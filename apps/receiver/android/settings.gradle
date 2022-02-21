@@ -1,4 +1,6 @@
-include ':app'
+include ':app', ':base', ':p2p', ':libwebrtc'
+project(':base').projectDir = new File('app/src/webrtc_sdk/base')
+project(':p2p').projectDir = new File('app/src/webrtc_sdk/p2p')
 
 def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
 def properties = new Properties()
