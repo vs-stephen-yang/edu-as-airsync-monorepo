@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.viewsonic" "\0"
-            VALUE "FileDescription", "display_flutter" "\0"
+            VALUE "FileDescription", "Display" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "display_flutter" "\0"
+            VALUE "InternalName", "Display" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.viewsonic. All rights reserved." "\0"
-            VALUE "OriginalFilename", "display_flutter.exe" "\0"
-            VALUE "ProductName", "display_flutter" "\0"
+            VALUE "OriginalFilename", "Display.exe" "\0"
+            VALUE "ProductName", "Display" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
