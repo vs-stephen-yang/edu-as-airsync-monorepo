@@ -1,6 +1,6 @@
 {
-    "name": "display_flutter",
-    "short_name": "display_flutter",
+    "name": "Display",
+    "short_name": "Display",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
