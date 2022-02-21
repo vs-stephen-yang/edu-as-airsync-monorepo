@@ -1,4 +1,4 @@
-package com.viewsonic.display_flutter;
+package com.mvbcast.crosswalk;
 
 import io.flutter.embedding.android.FlutterActivity;
 
