@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.DataChannel;
 import org.webrtc.IceCandidate;
+import org.webrtc.IceCandidateErrorEvent;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 
@@ -289,6 +290,16 @@ final class P2PPeerConnectionChannel extends PeerConnectionChannel {
         callbackExecutor.execute(() -> {
             Log.d(LOG_TAG, "onIceCandidate");
             observer.onIceCandidate(key, iceCandidate);
+        });
+    }
+
+    @Override
+    public void onIceCandidateError(IceCandidateErrorEvent event) {
+        callbackExecutor.execute(() -> {
+            Log.d(LOG_TAG,
+                    "onIceCandidateError address: " + event.address + ", port: " + event.port + ", url: "
+                            + event.url + ", errorCode: " + event.errorCode + ", errorText: " + event.errorText);
+            observer.onIceCandidateError(event);
         });
     }
 
