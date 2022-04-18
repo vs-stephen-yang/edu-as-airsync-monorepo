@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.IceCandidate;
+import org.webrtc.IceCandidateErrorEvent;
 import org.webrtc.RTCStatsReport;
 import org.webrtc.SessionDescription;
 
@@ -583,6 +584,11 @@ public final class P2PClient implements PeerConnectionChannel.PeerConnectionChan
         } catch (JSONException e) {
             DCHECK(e);
         }
+    }
+
+    @Override
+    public void onIceCandidateError(final IceCandidateErrorEvent event) {
+
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import org.webrtc.AudioTrack;
 import org.webrtc.DataChannel;
 import org.webrtc.IceCandidate;
+import org.webrtc.IceCandidateErrorEvent;
 import org.webrtc.MediaConstraints;
 import org.webrtc.MediaConstraints.KeyValuePair;
 import org.webrtc.MediaStream;
@@ -496,6 +497,9 @@ public abstract class PeerConnectionChannel
     abstract public void onIceCandidate(IceCandidate iceCandidate); 
 
     @Override
+    abstract public void onIceCandidateError(final IceCandidateErrorEvent event);
+
+    @Override
     abstract public void onIceCandidatesRemoved(IceCandidate[] iceCandidates);
 
     @Override
@@ -521,11 +525,16 @@ public abstract class PeerConnectionChannel
     @Override
     public void onAddTrack(RtpReceiver rtpReceiver, MediaStream[] mediaStreams) {
     }
-        
+
+
+    @Override
+    public void onRemoveTrack(RtpReceiver receiver) {
+    }
+
     @Override
     public void onTrack(RtpTransceiver transceiver) {
     }
-        
+
     //DataChannel.Observer interface
     @Override
     public void onBufferedAmountChange(long l) {
@@ -565,6 +574,8 @@ public abstract class PeerConnectionChannel
 
     public interface PeerConnectionChannelObserver {
         void onIceCandidate(String key, IceCandidate candidate);
+
+        void onIceCandidateError(IceCandidateErrorEvent event);
 
         void onIceCandidatesRemoved(String key, IceCandidate[] candidates);
 
