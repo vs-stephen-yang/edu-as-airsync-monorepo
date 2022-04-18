@@ -1,5 +1,8 @@
+import 'package:display_flutter/screens/eula.dart';
+import 'package:display_flutter/screens/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:no_context_navigation/no_context_navigation.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,30 +25,19 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-          ],
-        ),
-      ),
+      initialRoute: '/main_page',
+      navigatorKey: NavigationService.navigationKey,
+      onGenerateRoute: (routeSettings) {
+        switch (routeSettings.name) {
+          case '/eula':
+            return MaterialPageRoute<String>(
+                builder: (context) => const Eula());
+          case '/main_page':
+            return MaterialPageRoute<String>(
+                builder: (context) => const MainPage());
+        }
+      },
+      home: const MainPage(),
     );
   }
 }
