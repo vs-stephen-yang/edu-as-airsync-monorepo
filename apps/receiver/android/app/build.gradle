@@ -55,6 +55,11 @@ dependencies {
     implementation project(path: ':libwebrtc')
     implementation project(':base')
     implementation project(':p2p')
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation('io.socket:socket.io-client:1.0.1') {
+        // excluding org.json which is provided by Android
+        exclude group: 'org.json', module: 'json'
+    }
 }
 
 flutter {
