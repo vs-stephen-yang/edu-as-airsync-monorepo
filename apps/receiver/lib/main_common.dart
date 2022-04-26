@@ -1,11 +1,15 @@
 import 'package:display_flutter/screens/eula.dart';
-import 'package:display_flutter/screens/main_page.dart';
+import 'package:display_flutter/screens/home.dart';
+import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
-void main() {
-  runApp(const MyApp());
+void commonEntry(ConfigSettings settings) {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  var configureApp = AppConfig(settings: settings, child: const MyApp());
+  runApp(configureApp);
 }
 
 class MyApp extends StatelessWidget {
@@ -20,24 +24,24 @@ class MyApp extends StatelessWidget {
     );
 
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Display',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/main_page',
+      initialRoute: '/home',
       navigatorKey: NavigationService.navigationKey,
       onGenerateRoute: (routeSettings) {
         switch (routeSettings.name) {
           case '/eula':
             return MaterialPageRoute<String>(
                 builder: (context) => const Eula());
-          case '/main_page':
+          case '/home':
             return MaterialPageRoute<String>(
-                builder: (context) => const MainPage());
+                builder: (context) => const Home());
         }
       },
-      home: const MainPage(),
+      home: const Home(),
     );
   }
 }

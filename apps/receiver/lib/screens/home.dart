@@ -1,20 +1,22 @@
 import 'package:display_flutter/native_view/webrtc.dart';
+import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _MainPageState();
+  State<StatefulWidget> createState() => _HomeState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _HomeState extends State<Home> {
   String _displayCode = '';
   String _otpCode = '';
 
   @override
   Widget build(BuildContext context) {
+    var appConfig = AppConfig.of(context);
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
@@ -25,6 +27,12 @@ class _MainPageState extends State<MainPage> {
               child: WebRTCNativeView(
                 onWebRTCNativeViewCreatedCallback:
                     _webRTCNativeViewCreatedCallback,
+              ),
+            ),
+            FittedBox(
+              child: Text(
+                appConfig != null ? appConfig.settings.mainDisplayUrl : '',
+                style: const TextStyle(color: Colors.blue, fontSize: 30),
               ),
             ),
             FittedBox(
