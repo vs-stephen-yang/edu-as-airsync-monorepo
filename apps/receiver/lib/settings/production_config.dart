@@ -13,4 +13,11 @@ class ProductionConfig implements ConfigSettings {
   @override
   String vbsOtaUrl =
       'https://ubwaipq96h.execute-api.us-east-1.amazonaws.com/prod/otacheck';
+
+  @override
+  String icarHostName = 'api.myviewboard.com';
+
+  @override
+  String icarRegisterUrl =
+      'https://api.myviewboard.com/api/v1/application/extension/register?key=';
 }

@@ -1,3 +1,4 @@
+import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    var appConfig = AppConfig.of(context);
+    AppConfig? appConfig = AppConfig.of(context);
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
@@ -31,7 +32,7 @@ class _HomeState extends State<Home> {
             ),
             FittedBox(
               child: Text(
-                appConfig != null ? appConfig.settings.mainDisplayUrl : '',
+                appConfig?.settings.mainDisplayUrl ?? ' ',
                 style: const TextStyle(color: Colors.blue, fontSize: 30),
               ),
             ),
@@ -44,6 +45,18 @@ class _HomeState extends State<Home> {
             FittedBox(
               child: Text(
                 'OTP: $_otpCode',
+                style: const TextStyle(color: Colors.blue, fontSize: 30),
+              ),
+            ),
+            FittedBox(
+              child: Text(
+                'version: ${appConfig?.appVersion ?? ' '}',
+                style: const TextStyle(color: Colors.blue, fontSize: 30),
+              ),
+            ),
+            FittedBox(
+              child: Text(
+                'InstanceId: ${AppInstanceCreate().getInstanceID()}\n Registered: ${AppInstanceCreate().getIsRegistered()}',
                 style: const TextStyle(color: Colors.blue, fontSize: 30),
               ),
             ),

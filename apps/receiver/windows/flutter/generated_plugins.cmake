@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  device_info_vs
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)
