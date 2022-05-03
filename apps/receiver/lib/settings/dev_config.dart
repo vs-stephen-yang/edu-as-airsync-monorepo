@@ -13,4 +13,11 @@ class DevConfig implements ConfigSettings {
   @override
   String vbsOtaUrl =
       'https://jqi0t9ku01.execute-api.us-east-1.amazonaws.com/dev/otacheck';
+
+  @override
+  String icarHostName = 'devapi.myviewboard.com';
+
+  @override
+  String icarRegisterUrl =
+      'https://devapi.myviewboard.com/api/v1/application/extension/register?key=';
 }
