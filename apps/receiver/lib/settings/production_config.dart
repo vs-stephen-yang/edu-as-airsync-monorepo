@@ -24,4 +24,12 @@ class ProductionConfig implements ConfigSettings {
   @override
   String icarUpdateUrl =
       'https://api.myviewboard.com/api/v1/application/extension/register/uid?key=';
+
+  @override
+  String icarExceptionUrl =
+      'https://api.myviewboard.com/api/v1/application/extension/exception?key=';
+
+  @override
+  String icarExceptionFileUrl =
+      'https://api.myviewboard.com/api/v1/application/extension/exception/uid/file?folder=DisplayExceptionLog';
 }

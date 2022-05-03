@@ -30,4 +30,6 @@ abstract class ConfigSettings {
   late String icarHostName;
   late String icarRegisterUrl;
   late String icarUpdateUrl;
+  late String icarExceptionUrl;
+  late String icarExceptionFileUrl;
 }
