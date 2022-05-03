@@ -20,4 +20,8 @@ class DevConfig implements ConfigSettings {
   @override
   String icarRegisterUrl =
       'https://devapi.myviewboard.com/api/v1/application/extension/register?key=';
+
+  @override
+  String icarUpdateUrl =
+      'https://devapi.myviewboard.com/api/v1/application/extension/register/uid?key=';
 }
