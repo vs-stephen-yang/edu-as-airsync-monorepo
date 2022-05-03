@@ -20,4 +20,8 @@ class ProductionConfig implements ConfigSettings {
   @override
   String icarRegisterUrl =
       'https://api.myviewboard.com/api/v1/application/extension/register?key=';
+
+  @override
+  String icarUpdateUrl =
+      'https://api.myviewboard.com/api/v1/application/extension/register/uid?key=';
 }
