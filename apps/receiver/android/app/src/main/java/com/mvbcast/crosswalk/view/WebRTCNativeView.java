@@ -46,7 +46,7 @@ public class WebRTCNativeView implements PlatformView, MethodChannel.MethodCallH
 //                    constraintSet.applyTo(findViewById(R.id.parentLayout));
                 }));
 
-        WebRTCHelper.getInstance().processGetDisplayCode("3594987A");
+//        WebRTCHelper.getInstance().processGetDisplayCode("EC53FEC106F6433A82FA2F223A6C7F99");
     }
 
     // region PlatformView
@@ -81,6 +81,13 @@ public class WebRTCNativeView implements PlatformView, MethodChannel.MethodCallH
         Log.e("_TAG_", "onMethodCall: " + call.method + " object:" + call.arguments().toString());
         if ("setText".equals(call.method)) {
             result.success(null);
+        } else if ("connectControlSocket".equals(call.method)) {
+            WebRTCHelper.WebRTCInfo webRTCInfo = WebRTCHelper.getInstance().getWebRTCInfo();
+            webRTCInfo.InstanceId = call.argument("id");
+            webRTCInfo.DisplayCode = call.argument("displayCode");
+            webRTCInfo.Token = call.argument("token");
+            webRTCInfo.LicenseName = call.argument("name");
+            WebRTCHelper.getInstance().connectControlSocket(webRTCInfo.DisplayCode);
         } else {
             result.notImplemented();
         }
