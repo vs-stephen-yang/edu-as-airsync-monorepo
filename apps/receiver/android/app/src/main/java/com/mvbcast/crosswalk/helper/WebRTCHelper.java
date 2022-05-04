@@ -490,7 +490,7 @@ public class WebRTCHelper extends Observable implements
 
     private double mVolume = 5;
 
-    private void registerDisplayCode(String instanceID) {
+    public void registerDisplayCode(String instanceID) {
         try {
             String api = mGatewayUrl + "/presentation/displays";
             JSONObject content = new JSONObject();
@@ -1144,7 +1144,8 @@ public class WebRTCHelper extends Observable implements
     }
 
     // region Control Socket
-    private void connectControlSocket(String displayID) {
+    public void connectControlSocket(String displayID) {
+        android.util.Log.e(TAG, "zz connectControlSocket "+ displayID );
         mDisplaySocketReConnect.setValue(false);
         try {
             IO.Options options = new IO.Options();
