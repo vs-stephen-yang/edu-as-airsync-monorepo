@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:display_flutter/app_exception_report.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
@@ -19,7 +22,19 @@ Future<void> commonEntry(ConfigSettings settings) async {
       appVersion: packageInfo.version,
       child: const MyApp());
 
-  runApp(configureApp);
+  await AppExceptionReport().ensureInitialized(settings, packageInfo);
+
+  FlutterError.onError = (FlutterErrorDetails details) {
+    // Report errors to a service
+    AppExceptionReport().sendToServer(settings, packageInfo,
+        details.exceptionAsString(), details.stack.toString());
+  };
+
+  runZonedGuarded(() => runApp(configureApp), (error, stack) {
+    // Report errors to a service
+    AppExceptionReport().sendToServer(
+        settings, packageInfo, error.toString(), stack.toString());
+  });
 }
 
 class MyApp extends StatelessWidget {
