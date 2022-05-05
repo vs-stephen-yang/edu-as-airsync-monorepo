@@ -27,11 +27,14 @@ class _HomeState extends State<Home> {
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     _displayCodeBloc = DisplayCodeBloc(
         AppConfig.of(context)!.settings.apiGateway,
-        AppInstanceCreate().getInstanceID());
-    if (_displayCodeBloc.state is DisplayCodeInitial)
+        AppInstanceCreate().getInstanceID(),
+        AppConfig.of(context)!.appVersion);
+    if (_displayCodeBloc.state is DisplayCodeInitial) {
       _displayCodeBloc.add(GetDisplayCode());
+    }
   }
 
   @override
