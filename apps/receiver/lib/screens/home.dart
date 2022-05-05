@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
     super.didChangeDependencies();
     _displayCodeBloc = DisplayCodeBloc(
         AppConfig.of(context)!.settings.apiGateway,
-        AppInstanceCreate().getInstanceID(),
+        AppInstanceCreate().instanceID,
         AppConfig.of(context)!.appVersion);
     if (_displayCodeBloc.state is DisplayCodeInitial) {
       _displayCodeBloc.add(GetDisplayCode());
@@ -48,7 +48,7 @@ class _HomeState extends State<Home> {
             builder: (context, state) {
               if (state is DisplayCodeSuccess) {
                 controller.channel.invokeMethod("connectControlSocket", <String, String>{
-                  'id': AppInstanceCreate().getInstanceID(),
+                  'id': AppInstanceCreate().instanceID,
                   'displayCode': _displayCodeBloc.displayCode,
                   'token': _displayCodeBloc.token,
                   'name': _displayCodeBloc.name,
@@ -94,7 +94,7 @@ class _HomeState extends State<Home> {
                     ),
                     FittedBox(
                       child: Text(
-                        'InstanceId: ${AppInstanceCreate().getInstanceID()}\n Registered: ${AppInstanceCreate().getIsRegistered()}',
+                        'InstanceId: ${AppInstanceCreate().instanceID}\n Registered: ${AppInstanceCreate().isRegistered}',
                         style:
                             const TextStyle(color: Colors.blue, fontSize: 30),
                       ),

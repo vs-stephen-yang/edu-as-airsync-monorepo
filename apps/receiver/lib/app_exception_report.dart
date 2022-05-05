@@ -76,8 +76,8 @@ class AppExceptionReport {
     _timeStamp = current;
     _error = error;
 
-    if (AppInstanceCreate().getIsRegistered() /*&& kReleaseMode*/) {
-      String uid = AppInstanceCreate().getInstanceID();
+    if (AppInstanceCreate().isRegistered /*&& kReleaseMode*/) {
+      String uid = AppInstanceCreate().instanceID;
 
       // create file name
       String message = error.length > 90 ? error.substring(0, 90) : error;
