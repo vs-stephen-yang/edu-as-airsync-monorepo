@@ -29,15 +29,10 @@ class AppInstanceCreate {
   }
 
   bool _isRegistered = false;
+  bool get isRegistered => _isRegistered;
+
   String _instanceID = '';
-
-  getIsRegistered() {
-    return _isRegistered;
-  }
-
-  getInstanceID() {
-    return _instanceID;
-  }
+  String get instanceID => _instanceID;
 
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
