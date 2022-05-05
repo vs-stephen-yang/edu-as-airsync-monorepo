@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
     super.didChangeDependencies();
     _displayCodeBloc = DisplayCodeBloc(
         AppConfig.of(context)!.settings.apiGateway,
-        AppInstanceCreate().instanceID,
+        AppInstanceCreate().displayInstanceID,
         AppConfig.of(context)!.appVersion);
     if (_displayCodeBloc.state is DisplayCodeInitial) {
       _displayCodeBloc.add(GetDisplayCode());

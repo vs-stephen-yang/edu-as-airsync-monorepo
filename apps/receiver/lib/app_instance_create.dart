@@ -34,23 +34,42 @@ class AppInstanceCreate {
   String _instanceID = '';
   String get instanceID => _instanceID;
 
+  String _serialNumber = '';
+  String get serialNumber => _serialNumber;
+
+  String _modelName = '';
+  String get modelName => _modelName;
+
+  String get displayInstanceID => _modelName == 'VBS100' ? _serialNumber : _instanceID;
+
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('app_isRegistered', _isRegistered);
     prefs.setString('app_instanceID', _instanceID);
+    prefs.setString('app_serialNumber', _serialNumber);
+    prefs.setString('app_modelName', _modelName);
   }
 
   _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _isRegistered = prefs.getBool('app_isRegistered') ?? false;
     _instanceID = prefs.getString('app_instanceID') ?? '';
+    _serialNumber = prefs.getString('app_serialNumber') ?? '';
+    _modelName = prefs.getString('app_modelName') ?? '';
   }
 
   _createInstanceId(ConfigSettings settings, PackageInfo packageInfo) async {
     await _load();
 
     if (_instanceID.isEmpty) {
-      _instanceID = await _generateInstanceID();
+      try {
+        _serialNumber = await DeviceInfoVs.serialNumber ?? '1234567890';
+      } on PlatformException {
+        _serialNumber = '1234567890';
+      }
+      log('serialId: $_serialNumber');
+
+      _instanceID = await _generateInstanceID(_serialNumber);
       _save();
     }
     log('create instance: $_instanceID');
@@ -65,27 +84,24 @@ class AppInstanceCreate {
     }
   }
 
-  Future<String> _generateInstanceID() async {
+  Future<String> _generateInstanceID(String serialId) async {
     String deviceId;
-    String serialId;
-    try {
-      serialId = await DeviceInfoVs.serialNumber ?? '1234567890';
-    } on PlatformException {
-      serialId = '1234567890';
-    }
-    log('serialId: $serialId');
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (kIsWeb) {
       deviceId = (const Uuid()).v4();
+      _modelName = '';
     } else {
       if (Platform.isAndroid) {
         AndroidDeviceInfo info = await deviceInfo.androidInfo;
         deviceId = info.androidId!;
+        _modelName = info.model ?? '';
       } else if (Platform.isIOS) {
         IosDeviceInfo info = await deviceInfo.iosInfo;
         deviceId = info.identifierForVendor!;
+        _modelName = info.model ?? '';
       } else {
         deviceId = (const Uuid()).v4(); // todo: support other platform id.
+        _modelName = '';
       }
     }
     return _generateMd5(deviceId + serialId);
