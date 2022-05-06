@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:display_flutter/app_exception_report.dart';
 import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -13,6 +14,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 Future<void> commonEntry(ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await AppPreferences.ensureInitialized();
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   await AppInstanceCreate.ensureInitialized(settings, packageInfo);
 
@@ -53,8 +55,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.black, // Set app background color
       ),
-      initialRoute: '/home',
+      initialRoute:
+          AppPreferences().showEULA && AppInstanceCreate().modelName != 'VBS100'
+              ? '/eula'
+              : '/home',
       navigatorKey: NavigationService.navigationKey,
       onGenerateRoute: (routeSettings) {
         switch (routeSettings.name) {
