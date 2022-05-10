@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 import 'dart:js';
 
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/utility/utility_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
@@ -78,7 +78,8 @@ class ControlSocket extends ChangeNotifier {
   }
 
   void sendMessageToControlSocket(BuildContext context,
-      String messageFor, {String? allow, String? action, JsObject? reply} ) {
+      String messageFor, {String? allow, String? action, JsObject? reply, bool? showCode,
+        bool? showDelegate, String? presentationState} ) {
     if (mControlSocketIO == null) {
       // myLogDebug(TAG, "mDisplaySocketIO is not established.");
       log("mDisplaySocketIO is not established.");
@@ -103,14 +104,14 @@ class ControlSocket extends ChangeNotifier {
       var content = jsonEncode({
         'messageFor': displayCode,
         'action': 'display-state-update',
-        'action': 'display-state-update',
-        'code': mWebRTCInfo.IsShowCode,
-        'delegate': mWebRTCInfo.IsShowDelegate,
+        // 'action': 'display-state-update',
+        'code': showCode,
+        'delegate': showDelegate,
         'uiState': JsObject,
-        'presentationState':mWebRTCInfo.PresentationState.toString(),
+        'presentationState': presentationState,
         'extra':JsObject,
-        'messageId': getRandomString(21),
-        'nextId': getRandomString(21),
+        'messageId': UtilityHelper.getRandomString(21),
+        'nextId': UtilityHelper.getRandomString(21),
       });
       log('sendMessageToControlSocket: $content');
       mControlSocketIO.emit(messageFor, content);
