@@ -15,8 +15,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  String _displayCode = '';
-  String _otpCode = '';
   late WebRTCNativeViewController controller;
   late DisplayCodeBloc _displayCodeBloc;
 
@@ -111,11 +109,6 @@ class _HomeState extends State<Home> {
     this.controller = controller;
     controller.channel.setMethodCallHandler((MethodCall call) async {
       setState(() {
-        if (call.method == "setDisplayCode") {
-          _displayCode = call.arguments as String;
-        } else if (call.method == "setOtpCode") {
-          _otpCode = call.arguments as String;
-        }
       });
       return;
     });
