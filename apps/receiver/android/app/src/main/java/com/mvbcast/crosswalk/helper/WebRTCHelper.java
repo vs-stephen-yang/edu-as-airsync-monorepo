@@ -421,6 +421,10 @@ public class WebRTCHelper extends Observable implements
         return mDisplaySocketReConnect;
     }
 
+    public String getmAllowId() {
+        return !mAllowId.isEmpty() ? mAllowId : mReconnectAllowId;
+    }
+
     public boolean isConnected() {
         return !mClientId.isEmpty();
     }
@@ -1092,7 +1096,11 @@ public class WebRTCHelper extends Observable implements
                                             }
                                             mWebRTCInfo.IsUIStateChanged = true;
                                             setChanged();
-                                            notifyObservers();
+                                            if (!mWebRTCInfo.ModeratorMode) {
+                                                notifyObservers("startConnectTimeOutTimer");
+                                            } else {
+                                                notifyObservers();
+                                            }
                                             sendMessageToControlSocket(mWebRTCInfo.DisplayCode);
 
                                             connectP2pClient(clientId, allowId, response);

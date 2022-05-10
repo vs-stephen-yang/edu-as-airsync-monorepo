@@ -100,6 +100,10 @@ public class WebRTCNativeView implements PlatformView, MethodChannel.MethodCallH
     @Override
     public void update(Observable o, Object arg) {
         if (o instanceof WebRTCHelper) {
+            Log.d("zz update ", "o: "+ (o != null? o.toString(): "") + " arg: "+ (arg != null? arg.toString():""));
+            if (arg != null && arg.equals("startConnectTimeOutTimer")) {
+                startConnectTimeOutTimer(WebRTCHelper.getInstance().getmAllowId());
+            }
             mActivity.runOnUiThread(() -> {
                 WebRTCHelper.WebRTCInfo webRTCInfo = WebRTCHelper.getInstance().getWebRTCInfo();
                 setDisplayCode(webRTCInfo.DisplayCode);
@@ -118,6 +122,10 @@ public class WebRTCNativeView implements PlatformView, MethodChannel.MethodCallH
 
     private void setOtpCode(String otpCode) {
         methodChannel.invokeMethod("setOtpCode", otpCode);
+    }
+
+    private void startConnectTimeOutTimer(String allowId) {
+        methodChannel.invokeMethod("startConnectTimeOutTimer", allowId);
     }
     //-------------------------------------------------------------------------
     // endregion

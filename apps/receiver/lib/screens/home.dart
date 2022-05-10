@@ -1,10 +1,8 @@
-import 'dart:async';
-import 'dart:developer';
 
 import 'package:display_flutter/app_instance_create.dart';
 
 import 'package:display_flutter/blocs/display_code/display_code_bloc.dart';
-import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
@@ -119,79 +117,16 @@ class _HomeState extends State<Home> {
           _displayCode = call.arguments as String;
         } else if (call.method == "setOtpCode") {
           _otpCode = call.arguments as String;
+        } else if (call.method == "startConnectTimeOutTimer") {
+          ConnectionTimer.getInstance().startConnectionTimeoutTimer(controller, context, _displayCode, call.arguments as String);
         }
       });
       return;
     });
   }
 
-  late Timer mConnectionTimeoutTimer, mRemainingTimeTimer;
-  StreamController<int> mConnectionTimeTimeout = StreamController<int>();
-  StreamController<int> mRemainingTimeTimeout = StreamController<int>();
-
-  void _startConnectionTimeoutTimer() {
-    _stopConnectionTimeoutTimer();
-
-    var count = 30;
-    mConnectionTimeoutTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-
-      if (timer.tick < 30) {
-        // onTick
-        count = 30 - timer.tick;
-        mConnectionTimeTimeout.add(count);
-      } else if (timer.tick == 30) {
-        // onFinish
-        timer.cancel();
-        controller.channel.invokeMethod('setStateMachine', "ConnectionTimeout onFinish");
-
-        // AppCenterAnalyticsHelper.getInstance().EventStreamTimeout();
-
-        // AllowId from WebRTCHelper
-        ControlSocket.getInstance().sendMessageToControlSocket(context, _displayCode, allow: !mAllowId.isEmpty() ? mAllowId :
-        mReconnectAllowId, action: 'timeout');
-
-        controller.channel.invokeMethod('disconnectP2pClient');
-        // UtilityHelper.myToast(mActivityRef.get(), R.string.connection_connect_timeout);
-      }
-    });
+  void _controlAudio(bool enable) {
+    controller.channel.invokeMethod('_controlAudio', enable);
   }
-
-  void _stopConnectionTimeoutTimer() {
-    mConnectionTimeoutTimer.cancel();
-    mConnectionTimeTimeout.add(0);
-  }
-
-  void _startRemainingTimeTimer(int seconds) {
-    _stopRemainingTimeTimer();
-
-    mRemainingTimeTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      var count = 0;
-      if (timer.tick < seconds) {
-        // onTick
-        log('RemainingTimeTimeout tick: ${timer.tick}');
-        count = seconds - timer.tick;
-        mRemainingTimeTimeout.add(count);
-      } else if (timer.tick == seconds) {
-        // onFinish
-        timer.cancel();
-        log('RemainingTimeTimeout onFinish');
-
-        // TODO:SAVE WebRTCInfo
-        // mWebRTCInfo.ModeratorMode = false;
-        // mWebRTCInfo.IsModeratorLeave = true;
-        // mWebRTCInfo.ModeratorId = "";
-        // mWebRTCInfo.ModeratorName = "";
-
-        controller.channel.invokeMethod('disconnectP2pClient');
-      }
-    });
-  }
-
-  void _stopRemainingTimeTimer() {
-    mRemainingTimeTimer.cancel();
-    mRemainingTimeTimeout.add(0);
-  }
-
-
 
 }
