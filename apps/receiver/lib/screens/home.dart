@@ -57,53 +57,76 @@ class _HomeState extends State<Home> {
                   'name': _displayCodeBloc.name,
                 });
               }
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      child: WebRTCNativeView(
-                        onWebRTCNativeViewCreatedCallback:
-                            _webRTCNativeViewCreatedCallback,
-                      ),
+              return Stack(
+                children: [
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: WebRTCNativeView(
+                            onWebRTCNativeViewCreatedCallback:
+                                _webRTCNativeViewCreatedCallback,
+                          ),
+                        ),
+                        FittedBox(
+                          child: Text(
+                            appConfig?.settings.mainDisplayUrl ?? ' ',
+                            style: const TextStyle(
+                                color: Colors.blue, fontSize: 30),
+                          ),
+                        ),
+                        FittedBox(
+                          child: Text(
+                            'Display Code: ${_displayCodeBloc.displayCode}',
+                            style: const TextStyle(
+                                color: Colors.blue, fontSize: 30),
+                          ),
+                        ),
+                        FittedBox(
+                          child: Text(
+                            'OTP: ${_displayCodeBloc.otp}', //$_otpCode'
+                            style: const TextStyle(
+                                color: Colors.blue, fontSize: 30),
+                          ),
+                        ),
+                        FittedBox(
+                          child: Text(
+                            'version: ${appConfig?.appVersion ?? ' '}',
+                            style: const TextStyle(
+                                color: Colors.blue, fontSize: 30),
+                          ),
+                        ),
+                        FittedBox(
+                          child: Text(
+                            'InstanceId: ${AppInstanceCreate().instanceID}\n Registered: ${AppInstanceCreate().isRegistered}',
+                            style: const TextStyle(
+                                color: Colors.blue, fontSize: 30),
+                          ),
+                        ),
+                      ],
                     ),
-                    FittedBox(
-                      child: Text(
-                        appConfig?.settings.mainDisplayUrl ?? ' ',
-                        style:
-                            const TextStyle(color: Colors.blue, fontSize: 30),
-                      ),
-                    ),
-                    FittedBox(
-                      child: Text(
-                        'Display Code: ${_displayCodeBloc.displayCode}',
-                        style:
-                            const TextStyle(color: Colors.blue, fontSize: 30),
-                      ),
-                    ),
-                    FittedBox(
-                      child: Text(
-                        'OTP: ${_displayCodeBloc.otp}', //$_otpCode'
-                        style:
-                            const TextStyle(color: Colors.blue, fontSize: 30),
-                      ),
-                    ),
-                    FittedBox(
-                      child: Text(
-                        'version: ${appConfig?.appVersion ?? ' '}',
-                        style:
-                            const TextStyle(color: Colors.blue, fontSize: 30),
-                      ),
-                    ),
-                    FittedBox(
-                      child: Text(
-                        'InstanceId: ${AppInstanceCreate().instanceID}\n Registered: ${AppInstanceCreate().isRegistered}',
-                        style:
-                            const TextStyle(color: Colors.blue, fontSize: 30),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  Positioned(
+                      bottom: 0.0,
+                      left: 0.0,
+                      child: Column(
+                        children: [
+                          IconButton(
+                              onPressed: () {},
+                              icon: SvgPicture.asset(
+                                  'assets/images/ic_moderator_off')),
+                          IconButton(
+                              onPressed: () {},
+                              icon: SvgPicture.asset(
+                                  'assets/images/ic_language')),
+                          IconButton(
+                              onPressed: () {},
+                              icon: SvgPicture.asset(
+                                  'assets/images/ic_whatsnews')),
+                        ],
+                      ))
+                ],
               );
             },
           ),
