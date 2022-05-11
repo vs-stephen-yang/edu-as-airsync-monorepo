@@ -1,7 +1,9 @@
+import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/tittle_bar.dart';
+import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -50,6 +52,15 @@ class _HomeState extends State<Home> {
                     right: 0,
                     bottom: 0,
                     child: BottomBar(),
+                  ),
+                  Visibility(
+                    visible: AppInstanceCreate().modelName == 'VBS100',
+                    child: const Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: VbsOTA(),
+                    ),
                   ),
                 ],
               ),
