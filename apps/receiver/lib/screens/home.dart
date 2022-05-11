@@ -1,4 +1,3 @@
-
 import 'package:display_flutter/app_instance_create.dart';
 
 import 'package:display_flutter/blocs/display_code/display_code_bloc.dart';
@@ -8,6 +7,7 @@ import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -49,7 +49,8 @@ class _HomeState extends State<Home> {
           child: BlocBuilder<DisplayCodeBloc, DisplayCodeState>(
             builder: (context, state) {
               if (state is DisplayCodeSuccess) {
-                controller.channel.invokeMethod("connectControlSocket", <String, String>{
+                controller.channel
+                    .invokeMethod("connectControlSocket", <String, String>{
                   'id': AppInstanceCreate().instanceID,
                   'displayCode': _displayCodeBloc.displayCode,
                   'token': _displayCodeBloc.token,
@@ -118,7 +119,15 @@ class _HomeState extends State<Home> {
         } else if (call.method == "setOtpCode") {
           _otpCode = call.arguments as String;
         } else if (call.method == "startConnectTimeOutTimer") {
-          ConnectionTimer.getInstance().startConnectionTimeoutTimer(controller, context, _displayCode, call.arguments as String);
+          ConnectionTimer.getInstance().startConnectionTimeoutTimer(
+              controller, context, _displayCode, call.arguments as String);
+        } else if (call.method == "stopConnectionTimeoutTimer") {
+          ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+        } else if (call.method == "startRemainingTimeTimer") {
+          ConnectionTimer.getInstance()
+              .startRemainingTimeTimer(controller, call.arguments as int);
+        } else if (call.method == "stopRemainingTimeTimer") {
+          ConnectionTimer.getInstance().stopRemainingTimeTimer();
         }
       });
       return;
