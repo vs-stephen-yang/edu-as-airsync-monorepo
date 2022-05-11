@@ -38,11 +38,9 @@ class ConnectionTimer {
 
         // AppCenterAnalyticsHelper.getInstance().EventStreamTimeout();
 
-        // AllowId from WebRTCHelper
         ControlSocket.getInstance().sendMessageToControlSocket(
             context, _displayCode,
             allow: allow, action: 'timeout');
-        //allow: !mAllowId.isEmpty() ? mAllowId :mReconnectAllowId
 
         controller.channel.invokeMethod('disconnectP2pClient');
         // UtilityHelper.myToast(mActivityRef.get(), R.string.connection_connect_timeout);
@@ -71,14 +69,7 @@ class ConnectionTimer {
         timer.cancel();
         log('RemainingTimeTimeout onFinish');
 
-        // TODO:SAVE WebRTCInfo
-        // mWebRTCInfo.ModeratorMode = false;
-        // mWebRTCInfo.IsModeratorLeave = true;
-        // mWebRTCInfo.ModeratorId = "";
-        // mWebRTCInfo.ModeratorName = "";
-        controller.channel.invokeMethod(
-            'offModeratorMode'); //Android should include disconnectP2PClient
-        // controller.channel.invokeMethod('disconnectP2pClient');
+        controller.channel.invokeMethod('offModeratorMode');
       }
     });
   }

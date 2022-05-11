@@ -81,7 +81,6 @@ class ControlSocket extends ChangeNotifier {
       String messageFor, {String? allow, String? action, JsObject? reply, bool? showCode,
         bool? showDelegate, String? presentationState} ) {
     if (mControlSocketIO == null) {
-      // myLogDebug(TAG, "mDisplaySocketIO is not established.");
       log("mDisplaySocketIO is not established.");
       return;
     }
@@ -121,6 +120,5 @@ class ControlSocket extends ChangeNotifier {
   void _printControlSocketLog(String event, dynamic args) {
     log("mDisplaySocketIO: $event $args");
   }
-
 
 }

@@ -691,7 +691,7 @@ public class WebRTCHelper extends Observable implements
         });
     }
 
-    private void disconnectP2pClient() {
+    public void disconnectP2pClient() {
         if (!TextUtils.isEmpty(mClientId)) {
             setStateMachine(String.format("disconnect clientId: %s, allowId: %s", mClientId, mAllowId));
             if (mP2pClient != null) mP2pClient.disconnect();
