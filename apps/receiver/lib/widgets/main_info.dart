@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/blocs/display_code/display_code_bloc.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
@@ -84,8 +86,10 @@ class _MainInfoState extends State<MainInfo> {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Wrap(
+                      direction: Axis.horizontal,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 10,
                       children: <Widget>[
                         Text(
                           _isEyeOpen ? _displayCodeBloc.otp : "XXXX",
@@ -94,6 +98,31 @@ class _MainInfoState extends State<MainInfo> {
                             fontSize: 25,
                             fontWeight: FontWeight.w500,
                           ),
+                        ),
+                        Stack(
+                          alignment: Alignment.center,
+                          children: <Widget>[
+                            Transform(
+                              alignment: Alignment.center,
+                              transform: Matrix4.rotationY(math.pi),
+                              child: const SizedBox(
+                                width: 30,
+                                height: 30,
+                                child: CircularProgressIndicator(
+                                  //value: 0.3, // todo: otp timer
+                                  strokeWidth: 4,
+                                  backgroundColor: Colors.black,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ),
+                              ),
+                            ),
+                            const Text(
+                              '12', // todo: otp timer
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.white),
+                            ),
+                          ],
                         ),
                         IconButton(
                           onPressed: () {
