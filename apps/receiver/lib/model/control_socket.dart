@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:js';
 
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/utility_helper.dart';
@@ -77,9 +76,13 @@ class ControlSocket extends ChangeNotifier {
     mControlSocketIO.disconnect();
   }
 
-  void sendMessageToControlSocket(BuildContext context,
-      String messageFor, {String? allow, String? action, JsObject? reply, bool? showCode,
-        bool? showDelegate, String? presentationState} ) {
+  void sendMessageToControlSocket(BuildContext context, String messageFor,
+      {String? allow,
+      String? action,
+      String? reply,
+      bool? showCode,
+      bool? showDelegate,
+      String? presentationState}) {
     if (mControlSocketIO == null) {
       log("mDisplaySocketIO is not established.");
       return;
@@ -106,9 +109,9 @@ class ControlSocket extends ChangeNotifier {
         // 'action': 'display-state-update',
         'code': showCode,
         'delegate': showDelegate,
-        'uiState': JsObject,
+        'uiState': String,
         'presentationState': presentationState,
-        'extra':JsObject,
+        'extra': String,
         'messageId': UtilityHelper.getRandomString(21),
         'nextId': UtilityHelper.getRandomString(21),
       });
