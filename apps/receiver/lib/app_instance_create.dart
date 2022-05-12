@@ -42,6 +42,8 @@ class AppInstanceCreate {
 
   String get displayInstanceID => _modelName == 'VBS100' ? _serialNumber : _instanceID;
 
+  bool get isInstalledInVBS100 => _modelName == 'VBS100';
+
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('app_isRegistered', _isRegistered);

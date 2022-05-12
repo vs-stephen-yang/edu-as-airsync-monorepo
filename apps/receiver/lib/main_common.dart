@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.black, // Set app background color
       ),
       initialRoute:
-          AppPreferences().showEULA && AppInstanceCreate().modelName != 'VBS100'
+          AppPreferences().showEULA && !AppInstanceCreate().isInstalledInVBS100
               ? '/eula'
               : '/home',
       navigatorKey: NavigationService.navigationKey,
