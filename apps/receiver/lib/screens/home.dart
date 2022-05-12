@@ -1,11 +1,17 @@
 import 'package:display_flutter/app_instance_create.dart';
+
+import 'package:display_flutter/blocs/display_code/display_code_bloc.dart';
+import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
+import 'package:display_flutter/widgets/left_panels.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/tittle_bar.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -47,6 +53,7 @@ class _HomeState extends State<Home> {
                               isEnrolled: false, // todo: Moderator mode switch
                             )
                           : const Text(' ')),
+                  const Positioned(left: 20, bottom: 140, child: LeftPanels()),
                   const Positioned(
                     left: 0,
                     right: 0,
@@ -78,6 +85,20 @@ class _HomeState extends State<Home> {
       viewCreated = true;
     });
     controller.channel.setMethodCallHandler((MethodCall call) async {
+      if (call.method == "startConnectTimeOutTimer") {
+        ConnectionTimer.getInstance().startConnectionTimeoutTimer(
+            controller,
+            context,
+            BlocProvider.of<DisplayCodeBloc>(context).displayCode,
+            call.arguments as String);
+      } else if (call.method == "stopConnectionTimeoutTimer") {
+        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+      } else if (call.method == "startRemainingTimeTimer") {
+        ConnectionTimer.getInstance()
+            .startRemainingTimeTimer(controller, call.arguments as int);
+      } else if (call.method == "stopRemainingTimeTimer") {
+        ConnectionTimer.getInstance().stopRemainingTimeTimer();
+      }
       return;
     });
   }
