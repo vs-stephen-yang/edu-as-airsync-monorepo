@@ -11,12 +11,15 @@ import com.mvbcast.crosswalk.helper.WebRTCHelper;
 
 import org.webrtc.SurfaceViewRenderer;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.platform.PlatformView;
 
-public class WebRTCNativeView implements PlatformView, MethodChannel.MethodCallHandler {
+public class WebRTCNativeView implements PlatformView, MethodChannel.MethodCallHandler, Observer {
     private final Activity mActivity;
     private final SurfaceViewRenderer surfaceViewRenderer;
     private final MethodChannel methodChannel;
@@ -75,6 +78,15 @@ public class WebRTCNativeView implements PlatformView, MethodChannel.MethodCallH
             webRTCInfo.Token = call.argument("token");
             webRTCInfo.LicenseName = call.argument("name");
             WebRTCHelper.getInstance().connectControlSocket(webRTCInfo.DisplayCode);
+        } else if ("offModeratorMode".equals(call.method)) {
+            WebRTCHelper.WebRTCInfo webRTCInfo = WebRTCHelper.getInstance().getWebRTCInfo();
+            webRTCInfo.ModeratorMode = false;
+            webRTCInfo.IsModeratorLeave = true;
+            webRTCInfo.ModeratorId = "";
+            webRTCInfo.ModeratorName = "";
+            WebRTCHelper.getInstance().disconnectP2pClient();
+        } else if ("disconnectP2pClient".equals(call.method)) {
+            WebRTCHelper.getInstance().disconnectP2pClient();
         } else {
             result.notImplemented();
         }
@@ -82,9 +94,25 @@ public class WebRTCNativeView implements PlatformView, MethodChannel.MethodCallH
     //-------------------------------------------------------------------------
     // endregion
 
+    // region Observer
+    //-------------------------------------------------------------------------
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof WebRTCHelper) {
+            Log.d("zz update ", "o: "+ (o != null? o.toString(): "") + " arg: "+ (arg != null? arg.toString():""));
+            if (arg != null && arg.equals("startConnectTimeOutTimer")) {
+                startConnectTimeOutTimer(WebRTCHelper.getInstance().getmAllowId());
+            }
+        }
+    }
+    //-------------------------------------------------------------------------
+    // endregion
+
     // region private method
     //-------------------------------------------------------------------------
-
+    private void startConnectTimeOutTimer(String allowId) {
+        methodChannel.invokeMethod("startConnectTimeOutTimer", allowId);
+    }
     //-------------------------------------------------------------------------
     // endregion
 }
