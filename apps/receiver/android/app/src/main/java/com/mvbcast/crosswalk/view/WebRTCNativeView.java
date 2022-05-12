@@ -58,16 +58,6 @@ public class WebRTCNativeView implements PlatformView, MethodChannel.MethodCallH
     }
 
     @Override
-    public void onFlutterViewAttached(@NonNull View flutterView) {
-        WebRTCHelper.getInstance().addObserver(this);
-    }
-
-    @Override
-    public void onFlutterViewDetached() {
-        WebRTCHelper.getInstance().deleteObserver(this);
-    }
-
-    @Override
     public void dispose() {
         Log.e("_TAG_", "dispose");
     }
@@ -113,11 +103,6 @@ public class WebRTCNativeView implements PlatformView, MethodChannel.MethodCallH
             if (arg != null && arg.equals("startConnectTimeOutTimer")) {
                 startConnectTimeOutTimer(WebRTCHelper.getInstance().getmAllowId());
             }
-            mActivity.runOnUiThread(() -> {
-                WebRTCHelper.WebRTCInfo webRTCInfo = WebRTCHelper.getInstance().getWebRTCInfo();
-                setDisplayCode(webRTCInfo.DisplayCode);
-                setOtpCode(webRTCInfo.OTPCode);
-            });
         }
     }
     //-------------------------------------------------------------------------
@@ -125,14 +110,6 @@ public class WebRTCNativeView implements PlatformView, MethodChannel.MethodCallH
 
     // region private method
     //-------------------------------------------------------------------------
-    private void setDisplayCode(String displayCode) {
-        methodChannel.invokeMethod("setDisplayCode", displayCode);
-    }
-
-    private void setOtpCode(String otpCode) {
-        methodChannel.invokeMethod("setOtpCode", otpCode);
-    }
-
     private void startConnectTimeOutTimer(String allowId) {
         methodChannel.invokeMethod("startConnectTimeOutTimer", allowId);
     }
