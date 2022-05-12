@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
                     child: BottomBar(),
                   ),
                   Visibility(
-                    visible: AppInstanceCreate().modelName == 'VBS100',
+                    visible: AppInstanceCreate().isInstalledInVBS100,
                     child: const Positioned(
                       left: 0,
                       right: 0,
