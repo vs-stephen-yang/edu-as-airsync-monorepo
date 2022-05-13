@@ -1,11 +1,12 @@
-import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/screens/language_selection.dart';
+import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/screens/whats_new.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class StreamFunction extends StatefulWidget {
   const StreamFunction({Key? key}) : super(key: key);
+  static ValueNotifier<bool> showSplitScreen = ValueNotifier(false);
   static ValueNotifier<bool> showLanguage = ValueNotifier(false);
   static ValueNotifier<bool> showWhatsNew = ValueNotifier(false);
 
@@ -20,35 +21,50 @@ class _StreamFunctionStates extends State<StreamFunction> {
       children: [
         Column(
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.08,
-              width: MediaQuery.of(context).size.height * 0.08,
-              child: IconButton(
-                  onPressed: () {},
-                  icon: SvgPicture.asset(
-                    'assets/images/ic_moderator_off.svg',
-                  )),
+            IconButton(
+              iconSize: 48,
+              onPressed: () {
+                StreamFunction.showSplitScreen.value = true;
+              },
+              icon: const Image(
+                image: Svg('assets/images/ic_split_screen.svg'),
+              ),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.08,
-              width: MediaQuery.of(context).size.height * 0.08,
-              child: IconButton(
-                  onPressed: () {
-                    StreamFunction.showLanguage.value = true;
-                  },
-                  icon: SvgPicture.asset('assets/images/ic_language.svg')),
+            IconButton(
+              iconSize: 48,
+              onPressed: () {},
+              icon: const Image(
+                image: Svg('assets/images/ic_moderator_off.svg'),
+              ),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.08,
-              width: MediaQuery.of(context).size.height * 0.08,
-              child: IconButton(
-                  onPressed: () {
-                    StreamFunction.showWhatsNew.value = true;
-                  },
-                  icon: SvgPicture.asset('assets/images/ic_whatsnews.svg')),
+            IconButton(
+              iconSize: 48,
+              onPressed: () {
+                StreamFunction.showLanguage.value = true;
+              },
+              icon: const Image(
+                image: Svg('assets/images/ic_language.svg'),
+              ),
+            ),
+            IconButton(
+              iconSize: 48,
+              onPressed: () {
+                StreamFunction.showWhatsNew.value = true;
+              },
+              icon: const Image(
+                image: Svg('assets/images/ic_whats_news.svg'),
+              ),
             ),
           ],
         ),
+        ValueListenableBuilder(
+            valueListenable: StreamFunction.showSplitScreen,
+            builder: (BuildContext context, bool value, Widget? child) {
+              return Visibility(
+                visible: StreamFunction.showSplitScreen.value,
+                child: const SplitScreen(),
+              );
+            }),
         ValueListenableBuilder(
             valueListenable: StreamFunction.showLanguage,
             builder: (BuildContext context, bool value, Widget? child) {
