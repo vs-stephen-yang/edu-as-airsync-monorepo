@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:display_flutter/settings/app_config.dart';
-import 'package:display_flutter/utility/utility_helper.dart';
+import 'package:display_flutter/utility/random_string.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
@@ -112,8 +112,8 @@ class ControlSocket extends ChangeNotifier {
         'uiState': String,
         'presentationState': presentationState,
         'extra': String,
-        'messageId': UtilityHelper.getRandomString(21),
-        'nextId': UtilityHelper.getRandomString(21),
+        'messageId': RandomString.getRandomString(21),
+        'nextId': RandomString.getRandomString(21),
       });
       log('sendMessageToControlSocket: $content');
       mControlSocketIO.emit(messageFor, content);

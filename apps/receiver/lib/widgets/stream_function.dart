@@ -4,16 +4,16 @@ import 'package:display_flutter/screens/whats_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class LeftPanels extends StatefulWidget {
-  const LeftPanels({Key? key}) : super(key: key);
+class StreamFunction extends StatefulWidget {
+  const StreamFunction({Key? key}) : super(key: key);
   static ValueNotifier<bool> showLanguage = ValueNotifier(false);
   static ValueNotifier<bool> showWhatsNew = ValueNotifier(false);
 
   @override
-  State<StatefulWidget> createState() => _LeftPanelsStates();
+  State<StatefulWidget> createState() => _StreamFunctionStates();
 }
 
-class _LeftPanelsStates extends State<LeftPanels> {
+class _StreamFunctionStates extends State<StreamFunction> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -34,7 +34,7 @@ class _LeftPanelsStates extends State<LeftPanels> {
               width: MediaQuery.of(context).size.height * 0.08,
               child: IconButton(
                   onPressed: () {
-                    LeftPanels.showLanguage.value = true;
+                    StreamFunction.showLanguage.value = true;
                   },
                   icon: SvgPicture.asset('assets/images/ic_language.svg')),
             ),
@@ -43,25 +43,25 @@ class _LeftPanelsStates extends State<LeftPanels> {
               width: MediaQuery.of(context).size.height * 0.08,
               child: IconButton(
                   onPressed: () {
-                    LeftPanels.showWhatsNew.value = true;
+                    StreamFunction.showWhatsNew.value = true;
                   },
                   icon: SvgPicture.asset('assets/images/ic_whatsnews.svg')),
             ),
           ],
         ),
         ValueListenableBuilder(
-            valueListenable: LeftPanels.showLanguage,
+            valueListenable: StreamFunction.showLanguage,
             builder: (BuildContext context, bool value, Widget? child) {
               return Visibility(
-                visible: LeftPanels.showLanguage.value,
+                visible: StreamFunction.showLanguage.value,
                 child: const LanguageSelection(),
               );
             }),
         ValueListenableBuilder(
-            valueListenable: LeftPanels.showWhatsNew,
+            valueListenable: StreamFunction.showWhatsNew,
             builder: (BuildContext context, bool value, Widget? child) {
               return Visibility(
-                  visible: LeftPanels.showWhatsNew.value,
+                  visible: StreamFunction.showWhatsNew.value,
                   child: const WhatsNew());
             }),
       ],
