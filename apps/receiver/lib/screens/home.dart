@@ -4,7 +4,7 @@ import 'package:display_flutter/blocs/display_code/display_code_bloc.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
-import 'package:display_flutter/widgets/left_panels.dart';
+import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/tittle_bar.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
@@ -53,7 +53,8 @@ class _HomeState extends State<Home> {
                               isEnrolled: false, // todo: Moderator mode switch
                             )
                           : const Text(' ')),
-                  const Positioned(left: 20, bottom: 140, child: LeftPanels()),
+                  const Positioned(
+                      left: 20, bottom: 140, child: StreamFunction()),
                   const Positioned(
                     left: 0,
                     right: 0,

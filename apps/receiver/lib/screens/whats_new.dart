@@ -1,7 +1,6 @@
-import 'package:display_flutter/widgets/left_panels.dart';
+import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
-
-import '../app_colors.dart';
 
 class WhatsNew extends StatefulWidget {
   const WhatsNew({Key? key}) : super(key: key);
@@ -36,7 +35,7 @@ class _WhatsNewState extends State<WhatsNew> {
                     icon: const Icon(Icons.arrow_back_ios,
                         color: AppColors.primary_white),
                     onPressed: () {
-                      LeftPanels.showWhatsNew.value = false;
+                      StreamFunction.showWhatsNew.value = false;
                     },
                   ),
                 ),
