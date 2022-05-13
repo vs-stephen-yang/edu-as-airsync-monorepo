@@ -1,3 +1,4 @@
+import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/text_clock.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class TitleBar extends StatelessWidget {
               Text(
                 'Ver ${appConfig?.appVersion ?? ' '}',
                 style: const TextStyle(
-                  color: Color.fromRGBO(255, 255, 255, 0.5),
+                  color: AppColors.primaryWhiteA50,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),

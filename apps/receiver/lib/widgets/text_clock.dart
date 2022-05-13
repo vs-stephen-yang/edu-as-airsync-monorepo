@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:display_flutter/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -34,7 +35,7 @@ class _TextClockState extends State<TextClock> {
     return Text(
       time,
       style: const TextStyle(
-        color: Color.fromRGBO(255, 255, 255, 0.5),
+        color: AppColors.primaryWhiteA50,
         fontSize: 16,
         fontWeight: FontWeight.w700,
       ),
