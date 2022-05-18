@@ -25,7 +25,6 @@ abstract class ConfigSettings {
   late String apiGateway;
   late String mainDisplayUrl;
   late String prefixQRCode;
-  late String vbsOtaUrl;
 
   late String icarHostName;
   late String icarRegisterUrl;
