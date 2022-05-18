@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
+import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 
 class ConnectionTimer {
@@ -33,13 +34,13 @@ class ConnectionTimer {
       } else if (timer.tick == 30) {
         // onFinish
         timer.cancel();
-        controller.channel
-            .invokeMethod('setStateMachine', "ConnectionTimeout onFinish");
+        ControlSocket.getInstance()
+            .setStateMachine("ConnectionTimeout onFinish");
 
         // AppCenterAnalyticsHelper.getInstance().EventStreamTimeout();
 
         ControlSocket.getInstance().sendMessageToControlSocket(
-            context, _displayCode,
+            AppConfig.of(context)?.appVersion, _displayCode,
             allow: allow, action: 'timeout');
 
         controller.channel.invokeMethod('disconnectP2pClient');

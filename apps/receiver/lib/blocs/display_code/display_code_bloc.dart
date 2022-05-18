@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:display_flutter/model/webrtc_Info.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
@@ -12,16 +13,19 @@ part 'display_code_state.dart';
 
 class DisplayCodeBloc extends Bloc<DisplayCodeEvent, DisplayCodeState> {
   String apiGateway, instanceID, version;
-  late String displayCode= '', token, name, otp= '';
+  late String displayCode = '', token, name, otp = '';
+  WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
 
-  DisplayCodeBloc(this.apiGateway, this.instanceID, this.version) : super(DisplayCodeInitial()) {
+  DisplayCodeBloc(this.apiGateway, this.instanceID, this.version)
+      : super(DisplayCodeInitial()) {
     on<GetDisplayCode>((event, emit) async {
       bool result = await _processGetDisplayCode(instanceID, apiGateway);
       if (result) {
         emit(DisplayCodeSuccess());
         _processOTP();
       } else {
-        bool result = await _registerDisplayCode(instanceID, apiGateway, version);
+        bool result =
+            await _registerDisplayCode(instanceID, apiGateway, version);
         if (!result) {
           emit(DisplayCodeError());
         }
@@ -75,15 +79,16 @@ class DisplayCodeBloc extends Bloc<DisplayCodeEvent, DisplayCodeState> {
       Map json = jsonDecode(response.body);
       List jsonArray = json['list'];
       otp = jsonArray[0]['code'];
-      // TODO: update OTPUpdate = true
+      mWebRTCInfo.otpUpdate = true;
       Timer(const Duration(seconds: 30), () async {
         _processOTP();
       });
       return true;
     } else {
-      // TODO: update otpCode = "-"
-      // TODO: update otpTimer = 0
-      // TODO: update OTPUpdate = true
+      mWebRTCInfo.otpCode = "-";
+      mWebRTCInfo.otpTimer = 0;
+      mWebRTCInfo.otpUpdate = true;
+
       Timer(const Duration(seconds: 5), () async {
         _processOTP();
       });
