@@ -11,10 +11,6 @@ class ProductionConfig implements ConfigSettings {
   String prefixQRCode = 'https://myviewboarddisplay.com/enroll?device_id=';
 
   @override
-  String vbsOtaUrl =
-      'https://ubwaipq96h.execute-api.us-east-1.amazonaws.com/prod/otacheck';
-
-  @override
   String icarHostName = 'api.myviewboard.com';
 
   @override

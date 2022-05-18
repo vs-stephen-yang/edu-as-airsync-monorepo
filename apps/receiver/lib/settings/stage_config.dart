@@ -12,10 +12,6 @@ class StageConfig implements ConfigSettings {
       'https://stage.myviewboarddisplay.com/enroll?device_id=';
 
   @override
-  String vbsOtaUrl =
-      'https://jqi0t9ku01.execute-api.us-east-1.amazonaws.com/dev/otacheck';
-
-  @override
   String icarHostName = 'stageapi.myviewboard.com';
 
   @override
