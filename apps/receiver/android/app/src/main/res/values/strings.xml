@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="vbs_ota_progress_msg">"Downloading system updates"</string>
+    <string name="update_title">"myViewBoard Display Update"</string>
+    <string name="update_message">"A new version of the software is available"</string>
+    <string name="update_progress_text">"%d%%"</string>
+    <string name="update_permission">"Insufficient privilege to install Display. Please grant the privilege."</string>
+    <string name="update_goto_store_url">"The new version of software has been released. Do you want to install it now ?"</string>
+    <string name="update_install_now">"INSTALL NOW"</string>
+    <string name="update_ota_failure">"Install failure. Can not run installApp."</string>
+    <string name="update_ota_failure_retry">"Install failure. Retry OTA process again."</string>
+    <string name="update_ota_query_status_failure">"Can not query the file downloading status."</string>
+</resources>

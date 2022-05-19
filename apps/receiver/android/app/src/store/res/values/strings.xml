@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- https://developers.google.com/android/guides/google-services-plugin#adding_the_json_file -->
+    <!-- Present in all applications -->
+    <!-- mobilesdk_app_id -->
+    <string name="google_app_id" translatable="false">1:521772573304:android:23742d4c180615c09bc38d</string>
+
+    <!-- Present in applications with the appropriate services configured -->
+    <!-- project_number -->
+    <string name="gcm_defaultSenderId" translatable="false">521772573304</string>
+    <!-- client_id -->
+    <string name="default_web_client_id" translatable="false">521772573304-ffu4uhrtdu5qhgnufn3uo8pdosah71bp.apps.googleusercontent.com</string>
+
+    <!--	<string name="ga_trackingId" translatable="false">UA-65557217-3</string>-->
+
+    <!-- firebase_url -->
+    <string name="firebase_database_url" translatable="false">https://display-ssi.firebaseio.com</string>
+
+    <!-- current_key -->
+    <string name="google_api_key" translatable="false">AIzaSyBQxTtlLmYvCmFJKjzS0hC8yi6Gbpm9NYY</string>
+
+    <!-- current_key -->
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBQxTtlLmYvCmFJKjzS0hC8yi6Gbpm9NYY</string>
+
+    <!-- project_id -->
+    <string name="project_id" translatable="false">display-ssi</string>
+
+    <!-- storage_bucket -->
+    <string name="google_storage_bucket">display-ssi.appspot.com</string>
+</resources>
