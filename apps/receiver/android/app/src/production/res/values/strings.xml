@@ -1,3 +1,4 @@
 <resources>
-	<string name="vbs_ota_url" translatable="false">"https://ubwaipq96h.execute-api.us-east-1.amazonaws.com/prod/otacheck"</string>
+    <string name="vbs_ota_url" translatable="false">"https://ubwaipq96h.execute-api.us-east-1.amazonaws.com/prod/otacheck"</string>
+    <string name="app_ota_url" translatable="false">"https://api.myviewboard.com/api/v1/application/repo/VStreamer?extendsFolder=/V2"</string>
 </resources>
