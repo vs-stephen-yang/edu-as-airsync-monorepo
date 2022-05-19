@@ -35,14 +35,19 @@ class DisplayCodeBloc extends Bloc<DisplayCodeEvent, DisplayCodeState> {
 
   Future<bool> _registerDisplayCode(String instanceID, String apiGateway, String version) async {
     var api = Uri.parse('$apiGateway/presentation/displays');
-    var property = json.encode(
-        {'version': version, 'platform': 'android', 'capacities': '[]'});
-
+    var property = {
+      'version': version,
+      'platform': 'android',
+      'capacities': '[]'
+    };
     http.Response response = await http.post(api,
-        headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
         body: json.encode({'id': instanceID, 'property': property}));
 
-    if (response.statusCode >= HttpStatus.ok && response.statusCode < HttpStatus.multiStatus) {
+    if (response.statusCode >= HttpStatus.ok &&
+        response.statusCode < HttpStatus.multiStatus) {
       _processGetDisplayCode(instanceID, apiGateway);
       return true;
     } else {
