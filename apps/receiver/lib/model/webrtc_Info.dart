@@ -8,9 +8,9 @@ class WebRTCInfo {
   WebRTCInfo.internal();
 
   String? instanceId;
-  String? token;
-  String? displayCode;
-  String? licenseName;
+  String token = "";
+  String displayCode = "";
+  String licenseName = "";
   List<String> featureList = [];
   String? otpCode;
   int otpTimer = 0;

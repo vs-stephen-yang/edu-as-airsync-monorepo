@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/blocs/display_code/display_code_bloc.dart';
+import 'package:display_flutter/model/webrtc_Info.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
@@ -45,12 +46,13 @@ class _MainInfoState extends State<MainInfo> {
         child: BlocBuilder<DisplayCodeBloc, DisplayCodeState>(
           builder: (context, state) {
             if (state is DisplayCodeSuccess) {
+              // ControlSocket.getInstance().connect(AppConfig.of(context));
               widget.controller.channel
                   .invokeMethod("connectControlSocket", <String, String>{
                 'id': AppInstanceCreate().instanceID,
-                'displayCode': _displayCodeBloc.displayCode,
-                'token': _displayCodeBloc.token,
-                'name': _displayCodeBloc.name,
+                'displayCode': WebRTCInfo.getInstance().displayCode,
+                'token': WebRTCInfo.getInstance().token,
+                'name': WebRTCInfo.getInstance().licenseName,
               });
             }
             return Wrap(
@@ -207,11 +209,11 @@ class _MainInfoState extends State<MainInfo> {
 
   _getDisplayCode() {
     String result = '';
-    for (int i = 0; i < _displayCodeBloc.displayCode.length; i++) {
+    for (int i = 0; i < WebRTCInfo.getInstance().displayCode.length; i++) {
       if (i % 3 == 0 && result.isNotEmpty) {
         result += '-';
       }
-      result += _displayCodeBloc.displayCode.substring(i, i + 1);
+      result += WebRTCInfo.getInstance().displayCode.substring(i, i + 1);
     }
     return result;
   }

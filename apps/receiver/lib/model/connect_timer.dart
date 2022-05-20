@@ -2,8 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:display_flutter/model/control_socket.dart';
-import 'package:display_flutter/native_view/webrtc.dart';
-import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/model/webrtc_Info.dart';
 import 'package:flutter/material.dart';
 
 class ConnectionTimer {
@@ -20,8 +19,8 @@ class ConnectionTimer {
 
   ConnectionTimer.internal();
 
-  void startConnectionTimeoutTimer(WebRTCNativeViewController controller,
-      BuildContext context, String _displayCode, String allow) {
+  void startConnectionTimeoutTimer(String? appVersion, String? displayCode,
+      String? allow, VoidCallback onFinish) {
     stopConnectionTimeoutTimer();
 
     var count = 30;
@@ -37,13 +36,13 @@ class ConnectionTimer {
         ControlSocket.getInstance()
             .setStateMachine("ConnectionTimeout onFinish");
 
-        // AppCenterAnalyticsHelper.getInstance().EventStreamTimeout();
-
         ControlSocket.getInstance().sendMessageToControlSocket(
-            AppConfig.of(context)?.appVersion, _displayCode,
+            appVersion, displayCode,
             allow: allow, action: 'timeout');
 
-        controller.channel.invokeMethod('disconnectP2pClient');
+        onFinish();
+        // AppCenterAnalyticsHelper.getInstance().EventStreamTimeout();
+        // controller.channel.invokeMethod('disconnectP2pClient');
         // UtilityHelper.myToast(mActivityRef.get(), R.string.connection_connect_timeout);
       }
     });
@@ -54,8 +53,7 @@ class ConnectionTimer {
     mConnectionTimeTimeout.add(0);
   }
 
-  void startRemainingTimeTimer(
-      WebRTCNativeViewController controller, int seconds) {
+  void startRemainingTimeTimer(int seconds, VoidCallback onFinish) {
     stopRemainingTimeTimer();
 
     mRemainingTimeTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -69,8 +67,12 @@ class ConnectionTimer {
         // onFinish
         timer.cancel();
         log('RemainingTimeTimeout onFinish');
-
-        controller.channel.invokeMethod('offModeratorMode');
+        WebRTCInfo mWebRTCInfo = ControlSocket.getInstance().mWebRTCInfo;
+        mWebRTCInfo.moderatorMode = false;
+        mWebRTCInfo.isModeratorLeave = true;
+        mWebRTCInfo.moderatorId = "";
+        mWebRTCInfo.moderatorName = "";
+        onFinish;
       }
     });
   }

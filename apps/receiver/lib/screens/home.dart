@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:display_flutter/app_instance_create.dart';
-import 'package:display_flutter/blocs/display_code/display_code_bloc.dart';
 import 'package:display_flutter/model/connect_timer.dart';
+import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/model/webrtc_Info.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/split_screen.dart';
+import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/main_info.dart';
@@ -10,7 +14,6 @@ import 'package:display_flutter/widgets/tittle_bar.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -37,6 +40,8 @@ class _HomeState extends State<Home> {
     _webRtcWidget.add(Container(color: Colors.red));
     _webRtcWidget.add(Container(color: Colors.green));
     _webRtcWidget.add(Container(color: Colors.blue));
+
+    _initControlSocketListener(this.context);
   }
 
   @override
@@ -73,7 +78,7 @@ class _HomeState extends State<Home> {
                 }
 
                 List<Widget> webrtcWidgets =
-                    List.generate(value ? 4 : 1, (index) {
+                List.generate(value ? 4 : 1, (index) {
                   double? left, top, right, bottom;
                   if (index == 1) {
                     right = 0;
@@ -176,21 +181,51 @@ class _HomeState extends State<Home> {
       viewCreated = true;
     });
     controller.channel.setMethodCallHandler((MethodCall call) async {
-      if (call.method == "startConnectTimeOutTimer") {
-        ConnectionTimer.getInstance().startConnectionTimeoutTimer(
-            controller,
-            context,
-            BlocProvider.of<DisplayCodeBloc>(context).displayCode,
-            call.arguments as String);
-      } else if (call.method == "stopConnectionTimeoutTimer") {
-        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-      } else if (call.method == "startRemainingTimeTimer") {
-        ConnectionTimer.getInstance()
-            .startRemainingTimeTimer(controller, call.arguments as int);
-      } else if (call.method == "stopRemainingTimeTimer") {
-        ConnectionTimer.getInstance().stopRemainingTimeTimer();
-      }
       return;
+    });
+  }
+
+  void _initControlSocketListener(BuildContext context) {
+    ControlSocket.getInstance().socketResponse.getResponse.listen((event) {
+      Map response = jsonDecode(event as String);
+      String action = response['action'];
+      switch (action) {
+        case "set-moderator":
+          ConnectionTimer.getInstance().startRemainingTimeTimer(
+              ControlSocket.getInstance().mWebRTCInfo.remainingTime,
+              () => controller.channel.invokeMethod('disconnectP2pClient'));
+          break;
+        case "unset-moderator":
+          ConnectionTimer.getInstance().stopRemainingTimeTimer();
+          break;
+        case "control":
+          Map<String, dynamic> status = response['status'];
+          String statusAction = status['action'];
+          switch (statusAction) {
+            case 'setClient':
+              WebRTCInfo mWebRTCInfo = ControlSocket.getInstance().mWebRTCInfo;
+              if (!mWebRTCInfo.moderatorMode) {
+                ConnectionTimer.getInstance().startConnectionTimeoutTimer(
+                    AppConfig.of(context)?.appVersion,
+                    mWebRTCInfo.displayCode,
+                    mWebRTCInfo.allowId,
+                    () =>
+                        controller.channel.invokeMethod("disconnectP2pClient"));
+              }
+              controller.channel.invokeMethod("connectP2pClient", response);
+              break;
+            case "play":
+              break;
+            case "stop":
+              ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+              break;
+          }
+          break;
+        case "pauseVideo":
+          break;
+        case "resumeVideo":
+          break;
+      }
     });
   }
 }
