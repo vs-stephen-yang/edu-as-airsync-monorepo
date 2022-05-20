@@ -13,7 +13,7 @@ part 'display_code_state.dart';
 
 class DisplayCodeBloc extends Bloc<DisplayCodeEvent, DisplayCodeState> {
   String apiGateway, instanceID, version;
-  late String displayCode = '', token, name, otp = '';
+  late String otp = '';
   WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
 
   DisplayCodeBloc(this.apiGateway, this.instanceID, this.version)
@@ -56,16 +56,18 @@ class DisplayCodeBloc extends Bloc<DisplayCodeEvent, DisplayCodeState> {
   }
 
   Future<bool> _processGetDisplayCode(String instanceID, String apiGateway) async {
+    WebRTCInfo.getInstance().instanceId = instanceID;
     var api = Uri.parse('$apiGateway/presentation/displays/$instanceID');
     http.Response response = await http.get(api);
 
-    if (response.statusCode >= HttpStatus.ok && response.statusCode < HttpStatus.multiStatus) {
+    if (response.statusCode >= HttpStatus.ok &&
+        response.statusCode < HttpStatus.multiStatus) {
       Map json = jsonDecode(response.body);
-      displayCode = json['code'];
-      token = Uri.encodeComponent(json['token']);
+      WebRTCInfo.getInstance().displayCode = json['code'];
+      WebRTCInfo.getInstance().token = Uri.encodeComponent(json['token']);
       Map<String, dynamic> map = json['property'];
       List<dynamic> license = map['licenses'];
-      name = license[0]['name'];
+      WebRTCInfo.getInstance().licenseName = license[0]['name'];
 
       return true;
     } else {

@@ -1,18 +1,23 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 
 import 'package:display_flutter/model/webrtc_Info.dart';
+import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/random_string.dart';
 import 'package:display_flutter/utility/shorttime_string.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
 
-class ControlSocket extends ChangeNotifier {
-  late Socket mControlSocketIO;
-  late String _mGatewayUrl, displayCode, instanceId, token;
+class ControlSocket {
+  late IO.Socket mControlSocketIO;
+  late String _mGatewayUrl, _appVersion;
   final int _MAX_RECONNECT_ATTEMPTS = 5;
   int _displayReconnectAttempts = 0;
+  StreamResponse socketResponse = StreamResponse();
 
   WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
 
@@ -24,22 +29,25 @@ class ControlSocket extends ChangeNotifier {
 
   ControlSocket.internal();
 
-  void connect() {
-    // TODO:mDisplaySocketReConnect
-    // mDisplaySocketReConnect.setValue(false);
+  void connect(AppConfig? appConfig) {
+    _mGatewayUrl = appConfig!.settings.apiGateway;
+    _appVersion = appConfig.appVersion;
 
     mControlSocketIO = io(
         _mGatewayUrl,
         OptionBuilder()
+            .setTransports(['websocket']) // for Flutter or Dart VM
+            .disableAutoConnect()
             .enableForceNew()
             .enableReconnection()
             .setReconnectionAttempts(_MAX_RECONNECT_ATTEMPTS)
             .setQuery({
-          'socketCustomEvent': displayCode,
-          'role': 'display',
-          'deviceId': instanceId,
-          'token': token
-        }).build());
+              'socketCustomEvent': mWebRTCInfo.displayCode,
+              'role': 'display',
+              'deviceId': mWebRTCInfo.instanceId,
+              'token': mWebRTCInfo.token
+            })
+            .build());
 
     mControlSocketIO
         .onConnect((data) => _printControlSocketLog('connect', data));
@@ -51,25 +59,23 @@ class ControlSocket extends ChangeNotifier {
             _displayReconnectAttempts = 0;
 
             Future.delayed(const Duration(seconds: 5), () {
-              // TODO:mDisplaySocketReConnect
-              // mDisplaySocketReConnect.postValue(true);
-              connect();
+          connect(appConfig);
             });
-          }
-        });
+      }
+    });
     mControlSocketIO
         .onDisconnect((data) => _printControlSocketLog('disconnect', data));
     mControlSocketIO.onError((data) => _printControlSocketLog('error', data));
     mControlSocketIO.on(
         'message', (data) => _printControlSocketLog('message', data));
     mControlSocketIO.onReconnecting((data) => () {
-          _printControlSocketLog('reconnecting', data);
-          _displayReconnectAttempts++;
-        });
+      _printControlSocketLog('reconnecting', data);
+      _displayReconnectAttempts++;
+    });
     mControlSocketIO.on(
-        displayCode,
+        mWebRTCInfo.displayCode,
         (data) => () {
-              _printControlSocketLog(displayCode, data);
+              _printControlSocketLog(mWebRTCInfo.displayCode, data);
               _handleDisplayResponse(data);
             });
     mControlSocketIO.connect();
@@ -78,7 +84,7 @@ class ControlSocket extends ChangeNotifier {
   void _handleDisplayResponse(dynamic arg) {
     Map response = jsonDecode(arg as String);
     String messageFor = response['messageFor'];
-    if (messageFor.isNotEmpty && messageFor == displayCode) {
+    if (messageFor.isNotEmpty && messageFor == mWebRTCInfo.displayCode) {
       String action = response['action'];
       String userid = response['userid'];
       Map<String, dynamic> extra = response['extra'];
@@ -107,8 +113,7 @@ class ControlSocket extends ChangeNotifier {
           mWebRTCInfo.isUIStateChanged = true;
 
           // AppCenterAnalyticsHelper.getInstance().setEventProperties(buildEventProperties());
-          // ConnectionTimer.getInstance().startRemainingTimeTimer(remainingTime);
-
+          socketResponse.addResponseMessage(response);
           break;
         case "unset-moderator":
           mWebRTCInfo.moderatorMode = false;
@@ -119,11 +124,11 @@ class ControlSocket extends ChangeNotifier {
           mWebRTCInfo.meetingId = "";
 
           // AppCenterAnalyticsHelper.getInstance().setEventProperties(buildEventProperties());
-          // ConnectionTimer.getInstance().stopRemainingTimeTimer();
+          socketResponse.addResponseMessage(response);
           break;
         case "get-display-state":
           var reply = json.encode({
-            'messageFor': displayCode,
+            'messageFor': mWebRTCInfo.displayCode,
             'action': 'display-state-update',
             'status': 'display-state-update',
             'presentationState': mWebRTCInfo.presentationState.toString(),
@@ -134,14 +139,15 @@ class ControlSocket extends ChangeNotifier {
             'messageId': '${response['nextId']}',
             'nextId': RandomString.getRandomString(21)
           });
-          sendMessageToControlSocket('appVersion', displayCode, reply: reply);
+          sendMessageToControlSocket(_appVersion, mWebRTCInfo.displayCode,
+              reply: reply);
           break;
         case "set-ui-state":
           mWebRTCInfo.isShowCode = extra['code'];
           mWebRTCInfo.isShowDelegate = extra['delegate'];
           mWebRTCInfo.isUIStateChanged = true;
 
-          sendMessageToControlSocket('appVersion', displayCode);
+          sendMessageToControlSocket(_appVersion, mWebRTCInfo.displayCode);
           break;
         case "control":
           Map<String, dynamic> status = response['status'];
@@ -159,43 +165,44 @@ class ControlSocket extends ChangeNotifier {
                   mWebRTCInfo.presenterName = presenter['name'];
                   mWebRTCInfo.isUIStateChanged = true;
 
-                  sendMessageToControlSocket('appVersion', displayCode);
-
-                  // connectP2pClient(clientId, allowId, response);
+                  sendMessageToControlSocket(
+                      _appVersion, mWebRTCInfo.displayCode);
 
                   // AppCenterAnalyticsHelper.getInstance().EventStreamStart();
+                  socketResponse.addResponseMessage(response);
                 }
                 break;
               case "play":
                 if (userid == mWebRTCInfo.allowId) {
+                  socketResponse.addResponseMessage(response);
                   // streamPlay();
                   // AppCenterAnalyticsHelper.getInstance().EventStreamPlayed();
                 }
                 break;
               case "stop":
                 if (userid == mWebRTCInfo.allowId) {
-                  // streamStop();
+                  socketResponse.addResponseMessage(response);
                   // AppCenterAnalyticsHelper.getInstance().EventStreamStopped();
                 }
                 break;
             }
           } else {
-            sendMessageToControlSocket('appVersion', displayCode,
+            sendMessageToControlSocket(_appVersion, mWebRTCInfo.displayCode,
                 allow: userid, action: "denied");
           }
           break;
         case "pauseVideo":
           String nextId = response['nextId'];
           if (userid == mWebRTCInfo.allowId) {
+            socketResponse.addResponseMessage(response);
             // streamPause(nextId);
-            //
             // AppCenterAnalyticsHelper.getInstance().EventStreamPaused();
           }
           break;
         case "resumeVideo":
           if (userid == mWebRTCInfo.allowId) {
+            socketResponse.addResponseMessage(response);
             // streamResume();
-            //
             // AppCenterAnalyticsHelper.getInstance().EventStreamResumed();
           }
           break;
@@ -207,7 +214,7 @@ class ControlSocket extends ChangeNotifier {
     mControlSocketIO.disconnect();
   }
 
-  void sendMessageToControlSocket(String? appVersion, String messageFor,
+  void sendMessageToControlSocket(String? appVersion, String? messageFor,
       {String? allow,
       String? action,
       String? reply,
@@ -221,7 +228,7 @@ class ControlSocket extends ChangeNotifier {
 
     if (reply != null) {
       log("sendMessageToControlSocket: ${reply.toString()}");
-      mControlSocketIO.emit(messageFor, reply);
+      mControlSocketIO.emit(messageFor!, reply);
     } else if (action != null) {
       var content = json.encode({
         'messageFor': allow,
@@ -232,10 +239,10 @@ class ControlSocket extends ChangeNotifier {
       });
 
       log('sendMessageToControlSocket: $content');
-      mControlSocketIO.emit(messageFor, content);
+      mControlSocketIO.emit(messageFor!, content);
     } else {
       var content = jsonEncode({
-        'messageFor': displayCode,
+        'messageFor': mWebRTCInfo.displayCode,
         'action': 'display-state-update',
         'status': 'display-state-update',
         'code': showCode,
@@ -247,12 +254,12 @@ class ControlSocket extends ChangeNotifier {
         'nextId': RandomString.getRandomString(21),
       });
       log('sendMessageToControlSocket: $content');
-      mControlSocketIO.emit(messageFor, content);
+      mControlSocketIO.emit(messageFor!, content);
     }
   }
 
-  void _printControlSocketLog(String event, dynamic args) {
-    log("mDisplaySocketIO: $event $args");
+  void _printControlSocketLog(String? event, dynamic args) {
+    log("mDisplaySocketIO: $event ${args.toString()}");
   }
 
   var mStateMachineHistory = Queue<String>();
@@ -272,5 +279,27 @@ class ControlSocket extends ChangeNotifier {
       mStateMachineHistory.removeLast();
     }
     mStateMachineHistory.addFirst(msg);
+  }
+}
+
+class StreamResponse {
+  final _response = BehaviorSubject<Map>();
+  final _error_response = BehaviorSubject<Exception>();
+
+  void addResponseMessage(message) {
+    _response.add(message);
+  }
+
+  void addErrorResponseMessage(message) {
+    _response.add(message);
+  }
+
+  Stream<Map> get getResponse => _response.stream;
+
+  Stream<Exception> get getErrorResponse => _error_response.stream;
+
+  void dispose() {
+    _response.close();
+    _error_response.close();
   }
 }

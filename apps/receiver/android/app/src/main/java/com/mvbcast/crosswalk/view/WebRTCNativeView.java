@@ -78,13 +78,6 @@ public class WebRTCNativeView implements PlatformView, MethodChannel.MethodCallH
             webRTCInfo.Token = call.argument("token");
             webRTCInfo.LicenseName = call.argument("name");
             WebRTCHelper.getInstance().connectControlSocket(webRTCInfo.DisplayCode);
-        } else if ("offModeratorMode".equals(call.method)) {
-            WebRTCHelper.WebRTCInfo webRTCInfo = WebRTCHelper.getInstance().getWebRTCInfo();
-            webRTCInfo.ModeratorMode = false;
-            webRTCInfo.IsModeratorLeave = true;
-            webRTCInfo.ModeratorId = "";
-            webRTCInfo.ModeratorName = "";
-            WebRTCHelper.getInstance().disconnectP2pClient();
         } else if ("disconnectP2pClient".equals(call.method)) {
             WebRTCHelper.getInstance().disconnectP2pClient();
         } else {
