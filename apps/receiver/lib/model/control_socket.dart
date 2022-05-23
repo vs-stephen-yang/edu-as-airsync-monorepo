@@ -5,8 +5,7 @@ import 'dart:developer';
 
 import 'package:display_flutter/model/webrtc_Info.dart';
 import 'package:display_flutter/settings/app_config.dart';
-import 'package:display_flutter/utility/random_string.dart';
-import 'package:display_flutter/utility/shorttime_string.dart';
+import 'package:display_flutter/utility/get_string.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -137,7 +136,7 @@ class ControlSocket {
             'uiState': '[]',
             'extra': '[]',
             'messageId': '${response['nextId']}',
-            'nextId': RandomString.getRandomString(21)
+            'nextId': GetString.getRandomString(21)
           });
           sendMessageToControlSocket(_appVersion, mWebRTCInfo.displayCode,
               reply: reply);
@@ -250,8 +249,8 @@ class ControlSocket {
         'uiState': String,
         'presentationState': presentationState,
         'extra': String,
-        'messageId': RandomString.getRandomString(21),
-        'nextId': RandomString.getRandomString(21),
+        'messageId': GetString.getRandomString(21),
+        'nextId': GetString.getRandomString(21),
       });
       log('sendMessageToControlSocket: $content');
       mControlSocketIO.emit(messageFor!, content);
@@ -267,7 +266,7 @@ class ControlSocket {
 
   void setStateMachine(String state) {
     log('_setStateMachine: $state');
-    String msg = "$getShortTimeString $state";
+    String msg = "${GetString.getShortTimeString} $state";
     var buffer = StringBuffer();
     buffer.write("\nHistory:");
     for (String s in mStateMachineHistory) {
