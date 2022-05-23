@@ -1,4 +1,5 @@
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
 
@@ -45,8 +46,8 @@ class _WhatsNewState extends State<WhatsNew> {
                   alignment: Alignment.centerLeft,
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                    child: const Text(
-                      "What’s New on Display?",
+                    child: Text(
+                      S.of(context).main_whats_new_title,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary_white),

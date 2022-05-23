@@ -1,4 +1,5 @@
 import 'package:display_flutter/screens/language_selection.dart';
+import 'package:display_flutter/screens/moderator.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/screens/whats_new.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 class StreamFunction extends StatefulWidget {
   const StreamFunction({Key? key}) : super(key: key);
   static ValueNotifier<bool> showSplitScreen = ValueNotifier(false);
+  static ValueNotifier<bool> showModerator = ValueNotifier(false);
   static ValueNotifier<bool> showLanguage = ValueNotifier(false);
   static ValueNotifier<bool> showWhatsNew = ValueNotifier(false);
 
@@ -32,7 +34,9 @@ class _StreamFunctionStates extends State<StreamFunction> {
             ),
             IconButton(
               iconSize: 48,
-              onPressed: () {},
+              onPressed: () {
+                StreamFunction.showModerator.value = true;
+              },
               icon: const Image(
                 image: Svg('assets/images/ic_moderator_off.svg'),
               ),
@@ -63,6 +67,14 @@ class _StreamFunctionStates extends State<StreamFunction> {
               return Visibility(
                 visible: StreamFunction.showSplitScreen.value,
                 child: const SplitScreen(),
+              );
+            }),
+        ValueListenableBuilder(
+            valueListenable: StreamFunction.showModerator,
+            builder: (BuildContext context, bool value, Widget? child) {
+              return Visibility(
+                visible: StreamFunction.showModerator.value,
+                child: const ModeratorView(),
               );
             }),
         ValueListenableBuilder(

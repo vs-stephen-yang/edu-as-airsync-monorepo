@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/blocs/display_code/display_code_bloc.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/webrtc_Info.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -64,8 +65,8 @@ class _MainInfoState extends State<MainInfo> {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 16,
                   children: <Widget>[
-                    const Text(
-                      'Display Code',
+                    Text(
+                      S.of(context).main_content_display_code,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 30,
@@ -80,8 +81,8 @@ class _MainInfoState extends State<MainInfo> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const Text(
-                      'One Time Password',
+                    Text(
+                      S.of(context).main_content_one_time_password,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 30,
@@ -119,8 +120,8 @@ class _MainInfoState extends State<MainInfo> {
                                 ),
                               ),
                             ),
-                            const Text(
-                              '12', // todo: otp timer
+                            Text(
+                              WebRTCInfo.getInstance().otpTimer.toString(),
                               style:
                                   TextStyle(fontSize: 12, color: Colors.white),
                             ),
@@ -161,8 +162,8 @@ class _MainInfoState extends State<MainInfo> {
                             width: 50,
                             color: Colors.white,
                           ),
-                          const Text(
-                            'or',
+                          Text(
+                            S.of(context).main_content_scan_or,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 30,
@@ -188,8 +189,8 @@ class _MainInfoState extends State<MainInfo> {
                           size: const Size(25, 25),
                         ),
                       ),
-                      const Text(
-                        'Scan to enroll',
+                      Text(
+                        S.of(context).main_content_scan_to_enroll,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 30,

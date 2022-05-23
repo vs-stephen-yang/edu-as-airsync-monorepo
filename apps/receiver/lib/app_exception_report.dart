@@ -35,7 +35,7 @@ class AppExceptionReport {
       // todo: how to save temp file for upload. (getApplicationDocumentsDirectory did not support web)
     } else {
       _isInitialized = true;
-      initializeDateFormatting('en');
+      // initializeDateFormatting('en');
       //build channel
       _methodChannel.setMethodCallHandler((call) {
         sendToServer(configSettings, packageInfo, call.method,

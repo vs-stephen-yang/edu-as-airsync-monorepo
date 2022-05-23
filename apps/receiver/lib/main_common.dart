@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:display_flutter/app_exception_report.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -22,7 +24,7 @@ Future<void> commonEntry(ConfigSettings settings) async {
       settings: settings,
       appName: packageInfo.appName,
       appVersion: packageInfo.version,
-      child: const MyApp());
+      child: MyApp());
 
   await AppExceptionReport().ensureInitialized(settings, packageInfo);
 
@@ -39,8 +41,27 @@ Future<void> commonEntry(ConfigSettings settings) async {
   });
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  // This widget is the root of your application.
+
+  static void setLocale(BuildContext context, Locale newLocale) async {
+    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
+    state?.changeLanguage(newLocale);
+  }
+
+  @override
+  _MyAppState createState() => _MyAppState();
+
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale? _locale = AppPreferences().locale;
+
+  changeLanguage(Locale locale) {
+    setState(() {
+      _locale = AppPreferences().locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +72,14 @@ class MyApp extends StatelessWidget {
     );
 
     return MaterialApp(
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ], //add
+      supportedLocales: S.delegate.supportedLocales,
+      locale: _locale,
       title: 'Display',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
