@@ -78,7 +78,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                     alignment: Alignment.centerLeft,
                     padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      borderRadius: const BorderRadius.all(Radius.circular(30)),
                       color: (AppPreferences().language ==
                           AppPreferences.localeMap.keys.elementAt(index))? AppColors.primary_blue: AppColors.primary_grey_dark,
                     ),
