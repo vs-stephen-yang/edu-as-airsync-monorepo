@@ -77,9 +77,10 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                     height: MediaQuery.of(context).size.height * 0.07,
                     alignment: Alignment.centerLeft,
                     padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(30)),
-                      color: AppColors.primary_grey_dark,
+                      color: (AppPreferences().language ==
+                          AppPreferences.localeMap.keys.elementAt(index))? AppColors.primary_blue: AppColors.primary_grey_dark,
                     ),
                     child: Text(AppPreferences.localeMap.keys.elementAt(index),//languages[index],
                         style:
