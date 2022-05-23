@@ -1,4 +1,7 @@
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/app_preferences.dart';
+import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/main_common.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +13,6 @@ class LanguageSelection extends StatefulWidget {
 }
 
 class _LanguageSelectionState extends State<LanguageSelection> {
-  final List<String> languages = <String>['English', 'Chinese'];
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +49,8 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                   alignment: Alignment.centerLeft,
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                    child: const Text(
-                      "Language",
+                    child: Text(
+                      S.of(context).main_language_title,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary_white),
@@ -61,18 +63,28 @@ class _LanguageSelectionState extends State<LanguageSelection> {
           Expanded(
               child: ListView.separated(
             padding: const EdgeInsets.all(8),
-            itemCount: languages.length,
+            itemCount: AppPreferences.localeMap.length,
             itemBuilder: (BuildContext context, int index) {
-              return Container(
-                  height: MediaQuery.of(context).size.height * 0.07,
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                    color: AppColors.primary_grey_dark,
-                  ),
-                  child: Text(languages[index],
-                      style: const TextStyle(color: AppColors.primary_white)));
+              return InkWell(
+                onTap: () {
+                  setState(() {
+                    AppPreferences().language = AppPreferences.localeMap.keys.elementAt(index);
+                    Locale? locale = AppPreferences().locale;
+                    MyApp.setLocale(context, locale!);
+                  });
+                },
+                child: Container(
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      color: AppColors.primary_grey_dark,
+                    ),
+                    child: Text(AppPreferences.localeMap.keys.elementAt(index),//languages[index],
+                        style:
+                            const TextStyle(color: AppColors.primary_white))),
+              );
             },
             separatorBuilder: (BuildContext context, int index) {
               return const Divider(height: 10, color: Colors.transparent);

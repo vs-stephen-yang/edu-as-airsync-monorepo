@@ -1,0 +1,26 @@
+{
+  "main_content_display_code": "投影辨識碼",
+  "main_content_one_time_password": "一次性密碼",
+  "main_content_one_time_password_get_fail": "無法取得一次性密碼\n30秒後將再次執行",
+  "main_content_scan_or": "或",
+  "main_content_scan_to_enroll": "使用Companion App掃描註冊",
+  "main_wait_up_next": "下一位投影者",
+  "main_thanks_content": "感謝您使用 myViewBoard Display",
+  "main_language_title": "語言",
+  "main_language_name": "繁體中文",
+  "main_whats_new_title": "最新消息",
+  "main_whats_new_content": "[強化項目]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n\n[修改項目]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n",
+  "main_status_no_network": "網路品質不良\n請檢查網路連線",
+  "eula_title": "myViewBoard Display 終端使用者授權合約",
+  "eula_disagree": "不同意",
+  "eula_agree": "同意",
+
+  "moderator_presentersList": "人員列表",
+  "moderator_activate": "啟用",
+  "moderator_verifyCode_fail": "抱歉，出現問題，請稍後再試。",
+  "moderator_presentersLimit": "最多六人參加",
+  "moderator_cancel": "取消",
+  "moderator_exit_dialog": "確定要退出嗎?",
+  "moderator_remove": "移除",
+  "moderator_exit": "退出"
+}
