@@ -46,10 +46,29 @@ public class MainActivity extends FlutterActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        OTAHelper.getInstance().checkLatestVersion(MainActivity.this, () -> {
+            // TODO:
+        });
+    }
+
+    @Override
     protected void onDestroy() {
+        OTAHelper.getInstance().removeDownloadProcess(MainActivity.this);
+
         SystemImageOTAHelper.getInstance().unregisterBroadcastReceiver(MainActivity.this);
 
         super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (OTAHelper.getInstance().onActivityResult(MainActivity.this, requestCode, resultCode, data)) {
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void setSystemOTAEnableUI(boolean enableUI) {
