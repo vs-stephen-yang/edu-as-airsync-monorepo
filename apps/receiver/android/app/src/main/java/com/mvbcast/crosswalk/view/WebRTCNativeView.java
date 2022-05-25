@@ -77,7 +77,7 @@ public class WebRTCNativeView implements PlatformView, MethodChannel.MethodCallH
             webRTCInfo.DisplayCode = call.argument("displayCode");
             webRTCInfo.Token = call.argument("token");
             webRTCInfo.LicenseName = call.argument("name");
-            WebRTCHelper.getInstance().connectControlSocket(webRTCInfo.DisplayCode);
+            WebRTCHelper.getInstance().connectControlSocket(call.argument("apiGateway"), webRTCInfo.DisplayCode);
         } else if ("disconnectP2pClient".equals(call.method)) {
             WebRTCHelper.getInstance().disconnectP2pClient();
         } else {

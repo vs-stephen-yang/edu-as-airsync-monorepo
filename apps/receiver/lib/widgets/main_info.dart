@@ -50,6 +50,7 @@ class _MainInfoState extends State<MainInfo> {
               // ControlSocket.getInstance().connect(AppConfig.of(context));
               widget.controller.channel
                   .invokeMethod("connectControlSocket", <String, String>{
+                'apiGateway': AppConfig.of(context)!.settings.apiGateway,
                 'id': AppInstanceCreate().instanceID,
                 'displayCode': WebRTCInfo.getInstance().displayCode,
                 'token': WebRTCInfo.getInstance().token,
