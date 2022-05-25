@@ -87,10 +87,6 @@ public class WebRTCHelper extends Observable implements
     private static final String TAG = WebRTCHelper.class.getSimpleName();
 
     private final OkHttpClient mHttpClient = new OkHttpClient();
-    private static final String mStageUrl = "https://presentation-gateway.stage.myviewboard.cloud";
-    // private static final String mStageUrl = "https://presentation-gateway.dev.myviewboard.cloud";
-    private static final String mProductionUrl = "https://presentation-gateway.myviewboard.cloud";
-    private static String mGatewayUrl;
 
     // region Singleton Implementation
     // https://android.jlelse.eu/how-to-make-the-perfect-singleton-de6b951dfdb0
@@ -111,8 +107,6 @@ public class WebRTCHelper extends Observable implements
             synchronized (WebRTCHelper.class) {// Check for the second time.
                 // if there is no instance available... create new one
                 if (INSTANCE == null) INSTANCE = new WebRTCHelper();
-                // TODO: move gateway url to dart
-                mGatewayUrl = mStageUrl;
             }
         }
         return INSTANCE;
@@ -290,9 +284,6 @@ public class WebRTCHelper extends Observable implements
     }
     // endregion
 
-    public String getGatewayUrl() {
-        return mGatewayUrl;
-    }
 
     public void initWebRTCP2PClient(Activity activity, SurfaceViewRenderer renderer, WebRTCListener listener) {
         mActivityRef = new WeakReference<>(activity);
@@ -331,65 +322,6 @@ public class WebRTCHelper extends Observable implements
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
-        }
-    }
-
-    public void processGetDisplayCode(String instanceID) {
-        mWebRTCInfo.InstanceId = instanceID;
-        String api = mGatewayUrl + "/presentation/displays/" + instanceID;
-
-        Request request = new Request.Builder().url(api).get().build();
-        Call call = mHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                myToastL(mActivityRef.get(), "get display code failure");
-                myLogDebug(TAG, "get display code failure");
-                registerDisplayCode(instanceID);
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.code() >= HttpsURLConnection.HTTP_OK &&
-                        response.code() < HttpsURLConnection.HTTP_MULT_CHOICE) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(Objects.requireNonNull(response.body()).string());
-                        mWebRTCInfo.DisplayCode = jsonObject.getString("code");
-                        mWebRTCInfo.Token = jsonObject.getString("token");
-                        myLogDebug(TAG, "Token: " + mWebRTCInfo.Token);
-                        mWebRTCInfo.Token = URLEncoder.encode(mWebRTCInfo.Token, "utf-8");
-                        myLogDebug(TAG, "Token: " + mWebRTCInfo.Token);
-                        JSONObject property = jsonObject.optJSONObject("property");
-                        if (property != null) {
-                            JSONObject license = property.optJSONObject("license");
-                            if (license != null) {
-                                mWebRTCInfo.LicenseName = license.optString("name");
-                            }
-                        }
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            connectControlSocket(mWebRTCInfo.DisplayCode);
-                        });
-                        setChanged();
-                        notifyObservers();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    if (mWebRTCInfo.OTPCode.isEmpty())
-                        mMainHandler.post(getOneTimePassword);
-                } else {
-                    if (response.code() != 404) {
-                        myToastL(mActivityRef.get(), "get display code failure:" + response.code());
-                    }
-                    myLogDebug(TAG, "get display code failure");
-                    registerDisplayCode(instanceID);
-                }
-            }
-        });
-    }
-
-    public void forceUpdateOTP() {
-        if (!mWebRTCInfo.DisplayCode.isEmpty()) {
-            mMainHandler.post(getOneTimePassword);
         }
     }
 
@@ -493,96 +425,6 @@ public class WebRTCHelper extends Observable implements
     private int mDisplayReconnectAttempts = 0;
 
     private double mVolume = 5;
-
-    public void registerDisplayCode(String instanceID) {
-        try {
-            String api = mGatewayUrl + "/presentation/displays";
-            JSONObject content = new JSONObject();
-            JSONObject property = new JSONObject();
-            property.put("version", BuildConfig.VERSION_NAME);
-            property.put("platform", "android");
-            property.put("capacities", new JSONArray());
-            content.put("id", instanceID);
-            content.put("property", property);
-
-            RequestBody requestBody = RequestBody.create(content.toString(),
-                    MediaType.get("application/json; charset=utf-8"));
-            Request request = new Request.Builder().url(api).post(requestBody).build();
-            Call call = mHttpClient.newCall(request);
-            call.enqueue(new Callback() {
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    myToastL(mActivityRef.get(), "register display code failure");
-                    myLogDebug(TAG, "register display code failure");
-                }
-
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) {
-                    if (response.code() >= HttpsURLConnection.HTTP_OK &&
-                            response.code() < HttpsURLConnection.HTTP_MULT_CHOICE) {
-                        myLogDebug(TAG, "register display code success");
-                        processGetDisplayCode(instanceID);
-                    } else {
-                        myToastL(mActivityRef.get(), "register display code failure:" + response.code());
-                        myLogDebug(TAG, "register display code failure");
-                    }
-                }
-            });
-        } catch (JSONException e) {
-            myLogError(TAG, "register display code failure");
-            e.printStackTrace();
-        }
-    }
-
-    private final Runnable getOneTimePassword = new Runnable() {
-        @Override
-        public void run() {
-            mMainHandler.removeCallbacks(this);
-            String api = mGatewayUrl + "/presentation/displays/otp/generate";
-            String requestObj = "{\"id\":\"" + mWebRTCInfo.InstanceId + "\",\"count\":1}";
-
-            RequestBody requestBody = RequestBody.create(requestObj, MediaType.get("application/json; charset=utf-8"));
-            Request request = new Request.Builder().url(api).post(requestBody).build();
-            Call call = mHttpClient.newCall(request);
-            call.enqueue(new Callback() {
-                @Override
-                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    mWebRTCInfo.OTPCode = "-";
-                    mWebRTCInfo.OTPTimer = 0;
-                    restartGetOTP();
-                }
-
-                @Override
-                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                    try {
-                        JSONObject result = new JSONObject(Objects.requireNonNull(response.body()).string());
-                        JSONArray jsonArray = result.optJSONArray("list");
-                        if (jsonArray != null) {
-                            JSONObject jsonObject = jsonArray.optJSONObject(0);
-                            mWebRTCInfo.OTPCode = jsonObject.optString("code");
-                            mWebRTCInfo.OTPTimer = 30;
-                            myLogDebug("_TAG_", "OTPCode: " + mWebRTCInfo.OTPCode);
-                        } else {
-                            throw new JSONException("JSONArray is null");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        mWebRTCInfo.OTPCode = "-";
-                        mWebRTCInfo.OTPTimer = 0;
-                    }
-                    //myLogInfo(TAG, "OTP: " + strResult + " OTP Timer: " + mWebRTCInfo.OTPTimer);
-                    restartGetOTP();
-                }
-
-                private void restartGetOTP() {
-                    mWebRTCInfo.OTPUpdate = true;
-                    setChanged();
-                    notifyObservers();
-                    mMainHandler.postDelayed(getOneTimePassword, Math.max(mWebRTCInfo.OTPTimer, 5) * 1000L);
-                }
-            });
-        }
-    };
 
     private boolean initP2PClient() {
         if (mP2pClient == null) {
@@ -1152,7 +994,7 @@ public class WebRTCHelper extends Observable implements
     }
 
     // region Control Socket
-    public void connectControlSocket(String displayID) {
+    public void connectControlSocket(String gatewayUrl, String displayID) {
         android.util.Log.e(TAG, "zz connectControlSocket "+ displayID );
         mDisplaySocketReConnect.setValue(false);
         try {
@@ -1165,7 +1007,7 @@ public class WebRTCHelper extends Observable implements
                 myLogDebug(TAG, "stop reconnecting the former url");
                 mControlSocketIO.disconnect();
             }
-            mControlSocketIO = IO.socket(mGatewayUrl, options);
+            mControlSocketIO = IO.socket(gatewayUrl, options);
             mControlSocketIO
                     .on(Socket.EVENT_CONNECT, args -> printControlSocketLog(Socket.EVENT_CONNECT, args))
                     .on(Socket.EVENT_CONNECTING, args -> printControlSocketLog(Socket.EVENT_CONNECTING, args))
@@ -1179,7 +1021,7 @@ public class WebRTCHelper extends Observable implements
 
                             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                                 mDisplaySocketReConnect.postValue(true);
-                                connectControlSocket(displayID);
+                                connectControlSocket(gatewayUrl, displayID);
                             }, 5000);
                         }
                     })
