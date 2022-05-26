@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/connect_timer.dart';
@@ -181,7 +180,7 @@ class _HomeState extends State<Home> {
       viewCreated = true;
     });
     controller.channel.setMethodCallHandler((MethodCall call) async {
-      if (call.method == ("conectP2PClient")) {
+      if (call.method == ("connectP2PClientResult")) {
         bool result = call.arguments;
         ControlSocket.getInstance().handleP2PClientResult(result);
       }
@@ -192,8 +191,7 @@ class _HomeState extends State<Home> {
 
   void _initControlSocketListener(BuildContext context) {
     ControlSocket.getInstance().socketResponse.getResponse.listen((event) {
-      Map response = jsonDecode(event as String);
-      String action = response['action'];
+      String action = event['action'];
       switch (action) {
         case "set-moderator":
           ConnectionTimer.getInstance().startRemainingTimeTimer(
@@ -204,7 +202,7 @@ class _HomeState extends State<Home> {
           ConnectionTimer.getInstance().stopRemainingTimeTimer();
           break;
         case "control":
-          Map<String, dynamic> status = response['status'];
+          Map<String, dynamic> status = event['status'];
           String statusAction = status['action'];
           switch (statusAction) {
             case 'setClient':
@@ -216,7 +214,12 @@ class _HomeState extends State<Home> {
                     mWebRTCInfo.allowId,
                     () => controller.channel.invokeMethod("disconnectP2pClient"));
               }
-              controller.channel.invokeMethod("connectP2pClient", {'clientId':mWebRTCInfo.clientId, 'allowId':mWebRTCInfo.allowId, 'response':response});
+              var arg = {
+                'clientId': mWebRTCInfo.clientId,
+                'allowId': mWebRTCInfo.allowId,
+                'response': event,
+              };
+              controller.channel.invokeMethod('connectP2pClient', arg);
               break;
             case "play":
               break;

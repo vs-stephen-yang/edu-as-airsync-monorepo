@@ -78,9 +78,9 @@ class ControlSocket {
   }
 
   void _handleDisplayResponse(dynamic arg) {
-    String messageFor = arg['messageFor'];
-    if (messageFor.isNotEmpty && messageFor == mWebRTCInfo.displayCode) {
-      String action = arg['action'];
+    String? messageFor = arg['messageFor'];
+    if (messageFor != null && messageFor == mWebRTCInfo.displayCode) {
+      var action = arg['action'];
       var extra = arg['extra'];
       var userid = arg['userid'];
       switch (action) {
@@ -214,10 +214,7 @@ class ControlSocket {
   void sendMessageToControlSocket(String? appVersion, String? messageFor,
       {String? allow,
       String? action,
-      String? reply,
-      bool? showCode,
-      bool? showDelegate,
-      String? presentationState}) {
+      String? reply}) {
     if (mControlSocketIO == null) {
       print("mDisplaySocketIO is not established.");
       return;
@@ -295,7 +292,7 @@ class ControlSocket {
           'platform': 'android',
           'capacities': [],
           'code': mWebRTCInfo.displayCode,},
-        'direction': 'out', //AppConfig.of(context)?.appVersion,
+        'direction': 'out',
         'messageId': mWebRTCInfo.nextId,
         'nextId':GetString.getRandomString(21)
       });
