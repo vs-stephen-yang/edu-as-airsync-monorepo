@@ -180,9 +180,13 @@ class _HomeState extends State<Home> {
       viewCreated = true;
     });
     controller.channel.setMethodCallHandler((MethodCall call) async {
-      if (call.method == ("connectP2PClientResult")) {
-        bool result = call.arguments;
-        ControlSocket.getInstance().handleP2PClientResult(result);
+      switch (call.method) {
+        case "connectP2PClientSuccess":
+          ControlSocket.getInstance().handleP2PClientSuccess(call.arguments);
+          break;
+        case "connectP2PClientFailure":
+          ControlSocket.getInstance().handleP2PClientFailure(call.arguments);
+          break;
       }
 
       return;

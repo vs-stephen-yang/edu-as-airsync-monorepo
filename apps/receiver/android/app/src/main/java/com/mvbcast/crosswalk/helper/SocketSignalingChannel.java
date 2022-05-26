@@ -117,7 +117,7 @@ public class SocketSignalingChannel implements SignalingChannelInterface {
         }
     };
 
-    SocketSignalingChannel() {
+    public SocketSignalingChannel() {
         this.signalingChannelObservers = new ArrayList<>();
     }
 

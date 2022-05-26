@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/blocs/display_code/display_code_bloc.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/model/webrtc_Info.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -47,15 +48,7 @@ class _MainInfoState extends State<MainInfo> {
         child: BlocBuilder<DisplayCodeBloc, DisplayCodeState>(
           builder: (context, state) {
             if (state is DisplayCodeSuccess) {
-              // ControlSocket.getInstance().connect(AppConfig.of(context));
-              widget.controller.channel
-                  .invokeMethod("connectControlSocket", <String, String>{
-                'apiGateway': AppConfig.of(context)!.settings.apiGateway,
-                'id': AppInstanceCreate().instanceID,
-                'displayCode': WebRTCInfo.getInstance().displayCode,
-                'token': WebRTCInfo.getInstance().token,
-                'name': WebRTCInfo.getInstance().licenseName,
-              });
+              ControlSocket.getInstance().connect(AppConfig.of(context));
             }
             return Wrap(
               direction: Axis.vertical,
@@ -68,7 +61,7 @@ class _MainInfoState extends State<MainInfo> {
                   children: <Widget>[
                     Text(
                       S.of(context).main_content_display_code,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 30,
                         fontWeight: FontWeight.w700,
@@ -84,7 +77,7 @@ class _MainInfoState extends State<MainInfo> {
                     ),
                     Text(
                       S.of(context).main_content_one_time_password,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 30,
                         fontWeight: FontWeight.w700,
@@ -123,8 +116,10 @@ class _MainInfoState extends State<MainInfo> {
                             ),
                             Text(
                               WebRTCInfo.getInstance().otpTimer.toString(),
-                              style:
-                                  TextStyle(fontSize: 12, color: Colors.white),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.white,
+                              ),
                             ),
                           ],
                         ),
@@ -165,7 +160,7 @@ class _MainInfoState extends State<MainInfo> {
                           ),
                           Text(
                             S.of(context).main_content_scan_or,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 30,
                               fontWeight: FontWeight.w700,
@@ -192,7 +187,7 @@ class _MainInfoState extends State<MainInfo> {
                       ),
                       Text(
                         S.of(context).main_content_scan_to_enroll,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 30,
                           fontWeight: FontWeight.w700,
