@@ -440,7 +440,7 @@ public class WebRTCHelper extends Observable implements
         return true;
     }
 
-    private void connectP2pClient(String clientId, String allowId, JSONObject response) {
+     public void connectP2pClient(String clientId, String allowId, JSONObject response) {
         setStateMachine(String.format("connect clientId: %s, allowId: %s", clientId, allowId));
 
         if (!mWebRTCInfo.ModeratorMode) {

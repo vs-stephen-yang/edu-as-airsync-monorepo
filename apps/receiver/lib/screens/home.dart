@@ -181,6 +181,11 @@ class _HomeState extends State<Home> {
       viewCreated = true;
     });
     controller.channel.setMethodCallHandler((MethodCall call) async {
+      if (call.method == ("conectP2PClient")) {
+        bool result = call.arguments;
+        ControlSocket.getInstance().handleP2PClientResult(result);
+      }
+
       return;
     });
   }
@@ -209,10 +214,9 @@ class _HomeState extends State<Home> {
                     AppConfig.of(context)?.appVersion,
                     mWebRTCInfo.displayCode,
                     mWebRTCInfo.allowId,
-                    () =>
-                        controller.channel.invokeMethod("disconnectP2pClient"));
+                    () => controller.channel.invokeMethod("disconnectP2pClient"));
               }
-              controller.channel.invokeMethod("connectP2pClient", response);
+              controller.channel.invokeMethod("connectP2pClient", {'clientId':mWebRTCInfo.clientId, 'allowId':mWebRTCInfo.allowId, 'response':response});
               break;
             case "play":
               break;
