@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.mvbcast.crosswalk.helper.OTAHelper;
+import com.mvbcast.crosswalk.helper.WebRTCHelper;
 import com.mvbcast.crosswalk.vbsota.SystemImageOTAHelper;
 import com.mvbcast.crosswalk.view.WebRTCNativeViewFactory;
 
@@ -23,6 +24,7 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
 
 public class MainActivity extends FlutterActivity {
+    private static final String TAG = MainActivity.class.getSimpleName();
     private MethodChannel mVbsOTA;
 
     @Override
@@ -43,6 +45,20 @@ public class MainActivity extends FlutterActivity {
             // TODO:
         });
         OTAHelper.getInstance().clearForceCheckVersion();
+
+        WebRTCHelper.getInstance().initWebRTCContext(this);
+
+        WebRTCHelper.getInstance().getDecoder().observe(this,
+                s -> {
+                    // TODO: show on screen ?
+                    Log.d(TAG, String.format("Decoder: %s", s));
+                });
+
+        WebRTCHelper.getInstance().getFPS().observe(this,
+                s -> {
+                    // TODO: show on screen ?
+                    Log.d(TAG, String.format("Render fps: %s", s));
+                });
     }
 
     @Override
@@ -56,11 +72,14 @@ public class MainActivity extends FlutterActivity {
 
     @Override
     protected void onDestroy() {
+        WebRTCHelper.getInstance().onActivityDestroy();
+
         OTAHelper.getInstance().removeDownloadProcess(MainActivity.this);
 
         SystemImageOTAHelper.getInstance().unregisterBroadcastReceiver(MainActivity.this);
 
         super.onDestroy();
+        System.exit(0);
     }
 
     @Override

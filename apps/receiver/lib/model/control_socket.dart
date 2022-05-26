@@ -281,26 +281,30 @@ class ControlSocket {
     // mNeedReconnect = true;
   }
 
-  void handleP2PClientResult(bool result) {
-    if (result) {
-      setStateMachine("connect() onSuccess: %s"); //TODO:
-      var content = json.encode({
-        'messageFor': mWebRTCInfo.displayCode,
-        'action': 'control',
-        'status': {'action':'setClient', 'status':'ready'},
-        'extra': {'setClientId': mWebRTCInfo.clientId,'setAllowedPeer': mWebRTCInfo.allowId,'streamer': _appVersion,
-          'platform': 'android',
-          'capacities': [],
-          'code': mWebRTCInfo.displayCode,},
-        'direction': 'out',
-        'messageId': mWebRTCInfo.nextId,
-        'nextId':GetString.getRandomString(21)
-      });
-      sendMessageToControlSocket(_appVersion, mWebRTCInfo.displayCode, reply: content.toString());
-    } else {
-      // setStateMachine("connect() onFailure: %s %s");
+  void handleP2PClientSuccess(String result) {
+    setStateMachine("connect() onSuccess: $result"); //TODO:
+    var content = json.encode({
+      'messageFor': mWebRTCInfo.displayCode,
+      'action': 'control',
+      'status': {'action': 'setClient', 'status': 'ready'},
+      'extra': {
+        'setClientId': mWebRTCInfo.clientId,
+        'setAllowedPeer': mWebRTCInfo.allowId,
+        'streamer': _appVersion,
+        'platform': 'android',
+        'capacities': [],
+        'code': mWebRTCInfo.displayCode,
+      },
+      'direction': 'out',
+      'messageId': mWebRTCInfo.nextId,
+      'nextId': GetString.getRandomString(21)
+    });
+    sendMessageToControlSocket(_appVersion, mWebRTCInfo.displayCode,
+        reply: content.toString());
+  }
 
-    }
+  void handleP2PClientFailure(dynamic result) {
+    setStateMachine("connect() onFailure: %s %s");
   }
 }
 
