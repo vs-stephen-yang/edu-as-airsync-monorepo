@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class ConnectionTimer {
 
-  late Timer mConnectionTimeoutTimer, mRemainingTimeTimer;
+  Timer? mConnectionTimeoutTimer, mRemainingTimeTimer;
   StreamController<int> mConnectionTimeTimeout = StreamController<int>();
   StreamController<int> mRemainingTimeTimeout = StreamController<int>();
 
@@ -21,7 +21,7 @@ class ConnectionTimer {
 
   void startConnectionTimeoutTimer(String? appVersion, String? displayCode,
       String? allow, VoidCallback onFinish) {
-    stopConnectionTimeoutTimer();
+    if (mConnectionTimeoutTimer != null) stopConnectionTimeoutTimer();
 
     var count = 30;
     mConnectionTimeoutTimer =
@@ -49,7 +49,7 @@ class ConnectionTimer {
   }
 
   void stopConnectionTimeoutTimer() {
-    mConnectionTimeoutTimer.cancel();
+    mConnectionTimeoutTimer?.cancel();
     mConnectionTimeTimeout.add(0);
   }
 
@@ -78,7 +78,7 @@ class ConnectionTimer {
   }
 
   void stopRemainingTimeTimer() {
-    mRemainingTimeTimer.cancel();
+    mRemainingTimeTimer?.cancel();
     mRemainingTimeTimeout.add(0);
   }
 }
