@@ -36,6 +36,7 @@ class WebRTCInfo {
   String? meetingId;
   String? allowId;
   String? clientId;
+  String? nextId;
 }
 
 enum ePresentationState {
