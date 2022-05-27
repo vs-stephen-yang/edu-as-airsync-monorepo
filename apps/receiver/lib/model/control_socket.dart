@@ -151,7 +151,7 @@ class ControlSocket {
               case 'setClient':
                 mWebRTCInfo.clientId = extra['setClientId'];
                 mWebRTCInfo.allowId = extra['setAllowedPeer'];
-                mWebRTCInfo.nextId = extra['nextId'];
+                mWebRTCInfo.nextId = arg['nextId'];
                 if (mClientId.isEmpty) {
                   mWebRTCInfo.presentationState =
                       ePresentationState.waitForStream;
