@@ -101,7 +101,8 @@ public class WebRTCNativeView implements PlatformView,
     //-------------------------------------------------------------------------
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        myLogDebug(TAG, "onMethodCall: " + call.method + " object:" + call.arguments().toString());
+        Object msg = call.arguments() != null ? call.arguments().toString() : "";
+        myLogDebug(TAG, "onMethodCall: " + call.method + " object:" + msg);
         switch (call.method) {
             case "connectP2pClient":
                 connectP2pClient(call.argument("clientId"),
@@ -132,7 +133,10 @@ public class WebRTCNativeView implements PlatformView,
             mReconnectAllowId = "";
             mReconnectResponse = null;
         } else {
-            methodChannel.invokeMethod("stopConnectionTimeoutTimer", null);
+            if (mActivityRef.get() != null) {
+                mActivityRef.get().runOnUiThread(() ->
+                        methodChannel.invokeMethod("stopConnectionTimeoutTimer", null));
+            }
         }
     }
 
@@ -140,9 +144,13 @@ public class WebRTCNativeView implements PlatformView,
     public void onStreamAdded(RemoteStream remoteStream) {
         setStateMachine("onStreamAdded");
 
-        methodChannel.invokeMethod("stopConnectionTimeoutTimer", null);
+        if (mActivityRef.get() != null) {
+            mActivityRef.get().runOnUiThread(() -> {
+                methodChannel.invokeMethod("stopConnectionTimeoutTimer", null);
 
-        methodChannel.invokeMethod("sendMessageToControlSocket", null);
+                methodChannel.invokeMethod("sendMessageToControlSocket", null);
+            });
+        }
 
         mRemoteStream = remoteStream;
 
