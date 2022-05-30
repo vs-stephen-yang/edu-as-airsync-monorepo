@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:display_flutter/app_instance_create.dart';
@@ -9,8 +8,8 @@ import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
-import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/main_info.dart';
+import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/tittle_bar.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late WebRTCNativeViewController controller;
-  bool viewCreated = false;
 
   double _fullWidth = 0, _fullHeight = 0, _halfWidth = 0, _halfHeight = 0;
   final List<Widget> _webRtcWidget = <Widget>[];
@@ -42,7 +40,7 @@ class _HomeState extends State<Home> {
     _webRtcWidget.add(Container(color: Colors.green));
     _webRtcWidget.add(Container(color: Colors.blue));
 
-    _initControlSocketListener(this.context);
+    _initControlSocketListener(context);
   }
 
   @override
@@ -79,7 +77,7 @@ class _HomeState extends State<Home> {
                 }
 
                 List<Widget> webrtcWidgets =
-                List.generate(value ? 4 : 1, (index) {
+                    List.generate(value ? 4 : 1, (index) {
                   double? left, top, right, bottom;
                   if (index == 1) {
                     right = 0;
@@ -142,13 +140,7 @@ class _HomeState extends State<Home> {
                     right: 0,
                     child: TitleBar(),
                   ),
-                  Positioned(
-                      child: viewCreated
-                          ? MainInfo(
-                              controller: controller,
-                              isEnrolled: false, // todo: Moderator mode switch
-                            )
-                          : const Text(' ')),
+                  const Positioned(child: MainInfo()),
                   const Positioned(
                       left: 20, bottom: 140, child: StreamFunction()),
                   const Positioned(
@@ -177,10 +169,6 @@ class _HomeState extends State<Home> {
 
   _webRTCNativeViewCreatedCallback(WebRTCNativeViewController controller) {
     this.controller = controller;
-    setState(() {
-      // todo: Temporary solution: wait move control socket mechanism to Dart level.
-      viewCreated = true;
-    });
     controller.channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
         case "connectP2PClientSuccess":
@@ -190,13 +178,15 @@ class _HomeState extends State<Home> {
           var msg = call.arguments as Map;
           log("code: $msg['errorCode']");
           log("message: $msg['errorMessage']");
-          ControlSocket.getInstance().handleP2PClientFailure(msg['errorCode'], msg['errorMessage']);
+          ControlSocket.getInstance()
+              .handleP2PClientFailure(msg['errorCode'], msg['errorMessage']);
           break;
         case "stopConnectionTimeoutTimer":
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
           break;
         case "sendMessageToControlSocket":
-          ControlSocket.getInstance().sendMessageToControlSocket(ControlSocket.getInstance().mWebRTCInfo.displayCode);
+          ControlSocket.getInstance().sendMessageToControlSocket(
+              ControlSocket.getInstance().mWebRTCInfo.displayCode);
           break;
       }
 
@@ -227,7 +217,8 @@ class _HomeState extends State<Home> {
                     AppConfig.of(context)?.appVersion,
                     mWebRTCInfo.displayCode,
                     mWebRTCInfo.allowId,
-                    () => controller.channel.invokeMethod("disconnectP2pClient"));
+                    () =>
+                        controller.channel.invokeMethod("disconnectP2pClient"));
               }
               var arg = {
                 'clientId': mWebRTCInfo.clientId,
