@@ -187,6 +187,12 @@ class _HomeState extends State<Home> {
         case "connectP2PClientFailure":
           ControlSocket.getInstance().handleP2PClientFailure(call.arguments);
           break;
+        case "stopConnectionTimeoutTimer":
+          ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+          break;
+        case "sendMessageToControlSocket":
+          ControlSocket.getInstance().sendMessageToControlSocket(AppConfig.of(context)?.appVersion, ControlSocket.getInstance().mWebRTCInfo.displayCode);
+          break;
       }
 
       return;
