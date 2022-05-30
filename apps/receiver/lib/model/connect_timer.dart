@@ -36,8 +36,7 @@ class ConnectionTimer {
         ControlSocket.getInstance()
             .setStateMachine("ConnectionTimeout onFinish");
 
-        ControlSocket.getInstance().sendMessageToControlSocket(
-            appVersion, displayCode,
+        ControlSocket.getInstance().sendMessageToControlSocket(displayCode,
             allow: allow, action: 'timeout');
 
         onFinish();

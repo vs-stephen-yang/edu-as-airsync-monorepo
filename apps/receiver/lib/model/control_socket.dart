@@ -49,25 +49,30 @@ class ControlSocket {
             })
             .build());
 
-    mControlSocketIO.onConnect((data) => _printControlSocketLog('connect', data));
-    mControlSocketIO.onConnecting((data) => _printControlSocketLog('connecting', data));
+    mControlSocketIO
+        .onConnect((data) => _printControlSocketLog('connect', data));
+    mControlSocketIO
+        .onConnecting((data) => _printControlSocketLog('connecting', data));
     mControlSocketIO.onConnectError((data) {
-          _printControlSocketLog('connect_error', data);
-          if (_displayReconnectAttempts >= _MAX_RECONNECT_ATTEMPTS) {
-            _displayReconnectAttempts = 0;
+      _printControlSocketLog('connect_error', data);
+      if (_displayReconnectAttempts >= _MAX_RECONNECT_ATTEMPTS) {
+        _displayReconnectAttempts = 0;
 
-            Future.delayed(const Duration(seconds: 5), () {
+        Future.delayed(const Duration(seconds: 5), () {
           connect(appConfig);
-            });
+        });
       }
     });
     mControlSocketIO.on(mWebRTCInfo.displayCode, (data) {
-          _printControlSocketLog(mWebRTCInfo.displayCode, data);
-          _handleDisplayResponse(data);
-        });
-    mControlSocketIO.on('message', (data) => _printControlSocketLog('message', data));
-    mControlSocketIO.onConnectTimeout((data) => _printControlSocketLog('onConnectTimeout', data));
-    mControlSocketIO.onDisconnect((data) => _printControlSocketLog('disconnect', data));
+      _printControlSocketLog(mWebRTCInfo.displayCode, data);
+      _handleDisplayResponse(data);
+    });
+    mControlSocketIO.on(
+        'message', (data) => _printControlSocketLog('message', data));
+    mControlSocketIO.onConnectTimeout(
+        (data) => _printControlSocketLog('onConnectTimeout', data));
+    mControlSocketIO
+        .onDisconnect((data) => _printControlSocketLog('disconnect', data));
     mControlSocketIO.onError((data) => _printControlSocketLog('error', data));
     mControlSocketIO.onReconnecting((data) {
       _printControlSocketLog('reconnecting', data);
@@ -133,15 +138,14 @@ class ControlSocket {
             'messageId': '${arg['nextId']}',
             'nextId': GetString.getRandomString(21)
           });
-          sendMessageToControlSocket(_appVersion, mWebRTCInfo.displayCode,
-              reply: reply);
+          sendMessageToControlSocket(mWebRTCInfo.displayCode, reply: reply);
           break;
         case "set-ui-state":
           mWebRTCInfo.isShowCode = extra['code'];
           mWebRTCInfo.isShowDelegate = extra['delegate'];
           mWebRTCInfo.isUIStateChanged = true;
 
-          sendMessageToControlSocket(_appVersion, mWebRTCInfo.displayCode);
+          sendMessageToControlSocket(mWebRTCInfo.displayCode);
           break;
         case "control":
           Map<String, dynamic> status = arg['status'];
@@ -160,12 +164,12 @@ class ControlSocket {
                   mWebRTCInfo.presenterName = presenter['name'];
                   mWebRTCInfo.isUIStateChanged = true;
 
-                  sendMessageToControlSocket(_appVersion, mWebRTCInfo.displayCode);
+                  sendMessageToControlSocket(mWebRTCInfo.displayCode);
 
                   // AppCenterAnalyticsHelper.getInstance().EventStreamStart();
                 } else {
-                  sendMessageToControlSocket(
-                      _appVersion, mWebRTCInfo.displayCode, allow: mWebRTCInfo.allowId, action: 'blocked');
+                  sendMessageToControlSocket(mWebRTCInfo.displayCode,
+                      allow: mWebRTCInfo.allowId, action: 'blocked');
                 }
                 socketResponse.addResponseMessage(arg);
                 break;
@@ -184,7 +188,7 @@ class ControlSocket {
                 break;
             }
           } else {
-            sendMessageToControlSocket(_appVersion, mWebRTCInfo.displayCode,
+            sendMessageToControlSocket(mWebRTCInfo.displayCode,
                 allow: userid, action: "denied");
           }
           break;
@@ -211,40 +215,44 @@ class ControlSocket {
     mControlSocketIO.disconnect();
   }
 
-  void sendMessageToControlSocket(String? appVersion, String? messageFor,
-      {String? allow,
-      String? action,
-      String? reply}) {
+  void sendMessageToControlSocket(String? messageFor,
+      {String? allow, String? action, String? reply}) {
     if (mControlSocketIO == null) {
       print("mDisplaySocketIO is not established.");
       return;
     }
 
     if (reply != null) {
-      print('sendMessageToControlSocket: $reply');
-      mControlSocketIO.emit(messageFor!, reply);
+      print('sendMessageToControlSocket reply: $reply');
+      mControlSocketIO.emit(messageFor!, json.decode(reply));
     } else if (action != null) {
       var content = json.encode({
         'messageFor': allow,
         'action': action,
         'display': messageFor,
-        'streamer': appVersion, //AppConfig.of(context)?.appVersion,
+        'streamer': _appVersion,
         'capacities': '[]'
       });
 
-      print('sendMessageToControlSocket: $content');
-      mControlSocketIO.emit(messageFor!, content);
+      print('sendMessageToControlSocket action: $content');
+      mControlSocketIO.emit(messageFor!, json.decode(content));
     } else {
-      var content = jsonEncode({
+      var content = json.encode({
         'messageFor': mWebRTCInfo.displayCode,
         'action': 'display-state-update',
         // 'status': 'display-state-update',
-        'extra': {'uiState': {'code': mWebRTCInfo.isShowCode, 'delegate': mWebRTCInfo.isShowDelegate,}, 'presentationState': mWebRTCInfo.presentationState.name,},
+        'extra': {
+          'uiState': {
+            'code': mWebRTCInfo.isShowCode,
+            'delegate': mWebRTCInfo.isShowDelegate,
+          },
+          'presentationState': mWebRTCInfo.presentationState.name,
+        },
         'messageId': GetString.getRandomString(21),
         'nextId': GetString.getRandomString(21),
       });
       print('sendMessageToControlSocket: $content');
-      mControlSocketIO.emit(messageFor!, content);
+      mControlSocketIO.emit(messageFor!, json.decode(content));
     }
   }
 
@@ -256,7 +264,7 @@ class ControlSocket {
   static ValueNotifier<String> stateMachine = ValueNotifier('');
 
   void setStateMachine(String state) {
-    log('_setStateMachine: $state');
+    print('_setStateMachine: $state');
     String msg = "${GetString.getShortTimeString} $state";
     var buffer = StringBuffer();
     buffer.write("\nHistory:");
@@ -283,7 +291,7 @@ class ControlSocket {
   }
 
   void handleP2PClientSuccess(String result) {
-    setStateMachine("connect() onSuccess: $result"); //TODO:
+    setStateMachine("connect() onSuccess: $result");
     var content = json.encode({
       'messageFor': mWebRTCInfo.displayCode,
       'action': 'control',
@@ -300,12 +308,12 @@ class ControlSocket {
       'messageId': mWebRTCInfo.nextId,
       'nextId': GetString.getRandomString(21)
     });
-    sendMessageToControlSocket(_appVersion, mWebRTCInfo.displayCode,
+    sendMessageToControlSocket(mWebRTCInfo.displayCode,
         reply: content.toString());
   }
 
-  void handleP2PClientFailure(dynamic result) {
-    setStateMachine("connect() onFailure: %s %s");
+  void handleP2PClientFailure(String code, String message) {
+    setStateMachine("connect() onFailure: $code $message");
   }
 }
 
@@ -329,6 +337,4 @@ class StreamResponse {
     _response.close();
     _error_response.close();
   }
-
-
 }
