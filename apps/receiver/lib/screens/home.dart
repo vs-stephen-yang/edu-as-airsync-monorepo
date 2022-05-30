@@ -196,7 +196,7 @@ class _HomeState extends State<Home> {
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
           break;
         case "sendMessageToControlSocket":
-          ControlSocket.getInstance().sendMessageToControlSocket(AppConfig.of(context)?.appVersion, ControlSocket.getInstance().mWebRTCInfo.displayCode);
+          ControlSocket.getInstance().sendMessageToControlSocket(ControlSocket.getInstance().mWebRTCInfo.displayCode);
           break;
       }
 
