@@ -221,6 +221,7 @@ class ControlSocket {
     }
 
     if (reply != null) {
+      print('sendMessageToControlSocket: $reply');
       mControlSocketIO.emit(messageFor!, reply);
     } else if (action != null) {
       var content = json.encode({
