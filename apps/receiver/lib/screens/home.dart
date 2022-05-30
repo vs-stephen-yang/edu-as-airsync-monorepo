@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
@@ -185,7 +187,10 @@ class _HomeState extends State<Home> {
           ControlSocket.getInstance().handleP2PClientSuccess(call.arguments);
           break;
         case "connectP2PClientFailure":
-          ControlSocket.getInstance().handleP2PClientFailure(call.arguments);
+          var msg = call.arguments as Map;
+          log("code: $msg['errorCode']");
+          log("message: $msg['errorMessage']");
+          ControlSocket.getInstance().handleP2PClientFailure(msg['errorCode'], msg['errorMessage']);
           break;
         case "stopConnectionTimeoutTimer":
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
