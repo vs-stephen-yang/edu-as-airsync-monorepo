@@ -278,7 +278,7 @@ public class WebRTCNativeView implements PlatformView,
                     HashMap<String, Object> args = new HashMap<>();
                     args.put("errorCode", error.errorCode);
                     args.put("errorMessage", error.errorMessage);
-                    methodChannel.invokeMethod("handleP2PClientFailure", args);
+                    methodChannel.invokeMethod("connectP2PClientFailure", args);
                 });
 
                 setupReConnectSettings(clientId, allowId, response);
