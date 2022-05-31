@@ -190,8 +190,15 @@ class _HomeState extends State<Home> {
       switch (action) {
         case "set-moderator":
           ConnectionTimer.getInstance().startRemainingTimeTimer(
-              WebRTCInfo.getInstance().remainingTime,
-              () => controller.channel.invokeMethod('disconnectP2pClient'));
+              WebRTCInfo.getInstance().remainingTime, () {
+            WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
+            mWebRTCInfo.moderatorMode = false;
+            mWebRTCInfo.isModeratorLeave = true;
+            mWebRTCInfo.moderatorId = "";
+            mWebRTCInfo.moderatorName = "";
+
+            controller.channel.invokeMethod('disconnectP2pClient');
+          });
           break;
         case "unset-moderator":
           ConnectionTimer.getInstance().stopRemainingTimeTimer();
@@ -203,12 +210,17 @@ class _HomeState extends State<Home> {
             case 'setClient':
               WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
               if (!mWebRTCInfo.moderatorMode) {
-                ConnectionTimer.getInstance().startConnectionTimeoutTimer(
-                    AppConfig.of(context)?.appVersion,
-                    mWebRTCInfo.displayCode,
-                    mWebRTCInfo.allowId,
-                    () =>
-                        controller.channel.invokeMethod("disconnectP2pClient"));
+                ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
+                  ControlSocket.getInstance()
+                      .setStateMachine("ConnectionTimeout onFinish");
+
+                  ControlSocket.getInstance().sendMessageToControlSocket(
+                      mWebRTCInfo.displayCode,
+                      allow: mWebRTCInfo.allowId,
+                      action: 'timeout');
+
+                  controller.channel.invokeMethod("disconnectP2pClient");
+                });
               }
               try {
                 var arg = {

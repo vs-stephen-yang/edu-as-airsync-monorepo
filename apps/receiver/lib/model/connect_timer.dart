@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:display_flutter/model/control_socket.dart';
-import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:flutter/material.dart';
 
 class ConnectionTimer {
-
   Timer? mConnectionTimeoutTimer, mRemainingTimeTimer;
   StreamController<int> mConnectionTimeTimeout = StreamController<int>();
   StreamController<int> mRemainingTimeTimeout = StreamController<int>();
@@ -19,8 +16,7 @@ class ConnectionTimer {
 
   ConnectionTimer.internal();
 
-  void startConnectionTimeoutTimer(String? appVersion, String? displayCode,
-      String? allow, VoidCallback onFinish) {
+  void startConnectionTimeoutTimer(VoidCallback onFinish) {
     if (mConnectionTimeoutTimer != null) stopConnectionTimeoutTimer();
 
     var count = 30;
@@ -33,16 +29,9 @@ class ConnectionTimer {
       } else if (timer.tick == 30) {
         // onFinish
         timer.cancel();
-        ControlSocket.getInstance()
-            .setStateMachine("ConnectionTimeout onFinish");
-
-        ControlSocket.getInstance().sendMessageToControlSocket(displayCode,
-            allow: allow, action: 'timeout');
-
+        log('ConnectionTimeout onFinish');
         onFinish();
         // AppCenterAnalyticsHelper.getInstance().EventStreamTimeout();
-        // controller.channel.invokeMethod('disconnectP2pClient');
-        // UtilityHelper.myToast(mActivityRef.get(), R.string.connection_connect_timeout);
       }
     });
   }
@@ -66,12 +55,7 @@ class ConnectionTimer {
         // onFinish
         timer.cancel();
         log('RemainingTimeTimeout onFinish');
-        WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
-        mWebRTCInfo.moderatorMode = false;
-        mWebRTCInfo.isModeratorLeave = true;
-        mWebRTCInfo.moderatorId = "";
-        mWebRTCInfo.moderatorName = "";
-        onFinish;
+        onFinish();
       }
     });
   }
