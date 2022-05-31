@@ -4,7 +4,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/displays.dart';
 import 'package:display_flutter/model/moderator_socket.dart';
-import 'package:display_flutter/model/webrtc_Info.dart';
+import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/screens/moderator_message.dart';
 import 'package:display_flutter/screens/presenter_list.dart';
 import 'package:display_flutter/settings/app_config.dart';

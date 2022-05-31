@@ -4,7 +4,7 @@ import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/blocs/display_code/display_code_bloc.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
-import 'package:display_flutter/model/webrtc_Info.dart';
+import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

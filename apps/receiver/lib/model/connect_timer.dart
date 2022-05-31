@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:display_flutter/model/control_socket.dart';
-import 'package:display_flutter/model/webrtc_Info.dart';
+import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:flutter/material.dart';
 
 class ConnectionTimer {
@@ -11,7 +11,7 @@ class ConnectionTimer {
   StreamController<int> mConnectionTimeTimeout = StreamController<int>();
   StreamController<int> mRemainingTimeTimeout = StreamController<int>();
 
-  static ConnectionTimer _instance = ConnectionTimer.internal();
+  static final ConnectionTimer _instance = ConnectionTimer.internal();
 
   static ConnectionTimer getInstance() {
     return _instance;
@@ -66,7 +66,7 @@ class ConnectionTimer {
         // onFinish
         timer.cancel();
         log('RemainingTimeTimeout onFinish');
-        WebRTCInfo mWebRTCInfo = ControlSocket.getInstance().mWebRTCInfo;
+        WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
         mWebRTCInfo.moderatorMode = false;
         mWebRTCInfo.isModeratorLeave = true;
         mWebRTCInfo.moderatorId = "";

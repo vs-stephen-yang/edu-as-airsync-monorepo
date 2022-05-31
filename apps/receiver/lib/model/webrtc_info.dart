@@ -1,5 +1,5 @@
 class WebRTCInfo {
-  static WebRTCInfo _instance = WebRTCInfo.internal();
+  static final WebRTCInfo _instance = WebRTCInfo.internal();
 
   static WebRTCInfo getInstance() {
     return _instance;
@@ -19,7 +19,7 @@ class WebRTCInfo {
 
   bool isUIStateChanged = true;
 
-  ePresentationState presentationState = ePresentationState.stopStreaming;
+  PresentationState presentationState = PresentationState.stopStreaming;
 
   bool moderatorMode = false;
   bool isModeratorLeave = false;
@@ -39,7 +39,7 @@ class WebRTCInfo {
   String? nextId;
 }
 
-enum ePresentationState {
+enum PresentationState {
   stopStreaming,
   waitForStream,
   streaming,
