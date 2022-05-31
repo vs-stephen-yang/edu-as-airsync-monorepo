@@ -309,7 +309,7 @@ class ControlSocket {
         reply: content.toString());
   }
 
-  void handleP2PClientFailure(String code, String message) {
+  void handleP2PClientFailure(String code, String? message) {
     setStateMachine("connect() onFailure: $code $message");
   }
 
