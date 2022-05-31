@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:display_flutter/model/webrtc_Info.dart';
+import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/get_string.dart';
 import 'package:flutter/cupertino.dart';
@@ -158,7 +158,7 @@ class ControlSocket {
                 mWebRTCInfo.nextId = arg['nextId'];
                 if (mClientId.isEmpty) {
                   mWebRTCInfo.presentationState =
-                      ePresentationState.waitForStream;
+                      PresentationState.waitForStream;
                   Map<String, dynamic> presenter = extra['presenter'];
                   mWebRTCInfo.presenterId = presenter['id'];
                   mWebRTCInfo.presenterName = presenter['name'];

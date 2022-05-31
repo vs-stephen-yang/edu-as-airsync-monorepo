@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:display_flutter/model/webrtc_Info.dart';
+import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;

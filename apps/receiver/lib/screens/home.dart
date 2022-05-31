@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
-import 'package:display_flutter/model/webrtc_Info.dart';
+import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -186,7 +186,7 @@ class _HomeState extends State<Home> {
           break;
         case "sendMessageToControlSocket":
           ControlSocket.getInstance().sendMessageToControlSocket(
-              ControlSocket.getInstance().mWebRTCInfo.displayCode);
+              WebRTCInfo.getInstance().displayCode);
           break;
       }
 
@@ -200,7 +200,7 @@ class _HomeState extends State<Home> {
       switch (action) {
         case "set-moderator":
           ConnectionTimer.getInstance().startRemainingTimeTimer(
-              ControlSocket.getInstance().mWebRTCInfo.remainingTime,
+              WebRTCInfo.getInstance().remainingTime,
               () => controller.channel.invokeMethod('disconnectP2pClient'));
           break;
         case "unset-moderator":
@@ -211,7 +211,7 @@ class _HomeState extends State<Home> {
           String statusAction = status['action'];
           switch (statusAction) {
             case 'setClient':
-              WebRTCInfo mWebRTCInfo = ControlSocket.getInstance().mWebRTCInfo;
+              WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
               if (!mWebRTCInfo.moderatorMode) {
                 ConnectionTimer.getInstance().startConnectionTimeoutTimer(
                     AppConfig.of(context)?.appVersion,
