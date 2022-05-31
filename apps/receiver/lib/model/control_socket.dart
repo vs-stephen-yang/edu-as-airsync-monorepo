@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/get_string.dart';
@@ -85,25 +86,21 @@ class ControlSocket {
   void _handleDisplayResponse(dynamic arg) {
     String? messageFor = arg['messageFor'];
     if (messageFor != null && messageFor == mWebRTCInfo.displayCode) {
-      var action = arg['action'];
-      var extra = arg['extra'];
-      var userid = arg['userid'];
-      switch (action) {
+      var resp = DisplayMessage.fromJson(arg);
+      var userid = resp.userId;
+      switch (resp.action) {
         case "set-moderator":
           mWebRTCInfo.moderatorMode = true;
-          Map<String, dynamic> moderator = arg['moderator'];
-          String id = moderator['id'];
-          mWebRTCInfo.moderatorId = moderator['id'];
-          mWebRTCInfo.moderatorName = moderator['name'];
-          mWebRTCInfo.meetingId = extra['moderatedSessionId'];
-          int remainingTime =
-              extra['endTine'] - DateTime.now().millisecondsSinceEpoch;
-          mWebRTCInfo.remainingTime = remainingTime;
-          log('Remaining time: $remainingTime');
-          List<dynamic> checkPoints = extra['checkPoints'];
-          int duration = extra['durationRemaining'];
-          for (int i = 0; i < checkPoints.length; i++) {
-            if ((duration - checkPoints[i]) > 1000) {
+          Extra extra = Extra.fromJson(resp.extra);
+          Moderator moderator = Moderator.fromJson(extra.moderator);
+          mWebRTCInfo.moderatorId = moderator.id;
+          mWebRTCInfo.moderatorName = moderator.name;
+          mWebRTCInfo.meetingId = extra.moderatedSessionId;
+          mWebRTCInfo.remainingTime = extra.endTime! - DateTime.now().millisecondsSinceEpoch;
+          List<dynamic>? checkPoints = extra.checkPoints;
+          int? duration = extra.durationRemaining;
+          for (int i = 0; i < checkPoints!.length; i++) {
+            if ((duration! - checkPoints[i]) > 1000) {
               int point = ((duration - checkPoints[i]) / 1000) as int;
               mWebRTCInfo.remainingTimeCheckPoints.add(point);
               log('checkpoint: $point');
@@ -135,33 +132,35 @@ class ControlSocket {
             'delegate': mWebRTCInfo.isShowDelegate,
             'uiState': '[]',
             'extra': '[]',
-            'messageId': '${arg['nextId']}',
+            'messageId': resp.nextId,
             'nextId': GetString.getRandomString(21)
           });
           sendMessageToControlSocket(mWebRTCInfo.displayCode, reply: reply);
           break;
         case "set-ui-state":
-          mWebRTCInfo.isShowCode = extra['code'];
-          mWebRTCInfo.isShowDelegate = extra['delegate'];
+          Extra extra = Extra.fromJson(resp.extra);
+          mWebRTCInfo.isShowCode =  extra.code!;
+          mWebRTCInfo.isShowDelegate = extra.delegate!;
           mWebRTCInfo.isUIStateChanged = true;
 
           sendMessageToControlSocket(mWebRTCInfo.displayCode);
           break;
         case "control":
-          Map<String, dynamic> status = arg['status'];
+          Status status = Status.fromJson(resp.status);
           if (status != null) {
-            String statusAction = status['action'];
+            String? statusAction = status.action;
             switch (statusAction) {
               case 'setClient':
-                mWebRTCInfo.clientId = extra['setClientId'];
-                mWebRTCInfo.allowId = extra['setAllowedPeer'];
-                mWebRTCInfo.nextId = arg['nextId'];
+                Extra extra = Extra.fromJson(resp.extra);
+                mWebRTCInfo.clientId = extra.setClientId;
+                mWebRTCInfo.allowId = extra.setAllowedPeer;
+                mWebRTCInfo.nextId = resp.nextId;
                 if (mClientId.isEmpty) {
                   mWebRTCInfo.presentationState =
                       PresentationState.waitForStream;
-                  Map<String, dynamic> presenter = extra['presenter'];
-                  mWebRTCInfo.presenterId = presenter['id'];
-                  mWebRTCInfo.presenterName = presenter['name'];
+                  Presenter presenter = Presenter.fromJson(extra.presenter);
+                  mWebRTCInfo.presenterId = presenter.id;
+                  mWebRTCInfo.presenterName = presenter.name;
                   mWebRTCInfo.isUIStateChanged = true;
 
                   sendMessageToControlSocket(mWebRTCInfo.displayCode);
@@ -180,7 +179,7 @@ class ControlSocket {
                 }
                 break;
               case "stop":
-                if (userid == mWebRTCInfo.allowId) {
+                if (userid == mWebRTCInfo.presenterId) {
                   socketResponse.addResponseMessage(arg);
                   // AppCenterAnalyticsHelper.getInstance().EventStreamStopped();
                 }
