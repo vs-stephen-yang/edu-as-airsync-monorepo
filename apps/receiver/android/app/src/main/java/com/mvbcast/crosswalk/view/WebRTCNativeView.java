@@ -112,6 +112,18 @@ public class WebRTCNativeView implements PlatformView,
             case "disconnectP2pClient":
                 disconnectP2pClient();
                 break;
+            case "playVideo":
+                streamPlay(result);
+                break;
+            case "stopVideo":
+                streamStop(result);
+                break;
+            case "pauseVideo":
+                streamPause(result);
+                break;
+            case "resumeVideo":
+                streamResume(result);
+                break;
             default:
                 result.notImplemented();
                 break;
@@ -296,8 +308,6 @@ public class WebRTCNativeView implements PlatformView,
             mClientId = "";
             mAllowId = "";
         }
-
-        //sendMessageToControlSocket(mWebRTCInfo.DisplayCode);
     }
 
     private void setupReConnectSettings(String clientId, String allowId, JSONObject response) {
@@ -319,30 +329,33 @@ public class WebRTCNativeView implements PlatformView,
                 mRemoteStream.disableAudio();
     }
 
-    private void streamPlay() {
+    private void streamPlay(@NonNull MethodChannel.Result result) {
         setStateMachine("streamPlay()");
 
         mActivityRef.get().runOnUiThread(() -> {
             if (mRemoteStream != null) {
                 mRemoteStream.enableVideo();
             }
+
+            result.success(null);
         });
     }
 
-    private void streamStop() {
+    private void streamStop(@NonNull MethodChannel.Result result) {
         setStateMachine("streamStop()");
 
         disconnectP2pClient();
-        myToastL(mActivityRef.get(), "connection_receive_stop_stream");
 
         mActivityRef.get().runOnUiThread(() -> {
             if (mRemoteStream != null) {
                 mRemoteStream.disableVideo();
             }
+
+            result.success(null);
         });
     }
 
-    private void streamPause(String messageID) {
+    private void streamPause(@NonNull MethodChannel.Result result) {
         setStateMachine("streamPause() (freeze)");
 
         mActivityRef.get().runOnUiThread(() -> {
@@ -355,26 +368,13 @@ public class WebRTCNativeView implements PlatformView,
                 }
                 controlAudio(false);
                 mAudioControl = false;
-
-                // TODO: 111 move to dart control socket
-//                try {
-//                    JSONObject reply = new JSONObject();
-//                    reply.put("messageFor", mWebRTCInfo.DisplayCode);
-//                    reply.put("userid", mAllowId);
-//                    reply.put("action", "pauseVideo");
-//                    reply.put("status", "pauseVideo-ok");
-//                    reply.put("messageId", messageID);
-//                    reply.put("nextId", getRandomString(21));
-//
-//                    sendMessageToControlSocket(mWebRTCInfo.DisplayCode, reply);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
             }
+
+            result.success(null);
         });
     }
 
-    private void streamResume() {
+    private void streamResume(@NonNull MethodChannel.Result result) {
         setStateMachine("streamResume() (unfreeze)");
 
         mActivityRef.get().runOnUiThread(() -> {
@@ -387,6 +387,8 @@ public class WebRTCNativeView implements PlatformView,
                 controlAudio(true);
                 mAudioControl = true;
             }
+
+            result.success(null);
         });
     }
 

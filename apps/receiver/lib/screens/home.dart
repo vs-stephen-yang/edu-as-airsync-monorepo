@@ -195,7 +195,7 @@ class _HomeState extends State<Home> {
   }
 
   void _initControlSocketListener(BuildContext context) {
-    ControlSocket.getInstance().socketResponse.getResponse.listen((event) {
+    ControlSocket.getInstance().socketResponse.getResponse.listen((event) async {
       String action = event['action'];
       switch (action) {
         case "set-moderator":
@@ -228,15 +228,36 @@ class _HomeState extends State<Home> {
               controller.channel.invokeMethod('connectP2pClient', arg);
               break;
             case "play":
+              try {
+                await controller.channel.invokeMethod("playVideo");
+              } on PlatformException catch (e) {
+                print(e);
+              }
               break;
             case "stop":
-              ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+              try {
+                await controller.channel.invokeMethod("stopVideo");
+                ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+              } on PlatformException catch (e) {
+                print(e);
+              }
               break;
           }
           break;
         case "pauseVideo":
+          try {
+            await controller.channel.invokeMethod("pauseVideo");
+            ControlSocket.getInstance().handleStreamPauseSuccess(event['nextId']);
+          } on PlatformException catch (e) {
+            print(e);
+          }
           break;
         case "resumeVideo":
+          try {
+            await controller.channel.invokeMethod("resumeVideo");
+          } on PlatformException catch (e) {
+            print(e);
+          }
           break;
       }
     });

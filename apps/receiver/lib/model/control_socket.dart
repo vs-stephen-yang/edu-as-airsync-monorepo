@@ -176,7 +176,6 @@ class ControlSocket {
               case "play":
                 if (userid == mWebRTCInfo.allowId) {
                   socketResponse.addResponseMessage(arg);
-                  // streamPlay();
                   // AppCenterAnalyticsHelper.getInstance().EventStreamPlayed();
                 }
                 break;
@@ -193,17 +192,14 @@ class ControlSocket {
           }
           break;
         case "pauseVideo":
-          String nextId = arg['nextId'];
           if (userid == mWebRTCInfo.allowId) {
             socketResponse.addResponseMessage(arg);
-            // streamPause(nextId);
             // AppCenterAnalyticsHelper.getInstance().EventStreamPaused();
           }
           break;
         case "resumeVideo":
           if (userid == mWebRTCInfo.allowId) {
             socketResponse.addResponseMessage(arg);
-            // streamResume();
             // AppCenterAnalyticsHelper.getInstance().EventStreamResumed();
           }
           break;
@@ -314,6 +310,20 @@ class ControlSocket {
 
   void handleP2PClientFailure(String code, String message) {
     setStateMachine("connect() onFailure: $code $message");
+  }
+
+  void handleStreamPauseSuccess(String messageId) {
+    WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
+    var content = json.encode({
+      'messageFor': mWebRTCInfo.displayCode,
+      'userid': mWebRTCInfo.allowId,
+      'action': 'pauseVideo',
+      'status': 'pauseVideo-ok',
+      'messageId': messageId,
+      'nextId':  GetString.getRandomString(21)
+    });
+    sendMessageToControlSocket(mWebRTCInfo.displayCode,
+        reply: content.toString());
   }
 }
 
