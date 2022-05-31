@@ -35,6 +35,12 @@ class _MainInfoState extends State<MainInfo> {
   }
 
   @override
+  void dispose() {
+    ControlSocket.getInstance().disconnectControlSocket();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(30),
