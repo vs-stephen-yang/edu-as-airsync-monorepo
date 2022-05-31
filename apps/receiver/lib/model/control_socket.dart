@@ -218,7 +218,7 @@ class ControlSocket {
   void sendMessageToControlSocket(String? messageFor,
       {String? allow, String? action, String? reply}) {
     if (mControlSocketIO == null) {
-      print("mDisplaySocketIO is not established.");
+      print("mControlSocketIO is not established.");
       return;
     }
 
@@ -257,7 +257,7 @@ class ControlSocket {
   }
 
   void _printControlSocketLog(String? event, dynamic args) {
-    print("mDisplaySocketIO: $event ${args.toString()}");
+    print("mControlSocketIO: $event ${args.toString()}");
   }
 
   var mStateMachineHistory = Queue<String>();
