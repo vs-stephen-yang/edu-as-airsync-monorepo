@@ -67,7 +67,7 @@ public class WebRTCNativeView implements PlatformView,
         RendererCommon.RendererEvents {
     private static final String TAG = WebRTCNativeView.class.getSimpleName();
 
-    private WeakReference<Activity> mActivityRef;
+    private final WeakReference<Activity> mActivityRef;
     private final MethodChannel methodChannel;
 
     WebRTCNativeView(Context context, Activity activity, int id, BinaryMessenger messenger) {
@@ -105,9 +105,7 @@ public class WebRTCNativeView implements PlatformView,
         myLogDebug(TAG, "onMethodCall: " + call.method + " object:" + msg);
         switch (call.method) {
             case "connectP2pClient":
-                connectP2pClient(call.argument("clientId"),
-                        call.argument("allowId"),
-                        new JSONObject((Map) call.argument("response")));
+                connectP2pClient(call.argument("clientId"), call.argument("allowId"), result);
                 break;
             case "disconnectP2pClient":
                 disconnectP2pClient();
@@ -140,10 +138,10 @@ public class WebRTCNativeView implements PlatformView,
         if (mNeedReconnect) {
             myLogDebug(TAG, "mNeedReconnect");
             mNeedReconnect = false;
-            connectP2pClient(mReconnectClientId, mReconnectAllowId, mReconnectResponse);
+            connectP2pClient(mReconnectClientId, mReconnectAllowId, mMethodResult);
             mReconnectClientId = "";
             mReconnectAllowId = "";
-            mReconnectResponse = null;
+            mMethodResult = null;
         } else {
             if (mActivityRef.get() != null) {
                 mActivityRef.get().runOnUiThread(() ->
@@ -241,7 +239,7 @@ public class WebRTCNativeView implements PlatformView,
     private boolean mAudioControl = false;
     private boolean mNeedReconnect;
     private String mReconnectClientId = "", mReconnectAllowId = "";
-    private JSONObject mReconnectResponse = null;
+    private MethodChannel.Result mMethodResult = null;
 
     private boolean initP2PClient() {
         if (mP2pClient == null) {
@@ -257,7 +255,7 @@ public class WebRTCNativeView implements PlatformView,
         return true;
     }
 
-    private void connectP2pClient(String clientId, String allowId, JSONObject response) {
+    private void connectP2pClient(String clientId, String allowId, @NonNull MethodChannel.Result methodResult) {
         setStateMachine(String.format("connect clientId: %s, allowId: %s", clientId, allowId));
 
         if (!initP2PClient()) { // Try init again, return if init again failure.
@@ -279,21 +277,14 @@ public class WebRTCNativeView implements PlatformView,
         mP2pClient.connect(loginObj.toString(), new ActionCallback<String>() {
             @Override
             public void onSuccess(String result) {
-                mActivityRef.get().runOnUiThread(() -> {
-                    methodChannel.invokeMethod("connectP2PClientSuccess", result);
-                });
+                methodResult.success(result);
             }
 
             @Override
             public void onFailure(OwtError error) {
-                mActivityRef.get().runOnUiThread(() -> {
-                    HashMap<String, Object> args = new HashMap<>();
-                    args.put("errorCode", error.errorCode);
-                    args.put("errorMessage", error.errorMessage);
-                    methodChannel.invokeMethod("connectP2PClientFailure", args);
-                });
+                methodResult.error(String.valueOf(error.errorCode), error.errorMessage, null);
 
-                setupReConnectSettings(clientId, allowId, response);
+                setupReConnectSettings(clientId, allowId, methodResult);
                 mSocketSignalingChannel.disconnect();
 
                 myToastL(mActivityRef.get(), "connection_signal_connect_failure");
@@ -310,13 +301,13 @@ public class WebRTCNativeView implements PlatformView,
         }
     }
 
-    private void setupReConnectSettings(String clientId, String allowId, JSONObject response) {
+    private void setupReConnectSettings(String clientId, String allowId, @NonNull MethodChannel.Result methodResult) {
         // will go to the onServerDisconnected() callback in P2PClientObserver
         mClientId = "";
         mAllowId = "";
         mReconnectClientId = clientId;
         mReconnectAllowId = allowId;
-        mReconnectResponse = response;
+        mMethodResult = methodResult;
         mNeedReconnect = true;
     }
 

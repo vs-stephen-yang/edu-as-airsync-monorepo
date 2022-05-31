@@ -171,16 +171,6 @@ class _HomeState extends State<Home> {
     this.controller = controller;
     controller.channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
-        case "connectP2PClientSuccess":
-          ControlSocket.getInstance().handleP2PClientSuccess(call.arguments);
-          break;
-        case "connectP2PClientFailure":
-          var msg = call.arguments as Map;
-          log("code: $msg['errorCode']");
-          log("message: $msg['errorMessage']");
-          ControlSocket.getInstance()
-              .handleP2PClientFailure(msg['errorCode'], msg['errorMessage']);
-          break;
         case "stopConnectionTimeoutTimer":
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
           break;
@@ -220,12 +210,19 @@ class _HomeState extends State<Home> {
                     () =>
                         controller.channel.invokeMethod("disconnectP2pClient"));
               }
-              var arg = {
-                'clientId': mWebRTCInfo.clientId,
-                'allowId': mWebRTCInfo.allowId,
-                'response': event,
-              };
-              controller.channel.invokeMethod('connectP2pClient', arg);
+              try {
+                var arg = {
+                  'clientId': mWebRTCInfo.clientId,
+                  'allowId': mWebRTCInfo.allowId,
+                };
+                final String result = await controller.channel
+                    .invokeMethod('connectP2pClient', arg);
+                ControlSocket.getInstance().handleP2PClientSuccess(result);
+              } on PlatformException catch (e) {
+                ControlSocket.getInstance()
+                    .handleP2PClientFailure(e.code, e.message);
+                print(e);
+              }
               break;
             case "play":
               try {
