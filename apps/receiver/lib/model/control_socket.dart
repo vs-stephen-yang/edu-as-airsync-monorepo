@@ -207,8 +207,9 @@ class ControlSocket {
     }
   }
 
-  void _disconnectControlSocket() {
-    mControlSocketIO.disconnect();
+  void disconnectControlSocket() {
+    // https://github.com/rikulo/socket.io-client-dart/issues/108
+    mControlSocketIO.dispose();
   }
 
   void sendMessageToControlSocket(String? messageFor,
