@@ -8,16 +8,16 @@ class DisplayMessage {
   String? messageId;
   String? nextId;
 
-  DisplayMessage(
-      {this.messageFor,
-        this.userId,
-        this.action,
-        this.status,
-        this.extra,
-        this.direction,
-        this.messageId,
-        this.nextId,
-      });
+  DisplayMessage({
+    this.messageFor,
+    this.userId,
+    this.action,
+    this.status,
+    this.extra,
+    this.direction,
+    this.messageId,
+    this.nextId,
+  });
 
   DisplayMessage.fromJson(Map<String, dynamic> json) {
     messageFor = json['messageFor'];
@@ -31,15 +31,15 @@ class DisplayMessage {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['messageFor'] = this.messageFor;
-    data['userId'] = this.userId;
-    data['action'] = this.action;
-    data['status'] = this.status;
-    data['extra'] = this.extra;
-    data['direction'] = this.direction;
-    data['messageId'] = this.messageId;
-    data['nextId'] = this.nextId;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['messageFor'] = messageFor;
+    data['userId'] = userId;
+    data['action'] = action;
+    data['status'] = status;
+    data['extra'] = extra;
+    data['direction'] = direction;
+    data['messageId'] = messageId;
+    data['nextId'] = nextId;
 
     return data;
   }
@@ -57,9 +57,9 @@ class Status {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['action'] = this.action;
-    data['status'] = this.status;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['action'] = action;
+    data['status'] = status;
     return data;
   }
 }
@@ -99,17 +99,17 @@ class Extra {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['setClientId'] = this.setClientId;
-    data['setAllowedPeer'] = this.setAllowedPeer;
-    data['presenter'] = this.presenter;
-    data['moderator'] = this.moderator;
-    data['endTime'] = this.endTime;
-    data['moderatedSessionId'] = this.moderatedSessionId;
-    data['checkPoints'] = this.checkPoints;
-    data['durationRemaining'] = this.durationRemaining;
-    data['code'] = this.code;
-    data['delegate'] = this.delegate;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['setClientId'] = setClientId;
+    data['setAllowedPeer'] = setAllowedPeer;
+    data['presenter'] = presenter;
+    data['moderator'] = moderator;
+    data['endTime'] = endTime;
+    data['moderatedSessionId'] = moderatedSessionId;
+    data['checkPoints'] = checkPoints;
+    data['durationRemaining'] = durationRemaining;
+    data['code'] = code;
+    data['delegate'] = delegate;
     return data;
   }
 }
@@ -132,12 +132,12 @@ class Presenter {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['remark'] = this.remark;
-    data['status'] = this.status;
-    data['extra'] = this.extra;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['remark'] = remark;
+    data['status'] = status;
+    data['extra'] = extra;
     return data;
   }
 }
@@ -158,12 +158,11 @@ class Moderator {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['remark'] = this.remark;
-    data['status'] = this.status;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['remark'] = remark;
+    data['status'] = status;
     return data;
   }
 }
-
