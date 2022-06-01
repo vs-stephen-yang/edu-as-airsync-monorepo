@@ -4,30 +4,37 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:display_flutter/model/bean/display_message.dart';
+import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/webrtc_info.dart';
+import 'package:display_flutter/native_view/webrtc.dart';
+import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/get_string.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
 
 class ControlSocket {
+  static final ControlSocket _instance = ControlSocket._internal();
+
+  //private "Named constructors"
+  ControlSocket._internal();
+
+  // passes the instantiation to the _instance object
+  factory ControlSocket() => _instance;
+
   late IO.Socket mControlSocketIO;
   late String _mGatewayUrl, _appVersion;
   final int _maxReconnectAttempts = 5;
   int _displayReconnectAttempts = 0;
+
   StreamResponse socketResponse = StreamResponse();
 
+  final List<WebRTCNativeViewController> _webRtcController =
+      <WebRTCNativeViewController>[];
   WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
-
-  static final ControlSocket _instance = ControlSocket.internal();
-
-  static ControlSocket getInstance() {
-    return _instance;
-  }
-
-  ControlSocket.internal();
 
   void connect(AppConfig? appConfig) {
     _mGatewayUrl = appConfig!.settings.apiGateway;
@@ -82,7 +89,27 @@ class ControlSocket {
     mControlSocketIO.connect();
   }
 
-  void _handleDisplayResponse(dynamic arg) {
+  void disconnectControlSocket() {
+    // https://github.com/rikulo/socket.io-client-dart/issues/108
+    mControlSocketIO.dispose();
+  }
+
+  void addWebRtcController(WebRTCNativeViewController controller) {
+    _webRtcController.add(controller);
+    controller.channel.setMethodCallHandler((MethodCall call) async {
+      switch (call.method) {
+        case "stopConnectionTimeoutTimer":
+          ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+          break;
+        case "sendMessageToControlSocket":
+          sendMessageToControlSocket(mWebRTCInfo.displayCode);
+          break;
+      }
+      return;
+    });
+  }
+
+  void _handleDisplayResponse(dynamic arg) async {
     String? messageFor = arg['messageFor'];
     if (messageFor != null && messageFor == mWebRTCInfo.displayCode) {
       var resp = DisplayMessage.fromJson(arg);
@@ -109,7 +136,17 @@ class ControlSocket {
           mWebRTCInfo.isUIStateChanged = true;
 
           // AppCenterAnalyticsHelper.getInstance().setEventProperties(buildEventProperties());
-          socketResponse.addResponseMessage(arg);
+          ConnectionTimer.getInstance()
+              .startRemainingTimeTimer(mWebRTCInfo.remainingTime, () {
+            mWebRTCInfo.moderatorMode = false;
+            mWebRTCInfo.isModeratorLeave = true;
+            mWebRTCInfo.moderatorId = "";
+            mWebRTCInfo.moderatorName = "";
+
+            for (WebRTCNativeViewController controller in _webRtcController) {
+              controller.channel.invokeMethod('disconnectP2pClient');
+            }
+          });
           break;
         case "unset-moderator":
           mWebRTCInfo.moderatorMode = false;
@@ -120,7 +157,7 @@ class ControlSocket {
           mWebRTCInfo.meetingId = "";
 
           // AppCenterAnalyticsHelper.getInstance().setEventProperties(buildEventProperties());
-          socketResponse.addResponseMessage(arg);
+          ConnectionTimer.getInstance().stopRemainingTimeTimer();
           break;
         case "get-display-state":
           var reply = json.encode({
@@ -163,17 +200,75 @@ class ControlSocket {
               sendMessageToControlSocket(mWebRTCInfo.displayCode);
 
               // AppCenterAnalyticsHelper.getInstance().EventStreamStart();
-              socketResponse.addResponseMessage(arg);
+              if (!mWebRTCInfo.moderatorMode) {
+                ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
+                  setStateMachine("ConnectionTimeout onFinish");
+
+                  sendMessageToControlSocket(mWebRTCInfo.displayCode,
+                      allow: mWebRTCInfo.allowId, action: 'timeout');
+
+                  for (WebRTCNativeViewController controller
+                      in _webRtcController) {
+                    controller.channel.invokeMethod('disconnectP2pClient');
+                  }
+                });
+              }
+              try {
+                WebRTCNativeViewController? selectedController;
+                if (SplitScreen.splitScreenEnabled.value) {
+                  // todo: find unused view to connect
+                  for (WebRTCNativeViewController controller
+                      in _webRtcController) {
+                    if (await controller.channel
+                        .invokeMethod("isNotConnected")) {
+                      selectedController = controller;
+                      break;
+                    }
+                  }
+                } else {
+                  if (await _webRtcController[0]
+                      .channel
+                      .invokeMethod("isNotConnected")) {
+                    selectedController = _webRtcController[0];
+                  }
+                }
+                if (selectedController != null) {
+                  print(
+                      'selectedController: ${selectedController.channel.name}');
+                  var arg = {
+                    'clientId': mWebRTCInfo.clientId,
+                    'allowId': mWebRTCInfo.allowId,
+                  };
+                  final String result = await selectedController.channel
+                      .invokeMethod('connectP2pClient', arg);
+                  handleP2PClientSuccess(result);
+                } else {
+                  sendMessageToControlSocket(mWebRTCInfo.displayCode,
+                      allow: mWebRTCInfo.allowId, action: 'blocked');
+                }
+              } on PlatformException catch (e) {
+                handleP2PClientFailure(e.code, e.message);
+                print(e);
+              }
               break;
             case "play":
               if (userid == mWebRTCInfo.allowId) {
-                socketResponse.addResponseMessage(arg);
+                try {
+                  await _webRtcController[0].channel.invokeMethod("playVideo");
+                } on PlatformException catch (e) {
+                  print(e);
+                }
                 // AppCenterAnalyticsHelper.getInstance().EventStreamPlayed();
               }
               break;
             case "stop":
               if (userid == mWebRTCInfo.presenterId) {
-                socketResponse.addResponseMessage(arg);
+                try {
+                  await _webRtcController[0].channel.invokeMethod("stopVideo");
+                  ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+                } on PlatformException catch (e) {
+                  print(e);
+                }
                 // AppCenterAnalyticsHelper.getInstance().EventStreamStopped();
               }
               break;
@@ -181,23 +276,27 @@ class ControlSocket {
           break;
         case "pauseVideo":
           if (userid == mWebRTCInfo.allowId) {
-            socketResponse.addResponseMessage(arg);
+            try {
+              await _webRtcController[0].channel.invokeMethod("pauseVideo");
+              handleStreamPauseSuccess(mWebRTCInfo.nextId);
+            } on PlatformException catch (e) {
+              print(e);
+            }
             // AppCenterAnalyticsHelper.getInstance().EventStreamPaused();
           }
           break;
         case "resumeVideo":
           if (userid == mWebRTCInfo.allowId) {
-            socketResponse.addResponseMessage(arg);
+            try {
+              await _webRtcController[0].channel.invokeMethod("resumeVideo");
+            } on PlatformException catch (e) {
+              print(e);
+            }
             // AppCenterAnalyticsHelper.getInstance().EventStreamResumed();
           }
           break;
       }
     }
-  }
-
-  void disconnectControlSocket() {
-    // https://github.com/rikulo/socket.io-client-dart/issues/108
-    mControlSocketIO.dispose();
   }
 
   void sendMessageToControlSocket(String? messageFor,
@@ -285,8 +384,7 @@ class ControlSocket {
     setStateMachine("connect() onFailure: $code $message");
   }
 
-  void handleStreamPauseSuccess(String messageId) {
-    WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
+  void handleStreamPauseSuccess(String? messageId) {
     var content = json.encode({
       'messageFor': mWebRTCInfo.displayCode,
       'userid': mWebRTCInfo.allowId,

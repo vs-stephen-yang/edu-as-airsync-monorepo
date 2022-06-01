@@ -36,7 +36,7 @@ class _MainInfoState extends State<MainInfo> {
 
   @override
   void dispose() {
-    ControlSocket.getInstance().disconnectControlSocket();
+    ControlSocket().disconnectControlSocket();
     super.dispose();
   }
 
@@ -49,7 +49,7 @@ class _MainInfoState extends State<MainInfo> {
         child: BlocBuilder<DisplayCodeBloc, DisplayCodeState>(
           builder: (context, state) {
             if (state is DisplayCodeSuccess) {
-              ControlSocket.getInstance().connect(AppConfig.of(context));
+              ControlSocket().connect(AppConfig.of(context));
             }
             return Wrap(
               direction: Axis.vertical,

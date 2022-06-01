@@ -1,19 +1,13 @@
-import 'dart:developer';
-
 import 'package:display_flutter/app_instance_create.dart';
-import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
-import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/split_screen.dart';
-import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/tittle_bar.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -23,8 +17,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late WebRTCNativeViewController controller;
-
   double _fullWidth = 0, _fullHeight = 0, _halfWidth = 0, _halfHeight = 0;
   final List<Widget> _webRtcWidget = <Widget>[];
   final List<bool> _isSelectedList = List.filled(4, false, growable: false);
@@ -33,14 +25,17 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _webRtcWidget.add(WebRTCNativeView(
-      onWebRTCNativeViewCreatedCallback: _webRTCNativeViewCreatedCallback,
+      onWebRTCNativeViewCreatedCallback: ControlSocket().addWebRtcController,
     ));
-    // todo: design other native view.
-    _webRtcWidget.add(Container(color: Colors.red));
-    _webRtcWidget.add(Container(color: Colors.green));
-    _webRtcWidget.add(Container(color: Colors.blue));
-
-    _initControlSocketListener(context);
+    _webRtcWidget.add(WebRTCNativeView(
+      onWebRTCNativeViewCreatedCallback: ControlSocket().addWebRtcController,
+    ));
+    _webRtcWidget.add(WebRTCNativeView(
+      onWebRTCNativeViewCreatedCallback: ControlSocket().addWebRtcController,
+    ));
+    _webRtcWidget.add(WebRTCNativeView(
+      onWebRTCNativeViewCreatedCallback: ControlSocket().addWebRtcController,
+    ));
   }
 
   @override
@@ -165,110 +160,5 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
-  }
-
-  _webRTCNativeViewCreatedCallback(WebRTCNativeViewController controller) {
-    this.controller = controller;
-    controller.channel.setMethodCallHandler((MethodCall call) async {
-      switch (call.method) {
-        case "stopConnectionTimeoutTimer":
-          ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-          break;
-        case "sendMessageToControlSocket":
-          ControlSocket.getInstance().sendMessageToControlSocket(
-              WebRTCInfo.getInstance().displayCode);
-          break;
-      }
-
-      return;
-    });
-  }
-
-  void _initControlSocketListener(BuildContext context) {
-    ControlSocket.getInstance().socketResponse.getResponse.listen((event) async {
-      String action = event['action'];
-      switch (action) {
-        case "set-moderator":
-          ConnectionTimer.getInstance().startRemainingTimeTimer(
-              WebRTCInfo.getInstance().remainingTime, () {
-            WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
-            mWebRTCInfo.moderatorMode = false;
-            mWebRTCInfo.isModeratorLeave = true;
-            mWebRTCInfo.moderatorId = "";
-            mWebRTCInfo.moderatorName = "";
-
-            controller.channel.invokeMethod('disconnectP2pClient');
-          });
-          break;
-        case "unset-moderator":
-          ConnectionTimer.getInstance().stopRemainingTimeTimer();
-          break;
-        case "control":
-          Map<String, dynamic> status = event['status'];
-          String statusAction = status['action'];
-          switch (statusAction) {
-            case 'setClient':
-              WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
-              if (!mWebRTCInfo.moderatorMode) {
-                ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
-                  ControlSocket.getInstance()
-                      .setStateMachine("ConnectionTimeout onFinish");
-
-                  ControlSocket.getInstance().sendMessageToControlSocket(
-                      mWebRTCInfo.displayCode,
-                      allow: mWebRTCInfo.allowId,
-                      action: 'timeout');
-
-                  controller.channel.invokeMethod("disconnectP2pClient");
-                });
-              }
-              try {
-                var arg = {
-                  'clientId': mWebRTCInfo.clientId,
-                  'allowId': mWebRTCInfo.allowId,
-                };
-                final String result = await controller.channel
-                    .invokeMethod('connectP2pClient', arg);
-                ControlSocket.getInstance().handleP2PClientSuccess(result);
-              } on PlatformException catch (e) {
-                ControlSocket.getInstance()
-                    .handleP2PClientFailure(e.code, e.message);
-                print(e);
-              }
-              break;
-            case "play":
-              try {
-                await controller.channel.invokeMethod("playVideo");
-              } on PlatformException catch (e) {
-                print(e);
-              }
-              break;
-            case "stop":
-              try {
-                await controller.channel.invokeMethod("stopVideo");
-                ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-              } on PlatformException catch (e) {
-                print(e);
-              }
-              break;
-          }
-          break;
-        case "pauseVideo":
-          try {
-            await controller.channel.invokeMethod("pauseVideo");
-            ControlSocket.getInstance().handleStreamPauseSuccess(event['nextId']);
-          } on PlatformException catch (e) {
-            print(e);
-          }
-          break;
-        case "resumeVideo":
-          try {
-            await controller.channel.invokeMethod("resumeVideo");
-          } on PlatformException catch (e) {
-            print(e);
-          }
-          break;
-      }
-    });
   }
 }

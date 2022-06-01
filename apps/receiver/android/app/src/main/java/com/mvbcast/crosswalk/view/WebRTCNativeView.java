@@ -63,10 +63,12 @@ public class WebRTCNativeView implements PlatformView,
 
     private final WeakReference<Activity> mActivityRef;
     private final MethodChannel methodChannel;
+    private final int mId;
 
     WebRTCNativeView(Context context, Activity activity, int id, BinaryMessenger messenger) {
         mActivityRef = new WeakReference<>(activity);
-        myLogDebug("NativeWebRTCView create id: " + id);
+        mId = id;
+        myLogDebug("Create id: " + id);
         mSurfaceViewRenderer = new SurfaceViewRenderer(context);
         methodChannel =
                 new MethodChannel(messenger, "com.mvbcast.crosswalk/webrtc_native_view_" + id);
@@ -80,13 +82,13 @@ public class WebRTCNativeView implements PlatformView,
     //-------------------------------------------------------------------------
     @Override
     public View getView() {
-        myLogDebug("getView");
+        myLogDebug("getView id: " + mId);
         return mSurfaceViewRenderer;
     }
 
     @Override
     public void dispose() {
-        myLogDebug("dispose");
+        myLogDebug("dispose id: " + mId);
     }
     //-------------------------------------------------------------------------
     // endregion
@@ -96,8 +98,11 @@ public class WebRTCNativeView implements PlatformView,
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         Object msg = call.arguments() != null ? call.arguments().toString() : "";
-        myLogDebug("onMethodCall: " + call.method + " object:" + msg);
+        myLogDebug("id: " + mId + " onMethodCall: " + call.method + " object:" + msg);
         switch (call.method) {
+            case "isNotConnected":
+                result.success(mAllowId.isEmpty());
+                break;
             case "connectP2pClient":
                 connectP2pClient(call.argument("clientId"), call.argument("allowId"), result);
                 break;
