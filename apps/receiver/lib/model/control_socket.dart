@@ -15,14 +15,13 @@ import 'package:socket_io_client/socket_io_client.dart';
 class ControlSocket {
   late IO.Socket mControlSocketIO;
   late String _mGatewayUrl, _appVersion;
-  final int _MAX_RECONNECT_ATTEMPTS = 5;
+  final int _maxReconnectAttempts = 5;
   int _displayReconnectAttempts = 0;
   StreamResponse socketResponse = StreamResponse();
-  String mClientId = "", mAllowId = "";
 
   WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
 
-  static ControlSocket _instance = ControlSocket.internal();
+  static final ControlSocket _instance = ControlSocket.internal();
 
   static ControlSocket getInstance() {
     return _instance;
@@ -41,7 +40,7 @@ class ControlSocket {
             .disableAutoConnect()
             .enableForceNew()
             .enableReconnection()
-            .setReconnectionAttempts(_MAX_RECONNECT_ATTEMPTS)
+            .setReconnectionAttempts(_maxReconnectAttempts)
             .setQuery({
               'socketCustomEvent': mWebRTCInfo.displayCode,
               'role': 'display',
@@ -56,7 +55,7 @@ class ControlSocket {
         .onConnecting((data) => _printControlSocketLog('connecting', data));
     mControlSocketIO.onConnectError((data) {
       _printControlSocketLog('connect_error', data);
-      if (_displayReconnectAttempts >= _MAX_RECONNECT_ATTEMPTS) {
+      if (_displayReconnectAttempts >= _maxReconnectAttempts) {
         _displayReconnectAttempts = 0;
 
         Future.delayed(const Duration(seconds: 5), () {
@@ -96,7 +95,8 @@ class ControlSocket {
           mWebRTCInfo.moderatorId = moderator.id;
           mWebRTCInfo.moderatorName = moderator.name;
           mWebRTCInfo.meetingId = extra.moderatedSessionId;
-          mWebRTCInfo.remainingTime = extra.endTime! - DateTime.now().millisecondsSinceEpoch;
+          mWebRTCInfo.remainingTime =
+              extra.endTime! - DateTime.now().millisecondsSinceEpoch;
           List<dynamic>? checkPoints = extra.checkPoints;
           int? duration = extra.durationRemaining;
           for (int i = 0; i < checkPoints!.length; i++) {
@@ -139,7 +139,7 @@ class ControlSocket {
           break;
         case "set-ui-state":
           Extra extra = Extra.fromJson(resp.extra);
-          mWebRTCInfo.isShowCode =  extra.code!;
+          mWebRTCInfo.isShowCode = extra.code!;
           mWebRTCInfo.isShowDelegate = extra.delegate!;
           mWebRTCInfo.isUIStateChanged = true;
 
@@ -147,47 +147,36 @@ class ControlSocket {
           break;
         case "control":
           Status status = Status.fromJson(resp.status);
-          if (status != null) {
-            String? statusAction = status.action;
-            switch (statusAction) {
-              case 'setClient':
-                Extra extra = Extra.fromJson(resp.extra);
-                mWebRTCInfo.clientId = extra.setClientId;
-                mWebRTCInfo.allowId = extra.setAllowedPeer;
-                mWebRTCInfo.nextId = resp.nextId;
-                if (mClientId.isEmpty) {
-                  mWebRTCInfo.presentationState =
-                      PresentationState.waitForStream;
-                  Presenter presenter = Presenter.fromJson(extra.presenter);
-                  mWebRTCInfo.presenterId = presenter.id;
-                  mWebRTCInfo.presenterName = presenter.name;
-                  mWebRTCInfo.isUIStateChanged = true;
+          String? statusAction = status.action;
+          switch (statusAction) {
+            case 'setClient':
+              Extra extra = Extra.fromJson(resp.extra);
+              mWebRTCInfo.clientId = extra.setClientId;
+              mWebRTCInfo.allowId = extra.setAllowedPeer;
+              mWebRTCInfo.nextId = resp.nextId;
+              mWebRTCInfo.presentationState = PresentationState.waitForStream;
+              Presenter presenter = Presenter.fromJson(extra.presenter);
+              mWebRTCInfo.presenterId = presenter.id;
+              mWebRTCInfo.presenterName = presenter.name;
+              mWebRTCInfo.isUIStateChanged = true;
 
-                  sendMessageToControlSocket(mWebRTCInfo.displayCode);
+              sendMessageToControlSocket(mWebRTCInfo.displayCode);
 
-                  // AppCenterAnalyticsHelper.getInstance().EventStreamStart();
-                } else {
-                  sendMessageToControlSocket(mWebRTCInfo.displayCode,
-                      allow: mWebRTCInfo.allowId, action: 'blocked');
-                }
+              // AppCenterAnalyticsHelper.getInstance().EventStreamStart();
+              socketResponse.addResponseMessage(arg);
+              break;
+            case "play":
+              if (userid == mWebRTCInfo.allowId) {
                 socketResponse.addResponseMessage(arg);
-                break;
-              case "play":
-                if (userid == mWebRTCInfo.allowId) {
-                  socketResponse.addResponseMessage(arg);
-                  // AppCenterAnalyticsHelper.getInstance().EventStreamPlayed();
-                }
-                break;
-              case "stop":
-                if (userid == mWebRTCInfo.presenterId) {
-                  socketResponse.addResponseMessage(arg);
-                  // AppCenterAnalyticsHelper.getInstance().EventStreamStopped();
-                }
-                break;
-            }
-          } else {
-            sendMessageToControlSocket(mWebRTCInfo.displayCode,
-                allow: userid, action: "denied");
+                // AppCenterAnalyticsHelper.getInstance().EventStreamPlayed();
+              }
+              break;
+            case "stop":
+              if (userid == mWebRTCInfo.presenterId) {
+                socketResponse.addResponseMessage(arg);
+                // AppCenterAnalyticsHelper.getInstance().EventStreamStopped();
+              }
+              break;
           }
           break;
         case "pauseVideo":
@@ -213,11 +202,6 @@ class ControlSocket {
 
   void sendMessageToControlSocket(String? messageFor,
       {String? allow, String? action, String? reply}) {
-    if (mControlSocketIO == null) {
-      print("mControlSocketIO is not established.");
-      return;
-    }
-
     if (reply != null) {
       print('sendMessageToControlSocket reply: $reply');
       mControlSocketIO.emit(messageFor!, json.decode(reply));
@@ -275,17 +259,6 @@ class ControlSocket {
     mStateMachineHistory.addFirst(msg);
   }
 
-  void setupReConnectSettings(String clientId, String allowId, var response) {
-    // myLogDebug(TAG, "zz setupReConnectSettings");
-    // will go to the onServerDisconnected() callback in P2PClientObserver
-    mClientId = "";
-    mAllowId = "";
-    // mReconnectClientId = clientId;
-    // mReconnectAllowId = allowId;
-    // mReconnectResponse = response;
-    // mNeedReconnect = true;
-  }
-
   void handleP2PClientSuccess(String result) {
     setStateMachine("connect() onSuccess: $result");
     var content = json.encode({
@@ -320,7 +293,7 @@ class ControlSocket {
       'action': 'pauseVideo',
       'status': 'pauseVideo-ok',
       'messageId': messageId,
-      'nextId':  GetString.getRandomString(21)
+      'nextId': GetString.getRandomString(21)
     });
     sendMessageToControlSocket(mWebRTCInfo.displayCode,
         reply: content.toString());
@@ -329,7 +302,7 @@ class ControlSocket {
 
 class StreamResponse {
   final _response = BehaviorSubject<Map>();
-  final _error_response = BehaviorSubject<Exception>();
+  final _errorResponse = BehaviorSubject<Exception>();
 
   void addResponseMessage(message) {
     _response.add(message);
@@ -341,10 +314,10 @@ class StreamResponse {
 
   Stream<Map> get getResponse => _response.stream;
 
-  Stream<Exception> get getErrorResponse => _error_response.stream;
+  Stream<Exception> get getErrorResponse => _errorResponse.stream;
 
   void dispose() {
     _response.close();
-    _error_response.close();
+    _errorResponse.close();
   }
 }

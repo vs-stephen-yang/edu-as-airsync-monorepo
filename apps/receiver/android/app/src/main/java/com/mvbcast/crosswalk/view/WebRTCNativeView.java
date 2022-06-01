@@ -7,12 +7,9 @@ import static owt.base.MediaCodecs.VideoCodec.VP9;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -37,11 +34,8 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayDeque;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -72,7 +66,7 @@ public class WebRTCNativeView implements PlatformView,
 
     WebRTCNativeView(Context context, Activity activity, int id, BinaryMessenger messenger) {
         mActivityRef = new WeakReference<>(activity);
-        myLogDebug(TAG, "NativeWebRTCView create id: " + id);
+        myLogDebug("NativeWebRTCView create id: " + id);
         mSurfaceViewRenderer = new SurfaceViewRenderer(context);
         methodChannel =
                 new MethodChannel(messenger, "com.mvbcast.crosswalk/webrtc_native_view_" + id);
@@ -86,13 +80,13 @@ public class WebRTCNativeView implements PlatformView,
     //-------------------------------------------------------------------------
     @Override
     public View getView() {
-        Log.e("_TAG_", "getView");
+        myLogDebug("getView");
         return mSurfaceViewRenderer;
     }
 
     @Override
     public void dispose() {
-        Log.e("_TAG_", "dispose");
+        myLogDebug("dispose");
     }
     //-------------------------------------------------------------------------
     // endregion
@@ -102,7 +96,7 @@ public class WebRTCNativeView implements PlatformView,
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         Object msg = call.arguments() != null ? call.arguments().toString() : "";
-        myLogDebug(TAG, "onMethodCall: " + call.method + " object:" + msg);
+        myLogDebug("onMethodCall: " + call.method + " object:" + msg);
         switch (call.method) {
             case "connectP2pClient":
                 connectP2pClient(call.argument("clientId"), call.argument("allowId"), result);
@@ -136,7 +130,7 @@ public class WebRTCNativeView implements PlatformView,
         setStateMachine("onServerDisconnected");
 
         if (mNeedReconnect) {
-            myLogDebug(TAG, "mNeedReconnect");
+            myLogDebug("mNeedReconnect");
             mNeedReconnect = false;
             connectP2pClient(mReconnectClientId, mReconnectAllowId, mMethodResult);
             mReconnectClientId = "";
@@ -173,7 +167,6 @@ public class WebRTCNativeView implements PlatformView,
             @Override
             public void onEnded() {
                 disconnectP2pClient();
-                myToastL(mActivityRef.get(), "video stream ended.");
             }
 
             @Override
@@ -187,7 +180,7 @@ public class WebRTCNativeView implements PlatformView,
 
         if (mSurfaceViewRenderer != null) {
             if (mRemoteStream.hasVideo()) {
-                myLogDebug(TAG, "mRemoteStream.attach(mSurfaceViewRenderer)");
+                myLogDebug("mRemoteStream.attach(mSurfaceViewRenderer)");
                 mRemoteStream.attach(mSurfaceViewRenderer);
             }
         }
@@ -195,20 +188,19 @@ public class WebRTCNativeView implements PlatformView,
 
     @Override
     public void onDataReceived(String peerId, String message) {
-        myLogInfo(TAG, String.format("onDataReceived, peerId=%s, message=%s", peerId, message));
+        myLogInfo(String.format("onDataReceived, peerId=%s, message=%s", peerId, message));
     }
     // endregion
 
     // region RendererEvents
     @Override
     public void onFirstFrameRendered() {
-        myLogDebug(TAG, "onFirstFrameRendered");
+        myLogInfo("onFirstFrameRendered");
     }
 
     @Override
     public void onFrameResolutionChanged(int videoWidth, int videoHeight, int rotation) {
-        myLogDebug(TAG,
-                String.format(Locale.US, "w:%d, h:%d, r:%d", videoWidth, videoHeight, rotation));
+        myLogDebug(String.format(Locale.US, "w:%d, h:%d, r:%d", videoWidth, videoHeight, rotation));
 
         // TODO: Update UI layout aspect ratio.
 //        if (mListener != null) {
@@ -286,8 +278,6 @@ public class WebRTCNativeView implements PlatformView,
 
                 setupReConnectSettings(clientId, allowId, methodResult);
                 mSocketSignalingChannel.disconnect();
-
-                myToastL(mActivityRef.get(), "connection_signal_connect_failure");
             }
         });
     }
@@ -424,10 +414,10 @@ public class WebRTCNativeView implements PlatformView,
 
             try {
                 mP2pConfig.rtcConfiguration.iceServers = iceServersFromPCConfigJSON(jsonResult);
-                myLogDebug(TAG, "iceServersFromPCConfigJSON() is ok");
+                myLogInfo("iceServersFromPCConfigJSON() is ok");
             } catch (JSONException e) {
                 e.printStackTrace();
-                myLogError(TAG, e.toString());
+                myLogError(e.getMessage());
             }
 
             return mP2pConfig;
@@ -444,9 +434,9 @@ public class WebRTCNativeView implements PlatformView,
         try {
             URL url = new URL("https://getice.myviewboard.cloud");
             connection = (HttpsURLConnection) url.openConnection();
-            myLogDebug(TAG, "connecting");
+            myLogDebug("connecting");
             connection.connect();
-            myLogDebug(TAG, "connected");
+            myLogDebug("connected");
 
             InputStream stream = connection.getInputStream();
 
@@ -457,7 +447,7 @@ public class WebRTCNativeView implements PlatformView,
 
             while ((line = reader.readLine()) != null) {
                 buffer.append(line).append("\n");
-                myLogDebug("Response: ", "> " + line);   //here u ll get whole response...... :-)
+                myLogDebug("Response: > " + line);   //here u ll get whole response...... :-)
             }
 
             return buffer.toString();
@@ -501,7 +491,7 @@ public class WebRTCNativeView implements PlatformView,
 
     // region Information Analytics
     private void setStateMachine(String state) {
-        myLogDebug(TAG, state);
+        myLogDebug(state);
 
         String msg = String.format("(%s) %s", getShortTimeString(), state);
         StringBuilder sb = new StringBuilder(msg);
@@ -524,63 +514,25 @@ public class WebRTCNativeView implements PlatformView,
         return formatter.format(Calendar.getInstance().getTimeInMillis());
     }
 
-    private static String getRandomString(int len) {
-        String data = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
-            sb.append(data.toCharArray()[random.nextInt(data.length())]);
-        }
-        return sb.toString();
-    }
-
     private static final boolean DEBUG_MESSAGE = (BuildConfig.VERSION_CODE % 2) != 0;
 
     // region myLog
-    private static void myLogInfo(String tag, String msg) {
+    private static void myLogInfo(String msg) {
         if (DEBUG_MESSAGE) {
-            Log.i(tag, msg);
+            Log.i(TAG, msg);
         }
     }
 
-    private static void myLogDebug(String tag, String msg) {
+    private static void myLogDebug(String msg) {
         if (DEBUG_MESSAGE) {
-            Log.d(tag, msg);
+            Log.d(TAG, msg);
         }
     }
 
-    private static void myLogError(String tag, String msg) {
+    private static void myLogError(String msg) {
         if (DEBUG_MESSAGE) {
-            Log.e(tag, msg);
+            Log.e(TAG, msg);
         }
-    }
-
-    private static void myToast(Context context, int messageID) {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            if (context != null)
-                Toast.makeText(context, messageID, Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    private static void myToast(Context context, String messageString) {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            if (context != null)
-                Toast.makeText(context, messageString, Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    private static void myToastL(Context context, int messageID) {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            if (context != null)
-                Toast.makeText(context, messageID, Toast.LENGTH_LONG).show();
-        });
-    }
-
-    private static void myToastL(Context context, String messageString) {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            if (context != null)
-                Toast.makeText(context, messageString, Toast.LENGTH_LONG).show();
-        });
     }
     //-------------------------------------------------------------------------
     // endregion private Implementation
