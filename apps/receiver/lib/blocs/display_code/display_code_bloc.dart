@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
@@ -63,11 +64,16 @@ class DisplayCodeBloc extends Bloc<DisplayCodeEvent, DisplayCodeState> {
     if (response.statusCode >= HttpStatus.ok &&
         response.statusCode < HttpStatus.multiStatus) {
       Map json = jsonDecode(response.body);
+      AppPreferences().set(entityId: json['entityId'] ?? '');
       WebRTCInfo.getInstance().displayCode = json['code'];
       WebRTCInfo.getInstance().token = Uri.encodeComponent(json['token']);
-      Map<String, dynamic> map = json['property'];
-      List<dynamic> license = map['licenses'];
+      Map<String, dynamic> property = json['property'];
+      List<dynamic> license = property['licenses'];
       WebRTCInfo.getInstance().licenseName = license[0]['name'];
+      List<dynamic> features = property['features'];
+      for (String feature in features) {
+        WebRTCInfo.getInstance().featureList.add(feature);
+      }
 
       return true;
     } else {

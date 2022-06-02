@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/blocs/display_code/display_code_bloc.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
@@ -143,9 +144,7 @@ class _MainInfoState extends State<MainInfo> {
                   ],
                 ),
                 Visibility(
-                  visible: !WebRTCInfo.getInstance()
-                      .featureList
-                      .contains('Moderator'),
+                  visible: AppPreferences().entityId.isEmpty,
                   child: Wrap(
                     direction: Axis.vertical,
                     crossAxisAlignment: WrapCrossAlignment.center,
