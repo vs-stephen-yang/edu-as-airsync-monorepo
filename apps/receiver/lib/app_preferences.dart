@@ -17,29 +17,31 @@ class AppPreferences {
   }
 
   bool _showEULA = true;
+  String _entityId = '';
   String _moderatorId = '';
   String _language = 'English';
 
   bool get showEULA => _showEULA;
+  String get entityId => _entityId;
   String get moderatorId => _moderatorId;
   String get language => _language.isNotEmpty ? _language : _getDefaultSupportedLanguage();
   Locale? get locale => localeMap[language];
 
-  set language(String value) {
-    set(language: value);
-  }
-
   set({bool? showEULA,
+    String? entityId,
     String? moderatorId,
     String? language,}) {
     if (showEULA != null) {
       _showEULA = showEULA;
     }
+    if (entityId != null) {
+      _entityId = entityId;
+    }
     if (moderatorId != null) {
-      this._moderatorId = moderatorId;
+      _moderatorId = moderatorId;
     }
     if (language != null) {
-      this._language = language;
+      _language = language;
     }
     _save();
   }
@@ -47,6 +49,7 @@ class AppPreferences {
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('app_showEULA', _showEULA);
+    prefs.setString('app_entityId', _entityId);
     prefs.setString('app_moderatorId', _moderatorId);
     prefs.setString('app_language', _language);
   }
@@ -54,13 +57,14 @@ class AppPreferences {
   _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _showEULA = prefs.getBool('app_showEULA') ?? true;
+    _entityId = prefs.getString('app_entityId') ?? '';
     _moderatorId = prefs.getString('app_moderatorId') ?? '';
     _language = prefs.getString('app_language') ?? '';
   }
 
   static Map<String, Locale> localeMap = {
-    'English': Locale('en', ''),
-    '繁體中文': Locale.fromSubtags(
+    'English': const Locale('en', ''),
+    '繁體中文': const Locale.fromSubtags(
         languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),
   };
 

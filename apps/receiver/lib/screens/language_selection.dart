@@ -68,7 +68,9 @@ class _LanguageSelectionState extends State<LanguageSelection> {
               return InkWell(
                 onTap: () {
                   setState(() {
-                    AppPreferences().language = AppPreferences.localeMap.keys.elementAt(index);
+                    AppPreferences().set(
+                        language:
+                            AppPreferences.localeMap.keys.elementAt(index));
                     Locale? locale = AppPreferences().locale;
                     MyApp.setLocale(context, locale!);
                   });
