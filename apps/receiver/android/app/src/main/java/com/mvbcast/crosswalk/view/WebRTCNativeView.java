@@ -7,11 +7,14 @@ import static owt.base.MediaCodecs.VideoCodec.VP9;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mvbcast.crosswalk.BuildConfig;
@@ -62,6 +65,7 @@ public class WebRTCNativeView implements PlatformView,
     private static final String TAG = WebRTCNativeView.class.getSimpleName();
 
     private final WeakReference<Activity> mActivityRef;
+    private final ConstraintLayout mParentLayout;
     private final MethodChannel methodChannel;
     private final int mId;
 
@@ -79,6 +83,19 @@ public class WebRTCNativeView implements PlatformView,
         mSurfaceViewRenderer = new SurfaceViewRenderer(context);
         mSurfaceViewRenderer.setVisibility(View.GONE);
         mSurfaceViewRenderer.init(WebRTCHelper.getInstance().getRootEglBaseContext(), this);
+
+        mSurfaceViewRenderer.setId(View.generateViewId());
+        mParentLayout = new ConstraintLayout(context);
+        mParentLayout.setId(View.generateViewId());
+        mParentLayout.setBackgroundColor(Color.BLACK);
+        mParentLayout.addView(mSurfaceViewRenderer, -1, new ConstraintLayout.LayoutParams(0, 0));
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(mParentLayout);
+        constraintSet.connect(mSurfaceViewRenderer.getId(), ConstraintSet.START, mParentLayout.getId(), ConstraintSet.START);
+        constraintSet.connect(mSurfaceViewRenderer.getId(), ConstraintSet.TOP, mParentLayout.getId(), ConstraintSet.TOP);
+        constraintSet.connect(mSurfaceViewRenderer.getId(), ConstraintSet.END, mParentLayout.getId(), ConstraintSet.END);
+        constraintSet.connect(mSurfaceViewRenderer.getId(), ConstraintSet.BOTTOM, mParentLayout.getId(), ConstraintSet.BOTTOM);
+        constraintSet.applyTo(mParentLayout);
     }
 
     // region PlatformView
@@ -86,7 +103,7 @@ public class WebRTCNativeView implements PlatformView,
     @Override
     public View getView() {
         myLogDebug("getView id: " + mId);
-        return mSurfaceViewRenderer;
+        return mParentLayout;
     }
 
     @Override
@@ -224,11 +241,16 @@ public class WebRTCNativeView implements PlatformView,
     @Override
     public void onFrameResolutionChanged(int videoWidth, int videoHeight, int rotation) {
         myLogDebug(String.format(Locale.US, "w:%d, h:%d, r:%d", videoWidth, videoHeight, rotation));
-
-        // TODO: Update UI layout aspect ratio.
-//        if (mListener != null) {
-//            mListener.updateFrameResolution(videoWidth, videoHeight, rotation);
-//        }
+        if (mActivityRef.get() != null) {
+            mActivityRef.get().runOnUiThread(() -> {
+                String ratioVideoString = String.format(Locale.ENGLISH, "%d:%d", videoWidth, videoHeight);
+                myLogDebug(String.format(Locale.US, "ratioVideoString: %s", ratioVideoString));
+                ConstraintSet constraintSet = new ConstraintSet();
+                constraintSet.clone(mParentLayout);
+                constraintSet.setDimensionRatio(mSurfaceViewRenderer.getId(), ratioVideoString);
+                constraintSet.applyTo(mParentLayout);
+            });
+        }
     }
     // endregion
 
