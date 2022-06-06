@@ -26,7 +26,7 @@ class WebRTCInfo {
   String? moderatorId;
   String? moderatorName;
   int remainingTime = 0;
-  List<int> remainingTimeCheckPoints = [];
+  List<double> remainingTimeCheckPoints = [];
 
   bool isShowDelegate = false;
   bool isShowCode = false;

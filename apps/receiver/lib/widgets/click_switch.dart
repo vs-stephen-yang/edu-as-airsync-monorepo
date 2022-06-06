@@ -2,12 +2,12 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CheckBoxSwitch extends StatefulWidget {
-  bool isOpen, isEdit, isRemove;
+  bool isOpen, isEdit, isRemove, isSplit;
   ValueChanged<bool> onOpen;
   ValueChanged onRemove;
-  double width;
-  double height;
+  double width, height;
   String name;
+  int splitIndex;
 
   late Key? key;
 
@@ -16,6 +16,8 @@ class CheckBoxSwitch extends StatefulWidget {
     this.isOpen = false,
     this.isEdit = false,
     this.isRemove = false,
+    this.isSplit = false,
+    required this.splitIndex,
     required this.onOpen,
     required this.onRemove,
     required this.width,
@@ -33,9 +35,6 @@ class CheckBoxSwitch extends StatefulWidget {
 
 class CheckBoxSwitchState extends State<CheckBoxSwitch>
     with SingleTickerProviderStateMixin {
-  /// The width of the button is the same as the width of NormalLayer-Text('Name'),
-  /// because of the button and NormalLayer-Text are the relative position.
-  double? buttonWidth = 0;
 
   /// Whether the button is On
   bool _open = false;
@@ -43,14 +42,12 @@ class CheckBoxSwitchState extends State<CheckBoxSwitch>
   @override
   void initState() {
     super.initState();
-    buttonWidth = widget.width * 0.2;
   }
 
   @override
   Widget build(BuildContext context) {
     double width = widget.width;
     double height = widget.height;
-    // bool _edit = widget.isEdit;
     _open = widget.isOpen;
     String name = widget.name;
     if (widget.name.contains("\n")) name = widget.name.replaceAll("\n", " ");
@@ -71,24 +68,41 @@ class CheckBoxSwitchState extends State<CheckBoxSwitch>
       },
       child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(height / 2),
+            borderRadius: BorderRadius.circular(height),
             color: _open ? AppColors.primary_blue : AppColors.toggle_bg,
           ),
           child: Row(
             children: [
+              Visibility(
+                  visible: widget.isSplit && widget.splitIndex > 0 && _open,
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: widget.width * 0.15,
+                    height: height,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(height),
+                        bottomLeft: Radius.circular(height),
+                      ),
+                      color: AppColors.primary_white,
+                    ),
+                    child: Text(widget.splitIndex.toString(),
+                        style: const TextStyle(
+                            color: AppColors.primary_blue, fontSize: 16)),
+                  )),
               Expanded(
                   child: Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.fromLTRB(height / 2, 0, 0, 0),
+                    alignment: Alignment.centerLeft,
+                padding: EdgeInsets.fromLTRB(widget.width * 0.1, 0, 0, 0),
                 child: Text(name,
-                    style: TextStyle(color: Colors.white, fontSize: 16)),
+                    style: const TextStyle(color: Colors.white, fontSize: 16)),
               )),
               Container(
                 alignment: Alignment.centerRight,
-                padding: EdgeInsets.fromLTRB(0, 0, height / 2, 0),
+                padding: EdgeInsets.fromLTRB(0, 0, widget.width*0.1, 0),
                 child: Text(shortName,
                     maxLines: 1,
-                    style: TextStyle(color: Colors.white, fontSize: 16)),
+                    style: const TextStyle(color: Colors.white, fontSize: 16)),
               ),
             ],
           )),

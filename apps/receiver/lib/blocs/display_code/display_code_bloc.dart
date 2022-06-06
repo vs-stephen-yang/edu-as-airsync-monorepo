@@ -91,8 +91,8 @@ class DisplayCodeBloc extends Bloc<DisplayCodeEvent, DisplayCodeState> {
     if (response.statusCode >= HttpStatus.created) {
       Map json = jsonDecode(response.body);
       List jsonArray = json['list'];
-      otp = jsonArray[0]['code'];
-      mWebRTCInfo.otpTimer = mWebRTCInfo.otpCode == "-" ? 0: 30;
+      mWebRTCInfo.otpCode = otp = jsonArray[0]['code'];
+      mWebRTCInfo.otpTimer = mWebRTCInfo.otpCode == "-" ? 0 : 30;
       mWebRTCInfo.otpUpdate = true;
       Timer(const Duration(seconds: 30), () async {
         _processOTP();

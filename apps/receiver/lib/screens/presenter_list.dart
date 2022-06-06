@@ -8,11 +8,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PresenterList extends StatefulWidget {
-  bool isEdit = false;
+  bool isSplit = false;
   Key? bkey;
   final ValueChanged<bool> updateEditIcon;
 
-  PresenterList(this.bkey, this.updateEditIcon) : super(key: bkey);
+  PresenterList(this.bkey, this.updateEditIcon, this.isSplit) : super(key: bkey);
 
   @override
   PresenterListState createState() => PresenterListState();
@@ -38,8 +38,7 @@ class PresenterListState extends State<PresenterList> {
                   child: Container(
                   alignment: Alignment.topCenter,
                   width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.fromLTRB(
-                      0, MediaQuery.of(context).size.height / 3, 0, 0),
+                  margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
                   child: Text(
                     S.of(context).moderator_presentersLimit,
                     style: TextStyle(color: Colors.white),
@@ -56,22 +55,42 @@ class PresenterListState extends State<PresenterList> {
                             var name = display.peerList[index].presenter;
                             var status = display.peerList[index].status;
                             var peer = display.peerList[index].peer;
+                            int splitIndex = 0;
+                            if (display.splitIndexMap
+                                .containsValue(display.peerList[index].id)) {
+                              display.splitIndexMap.forEach((key, value) {
+                                if (value == display.peerList[index].id) {
+                                  splitIndex = key;
+                                }
+                              });
+                            }
 
                             CheckBoxSwitch toggleSwitch = CheckBoxSwitch(
                               itemKey: display.peerList[index].key,
                               height: MediaQuery.of(context).size.height * 0.08,
-                              width: MediaQuery.of(context).size.width * 0.8,
+                              width: MediaQuery.of(context).size.width * 0.2,
                               name: name,
                               isEdit: bEditNotifier,
                               isOpen: (status == 'play' || status == 'pause'),
+                              isSplit: widget.isSplit,
+                              splitIndex: splitIndex,
                               onOpen: (value) {
                                 setState(() {
-                                  if (value) {
-                                    isOpen = true;
-                                    EasyDebounce.debounce(
-                                      'stop_play',
-                                      Duration(milliseconds: 1000),
+                                  EasyDebounce.debounce(
+                                      'stop_play', Duration(milliseconds: 1000),
                                       () {
+                                    if (value) {
+                                      if (widget.isSplit) {
+                                        bool bAdd = false;
+                                        display.splitIndexMap.forEach((key, value) {
+                                          if (value == '') {
+                                            bAdd = true;
+                                          }
+                                        });
+                                        if (!bAdd) {
+                                          return;
+                                        }
+                                      } else {
                                         // check other presenters' status
                                         int checkPlayStatus = 0;
                                         int repeatedStatusIndex = 0;
@@ -97,28 +116,26 @@ class PresenterListState extends State<PresenterList> {
                                                   .peer,
                                               display.displayResponse);
                                         }
-                                        // play
-                                        String action = (status == 'play' ||
-                                                status == 'pause')
-                                            ? 'stop'
-                                            : 'play';
-                                        // AppAnalytics()
-                                        //     .trackEventPresentClicked();
-                                        moderatorSocket.peerAction('play', peer,
-                                            display.displayResponse);
+                                      }
 
-                                        display.setPresenterTimeTimer(
-                                            action == 'play');
-                                      },
-                                    );
-                                  } else {
-                                    EasyDebounce.debounce('stop_play',
-                                        Duration(milliseconds: 1000), () {
-                                      // AppAnalytics().trackEventPresentClicked();
-                                          moderatorSocket.peerAction('stop', peer,
+                                      // play
+                                      String action = (status == 'play' ||
+                                              status == 'pause')
+                                          ? 'stop'
+                                          : 'play';
+                                      // AppAnalytics()
+                                      //     .trackEventPresentClicked();
+                                      moderatorSocket.peerAction('play', peer,
                                           display.displayResponse);
-                                    });
-                                  }
+
+                                      display.setPresenterTimeTimer(
+                                          action == 'play');
+                                    } else {
+                                      // AppAnalytics().trackEventPresentClicked();
+                                      moderatorSocket.peerAction('stop', peer,
+                                          display.displayResponse);
+                                    }
+                                  });
                                 });
                               },
                               onRemove: (value) {

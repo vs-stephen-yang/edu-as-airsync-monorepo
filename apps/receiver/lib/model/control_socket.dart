@@ -128,7 +128,7 @@ class ControlSocket {
           int? duration = extra.durationRemaining;
           for (int i = 0; i < checkPoints!.length; i++) {
             if ((duration! - checkPoints[i]) > 1000) {
-              int point = ((duration - checkPoints[i]) / 1000) as int;
+              double point = ((duration - checkPoints[i]) / 1000);
               mWebRTCInfo.remainingTimeCheckPoints.add(point);
               log('checkpoint: $point');
             }
