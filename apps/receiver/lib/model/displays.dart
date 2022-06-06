@@ -86,6 +86,7 @@ class DisplayInfo {
   int remainingTimeEnd = 0;
 
   List<DisplayPeer> peerList = <DisplayPeer>[];
+  Map<int, String> splitIndexMap = <int, String>{1: '', 2: '', 3: '', 4: ''};
   int presenterIndex = -1;
   String presenterName = '';
   String presenterStatus = '';
@@ -93,6 +94,7 @@ class DisplayInfo {
   int presenterTime = 0;
   late Timer _presenterTimeTimer;
   bool _presenterTimeTimerInit = false;
+  bool splitsScreen = false;
 
   DisplayInfo(
       {String? displayId,
@@ -187,6 +189,7 @@ class DisplayInfo {
 }
 
 class DisplayPeer {
+  String id = '';
   String presenter = '';
   String status = '';
   dynamic peer;

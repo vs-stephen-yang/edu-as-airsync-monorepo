@@ -7,11 +7,12 @@ class CustomAlertDialog extends StatefulWidget {
     Key? key,
     required this.title,
     required this.description,
+    required this.positiveButton,
     required this.onPositive,
     required this.onNegative,
   }) : super(key: key);
 
-  final String title, description;
+  final String title, description, positiveButton;
   final VoidCallback onPositive, onNegative;
 
   @override
@@ -29,7 +30,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
         ),
         child: Container(
           margin: EdgeInsets.all(15.0),
-          width: MediaQuery.of(context).size.width / 2,
+          width: MediaQuery.of(context).size.height *0.3,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -83,7 +84,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                         },
                         child: Center(
                           child: Text(
-                            S.of(context).moderator_exit,
+                            widget.positiveButton,
                             style: TextStyle(
                               color: Colors.white,
                             ),

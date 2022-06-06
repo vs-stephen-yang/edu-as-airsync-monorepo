@@ -24,5 +24,8 @@
   "moderator_cancel": "CANCEL",
   "moderator_exit_dialog": "Are you sure you want to exit?",
   "moderator_remove": "REMOVE",
-  "moderator_exit": "EXIT"
+  "moderator_exit": "EXIT",
+  "moderator_activate_split_screen": "Would you like to activate the split screen feature in presenters’ list ? (Total maxium 4 people)",
+  "moderator_deactivate_split_screen": "Would you like to deactivate the split screen feature in presenters’ list ? ",
+  "moderator_confirm": "Confirm"
 }

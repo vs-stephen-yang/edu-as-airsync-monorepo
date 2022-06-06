@@ -299,6 +299,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Would you like to activate the split screen feature in presenters’ list ? (Total maxium 4 people)`
+  String get moderator_activate_split_screen {
+    return Intl.message(
+      'Would you like to activate the split screen feature in presenters’ list ? (Total maxium 4 people)',
+      name: 'moderator_activate_split_screen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Would you like to deactivate the split screen feature in presenters’ list ? `
+  String get moderator_deactivate_split_screen {
+    return Intl.message(
+      'Would you like to deactivate the split screen feature in presenters’ list ? ',
+      name: 'moderator_deactivate_split_screen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm`
+  String get moderator_confirm {
+    return Intl.message(
+      'Confirm',
+      name: 'moderator_confirm',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
