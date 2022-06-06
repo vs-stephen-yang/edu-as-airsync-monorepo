@@ -69,12 +69,15 @@ public class WebRTCNativeView implements PlatformView,
         mActivityRef = new WeakReference<>(activity);
         mId = id;
         myLogDebug("Create id: " + id);
-        mSurfaceViewRenderer = new SurfaceViewRenderer(context);
+
         methodChannel =
                 new MethodChannel(messenger, "com.mvbcast.crosswalk/webrtc_native_view_" + id);
         methodChannel.setMethodCallHandler(this);
 
         initP2PClient();
+
+        mSurfaceViewRenderer = new SurfaceViewRenderer(context);
+        mSurfaceViewRenderer.setVisibility(View.GONE);
         mSurfaceViewRenderer.init(WebRTCHelper.getInstance().getRootEglBaseContext(), this);
     }
 
@@ -88,6 +91,10 @@ public class WebRTCNativeView implements PlatformView,
 
     @Override
     public void dispose() {
+        if (mSurfaceViewRenderer != null) {
+            mSurfaceViewRenderer.release();
+            mSurfaceViewRenderer = null;
+        }
         myLogDebug("dispose id: " + mId);
     }
     //-------------------------------------------------------------------------
@@ -183,11 +190,16 @@ public class WebRTCNativeView implements PlatformView,
 
         mRemoteStream.addObserver(mStreamObserver);
 
-        if (mSurfaceViewRenderer != null) {
-            if (mRemoteStream.hasVideo()) {
-                myLogDebug("mRemoteStream.attach(mSurfaceViewRenderer)");
-                mRemoteStream.attach(mSurfaceViewRenderer);
-            }
+        if (mActivityRef.get() != null) {
+            mActivityRef.get().runOnUiThread(() -> {
+                if (mSurfaceViewRenderer != null) {
+                    if (mRemoteStream.hasVideo()) {
+                        myLogDebug("mRemoteStream.attach(mSurfaceViewRenderer)");
+                        mRemoteStream.attach(mSurfaceViewRenderer);
+                    }
+                    mSurfaceViewRenderer.setVisibility(View.VISIBLE);
+                }
+            });
         }
     }
 
@@ -230,7 +242,7 @@ public class WebRTCNativeView implements PlatformView,
     private final SocketSignalingChannel mSocketSignalingChannel = new SocketSignalingChannel();
     private RemoteStream mRemoteStream;
     private RemoteStream.StreamObserver mStreamObserver;
-    private final SurfaceViewRenderer mSurfaceViewRenderer;
+    private SurfaceViewRenderer mSurfaceViewRenderer;
     private P2PClientConfiguration mP2pConfig;
     private String mClientId = "", mAllowId = "";
     private boolean mAudioControl = false;
@@ -294,6 +306,17 @@ public class WebRTCNativeView implements PlatformView,
             mClientId = "";
             mAllowId = "";
         }
+        mActivityRef.get().runOnUiThread(() -> {
+            if (mSurfaceViewRenderer != null) {
+                mSurfaceViewRenderer.clearImage();
+                if (mRemoteStream != null) {
+                    if (mRemoteStream.hasVideo()) {
+                        mRemoteStream.detach(mSurfaceViewRenderer);
+                    }
+                }
+                mSurfaceViewRenderer.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void setupReConnectSettings(String clientId, String allowId, @NonNull MethodChannel.Result methodResult) {
