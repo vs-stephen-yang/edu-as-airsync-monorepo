@@ -91,6 +91,12 @@ public class WebRTCNativeView implements PlatformView,
 
     @Override
     public void dispose() {
+        disconnectP2pClient();
+
+        if (mActivityRef.get() != null) {
+            mActivityRef.get().runOnUiThread(() -> methodChannel.invokeMethod("disposed", null));
+        }
+
         if (mSurfaceViewRenderer != null) {
             mSurfaceViewRenderer.release();
             mSurfaceViewRenderer = null;
@@ -104,8 +110,8 @@ public class WebRTCNativeView implements PlatformView,
     //-------------------------------------------------------------------------
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Object msg = call.arguments() != null ? call.arguments().toString() : "";
-        myLogDebug("id: " + mId + " onMethodCall: " + call.method + " object:" + msg);
+        String msg = call.arguments() != null ? call.arguments().toString() : "";
+        myLogDebug(String.format(Locale.US, "mId: %d, onMethodCall: %s object: %s", mId, call.method, msg));
         switch (call.method) {
             case "isNotConnected":
                 result.success(mAllowId.isEmpty());
@@ -255,17 +261,17 @@ public class WebRTCNativeView implements PlatformView,
             if (getAndSetConfigOfIceServers() != null) {
                 mP2pClient = new P2PClient(mP2pConfig, mSocketSignalingChannel);
                 mP2pClient.addObserver(this);
-                setStateMachine("init P2PClient success.");
+                setStateMachine(String.format(Locale.US, "mId: %d, init P2PClient success.", mId));
                 return true;
             }
-            setStateMachine("init P2PClient failure.");
+            setStateMachine(String.format(Locale.US, "mId: %d, init P2PClient failure.", mId));
             return false;
         }
         return true;
     }
 
     private void connectP2pClient(String clientId, String allowId, @NonNull MethodChannel.Result methodResult) {
-        setStateMachine(String.format("connect clientId: %s, allowId: %s", clientId, allowId));
+        setStateMachine(String.format(Locale.US, "mId: %d, connect clientId: %s, allowId: %s", mId, clientId, allowId));
 
         if (!initP2PClient()) { // Try init again, return if init again failure.
             return;
@@ -301,7 +307,7 @@ public class WebRTCNativeView implements PlatformView,
 
     private void disconnectP2pClient() {
         if (!TextUtils.isEmpty(mClientId)) {
-            setStateMachine(String.format("disconnect clientId: %s, allowId: %s", mClientId, mAllowId));
+            setStateMachine(String.format(Locale.US, "mId: %d, disconnect clientId: %s, allowId: %s", mId, mClientId, mAllowId));
             if (mP2pClient != null) mP2pClient.disconnect();
             mClientId = "";
             mAllowId = "";
