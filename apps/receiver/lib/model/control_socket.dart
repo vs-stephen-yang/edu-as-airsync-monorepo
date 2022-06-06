@@ -98,6 +98,9 @@ class ControlSocket {
     _webRtcController.add(controller);
     controller.channel.setMethodCallHandler((MethodCall call) async {
       switch (call.method) {
+        case 'disposed':
+          _webRtcController.remove(controller);
+          break;
         case "stopConnectionTimeoutTimer":
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
           break;

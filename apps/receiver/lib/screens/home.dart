@@ -18,25 +18,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   double _fullWidth = 0, _fullHeight = 0, _halfWidth = 0, _halfHeight = 0;
-  final List<Widget> _webRtcWidget = <Widget>[];
   final List<bool> _isSelectedList = List.filled(4, false, growable: false);
-
-  @override
-  void initState() {
-    super.initState();
-    _webRtcWidget.add(WebRTCNativeView(
-      onWebRTCNativeViewCreatedCallback: ControlSocket().addWebRtcController,
-    ));
-    _webRtcWidget.add(WebRTCNativeView(
-      onWebRTCNativeViewCreatedCallback: ControlSocket().addWebRtcController,
-    ));
-    _webRtcWidget.add(WebRTCNativeView(
-      onWebRTCNativeViewCreatedCallback: ControlSocket().addWebRtcController,
-    ));
-    _webRtcWidget.add(WebRTCNativeView(
-      onWebRTCNativeViewCreatedCallback: ControlSocket().addWebRtcController,
-    ));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +95,9 @@ class _HomeState extends State<Home> {
                         curve: Curves.linear,
                         duration:
                             Duration(seconds: _isSelectedList[index] ? 1 : 0),
-                        child: _webRtcWidget[index],
+                        child: WebRTCNativeView(
+                          onWebRTCNativeViewCreatedCallback: ControlSocket().addWebRtcController,
+                        ),
                       ),
                     ),
                   );
