@@ -48,9 +48,27 @@ class _HomeState extends State<Home> {
                     } else {
                       _isSelectedList.fillRange(
                           0, _isSelectedList.length, false);
-                      _isSelectedList[0] = true;
                     }
                   });
+                }
+
+                double _getWidthHeight(int selection, bool isWidth) {
+                  if (value) {
+                    // split screen enabled
+                    if (_isSelectedList[selection]) {
+                      // selected item
+                      return isWidth ? _fullWidth : _fullHeight;
+                    } else if (_isSelectedList.contains(true)) {
+                      // has any item selected
+                      return 0;
+                    } else {
+                      // no any item selected
+                      return isWidth ? _halfWidth : _halfHeight;
+                    }
+                  } else {
+                    // split screen disabled
+                    return isWidth ? _fullWidth : _fullHeight;
+                  }
                 }
 
                 List<Widget> webrtcWidgets =
@@ -79,19 +97,9 @@ class _HomeState extends State<Home> {
                     child: GestureDetector(
                       onDoubleTap: () => _updateSizeForSelected(index),
                       child: AnimatedContainer(
-                        width: _isSelectedList[index]
-                            ? _fullWidth
-                            : !_isSelectedList.contains(true)
-                                ? _halfWidth
-                                : 0,
-                        height: _isSelectedList[index]
-                            ? _fullHeight
-                            : !_isSelectedList.contains(true)
-                                ? _halfHeight
-                                : 0,
-                        alignment: _isSelectedList[index]
-                            ? Alignment.center
-                            : Alignment.topLeft,
+                        width: _getWidthHeight(index, true),
+                        height: _getWidthHeight(index, false),
+                        alignment: Alignment.center,
                         curve: Curves.linear,
                         duration:
                             Duration(seconds: _isSelectedList[index] ? 1 : 0),
