@@ -1,5 +1,10 @@
 package com.mvbcast.crosswalk.helper;
 
+import static owt.base.MediaCodecs.VideoCodec.H264;
+import static owt.base.MediaCodecs.VideoCodec.H265;
+import static owt.base.MediaCodecs.VideoCodec.VP8;
+import static owt.base.MediaCodecs.VideoCodec.VP9;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Build;
@@ -10,13 +15,32 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.mvbcast.crosswalk.BuildConfig;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.webrtc.EglBase;
 import org.webrtc.Logging;
+import org.webrtc.PeerConnection;
 import org.webrtc.SoftwareVideoDecoderFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayDeque;
+import java.util.LinkedList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import owt.base.ContextInitialization;
+import owt.base.VideoEncodingParameters;
+import owt.p2p.P2PClientConfiguration;
 
 /**
  * Created by ChangLo on 2022/05/26.
@@ -24,6 +48,7 @@ import owt.base.ContextInitialization;
  */
 
 public class WebRTCHelper {
+    private static final String TAG = WebRTCHelper.class.getSimpleName();
     EglBase mRootEglBase = EglBase.create();
 
     // region Singleton Implementation
@@ -93,6 +118,59 @@ public class WebRTCHelper {
         return mRootEglBase.getEglBaseContext();
     }
 
+    public P2PClientConfiguration getAndSetConfigOfIceServers() {
+
+        if (mP2pConfig != null) return mP2pConfig;
+
+        Callable<String> task = this::getJsonOfIceServers; // Short way for "() -> getJsonOfIceServers();". Suggested
+        // by intelligence.
+
+        ExecutorService mExecutor = Executors.newSingleThreadExecutor();
+        Future<String> future = mExecutor.submit(task);
+
+        String jsonResult = null;
+
+        try {
+            jsonResult = future.get(); // halt and wait here !!
+
+            // Once an executor service has been shut down it can't be reactivated.
+            // Create a new executor service to restart execution
+            // See, https://stackoverflow.com/questions/26143233/android-java-executorservice-execute-after-shutdown
+            mExecutor.shutdown();
+        }
+        // todo: loop to call getJsonOfIceServers for exceptions
+        catch (ExecutionException | InterruptedException e) {
+
+            e.printStackTrace();
+        }
+
+        if (jsonResult != null) {
+
+            VideoEncodingParameters h264 = new VideoEncodingParameters(H264);
+            VideoEncodingParameters h265 = new VideoEncodingParameters(H265);
+            VideoEncodingParameters vp8 = new VideoEncodingParameters(VP8);
+            VideoEncodingParameters vp9 = new VideoEncodingParameters(VP9);
+            mP2pConfig = P2PClientConfiguration.builder()
+                    .addVideoParameters(vp8)
+                    .addVideoParameters(h264)
+                    .addVideoParameters(h265)
+                    .addVideoParameters(vp9)
+                    .build();
+
+            try {
+                mP2pConfig.rtcConfiguration.iceServers = iceServersFromPCConfigJSON(jsonResult);
+                myLogDebug(TAG, "iceServersFromPCConfigJSON() is ok");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                myLogDebug(TAG, e.getMessage());
+            }
+
+            return mP2pConfig;
+        }
+
+        return null;
+    }
+
     public LiveData<String> getDecoder() {
         return mDecoder;
     }
@@ -106,11 +184,75 @@ public class WebRTCHelper {
 
     // region private Implementation
     //-------------------------------------------------------------------------
+    private P2PClientConfiguration mP2pConfig;
     private final MutableLiveData<String> mDecoder = new MutableLiveData<>();
     private final MutableLiveData<String> mFPS = new MutableLiveData<>();
     private final ArrayDeque<String> mStreamFPS = new ArrayDeque<>();
     @SuppressWarnings("ConstantConditions")
     private static final boolean DEBUG_MESSAGE = (BuildConfig.VERSION_CODE % 2) != 0;
+
+    private String getJsonOfIceServers() {
+
+        HttpsURLConnection connection = null;
+        BufferedReader reader = null;
+
+        try {
+            URL url = new URL("https://getice.myviewboard.cloud");
+            connection = (HttpsURLConnection) url.openConnection();
+            myLogDebug(TAG, "connecting");
+            connection.connect();
+            myLogDebug(TAG, "connected");
+
+            InputStream stream = connection.getInputStream();
+
+            reader = new BufferedReader(new InputStreamReader(stream));
+
+            StringBuilder buffer = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line).append("\n");
+                myLogDebug(TAG, "Response: > " + line);   //here u ll get whole response...... :-)
+            }
+
+            return buffer.toString();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    private LinkedList<PeerConnection.IceServer> iceServersFromPCConfigJSON(String pcConfig)
+            throws JSONException {
+        JSONObject json = new JSONObject(pcConfig);
+        JSONArray servers = json.getJSONArray("list");
+        LinkedList<PeerConnection.IceServer> ret = new LinkedList<>();
+        for (int i = 0; i < servers.length(); ++i) {
+            JSONObject server = servers.getJSONObject(i);
+            String url = server.getString("url");
+            String username = server.has("username") ? server.getString("username") : "";
+            String credential = server.has("credential") ? server.getString("credential") : "";
+            PeerConnection.IceServer turnServer =
+                    PeerConnection.IceServer.builder(url)
+                            .setUsername(username)
+                            .setPassword(credential)
+                            .createIceServer();
+            ret.add(turnServer);
+        }
+        return ret;
+    }
 
     @SuppressWarnings("SameParameterValue")
     private static void myLogDebug(String tag, String msg) {
