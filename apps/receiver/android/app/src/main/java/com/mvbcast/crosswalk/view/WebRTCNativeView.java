@@ -1,10 +1,5 @@
 package com.mvbcast.crosswalk.view;
 
-import static owt.base.MediaCodecs.VideoCodec.H264;
-import static owt.base.MediaCodecs.VideoCodec.H265;
-import static owt.base.MediaCodecs.VideoCodec.VP8;
-import static owt.base.MediaCodecs.VideoCodec.VP9;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
@@ -21,31 +16,16 @@ import com.mvbcast.crosswalk.BuildConfig;
 import com.mvbcast.crosswalk.helper.SocketSignalingChannel;
 import com.mvbcast.crosswalk.helper.WebRTCHelper;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.webrtc.PeerConnection;
 import org.webrtc.RendererCommon;
 import org.webrtc.SurfaceViewRenderer;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayDeque;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.Locale;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
@@ -53,7 +33,6 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.platform.PlatformView;
 import owt.base.ActionCallback;
 import owt.base.OwtError;
-import owt.base.VideoEncodingParameters;
 import owt.p2p.P2PClient;
 import owt.p2p.P2PClientConfiguration;
 import owt.p2p.RemoteStream;
@@ -77,8 +56,6 @@ public class WebRTCNativeView implements PlatformView,
         methodChannel =
                 new MethodChannel(messenger, "com.mvbcast.crosswalk/webrtc_native_view_" + id);
         methodChannel.setMethodCallHandler(this);
-
-        initP2PClient();
 
         mSurfaceViewRenderer = new SurfaceViewRenderer(context);
         mSurfaceViewRenderer.setVisibility(View.GONE);
@@ -271,7 +248,6 @@ public class WebRTCNativeView implements PlatformView,
     private RemoteStream mRemoteStream;
     private RemoteStream.StreamObserver mStreamObserver;
     private SurfaceViewRenderer mSurfaceViewRenderer;
-    private P2PClientConfiguration mP2pConfig;
     private String mClientId = "", mAllowId = "";
     private boolean mAudioControl = false;
     private boolean mNeedReconnect;
@@ -280,8 +256,9 @@ public class WebRTCNativeView implements PlatformView,
 
     private boolean initP2PClient() {
         if (mP2pClient == null) {
-            if (getAndSetConfigOfIceServers() != null) {
-                mP2pClient = new P2PClient(mP2pConfig, mSocketSignalingChannel);
+            P2PClientConfiguration p2pConfig = WebRTCHelper.getInstance().getAndSetConfigOfIceServers();
+            if (p2pConfig != null) {
+                mP2pClient = new P2PClient(p2pConfig, mSocketSignalingChannel);
                 mP2pClient.addObserver(this);
                 setStateMachine(String.format(Locale.US, "mId: %d, init P2PClient success.", mId));
                 return true;
@@ -427,122 +404,6 @@ public class WebRTCNativeView implements PlatformView,
 
             result.success(null);
         });
-    }
-
-    private P2PClientConfiguration getAndSetConfigOfIceServers() {
-
-        if (mP2pConfig != null) return mP2pConfig;
-
-        Callable<String> task = this::getJsonOfIceServers; // Short way for "() -> getJsonOfIceServers();". Suggested
-        // by intelligence.
-
-        ExecutorService mExecutor = Executors.newSingleThreadExecutor();
-        Future<String> future = mExecutor.submit(task);
-
-        String jsonResult = null;
-
-        try {
-            jsonResult = future.get(); // halt and wait here !!
-
-            // Once an executor service has been shut down it can't be reactivated.
-            // Create a new executor service to restart execution
-            // See, https://stackoverflow.com/questions/26143233/android-java-executorservice-execute-after-shutdown
-            mExecutor.shutdown();
-        }
-        // todo: loop to call getJsonOfIceServers for exceptions
-        catch (ExecutionException | InterruptedException e) {
-
-            e.printStackTrace();
-        }
-
-        if (jsonResult != null) {
-
-            VideoEncodingParameters h264 = new VideoEncodingParameters(H264);
-            VideoEncodingParameters h265 = new VideoEncodingParameters(H265);
-            VideoEncodingParameters vp8 = new VideoEncodingParameters(VP8);
-            VideoEncodingParameters vp9 = new VideoEncodingParameters(VP9);
-            mP2pConfig = P2PClientConfiguration.builder()
-                    .addVideoParameters(vp8)
-                    .addVideoParameters(h264)
-                    .addVideoParameters(h265)
-                    .addVideoParameters(vp9)
-                    .build();
-
-            try {
-                mP2pConfig.rtcConfiguration.iceServers = iceServersFromPCConfigJSON(jsonResult);
-                myLogInfo("iceServersFromPCConfigJSON() is ok");
-            } catch (JSONException e) {
-                e.printStackTrace();
-                myLogError(e.getMessage());
-            }
-
-            return mP2pConfig;
-        }
-
-        return null;
-    }
-
-    private String getJsonOfIceServers() {
-
-        HttpsURLConnection connection = null;
-        BufferedReader reader = null;
-
-        try {
-            URL url = new URL("https://getice.myviewboard.cloud");
-            connection = (HttpsURLConnection) url.openConnection();
-            myLogDebug("connecting");
-            connection.connect();
-            myLogDebug("connected");
-
-            InputStream stream = connection.getInputStream();
-
-            reader = new BufferedReader(new InputStreamReader(stream));
-
-            StringBuilder buffer = new StringBuilder();
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line).append("\n");
-                myLogDebug("Response: > " + line);   //here u ll get whole response...... :-)
-            }
-
-            return buffer.toString();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-    private LinkedList<PeerConnection.IceServer> iceServersFromPCConfigJSON(String pcConfig)
-            throws JSONException {
-        JSONObject json = new JSONObject(pcConfig);
-        JSONArray servers = json.getJSONArray("list");
-        LinkedList<PeerConnection.IceServer> ret = new LinkedList<>();
-        for (int i = 0; i < servers.length(); ++i) {
-            JSONObject server = servers.getJSONObject(i);
-            String url = server.getString("url");
-            String username = server.has("username") ? server.getString("username") : "";
-            String credential = server.has("credential") ? server.getString("credential") : "";
-            PeerConnection.IceServer turnServer =
-                    PeerConnection.IceServer.builder(url)
-                            .setUsername(username)
-                            .setPassword(credential)
-                            .createIceServer();
-            ret.add(turnServer);
-        }
-        return ret;
     }
 
     // region Information Analytics
