@@ -95,6 +95,7 @@ class DisplayInfo {
   late Timer _presenterTimeTimer;
   bool _presenterTimeTimerInit = false;
   bool splitsScreen = false;
+  String presenterId = '';
 
   DisplayInfo(
       {String? displayId,
