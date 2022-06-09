@@ -35,8 +35,8 @@ class WebRTCNativeView extends StatelessWidget {
             );
           },
           onCreatePlatformView: (PlatformViewCreationParams params) {
-            ExpensiveAndroidViewController viewController =
-                PlatformViewsService.initExpensiveAndroidView(
+            SurfaceAndroidViewController viewController =
+                PlatformViewsService.initSurfaceAndroidView(
                     id: params.id,
                     viewType: viewType,
                     layoutDirection: TextDirection.ltr);
