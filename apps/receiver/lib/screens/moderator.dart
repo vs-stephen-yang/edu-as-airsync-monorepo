@@ -260,13 +260,13 @@ class _ModeratorViewState extends State<ModeratorView> {
     );
   }
   void updateLogoutIconState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       _logoutIconKey.currentState?.setState(() {});
     });
   }
 
   void updateEditIconState(bool isEditMode) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       _editIconKey.currentState?.setState(() {
         bEditClick = isEditMode;
       });

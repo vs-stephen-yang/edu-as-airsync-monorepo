@@ -104,7 +104,7 @@ class _HomeState extends State<Home> {
                         duration:
                             Duration(seconds: _isSelectedList[index] ? 1 : 0),
                         child: WebRTCNativeView(
-                          useHybrid: true,
+                          useHybrid: false,
                           onWebRTCNativeViewCreatedCallback:
                               ControlSocket().addWebRtcController,
                         ),
