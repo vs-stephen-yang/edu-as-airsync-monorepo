@@ -97,13 +97,25 @@ class _ModeratorViewState extends State<ModeratorView> {
                             }
                           }
                         });
-
+                      } else {
+                        if (display.peerList[i].id != display.presenterId) {
+                          moderatorSocket.peerAction(
+                              'stop', display.peerList[i].peer,
+                              display.displayResponse);
+                        } else {
+                          if (display.peerList[i].id != display.presenterId) {
+                            moderatorSocket.peerAction(
+                                'stop', display.peerList[i].peer,
+                                display.displayResponse);
+                          } else {
+                            display.presenterIndex = i;
+                            display.presenterName = peer.presenter;
+                            display.presenterStatus = peer.status;
+                            display.presenterSignalStrength = 0.5;
+                            display.presenterTime = tempPresenterTime;
+                          }
+                        }
                       }
-                      display.presenterIndex = i;
-                      display.presenterName = peer.presenter;
-                      display.presenterStatus = peer.status;
-                      display.presenterSignalStrength = 0.5;
-                      display.presenterTime = tempPresenterTime;
                     }
                   }
                 }
@@ -134,7 +146,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                           child: Text(
                             S.of(context).moderator_presentersList,
                             style: TextStyle(
-                                fontSize: 25,
+                                fontSize: 22,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.primary_white),
                           )),
@@ -347,6 +359,21 @@ class _ModeratorViewState extends State<ModeratorView> {
             setState(() {
               SplitScreen.splitScreenEnabled.value =
                   !SplitScreen.splitScreenEnabled.value;
+
+              if (!SplitScreen.splitScreenEnabled.value) {
+                var display = Displays().getSelectedDisplay();
+                // check whether the presenters are playing
+                display.splitIndexMap.forEach((key, value) {
+                  if (value != '') {
+                    display.peerList.forEach((element) {
+                      if (element.id == value) {
+                        moderatorSocket.peerAction('stop', element.peer,
+                            display.displayResponse);
+                      }
+                    });
+                  }
+                });
+              }
             });
           },
           onNegative: () {},
@@ -365,9 +392,9 @@ class _ModeratorViewState extends State<ModeratorView> {
           positiveButton: S.of(context).moderator_exit,
           onPositive: () {
             // AppAnalytics().trackEventLogoutYes();
-            _logout();
-            setState(() {});
-            StreamFunction.showModerator.value = false;
+            setState(() {
+              _logout();
+            });
           },
           onNegative: () {
             // AppAnalytics().trackEventLogoutNo();
@@ -378,6 +405,7 @@ class _ModeratorViewState extends State<ModeratorView> {
   }
 
   void _logout() {
+    if (SplitScreen.splitScreenEnabled.value) SplitScreen.splitScreenEnabled.value = false;
     _attendeesListKey.currentState?.removeAllPresenter();
     Displays().getDisplays().forEach((element) {
       // AppAnalytics()
@@ -387,6 +415,7 @@ class _ModeratorViewState extends State<ModeratorView> {
     moderatorSocket.disconnect();
     Displays().removeAllDisplayInfo();
     AppPreferences().set(moderatorId: '');
+    StreamFunction.showModerator.value = false;
   }
 
   bool verifyCode(String dataString) {

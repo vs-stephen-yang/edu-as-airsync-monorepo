@@ -167,11 +167,13 @@ class ControlSocket {
             'messageFor': mWebRTCInfo.displayCode,
             'action': 'display-state-update',
             'status': 'display-state-update',
-            'presentationState': mWebRTCInfo.presentationState.toString(),
-            'code': mWebRTCInfo.isShowCode,
-            'delegate': mWebRTCInfo.isShowDelegate,
-            'uiState': '[]',
-            'extra': '[]',
+            'extra': {
+              'uiState': {
+                'code': mWebRTCInfo.isShowCode,
+                'delegate': mWebRTCInfo.isShowDelegate,
+              },
+              'presentationState': mWebRTCInfo.presentationState.toString(),
+            },
             'messageId': resp.nextId,
             'nextId': GetString.getRandomString(21)
           });
