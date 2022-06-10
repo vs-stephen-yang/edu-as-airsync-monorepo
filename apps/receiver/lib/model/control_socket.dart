@@ -218,42 +218,44 @@ class ControlSocket {
                   }
                 });
               }
-              try {
-                WebRTCNativeViewController? selectedController;
-                if (SplitScreen.splitScreenEnabled.value) {
-                  // todo: find unused view to connect
-                  for (WebRTCNativeViewController controller
-                      in _webRtcController) {
-                    if (await controller.channel
-                        .invokeMethod("isNotConnected")) {
-                      selectedController = controller;
-                      break;
-                    }
-                  }
-                } else {
-                  if (await _webRtcController[0]
-                      .channel
-                      .invokeMethod("isNotConnected")) {
-                    selectedController = _webRtcController[0];
+
+              WebRTCNativeViewController? selectedController;
+              if (SplitScreen.splitScreenEnabled.value) {
+                // todo: find unused view to connect
+                for (WebRTCNativeViewController controller
+                    in _webRtcController) {
+                  if (await controller.channel.invokeMethod("isNotConnected")) {
+                    selectedController = controller;
+                    break;
                   }
                 }
-                if (selectedController != null) {
-                  print(
-                      'selectedController: ${selectedController.channel.name}');
-                  var arg = {
-                    'clientId': mWebRTCInfo.clientId,
-                    'allowId': mWebRTCInfo.allowId,
-                  };
+              } else {
+                if (await _webRtcController[0]
+                    .channel
+                    .invokeMethod("isNotConnected")) {
+                  selectedController = _webRtcController[0];
+                }
+              }
+              if (selectedController != null) {
+                print('selectedController: ${selectedController.channel.name}');
+                var arg = {
+                  'clientId': mWebRTCInfo.clientId,
+                  'allowId': mWebRTCInfo.allowId,
+                };
+                try {
                   final String result = await selectedController.channel
                       .invokeMethod('connectP2pClient', arg);
                   handleP2PClientSuccess(result);
-                } else {
+                } on PlatformException catch (e) {
+                  handleP2PClientFailure(e.code, e.message);
                   sendMessageToControlSocket(mWebRTCInfo.displayCode,
                       allow: mWebRTCInfo.allowId, action: 'blocked');
+                  print(e);
                 }
-              } on PlatformException catch (e) {
-                handleP2PClientFailure(e.code, e.message);
-                print(e);
+              } else {
+                print('selectedController is null!');
+                sendMessageToControlSocket(mWebRTCInfo.displayCode,
+                    allow: mWebRTCInfo.allowId, action: 'blocked');
               }
               break;
             case "play":
