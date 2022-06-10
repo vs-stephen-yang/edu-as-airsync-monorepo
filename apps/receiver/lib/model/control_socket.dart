@@ -204,21 +204,6 @@ class ControlSocket {
 
               sendMessageToControlSocket(mWebRTCInfo.displayCode);
 
-              // AppCenterAnalyticsHelper.getInstance().EventStreamStart();
-              if (!mWebRTCInfo.moderatorMode) {
-                ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
-                  setStateMachine("ConnectionTimeout onFinish");
-
-                  sendMessageToControlSocket(mWebRTCInfo.displayCode,
-                      allow: mWebRTCInfo.allowId, action: 'timeout');
-
-                  for (WebRTCNativeViewController controller
-                      in _webRtcController) {
-                    controller.channel.invokeMethod('disconnectP2pClient');
-                  }
-                });
-              }
-
               WebRTCNativeViewController? selectedController;
               if (SplitScreen.splitScreenEnabled.value) {
                 // todo: find unused view to connect
@@ -237,23 +222,38 @@ class ControlSocket {
                 }
               }
               if (selectedController != null) {
-                print('selectedController: ${selectedController.channel.name}');
-                var arg = {
-                  'clientId': mWebRTCInfo.clientId,
-                  'allowId': mWebRTCInfo.allowId,
-                };
+                log('selectedController: ${selectedController.channel.name}');
                 try {
+                  if (!mWebRTCInfo.moderatorMode) {
+                    ConnectionTimer.getInstance().startConnectionTimeoutTimer(
+                        mWebRTCInfo.displayCode,
+                        mWebRTCInfo.allowId ?? '',
+                        selectedController, (displayCode, allowId, controller) {
+                      setStateMachine("ConnectionTimeout onFinish");
+
+                      sendMessageToControlSocket(displayCode,
+                          allow: allowId, action: 'timeout');
+
+                      controller.channel.invokeMethod('disconnectP2pClient');
+                    });
+                  }
+
+                  var arg = {
+                    'clientId': mWebRTCInfo.clientId,
+                    'allowId': mWebRTCInfo.allowId,
+                  };
                   final String result = await selectedController.channel
                       .invokeMethod('connectP2pClient', arg);
                   handleP2PClientSuccess(result);
+                  // AppCenterAnalyticsHelper.getInstance().EventStreamStart();
                 } on PlatformException catch (e) {
                   handleP2PClientFailure(e.code, e.message);
                   sendMessageToControlSocket(mWebRTCInfo.displayCode,
                       allow: mWebRTCInfo.allowId, action: 'blocked');
-                  print(e);
+                  log(e.toString());
                 }
               } else {
-                print('selectedController is null!');
+                log('selectedController is null!');
                 sendMessageToControlSocket(mWebRTCInfo.displayCode,
                     allow: mWebRTCInfo.allowId, action: 'blocked');
               }
@@ -263,7 +263,7 @@ class ControlSocket {
                 try {
                   await _webRtcController[0].channel.invokeMethod("playVideo");
                 } on PlatformException catch (e) {
-                  print(e);
+                  log(e.toString());
                 }
                 // AppCenterAnalyticsHelper.getInstance().EventStreamPlayed();
               }
@@ -274,7 +274,7 @@ class ControlSocket {
                   await _webRtcController[0].channel.invokeMethod("stopVideo");
                   ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
                 } on PlatformException catch (e) {
-                  print(e);
+                  log(e.toString());
                 }
                 // AppCenterAnalyticsHelper.getInstance().EventStreamStopped();
               }
@@ -287,7 +287,7 @@ class ControlSocket {
               await _webRtcController[0].channel.invokeMethod("pauseVideo");
               handleStreamPauseSuccess(mWebRTCInfo.nextId);
             } on PlatformException catch (e) {
-              print(e);
+              log(e.toString());
             }
             // AppCenterAnalyticsHelper.getInstance().EventStreamPaused();
           }
@@ -297,7 +297,7 @@ class ControlSocket {
             try {
               await _webRtcController[0].channel.invokeMethod("resumeVideo");
             } on PlatformException catch (e) {
-              print(e);
+              log(e.toString());
             }
             // AppCenterAnalyticsHelper.getInstance().EventStreamResumed();
           }
