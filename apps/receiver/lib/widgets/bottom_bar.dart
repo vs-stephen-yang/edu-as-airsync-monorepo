@@ -13,15 +13,21 @@ class BottomBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Image.asset(
-                'assets/images/ic_logo_power_by.png',
-                width: 290,
-                height: 88,
+              Container(
+                color: Colors.green,
+                child: Image.asset(
+                  'assets/images/ic_logo_my_viewboard.png',
+                  width: 276,
+                  height: 78,
+                ),
               ),
-              Image.asset(
-                'assets/images/ic_logo_build_by.png',
-                width: 234,
-                height: 88,
+              Container(
+                color: Colors.cyan,
+                child: Image.asset(
+                  'assets/images/ic_logo_build_by.png',
+                  width: 234,
+                  height: 88,
+                ),
               ),
             ],
           ),
