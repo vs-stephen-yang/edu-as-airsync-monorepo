@@ -51,7 +51,7 @@ public class WebRTCNativeView implements PlatformView,
     WebRTCNativeView(Context context, Activity activity, int id, BinaryMessenger messenger) {
         mActivityRef = new WeakReference<>(activity);
         mId = id;
-        myLogDebug("Create id: " + id);
+        myLogDebug("Create");
 
         methodChannel =
                 new MethodChannel(messenger, "com.mvbcast.crosswalk/webrtc_native_view_" + id);
@@ -79,7 +79,7 @@ public class WebRTCNativeView implements PlatformView,
     //-------------------------------------------------------------------------
     @Override
     public View getView() {
-        myLogDebug("getView id: " + mId);
+        myLogDebug("getView");
         return mParentLayout;
     }
 
@@ -95,7 +95,7 @@ public class WebRTCNativeView implements PlatformView,
             mSurfaceViewRenderer.release();
             mSurfaceViewRenderer = null;
         }
-        myLogDebug("dispose id: " + mId);
+        myLogDebug("dispose");
     }
     //-------------------------------------------------------------------------
     // endregion
@@ -105,7 +105,7 @@ public class WebRTCNativeView implements PlatformView,
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         String msg = call.arguments() != null ? call.arguments().toString() : "";
-        myLogDebug(String.format(Locale.US, "mId: %d, onMethodCall: %s object: %s", mId, call.method, msg));
+        myLogDebug(String.format(Locale.US, "onMethodCall: %s, object: %s", call.method, msg));
         switch (call.method) {
             case "isNotConnected":
                 result.success(mAllowId.isEmpty());
@@ -260,17 +260,17 @@ public class WebRTCNativeView implements PlatformView,
             if (p2pConfig != null) {
                 mP2pClient = new P2PClient(p2pConfig, mSocketSignalingChannel);
                 mP2pClient.addObserver(this);
-                setStateMachine(String.format(Locale.US, "mId: %d, init P2PClient success.", mId));
+                setStateMachine("init P2PClient success.");
                 return true;
             }
-            setStateMachine(String.format(Locale.US, "mId: %d, init P2PClient failure.", mId));
+            setStateMachine("init P2PClient failure.");
             return false;
         }
         return true;
     }
 
     private void connectP2pClient(String clientId, String allowId, @NonNull MethodChannel.Result methodResult) {
-        setStateMachine(String.format(Locale.US, "mId: %d, connect clientId: %s, allowId: %s", mId, clientId, allowId));
+        setStateMachine(String.format(Locale.US, "connect clientId: %s, allowId: %s", clientId, allowId));
 
         if (!initP2PClient()) { // Try init again, return if init again failure.
             return;
@@ -306,7 +306,7 @@ public class WebRTCNativeView implements PlatformView,
 
     private void disconnectP2pClient() {
         if (!TextUtils.isEmpty(mClientId)) {
-            setStateMachine(String.format(Locale.US, "mId: %d, disconnect clientId: %s, allowId: %s", mId, mClientId, mAllowId));
+            setStateMachine(String.format(Locale.US, "disconnect clientId: %s, allowId: %s", mClientId, mAllowId));
             if (mP2pClient != null) mP2pClient.disconnect();
             mClientId = "";
             mAllowId = "";
@@ -412,7 +412,7 @@ public class WebRTCNativeView implements PlatformView,
 
         String msg = String.format("(%s) %s", getShortTimeString(), state);
         StringBuilder sb = new StringBuilder(msg);
-        sb.append("\n").append("History:");
+        sb.append("\n").append(String.format("mId: %s, History:", mId));
         for (String s : mStateMachineHistory) {
             sb.append("\n").append(s);
         }
@@ -434,21 +434,21 @@ public class WebRTCNativeView implements PlatformView,
     private static final boolean DEBUG_MESSAGE = (BuildConfig.VERSION_CODE % 2) != 0;
 
     // region myLog
-    private static void myLogInfo(String msg) {
+    private void myLogInfo(String msg) {
         if (DEBUG_MESSAGE) {
-            Log.i(TAG, msg);
+            Log.i(TAG, String.format(Locale.US, "mId = %d, msg: %s", mId, msg));
         }
     }
 
-    private static void myLogDebug(String msg) {
+    private void myLogDebug(String msg) {
         if (DEBUG_MESSAGE) {
-            Log.d(TAG, msg);
+            Log.d(TAG, String.format(Locale.US, "mId = %d, msg: %s", mId, msg));
         }
     }
 
-    private static void myLogError(String msg) {
+    private void myLogError(String msg) {
         if (DEBUG_MESSAGE) {
-            Log.e(TAG, msg);
+            Log.e(TAG, String.format(Locale.US, "mId = %d, msg: %s", mId, msg));
         }
     }
     //-------------------------------------------------------------------------
