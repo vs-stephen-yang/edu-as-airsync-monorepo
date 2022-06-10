@@ -141,18 +141,9 @@ public class WebRTCNativeView implements PlatformView,
     public void onServerDisconnected() {
         setStateMachine("onServerDisconnected");
 
-        if (mNeedReconnect) {
-            myLogDebug("mNeedReconnect");
-            mNeedReconnect = false;
-            connectP2pClient(mReconnectClientId, mReconnectAllowId, mMethodResult);
-            mReconnectClientId = "";
-            mReconnectAllowId = "";
-            mMethodResult = null;
-        } else {
-            if (mActivityRef.get() != null) {
-                mActivityRef.get().runOnUiThread(() ->
-                        methodChannel.invokeMethod("stopConnectionTimeoutTimer", null));
-            }
+        if (mActivityRef.get() != null) {
+            mActivityRef.get().runOnUiThread(() ->
+                    methodChannel.invokeMethod("stopConnectionTimeoutTimer", null));
         }
     }
 
@@ -250,9 +241,6 @@ public class WebRTCNativeView implements PlatformView,
     private SurfaceViewRenderer mSurfaceViewRenderer;
     private String mClientId = "", mAllowId = "";
     private boolean mAudioControl = false;
-    private boolean mNeedReconnect;
-    private String mReconnectClientId = "", mReconnectAllowId = "";
-    private MethodChannel.Result mMethodResult = null;
 
     private boolean initP2PClient() {
         if (mP2pClient == null) {
@@ -297,9 +285,8 @@ public class WebRTCNativeView implements PlatformView,
             @Override
             public void onFailure(OwtError error) {
                 methodResult.error(String.valueOf(error.errorCode), error.errorMessage, null);
-
-                setupReConnectSettings(clientId, allowId, methodResult);
-                mSocketSignalingChannel.disconnect();
+                mClientId = "";
+                mAllowId = "";
             }
         });
     }
@@ -322,16 +309,6 @@ public class WebRTCNativeView implements PlatformView,
                 mSurfaceViewRenderer.setVisibility(View.GONE);
             }
         });
-    }
-
-    private void setupReConnectSettings(String clientId, String allowId, @NonNull MethodChannel.Result methodResult) {
-        // will go to the onServerDisconnected() callback in P2PClientObserver
-        mClientId = "";
-        mAllowId = "";
-        mReconnectClientId = clientId;
-        mReconnectAllowId = allowId;
-        mMethodResult = methodResult;
-        mNeedReconnect = true;
     }
 
     private void controlAudio(boolean isEnable) {
