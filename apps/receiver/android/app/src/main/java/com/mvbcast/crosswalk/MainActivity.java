@@ -48,6 +48,8 @@ public class MainActivity extends FlutterActivity {
 
         WebRTCHelper.getInstance().initWebRTCContext(this);
 
+        WebRTCHelper.getInstance().getAndSetConfigOfIceServers();
+
         WebRTCHelper.getInstance().getDecoder().observe(this,
                 s -> {
                     // TODO: show on screen ?
