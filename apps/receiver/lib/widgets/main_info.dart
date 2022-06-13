@@ -23,16 +23,6 @@ class _MainInfoState extends State<MainInfo> {
   @override
   Widget build(BuildContext context) {
     AppConfig? appConfig = AppConfig.of(context);
-    String qrCode = '';
-    if (appConfig != null) {
-      if (AppInstanceCreate().isInstalledInVBS100) {
-        qrCode =
-            appConfig.settings.prefixQRCode + AppInstanceCreate().serialNumber;
-      } else {
-        qrCode =
-            appConfig.settings.prefixQRCode + AppInstanceCreate().instanceID;
-      }
-    }
     return Container(
       padding: const EdgeInsets.all(30),
       child: Wrap(
@@ -159,7 +149,13 @@ class _MainInfoState extends State<MainInfo> {
                   ],
                 ),
                 QrImage(
-                  data: qrCode,
+                  data: appConfig != null
+                      ? (AppInstanceCreate().isInstalledInVBS100)
+                          ? appConfig.settings.prefixQRCode +
+                              AppInstanceCreate().serialNumber
+                          : appConfig.settings.prefixQRCode +
+                              AppInstanceCreate().instanceID
+                      : '',
                   version: QrVersions.auto,
                   size: 120.0,
                   backgroundColor: Colors.white,
