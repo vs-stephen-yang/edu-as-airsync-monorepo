@@ -4,6 +4,7 @@ import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/webrtc_info.dart';
+import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -21,6 +22,17 @@ class _MainInfoState extends State<MainInfo> {
 
   @override
   Widget build(BuildContext context) {
+    AppConfig? appConfig = AppConfig.of(context);
+    String qrCode = '';
+    if (appConfig != null) {
+      if (AppInstanceCreate().isInstalledInVBS100) {
+        qrCode =
+            appConfig.settings.prefixQRCode + AppInstanceCreate().serialNumber;
+      } else {
+        qrCode =
+            appConfig.settings.prefixQRCode + AppInstanceCreate().instanceID;
+      }
+    }
     return Container(
       padding: const EdgeInsets.all(30),
       child: Wrap(
@@ -147,7 +159,7 @@ class _MainInfoState extends State<MainInfo> {
                   ],
                 ),
                 QrImage(
-                  data: AppInstanceCreate().instanceID,
+                  data: qrCode,
                   version: QrVersions.auto,
                   size: 120.0,
                   backgroundColor: Colors.white,
