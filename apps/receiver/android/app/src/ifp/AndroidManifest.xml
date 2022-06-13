@@ -4,4 +4,22 @@
 	package="com.mvbcast.crosswalk"
 	android:sharedUserId="android.uid.system"
 	tools:node="merge">
+
+	<application tools:ignore="GoogleAppIndexingWarning"
+		android:icon="@mipmap/ic_launcher">
+		<receiver
+			android:name=".helper.BootDeviceReceiver"
+			android:enabled="true"
+			android:exported="true">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+			</intent-filter>
+		</receiver>
+
+		<receiver
+			android:name=".MainActivity$AppAlarmOTA"
+			android:enabled="true"
+			android:exported="true"
+			android:permission="com.mvbcast.crosswalk.AppAlarmOTA" />
+	</application>
 </manifest>
