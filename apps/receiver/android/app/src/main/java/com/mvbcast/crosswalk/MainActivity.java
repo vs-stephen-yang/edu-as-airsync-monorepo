@@ -102,7 +102,7 @@ public class MainActivity extends FlutterActivity {
 
     // region App Alarm OTA
     public static void setAlarmOTA(Context context) {
-        Log.e("_TAG_", "setAlarmOTA !!!!!");
+        Log.e(TAG, "setAlarmOTA !!!!!");
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         PendingIntent pendingIntent =
@@ -132,7 +132,7 @@ public class MainActivity extends FlutterActivity {
     public static class AppAlarmOTA extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.e("_TAG_", "AppAlarmOTA onReceive");
+            Log.e(TAG, "AppAlarmOTA onReceive");
             OTAHelper.getInstance().checkLatestVersion();
         }
     }
