@@ -14,9 +14,8 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class MainInfo extends StatefulWidget {
-  const MainInfo({Key? key, required this.webRTCInfo}) : super(key: key);
+  const MainInfo({Key? key}) : super(key: key);
   static ValueNotifier<bool> showMainInfo = ValueNotifier(true);
-  final WebRTCInfo webRTCInfo;
 
   @override
   State createState() => _MainInfoState();
@@ -24,8 +23,11 @@ class MainInfo extends StatefulWidget {
 
 class _MainInfoState extends State<MainInfo> {
   late MainInfoBloc _mainInfoBloc;
-  static final ValueNotifier<bool> _isEyeOpen =
-      ValueNotifier(true); // use static to keep value for eye switch
+  static const int maxCountDown = 30;
+  static final ValueNotifier<bool> _isEyeOpen = ValueNotifier(true);
+  static final ValueNotifier<double> _countDownProgress = ValueNotifier(1);
+  static int _countDownValue = maxCountDown;
+  final WebRTCInfo webRTCInfo = WebRTCInfo.getInstance();
 
   @override
   void didChangeDependencies() {
@@ -50,7 +52,7 @@ class _MainInfoState extends State<MainInfo> {
               BlocProvider.of<MainInfoBloc>(context).add(GetOneTimePassword());
               break;
             case MainInfoState.getDisplayCodeError:
-              _showSnackBarMessage('get display code failure');
+              _showSnackBarMessage(S.of(context).get_code_failure);
               BlocProvider.of<MainInfoBloc>(context).add(RegisterDisplayCode());
               break;
             case MainInfoState.registerDisplayCodeSuccess:
@@ -64,13 +66,24 @@ class _MainInfoState extends State<MainInfo> {
               });
               break;
             case MainInfoState.getOneTimePasswordSuccess:
-              Timer(const Duration(seconds: 30), () async {
-                BlocProvider.of<MainInfoBloc>(context)
-                    .add(GetOneTimePassword());
+              Timer.periodic(const Duration(milliseconds: 100), (timer) {
+                if (timer.tick < maxCountDown * 10) {
+                  _countDownProgress.value =
+                      1 - (timer.tick / 10 / maxCountDown);
+                  _countDownValue = maxCountDown - timer.tick ~/ 10;
+                } else {
+                  _countDownProgress.value = 1;
+                  _countDownValue = maxCountDown;
+                  timer.cancel();
+                  BlocProvider.of<MainInfoBloc>(context)
+                      .add(GetOneTimePassword());
+                }
               });
               break;
             case MainInfoState.getOneTimePasswordError:
-              _showSnackBarMessage('get OTP failure');
+              _countDownProgress.value = 1;
+              _countDownValue = maxCountDown;
+              _showSnackBarMessage(S.of(context).main_content_one_time_password_get_fail);
               Timer(const Duration(seconds: 5), () async {
                 BlocProvider.of<MainInfoBloc>(context)
                     .add(GetOneTimePassword());
@@ -110,11 +123,11 @@ class _MainInfoState extends State<MainInfo> {
 
   _getDisplayCode() {
     String result = '';
-    for (int i = 0; i < widget.webRTCInfo.displayCode.length; i++) {
+    for (int i = 0; i < webRTCInfo.displayCode.length; i++) {
       if (i % 3 == 0 && result.isNotEmpty) {
         result += '-';
       }
-      result += widget.webRTCInfo.displayCode.substring(i, i + 1);
+      result += webRTCInfo.displayCode.substring(i, i + 1);
     }
     return result;
   }
@@ -168,39 +181,44 @@ class _MainInfoState extends State<MainInfo> {
               spacing: 10,
               children: <Widget>[
                 Text(
-                  value ? widget.webRTCInfo.otpCode : "XXXX",
+                  value ? webRTCInfo.otpCode : "XXXX",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    Transform(
+                ValueListenableBuilder(
+                  valueListenable: _countDownProgress,
+                  builder: (BuildContext context, double value, Widget? child) {
+                    return Stack(
                       alignment: Alignment.center,
-                      transform: Matrix4.rotationY(math.pi),
-                      child: const SizedBox(
-                        width: 30,
-                        height: 30,
-                        child: CircularProgressIndicator(
-                          //value: 0.3, // todo: otp timer
-                          strokeWidth: 4,
-                          backgroundColor: Colors.black,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                      children: <Widget>[
+                        Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.rotationY(math.pi),
+                          child: SizedBox(
+                            width: 30,
+                            height: 30,
+                            child: CircularProgressIndicator(
+                              value: value,
+                              strokeWidth: 4,
+                              backgroundColor: Colors.black,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                  Colors.white),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Text(
-                      widget.webRTCInfo.otpTimer.toString(),
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                        Text(
+                          _countDownValue.toString(),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
                 IconButton(
                   onPressed: () {

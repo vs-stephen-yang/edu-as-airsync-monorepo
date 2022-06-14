@@ -1,6 +1,5 @@
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/control_socket.dart';
-import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
@@ -149,9 +148,7 @@ class _HomeState extends State<Home> {
                 );
               },
             ),
-            MainInfo(
-              webRTCInfo: WebRTCInfo.getInstance(),
-            ),
+            const MainInfo(),
             ValueListenableBuilder(
               valueListenable: Home.showStreamFunction,
               builder: (BuildContext context, bool value, Widget? child) {
