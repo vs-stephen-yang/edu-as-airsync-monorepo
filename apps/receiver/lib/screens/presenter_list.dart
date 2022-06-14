@@ -79,7 +79,7 @@ class PresenterListState extends State<PresenterList> {
                                 if (value) {
                                   EasyDebounce.debounce(
                                       'stop_play',
-                                      Duration(milliseconds: 1500),
+                                      Duration(milliseconds: 1000),
                                           () {
                                             if (widget.isSplit) {
                                               bool bAdd = false;
@@ -124,7 +124,7 @@ class PresenterListState extends State<PresenterList> {
                                           });
                                 } else {
                                   EasyDebounce.debounce('stop_play',
-                                      Duration(milliseconds: 1500), () {
+                                      Duration(milliseconds: 1000), () {
                                         if (display.presenterId == id) display.presenterId = '';
                                         // AppAnalytics().trackEventPresentClicked();
                                         moderatorSocket.peerAction('stop', peer,
