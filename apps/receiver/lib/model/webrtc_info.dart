@@ -13,7 +13,6 @@ class WebRTCInfo {
   String licenseName = '';
   List<String> featureList = [];
   String otpCode = '';
-  int otpTimer = 0;
 
   bool isUIStateChanged = true;
 

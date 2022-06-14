@@ -83,16 +83,19 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
         },
         body: json.encode({'id': instanceID, 'count': '1'}));
 
-    if (response.statusCode >= HttpStatus.created) {
+    if (response.statusCode == HttpStatus.created) {
       Map json = jsonDecode(response.body);
-      List jsonArray = json['list'];
-      mWebRTCInfo.otpCode = jsonArray[0]['code'];
-      mWebRTCInfo.otpTimer = mWebRTCInfo.otpCode == "-" ? 0 : 30;
-      emit(MainInfoState.getOneTimePasswordSuccess);
-    } else {
-      mWebRTCInfo.otpCode = "-";
-      mWebRTCInfo.otpTimer = 0;
-      emit(MainInfoState.getOneTimePasswordError);
+      if (json.containsKey('list')) {
+        List jsonArray = json['list'];
+        if (jsonArray.isNotEmpty) {
+          mWebRTCInfo.otpCode = jsonArray[0]['code'] ?? '';
+          if (mWebRTCInfo.otpCode.isNotEmpty) {
+            emit(MainInfoState.getOneTimePasswordSuccess);
+            return;
+          }
+        }
+      }
     }
+    emit(MainInfoState.getOneTimePasswordError);
   }
 }
