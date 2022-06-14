@@ -1,0 +1,98 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:bloc/bloc.dart';
+import 'package:display_flutter/app_preferences.dart';
+import 'package:display_flutter/model/webrtc_info.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
+
+part 'main_info_event.dart';
+
+part 'main_info_state.dart';
+
+// https://bloclibrary.dev/#/gettingstarted
+class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
+  String apiGateway, instanceID, version;
+  WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
+
+  MainInfoBloc(this.apiGateway, this.instanceID, this.version)
+      : super(MainInfoState.initialState) {
+    on<GetDisplayCode>(_processGetDisplayCode);
+    on<RegisterDisplayCode>(_registerDisplayCode);
+    on<GetOneTimePassword>(_getOneTimePassword);
+  }
+
+  Future<void> _processGetDisplayCode(
+      MainInfoEvent event, Emitter<MainInfoState> emit) async {
+    var api = Uri.parse('$apiGateway/presentation/displays/$instanceID');
+    http.Response response = await http.get(api);
+
+    if (response.statusCode >= HttpStatus.ok &&
+        response.statusCode < HttpStatus.multiStatus) {
+      Map json = jsonDecode(response.body);
+      AppPreferences().set(entityId: json['entityId'] ?? '');
+      mWebRTCInfo.displayCode = json['code'];
+      mWebRTCInfo.token = Uri.encodeComponent(json['token']);
+      Map<String, dynamic> property = json['property'];
+      List<dynamic> license = property['licenses'];
+      mWebRTCInfo.licenseName = license[0]['name'];
+      List<dynamic> features = property['features'];
+      for (String feature in features) {
+        mWebRTCInfo.featureList.add(feature);
+      }
+      emit(MainInfoState.getDisplayCodeSuccess);
+    } else {
+      emit(MainInfoState.getDisplayCodeError);
+    }
+  }
+
+  Future<void> _registerDisplayCode(
+      MainInfoEvent event, Emitter<MainInfoState> emit) async {
+    emit(MainInfoState.registerDisplayCode);
+    var api = Uri.parse('$apiGateway/presentation/displays');
+    var property = {
+      'version': version,
+      'platform': 'android',
+      'capacities': '[]'
+    };
+    http.Response response = await http.post(api,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: json.encode({'id': instanceID, 'property': property}));
+
+    if (response.statusCode >= HttpStatus.ok &&
+        response.statusCode < HttpStatus.multiStatus) {
+      emit(MainInfoState.registerDisplayCodeSuccess);
+    } else {
+      emit(MainInfoState.registerDisplayCodeError);
+    }
+  }
+
+  Future<void> _getOneTimePassword(
+      MainInfoEvent event, Emitter<MainInfoState> emit) async {
+    emit(MainInfoState.getOneTimePassword);
+    var api = Uri.parse('$apiGateway/presentation/displays/otp/generate');
+
+    http.Response response = await http.post(api,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: json.encode({'id': instanceID, 'count': '1'}));
+
+    if (response.statusCode >= HttpStatus.created) {
+      Map json = jsonDecode(response.body);
+      List jsonArray = json['list'];
+      mWebRTCInfo.otpCode = jsonArray[0]['code'];
+      mWebRTCInfo.otpTimer = mWebRTCInfo.otpCode == "-" ? 0 : 30;
+      emit(MainInfoState.getOneTimePasswordSuccess);
+    } else {
+      mWebRTCInfo.otpCode = "-";
+      mWebRTCInfo.otpTimer = 0;
+      emit(MainInfoState.getOneTimePasswordError);
+    }
+  }
+}

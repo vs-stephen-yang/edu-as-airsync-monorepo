@@ -8,14 +8,12 @@ class WebRTCInfo {
   WebRTCInfo.internal();
 
   String? instanceId;
-  String token = "";
-  String displayCode = "";
-  String licenseName = "";
+  String token = '';
+  String displayCode = '';
+  String licenseName = '';
   List<String> featureList = [];
-  String? otpCode;
+  String otpCode = '';
   int otpTimer = 0;
-  bool otpUpdate = false;
-  bool otpForceUpdate = false;
 
   bool isUIStateChanged = true;
 
