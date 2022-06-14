@@ -103,17 +103,11 @@ class _ModeratorViewState extends State<ModeratorView> {
                               'stop', display.peerList[i].peer,
                               display.displayResponse);
                         } else {
-                          if (display.peerList[i].id != display.presenterId) {
-                            moderatorSocket.peerAction(
-                                'stop', display.peerList[i].peer,
-                                display.displayResponse);
-                          } else {
-                            display.presenterIndex = i;
-                            display.presenterName = peer.presenter;
-                            display.presenterStatus = peer.status;
-                            display.presenterSignalStrength = 0.5;
-                            display.presenterTime = tempPresenterTime;
-                          }
+                          display.presenterIndex = i;
+                          display.presenterName = peer.presenter;
+                          display.presenterStatus = peer.status;
+                          display.presenterSignalStrength = 0.5;
+                          display.presenterTime = tempPresenterTime;
                         }
                       }
                     }
