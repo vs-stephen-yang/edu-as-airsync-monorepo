@@ -1,194 +1,294 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
+import 'package:display_flutter/blocs/main_info_bloc.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class MainInfo extends StatefulWidget {
-  const MainInfo({Key? key, required this.otpCode}) : super(key: key);
-  final String otpCode;
+  const MainInfo({Key? key, required this.webRTCInfo}) : super(key: key);
+  static ValueNotifier<bool> showMainInfo = ValueNotifier(true);
+  final WebRTCInfo webRTCInfo;
 
   @override
   State createState() => _MainInfoState();
 }
 
 class _MainInfoState extends State<MainInfo> {
-  static bool _isEyeOpen = true; // use static to keep value for eye switch
+  late MainInfoBloc _mainInfoBloc;
+  static final ValueNotifier<bool> _isEyeOpen =
+      ValueNotifier(true); // use static to keep value for eye switch
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _mainInfoBloc = MainInfoBloc(
+        AppConfig.of(context)!.settings.apiGateway,
+        AppInstanceCreate().displayInstanceID,
+        AppConfig.of(context)!.appVersion)
+      ..add(GetDisplayCode());
+  }
 
   @override
   Widget build(BuildContext context) {
     AppConfig? appConfig = AppConfig.of(context);
-    return Container(
-      padding: const EdgeInsets.all(30),
-      child: Wrap(
-        direction: Axis.vertical,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: <Widget>[
-          Wrap(
-            direction: Axis.vertical,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 16,
-            children: <Widget>[
-              Text(
-                S.of(context).main_content_display_code,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Text(
-                _getDisplayCode(),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              Text(
-                S.of(context).main_content_one_time_password,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Wrap(
-                direction: Axis.horizontal,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 10,
-                children: <Widget>[
-                  Text(
-                    _isEyeOpen ? widget.otpCode : "XXXX",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w500,
+    return BlocProvider(
+      create: (_) => _mainInfoBloc,
+      child: BlocListener<MainInfoBloc, MainInfoState>(
+        listener: (context, state) {
+          switch (state) {
+            case MainInfoState.getDisplayCodeSuccess:
+              ControlSocket().connect(AppConfig.of(context));
+              BlocProvider.of<MainInfoBloc>(context).add(GetOneTimePassword());
+              break;
+            case MainInfoState.getDisplayCodeError:
+              _showSnackBarMessage('get display code failure');
+              BlocProvider.of<MainInfoBloc>(context).add(RegisterDisplayCode());
+              break;
+            case MainInfoState.registerDisplayCodeSuccess:
+              BlocProvider.of<MainInfoBloc>(context).add(GetDisplayCode());
+              break;
+            case MainInfoState.registerDisplayCodeError:
+              _showSnackBarMessage('register display code failure');
+              Timer(const Duration(seconds: 5), () async {
+                BlocProvider.of<MainInfoBloc>(context)
+                    .add(RegisterDisplayCode());
+              });
+              break;
+            case MainInfoState.getOneTimePasswordSuccess:
+              Timer(const Duration(seconds: 30), () async {
+                BlocProvider.of<MainInfoBloc>(context)
+                    .add(GetOneTimePassword());
+              });
+              break;
+            case MainInfoState.getOneTimePasswordError:
+              _showSnackBarMessage('get OTP failure');
+              Timer(const Duration(seconds: 5), () async {
+                BlocProvider.of<MainInfoBloc>(context)
+                    .add(GetOneTimePassword());
+              });
+              break;
+            default:
+              break;
+          }
+        },
+        child: BlocBuilder<MainInfoBloc, MainInfoState>(
+          builder: (context, state) {
+            return ValueListenableBuilder(
+              valueListenable: MainInfo.showMainInfo,
+              builder: (BuildContext context, bool value, Widget? child) {
+                return Visibility(
+                  visible: value,
+                  child: Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Wrap(
+                      direction: Axis.vertical,
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: <Widget>[
+                        _buildMainInfoWidget(),
+                        _buildEnrollWidget(appConfig),
+                      ],
                     ),
                   ),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: <Widget>[
-                      Transform(
-                        alignment: Alignment.center,
-                        transform: Matrix4.rotationY(math.pi),
-                        child: const SizedBox(
-                          width: 30,
-                          height: 30,
-                          child: CircularProgressIndicator(
-                            //value: 0.3, // todo: otp timer
-                            strokeWidth: 4,
-                            backgroundColor: Colors.black,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        ),
-                      ),
-                      Text(
-                        WebRTCInfo.getInstance().otpTimer.toString(),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _isEyeOpen = !_isEyeOpen;
-                      });
-                    },
-                    icon: Image.asset(
-                      _isEyeOpen
-                          ? 'assets/images/ic_eye_open.png'
-                          : 'assets/images/ic_eye_close.png',
-                      width: 48,
-                      height: 48,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Visibility(
-            visible: AppPreferences().entityId.isEmpty,
-            child: Wrap(
-              direction: Axis.vertical,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 16,
-              children: <Widget>[
-                Wrap(
-                  direction: Axis.horizontal,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 10,
-                  children: <Widget>[
-                    Container(
-                      height: 2,
-                      width: 50,
-                      color: Colors.white,
-                    ),
-                    Text(
-                      S.of(context).main_content_scan_or,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Container(
-                      height: 2,
-                      width: 50,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-                QrImage(
-                  data: appConfig != null
-                      ? (AppInstanceCreate().isInstalledInVBS100)
-                          ? appConfig.settings.prefixQRCode +
-                              AppInstanceCreate().serialNumber
-                          : appConfig.settings.prefixQRCode +
-                              AppInstanceCreate().instanceID
-                      : '',
-                  version: QrVersions.auto,
-                  size: 120.0,
-                  backgroundColor: Colors.white,
-                  embeddedImage: const Svg('assets/images/ic_logo_my.svg'),
-                  embeddedImageStyle: QrEmbeddedImageStyle(
-                    // Cannot set too large, will scan failure!!
-                    size: const Size(25, 25),
-                  ),
-                ),
-                Text(
-                  S.of(context).main_content_scan_to_enroll,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
 
   _getDisplayCode() {
     String result = '';
-    for (int i = 0; i < WebRTCInfo.getInstance().displayCode.length; i++) {
+    for (int i = 0; i < widget.webRTCInfo.displayCode.length; i++) {
       if (i % 3 == 0 && result.isNotEmpty) {
         result += '-';
       }
-      result += WebRTCInfo.getInstance().displayCode.substring(i, i + 1);
+      result += widget.webRTCInfo.displayCode.substring(i, i + 1);
     }
     return result;
+  }
+
+  _showSnackBarMessage(String message) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+  }
+
+  _buildMainInfoWidget() {
+    return Wrap(
+      direction: Axis.vertical,
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 16,
+      children: <Widget>[
+        Text(
+          S.of(context).main_content_display_code,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 30,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        Text(
+          _getDisplayCode(),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 25,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        Text(
+          S.of(context).main_content_one_time_password,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 30,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        ValueListenableBuilder(
+          valueListenable: _isEyeOpen,
+          builder: (BuildContext context, bool value, Widget? child) {
+            return Wrap(
+              direction: Axis.horizontal,
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 10,
+              children: <Widget>[
+                Text(
+                  value ? widget.webRTCInfo.otpCode : "XXXX",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationY(math.pi),
+                      child: const SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: CircularProgressIndicator(
+                          //value: 0.3, // todo: otp timer
+                          strokeWidth: 4,
+                          backgroundColor: Colors.black,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      widget.webRTCInfo.otpTimer.toString(),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  onPressed: () {
+                    _isEyeOpen.value = !_isEyeOpen.value;
+                  },
+                  icon: Image.asset(
+                    value
+                        ? 'assets/images/ic_eye_open.png'
+                        : 'assets/images/ic_eye_close.png',
+                    width: 48,
+                    height: 48,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  _buildEnrollWidget(AppConfig? appConfig) {
+    return Visibility(
+      visible: AppPreferences().entityId.isEmpty,
+      child: Wrap(
+        direction: Axis.vertical,
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 16,
+        children: <Widget>[
+          Wrap(
+            direction: Axis.horizontal,
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 10,
+            children: <Widget>[
+              Container(
+                height: 2,
+                width: 50,
+                color: Colors.white,
+              ),
+              Text(
+                S.of(context).main_content_scan_or,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Container(
+                height: 2,
+                width: 50,
+                color: Colors.white,
+              ),
+            ],
+          ),
+          // Add size box to prevent flick.
+          SizedBox(
+            width: 120,
+            height: 120,
+            child: QrImage(
+              data: appConfig != null
+                  ? (AppInstanceCreate().isInstalledInVBS100)
+                      ? appConfig.settings.prefixQRCode +
+                          AppInstanceCreate().serialNumber
+                      : appConfig.settings.prefixQRCode +
+                          AppInstanceCreate().instanceID
+                  : '',
+              version: QrVersions.auto,
+              size: 120.0,
+              backgroundColor: Colors.white,
+              embeddedImage: const Svg('assets/images/ic_logo_my.svg'),
+              embeddedImageStyle: QrEmbeddedImageStyle(
+                // Cannot set too large, will scan failure!!
+                size: const Size(25, 25),
+              ),
+            ),
+          ),
+          Text(
+            S.of(context).main_content_scan_to_enroll,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 30,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

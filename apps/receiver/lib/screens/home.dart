@@ -1,21 +1,18 @@
 import 'package:display_flutter/app_instance_create.dart';
-import 'package:display_flutter/blocs/display_code/display_code_bloc.dart';
 import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/split_screen.dart';
-import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/tittle_bar.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
   static ValueNotifier<bool> showTitleBottomBar = ValueNotifier(true);
-  static ValueNotifier<bool> showMainInfo = ValueNotifier(true);
   static ValueNotifier<bool> showStreamFunction = ValueNotifier(true);
 
   @override
@@ -23,21 +20,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late DisplayCodeBloc _displayCodeBloc;
   double _fullWidth = 0, _fullHeight = 0, _halfWidth = 0, _halfHeight = 0;
   final List<bool> _isSelectedList = List.filled(4, false, growable: false);
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _displayCodeBloc = DisplayCodeBloc(
-        AppConfig.of(context)!.settings.apiGateway,
-        AppInstanceCreate().displayInstanceID,
-        AppConfig.of(context)!.appVersion);
-    if (_displayCodeBloc.state is DisplayCodeInitial) {
-      _displayCodeBloc.add(GetDisplayCode());
-    }
-  }
 
   @override
   void dispose() {
@@ -165,23 +149,8 @@ class _HomeState extends State<Home> {
                 );
               },
             ),
-            BlocProvider(
-              create: (context) => _displayCodeBloc,
-              child: BlocBuilder<DisplayCodeBloc, DisplayCodeState>(
-                builder: (context, state) {
-                  if (state is DisplayCodeSuccess) {
-                    ControlSocket().connect(AppConfig.of(context));
-                  }
-                  return ValueListenableBuilder(
-                    valueListenable: Home.showMainInfo,
-                    builder: (BuildContext context, bool value, Widget? child) {
-                      return Visibility(
-                          visible: value,
-                          child: MainInfo(otpCode: _displayCodeBloc.otp));
-                    },
-                  );
-                },
-              ),
+            MainInfo(
+              webRTCInfo: WebRTCInfo.getInstance(),
             ),
             ValueListenableBuilder(
               valueListenable: Home.showStreamFunction,
