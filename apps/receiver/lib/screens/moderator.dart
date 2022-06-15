@@ -306,7 +306,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                   flex: 8,
                   child: GestureDetector(
                     onTap: () {
-                      verifyCode('${AppConfig.of(context)?.settings.apiGateway}/presentation/displays/qrcode/binding?code=${mWebRTCInfo.displayCode}&otp=${mWebRTCInfo.otpCode}');
+                      verifyCode();
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -404,7 +404,7 @@ class _ModeratorViewState extends State<ModeratorView> {
     Displays().getDisplays().forEach((element) {
       // AppAnalytics()
       //     .trackEventMeetingEnded(element.displayId, element.meetingId);
-      moderatorSocket.unBindFromDisplay(element.displayId);
+      moderatorSocket.unBindFromDisplay(element.displayId, mWebRTCInfo.token);
     });
     moderatorSocket.disconnect();
     Displays().removeAllDisplayInfo();
@@ -412,27 +412,15 @@ class _ModeratorViewState extends State<ModeratorView> {
     StreamFunction.showModerator.value = false;
   }
 
-  bool verifyCode(String dataString) {
+  bool verifyCode() {
     var moderator = moderatorSocket.createModerator('Guest', '');
-    AppPreferences()
-        .set(moderatorId: moderator.id);
+    AppPreferences().set(moderatorId: moderator.id);
     moderatorSocket.connectAndListen(context);
-    if (!dataString.startsWith('https://')) {
-      ModeratorMessage.showSnackMessage(context, false, S.of(context).moderator_verifyCode_fail);
-      return false;
-    }
-    var list = dataString.split('?');
-    if (list.isEmpty || list[1].isEmpty) {
-      ModeratorMessage.showSnackMessage(context, false, S.of(context).moderator_verifyCode_fail);
-      return false;
-    }
-    Map<String, String> query = GetString.splitQueryString(list[1]);
-    if (query['code'] == null || query['otp'] == null) {
-      ModeratorMessage.showSnackMessage(context, false, S.of(context).moderator_verifyCode_fail);
-      return false;
-    }
     try {
-      moderatorSocket.bindToDisplay(query['code'], query['otp']).then((value) {
+      moderatorSocket
+          .bindToDisplay(
+              mWebRTCInfo.displayCode, mWebRTCInfo.otpCode, mWebRTCInfo.token)
+          .then((value) {
         // AppAnalytics().trackEventMeetingStarted(
         //     value['code'] ?? '', value['property']['meetingId'] ?? '');
         Future.delayed(const Duration(seconds: 1), () {
