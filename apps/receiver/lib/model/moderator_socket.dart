@@ -14,6 +14,8 @@ import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:uuid/uuid.dart';
 
+final moderatorSocket = ModeratorSocket();
+
 class ModeratorSocket {
   StreamSocket streamSocket = StreamSocket();
   StreamPeerlist streamPeerlist = StreamPeerlist();
@@ -170,8 +172,11 @@ class ModeratorSocket {
     });
   }
 
-  Future unBindFromDisplay(code) async {
-    var headers = {'Content-Type': 'application/json'};
+  Future unBindFromDisplay(code, token) async {
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
     var api = Uri.parse('$gatewayUrl/presentation/displays/moderator/unbind');
     print('api: $api');
     var request = http.Request('PATCH', api);
@@ -192,8 +197,11 @@ class ModeratorSocket {
     }
   }
 
-  Future bindToDisplay(code, otp) async {
-    var headers = {'Content-Type': 'application/json'};
+  Future bindToDisplay(code, otp, token) async {
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
     var api = Uri.parse('$gatewayUrl/presentation/displays/moderator');
     print('bindToDisplay api: $api');
     var request = http.Request('POST', api);
@@ -202,7 +210,6 @@ class ModeratorSocket {
     request.headers.addAll(headers);
     http.StreamedResponse streamedResponse = await request.send();
     try {
-      print('bindToDisplay try');
       dynamic response =
           await ApiResponseFactory.returnResponse(streamedResponse);
       print('bindToDisplay: $response');
@@ -256,5 +263,3 @@ class ModeratorSocket {
     setModeratorResponse.dispose();
   }
 }
-
-final moderatorSocket = ModeratorSocket();
