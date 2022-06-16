@@ -14,8 +14,6 @@ class WebRTCInfo {
   List<String> featureList = [];
   String otpCode = '';
 
-  bool isUIStateChanged = true;
-
   PresentationState presentationState = PresentationState.stopStreaming;
 
   bool moderatorMode = false;
@@ -28,12 +26,12 @@ class WebRTCInfo {
   bool isShowDelegate = false;
   bool isShowCode = false;
 
-  String? presenterId;
-  String? presenterName;
-  String? meetingId;
-  String? allowId;
-  String? clientId;
-  String? nextId;
+  String presenterId = '';
+  String presenterName = '';
+  String meetingId = '';
+  String allowId = '';
+  String clientId = '';
+  String nextId = '';
 }
 
 enum PresentationState {

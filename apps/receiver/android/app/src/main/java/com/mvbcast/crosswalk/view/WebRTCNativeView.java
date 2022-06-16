@@ -143,7 +143,7 @@ public class WebRTCNativeView implements PlatformView,
 
         if (mActivityRef.get() != null) {
             mActivityRef.get().runOnUiThread(() ->
-                    methodChannel.invokeMethod("stopConnectionTimeoutTimer", null));
+                    methodChannel.invokeMethod("onServerDisconnected", null));
         }
     }
 
@@ -153,9 +153,7 @@ public class WebRTCNativeView implements PlatformView,
 
         if (mActivityRef.get() != null) {
             mActivityRef.get().runOnUiThread(() -> {
-                methodChannel.invokeMethod("stopConnectionTimeoutTimer", null);
-
-                methodChannel.invokeMethod("sendMessageToControlSocket", null);
+                methodChannel.invokeMethod("onStreamAdded", null);
             });
         }
 
@@ -307,6 +305,9 @@ public class WebRTCNativeView implements PlatformView,
                     }
                 }
                 mSurfaceViewRenderer.setVisibility(View.GONE);
+            }
+            if (methodChannel != null) {
+                methodChannel.invokeMethod("disconnectedP2pClient", null);
             }
         });
     }
