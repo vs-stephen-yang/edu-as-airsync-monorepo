@@ -1,3 +1,4 @@
+import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/screens/language_selection.dart';
 import 'package:display_flutter/screens/moderator.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -13,32 +14,64 @@ class StreamFunction extends StatefulWidget {
   static ValueNotifier<bool> showWhatsNew = ValueNotifier(false);
 
   @override
-  State<StatefulWidget> createState() => _StreamFunctionStates();
+  State<StatefulWidget> createState() => StreamFunctionStates();
 }
 
-class _StreamFunctionStates extends State<StreamFunction> {
+class StreamFunctionStates extends State<StreamFunction> {
   @override
   Widget build(BuildContext context) {
+    // region SplitScreen icon
+    String iconSplitScreen = '';
+    if (WebRTCInfo.getInstance().moderatorMode) {
+      iconSplitScreen = 'assets/images/ic_split_screen_off.svg';
+    } else {
+      if (SplitScreen.splitScreenEnabled.value) {
+        iconSplitScreen = 'assets/images/ic_split_screen_activate.svg';
+      } else {
+        iconSplitScreen = 'assets/images/ic_split_screen_on.svg';
+      }
+    }
+    // endregion
+
+    // region Moderator icon
+    String iconModerator = '';
+    if (!WebRTCInfo.getInstance().moderatorMode &&
+        SplitScreen.splitScreenEnabled.value) {
+      iconModerator = 'assets/images/ic_moderator_off.svg';
+    } else {
+      if (WebRTCInfo.getInstance().moderatorMode) {
+        iconModerator = 'assets/images/ic_moderator_activate.svg';
+      } else {
+        iconModerator = 'assets/images/ic_moderator_on.svg';
+      }
+    }
+    // endregion
+
     return Stack(
-      children: [
+      children: <Widget>[
         Column(
-          children: [
+          children: <Widget>[
             IconButton(
               iconSize: 48,
-              onPressed: () {
-                StreamFunction.showSplitScreen.value = true;
-              },
-              icon: const Image(
-                image: Svg('assets/images/ic_split_screen.svg'),
+              onPressed: WebRTCInfo.getInstance().moderatorMode
+                  ? null
+                  : () {
+                      StreamFunction.showSplitScreen.value = true;
+                    },
+              icon: Image(
+                image: Svg(iconSplitScreen),
               ),
             ),
             IconButton(
               iconSize: 48,
-              onPressed: () {
-                StreamFunction.showModerator.value = true;
-              },
-              icon: const Image(
-                image: Svg('assets/images/ic_moderator_off.svg'),
+              onPressed: (!WebRTCInfo.getInstance().moderatorMode &&
+                      SplitScreen.splitScreenEnabled.value)
+                  ? null
+                  : () {
+                      StreamFunction.showModerator.value = true;
+                    },
+              icon: Image(
+                image: Svg(iconModerator),
               ),
             ),
             IconButton(
@@ -65,7 +98,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
             valueListenable: StreamFunction.showSplitScreen,
             builder: (BuildContext context, bool value, Widget? child) {
               return Visibility(
-                visible: StreamFunction.showSplitScreen.value,
+                visible: value,
                 child: const SplitScreen(),
               );
             }),
@@ -73,7 +106,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
             valueListenable: StreamFunction.showModerator,
             builder: (BuildContext context, bool value, Widget? child) {
               return Visibility(
-                visible: StreamFunction.showModerator.value,
+                visible: value,
                 child: const ModeratorView(),
               );
             }),
@@ -81,16 +114,14 @@ class _StreamFunctionStates extends State<StreamFunction> {
             valueListenable: StreamFunction.showLanguage,
             builder: (BuildContext context, bool value, Widget? child) {
               return Visibility(
-                visible: StreamFunction.showLanguage.value,
+                visible: value,
                 child: const LanguageSelection(),
               );
             }),
         ValueListenableBuilder(
             valueListenable: StreamFunction.showWhatsNew,
             builder: (BuildContext context, bool value, Widget? child) {
-              return Visibility(
-                  visible: StreamFunction.showWhatsNew.value,
-                  child: const WhatsNew());
+              return Visibility(visible: value, child: const WhatsNew());
             }),
       ],
     );

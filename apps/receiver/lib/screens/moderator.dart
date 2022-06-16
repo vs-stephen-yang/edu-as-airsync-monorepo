@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_preferences.dart';
@@ -5,26 +6,19 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/displays.dart';
 import 'package:display_flutter/model/moderator_socket.dart';
 import 'package:display_flutter/model/webrtc_info.dart';
-import 'package:display_flutter/screens/moderator_message.dart';
+import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/presenter_list.dart';
 import 'package:display_flutter/screens/split_screen.dart';
-import 'package:display_flutter/settings/app_config.dart';
-import 'package:display_flutter/utility/get_string.dart';
 import 'package:display_flutter/widgets/custom_dialog.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'dart:math' as math;
-
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
-class ModeratorView extends StatefulWidget{
+class ModeratorView extends StatefulWidget {
   const ModeratorView({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return _ModeratorViewState();
-  }
+  State createState() => _ModeratorViewState();
 }
 
 class _ModeratorViewState extends State<ModeratorView> {
@@ -49,7 +43,8 @@ class _ModeratorViewState extends State<ModeratorView> {
       child: StreamBuilder(
           stream: moderatorSocket.streamPeerlist.getResponse,
           builder: (BuildContext context, AsyncSnapshot<Map> peerlistSnapshot) {
-            if (peerlistSnapshot.hasData && moderatorSocket.peerListHasNewData) {
+            if (peerlistSnapshot.hasData &&
+                moderatorSocket.peerListHasNewData) {
               moderatorSocket.peerListHasNewData = false;
               var messageFor = peerlistSnapshot.data!['messageFor'];
               var action = peerlistSnapshot.data!['action'];
@@ -57,7 +52,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                 var displays = Displays().getDisplays();
                 if (displays.contains(DisplayInfo(displayId: messageFor))) {
                   DisplayInfo display = displays.firstWhere(
-                          (element) => element.displayId == messageFor,
+                      (element) => element.displayId == messageFor,
                       orElse: null);
                   int tempPresenterTime = display.presenterTime;
                   display.clearStatus();
@@ -79,8 +74,9 @@ class _ModeratorViewState extends State<ModeratorView> {
                       if (SplitScreen.splitScreenEnabled.value) {
                         if (display.splitIndexMap.containsValue(peer.id)) {
                           display.splitIndexMap.forEach((key, value) {
-                            if (value == (peer.id))
+                            if (value == (peer.id)) {
                               display.splitIndexMap[key] = '';
+                            }
                           });
                         }
                       }
@@ -100,7 +96,8 @@ class _ModeratorViewState extends State<ModeratorView> {
                       } else {
                         if (display.peerList[i].id != display.presenterId) {
                           moderatorSocket.peerAction(
-                              'stop', display.peerList[i].peer,
+                              'stop',
+                              display.peerList[i].peer,
                               display.displayResponse);
                         } else {
                           display.presenterIndex = i;
@@ -125,64 +122,70 @@ class _ModeratorViewState extends State<ModeratorView> {
                   child: Row(
                     children: <Widget>[
                       Expanded(
-                          child: FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: IconButton(
-                              icon: const Icon(Icons.arrow_back_ios,
-                                  color: AppColors.primary_white),
-                              onPressed: () {
-                                StreamFunction.showModerator.value = false;
-                              },
-                            ),
-                          )),
-                      Expanded(
-                          flex: 6,
-                          child: Text(
-                            S.of(context).moderator_presentersList,
-                            style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
+                        child: FittedBox(
+                          fit: BoxFit.fitHeight,
+                          child: IconButton(
+                            icon: const Icon(Icons.arrow_back_ios,
                                 color: AppColors.primary_white),
-                          )),
+                            onPressed: () {
+                              StreamFunction.showModerator.value = false;
+                            },
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 6,
+                        child: Text(
+                          S.of(context).moderator_presentersList,
+                          style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary_white),
+                        ),
+                      ),
                       const Spacer(
                         flex: 1,
                       ),
                       Expanded(
-                          child: FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: IconButton(
-                              icon: SpiltIcon(_splitIconKey),
-                              onPressed: () {
-                                if (Displays().getDisplays().isNotEmpty)
-                              _callSplitScreenDialog();
-                          },
-                            ),
-                          )),
+                        child: FittedBox(
+                          fit: BoxFit.fitHeight,
+                          child: IconButton(
+                            icon: SpiltIcon(_splitIconKey),
+                            onPressed: () {
+                              if (Displays().getDisplays().isNotEmpty) {
+                                _callSplitScreenDialog();
+                              }
+                            },
+                          ),
+                        ),
+                      ),
                       Expanded(
-                          child: FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: IconButton(
-                              icon: EditIcon(_editIconKey),
-                              onPressed: () {
-                                if (Displays()
-                                    .getSelectedDisplay()
-                                    .peerList
-                                    .isNotEmpty) {
-                                  bEditClick = !bEditClick;
-                                  _attendeesListKey.currentState!
-                                      .updateEditStatus(bEditClick);
-                                }
-                              },
-                            ),
-                          )),
+                        child: FittedBox(
+                          fit: BoxFit.fitHeight,
+                          child: IconButton(
+                            icon: EditIcon(_editIconKey),
+                            onPressed: () {
+                              if (Displays()
+                                  .getSelectedDisplay()
+                                  .peerList
+                                  .isNotEmpty) {
+                                bEditClick = !bEditClick;
+                                _attendeesListKey.currentState!
+                                    .updateEditStatus(bEditClick);
+                              }
+                            },
+                          ),
+                        ),
+                      ),
                       Expanded(
-                          child: FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: Transform.rotate(
-                                angle: 90 * math.pi / 180,
-                                child: const Icon(Icons.horizontal_rule,
-                                    color: AppColors.primary_white)),
-                          )),
+                        child: FittedBox(
+                          fit: BoxFit.fitHeight,
+                          child: Transform.rotate(
+                              angle: 90 * math.pi / 180,
+                              child: const Icon(Icons.horizontal_rule,
+                                  color: AppColors.primary_white)),
+                        ),
+                      ),
                       getLogOutIcon(),
                     ],
                   ),
@@ -199,11 +202,10 @@ class _ModeratorViewState extends State<ModeratorView> {
                         var action = socketSnapshot.data!['action'];
                         switch (action) {
                           case ModeratorSocket.DISPLAY_STATE_UPDATE:
-                            if (displays.contains(
-                                DisplayInfo(displayId: messageFor))) {
+                            if (displays
+                                .contains(DisplayInfo(displayId: messageFor))) {
                               DisplayInfo display = displays.firstWhere(
-                                      (element) =>
-                                  element.displayId == messageFor,
+                                  (element) => element.displayId == messageFor,
                                   orElse: null);
                               display.uiStateCode = socketSnapshot
                                   .data!['extra']['uiState']['code'];
@@ -231,8 +233,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                     }),
                 StreamBuilder(
                   stream: moderatorSocket.setModeratorResponse.getResponse,
-                  builder:
-                      (BuildContext context, AsyncSnapshot<Map> snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
                     if (snapshot.hasData &&
                         moderatorSocket.setModeratorHasNewData) {
                       moderatorSocket.setModeratorHasNewData = false;
@@ -265,6 +266,7 @@ class _ModeratorViewState extends State<ModeratorView> {
           }),
     );
   }
+
   void updateLogoutIconState() {
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       _logoutIconKey.currentState?.setState(() {});
@@ -281,15 +283,16 @@ class _ModeratorViewState extends State<ModeratorView> {
 
   Widget getLogOutIcon() {
     return Expanded(
-        child: FittedBox(
-          fit: BoxFit.fitHeight,
-          child: IconButton(
-            icon: LogoutIcon(_logoutIconKey),
-            onPressed: () {
-              if (Displays().getDisplays().isNotEmpty) _callLogOutDialog();
-            },
-          ),
-        ));
+      child: FittedBox(
+        fit: BoxFit.fitHeight,
+        child: IconButton(
+          icon: LogoutIcon(_logoutIconKey),
+          onPressed: () {
+            if (Displays().getDisplays().isNotEmpty) _callLogOutDialog();
+          },
+        ),
+      ),
+    );
   }
 
   Widget getActivateButton() {
@@ -317,7 +320,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                         color: AppColors.primary_white,
                       ),
                       child: Text(S.of(context).moderator_activate,
-                          style: TextStyle(color: AppColors.neutral1)),
+                          style: const TextStyle(color: AppColors.neutral1)),
                     ),
                   ),
                 ),
@@ -361,8 +364,8 @@ class _ModeratorViewState extends State<ModeratorView> {
                   if (value != '') {
                     display.peerList.forEach((element) {
                       if (element.id == value) {
-                        moderatorSocket.peerAction('stop', element.peer,
-                            display.displayResponse);
+                        moderatorSocket.peerAction(
+                            'stop', element.peer, display.displayResponse);
                       }
                     });
                   }
@@ -388,6 +391,9 @@ class _ModeratorViewState extends State<ModeratorView> {
             // AppAnalytics().trackEventLogoutYes();
             setState(() {
               _logout();
+              streamFunctionKey.currentState?.setState(() {
+                WebRTCInfo.getInstance().moderatorMode = false;
+              });
             });
           },
           onNegative: () {
@@ -399,7 +405,9 @@ class _ModeratorViewState extends State<ModeratorView> {
   }
 
   void _logout() {
-    if (SplitScreen.splitScreenEnabled.value) SplitScreen.splitScreenEnabled.value = false;
+    if (SplitScreen.splitScreenEnabled.value) {
+      SplitScreen.splitScreenEnabled.value = false;
+    }
     _attendeesListKey.currentState?.removeAllPresenter();
     Displays().getDisplays().forEach((element) {
       // AppAnalytics()
@@ -424,7 +432,9 @@ class _ModeratorViewState extends State<ModeratorView> {
         // AppAnalytics().trackEventMeetingStarted(
         //     value['code'] ?? '', value['property']['meetingId'] ?? '');
         Future.delayed(const Duration(seconds: 1), () {
-          setState(() {});
+          setState(() {
+            streamFunctionKey.currentState?.setState(() {});
+          });
         });
       }).catchError((dynamic e) {});
     } catch (e) {
@@ -448,10 +458,11 @@ class SpiltIconState extends State<SpiltIcon> {
   Widget build(BuildContext context) {
     return Image(
       image: Displays().getDisplays().isEmpty
-          ? Svg('assets/images/ic_moderator_split_screen_off.svg')
+          ? const Svg('assets/images/ic_moderator_split_screen_off.svg')
           : SplitScreen.splitScreenEnabled.value
-              ? Svg('assets/images/ic_moderator_split_screen_activate.svg')
-              : Svg('assets/images/ic_moderator_split_screen_on.svg'),
+              ? const Svg(
+                  'assets/images/ic_moderator_split_screen_activate.svg')
+              : const Svg('assets/images/ic_moderator_split_screen_on.svg'),
     );
   }
 }
