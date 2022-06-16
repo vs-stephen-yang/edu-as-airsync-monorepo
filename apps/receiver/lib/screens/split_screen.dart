@@ -1,4 +1,5 @@
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -8,7 +9,7 @@ class SplitScreen extends StatefulWidget {
   static ValueNotifier<bool> splitScreenEnabled = ValueNotifier(false);
 
   @override
-  _SplitScreenState createState() => _SplitScreenState();
+  State createState() => _SplitScreenState();
 }
 
 class _SplitScreenState extends State<SplitScreen>
@@ -122,6 +123,7 @@ class _SplitScreenState extends State<SplitScreen>
                 setState(() {
                   SplitScreen.splitScreenEnabled.value =
                       !SplitScreen.splitScreenEnabled.value;
+                  streamFunctionKey.currentState?.setState(() {});
                 });
               },
               child: Text(
