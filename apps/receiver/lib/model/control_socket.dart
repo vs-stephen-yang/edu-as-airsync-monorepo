@@ -7,9 +7,12 @@ import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
+import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/get_string.dart';
+import 'package:display_flutter/widgets/main_info.dart';
+import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
@@ -106,9 +109,16 @@ class ControlSocket {
           break;
         case 'onStreamAdded':
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+          controller.nativeViewState.switchConnectionState(false);
+          Home.showTitleBottomBar.value = false;
+          StreamFunction.showWaitFunction.value = false;
           sendMessageToControlSocket(mWebRTCInfo.displayCode);
           break;
         case 'disconnectedP2pClient':
+          controller.nativeViewState.switchConnectionState(false);
+          Home.showTitleBottomBar.value = true;
+          StreamFunction.showWaitFunction.value = true;
+          MainInfo.showMainInfo.value = true;
           break;
       }
       return;
@@ -234,9 +244,14 @@ class ControlSocket {
                           allow: allowId, action: 'timeout');
 
                       controller.channel.invokeMethod('disconnectP2pClient');
+                      MainInfo.showMainInfo.value = true;
+                      controller.nativeViewState.switchConnectionState(false);
                     });
                   }
 
+                  MainInfo.showMainInfo.value = false;
+                  selectedController.nativeViewState
+                      .switchConnectionState(true);
                   var arg = {
                     'clientId': mWebRTCInfo.clientId,
                     'allowId': mWebRTCInfo.allowId,
@@ -246,6 +261,9 @@ class ControlSocket {
                   handleP2PClientSuccess(result);
                   // AppCenterAnalyticsHelper.getInstance().EventStreamStart();
                 } on PlatformException catch (e) {
+                  MainInfo.showMainInfo.value = true;
+                  selectedController.nativeViewState
+                      .switchConnectionState(false);
                   handleP2PClientFailure(e.code, e.message);
                   sendMessageToControlSocket(mWebRTCInfo.displayCode,
                       allow: mWebRTCInfo.allowId, action: 'blocked');

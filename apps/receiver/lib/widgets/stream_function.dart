@@ -8,6 +8,8 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class StreamFunction extends StatefulWidget {
   const StreamFunction({Key? key}) : super(key: key);
+
+  static ValueNotifier<bool> showWaitFunction = ValueNotifier(true);
   static ValueNotifier<bool> showSplitScreen = ValueNotifier(false);
   static ValueNotifier<bool> showModerator = ValueNotifier(false);
   static ValueNotifier<bool> showLanguage = ValueNotifier(false);
@@ -49,80 +51,83 @@ class StreamFunctionStates extends State<StreamFunction> {
 
     return Stack(
       children: <Widget>[
-        Column(
-          children: <Widget>[
-            IconButton(
-              iconSize: 48,
-              onPressed: WebRTCInfo.getInstance().moderatorMode
-                  ? null
-                  : () {
-                      StreamFunction.showSplitScreen.value = true;
+        ValueListenableBuilder(
+          valueListenable: StreamFunction.showWaitFunction,
+          builder: (BuildContext context, bool value, Widget? child) {
+            return Visibility(
+              visible: value,
+              child: Column(
+                children: <Widget>[
+                  IconButton(
+                    iconSize: 48,
+                    onPressed: WebRTCInfo.getInstance().moderatorMode
+                        ? null
+                        : () {
+                            StreamFunction.showSplitScreen.value = true;
+                          },
+                    icon: Image(
+                      image: Svg(iconSplitScreen),
+                    ),
+                  ),
+                  IconButton(
+                    iconSize: 48,
+                    onPressed: (!WebRTCInfo.getInstance().moderatorMode &&
+                            SplitScreen.splitScreenEnabled.value)
+                        ? null
+                        : () {
+                            StreamFunction.showModerator.value = true;
+                          },
+                    icon: Image(
+                      image: Svg(iconModerator),
+                    ),
+                  ),
+                  IconButton(
+                    iconSize: 48,
+                    onPressed: () {
+                      StreamFunction.showLanguage.value = true;
                     },
-              icon: Image(
-                image: Svg(iconSplitScreen),
-              ),
-            ),
-            IconButton(
-              iconSize: 48,
-              onPressed: (!WebRTCInfo.getInstance().moderatorMode &&
-                      SplitScreen.splitScreenEnabled.value)
-                  ? null
-                  : () {
-                      StreamFunction.showModerator.value = true;
+                    icon: const Image(
+                      image: Svg('assets/images/ic_language.svg'),
+                    ),
+                  ),
+                  IconButton(
+                    iconSize: 48,
+                    onPressed: () {
+                      StreamFunction.showWhatsNew.value = true;
                     },
-              icon: Image(
-                image: Svg(iconModerator),
+                    icon: const Image(
+                      image: Svg('assets/images/ic_whats_news.svg'),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            IconButton(
-              iconSize: 48,
-              onPressed: () {
-                StreamFunction.showLanguage.value = true;
-              },
-              icon: const Image(
-                image: Svg('assets/images/ic_language.svg'),
-              ),
-            ),
-            IconButton(
-              iconSize: 48,
-              onPressed: () {
-                StreamFunction.showWhatsNew.value = true;
-              },
-              icon: const Image(
-                image: Svg('assets/images/ic_whats_news.svg'),
-              ),
-            ),
-          ],
+            );
+          },
         ),
         ValueListenableBuilder(
-            valueListenable: StreamFunction.showSplitScreen,
-            builder: (BuildContext context, bool value, Widget? child) {
-              return Visibility(
-                visible: value,
-                child: const SplitScreen(),
-              );
-            }),
+          valueListenable: StreamFunction.showSplitScreen,
+          builder: (BuildContext context, bool value, Widget? child) {
+            return Visibility(visible: value, child: const SplitScreen());
+          },
+        ),
         ValueListenableBuilder(
-            valueListenable: StreamFunction.showModerator,
-            builder: (BuildContext context, bool value, Widget? child) {
-              return Visibility(
-                visible: value,
-                child: const ModeratorView(),
-              );
-            }),
+          valueListenable: StreamFunction.showModerator,
+          builder: (BuildContext context, bool value, Widget? child) {
+            return Visibility(visible: value, child: const ModeratorView());
+          },
+        ),
         ValueListenableBuilder(
-            valueListenable: StreamFunction.showLanguage,
-            builder: (BuildContext context, bool value, Widget? child) {
-              return Visibility(
-                visible: value,
-                child: const LanguageSelection(),
-              );
-            }),
+          valueListenable: StreamFunction.showLanguage,
+          builder: (BuildContext context, bool value, Widget? child) {
+            return Visibility(visible: value, child: const LanguageSelection());
+          },
+        ),
         ValueListenableBuilder(
-            valueListenable: StreamFunction.showWhatsNew,
-            builder: (BuildContext context, bool value, Widget? child) {
-              return Visibility(visible: value, child: const WhatsNew());
-            }),
+          valueListenable: StreamFunction.showWhatsNew,
+          builder: (BuildContext context, bool value, Widget? child) {
+            return Visibility(visible: value, child: const WhatsNew());
+          },
+        ),
       ],
     );
   }
