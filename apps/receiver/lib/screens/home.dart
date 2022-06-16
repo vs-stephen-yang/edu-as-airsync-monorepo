@@ -14,7 +14,6 @@ final GlobalKey<StreamFunctionStates> streamFunctionKey = GlobalKey();
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
   static ValueNotifier<bool> showTitleBottomBar = ValueNotifier(true);
-  static ValueNotifier<bool> showStreamFunction = ValueNotifier(true);
 
   @override
   State<StatefulWidget> createState() => _HomeState();
@@ -151,18 +150,10 @@ class _HomeState extends State<Home> {
               },
             ),
             const MainInfo(),
-            ValueListenableBuilder(
-              valueListenable: Home.showStreamFunction,
-              builder: (BuildContext context, bool value, Widget? child) {
-                return Visibility(
-                  visible: value,
-                  child: Positioned(
-                    left: 20,
-                    bottom: 140,
-                    child: StreamFunction(key: streamFunctionKey),
-                  ),
-                );
-              },
+            Positioned(
+              left: 20,
+              bottom: 140,
+              child: StreamFunction(key: streamFunctionKey),
             ),
           ],
         ),
