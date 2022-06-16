@@ -101,11 +101,14 @@ class ControlSocket {
         case 'disposed':
           _webRtcController.remove(controller);
           break;
-        case "stopConnectionTimeoutTimer":
+        case 'onServerDisconnected':
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
           break;
-        case "sendMessageToControlSocket":
+        case 'onStreamAdded':
+          ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
           sendMessageToControlSocket(mWebRTCInfo.displayCode);
+          break;
+        case 'disconnectedP2pClient':
           break;
       }
       return;
@@ -124,7 +127,7 @@ class ControlSocket {
           Moderator moderator = Moderator.fromJson(extra.moderator);
           mWebRTCInfo.moderatorId = moderator.id;
           mWebRTCInfo.moderatorName = moderator.name;
-          mWebRTCInfo.meetingId = extra.moderatedSessionId;
+          mWebRTCInfo.meetingId = extra.moderatedSessionId ?? '';
           mWebRTCInfo.remainingTime =
               extra.endTime! - DateTime.now().millisecondsSinceEpoch;
           List<dynamic>? checkPoints = extra.checkPoints;
@@ -136,7 +139,6 @@ class ControlSocket {
               log('checkpoint: $point');
             }
           }
-          mWebRTCInfo.isUIStateChanged = true;
 
           // AppCenterAnalyticsHelper.getInstance().setEventProperties(buildEventProperties());
           ConnectionTimer.getInstance()
@@ -156,7 +158,6 @@ class ControlSocket {
           mWebRTCInfo.isModeratorLeave = true;
           mWebRTCInfo.moderatorId = "";
           mWebRTCInfo.moderatorName = "";
-          mWebRTCInfo.isUIStateChanged = true;
           mWebRTCInfo.meetingId = "";
 
           // AppCenterAnalyticsHelper.getInstance().setEventProperties(buildEventProperties());
@@ -183,7 +184,6 @@ class ControlSocket {
           Extra extra = Extra.fromJson(resp.extra);
           mWebRTCInfo.isShowCode = extra.code!;
           mWebRTCInfo.isShowDelegate = extra.delegate!;
-          mWebRTCInfo.isUIStateChanged = true;
 
           sendMessageToControlSocket(mWebRTCInfo.displayCode);
           break;
@@ -193,14 +193,13 @@ class ControlSocket {
           switch (statusAction) {
             case 'setClient':
               Extra extra = Extra.fromJson(resp.extra);
-              mWebRTCInfo.clientId = extra.setClientId;
-              mWebRTCInfo.allowId = extra.setAllowedPeer;
-              mWebRTCInfo.nextId = resp.nextId;
+              mWebRTCInfo.clientId = extra.setClientId ?? '';
+              mWebRTCInfo.allowId = extra.setAllowedPeer ?? '';
+              mWebRTCInfo.nextId = resp.nextId ?? '';
               mWebRTCInfo.presentationState = PresentationState.waitForStream;
               Presenter presenter = Presenter.fromJson(extra.presenter);
-              mWebRTCInfo.presenterId = presenter.id;
-              mWebRTCInfo.presenterName = presenter.name;
-              mWebRTCInfo.isUIStateChanged = true;
+              mWebRTCInfo.presenterId = presenter.id ?? '';
+              mWebRTCInfo.presenterName = presenter.name ?? '';
 
               sendMessageToControlSocket(mWebRTCInfo.displayCode);
 
@@ -227,7 +226,7 @@ class ControlSocket {
                   if (!mWebRTCInfo.moderatorMode) {
                     ConnectionTimer.getInstance().startConnectionTimeoutTimer(
                         mWebRTCInfo.displayCode,
-                        mWebRTCInfo.allowId ?? '',
+                        mWebRTCInfo.allowId,
                         selectedController, (displayCode, allowId, controller) {
                       setStateMachine("ConnectionTimeout onFinish");
 
