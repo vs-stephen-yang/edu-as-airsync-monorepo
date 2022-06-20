@@ -195,4 +195,5 @@ class DisplayPeer {
   String status = '';
   dynamic peer;
   late GlobalKey<CheckBoxSwitchState> key;
+  bool waitReply = false;
 }
