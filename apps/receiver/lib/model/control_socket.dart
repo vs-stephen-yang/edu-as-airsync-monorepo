@@ -15,8 +15,6 @@ import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
 
 class ControlSocket {
@@ -28,12 +26,10 @@ class ControlSocket {
   // passes the instantiation to the _instance object
   factory ControlSocket() => _instance;
 
-  late IO.Socket mControlSocketIO;
+  late Socket mControlSocketIO;
   late String _mGatewayUrl, _appVersion;
   final int _maxReconnectAttempts = 5;
   int _displayReconnectAttempts = 0;
-
-  StreamResponse socketResponse = StreamResponse();
 
   final List<WebRTCNativeViewController> _webRtcController =
       <WebRTCNativeViewController>[];
@@ -419,27 +415,5 @@ class ControlSocket {
     });
     sendMessageToControlSocket(mWebRTCInfo.displayCode,
         reply: content.toString());
-  }
-}
-
-class StreamResponse {
-  final _response = BehaviorSubject<Map>();
-  final _errorResponse = BehaviorSubject<Exception>();
-
-  void addResponseMessage(message) {
-    _response.add(message);
-  }
-
-  void addErrorResponseMessage(message) {
-    _response.add(message);
-  }
-
-  Stream<Map> get getResponse => _response.stream;
-
-  Stream<Exception> get getErrorResponse => _errorResponse.stream;
-
-  void dispose() {
-    _response.close();
-    _errorResponse.close();
   }
 }
