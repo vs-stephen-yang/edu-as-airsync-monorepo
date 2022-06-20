@@ -271,7 +271,9 @@ class ControlSocket {
               }
               break;
             case "play":
-              if (userid == mWebRTCInfo.allowId) {
+              Extra extra = Extra.fromJson(resp.extra);
+              var clientid = extra.setClientId ?? '';
+              if (clientid == mWebRTCInfo.presenterId) {
                 try {
                   await _webRtcController[0].channel.invokeMethod("playVideo");
                 } on PlatformException catch (e) {
