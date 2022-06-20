@@ -48,7 +48,9 @@ class _MainInfoState extends State<MainInfo> {
         listener: (context, state) {
           switch (state) {
             case MainInfoState.getDisplayCodeSuccess:
-              ControlSocket().connect(AppConfig.of(context));
+              if (appConfig != null) {
+                ControlSocket().connect(appConfig.settings.apiGateway);
+              }
               BlocProvider.of<MainInfoBloc>(context).add(GetOneTimePassword());
               break;
             case MainInfoState.getDisplayCodeError:

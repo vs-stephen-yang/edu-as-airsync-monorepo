@@ -29,9 +29,8 @@ class WebRTCInfo {
   String presenterId = '';
   String presenterName = '';
   String meetingId = '';
-  String allowId = '';
-  String clientId = '';
-  String nextId = '';
+  String peerToken = '';
+  String peerId = '';
 }
 
 enum PresentationState {

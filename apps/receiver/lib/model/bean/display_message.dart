@@ -1,31 +1,27 @@
 class DisplayMessage {
   String? messageFor;
-  String? userId;
   String? action;
-  dynamic status;
+  String? status;
   dynamic extra;
-  String? direction;
   String? messageId;
   String? nextId;
 
   DisplayMessage({
     this.messageFor,
-    this.userId,
     this.action,
     this.status,
     this.extra,
-    this.direction,
     this.messageId,
     this.nextId,
   });
 
   DisplayMessage.fromJson(Map<String, dynamic> json) {
     messageFor = json['messageFor'];
-    userId = json['userid'];
     action = json['action'];
-    status = json['status'];
+    if (json['status'] is String) {
+      status = json['status'];
+    }
     extra = json['extra'];
-    direction = json['direction'];
     messageId = json['messageId'];
     nextId = json['nextId'];
   }
@@ -33,41 +29,19 @@ class DisplayMessage {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['messageFor'] = messageFor;
-    data['userId'] = userId;
     data['action'] = action;
     data['status'] = status;
     data['extra'] = extra;
-    data['direction'] = direction;
     data['messageId'] = messageId;
     data['nextId'] = nextId;
-
-    return data;
-  }
-}
-
-class Status {
-  String? action;
-  String? status;
-
-  Status({this.action, this.status});
-
-  Status.fromJson(Map<String, dynamic> json) {
-    action = json['action'];
-    status = json['status'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['action'] = action;
-    data['status'] = status;
     return data;
   }
 }
 
 class Extra {
-  String? setClientId;
-  String? setAllowedPeer;
+  dynamic signal;
   dynamic presenter;
+  // todo: confirm below item
   dynamic moderator;
   int? endTime = 0;
   String? moderatedSessionId;
@@ -77,18 +51,18 @@ class Extra {
   bool? delegate = false;
 
   Extra({
-    this.setClientId,
-    this.setAllowedPeer,
+    this.signal,
     this.presenter,
+
     this.moderator,
     this.moderatedSessionId,
     this.checkPoints,
   });
 
   Extra.fromJson(Map<String, dynamic> json) {
-    setClientId = json['setClientId'];
-    setAllowedPeer = json['setAllowedPeer'];
+    signal = json['signal'];
     presenter = json['presenter'];
+
     moderator = json['moderator'];
     endTime = json['endTime'];
     moderatedSessionId = json['moderatedSessionId'];
@@ -100,9 +74,9 @@ class Extra {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['setClientId'] = setClientId;
-    data['setAllowedPeer'] = setAllowedPeer;
+    data['signal'] = signal;
     data['presenter'] = presenter;
+
     data['moderator'] = moderator;
     data['endTime'] = endTime;
     data['moderatedSessionId'] = moderatedSessionId;
@@ -110,6 +84,28 @@ class Extra {
     data['durationRemaining'] = durationRemaining;
     data['code'] = code;
     data['delegate'] = delegate;
+    return data;
+  }
+}
+
+class Signal {
+  String? token;
+  String? peerId;
+
+  Signal({
+    this.token,
+    this.peerId,
+  });
+
+  Signal.fromJson(Map<String, dynamic> json) {
+    token = json['token'];
+    peerId = json['peerId'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['token'] = token;
+    data['peerId'] = peerId;
     return data;
   }
 }
