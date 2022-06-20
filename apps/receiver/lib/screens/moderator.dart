@@ -55,6 +55,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                       (element) => element.displayId == messageFor,
                       orElse: null);
                   int tempPresenterTime = display.presenterTime;
+                  var temp = display.peerList;
                   display.clearStatus();
 
                   List value = peerlistSnapshot.data!['extra']['peerlist'];
@@ -67,6 +68,15 @@ class _ModeratorViewState extends State<ModeratorView> {
                     peer.status = value[i]['status'];
                     peer.peer = value[i];
                     peer.key = GlobalKey();
+                    String action = value[i]['action'];
+                    temp.forEach((element) {
+                      if (element.id == peer.id) {
+                        peer.waitReply = element.waitReply;
+                      }
+                    });
+                    if(action == peer.status) {
+                      peer.waitReply = false;
+                    }
 
                     if (peer.status != 'remove') {
                       display.peerList.add(peer);
@@ -405,9 +415,7 @@ class _ModeratorViewState extends State<ModeratorView> {
   }
 
   void _logout() {
-    if (SplitScreen.splitScreenEnabled.value) {
-      SplitScreen.splitScreenEnabled.value = false;
-    }
+    SplitScreen.splitScreenEnabled.value = false;
     _attendeesListKey.currentState?.removeAllPresenter();
     Displays().getDisplays().forEach((element) {
       // AppAnalytics()

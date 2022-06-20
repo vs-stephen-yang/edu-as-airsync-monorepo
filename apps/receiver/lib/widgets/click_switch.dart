@@ -2,7 +2,7 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CheckBoxSwitch extends StatefulWidget {
-  bool isOpen, isEdit, isRemove, isSplit;
+  bool bOpen, bEdit, bRemove, bSplit, bWait;
   ValueChanged<bool> onOpen;
   ValueChanged onRemove;
   double width, height;
@@ -13,10 +13,11 @@ class CheckBoxSwitch extends StatefulWidget {
 
   CheckBoxSwitch({
     Key? itemKey,
-    this.isOpen = false,
-    this.isEdit = false,
-    this.isRemove = false,
-    this.isSplit = false,
+    this.bOpen = false,
+    this.bEdit = false,
+    this.bRemove = false,
+    this.bSplit = false,
+    required this.bWait,
     required this.splitIndex,
     required this.onOpen,
     required this.onRemove,
@@ -48,7 +49,7 @@ class CheckBoxSwitchState extends State<CheckBoxSwitch>
   Widget build(BuildContext context) {
     double width = widget.width;
     double height = widget.height;
-    _open = widget.isOpen;
+    _open = widget.bOpen;
     String name = widget.name;
     if (widget.name.contains("\n")) name = widget.name.replaceAll("\n", " ");
     if (name.length > 10) name = name.substring(0, 10) + "..";
@@ -73,23 +74,23 @@ class CheckBoxSwitchState extends State<CheckBoxSwitch>
           ),
           child: Row(
             children: [
-              Visibility(
-                  visible: widget.isSplit && widget.splitIndex > 0 && _open,
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: widget.width * 0.15,
-                    height: height,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(height),
-                        bottomLeft: Radius.circular(height),
-                      ),
-                      color: AppColors.primary_white,
-                    ),
-                    child: Text(widget.splitIndex.toString(),
-                        style: const TextStyle(
-                            color: AppColors.primary_blue, fontSize: 16)),
-                  )),
+              // Visibility(
+              //     visible: widget.bSplit && widget.splitIndex > 0 && _open,
+              //     child: Container(
+              //       alignment: Alignment.center,
+              //       width: widget.width * 0.15,
+              //       height: height,
+              //       decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.only(
+              //           topLeft: Radius.circular(height),
+              //           bottomLeft: Radius.circular(height),
+              //         ),
+              //         color: AppColors.primary_white,
+              //       ),
+              //       child: Text(widget.splitIndex.toString(),
+              //           style: const TextStyle(
+              //               color: AppColors.primary_blue, fontSize: 16)),
+              //     )),
               Expanded(
                   child: Container(
                     alignment: Alignment.centerLeft,
@@ -109,15 +110,15 @@ class CheckBoxSwitchState extends State<CheckBoxSwitch>
     );
 
     Widget checkBox = Visibility(
-        visible: widget.isEdit,
+        visible: widget.bEdit,
         child: Checkbox(
             checkColor: Colors.white,
             fillColor: MaterialStateProperty.resolveWith(
                 (states) => AppColors.primary_red),
-            value: widget.isRemove,
+            value: widget.bRemove,
             onChanged: (bool? value) {
               setState(() {
-                widget.isRemove = value!;
+                widget.bRemove = value!;
               });
             }));
 
@@ -142,6 +143,6 @@ class CheckBoxSwitchState extends State<CheckBoxSwitch>
   }
 
   bool getChecked() {
-    return widget.isRemove;
+    return widget.bRemove;
   }
 }

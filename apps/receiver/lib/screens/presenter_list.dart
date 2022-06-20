@@ -4,7 +4,6 @@ import 'package:display_flutter/model/displays.dart';
 import 'package:display_flutter/model/moderator_socket.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/click_switch.dart';
-import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -57,6 +56,7 @@ class PresenterListState extends State<PresenterList> {
                             var status = display.peerList[index].status;
                             var peer = display.peerList[index].peer;
                             var id = display.peerList[index].id;
+                            var bWait = display.peerList[index].waitReply;
                             int splitIndex = 0;
                             if (display.splitIndexMap.containsValue(id)) {
                               display.splitIndexMap.forEach((key, value) {
@@ -65,71 +65,68 @@ class PresenterListState extends State<PresenterList> {
                                 }
                               });
                             }
+                            print("zz $name $bWait");
 
                             CheckBoxSwitch toggleSwitch = CheckBoxSwitch(
                               itemKey: display.peerList[index].key,
                               height: MediaQuery.of(context).size.height * 0.07,
                               width: MediaQuery.of(context).size.width * 0.2,
                               name: name,
-                              isEdit: bEditNotifier,
-                              isOpen: (status == 'play' || status == 'pause'),
-                              isSplit: widget.isSplit,
+                              bEdit: bEditNotifier,
+                              bOpen: (status == 'play' || status == 'pause'),
+                              bWait: bWait,
+                              bSplit: widget.isSplit,
                               splitIndex: splitIndex,
                               onOpen: (value) {
                                 if (value) {
-                                  EasyDebounce.debounce(
-                                      'stop_play',
-                                      Duration(milliseconds: 1000),
-                                          () {
-                                            if (widget.isSplit) {
-                                              bool bAdd = false;
-                                              display.splitIndexMap.forEach((key, value) {
-                                                if (value == '') {
-                                                  bAdd = true;
-                                                }
-                                              });
-                                              if (!bAdd) {
-                                                return;
-                                              }
-                                            } else {
-                                              // check other presenters' status and close the presenter
-                                              for (int i = 0; i < display.peerList.length; i++) {
-                                                if (display.peerList[i].status == 'play') {
-                                                  if (i != index) {
-                                                    // AppAnalytics()
-                                                    //     .trackEventPresentClicked();
-                                                    moderatorSocket.peerAction(
-                                                        'stop',
-                                                        display
-                                                            .peerList[i]
-                                                            .peer,
-                                                        display.displayResponse);
-                                                  }
-                                                }
-                                              }
-                                            }
-                                            // play
-                                            String action = (status == 'play' ||
-                                                status == 'pause')
-                                                ? 'stop'
-                                                : 'play';
-                                            display.presenterId = id;
-                                            // AppAnalytics()
-                                            //     .trackEventPresentClicked();
-                                            moderatorSocket.peerAction('play', peer,
-                                                display.displayResponse);
+                                  if (display.peerList[index].waitReply) return;
+                                  if (widget.isSplit) {
+                                    bool bAdd = false;
+                                    display.splitIndexMap.forEach((key, value) {
+                                      if (value == '') {
+                                        bAdd = true;
+                                      }
+                                    });
+                                    if (!bAdd) {
+                                      return;
+                                    }
+                                  } else {
+                                    // check other presenters' status and close the presenter
+                                    for (int i = 0; i < display.peerList.length; i++) {
+                                      if (display.peerList[i].status == 'play') {
+                                        if (i != index) {
+                                          // AppAnalytics()
+                                          //     .trackEventPresentClicked();
+                                          moderatorSocket.peerAction(
+                                              'stop',
+                                              display
+                                                  .peerList[i]
+                                                  .peer,
+                                              display.displayResponse);
+                                        }
+                                      }
+                                    }
+                                  }
+                                  // play
+                                  display.peerList[index].waitReply = true;
+                                  String action = (status == 'play' ||
+                                      status == 'pause')
+                                      ? 'stop'
+                                      : 'play';
+                                  display.presenterId = id;
+                                  // AppAnalytics()
+                                  //     .trackEventPresentClicked();
+                                  moderatorSocket.peerAction('play', peer,
+                                      display.displayResponse);
 
-                                            display.setPresenterTimeTimer(
-                                                action == 'play');
-                                          });
+                                  display.setPresenterTimeTimer(
+                                      action == 'play');
                                 } else {
-                                  EasyDebounce.debounce('stop_play',
-                                      Duration(milliseconds: 1000), () {
-                                        if (display.presenterId == id) display.presenterId = '';
-                                        // AppAnalytics().trackEventPresentClicked();
-                                        moderatorSocket.peerAction('stop', peer,
-                                            display.displayResponse);
-                                      });
+                                  if (display.peerList[index].waitReply) return;
+                                  if (display.presenterId == id) display.presenterId = '';
+                                  // AppAnalytics().trackEventPresentClicked();
+                                  moderatorSocket.peerAction('stop', peer,
+                                      display.displayResponse);
                                 }
                               },
                               onRemove: (value) {
