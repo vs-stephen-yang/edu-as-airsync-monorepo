@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -13,7 +12,6 @@ import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/get_string.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
@@ -34,6 +32,10 @@ class ControlSocket {
   final List<WebRTCNativeViewController> _webRtcController =
       <WebRTCNativeViewController>[];
   WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
+
+  void _printControlSocketLog(String? event, dynamic args) {
+    print("mControlSocketIO: $event ${args.toString()}");
+  }
 
   void connect(AppConfig? appConfig) {
     _mGatewayUrl = appConfig!.settings.apiGateway;
@@ -155,7 +157,7 @@ class ControlSocket {
             mWebRTCInfo.moderatorName = "";
 
             for (WebRTCNativeViewController controller in _webRtcController) {
-              controller.channel.invokeMethod('disconnectP2pClient');
+              controller.channel.invokeMethod('remainingTimeTimeOut');
             }
           });
           break;
@@ -234,12 +236,10 @@ class ControlSocket {
                         mWebRTCInfo.displayCode,
                         mWebRTCInfo.allowId,
                         selectedController, (displayCode, allowId, controller) {
-                      setStateMachine("ConnectionTimeout onFinish");
-
                       sendMessageToControlSocket(displayCode,
                           allow: allowId, action: 'timeout');
 
-                      controller.channel.invokeMethod('disconnectP2pClient');
+                      controller.channel.invokeMethod('connectionTimeTimeOut');
                       MainInfo.showMainInfo.value = true;
                       controller.nativeViewState.switchConnectionState(false);
                     });
@@ -260,7 +260,6 @@ class ControlSocket {
                   MainInfo.showMainInfo.value = true;
                   selectedController.nativeViewState
                       .switchConnectionState(false);
-                  handleP2PClientFailure(e.code, e.message);
                   sendMessageToControlSocket(mWebRTCInfo.displayCode,
                       allow: mWebRTCInfo.allowId, action: 'blocked');
                   log(e.toString());
@@ -355,31 +354,7 @@ class ControlSocket {
     }
   }
 
-  void _printControlSocketLog(String? event, dynamic args) {
-    print("mControlSocketIO: $event ${args.toString()}");
-  }
-
-  var mStateMachineHistory = Queue<String>();
-  static ValueNotifier<String> stateMachine = ValueNotifier('');
-
-  void setStateMachine(String state) {
-    print('_setStateMachine: $state');
-    String msg = "${GetString.getShortTimeString} $state";
-    var buffer = StringBuffer();
-    buffer.write("\nHistory:");
-    for (String s in mStateMachineHistory) {
-      buffer.write("\n$s");
-    }
-    stateMachine.value = buffer.toString();
-
-    if (mStateMachineHistory.length >= 10) {
-      mStateMachineHistory.removeLast();
-    }
-    mStateMachineHistory.addFirst(msg);
-  }
-
   void handleP2PClientSuccess(String result) {
-    setStateMachine("connect() onSuccess: $result");
     var content = json.encode({
       'messageFor': mWebRTCInfo.displayCode,
       'action': 'control',
@@ -398,10 +373,6 @@ class ControlSocket {
     });
     sendMessageToControlSocket(mWebRTCInfo.displayCode,
         reply: content.toString());
-  }
-
-  void handleP2PClientFailure(String code, String? message) {
-    setStateMachine("connect() onFailure: $code $message");
   }
 
   void handleStreamPauseSuccess(String? messageId) {
