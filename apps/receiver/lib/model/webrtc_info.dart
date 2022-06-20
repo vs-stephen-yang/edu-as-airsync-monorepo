@@ -7,7 +7,6 @@ class WebRTCInfo {
 
   WebRTCInfo.internal();
 
-  String? instanceId;
   String token = '';
   String displayCode = '';
   String licenseName = '';

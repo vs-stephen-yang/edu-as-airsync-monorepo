@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/webrtc_info.dart';
@@ -43,7 +44,7 @@ class ControlSocket {
             .setQuery({
               'socketCustomEvent': mWebRTCInfo.displayCode,
               'role': 'display',
-              'deviceId': mWebRTCInfo.instanceId,
+              'deviceId': AppInstanceCreate().displayInstanceID,
               'token': mWebRTCInfo.token
             })
             .build());
