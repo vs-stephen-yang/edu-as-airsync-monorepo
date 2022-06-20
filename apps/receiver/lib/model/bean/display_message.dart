@@ -21,7 +21,7 @@ class DisplayMessage {
 
   DisplayMessage.fromJson(Map<String, dynamic> json) {
     messageFor = json['messageFor'];
-    userId = json['userId'];
+    userId = json['userid'];
     action = json['action'];
     status = json['status'];
     extra = json['extra'];
