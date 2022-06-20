@@ -108,10 +108,10 @@ public class WebRTCNativeView implements PlatformView,
         myLogDebug(String.format(Locale.US, "onMethodCall: %s, object: %s", call.method, msg));
         switch (call.method) {
             case "isNotConnected":
-                result.success(mAllowId.isEmpty());
+                result.success(mPeerId.isEmpty());
                 break;
             case "connectP2pClient":
-                connectP2pClient(call.argument("clientId"), call.argument("allowId"), result);
+                connectP2pClient(call.argument("token"), call.argument("peerId"), result);
                 break;
             case "remainingTimeTimeOut":
                 setStateMachine("RemainingTimeTimeOut onFinish");
@@ -157,9 +157,8 @@ public class WebRTCNativeView implements PlatformView,
         setStateMachine("onStreamAdded");
 
         if (mActivityRef.get() != null) {
-            mActivityRef.get().runOnUiThread(() -> {
-                methodChannel.invokeMethod("onStreamAdded", null);
-            });
+            mActivityRef.get().runOnUiThread(() ->
+                    methodChannel.invokeMethod("onStreamAdded", null));
         }
 
         mRemoteStream = remoteStream;
@@ -242,7 +241,7 @@ public class WebRTCNativeView implements PlatformView,
     private RemoteStream mRemoteStream;
     private RemoteStream.StreamObserver mStreamObserver;
     private SurfaceViewRenderer mSurfaceViewRenderer;
-    private String mClientId = "", mAllowId = "";
+    private String mPeerId = "";
     private boolean mAudioControl = false;
 
     private boolean initP2PClient() {
@@ -260,25 +259,24 @@ public class WebRTCNativeView implements PlatformView,
         return true;
     }
 
-    private void connectP2pClient(String clientId, String allowId, @NonNull MethodChannel.Result methodResult) {
-        setStateMachine(String.format(Locale.US, "connect clientId: %s, allowId: %s", clientId, allowId));
+    private void connectP2pClient(String token, String peerId, @NonNull MethodChannel.Result methodResult) {
+        setStateMachine(String.format(Locale.US, "connect token: %s, peerId: %s", token, peerId));
 
         if (!initP2PClient()) { // Try init again, return if init again failure.
             return;
         }
 
-        mClientId = clientId;
-        mAllowId = allowId;
+        mPeerId = peerId;
 
         JSONObject loginObj = new JSONObject();
         try {
             loginObj.put("host", "https://mrtc.myviewboard.cloud");
-            loginObj.put("token", clientId);
+            loginObj.put("token", token);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        mP2pClient.addAllowedRemotePeer(allowId);
+        mP2pClient.addAllowedRemotePeer(peerId);
         mP2pClient.connect(loginObj.toString(), new ActionCallback<String>() {
             @Override
             public void onSuccess(String result) {
@@ -290,18 +288,16 @@ public class WebRTCNativeView implements PlatformView,
             public void onFailure(OwtError error) {
                 setStateMachine(String.format("connect() onFailure: %s %s", error.errorCode, error.errorMessage));
                 methodResult.error(String.valueOf(error.errorCode), error.errorMessage, null);
-                mClientId = "";
-                mAllowId = "";
+                mPeerId = "";
             }
         });
     }
 
     private void disconnectP2pClient() {
-        if (!TextUtils.isEmpty(mClientId)) {
-            setStateMachine(String.format(Locale.US, "disconnect clientId: %s, allowId: %s", mClientId, mAllowId));
+        if (!TextUtils.isEmpty(mPeerId)) {
+            setStateMachine(String.format(Locale.US, "disconnect peerId: %s", mPeerId));
             if (mP2pClient != null) mP2pClient.disconnect();
-            mClientId = "";
-            mAllowId = "";
+            mPeerId = "";
         }
         mActivityRef.get().runOnUiThread(() -> {
             if (mSurfaceViewRenderer != null) {
@@ -416,6 +412,7 @@ public class WebRTCNativeView implements PlatformView,
         return formatter.format(Calendar.getInstance().getTimeInMillis());
     }
 
+    @SuppressWarnings("ConstantConditions")
     private static final boolean DEBUG_MESSAGE = (BuildConfig.VERSION_CODE % 2) != 0;
 
     // region myLog
