@@ -113,7 +113,12 @@ public class WebRTCNativeView implements PlatformView,
             case "connectP2pClient":
                 connectP2pClient(call.argument("clientId"), call.argument("allowId"), result);
                 break;
-            case "disconnectP2pClient":
+            case "remainingTimeTimeOut":
+                setStateMachine("RemainingTimeTimeOut onFinish");
+                disconnectP2pClient();
+                break;
+            case "connectionTimeTimeOut":
+                setStateMachine("ConnectionTimeout onFinish");
                 disconnectP2pClient();
                 break;
             case "playVideo":
@@ -277,11 +282,13 @@ public class WebRTCNativeView implements PlatformView,
         mP2pClient.connect(loginObj.toString(), new ActionCallback<String>() {
             @Override
             public void onSuccess(String result) {
+                setStateMachine(String.format("connect() onSuccess: %s", result));
                 methodResult.success(result);
             }
 
             @Override
             public void onFailure(OwtError error) {
+                setStateMachine(String.format("connect() onFailure: %s %s", error.errorCode, error.errorMessage));
                 methodResult.error(String.valueOf(error.errorCode), error.errorMessage, null);
                 mClientId = "";
                 mAllowId = "";
