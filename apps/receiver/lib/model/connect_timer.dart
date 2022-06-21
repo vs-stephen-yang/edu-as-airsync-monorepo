@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:flutter/material.dart';
 
-typedef ConnectionTimerCallback = void Function(WebRTCInfo webRTCInfo,
-    String nextId, WebRTCNativeViewController webRTCNativeViewController);
+typedef ConnectionTimerCallback = void Function(
+    WebRTCNativeViewController controller, String nextId);
 
 class ConnectionTimer {
   Timer? mConnectionTimeoutTimer, mRemainingTimeTimer;
@@ -21,8 +20,8 @@ class ConnectionTimer {
 
   ConnectionTimer.internal();
 
-  void startConnectionTimeoutTimer(WebRTCInfo webRTCInfo, String nextId,
-      WebRTCNativeViewController controller, ConnectionTimerCallback onFinish) {
+  void startConnectionTimeoutTimer(WebRTCNativeViewController controller,
+      String nextId, ConnectionTimerCallback onFinish) {
     if (mConnectionTimeoutTimer != null) stopConnectionTimeoutTimer();
 
     var count = 30;
@@ -36,7 +35,7 @@ class ConnectionTimer {
         // onFinish
         timer.cancel();
         log('ConnectionTimeout onFinish');
-        onFinish(webRTCInfo, nextId, controller);
+        onFinish(controller, nextId);
         // AppCenterAnalyticsHelper.getInstance().EventStreamTimeout();
       }
     });

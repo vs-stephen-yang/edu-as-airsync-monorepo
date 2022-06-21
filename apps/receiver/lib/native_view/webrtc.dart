@@ -1,6 +1,6 @@
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/webrtc_info.dart';
+import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -30,6 +30,7 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
     with TickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
+  WebRTCNativeViewController? _webRTCNativeViewController;
 
   bool showConnectionInfo = false;
 
@@ -78,8 +79,10 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
                     viewType: viewType,
                     layoutDirection: TextDirection.ltr);
             viewController.addOnPlatformViewCreatedListener((id) {
+              _webRTCNativeViewController =
+                  WebRTCNativeViewController(this, id);
               widget.onWebRTCNativeViewCreatedCallback(
-                  WebRTCNativeViewController(this, id));
+                  _webRTCNativeViewController!);
             });
             viewController.create();
             return viewController;
@@ -89,8 +92,9 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
         nativeView = AndroidView(
           viewType: viewType,
           onPlatformViewCreated: (id) {
+            _webRTCNativeViewController = WebRTCNativeViewController(this, id);
             widget.onWebRTCNativeViewCreatedCallback(
-                WebRTCNativeViewController(this, id));
+                _webRTCNativeViewController!);
           },
         );
       }
@@ -113,7 +117,7 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Visibility(
-                    visible: WebRTCInfo.getInstance().moderatorMode,
+                    visible: ControlSocket().moderatorMode,
                     child: Column(
                       children: <Widget>[
                         Text(
@@ -128,7 +132,7 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
                           height: 20,
                         ),
                         Text(
-                          WebRTCInfo.getInstance().presenterName,
+                          _webRTCNativeViewController?.presenterName ?? '',
                           style: const TextStyle(
                             color: AppColors.primary_blue,
                             fontWeight: FontWeight.w700,
@@ -184,6 +188,12 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
 class WebRTCNativeViewController {
   late WebRTCNativeViewState nativeViewState;
   late MethodChannel channel;
+
+  PresentationState presentationState = PresentationState.stopStreaming;
+  String presenterId = '';
+  String presenterName = '';
+  String peerToken = '';
+  String peerId = '';
 
   WebRTCNativeViewController(WebRTCNativeViewState viewState, int id) {
     nativeViewState = viewState;

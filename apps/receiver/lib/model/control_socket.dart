@@ -5,7 +5,6 @@ import 'dart:developer';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/connect_timer.dart';
-import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -30,7 +29,22 @@ class ControlSocket {
 
   final List<WebRTCNativeViewController> _webRtcController =
       <WebRTCNativeViewController>[];
-  WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
+
+  String token = '';
+  String displayCode = '';
+  String otpCode = '';
+  String licenseName = '';
+  List<String> featureList = [];
+
+  bool moderatorMode = false;
+  String moderatorId = '';
+  String moderatorName = '';
+  String meetingId = '';
+  int remainingTime = 0;
+  List<double> remainingTimeCheckPoints = [];
+
+  bool isShowDelegate = false;
+  bool isShowCode = false;
 
   void connect(String apiGateway) {
     _controlSocketIO = io(
@@ -42,10 +56,10 @@ class ControlSocket {
             .enableReconnection()
             .setReconnectionAttempts(_maxReconnectAttempts)
             .setQuery({
-              'socketCustomEvent': mWebRTCInfo.displayCode,
+              'socketCustomEvent': displayCode,
               'role': 'display',
               'deviceId': AppInstanceCreate().displayInstanceID,
-              'token': mWebRTCInfo.token
+              'token': token
             })
             .build());
 
@@ -63,8 +77,8 @@ class ControlSocket {
         });
       }
     });
-    _controlSocketIO.on(mWebRTCInfo.displayCode, (data) {
-      _printControlSocketLog(mWebRTCInfo.displayCode, data);
+    _controlSocketIO.on(displayCode, (data) {
+      _printControlSocketLog(displayCode, data);
       _handleDisplayResponse(data);
     });
     _controlSocketIO.on(
@@ -99,16 +113,34 @@ class ControlSocket {
           break;
         case 'onStreamAdded':
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+          controller.presentationState = PresentationState.streaming;
           controller.nativeViewState.switchConnectionState(false);
+          _handleDisplayStateUpdate(controller);
+
           Home.showTitleBottomBar.value = false;
           StreamFunction.showWaitFunction.value = false;
-          _handleDisplayStateUpdate(mWebRTCInfo);
           break;
         case 'disconnectedP2pClient':
+          controller.presentationState = PresentationState.stopStreaming;
           controller.nativeViewState.switchConnectionState(false);
-          Home.showTitleBottomBar.value = true;
-          StreamFunction.showWaitFunction.value = true;
-          MainInfo.showMainInfo.value = true;
+
+          if (SplitScreen.splitScreenEnabled.value) {
+            bool presenting = false;
+            for (WebRTCNativeViewController controller in _webRtcController) {
+              if (controller.presentationState != PresentationState.stopStreaming) {
+                presenting |= true;
+              }
+            }
+            if (!presenting) {
+              Home.showTitleBottomBar.value = true;
+              StreamFunction.showWaitFunction.value = true;
+              MainInfo.showMainInfo.value = true;
+            }
+          }else {
+            Home.showTitleBottomBar.value = true;
+            StreamFunction.showWaitFunction.value = true;
+            MainInfo.showMainInfo.value = true;
+          }
           break;
       }
       return;
@@ -121,36 +153,38 @@ class ControlSocket {
 
   void _handleDisplayResponse(dynamic arg) async {
     String? messageFor = arg['messageFor'];
-    if (messageFor != null && messageFor == mWebRTCInfo.displayCode) {
+    if (messageFor != null && messageFor == displayCode) {
       var resp = DisplayMessage.fromJson(arg);
       switch (resp.action) {
         // region Moderator
         case "set-moderator":
-          mWebRTCInfo.moderatorMode = true;
+          moderatorMode = true;
           Extra extra = Extra.fromJson(resp.extra);
           Moderator moderator = Moderator.fromJson(extra.moderator);
-          mWebRTCInfo.moderatorId = moderator.id;
-          mWebRTCInfo.moderatorName = moderator.name;
-          mWebRTCInfo.meetingId = extra.moderatedSessionId ?? '';
-          mWebRTCInfo.remainingTime =
+          moderatorId = moderator.id ?? '';
+          moderatorName = moderator.name ?? '';
+          meetingId = extra.moderatedSessionId ?? '';
+          remainingTime =
               extra.endTime! - DateTime.now().millisecondsSinceEpoch;
           List<dynamic>? checkPoints = extra.checkPoints;
           int? duration = extra.durationRemaining;
           for (int i = 0; i < checkPoints!.length; i++) {
             if ((duration! - checkPoints[i]) > 1000) {
               double point = ((duration - checkPoints[i]) / 1000);
-              mWebRTCInfo.remainingTimeCheckPoints.add(point);
+              remainingTimeCheckPoints.add(point);
               log('checkpoint: $point');
             }
           }
 
           // AppCenterAnalyticsHelper.getInstance().setEventProperties(buildEventProperties());
-          ConnectionTimer.getInstance()
-              .startRemainingTimeTimer(mWebRTCInfo.remainingTime, () {
-            mWebRTCInfo.moderatorMode = false;
-            mWebRTCInfo.isModeratorLeave = true;
-            mWebRTCInfo.moderatorId = "";
-            mWebRTCInfo.moderatorName = "";
+          ConnectionTimer.getInstance().startRemainingTimeTimer(remainingTime,
+              () {
+            moderatorMode = false;
+            moderatorId = '';
+            moderatorName = '';
+            meetingId = '';
+            remainingTime = 0;
+            remainingTimeCheckPoints.clear();
 
             for (WebRTCNativeViewController controller in _webRtcController) {
               controller.channel.invokeMethod('remainingTimeTimeOut');
@@ -158,11 +192,12 @@ class ControlSocket {
           });
           break;
         case "unset-moderator":
-          mWebRTCInfo.moderatorMode = false;
-          mWebRTCInfo.isModeratorLeave = true;
-          mWebRTCInfo.moderatorId = "";
-          mWebRTCInfo.moderatorName = "";
-          mWebRTCInfo.meetingId = "";
+          moderatorMode = false;
+          moderatorId = '';
+          moderatorName = '';
+          meetingId = '';
+          remainingTime = 0;
+          remainingTimeCheckPoints.clear();
 
           // AppCenterAnalyticsHelper.getInstance().setEventProperties(buildEventProperties());
           ConnectionTimer.getInstance().stopRemainingTimeTimer();
@@ -170,80 +205,98 @@ class ControlSocket {
         // endregion Moderator
         // region Present
         case "start-present":
-          Extra extra = Extra.fromJson(resp.extra);
-
-          Signal signal = Signal.fromJson(extra.signal);
-          mWebRTCInfo.peerToken = signal.token ?? '';
-          mWebRTCInfo.peerId = signal.peerId ?? '';
-
-          Presenter presenter = Presenter.fromJson(extra.presenter);
-          mWebRTCInfo.presenterId = presenter.id ?? '';
-          mWebRTCInfo.presenterName = presenter.name ?? '';
-
           WebRTCNativeViewController? selectedController;
           if (SplitScreen.splitScreenEnabled.value) {
-            // todo: find unused view to connect
             for (WebRTCNativeViewController controller in _webRtcController) {
-              if (await controller.channel.invokeMethod("isNotConnected")) {
+              if (controller.presentationState ==
+                  PresentationState.stopStreaming) {
                 selectedController = controller;
                 break;
               }
             }
           } else {
-            if (await _webRtcController[0]
-                .channel
-                .invokeMethod("isNotConnected")) {
+            if (_webRtcController[0].presentationState ==
+                PresentationState.stopStreaming) {
               selectedController = _webRtcController[0];
             }
           }
+
+          Extra extra = Extra.fromJson(resp.extra);
+          Signal signal = Signal.fromJson(extra.signal);
+          Presenter presenter = Presenter.fromJson(extra.presenter);
+
           if (selectedController != null) {
             log('selectedController: ${selectedController.channel.name}');
             try {
               // Send wait for stream
-              mWebRTCInfo.presentationState = PresentationState.waitForStream;
-              _handleDisplayStateUpdate(mWebRTCInfo);
+              selectedController.presentationState =
+                  PresentationState.waitForStream;
+              _handleDisplayStateUpdate(selectedController);
               // Send wait for stream
 
-              if (!mWebRTCInfo.moderatorMode) {
+              selectedController.presenterId = presenter.id ?? '';
+              selectedController.presenterName = presenter.name ?? '';
+
+              if (!moderatorMode) {
                 ConnectionTimer.getInstance().startConnectionTimeoutTimer(
-                    mWebRTCInfo, resp.nextId ?? '', selectedController,
-                    (webRTCInfo, nextId, controller) {
-                  _handleP2PClientReject(webRTCInfo, nextId, 'timeout');
+                    selectedController, resp.nextId ?? '',
+                    (controller, nextId) {
+                  _handleP2PClientReject(
+                      controller.presenterId, nextId, 'timeout');
 
                   controller.channel.invokeMethod('connectionTimeTimeOut');
-                  MainInfo.showMainInfo.value = true;
-                  controller.nativeViewState.switchConnectionState(false);
+                  // NativeView will invokeMethod disconnectedP2pClient to switch UI.
                 });
               }
 
               MainInfo.showMainInfo.value = false;
               selectedController.nativeViewState.switchConnectionState(true);
               var arg = {
-                'token': mWebRTCInfo.peerToken,
-                'peerId': mWebRTCInfo.peerId,
+                'token': signal.token,
+                'peerId': signal.peerId,
               };
               final String result = await selectedController.channel
                   .invokeMethod('connectP2pClient', arg);
-              _handleP2PClientSuccess(mWebRTCInfo, resp.nextId ?? '', result);
+
+              selectedController.peerToken = signal.token ?? '';
+              selectedController.peerId = signal.peerId ?? '';
+
+              _handleP2PClientSuccess(
+                  selectedController, resp.nextId ?? '', result);
               // AppCenterAnalyticsHelper.getInstance().EventStreamStart();
             } on PlatformException catch (e) {
+              log(e.toString());
+
+              selectedController.presentationState =
+                  PresentationState.stopStreaming;
               MainInfo.showMainInfo.value = true;
               selectedController.nativeViewState.switchConnectionState(false);
-              _handleP2PClientReject(mWebRTCInfo, resp.nextId ?? '', 'blocked');
-              log(e.toString());
+
+              _handleP2PClientReject(
+                  presenter.id ?? '', resp.nextId ?? '', 'blocked');
             }
           } else {
             log('selectedController is null!');
-            _handleP2PClientReject(mWebRTCInfo, resp.nextId ?? '', 'blocked');
+
+            _handleP2PClientReject(
+                presenter.id ?? '', resp.nextId ?? '', 'blocked');
           }
           break;
         case "stop-present":
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
-          // todo: split screen find controller channel
-          if (presenter.id == mWebRTCInfo.presenterId) {
+
+          WebRTCNativeViewController? selectedController;
+          for (WebRTCNativeViewController controller in _webRtcController) {
+            if (controller.presenterId == presenter.id) {
+              selectedController = controller;
+              break;
+            }
+          }
+
+          if (selectedController != null) {
             try {
-              await _webRtcController[0].channel.invokeMethod("stopVideo");
+              await selectedController.channel.invokeMethod("stopVideo");
               // AppCenterAnalyticsHelper.getInstance().EventStreamStopped();
               ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
             } on PlatformException catch (e) {
@@ -254,11 +307,19 @@ class ControlSocket {
         case "pause-present":
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
-          // todo: split screen find controller channel
-          if (presenter.id == mWebRTCInfo.presenterId) {
+
+          WebRTCNativeViewController? selectedController;
+          for (WebRTCNativeViewController controller in _webRtcController) {
+            if (controller.presenterId == presenter.id) {
+              selectedController = controller;
+              break;
+            }
+          }
+
+          if (selectedController != null) {
             try {
-              await _webRtcController[0].channel.invokeMethod("pauseVideo");
-              _handleStreamPauseSuccess(mWebRTCInfo, resp.nextId);
+              await selectedController.channel.invokeMethod("pauseVideo");
+              _handleStreamPauseSuccess(selectedController, resp.nextId);
               // AppCenterAnalyticsHelper.getInstance().EventStreamPaused();
             } on PlatformException catch (e) {
               log(e.toString());
@@ -268,10 +329,18 @@ class ControlSocket {
         case "resume-present":
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
-          // todo: split screen find controller channel
-          if (presenter.id == mWebRTCInfo.presenterId) {
+
+          WebRTCNativeViewController? selectedController;
+          for (WebRTCNativeViewController controller in _webRtcController) {
+            if (controller.presenterId == presenter.id) {
+              selectedController = controller;
+              break;
+            }
+          }
+
+          if (selectedController != null) {
             try {
-              await _webRtcController[0].channel.invokeMethod("resumeVideo");
+              await selectedController.channel.invokeMethod("resumeVideo");
               // AppCenterAnalyticsHelper.getInstance().EventStreamResumed();
             } on PlatformException catch (e) {
               log(e.toString());
@@ -283,34 +352,34 @@ class ControlSocket {
     }
   }
 
-  void _handleDisplayStateUpdate(WebRTCInfo webRTCInfo) {
+  void _handleDisplayStateUpdate(WebRTCNativeViewController controller) {
     var content = json.encode({
-      'messageFor': webRTCInfo.presenterId,
+      'messageFor': controller.presenterId,
       'action': 'display-state-update',
       'status': 'display-state-update',
       'extra': {
         'uiState': {
-          'code': webRTCInfo.isShowCode,
-          'delegate': webRTCInfo.isShowDelegate,
+          'code': isShowCode,
+          'delegate': isShowDelegate,
         },
-        'presentationState': webRTCInfo.presentationState.name,
+        'presentationState': controller.presentationState.name,
       },
       'messageId': GetString.getRandomString(21),
       'nextId': GetString.getRandomString(21),
     });
     print('mControlSocketIO: _handleDisplayStateUpdate: $content');
-    _controlSocketIO.emit(webRTCInfo.displayCode, json.decode(content));
+    _controlSocketIO.emit(displayCode, json.decode(content));
   }
 
   void _handleP2PClientSuccess(
-      WebRTCInfo webRTCInfo, String nextId, String result) {
+      WebRTCNativeViewController controller, String nextId, String result) {
     var content = json.encode({
-      'messageFor': webRTCInfo.displayCode,
+      'messageFor': displayCode,
       'action': 'start-present',
       'status': 'ready',
       'extra': {
         'presenter': {
-          'id': webRTCInfo.presenterId,
+          'id': controller.presenterId,
           'extra': {
             'constraint': {
               'frameRate': 30,
@@ -323,40 +392,47 @@ class ControlSocket {
       'nextId': GetString.getRandomString(21)
     });
     print('mControlSocketIO: _handleP2PClientSuccess: $content');
-    _controlSocketIO.emit(webRTCInfo.displayCode, json.decode(content));
+    _controlSocketIO.emit(displayCode, json.decode(content));
   }
 
   void _handleP2PClientReject(
-      WebRTCInfo webRTCInfo, String nextId, String reason) {
+      String presenterId, String nextId, String reason) {
     var content = json.encode({
-      'messageFor': webRTCInfo.displayCode,
+      'messageFor': displayCode,
       'action': 'reject-present',
       'extra': {
         'presenter': {
-          'id': webRTCInfo.presenterId,
+          'id': presenterId,
         },
         'reason': reason,
       },
       'messageId': nextId,
     });
     print('mControlSocketIO: _handleP2PClientReject: $content');
-    _controlSocketIO.emit(webRTCInfo.displayCode, json.decode(content));
+    _controlSocketIO.emit(displayCode, json.decode(content));
   }
 
-  void _handleStreamPauseSuccess(WebRTCInfo webRTCInfo, String? nextId) {
+  void _handleStreamPauseSuccess(
+      WebRTCNativeViewController controller, String? nextId) {
     var content = json.encode({
-      'messageFor': webRTCInfo.displayCode,
+      'messageFor': displayCode,
       'action': 'pause-present',
       'status': 'ok',
       'extra': {
         'presenter': {
-          'id': webRTCInfo.presenterId,
+          'id': controller.presenterId,
         },
       },
       'messageId': nextId,
       'nextId': GetString.getRandomString(21)
     });
     print('mControlSocketIO: _handleStreamPauseSuccess: $content');
-    _controlSocketIO.emit(webRTCInfo.displayCode, json.decode(content));
+    _controlSocketIO.emit(displayCode, json.decode(content));
   }
+}
+
+enum PresentationState {
+  stopStreaming,
+  waitForStream,
+  streaming,
 }

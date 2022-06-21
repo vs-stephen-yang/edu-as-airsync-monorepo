@@ -1,4 +1,4 @@
-import 'package:display_flutter/model/webrtc_info.dart';
+import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/language_selection.dart';
 import 'package:display_flutter/screens/moderator.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -24,7 +24,7 @@ class StreamFunctionStates extends State<StreamFunction> {
   Widget build(BuildContext context) {
     // region SplitScreen icon
     String iconSplitScreen = '';
-    if (WebRTCInfo.getInstance().moderatorMode) {
+    if (ControlSocket().moderatorMode) {
       iconSplitScreen = 'assets/images/ic_split_screen_off.svg';
     } else {
       if (SplitScreen.splitScreenEnabled.value) {
@@ -37,11 +37,11 @@ class StreamFunctionStates extends State<StreamFunction> {
 
     // region Moderator icon
     String iconModerator = '';
-    if (!WebRTCInfo.getInstance().moderatorMode &&
+    if (!ControlSocket().moderatorMode &&
         SplitScreen.splitScreenEnabled.value) {
       iconModerator = 'assets/images/ic_moderator_off.svg';
     } else {
-      if (WebRTCInfo.getInstance().moderatorMode) {
+      if (ControlSocket().moderatorMode) {
         iconModerator = 'assets/images/ic_moderator_activate.svg';
       } else {
         iconModerator = 'assets/images/ic_moderator_on.svg';
@@ -60,7 +60,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                 children: <Widget>[
                   IconButton(
                     iconSize: 48,
-                    onPressed: WebRTCInfo.getInstance().moderatorMode
+                    onPressed: ControlSocket().moderatorMode
                         ? null
                         : () {
                             StreamFunction.showSplitScreen.value = true;
@@ -71,7 +71,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                   ),
                   IconButton(
                     iconSize: 48,
-                    onPressed: (!WebRTCInfo.getInstance().moderatorMode &&
+                    onPressed: (!ControlSocket().moderatorMode &&
                             SplitScreen.splitScreenEnabled.value)
                         ? null
                         : () {
