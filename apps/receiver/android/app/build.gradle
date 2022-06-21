@@ -40,6 +40,8 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        // https://developer.android.com/studio/build/build-variants#resolve_matching_errors
+        missingDimensionStrategy 'distribute', 'googlePlay'
     }
 
     flavorDimensions("channel", "stage")
