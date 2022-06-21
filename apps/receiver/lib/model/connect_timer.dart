@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +37,7 @@ class ConnectionTimer {
         timer.cancel();
         log('ConnectionTimeout onFinish');
         onFinish(controller, nextId);
-        // AppCenterAnalyticsHelper.getInstance().EventStreamTimeout();
+        AppAnalytics().trackEventPresentTimeout();
       }
     });
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/blocs/main_info_bloc.dart';
@@ -224,6 +225,11 @@ class _MainInfoState extends State<MainInfo> {
                 IconButton(
                   onPressed: () {
                     _isEyeOpen.value = !_isEyeOpen.value;
+                    if (_isEyeOpen.value) {
+                      AppAnalytics().trackEventMaskOTPCode();
+                    } else {
+                      AppAnalytics().trackEventUnMaskOTPCode();
+                    }
                   },
                   icon: Image.asset(
                     value
