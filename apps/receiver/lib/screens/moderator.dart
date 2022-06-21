@@ -3,9 +3,9 @@ import 'dart:math' as math;
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/model/displays.dart';
 import 'package:display_flutter/model/moderator_socket.dart';
-import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/presenter_list.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -23,7 +23,6 @@ class ModeratorView extends StatefulWidget {
 
 class _ModeratorViewState extends State<ModeratorView> {
   bool bEditClick = false;
-  WebRTCInfo mWebRTCInfo = WebRTCInfo.getInstance();
 
   final GlobalKey<PresenterListState> _attendeesListKey = GlobalKey();
   final GlobalKey<SpiltIconState> _splitIconKey = GlobalKey();
@@ -74,7 +73,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                         peer.waitReply = element.waitReply;
                       }
                     });
-                    if(action == peer.status) {
+                    if (action == peer.status) {
                       peer.waitReply = false;
                     }
 
@@ -402,7 +401,7 @@ class _ModeratorViewState extends State<ModeratorView> {
             setState(() {
               _logout();
               streamFunctionKey.currentState?.setState(() {
-                WebRTCInfo.getInstance().moderatorMode = false;
+                ControlSocket().moderatorMode = false;
               });
             });
           },
@@ -420,7 +419,8 @@ class _ModeratorViewState extends State<ModeratorView> {
     Displays().getDisplays().forEach((element) {
       // AppAnalytics()
       //     .trackEventMeetingEnded(element.displayId, element.meetingId);
-      moderatorSocket.unBindFromDisplay(element.displayId, mWebRTCInfo.token);
+      moderatorSocket.unBindFromDisplay(
+          element.displayId, ControlSocket().token);
     });
     moderatorSocket.disconnect();
     Displays().removeAllDisplayInfo();
@@ -434,8 +434,8 @@ class _ModeratorViewState extends State<ModeratorView> {
     moderatorSocket.connectAndListen(context);
     try {
       moderatorSocket
-          .bindToDisplay(
-              mWebRTCInfo.displayCode, mWebRTCInfo.otpCode, mWebRTCInfo.token)
+          .bindToDisplay(ControlSocket().displayCode, ControlSocket().otpCode,
+              ControlSocket().token)
           .then((value) {
         // AppAnalytics().trackEventMeetingStarted(
         //     value['code'] ?? '', value['property']['meetingId'] ?? '');

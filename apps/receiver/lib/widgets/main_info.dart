@@ -6,7 +6,6 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/blocs/main_info_bloc.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
-import 'package:display_flutter/model/webrtc_info.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +26,6 @@ class _MainInfoState extends State<MainInfo> {
   static final ValueNotifier<bool> _isEyeOpen = ValueNotifier(true);
   static final ValueNotifier<double> _countDownProgress = ValueNotifier(1);
   static int _countDownValue = maxCountDown;
-  final WebRTCInfo webRTCInfo = WebRTCInfo.getInstance();
 
   @override
   void didChangeDependencies() {
@@ -85,7 +83,8 @@ class _MainInfoState extends State<MainInfo> {
             case MainInfoState.getOneTimePasswordError:
               _countDownProgress.value = 1;
               _countDownValue = maxCountDown;
-              _showSnackBarMessage(S.of(context).main_content_one_time_password_get_fail);
+              _showSnackBarMessage(
+                  S.of(context).main_content_one_time_password_get_fail);
               Timer(const Duration(seconds: 5), () async {
                 BlocProvider.of<MainInfoBloc>(context)
                     .add(GetOneTimePassword());
@@ -125,11 +124,11 @@ class _MainInfoState extends State<MainInfo> {
 
   _getDisplayCode() {
     String result = '';
-    for (int i = 0; i < webRTCInfo.displayCode.length; i++) {
+    for (int i = 0; i < ControlSocket().displayCode.length; i++) {
       if (i % 3 == 0 && result.isNotEmpty) {
         result += '-';
       }
-      result += webRTCInfo.displayCode.substring(i, i + 1);
+      result += ControlSocket().displayCode.substring(i, i + 1);
     }
     return result;
   }
@@ -183,7 +182,7 @@ class _MainInfoState extends State<MainInfo> {
               spacing: 10,
               children: <Widget>[
                 Text(
-                  value ? webRTCInfo.otpCode : "XXXX",
+                  value ? ControlSocket().otpCode : "XXXX",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
