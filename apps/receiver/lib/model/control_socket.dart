@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/connect_timer.dart';
@@ -47,6 +48,11 @@ class ControlSocket {
   bool isShowCode = false;
 
   void connect(String apiGateway) {
+    AppAnalytics().setEventProperties({
+      'displayID': ControlSocket().displayCode,
+      'licenseName': ControlSocket().licenseName
+    });
+
     _controlSocketIO = io(
         apiGateway,
         OptionBuilder()
@@ -119,6 +125,8 @@ class ControlSocket {
 
           Home.showTitleBottomBar.value = false;
           StreamFunction.showWaitFunction.value = false;
+
+          AppAnalytics().trackEventPresentStart();
           break;
         case 'disconnectedP2pClient':
           controller.presentationState = PresentationState.stopStreaming;
@@ -127,7 +135,8 @@ class ControlSocket {
           if (SplitScreen.splitScreenEnabled.value) {
             bool presenting = false;
             for (WebRTCNativeViewController controller in _webRtcController) {
-              if (controller.presentationState != PresentationState.stopStreaming) {
+              if (controller.presentationState !=
+                  PresentationState.stopStreaming) {
                 presenting |= true;
               }
             }
@@ -136,11 +145,13 @@ class ControlSocket {
               StreamFunction.showWaitFunction.value = true;
               MainInfo.showMainInfo.value = true;
             }
-          }else {
+          } else {
             Home.showTitleBottomBar.value = true;
             StreamFunction.showWaitFunction.value = true;
             MainInfo.showMainInfo.value = true;
           }
+
+          AppAnalytics().trackEventPresentStopped();
           break;
       }
       return;
@@ -176,7 +187,9 @@ class ControlSocket {
             }
           }
 
-          // AppCenterAnalyticsHelper.getInstance().setEventProperties(buildEventProperties());
+          AppAnalytics().setEventProperties(
+              {'displayID': displayCode, 'meetingId': meetingId});
+
           ConnectionTimer.getInstance().startRemainingTimeTimer(remainingTime,
               () {
             moderatorMode = false;
@@ -185,6 +198,9 @@ class ControlSocket {
             meetingId = '';
             remainingTime = 0;
             remainingTimeCheckPoints.clear();
+
+            AppAnalytics().setEventProperties(
+                {'displayID': displayCode, 'meetingId': meetingId});
 
             for (WebRTCNativeViewController controller in _webRtcController) {
               controller.channel.invokeMethod('remainingTimeTimeOut');
@@ -199,7 +215,8 @@ class ControlSocket {
           remainingTime = 0;
           remainingTimeCheckPoints.clear();
 
-          // AppCenterAnalyticsHelper.getInstance().setEventProperties(buildEventProperties());
+          AppAnalytics().setEventProperties(
+              {'displayID': displayCode, 'meetingId': meetingId});
           ConnectionTimer.getInstance().stopRemainingTimeTimer();
           break;
         // endregion Moderator
@@ -263,7 +280,6 @@ class ControlSocket {
 
               _handleP2PClientSuccess(
                   selectedController, resp.nextId ?? '', result);
-              // AppCenterAnalyticsHelper.getInstance().EventStreamStart();
             } on PlatformException catch (e) {
               log(e.toString());
 
@@ -297,7 +313,6 @@ class ControlSocket {
           if (selectedController != null) {
             try {
               await selectedController.channel.invokeMethod("stopVideo");
-              // AppCenterAnalyticsHelper.getInstance().EventStreamStopped();
               ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
             } on PlatformException catch (e) {
               log(e.toString());
@@ -320,7 +335,7 @@ class ControlSocket {
             try {
               await selectedController.channel.invokeMethod("pauseVideo");
               _handleStreamPauseSuccess(selectedController, resp.nextId);
-              // AppCenterAnalyticsHelper.getInstance().EventStreamPaused();
+              AppAnalytics().trackEventPresentPaused();
             } on PlatformException catch (e) {
               log(e.toString());
             }
@@ -341,7 +356,7 @@ class ControlSocket {
           if (selectedController != null) {
             try {
               await selectedController.channel.invokeMethod("resumeVideo");
-              // AppCenterAnalyticsHelper.getInstance().EventStreamResumed();
+              AppAnalytics().trackEventPresentResumed();
             } on PlatformException catch (e) {
               log(e.toString());
             }

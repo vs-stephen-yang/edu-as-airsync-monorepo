@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_exception_report.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
@@ -24,9 +25,10 @@ Future<void> commonEntry(ConfigSettings settings) async {
       settings: settings,
       appName: packageInfo.appName,
       appVersion: packageInfo.version,
-      child: MyApp());
+      child: const MyApp());
 
   await AppExceptionReport().ensureInitialized(settings, packageInfo);
+  await AppAnalytics().ensureInitialized(settings, packageInfo);
 
   FlutterError.onError = (FlutterErrorDetails details) {
     // Report errors to a service
@@ -43,6 +45,7 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+  const MyApp({Key? key}) : super(key: key);
 
   static void setLocale(BuildContext context, Locale newLocale) async {
     _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
@@ -51,7 +54,6 @@ class MyApp extends StatefulWidget {
 
   @override
   _MyAppState createState() => _MyAppState();
-
 }
 
 class _MyAppState extends State<MyApp> {
@@ -61,6 +63,18 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _locale = AppPreferences().locale;
     });
+  }
+
+  @override
+  void initState() {
+    AppAnalytics().trackEventAppStarted();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    AppAnalytics().trackEventAppTerminated();
+    super.dispose();
   }
 
   @override
@@ -77,7 +91,8 @@ class _MyAppState extends State<MyApp> {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
-      ], //add
+      ],
+      //add
       supportedLocales: S.delegate.supportedLocales,
       locale: _locale,
       title: 'Display',

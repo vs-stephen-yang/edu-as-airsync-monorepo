@@ -26,6 +26,9 @@ abstract class ConfigSettings {
   late String mainDisplayUrl;
   late String prefixQRCode;
 
+  late String appSecretAndroid;
+  late String appSecretIOS;
+
   late String icarHostName;
   late String icarRegisterUrl;
   late String icarUpdateUrl;
