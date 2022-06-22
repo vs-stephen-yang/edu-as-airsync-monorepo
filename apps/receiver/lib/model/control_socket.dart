@@ -147,11 +147,15 @@ class ControlSocket {
             if (!presenting) {
               Home.showTitleBottomBar.value = true;
               StreamFunction.showWaitFunction.value = true;
+              StreamFunction.showStreamMenu.value = false;
+              StreamFunction.showPresentFunction.value = false;
               MainInfo.showMainInfo.value = true;
             }
           } else {
             Home.showTitleBottomBar.value = true;
             StreamFunction.showWaitFunction.value = true;
+            StreamFunction.showStreamMenu.value = false;
+            StreamFunction.showPresentFunction.value = false;
             MainInfo.showMainInfo.value = true;
           }
 
