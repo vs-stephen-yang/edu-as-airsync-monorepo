@@ -107,9 +107,6 @@ public class WebRTCNativeView implements PlatformView,
         String msg = call.arguments() != null ? call.arguments().toString() : "";
         myLogDebug(String.format(Locale.US, "onMethodCall: %s, object: %s", call.method, msg));
         switch (call.method) {
-            case "isNotConnected":
-                result.success(mPeerId.isEmpty());
-                break;
             case "connectP2pClient":
                 connectP2pClient(call.argument("token"), call.argument("peerId"), result);
                 break;
@@ -171,6 +168,7 @@ public class WebRTCNativeView implements PlatformView,
         mStreamObserver = new RemoteStream.StreamObserver() {
             @Override
             public void onEnded() {
+                setStateMachine("onEnded");
                 disconnectP2pClient();
             }
 
@@ -241,7 +239,6 @@ public class WebRTCNativeView implements PlatformView,
     private RemoteStream mRemoteStream;
     private RemoteStream.StreamObserver mStreamObserver;
     private SurfaceViewRenderer mSurfaceViewRenderer;
-    private String mPeerId = "";
     private boolean mAudioControl = false;
 
     private boolean initP2PClient() {
@@ -266,8 +263,6 @@ public class WebRTCNativeView implements PlatformView,
             return;
         }
 
-        mPeerId = peerId;
-
         JSONObject loginObj = new JSONObject();
         try {
             loginObj.put("host", "https://mrtc.myviewboard.cloud");
@@ -288,17 +283,16 @@ public class WebRTCNativeView implements PlatformView,
             public void onFailure(OwtError error) {
                 setStateMachine(String.format("connect() onFailure: %s %s", error.errorCode, error.errorMessage));
                 methodResult.error(String.valueOf(error.errorCode), error.errorMessage, null);
-                mPeerId = "";
             }
         });
     }
 
     private void disconnectP2pClient() {
-        if (!TextUtils.isEmpty(mPeerId)) {
-            setStateMachine(String.format(Locale.US, "disconnect peerId: %s", mPeerId));
-            if (mP2pClient != null) mP2pClient.disconnect();
-            mPeerId = "";
+        if (mP2pClient != null) {
+            setStateMachine(String.format(Locale.US, "disconnect uid: %s", mP2pClient.id()));
+            mP2pClient.disconnect();
         }
+
         mActivityRef.get().runOnUiThread(() -> {
             if (mSurfaceViewRenderer != null) {
                 mSurfaceViewRenderer.clearImage();
