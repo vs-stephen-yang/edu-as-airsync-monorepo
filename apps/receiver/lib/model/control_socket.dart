@@ -69,13 +69,16 @@ class ControlSocket {
             })
             .build());
 
-    _controlSocketIO
-        .onConnect((data) => _printControlSocketLog('connect', data));
+    _controlSocketIO.onConnect((data) {
+      _printControlSocketLog('connect', data);
+      Home.showCloudOff.value = false;
+    });
     _controlSocketIO
         .onConnecting((data) => _printControlSocketLog('connecting', data));
     _controlSocketIO.onConnectError((data) {
       _printControlSocketLog('connect_error', data);
       if (_displayReconnectAttempts >= _maxReconnectAttempts) {
+        Home.showCloudOff.value = true;
         _displayReconnectAttempts = 0;
 
         Future.delayed(const Duration(seconds: 5), () {
