@@ -156,7 +156,7 @@ class _HomeState extends State<Home> {
             const MainInfo(),
             Positioned(
               left: 20,
-              bottom: 140,
+              bottom: 0,
               child: StreamFunction(key: streamFunctionKey),
             ),
             ValueListenableBuilder(

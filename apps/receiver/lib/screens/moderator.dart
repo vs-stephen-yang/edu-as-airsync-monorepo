@@ -137,6 +137,9 @@ class _ModeratorViewState extends State<ModeratorView> {
                             icon: const Icon(Icons.arrow_back_ios,
                                 color: AppColors.primary_white),
                             onPressed: () {
+                              if (_isPresenting()) {
+                                StreamFunction.showStreamMenu.value = true;
+                              }
                               StreamFunction.showModerator.value = false;
                             },
                           ),
@@ -339,6 +342,21 @@ class _ModeratorViewState extends State<ModeratorView> {
               ],
             )));
   }
+
+  bool _isPresenting() {
+    bool presenting = false;
+    if (SplitScreen.splitScreenEnabled.value) {
+      var display = Displays().getSelectedDisplay();
+      display.splitIndexMap.forEach((key, value) {
+        if (value.isNotEmpty) {
+          presenting = true;
+        }
+      });
+    } else {
+      if (Displays().getSelectedDisplay().presenterIndex != -1) presenting = true;
+    }
+    return presenting;
+}
 
   Future<void> _queryDisplay(
       List<DisplayInfo> displays, dynamic displayIds) async {
