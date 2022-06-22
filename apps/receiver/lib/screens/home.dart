@@ -1,4 +1,6 @@
+import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -8,12 +10,14 @@ import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/tittle_bar.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 final GlobalKey<StreamFunctionStates> streamFunctionKey = GlobalKey();
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
   static ValueNotifier<bool> showTitleBottomBar = ValueNotifier(true);
+  static ValueNotifier<bool> showCloudOff = ValueNotifier(false);
 
   @override
   State<StatefulWidget> createState() => _HomeState();
@@ -154,6 +158,34 @@ class _HomeState extends State<Home> {
               left: 20,
               bottom: 140,
               child: StreamFunction(key: streamFunctionKey),
+            ),
+            ValueListenableBuilder(
+              valueListenable: Home.showCloudOff,
+              builder: (BuildContext context, bool value, Widget? child) {
+                return Visibility(
+                  visible: value,
+                  child: Container(
+                    color: Colors.black,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const Image(
+                            image: Svg('assets/images/ic_cloud_off.svg')),
+                        const SizedBox(width: 20),
+                        Text(
+                          S.of(context).main_status_no_network,
+                          style: const TextStyle(
+                            color: AppColors.primary_white,
+                            fontSize: 20,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),
