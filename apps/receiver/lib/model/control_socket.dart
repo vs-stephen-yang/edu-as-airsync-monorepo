@@ -131,6 +131,7 @@ class ControlSocket {
         case 'disconnectedP2pClient':
           controller.presentationState = PresentationState.stopStreaming;
           controller.nativeViewState.switchConnectionState(false);
+          _handleDisplayStateUpdate(controller);
 
           if (SplitScreen.splitScreenEnabled.value) {
             bool presenting = false;
@@ -267,6 +268,7 @@ class ControlSocket {
               }
 
               MainInfo.showMainInfo.value = false;
+
               selectedController.nativeViewState.switchConnectionState(true);
               var arg = {
                 'token': signal.token,
@@ -285,8 +287,10 @@ class ControlSocket {
 
               selectedController.presentationState =
                   PresentationState.stopStreaming;
-              MainInfo.showMainInfo.value = true;
               selectedController.nativeViewState.switchConnectionState(false);
+              _handleDisplayStateUpdate(selectedController);
+
+              MainInfo.showMainInfo.value = true;
 
               _handleP2PClientReject(
                   presenter.id ?? '', resp.nextId ?? '', 'blocked');
