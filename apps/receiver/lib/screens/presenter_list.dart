@@ -65,7 +65,6 @@ class PresenterListState extends State<PresenterList> {
                                 }
                               });
                             }
-                            print("zz $name $bWait");
 
                             CheckBoxSwitch toggleSwitch = CheckBoxSwitch(
                               itemKey: display.peerList[index].key,
@@ -80,6 +79,7 @@ class PresenterListState extends State<PresenterList> {
                               onOpen: (value) {
                                 if (value) {
                                   if (display.peerList[index].waitReply) return;
+                                  display.peerList[index].waitReply = true;
                                   if (widget.isSplit) {
                                     bool bAdd = false;
                                     display.splitIndexMap.forEach((key, value) {
@@ -88,6 +88,7 @@ class PresenterListState extends State<PresenterList> {
                                       }
                                     });
                                     if (!bAdd) {
+                                      display.peerList[index].waitReply = false;
                                       return;
                                     }
                                   } else {
@@ -108,7 +109,6 @@ class PresenterListState extends State<PresenterList> {
                                     }
                                   }
                                   // play
-                                  display.peerList[index].waitReply = true;
                                   String action = (status == 'play' ||
                                       status == 'pause')
                                       ? 'stop'
