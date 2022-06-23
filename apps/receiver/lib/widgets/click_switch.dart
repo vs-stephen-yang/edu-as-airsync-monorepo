@@ -1,5 +1,6 @@
 import 'package:display_flutter/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class CheckBoxSwitch extends StatefulWidget {
   bool bOpen, bEdit, bRemove, bSplit, bWait;
@@ -40,9 +41,28 @@ class CheckBoxSwitchState extends State<CheckBoxSwitch>
   /// Whether the button is On
   bool _open = false;
 
+  late AnimationController controller;
+
   @override
   void initState() {
     super.initState();
+    controller =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        //动画从 controller.forward() 正向执行 结束时会回调此方法
+        print("status is completed");
+      } else if (status == AnimationStatus.dismissed) {
+        //动画从 controller.reverse() 反向执行 结束时会回调此方法
+        print("status is dismissed");
+      } else if (status == AnimationStatus.forward) {
+        print("status is forward");
+        //执行 controller.forward() 会回调此状态
+      } else if (status == AnimationStatus.reverse) {
+        //执行 controller.reverse() 会回调此状态
+        print("status is reverse");
+      }
+    });
   }
 
   @override
@@ -60,10 +80,17 @@ class CheckBoxSwitchState extends State<CheckBoxSwitch>
           name.split(" ").last.substring(0, 1);
     }
 
+    Widget loading = widget.bWait
+        ? buildRotationLoadingIcon()
+        : Text(shortName,
+                maxLines: 1,
+                style: const TextStyle(color: Colors.white, fontSize: 16));
+
     Widget cell = InkWell(
       onTap: () {
         _open = !_open;
         setState(() {
+          controller.forward();
           widget.onOpen(_open);
         });
       },
@@ -101,9 +128,7 @@ class CheckBoxSwitchState extends State<CheckBoxSwitch>
               Container(
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.fromLTRB(0, 0, widget.width*0.1, 0),
-                child: Text(shortName,
-                    maxLines: 1,
-                    style: const TextStyle(color: Colors.white, fontSize: 16)),
+                child: loading,
               ),
             ],
           )),
@@ -133,6 +158,28 @@ class CheckBoxSwitchState extends State<CheckBoxSwitch>
       ),
     );
   }
+
+  Widget buildRotationLoadingIcon() {
+    return SizedBox(
+      width: widget.height/2,
+      height: widget.height/2,
+      child: Center(
+        child: RotationTransition(
+          //设置动画的旋转中心
+          alignment: Alignment.center,
+          //动画控制器
+          turns: controller,
+          //将要执行动画的子view
+          child: const Image(
+            image: Svg(
+              'assets/images/ic_moderator_loading.svg',
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
 
   void setButtonStatue({required bool status}) {
     if (status) {
