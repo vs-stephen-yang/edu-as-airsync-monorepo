@@ -302,42 +302,6 @@ class _ModeratorViewState extends State<ModeratorView> {
     );
   }
 
-  Widget getActivateButton() {
-    return Visibility(
-        visible: Displays().getDisplays().isEmpty,
-        child: Container(
-            color: Colors.transparent,
-            child: Row(
-              children: [
-                const Spacer(
-                  flex: 1,
-                ),
-                Expanded(
-                  flex: 8,
-                  child: GestureDetector(
-                    onTap: () {
-                      verifyCode();
-                    },
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: AppColors.primary_white,
-                      ),
-                      child: Text(S.of(context).moderator_activate,
-                          style: const TextStyle(color: AppColors.neutral1)),
-                    ),
-                  ),
-                ),
-                const Spacer(
-                  flex: 1,
-                ),
-              ],
-            )));
-  }
-
   bool _isPresenting() {
     bool presenting = false;
     if (SplitScreen.splitScreenEnabled.value) {
