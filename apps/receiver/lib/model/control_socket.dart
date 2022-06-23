@@ -13,6 +13,7 @@ import 'package:display_flutter/utility/get_string.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart';
 
 class ControlSocket {
@@ -37,9 +38,8 @@ class ControlSocket {
   String licenseName = '';
   List<String> featureList = [];
 
-  bool moderatorMode = false;
-  String moderatorId = '';
-  String moderatorName = '';
+  Moderator? moderator;
+
   String meetingId = '';
   int remainingTime = 0;
   List<double> remainingTimeCheckPoints = [];
@@ -182,11 +182,8 @@ class ControlSocket {
       switch (resp.action) {
         // region Moderator
         case "set-moderator":
-          moderatorMode = true;
           Extra extra = Extra.fromJson(resp.extra);
-          Moderator moderator = Moderator.fromJson(extra.moderator);
-          moderatorId = moderator.id ?? '';
-          moderatorName = moderator.name ?? '';
+          moderator = Moderator.fromJson(extra.moderator);
           meetingId = extra.moderatedSessionId ?? '';
           remainingTime =
               extra.endTime! - DateTime.now().millisecondsSinceEpoch;
@@ -205,9 +202,7 @@ class ControlSocket {
 
           ConnectionTimer.getInstance().startRemainingTimeTimer(remainingTime,
               () {
-            moderatorMode = false;
-            moderatorId = '';
-            moderatorName = '';
+            moderator = null;
             meetingId = '';
             remainingTime = 0;
             remainingTimeCheckPoints.clear();
@@ -221,9 +216,7 @@ class ControlSocket {
           });
           break;
         case "unset-moderator":
-          moderatorMode = false;
-          moderatorId = '';
-          moderatorName = '';
+          moderator = null;
           meetingId = '';
           remainingTime = 0;
           remainingTimeCheckPoints.clear();
@@ -266,7 +259,7 @@ class ControlSocket {
               _handleDisplayStateUpdate(selectedController);
               // Send wait for stream
 
-              if (!moderatorMode) {
+              if (moderator == null) {
                 ConnectionTimer.getInstance().startConnectionTimeoutTimer(
                     selectedController, resp.nextId ?? '',
                     (controller, nextId) {
@@ -474,6 +467,23 @@ class ControlSocket {
       }
     }
     return presenting;
+  }
+
+  unbindModerator(String apiGateway, Moderator moderator) async {
+    try {
+      http.Response response = await http.patch(
+        Uri.parse('$apiGateway/presentation/displays/moderator/unbind'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: json.encode({'code': displayCode, 'moderator': moderator}),
+      );
+      print('unbind status: ${response.statusCode}');
+      // every thing else
+    } catch (e) {
+      print('unbind failure: $e');
+      // http.post maybe no network connection.
+    }
   }
 }
 

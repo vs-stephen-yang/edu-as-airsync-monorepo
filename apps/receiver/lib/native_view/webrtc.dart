@@ -117,7 +117,7 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Visibility(
-                    visible: ControlSocket().moderatorMode,
+                    visible: ControlSocket().moderator != null,
                     child: Column(
                       children: <Widget>[
                         Text(

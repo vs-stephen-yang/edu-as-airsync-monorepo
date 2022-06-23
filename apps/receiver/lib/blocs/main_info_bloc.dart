@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:display_flutter/app_preferences.dart';
+import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +18,7 @@ part 'main_info_state.dart';
 // https://bloclibrary.dev/#/gettingstarted
 class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
   String apiGateway, instanceID, version;
+  static bool isFirstTimeGetDisplayCode = true;
 
   MainInfoBloc(this.apiGateway, this.instanceID, this.version)
       : super(MainInfoState.initialState) {
@@ -44,6 +46,15 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
         List<dynamic> features = property['features'];
         for (String feature in features) {
           ControlSocket().featureList.add(feature);
+        }
+        if (isFirstTimeGetDisplayCode) {
+          isFirstTimeGetDisplayCode = false;
+          if (property.containsKey('moderator')) {
+            if (property['moderator'] != null) {
+              ControlSocket().unbindModerator(
+                  apiGateway, Moderator.fromJson(property['moderator']));
+            }
+          }
         }
         emit(MainInfoState.getDisplayCodeSuccess);
       } else {
