@@ -11,6 +11,7 @@ import 'package:display_flutter/screens/presenter_list.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/custom_dialog.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
@@ -40,7 +41,7 @@ class _ModeratorViewState extends State<ModeratorView> {
         //TODO: the color is AppColors.primary_grey_tran during presenting
       ),
       child: StreamBuilder(
-          stream: moderatorSocket.streamPeerlist.getResponse,
+          stream: moderatorSocket.setModeratorResponse.getResponse,
           builder: (BuildContext context, AsyncSnapshot<Map> peerlistSnapshot) {
             if (peerlistSnapshot.hasData &&
                 moderatorSocket.peerListHasNewData) {
@@ -120,6 +121,27 @@ class _ModeratorViewState extends State<ModeratorView> {
                   }
                 }
               }
+            } else if (peerlistSnapshot.hasData &&
+                moderatorSocket.setModeratorHasNewData) {
+              moderatorSocket.setModeratorHasNewData = false;
+              var property = peerlistSnapshot.data!['property'];
+              if (property != null && property.length > 0) {
+                // bindToDisplay will have property
+                var display = DisplayInfo(
+                  displayId: peerlistSnapshot.data!['code'],
+                  displayResponse: peerlistSnapshot.data,
+                );
+                Displays().addDisplayInfo(display);
+              }
+            } else if (peerlistSnapshot.hasData &&
+                moderatorSocket.unsetModeratorHasNewData) {
+              moderatorSocket.unsetModeratorHasNewData = false;
+              var displays = Displays().getDisplays();
+              var messageFor = peerlistSnapshot.data!['messageFor'];
+              if (displays
+                  .contains(DisplayInfo(displayId: messageFor))) {
+                _logout();
+              }
             }
             return Column(
               children: [
@@ -131,6 +153,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                   child: Row(
                     children: <Widget>[
                       Expanded(
+                        flex: 15,
                         child: FittedBox(
                           fit: BoxFit.fitHeight,
                           child: IconButton(
@@ -146,7 +169,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                         ),
                       ),
                       Expanded(
-                        flex: 6,
+                        flex: 55,
                         child: Text(
                           S.of(context).moderator_presentersList,
                           style: const TextStyle(
@@ -156,7 +179,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                         ),
                       ),
                       const Spacer(
-                        flex: 1,
+                        flex: 10,
                       ),
                       Expanded(
                         child: FittedBox(
@@ -172,6 +195,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                         ),
                       ),
                       Expanded(
+                        flex: 15,
                         child: FittedBox(
                           fit: BoxFit.fitHeight,
                           child: IconButton(
@@ -190,15 +214,12 @@ class _ModeratorViewState extends State<ModeratorView> {
                         ),
                       ),
                       Expanded(
+                        flex: 15,
                         child: FittedBox(
                           fit: BoxFit.fitHeight,
-                          child: Transform.rotate(
-                              angle: 90 * math.pi / 180,
-                              child: const Icon(Icons.horizontal_rule,
-                                  color: AppColors.primary_white)),
+                          child: getLogOutIcon(),
                         ),
                       ),
-                      getLogOutIcon(),
                     ],
                   ),
                 ),
@@ -243,36 +264,6 @@ class _ModeratorViewState extends State<ModeratorView> {
                               updateEditIconState,
                               SplitScreen.splitScreenEnabled.value));
                     }),
-                StreamBuilder(
-                  stream: moderatorSocket.setModeratorResponse.getResponse,
-                  builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
-                    if (snapshot.hasData &&
-                        moderatorSocket.setModeratorHasNewData) {
-                      moderatorSocket.setModeratorHasNewData = false;
-                      var property = snapshot.data!['property'];
-                      if (property != null && property.length > 0) {
-                        // bindToDisplay will have property
-                        var display = DisplayInfo(
-                          displayId: snapshot.data!['code'],
-                          displayResponse: snapshot.data,
-                        );
-                        Displays().addDisplayInfo(display);
-                        updateLogoutIconState();
-                      }
-                    } else if (snapshot.hasData &&
-                        moderatorSocket.unsetModeratorHasNewData) {
-                      moderatorSocket.unsetModeratorHasNewData = false;
-                      var displays = Displays().getDisplays();
-                      var messageFor = snapshot.data!['messageFor'];
-                      if (displays
-                          .contains(DisplayInfo(displayId: messageFor))) {
-                        _logout();
-                        updateLogoutIconState();
-                      }
-                    }
-                    return getActivateButton();
-                  },
-                ),
               ],
             );
           }),
@@ -294,16 +285,18 @@ class _ModeratorViewState extends State<ModeratorView> {
   }
 
   Widget getLogOutIcon() {
-    return Expanded(
-      child: FittedBox(
-        fit: BoxFit.fitHeight,
-        child: IconButton(
-          icon: LogoutIcon(_logoutIconKey),
-          onPressed: () {
-            if (Displays().getDisplays().isNotEmpty) _callLogOutDialog();
-          },
-        ),
-      ),
+    return IconButton(
+      icon: LogoutIcon(_logoutIconKey),
+      onPressed: () {
+        EasyDebounce.debounce('activate-logout', Duration(milliseconds: 800), () {
+          if (Displays().getDisplays().isEmpty) {
+            verifyCode();
+            updateLogoutIconState();
+          } else {
+            _callLogOutDialog();
+          }
+        });
+      },
     );
   }
 
@@ -524,9 +517,9 @@ class LogoutIcon extends StatefulWidget {
 class LogoutIconState extends State<LogoutIcon> {
   @override
   Widget build(BuildContext context) {
-    return Icon(Icons.logout,
-        color: Displays().getDisplays().isEmpty
-            ? AppColors.neutral4
-            : AppColors.primary_white);
+    String path = 'assets/images/ic_activate_off.svg';
+    if (Displays().getDisplays().isNotEmpty)
+      path = 'assets/images/ic_activate_on.svg';
+    return Image(image: Svg(path));
   }
 }
