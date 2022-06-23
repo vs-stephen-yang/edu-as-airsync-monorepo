@@ -7,6 +7,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/blocs/main_info_bloc.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -84,8 +85,10 @@ class _MainInfoState extends State<MainInfo> {
             case MainInfoState.getOneTimePasswordError:
               _countDownProgress.value = 1;
               _countDownValue = maxCountDown;
-              _showSnackBarMessage(
-                  S.of(context).main_content_one_time_password_get_fail);
+              if (!Home.showCloudOff.value) {
+                _showSnackBarMessage(
+                    S.of(context).main_content_one_time_password_get_fail);
+              }
               Timer(const Duration(seconds: 5), () async {
                 BlocProvider.of<MainInfoBloc>(context)
                     .add(GetOneTimePassword());
