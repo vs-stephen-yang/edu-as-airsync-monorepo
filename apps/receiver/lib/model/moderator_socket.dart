@@ -18,7 +18,6 @@ final moderatorSocket = ModeratorSocket();
 
 class ModeratorSocket {
   StreamSocket streamSocket = StreamSocket();
-  StreamPeerlist streamPeerlist = StreamPeerlist();
   StreamResponse setModeratorResponse = StreamResponse();
   bool socketHasNewData = false;
   bool peerListHasNewData = false;
@@ -117,7 +116,7 @@ class ModeratorSocket {
     for (var element in peerlistEvent) {
       socket.on(element, (_) {
         log('$element: $_');
-        streamPeerlist.addResponseMessage(_);
+        setModeratorResponse.addResponseMessage(_);
         peerListHasNewData = true;
       });
     }
@@ -259,7 +258,6 @@ class ModeratorSocket {
 
   void dispose() {
     streamSocket.dispose();
-    streamPeerlist.dispose();
     setModeratorResponse.dispose();
   }
 }
