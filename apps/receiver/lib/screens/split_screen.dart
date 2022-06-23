@@ -1,4 +1,5 @@
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +64,9 @@ class _SplitScreenState extends State<SplitScreen>
                     icon: const Icon(Icons.arrow_back_ios,
                         color: AppColors.primary_white),
                     onPressed: () {
+                      if (SplitScreen.splitScreenEnabled.value && ControlSocket().isPresenting()) {
+                        StreamFunction.showStreamMenu.value = true;
+                      }
                       StreamFunction.showSplitScreen.value = false;
                     },
                   ),
