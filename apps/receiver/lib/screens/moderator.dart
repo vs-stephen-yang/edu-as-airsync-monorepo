@@ -312,10 +312,12 @@ class _ModeratorViewState extends State<ModeratorView> {
         }
       });
     } else {
-      if (Displays().getSelectedDisplay().presenterIndex != -1) presenting = true;
+      if (Displays().getSelectedDisplay().presenterIndex != -1) {
+        presenting = true;
+      }
     }
     return presenting;
-}
+  }
 
   Future<void> _queryDisplay(
       List<DisplayInfo> displays, dynamic displayIds) async {
@@ -378,7 +380,7 @@ class _ModeratorViewState extends State<ModeratorView> {
             setState(() {
               _logout();
               streamFunctionKey.currentState?.setState(() {
-                ControlSocket().moderatorMode = false;
+                ControlSocket().moderator = null;
               });
             });
           },

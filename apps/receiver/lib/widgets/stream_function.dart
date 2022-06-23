@@ -28,7 +28,7 @@ class StreamFunctionStates extends State<StreamFunction> {
   Widget build(BuildContext context) {
     // region SplitScreen icon
     String iconSplitScreen = '';
-    if (ControlSocket().moderatorMode) {
+    if (ControlSocket().moderator != null) {
       iconSplitScreen = 'assets/images/ic_split_screen_off.svg';
     } else {
       if (SplitScreen.splitScreenEnabled.value) {
@@ -41,11 +41,11 @@ class StreamFunctionStates extends State<StreamFunction> {
 
     // region Moderator icon
     String iconModerator = '';
-    if (!ControlSocket().moderatorMode &&
+    if (ControlSocket().moderator == null &&
         SplitScreen.splitScreenEnabled.value) {
       iconModerator = 'assets/images/ic_moderator_off.svg';
     } else {
-      if (ControlSocket().moderatorMode) {
+      if (ControlSocket().moderator != null) {
         iconModerator = 'assets/images/ic_moderator_activate.svg';
       } else {
         iconModerator = 'assets/images/ic_moderator_on.svg';
@@ -67,7 +67,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                   children: <Widget>[
                     IconButton(
                       iconSize: 48,
-                      onPressed: ControlSocket().moderatorMode
+                      onPressed: ControlSocket().moderator != null
                           ? null
                           : () {
                         StreamFunction.showSplitScreen.value = true;
@@ -78,7 +78,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                     ),
                     IconButton(
                       iconSize: 48,
-                      onPressed: (!ControlSocket().moderatorMode &&
+                      onPressed: (ControlSocket().moderator == null &&
                           SplitScreen.splitScreenEnabled.value)
                           ? null
                           : () {
@@ -123,7 +123,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                   children: [
                     IconButton(
                       iconSize: 48,
-                      onPressed: ControlSocket().moderatorMode
+                      onPressed: ControlSocket().moderator != null
                           ? null
                           : () {
                         StreamFunction.showSplitScreen.value = true;
@@ -135,7 +135,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                     ),
                     IconButton(
                       iconSize: 48,
-                      onPressed: (!ControlSocket().moderatorMode &&
+                      onPressed: (ControlSocket().moderator == null &&
                           SplitScreen.splitScreenEnabled.value)
                           ? null
                           : () {
