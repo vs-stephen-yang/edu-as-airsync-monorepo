@@ -128,6 +128,11 @@ class ControlSocket {
 
           Home.showTitleBottomBar.value = false;
           StreamFunction.showWaitFunction.value = false;
+          if (StreamFunction.showModerator.value || StreamFunction.showSplitScreen.value) {
+            StreamFunction.showStreamMenu.value = false;
+          } else {
+            StreamFunction.showStreamMenu.value = true;
+          }
 
           AppAnalytics().trackEventPresentStart();
           break;
@@ -392,7 +397,7 @@ class ControlSocket {
       'messageId': GetString.getRandomString(21),
       'nextId': GetString.getRandomString(21),
     });
-    print('mControlSocketIO: _handleDisplayStateUpdate: $content');
+    print('mControlSocketIO: send _handleDisplayStateUpdate: $content');
     _controlSocketIO.emit(displayCode, json.decode(content));
   }
 
@@ -453,6 +458,22 @@ class ControlSocket {
     });
     print('mControlSocketIO: _handleStreamPauseSuccess: $content');
     _controlSocketIO.emit(displayCode, json.decode(content));
+  }
+
+  bool isPresenting() {
+    bool presenting = false;
+    if (SplitScreen.splitScreenEnabled.value) {
+      for (WebRTCNativeViewController controller in _webRtcController) {
+        if (controller.presentationState == PresentationState.streaming) {
+          presenting |= true;
+        }
+      }
+    } else {
+      if (_webRtcController[0].presentationState == PresentationState.streaming) {
+        presenting = true;
+      }
+    }
+    return presenting;
   }
 }
 
