@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_preferences.dart';
@@ -170,18 +169,21 @@ class _ModeratorViewState extends State<ModeratorView> {
                       ),
                       Expanded(
                         flex: 55,
-                        child: Text(
-                          S.of(context).moderator_presentersList,
-                          style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primary_white),
+                        child: FittedBox(
+                          fit: BoxFit.fitHeight,
+                          child: Text(
+                            S.of(context).moderator_presentersList,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary_white),
+                          ),
                         ),
                       ),
                       const Spacer(
                         flex: 10,
                       ),
                       Expanded(
+                        flex: 15,
                         child: FittedBox(
                           fit: BoxFit.fitHeight,
                           child: IconButton(
