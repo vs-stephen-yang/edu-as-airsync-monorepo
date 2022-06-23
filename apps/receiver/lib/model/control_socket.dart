@@ -253,14 +253,13 @@ class ControlSocket {
           if (selectedController != null) {
             log('selectedController: ${selectedController.channel.name}');
             try {
+              selectedController.presenterId = presenter.id ?? '';
+              selectedController.presenterName = presenter.name ?? '';
               // Send wait for stream
               selectedController.presentationState =
                   PresentationState.waitForStream;
               _handleDisplayStateUpdate(selectedController);
               // Send wait for stream
-
-              selectedController.presenterId = presenter.id ?? '';
-              selectedController.presenterName = presenter.name ?? '';
 
               if (!moderatorMode) {
                 ConnectionTimer.getInstance().startConnectionTimeoutTimer(
