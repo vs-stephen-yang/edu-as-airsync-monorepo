@@ -128,12 +128,19 @@ class ControlSocket {
 
           Home.showTitleBottomBar.value = false;
           StreamFunction.showWaitFunction.value = false;
-          if (StreamFunction.showModerator.value || StreamFunction.showSplitScreen.value) {
-            StreamFunction.showStreamMenu.value = false;
+          if (SplitScreen.splitScreenEnabled.value) {
+            if (StreamFunction.showModerator.value || StreamFunction.showSplitScreen.value) {
+              StreamFunction.showStreamMenu.value = false;
+            } else if (StreamFunction.showPresentFunction.value){
+              StreamFunction.showStreamMenu.value = false;
+            } else {
+              StreamFunction.showStreamMenu.value = true;
+            }
           } else {
-            StreamFunction.showStreamMenu.value = true;
+            if (moderator != null && StreamFunction.showModerator.value) {
+              StreamFunction.showStreamMenu.value = false;
+            }
           }
-
           AppAnalytics().trackEventPresentStart();
           break;
         case 'disconnectedP2pClient':
