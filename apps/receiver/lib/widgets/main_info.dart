@@ -229,9 +229,9 @@ class _MainInfoState extends State<MainInfo> {
                   onPressed: () {
                     _isEyeOpen.value = !_isEyeOpen.value;
                     if (_isEyeOpen.value) {
-                      AppAnalytics().trackEventMaskOTPCode();
-                    } else {
                       AppAnalytics().trackEventUnMaskOTPCode();
+                    } else {
+                      AppAnalytics().trackEventMaskOTPCode();
                     }
                   },
                   icon: Image.asset(
