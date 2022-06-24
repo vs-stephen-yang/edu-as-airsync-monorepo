@@ -40,6 +40,11 @@ class _SplitScreenState extends State<SplitScreen>
 
   @override
   Widget build(BuildContext context) {
+
+    String path = 'assets/images/ic_activate_off.svg';
+    if (SplitScreen.splitScreenEnabled.value)
+      path = 'assets/images/ic_activate_on.svg';
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.6,
       width: MediaQuery.of(context).size.width * 0.25,
@@ -86,14 +91,29 @@ class _SplitScreenState extends State<SplitScreen>
                     ),
                   ),
                 ),
+                Expanded(
+                  child: FittedBox(
+                    alignment: Alignment.centerRight,
+                    fit: BoxFit.fitHeight,
+                    child: IconButton(
+                      icon: Image(image: Svg(path)),
+                      onPressed: () {
+                        setState(() {
+                          SplitScreen.splitScreenEnabled.value =
+                              !SplitScreen.splitScreenEnabled.value;
+                          streamFunctionKey.currentState?.setState(() {});
+                        });
+                      },
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.2, horizontal: 30),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Visibility(
                     visible: SplitScreen.splitScreenEnabled.value,
@@ -117,37 +137,6 @@ class _SplitScreenState extends State<SplitScreen>
                     ),
                   ),
                 ],
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  SplitScreen.splitScreenEnabled.value =
-                      !SplitScreen.splitScreenEnabled.value;
-                  streamFunctionKey.currentState?.setState(() {});
-                });
-              },
-              child: Text(
-                SplitScreen.splitScreenEnabled.value
-                    ? 'Deactivate'
-                    : 'Activate',
-                style: const TextStyle(
-                  color: AppColors.neutral1,
-                ),
-              ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith((states) {
-                  return Colors.white;
-                }),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: const BorderSide(color: Colors.white),
-                  ),
-                ),
               ),
             ),
           ),
