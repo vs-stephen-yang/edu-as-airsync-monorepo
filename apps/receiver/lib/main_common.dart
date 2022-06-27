@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_exception_report.dart';
@@ -82,22 +83,24 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Future<bool> didPopRoute() async {
-    NavigatorState? navigatorState =
-        NavigationService.navigationKey.currentState;
-    if (navigatorState != null && !navigatorState.canPop()) {
-      ControlSocket().disconnectControlSocket();
-      AppAnalytics().trackEventAppTerminated();
+    if (!Platform.isAndroid) {
+      NavigatorState? navigatorState =
+          NavigationService.navigationKey.currentState;
+      if (navigatorState != null && !navigatorState.canPop()) {
+        ControlSocket().disconnectControlSocket();
+        AppAnalytics().trackEventAppTerminated();
 
-      Moderator? moderator = ControlSocket().moderator;
-      if (moderator != null) {
-        AppConfig? appConfig = AppConfig.of(context);
-        if (appConfig != null) {
-          ControlSocket()
-              .unbindModerator(appConfig.settings.apiGateway, moderator);
+        Moderator? moderator = ControlSocket().moderator;
+        if (moderator != null) {
+          AppConfig? appConfig = AppConfig.of(context);
+          if (appConfig != null) {
+            ControlSocket()
+                .unbindModerator(appConfig.settings.apiGateway, moderator);
+          }
         }
+        // wait one second for handle above process.
+        await Future.delayed(const Duration(seconds: 1));
       }
-      // wait one second for handle above process.
-      await Future.delayed(const Duration(seconds: 1));
     }
     return Future<bool>.value(false);
   }
