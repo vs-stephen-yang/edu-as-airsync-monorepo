@@ -194,7 +194,6 @@ class StreamFunctionStates extends State<StreamFunction> {
                   onPressed: () {
                     StreamFunction.showPresentFunction.value = true;
                     StreamFunction.showStreamMenu.value = false;
-                    // StreamFunction.showArrowMenu.value = true;
                   },
                   icon: const Image(
                     image: Svg('assets/images/ic_streaming_menu.svg'), // Svg('assets/images/ic_display_code_arrow.svg'),
