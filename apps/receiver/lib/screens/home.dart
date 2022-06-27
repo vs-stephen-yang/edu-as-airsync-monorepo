@@ -28,12 +28,6 @@ class _HomeState extends State<Home> {
   final List<bool> _isSelectedList = List.filled(4, false, growable: false);
 
   @override
-  void dispose() {
-    ControlSocket().disconnectControlSocket();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     _fullWidth = size.width;
