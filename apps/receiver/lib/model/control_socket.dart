@@ -25,7 +25,7 @@ class ControlSocket {
   // passes the instantiation to the _instance object
   factory ControlSocket() => _instance;
 
-  late Socket _controlSocketIO;
+  Socket? _controlSocketIO;
   final int _maxReconnectAttempts = 5;
   int _displayReconnectAttempts = 0;
 
@@ -69,13 +69,13 @@ class ControlSocket {
             })
             .build());
 
-    _controlSocketIO.onConnect((data) {
+    _controlSocketIO?.onConnect((data) {
       _printControlSocketLog('connect', data);
       Home.showCloudOff.value = false;
     });
     _controlSocketIO
-        .onConnecting((data) => _printControlSocketLog('connecting', data));
-    _controlSocketIO.onConnectError((data) {
+        ?.onConnecting((data) => _printControlSocketLog('connecting', data));
+    _controlSocketIO?.onConnectError((data) {
       _printControlSocketLog('connect_error', data);
       if (_displayReconnectAttempts >= _maxReconnectAttempts) {
         Home.showCloudOff.value = true;
@@ -86,28 +86,28 @@ class ControlSocket {
         });
       }
     });
-    _controlSocketIO.on(displayCode, (data) {
+    _controlSocketIO?.on(displayCode, (data) {
       _printControlSocketLog(displayCode, data);
       _handleDisplayResponse(data);
     });
-    _controlSocketIO.on(
+    _controlSocketIO?.on(
         'message', (data) => _printControlSocketLog('message', data));
-    _controlSocketIO.onConnectTimeout(
+    _controlSocketIO?.onConnectTimeout(
         (data) => _printControlSocketLog('onConnectTimeout', data));
     _controlSocketIO
-        .onDisconnect((data) => _printControlSocketLog('disconnect', data));
-    _controlSocketIO.onError((data) => _printControlSocketLog('error', data));
-    _controlSocketIO.onReconnecting((data) {
+        ?.onDisconnect((data) => _printControlSocketLog('disconnect', data));
+    _controlSocketIO?.onError((data) => _printControlSocketLog('error', data));
+    _controlSocketIO?.onReconnecting((data) {
       _printControlSocketLog('reconnecting', data);
       _displayReconnectAttempts++;
     });
 
-    _controlSocketIO.connect();
+    _controlSocketIO?.connect();
   }
 
   void disconnectControlSocket() {
     // https://github.com/rikulo/socket.io-client-dart/issues/108
-    _controlSocketIO.dispose();
+    _controlSocketIO?.dispose();
   }
 
   void addWebRtcController(WebRTCNativeViewController controller) {
@@ -129,9 +129,10 @@ class ControlSocket {
           Home.showTitleBottomBar.value = false;
           StreamFunction.showWaitFunction.value = false;
           if (SplitScreen.splitScreenEnabled.value) {
-            if (StreamFunction.showModerator.value || StreamFunction.showSplitScreen.value) {
+            if (StreamFunction.showModerator.value ||
+                StreamFunction.showSplitScreen.value) {
               StreamFunction.showStreamMenu.value = false;
-            } else if (StreamFunction.showPresentFunction.value){
+            } else if (StreamFunction.showPresentFunction.value) {
               StreamFunction.showStreamMenu.value = false;
             } else {
               StreamFunction.showStreamMenu.value = true;
@@ -405,7 +406,7 @@ class ControlSocket {
       'nextId': GetString.getRandomString(21),
     });
     print('mControlSocketIO: send _handleDisplayStateUpdate: $content');
-    _controlSocketIO.emit(displayCode, json.decode(content));
+    _controlSocketIO?.emit(displayCode, json.decode(content));
   }
 
   void _handleP2PClientSuccess(
@@ -429,7 +430,7 @@ class ControlSocket {
       'nextId': GetString.getRandomString(21)
     });
     print('mControlSocketIO: _handleP2PClientSuccess: $content');
-    _controlSocketIO.emit(displayCode, json.decode(content));
+    _controlSocketIO?.emit(displayCode, json.decode(content));
   }
 
   void _handleP2PClientReject(
@@ -446,7 +447,7 @@ class ControlSocket {
       'messageId': nextId,
     });
     print('mControlSocketIO: _handleP2PClientReject: $content');
-    _controlSocketIO.emit(displayCode, json.decode(content));
+    _controlSocketIO?.emit(displayCode, json.decode(content));
   }
 
   void _handleStreamPauseSuccess(
@@ -464,7 +465,7 @@ class ControlSocket {
       'nextId': GetString.getRandomString(21)
     });
     print('mControlSocketIO: _handleStreamPauseSuccess: $content');
-    _controlSocketIO.emit(displayCode, json.decode(content));
+    _controlSocketIO?.emit(displayCode, json.decode(content));
   }
 
   bool isPresenting() {
@@ -476,7 +477,8 @@ class ControlSocket {
         }
       }
     } else {
-      if (_webRtcController[0].presentationState == PresentationState.streaming) {
+      if (_webRtcController[0].presentationState ==
+          PresentationState.streaming) {
         presenting = true;
       }
     }

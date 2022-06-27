@@ -5,6 +5,8 @@ import 'package:display_flutter/app_exception_report.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/bean/display_message.dart';
+import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -56,7 +58,7 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Locale? _locale = AppPreferences().locale;
 
   changeLanguage(Locale locale) {
@@ -67,14 +69,37 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
+    WidgetsBinding.instance?.addObserver(this);
     AppAnalytics().trackEventAppStarted();
     super.initState();
   }
 
   @override
   void dispose() {
-    AppAnalytics().trackEventAppTerminated();
+    WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  Future<bool> didPopRoute() async {
+    NavigatorState? navigatorState =
+        NavigationService.navigationKey.currentState;
+    if (navigatorState != null && !navigatorState.canPop()) {
+      ControlSocket().disconnectControlSocket();
+      AppAnalytics().trackEventAppTerminated();
+
+      Moderator? moderator = ControlSocket().moderator;
+      if (moderator != null) {
+        AppConfig? appConfig = AppConfig.of(context);
+        if (appConfig != null) {
+          ControlSocket()
+              .unbindModerator(appConfig.settings.apiGateway, moderator);
+        }
+      }
+      // wait one second for handle above process.
+      await Future.delayed(const Duration(seconds: 1));
+    }
+    return Future<bool>.value(false);
   }
 
   @override
