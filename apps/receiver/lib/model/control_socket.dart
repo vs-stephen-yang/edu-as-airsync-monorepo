@@ -477,8 +477,9 @@ class ControlSocket {
         }
       }
     } else {
-      if (_webRtcController[0].presentationState ==
-          PresentationState.streaming) {
+      if (_webRtcController.isNotEmpty &&
+          _webRtcController[0].presentationState ==
+              PresentationState.streaming) {
         presenting = true;
       }
     }

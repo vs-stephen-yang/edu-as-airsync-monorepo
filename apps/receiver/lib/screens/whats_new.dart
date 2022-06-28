@@ -1,5 +1,6 @@
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
 
@@ -16,10 +17,11 @@ class _WhatsNewState extends State<WhatsNew> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.6,
       width: MediaQuery.of(context).size.width * 0.25,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-        color: AppColors.primary_grey,
-        //TODO: the color is AppColors.primary_grey_tran during presenting
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(15)),
+        color: ControlSocket().isPresenting()
+            ? AppColors.primary_grey_tran
+            : AppColors.primary_grey,
       ),
       child: Column(
         children: [
@@ -48,7 +50,7 @@ class _WhatsNewState extends State<WhatsNew> {
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                     child: Text(
                       S.of(context).main_whats_new_title,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary_white),
                     ),
