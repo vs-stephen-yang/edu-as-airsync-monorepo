@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/blocs/main_info_bloc.dart';
@@ -107,6 +108,12 @@ class _MainInfoState extends State<MainInfo> {
                   visible: value,
                   child: Container(
                     padding: const EdgeInsets.all(30),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      color: ControlSocket().isPresenting()
+                          ? AppColors.primaryBlackA30
+                          : Colors.transparent,
+                    ),
                     child: Wrap(
                       direction: Axis.vertical,
                       alignment: WrapAlignment.center,

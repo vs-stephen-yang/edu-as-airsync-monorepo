@@ -1,4 +1,3 @@
-
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -34,10 +33,11 @@ class _ModeratorViewState extends State<ModeratorView> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.6,
       width: MediaQuery.of(context).size.width * 0.25,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-        color: AppColors.primary_grey,
-        //TODO: the color is AppColors.primary_grey_tran during presenting
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(15)),
+        color: ControlSocket().isPresenting()
+            ? AppColors.primary_grey_tran
+            : AppColors.primary_grey,
       ),
       child: StreamBuilder(
           stream: moderatorSocket.setModeratorResponse.getResponse,
@@ -137,8 +137,7 @@ class _ModeratorViewState extends State<ModeratorView> {
               moderatorSocket.unsetModeratorHasNewData = false;
               var displays = Displays().getDisplays();
               var messageFor = peerlistSnapshot.data!['messageFor'];
-              if (displays
-                  .contains(DisplayInfo(displayId: messageFor))) {
+              if (displays.contains(DisplayInfo(displayId: messageFor))) {
                 _logout();
               }
             }
@@ -290,7 +289,8 @@ class _ModeratorViewState extends State<ModeratorView> {
     return IconButton(
       icon: LogoutIcon(_logoutIconKey),
       onPressed: () {
-        EasyDebounce.debounce('activate-logout', Duration(milliseconds: 800), () {
+        EasyDebounce.debounce('activate-logout', Duration(milliseconds: 800),
+            () {
           if (Displays().getDisplays().isEmpty) {
             verifyCode();
             updateLogoutIconState();

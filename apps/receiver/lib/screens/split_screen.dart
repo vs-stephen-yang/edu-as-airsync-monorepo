@@ -40,18 +40,19 @@ class _SplitScreenState extends State<SplitScreen>
 
   @override
   Widget build(BuildContext context) {
-
     String path = 'assets/images/ic_activate_off.svg';
-    if (SplitScreen.splitScreenEnabled.value)
+    if (SplitScreen.splitScreenEnabled.value) {
       path = 'assets/images/ic_activate_on.svg';
+    }
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.6,
       width: MediaQuery.of(context).size.width * 0.25,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-        color: AppColors.primary_grey,
-        //TODO: the color is AppColors.primary_grey_tran during presenting
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(15)),
+        color: ControlSocket().isPresenting()
+            ? AppColors.primary_grey_tran
+            : AppColors.primary_grey,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -69,7 +70,8 @@ class _SplitScreenState extends State<SplitScreen>
                     icon: const Icon(Icons.arrow_back_ios,
                         color: AppColors.primary_white),
                     onPressed: () {
-                      if (SplitScreen.splitScreenEnabled.value && ControlSocket().isPresenting()) {
+                      if (SplitScreen.splitScreenEnabled.value &&
+                          ControlSocket().isPresenting()) {
                         StreamFunction.showStreamMenu.value = true;
                       }
                       StreamFunction.showSplitScreen.value = false;
@@ -112,7 +114,9 @@ class _SplitScreenState extends State<SplitScreen>
           ),
           Expanded(
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.2, horizontal: 30),
+              padding: EdgeInsets.symmetric(
+                  vertical: MediaQuery.of(context).size.height * 0.2,
+                  horizontal: 30),
               child: Column(
                 children: <Widget>[
                   Visibility(
