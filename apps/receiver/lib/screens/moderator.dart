@@ -441,6 +441,13 @@ class _ModeratorViewState extends State<ModeratorView> {
     }
     return true;
   }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
 }
 
 class SpiltIcon extends StatefulWidget {

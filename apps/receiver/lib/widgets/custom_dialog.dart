@@ -23,6 +23,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+        alignment: Alignment.centerLeft,
         elevation: 0,
         backgroundColor: AppColors.primary_dialog,
         shape: RoundedRectangleBorder(
