@@ -185,7 +185,8 @@ class PresenterListState extends State<PresenterList> {
                           if (display.peerList[i].key.currentState!
                               .getChecked()) {
                             var id = display.peerList[i].id;
-                            if (SplitScreen.splitScreenEnabled.value) {
+                            if (SplitScreen
+                                .mapSplitScreen.value[keySplitScreenEnable]) {
                               if (display.splitIndexMap.containsValue(id)) {
                                 display.splitIndexMap.forEach((key, value) {
                                   if (value == id) {

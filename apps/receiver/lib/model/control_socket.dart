@@ -128,7 +128,7 @@ class ControlSocket {
 
           Home.showTitleBottomBar.value = false;
           StreamFunction.showWaitFunction.value = false;
-          if (SplitScreen.splitScreenEnabled.value) {
+          if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
             if (StreamFunction.showModerator.value ||
                 StreamFunction.showSplitScreen.value) {
               StreamFunction.showStreamMenu.value = false;
@@ -149,7 +149,7 @@ class ControlSocket {
           controller.nativeViewState.switchConnectionState(false);
           _handleDisplayStateUpdate(controller);
 
-          if (SplitScreen.splitScreenEnabled.value) {
+          if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
             bool presenting = false;
             for (WebRTCNativeViewController controller in _webRtcController) {
               if (controller.presentationState !=
@@ -237,7 +237,7 @@ class ControlSocket {
         // region Present
         case "start-present":
           WebRTCNativeViewController? selectedController;
-          if (SplitScreen.splitScreenEnabled.value) {
+          if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
             for (WebRTCNativeViewController controller in _webRtcController) {
               if (controller.presentationState ==
                   PresentationState.stopStreaming) {
@@ -407,6 +407,20 @@ class ControlSocket {
     });
     print('mControlSocketIO: send _handleDisplayStateUpdate: $content');
     _controlSocketIO?.emit(displayCode, json.decode(content));
+
+    int connecting = 0, lastID = 0;
+    for (int i = 0; i < _webRtcController.length; i++) {
+      if (_webRtcController[i].presentationState !=
+          PresentationState.stopStreaming) {
+        connecting++;
+        lastID = i;
+      }
+    }
+    SplitScreen.mapSplitScreen.value[keySplitScreenCount] = connecting - 1;
+    SplitScreen.mapSplitScreen.value[keySplitScreenLastId] = lastID;
+    // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
+    SplitScreen.mapSplitScreen.value =
+        Map.from(SplitScreen.mapSplitScreen.value);
   }
 
   void _handleP2PClientSuccess(
@@ -470,7 +484,7 @@ class ControlSocket {
 
   bool isPresenting() {
     bool presenting = false;
-    if (SplitScreen.splitScreenEnabled.value) {
+    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       for (WebRTCNativeViewController controller in _webRtcController) {
         if (controller.presentationState == PresentationState.streaming) {
           presenting |= true;

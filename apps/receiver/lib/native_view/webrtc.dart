@@ -109,7 +109,10 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
         Visibility(
           visible: showConnectionInfo,
           child: Transform.scale(
-            scale: SplitScreen.splitScreenEnabled.value ? 0.5 : 1.0,
+            scale: SplitScreen.mapSplitScreen.value[keySplitScreenEnable] &&
+                    SplitScreen.mapSplitScreen.value[keySplitScreenCount] > 1
+                ? 0.5
+                : 1.0,
             child: SizedBox(
               width: MediaQuery.of(context).size.width / 2,
               child: Column(

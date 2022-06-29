@@ -5,9 +5,14 @@ import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
+const String keySplitScreenEnable = 'enable';
+const String keySplitScreenCount = 'count';
+const String keySplitScreenLastId = 'lastId';
+
 class SplitScreen extends StatefulWidget {
   const SplitScreen({Key? key}) : super(key: key);
-  static ValueNotifier<bool> splitScreenEnabled = ValueNotifier(false);
+  static ValueNotifier<Map<String, dynamic>> mapSplitScreen =
+      ValueNotifier({keySplitScreenEnable: false, keySplitScreenCount: 0});
 
   @override
   State createState() => _SplitScreenState();
@@ -41,7 +46,7 @@ class _SplitScreenState extends State<SplitScreen>
   @override
   Widget build(BuildContext context) {
     String path = 'assets/images/ic_activate_off.svg';
-    if (SplitScreen.splitScreenEnabled.value) {
+    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       path = 'assets/images/ic_activate_on.svg';
     }
 
@@ -70,7 +75,8 @@ class _SplitScreenState extends State<SplitScreen>
                     icon: const Icon(Icons.arrow_back_ios,
                         color: AppColors.primary_white),
                     onPressed: () {
-                      if (SplitScreen.splitScreenEnabled.value &&
+                      if (SplitScreen
+                              .mapSplitScreen.value[keySplitScreenEnable] &&
                           ControlSocket().isPresenting()) {
                         StreamFunction.showStreamMenu.value = true;
                       }
@@ -101,8 +107,13 @@ class _SplitScreenState extends State<SplitScreen>
                       icon: Image(image: Svg(path)),
                       onPressed: () {
                         setState(() {
-                          SplitScreen.splitScreenEnabled.value =
-                              !SplitScreen.splitScreenEnabled.value;
+                          SplitScreen
+                                  .mapSplitScreen.value[keySplitScreenEnable] =
+                              !SplitScreen
+                                  .mapSplitScreen.value[keySplitScreenEnable];
+                          // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
+                          SplitScreen.mapSplitScreen.value =
+                              Map.from(SplitScreen.mapSplitScreen.value);
                           streamFunctionKey.currentState?.setState(() {});
                         });
                       },
@@ -120,7 +131,8 @@ class _SplitScreenState extends State<SplitScreen>
               child: Column(
                 children: <Widget>[
                   Visibility(
-                    visible: SplitScreen.splitScreenEnabled.value,
+                    visible:
+                        SplitScreen.mapSplitScreen.value[keySplitScreenEnable],
                     child: RotationTransition(
                       turns: _animation,
                       child: const Image(
@@ -132,7 +144,7 @@ class _SplitScreenState extends State<SplitScreen>
                     ),
                   ),
                   Text(
-                    SplitScreen.splitScreenEnabled.value
+                    SplitScreen.mapSplitScreen.value[keySplitScreenEnable]
                         ? '“Waiting for a sender a screen...”'
                         : 'Would you like to turn on the split screen feature?',
                     style: const TextStyle(
