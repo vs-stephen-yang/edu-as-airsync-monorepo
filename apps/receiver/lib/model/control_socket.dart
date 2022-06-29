@@ -392,7 +392,7 @@ class ControlSocket {
 
   void _handleDisplayStateUpdate(WebRTCNativeViewController controller) {
     var content = json.encode({
-      'messageFor': displayCode,
+      'messageFor': controller.presenterId,
       'action': 'display-state-update',
       'status': 'display-state-update',
       'extra': {
