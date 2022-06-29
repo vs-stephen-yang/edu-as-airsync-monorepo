@@ -91,6 +91,18 @@ class _ModeratorViewState extends State<ModeratorView> {
                       }
                     }
 
+                    if (peer.status == 'stop') {
+                      if (SplitScreen.splitScreenEnabled.value) {
+                        if (display.splitIndexMap.containsValue(peer.id)) {
+                          display.splitIndexMap.forEach((key, value) {
+                            if (value == (peer.id)) {
+                              display.splitIndexMap[key] = '';
+                            }
+                          });
+                        }
+                      }
+                    }
+
                     if (peer.status == 'play' || peer.status == 'pause') {
                       if (SplitScreen.splitScreenEnabled.value) {
                         // check
