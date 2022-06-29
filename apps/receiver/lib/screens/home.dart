@@ -47,11 +47,12 @@ class _HomeState extends State<Home> {
             alignment: Alignment.center,
             children: <Widget>[
               ValueListenableBuilder(
-                valueListenable: SplitScreen.splitScreenEnabled,
-                builder: (BuildContext context, bool value, Widget? child) {
+                valueListenable: SplitScreen.mapSplitScreen,
+                builder: (BuildContext context, Map<String, dynamic> value,
+                    Widget? child) {
                   _updateSizeForSelected(int selection) {
                     setState(() {
-                      if (value) {
+                      if (value[keySplitScreenEnable]) {
                         for (int i = 0; i < _isSelectedList.length; i++) {
                           if (i == selection) {
                             _isSelectedList[i] = !_isSelectedList[i];
@@ -67,7 +68,7 @@ class _HomeState extends State<Home> {
                   }
 
                   double _getWidthHeight(int selection, bool isWidth) {
-                    if (value) {
+                    if (value[keySplitScreenEnable]) {
                       // split screen enabled
                       if (_isSelectedList[selection]) {
                         // selected item
@@ -77,6 +78,13 @@ class _HomeState extends State<Home> {
                         return 0;
                       } else {
                         // no any item selected
+                        if (value[keySplitScreenCount] < 1) {
+                          if (selection == value[keySplitScreenLastId]) {
+                            return isWidth ? _fullWidth : _fullHeight;
+                          } else {
+                            return 1; // MUST use 1 to create view, 0 won't.
+                          }
+                        }
                         return isWidth ? _halfWidth : _halfHeight;
                       }
                     } else {
@@ -85,8 +93,8 @@ class _HomeState extends State<Home> {
                     }
                   }
 
-                  List<Widget> webrtcWidgets =
-                      List.generate(value ? 4 : 1, (index) {
+                  List<Widget> webrtcWidgets = List.generate(
+                      value[keySplitScreenEnable] ? 4 : 1, (index) {
                     double? left, top, right, bottom;
                     if (index == 1) {
                       right = 0;

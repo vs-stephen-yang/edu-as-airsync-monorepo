@@ -31,7 +31,7 @@ class StreamFunctionStates extends State<StreamFunction> {
     if (ControlSocket().moderator != null) {
       iconSplitScreen = 'assets/images/ic_split_screen_off.svg';
     } else {
-      if (SplitScreen.splitScreenEnabled.value) {
+      if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
         iconSplitScreen = 'assets/images/ic_split_screen_activate.svg';
       } else {
         iconSplitScreen = 'assets/images/ic_split_screen_on.svg';
@@ -42,7 +42,7 @@ class StreamFunctionStates extends State<StreamFunction> {
     // region Moderator icon
     String iconModerator = '';
     if (ControlSocket().moderator == null &&
-        SplitScreen.splitScreenEnabled.value) {
+        SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       iconModerator = 'assets/images/ic_moderator_off.svg';
     } else {
       if (ControlSocket().moderator != null) {
@@ -79,7 +79,8 @@ class StreamFunctionStates extends State<StreamFunction> {
                     IconButton(
                       iconSize: 48,
                       onPressed: (ControlSocket().moderator == null &&
-                          SplitScreen.splitScreenEnabled.value)
+                              SplitScreen
+                                  .mapSplitScreen.value[keySplitScreenEnable])
                           ? null
                           : () {
                         StreamFunction.showModerator.value = true;
@@ -136,7 +137,8 @@ class StreamFunctionStates extends State<StreamFunction> {
                     IconButton(
                       iconSize: 48,
                       onPressed: (ControlSocket().moderator == null &&
-                          SplitScreen.splitScreenEnabled.value)
+                              SplitScreen
+                                  .mapSplitScreen.value[keySplitScreenEnable])
                           ? null
                           : () {
                         StreamFunction.showModerator.value = true;

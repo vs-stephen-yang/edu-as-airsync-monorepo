@@ -80,7 +80,8 @@ class _ModeratorViewState extends State<ModeratorView> {
                     if (peer.status != 'remove') {
                       display.peerList.add(peer);
                     } else {
-                      if (SplitScreen.splitScreenEnabled.value) {
+                      if (SplitScreen
+                          .mapSplitScreen.value[keySplitScreenEnable]) {
                         if (display.splitIndexMap.containsValue(peer.id)) {
                           display.splitIndexMap.forEach((key, value) {
                             if (value == (peer.id)) {
@@ -92,7 +93,8 @@ class _ModeratorViewState extends State<ModeratorView> {
                     }
 
                     if (peer.status == 'stop') {
-                      if (SplitScreen.splitScreenEnabled.value) {
+                      if (SplitScreen
+                          .mapSplitScreen.value[keySplitScreenEnable]) {
                         if (display.splitIndexMap.containsValue(peer.id)) {
                           display.splitIndexMap.forEach((key, value) {
                             if (value == (peer.id)) {
@@ -104,7 +106,8 @@ class _ModeratorViewState extends State<ModeratorView> {
                     }
 
                     if (peer.status == 'play' || peer.status == 'pause') {
-                      if (SplitScreen.splitScreenEnabled.value) {
+                      if (SplitScreen
+                          .mapSplitScreen.value[keySplitScreenEnable]) {
                         // check
                         display.splitIndexMap.forEach((key, value) {
                           if (!display.splitIndexMap.containsValue(peer.id)) {
@@ -275,7 +278,8 @@ class _ModeratorViewState extends State<ModeratorView> {
                           child: PresenterList(
                               _attendeesListKey,
                               updateEditIconState,
-                              SplitScreen.splitScreenEnabled.value));
+                              SplitScreen
+                                  .mapSplitScreen.value[keySplitScreenEnable]));
                     }),
               ],
             );
@@ -316,7 +320,7 @@ class _ModeratorViewState extends State<ModeratorView> {
 
   bool _isPresenting() {
     bool presenting = false;
-    if (SplitScreen.splitScreenEnabled.value) {
+    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       var display = Displays().getSelectedDisplay();
       display.splitIndexMap.forEach((key, value) {
         if (value.isNotEmpty) {
@@ -348,16 +352,19 @@ class _ModeratorViewState extends State<ModeratorView> {
       builder: (BuildContext context) {
         return CustomAlertDialog(
           title: '',
-          description: SplitScreen.splitScreenEnabled.value
+          description: SplitScreen.mapSplitScreen.value[keySplitScreenEnable]
               ? S.of(context).moderator_deactivate_split_screen
               : S.of(context).moderator_activate_split_screen,
           positiveButton: S.of(context).moderator_confirm,
           onPositive: () {
             setState(() {
-              SplitScreen.splitScreenEnabled.value =
-                  !SplitScreen.splitScreenEnabled.value;
+              SplitScreen.mapSplitScreen.value[keySplitScreenEnable] =
+                  !SplitScreen.mapSplitScreen.value[keySplitScreenEnable];
+              // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
+              SplitScreen.mapSplitScreen.value =
+                  Map.from(SplitScreen.mapSplitScreen.value);
 
-              if (!SplitScreen.splitScreenEnabled.value) {
+              if (!SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
                 var display = Displays().getSelectedDisplay();
                 // check whether the presenters are playing
                 display.splitIndexMap.forEach((key, value) {
@@ -405,7 +412,11 @@ class _ModeratorViewState extends State<ModeratorView> {
   }
 
   void _logout() {
-    SplitScreen.splitScreenEnabled.value = false;
+    SplitScreen.mapSplitScreen.value[keySplitScreenEnable] = false;
+    SplitScreen.mapSplitScreen.value[keySplitScreenCount] = 0;
+    // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
+    SplitScreen.mapSplitScreen.value =
+        Map.from(SplitScreen.mapSplitScreen.value);
     _attendeesListKey.currentState?.removeAllPresenter();
     Displays().getDisplays().forEach((element) {
       // AppAnalytics()
@@ -465,7 +476,7 @@ class SpiltIconState extends State<SpiltIcon> {
     return Image(
       image: Displays().getDisplays().isEmpty
           ? const Svg('assets/images/ic_moderator_split_screen_off.svg')
-          : SplitScreen.splitScreenEnabled.value
+          : SplitScreen.mapSplitScreen.value[keySplitScreenEnable]
               ? const Svg(
                   'assets/images/ic_moderator_split_screen_activate.svg')
               : const Svg('assets/images/ic_moderator_split_screen_on.svg'),
