@@ -1,3 +1,4 @@
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/displays.dart';
@@ -93,44 +94,45 @@ class PresenterListState extends State<PresenterList> {
                                     }
                                   } else {
                                     // check other presenters' status and close the presenter
-                                    for (int i = 0; i < display.peerList.length; i++) {
-                                      if (display.peerList[i].status == 'play') {
+                                    for (int i = 0;
+                                        i < display.peerList.length;
+                                        i++) {
+                                      if (display.peerList[i].status ==
+                                          'play') {
                                         if (i != index) {
-                                          // AppAnalytics()
-                                          //     .trackEventPresentClicked();
+                                          AppAnalytics()
+                                              .trackEventPresentClicked();
                                           moderatorSocket.peerAction(
                                               'stop',
-                                              display
-                                                  .peerList[i]
-                                                  .peer,
+                                              display.peerList[i].peer,
                                               display.displayResponse);
                                         }
                                       }
                                     }
                                   }
                                   // play
-                                  String action = (status == 'play' ||
-                                      status == 'pause')
-                                      ? 'stop'
-                                      : 'play';
+                                  String action =
+                                      (status == 'play' || status == 'pause')
+                                          ? 'stop'
+                                          : 'play';
                                   display.presenterId = id;
-                                  // AppAnalytics()
-                                  //     .trackEventPresentClicked();
-                                  moderatorSocket.peerAction('play', peer,
-                                      display.displayResponse);
+                                  AppAnalytics().trackEventPresentClicked();
+                                  moderatorSocket.peerAction(
+                                      'play', peer, display.displayResponse);
 
-                                  display.setPresenterTimeTimer(
-                                      action == 'play');
+                                  display
+                                      .setPresenterTimeTimer(action == 'play');
                                 } else {
                                   if (display.peerList[index].waitReply) return;
-                                  if (display.presenterId == id) display.presenterId = '';
-                                  // AppAnalytics().trackEventPresentClicked();
-                                  moderatorSocket.peerAction('stop', peer,
-                                      display.displayResponse);
+                                  if (display.presenterId == id)
+                                    display.presenterId = '';
+                                  AppAnalytics().trackEventPresentClicked();
+                                  moderatorSocket.peerAction(
+                                      'stop', peer, display.displayResponse);
                                 }
                               },
                               onRemove: (value) {
-                                // AppAnalytics().trackEventKickoffClicked();
+                                AppAnalytics().trackEventKickoffClicked();
                               },
                             );
                             return Row(
@@ -154,6 +156,7 @@ class PresenterListState extends State<PresenterList> {
                         setState(() {
                           bEditNotifier = false;
                           widget.updateEditIcon(bEditNotifier);
+                          AppAnalytics().trackEventKickoffNo();
                         });
                       },
                       child: Container(
@@ -179,6 +182,7 @@ class PresenterListState extends State<PresenterList> {
                     flex: 3,
                     child: InkWell(
                       onTap: () {
+                        AppAnalytics().trackEventKickoffYes();
                         for (int i = 0;
                             i < Displays().getSelectedDisplay().peerList.length;
                             i++) {
@@ -229,13 +233,11 @@ class PresenterListState extends State<PresenterList> {
   }
 
   _removePresenter(BuildContext context, DisplayInfo display, dynamic peer) {
-    // AppAnalytics().trackEventKickoffYes();
     moderatorSocket.peerAction('remove', peer, display.displayResponse);
   }
 
   void removeAllPresenter() {
     for (int i = 0; i < Displays().getSelectedDisplay().peerList.length; i++) {
-      // AppAnalytics().trackEventKickoffYes();
       moderatorSocket.peerAction(
           'remove',
           Displays().getSelectedDisplay().peerList[i].peer,

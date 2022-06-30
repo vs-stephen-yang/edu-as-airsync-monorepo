@@ -1,3 +1,4 @@
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -51,7 +52,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                 var displays = Displays().getDisplays();
                 if (displays.contains(DisplayInfo(displayId: messageFor))) {
                   DisplayInfo display = displays.firstWhere(
-                      (element) => element.displayId == messageFor,
+                          (element) => element.displayId == messageFor,
                       orElse: null);
                   int tempPresenterTime = display.presenterTime;
                   var temp = display.peerList;
@@ -176,6 +177,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                               if (_isPresenting()) {
                                 StreamFunction.showStreamMenu.value = true;
                               }
+                              AppAnalytics().trackEventModeratorTerminated();
                               StreamFunction.showModerator.value = false;
                             },
                           ),
@@ -254,7 +256,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                             if (displays
                                 .contains(DisplayInfo(displayId: messageFor))) {
                               DisplayInfo display = displays.firstWhere(
-                                  (element) => element.displayId == messageFor,
+                                      (element) => element.displayId == messageFor,
                                   orElse: null);
                               display.uiStateCode = socketSnapshot
                                   .data!['extra']['uiState']['code'];
@@ -311,6 +313,7 @@ class _ModeratorViewState extends State<ModeratorView> {
             verifyCode();
             updateLogoutIconState();
           } else {
+            AppAnalytics().trackEventLogoutClicked();
             _callLogOutDialog();
           }
         });
@@ -395,7 +398,7 @@ class _ModeratorViewState extends State<ModeratorView> {
           description: S.of(context).moderator_exit_dialog,
           positiveButton: S.of(context).moderator_exit,
           onPositive: () {
-            // AppAnalytics().trackEventLogoutYes();
+            AppAnalytics().trackEventLogoutYes();
             setState(() {
               _logout();
               streamFunctionKey.currentState?.setState(() {
@@ -404,7 +407,7 @@ class _ModeratorViewState extends State<ModeratorView> {
             });
           },
           onNegative: () {
-            // AppAnalytics().trackEventLogoutNo();
+            AppAnalytics().trackEventLogoutNo();
           },
         );
       },
@@ -419,14 +422,15 @@ class _ModeratorViewState extends State<ModeratorView> {
         Map.from(SplitScreen.mapSplitScreen.value);
     _attendeesListKey.currentState?.removeAllPresenter();
     Displays().getDisplays().forEach((element) {
-      // AppAnalytics()
-      //     .trackEventMeetingEnded(element.displayId, element.meetingId);
+      AppAnalytics()
+          .trackEventMeetingEnded(element.displayId, element.meetingId);
       moderatorSocket.unBindFromDisplay(
           element.displayId, ControlSocket().token);
     });
     moderatorSocket.disconnect();
     Displays().removeAllDisplayInfo();
     AppPreferences().set(moderatorId: '');
+    AppAnalytics().trackEventModeratorTerminated();
     StreamFunction.showModerator.value = false;
   }
 
@@ -439,8 +443,8 @@ class _ModeratorViewState extends State<ModeratorView> {
           .bindToDisplay(ControlSocket().displayCode, ControlSocket().otpCode,
               ControlSocket().token)
           .then((value) {
-        // AppAnalytics().trackEventMeetingStarted(
-        //     value['code'] ?? '', value['property']['meetingId'] ?? '');
+        AppAnalytics().trackEventMeetingStarted(
+            value['code'] ?? '', value['property']['meetingId'] ?? '');
         Future.delayed(const Duration(seconds: 1), () {
           setState(() {
             streamFunctionKey.currentState?.setState(() {});

@@ -1,3 +1,4 @@
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/language_selection.dart';
 import 'package:display_flutter/screens/moderator.dart';
@@ -83,8 +84,9 @@ class StreamFunctionStates extends State<StreamFunction> {
                                   .mapSplitScreen.value[keySplitScreenEnable])
                           ? null
                           : () {
-                        StreamFunction.showModerator.value = true;
-                      },
+                              AppAnalytics().trackEventModeratorStarted();
+                              StreamFunction.showModerator.value = true;
+                            },
                       icon: Image(
                         image: Svg(iconModerator),
                       ),
@@ -141,9 +143,10 @@ class StreamFunctionStates extends State<StreamFunction> {
                                   .mapSplitScreen.value[keySplitScreenEnable])
                           ? null
                           : () {
-                        StreamFunction.showModerator.value = true;
-                        StreamFunction.showPresentFunction.value = false;
-                      },
+                              AppAnalytics().trackEventModeratorStarted();
+                              StreamFunction.showModerator.value = true;
+                              StreamFunction.showPresentFunction.value = false;
+                            },
                       icon: Image(
                         image: Svg(iconModerator),
                       ),
