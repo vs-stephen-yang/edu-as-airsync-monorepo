@@ -208,8 +208,7 @@ class ControlSocket {
           AppAnalytics().setEventProperties(
               {'displayID': displayCode, 'meetingId': meetingId});
 
-          ConnectionTimer.getInstance().startRemainingTimeTimer(remainingTime,
-              () {
+          ConnectionTimer.getInstance().startRemainingTimeTimer(10800, () {
             moderator = null;
             meetingId = '';
             remainingTime = 0;

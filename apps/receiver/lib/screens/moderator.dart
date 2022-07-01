@@ -8,6 +8,7 @@ import 'package:display_flutter/model/moderator_socket.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/presenter_list.dart';
 import 'package:display_flutter/screens/split_screen.dart';
+import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:display_flutter/widgets/custom_dialog.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:easy_debounce/easy_debounce.dart';
@@ -431,6 +432,8 @@ class _ModeratorViewState extends State<ModeratorView> {
     Displays().removeAllDisplayInfo();
     AppPreferences().set(moderatorId: '');
     AppAnalytics().trackEventModeratorTerminated();
+    StatusBar.showAlertBar.value = false;
+    StatusBar.showReamingTime.value = false;
     StreamFunction.showModerator.value = false;
   }
 
