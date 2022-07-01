@@ -6,6 +6,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/split_screen.dart';
+import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
@@ -162,6 +163,9 @@ class _HomeState extends State<Home> {
                 },
               ),
               const MainInfo(),
+              const Positioned(
+                child: StatusBar(),
+              ),
               Positioned(
                 left: 20,
                 bottom: 0,
