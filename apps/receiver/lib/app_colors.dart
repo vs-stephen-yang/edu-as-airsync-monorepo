@@ -23,8 +23,6 @@ class AppColors {
 
   static const Color primary_red = Color.fromRGBO(0xFD, 0x1A, 0x2D, 1.0);
 
-  static const Color timeout_red = Color.fromRGBO(0xFF, 0x3B, 0x30, 1.0);
-
   static const Color toggle_bg = Color.fromRGBO(0x38, 0x38, 0x38, 1.0);
 
   static const Color primary_blue = Color.fromRGBO(0x29, 0x79, 0xFF, 1.0);

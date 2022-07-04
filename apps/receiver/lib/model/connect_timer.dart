@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
-import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:flutter/material.dart';
 
 typedef ConnectionTimerCallback = void Function(
@@ -52,24 +51,14 @@ class ConnectionTimer {
     stopRemainingTimeTimer();
 
     mRemainingTimeTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      log('RemainingTimeTimeout tick: ${timer.tick} // $seconds');
-
-      if (seconds - timer.tick == 300) {
-        var count = seconds - timer.tick;
-        mRemainingTimeTimeout.sink.add(count);
-        StatusBar.showAlertBar.value = true;
-        StatusBar.showReamingTime.value = true;
-        StatusBar.showTimeoutAlert.value = true;
-      } else if (seconds - timer.tick < 300 && timer.tick != seconds) {
-        var count = seconds - timer.tick;
-        mRemainingTimeTimeout.sink.add(count);
-        if (seconds - timer.tick == 295) {
-          StatusBar.showTimeoutAlert.value = false;
-        }
+      var count = 0;
+      if (timer.tick < seconds) {
+        // onTick
+        log('RemainingTimeTimeout tick: ${timer.tick}');
+        count = seconds - timer.tick;
+        mRemainingTimeTimeout.add(count);
       } else if (timer.tick == seconds) {
         // onFinish
-        StatusBar.showAlertBar.value = false;
-        StatusBar.showReamingTime.value = false;
         timer.cancel();
         log('RemainingTimeTimeout onFinish');
         onFinish();
@@ -79,6 +68,6 @@ class ConnectionTimer {
 
   void stopRemainingTimeTimer() {
     mRemainingTimeTimer?.cancel();
-    mRemainingTimeTimeout.sink.add(0);
+    mRemainingTimeTimeout.add(0);
   }
 }
