@@ -1,4 +1,6 @@
+
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
@@ -114,6 +116,23 @@ class _SplitScreenState extends State<SplitScreen>
                           // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
                           SplitScreen.mapSplitScreen.value =
                               Map.from(SplitScreen.mapSplitScreen.value);
+                          if (SplitScreen
+                              .mapSplitScreen.value[keySplitScreenEnable]) {
+                            ConnectionTimer.getInstance().startRemainingTimeTimer(() {
+                              streamFunctionKey.currentState?.setState(() {
+                                SplitScreen.mapSplitScreen
+                                    .value[keySplitScreenEnable] = false;
+                                ConnectionTimer.getInstance()
+                                    .stopConnectionTimeoutTimer();
+                                ControlSocket().removeAllPresenters();
+                                StreamFunction.showSplitScreen.value = false;
+                              });
+                            });
+                          } else {
+                            ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+                            ConnectionTimer.getInstance().stopRemainingTimeTimer();
+                            ControlSocket().removeAllPresenters();
+                          }
                           streamFunctionKey.currentState?.setState(() {});
                         });
                       },

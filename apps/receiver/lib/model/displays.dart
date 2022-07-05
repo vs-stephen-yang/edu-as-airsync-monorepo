@@ -143,7 +143,7 @@ class DisplayInfo {
     if (code.length % 3 != 0) // add last digit
       replaced = replaced + code.substring(loop * 3);
     else //remove last "-"
-      replaced = replaced.substring(0, replaced.length - 1);
+      if (replaced.length > 0) replaced = replaced.substring(0, replaced.length - 1);
     return replaced;
   }
 

@@ -223,7 +223,7 @@ class StreamFunctionStates extends State<StreamFunction> {
           child: ValueListenableBuilder(
             valueListenable: StreamFunction.showModerator,
             builder: (BuildContext context, bool value, Widget? child) {
-              return Visibility(visible: value, child: const ModeratorView());
+              return Visibility(visible: value, child: ModeratorView());
             },
           ),
         ),
