@@ -147,6 +147,7 @@ class _HomeState extends State<Home> {
                   return Visibility(
                     visible: value,
                     child: Stack(
+                      fit: StackFit.expand,
                       children: <Widget>[
                         const Positioned(
                             left: 0, top: 0, right: 0, child: TitleBar()),
