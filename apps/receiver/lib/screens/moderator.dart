@@ -10,7 +10,6 @@ import 'package:display_flutter/screens/presenter_list.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/custom_dialog.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
-import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
@@ -46,6 +45,7 @@ class ModeratorView extends StatefulWidget {
 
 class _ModeratorViewState extends State<ModeratorView> {
   bool bEditClick = false;
+  bool bLogInClick = false;
 
   final GlobalKey<SpiltIconState> _splitIconKey = GlobalKey();
   final GlobalKey<EditIconState> _editIconKey = GlobalKey();
@@ -329,16 +329,19 @@ class _ModeratorViewState extends State<ModeratorView> {
     return IconButton(
       icon: LogoutIcon(_logoutIconKey),
       onPressed: () {
-        EasyDebounce.debounce('activate-logout', Duration(milliseconds: 800),
-            () {
+        if (!bLogInClick) {
+          bLogInClick = true;
           if (Displays().getDisplays().isEmpty) {
-            verifyCode();
-            updateLogoutIconState();
+            verifyCode().then((value) {
+              updateLogoutIconState();
+              bLogInClick = false;
+            });
           } else {
             AppAnalytics().trackEventLogoutClicked();
             _callLogOutDialog();
+            bLogInClick = false;
           }
-        });
+        }
       },
     );
   }
@@ -436,25 +439,24 @@ class _ModeratorViewState extends State<ModeratorView> {
     );
   }
 
-  bool verifyCode() {
+  Future<bool> verifyCode() async {
     var moderator = moderatorSocket.createModerator('Guest', '');
     AppPreferences().set(moderatorId: moderator.id);
     moderatorSocket.connectAndListen(context);
     try {
-      moderatorSocket
+      await moderatorSocket
           .bindToDisplay(ControlSocket().displayCode, ControlSocket().otpCode,
               ControlSocket().token)
           .then((value) {
         AppAnalytics().trackEventMeetingStarted(
             value['code'] ?? '', value['property']['meetingId'] ?? '');
-        Future.delayed(const Duration(seconds: 1), () {
-          streamFunctionKey.currentState?.setState(() {});
-        });
+        streamFunctionKey.currentState?.setState(() {});
       }).catchError((dynamic e) {});
     } catch (e) {
-      return false;
+      return Future.value(false);
     }
-    return true;
+    return Future.value(true);
+
   }
 
   @override
