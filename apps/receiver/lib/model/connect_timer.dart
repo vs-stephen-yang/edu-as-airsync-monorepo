@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
+import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:flutter/material.dart';
 
 typedef ConnectionTimerCallback = void Function(
@@ -11,9 +12,10 @@ typedef ConnectionTimerCallback = void Function(
 class ConnectionTimer {
   Timer? mConnectionTimeoutTimer, mRemainingTimeTimer;
   StreamController<int> mConnectionTimeTimeout = StreamController<int>();
-  StreamController<int> mRemainingTimeTimeout = StreamController<int>();
+  StreamController<int> mRemainingTimeTimeout = StreamController<int>.broadcast();
 
   static final ConnectionTimer _instance = ConnectionTimer.internal();
+  int remainingTimeLimit = 10800;
 
   static ConnectionTimer getInstance() {
     return _instance;
@@ -47,27 +49,37 @@ class ConnectionTimer {
     mConnectionTimeTimeout.add(0);
   }
 
-  void startRemainingTimeTimer(int seconds, VoidCallback onFinish) {
+  void startRemainingTimeTimer(VoidCallback onFinish) {
     stopRemainingTimeTimer();
 
     mRemainingTimeTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      var count = 0;
-      if (timer.tick < seconds) {
-        // onTick
-        log('RemainingTimeTimeout tick: ${timer.tick}');
-        count = seconds - timer.tick;
-        mRemainingTimeTimeout.add(count);
-      } else if (timer.tick == seconds) {
+      log('RemainingTimeTimeout tick: ${timer.tick} // $remainingTimeLimit');
+
+      if (remainingTimeLimit - timer.tick == 300) {
+        int count = remainingTimeLimit - timer.tick;
+        mRemainingTimeTimeout.sink.add(count);
+        StatusBar.showReamingTime.value = true;
+        StatusBar.showReamingTimeAlert.value = true;
+      } else if (remainingTimeLimit - timer.tick < 300 && timer.tick != remainingTimeLimit) {
+        int count = remainingTimeLimit - timer.tick;
+        mRemainingTimeTimeout.sink.add(count);
+        if (remainingTimeLimit - timer.tick == 295) {
+          StatusBar.showReamingTimeAlert.value = false;
+        }
+      } else if (timer.tick == remainingTimeLimit) {
         // onFinish
+        StatusBar.showReamingTime.value = false;
+        onFinish();
         timer.cancel();
         log('RemainingTimeTimeout onFinish');
-        onFinish();
       }
     });
   }
 
   void stopRemainingTimeTimer() {
     mRemainingTimeTimer?.cancel();
-    mRemainingTimeTimeout.add(0);
+    mRemainingTimeTimer = null;
+    StatusBar.showReamingTime.value = false;
+    mRemainingTimeTimeout.sink.add(0);
   }
 }

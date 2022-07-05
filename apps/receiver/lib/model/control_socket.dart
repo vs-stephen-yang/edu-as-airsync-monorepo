@@ -8,6 +8,7 @@ import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/home.dart';
+import 'package:display_flutter/screens/moderator.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/get_string.dart';
 import 'package:display_flutter/widgets/main_info.dart';
@@ -208,20 +209,14 @@ class ControlSocket {
           AppAnalytics().setEventProperties(
               {'displayID': displayCode, 'meetingId': meetingId});
 
-          ConnectionTimer.getInstance().startRemainingTimeTimer(remainingTime,
-              () {
-            moderator = null;
-            meetingId = '';
-            remainingTime = 0;
-            remainingTimeCheckPoints.clear();
-
-            AppAnalytics().setEventProperties(
-                {'displayID': displayCode, 'meetingId': meetingId});
-
-            for (WebRTCNativeViewController controller in _webRtcController) {
-              controller.channel.invokeMethod('remainingTimeTimeOut');
-            }
-          });
+          if (ConnectionTimer.getInstance().mRemainingTimeTimer == null) {
+            ConnectionTimer.getInstance().startRemainingTimeTimer(() {
+              ModeratorView().logout();
+              streamFunctionKey.currentState?.setState(() {
+                ControlSocket().moderator = null;
+              });
+            });
+          }
           break;
         case "unset-moderator":
           moderator = null;
@@ -293,14 +288,22 @@ class ControlSocket {
                 'token': signal.token,
                 'peerId': signal.peerId,
               };
-              final String result = await selectedController.channel
-                  .invokeMethod('connectP2pClient', arg);
+              final String result = await selectedController.channel.invokeMethod('connectP2pClient', arg);
 
               selectedController.peerToken = signal.token ?? '';
               selectedController.peerId = signal.peerId ?? '';
 
               _handleP2PClientSuccess(
                   selectedController, resp.nextId ?? '', result);
+
+              if (moderator == null && !SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+                ConnectionTimer.getInstance().startRemainingTimeTimer(() {
+
+                  AppAnalytics().setEventProperties(
+                      {'displayID': displayCode, 'meetingId': meetingId});
+                  selectedController!.channel.invokeMethod("stopVideo");
+                });
+              }
             } on PlatformException catch (e) {
               log(e.toString());
 
@@ -337,6 +340,10 @@ class ControlSocket {
             try {
               await selectedController.channel.invokeMethod("stopVideo");
               ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+              if (moderator == null &&
+                  !SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+                ConnectionTimer.getInstance().stopRemainingTimeTimer();
+              }
             } on PlatformException catch (e) {
               log(e.toString());
             }
@@ -514,6 +521,22 @@ class ControlSocket {
     } catch (e) {
       print('unbind failure: $e');
       // http.post maybe no network connection.
+    }
+  }
+
+  removeAllPresenters() async {
+    WebRTCNativeViewController? selectedController;
+    List<WebRTCNativeViewController> temp = List.from(_webRtcController);
+    for (WebRTCNativeViewController controller in temp) {
+      selectedController = controller;
+      if (controller.presenterId.isNotEmpty) {
+        try {
+          await selectedController.channel.invokeMethod("stopVideo");
+          ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+        } on PlatformException catch (e) {
+          log(e.toString());
+        }
+      }
     }
   }
 }

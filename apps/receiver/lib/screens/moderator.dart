@@ -15,16 +15,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class ModeratorView extends StatefulWidget {
-  const ModeratorView({Key? key}) : super(key: key);
+  ModeratorView({Key? key}) : super(key: key);
+
+  GlobalKey<PresenterListState> attendeesListKey = GlobalKey();
 
   @override
   State createState() => _ModeratorViewState();
+
+  void logout() {
+    SplitScreen.mapSplitScreen.value[keySplitScreenEnable] = false;
+    SplitScreen.mapSplitScreen.value[keySplitScreenCount] = 0;
+    // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
+    SplitScreen.mapSplitScreen.value =
+        Map.from(SplitScreen.mapSplitScreen.value);
+    attendeesListKey.currentState?.removeAllPresenter();
+    Displays().getDisplays().forEach((element) {
+      AppAnalytics()
+          .trackEventMeetingEnded(element.displayId, element.meetingId);
+      moderatorSocket.unBindFromDisplay(
+          element.displayId, ControlSocket().token);
+    });
+    moderatorSocket.disconnect();
+    Displays().removeAllDisplayInfo();
+    AppPreferences().set(moderatorId: '');
+    AppAnalytics().trackEventModeratorTerminated();
+    StreamFunction.showModerator.value = false;
+  }
+
 }
 
 class _ModeratorViewState extends State<ModeratorView> {
   bool bEditClick = false;
 
-  final GlobalKey<PresenterListState> _attendeesListKey = GlobalKey();
   final GlobalKey<SpiltIconState> _splitIconKey = GlobalKey();
   final GlobalKey<EditIconState> _editIconKey = GlobalKey();
   final GlobalKey<LogoutIconState> _logoutIconKey = GlobalKey();
@@ -154,7 +176,7 @@ class _ModeratorViewState extends State<ModeratorView> {
               var displays = Displays().getDisplays();
               var messageFor = peerlistSnapshot.data!['messageFor'];
               if (displays.contains(DisplayInfo(displayId: messageFor))) {
-                _logout();
+                widget.logout();
               }
             }
             return Column(
@@ -224,7 +246,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                                   .peerList
                                   .isNotEmpty) {
                                 bEditClick = !bEditClick;
-                                _attendeesListKey.currentState!
+                                widget.attendeesListKey.currentState!
                                     .updateEditStatus(bEditClick);
                               }
                             },
@@ -278,7 +300,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                       return Expanded(
                           flex: 1,
                           child: PresenterList(
-                              _attendeesListKey,
+                              widget.attendeesListKey,
                               updateEditIconState,
                               SplitScreen
                                   .mapSplitScreen.value[keySplitScreenEnable]));
@@ -400,7 +422,7 @@ class _ModeratorViewState extends State<ModeratorView> {
           onPositive: () {
             AppAnalytics().trackEventLogoutYes();
             setState(() {
-              _logout();
+              widget.logout();
               streamFunctionKey.currentState?.setState(() {
                 ControlSocket().moderator = null;
               });
@@ -412,26 +434,6 @@ class _ModeratorViewState extends State<ModeratorView> {
         );
       },
     );
-  }
-
-  void _logout() {
-    SplitScreen.mapSplitScreen.value[keySplitScreenEnable] = false;
-    SplitScreen.mapSplitScreen.value[keySplitScreenCount] = 0;
-    // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
-    SplitScreen.mapSplitScreen.value =
-        Map.from(SplitScreen.mapSplitScreen.value);
-    _attendeesListKey.currentState?.removeAllPresenter();
-    Displays().getDisplays().forEach((element) {
-      AppAnalytics()
-          .trackEventMeetingEnded(element.displayId, element.meetingId);
-      moderatorSocket.unBindFromDisplay(
-          element.displayId, ControlSocket().token);
-    });
-    moderatorSocket.disconnect();
-    Displays().removeAllDisplayInfo();
-    AppPreferences().set(moderatorId: '');
-    AppAnalytics().trackEventModeratorTerminated();
-    StreamFunction.showModerator.value = false;
   }
 
   bool verifyCode() {
@@ -446,9 +448,7 @@ class _ModeratorViewState extends State<ModeratorView> {
         AppAnalytics().trackEventMeetingStarted(
             value['code'] ?? '', value['property']['meetingId'] ?? '');
         Future.delayed(const Duration(seconds: 1), () {
-          setState(() {
-            streamFunctionKey.currentState?.setState(() {});
-          });
+          streamFunctionKey.currentState?.setState(() {});
         });
       }).catchError((dynamic e) {});
     } catch (e) {
