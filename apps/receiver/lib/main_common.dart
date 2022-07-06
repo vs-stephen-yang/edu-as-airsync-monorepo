@@ -49,10 +49,16 @@ Future<void> commonEntry(ConfigSettings settings) async {
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.
   const MyApp({Key? key}) : super(key: key);
+  static ValueNotifier<bool> updatedLocale = ValueNotifier(false);
 
-  static void setLocale(BuildContext context, Locale newLocale) async {
+  static void setNewLocale(BuildContext context, int index) async {
+    String newLanguage = AppPreferences.localeMap.keys.elementAt(index);
+    AppPreferences().set(language: newLanguage);
+
     _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
-    state?.changeLanguage(newLocale);
+    state?.changeLanguage(AppPreferences().locale);
+
+    updatedLocale.value = !updatedLocale.value;
   }
 
   @override
@@ -62,9 +68,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Locale? _locale = AppPreferences().locale;
 
-  changeLanguage(Locale locale) {
+  changeLanguage(Locale? locale) {
     setState(() {
-      _locale = AppPreferences().locale;
+      _locale = locale;
     });
   }
 
