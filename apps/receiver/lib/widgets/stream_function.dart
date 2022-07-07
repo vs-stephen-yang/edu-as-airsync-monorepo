@@ -216,7 +216,7 @@ class StreamFunctionStates extends State<StreamFunction> {
         StreamFunction.showPresentFunction.value = false;
       }
     } else {
-      PrivilegeMessage.showPrivilegeMessage.value = true;
+      _callPrivilegeDialog();
     }
   }
 
@@ -228,7 +228,17 @@ class StreamFunctionStates extends State<StreamFunction> {
         StreamFunction.showPresentFunction.value = false;
       }
     } else {
-      PrivilegeMessage.showPrivilegeMessage.value = true;
+      _callPrivilegeDialog();
     }
+  }
+
+  _callPrivilegeDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const PrivilegeDialog();
+      },
+    );
   }
 }
