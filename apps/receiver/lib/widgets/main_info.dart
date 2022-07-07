@@ -9,6 +9,7 @@ import 'package:display_flutter/blocs/main_info_bloc.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/home.dart';
+import 'package:display_flutter/screens/moderator.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +19,8 @@ import 'package:qr_flutter/qr_flutter.dart';
 class MainInfo extends StatefulWidget {
   const MainInfo({Key? key}) : super(key: key);
   static ValueNotifier<bool> showMainInfo = ValueNotifier(true);
+  // Update Display Privilege Status,...
+  static bool updateDisplayStatus = false;
 
   @override
   State createState() => _MainInfoState();
@@ -57,6 +60,15 @@ class _MainInfoState extends State<MainInfo> {
             case MainInfoState.getDisplayCodeError:
               _showSnackBarMessage(S.of(context).get_code_failure);
               BlocProvider.of<MainInfoBloc>(context).add(RegisterDisplayCode());
+              break;
+            case MainInfoState.getDisplayCodeInfoSuccess:
+              if (ControlSocket().featureList.isEmpty) {
+                // Disable SplitScreen and Moderator features.
+                ModeratorView().logout();
+                streamFunctionKey.currentState?.setState(() {
+                  ControlSocket().moderator = null;
+                });
+              }
               break;
             case MainInfoState.registerDisplayCodeSuccess:
               BlocProvider.of<MainInfoBloc>(context).add(GetDisplayCode());
@@ -104,6 +116,14 @@ class _MainInfoState extends State<MainInfo> {
             return ValueListenableBuilder(
               valueListenable: MainInfo.showMainInfo,
               builder: (BuildContext context, bool value, Widget? child) {
+                if (value) {
+                  if (MainInfo.updateDisplayStatus) {
+                    MainInfo.updateDisplayStatus = false;
+                    BlocProvider.of<MainInfoBloc>(context)
+                        .add(GetDisplayCodeInfo());
+                  }
+                }
+
                 return Visibility(
                   visible: value,
                   child: Container(

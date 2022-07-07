@@ -5,6 +5,8 @@ abstract class MainInfoEvent {}
 
 class GetDisplayCode extends MainInfoEvent {}
 
+class GetDisplayCodeInfo extends MainInfoEvent {}
+
 class RegisterDisplayCode extends MainInfoEvent {}
 
 class GetOneTimePassword extends MainInfoEvent {}

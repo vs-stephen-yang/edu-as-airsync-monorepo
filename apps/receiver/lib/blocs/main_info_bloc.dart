@@ -23,12 +23,30 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
   MainInfoBloc(this.apiGateway, this.instanceID, this.version)
       : super(MainInfoState.initialState) {
     on<GetDisplayCode>(_processGetDisplayCode);
+    on<GetDisplayCodeInfo>(_processGetDisplayCodeInfo);
     on<RegisterDisplayCode>(_registerDisplayCode);
     on<GetOneTimePassword>(_getOneTimePassword);
   }
 
   Future<void> _processGetDisplayCode(
       MainInfoEvent event, Emitter<MainInfoState> emit) async {
+    if (await _handleGetDisplayCode()) {
+      emit(MainInfoState.getDisplayCodeSuccess);
+    } else {
+      emit(MainInfoState.getDisplayCodeError);
+    }
+  }
+
+  Future<void> _processGetDisplayCodeInfo(
+      MainInfoEvent event, Emitter<MainInfoState> emit) async {
+    if (await _handleGetDisplayCode()) {
+      emit(MainInfoState.getDisplayCodeInfoSuccess);
+    } else {
+      emit(MainInfoState.getDisplayCodeInfoError);
+    }
+  }
+
+  Future<bool> _handleGetDisplayCode() async {
     try {
       http.Response response = await http.get(
         Uri.parse('$apiGateway/presentation/displays/$instanceID'),
@@ -44,6 +62,7 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
         List<dynamic> license = property['licenses'];
         ControlSocket().licenseName = license[0]['name'];
         List<dynamic> features = property['features'];
+        ControlSocket().featureList.clear();
         for (String feature in features) {
           ControlSocket().featureList.add(feature);
         }
@@ -56,14 +75,14 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
             }
           }
         }
-        emit(MainInfoState.getDisplayCodeSuccess);
+        return true;
       } else {
-        emit(MainInfoState.getDisplayCodeError);
+        return false;
       }
     } catch (e) {
       log(e.toString());
       // http.get maybe no network connection.
-      emit(MainInfoState.getDisplayCodeError);
+      return false;
     }
   }
 

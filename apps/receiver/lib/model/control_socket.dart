@@ -396,7 +396,13 @@ class ControlSocket {
         // endregion  Present
         // region Communication
         case "mode-update":
-          //todo: get display code to update feature list!
+          // Set updateDisplayStatus true, and wait disconnectedP2pClient set
+          // MainInfo.showMainInfo.value to update privilege status.
+          MainInfo.updateDisplayStatus = true;
+          if (!isPresenting()) {
+            MainInfo.showMainInfo.value = false;
+            MainInfo.showMainInfo.value = true;
+          }
           break;
         // endregion
       }
