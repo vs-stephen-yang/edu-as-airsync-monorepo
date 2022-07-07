@@ -12,10 +12,6 @@ class StreamFunction extends StatefulWidget {
   const StreamFunction({Key? key}) : super(key: key);
 
   static ValueNotifier<bool> showWaitFunction = ValueNotifier(true);
-  static ValueNotifier<bool> showSplitScreen = ValueNotifier(false);
-  static ValueNotifier<bool> showModerator = ValueNotifier(false);
-  static ValueNotifier<bool> showLanguage = ValueNotifier(false);
-  static ValueNotifier<bool> showWhatsNew = ValueNotifier(false);
   static ValueNotifier<bool> showPresentFunction = ValueNotifier(false);
   static ValueNotifier<bool> showArrowMenu = ValueNotifier(true);
   static ValueNotifier<bool> showStreamMenu = ValueNotifier(false);
@@ -58,7 +54,7 @@ class StreamFunctionStates extends State<StreamFunction> {
       alignment: Alignment.bottomLeft,
       children: <Widget>[
         Container(
-          margin: EdgeInsets.only(bottom: 140),
+          margin: const EdgeInsets.only(bottom: 140),
           child: ValueListenableBuilder(
             valueListenable: StreamFunction.showWaitFunction,
             builder: (BuildContext context, bool value, Widget? child) {
@@ -71,8 +67,8 @@ class StreamFunctionStates extends State<StreamFunction> {
                       onPressed: ControlSocket().moderator != null
                           ? null
                           : () {
-                        StreamFunction.showSplitScreen.value = true;
-                      },
+                              SplitScreen.showSplitScreen.value = true;
+                            },
                       icon: Image(
                         image: Svg(iconSplitScreen),
                       ),
@@ -85,7 +81,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                           ? null
                           : () {
                               AppAnalytics().trackEventModeratorStarted();
-                              StreamFunction.showModerator.value = true;
+                              ModeratorView.showModerator.value = true;
                             },
                       icon: Image(
                         image: Svg(iconModerator),
@@ -94,7 +90,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                     IconButton(
                       iconSize: 48,
                       onPressed: () {
-                        StreamFunction.showLanguage.value = true;
+                        LanguageSelection.showLanguage.value = true;
                       },
                       icon: const Image(
                         image: Svg('assets/images/ic_language.svg'),
@@ -103,7 +99,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                     IconButton(
                       iconSize: 48,
                       onPressed: () {
-                        StreamFunction.showWhatsNew.value = true;
+                        WhatsNew.showWhatsNew.value = true;
                       },
                       icon: const Image(
                         image: Svg('assets/images/ic_whats_news.svg'),
@@ -116,7 +112,7 @@ class StreamFunctionStates extends State<StreamFunction> {
           ),
         ),
         Container(
-          margin: EdgeInsets.only(bottom: 20),
+          margin: const EdgeInsets.only(bottom: 20),
           child: ValueListenableBuilder(
             valueListenable: StreamFunction.showPresentFunction,
             builder: (BuildContext context, bool value, Widget? child) {
@@ -129,9 +125,9 @@ class StreamFunctionStates extends State<StreamFunction> {
                       onPressed: ControlSocket().moderator != null
                           ? null
                           : () {
-                        StreamFunction.showSplitScreen.value = true;
-                        StreamFunction.showPresentFunction.value = false;
-                      },
+                              SplitScreen.showSplitScreen.value = true;
+                              StreamFunction.showPresentFunction.value = false;
+                            },
                       icon: Image(
                         image: Svg(iconSplitScreen),
                       ),
@@ -144,7 +140,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                           ? null
                           : () {
                               AppAnalytics().trackEventModeratorStarted();
-                              StreamFunction.showModerator.value = true;
+                              ModeratorView.showModerator.value = true;
                               StreamFunction.showPresentFunction.value = false;
                             },
                       icon: Image(
@@ -174,7 +170,8 @@ class StreamFunctionStates extends State<StreamFunction> {
                               StreamFunction.showStreamMenu.value = true;
                             },
                             icon: const Image(
-                              image: Svg('assets/images/ic_display_code_arrow.svg'),
+                              image: Svg(
+                                  'assets/images/ic_display_code_arrow.svg'),
                             ),
                           ),
                         );
@@ -186,9 +183,8 @@ class StreamFunctionStates extends State<StreamFunction> {
             },
           ),
         ),
-
         Container(
-          margin: EdgeInsets.only(bottom: 20),
+          margin: const EdgeInsets.only(bottom: 20),
           child: ValueListenableBuilder(
             valueListenable: StreamFunction.showStreamMenu,
             builder: (BuildContext context, bool value, Widget? child) {
@@ -201,50 +197,17 @@ class StreamFunctionStates extends State<StreamFunction> {
                     StreamFunction.showStreamMenu.value = false;
                   },
                   icon: const Image(
-                    image: Svg('assets/images/ic_streaming_menu.svg'), // Svg('assets/images/ic_display_code_arrow.svg'),
+                    image: Svg('assets/images/ic_streaming_menu.svg'),
                   ),
                 ),
               );
             },
           ),
         ),
-
-        Container(
-          margin: EdgeInsets.only(bottom: 140),
-          child: ValueListenableBuilder(
-            valueListenable: StreamFunction.showSplitScreen,
-            builder: (BuildContext context, bool value, Widget? child) {
-              return Visibility(visible: value, child: const SplitScreen());
-            },
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.only(bottom: 140),
-          child: ValueListenableBuilder(
-            valueListenable: StreamFunction.showModerator,
-            builder: (BuildContext context, bool value, Widget? child) {
-              return Visibility(visible: value, child: ModeratorView());
-            },
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.only(bottom: 140),
-          child: ValueListenableBuilder(
-            valueListenable: StreamFunction.showLanguage,
-            builder: (BuildContext context, bool value, Widget? child) {
-              return Visibility(visible: value, child: const LanguageSelection());
-            },
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.only(bottom: 140),
-          child: ValueListenableBuilder(
-            valueListenable: StreamFunction.showWhatsNew,
-            builder: (BuildContext context, bool value, Widget? child) {
-              return Visibility(visible: value, child: const WhatsNew());
-            },
-          ),
-        ),
+        const SplitScreen(),
+        ModeratorView(),
+        const LanguageSelection(),
+        const WhatsNew(),
       ],
     );
   }

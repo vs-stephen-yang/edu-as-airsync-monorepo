@@ -130,8 +130,8 @@ class ControlSocket {
           Home.showTitleBottomBar.value = false;
           StreamFunction.showWaitFunction.value = false;
           if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-            if (StreamFunction.showModerator.value ||
-                StreamFunction.showSplitScreen.value) {
+            if (ModeratorView.showModerator.value ||
+                SplitScreen.showSplitScreen.value) {
               StreamFunction.showStreamMenu.value = false;
             } else if (StreamFunction.showPresentFunction.value) {
               StreamFunction.showStreamMenu.value = false;
@@ -139,7 +139,7 @@ class ControlSocket {
               StreamFunction.showStreamMenu.value = true;
             }
           } else {
-            if (moderator != null && StreamFunction.showModerator.value) {
+            if (moderator != null && ModeratorView.showModerator.value) {
               StreamFunction.showStreamMenu.value = false;
             }
           }
@@ -288,7 +288,8 @@ class ControlSocket {
                 'token': signal.token,
                 'peerId': signal.peerId,
               };
-              final String result = await selectedController.channel.invokeMethod('connectP2pClient', arg);
+              final String result = await selectedController.channel
+                  .invokeMethod('connectP2pClient', arg);
 
               selectedController.peerToken = signal.token ?? '';
               selectedController.peerId = signal.peerId ?? '';
@@ -296,9 +297,9 @@ class ControlSocket {
               _handleP2PClientSuccess(
                   selectedController, resp.nextId ?? '', result);
 
-              if (moderator == null && !SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+              if (moderator == null &&
+                  !SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
                 ConnectionTimer.getInstance().startRemainingTimeTimer(() {
-
                   AppAnalytics().setEventProperties(
                       {'displayID': displayCode, 'meetingId': meetingId});
                   selectedController!.channel.invokeMethod("stopVideo");
