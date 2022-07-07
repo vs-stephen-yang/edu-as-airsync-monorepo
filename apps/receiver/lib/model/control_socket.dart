@@ -394,6 +394,11 @@ class ControlSocket {
           }
           break;
         // endregion  Present
+        // region Communication
+        case "mode-update":
+          //todo: get display code to update feature list!
+          break;
+        // endregion
       }
     }
   }

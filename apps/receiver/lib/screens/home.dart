@@ -6,6 +6,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/split_screen.dart';
+import 'package:display_flutter/widgets/privilege_message.dart';
 import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/main_info.dart';
@@ -149,7 +150,7 @@ class _HomeState extends State<Home> {
                               child: Visibility(
                             visible: value[keySplitScreenEnable] && ControlSocket().isPresenting(index: index) && !_isSelectedList[index],
                                 child: IconButton(
-                                  icon: Image(
+                                  icon: const Image(
                                       image: Svg('assets/images/ic_zoom_in.svg',
                                           size: Size.square(48))),
                                   onPressed: () {
@@ -163,7 +164,7 @@ class _HomeState extends State<Home> {
                               child: Visibility(
                                 visible: value[keySplitScreenEnable] && ControlSocket().isPresenting() && _isSelectedList[index],
                                 child: IconButton(
-                                  icon: Image(
+                                  icon: const Image(
                                       image: Svg('assets/images/ic_zoom_out.svg',
                                           size: Size.square(48))),
                                   onPressed: () {
@@ -207,6 +208,7 @@ class _HomeState extends State<Home> {
               const Positioned(
                 child: StatusBar(),
               ),
+              const PrivilegeMessage(),
               Positioned(
                 left: 20,
                 bottom: 0,
