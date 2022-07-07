@@ -97,19 +97,28 @@ class _HomeState extends State<Home> {
                   List<Widget> webrtcWidgets = List.generate(
                       value[keySplitScreenEnable] ? 4 : 1, (index) {
                     double? left, top, right, bottom;
+                    double? iconLeft, iconTop, iconRight, iconBottom;
                     if (index == 1) {
                       right = 0;
                       top = 0;
+                      iconLeft = 20;
+                      iconBottom = 20;
                     } else if (index == 2) {
                       left = 0;
                       bottom = 0;
+                      iconRight = 20;
+                      iconTop = 20;
                     } else if (index == 3) {
                       right = 0;
                       bottom = 0;
+                      iconLeft = 20;
+                      iconTop = 20;
                     } else {
                       // index 0 and default.
                       left = 0;
                       top = 0;
+                      iconRight = 20;
+                      iconBottom = 20;
                     }
 
                     return Positioned(
@@ -117,21 +126,52 @@ class _HomeState extends State<Home> {
                       top: top,
                       right: right,
                       bottom: bottom,
-                      child: GestureDetector(
-                        onDoubleTap: () => _updateSizeForSelected(index),
-                        child: AnimatedContainer(
-                          width: _getWidthHeight(index, true),
-                          height: _getWidthHeight(index, false),
-                          alignment: Alignment.center,
-                          curve: Curves.linear,
-                          duration:
-                              Duration(seconds: _isSelectedList[index] ? 1 : 0),
-                          child: WebRTCNativeView(
-                            useHybrid: false,
-                            onWebRTCNativeViewCreatedCallback:
-                                ControlSocket().addWebRtcController,
+                      child: Stack(
+                        children: <Widget>[
+                          AnimatedContainer(
+                            width: _getWidthHeight(index, true),
+                            height: _getWidthHeight(index, false),
+                            alignment: Alignment.center,
+                            curve: Curves.linear,
+                            duration: Duration(
+                                seconds: _isSelectedList[index] ? 1 : 0),
+                            child: WebRTCNativeView(
+                              useHybrid: false,
+                              onWebRTCNativeViewCreatedCallback:
+                                  ControlSocket().addWebRtcController,
+                            ),
                           ),
-                        ),
+                          Positioned(
+                              left: iconLeft,
+                              top: iconTop,
+                              right: iconRight,
+                              bottom: iconBottom,
+                              child: Visibility(
+                            visible: value[keySplitScreenEnable] && ControlSocket().isPresenting(index: index) && !_isSelectedList[index],
+                                child: IconButton(
+                                  icon: Image(
+                                      image: Svg('assets/images/ic_zoom_in.svg',
+                                          size: Size.square(48))),
+                                  onPressed: () {
+                                    _updateSizeForSelected(index);
+                                  },
+                                ),
+                              )),
+                          Positioned(
+                              right: 0,
+                              bottom: 0,
+                              child: Visibility(
+                                visible: value[keySplitScreenEnable] && ControlSocket().isPresenting() && _isSelectedList[index],
+                                child: IconButton(
+                                  icon: Image(
+                                      image: Svg('assets/images/ic_zoom_out.svg',
+                                          size: Size.square(48))),
+                                  onPressed: () {
+                                    _updateSizeForSelected(index);
+                                  },
+                                ),
+                              )),
+                        ],
                       ),
                     );
                   });
