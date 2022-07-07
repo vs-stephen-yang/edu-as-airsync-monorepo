@@ -4,6 +4,8 @@ enum MainInfoState {
   initialState,
   getDisplayCodeSuccess,
   getDisplayCodeError,
+  getDisplayCodeInfoSuccess,
+  getDisplayCodeInfoError,
   registerDisplayCode,
   registerDisplayCodeSuccess,
   registerDisplayCodeError,
