@@ -5,6 +5,7 @@ import 'package:display_flutter/screens/moderator.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/screens/whats_new.dart';
 import 'package:display_flutter/widgets/main_info.dart';
+import 'package:display_flutter/widgets/privilege_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
@@ -67,7 +68,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                       onPressed: ControlSocket().moderator != null
                           ? null
                           : () {
-                              SplitScreen.showSplitScreen.value = true;
+                              _showSplitScreen(false);
                             },
                       icon: Image(
                         image: Svg(iconSplitScreen),
@@ -80,8 +81,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                                   .mapSplitScreen.value[keySplitScreenEnable])
                           ? null
                           : () {
-                              AppAnalytics().trackEventModeratorStarted();
-                              ModeratorView.showModerator.value = true;
+                              _showModerator(false);
                             },
                       icon: Image(
                         image: Svg(iconModerator),
@@ -125,8 +125,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                       onPressed: ControlSocket().moderator != null
                           ? null
                           : () {
-                              SplitScreen.showSplitScreen.value = true;
-                              StreamFunction.showPresentFunction.value = false;
+                              _showSplitScreen(true);
                             },
                       icon: Image(
                         image: Svg(iconSplitScreen),
@@ -139,9 +138,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                                   .mapSplitScreen.value[keySplitScreenEnable])
                           ? null
                           : () {
-                              AppAnalytics().trackEventModeratorStarted();
-                              ModeratorView.showModerator.value = true;
-                              StreamFunction.showPresentFunction.value = false;
+                              _showModerator(true);
                             },
                       icon: Image(
                         image: Svg(iconModerator),
@@ -210,5 +207,28 @@ class StreamFunctionStates extends State<StreamFunction> {
         const WhatsNew(),
       ],
     );
+  }
+
+  _showSplitScreen(bool leavePresentFunction) {
+    if (ControlSocket().featureList.contains('SplitScreen')) {
+      SplitScreen.showSplitScreen.value = true;
+      if (leavePresentFunction) {
+        StreamFunction.showPresentFunction.value = false;
+      }
+    } else {
+      PrivilegeMessage.showPrivilegeMessage.value = true;
+    }
+  }
+
+  _showModerator(bool leavePresentFunction) {
+    if (ControlSocket().featureList.contains('Moderator')) {
+      AppAnalytics().trackEventModeratorStarted();
+      ModeratorView.showModerator.value = true;
+      if (leavePresentFunction) {
+        StreamFunction.showPresentFunction.value = false;
+      }
+    } else {
+      PrivilegeMessage.showPrivilegeMessage.value = true;
+    }
   }
 }

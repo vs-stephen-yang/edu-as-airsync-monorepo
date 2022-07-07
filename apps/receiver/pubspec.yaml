@@ -57,6 +57,7 @@ dependencies:
   easy_debounce: ^2.0.2+1
   flutter_appcenter_bundle:
     path: ./plugin/flutter_appcenter_bundle-3.3.2
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:
