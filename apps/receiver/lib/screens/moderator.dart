@@ -15,8 +15,9 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class ModeratorView extends StatefulWidget {
   ModeratorView({Key? key}) : super(key: key);
+  static ValueNotifier<bool> showModerator = ValueNotifier(false);
 
-  GlobalKey<PresenterListState> attendeesListKey = GlobalKey();
+  final GlobalKey<PresenterListState> attendeesListKey = GlobalKey();
 
   @override
   State createState() => _ModeratorViewState();
@@ -38,9 +39,8 @@ class ModeratorView extends StatefulWidget {
     Displays().removeAllDisplayInfo();
     AppPreferences().set(moderatorId: '');
     AppAnalytics().trackEventModeratorTerminated();
-    StreamFunction.showModerator.value = false;
+    showModerator.value = false;
   }
-
 }
 
 class _ModeratorViewState extends State<ModeratorView> {
@@ -53,261 +53,276 @@ class _ModeratorViewState extends State<ModeratorView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.6,
-      width: MediaQuery.of(context).size.width * 0.25,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(15)),
-        color: ControlSocket().isPresenting()
-            ? AppColors.primary_grey_tran
-            : AppColors.primary_grey,
-      ),
-      child: StreamBuilder(
-          stream: moderatorSocket.setModeratorResponse.getResponse,
-          builder: (BuildContext context, AsyncSnapshot<Map> peerlistSnapshot) {
-            if (peerlistSnapshot.hasData &&
-                moderatorSocket.peerListHasNewData) {
-              moderatorSocket.peerListHasNewData = false;
-              var messageFor = peerlistSnapshot.data!['messageFor'];
-              var action = peerlistSnapshot.data!['action'];
-              if (action == 'update-peerlist') {
-                var displays = Displays().getDisplays();
-                if (displays.contains(DisplayInfo(displayId: messageFor))) {
-                  DisplayInfo display = displays.firstWhere(
+    return ValueListenableBuilder(
+      valueListenable: ModeratorView.showModerator,
+      builder: (BuildContext context, bool value, Widget? child) {
+        return Visibility(
+          visible: value,
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 140),
+            height: MediaQuery.of(context).size.height * 0.6,
+            width: MediaQuery.of(context).size.width * 0.25,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(15)),
+              color: ControlSocket().isPresenting()
+                  ? AppColors.primary_grey_tran
+                  : AppColors.primary_grey,
+            ),
+            child: StreamBuilder(
+              stream: moderatorSocket.setModeratorResponse.getResponse,
+              builder:
+                  (BuildContext context, AsyncSnapshot<Map> peerlistSnapshot) {
+                if (peerlistSnapshot.hasData &&
+                    moderatorSocket.peerListHasNewData) {
+                  moderatorSocket.peerListHasNewData = false;
+                  var messageFor = peerlistSnapshot.data!['messageFor'];
+                  var action = peerlistSnapshot.data!['action'];
+                  if (action == 'update-peerlist') {
+                    var displays = Displays().getDisplays();
+                    if (displays.contains(DisplayInfo(displayId: messageFor))) {
+                      DisplayInfo display = displays.firstWhere(
                           (element) => element.displayId == messageFor,
-                      orElse: null);
-                  int tempPresenterTime = display.presenterTime;
-                  var temp = display.peerList;
-                  display.clearStatus();
+                          orElse: null);
+                      int tempPresenterTime = display.presenterTime;
+                      var temp = display.peerList;
+                      display.clearStatus();
 
-                  List value = peerlistSnapshot.data!['extra']['peerlist'];
-                  value.sort((a, b) =>
-                      a['presenter']['name'].compareTo(b['presenter']['name']));
-                  for (int i = 0; i < value.length; i++) {
-                    DisplayPeer peer = DisplayPeer();
-                    peer.id = value[i]['presenter']['id'];
-                    peer.presenter = value[i]['presenter']['name'];
-                    peer.status = value[i]['status'];
-                    peer.peer = value[i];
-                    peer.key = GlobalKey();
-                    String action = value[i]['action'];
-                    temp.forEach((element) {
-                      if (element.id == peer.id) {
-                        peer.waitReply = element.waitReply;
-                      }
-                    });
-                    if (action == peer.status) {
-                      peer.waitReply = false;
-                    }
-
-                    if (peer.status != 'remove') {
-                      display.peerList.add(peer);
-                    } else {
-                      if (SplitScreen
-                          .mapSplitScreen.value[keySplitScreenEnable]) {
-                        if (display.splitIndexMap.containsValue(peer.id)) {
-                          display.splitIndexMap.forEach((key, value) {
-                            if (value == (peer.id)) {
-                              display.splitIndexMap[key] = '';
-                            }
-                          });
+                      List value = peerlistSnapshot.data!['extra']['peerlist'];
+                      value.sort((a, b) => a['presenter']['name']
+                          .compareTo(b['presenter']['name']));
+                      for (int i = 0; i < value.length; i++) {
+                        DisplayPeer peer = DisplayPeer();
+                        peer.id = value[i]['presenter']['id'];
+                        peer.presenter = value[i]['presenter']['name'];
+                        peer.status = value[i]['status'];
+                        peer.peer = value[i];
+                        peer.key = GlobalKey();
+                        String action = value[i]['action'];
+                        for (var element in temp) {
+                          if (element.id == peer.id) {
+                            peer.waitReply = element.waitReply;
+                          }
                         }
-                      }
-                    }
-
-                    if (peer.status == 'stop') {
-                      if (SplitScreen
-                          .mapSplitScreen.value[keySplitScreenEnable]) {
-                        if (display.splitIndexMap.containsValue(peer.id)) {
-                          display.splitIndexMap.forEach((key, value) {
-                            if (value == (peer.id)) {
-                              display.splitIndexMap[key] = '';
-                            }
-                          });
+                        if (action == peer.status) {
+                          peer.waitReply = false;
                         }
-                      }
-                    }
 
-                    if (peer.status == 'play' || peer.status == 'pause') {
-                      if (SplitScreen
-                          .mapSplitScreen.value[keySplitScreenEnable]) {
-                        // check
-                        display.splitIndexMap.forEach((key, value) {
-                          if (!display.splitIndexMap.containsValue(peer.id)) {
-                            print("zz map $key $value");
-                            if (value == '') {
-                              display.splitIndexMap[key] = peer.id;
+                        if (peer.status != 'remove') {
+                          display.peerList.add(peer);
+                        } else {
+                          if (SplitScreen
+                              .mapSplitScreen.value[keySplitScreenEnable]) {
+                            if (display.splitIndexMap.containsValue(peer.id)) {
+                              display.splitIndexMap.forEach((key, value) {
+                                if (value == (peer.id)) {
+                                  display.splitIndexMap[key] = '';
+                                }
+                              });
                             }
                           }
-                        });
-                      } else {
-                        if (display.peerList[i].id != display.presenterId) {
-                          moderatorSocket.peerAction(
-                              'stop',
-                              display.peerList[i].peer,
-                              display.displayResponse);
-                        } else {
-                          display.presenterIndex = i;
-                          display.presenterName = peer.presenter;
-                          display.presenterStatus = peer.status;
-                          display.presenterSignalStrength = 0.5;
-                          display.presenterTime = tempPresenterTime;
+                        }
+
+                        if (peer.status == 'stop') {
+                          if (SplitScreen
+                              .mapSplitScreen.value[keySplitScreenEnable]) {
+                            if (display.splitIndexMap.containsValue(peer.id)) {
+                              display.splitIndexMap.forEach((key, value) {
+                                if (value == (peer.id)) {
+                                  display.splitIndexMap[key] = '';
+                                }
+                              });
+                            }
+                          }
+                        }
+
+                        if (peer.status == 'play' || peer.status == 'pause') {
+                          if (SplitScreen
+                              .mapSplitScreen.value[keySplitScreenEnable]) {
+                            // check
+                            display.splitIndexMap.forEach((key, value) {
+                              if (!display.splitIndexMap
+                                  .containsValue(peer.id)) {
+                                print("zz map $key $value");
+                                if (value == '') {
+                                  display.splitIndexMap[key] = peer.id;
+                                }
+                              }
+                            });
+                          } else {
+                            if (display.peerList[i].id != display.presenterId) {
+                              moderatorSocket.peerAction(
+                                  'stop',
+                                  display.peerList[i].peer,
+                                  display.displayResponse);
+                            } else {
+                              display.presenterIndex = i;
+                              display.presenterName = peer.presenter;
+                              display.presenterStatus = peer.status;
+                              display.presenterSignalStrength = 0.5;
+                              display.presenterTime = tempPresenterTime;
+                            }
+                          }
                         }
                       }
                     }
                   }
+                } else if (peerlistSnapshot.hasData &&
+                    moderatorSocket.setModeratorHasNewData) {
+                  moderatorSocket.setModeratorHasNewData = false;
+                  var property = peerlistSnapshot.data!['property'];
+                  if (property != null && property.length > 0) {
+                    // bindToDisplay will have property
+                    var display = DisplayInfo(
+                      displayId: peerlistSnapshot.data!['code'],
+                      displayResponse: peerlistSnapshot.data,
+                    );
+                    Displays().addDisplayInfo(display);
+                  }
+                } else if (peerlistSnapshot.hasData &&
+                    moderatorSocket.unsetModeratorHasNewData) {
+                  moderatorSocket.unsetModeratorHasNewData = false;
+                  var displays = Displays().getDisplays();
+                  var messageFor = peerlistSnapshot.data!['messageFor'];
+                  if (displays.contains(DisplayInfo(displayId: messageFor))) {
+                    widget.logout();
+                  }
                 }
-              }
-            } else if (peerlistSnapshot.hasData &&
-                moderatorSocket.setModeratorHasNewData) {
-              moderatorSocket.setModeratorHasNewData = false;
-              var property = peerlistSnapshot.data!['property'];
-              if (property != null && property.length > 0) {
-                // bindToDisplay will have property
-                var display = DisplayInfo(
-                  displayId: peerlistSnapshot.data!['code'],
-                  displayResponse: peerlistSnapshot.data,
-                );
-                Displays().addDisplayInfo(display);
-              }
-            } else if (peerlistSnapshot.hasData &&
-                moderatorSocket.unsetModeratorHasNewData) {
-              moderatorSocket.unsetModeratorHasNewData = false;
-              var displays = Displays().getDisplays();
-              var messageFor = peerlistSnapshot.data!['messageFor'];
-              if (displays.contains(DisplayInfo(displayId: messageFor))) {
-                widget.logout();
-              }
-            }
-            return Column(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.08,
-                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-                  color: Colors.transparent,
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 15,
-                        child: FittedBox(
-                          fit: BoxFit.fitHeight,
-                          child: IconButton(
-                            icon: const Icon(Icons.arrow_back_ios,
-                                color: AppColors.primary_white),
-                            onPressed: () {
-                              if (_isPresenting()) {
-                                StreamFunction.showStreamMenu.value = true;
+                return Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.08,
+                      margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+                      color: Colors.transparent,
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 15,
+                            child: FittedBox(
+                              fit: BoxFit.fitHeight,
+                              child: IconButton(
+                                icon: const Icon(Icons.arrow_back_ios,
+                                    color: AppColors.primary_white),
+                                onPressed: () {
+                                  if (_isPresenting()) {
+                                    StreamFunction.showStreamMenu.value = true;
+                                  }
+                                  AppAnalytics()
+                                      .trackEventModeratorTerminated();
+                                  ModeratorView.showModerator.value = false;
+                                },
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 55,
+                            child: FittedBox(
+                              fit: BoxFit.fitHeight,
+                              child: Text(
+                                S.of(context).moderator_presentersList,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primary_white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Spacer(flex: 10),
+                          Expanded(
+                            flex: 15,
+                            child: FittedBox(
+                              fit: BoxFit.fitHeight,
+                              child: IconButton(
+                                icon: SpiltIcon(_splitIconKey),
+                                onPressed: () {
+                                  if (Displays().getDisplays().isNotEmpty) {
+                                    _callSplitScreenDialog();
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 15,
+                            child: FittedBox(
+                              fit: BoxFit.fitHeight,
+                              child: IconButton(
+                                icon: EditIcon(_editIconKey),
+                                onPressed: () {
+                                  if (Displays()
+                                      .getSelectedDisplay()
+                                      .peerList
+                                      .isNotEmpty) {
+                                    bEditClick = !bEditClick;
+                                    widget.attendeesListKey.currentState!
+                                        .updateEditStatus(bEditClick);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 15,
+                            child: FittedBox(
+                              fit: BoxFit.fitHeight,
+                              child: getLogOutIcon(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    StreamBuilder(
+                      stream: moderatorSocket.streamSocket.getResponse,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<Map> socketSnapshot) {
+                        if (socketSnapshot.hasData &&
+                            moderatorSocket.socketHasNewData) {
+                          moderatorSocket.socketHasNewData = false;
+                          var displays = Displays().getDisplays();
+                          var messageFor = socketSnapshot.data!['messageFor'];
+                          var action = socketSnapshot.data!['action'];
+                          switch (action) {
+                            case ModeratorSocket.DISPLAY_STATE_UPDATE:
+                              if (displays.contains(
+                                  DisplayInfo(displayId: messageFor))) {
+                                DisplayInfo display = displays.firstWhere(
+                                    (element) =>
+                                        element.displayId == messageFor,
+                                    orElse: null);
+                                display.uiStateCode = socketSnapshot
+                                    .data!['extra']['uiState']['code'];
+                                display.uiStateDelegate = socketSnapshot
+                                    .data!['extra']['uiState']['delegate'];
+                                displays
+                                    .map((e) => e == display ? display : e)
+                                    .toList();
                               }
-                              AppAnalytics().trackEventModeratorTerminated();
-                              StreamFunction.showModerator.value = false;
-                            },
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 55,
-                        child: FittedBox(
-                          fit: BoxFit.fitHeight,
-                          child: Text(
-                            S.of(context).moderator_presentersList,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primary_white),
-                          ),
-                        ),
-                      ),
-                      const Spacer(
-                        flex: 10,
-                      ),
-                      Expanded(
-                        flex: 15,
-                        child: FittedBox(
-                          fit: BoxFit.fitHeight,
-                          child: IconButton(
-                            icon: SpiltIcon(_splitIconKey),
-                            onPressed: () {
-                              if (Displays().getDisplays().isNotEmpty) {
-                                _callSplitScreenDialog();
+                              break;
+                            case ModeratorSocket.UPDATE_DISPLAY_LIST:
+                              if (messageFor == AppPreferences().moderatorId) {
+                                _queryDisplay(displays,
+                                    socketSnapshot.data!['extra']['displays']);
                               }
-                            },
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 15,
-                        child: FittedBox(
-                          fit: BoxFit.fitHeight,
-                          child: IconButton(
-                            icon: EditIcon(_editIconKey),
-                            onPressed: () {
-                              if (Displays()
-                                  .getSelectedDisplay()
-                                  .peerList
-                                  .isNotEmpty) {
-                                bEditClick = !bEditClick;
-                                widget.attendeesListKey.currentState!
-                                    .updateEditStatus(bEditClick);
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 15,
-                        child: FittedBox(
-                          fit: BoxFit.fitHeight,
-                          child: getLogOutIcon(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                StreamBuilder(
-                    stream: moderatorSocket.streamSocket.getResponse,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<Map> socketSnapshot) {
-                      if (socketSnapshot.hasData &&
-                          moderatorSocket.socketHasNewData) {
-                        moderatorSocket.socketHasNewData = false;
-                        var displays = Displays().getDisplays();
-                        var messageFor = socketSnapshot.data!['messageFor'];
-                        var action = socketSnapshot.data!['action'];
-                        switch (action) {
-                          case ModeratorSocket.DISPLAY_STATE_UPDATE:
-                            if (displays
-                                .contains(DisplayInfo(displayId: messageFor))) {
-                              DisplayInfo display = displays.firstWhere(
-                                      (element) => element.displayId == messageFor,
-                                  orElse: null);
-                              display.uiStateCode = socketSnapshot
-                                  .data!['extra']['uiState']['code'];
-                              display.uiStateDelegate = socketSnapshot
-                                  .data!['extra']['uiState']['delegate'];
-                              displays
-                                  .map((e) => e == display ? display : e)
-                                  .toList();
-                            }
-                            break;
-                          case ModeratorSocket.UPDATE_DISPLAY_LIST:
-                            if (messageFor == AppPreferences().moderatorId) {
-                              _queryDisplay(displays,
-                                  socketSnapshot.data!['extra']['displays']);
-                            }
-                            break;
+                              break;
+                          }
                         }
-                      }
-                      return Expanded(
+                        return Expanded(
                           flex: 1,
                           child: PresenterList(
                               widget.attendeesListKey,
                               updateEditIconState,
                               SplitScreen
-                                  .mapSplitScreen.value[keySplitScreenEnable]));
-                    }),
-              ],
-            );
-          }),
+                                  .mapSplitScreen.value[keySplitScreenEnable]),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -397,12 +412,12 @@ class _ModeratorViewState extends State<ModeratorView> {
                 // check whether the presenters are playing
                 display.splitIndexMap.forEach((key, value) {
                   if (value != '') {
-                    display.peerList.forEach((element) {
+                    for (var element in display.peerList) {
                       if (element.id == value) {
                         moderatorSocket.peerAction(
                             'stop', element.peer, display.displayResponse);
                       }
-                    });
+                    }
                   }
                 });
               }
@@ -456,7 +471,6 @@ class _ModeratorViewState extends State<ModeratorView> {
       return Future.value(false);
     }
     return Future.value(true);
-
   }
 
   @override
@@ -480,12 +494,11 @@ class SpiltIconState extends State<SpiltIcon> {
   @override
   Widget build(BuildContext context) {
     return Image(
-      image: Displays().getDisplays().isEmpty
-          ? const Svg('assets/images/ic_moderator_split_screen_off.svg')
+      image: Svg(Displays().getDisplays().isEmpty
+          ? 'assets/images/ic_moderator_split_screen_off.svg'
           : SplitScreen.mapSplitScreen.value[keySplitScreenEnable]
-              ? const Svg(
-                  'assets/images/ic_moderator_split_screen_activate.svg')
-              : const Svg('assets/images/ic_moderator_split_screen_on.svg'),
+              ? 'assets/images/ic_moderator_split_screen_activate.svg'
+              : 'assets/images/ic_moderator_split_screen_on.svg'),
     );
   }
 }
@@ -502,10 +515,12 @@ class EditIcon extends StatefulWidget {
 class EditIconState extends State<EditIcon> {
   @override
   Widget build(BuildContext context) {
-    return Icon(Icons.edit,
-        color: Displays().getSelectedDisplay().peerList.isEmpty
-            ? AppColors.neutral4
-            : AppColors.primary_white);
+    return Icon(
+      Icons.edit,
+      color: Displays().getSelectedDisplay().peerList.isEmpty
+          ? AppColors.neutral4
+          : AppColors.primary_white,
+    );
   }
 }
 
@@ -521,9 +536,10 @@ class LogoutIcon extends StatefulWidget {
 class LogoutIconState extends State<LogoutIcon> {
   @override
   Widget build(BuildContext context) {
-    String path = 'assets/images/ic_activate_off.svg';
-    if (Displays().getDisplays().isNotEmpty)
-      path = 'assets/images/ic_activate_on.svg';
-    return Image(image: Svg(path));
+    return Image(
+      image: Svg((Displays().getDisplays().isNotEmpty)
+          ? 'assets/images/ic_activate_on.svg'
+          : 'assets/images/ic_activate_off.svg'),
+    );
   }
 }
