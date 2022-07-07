@@ -5,15 +5,14 @@ import 'package:display_flutter/model/displays.dart';
 import 'package:display_flutter/model/moderator_socket.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/click_switch.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PresenterList extends StatefulWidget {
   bool isSplit = false;
-  Key? bkey;
+  Key? listKey;
   final ValueChanged<bool> updateEditIcon;
 
-  PresenterList(this.bkey, this.updateEditIcon, this.isSplit) : super(key: bkey);
+  PresenterList(this.listKey, this.updateEditIcon, this.isSplit) : super(key: listKey);
 
   @override
   PresenterListState createState() => PresenterListState();
@@ -29,7 +28,7 @@ class PresenterListState extends State<PresenterList> {
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.transparent,
       ),
       child: Column(
@@ -39,10 +38,10 @@ class PresenterListState extends State<PresenterList> {
                   child: Container(
                   alignment: Alignment.topCenter,
                   width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                  margin: const EdgeInsets.fromLTRB(0, 100, 0, 0),
                   child: Text(
                     S.of(context).moderator_presentersLimit,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ))
               : Expanded(
@@ -106,6 +105,21 @@ class PresenterListState extends State<PresenterList> {
                                               'stop',
                                               display.peerList[i].peer,
                                               display.displayResponse);
+                                          Future.delayed(const Duration(seconds: 2)).then((value) {
+                                            // play
+                                            String action =
+                                            (status == 'play' || status == 'pause')
+                                                ? 'stop'
+                                                : 'play';
+                                            display.presenterId = id;
+                                            AppAnalytics().trackEventPresentClicked();
+                                            moderatorSocket.peerAction(
+                                                'play', peer, display.displayResponse);
+
+                                            display
+                                                .setPresenterTimeTimer(action == 'play');
+                                          });
+                                          return;
                                         }
                                       }
                                     }
@@ -124,8 +138,9 @@ class PresenterListState extends State<PresenterList> {
                                       .setPresenterTimeTimer(action == 'play');
                                 } else {
                                   if (display.peerList[index].waitReply) return;
-                                  if (display.presenterId == id)
+                                  if (display.presenterId == id) {
                                     display.presenterId = '';
+                                  }
                                   AppAnalytics().trackEventPresentClicked();
                                   moderatorSocket.peerAction(
                                       'stop', peer, display.displayResponse);
@@ -143,7 +158,7 @@ class PresenterListState extends State<PresenterList> {
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) {
-                            return Divider(height: 10);
+                            return const Divider(height: 10);
                           }))),
           Visibility(
               visible: bEditNotifier,
@@ -170,12 +185,12 @@ class PresenterListState extends State<PresenterList> {
                             fit: BoxFit.fitHeight,
                             child: Text(
                               S.of(context).moderator_cancel,
-                              style: TextStyle(color: AppColors.primary_grey),
+                              style: const TextStyle(color: AppColors.primary_grey),
                             )),
                       ),
                     ),
                   ),
-                  Spacer(
+                  const Spacer(
                     flex: 1,
                   ),
                   Expanded(
@@ -221,7 +236,7 @@ class PresenterListState extends State<PresenterList> {
                           child: FittedBox(
                             fit: BoxFit.fitHeight,
                             child: Text(S.of(context).moderator_remove,
-                                style: TextStyle(color: Colors.white)),
+                                style: const TextStyle(color: Colors.white)),
                           )),
                     ),
                   ),
