@@ -490,12 +490,17 @@ class ControlSocket {
     _controlSocketIO?.emit(displayCode, json.decode(content));
   }
 
-  bool isPresenting() {
+  bool isPresenting({index}) {
     bool presenting = false;
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      for (WebRTCNativeViewController controller in _webRtcController) {
-        if (controller.presentationState == PresentationState.streaming) {
-          presenting |= true;
+      if (index != null && _webRtcController.length > index) {
+        if (_webRtcController[index].presentationState ==
+            PresentationState.streaming) presenting = true;
+      } else {
+        for (WebRTCNativeViewController controller in _webRtcController) {
+          if (controller.presentationState == PresentationState.streaming) {
+            presenting |= true;
+          }
         }
       }
     } else {
