@@ -59,27 +59,39 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
 
         AppPreferences().set(entityId: json['entityId'] ?? '');
 
-        ControlSocket().displayCode = json['code'];
-        ControlSocket().token = Uri.encodeComponent(json['token']);
+        ControlSocket().displayCode = json['code'] ?? '';
+        ControlSocket().token = Uri.encodeComponent(json['token'] ?? '');
 
-        Map<String, dynamic> property = json['property'];
-        List<dynamic> license = property['licenses'];
-        ControlSocket().licenseName = license[0]['name'];
+        if (json.containsKey('property')) {
+          Map<String, dynamic> property = json['property'];
 
-        List<dynamic> features = property['features'];
-        ControlSocket().featureList.clear();
-        for (String feature in features) {
-          ControlSocket().featureList.add(feature);
-        }
+          if (property.containsKey('licenses')) {
+            List<dynamic> license = property['licenses'];
 
-        ConnectionTimer.getInstance().remainingTimeLimit = property['limitTimeBySecond'];
+            ControlSocket().licenseName = license[0]['name'] ?? '';
+          }
 
-        if (isFirstTimeGetDisplayCode) {
-          isFirstTimeGetDisplayCode = false;
-          if (property.containsKey('moderator')) {
-            if (property['moderator'] != null) {
-              ControlSocket().unbindModerator(
-                  apiGateway, Moderator.fromJson(property['moderator']));
+          if (property.containsKey('features')) {
+            List<dynamic> features = property['features'];
+
+            ControlSocket().featureList.clear();
+            for (String feature in features) {
+              ControlSocket().featureList.add(feature);
+            }
+          }
+
+          if (property.containsKey('limitTimeBySecond')) {
+            ConnectionTimer.getInstance().remainingTimeLimit =
+                property['limitTimeBySecond'];
+          }
+
+          if (isFirstTimeGetDisplayCode) {
+            isFirstTimeGetDisplayCode = false;
+            if (property.containsKey('moderator')) {
+              if (property['moderator'] != null) {
+                ControlSocket().unbindModerator(
+                    apiGateway, Moderator.fromJson(property['moderator']));
+              }
             }
           }
         }
