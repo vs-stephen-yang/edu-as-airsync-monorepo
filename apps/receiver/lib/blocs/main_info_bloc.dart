@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
+import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -55,17 +56,24 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
       if (response.statusCode >= HttpStatus.ok &&
           response.statusCode < HttpStatus.multiStatus) {
         Map json = jsonDecode(response.body);
+
         AppPreferences().set(entityId: json['entityId'] ?? '');
+
         ControlSocket().displayCode = json['code'];
         ControlSocket().token = Uri.encodeComponent(json['token']);
+
         Map<String, dynamic> property = json['property'];
         List<dynamic> license = property['licenses'];
         ControlSocket().licenseName = license[0]['name'];
+
         List<dynamic> features = property['features'];
         ControlSocket().featureList.clear();
         for (String feature in features) {
           ControlSocket().featureList.add(feature);
         }
+
+        ConnectionTimer.getInstance().remainingTimeLimit = property['limitTimeBySecond'];
+
         if (isFirstTimeGetDisplayCode) {
           isFirstTimeGetDisplayCode = false;
           if (property.containsKey('moderator')) {
