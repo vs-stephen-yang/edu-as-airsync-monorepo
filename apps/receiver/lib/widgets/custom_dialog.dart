@@ -30,24 +30,25 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
           borderRadius: BorderRadius.circular(15.0),
         ),
         child: Container(
-          margin: EdgeInsets.all(15.0),
-          width: MediaQuery.of(context).size.height *0.3,
+          margin: const EdgeInsets.all(15.0),
+          width: MediaQuery.of(context).size.height * 0.3,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 "${widget.description}",
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 children: [
                   Expanded(
                     flex: 3,
                     child: Container(
+                      padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(3),
                         color: Colors.white,
@@ -60,7 +61,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                         child: Center(
                           child: Text(
                             S.of(context).moderator_cancel,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: AppColors.primary_grey,
                             ),
                           ),
@@ -68,12 +69,13 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                       ),
                     ),
                   ),
-                  Spacer(
+                  const Spacer(
                     flex: 1,
                   ),
                   Expanded(
                     flex: 3,
                     child: Container(
+                      padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(3),
                         color: AppColors.primary_red,
@@ -86,7 +88,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                         child: Center(
                           child: Text(
                             widget.positiveButton,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                             ),
                           ),

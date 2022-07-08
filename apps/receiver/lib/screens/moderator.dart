@@ -398,7 +398,7 @@ class _ModeratorViewState extends State<ModeratorView> {
           description: SplitScreen.mapSplitScreen.value[keySplitScreenEnable]
               ? S.of(context).moderator_deactivate_split_screen
               : S.of(context).moderator_activate_split_screen,
-          positiveButton: S.of(context).moderator_confirm,
+          positiveButton: S.of(context).moderator_activate,
           onPositive: () {
             setState(() {
               SplitScreen.mapSplitScreen.value[keySplitScreenEnable] =
