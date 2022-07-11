@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:display_flutter/model/stream/StreamPeerlist.dart';
-import 'package:display_flutter/model/stream/StreamResponse.dart';
-import 'package:display_flutter/model/stream/StreamSocket.dart';
 import 'package:display_flutter/model/bean/moderator_peer_message.dart';
 import 'package:display_flutter/model/bean/moderator_role.dart';
+import 'package:display_flutter/model/stream/StreamResponse.dart';
+import 'package:display_flutter/model/stream/StreamSocket.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/ApiResponseFactory.dart';
 import 'package:flutter/material.dart';
@@ -182,16 +181,18 @@ class ModeratorSocket {
     request.body = json.encode({'code': code, 'moderator': moderator});
     request.headers.addAll(headers);
     http.StreamedResponse streamedResponse = await request.send();
-    try {
-      dynamic response =
-          await ApiResponseFactory.returnResponse(streamedResponse);
-      log('unBindFromDisplay: $response');
-      setModeratorResponse.addResponseMessage(response);
+
+    var response = await http.Response.fromStream(streamedResponse);
+    bool isSuccessful = ApiResponseFactory.returnResponse(response.statusCode);
+    print('unBindFromDisplay: $isSuccessful');
+    if (isSuccessful) {
+      setModeratorResponse
+          .addResponseMessage(json.decode(response.body.toString()));
       setModeratorHasNewData = true;
       return response;
-    } catch (err) {
-      print('err: $err');
-      setModeratorResponse.addResponseMessage({0 as dynamic: err});
+    } else {
+      setModeratorResponse
+          .addResponseMessage({'Exception': response.statusCode});
       setModeratorHasNewData = true;
     }
   }
@@ -208,18 +209,20 @@ class ModeratorSocket {
         json.encode({'code': code, 'otp': otp, 'moderator': moderator});
     request.headers.addAll(headers);
     http.StreamedResponse streamedResponse = await request.send();
-    try {
-      dynamic response =
-          await ApiResponseFactory.returnResponse(streamedResponse);
-      print('bindToDisplay: $response');
-      setModeratorResponse.addResponseMessage(response);
+
+    var response = await http.Response.fromStream(streamedResponse);
+    bool isSuccessful = ApiResponseFactory.returnResponse(response.statusCode);
+    print('bindToDisplay: $isSuccessful');
+    if (isSuccessful) {
+      setModeratorResponse
+          .addResponseMessage(json.decode(response.body.toString()));
       setModeratorHasNewData = true;
 
       getDisplayState(code);
       return response;
-    } catch (err) {
-      print('bindToDisplay err: $err');
-      setModeratorResponse.addResponseMessage({0 as dynamic: err});
+    } else {
+      setModeratorResponse
+          .addResponseMessage({'Exception': response.statusCode});
       setModeratorHasNewData = true;
     }
   }
@@ -227,25 +230,26 @@ class ModeratorSocket {
   Future queryDisplay(code) async {
     var headers = {'Content-Type': 'application/json'};
     var api = Uri.parse('$gatewayUrl/presentation/displays?code=$code');
-    print('api: $api');
+    print('queryDisplay api: $api');
     var request = http.Request('GET', api);
     request.headers.addAll(headers);
     http.StreamedResponse streamedResponse = await request.send();
-    try {
-      dynamic response =
-          await ApiResponseFactory.returnResponse(streamedResponse);
-      log('queryDisplay: $response');
-      setModeratorResponse.addResponseMessage(response);
+
+    var response = await http.Response.fromStream(streamedResponse);
+    bool isSuccessful = ApiResponseFactory.returnResponse(response.statusCode);
+    print('queryDisplay: $isSuccessful');
+    if (isSuccessful) {
+      setModeratorResponse
+          .addResponseMessage(json.decode(response.body.toString()));
       setModeratorHasNewData = true;
 
       getDisplayState(code);
       sendPeerListRequest(code);
       return response;
-    } catch (err) {
-      print('err: $err');
-      setModeratorResponse.addResponseMessage({0 as dynamic: err});
+    } else {
+      setModeratorResponse
+          .addResponseMessage({'Exception': response.statusCode});
       setModeratorHasNewData = true;
-      rethrow;
     }
   }
 
