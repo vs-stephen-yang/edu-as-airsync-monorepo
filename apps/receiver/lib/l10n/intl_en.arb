@@ -16,7 +16,6 @@
   "eula_title": "myViewBoard Display EULA",
   "eula_disagree": "I Disagree",
   "eula_agree": "I Agree",
-
   "moderator_presentersList": "Presenters' List",
   "moderator_activate": "Activate",
   "moderator_verifyCode_fail": "Something went wrong, please try again",
@@ -25,7 +24,7 @@
   "moderator_exit_dialog": "Are you sure you want to exit?",
   "moderator_remove": "REMOVE",
   "moderator_exit": "EXIT",
-  "moderator_activate_split_screen": "Would you like to activate the split screen feature in presenters’ list ? (Total maxium 4 people)",
-  "moderator_deactivate_split_screen": "Would you like to deactivate the split screen feature in presenters’ list ? ",
-  "moderator_confirm": "Confirm"
+  "moderator_activate_split_screen": "Would you like to activate the split screen feature in the presenters’ list? (Total maximum 4 people)",
+  "moderator_deactivate_split_screen": "Would you like to deactivate the split screen feature in the presenters’ list?",
+  "moderator_confirm": "CONFIRM"
 }

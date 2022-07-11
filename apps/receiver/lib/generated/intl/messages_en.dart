@@ -53,11 +53,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("What’s New on Display?"),
         "moderator_activate": MessageLookupByLibrary.simpleMessage("Activate"),
         "moderator_activate_split_screen": MessageLookupByLibrary.simpleMessage(
-            "Would you like to activate the split screen feature in presenters’ list ? (Total maxium 4 people)"),
+            "Would you like to activate the split screen feature in the presenters’ list? (Total maximum 4 people)"),
         "moderator_cancel": MessageLookupByLibrary.simpleMessage("CANCEL"),
-        "moderator_confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "moderator_confirm": MessageLookupByLibrary.simpleMessage("CONFIRM"),
         "moderator_deactivate_split_screen": MessageLookupByLibrary.simpleMessage(
-            "Would you like to deactivate the split screen feature in presenters’ list ? "),
+            "Would you like to deactivate the split screen feature in the presenters’ list?"),
         "moderator_exit": MessageLookupByLibrary.simpleMessage("EXIT"),
         "moderator_exit_dialog": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to exit?"),
