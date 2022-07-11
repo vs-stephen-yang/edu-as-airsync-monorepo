@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -300,30 +301,30 @@ class S {
     );
   }
 
-  /// `Would you like to activate the split screen feature in presenters’ list ? (Total maxium 4 people)`
+  /// `Would you like to activate the split screen feature in the presenters’ list? (Total maximum 4 people)`
   String get moderator_activate_split_screen {
     return Intl.message(
-      'Would you like to activate the split screen feature in presenters’ list ? (Total maxium 4 people)',
+      'Would you like to activate the split screen feature in the presenters’ list? (Total maximum 4 people)',
       name: 'moderator_activate_split_screen',
       desc: '',
       args: [],
     );
   }
 
-  /// `Would you like to deactivate the split screen feature in presenters’ list ? `
+  /// `Would you like to deactivate the split screen feature in the presenters’ list?`
   String get moderator_deactivate_split_screen {
     return Intl.message(
-      'Would you like to deactivate the split screen feature in presenters’ list ? ',
+      'Would you like to deactivate the split screen feature in the presenters’ list?',
       name: 'moderator_deactivate_split_screen',
       desc: '',
       args: [],
     );
   }
 
-  /// `Confirm`
+  /// `CONFIRM`
   String get moderator_confirm {
     return Intl.message(
-      'Confirm',
+      'CONFIRM',
       name: 'moderator_confirm',
       desc: '',
       args: [],
