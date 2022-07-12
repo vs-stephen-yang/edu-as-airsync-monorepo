@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:display_flutter/model/stream/StreamPeerlist.dart';
-import 'package:display_flutter/model/stream/StreamResponse.dart';
-import 'package:display_flutter/model/stream/StreamSocket.dart';
 import 'package:display_flutter/model/bean/moderator_peer_message.dart';
 import 'package:display_flutter/model/bean/moderator_role.dart';
+import 'package:display_flutter/model/stream/StreamResponse.dart';
+import 'package:display_flutter/model/stream/StreamSocket.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/ApiResponseFactory.dart';
 import 'package:flutter/material.dart';
@@ -221,6 +220,7 @@ class ModeratorSocket {
       print('bindToDisplay err: $err');
       setModeratorResponse.addResponseMessage({0 as dynamic: err});
       setModeratorHasNewData = true;
+      throw err;
     }
   }
 
