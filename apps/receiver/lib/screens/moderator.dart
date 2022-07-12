@@ -16,6 +16,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 class ModeratorView extends StatefulWidget {
   ModeratorView({Key? key}) : super(key: key);
   static ValueNotifier<bool> showModerator = ValueNotifier(false);
+  static ValueNotifier<bool> showModeratorMessage = ValueNotifier(false);
 
   final GlobalKey<PresenterListState> attendeesListKey = GlobalKey();
 
@@ -316,6 +317,38 @@ class _ModeratorViewState extends State<ModeratorView> {
                         );
                       },
                     ),
+                    ValueListenableBuilder(
+                        valueListenable: ModeratorView.showModeratorMessage,
+                        builder:
+                            (BuildContext context, bool value, Widget? child) {
+                          ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                          return Visibility(
+                              visible: value,
+                              child: Container(
+                                alignment: Alignment.bottomLeft,
+                                padding: const EdgeInsets.all(8.0),
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15)),
+                                  color: AppColors.semantic2,
+                                ),
+                                child: Row(
+                                  children: <Widget>[
+                                    Container(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            8.0, 0.0, 8.0, 0.0),
+                                        child: (const Icon(Icons.info_outline,
+                                            color: Colors.white))),
+                                    Expanded(
+                                      child: Text(S
+                                          .of(context)
+                                          .moderator_verifyCode_fail),
+                                    ),
+                                  ],
+                                ),
+                              ));
+                        }),
                   ],
                 );
               },
@@ -466,7 +499,12 @@ class _ModeratorViewState extends State<ModeratorView> {
         AppAnalytics().trackEventMeetingStarted(
             value['code'] ?? '', value['property']['meetingId'] ?? '');
         streamFunctionKey.currentState?.setState(() {});
-      }).catchError((dynamic e) {});
+      }).catchError((dynamic e) {
+        Future.delayed(const Duration(seconds: 5), () {
+          ModeratorView.showModeratorMessage.value = false;
+        });
+        ModeratorView.showModeratorMessage.value = true;
+      });
     } catch (e) {
       return Future.value(false);
     }
