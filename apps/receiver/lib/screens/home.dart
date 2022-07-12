@@ -6,9 +6,9 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/split_screen.dart';
-import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/main_info.dart';
+import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/tittle_bar.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
@@ -147,7 +147,10 @@ class _HomeState extends State<Home> {
                               right: iconRight,
                               bottom: iconBottom,
                               child: Visibility(
-                            visible: value[keySplitScreenEnable] && ControlSocket().isPresenting(index: index) && !_isSelectedList[index],
+                                visible: value[keySplitScreenEnable] &&
+                                    ControlSocket()
+                                        .isPresenting(index: index) &&
+                                    !_isSelectedList[index],
                                 child: IconButton(
                                   icon: const Image(
                                       image: Svg('assets/images/ic_zoom_in.svg',
@@ -161,10 +164,13 @@ class _HomeState extends State<Home> {
                               right: 0,
                               bottom: 0,
                               child: Visibility(
-                                visible: value[keySplitScreenEnable] && ControlSocket().isPresenting() && _isSelectedList[index],
+                                visible: value[keySplitScreenEnable] &&
+                                    ControlSocket().isPresenting() &&
+                                    _isSelectedList[index],
                                 child: IconButton(
                                   icon: const Image(
-                                      image: Svg('assets/images/ic_zoom_out.svg',
+                                      image: Svg(
+                                          'assets/images/ic_zoom_out.svg',
                                           size: Size.square(48))),
                                   onPressed: () {
                                     _updateSizeForSelected(index);
@@ -250,7 +256,7 @@ class _HomeState extends State<Home> {
             return Future.value(true);
           } else {
             try {
-              _showSnackBarMessage('Display App goes to the background.');
+              _showSnackBarMessage(S.of(context).main_status_go_background);
               await Future.delayed(const Duration(seconds: 1));
               _androidAppRetain.invokeMethod('sendToBackground');
               return Future.value(false);

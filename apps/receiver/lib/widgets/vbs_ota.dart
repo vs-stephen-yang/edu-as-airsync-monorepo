@@ -1,3 +1,4 @@
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -46,9 +47,12 @@ class _VbsOTAState extends State<VbsOTA> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      const Text(
-                        'Downloading new system update',
-                        style: TextStyle(fontSize: 10, color: Colors.white),
+                      Text(
+                        S.of(context).vbs_ota_progress_msg,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          color: Colors.white,
+                        ),
                       ),
                       SizedBox(
                         height: 20,

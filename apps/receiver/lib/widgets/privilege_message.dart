@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
 class PrivilegeDialog extends StatelessWidget {
@@ -18,11 +19,11 @@ class PrivilegeDialog extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Padding(
-              padding: EdgeInsets.all(20),
+            Padding(
+              padding: const EdgeInsets.all(20),
               child: AutoSizeText(
-                'Insufficient privilege for Display Advanced. Please contact your IT administrator.',
-                style: TextStyle(
+                S.of(context).main_privilege_message,
+                style: const TextStyle(
                   fontSize: 25,
                   color: Colors.white,
                 ),
@@ -34,9 +35,9 @@ class PrivilegeDialog extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const AutoSizeText(
-                'Close',
-                style: TextStyle(
+              child: AutoSizeText(
+                S.of(context).main_privilege_close,
+                style: const TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.w400,
                 ),

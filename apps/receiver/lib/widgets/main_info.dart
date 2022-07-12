@@ -19,6 +19,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 class MainInfo extends StatefulWidget {
   const MainInfo({Key? key}) : super(key: key);
   static ValueNotifier<bool> showMainInfo = ValueNotifier(true);
+
   // Update Display Privilege Status,...
   static bool updateDisplayStatus = false;
 
@@ -58,7 +59,7 @@ class _MainInfoState extends State<MainInfo> {
               BlocProvider.of<MainInfoBloc>(context).add(GetOneTimePassword());
               break;
             case MainInfoState.getDisplayCodeError:
-              _showSnackBarMessage(S.of(context).get_code_failure);
+              _showSnackBarMessage(S.of(context).main_get_display_code_failure);
               BlocProvider.of<MainInfoBloc>(context).add(RegisterDisplayCode());
               break;
             case MainInfoState.getDisplayCodeInfoSuccess:
@@ -74,7 +75,8 @@ class _MainInfoState extends State<MainInfo> {
               BlocProvider.of<MainInfoBloc>(context).add(GetDisplayCode());
               break;
             case MainInfoState.registerDisplayCodeError:
-              _showSnackBarMessage('register display code failure');
+              _showSnackBarMessage(
+                  S.of(context).main_register_display_code_failure);
               Timer(const Duration(seconds: 5), () async {
                 BlocProvider.of<MainInfoBloc>(context)
                     .add(RegisterDisplayCode());

@@ -37,13 +37,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("使用Companion App掃描註冊"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("繁體中文"),
         "main_language_title": MessageLookupByLibrary.simpleMessage("語言"),
+        "main_status_go_background":
+            MessageLookupByLibrary.simpleMessage("Display App 背景執行中"),
         "main_status_no_network":
             MessageLookupByLibrary.simpleMessage("網路品質不良\n請檢查網路連線"),
+        "main_status_remaining_time":
+            MessageLookupByLibrary.simpleMessage("%02d min : %02d sec"),
         "main_thanks_content":
             MessageLookupByLibrary.simpleMessage("感謝您使用 myViewBoard Display"),
+        "main_wait_title": MessageLookupByLibrary.simpleMessage("等待投影中..."),
         "main_wait_up_next": MessageLookupByLibrary.simpleMessage("下一位投影者"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "[強化項目]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n\n[修改項目]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n"),
+            "[強化項目]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n\n[修改項目]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6"),
         "main_whats_new_title": MessageLookupByLibrary.simpleMessage("最新消息"),
         "moderator_activate": MessageLookupByLibrary.simpleMessage("啟用"),
         "moderator_cancel": MessageLookupByLibrary.simpleMessage("取消"),
@@ -56,6 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("人員列表"),
         "moderator_remove": MessageLookupByLibrary.simpleMessage("移除"),
         "moderator_verifyCode_fail":
-            MessageLookupByLibrary.simpleMessage("抱歉，出現問題，請稍後再試。")
+            MessageLookupByLibrary.simpleMessage("抱歉，出現問題，請稍後再試。"),
+        "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage("更新下載中")
       };
 }

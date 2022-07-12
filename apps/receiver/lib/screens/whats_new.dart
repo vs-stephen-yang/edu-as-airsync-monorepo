@@ -30,6 +30,7 @@ class _WhatsNewState extends State<WhatsNew> {
                   : AppColors.primary_grey,
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Container(
                   // alignment: Alignment.center,
@@ -69,13 +70,20 @@ class _WhatsNewState extends State<WhatsNew> {
                     ],
                   ),
                 ),
-                const RawScrollbar(
-                  isAlwaysShown: true,
-                  thumbColor: AppColors.primary_white,
-                  child: SingleChildScrollView(
-                    child: Text(
-                      "",
-                      style: TextStyle(color: AppColors.primary_white),
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.all(10),
+                    child: RawScrollbar(
+                      isAlwaysShown: true,
+                      thumbColor: AppColors.primary_white,
+                      child: SingleChildScrollView(
+                        child: Text(
+                          S.of(context).main_whats_new_content,
+                          style: const TextStyle(
+                            color: AppColors.primary_white,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
