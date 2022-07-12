@@ -1,4 +1,5 @@
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/home.dart';
@@ -89,9 +90,9 @@ class _SplitScreenState extends State<SplitScreen>
                           alignment: Alignment.centerLeft,
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 5),
-                            child: const Text(
-                              "Split Screen",
-                              style: TextStyle(
+                            child: Text(
+                              S.of(context).main_split_screen_title,
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.primary_white,
                               ),
@@ -140,8 +141,8 @@ class _SplitScreenState extends State<SplitScreen>
                         ),
                         Text(
                           SplitScreen.mapSplitScreen.value[keySplitScreenEnable]
-                              ? '“Waiting for a sender a screen...”'
-                              : 'Would you like to turn on the split screen feature?',
+                              ? S.of(context).main_split_screen_waiting
+                              : S.of(context).main_split_screen_question,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 15,

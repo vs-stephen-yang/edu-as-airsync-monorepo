@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="vbs_ota_progress_msg">"Downloading system updates"</string>
     <string name="update_title">"myViewBoard Display Update"</string>
     <string name="update_message">"A new version of the software is available"</string>
     <string name="update_progress_text">"%d%%"</string>

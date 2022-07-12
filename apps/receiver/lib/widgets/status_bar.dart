@@ -1,10 +1,10 @@
+import 'dart:math' as math;
 
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
-
 import 'package:intl/intl.dart';
 
 class StatusBar extends StatefulWidget {
@@ -20,7 +20,6 @@ class StatusBar extends StatefulWidget {
 class _StatusBarState extends State<StatusBar> {
   @override
   Widget build(BuildContext context) {
-
     return Stack(
       children: [
         Align(
@@ -40,7 +39,7 @@ class _StatusBarState extends State<StatusBar> {
                     color: AppColors.primary_grey_tran,
                   ),
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Visibility(
@@ -67,12 +66,18 @@ class _StatusBarState extends State<StatusBar> {
                           String min = '00', sec = '00';
                           NumberFormat formatter = NumberFormat('00');
                           if (snapData.hasData) {
-                            min = formatter.format((snapData.data!/60).floor());
-                            sec = formatter.format(snapData.data!%60);
+                            min =
+                                formatter.format((snapData.data! / 60).floor());
+                            sec = formatter.format(snapData.data! % 60);
                           }
+                          String time =
+                              S.of(context).main_status_remaining_time;
+                          time = time
+                              .replaceFirst('%02d', min)
+                              .replaceFirst('%02d', sec);
                           return Visibility(
                             visible: StatusBar.showReamingTime.value,
-                            child: Text('$min min: $sec sec',
+                            child: Text(time,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -87,7 +92,8 @@ class _StatusBarState extends State<StatusBar> {
             },
           ),
         ),
-        Center(child: ValueListenableBuilder(
+        Center(
+            child: ValueListenableBuilder(
           valueListenable: StatusBar.showReamingTimeAlert,
           builder: (BuildContext context, bool value, Widget? child) {
             return Visibility(
@@ -102,10 +108,12 @@ class _StatusBarState extends State<StatusBar> {
                         ? AppColors.primary_grey_tran
                         : AppColors.primary_grey,
                   ),
-                  child: const Text(
-                    '5 minutes left',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
+                  child: Text(
+                    S.of(context).main_limit_time_message,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        color: Colors.white),
                   ),
                 ));
           },
@@ -113,7 +121,4 @@ class _StatusBarState extends State<StatusBar> {
       ],
     );
   }
-
-
-
 }

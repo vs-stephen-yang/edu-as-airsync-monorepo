@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="vbs_ota_progress_msg">"更新下載中"</string>
     <string name="update_title">"myViewBoard Display 更新"</string>
     <string name="update_message">"已有新版本可供安裝"</string>
     <string name="update_progress_text">"%d%%"</string>

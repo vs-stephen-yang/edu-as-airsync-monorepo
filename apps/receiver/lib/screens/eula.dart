@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:display_flutter/app_preferences.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,9 +32,9 @@ class _EulaState extends State<Eula> {
                       children: <Widget>[
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 20),
-                          child: const Text(
-                            'myViewBoard Display EULA',
-                            style: TextStyle(
+                          child: Text(
+                            S.of(context).eula_title,
+                            style: const TextStyle(
                               color: Color(0xFF2979FF),
                               fontSize: 25,
                               fontWeight: FontWeight.w500,
@@ -53,7 +54,7 @@ class _EulaState extends State<Eula> {
                                       snapshot.data != null) {
                                     content = snapshot.data as String;
                                   } else {
-                                    content = 'myViewBoard Display EULA';
+                                    content = S.of(context).eula_title;
                                   }
                                   return Text(
                                     content,
@@ -93,9 +94,9 @@ class _EulaState extends State<Eula> {
                           // todo: support other platform.
                         }
                       },
-                      child: const Text(
-                        'I Disagree',
-                        style: TextStyle(fontSize: 18),
+                      child: Text(
+                        S.of(context).eula_disagree,
+                        style: const TextStyle(fontSize: 18),
                       ),
                     ),
                   ),
@@ -107,9 +108,9 @@ class _EulaState extends State<Eula> {
                       AppPreferences().set(showEULA: false);
                       navService.pushNamedAndRemoveUntil('/home');
                     },
-                    child: const Text(
-                      'I Agree',
-                      style: TextStyle(fontSize: 18),
+                    child: Text(
+                      S.of(context).eula_agree,
+                      style: const TextStyle(fontSize: 18),
                     ),
                   ),
                 ),

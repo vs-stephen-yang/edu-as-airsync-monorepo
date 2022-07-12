@@ -164,9 +164,9 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
                   const SizedBox(
                     height: 20,
                   ),
-                  const Text(
-                    '"Waiting for a sender to share a screen..."',
-                    style: TextStyle(
+                  Text(
+                    S.of(context).main_wait_title,
+                    style: const TextStyle(
                       color: AppColors.primary_blue,
                       fontWeight: FontWeight.w700,
                       fontSize: 25,

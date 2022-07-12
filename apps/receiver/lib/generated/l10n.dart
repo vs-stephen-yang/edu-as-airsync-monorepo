@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -51,11 +50,71 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `connection timeout.`
-  String get connection_connect_timeout {
+  /// `Downloading system updates`
+  String get vbs_ota_progress_msg {
     return Intl.message(
-      'connection timeout.',
-      name: 'connection_connect_timeout',
+      'Downloading system updates',
+      name: 'vbs_ota_progress_msg',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `myViewBoard Display EULA`
+  String get eula_title {
+    return Intl.message(
+      'myViewBoard Display EULA',
+      name: 'eula_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I Disagree`
+  String get eula_disagree {
+    return Intl.message(
+      'I Disagree',
+      name: 'eula_disagree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `I Agree`
+  String get eula_agree {
+    return Intl.message(
+      'I Agree',
+      name: 'eula_agree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Poor network connection detected.\nPlease check your connectivity.`
+  String get main_status_no_network {
+    return Intl.message(
+      'Poor network connection detected.\nPlease check your connectivity.',
+      name: 'main_status_no_network',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `%02d min : %02d sec`
+  String get main_status_remaining_time {
+    return Intl.message(
+      '%02d min : %02d sec',
+      name: 'main_status_remaining_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Display App goes to the background.`
+  String get main_status_go_background {
+    return Intl.message(
+      'Display App goes to the background.',
+      name: 'main_status_go_background',
       desc: '',
       args: [],
     );
@@ -71,16 +130,6 @@ class S {
     );
   }
 
-  /// `get display code failure: `
-  String get get_code_failure {
-    return Intl.message(
-      'get display code failure: ',
-      name: 'get_code_failure',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `One Time Password`
   String get main_content_one_time_password {
     return Intl.message(
@@ -91,10 +140,10 @@ class S {
     );
   }
 
-  /// `Failed to get new password. Please wait for 30 seconds before retrying.`
+  /// `Failed to get new password.\nPlease wait for 30 seconds before retrying.`
   String get main_content_one_time_password_get_fail {
     return Intl.message(
-      'Failed to get new password. Please wait for 30 seconds before retrying.',
+      'Failed to get new password.\nPlease wait for 30 seconds before retrying.',
       name: 'main_content_one_time_password_get_fail',
       desc: '',
       args: [],
@@ -126,6 +175,16 @@ class S {
     return Intl.message(
       'UP NEXT',
       name: 'main_wait_up_next',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for a sender to share a screen...`
+  String get main_wait_title {
+    return Intl.message(
+      'Waiting for a sender to share a screen...',
+      name: 'main_wait_title',
       desc: '',
       args: [],
     );
@@ -171,51 +230,91 @@ class S {
     );
   }
 
-  /// `[Improvements]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n\n[Modifications]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n`
+  /// `[Improvements]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n\n[Modifications]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n\n`
   String get main_whats_new_content {
     return Intl.message(
-      '[Improvements]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n\n[Modifications]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n',
+      '[Improvements]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n\n[Modifications]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n\n',
       name: 'main_whats_new_content',
       desc: '',
       args: [],
     );
   }
 
-  /// `Poor network connection detected.\nPlease check your connectivity.`
-  String get main_status_no_network {
+  /// `Split Screen`
+  String get main_split_screen_title {
     return Intl.message(
-      'Poor network connection detected.\nPlease check your connectivity.',
-      name: 'main_status_no_network',
+      'Split Screen',
+      name: 'main_split_screen_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `myViewBoard Display EULA`
-  String get eula_title {
+  /// `“Waiting for a sender a screen...”`
+  String get main_split_screen_waiting {
     return Intl.message(
-      'myViewBoard Display EULA',
-      name: 'eula_title',
+      '“Waiting for a sender a screen...”',
+      name: 'main_split_screen_waiting',
       desc: '',
       args: [],
     );
   }
 
-  /// `I Disagree`
-  String get eula_disagree {
+  /// `Would you like to turn on the split screen feature?`
+  String get main_split_screen_question {
     return Intl.message(
-      'I Disagree',
-      name: 'eula_disagree',
+      'Would you like to turn on the split screen feature?',
+      name: 'main_split_screen_question',
       desc: '',
       args: [],
     );
   }
 
-  /// `I Agree`
-  String get eula_agree {
+  /// `5 minutes left`
+  String get main_limit_time_message {
     return Intl.message(
-      'I Agree',
-      name: 'eula_agree',
+      '5 minutes left',
+      name: 'main_limit_time_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get display code failure.`
+  String get main_get_display_code_failure {
+    return Intl.message(
+      'Get display code failure.',
+      name: 'main_get_display_code_failure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Register display code failure.`
+  String get main_register_display_code_failure {
+    return Intl.message(
+      'Register display code failure.',
+      name: 'main_register_display_code_failure',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insufficient privilege for Display Advanced. Please contact your IT administrator.`
+  String get main_privilege_message {
+    return Intl.message(
+      'Insufficient privilege for Display Advanced. Please contact your IT administrator.',
+      name: 'main_privilege_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get main_privilege_close {
+    return Intl.message(
+      'Close',
+      name: 'main_privilege_close',
       desc: '',
       args: [],
     );
