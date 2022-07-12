@@ -16,7 +16,6 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 class ModeratorView extends StatefulWidget {
   ModeratorView({Key? key}) : super(key: key);
   static ValueNotifier<bool> showModerator = ValueNotifier(false);
-  static ValueNotifier<bool> showModeratorMessage = ValueNotifier(false);
 
   final GlobalKey<PresenterListState> attendeesListKey = GlobalKey();
 
@@ -178,11 +177,6 @@ class _ModeratorViewState extends State<ModeratorView> {
                       displayResponse: peerlistSnapshot.data,
                     );
                     Displays().addDisplayInfo(display);
-                  } else if (peerlistSnapshot.data!['Exception'] != null) {
-                    Future.delayed(Duration(seconds: 5), () {
-                      ModeratorView.showModeratorMessage.value = false;
-                    });
-                    ModeratorView.showModeratorMessage.value = true;
                   }
                 } else if (peerlistSnapshot.hasData &&
                     moderatorSocket.unsetModeratorHasNewData) {
@@ -322,38 +316,6 @@ class _ModeratorViewState extends State<ModeratorView> {
                         );
                       },
                     ),
-                    ValueListenableBuilder(
-                        valueListenable: ModeratorView.showModeratorMessage,
-                        builder:
-                            (BuildContext context, bool value, Widget? child) {
-                          ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                          return Visibility(
-                              visible: value,
-                              child: Container(
-                                alignment: Alignment.bottomLeft,
-                                padding: const EdgeInsets.all(8.0),
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(15),
-                                      bottomRight: Radius.circular(15)),
-                                  color: AppColors.semantic2,
-                                ),
-                                child: Row(
-                                  children: <Widget>[
-                                    Container(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            16.0, 0.0, 16.0, 0.0),
-                                        child: (const Icon(Icons.info_outline,
-                                            color: Colors.white))),
-                                    Expanded(
-                                      child: Text(S
-                                          .of(context)
-                                          .moderator_verifyCode_fail),
-                                    ),
-                                  ],
-                                ),
-                              ));
-                        }),
                   ],
                 );
               },
