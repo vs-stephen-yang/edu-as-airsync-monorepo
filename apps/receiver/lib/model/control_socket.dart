@@ -125,6 +125,9 @@ class ControlSocket {
           controller.nativeViewState.switchConnectionState(false);
           _handleDisplayStateUpdate(controller);
 
+          // todo: change quality while split screen switched.
+          _handleChangeQuality(controller, true, true);
+
           Home.showTitleBottomBar.value = false;
           StreamFunction.showWaitFunction.value = false;
           if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
@@ -484,6 +487,22 @@ class ControlSocket {
       'nextId': GetString.getRandomString(21)
     });
     print('mControlSocketIO: _handleStreamPauseSuccess: $content');
+    _controlSocketIO?.emit(displayCode, json.decode(content));
+  }
+
+  void _handleChangeQuality(WebRTCNativeViewController controller,
+      bool isFullHeight, bool isFullFrameRate) {
+    var content = json.encode({
+      'messageFor': controller.presenterId,
+      'action': 'change-quality',
+      'extra': {
+        'constraints': {
+          'frameRate': isFullFrameRate ? 30 : 0,
+          'height': isFullHeight ? 1080 : 540,
+        },
+      },
+    });
+    print('mControlSocketIO: _handleChangeQuality: $content');
     _controlSocketIO?.emit(displayCode, json.decode(content));
   }
 
