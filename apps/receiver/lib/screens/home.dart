@@ -147,8 +147,9 @@ class _HomeState extends State<Home> {
                               child: Visibility(
                                 visible: value[keySplitScreenEnable] &&
                                     ControlSocket()
-                                        .isPresenting(index: index) &&
-                                    !_isSelectedList[index],
+                                        .isPresenting(index: index, from: 1) &&
+                                    !_isSelectedList[index] &&
+                                    ControlSocket().presenterQty() > 1,
                                 child: IconButton(
                                   icon: const Image(
                                       image: Svg('assets/images/ic_zoom_in.svg',
