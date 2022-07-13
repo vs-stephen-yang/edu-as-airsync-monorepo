@@ -42,8 +42,6 @@ class ControlSocket {
   Moderator? moderator;
 
   String meetingId = '';
-  int remainingTime = 0;
-  List<double> remainingTimeCheckPoints = [];
 
   bool isShowDelegate = false;
   bool isShowCode = false;
@@ -193,18 +191,7 @@ class ControlSocket {
         case "set-moderator":
           Extra extra = Extra.fromJson(resp.extra);
           moderator = Moderator.fromJson(extra.moderator);
-          meetingId = extra.moderatedSessionId ?? '';
-          remainingTime =
-              extra.endTime! - DateTime.now().millisecondsSinceEpoch;
-          List<dynamic>? checkPoints = extra.checkPoints;
-          int? duration = extra.durationRemaining;
-          for (int i = 0; i < checkPoints!.length; i++) {
-            if ((duration! - checkPoints[i]) > 1000) {
-              double point = ((duration - checkPoints[i]) / 1000);
-              remainingTimeCheckPoints.add(point);
-              log('checkpoint: $point');
-            }
-          }
+          meetingId = extra.meetingId ?? '';
 
           AppAnalytics().setEventProperties(
               {'displayID': displayCode, 'meetingId': meetingId});
@@ -221,11 +208,10 @@ class ControlSocket {
         case "unset-moderator":
           moderator = null;
           meetingId = '';
-          remainingTime = 0;
-          remainingTimeCheckPoints.clear();
 
           AppAnalytics().setEventProperties(
               {'displayID': displayCode, 'meetingId': meetingId});
+
           ConnectionTimer.getInstance().stopRemainingTimeTimer();
           break;
         // endregion Moderator

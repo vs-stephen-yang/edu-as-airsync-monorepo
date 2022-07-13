@@ -39,24 +39,19 @@ class DisplayMessage {
 }
 
 class Extra {
+  // 'start-present'
   dynamic signal;
   dynamic presenter;
-  // todo: confirm below item
+
+  // 'set-moderator'
   dynamic moderator;
-  int? endTime = 0;
-  String? moderatedSessionId;
-  List<dynamic>? checkPoints;
-  int? durationRemaining = 0;
-  bool? code = false;
-  bool? delegate = false;
+  String? meetingId;
 
   Extra({
     this.signal,
     this.presenter,
-
     this.moderator,
-    this.moderatedSessionId,
-    this.checkPoints,
+    this.meetingId,
   });
 
   Extra.fromJson(Map<String, dynamic> json) {
@@ -64,12 +59,7 @@ class Extra {
     presenter = json['presenter'];
 
     moderator = json['moderator'];
-    endTime = json['endTime'];
-    moderatedSessionId = json['moderatedSessionId'];
-    checkPoints = json['checkPoints'];
-    durationRemaining = json['durationRemaining'];
-    code = json['code'];
-    delegate = json['delegate'];
+    meetingId = json['meetingId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -78,12 +68,7 @@ class Extra {
     data['presenter'] = presenter;
 
     data['moderator'] = moderator;
-    data['endTime'] = endTime;
-    data['moderatedSessionId'] = moderatedSessionId;
-    data['checkPoints'] = checkPoints;
-    data['durationRemaining'] = durationRemaining;
-    data['code'] = code;
-    data['delegate'] = delegate;
+    data['meetingId'] = meetingId;
     return data;
   }
 }
@@ -143,14 +128,16 @@ class Moderator {
   String? name;
   String? remark;
   String? status;
+  dynamic extra;
 
-  Moderator({this.id, this.name, this.remark, this.status});
+  Moderator({this.id, this.name, this.remark, this.status, this.extra});
 
   Moderator.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     remark = json['remark'];
     status = json['status'];
+    extra = json['extra'];
   }
 
   Map<String, dynamic> toJson() {
@@ -159,6 +146,7 @@ class Moderator {
     data['name'] = name;
     data['remark'] = remark;
     data['status'] = status;
+    data['extra'] = extra;
     return data;
   }
 }
