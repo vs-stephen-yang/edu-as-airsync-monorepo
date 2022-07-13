@@ -125,8 +125,8 @@ class ControlSocket {
           controller.nativeViewState.switchConnectionState(false);
           _handleDisplayStateUpdate(controller);
 
-          // todo: change quality while split screen switched.
-          _handleChangeQuality(controller, true, true);
+          // must after _handleDisplayStateUpdate!
+          _handleQualityUpdate(controller);
 
           Home.showTitleBottomBar.value = false;
           StreamFunction.showWaitFunction.value = false;
@@ -150,6 +150,15 @@ class ControlSocket {
           controller.presentationState = PresentationState.stopStreaming;
           controller.nativeViewState.switchConnectionState(false);
           _handleDisplayStateUpdate(controller);
+
+          // must after _handleDisplayStateUpdate!
+          _handleQualityUpdate(controller);
+
+          // Clear all presenter settings.
+          controller.presenterId = '';
+          controller.presenterName = '';
+          controller.peerToken = '';
+          controller.peerId = '';
 
           if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
             bool presenting = false;
@@ -431,6 +440,22 @@ class ControlSocket {
         Map.from(SplitScreen.mapSplitScreen.value);
   }
 
+  void _handleQualityUpdate(WebRTCNativeViewController controller) {
+    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+      if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 1) {
+        _handleChangeQuality(_webRtcController.first, true, true);
+      } else {
+        for (WebRTCNativeViewController viewController in _webRtcController) {
+          if (viewController.presenterId.isNotEmpty) {
+            _handleChangeQuality(viewController, false, true);
+          }
+        }
+      }
+    } else {
+      _handleChangeQuality(controller, true, true);
+    }
+  }
+
   void _handleP2PClientSuccess(
       WebRTCNativeViewController controller, String nextId, String result) {
     var content = json.encode({
@@ -557,6 +582,21 @@ class ControlSocket {
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
         } on PlatformException catch (e) {
           log(e.toString());
+        }
+      }
+    }
+  }
+
+  updateAllQuality(int selection, bool hasSelected) {
+    if (selection == -1) {
+      _handleChangeQuality(_webRtcController[0], true, true);
+    } else {
+      for (int i = 0; i < _webRtcController.length; i++) {
+        if (_webRtcController[i].presenterId.isNotEmpty) {
+          _handleChangeQuality(
+              _webRtcController[i],
+              (i == selection && hasSelected),
+              (i == selection || !hasSelected));
         }
       }
     }

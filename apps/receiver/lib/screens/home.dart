@@ -61,9 +61,11 @@ class _HomeState extends State<Home> {
                             _isSelectedList[i] = false;
                           }
                         }
+                        ControlSocket().updateAllQuality(selection, _isSelectedList.contains(true));
                       } else {
                         _isSelectedList.fillRange(
                             0, _isSelectedList.length, false);
+                        ControlSocket().updateAllQuality(-1, _isSelectedList.contains(true));
                       }
                     });
                   }
