@@ -554,6 +554,19 @@ class ControlSocket {
     return presenting;
   }
 
+  int presenterQty() {
+    int qty = 0;
+    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+      for (WebRTCNativeViewController controller in _webRtcController) {
+        if (controller.presentationState == PresentationState.streaming) {
+          qty++;
+        }
+      }
+    }
+    print('zz presenterQty ${qty}');
+    return qty;
+  }
+
   unbindModerator(String apiGateway, Moderator moderator) async {
     try {
       http.Response response = await http.patch(
@@ -574,9 +587,9 @@ class ControlSocket {
   removeAllPresenters() async {
     WebRTCNativeViewController? selectedController;
     List<WebRTCNativeViewController> temp = List.from(_webRtcController);
-    for (WebRTCNativeViewController controller in temp) {
-      selectedController = controller;
-      if (controller.presenterId.isNotEmpty) {
+    for (int i = temp.length - 1; i >= 0; i--) {
+      selectedController = temp[i];
+      if (selectedController.presenterId.isNotEmpty) {
         try {
           await selectedController.channel.invokeMethod("stopVideo");
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
