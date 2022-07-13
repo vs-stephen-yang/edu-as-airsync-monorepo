@@ -128,13 +128,9 @@ class _HomeState extends State<Home> {
                       bottom: bottom,
                       child: Stack(
                         children: <Widget>[
-                          AnimatedContainer(
+                          SizedBox(
                             width: _getWidthHeight(index, true),
                             height: _getWidthHeight(index, false),
-                            alignment: Alignment.center,
-                            curve: Curves.linear,
-                            duration: Duration(
-                                seconds: _isSelectedList[index] ? 1 : 0),
                             child: WebRTCNativeView(
                               useHybrid: false,
                               onWebRTCNativeViewCreatedCallback:
