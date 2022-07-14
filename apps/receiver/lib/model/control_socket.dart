@@ -6,6 +6,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/connect_timer.dart';
+import 'package:display_flutter/model/moderator_helper.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/moderator.dart';
@@ -131,9 +132,11 @@ class ControlSocket {
           Home.showTitleBottomBar.value = false;
           StreamFunction.showWaitFunction.value = false;
           if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-            if (ModeratorView.showModerator.value ||
-                SplitScreen.showSplitScreen.value) {
+            if (SplitScreen.showSplitScreen.value) {
               StreamFunction.showStreamMenu.value = false;
+            } else if (ModeratorView.showModerator.value) {
+              StreamFunction.showStreamMenu.value = false;
+              ModeratorHelper.getInstance().refresh();
             } else if (StreamFunction.showPresentFunction.value) {
               StreamFunction.showStreamMenu.value = false;
             } else {
@@ -142,6 +145,10 @@ class ControlSocket {
           } else {
             if (moderator != null && ModeratorView.showModerator.value) {
               StreamFunction.showStreamMenu.value = false;
+              ModeratorHelper.getInstance().refresh();
+            } else {
+              SplitScreen.showSplitScreen.value = false;
+              ModeratorView.showModerator.value = false;
             }
           }
           AppAnalytics().trackEventPresentStart();
@@ -169,6 +176,9 @@ class ControlSocket {
               }
             }
             if (!presenting) {
+              if (moderator != null && ModeratorView.showModerator.value) {
+                ModeratorHelper.getInstance().refresh();
+              }
               Home.showTitleBottomBar.value = true;
               StreamFunction.showWaitFunction.value = true;
               StreamFunction.showStreamMenu.value = false;
@@ -176,6 +186,9 @@ class ControlSocket {
               MainInfo.showMainInfo.value = true;
             }
           } else {
+            if (moderator != null && ModeratorView.showModerator.value) {
+              ModeratorHelper.getInstance().refresh();
+            }
             Home.showTitleBottomBar.value = true;
             StreamFunction.showWaitFunction.value = true;
             StreamFunction.showStreamMenu.value = false;
