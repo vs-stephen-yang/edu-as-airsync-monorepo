@@ -147,7 +147,7 @@ class _HomeState extends State<Home> {
                               child: Visibility(
                                 visible: value[keySplitScreenEnable] &&
                                     ControlSocket()
-                                        .isPresenting(index: index, from: 1) &&
+                                        .isPresenting(index: index) &&
                                     !_isSelectedList[index] &&
                                     ControlSocket().presenterQty() > 1,
                                 child: IconButton(
