@@ -70,7 +70,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                 width: MediaQuery.of(context).size.width * 0.25,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(15)),
-                  color: ControlSocket().isPresenting(from: 4)
+                  color: ControlSocket().isPresenting()
                       ? AppColors.primary_grey_tran
                       : AppColors.primary_grey,
                 ),
