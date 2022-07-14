@@ -186,12 +186,12 @@ class ModeratorSocket {
           await ApiResponseFactory.returnResponse(streamedResponse);
       log('unBindFromDisplay: $response');
       setModeratorResponse.addResponseMessage(response);
-      setModeratorHasNewData = true;
+      unsetModeratorHasNewData = true;
       return response;
     } catch (err) {
       print('err: $err');
       setModeratorResponse.addResponseMessage({0 as dynamic: err});
-      setModeratorHasNewData = true;
+      unsetModeratorHasNewData = true;
     }
   }
 
