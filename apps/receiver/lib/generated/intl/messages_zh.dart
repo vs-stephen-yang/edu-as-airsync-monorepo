@@ -51,7 +51,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "[強化項目]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n\n[修改項目]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6"),
         "main_whats_new_title": MessageLookupByLibrary.simpleMessage("最新消息"),
         "moderator_activate": MessageLookupByLibrary.simpleMessage("啟用"),
+        "moderator_activate_split_screen":
+            MessageLookupByLibrary.simpleMessage("確定啟用分割畫面功能嗎?最多可四人同時投影。"),
         "moderator_cancel": MessageLookupByLibrary.simpleMessage("取消"),
+        "moderator_confirm": MessageLookupByLibrary.simpleMessage("確定"),
+        "moderator_deactivate_split_screen":
+            MessageLookupByLibrary.simpleMessage("確定結束分割畫面功能嗎?"),
         "moderator_exit": MessageLookupByLibrary.simpleMessage("退出"),
         "moderator_exit_dialog":
             MessageLookupByLibrary.simpleMessage("確定要退出嗎?"),

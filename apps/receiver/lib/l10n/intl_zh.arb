@@ -25,5 +25,8 @@
   "moderator_cancel": "取消",
   "moderator_exit_dialog": "確定要退出嗎?",
   "moderator_remove": "移除",
-  "moderator_exit": "退出"
+  "moderator_exit": "退出",
+  "moderator_activate_split_screen": "確定啟用分割畫面功能嗎?最多可四人同時投影。",
+  "moderator_deactivate_split_screen": "確定結束分割畫面功能嗎?",
+  "moderator_confirm": "確定"
 }
