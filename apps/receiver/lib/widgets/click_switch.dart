@@ -74,17 +74,20 @@ class CheckBoxSwitchState extends State<CheckBoxSwitch>
     if (widget.name.contains("\n")) name = widget.name.replaceAll("\n", " ");
     if (name.length > 10) name = name.substring(0, 10) + "..";
 
-    String shortName = name.substring(0, 2).toUpperCase();
-    if (name.contains(" ")) {
-      shortName = name.split(" ").first.substring(0, 1) +
-          name.split(" ").last.substring(0, 1);
+    String shortName = name.toUpperCase();
+    var reg = RegExp(r'^[A-Z0-9.,-]+\s+[A-Z0-9.,-]+$');
+    if (reg.hasMatch(shortName)) {
+      shortName = shortName.split(" ").first.substring(0, 1) +
+          shortName.split(" ").last.substring(0, 1);
+    } else if (name.length > 1) {
+      shortName = name.substring(0, 2).toUpperCase();
     }
 
     Widget loading = widget.bWait
         ? buildRotationLoadingIcon()
         : Text(shortName,
-                maxLines: 1,
-                style: const TextStyle(color: Colors.white, fontSize: 16));
+            maxLines: 1,
+            style: const TextStyle(color: Colors.white, fontSize: 16));
 
     Widget cell = InkWell(
       onTap: () {
