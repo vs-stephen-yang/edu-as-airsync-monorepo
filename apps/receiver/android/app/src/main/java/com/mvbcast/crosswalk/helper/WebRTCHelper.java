@@ -14,6 +14,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mvbcast.crosswalk.BuildConfig;
+import com.mvbcast.crosswalk.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -102,8 +103,8 @@ public class WebRTCHelper {
                     .initialize();
         } catch (RuntimeException e) {
             new AlertDialog.Builder(activity)
-                    .setTitle("unsupported_device_title")
-                    .setMessage("unsupported_device_msg\n\n\"" + e.getMessage() + "\"")
+                    .setTitle(R.string.unsupported_device_title)
+                    .setMessage(activity.getString(R.string.unsupported_device_msg) + "\n\n\"" + e.getMessage() + "\"")
                     .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                         // Continue with delete operation
                         activity.finish();

@@ -35,8 +35,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_content_scan_or": MessageLookupByLibrary.simpleMessage("或"),
         "main_content_scan_to_enroll":
             MessageLookupByLibrary.simpleMessage("使用Companion App掃描註冊"),
+        "main_get_display_code_failure":
+            MessageLookupByLibrary.simpleMessage("取得投影辨識碼失敗"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("繁體中文"),
         "main_language_title": MessageLookupByLibrary.simpleMessage("語言"),
+        "main_limit_time_message":
+            MessageLookupByLibrary.simpleMessage("五分鐘後結束"),
+        "main_privilege_close": MessageLookupByLibrary.simpleMessage("關閉"),
+        "main_privilege_message":
+            MessageLookupByLibrary.simpleMessage("權限不足，請聯繫IT管理員"),
+        "main_register_display_code_failure":
+            MessageLookupByLibrary.simpleMessage("註冊投影辨識碼失敗"),
+        "main_split_screen_question":
+            MessageLookupByLibrary.simpleMessage("啟動分割畫面?"),
+        "main_split_screen_title": MessageLookupByLibrary.simpleMessage("分割畫面"),
+        "main_split_screen_waiting":
+            MessageLookupByLibrary.simpleMessage("分割畫面已啟動"),
         "main_status_go_background":
             MessageLookupByLibrary.simpleMessage("Display App 背景執行中"),
         "main_status_no_network":

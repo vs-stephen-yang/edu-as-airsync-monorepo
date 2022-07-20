@@ -52,8 +52,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Would you like to turn on the split screen feature?"),
         "main_split_screen_title":
             MessageLookupByLibrary.simpleMessage("Split Screen"),
-        "main_split_screen_waiting": MessageLookupByLibrary.simpleMessage(
-            "“Waiting for a sender a screen...”"),
+        "main_split_screen_waiting":
+            MessageLookupByLibrary.simpleMessage("“Split Screen activated...”"),
         "main_status_go_background": MessageLookupByLibrary.simpleMessage(
             "Display App goes to the background."),
         "main_status_no_network": MessageLookupByLibrary.simpleMessage(

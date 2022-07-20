@@ -9,4 +9,6 @@
     <string name="update_ota_failure">"Install failure. Can not run installApp."</string>
     <string name="update_ota_failure_retry">"Install failure. Retry OTA process again."</string>
     <string name="update_ota_query_status_failure">"Can not query the file downloading status."</string>
+    <string name="unsupported_device_title">"Unsupported device"</string>
+    <string name="unsupported_device_msg">"Display App is not supported on the device."</string>
 </resources>
