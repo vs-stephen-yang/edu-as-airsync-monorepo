@@ -250,10 +250,10 @@ class S {
     );
   }
 
-  /// `“Waiting for a sender a screen...”`
+  /// `“Split Screen activated...”`
   String get main_split_screen_waiting {
     return Intl.message(
-      '“Waiting for a sender a screen...”',
+      '“Split Screen activated...”',
       name: 'main_split_screen_waiting',
       desc: '',
       args: [],

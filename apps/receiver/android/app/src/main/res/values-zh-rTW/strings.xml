@@ -9,4 +9,6 @@
     <string name="update_ota_failure">"安裝失敗.無法執行installApp"</string>
     <string name="update_ota_failure_retry">"安裝失敗.重新執行OTA"</string>
     <string name="update_ota_query_status_failure">"無法取得檔案下載狀態"</string>
+    <string name="unsupported_device_title">"不支援的設備"</string>
+    <string name="unsupported_device_msg">"此設備不支援myViewBoard Display"</string>
 </resources>

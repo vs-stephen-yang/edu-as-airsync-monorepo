@@ -19,7 +19,7 @@
   "main_whats_new_title": "What’s New on Display?",
   "main_whats_new_content": "[Improvements]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n\n[Modifications]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n\n",
   "main_split_screen_title": "Split Screen",
-  "main_split_screen_waiting": "“Waiting for a sender a screen...”",
+  "main_split_screen_waiting": "“Split Screen activated...”",
   "main_split_screen_question": "Would you like to turn on the split screen feature?",
   "main_limit_time_message": "5 minutes left",
   "main_get_display_code_failure": "Get display code failure.",
