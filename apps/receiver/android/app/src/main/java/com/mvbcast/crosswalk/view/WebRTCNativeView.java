@@ -62,6 +62,7 @@ public class WebRTCNativeView implements PlatformView,
         mSurfaceViewRenderer.init(WebRTCHelper.getInstance().getRootEglBaseContext(), this);
 
         mSurfaceViewRenderer.setId(View.generateViewId());
+        mSurfaceViewRenderer.setKeepScreenOn(true);
         mParentLayout = new ConstraintLayout(context);
         mParentLayout.setId(View.generateViewId());
         mParentLayout.setBackgroundColor(Color.BLACK);
