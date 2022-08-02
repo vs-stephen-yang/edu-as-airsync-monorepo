@@ -119,7 +119,8 @@ class _MainInfoState extends State<MainInfo> {
               valueListenable: MainInfo.showMainInfo,
               builder: (BuildContext context, bool value, Widget? child) {
                 if (value) {
-                  if (MainInfo.updateDisplayStatus) {
+                  if (!ControlSocket().isPresenting()
+                      && MainInfo.updateDisplayStatus) {
                     MainInfo.updateDisplayStatus = false;
                     BlocProvider.of<MainInfoBloc>(context)
                         .add(GetDisplayCodeInfo());
