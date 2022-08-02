@@ -14,39 +14,49 @@ class PrivilegeDialog extends StatelessWidget {
       ),
       backgroundColor: AppColors.primary_dialog,
       child: SizedBox(
-        height: MediaQuery.of(context).size.height / 3,
-        width: MediaQuery.of(context).size.width / 3,
+        height: MediaQuery.of(context).size.height / 2,
+        width: MediaQuery.of(context).size.width / 2.5,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: AutoSizeText(
-                S.of(context).main_privilege_message,
-                style: const TextStyle(
-                  fontSize: 25,
-                  color: Colors.white,
+            Flexible(
+              flex: 5,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: SingleChildScrollView(
+                    child: AutoSizeText(
+                      S.of(context).main_privilege_message,
+                      style: const TextStyle(
+                        fontSize: 25,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 4,
+                    ),
+                  ),
                 ),
-                textAlign: TextAlign.center,
-                maxLines: 4,
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: AutoSizeText(
-                S.of(context).main_privilege_close,
-                style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w400,
+            Flexible(
+              flex: 1,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: AutoSizeText(
+                  S.of(context).main_privilege_close,
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  maxLines: 1,
                 ),
-                maxLines: 1,
-              ),
-              style: ElevatedButton.styleFrom(
-                onPrimary: AppColors.neutral1,
-                primary: Colors.white,
-                minimumSize: const Size(80, 15),
+                style: ElevatedButton.styleFrom(
+                  onPrimary: AppColors.neutral1,
+                  primary: Colors.white,
+                  minimumSize: const Size(80, 15),
+                ),
               ),
             ),
           ],
