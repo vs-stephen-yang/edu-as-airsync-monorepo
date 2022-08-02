@@ -20,6 +20,7 @@ part 'main_info_state.dart';
 class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
   String apiGateway, instanceID, version;
   static bool isFirstTimeGetDisplayCode = true;
+  String getDisplayCodeVersion = '';
 
   MainInfoBloc(this.apiGateway, this.instanceID, this.version)
       : super(MainInfoState.initialState) {
@@ -32,6 +33,9 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
   Future<void> _processGetDisplayCode(
       MainInfoEvent event, Emitter<MainInfoState> emit) async {
     if (await _handleGetDisplayCode()) {
+      if (version != getDisplayCodeVersion) {
+        await _updateVersionNumber();
+      }
       emit(MainInfoState.getDisplayCodeSuccess);
     } else {
       emit(MainInfoState.getDisplayCodeError);
@@ -85,6 +89,10 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
                 property['limitTimeBySecond'];
           }
 
+          if (property.containsKey('version')) {
+            getDisplayCodeVersion = property['version'];
+          }
+
           if (isFirstTimeGetDisplayCode) {
             isFirstTimeGetDisplayCode = false;
             if (property.containsKey('moderator')) {
@@ -103,6 +111,32 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
       log(e.toString());
       // http.get maybe no network connection.
       return false;
+    }
+  }
+
+  Future<void> _updateVersionNumber() async {
+    if (ControlSocket().token.isEmpty) return;
+    try {
+      http.Response response = await http.patch(
+        Uri.parse('$apiGateway/presentation/displays/$instanceID'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${ControlSocket().token}',
+        },
+        body: json.encode({
+          'property': {
+            'version': version,
+          }
+        }),
+      );
+
+      if (response.statusCode >= HttpStatus.ok &&
+          response.statusCode < HttpStatus.multiStatus) {
+        log('Update version number success.');
+      }
+    } catch (e) {
+      log(e.toString());
+      // http.get maybe no network connection.
     }
   }
 
