@@ -78,10 +78,10 @@ class _HomeState extends State<Home> {
                         return isWidth ? _fullWidth : _fullHeight;
                       } else if (_isSelectedList.contains(true)) {
                         // has any item selected
-                        return 0;
+                        return 1; // MUST use 1 to create view, 0 won't.
                       } else {
                         // no any item selected
-                        if (value[keySplitScreenCount] < 1) {
+                        if (value[keySplitScreenCount] < 2) {
                           if (selection == value[keySplitScreenLastId]) {
                             return isWidth ? _fullWidth : _fullHeight;
                           } else {
