@@ -22,6 +22,8 @@ class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
   static ValueNotifier<bool> showTitleBottomBar = ValueNotifier(true);
   static ValueNotifier<bool> showCloudOff = ValueNotifier(false);
+  static ValueNotifier<List<bool>> isSelectedList =
+      ValueNotifier(List.filled(4, false, growable: false));
 
   @override
   State<StatefulWidget> createState() => _HomeState();
@@ -29,7 +31,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   double _fullWidth = 0, _fullHeight = 0, _halfWidth = 0, _halfHeight = 0;
-  final List<bool> _isSelectedList = List.filled(4, false, growable: false);
   static const _androidAppRetain =
       MethodChannel("com.mvbcast.crosswalk/android_app_retain");
 
@@ -52,31 +53,40 @@ class _HomeState extends State<Home> {
                 builder: (BuildContext context, Map<String, dynamic> value,
                     Widget? child) {
                   _updateSizeForSelected(int selection) {
-                    setState(() {
-                      if (value[keySplitScreenEnable]) {
-                        for (int i = 0; i < _isSelectedList.length; i++) {
-                          if (i == selection) {
-                            _isSelectedList[i] = !_isSelectedList[i];
-                          } else {
-                            _isSelectedList[i] = false;
-                          }
+                    if (value[keySplitScreenEnable]) {
+                      for (int i = 0;
+                          i < Home.isSelectedList.value.length;
+                          i++) {
+                        if (i == selection) {
+                          Home.isSelectedList.value[i] =
+                              !Home.isSelectedList.value[i];
+                        } else {
+                          Home.isSelectedList.value[i] = false;
                         }
-                        ControlSocket().updateAllQuality(selection, _isSelectedList.contains(true));
-                      } else {
-                        _isSelectedList.fillRange(
-                            0, _isSelectedList.length, false);
-                        ControlSocket().updateAllQuality(-1, _isSelectedList.contains(true));
                       }
-                    });
+                      // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
+                      Home.isSelectedList.value =
+                          List.from(Home.isSelectedList.value);
+
+                      ControlSocket().updateAllQuality(
+                          selection, Home.isSelectedList.value.contains(true));
+                    } else {
+                      Home.isSelectedList.value.fillRange(
+                          0, Home.isSelectedList.value.length, false);
+                      // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
+                      Home.isSelectedList.value =
+                          List.from(Home.isSelectedList.value);
+                      ControlSocket().updateAllQuality(0, true);
+                    }
                   }
 
                   double _getWidthHeight(int selection, bool isWidth) {
                     if (value[keySplitScreenEnable]) {
                       // split screen enabled
-                      if (_isSelectedList[selection]) {
+                      if (Home.isSelectedList.value[selection]) {
                         // selected item
                         return isWidth ? _fullWidth : _fullHeight;
-                      } else if (_isSelectedList.contains(true)) {
+                      } else if (Home.isSelectedList.value.contains(true)) {
                         // has any item selected
                         return 1; // MUST use 1 to create view, 0 won't.
                       } else {
@@ -122,62 +132,76 @@ class _HomeState extends State<Home> {
                       iconRight = 20;
                       iconBottom = 20;
                     }
-
-                    return Positioned(
-                      left: left,
-                      top: top,
-                      right: right,
-                      bottom: bottom,
-                      child: Stack(
-                        children: <Widget>[
-                          SizedBox(
-                            width: _getWidthHeight(index, true),
-                            height: _getWidthHeight(index, false),
-                            child: WebRTCNativeView(
-                              useHybrid: false,
-                              onWebRTCNativeViewCreatedCallback:
-                                  ControlSocket().addWebRtcController,
-                            ),
-                          ),
-                          Positioned(
-                              left: iconLeft,
-                              top: iconTop,
-                              right: iconRight,
-                              bottom: iconBottom,
-                              child: Visibility(
-                                visible: value[keySplitScreenEnable] &&
-                                    ControlSocket()
-                                        .isPresenting(index: index) &&
-                                    !_isSelectedList[index] &&
-                                    ControlSocket().presenterQty() > 1,
-                                child: IconButton(
-                                  icon: const Image(
-                                      image: Svg('assets/images/ic_zoom_in.svg',
-                                          size: Size.square(48))),
-                                  onPressed: () {
-                                    _updateSizeForSelected(index);
-                                  },
+                    return ValueListenableBuilder(
+                      valueListenable: Home.isSelectedList,
+                      builder: (BuildContext context, List<bool> value,
+                          Widget? child) {
+                        return Positioned(
+                          left: left,
+                          top: top,
+                          right: right,
+                          bottom: bottom,
+                          child: Stack(
+                            children: <Widget>[
+                              SizedBox(
+                                width: _getWidthHeight(index, true),
+                                height: _getWidthHeight(index, false),
+                                child: WebRTCNativeView(
+                                  useHybrid: false,
+                                  onWebRTCNativeViewCreatedCallback:
+                                      ControlSocket().addWebRtcController,
                                 ),
-                              )),
-                          Positioned(
-                              right: 0,
-                              bottom: 0,
-                              child: Visibility(
-                                visible: value[keySplitScreenEnable] &&
-                                    ControlSocket().isPresenting() &&
-                                    _isSelectedList[index],
-                                child: IconButton(
-                                  icon: const Image(
+                              ),
+                              Positioned(
+                                left: iconLeft,
+                                top: iconTop,
+                                right: iconRight,
+                                bottom: iconBottom,
+                                child: Visibility(
+                                  visible: SplitScreen.mapSplitScreen
+                                          .value[keySplitScreenEnable] &&
+                                      ControlSocket()
+                                          .isPresenting(index: index) &&
+                                      !Home.isSelectedList.value[index] &&
+                                      ControlSocket().presenterQty() > 1,
+                                  child: IconButton(
+                                    icon: const Image(
                                       image: Svg(
-                                          'assets/images/ic_zoom_out.svg',
-                                          size: Size.square(48))),
-                                  onPressed: () {
-                                    _updateSizeForSelected(index);
-                                  },
+                                        'assets/images/ic_zoom_in.svg',
+                                        size: Size.square(48),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      _updateSizeForSelected(index);
+                                    },
+                                  ),
                                 ),
-                              )),
-                        ],
-                      ),
+                              ),
+                              Positioned(
+                                right: 0,
+                                bottom: 0,
+                                child: Visibility(
+                                  visible: SplitScreen.mapSplitScreen
+                                          .value[keySplitScreenEnable] &&
+                                      ControlSocket().isPresenting() &&
+                                      Home.isSelectedList.value[index],
+                                  child: IconButton(
+                                    icon: const Image(
+                                      image: Svg(
+                                        'assets/images/ic_zoom_out.svg',
+                                        size: Size.square(48),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      _updateSizeForSelected(index);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     );
                   });
 
