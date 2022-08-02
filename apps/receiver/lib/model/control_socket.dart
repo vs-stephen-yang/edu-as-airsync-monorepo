@@ -184,6 +184,11 @@ class ControlSocket {
               StreamFunction.showStreamMenu.value = false;
               StreamFunction.showPresentFunction.value = false;
               MainInfo.showMainInfo.value = true;
+            } else {
+              Home.isSelectedList.value
+                  .fillRange(0, Home.isSelectedList.value.length, false);
+              // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
+              Home.isSelectedList.value = List.from(Home.isSelectedList.value);
             }
           } else {
             if (moderator != null && ModeratorView.showModerator.value) {
@@ -456,7 +461,11 @@ class ControlSocket {
   void _handleQualityUpdate(WebRTCNativeViewController controller) {
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
-        _handleChangeQuality(_webRtcController.first, true, true);
+        for (WebRTCNativeViewController viewController in _webRtcController) {
+          if (viewController.presentationState == PresentationState.streaming) {
+            _handleChangeQuality(viewController, true, true);
+          }
+        }
       } else {
         for (WebRTCNativeViewController viewController in _webRtcController) {
           if (viewController.presenterId.isNotEmpty) {
