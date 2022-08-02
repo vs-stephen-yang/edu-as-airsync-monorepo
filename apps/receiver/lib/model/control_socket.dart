@@ -446,7 +446,7 @@ class ControlSocket {
         lastID = i;
       }
     }
-    SplitScreen.mapSplitScreen.value[keySplitScreenCount] = connecting - 1;
+    SplitScreen.mapSplitScreen.value[keySplitScreenCount] = connecting;
     SplitScreen.mapSplitScreen.value[keySplitScreenLastId] = lastID;
     // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
     SplitScreen.mapSplitScreen.value =
@@ -455,7 +455,7 @@ class ControlSocket {
 
   void _handleQualityUpdate(WebRTCNativeViewController controller) {
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 1) {
+      if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
         _handleChangeQuality(_webRtcController.first, true, true);
       } else {
         for (WebRTCNativeViewController viewController in _webRtcController) {
