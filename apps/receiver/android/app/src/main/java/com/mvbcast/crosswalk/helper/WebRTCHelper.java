@@ -30,7 +30,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -172,12 +174,29 @@ public class WebRTCHelper {
         return null;
     }
 
+    public LiveData<Boolean> getDebugInfoVisible() {
+        return mIsDebugInfoVisible;
+    }
+
+    public void setDebugInfoVisible(boolean visible) {
+        if (DEBUG_MESSAGE) { // only show debug on stage version.
+            mIsDebugInfoVisible.postValue(visible);
+        }
+    }
+
     public LiveData<String> getDecoder() {
         return mDecoder;
     }
 
-    public LiveData<String> getFPS() {
-        return mFPS;
+    public LiveData<String> getFPS(String key) {
+        return mFPS.get(key);
+    }
+
+    public void clearFPS(String key) {
+        ArrayDeque<String> data = mStreamFPS.get(key);
+        if (data != null) {
+            data.clear();
+        }
     }
 
     //-------------------------------------------------------------------------
@@ -186,9 +205,25 @@ public class WebRTCHelper {
     // region private Implementation
     //-------------------------------------------------------------------------
     private P2PClientConfiguration mP2pConfig;
+    private final MutableLiveData<Boolean> mIsDebugInfoVisible = new MutableLiveData<>();
+
+    {
+        mIsDebugInfoVisible.postValue(false);
+    }
+
     private final MutableLiveData<String> mDecoder = new MutableLiveData<>();
-    private final MutableLiveData<String> mFPS = new MutableLiveData<>();
-    private final ArrayDeque<String> mStreamFPS = new ArrayDeque<>();
+    private final Map<String, MutableLiveData<String>> mFPS = new HashMap<String, MutableLiveData<String>>() {{
+        put("remoteRenderMain", new MutableLiveData<>());
+        put("remoteRenderSub1", new MutableLiveData<>());
+        put("remoteRenderSub2", new MutableLiveData<>());
+        put("remoteRenderSub3", new MutableLiveData<>());
+    }};
+    private final Map<String, ArrayDeque<String>> mStreamFPS = new HashMap<String, ArrayDeque<String>>() {{
+        put("remoteRenderMain", new ArrayDeque<>());
+        put("remoteRenderSub1", new ArrayDeque<>());
+        put("remoteRenderSub2", new ArrayDeque<>());
+        put("remoteRenderSub3", new ArrayDeque<>());
+    }};
     @SuppressWarnings("ConstantConditions")
     private static final boolean DEBUG_MESSAGE = (BuildConfig.VERSION_CODE % 2) != 0;
 
@@ -263,21 +298,27 @@ public class WebRTCHelper {
     }
 
     private void loggerParser(String s, String severity, String s1) {
+        if (!DEBUG_MESSAGE) return; // only show debug on stage version.
         myLogDebug("loggerParser", String.format("severity: %s s1: %s s: %s", severity, s1, s));
         switch (severity) {
             case "LS_INFO":
                 switch (s1) {
                     case "EglRenderer":
-                        if (s.startsWith("remote_rendererDuration")) {
-                            if (s.contains("Render fps:")) {
+                        if (s.contains("Render fps:")) {
+                            String key = s.substring(0, s.indexOf("Duration"));
+                            ArrayDeque<String> stream = mStreamFPS.get(key);
+                            if (stream != null) {
                                 String fps = s.substring(s.indexOf("Render fps:") + 11, s.indexOf("Average") - 2);
-
-                                if (mStreamFPS.offerFirst(fps)) {
-                                    if (mStreamFPS.size() > 10) {
-                                        mStreamFPS.removeLast();
+                                if (stream.offerFirst(fps)) {
+                                    if (stream.size() > 10) {
+                                        stream.removeLast();
                                     }
                                 }
-                                mFPS.postValue(mStreamFPS.toString());
+                                MutableLiveData<String> liveFPS = mFPS.get(key);
+                                if (liveFPS != null) {
+                                    liveFPS.postValue(stream.toString());
+                                    mFPS.put(key, liveFPS);
+                                }
                             }
                         }
                         break;
