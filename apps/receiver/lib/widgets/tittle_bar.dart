@@ -2,9 +2,11 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/text_clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TitleBar extends StatelessWidget {
   const TitleBar({Key? key}) : super(key: key);
+  static const _debugInfo = MethodChannel('com.mvbcast.crosswalk/debug_info');
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +19,17 @@ class TitleBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                'Ver ${appConfig?.appVersion ?? ' '}',
-                style: const TextStyle(
-                  color: AppColors.primaryWhiteA50,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+              TextButton(
+                onPressed: () async {
+                  await _debugInfo.invokeMethod("toggleDebugInfoVisible");
+                },
+                child: Text(
+                  'Ver ${appConfig?.appVersion ?? ' '}',
+                  style: const TextStyle(
+                    color: AppColors.primaryWhiteA50,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
               const TextClock(),

@@ -1,11 +1,10 @@
 package com.mvbcast.crosswalk.view;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Color;
-import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -13,6 +12,8 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mvbcast.crosswalk.BuildConfig;
+import com.mvbcast.crosswalk.MainActivity;
+import com.mvbcast.crosswalk.R;
 import com.mvbcast.crosswalk.helper.SocketSignalingChannel;
 import com.mvbcast.crosswalk.helper.WebRTCHelper;
 
@@ -24,6 +25,7 @@ import org.webrtc.SurfaceViewRenderer;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -47,33 +49,47 @@ public class WebRTCNativeView implements PlatformView,
     private final ConstraintLayout mParentLayout;
     private final MethodChannel methodChannel;
     private final int mId;
+    private static final Object lock = new Object();
+    private final ArrayList<Integer> mRenderUsedList;
+    private final int mRenderId;
+    private final String mRenderName;
 
-    WebRTCNativeView(Context context, Activity activity, int id, BinaryMessenger messenger) {
+    WebRTCNativeView(Activity activity, int id, BinaryMessenger messenger, ArrayList<Integer> renderUsedList, int renderId) {
         mActivityRef = new WeakReference<>(activity);
         mId = id;
-        myLogDebug("Create");
+        mRenderUsedList = renderUsedList;
+        mRenderId = renderId;
+        myLogDebug("Create: " + mRenderId);
 
         methodChannel =
                 new MethodChannel(messenger, "com.mvbcast.crosswalk/webrtc_native_view_" + id);
         methodChannel.setMethodCallHandler(this);
 
-        mSurfaceViewRenderer = new SurfaceViewRenderer(context);
-        mSurfaceViewRenderer.setVisibility(View.GONE);
+        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        View webrtc_render = layoutInflater.inflate(R.layout.webrtc_render, null, false);
+        mParentLayout = webrtc_render.findViewById(R.id.parentLayout);
+        mSurfaceViewRenderer = webrtc_render.findViewById(mRenderId);
+        mSurfaceViewRenderer.setKeepScreenOn(true);
         mSurfaceViewRenderer.init(WebRTCHelper.getInstance().getRootEglBaseContext(), this);
 
-        mSurfaceViewRenderer.setId(View.generateViewId());
-        mSurfaceViewRenderer.setKeepScreenOn(true);
-        mParentLayout = new ConstraintLayout(context);
-        mParentLayout.setId(View.generateViewId());
-        mParentLayout.setBackgroundColor(Color.BLACK);
-        mParentLayout.addView(mSurfaceViewRenderer, -1, new ConstraintLayout.LayoutParams(0, 0));
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(mParentLayout);
-        constraintSet.connect(mSurfaceViewRenderer.getId(), ConstraintSet.START, mParentLayout.getId(), ConstraintSet.START);
-        constraintSet.connect(mSurfaceViewRenderer.getId(), ConstraintSet.TOP, mParentLayout.getId(), ConstraintSet.TOP);
-        constraintSet.connect(mSurfaceViewRenderer.getId(), ConstraintSet.END, mParentLayout.getId(), ConstraintSet.END);
-        constraintSet.connect(mSurfaceViewRenderer.getId(), ConstraintSet.BOTTOM, mParentLayout.getId(), ConstraintSet.BOTTOM);
-        constraintSet.applyTo(mParentLayout);
+        WebRTCHelper.getInstance().getDebugInfoVisible().observe((MainActivity) activity,
+                s -> webrtc_render.findViewById(R.id.layoutDebugInfo)
+                        .setVisibility(s ? View.VISIBLE : View.GONE));
+
+        WebRTCHelper.getInstance().getDecoder().observe((MainActivity) activity,
+                s -> {
+                    ((TextView) webrtc_render.findViewById(R.id.textDecoder))
+                            .setText(String.format("Decoder: %s", s));
+                    Log.d(TAG, String.format("Decoder: %s", s));
+                });
+
+        mRenderName = activity.getResources().getResourceEntryName(mRenderId);
+        WebRTCHelper.getInstance().getFPS(mRenderName).observe((MainActivity) activity,
+                s -> {
+                    ((TextView) webrtc_render.findViewById(R.id.textFPS))
+                            .setText(String.format("Render fps: %s", s));
+                    Log.d(TAG, String.format("Render fps: %s", s));
+                });
     }
 
     // region PlatformView
@@ -86,6 +102,9 @@ public class WebRTCNativeView implements PlatformView,
 
     @Override
     public void dispose() {
+        synchronized (lock) {
+            mRenderUsedList.remove((Object) mRenderId);
+        }
         disconnectP2pClient();
 
         if (mActivityRef.get() != null) {
@@ -153,6 +172,7 @@ public class WebRTCNativeView implements PlatformView,
     @Override
     public void onStreamAdded(RemoteStream remoteStream) {
         setStateMachine("onStreamAdded");
+        WebRTCHelper.getInstance().clearFPS(mRenderName);
 
         if (mActivityRef.get() != null) {
             mActivityRef.get().runOnUiThread(() ->

@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
 public class MainActivity extends FlutterActivity {
@@ -58,17 +57,13 @@ public class MainActivity extends FlutterActivity {
 
         WebRTCHelper.getInstance().getAndSetConfigOfIceServers();
 
-        WebRTCHelper.getInstance().getDecoder().observe(this,
-                s -> {
-                    // TODO: show on screen ?
-                    Log.d(TAG, String.format("Decoder: %s", s));
-                });
-
-        WebRTCHelper.getInstance().getFPS().observe(this,
-                s -> {
-                    // TODO: show on screen ?
-                    Log.d(TAG, String.format("Render fps: %s", s));
-                });
+        MethodChannel debugInfo = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/debug_info");
+        debugInfo.setMethodCallHandler(((call, result) -> {
+            if (call.method.equals("toggleDebugInfoVisible")) {
+                Boolean value = WebRTCHelper.getInstance().getDebugInfoVisible().getValue();
+                WebRTCHelper.getInstance().setDebugInfoVisible(value != null && !value);
+            }
+        }));
     }
 
     @Override
