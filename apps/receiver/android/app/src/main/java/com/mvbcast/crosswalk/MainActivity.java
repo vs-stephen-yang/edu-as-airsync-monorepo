@@ -57,11 +57,13 @@ public class MainActivity extends FlutterActivity {
 
         WebRTCHelper.getInstance().getAndSetConfigOfIceServers();
 
-        MethodChannel debugInfo = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/debug_info");
+        MethodChannel debugInfo = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/debug_switch");
         debugInfo.setMethodCallHandler(((call, result) -> {
             if (call.method.equals("toggleDebugInfoVisible")) {
                 Boolean value = WebRTCHelper.getInstance().getDebugInfoVisible().getValue();
                 WebRTCHelper.getInstance().setDebugInfoVisible(value != null && !value);
+            } else if (call.method.equals("forceHardware")) {
+                WebRTCHelper.getInstance().setForceHardware(MainActivity.this, (boolean) call.arguments);
             }
         }));
     }

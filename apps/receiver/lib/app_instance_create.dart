@@ -44,6 +44,8 @@ class AppInstanceCreate {
 
   bool get isInstalledInVBS100 => _modelName == 'VBS100';
 
+  bool get isInstalledIn50_2 => _modelName.contains('50-2');
+
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('app_isRegistered', _isRegistered);

@@ -1,5 +1,6 @@
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/language_selection.dart';
 import 'package:display_flutter/screens/moderator.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -63,6 +64,19 @@ class StreamFunctionStates extends State<StreamFunction> {
                 visible: value,
                 child: Column(
                   children: <Widget>[
+                    Visibility(
+                      visible: true, // Todo: set Visible while Stage only.
+                      child: IconButton(
+                        iconSize: 48,
+                        onPressed: () {
+                          DebugSwitch.showDebugSwitch.value = true;
+                        },
+                        icon: const Icon(
+                          Icons.build_outlined,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                     IconButton(
                       iconSize: 48,
                       onPressed: ControlSocket().moderator != null
@@ -205,6 +219,7 @@ class StreamFunctionStates extends State<StreamFunction> {
         ModeratorView(),
         const LanguageSelection(),
         const WhatsNew(),
+        const DebugSwitch(),
       ],
     );
   }
