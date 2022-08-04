@@ -5,10 +5,14 @@ import static owt.base.MediaCodecs.VideoCodec.H265;
 import static owt.base.MediaCodecs.VideoCodec.VP8;
 import static owt.base.MediaCodecs.VideoCodec.VP9;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -91,6 +95,11 @@ public class WebRTCHelper {
     public void initWebRTCContext(Activity activity) {
         try {
             boolean isForceSW = Build.MODEL.contains("50-2");
+
+            if (WebRTCHelper.getInstance().getForceHardware(activity)) {
+                isForceSW = false;
+                Toast.makeText(activity, "50-2 use Hardware Decoder", Toast.LENGTH_LONG).show();
+            }
 
             if (isForceSW) mDecoder.postValue("Use Software Video Decoder.");
 
@@ -199,11 +208,36 @@ public class WebRTCHelper {
         }
     }
 
+    public boolean getForceHardware(Context context) {
+        return ReadConfigFromSP(context);
+    }
+
+    public void setForceHardware(Context context, boolean forceHardware) {
+        WriteConfigToSP(context, forceHardware);
+    }
+
     //-------------------------------------------------------------------------
     // endregion public Implementation
 
     // region private Implementation
     //-------------------------------------------------------------------------
+    // region SharePref
+    private final String PREF_NAME = "WebRTC";
+    private final String PREFKEY_FORCE_HARDWARE = "FORCE_HARDWARE";
+
+    private boolean ReadConfigFromSP(Context context) {
+        SharedPreferences pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return pref.getBoolean(PREFKEY_FORCE_HARDWARE, false);
+    }
+
+    @SuppressLint("ApplySharedPref")
+    private void WriteConfigToSP(Context context, boolean forceHardware) {
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean(PREFKEY_FORCE_HARDWARE, forceHardware)
+                .commit();
+    }
+
     private P2PClientConfiguration mP2pConfig;
     private final MutableLiveData<Boolean> mIsDebugInfoVisible = new MutableLiveData<>();
 
