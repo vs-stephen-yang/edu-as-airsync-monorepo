@@ -22,6 +22,8 @@ class AppConfig extends InheritedWidget {
 }
 
 abstract class ConfigSettings {
+  late bool isDevelopEnvironment;
+
   late String apiGateway;
   late String mainDisplayUrl;
   late String prefixQRCode;

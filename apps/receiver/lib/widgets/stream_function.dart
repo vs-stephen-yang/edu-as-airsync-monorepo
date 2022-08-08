@@ -13,6 +13,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 class StreamFunction extends StatefulWidget {
   const StreamFunction({Key? key}) : super(key: key);
 
+  static ValueNotifier<bool> showDebugFunction = ValueNotifier(false);
   static ValueNotifier<bool> showWaitFunction = ValueNotifier(true);
   static ValueNotifier<bool> showPresentFunction = ValueNotifier(false);
   static ValueNotifier<bool> showArrowMenu = ValueNotifier(true);
@@ -64,18 +65,24 @@ class StreamFunctionStates extends State<StreamFunction> {
                 visible: value,
                 child: Column(
                   children: <Widget>[
-                    Visibility(
-                      visible: true, // Todo: set Visible while Stage only.
-                      child: IconButton(
-                        iconSize: 48,
-                        onPressed: () {
-                          DebugSwitch.showDebugSwitch.value = true;
-                        },
-                        icon: const Icon(
-                          Icons.build_outlined,
-                          color: Colors.white,
-                        ),
-                      ),
+                    ValueListenableBuilder(
+                      valueListenable: StreamFunction.showDebugFunction,
+                      builder:
+                          (BuildContext context, bool value, Widget? child) {
+                        return Visibility(
+                          visible: value,
+                          child: IconButton(
+                            iconSize: 48,
+                            onPressed: () {
+                              DebugSwitch.showDebugSwitch.value = true;
+                            },
+                            icon: const Icon(
+                              Icons.build_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     IconButton(
                       iconSize: 48,

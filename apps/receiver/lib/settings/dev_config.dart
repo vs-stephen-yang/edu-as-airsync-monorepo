@@ -2,6 +2,9 @@ import 'package:display_flutter/settings/app_config.dart';
 
 class DevConfig implements ConfigSettings {
   @override
+  bool isDevelopEnvironment = true;
+
+  @override
   String apiGateway = 'https://presentation-gateway.dev.myviewboard.cloud';
 
   @override
