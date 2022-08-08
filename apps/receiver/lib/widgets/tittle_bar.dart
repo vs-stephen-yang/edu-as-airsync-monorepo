@@ -1,5 +1,6 @@
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/text_clock.dart';
 import 'package:flutter/material.dart';
 
@@ -17,12 +18,21 @@ class TitleBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                'Ver ${appConfig?.appVersion ?? ' '}',
-                style: const TextStyle(
-                  color: AppColors.primaryWhiteA50,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+              TextButton(
+                onPressed: () {
+                  if (AppConfig.of(context)?.settings.isDevelopEnvironment ??
+                      false) {
+                    StreamFunction.showDebugFunction.value =
+                        !StreamFunction.showDebugFunction.value;
+                  }
+                },
+                child: Text(
+                  'Ver ${appConfig?.appVersion ?? ' '}',
+                  style: const TextStyle(
+                    color: AppColors.primaryWhiteA50,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
               const TextClock(),
