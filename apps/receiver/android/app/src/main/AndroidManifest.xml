@@ -11,6 +11,12 @@
 
     <uses-sdk tools:overrideLibrary="com.viewsonic.systemapi" />
 
+    <supports-screens
+        android:largeScreens="true"
+        android:normalScreens="false"
+        android:smallScreens="false"
+        android:xlargeScreens="true"/>
+
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
