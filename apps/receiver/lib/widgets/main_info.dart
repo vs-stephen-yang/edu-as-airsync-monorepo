@@ -120,6 +120,7 @@ class _MainInfoState extends State<MainInfo> {
               builder: (BuildContext context, bool value, Widget? child) {
                 if (value) {
                   if (!ControlSocket().isPresenting()
+                      && ControlSocket().moderator == null
                       && MainInfo.updateDisplayStatus) {
                     MainInfo.updateDisplayStatus = false;
                     BlocProvider.of<MainInfoBloc>(context)
