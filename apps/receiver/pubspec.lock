@@ -139,7 +139,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "8f37232399cf865a53832be4dffc0628eea8d885"
+      resolved-ref: "60e1d87c630f51b1d3efc8396235649888f70e73"
       url: "https://viewsonic-ssi.visualstudio.com/Droid/_git/Device_Info_VS"
     source: git
     version: "0.0.1"
