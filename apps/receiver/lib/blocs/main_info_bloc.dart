@@ -69,12 +69,6 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
         if (json.containsKey('property')) {
           Map<String, dynamic> property = json['property'];
 
-          if (property.containsKey('licenses')) {
-            List<dynamic> license = property['licenses'];
-
-            ControlSocket().licenseName = license[0]['name'] ?? '';
-          }
-
           if (property.containsKey('features')) {
             List<dynamic> features = property['features'];
 
