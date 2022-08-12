@@ -38,7 +38,6 @@ class ControlSocket {
   String token = '';
   String displayCode = '';
   String otpCode = '';
-  String licenseName = '';
   List<String> featureList = [];
 
   Moderator? moderator;
@@ -51,7 +50,6 @@ class ControlSocket {
   void connect(String apiGateway) {
     AppAnalytics().setEventProperties({
       'displayID': ControlSocket().displayCode,
-      'licenseName': ControlSocket().licenseName
     });
 
     _controlSocketIO = io(
