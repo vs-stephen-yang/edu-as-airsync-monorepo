@@ -16,7 +16,6 @@ import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 class ControlSocket {
@@ -538,20 +537,12 @@ class ControlSocket {
 
   void _handleChangeQuality(WebRTCNativeViewController controller,
       bool isFullHeight, bool isFullFrameRate) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool forceHardware = prefs.getBool('forceHardware') ?? false;
-    bool reduceFrameRate =
-        !forceHardware && AppInstanceCreate().isInstalledIn50_2;
     var content = json.encode({
       'messageFor': controller.presenterId,
       'action': 'change-quality',
       'extra': {
         'constraints': {
-          'frameRate': isFullFrameRate
-              ? reduceFrameRate
-                  ? 10
-                  : 30
-              : 0,
+          'frameRate': isFullFrameRate ? 30 : 0,
           'height': isFullHeight ? 1080 : 540,
         },
       },
