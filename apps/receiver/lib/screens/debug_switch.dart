@@ -1,8 +1,6 @@
 import 'package:display_flutter/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DebugSwitch extends StatefulWidget {
   const DebugSwitch({Key? key}) : super(key: key);
@@ -14,19 +12,6 @@ class DebugSwitch extends StatefulWidget {
 
 class _DebugSwitchState extends State<DebugSwitch> {
   static const _debugSwitch = MethodChannel('com.mvbcast.crosswalk/debug_switch');
-  bool _forceHardware = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _load();
-  }
-
-  @override
-  void dispose() async {
-    super.dispose();
-    _save();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,53 +85,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
                     ),
                   ),
                 ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.06,
-                  margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                  color: Colors.transparent,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        '50-2 use hardware decoder:\n(Need restart App!!)',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary_white,
-                        ),
-                      ),
-                      IconButton(
-                        icon: Image(
-                          image: Svg((_forceHardware)
-                              ? 'assets/images/ic_activate_on.svg'
-                              : 'assets/images/ic_activate_off.svg'),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _forceHardware = !_forceHardware;
-                            _debugSwitch.invokeMethod(
-                                'forceHardware', _forceHardware);
-                            _save();
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
         );
       },
     );
-  }
-
-  _load() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _forceHardware = prefs.getBool('forceHardware') ?? false;
-  }
-
-  _save() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('forceHardware', _forceHardware);
   }
 }

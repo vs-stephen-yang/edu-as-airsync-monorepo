@@ -62,8 +62,6 @@ public class MainActivity extends FlutterActivity {
             if (call.method.equals("toggleDebugInfoVisible")) {
                 Boolean value = WebRTCHelper.getInstance().getDebugInfoVisible().getValue();
                 WebRTCHelper.getInstance().setDebugInfoVisible(value != null && !value);
-            } else if (call.method.equals("forceHardware")) {
-                WebRTCHelper.getInstance().setForceHardware(MainActivity.this, (boolean) call.arguments);
             }
         }));
     }
