@@ -22,7 +22,6 @@ import org.json.JSONObject;
 import org.webrtc.EglBase;
 import org.webrtc.Logging;
 import org.webrtc.PeerConnection;
-import org.webrtc.SoftwareVideoDecoderFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -90,16 +89,11 @@ public class WebRTCHelper {
 
     public void initWebRTCContext(Activity activity) {
         try {
-            boolean isForceSW = Build.MODEL.contains("50-2");
-
-            if (isForceSW) mDecoder.postValue("Use Software Video Decoder.");
-
             ContextInitialization.create()
                     .setApplicationContext(activity)
                     .setVideoHardwareAccelerationOptions(
                             mRootEglBase.getEglBaseContext(),
                             mRootEglBase.getEglBaseContext())
-                    .setCustomizedVideoDecoderFactory(isForceSW ? new SoftwareVideoDecoderFactory() : null)
                     .setCustomizedLoggableFactory((s, severity, s1) ->
                             loggerParser(s, severity.name(), s1), Logging.Severity.LS_VERBOSE)
                     .initialize();
@@ -162,6 +156,10 @@ public class WebRTCHelper {
 
             try {
                 mP2pConfig.rtcConfiguration.iceServers = iceServersFromPCConfigJSON(jsonResult);
+                if (Build.MODEL.contains("50-2")) {
+                    // disable the prerenderer smoothing to workaround the low fps issue on 50-2
+                    mP2pConfig.rtcConfiguration.enablePrerendererSmoothing = false;
+                }
                 myLogDebug(TAG, "iceServersFromPCConfigJSON() is ok");
             } catch (JSONException e) {
                 e.printStackTrace();
