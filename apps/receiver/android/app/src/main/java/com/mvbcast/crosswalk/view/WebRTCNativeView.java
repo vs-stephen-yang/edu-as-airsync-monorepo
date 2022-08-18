@@ -80,7 +80,7 @@ public class WebRTCNativeView implements PlatformView,
                 s -> {
                     ((TextView) webrtc_render.findViewById(R.id.textDecoder))
                             .setText(String.format("Decoder: %s", s));
-                    Log.d(TAG, String.format("Decoder: %s", s));
+                    myLogDebug(String.format("Decoder: %s", s));
                 });
 
         mRenderName = activity.getResources().getResourceEntryName(mRenderId);
@@ -88,7 +88,7 @@ public class WebRTCNativeView implements PlatformView,
                 s -> {
                     ((TextView) webrtc_render.findViewById(R.id.textFPS))
                             .setText(String.format("Render fps: %s", s));
-                    Log.d(TAG, String.format("Render fps: %s", s));
+                    myLogDebug(String.format("Render fps: %s", s));
                 });
     }
 
