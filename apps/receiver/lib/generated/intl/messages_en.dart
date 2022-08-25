@@ -32,38 +32,38 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("One Time Password"),
         "main_content_one_time_password_get_fail":
             MessageLookupByLibrary.simpleMessage(
-                "Failed to get new password.\nPlease wait for 30 seconds before retrying."),
+                "Failed to refresh password.\nPlease wait for 30 seconds before retrying."),
         "main_content_scan_or": MessageLookupByLibrary.simpleMessage("or"),
-        "main_content_scan_to_enroll":
-            MessageLookupByLibrary.simpleMessage("Scan to enroll"),
-        "main_get_display_code_failure":
-            MessageLookupByLibrary.simpleMessage("Get display code failure."),
+        "main_content_scan_to_enroll": MessageLookupByLibrary.simpleMessage(
+            "IT Admin: Use Companion App to scan and enroll"),
+        "main_get_display_code_failure": MessageLookupByLibrary.simpleMessage(
+            "Failed to get display code. Wait for network connectivity to resume, or restart the app."),
         "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
         "main_language_title": MessageLookupByLibrary.simpleMessage("Language"),
         "main_limit_time_message":
             MessageLookupByLibrary.simpleMessage("5 minutes left"),
         "main_privilege_close": MessageLookupByLibrary.simpleMessage("Close"),
         "main_privilege_message": MessageLookupByLibrary.simpleMessage(
-            "Insufficient privilege for Display Advanced. Please contact your IT administrator."),
+            "This is a Display Advanced feature. Please contact your IT administrator for more information."),
         "main_register_display_code_failure":
             MessageLookupByLibrary.simpleMessage(
-                "Register display code failure."),
+                "Display App registration failed. Please try again."),
         "main_split_screen_question": MessageLookupByLibrary.simpleMessage(
-            "Would you like to turn on the split screen feature?"),
+            "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once."),
         "main_split_screen_title":
             MessageLookupByLibrary.simpleMessage("Split Screen"),
-        "main_split_screen_waiting":
-            MessageLookupByLibrary.simpleMessage("“Split Screen activated...”"),
+        "main_split_screen_waiting": MessageLookupByLibrary.simpleMessage(
+            "Split screen enabled. Waiting for presenter to share screen..."),
         "main_status_go_background": MessageLookupByLibrary.simpleMessage(
-            "Display App goes to the background."),
+            "Display app is running in the background."),
         "main_status_no_network": MessageLookupByLibrary.simpleMessage(
-            "Poor network connection detected.\nPlease check your connectivity."),
+            "Unstable network connection.\nPlease check your connectivity status."),
         "main_status_remaining_time":
             MessageLookupByLibrary.simpleMessage("%02d min : %02d sec"),
         "main_thanks_content": MessageLookupByLibrary.simpleMessage(
             "Thank you for using myViewBoard Display."),
         "main_wait_title": MessageLookupByLibrary.simpleMessage(
-            "Waiting for a sender to share a screen..."),
+            "Waiting for presenter to share screen..."),
         "main_wait_up_next": MessageLookupByLibrary.simpleMessage("UP NEXT"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
             "[Improvements]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n\n[Modifications]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n\n"),

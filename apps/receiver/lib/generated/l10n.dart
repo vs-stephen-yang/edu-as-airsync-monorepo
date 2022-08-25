@@ -90,10 +90,10 @@ class S {
     );
   }
 
-  /// `Poor network connection detected.\nPlease check your connectivity.`
+  /// `Unstable network connection.\nPlease check your connectivity status.`
   String get main_status_no_network {
     return Intl.message(
-      'Poor network connection detected.\nPlease check your connectivity.',
+      'Unstable network connection.\nPlease check your connectivity status.',
       name: 'main_status_no_network',
       desc: '',
       args: [],
@@ -110,10 +110,10 @@ class S {
     );
   }
 
-  /// `Display App goes to the background.`
+  /// `Display app is running in the background.`
   String get main_status_go_background {
     return Intl.message(
-      'Display App goes to the background.',
+      'Display app is running in the background.',
       name: 'main_status_go_background',
       desc: '',
       args: [],
@@ -140,10 +140,10 @@ class S {
     );
   }
 
-  /// `Failed to get new password.\nPlease wait for 30 seconds before retrying.`
+  /// `Failed to refresh password.\nPlease wait for 30 seconds before retrying.`
   String get main_content_one_time_password_get_fail {
     return Intl.message(
-      'Failed to get new password.\nPlease wait for 30 seconds before retrying.',
+      'Failed to refresh password.\nPlease wait for 30 seconds before retrying.',
       name: 'main_content_one_time_password_get_fail',
       desc: '',
       args: [],
@@ -160,10 +160,10 @@ class S {
     );
   }
 
-  /// `Scan to enroll`
+  /// `IT Admin: Use Companion App to scan and enroll`
   String get main_content_scan_to_enroll {
     return Intl.message(
-      'Scan to enroll',
+      'IT Admin: Use Companion App to scan and enroll',
       name: 'main_content_scan_to_enroll',
       desc: '',
       args: [],
@@ -180,10 +180,10 @@ class S {
     );
   }
 
-  /// `Waiting for a sender to share a screen...`
+  /// `Waiting for presenter to share screen...`
   String get main_wait_title {
     return Intl.message(
-      'Waiting for a sender to share a screen...',
+      'Waiting for presenter to share screen...',
       name: 'main_wait_title',
       desc: '',
       args: [],
@@ -250,20 +250,20 @@ class S {
     );
   }
 
-  /// `“Split Screen activated...”`
+  /// `Split screen enabled. Waiting for presenter to share screen...`
   String get main_split_screen_waiting {
     return Intl.message(
-      '“Split Screen activated...”',
+      'Split screen enabled. Waiting for presenter to share screen...',
       name: 'main_split_screen_waiting',
       desc: '',
       args: [],
     );
   }
 
-  /// `Would you like to turn on the split screen feature?`
+  /// `Click the above toggle for Split Screen Mode. Up to 4 participants can present at once.`
   String get main_split_screen_question {
     return Intl.message(
-      'Would you like to turn on the split screen feature?',
+      'Click the above toggle for Split Screen Mode. Up to 4 participants can present at once.',
       name: 'main_split_screen_question',
       desc: '',
       args: [],
@@ -280,30 +280,30 @@ class S {
     );
   }
 
-  /// `Get display code failure.`
+  /// `Failed to get display code. Wait for network connectivity to resume, or restart the app.`
   String get main_get_display_code_failure {
     return Intl.message(
-      'Get display code failure.',
+      'Failed to get display code. Wait for network connectivity to resume, or restart the app.',
       name: 'main_get_display_code_failure',
       desc: '',
       args: [],
     );
   }
 
-  /// `Register display code failure.`
+  /// `Display App registration failed. Please try again.`
   String get main_register_display_code_failure {
     return Intl.message(
-      'Register display code failure.',
+      'Display App registration failed. Please try again.',
       name: 'main_register_display_code_failure',
       desc: '',
       args: [],
     );
   }
 
-  /// `Insufficient privilege for Display Advanced. Please contact your IT administrator.`
+  /// `This is a Display Advanced feature. Please contact your IT administrator for more information.`
   String get main_privilege_message {
     return Intl.message(
-      'Insufficient privilege for Display Advanced. Please contact your IT administrator.',
+      'This is a Display Advanced feature. Please contact your IT administrator for more information.',
       name: 'main_privilege_message',
       desc: '',
       args: [],
