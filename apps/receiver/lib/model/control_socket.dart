@@ -296,6 +296,7 @@ class ControlSocket {
               }
 
               MainInfo.showMainInfo.value = false;
+              StreamFunction.showWaitFunction.value = false;
 
               selectedController.nativeViewState.switchConnectionState(true);
               var arg = {
@@ -328,6 +329,7 @@ class ControlSocket {
               _handleDisplayStateUpdate(selectedController);
 
               MainInfo.showMainInfo.value = true;
+              StreamFunction.showWaitFunction.value = true;
 
               _handleP2PClientReject(
                   presenter.id ?? '', resp.nextId ?? '', 'blocked');
