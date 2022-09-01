@@ -24,6 +24,8 @@ class Home extends StatefulWidget {
   static ValueNotifier<bool> showCloudOff = ValueNotifier(false);
   static ValueNotifier<List<bool>> isSelectedList =
       ValueNotifier(List.filled(4, false, growable: false));
+  static ValueNotifier<List<bool>> isSplitScreenMenuList =
+      ValueNotifier(List.filled(4, false, growable: false));
 
   @override
   State<StatefulWidget> createState() => _HomeState();
@@ -50,163 +52,52 @@ class _HomeState extends State<Home> {
             children: <Widget>[
               ValueListenableBuilder(
                 valueListenable: SplitScreen.mapSplitScreen,
-                builder: (BuildContext context, Map<String, dynamic> value,
-                    Widget? child) {
-                  _updateSizeForSelected(int selection) {
-                    if (value[keySplitScreenEnable]) {
-                      for (int i = 0;
-                          i < Home.isSelectedList.value.length;
-                          i++) {
-                        if (i == selection) {
-                          Home.isSelectedList.value[i] =
-                              !Home.isSelectedList.value[i];
-                        } else {
-                          Home.isSelectedList.value[i] = false;
-                        }
-                      }
-                      // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
-                      Home.isSelectedList.value =
-                          List.from(Home.isSelectedList.value);
-
-                      ControlSocket().updateAllQuality(
-                          selection, Home.isSelectedList.value.contains(true));
-                    } else {
-                      Home.isSelectedList.value.fillRange(
-                          0, Home.isSelectedList.value.length, false);
-                      // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
-                      Home.isSelectedList.value =
-                          List.from(Home.isSelectedList.value);
-                      ControlSocket().updateAllQuality(0, true);
-                    }
-                  }
-
-                  double _getWidthHeight(int selection, bool isWidth) {
-                    if (value[keySplitScreenEnable]) {
-                      // split screen enabled
-                      if (Home.isSelectedList.value[selection]) {
-                        // selected item
-                        return isWidth ? _fullWidth : _fullHeight;
-                      } else if (Home.isSelectedList.value.contains(true)) {
-                        // has any item selected
-                        return 1; // MUST use 1 to create view, 0 won't.
-                      } else {
-                        // no any item selected
-                        if (value[keySplitScreenCount] < 2) {
-                          if (selection == value[keySplitScreenLastId]) {
-                            return isWidth ? _fullWidth : _fullHeight;
-                          } else {
-                            return 1; // MUST use 1 to create view, 0 won't.
-                          }
-                        }
-                        return isWidth ? _halfWidth : _halfHeight;
-                      }
-                    } else {
-                      // split screen disabled
-                      return isWidth ? _fullWidth : _fullHeight;
-                    }
-                  }
-
-                  List<Widget> webrtcWidgets = List.generate(
-                      value[keySplitScreenEnable] ? 4 : 1, (index) {
-                    double? left, top, right, bottom;
-                    double? iconLeft, iconTop, iconRight, iconBottom;
-                    if (index == 1) {
-                      right = 0;
-                      top = 0;
-                      iconLeft = 20;
-                      iconBottom = 20;
-                    } else if (index == 2) {
-                      left = 0;
-                      bottom = 0;
-                      iconRight = 20;
-                      iconTop = 20;
-                    } else if (index == 3) {
-                      right = 0;
-                      bottom = 0;
-                      iconLeft = 20;
-                      iconTop = 20;
-                    } else {
-                      // index 0 and default.
-                      left = 0;
-                      top = 0;
-                      iconRight = 20;
-                      iconBottom = 20;
-                    }
-                    return ValueListenableBuilder(
-                      valueListenable: Home.isSelectedList,
-                      builder: (BuildContext context, List<bool> value,
-                          Widget? child) {
-                        return Positioned(
-                          left: left,
-                          top: top,
-                          right: right,
-                          bottom: bottom,
-                          child: Stack(
-                            children: <Widget>[
-                              SizedBox(
-                                width: _getWidthHeight(index, true),
-                                height: _getWidthHeight(index, false),
-                                child: WebRTCNativeView(
-                                  useHybrid: false,
-                                  onWebRTCNativeViewCreatedCallback:
-                                      ControlSocket().addWebRtcController,
-                                ),
-                              ),
-                              Positioned(
-                                left: iconLeft,
-                                top: iconTop,
-                                right: iconRight,
-                                bottom: iconBottom,
-                                child: Visibility(
-                                  visible: SplitScreen.mapSplitScreen
-                                          .value[keySplitScreenEnable] &&
-                                      ControlSocket()
-                                          .isPresenting(index: index) &&
-                                      !Home.isSelectedList.value[index] &&
-                                      ControlSocket().presenterQty() > 1,
-                                  child: IconButton(
-                                    icon: const Image(
-                                      image: Svg(
-                                        'assets/images/ic_zoom_in.svg',
-                                        size: Size.square(48),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      _updateSizeForSelected(index);
-                                    },
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                right: 0,
-                                bottom: 0,
-                                child: Visibility(
-                                  visible: SplitScreen.mapSplitScreen
-                                          .value[keySplitScreenEnable] &&
-                                      ControlSocket().isPresenting() &&
-                                      Home.isSelectedList.value[index],
-                                  child: IconButton(
-                                    icon: const Image(
-                                      image: Svg(
-                                        'assets/images/ic_zoom_out.svg',
-                                        size: Size.square(48),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      _updateSizeForSelected(index);
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  });
-
+                builder: (context, Map<String, dynamic> value, child) {
                   return Stack(
-                    children: webrtcWidgets,
+                    children: List.generate(value[keySplitScreenEnable] ? 4 : 1,
+                        (index) {
+                      double? left, top, right, bottom;
+                      if (index == 1) {
+                        right = 0;
+                        top = 0;
+                      } else if (index == 2) {
+                        left = 0;
+                        bottom = 0;
+                      } else if (index == 3) {
+                        right = 0;
+                        bottom = 0;
+                      } else {
+                        // index 0 and default.
+                        left = 0;
+                        top = 0;
+                      }
+                      return ValueListenableBuilder(
+                        valueListenable: Home.isSelectedList,
+                        builder: (context, value, child) {
+                          return Positioned(
+                            left: left,
+                            top: top,
+                            right: right,
+                            bottom: bottom,
+                            child: Stack(
+                              children: <Widget>[
+                                SizedBox(
+                                  width: _getWidthHeight(index, true),
+                                  height: _getWidthHeight(index, false),
+                                  child: WebRTCNativeView(
+                                    useHybrid: false,
+                                    onWebRTCNativeViewCreatedCallback:
+                                        ControlSocket().addWebRtcController,
+                                  ),
+                                ),
+                                buildSplitScreenMenu(index),
+                                buildZoomOutMenu(index),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }),
                   );
                 },
               ),
@@ -301,5 +192,192 @@ class _HomeState extends State<Home> {
       ..showSnackBar(
         SnackBar(content: Text(message)),
       );
+  }
+
+  _updateSizeForSelected(int selection) {
+    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+      for (int i = 0; i < Home.isSelectedList.value.length; i++) {
+        if (i == selection) {
+          Home.isSelectedList.value[i] = !Home.isSelectedList.value[i];
+        } else {
+          Home.isSelectedList.value[i] = false;
+        }
+      }
+      // Using below method to trigger value changed.
+      // https://github.com/flutter/flutter/issues/29958
+      Home.isSelectedList.value = List.from(Home.isSelectedList.value);
+
+      ControlSocket().updateAllQuality(
+          selection, Home.isSelectedList.value.contains(true));
+    } else {
+      Home.isSelectedList.value
+          .fillRange(0, Home.isSelectedList.value.length, false);
+      // Using below method to trigger value changed.
+      // https://github.com/flutter/flutter/issues/29958
+      Home.isSelectedList.value = List.from(Home.isSelectedList.value);
+      ControlSocket().updateAllQuality(0, true);
+    }
+  }
+
+  double _getWidthHeight(int selection, bool isWidth) {
+    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+      // split screen enabled
+      if (Home.isSelectedList.value[selection]) {
+        // selected item
+        return isWidth ? _fullWidth : _fullHeight;
+      } else if (Home.isSelectedList.value.contains(true)) {
+        // has any item selected
+        return 1; // MUST use 1 to create view, 0 won't.
+      } else {
+        // no any item selected
+        if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
+          if (selection ==
+              SplitScreen.mapSplitScreen.value[keySplitScreenLastId]) {
+            return isWidth ? _fullWidth : _fullHeight;
+          } else {
+            return 1; // MUST use 1 to create view, 0 won't.
+          }
+        }
+        return isWidth ? _halfWidth : _halfHeight;
+      }
+    } else {
+      // split screen disabled
+      return isWidth ? _fullWidth : _fullHeight;
+    }
+  }
+
+  Widget buildSplitScreenMenu(int index) {
+    double? iconLeft, iconTop, iconRight, iconBottom;
+    if (index == 1) {
+      iconLeft = 20;
+      iconBottom = 20;
+    } else if (index == 2) {
+      iconRight = 20;
+      iconTop = 20;
+    } else if (index == 3) {
+      iconLeft = 20;
+      iconTop = 20;
+    } else {
+      // index 0 and default.
+      iconRight = 20;
+      iconBottom = 20;
+    }
+    return Positioned(
+      left: iconLeft,
+      top: iconTop,
+      right: iconRight,
+      bottom: iconBottom,
+      child: Visibility(
+        visible: SplitScreen.mapSplitScreen.value[keySplitScreenEnable] &&
+            ControlSocket().isPresenting(index: index) &&
+            !Home.isSelectedList.value[index] &&
+            ControlSocket().presenterQty() > 1,
+        child: ValueListenableBuilder(
+          valueListenable: Home.isSplitScreenMenuList,
+          builder: (BuildContext context, List<bool> value, Widget? child) {
+            return Stack(
+              children: <Widget>[
+                Visibility(
+                  visible: !value[index],
+                  child: IconButton(
+                    icon: const Image(
+                      image: Svg(
+                        'assets/images/ic_split_screen_menu.svg',
+                        size: Size.square(48),
+                      ),
+                    ),
+                    onPressed: () {
+                      Home.isSplitScreenMenuList.value[index] = true;
+                      // Using below method to trigger value changed.
+                      // https://github.com/flutter/flutter/issues/29958
+                      Home.isSplitScreenMenuList.value =
+                          List.from(Home.isSplitScreenMenuList.value);
+                      // _updateSizeForSelected(index);
+                    },
+                  ),
+                ),
+                Visibility(
+                  visible: value[index],
+                  child: Wrap(
+                    textDirection: (index == 0 || index == 2)
+                        ? TextDirection.ltr
+                        : TextDirection.rtl,
+                    children: <Widget>[
+                      IconButton(
+                        icon: const Image(
+                          image: Svg(
+                            'assets/images/ic_connection_close.svg',
+                            size: Size.square(48),
+                          ),
+                        ),
+                        onPressed: () {
+                          Home.isSplitScreenMenuList.value.fillRange(0,
+                              Home.isSplitScreenMenuList.value.length, false);
+                          ControlSocket().removePresenterBy(index);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Image(
+                          image: Svg(
+                            'assets/images/ic_zoom_in.svg',
+                            size: Size.square(48),
+                          ),
+                        ),
+                        onPressed: () {
+                          Home.isSplitScreenMenuList.value.fillRange(0,
+                              Home.isSplitScreenMenuList.value.length, false);
+                          _updateSizeForSelected(index);
+                        },
+                      ),
+                      IconButton(
+                        icon: Image(
+                          image: Svg(
+                            (index == 0 || index == 2)
+                                ? 'assets/images/ic_arrow_right.svg'
+                                : 'assets/images/ic_arrow_left.svg',
+                            size: const Size.square(48),
+                          ),
+                        ),
+                        onPressed: () {
+                          Home.isSplitScreenMenuList.value[index] = false;
+                          // Using below method to trigger value changed.
+                          // https://github.com/flutter/flutter/issues/29958
+                          Home.isSplitScreenMenuList.value =
+                              List.from(Home.isSplitScreenMenuList.value);
+                          // _updateSizeForSelected(index);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget buildZoomOutMenu(int index) {
+    return Positioned(
+      right: 20,
+      bottom: 20,
+      child: Visibility(
+        visible: SplitScreen.mapSplitScreen.value[keySplitScreenEnable] &&
+            ControlSocket().isPresenting() &&
+            Home.isSelectedList.value[index],
+        child: IconButton(
+          icon: const Image(
+            image: Svg(
+              'assets/images/ic_zoom_out.svg',
+              size: Size.square(48),
+            ),
+          ),
+          onPressed: () {
+            _updateSizeForSelected(index);
+          },
+        ),
+      ),
+    );
   }
 }
