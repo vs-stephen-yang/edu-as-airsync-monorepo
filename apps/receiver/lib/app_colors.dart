@@ -13,6 +13,8 @@ class AppColors {
 
   static const Color primaryBlackA30 = Color.fromRGBO(0, 0, 0, 0.3);
 
+  static const Color primaryBlackA50 = Color.fromRGBO(0, 0, 0, 0.5);
+
   static const Color neutral1 = Color.fromRGBO(0x7E, 0x7E, 0x7E, 1.0);
 
   static const Color neutral4 = Color.fromRGBO(0x38, 0x38, 0x38, 1.0);

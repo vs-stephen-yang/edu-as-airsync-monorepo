@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
@@ -106,6 +107,35 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
       alignment: Alignment.center,
       children: <Widget>[
         nativeView,
+        Align(
+          alignment: Alignment.topCenter,
+          child: Visibility(
+            visible: _webRTCNativeViewController != null
+                ? _webRTCNativeViewController!.presentationState ==
+                        PresentationState.streaming &&
+                    _webRTCNativeViewController!.presenterName.isNotEmpty &&
+                    SplitScreen.mapSplitScreen.value[keySplitScreenEnable]
+                : false,
+            child: Container(
+              width: 120,
+              height: 30,
+              padding: const EdgeInsets.all(5),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: AppColors.primaryBlackA50,
+              ),
+              child: AutoSizeText(
+                _webRTCNativeViewController?.presenterName ?? '',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+                maxLines: 1,
+              ),
+            ),
+          ),
+        ),
         Visibility(
           visible: showConnectionInfo,
           child: Transform.scale(
