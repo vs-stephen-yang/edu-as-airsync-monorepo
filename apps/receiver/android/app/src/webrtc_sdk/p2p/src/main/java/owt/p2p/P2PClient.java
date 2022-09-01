@@ -232,6 +232,7 @@ public final class P2PClient implements PeerConnectionChannel.PeerConnectionChan
         }
         DCHECK(signalingChannel);
         signalingChannel.disconnect();
+        changeConnectionStatus(DISCONNECTED);
     }
 
     /**
