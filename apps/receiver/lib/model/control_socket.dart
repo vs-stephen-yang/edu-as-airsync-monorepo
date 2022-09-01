@@ -622,6 +622,18 @@ class ControlSocket {
     }
   }
 
+  removePresenterBy(int index) async {
+    WebRTCNativeViewController? selectedController = _webRtcController[index];
+    if (selectedController.presenterId.isNotEmpty) {
+      try {
+        await selectedController.channel.invokeMethod("stopVideo");
+        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+      } on PlatformException catch (e) {
+        log(e.toString());
+      }
+    }
+  }
+
   updateAllQuality(int selection, bool hasSelected) {
     if (selection == -1) {
       _handleChangeQuality(_webRtcController[0], true, true);
