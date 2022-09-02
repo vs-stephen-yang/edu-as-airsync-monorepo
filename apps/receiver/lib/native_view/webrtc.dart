@@ -103,6 +103,13 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
       nativeView = Text(
           '$defaultTargetPlatform is not yet supported by the webrtc_native_view plugin');
     }
+    String presenterName = '';
+    if (_webRTCNativeViewController != null) {
+      presenterName = _webRTCNativeViewController!.presenterName;
+      if (presenterName.length > 10) {
+        presenterName = presenterName.substring(0, 10) + "..";
+      }
+    }
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
@@ -126,7 +133,7 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
                 color: AppColors.primaryBlackA50,
               ),
               child: AutoSizeText(
-                _webRTCNativeViewController?.presenterName ?? '',
+                presenterName,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
