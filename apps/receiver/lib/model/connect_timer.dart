@@ -12,7 +12,8 @@ typedef ConnectionTimerCallback = void Function(
 class ConnectionTimer {
   Timer? mConnectionTimeoutTimer, mRemainingTimeTimer;
   StreamController<int> mConnectionTimeTimeout = StreamController<int>();
-  StreamController<int> mRemainingTimeTimeout = StreamController<int>.broadcast();
+  StreamController<int> mRemainingTimeTimeout =
+      StreamController<int>.broadcast();
 
   static final ConnectionTimer _instance = ConnectionTimer.internal();
   int remainingTimeLimit = 10800;
@@ -39,7 +40,6 @@ class ConnectionTimer {
         timer.cancel();
         log('ConnectionTimeout onFinish');
         onFinish(controller, nextId);
-        AppAnalytics().trackEventPresentTimeout();
       }
     });
   }
@@ -59,8 +59,10 @@ class ConnectionTimer {
         int count = remainingTimeLimit - timer.tick;
         mRemainingTimeTimeout.sink.add(count);
         StatusBar.showReamingTime.value = true;
+        AppAnalytics().trackEventSessionTimeoutNotification();
         StatusBar.showReamingTimeAlert.value = true;
-      } else if (remainingTimeLimit - timer.tick < 300 && timer.tick != remainingTimeLimit) {
+      } else if (remainingTimeLimit - timer.tick < 300 &&
+          timer.tick != remainingTimeLimit) {
         int count = remainingTimeLimit - timer.tick;
         mRemainingTimeTimeout.sink.add(count);
         if (remainingTimeLimit - timer.tick == 295) {
@@ -69,6 +71,7 @@ class ConnectionTimer {
       } else if (timer.tick == remainingTimeLimit) {
         // onFinish
         StatusBar.showReamingTime.value = false;
+        AppAnalytics().trackEventSessionTimeout();
         onFinish();
         timer.cancel();
         log('RemainingTimeTimeout onFinish');

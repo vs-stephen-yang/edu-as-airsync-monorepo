@@ -12,7 +12,8 @@ class PresenterList extends StatefulWidget {
   Key? listKey;
   final ValueChanged<bool> updateEditIcon;
 
-  PresenterList(this.listKey, this.updateEditIcon, this.isSplit) : super(key: listKey);
+  PresenterList(this.listKey, this.updateEditIcon, this.isSplit)
+      : super(key: listKey);
 
   @override
   PresenterListState createState() => PresenterListState();
@@ -100,24 +101,27 @@ class PresenterListState extends State<PresenterList> {
                                           'play') {
                                         if (i != index) {
                                           AppAnalytics()
-                                              .trackEventPresentClicked();
+                                              .trackEventModeratorPresenterStop();
                                           moderatorSocket.peerAction(
                                               'stop',
                                               display.peerList[i].peer,
                                               display.displayResponse);
-                                          Future.delayed(const Duration(seconds: 2)).then((value) {
+                                          Future.delayed(
+                                                  const Duration(seconds: 2))
+                                              .then((value) {
                                             // play
-                                            String action =
-                                            (status == 'play' || status == 'pause')
+                                            String action = (status == 'play' ||
+                                                    status == 'pause')
                                                 ? 'stop'
                                                 : 'play';
                                             display.presenterId = id;
-                                            AppAnalytics().trackEventPresentClicked();
-                                            moderatorSocket.peerAction(
-                                                'play', peer, display.displayResponse);
+                                            AppAnalytics()
+                                                .trackEventModeratorPresenterPresent();
+                                            moderatorSocket.peerAction('play',
+                                                peer, display.displayResponse);
 
-                                            display
-                                                .setPresenterTimeTimer(action == 'play');
+                                            display.setPresenterTimeTimer(
+                                                action == 'play');
                                           });
                                           return;
                                         }
@@ -130,7 +134,8 @@ class PresenterListState extends State<PresenterList> {
                                           ? 'stop'
                                           : 'play';
                                   display.presenterId = id;
-                                  AppAnalytics().trackEventPresentClicked();
+                                  AppAnalytics()
+                                      .trackEventModeratorPresenterPresent();
                                   moderatorSocket.peerAction(
                                       'play', peer, display.displayResponse);
 
@@ -141,14 +146,13 @@ class PresenterListState extends State<PresenterList> {
                                   if (display.presenterId == id) {
                                     display.presenterId = '';
                                   }
-                                  AppAnalytics().trackEventPresentClicked();
+                                  AppAnalytics()
+                                      .trackEventModeratorPresenterStop();
                                   moderatorSocket.peerAction(
                                       'stop', peer, display.displayResponse);
                                 }
                               },
-                              onRemove: (value) {
-                                AppAnalytics().trackEventKickoffClicked();
-                              },
+                              onRemove: (value) {},
                             );
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -171,7 +175,6 @@ class PresenterListState extends State<PresenterList> {
                         setState(() {
                           bEditNotifier = false;
                           widget.updateEditIcon(bEditNotifier);
-                          AppAnalytics().trackEventKickoffNo();
                         });
                       },
                       child: Container(
@@ -185,7 +188,8 @@ class PresenterListState extends State<PresenterList> {
                             fit: BoxFit.fitHeight,
                             child: Text(
                               S.of(context).moderator_cancel,
-                              style: const TextStyle(color: AppColors.primary_grey),
+                              style: const TextStyle(
+                                  color: AppColors.primary_grey),
                             )),
                       ),
                     ),
@@ -197,7 +201,7 @@ class PresenterListState extends State<PresenterList> {
                     flex: 3,
                     child: InkWell(
                       onTap: () {
-                        AppAnalytics().trackEventKickoffYes();
+                        AppAnalytics().trackEventModeratorPresentersRemove();
                         for (int i = 0;
                             i < Displays().getSelectedDisplay().peerList.length;
                             i++) {

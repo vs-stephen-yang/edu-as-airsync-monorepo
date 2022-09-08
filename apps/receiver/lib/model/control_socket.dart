@@ -48,10 +48,6 @@ class ControlSocket {
   bool isShowCode = false;
 
   void connect(String apiGateway) {
-    AppAnalytics().setEventProperties({
-      'displayID': ControlSocket().displayCode,
-    });
-
     _controlSocketIO = io(
         apiGateway,
         OptionBuilder()
@@ -69,6 +65,7 @@ class ControlSocket {
             .build());
 
     _controlSocketIO?.onConnect((data) {
+      AppAnalytics().trackEventControlConnected();
       _printControlSocketLog('connect', data);
       Home.showCloudOff.value = false;
     });
@@ -93,8 +90,10 @@ class ControlSocket {
         'message', (data) => _printControlSocketLog('message', data));
     _controlSocketIO?.onConnectTimeout(
         (data) => _printControlSocketLog('onConnectTimeout', data));
-    _controlSocketIO
-        ?.onDisconnect((data) => _printControlSocketLog('disconnect', data));
+    _controlSocketIO?.onDisconnect((data) {
+      AppAnalytics().trackEventControlDisconnected();
+      _printControlSocketLog('disconnect', data);
+    });
     _controlSocketIO?.onError((data) => _printControlSocketLog('error', data));
     _controlSocketIO?.onReconnecting((data) {
       _printControlSocketLog('reconnecting', data);
@@ -150,7 +149,8 @@ class ControlSocket {
               ModeratorView.showModerator.value = false;
             }
           }
-          AppAnalytics().trackEventPresentStart();
+
+          AppAnalytics().trackEventPresentStarted();
           break;
         case 'disconnectedP2pClient':
           controller.presentationState = PresentationState.stopStreaming;
@@ -222,8 +222,7 @@ class ControlSocket {
           moderator = Moderator.fromJson(extra.moderator);
           meetingId = extra.meetingId ?? '';
 
-          AppAnalytics().setEventProperties(
-              {'displayID': displayCode, 'meetingId': meetingId});
+          AppAnalytics().setEventProperties(meetingId: meetingId);
 
           if (ConnectionTimer.getInstance().mRemainingTimeTimer == null) {
             ConnectionTimer.getInstance().startRemainingTimeTimer(() {
@@ -238,14 +237,15 @@ class ControlSocket {
           moderator = null;
           meetingId = '';
 
-          AppAnalytics().setEventProperties(
-              {'displayID': displayCode, 'meetingId': meetingId});
+          AppAnalytics().setEventProperties(meetingId: meetingId);
 
           ConnectionTimer.getInstance().stopRemainingTimeTimer();
           break;
         // endregion Moderator
         // region Present
         case "start-present":
+          AppAnalytics().trackEventPresentStartReceived();
+
           WebRTCNativeViewController? selectedController;
           if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
             for (WebRTCNativeViewController controller in _webRtcController) {
@@ -304,6 +304,7 @@ class ControlSocket {
                 'token': signal.token,
                 'peerId': signal.peerId,
               };
+              AppAnalytics().trackEventPresentStarting();
               final String result = await selectedController.channel
                   .invokeMethod('connectP2pClient', arg);
 
@@ -316,8 +317,6 @@ class ControlSocket {
               if (moderator == null &&
                   !SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
                 ConnectionTimer.getInstance().startRemainingTimeTimer(() {
-                  AppAnalytics().setEventProperties(
-                      {'displayID': displayCode, 'meetingId': meetingId});
                   selectedController!.channel.invokeMethod("stopVideo");
                 });
               }
@@ -343,6 +342,8 @@ class ControlSocket {
           }
           break;
         case "stop-present":
+          AppAnalytics().trackEventPresentStopReceived();
+
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
 
@@ -368,6 +369,8 @@ class ControlSocket {
           }
           break;
         case "pause-present":
+          AppAnalytics().trackEventPresentPauseReceived();
+
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
 
@@ -383,13 +386,14 @@ class ControlSocket {
             try {
               await selectedController.channel.invokeMethod("pauseVideo");
               _handleStreamPauseSuccess(selectedController, resp.nextId);
-              AppAnalytics().trackEventPresentPaused();
             } on PlatformException catch (e) {
               log(e.toString());
             }
           }
           break;
         case "resume-present":
+          AppAnalytics().trackEventPresentResumeReceived();
+
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
 
@@ -404,7 +408,6 @@ class ControlSocket {
           if (selectedController != null) {
             try {
               await selectedController.channel.invokeMethod("resumeVideo");
-              AppAnalytics().trackEventPresentResumed();
             } on PlatformException catch (e) {
               log(e.toString());
             }
@@ -501,6 +504,7 @@ class ControlSocket {
     });
     print('mControlSocketIO: _handleP2PClientSuccess: $content');
     _controlSocketIO?.emit(displayCode, json.decode(content));
+    AppAnalytics().trackEventPresentReadySent();
   }
 
   void _handleP2PClientReject(
@@ -518,6 +522,11 @@ class ControlSocket {
     });
     print('mControlSocketIO: _handleP2PClientReject: $content');
     _controlSocketIO?.emit(displayCode, json.decode(content));
+    if (reason == 'timeout') {
+      AppAnalytics().trackEventPresentRejectTimeOutSent();
+    } else if (reason == 'blocked') {
+      AppAnalytics().trackEventPresentRejectBlockedSent();
+    }
   }
 
   void _handleStreamPauseSuccess(

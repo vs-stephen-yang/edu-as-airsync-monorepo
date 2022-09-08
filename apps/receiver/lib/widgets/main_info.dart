@@ -53,6 +53,8 @@ class _MainInfoState extends State<MainInfo> {
         listener: (context, state) {
           switch (state) {
             case MainInfoState.getDisplayCodeSuccess:
+              AppAnalytics()
+                  .setEventProperties(displayCode: ControlSocket().displayCode);
               if (appConfig != null) {
                 ControlSocket().connect(appConfig.settings.apiGateway);
               }
@@ -63,13 +65,27 @@ class _MainInfoState extends State<MainInfo> {
               BlocProvider.of<MainInfoBloc>(context).add(RegisterDisplayCode());
               break;
             case MainInfoState.getDisplayCodeInfoSuccess:
+              if (AppPreferences().entityId.isNotEmpty &&
+                  ControlSocket().entityId.isEmpty) {
+                AppAnalytics().trackEventUnenrolled();
+                AppAnalytics()
+                    .setEventProperties(entityId: ControlSocket().entityId);
+              } else {
+                AppAnalytics()
+                    .setEventProperties(entityId: ControlSocket().entityId);
+                AppAnalytics().trackEventEnrolled();
+              }
               AppPreferences().set(entityId: ControlSocket().entityId);
+
               if (ControlSocket().featureList.isEmpty) {
+                AppAnalytics().trackEventLicenseRevoked();
                 // Disable SplitScreen and Moderator features.
                 ModeratorView().logout();
                 streamFunctionKey.currentState?.setState(() {
                   ControlSocket().moderator = null;
                 });
+              } else {
+                AppAnalytics().trackEventLicenseGranted();
               }
               break;
             case MainInfoState.registerDisplayCodeSuccess:
@@ -120,9 +136,9 @@ class _MainInfoState extends State<MainInfo> {
               valueListenable: MainInfo.showMainInfo,
               builder: (BuildContext context, bool value, Widget? child) {
                 if (value) {
-                  if (!ControlSocket().isPresenting()
-                      && ControlSocket().moderator == null
-                      && MainInfo.updateDisplayStatus) {
+                  if (!ControlSocket().isPresenting() &&
+                      ControlSocket().moderator == null &&
+                      MainInfo.updateDisplayStatus) {
                     MainInfo.updateDisplayStatus = false;
                     BlocProvider.of<MainInfoBloc>(context)
                         .add(GetDisplayCodeInfo());
@@ -259,12 +275,8 @@ class _MainInfoState extends State<MainInfo> {
                 ),
                 IconButton(
                   onPressed: () {
+                    AppAnalytics().trackEventAppOTPMaskClick();
                     _isEyeOpen.value = !_isEyeOpen.value;
-                    if (_isEyeOpen.value) {
-                      AppAnalytics().trackEventUnMaskOTPCode();
-                    } else {
-                      AppAnalytics().trackEventMaskOTPCode();
-                    }
                   },
                   icon: Image.asset(
                     value
