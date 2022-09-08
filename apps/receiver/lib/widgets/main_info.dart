@@ -63,6 +63,7 @@ class _MainInfoState extends State<MainInfo> {
               BlocProvider.of<MainInfoBloc>(context).add(RegisterDisplayCode());
               break;
             case MainInfoState.getDisplayCodeInfoSuccess:
+              AppPreferences().set(entityId: ControlSocket().entityId);
               if (ControlSocket().featureList.isEmpty) {
                 // Disable SplitScreen and Moderator features.
                 ModeratorView().logout();

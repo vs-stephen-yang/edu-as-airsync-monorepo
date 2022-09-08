@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
@@ -61,8 +60,7 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
           response.statusCode < HttpStatus.multiStatus) {
         Map json = jsonDecode(response.body);
 
-        AppPreferences().set(entityId: json['entityId'] ?? '');
-
+        ControlSocket().entityId = json['entityId'] ?? '';
         ControlSocket().displayCode = json['code'] ?? '';
         ControlSocket().token = Uri.encodeComponent(json['token'] ?? '');
 
