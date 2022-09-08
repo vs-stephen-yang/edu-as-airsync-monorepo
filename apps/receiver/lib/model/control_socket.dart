@@ -34,6 +34,7 @@ class ControlSocket {
   final List<WebRTCNativeViewController> _webRtcController =
       <WebRTCNativeViewController>[];
 
+  String entityId = '';
   String token = '';
   String displayCode = '';
   String otpCode = '';
