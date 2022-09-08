@@ -111,6 +111,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                     IconButton(
                       iconSize: 48,
                       onPressed: () {
+                        AppAnalytics().trackEventAppLanguageClick();
                         LanguageSelection.showLanguage.value = true;
                       },
                       icon: const Image(
@@ -120,6 +121,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                     IconButton(
                       iconSize: 48,
                       onPressed: () {
+                        AppAnalytics().trackEventAppWhatsNewsClick();
                         WhatsNew.showWhatsNew.value = true;
                       },
                       icon: const Image(
@@ -232,6 +234,7 @@ class StreamFunctionStates extends State<StreamFunction> {
   }
 
   _showSplitScreen(bool leavePresentFunction) {
+    AppAnalytics().trackEventAppSplitScreenClick();
     if (ControlSocket().featureList.contains('SplitScreen')) {
       SplitScreen.showSplitScreen.value = true;
       if (leavePresentFunction) {
@@ -243,8 +246,8 @@ class StreamFunctionStates extends State<StreamFunction> {
   }
 
   _showModerator(bool leavePresentFunction) {
+    AppAnalytics().trackEventAppModeratorClick();
     if (ControlSocket().featureList.contains('Moderator')) {
-      AppAnalytics().trackEventModeratorStarted();
       ModeratorView.showModerator.value = true;
       if (leavePresentFunction) {
         StreamFunction.showPresentFunction.value = false;
@@ -255,6 +258,7 @@ class StreamFunctionStates extends State<StreamFunction> {
   }
 
   _callPrivilegeDialog() {
+    AppAnalytics().trackEventLicenseInsufficientPrivilege();
     showDialog(
       context: context,
       barrierDismissible: false,

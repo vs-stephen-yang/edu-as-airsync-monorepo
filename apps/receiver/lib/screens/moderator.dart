@@ -33,15 +33,13 @@ class ModeratorView extends StatefulWidget {
         Map.from(SplitScreen.mapSplitScreen.value);
     attendeesListKey.currentState?.removeAllPresenter();
     Displays().getDisplays().forEach((element) {
-      AppAnalytics()
-          .trackEventMeetingEnded(element.displayId, element.meetingId);
       moderatorSocket.unBindFromDisplay(
           element.displayId, ControlSocket().token);
     });
     moderatorSocket.disconnect();
     Displays().removeAllDisplayInfo();
     AppPreferences().set(moderatorId: '');
-    AppAnalytics().trackEventModeratorTerminated();
+    AppAnalytics().trackEventModeratorOff();
     showModerator.value = false;
   }
 }
@@ -98,6 +96,9 @@ class _ModeratorViewState extends State<ModeratorView> {
                               peerlistSnapshot.data!['extra']['peerlist'];
                           value.sort((a, b) => a['presenter']['name']
                               .compareTo(b['presenter']['name']));
+                          AppAnalytics()
+                              .trackEventModeratorPresentersListUpdated(
+                                  value.toString());
                           for (int i = 0; i < value.length; i++) {
                             DisplayPeer peer = DisplayPeer();
                             peer.id = value[i]['presenter']['id'];
@@ -217,12 +218,12 @@ class _ModeratorViewState extends State<ModeratorView> {
                                     icon: const Icon(Icons.arrow_back_ios,
                                         color: AppColors.primary_white),
                                     onPressed: () {
+                                      AppAnalytics()
+                                          .trackEventModeratorPanelClose();
                                       if (_isPresenting()) {
                                         StreamFunction.showStreamMenu.value =
                                             true;
                                       }
-                                      AppAnalytics()
-                                          .trackEventModeratorTerminated();
                                       ModeratorView.showModerator.value = false;
                                     },
                                   ),
@@ -263,6 +264,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                                   child: IconButton(
                                     icon: EditIcon(_editIconKey),
                                     onPressed: () {
+                                      AppAnalytics().trackEventModeratorEdit();
                                       if (Displays()
                                           .getSelectedDisplay()
                                           .peerList
@@ -404,7 +406,6 @@ class _ModeratorViewState extends State<ModeratorView> {
               bLogInClick = false;
             });
           } else {
-            AppAnalytics().trackEventLogoutClicked();
             _callLogOutDialog();
             bLogInClick = false;
           }
@@ -460,6 +461,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                   Map.from(SplitScreen.mapSplitScreen.value);
 
               if (!SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+                AppAnalytics().trackEventModeratorSplitScreenOff();
                 var display = Displays().getSelectedDisplay();
                 // check whether the presenters are playing
                 display.splitIndexMap.forEach((key, value) {
@@ -472,6 +474,8 @@ class _ModeratorViewState extends State<ModeratorView> {
                     }
                   }
                 });
+              } else {
+                AppAnalytics().trackEventModeratorSplitScreenOn();
               }
             });
           },
@@ -490,7 +494,6 @@ class _ModeratorViewState extends State<ModeratorView> {
           description: S.of(context).moderator_exit_dialog,
           positiveButton: S.of(context).moderator_exit,
           onPositive: () {
-            AppAnalytics().trackEventLogoutYes();
             setState(() {
               widget.logout();
               streamFunctionKey.currentState?.setState(() {
@@ -498,9 +501,7 @@ class _ModeratorViewState extends State<ModeratorView> {
               });
             });
           },
-          onNegative: () {
-            AppAnalytics().trackEventLogoutNo();
-          },
+          onNegative: () {},
         );
       },
     );
@@ -515,8 +516,7 @@ class _ModeratorViewState extends State<ModeratorView> {
           .bindToDisplay(ControlSocket().displayCode, ControlSocket().otpCode,
               ControlSocket().token)
           .then((value) {
-        AppAnalytics().trackEventMeetingStarted(
-            value['code'] ?? '', value['property']['meetingId'] ?? '');
+        AppAnalytics().trackEventModeratorOn();
         streamFunctionKey.currentState?.setState(() {});
       }).catchError((dynamic e) {
         Future.delayed(const Duration(seconds: 5), () {

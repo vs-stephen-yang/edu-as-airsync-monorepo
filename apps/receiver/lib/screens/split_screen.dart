@@ -1,3 +1,4 @@
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
@@ -161,6 +162,7 @@ class _SplitScreenState extends State<SplitScreen>
   }
 
   _backStreamMenu() {
+    AppAnalytics().trackEventSplitScreenPanelClose();
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable] &&
         ControlSocket().isPresenting()) {
       StreamFunction.showStreamMenu.value = true;
@@ -177,6 +179,7 @@ class _SplitScreenState extends State<SplitScreen>
           Map.from(SplitScreen.mapSplitScreen.value);
 
       if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+        AppAnalytics().trackEventSplitScreenOn();
         ConnectionTimer.getInstance().startRemainingTimeTimer(() {
           streamFunctionKey.currentState?.setState(() {
             SplitScreen.showSplitScreen.value = false;
@@ -186,6 +189,7 @@ class _SplitScreenState extends State<SplitScreen>
           });
         });
       } else {
+        AppAnalytics().trackEventSplitScreenOff();
         ConnectionTimer.getInstance().stopRemainingTimeTimer();
         ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
         ControlSocket().removeAllPresenters();

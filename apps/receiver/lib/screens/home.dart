@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -311,6 +312,7 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         onPressed: () {
+                          AppAnalytics().trackEventSplitScreenDisconnectClick();
                           Home.isSplitScreenMenuList.value.fillRange(0,
                               Home.isSplitScreenMenuList.value.length, false);
                           ControlSocket().removePresenterBy(index);
@@ -324,6 +326,7 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         onPressed: () {
+                          AppAnalytics().trackEventSplitScreenFullScreenClick();
                           Home.isSplitScreenMenuList.value.fillRange(0,
                               Home.isSplitScreenMenuList.value.length, false);
                           _updateSizeForSelected(index);

@@ -31,7 +31,9 @@ Future<void> commonEntry(ConfigSettings settings) async {
       child: const MyApp());
 
   await AppExceptionReport().ensureInitialized(settings, packageInfo);
-  await AppAnalytics().ensureInitialized(settings, packageInfo);
+  await AppAnalytics().ensureInitialized(settings);
+  AppAnalytics()
+      .setEventProperties(instanceId: AppInstanceCreate().displayInstanceID);
 
   FlutterError.onError = (FlutterErrorDetails details) {
     // Report errors to a service

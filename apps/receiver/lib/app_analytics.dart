@@ -4,9 +4,6 @@ import 'dart:io';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-
-import 'model/displays.dart';
 
 class AppAnalytics {
   static final AppAnalytics _instance = AppAnalytics._internal();
@@ -17,20 +14,7 @@ class AppAnalytics {
   // passes the instantiation to the _instance object
   factory AppAnalytics() => _instance;
 
-  ensureInitialized(
-      ConfigSettings configSettings, PackageInfo packageInfo) async {
-    _eventProperties.addAll({
-      'version': packageInfo.version,
-    });
-    _eventNetworkQualityProperties.addAll({
-      'version': packageInfo.version,
-    });
-    _eventModeratorProperties.addAll({
-      'butlerId': '',
-      'displayId': Displays().getSelectedDisplay().displayId,
-      'meetingId': Displays().getSelectedDisplay().meetingId,
-      'version': packageInfo.version,
-    });
+  ensureInitialized(ConfigSettings configSettings) async {
     if (kIsWeb) {
       // todo: support other platform analytics.
     } else {
@@ -51,52 +35,52 @@ class AppAnalytics {
 
   bool _isInitialized = false;
   final Map<String, String> _eventProperties = {};
-  final Map<String, String> _eventNetworkQualityProperties = {};
-  final Map<String, String> _eventModeratorProperties = {};
 
-  setEventProperties(Map<String, String> properties) {
+  String _entityId = '';
+  String _instanceId = '';
+  String _meetingId = '';
+  String _presentId = '';
+  String _presenterId = '';
+  String _displayCode = '';
+
+  setEventProperties(
+      {String? entityId,
+      String? instanceId,
+      String? meetingId,
+      String? presentId,
+      String? presenterId,
+      String? displayCode}) {
+    if (entityId != null) {
+      _entityId = entityId;
+    }
+    if (instanceId != null) {
+      _instanceId = instanceId;
+    }
+    if (meetingId != null) {
+      _meetingId = meetingId;
+    }
+    if (presentId != null) {
+      _presentId = presentId;
+    }
+    if (presenterId != null) {
+      _presenterId = presenterId;
+    }
+    if (displayCode != null) {
+      _displayCode = displayCode;
+    }
+    _updateEventProperties();
+  }
+
+  _updateEventProperties() {
+    Map<String, String> properties = {
+      'entity_id': _entityId,
+      'instance_id': _instanceId,
+      'meeting_id': _meetingId,
+      'present_id': _presentId,
+      'presenter_id': _presenterId,
+      'display_code': _displayCode,
+    };
     _eventProperties.addAll(properties);
-    _eventNetworkQualityProperties.addAll(properties);
-  }
-
-  trackEventAppStarted() {
-    _trackEventWithProperties('appStarted', _eventProperties);
-  }
-
-  trackEventAppTerminated() {
-    _trackEventWithProperties('appTerminated', _eventProperties);
-  }
-
-  trackEventMaskOTPCode() {
-    _trackEventWithProperties('maskOTPCode', _eventProperties);
-  }
-
-  trackEventUnMaskOTPCode() {
-    _trackEventWithProperties('unmaskOTPCode', _eventProperties);
-  }
-
-  trackEventNetworkQuality() {
-    _trackEventWithProperties('networkQuality', _eventNetworkQualityProperties);
-  }
-
-  trackEventPresentStart() {
-    _trackEventWithProperties('presentStart', _eventProperties);
-  }
-
-  trackEventPresentPaused() {
-    _trackEventWithProperties('presentPaused', _eventProperties);
-  }
-
-  trackEventPresentResumed() {
-    _trackEventWithProperties('presentResumed', _eventProperties);
-  }
-
-  trackEventPresentStopped() {
-    _trackEventWithProperties('presentStopped', _eventProperties);
-  }
-
-  trackEventPresentTimeout() {
-    _trackEventWithProperties('presentTimeout', _eventProperties);
   }
 
   _trackEventWithProperties(String event, Map<String, String> properties) {
@@ -106,62 +90,220 @@ class AppAnalytics {
     }
   }
 
-  // region Moderator
-
-  trackEventModeratorStarted() {
-    _trackEventWithProperties('appModeratorStarted', _eventModeratorProperties);
+  // region Session
+  trackEventSessionTimeout() {
+    _trackEventWithProperties('session_timeout', _eventProperties);
   }
 
-  trackEventModeratorTerminated() {
+  trackEventSessionTimeoutNotification() {
+    _trackEventWithProperties('session_timeout_notification', _eventProperties);
+  }
+
+  // endregion
+
+  // region Present-specific
+  trackEventPresentStartReceived() {
+    _trackEventWithProperties('present_start_received', _eventProperties);
+  }
+
+  trackEventPresentReadySent() {
+    _trackEventWithProperties('present_start_ready_sent', _eventProperties);
+  }
+
+  trackEventPresentRejectTimeOutSent() {
+    _trackEventWithProperties('present_reject_timeout_sent', _eventProperties);
+  }
+
+  trackEventPresentRejectBlockedSent() {
+    _trackEventWithProperties('present_reject_blocked_sent', _eventProperties);
+  }
+
+  trackEventPresentStarting() {
+    _trackEventWithProperties('present_starting', _eventProperties);
+  }
+
+  trackEventPresentStarted() {
+    _trackEventWithProperties('present_started', _eventProperties);
+  }
+
+  trackEventPresentStopReceived() {
+    _trackEventWithProperties('present_stop_received', _eventProperties);
+  }
+
+  trackEventPresentStopped() {
+    _trackEventWithProperties('present_stopped', _eventProperties);
+  }
+
+  trackEventPresentPauseReceived() {
+    _trackEventWithProperties('present_pause_received', _eventProperties);
+  }
+
+  trackEventPresentResumeReceived() {
+    _trackEventWithProperties('present_resume_received', _eventProperties);
+  }
+
+  // Todo: insert optional event
+  trackEventPresentSignalConnected() {
+    _trackEventWithProperties('present_signal_connected', _eventProperties);
+  }
+
+  trackEventPresentSignalDisconnected() {
+    _trackEventWithProperties('present_signal_disconnected', _eventProperties);
+  }
+
+  trackEventPresentConnectConnecting() {
+    _trackEventWithProperties('present_connect_connecting', _eventProperties);
+  }
+
+  trackEventPresentConnectDisconnected() {
+    _trackEventWithProperties('present_connect_disconnected', _eventProperties);
+  }
+
+  trackEventPresentConnectClosed() {
+    _trackEventWithProperties('present_connect_closed', _eventProperties);
+  }
+
+  trackEventPresentConnectFailed() {
+    _trackEventWithProperties('present_connect_failed', _eventProperties);
+  }
+
+  // endregion
+
+  // region Enrollment
+  trackEventEnrolled() {
+    _trackEventWithProperties('enrolled', _eventProperties);
+  }
+
+  trackEventUnenrolled() {
+    _trackEventWithProperties('unenrolled', _eventProperties);
+  }
+
+  // endregion
+
+  // region License-specific
+  trackEventLicenseGranted() {
+    _trackEventWithProperties('license_granted', _eventProperties);
+  }
+
+  trackEventLicenseRevoked() {
+    _trackEventWithProperties('license_revoked', _eventProperties);
+  }
+
+  trackEventLicenseInsufficientPrivilege() {
     _trackEventWithProperties(
-        'appModeratorTerminated', _eventModeratorProperties);
+        'license_insufficient_privilege', _eventProperties);
   }
 
-  trackEventMeetingStarted(String displayId, String meetingId) {
-    Map<String, String> properties = _eventModeratorProperties;
-    properties.update('displayId', (value) => displayId);
-    properties.update('meetingId', (value) => meetingId);
-    _trackEventWithProperties('meetingStarted', properties);
+  // endregion
+
+  // region SplitScreen-specific
+  trackEventSplitScreenOn() {
+    _trackEventWithProperties('splitscreen_on', _eventProperties);
   }
 
-  trackEventMeetingEnded(String displayId, String meetingId) {
-    Map<String, String> properties = _eventModeratorProperties;
-    properties.update('displayId', (value) => displayId);
-    properties.update('meetingId', (value) => meetingId);
-    _trackEventWithProperties('meetingEnded', properties);
+  trackEventSplitScreenOff() {
+    _trackEventWithProperties('splitscreen_off', _eventProperties);
   }
 
-  trackEventDelegateClicked() {
-    _trackEventWithProperties('delegateClicked', _eventModeratorProperties);
+  trackEventSplitScreenPanelClose() {
+    _trackEventWithProperties('splitscreen_panel_close', _eventProperties);
   }
 
-  trackEventPresentClicked() {
-    _trackEventWithProperties('presentClicked', _eventModeratorProperties);
+  trackEventSplitScreenFullScreenClick() {
+    _trackEventWithProperties('splitscreen_fullscreen_click', _eventProperties);
   }
 
-  trackEventKickoffClicked() {
-    _trackEventWithProperties('kickoffClicked', _eventModeratorProperties);
+  trackEventSplitScreenDisconnectClick() {
+    _trackEventWithProperties('splitscreen_disconnect_click', _eventProperties);
   }
 
-  trackEventKickoffYes() {
-    _trackEventWithProperties('kickoffYes', _eventModeratorProperties);
+  // endregion
+
+  // region Moderator-specific
+  trackEventModeratorOn() {
+    _trackEventWithProperties('moderator_on', _eventProperties);
   }
 
-  trackEventKickoffNo() {
-    _trackEventWithProperties('kickoffNo', _eventModeratorProperties);
+  trackEventModeratorOff() {
+    _trackEventWithProperties('moderator_off', _eventProperties);
   }
 
-  trackEventLogoutClicked() {
-    _trackEventWithProperties('logoutClicked', _eventModeratorProperties);
+  trackEventModeratorPanelClose() {
+    _trackEventWithProperties('moderator_panel_close', _eventProperties);
   }
 
-  trackEventLogoutYes() {
-    _trackEventWithProperties('logoutYes', _eventModeratorProperties);
+  trackEventModeratorEdit() {
+    _trackEventWithProperties('moderator_edit', _eventProperties);
   }
 
-  trackEventLogoutNo() {
-    _trackEventWithProperties('logoutNo', _eventModeratorProperties);
+  trackEventModeratorSplitScreenOn() {
+    _trackEventWithProperties('moderator_splitscreen_on', _eventProperties);
   }
 
-//endregion
+  trackEventModeratorSplitScreenOff() {
+    _trackEventWithProperties('moderator_splitscreen_off', _eventProperties);
+  }
+
+  trackEventModeratorPresentersListUpdated(String presenters) {
+    Map<String, String> properties = {
+      'presenters': presenters,
+    };
+    properties.addAll(_eventProperties);
+    _trackEventWithProperties('moderator_presenters_list_updated', properties);
+  }
+
+  trackEventModeratorPresentersRemove() {
+    _trackEventWithProperties('moderator_presenters_remove', _eventProperties);
+  }
+
+  trackEventModeratorPresenterPresent() {
+    _trackEventWithProperties('moderator_presenter_present', _eventProperties);
+  }
+
+  trackEventModeratorPresenterStop() {
+    _trackEventWithProperties('moderator_presenter_stop', _eventProperties);
+  }
+
+  // endregion
+
+  // region Top-level UI
+  trackEventAppSplitScreenClick() {
+    _trackEventWithProperties('app_splitscreen_click', _eventProperties);
+  }
+
+  trackEventAppModeratorClick() {
+    _trackEventWithProperties('app_moderator_click', _eventProperties);
+  }
+
+  trackEventAppLanguageClick() {
+    _trackEventWithProperties('app_language_click', _eventProperties);
+  }
+
+  trackEventAppWhatsNewsClick() {
+    _trackEventWithProperties('app_whatsnews_click', _eventProperties);
+  }
+
+  trackEventAppOTPMaskClick() {
+    _trackEventWithProperties('app_otp_mask_click', _eventProperties);
+  }
+
+  // endregion
+
+  // region Misc Events
+  trackEventAppStarted() {
+    _trackEventWithProperties('app_start', _eventProperties);
+  }
+
+  trackEventAppTerminated() {
+    _trackEventWithProperties('app_stop', _eventProperties);
+  }
+
+  trackEventControlConnected() {
+    _trackEventWithProperties('control_connected', _eventProperties);
+  }
+
+  trackEventControlDisconnected() {
+    _trackEventWithProperties('control_disconnected', _eventProperties);
+  }
+// endregion
 }
