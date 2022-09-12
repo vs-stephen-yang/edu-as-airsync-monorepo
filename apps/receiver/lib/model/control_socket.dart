@@ -256,16 +256,18 @@ class ControlSocket {
               }
             }
           } else {
-            if (moderator != null) {
-              if (_webRtcController[0].presentationState ==
+            if (_webRtcController.isNotEmpty) {
+              if (moderator != null) {
+                if (_webRtcController[0].presentationState ==
+                    PresentationState.stopStreaming) {
+                  selectedController = _webRtcController[0];
+                } else if (_webRtcController[0].peerId.isNotEmpty) {
+                  selectedController = _webRtcController[0];
+                }
+              } else if (_webRtcController[0].presentationState ==
                   PresentationState.stopStreaming) {
                 selectedController = _webRtcController[0];
-              } else if (_webRtcController[0].peerId.isNotEmpty) {
-                selectedController = _webRtcController[0];
               }
-            } else if (_webRtcController[0].presentationState ==
-                PresentationState.stopStreaming) {
-              selectedController = _webRtcController[0];
             }
           }
 
