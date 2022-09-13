@@ -155,8 +155,10 @@ class ControlSocket {
               controller.presentId, controller.presenterId);
           break;
         case 'disconnectedP2pClient':
-          AppAnalytics().trackEventPresentStopped(
-              controller.presentId, controller.presenterId);
+          if (call.arguments as bool) {
+            AppAnalytics().trackEventPresentStopped(
+                controller.presentId, controller.presenterId);
+          }
 
           controller.presentationState = PresentationState.stopStreaming;
           controller.nativeViewState.switchConnectionState(false);
