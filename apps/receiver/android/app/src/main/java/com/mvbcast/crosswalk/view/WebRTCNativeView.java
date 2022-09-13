@@ -105,7 +105,7 @@ public class WebRTCNativeView implements PlatformView,
         synchronized (lock) {
             mRenderUsedList.remove((Object) mRenderId);
         }
-        disconnectP2pClient();
+        disconnectP2pClient(false);
 
         if (mActivityRef.get() != null) {
             mActivityRef.get().runOnUiThread(() -> methodChannel.invokeMethod("disposed", null));
@@ -130,13 +130,8 @@ public class WebRTCNativeView implements PlatformView,
             case "connectP2pClient":
                 connectP2pClient(call.argument("token"), call.argument("peerId"), result);
                 break;
-            case "remainingTimeTimeOut":
-                setStateMachine("RemainingTimeTimeOut onFinish");
-                disconnectP2pClient();
-                break;
             case "connectionTimeTimeOut":
-                setStateMachine("ConnectionTimeout onFinish");
-                disconnectP2pClient();
+                disconnectP2pClient(true);
                 break;
             case "playVideo":
                 streamPlay(result);
@@ -190,7 +185,7 @@ public class WebRTCNativeView implements PlatformView,
             @Override
             public void onEnded() {
                 setStateMachine("onEnded");
-                disconnectP2pClient();
+                disconnectP2pClient(false);
             }
 
             @Override
@@ -308,7 +303,7 @@ public class WebRTCNativeView implements PlatformView,
         });
     }
 
-    private void disconnectP2pClient() {
+    private void disconnectP2pClient(boolean sendAnalytics) {
         if (mP2pClient != null) {
             setStateMachine(String.format(Locale.US, "disconnect uid: %s", mP2pClient.id()));
             mP2pClient.disconnect();
@@ -325,7 +320,7 @@ public class WebRTCNativeView implements PlatformView,
                 mSurfaceViewRenderer.setVisibility(View.GONE);
             }
             if (methodChannel != null) {
-                methodChannel.invokeMethod("disconnectedP2pClient", null);
+                methodChannel.invokeMethod("disconnectedP2pClient", sendAnalytics);
             }
         });
     }
@@ -354,7 +349,7 @@ public class WebRTCNativeView implements PlatformView,
     private void streamStop(@NonNull MethodChannel.Result result) {
         setStateMachine("streamStop()");
 
-        disconnectP2pClient();
+        disconnectP2pClient(true);
 
         mActivityRef.get().runOnUiThread(() -> {
             if (mRemoteStream != null) {
