@@ -17,6 +17,7 @@ import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart';
+import 'package:uuid/uuid.dart';
 
 class ControlSocket {
   static final ControlSocket _instance = ControlSocket._internal();
@@ -150,9 +151,13 @@ class ControlSocket {
             }
           }
 
-          AppAnalytics().trackEventPresentStarted();
+          AppAnalytics().trackEventPresentStarted(
+              controller.presentId, controller.presenterId);
           break;
         case 'disconnectedP2pClient':
+          AppAnalytics().trackEventPresentStopped(
+              controller.presentId, controller.presenterId);
+
           controller.presentationState = PresentationState.stopStreaming;
           controller.nativeViewState.switchConnectionState(false);
           _handleDisplayStateUpdate(controller);
@@ -161,6 +166,7 @@ class ControlSocket {
           _handleQualityUpdate(controller);
 
           // Clear all presenter settings.
+          controller.presentId = '';
           controller.presenterId = '';
           controller.presenterName = '';
           controller.peerToken = '';
@@ -199,8 +205,6 @@ class ControlSocket {
             StreamFunction.showPresentFunction.value = false;
             MainInfo.showMainInfo.value = true;
           }
-
-          AppAnalytics().trackEventPresentStopped();
           break;
       }
       return;
@@ -244,8 +248,6 @@ class ControlSocket {
         // endregion Moderator
         // region Present
         case "start-present":
-          AppAnalytics().trackEventPresentStartReceived();
-
           WebRTCNativeViewController? selectedController;
           if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
             for (WebRTCNativeViewController controller in _webRtcController) {
@@ -278,8 +280,11 @@ class ControlSocket {
           if (selectedController != null) {
             log('selectedController: ${selectedController.channel.name}');
             try {
+              selectedController.presentId = const Uuid().v4();
               selectedController.presenterId = presenter.id ?? '';
               selectedController.presenterName = presenter.name ?? '';
+              AppAnalytics().trackEventPresentStartReceived(
+                  selectedController.presentId, selectedController.presenterId);
               // Send wait for stream
               selectedController.presentationState =
                   PresentationState.waitForStream;
@@ -290,7 +295,7 @@ class ControlSocket {
                 ConnectionTimer.getInstance().startConnectionTimeoutTimer(
                     selectedController, resp.nextId ?? '',
                     (controller, nextId) {
-                  _handleP2PClientReject(
+                  _handleP2PClientReject(controller.presentId,
                       controller.presenterId, nextId, 'timeout');
 
                   controller.channel.invokeMethod('connectionTimeTimeOut');
@@ -306,7 +311,8 @@ class ControlSocket {
                 'token': signal.token,
                 'peerId': signal.peerId,
               };
-              AppAnalytics().trackEventPresentStarting();
+              AppAnalytics().trackEventPresentStarting(
+                  selectedController.presentId, selectedController.presenterId);
               final String result = await selectedController.channel
                   .invokeMethod('connectP2pClient', arg);
 
@@ -333,19 +339,17 @@ class ControlSocket {
               MainInfo.showMainInfo.value = true;
               StreamFunction.showWaitFunction.value = true;
 
-              _handleP2PClientReject(
-                  presenter.id ?? '', resp.nextId ?? '', 'blocked');
+              _handleP2PClientReject(selectedController.presentId,
+                  selectedController.presenterId, resp.nextId ?? '', 'blocked');
             }
           } else {
             log('selectedController is null!');
 
-            _handleP2PClientReject(
-                presenter.id ?? '', resp.nextId ?? '', 'blocked');
+            _handleP2PClientReject(const Uuid().v4(), presenter.id ?? '',
+                resp.nextId ?? '', 'blocked');
           }
           break;
         case "stop-present":
-          AppAnalytics().trackEventPresentStopReceived();
-
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
 
@@ -358,6 +362,9 @@ class ControlSocket {
           }
 
           if (selectedController != null) {
+            AppAnalytics().trackEventPresentStopReceived(
+                selectedController.presentId, selectedController.presenterId);
+
             try {
               await selectedController.channel.invokeMethod("stopVideo");
               ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
@@ -371,8 +378,6 @@ class ControlSocket {
           }
           break;
         case "pause-present":
-          AppAnalytics().trackEventPresentPauseReceived();
-
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
 
@@ -385,6 +390,9 @@ class ControlSocket {
           }
 
           if (selectedController != null) {
+            AppAnalytics().trackEventPresentPauseReceived(
+                selectedController.presentId, selectedController.presenterId);
+
             try {
               await selectedController.channel.invokeMethod("pauseVideo");
               _handleStreamPauseSuccess(selectedController, resp.nextId);
@@ -394,8 +402,6 @@ class ControlSocket {
           }
           break;
         case "resume-present":
-          AppAnalytics().trackEventPresentResumeReceived();
-
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
 
@@ -408,6 +414,9 @@ class ControlSocket {
           }
 
           if (selectedController != null) {
+            AppAnalytics().trackEventPresentResumeReceived(
+                selectedController.presentId, selectedController.presenterId);
+
             try {
               await selectedController.channel.invokeMethod("resumeVideo");
             } on PlatformException catch (e) {
@@ -506,11 +515,12 @@ class ControlSocket {
     });
     print('mControlSocketIO: _handleP2PClientSuccess: $content');
     _controlSocketIO?.emit(displayCode, json.decode(content));
-    AppAnalytics().trackEventPresentReadySent();
+    AppAnalytics().trackEventPresentReadySent(
+        controller.presentId, controller.presenterId);
   }
 
   void _handleP2PClientReject(
-      String presenterId, String nextId, String reason) {
+      String presentId, String presenterId, String nextId, String reason) {
     var content = json.encode({
       'messageFor': displayCode,
       'action': 'reject-present',
@@ -525,9 +535,9 @@ class ControlSocket {
     print('mControlSocketIO: _handleP2PClientReject: $content');
     _controlSocketIO?.emit(displayCode, json.decode(content));
     if (reason == 'timeout') {
-      AppAnalytics().trackEventPresentRejectTimeOutSent();
+      AppAnalytics().trackEventPresentRejectTimeOutSent(presentId, presenterId);
     } else if (reason == 'blocked') {
-      AppAnalytics().trackEventPresentRejectBlockedSent();
+      AppAnalytics().trackEventPresentRejectBlockedSent(presentId, presenterId);
     }
   }
 

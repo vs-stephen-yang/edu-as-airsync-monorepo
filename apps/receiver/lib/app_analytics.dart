@@ -83,6 +83,17 @@ class AppAnalytics {
     _eventProperties.addAll(properties);
   }
 
+  Map<String, String> _getPresentProperties(
+      String presentId, String presenterId) {
+    Map<String, String> properties = {};
+    properties.addAll(_eventProperties);
+    properties.addAll({
+      'present_id': presentId,
+      'presenter_id': presenterId,
+    });
+    return properties;
+  }
+
   _trackEventWithProperties(String event, Map<String, String> properties) {
     if (_isInitialized) {
       log('event: $event, properties: $properties');
@@ -102,44 +113,54 @@ class AppAnalytics {
   // endregion
 
   // region Present-specific
-  trackEventPresentStartReceived() {
-    _trackEventWithProperties('present_start_received', _eventProperties);
+  trackEventPresentStartReceived(String presentId, String presenterId) {
+    _trackEventWithProperties('present_start_received',
+        _getPresentProperties(presentId, presenterId));
   }
 
-  trackEventPresentReadySent() {
-    _trackEventWithProperties('present_start_ready_sent', _eventProperties);
+  trackEventPresentReadySent(String presentId, String presenterId) {
+    _trackEventWithProperties('present_start_ready_sent',
+        _getPresentProperties(presentId, presenterId));
   }
 
-  trackEventPresentRejectTimeOutSent() {
-    _trackEventWithProperties('present_reject_timeout_sent', _eventProperties);
+  trackEventPresentRejectTimeOutSent(String presentId, String presenterId) {
+    _trackEventWithProperties('present_reject_timeout_sent',
+        _getPresentProperties(presentId, presenterId));
   }
 
-  trackEventPresentRejectBlockedSent() {
-    _trackEventWithProperties('present_reject_blocked_sent', _eventProperties);
+  trackEventPresentRejectBlockedSent(String presentId, String presenterId) {
+    _trackEventWithProperties('present_reject_blocked_sent',
+        _getPresentProperties(presentId, presenterId));
   }
 
-  trackEventPresentStarting() {
-    _trackEventWithProperties('present_starting', _eventProperties);
+  trackEventPresentStarting(String presentId, String presenterId) {
+    _trackEventWithProperties(
+        'present_starting', _getPresentProperties(presentId, presenterId));
   }
 
-  trackEventPresentStarted() {
-    _trackEventWithProperties('present_started', _eventProperties);
+  trackEventPresentStarted(String presentId, String presenterId) {
+    _trackEventWithProperties(
+        'present_started', _getPresentProperties(presentId, presenterId));
   }
 
-  trackEventPresentStopReceived() {
-    _trackEventWithProperties('present_stop_received', _eventProperties);
+  trackEventPresentStopReceived(String presentId, String presenterId) {
+    _trackEventWithProperties(
+        'present_stop_received', _getPresentProperties(presentId, presenterId));
   }
 
-  trackEventPresentStopped() {
-    _trackEventWithProperties('present_stopped', _eventProperties);
+  trackEventPresentStopped(String presentId, String presenterId) {
+    _trackEventWithProperties(
+        'present_stopped', _getPresentProperties(presentId, presenterId));
   }
 
-  trackEventPresentPauseReceived() {
-    _trackEventWithProperties('present_pause_received', _eventProperties);
+  trackEventPresentPauseReceived(String presentId, String presenterId) {
+    _trackEventWithProperties('present_pause_received',
+        _getPresentProperties(presentId, presenterId));
   }
 
-  trackEventPresentResumeReceived() {
-    _trackEventWithProperties('present_resume_received', _eventProperties);
+  trackEventPresentResumeReceived(String presentId, String presenterId) {
+    _trackEventWithProperties('present_resume_received',
+        _getPresentProperties(presentId, presenterId));
   }
 
   // Todo: insert optional event

@@ -39,7 +39,6 @@ class ModeratorView extends StatefulWidget {
     moderatorSocket.disconnect();
     Displays().removeAllDisplayInfo();
     AppPreferences().set(moderatorId: '');
-    AppAnalytics().trackEventModeratorOff();
     showModerator.value = false;
   }
 }
@@ -98,7 +97,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                               .compareTo(b['presenter']['name']));
                           AppAnalytics()
                               .trackEventModeratorPresentersListUpdated(
-                                  value.toString());
+                                  value.length.toString());
                           for (int i = 0; i < value.length; i++) {
                             DisplayPeer peer = DisplayPeer();
                             peer.id = value[i]['presenter']['id'];
@@ -264,11 +263,11 @@ class _ModeratorViewState extends State<ModeratorView> {
                                   child: IconButton(
                                     icon: EditIcon(_editIconKey),
                                     onPressed: () {
-                                      AppAnalytics().trackEventModeratorEdit();
                                       if (Displays()
                                           .getSelectedDisplay()
                                           .peerList
                                           .isNotEmpty) {
+                                        AppAnalytics().trackEventModeratorEdit();
                                         bEditClick = !bEditClick;
                                         widget.attendeesListKey.currentState!
                                             .updateEditStatus(bEditClick);
@@ -495,6 +494,7 @@ class _ModeratorViewState extends State<ModeratorView> {
           positiveButton: S.of(context).moderator_exit,
           onPositive: () {
             setState(() {
+              AppAnalytics().trackEventModeratorOff();
               widget.logout();
               streamFunctionKey.currentState?.setState(() {
                 ControlSocket().moderator = null;

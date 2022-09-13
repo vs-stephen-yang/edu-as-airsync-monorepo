@@ -7,6 +7,7 @@ import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:uuid/uuid.dart';
 
 const String keySplitScreenEnable = 'enable';
 const String keySplitScreenCount = 'count';
@@ -179,8 +180,10 @@ class _SplitScreenState extends State<SplitScreen>
           Map.from(SplitScreen.mapSplitScreen.value);
 
       if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+        AppAnalytics().setEventProperties(meetingId: const Uuid().v4());
         AppAnalytics().trackEventSplitScreenOn();
         ConnectionTimer.getInstance().startRemainingTimeTimer(() {
+          AppAnalytics().setEventProperties(meetingId: '');
           streamFunctionKey.currentState?.setState(() {
             SplitScreen.showSplitScreen.value = false;
             SplitScreen.mapSplitScreen.value[keySplitScreenEnable] = false;
@@ -190,6 +193,7 @@ class _SplitScreenState extends State<SplitScreen>
         });
       } else {
         AppAnalytics().trackEventSplitScreenOff();
+        AppAnalytics().setEventProperties(meetingId: '');
         ConnectionTimer.getInstance().stopRemainingTimeTimer();
         ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
         ControlSocket().removeAllPresenters();

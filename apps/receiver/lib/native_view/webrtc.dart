@@ -230,6 +230,7 @@ class WebRTCNativeViewController {
   late MethodChannel channel;
 
   PresentationState presentationState = PresentationState.stopStreaming;
+  String presentId = '';
   String presenterId = '';
   String presenterName = '';
   String peerToken = '';
