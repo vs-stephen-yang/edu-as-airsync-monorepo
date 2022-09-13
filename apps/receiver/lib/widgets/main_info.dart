@@ -70,7 +70,8 @@ class _MainInfoState extends State<MainInfo> {
                 AppAnalytics().trackEventUnenrolled();
                 AppAnalytics()
                     .setEventProperties(entityId: ControlSocket().entityId);
-              } else {
+              } else if (AppPreferences().entityId.isEmpty &&
+                  ControlSocket().entityId.isNotEmpty) {
                 AppAnalytics()
                     .setEventProperties(entityId: ControlSocket().entityId);
                 AppAnalytics().trackEventEnrolled();

@@ -32,8 +32,9 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
   await AppExceptionReport().ensureInitialized(settings, packageInfo);
   await AppAnalytics().ensureInitialized(settings);
-  AppAnalytics()
-      .setEventProperties(instanceId: AppInstanceCreate().displayInstanceID);
+  AppAnalytics().setEventProperties(
+      entityId: AppPreferences().entityId,
+      instanceId: AppInstanceCreate().displayInstanceID);
 
   FlutterError.onError = (FlutterErrorDetails details) {
     // Report errors to a service
