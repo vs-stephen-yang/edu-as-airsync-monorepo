@@ -25,6 +25,7 @@ import io.socket.client.Ack;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter.Listener;
+import io.socket.engineio.client.transports.WebSocket;
 import owt.base.ActionCallback;
 import owt.base.Const;
 import owt.base.OwtError;
@@ -148,6 +149,7 @@ public class SocketSignalingChannel implements SignalingChannelInterface {
                 return;
             }
             IO.Options opt = new IO.Options();
+            opt.transports = new String[] {WebSocket.NAME};
             opt.forceNew = true;
             opt.reconnection = true;
             opt.reconnectionAttempts = MAX_RECONNECT_ATTEMPTS;
