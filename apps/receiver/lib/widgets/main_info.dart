@@ -58,6 +58,9 @@ class _MainInfoState extends State<MainInfo> {
               if (appConfig != null) {
                 ControlSocket().connect(appConfig.settings.apiGateway);
               }
+              AppPreferences().set(entityId: ControlSocket().entityId);
+              AppAnalytics()
+                  .setEventProperties(entityId: AppPreferences().entityId);
               BlocProvider.of<MainInfoBloc>(context).add(GetOneTimePassword());
               break;
             case MainInfoState.getDisplayCodeError:
