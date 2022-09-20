@@ -23,8 +23,8 @@ import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
 
-public class MainActivity extends FlutterActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
+public class EulaActivity extends FlutterActivity {
+    private static final String TAG = EulaActivity.class.getSimpleName();
     private MethodChannel mVbsOTA;
 
     @Override
@@ -46,9 +46,9 @@ public class MainActivity extends FlutterActivity {
         });
 
         mVbsOTA = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/vbs_ota");
-        SystemImageOTAHelper.getInstance().registerBroadcastReceiver(MainActivity.this);
+        SystemImageOTAHelper.getInstance().registerBroadcastReceiver(EulaActivity.this);
 
-        OTAHelper.getInstance().checkLatestVersion(MainActivity.this, () -> {
+        OTAHelper.getInstance().checkLatestVersion(EulaActivity.this, () -> {
             // TODO:
         });
         OTAHelper.getInstance().clearForceCheckVersion();
@@ -70,7 +70,7 @@ public class MainActivity extends FlutterActivity {
     protected void onStart() {
         super.onStart();
 
-        OTAHelper.getInstance().checkLatestVersion(MainActivity.this, () -> {
+        OTAHelper.getInstance().checkLatestVersion(EulaActivity.this, () -> {
             // TODO:
         });
     }
@@ -79,9 +79,9 @@ public class MainActivity extends FlutterActivity {
     protected void onDestroy() {
         WebRTCHelper.getInstance().onActivityDestroy();
 
-        OTAHelper.getInstance().removeDownloadProcess(MainActivity.this);
+        OTAHelper.getInstance().removeDownloadProcess(EulaActivity.this);
 
-        SystemImageOTAHelper.getInstance().unregisterBroadcastReceiver(MainActivity.this);
+        SystemImageOTAHelper.getInstance().unregisterBroadcastReceiver(EulaActivity.this);
 
         super.onDestroy();
         System.exit(0);
@@ -89,7 +89,7 @@ public class MainActivity extends FlutterActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (OTAHelper.getInstance().onActivityResult(MainActivity.this, requestCode, resultCode, data)) {
+        if (OTAHelper.getInstance().onActivityResult(EulaActivity.this, requestCode, resultCode, data)) {
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);

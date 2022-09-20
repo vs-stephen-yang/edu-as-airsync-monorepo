@@ -19,7 +19,7 @@
 		</receiver>
 
 		<receiver
-			android:name=".MainActivity$AppAlarmOTA"
+			android:name=".EulaActivity$AppAlarmOTA"
 			android:enabled="true"
 			android:exported="true"
 			android:permission="com.mvbcast.crosswalk.AppAlarmOTA" />

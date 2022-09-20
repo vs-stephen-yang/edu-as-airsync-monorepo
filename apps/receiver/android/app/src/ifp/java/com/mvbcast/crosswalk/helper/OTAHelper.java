@@ -31,7 +31,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import com.mvbcast.crosswalk.BuildConfig;
-import com.mvbcast.crosswalk.MainActivity;
+import com.mvbcast.crosswalk.EulaActivity;
 import com.mvbcast.crosswalk.R;
 import com.viewsonic.systemapi.SystemUtil;
 
@@ -101,7 +101,7 @@ public final class OTAHelper extends Observable {
     private File mFile;
     private boolean mbRegistered = false;
     private AlertDialog mAlertDialog;
-    private WeakReference<MainActivity> mActivityRef;
+    private WeakReference<EulaActivity> mActivityRef;
     private WeakReference<TextView> mTextProgressRef;
     private WeakReference<ProgressBar> mProgressBarRef;
 
@@ -415,8 +415,8 @@ public final class OTAHelper extends Observable {
 
     public void checkLatestVersion(final Activity activity, OnCheckLatestVersion oncheckLatestVersion) {
         Log.d(TAG, "checkLatestVersion");
-        if (mActivityRef == null && activity instanceof MainActivity) {
-            mActivityRef = new WeakReference<>((MainActivity) activity);
+        if (mActivityRef == null && activity instanceof EulaActivity) {
+            mActivityRef = new WeakReference<>((EulaActivity) activity);
         }
 
         Date currentTime = Calendar.getInstance().getTime();

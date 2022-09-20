@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.mvbcast.crosswalk.BuildConfig;
-import com.mvbcast.crosswalk.MainActivity;
+import com.mvbcast.crosswalk.EulaActivity;
 import com.mvbcast.crosswalk.R;
 
 import java.lang.ref.WeakReference;
@@ -74,7 +74,7 @@ public final class OTAHelper extends Observable {
     private boolean mForceCheckVersion = true; // Init true for startup without network connected.
     private boolean mIsChecking = false;
     private AlertDialog mAlertDialog;
-    private WeakReference<MainActivity> mActivityRef;
+    private WeakReference<EulaActivity> mActivityRef;
 
     @SuppressWarnings("all")
     private void initFireBaseDefaultSettings() {
@@ -179,8 +179,8 @@ public final class OTAHelper extends Observable {
 
     public void checkLatestVersion(final Activity activity, OnCheckLatestVersion oncheckLatestVersion) {
         Log.d(TAG, "checkLatestVersion");
-        if (mActivityRef == null && activity instanceof MainActivity) {
-            mActivityRef = new WeakReference<>((MainActivity) activity);
+        if (mActivityRef == null && activity instanceof EulaActivity) {
+            mActivityRef = new WeakReference<>((EulaActivity) activity);
         }
 
         Date currentTime = Calendar.getInstance().getTime();
