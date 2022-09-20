@@ -12,7 +12,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mvbcast.crosswalk.BuildConfig;
-import com.mvbcast.crosswalk.MainActivity;
+import com.mvbcast.crosswalk.EulaActivity;
 import com.mvbcast.crosswalk.R;
 import com.mvbcast.crosswalk.helper.SocketSignalingChannel;
 import com.mvbcast.crosswalk.helper.WebRTCHelper;
@@ -72,11 +72,11 @@ public class WebRTCNativeView implements PlatformView,
         mSurfaceViewRenderer.setKeepScreenOn(true);
         mSurfaceViewRenderer.init(WebRTCHelper.getInstance().getRootEglBaseContext(), this);
 
-        WebRTCHelper.getInstance().getDebugInfoVisible().observe((MainActivity) activity,
+        WebRTCHelper.getInstance().getDebugInfoVisible().observe((EulaActivity) activity,
                 s -> webrtc_render.findViewById(R.id.layoutDebugInfo)
                         .setVisibility(s ? View.VISIBLE : View.GONE));
 
-        WebRTCHelper.getInstance().getDecoder().observe((MainActivity) activity,
+        WebRTCHelper.getInstance().getDecoder().observe((EulaActivity) activity,
                 s -> {
                     ((TextView) webrtc_render.findViewById(R.id.textDecoder))
                             .setText(String.format("Decoder: %s", s));
@@ -84,7 +84,7 @@ public class WebRTCNativeView implements PlatformView,
                 });
 
         mRenderName = activity.getResources().getResourceEntryName(mRenderId);
-        WebRTCHelper.getInstance().getFPS(mRenderName).observe((MainActivity) activity,
+        WebRTCHelper.getInstance().getFPS(mRenderName).observe((EulaActivity) activity,
                 s -> {
                     ((TextView) webrtc_render.findViewById(R.id.textFPS))
                             .setText(String.format("Render fps: %s", s));

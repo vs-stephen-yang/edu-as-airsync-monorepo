@@ -11,7 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 
-import com.mvbcast.crosswalk.MainActivity;
+import com.mvbcast.crosswalk.EulaActivity;
 
 public class SystemImageOTAHelper {
     // region Singleton Implementation
@@ -78,8 +78,8 @@ public class SystemImageOTAHelper {
                 if (extras.containsKey("type") && extras.containsKey("value")) {
                     Object typeObj = extras.get("type");
                     Object valueObj = extras.get("value");
-                    if (context instanceof MainActivity && typeObj instanceof String && valueObj instanceof String) {
-                        MainActivity activity = (MainActivity) context;
+                    if (context instanceof EulaActivity && typeObj instanceof String && valueObj instanceof String) {
+                        EulaActivity activity = (EulaActivity) context;
                         String type = (String) typeObj;
                         String value = (String) valueObj;
                         if (type.equals("isUpdate")) {
