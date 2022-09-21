@@ -230,10 +230,10 @@ class S {
     );
   }
 
-  /// `[Improvements]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n\n[Modifications]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n\n`
+  /// `New Display Advanced features\n1.\tDisplay enrollment as an entity instance: \n    i.\tEntity IT Admin can use the Companion app to scan a QR code to complete a Display enrollment.\n    ii.\tEntity IT Admin can grant or revoke Display Advanced licenses after signing into myviewboard.com and going to Entity Management > Display.\n2.\tModerator Mode: \n    i.\tA moderator can add up to 6 presenters and remove them at any time. \n    ii.\tThe moderator can select up to 4 presenters to share their screens.\n    iii.\tThe moderator can start or stop any presenter's screen sharing.\n3.\tSplit Screen Mode: \n    i.\tUp to 4 presenters can share their screens simultaneously.\n\n`
   String get main_whats_new_content {
     return Intl.message(
-      '[Improvements]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n\n[Modifications]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n\n',
+      'New Display Advanced features\n1.\tDisplay enrollment as an entity instance: \n    i.\tEntity IT Admin can use the Companion app to scan a QR code to complete a Display enrollment.\n    ii.\tEntity IT Admin can grant or revoke Display Advanced licenses after signing into myviewboard.com and going to Entity Management > Display.\n2.\tModerator Mode: \n    i.\tA moderator can add up to 6 presenters and remove them at any time. \n    ii.\tThe moderator can select up to 4 presenters to share their screens.\n    iii.\tThe moderator can start or stop any presenter\'s screen sharing.\n3.\tSplit Screen Mode: \n    i.\tUp to 4 presenters can share their screens simultaneously.\n\n',
       name: 'main_whats_new_content',
       desc: '',
       args: [],
@@ -320,10 +320,10 @@ class S {
     );
   }
 
-  /// `Presenters' List`
+  /// `Presenters`
   String get moderator_presentersList {
     return Intl.message(
-      'Presenters\' List',
+      'Presenters',
       name: 'moderator_presentersList',
       desc: '',
       args: [],
@@ -340,21 +340,31 @@ class S {
     );
   }
 
-  /// `Something went wrong, please try again`
+  /// `Something went wrong. Please try again.`
   String get moderator_verifyCode_fail {
     return Intl.message(
-      'Something went wrong, please try again',
+      'Something went wrong. Please try again.',
       name: 'moderator_verifyCode_fail',
       desc: '',
       args: [],
     );
   }
 
-  /// `Maximum 6 people`
+  /// `Click the above toggle for Moderator Mode. Up to 6 presenters can join.`
   String get moderator_presentersLimit {
     return Intl.message(
-      'Maximum 6 people',
+      'Click the above toggle for Moderator Mode. Up to 6 presenters can join.',
       name: 'moderator_presentersLimit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to end this moderator session? All presenters will be removed.`
+  String get moderator_exit_dialog {
+    return Intl.message(
+      'Are you sure you want to end this moderator session? All presenters will be removed.',
+      name: 'moderator_exit_dialog',
       desc: '',
       args: [],
     );
@@ -370,11 +380,11 @@ class S {
     );
   }
 
-  /// `Are you sure you want to exit?`
-  String get moderator_exit_dialog {
+  /// `EXIT`
+  String get moderator_exit {
     return Intl.message(
-      'Are you sure you want to exit?',
-      name: 'moderator_exit_dialog',
+      'EXIT',
+      name: 'moderator_exit',
       desc: '',
       args: [],
     );
@@ -390,40 +400,30 @@ class S {
     );
   }
 
-  /// `EXIT`
-  String get moderator_exit {
-    return Intl.message(
-      'EXIT',
-      name: 'moderator_exit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Would you like to activate the split screen feature in the presenters’ list? (Total maximum 4 people)`
+  /// `Click the above toggle for Split Screen Mode. Up to 4 participants can present at once.`
   String get moderator_activate_split_screen {
     return Intl.message(
-      'Would you like to activate the split screen feature in the presenters’ list? (Total maximum 4 people)',
+      'Click the above toggle for Split Screen Mode. Up to 4 participants can present at once.',
       name: 'moderator_activate_split_screen',
       desc: '',
       args: [],
     );
   }
 
-  /// `Would you like to deactivate the split screen feature in the presenters’ list?`
+  /// `Are you sure you want to end this split screen session? All screens currently shared will be terminated.`
   String get moderator_deactivate_split_screen {
     return Intl.message(
-      'Would you like to deactivate the split screen feature in the presenters’ list?',
+      'Are you sure you want to end this split screen session? All screens currently shared will be terminated.',
       name: 'moderator_deactivate_split_screen',
       desc: '',
       args: [],
     );
   }
 
-  /// `CONFIRM`
+  /// `Confirm`
   String get moderator_confirm {
     return Intl.message(
-      'CONFIRM',
+      'Confirm',
       name: 'moderator_confirm',
       desc: '',
       args: [],

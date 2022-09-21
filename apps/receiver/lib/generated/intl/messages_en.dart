@@ -66,26 +66,26 @@ class MessageLookup extends MessageLookupByLibrary {
             "Waiting for presenter to share screen..."),
         "main_wait_up_next": MessageLookupByLibrary.simpleMessage("UP NEXT"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "[Improvements]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n- 7\n- 8\n- 9\n\n[Modifications]\n- 1\n- 2\n- 3\n- 4\n- 5\n- 6\n\n"),
+            "New Display Advanced features\n1.\tDisplay enrollment as an entity instance: \n    i.\tEntity IT Admin can use the Companion app to scan a QR code to complete a Display enrollment.\n    ii.\tEntity IT Admin can grant or revoke Display Advanced licenses after signing into myviewboard.com and going to Entity Management > Display.\n2.\tModerator Mode: \n    i.\tA moderator can add up to 6 presenters and remove them at any time. \n    ii.\tThe moderator can select up to 4 presenters to share their screens.\n    iii.\tThe moderator can start or stop any presenter\'s screen sharing.\n3.\tSplit Screen Mode: \n    i.\tUp to 4 presenters can share their screens simultaneously.\n\n"),
         "main_whats_new_title":
             MessageLookupByLibrary.simpleMessage("What’s New on Display?"),
         "moderator_activate": MessageLookupByLibrary.simpleMessage("Activate"),
         "moderator_activate_split_screen": MessageLookupByLibrary.simpleMessage(
-            "Would you like to activate the split screen feature in the presenters’ list? (Total maximum 4 people)"),
+            "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once."),
         "moderator_cancel": MessageLookupByLibrary.simpleMessage("CANCEL"),
-        "moderator_confirm": MessageLookupByLibrary.simpleMessage("CONFIRM"),
+        "moderator_confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "moderator_deactivate_split_screen": MessageLookupByLibrary.simpleMessage(
-            "Would you like to deactivate the split screen feature in the presenters’ list?"),
+            "Are you sure you want to end this split screen session? All screens currently shared will be terminated."),
         "moderator_exit": MessageLookupByLibrary.simpleMessage("EXIT"),
         "moderator_exit_dialog": MessageLookupByLibrary.simpleMessage(
-            "Are you sure you want to exit?"),
-        "moderator_presentersLimit":
-            MessageLookupByLibrary.simpleMessage("Maximum 6 people"),
+            "Are you sure you want to end this moderator session? All presenters will be removed."),
+        "moderator_presentersLimit": MessageLookupByLibrary.simpleMessage(
+            "Click the above toggle for Moderator Mode. Up to 6 presenters can join."),
         "moderator_presentersList":
-            MessageLookupByLibrary.simpleMessage("Presenters\' List"),
+            MessageLookupByLibrary.simpleMessage("Presenters"),
         "moderator_remove": MessageLookupByLibrary.simpleMessage("REMOVE"),
         "moderator_verifyCode_fail": MessageLookupByLibrary.simpleMessage(
-            "Something went wrong, please try again"),
+            "Something went wrong. Please try again."),
         "vbs_ota_progress_msg":
             MessageLookupByLibrary.simpleMessage("Downloading system updates")
       };
