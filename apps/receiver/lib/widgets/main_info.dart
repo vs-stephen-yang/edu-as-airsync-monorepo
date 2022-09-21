@@ -307,31 +307,8 @@ class _MainInfoState extends State<MainInfo> {
         crossAxisAlignment: WrapCrossAlignment.center,
         spacing: 16,
         children: <Widget>[
-          Wrap(
-            direction: Axis.horizontal,
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 10,
-            children: <Widget>[
-              Container(
-                height: 2,
-                width: 50,
-                color: Colors.white,
-              ),
-              Text(
-                S.of(context).main_content_scan_or,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Container(
-                height: 2,
-                width: 50,
-                color: Colors.white,
-              ),
-            ],
+          const SizedBox(
+            height: 2,
           ),
           // Add size box to prevent flick.
           SizedBox(
