@@ -316,11 +316,8 @@ class _MainInfoState extends State<MainInfo> {
             height: 120,
             child: QrImage(
               data: appConfig != null
-                  ? (AppInstanceCreate().isInstalledInVBS100)
-                      ? appConfig.settings.prefixQRCode +
-                          AppInstanceCreate().serialNumber
-                      : appConfig.settings.prefixQRCode +
-                          AppInstanceCreate().instanceID
+                  ? appConfig.settings.prefixQRCode +
+                      AppInstanceCreate().displayInstanceID
                   : '',
               version: QrVersions.auto,
               size: 120.0,
