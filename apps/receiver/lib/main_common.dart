@@ -138,10 +138,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.black, // Set app background color
       ),
-      initialRoute:
-          AppPreferences().showEULA && !AppInstanceCreate().isInstalledInVBS100
-              ? '/eula'
-              : '/home',
+      initialRoute: AppPreferences().showEULA &&
+              !AppInstanceCreate().isInstalledInVBS100 &&
+              !AppInstanceCreate().isNoneTouchModel
+          ? '/eula'
+          : '/home',
       navigatorKey: NavigationService.navigationKey,
       onGenerateRoute: (routeSettings) {
         switch (routeSettings.name) {
