@@ -29,23 +29,31 @@ class AppInstanceCreate {
   }
 
   bool _isRegistered = false;
+
   bool get isRegistered => _isRegistered;
 
   // App instance id, for admin backend used (Crash report, Application insight,...)
   String _instanceID = '';
+
   String get instanceID => _instanceID;
 
   String _serialNumber = '';
+
   String get serialNumber => _serialNumber;
 
   String _modelName = '';
+
   String get modelName => _modelName;
 
   bool get isInstalledInVBS100 => _modelName == 'VBS100';
 
+  bool get isNoneTouchModel =>
+      _modelName.startsWith("CDE") || _modelName.startsWith("LD");
+
   // Display instance id, for Display backend used (Control socket, entity enroll,...)
   // "VBS100" is serial number, others is App instance id
-  String get displayInstanceID => isInstalledInVBS100 ? _serialNumber : _instanceID;
+  String get displayInstanceID =>
+      isInstalledInVBS100 ? _serialNumber : _instanceID;
 
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -300,7 +300,8 @@ class _MainInfoState extends State<MainInfo> {
 
   _buildEnrollWidget(AppConfig? appConfig) {
     return Visibility(
-      visible: AppPreferences().entityId.isEmpty,
+      visible: AppPreferences().entityId.isEmpty &&
+          !AppInstanceCreate().isNoneTouchModel,
       child: Wrap(
         direction: Axis.vertical,
         alignment: WrapAlignment.center,

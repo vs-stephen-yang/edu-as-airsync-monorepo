@@ -128,10 +128,13 @@ class _HomeState extends State<Home> {
               const Positioned(
                 child: StatusBar(),
               ),
-              Positioned(
-                left: 20,
-                bottom: 0,
-                child: StreamFunction(key: streamFunctionKey),
+              Visibility(
+                visible: !AppInstanceCreate().isNoneTouchModel,
+                child: Positioned(
+                  left: 20,
+                  bottom: 0,
+                  child: StreamFunction(key: streamFunctionKey),
+                ),
               ),
               ValueListenableBuilder(
                 valueListenable: Home.showCloudOff,
