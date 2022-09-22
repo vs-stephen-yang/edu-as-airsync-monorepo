@@ -261,14 +261,7 @@ class ControlSocket {
             }
           } else {
             if (_webRtcController.isNotEmpty) {
-              if (moderator != null) {
-                if (_webRtcController[0].presentationState ==
-                    PresentationState.stopStreaming) {
-                  selectedController = _webRtcController[0];
-                } else if (_webRtcController[0].peerId.isNotEmpty) {
-                  selectedController = _webRtcController[0];
-                }
-              } else if (_webRtcController[0].presentationState ==
+              if (_webRtcController[0].presentationState ==
                   PresentationState.stopStreaming) {
                 selectedController = _webRtcController[0];
               }
@@ -340,15 +333,14 @@ class ControlSocket {
 
               MainInfo.showMainInfo.value = true;
               StreamFunction.showWaitFunction.value = true;
-
-              _handleP2PClientReject(selectedController.presentId,
-                  selectedController.presenterId, resp.nextId ?? '', 'blocked');
             }
           } else {
             log('selectedController is null!');
 
-            _handleP2PClientReject(const Uuid().v4(), presenter.id ?? '',
-                resp.nextId ?? '', 'blocked');
+            if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+              _handleP2PClientReject(const Uuid().v4(), presenter.id ?? '',
+                  resp.nextId ?? '', 'blocked');
+            }
           }
           break;
         case "stop-present":

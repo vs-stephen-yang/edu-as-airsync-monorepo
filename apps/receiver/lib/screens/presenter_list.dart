@@ -79,8 +79,13 @@ class PresenterListState extends State<PresenterList> {
                               splitIndex: splitIndex,
                               onOpen: (value) {
                                 if (value) {
-                                  if (display.peerList[index].waitReply) return;
+                                  // Should check all element to prevent quickly switch presenter.
+                                  var result = display.peerList
+                                      .where((element) => element.waitReply)
+                                      .toList();
+                                  if (result.isNotEmpty) return;
                                   display.peerList[index].waitReply = true;
+
                                   if (widget.isSplit) {
                                     bool bAdd = false;
                                     display.splitIndexMap.forEach((key, value) {
@@ -100,56 +105,26 @@ class PresenterListState extends State<PresenterList> {
                                       if (display.peerList[i].status ==
                                           'play') {
                                         if (i != index) {
-                                          AppAnalytics()
-                                              .trackEventModeratorPresenterStop();
-                                          moderatorSocket.peerAction(
-                                              'stop',
-                                              display.peerList[i].peer,
-                                              display.displayResponse);
+                                          _sendPresenterStop(display,
+                                              display.peerList[i].peer);
                                           Future.delayed(
                                                   const Duration(seconds: 2))
                                               .then((value) {
-                                            // play
-                                            String action = (status == 'play' ||
-                                                    status == 'pause')
-                                                ? 'stop'
-                                                : 'play';
-                                            display.presenterId = id;
-                                            AppAnalytics()
-                                                .trackEventModeratorPresenterPresent();
-                                            moderatorSocket.peerAction('play',
-                                                peer, display.displayResponse);
-
-                                            display.setPresenterTimeTimer(
-                                                action == 'play');
+                                            _sendPresenterPlay(
+                                                display, peer, id, status);
                                           });
                                           return;
                                         }
                                       }
                                     }
                                   }
-                                  // play
-                                  String action =
-                                      (status == 'play' || status == 'pause')
-                                          ? 'stop'
-                                          : 'play';
-                                  display.presenterId = id;
-                                  AppAnalytics()
-                                      .trackEventModeratorPresenterPresent();
-                                  moderatorSocket.peerAction(
-                                      'play', peer, display.displayResponse);
-
-                                  display
-                                      .setPresenterTimeTimer(action == 'play');
+                                  _sendPresenterPlay(display, peer, id, status);
                                 } else {
                                   if (display.peerList[index].waitReply) return;
                                   if (display.presenterId == id) {
                                     display.presenterId = '';
                                   }
-                                  AppAnalytics()
-                                      .trackEventModeratorPresenterStop();
-                                  moderatorSocket.peerAction(
-                                      'stop', peer, display.displayResponse);
+                                  _sendPresenterStop(display, peer);
                                 }
                               },
                               onRemove: (value) {},
@@ -262,6 +237,22 @@ class PresenterListState extends State<PresenterList> {
           Displays().getSelectedDisplay().peerList[i].peer,
           Displays().getSelectedDisplay().displayResponse);
     }
+  }
+
+  _sendPresenterPlay(
+      DisplayInfo display, dynamic peer, String id, String status) {
+    display.presenterId = id;
+
+    AppAnalytics().trackEventModeratorPresenterPresent();
+    moderatorSocket.peerAction('play', peer, display.displayResponse);
+
+    String action = (status == 'play' || status == 'pause') ? 'stop' : 'play';
+    display.setPresenterTimeTimer(action == 'play');
+  }
+
+  _sendPresenterStop(DisplayInfo display, dynamic peer) {
+    AppAnalytics().trackEventModeratorPresenterStop();
+    moderatorSocket.peerAction('stop', peer, display.displayResponse);
   }
 
   void updateEditStatus(bool status) {
