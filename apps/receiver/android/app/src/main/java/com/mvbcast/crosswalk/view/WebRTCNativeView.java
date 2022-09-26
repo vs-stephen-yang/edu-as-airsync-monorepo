@@ -133,6 +133,12 @@ public class WebRTCNativeView implements PlatformView,
             case "connectionTimeTimeOut":
                 disconnectP2pClient(true);
                 break;
+            case "enableAudio":
+                controlAudio(true);
+                break;
+            case "disableAudio":
+                controlAudio(false);
+                break;
             case "playVideo":
                 streamPlay(result);
                 break;

@@ -664,6 +664,16 @@ class ControlSocket {
       }
     }
   }
+
+  updateAllAudioEnableState(bool enable) {
+    for (WebRTCNativeViewController controller in _webRtcController) {
+      if (enable) {
+        controller.channel.invokeMethod('enableAudio');
+      } else {
+        controller.channel.invokeMethod('disableAudio');
+      }
+    }
+  }
 }
 
 enum PresentationState {
