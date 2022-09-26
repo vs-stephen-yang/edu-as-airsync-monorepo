@@ -61,7 +61,7 @@ class ControlSocket {
               'socketCustomEvent': displayCode,
               'role': 'display',
               'deviceId': AppInstanceCreate().displayInstanceID,
-              'token': token
+              'token': Uri.encodeComponent(token)
             })
             .build());
 
