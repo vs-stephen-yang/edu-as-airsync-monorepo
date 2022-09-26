@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:display_flutter/app_analytics.dart';
@@ -88,6 +89,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    log('AppLifecycleState: $state');
+    if (state == AppLifecycleState.inactive) {
+      ControlSocket().updateAllAudioEnableState(false);
+    } else if (state == AppLifecycleState.resumed) {
+      ControlSocket().updateAllAudioEnableState(true);
+    }
   }
 
   @override
