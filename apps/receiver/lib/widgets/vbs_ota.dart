@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,9 +40,15 @@ class _VbsOTAState extends State<VbsOTA> {
             crossAxisAlignment: WrapCrossAlignment.center,
             spacing: 10,
             children: <Widget>[
-              const Image(
-                  image: Svg('assets/images/ic_power_settings.svg',
-                      size: Size.square(48))),
+              IconButton(
+                iconSize: 48,
+                onPressed: () {
+                  Process.run('reboot', <String>[]);
+                },
+                icon: const Image(
+                  image: Svg('assets/images/ic_power_settings.svg'),
+                ),
+              ),
               Visibility(
                 visible: _systemOTAEnableUI,
                 child: IntrinsicWidth(
