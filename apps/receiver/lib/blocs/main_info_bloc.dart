@@ -62,7 +62,7 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
 
         ControlSocket().entityId = json['entityId'] ?? '';
         ControlSocket().displayCode = json['code'] ?? '';
-        ControlSocket().token = Uri.encodeComponent(json['token'] ?? '');
+        ControlSocket().token = json['token'] ?? '';
 
         if (json.containsKey('property')) {
           Map<String, dynamic> property = json['property'];
