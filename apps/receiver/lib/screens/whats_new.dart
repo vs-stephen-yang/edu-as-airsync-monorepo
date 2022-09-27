@@ -77,6 +77,7 @@ class _WhatsNewState extends State<WhatsNew> {
                       isAlwaysShown: true,
                       thumbColor: AppColors.primary_white,
                       child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
                         child: Text(
                           S.of(context).main_whats_new_content,
                           style: const TextStyle(
