@@ -33,8 +33,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_content_one_time_password_get_fail":
             MessageLookupByLibrary.simpleMessage("無法取得一次性密碼\n30秒後將再次執行"),
         "main_content_scan_or": MessageLookupByLibrary.simpleMessage("或"),
-        "main_content_scan_to_enroll":
-            MessageLookupByLibrary.simpleMessage("使用Companion App掃描註冊"),
+        "main_content_scan_to_enroll": MessageLookupByLibrary.simpleMessage(
+            "使用投影辨識碼及一次性密碼分享畫面\nIT 管理員可使用Companion App掃描註冊"),
         "main_get_display_code_failure":
             MessageLookupByLibrary.simpleMessage("取得投影辨識碼失敗"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("繁體中文"),

@@ -10,7 +10,7 @@
   "main_content_one_time_password": "一次性密碼",
   "main_content_one_time_password_get_fail": "無法取得一次性密碼\n30秒後將再次執行",
   "main_content_scan_or": "或",
-  "main_content_scan_to_enroll": "使用Companion App掃描註冊",
+  "main_content_scan_to_enroll": "使用投影辨識碼及一次性密碼分享畫面\nIT 管理員可使用Companion App掃描註冊",
   "main_wait_up_next": "下一位投影者",
   "main_wait_title": "等待投影中...",
   "main_thanks_content": "感謝您使用 myViewBoard Display",

@@ -35,7 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Failed to refresh password.\nPlease wait for 30 seconds before retrying."),
         "main_content_scan_or": MessageLookupByLibrary.simpleMessage("or"),
         "main_content_scan_to_enroll": MessageLookupByLibrary.simpleMessage(
-            "IT Admin: Use Companion App to scan and enroll"),
+            "To share screen: Use the above URL, Display Code, and One Time Password.\nOptional: IT Admin can use Companion App to scan and enroll"),
         "main_get_display_code_failure": MessageLookupByLibrary.simpleMessage(
             "Failed to get display code. Wait for network connectivity to resume, or restart the app."),
         "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
