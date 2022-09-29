@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
@@ -330,11 +331,13 @@ class _MainInfoState extends State<MainInfo> {
               ),
             ),
           ),
-          Text(
+          AutoSizeText(
             S.of(context).main_content_scan_to_enroll,
+            textAlign: TextAlign.center,
+            maxLines: 2,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 30,
+              fontSize: 16,
               fontWeight: FontWeight.w700,
             ),
           ),

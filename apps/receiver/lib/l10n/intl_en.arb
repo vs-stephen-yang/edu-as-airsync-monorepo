@@ -10,7 +10,7 @@
   "main_content_one_time_password": "One Time Password",
   "main_content_one_time_password_get_fail": "Failed to refresh password.\nPlease wait for 30 seconds before retrying.",
   "main_content_scan_or": "or",
-  "main_content_scan_to_enroll": "IT Admin: Use Companion App to scan and enroll",
+  "main_content_scan_to_enroll": "To share screen: Use the above URL, Display Code, and One Time Password.\nOptional: IT Admin can use Companion App to scan and enroll",
   "main_wait_up_next": "UP NEXT",
   "main_wait_title": "Waiting for presenter to share screen...",
   "main_thanks_content": "Thank you for using myViewBoard Display.",

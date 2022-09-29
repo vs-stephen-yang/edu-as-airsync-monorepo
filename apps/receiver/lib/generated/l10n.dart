@@ -160,10 +160,10 @@ class S {
     );
   }
 
-  /// `IT Admin: Use Companion App to scan and enroll`
+  /// `To share screen: Use the above URL, Display Code, and One Time Password.\nOptional: IT Admin can use Companion App to scan and enroll`
   String get main_content_scan_to_enroll {
     return Intl.message(
-      'IT Admin: Use Companion App to scan and enroll',
+      'To share screen: Use the above URL, Display Code, and One Time Password.\nOptional: IT Admin can use Companion App to scan and enroll',
       name: 'main_content_scan_to_enroll',
       desc: '',
       args: [],
