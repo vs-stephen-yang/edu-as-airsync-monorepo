@@ -45,8 +45,10 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
       MainInfoEvent event, Emitter<MainInfoState> emit) async {
     if (await _handleGetDisplayCode()) {
       emit(MainInfoState.getDisplayCodeInfoSuccess);
+      emit(MainInfoState.emptyState);
     } else {
       emit(MainInfoState.getDisplayCodeInfoError);
+      emit(MainInfoState.emptyState);
     }
   }
 
