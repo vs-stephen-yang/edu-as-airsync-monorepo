@@ -1,6 +1,7 @@
 package com.mvbcast.crosswalk;
 
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
 public class EulaActivity extends FlutterActivity {
@@ -64,6 +66,28 @@ public class EulaActivity extends FlutterActivity {
                 WebRTCHelper.getInstance().setDebugInfoVisible(value != null && !value);
             }
         }));
+
+        MethodChannel bootMethodChannel = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/auto_startup");
+        bootMethodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
+            @SuppressLint("ApplySharedPref")
+            @Override
+            public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+                if (call.method.equals("getAutoStartupValue")) {
+                    boolean autoStartUp = getSharedPreferences("display", MODE_PRIVATE)
+                            .getBoolean("autoStartup", true);
+                    result.success(autoStartUp);
+                } else if (call.method.equals("setAutoStartupValue")) {
+                    boolean autoStartUp = Boolean.TRUE.equals(call.argument("startup"));
+                    getSharedPreferences("display", MODE_PRIVATE)
+                            .edit()
+                            .putBoolean("autoStartup", autoStartUp)
+                            .commit();
+                    result.success(null);
+                } else {
+                    result.notImplemented();
+                }
+            }
+        });
     }
 
     @Override

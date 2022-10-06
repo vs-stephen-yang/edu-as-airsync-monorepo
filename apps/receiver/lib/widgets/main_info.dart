@@ -153,7 +153,6 @@ class _MainInfoState extends State<MainInfo> {
                 return Visibility(
                   visible: value,
                   child: Container(
-                    padding: const EdgeInsets.all(30),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(20)),
                       color: ControlSocket().isPresenting()
@@ -314,20 +313,21 @@ class _MainInfoState extends State<MainInfo> {
           ),
           // Add size box to prevent flick.
           SizedBox(
-            width: 120,
-            height: 120,
+            width: 80,
+            height: 80,
             child: QrImage(
               data: appConfig != null
                   ? appConfig.settings.prefixQRCode +
                       AppInstanceCreate().displayInstanceID
                   : '',
               version: QrVersions.auto,
-              size: 120.0,
+              size: 80.0,
+              padding: const EdgeInsets.all(3),
               backgroundColor: Colors.white,
               embeddedImage: const Svg('assets/images/ic_logo_my.svg'),
               embeddedImageStyle: QrEmbeddedImageStyle(
                 // Cannot set too large, will scan failure!!
-                size: const Size(25, 25),
+                size: const Size(20, 20),
               ),
             ),
           ),

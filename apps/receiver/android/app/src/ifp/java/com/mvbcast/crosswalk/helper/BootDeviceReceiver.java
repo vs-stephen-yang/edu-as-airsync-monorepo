@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import com.mvbcast.crosswalk.EulaActivity;
 
@@ -15,7 +14,9 @@ public class BootDeviceReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
+        boolean autoStartUp = context.getSharedPreferences("display", Context.MODE_PRIVATE)
+                .getBoolean("autoStartup", true);
+        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) && autoStartUp) {
             if (Build.MODEL.equals("VBS100")) {
                 Intent activityIntent = new Intent(context, EulaActivity.class);
                 activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
