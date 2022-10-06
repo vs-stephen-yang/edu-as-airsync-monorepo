@@ -241,7 +241,7 @@ class StreamFunctionStates extends State<StreamFunction> {
         StreamFunction.showPresentFunction.value = false;
       }
     } else {
-      _callPrivilegeDialog();
+      _callPrivilegeDialog('Split Screen'); // todo: multi language
     }
   }
 
@@ -253,17 +253,17 @@ class StreamFunctionStates extends State<StreamFunction> {
         StreamFunction.showPresentFunction.value = false;
       }
     } else {
-      _callPrivilegeDialog();
+      _callPrivilegeDialog('Moderator'); // todo: multi language
     }
   }
 
-  _callPrivilegeDialog() {
+  _callPrivilegeDialog(String title) {
     AppAnalytics().trackEventLicenseInsufficientPrivilege();
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return const PrivilegeDialog();
+        return PrivilegeDialog(title: title);
       },
     );
   }

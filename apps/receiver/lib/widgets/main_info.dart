@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
@@ -12,10 +11,9 @@ import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/moderator.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/privilege_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class MainInfo extends StatefulWidget {
   const MainInfo({Key? key}) : super(key: key);
@@ -69,6 +67,8 @@ class _MainInfoState extends State<MainInfo> {
               BlocProvider.of<MainInfoBloc>(context).add(RegisterDisplayCode());
               break;
             case MainInfoState.getDisplayCodeInfoSuccess:
+              PrivilegeDialog.showPrivilegeQrCode.value =
+                  !PrivilegeDialog.showPrivilegeQrCode.value;
               if (AppPreferences().entityId.isNotEmpty &&
                   ControlSocket().entityId.isEmpty) {
                 AppAnalytics().trackEventUnenrolled();
@@ -163,9 +163,101 @@ class _MainInfoState extends State<MainInfo> {
                       direction: Axis.vertical,
                       alignment: WrapAlignment.center,
                       crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 16,
                       children: <Widget>[
-                        _buildMainInfoWidget(),
-                        _buildEnrollWidget(appConfig),
+                        Text(
+                          S.of(context).main_content_display_code,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                          _getDisplayCode(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 25,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          S.of(context).main_content_one_time_password,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        ValueListenableBuilder(
+                          valueListenable: _isEyeOpen,
+                          builder: (BuildContext context, bool value,
+                              Widget? child) {
+                            return Wrap(
+                              direction: Axis.horizontal,
+                              alignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 10,
+                              children: <Widget>[
+                                Text(
+                                  value ? ControlSocket().otpCode : 'XXXX',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                ValueListenableBuilder(
+                                  valueListenable: _countDownProgress,
+                                  builder: (BuildContext context, double value,
+                                      Widget? child) {
+                                    return Stack(
+                                      alignment: Alignment.center,
+                                      children: <Widget>[
+                                        Transform(
+                                          alignment: Alignment.center,
+                                          transform: Matrix4.rotationY(math.pi),
+                                          child: SizedBox(
+                                            width: 30,
+                                            height: 30,
+                                            child: CircularProgressIndicator(
+                                              value: value,
+                                              strokeWidth: 4,
+                                              backgroundColor: Colors.black,
+                                              valueColor:
+                                                  const AlwaysStoppedAnimation<
+                                                      Color>(Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          _countDownValue.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    AppAnalytics().trackEventAppOTPMaskClick();
+                                    _isEyeOpen.value = !_isEyeOpen.value;
+                                  },
+                                  icon: Image.asset(
+                                    value
+                                        ? 'assets/images/ic_eye_open.png'
+                                        : 'assets/images/ic_eye_close.png',
+                                    width: 48,
+                                    height: 48,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -195,154 +287,5 @@ class _MainInfoState extends State<MainInfo> {
       ..showSnackBar(
         SnackBar(content: Text(message)),
       );
-  }
-
-  _buildMainInfoWidget() {
-    return Wrap(
-      direction: Axis.vertical,
-      alignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: 16,
-      children: <Widget>[
-        Text(
-          S.of(context).main_content_display_code,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 30,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        Text(
-          _getDisplayCode(),
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 25,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        Text(
-          S.of(context).main_content_one_time_password,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 30,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        ValueListenableBuilder(
-          valueListenable: _isEyeOpen,
-          builder: (BuildContext context, bool value, Widget? child) {
-            return Wrap(
-              direction: Axis.horizontal,
-              alignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 10,
-              children: <Widget>[
-                Text(
-                  value ? ControlSocket().otpCode : "XXXX",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                ValueListenableBuilder(
-                  valueListenable: _countDownProgress,
-                  builder: (BuildContext context, double value, Widget? child) {
-                    return Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        Transform(
-                          alignment: Alignment.center,
-                          transform: Matrix4.rotationY(math.pi),
-                          child: SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: CircularProgressIndicator(
-                              value: value,
-                              strokeWidth: 4,
-                              backgroundColor: Colors.black,
-                              valueColor: const AlwaysStoppedAnimation<Color>(
-                                  Colors.white),
-                            ),
-                          ),
-                        ),
-                        Text(
-                          _countDownValue.toString(),
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                IconButton(
-                  onPressed: () {
-                    AppAnalytics().trackEventAppOTPMaskClick();
-                    _isEyeOpen.value = !_isEyeOpen.value;
-                  },
-                  icon: Image.asset(
-                    value
-                        ? 'assets/images/ic_eye_open.png'
-                        : 'assets/images/ic_eye_close.png',
-                    width: 48,
-                    height: 48,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  _buildEnrollWidget(AppConfig? appConfig) {
-    return Visibility(
-      visible: AppPreferences().entityId.isEmpty &&
-          !AppInstanceCreate().isNoneTouchModel,
-      child: Wrap(
-        direction: Axis.vertical,
-        alignment: WrapAlignment.center,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 16,
-        children: <Widget>[
-          const SizedBox(
-            height: 2,
-          ),
-          // Add size box to prevent flick.
-          SizedBox(
-            width: 80,
-            height: 80,
-            child: QrImage(
-              data: appConfig != null
-                  ? appConfig.settings.prefixQRCode +
-                      AppInstanceCreate().displayInstanceID
-                  : '',
-              version: QrVersions.auto,
-              size: 80.0,
-              padding: const EdgeInsets.all(3),
-              backgroundColor: Colors.white,
-              embeddedImage: const Svg('assets/images/ic_logo_my.svg'),
-              embeddedImageStyle: QrEmbeddedImageStyle(
-                // Cannot set too large, will scan failure!!
-                size: const Size(20, 20),
-              ),
-            ),
-          ),
-          AutoSizeText(
-            S.of(context).main_content_scan_to_enroll,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
