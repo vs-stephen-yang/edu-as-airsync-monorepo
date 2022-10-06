@@ -14,8 +14,16 @@ class VbsOTA extends StatefulWidget {
 
 class _VbsOTAState extends State<VbsOTA> {
   static const _vbsOTA = MethodChannel('com.mvbcast.crosswalk/vbs_ota');
+  static const _autoStartUp =
+      MethodChannel('com.mvbcast.crosswalk/auto_startup');
+
   bool _systemOTAEnableUI = false;
   int _downloadProgress = 0;
+
+  Future<bool> _getAutoStartUpSettings() async {
+    return await _autoStartUp
+        .invokeMethod('getAutoStartupValue', <String, dynamic>{});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +40,43 @@ class _VbsOTAState extends State<VbsOTA> {
     });
     return Container(
       padding: const EdgeInsets.all(20),
-      child: Stack(
-        alignment: Alignment.bottomCenter,
+      child: Column(
         children: [
+          Wrap(
+            direction: Axis.horizontal,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 10,
+            children: <Widget>[
+              FutureBuilder(
+                future: _getAutoStartUpSettings(),
+                builder: (context, snapshot) {
+                  return SizedBox(
+                    width: 25,
+                    height: 25,
+                    child: Checkbox(
+                      side: MaterialStateBorderSide.resolveWith((states) =>
+                          const BorderSide(width: 1.0, color: Colors.white)),
+                      value: (snapshot.hasData) ? snapshot.data as bool : null,
+                      tristate: true,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _autoStartUp.invokeMethod("setAutoStartupValue",
+                              <String, dynamic>{'startup': value});
+                        });
+                      },
+                    ),
+                  );
+                },
+              ),
+              const Text(
+                'Execute Display after startup',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
           Wrap(
             direction: Axis.horizontal,
             crossAxisAlignment: WrapCrossAlignment.center,
