@@ -169,7 +169,7 @@ class _MainInfoState extends State<MainInfo> {
                           S.of(context).main_content_display_code,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 30,
+                            fontSize: 40,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -177,7 +177,7 @@ class _MainInfoState extends State<MainInfo> {
                           _getDisplayCode(),
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 25,
+                            fontSize: 35,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -185,7 +185,7 @@ class _MainInfoState extends State<MainInfo> {
                           S.of(context).main_content_one_time_password,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 30,
+                            fontSize: 40,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -203,7 +203,7 @@ class _MainInfoState extends State<MainInfo> {
                                   value ? ControlSocket().otpCode : 'XXXX',
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 25,
+                                    fontSize: 35,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -218,8 +218,8 @@ class _MainInfoState extends State<MainInfo> {
                                           alignment: Alignment.center,
                                           transform: Matrix4.rotationY(math.pi),
                                           child: SizedBox(
-                                            width: 30,
-                                            height: 30,
+                                            width: 40,
+                                            height: 40,
                                             child: CircularProgressIndicator(
                                               value: value,
                                               strokeWidth: 4,
@@ -233,7 +233,7 @@ class _MainInfoState extends State<MainInfo> {
                                         Text(
                                           _countDownValue.toString(),
                                           style: const TextStyle(
-                                            fontSize: 12,
+                                            fontSize: 22,
                                             color: Colors.white,
                                           ),
                                         ),

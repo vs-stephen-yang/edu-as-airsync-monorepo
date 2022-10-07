@@ -17,7 +17,7 @@
   "main_language_title": "語言",
   "main_language_name": "繁體中文",
   "main_whats_new_title": "最新消息",
-  "main_whats_new_content": "Display Advanced 新增功能\n1.\t將Display註冊到實體: \n    i.\tIT Admin可使用Companion App掃描QR code進行Display註冊\n    ii.\t完成註冊後，IT Admin可在Display管理介面(實體管理>Display)進行權限管理 \n2.\t主持人模式: \n    i.\t最多可容納6位人員\n    ii.\t主持人模式下，開啟分割畫面後，最多可同時指定4位人員同時投影\n    iii.\t主持人可隨時指定人員開始或是結束投影\n3.\t分割畫面模式: \n    i.\t最多可同時4位人員同時投影",
+  "main_whats_new_content": "外觀調整",
   "main_split_screen_title": "分割畫面",
   "main_split_screen_waiting": "分割畫面已啟動",
   "main_split_screen_question": "啟動分割畫面?",

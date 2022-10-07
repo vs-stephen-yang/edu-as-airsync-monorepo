@@ -1,4 +1,5 @@
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/language_selection.dart';
@@ -84,28 +85,34 @@ class StreamFunctionStates extends State<StreamFunction> {
                         );
                       },
                     ),
-                    IconButton(
-                      iconSize: 48,
-                      onPressed: ControlSocket().moderator != null
-                          ? null
-                          : () {
-                              _showSplitScreen(false);
-                            },
-                      icon: Image(
-                        image: Svg(iconSplitScreen),
+                    Visibility(
+                      visible: !AppInstanceCreate().isDisableAdvance,
+                      child: IconButton(
+                        iconSize: 48,
+                        onPressed: ControlSocket().moderator != null
+                            ? null
+                            : () {
+                                _showSplitScreen(false);
+                              },
+                        icon: Image(
+                          image: Svg(iconSplitScreen),
+                        ),
                       ),
                     ),
-                    IconButton(
-                      iconSize: 48,
-                      onPressed: (ControlSocket().moderator == null &&
-                              SplitScreen
-                                  .mapSplitScreen.value[keySplitScreenEnable])
-                          ? null
-                          : () {
-                              _showModerator(false);
-                            },
-                      icon: Image(
-                        image: Svg(iconModerator),
+                    Visibility(
+                      visible: !AppInstanceCreate().isDisableAdvance,
+                      child: IconButton(
+                        iconSize: 48,
+                        onPressed: (ControlSocket().moderator == null &&
+                                SplitScreen
+                                    .mapSplitScreen.value[keySplitScreenEnable])
+                            ? null
+                            : () {
+                                _showModerator(false);
+                              },
+                        icon: Image(
+                          image: Svg(iconModerator),
+                        ),
                       ),
                     ),
                     IconButton(

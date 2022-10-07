@@ -63,8 +63,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("感謝您使用 myViewBoard Display"),
         "main_wait_title": MessageLookupByLibrary.simpleMessage("等待投影中..."),
         "main_wait_up_next": MessageLookupByLibrary.simpleMessage("下一位投影者"),
-        "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "Display Advanced 新增功能\n1.\t將Display註冊到實體: \n    i.\tIT Admin可使用Companion App掃描QR code進行Display註冊\n    ii.\t完成註冊後，IT Admin可在Display管理介面(實體管理>Display)進行權限管理 \n2.\t主持人模式: \n    i.\t最多可容納6位人員\n    ii.\t主持人模式下，開啟分割畫面後，最多可同時指定4位人員同時投影\n    iii.\t主持人可隨時指定人員開始或是結束投影\n3.\t分割畫面模式: \n    i.\t最多可同時4位人員同時投影"),
+        "main_whats_new_content": MessageLookupByLibrary.simpleMessage("外觀調整"),
         "main_whats_new_title": MessageLookupByLibrary.simpleMessage("最新消息"),
         "moderator_activate": MessageLookupByLibrary.simpleMessage("啟用"),
         "moderator_activate_split_screen":
