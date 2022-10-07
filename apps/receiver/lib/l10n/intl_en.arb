@@ -26,6 +26,7 @@
   "main_register_display_code_failure": "Display App registration failed. Please try again.",
   "main_privilege_message": "This is a Display Advanced feature. Please contact your IT administrator for more information.",
   "main_privilege_close": "Close",
+  "main_auto_startup": "Launch Display on startup",
   "moderator_presentersList": "Presenters",
   "moderator_activate": "Activate",
   "moderator_verifyCode_fail": "Something went wrong. Please try again.",
