@@ -26,6 +26,7 @@
   "main_register_display_code_failure": "註冊投影辨識碼失敗",
   "main_privilege_message": "權限不足，請聯繫IT管理員",
   "main_privilege_close": "關閉",
+  "main_auto_startup": "開機後自動執行Display",
   "moderator_presentersList": "人員列表",
   "moderator_activate": "啟用",
   "moderator_verifyCode_fail": "抱歉，出現問題，請稍後再試。",

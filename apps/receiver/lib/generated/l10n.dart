@@ -320,6 +320,16 @@ class S {
     );
   }
 
+  /// `Launch Display on startup`
+  String get main_auto_startup {
+    return Intl.message(
+      'Launch Display on startup',
+      name: 'main_auto_startup',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Presenters`
   String get moderator_presentersList {
     return Intl.message(

@@ -26,6 +26,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "eula_disagree": MessageLookupByLibrary.simpleMessage("不同意"),
         "eula_title": MessageLookupByLibrary.simpleMessage(
             "myViewBoard Display 終端使用者授權合約"),
+        "main_auto_startup":
+            MessageLookupByLibrary.simpleMessage("開機後自動執行Display"),
         "main_content_display_code":
             MessageLookupByLibrary.simpleMessage("投影辨識碼"),
         "main_content_one_time_password":
