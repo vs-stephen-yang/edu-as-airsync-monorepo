@@ -230,10 +230,10 @@ class S {
     );
   }
 
-  /// `New Display Advanced features\n1.\tDisplay enrollment as an entity instance: \n    i.\tEntity IT Admin can use the Companion app to scan a QR code to complete a Display enrollment.\n    ii.\tEntity IT Admin can grant or revoke Display Advanced licenses after signing into myviewboard.com and going to Entity Management > Display.\n2.\tModerator Mode: \n    i.\tA moderator can add up to 6 presenters and remove them at any time. \n    ii.\tThe moderator can select up to 4 presenters to share their screens.\n    iii.\tThe moderator can start or stop any presenter's screen sharing.\n3.\tSplit Screen Mode: \n    i.\tUp to 4 presenters can share their screens simultaneously.\n\n`
+  /// `UI adjustment.`
   String get main_whats_new_content {
     return Intl.message(
-      'New Display Advanced features\n1.\tDisplay enrollment as an entity instance: \n    i.\tEntity IT Admin can use the Companion app to scan a QR code to complete a Display enrollment.\n    ii.\tEntity IT Admin can grant or revoke Display Advanced licenses after signing into myviewboard.com and going to Entity Management > Display.\n2.\tModerator Mode: \n    i.\tA moderator can add up to 6 presenters and remove them at any time. \n    ii.\tThe moderator can select up to 4 presenters to share their screens.\n    iii.\tThe moderator can start or stop any presenter\'s screen sharing.\n3.\tSplit Screen Mode: \n    i.\tUp to 4 presenters can share their screens simultaneously.\n\n',
+      'UI adjustment.',
       name: 'main_whats_new_content',
       desc: '',
       args: [],

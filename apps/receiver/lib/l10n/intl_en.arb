@@ -17,7 +17,7 @@
   "main_language_title": "Language",
   "main_language_name": "English",
   "main_whats_new_title": "What’s New on Display?",
-  "main_whats_new_content": "New Display Advanced features\n1.\tDisplay enrollment as an entity instance: \n    i.\tEntity IT Admin can use the Companion app to scan a QR code to complete a Display enrollment.\n    ii.\tEntity IT Admin can grant or revoke Display Advanced licenses after signing into myviewboard.com and going to Entity Management > Display.\n2.\tModerator Mode: \n    i.\tA moderator can add up to 6 presenters and remove them at any time. \n    ii.\tThe moderator can select up to 4 presenters to share their screens.\n    iii.\tThe moderator can start or stop any presenter's screen sharing.\n3.\tSplit Screen Mode: \n    i.\tUp to 4 presenters can share their screens simultaneously.\n\n",
+  "main_whats_new_content": "UI adjustment.",
   "main_split_screen_title": "Split Screen",
   "main_split_screen_waiting": "Split screen enabled. Waiting for presenter to share screen...",
   "main_split_screen_question": "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once.",

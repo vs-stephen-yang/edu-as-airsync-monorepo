@@ -50,6 +50,8 @@ class AppInstanceCreate {
   bool get isNoneTouchModel =>
       _modelName.startsWith("CDE") || _modelName.startsWith("LD");
 
+  bool get isDisableAdvance => true;
+
   // Display instance id, for Display backend used (Control socket, entity enroll,...)
   // "VBS100" is serial number, others is App instance id
   String get displayInstanceID =>
