@@ -162,7 +162,7 @@ class ModeratorSocket {
     socket.emit('set-ui-state', {
       'messageFor': displayCode,
       'action': 'set-ui-state',
-      'status': "",
+      'status': '',
       'extra': {
         'code': code,
         'delegate': delegate,

@@ -5,14 +5,14 @@ import 'dart:convert';
 class GetString {
   static getRandomString(int length) {
     const data =
-        "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
+        'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
     Random random = Random();
     return String.fromCharCodes(Iterable.generate(
         length, (_) => data.codeUnitAt(random.nextInt(data.length))));
   }
 
   static getShortTimeString(String keyStr, String data) {
-    DateFormat inputFormat = DateFormat("MM-dd-HH-mm-ss", "en_US");
+    DateFormat inputFormat = DateFormat('MM-dd-HH-mm-ss', 'en_US');
     return inputFormat.format(DateTime.now());
   }
 

@@ -107,7 +107,7 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
     if (_webRTCNativeViewController != null) {
       presenterName = _webRTCNativeViewController!.presenterName;
       if (presenterName.length > 10) {
-        presenterName = presenterName.substring(0, 10) + "..";
+        presenterName = presenterName.substring(0, 10) + '..';
       }
     }
     return Stack(
@@ -238,6 +238,6 @@ class WebRTCNativeViewController {
 
   WebRTCNativeViewController(WebRTCNativeViewState viewState, int id) {
     nativeViewState = viewState;
-    channel = MethodChannel("com.mvbcast.crosswalk/webrtc_native_view_$id");
+    channel = MethodChannel('com.mvbcast.crosswalk/webrtc_native_view_$id');
   }
 }

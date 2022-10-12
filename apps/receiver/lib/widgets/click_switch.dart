@@ -71,14 +71,14 @@ class CheckBoxSwitchState extends State<CheckBoxSwitch>
     double height = widget.height;
     _open = widget.bOpen;
     String name = widget.name;
-    if (widget.name.contains("\n")) name = widget.name.replaceAll("\n", " ");
-    if (name.length > 10) name = name.substring(0, 10) + "..";
+    if (widget.name.contains('\n')) name = widget.name.replaceAll('\n', ' ');
+    if (name.length > 10) name = name.substring(0, 10) + '..';
 
     String shortName = name.toUpperCase();
     var reg = RegExp(r'^[A-Z0-9.,-]+\s+[A-Z0-9.,-]+$');
     if (reg.hasMatch(shortName)) {
-      shortName = shortName.split(" ").first.substring(0, 1) +
-          shortName.split(" ").last.substring(0, 1);
+      shortName = shortName.split(' ').first.substring(0, 1) +
+          shortName.split(' ').last.substring(0, 1);
     } else if (name.length > 1) {
       shortName = name.substring(0, 2).toUpperCase();
     }

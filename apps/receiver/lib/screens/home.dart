@@ -35,7 +35,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   double _fullWidth = 0, _fullHeight = 0, _halfWidth = 0, _halfHeight = 0;
   static const _androidAppRetain =
-      MethodChannel("com.mvbcast.crosswalk/android_app_retain");
+      MethodChannel('com.mvbcast.crosswalk/android_app_retain');
 
   @override
   Widget build(BuildContext context) {
