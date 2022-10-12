@@ -50,7 +50,11 @@ class AppInstanceCreate {
   bool get isNoneTouchModel =>
       _modelName.startsWith("CDE") || _modelName.startsWith("LD");
 
-  bool get isDisableAdvance => true;
+  int _versionCode = 0;
+
+  bool get _isProduction => _versionCode % 2 == 0;
+
+  bool get isDisableAdvance => _isProduction;
 
   // Display instance id, for Display backend used (Control socket, entity enroll,...)
   // "VBS100" is serial number, others is App instance id
@@ -75,6 +79,8 @@ class AppInstanceCreate {
 
   _createInstanceId(ConfigSettings settings, PackageInfo packageInfo) async {
     await _load();
+
+    _versionCode = int.parse(packageInfo.buildNumber);
 
     if (_instanceID.isEmpty) {
       try {
