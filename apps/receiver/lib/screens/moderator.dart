@@ -153,7 +153,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                                 display.splitIndexMap.forEach((key, value) {
                                   if (!display.splitIndexMap
                                       .containsValue(peer.id)) {
-                                    print("zz map $key $value");
+                                    print('zz map $key $value');
                                     if (value == '') {
                                       display.splitIndexMap[key] = peer.id;
                                     }

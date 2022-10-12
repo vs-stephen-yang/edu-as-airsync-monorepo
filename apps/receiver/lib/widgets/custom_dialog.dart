@@ -36,7 +36,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "${widget.description}",
+                widget.description,
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

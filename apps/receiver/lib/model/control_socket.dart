@@ -214,7 +214,7 @@ class ControlSocket {
   }
 
   void _printControlSocketLog(String? event, dynamic args) {
-    print("mControlSocketIO: $event ${args.toString()}");
+    print('mControlSocketIO: $event ${args.toString()}');
   }
 
   void _handleDisplayResponse(dynamic arg) async {
@@ -223,7 +223,7 @@ class ControlSocket {
       var resp = DisplayMessage.fromJson(arg);
       switch (resp.action) {
         // region Moderator
-        case "set-moderator":
+        case 'set-moderator':
           Extra extra = Extra.fromJson(resp.extra);
           moderator = Moderator.fromJson(extra.moderator);
           meetingId = extra.meetingId ?? '';
@@ -239,7 +239,7 @@ class ControlSocket {
             });
           }
           break;
-        case "unset-moderator":
+        case 'unset-moderator':
           moderator = null;
           meetingId = '';
 
@@ -249,7 +249,7 @@ class ControlSocket {
           break;
         // endregion Moderator
         // region Present
-        case "start-present":
+        case 'start-present':
           WebRTCNativeViewController? selectedController;
           if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
             for (WebRTCNativeViewController controller in _webRtcController) {
@@ -320,7 +320,7 @@ class ControlSocket {
               if (moderator == null &&
                   !SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
                 ConnectionTimer.getInstance().startRemainingTimeTimer(() {
-                  selectedController!.channel.invokeMethod("stopVideo");
+                  selectedController!.channel.invokeMethod('stopVideo');
                 });
               }
             } on PlatformException catch (e) {
@@ -343,7 +343,7 @@ class ControlSocket {
             }
           }
           break;
-        case "stop-present":
+        case 'stop-present':
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
 
@@ -360,7 +360,7 @@ class ControlSocket {
                 selectedController.presentId, selectedController.presenterId);
 
             try {
-              await selectedController.channel.invokeMethod("stopVideo");
+              await selectedController.channel.invokeMethod('stopVideo');
               ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
               if (moderator == null &&
                   !SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
@@ -371,7 +371,7 @@ class ControlSocket {
             }
           }
           break;
-        case "pause-present":
+        case 'pause-present':
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
 
@@ -388,14 +388,14 @@ class ControlSocket {
                 selectedController.presentId, selectedController.presenterId);
 
             try {
-              await selectedController.channel.invokeMethod("pauseVideo");
+              await selectedController.channel.invokeMethod('pauseVideo');
               _handleStreamPauseSuccess(selectedController, resp.nextId);
             } on PlatformException catch (e) {
               log(e.toString());
             }
           }
           break;
-        case "resume-present":
+        case 'resume-present':
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
 
@@ -412,7 +412,7 @@ class ControlSocket {
                 selectedController.presentId, selectedController.presenterId);
 
             try {
-              await selectedController.channel.invokeMethod("resumeVideo");
+              await selectedController.channel.invokeMethod('resumeVideo');
             } on PlatformException catch (e) {
               log(e.toString());
             }
@@ -420,7 +420,7 @@ class ControlSocket {
           break;
         // endregion  Present
         // region Communication
-        case "mode-update":
+        case 'mode-update':
           // Set updateDisplayStatus true, and wait disconnectedP2pClient set
           // MainInfo.showMainInfo.value to update privilege status.
           MainInfo.updateDisplayStatus = true;
@@ -629,7 +629,7 @@ class ControlSocket {
       selectedController = temp[i];
       if (selectedController.presenterId.isNotEmpty) {
         try {
-          await selectedController.channel.invokeMethod("stopVideo");
+          await selectedController.channel.invokeMethod('stopVideo');
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
         } on PlatformException catch (e) {
           log(e.toString());
@@ -642,7 +642,7 @@ class ControlSocket {
     WebRTCNativeViewController? selectedController = _webRtcController[index];
     if (selectedController.presenterId.isNotEmpty) {
       try {
-        await selectedController.channel.invokeMethod("stopVideo");
+        await selectedController.channel.invokeMethod('stopVideo');
         ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       } on PlatformException catch (e) {
         log(e.toString());

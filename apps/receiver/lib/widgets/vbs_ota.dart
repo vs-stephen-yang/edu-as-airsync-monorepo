@@ -60,7 +60,7 @@ class _VbsOTAState extends State<VbsOTA> {
                       tristate: true,
                       onChanged: (bool? value) {
                         setState(() {
-                          _autoStartUp.invokeMethod("setAutoStartupValue",
+                          _autoStartUp.invokeMethod('setAutoStartupValue',
                               <String, dynamic>{'startup': value});
                         });
                       },

@@ -74,7 +74,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
                   color: Colors.transparent,
                   child: TextButton(
                     onPressed: () {
-                      _debugSwitch.invokeMethod("toggleDebugInfoVisible");
+                      _debugSwitch.invokeMethod('toggleDebugInfoVisible');
                     },
                     child: const Text(
                       '-- Toggle webrtc logger panel --',
