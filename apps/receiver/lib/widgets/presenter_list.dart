@@ -4,7 +4,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/displays.dart';
 import 'package:display_flutter/model/moderator_socket.dart';
 import 'package:display_flutter/screens/split_screen.dart';
-import 'package:display_flutter/widgets/click_switch.dart';
+import 'package:display_flutter/widgets/check_box_switch.dart';
 import 'package:flutter/material.dart';
 
 class PresenterList extends StatefulWidget {
