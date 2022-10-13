@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:display_flutter/widgets/click_switch.dart';
+import 'package:display_flutter/widgets/check_box_switch.dart';
 import 'package:flutter/widgets.dart';
 
 class Displays {

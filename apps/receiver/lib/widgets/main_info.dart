@@ -9,9 +9,9 @@ import 'package:display_flutter/blocs/main_info_bloc.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/home.dart';
-import 'package:display_flutter/screens/moderator.dart';
+import 'package:display_flutter/screens/moderator_view.dart';
 import 'package:display_flutter/settings/app_config.dart';
-import 'package:display_flutter/widgets/privilege_message.dart';
+import 'package:display_flutter/widgets/privilege_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

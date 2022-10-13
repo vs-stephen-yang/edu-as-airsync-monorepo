@@ -3,11 +3,11 @@ import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/language_selection.dart';
-import 'package:display_flutter/screens/moderator.dart';
+import 'package:display_flutter/screens/moderator_view.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/screens/whats_new.dart';
 import 'package:display_flutter/widgets/main_info.dart';
-import 'package:display_flutter/widgets/privilege_message.dart';
+import 'package:display_flutter/widgets/privilege_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 

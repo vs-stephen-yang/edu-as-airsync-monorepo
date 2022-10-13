@@ -9,7 +9,7 @@ import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/moderator_helper.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/home.dart';
-import 'package:display_flutter/screens/moderator.dart';
+import 'package:display_flutter/screens/moderator_view.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/get_string.dart';
 import 'package:display_flutter/widgets/main_info.dart';
