@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/app_auto_enroll.dart';
 import 'package:display_flutter/app_exception_report.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
@@ -30,6 +31,14 @@ Future<void> commonEntry(ConfigSettings settings) async {
       appName: packageInfo.appName,
       appVersion: packageInfo.version,
       child: const MyApp());
+
+  if (AppInstanceCreate().isRegistered && AppPreferences().entityId.isEmpty) {
+    String entityId = await AppAutoEnroll()
+        .getEnrollInformation(settings, AppInstanceCreate().displayInstanceID);
+    if (entityId.isNotEmpty) {
+      AppPreferences().set(entityId: entityId);
+    }
+  }
 
   await AppExceptionReport().ensureInitialized(settings, packageInfo);
   await AppAnalytics().ensureInitialized(settings);
