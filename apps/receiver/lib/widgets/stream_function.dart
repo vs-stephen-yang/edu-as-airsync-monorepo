@@ -75,7 +75,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                           child: IconButton(
                             iconSize: 48,
                             onPressed: () {
-                              DebugSwitch.showDebugSwitch.value = true;
+                              _showMenuDialog(const DebugSwitch());
                             },
                             icon: const Icon(
                               Icons.build_outlined,
@@ -119,7 +119,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                       iconSize: 48,
                       onPressed: () {
                         AppAnalytics().trackEventAppLanguageClick();
-                        LanguageSelection.showLanguage.value = true;
+                        _showMenuDialog(const LanguageSelection());
                       },
                       icon: const Image(
                         image: Svg('assets/images/ic_language.svg'),
@@ -129,7 +129,7 @@ class StreamFunctionStates extends State<StreamFunction> {
                       iconSize: 48,
                       onPressed: () {
                         AppAnalytics().trackEventAppWhatsNewsClick();
-                        WhatsNew.showWhatsNew.value = true;
+                        _showMenuDialog(const WhatsNew());
                       },
                       icon: const Image(
                         image: Svg('assets/images/ic_whats_news.svg'),
@@ -231,47 +231,44 @@ class StreamFunctionStates extends State<StreamFunction> {
             },
           ),
         ),
-        const SplitScreen(),
-        ModeratorView(),
-        const LanguageSelection(),
-        const WhatsNew(),
-        const DebugSwitch(),
       ],
+    );
+  }
+
+  _showMenuDialog(Widget widget) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return widget;
+      },
     );
   }
 
   _showSplitScreen(bool leavePresentFunction) {
     AppAnalytics().trackEventAppSplitScreenClick();
     if (ControlSocket().featureList.contains('SplitScreen')) {
-      SplitScreen.showSplitScreen.value = true;
+      _showMenuDialog(const SplitScreen());
       if (leavePresentFunction) {
         StreamFunction.showPresentFunction.value = false;
       }
     } else {
-      _callPrivilegeDialog('Split Screen'); // todo: multi language
+      // todo: multi language
+      _showMenuDialog(const PrivilegeDialog(title: 'Split Screen'));
     }
   }
 
   _showModerator(bool leavePresentFunction) {
     AppAnalytics().trackEventAppModeratorClick();
     if (ControlSocket().featureList.contains('Moderator')) {
-      ModeratorView.showModerator.value = true;
+      _showMenuDialog(ModeratorView());
       if (leavePresentFunction) {
         StreamFunction.showPresentFunction.value = false;
       }
     } else {
-      _callPrivilegeDialog('Moderator'); // todo: multi language
+      AppAnalytics().trackEventLicenseInsufficientPrivilege();
+      // todo: multi language
+      _showMenuDialog(const PrivilegeDialog(title: 'Moderator'));
     }
-  }
-
-  _callPrivilegeDialog(String title) {
-    AppAnalytics().trackEventLicenseInsufficientPrivilege();
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return PrivilegeDialog(title: title);
-      },
-    );
   }
 }

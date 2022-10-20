@@ -16,6 +16,7 @@ import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:uuid/uuid.dart';
 
@@ -130,24 +131,17 @@ class ControlSocket {
 
           Home.showTitleBottomBar.value = false;
           StreamFunction.showWaitFunction.value = false;
+          StreamFunction.showStreamMenu.value = true;
+
           if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-            if (SplitScreen.showSplitScreen.value) {
-              StreamFunction.showStreamMenu.value = false;
-            } else if (ModeratorView.showModerator.value) {
-              StreamFunction.showStreamMenu.value = false;
+            if (moderator != null && navService.canPop()) {
               ModeratorHelper.getInstance().refresh();
-            } else if (StreamFunction.showPresentFunction.value) {
-              StreamFunction.showStreamMenu.value = false;
-            } else {
-              StreamFunction.showStreamMenu.value = true;
             }
           } else {
-            if (moderator != null && ModeratorView.showModerator.value) {
-              StreamFunction.showStreamMenu.value = false;
+            if (moderator != null && navService.canPop()) {
               ModeratorHelper.getInstance().refresh();
             } else {
-              SplitScreen.showSplitScreen.value = false;
-              ModeratorView.showModerator.value = false;
+              navService.popUntil('/home');
             }
           }
 
@@ -183,7 +177,7 @@ class ControlSocket {
               }
             }
             if (!presenting) {
-              if (moderator != null && ModeratorView.showModerator.value) {
+              if (moderator != null && navService.canPop()) {
                 ModeratorHelper.getInstance().refresh();
               }
               Home.showTitleBottomBar.value = true;
@@ -198,7 +192,7 @@ class ControlSocket {
               Home.isSelectedList.value = List.from(Home.isSelectedList.value);
             }
           } else {
-            if (moderator != null && ModeratorView.showModerator.value) {
+            if (moderator != null && navService.canPop()) {
               ModeratorHelper.getInstance().refresh();
             }
             Home.showTitleBottomBar.value = true;

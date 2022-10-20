@@ -164,14 +164,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           ? '/eula'
           : '/home',
       navigatorKey: NavigationService.navigationKey,
+      routes: {
+        // for "navService.popUntil('/home')"
+        '/home': (context) => const Home(),
+      },
       onGenerateRoute: (routeSettings) {
         switch (routeSettings.name) {
           case '/eula':
             return MaterialPageRoute<String>(
                 builder: (context) => const Eula());
-          case '/home':
-            return MaterialPageRoute<String>(
-                builder: (context) => const Home());
         }
         return null;
       },
