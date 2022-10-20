@@ -9,15 +9,15 @@ import 'package:display_flutter/model/moderator_socket.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/custom_alert_dialog.dart';
+import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:display_flutter/widgets/presenter_list.dart';
-import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
 class ModeratorView extends StatefulWidget {
   ModeratorView({Key? key}) : super(key: key);
-  static ValueNotifier<bool> showModerator = ValueNotifier(false);
   static ValueNotifier<bool> showModeratorMessage = ValueNotifier(false);
 
   final GlobalKey<PresenterListState> attendeesListKey = GlobalKey();
@@ -39,7 +39,7 @@ class ModeratorView extends StatefulWidget {
     moderatorSocket.disconnect();
     Displays().removeAllDisplayInfo();
     AppPreferences().set(moderatorId: '');
-    showModerator.value = false;
+    navService.popUntil('/home');
   }
 }
 
@@ -53,329 +53,295 @@ class _ModeratorViewState extends State<ModeratorView> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: ModeratorView.showModerator,
-      builder: (BuildContext context, bool value, Widget? child) {
-        return Visibility(
-          visible: value,
-          child: ChangeNotifierProvider.value(
-            value: ModeratorHelper.getInstance(),
-            child: Consumer<ModeratorHelper>(builder: (context, model, child) {
-              return Container(
-                margin: const EdgeInsets.only(bottom: 140),
-                height: MediaQuery.of(context).size.height * 0.6,
-                width: MediaQuery.of(context).size.width * 0.25,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(15)),
-                  color: ControlSocket().isPresenting()
-                      ? AppColors.primary_grey_tran
-                      : AppColors.primary_grey,
-                ),
-                child: StreamBuilder(
-                  stream: moderatorSocket.setModeratorResponse.getResponse,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<Map> peerlistSnapshot) {
-                    if (peerlistSnapshot.hasData &&
-                        moderatorSocket.peerListHasNewData) {
-                      moderatorSocket.peerListHasNewData = false;
-                      var messageFor = peerlistSnapshot.data!['messageFor'];
-                      var action = peerlistSnapshot.data!['action'];
-                      if (action == 'update-peerlist') {
-                        var displays = Displays().getDisplays();
-                        if (displays
-                            .contains(DisplayInfo(displayId: messageFor))) {
-                          DisplayInfo display = displays.firstWhere(
-                              (element) => element.displayId == messageFor,
-                              orElse: null);
-                          int tempPresenterTime = display.presenterTime;
-                          var temp = display.peerList;
-                          display.clearStatus();
+    return MenuDialog(
+      backgroundColor: ControlSocket().isPresenting()
+          ? AppColors.primary_grey_tran
+          : AppColors.primary_grey,
+      child: ChangeNotifierProvider.value(
+        value: ModeratorHelper.getInstance(),
+        child: Consumer<ModeratorHelper>(builder: (context, model, child) {
+          return StreamBuilder(
+            stream: moderatorSocket.setModeratorResponse.getResponse,
+            builder:
+                (BuildContext context, AsyncSnapshot<Map> peerlistSnapshot) {
+              if (peerlistSnapshot.hasData &&
+                  moderatorSocket.peerListHasNewData) {
+                moderatorSocket.peerListHasNewData = false;
+                var messageFor = peerlistSnapshot.data!['messageFor'];
+                var action = peerlistSnapshot.data!['action'];
+                if (action == 'update-peerlist') {
+                  var displays = Displays().getDisplays();
+                  if (displays.contains(DisplayInfo(displayId: messageFor))) {
+                    DisplayInfo display = displays.firstWhere(
+                        (element) => element.displayId == messageFor,
+                        orElse: null);
+                    int tempPresenterTime = display.presenterTime;
+                    var temp = display.peerList;
+                    display.clearStatus();
 
-                          List value =
-                              peerlistSnapshot.data!['extra']['peerlist'];
-                          value.sort((a, b) => a['presenter']['name']
-                              .compareTo(b['presenter']['name']));
-                          AppAnalytics()
-                              .trackEventModeratorPresentersListUpdated(
-                                  value.length.toString());
-                          for (int i = 0; i < value.length; i++) {
-                            DisplayPeer peer = DisplayPeer();
-                            peer.id = value[i]['presenter']['id'];
-                            peer.presenter = value[i]['presenter']['name'];
-                            peer.status = value[i]['status'];
-                            peer.peer = value[i];
-                            peer.key = GlobalKey();
-                            String action = value[i]['action'];
-                            for (var element in temp) {
-                              if (element.id == peer.id) {
-                                peer.waitReply = element.waitReply;
-                              }
-                            }
-                            if (action == peer.status) {
-                              peer.waitReply = false;
-                            }
+                    List value = peerlistSnapshot.data!['extra']['peerlist'];
+                    value.sort((a, b) => a['presenter']['name']
+                        .compareTo(b['presenter']['name']));
+                    AppAnalytics().trackEventModeratorPresentersListUpdated(
+                        value.length.toString());
+                    for (int i = 0; i < value.length; i++) {
+                      DisplayPeer peer = DisplayPeer();
+                      peer.id = value[i]['presenter']['id'];
+                      peer.presenter = value[i]['presenter']['name'];
+                      peer.status = value[i]['status'];
+                      peer.peer = value[i];
+                      peer.key = GlobalKey();
+                      String action = value[i]['action'];
+                      for (var element in temp) {
+                        if (element.id == peer.id) {
+                          peer.waitReply = element.waitReply;
+                        }
+                      }
+                      if (action == peer.status) {
+                        peer.waitReply = false;
+                      }
 
-                            if (peer.status != 'remove') {
-                              display.peerList.add(peer);
-                            } else {
-                              if (SplitScreen
-                                  .mapSplitScreen.value[keySplitScreenEnable]) {
-                                if (display.splitIndexMap
-                                    .containsValue(peer.id)) {
-                                  display.splitIndexMap.forEach((key, value) {
-                                    if (value == (peer.id)) {
-                                      display.splitIndexMap[key] = '';
-                                    }
-                                  });
-                                }
+                      if (peer.status != 'remove') {
+                        display.peerList.add(peer);
+                      } else {
+                        if (SplitScreen
+                            .mapSplitScreen.value[keySplitScreenEnable]) {
+                          if (display.splitIndexMap.containsValue(peer.id)) {
+                            display.splitIndexMap.forEach((key, value) {
+                              if (value == (peer.id)) {
+                                display.splitIndexMap[key] = '';
                               }
-                            }
-
-                            if (peer.status == 'stop') {
-                              if (SplitScreen
-                                  .mapSplitScreen.value[keySplitScreenEnable]) {
-                                if (display.splitIndexMap
-                                    .containsValue(peer.id)) {
-                                  display.splitIndexMap.forEach((key, value) {
-                                    if (value == (peer.id)) {
-                                      display.splitIndexMap[key] = '';
-                                    }
-                                  });
-                                }
-                              }
-                            }
-
-                            if (peer.status == 'play' ||
-                                peer.status == 'pause') {
-                              if (SplitScreen
-                                  .mapSplitScreen.value[keySplitScreenEnable]) {
-                                // check
-                                display.splitIndexMap.forEach((key, value) {
-                                  if (!display.splitIndexMap
-                                      .containsValue(peer.id)) {
-                                    print('zz map $key $value');
-                                    if (value == '') {
-                                      display.splitIndexMap[key] = peer.id;
-                                    }
-                                  }
-                                });
-                              } else {
-                                if (display.peerList[i].id !=
-                                    display.presenterId) {
-                                  moderatorSocket.peerAction(
-                                      'stop',
-                                      display.peerList[i].peer,
-                                      display.displayResponse);
-                                } else {
-                                  display.presenterIndex = i;
-                                  display.presenterName = peer.presenter;
-                                  display.presenterStatus = peer.status;
-                                  display.presenterSignalStrength = 0.5;
-                                  display.presenterTime = tempPresenterTime;
-                                }
-                              }
-                            }
+                            });
                           }
                         }
                       }
-                    } else if (peerlistSnapshot.hasData &&
-                        moderatorSocket.setModeratorHasNewData) {
-                      moderatorSocket.setModeratorHasNewData = false;
-                      var property = peerlistSnapshot.data!['property'];
-                      if (property != null && property.length > 0) {
-                        // bindToDisplay will have property
-                        var display = DisplayInfo(
-                          displayId: peerlistSnapshot.data!['code'],
-                          displayResponse: peerlistSnapshot.data,
-                        );
-                        Displays().addDisplayInfo(display);
+
+                      if (peer.status == 'stop') {
+                        if (SplitScreen
+                            .mapSplitScreen.value[keySplitScreenEnable]) {
+                          if (display.splitIndexMap.containsValue(peer.id)) {
+                            display.splitIndexMap.forEach((key, value) {
+                              if (value == (peer.id)) {
+                                display.splitIndexMap[key] = '';
+                              }
+                            });
+                          }
+                        }
                       }
-                    } else if (peerlistSnapshot.hasData &&
-                        moderatorSocket.unsetModeratorHasNewData) {
-                      moderatorSocket.unsetModeratorHasNewData = false;
-                      var displays = Displays().getDisplays();
-                      var messageFor = peerlistSnapshot.data!['messageFor'];
-                      if (displays
-                          .contains(DisplayInfo(displayId: messageFor))) {
-                        widget.logout();
+
+                      if (peer.status == 'play' || peer.status == 'pause') {
+                        if (SplitScreen
+                            .mapSplitScreen.value[keySplitScreenEnable]) {
+                          // check
+                          display.splitIndexMap.forEach((key, value) {
+                            if (!display.splitIndexMap.containsValue(peer.id)) {
+                              print('zz map $key $value');
+                              if (value == '') {
+                                display.splitIndexMap[key] = peer.id;
+                              }
+                            }
+                          });
+                        } else {
+                          if (display.peerList[i].id != display.presenterId) {
+                            moderatorSocket.peerAction(
+                                'stop',
+                                display.peerList[i].peer,
+                                display.displayResponse);
+                          } else {
+                            display.presenterIndex = i;
+                            display.presenterName = peer.presenter;
+                            display.presenterStatus = peer.status;
+                            display.presenterSignalStrength = 0.5;
+                            display.presenterTime = tempPresenterTime;
+                          }
+                        }
                       }
                     }
-                    return Column(
-                      children: [
-                        Container(
-                          alignment: Alignment.center,
-                          height: MediaQuery.of(context).size.height * 0.08,
-                          margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-                          color: Colors.transparent,
+                  }
+                }
+              } else if (peerlistSnapshot.hasData &&
+                  moderatorSocket.setModeratorHasNewData) {
+                moderatorSocket.setModeratorHasNewData = false;
+                var property = peerlistSnapshot.data!['property'];
+                if (property != null && property.length > 0) {
+                  // bindToDisplay will have property
+                  var display = DisplayInfo(
+                    displayId: peerlistSnapshot.data!['code'],
+                    displayResponse: peerlistSnapshot.data,
+                  );
+                  Displays().addDisplayInfo(display);
+                }
+              } else if (peerlistSnapshot.hasData &&
+                  moderatorSocket.unsetModeratorHasNewData) {
+                moderatorSocket.unsetModeratorHasNewData = false;
+                var displays = Displays().getDisplays();
+                var messageFor = peerlistSnapshot.data!['messageFor'];
+                if (displays.contains(DisplayInfo(displayId: messageFor))) {
+                  widget.logout();
+                }
+              }
+              return Column(
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    height: MediaQuery.of(context).size.height * 0.08,
+                    margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+                    color: Colors.transparent,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 15,
+                          child: FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: IconButton(
+                              icon: const Icon(Icons.arrow_back_ios,
+                                  color: AppColors.primary_white),
+                              onPressed: () {
+                                AppAnalytics().trackEventModeratorPanelClose();
+                                navService.popUntil('/home');
+                              },
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 55,
+                          child: FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: Text(
+                              S.of(context).moderator_presentersList,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary_white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Spacer(flex: 10),
+                        Expanded(
+                          flex: 15,
+                          child: FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: IconButton(
+                              icon: SpiltIcon(_splitIconKey),
+                              onPressed: () {
+                                if (Displays().getDisplays().isNotEmpty) {
+                                  _callSplitScreenDialog();
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 15,
+                          child: FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: IconButton(
+                              icon: EditIcon(_editIconKey),
+                              onPressed: () {
+                                if (Displays()
+                                    .getSelectedDisplay()
+                                    .peerList
+                                    .isNotEmpty) {
+                                  AppAnalytics().trackEventModeratorEdit();
+                                  bEditClick = !bEditClick;
+                                  widget.attendeesListKey.currentState!
+                                      .updateEditStatus(bEditClick);
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 15,
+                          child: FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: getLogOutIcon(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  StreamBuilder(
+                    stream: moderatorSocket.streamSocket.getResponse,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<Map> socketSnapshot) {
+                      if (socketSnapshot.hasData &&
+                          moderatorSocket.socketHasNewData) {
+                        moderatorSocket.socketHasNewData = false;
+                        var displays = Displays().getDisplays();
+                        var messageFor = socketSnapshot.data!['messageFor'];
+                        var action = socketSnapshot.data!['action'];
+                        switch (action) {
+                          case ModeratorSocket.DISPLAY_STATE_UPDATE:
+                            if (displays
+                                .contains(DisplayInfo(displayId: messageFor))) {
+                              DisplayInfo display = displays.firstWhere(
+                                  (element) => element.displayId == messageFor,
+                                  orElse: null);
+                              display.uiStateCode = socketSnapshot
+                                  .data!['extra']['uiState']['code'];
+                              display.uiStateDelegate = socketSnapshot
+                                  .data!['extra']['uiState']['delegate'];
+                              displays
+                                  .map((e) => e == display ? display : e)
+                                  .toList();
+                            }
+                            break;
+                          case ModeratorSocket.UPDATE_DISPLAY_LIST:
+                            if (messageFor == AppPreferences().moderatorId) {
+                              _queryDisplay(displays,
+                                  socketSnapshot.data!['extra']['displays']);
+                            }
+                            break;
+                        }
+                      }
+                      return Expanded(
+                        flex: 1,
+                        child: PresenterList(
+                            widget.attendeesListKey,
+                            updateEditIconState,
+                            SplitScreen
+                                .mapSplitScreen.value[keySplitScreenEnable]),
+                      );
+                    },
+                  ),
+                  ValueListenableBuilder(
+                    valueListenable: ModeratorView.showModeratorMessage,
+                    builder: (BuildContext context, bool value, Widget? child) {
+                      return Visibility(
+                        visible: value,
+                        child: Container(
+                          alignment: Alignment.bottomLeft,
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(15),
+                                bottomRight: Radius.circular(15)),
+                            color: AppColors.semantic2,
+                          ),
                           child: Row(
                             children: <Widget>[
+                              Container(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      8.0, 0.0, 8.0, 0.0),
+                                  child: (const Icon(Icons.info_outline,
+                                      color: Colors.white))),
                               Expanded(
-                                flex: 15,
-                                child: FittedBox(
-                                  fit: BoxFit.fitHeight,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.arrow_back_ios,
-                                        color: AppColors.primary_white),
-                                    onPressed: () {
-                                      AppAnalytics()
-                                          .trackEventModeratorPanelClose();
-                                      if (_isPresenting()) {
-                                        StreamFunction.showStreamMenu.value =
-                                            true;
-                                      }
-                                      ModeratorView.showModerator.value = false;
-                                    },
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 55,
-                                child: FittedBox(
-                                  fit: BoxFit.fitHeight,
-                                  child: Text(
-                                    S.of(context).moderator_presentersList,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.primary_white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const Spacer(flex: 10),
-                              Expanded(
-                                flex: 15,
-                                child: FittedBox(
-                                  fit: BoxFit.fitHeight,
-                                  child: IconButton(
-                                    icon: SpiltIcon(_splitIconKey),
-                                    onPressed: () {
-                                      if (Displays().getDisplays().isNotEmpty) {
-                                        _callSplitScreenDialog();
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 15,
-                                child: FittedBox(
-                                  fit: BoxFit.fitHeight,
-                                  child: IconButton(
-                                    icon: EditIcon(_editIconKey),
-                                    onPressed: () {
-                                      if (Displays()
-                                          .getSelectedDisplay()
-                                          .peerList
-                                          .isNotEmpty) {
-                                        AppAnalytics().trackEventModeratorEdit();
-                                        bEditClick = !bEditClick;
-                                        widget.attendeesListKey.currentState!
-                                            .updateEditStatus(bEditClick);
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 15,
-                                child: FittedBox(
-                                  fit: BoxFit.fitHeight,
-                                  child: getLogOutIcon(),
-                                ),
+                                child: Text(
+                                    S.of(context).moderator_verifyCode_fail),
                               ),
                             ],
                           ),
                         ),
-                        StreamBuilder(
-                          stream: moderatorSocket.streamSocket.getResponse,
-                          builder: (BuildContext context,
-                              AsyncSnapshot<Map> socketSnapshot) {
-                            if (socketSnapshot.hasData &&
-                                moderatorSocket.socketHasNewData) {
-                              moderatorSocket.socketHasNewData = false;
-                              var displays = Displays().getDisplays();
-                              var messageFor =
-                                  socketSnapshot.data!['messageFor'];
-                              var action = socketSnapshot.data!['action'];
-                              switch (action) {
-                                case ModeratorSocket.DISPLAY_STATE_UPDATE:
-                                  if (displays.contains(
-                                      DisplayInfo(displayId: messageFor))) {
-                                    DisplayInfo display = displays.firstWhere(
-                                        (element) =>
-                                            element.displayId == messageFor,
-                                        orElse: null);
-                                    display.uiStateCode = socketSnapshot
-                                        .data!['extra']['uiState']['code'];
-                                    display.uiStateDelegate = socketSnapshot
-                                        .data!['extra']['uiState']['delegate'];
-                                    displays
-                                        .map((e) => e == display ? display : e)
-                                        .toList();
-                                  }
-                                  break;
-                                case ModeratorSocket.UPDATE_DISPLAY_LIST:
-                                  if (messageFor ==
-                                      AppPreferences().moderatorId) {
-                                    _queryDisplay(
-                                        displays,
-                                        socketSnapshot.data!['extra']
-                                            ['displays']);
-                                  }
-                                  break;
-                              }
-                            }
-                            return Expanded(
-                              flex: 1,
-                              child: PresenterList(
-                                  widget.attendeesListKey,
-                                  updateEditIconState,
-                                  SplitScreen.mapSplitScreen
-                                      .value[keySplitScreenEnable]),
-                            );
-                          },
-                        ),
-                        ValueListenableBuilder(
-                            valueListenable: ModeratorView.showModeratorMessage,
-                            builder: (BuildContext context, bool value,
-                                Widget? child) {
-                              return Visibility(
-                                  visible: value,
-                                  child: Container(
-                                    alignment: Alignment.bottomLeft,
-                                    padding: const EdgeInsets.all(8.0),
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(15),
-                                          bottomRight: Radius.circular(15)),
-                                      color: AppColors.semantic2,
-                                    ),
-                                    child: Row(
-                                      children: <Widget>[
-                                        Container(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                8.0, 0.0, 8.0, 0.0),
-                                            child: (const Icon(
-                                                Icons.info_outline,
-                                                color: Colors.white))),
-                                        Expanded(
-                                          child: Text(S
-                                              .of(context)
-                                              .moderator_verifyCode_fail),
-                                        ),
-                                      ],
-                                    ),
-                                  ));
-                            }),
-                      ],
-                    );
-                  },
-                ),
+                      );
+                    },
+                  ),
+                ],
               );
-            }),
-          ),
-        );
-      },
+            },
+          );
+        }),
+      ),
     );
   }
 
@@ -411,23 +377,6 @@ class _ModeratorViewState extends State<ModeratorView> {
         }
       },
     );
-  }
-
-  bool _isPresenting() {
-    bool presenting = false;
-    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      var display = Displays().getSelectedDisplay();
-      display.splitIndexMap.forEach((key, value) {
-        if (value.isNotEmpty) {
-          presenting = true;
-        }
-      });
-    } else {
-      if (Displays().getSelectedDisplay().presenterIndex != -1) {
-        presenting = true;
-      }
-    }
-    return presenting;
   }
 
   Future<void> _queryDisplay(
