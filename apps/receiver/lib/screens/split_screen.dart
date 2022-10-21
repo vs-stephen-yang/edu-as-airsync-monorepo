@@ -4,6 +4,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/home.dart';
+import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -66,12 +67,14 @@ class _SplitScreenState extends State<SplitScreen>
               children: [
                 FittedBox(
                   fit: BoxFit.fitHeight,
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
+                  child: FocusIconButton(
+                    child: const Icon(
+                      Icons.arrow_back_ios_new,
                       color: AppColors.primary_white,
                     ),
-                    onPressed: () {
+                    splashRadius: 20,
+                    focusColor: Colors.grey,
+                    onClick: () {
                       AppAnalytics().trackEventSplitScreenPanelClose();
                       navService.popUntil('/home');
                     },
@@ -97,14 +100,16 @@ class _SplitScreenState extends State<SplitScreen>
                   child: FittedBox(
                     alignment: Alignment.centerRight,
                     fit: BoxFit.fitHeight,
-                    child: IconButton(
-                      icon: Image(
+                    child: FocusIconButton(
+                      child: Image(
                         image: Svg((SplitScreen
                                 .mapSplitScreen.value[keySplitScreenEnable])
                             ? 'assets/images/ic_activate_on.svg'
                             : 'assets/images/ic_activate_off.svg'),
                       ),
-                      onPressed: () {
+                      splashRadius: 20,
+                      focusColor: Colors.grey,
+                      onClick: () {
                         setState(() {
                           _switchSplitScreen();
                         });

@@ -1,11 +1,13 @@
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/language_selection.dart';
 import 'package:display_flutter/screens/moderator_view.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/screens/whats_new.dart';
+import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/privilege_dialog.dart';
 import 'package:flutter/material.dart';
@@ -64,78 +66,88 @@ class StreamFunctionStates extends State<StreamFunction> {
             builder: (BuildContext context, bool value, Widget? child) {
               return Visibility(
                 visible: value,
-                child: Column(
-                  children: <Widget>[
-                    ValueListenableBuilder(
-                      valueListenable: StreamFunction.showDebugFunction,
-                      builder:
-                          (BuildContext context, bool value, Widget? child) {
-                        return Visibility(
-                          visible: value,
-                          child: IconButton(
-                            iconSize: 48,
-                            onPressed: () {
-                              _showMenuDialog(const DebugSwitch());
-                            },
-                            icon: const Icon(
-                              Icons.build_outlined,
-                              color: Colors.white,
+                child: Container(
+                  width: AppUIConstant.featureContainerWidth,
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ValueListenableBuilder(
+                        valueListenable: StreamFunction.showDebugFunction,
+                        builder:
+                            (BuildContext context, bool value, Widget? child) {
+                          return Visibility(
+                            visible: value,
+                            child: FocusIconButton(
+                              child: const Icon(
+                                Icons.build_outlined,
+                                color: Colors.white,
+                              ),
+                              hasFocusSize: AppUIConstant.iconHasFocusSize,
+                              notFocusSize: AppUIConstant.iconNotFocusSize,
+                              onClick: () {
+                                _showMenuDialog(const DebugSwitch());
+                              },
                             ),
+                          );
+                        },
+                      ),
+                      Visibility(
+                        visible: !AppInstanceCreate().isDisableAdvance,
+                        child: FocusIconButton(
+                          child: Image(
+                            image: Svg(iconSplitScreen),
                           ),
-                        );
-                      },
-                    ),
-                    Visibility(
-                      visible: !AppInstanceCreate().isDisableAdvance,
-                      child: IconButton(
-                        iconSize: 48,
-                        onPressed: ControlSocket().moderator != null
-                            ? null
-                            : () {
-                                _showSplitScreen(false);
-                              },
-                        icon: Image(
-                          image: Svg(iconSplitScreen),
+                          hasFocusSize: AppUIConstant.iconHasFocusSize,
+                          notFocusSize: AppUIConstant.iconNotFocusSize,
+                          onClick: ControlSocket().moderator == null
+                              ? () {
+                                  _showSplitScreen(false);
+                                }
+                              : null,
                         ),
                       ),
-                    ),
-                    Visibility(
-                      visible: !AppInstanceCreate().isDisableAdvance,
-                      child: IconButton(
-                        iconSize: 48,
-                        onPressed: (ControlSocket().moderator == null &&
-                                SplitScreen
-                                    .mapSplitScreen.value[keySplitScreenEnable])
-                            ? null
-                            : () {
-                                _showModerator(false);
-                              },
-                        icon: Image(
-                          image: Svg(iconModerator),
+                      Visibility(
+                        visible: !AppInstanceCreate().isDisableAdvance,
+                        child: FocusIconButton(
+                          child: Image(
+                            image: Svg(iconModerator),
+                          ),
+                          hasFocusSize: AppUIConstant.iconHasFocusSize,
+                          notFocusSize: AppUIConstant.iconNotFocusSize,
+                          onClick: (ControlSocket().moderator == null &&
+                                  SplitScreen.mapSplitScreen
+                                      .value[keySplitScreenEnable])
+                              ? null
+                              : () {
+                                  _showModerator(false);
+                                },
                         ),
                       ),
-                    ),
-                    IconButton(
-                      iconSize: 48,
-                      onPressed: () {
-                        AppAnalytics().trackEventAppLanguageClick();
-                        _showMenuDialog(const LanguageSelection());
-                      },
-                      icon: const Image(
-                        image: Svg('assets/images/ic_language.svg'),
+                      FocusIconButton(
+                        child: const Image(
+                          image: Svg('assets/images/ic_language.svg'),
+                        ),
+                        hasFocusSize: AppUIConstant.iconHasFocusSize,
+                        notFocusSize: AppUIConstant.iconNotFocusSize,
+                        onClick: () {
+                          AppAnalytics().trackEventAppLanguageClick();
+                          _showMenuDialog(const LanguageSelection());
+                        },
                       ),
-                    ),
-                    IconButton(
-                      iconSize: 48,
-                      onPressed: () {
-                        AppAnalytics().trackEventAppWhatsNewsClick();
-                        _showMenuDialog(const WhatsNew());
-                      },
-                      icon: const Image(
-                        image: Svg('assets/images/ic_whats_news.svg'),
+                      FocusIconButton(
+                        child: const Image(
+                          image: Svg('assets/images/ic_whats_news.svg'),
+                        ),
+                        hasFocusSize: AppUIConstant.iconHasFocusSize,
+                        notFocusSize: AppUIConstant.iconNotFocusSize,
+                        onClick: () {
+                          AppAnalytics().trackEventAppWhatsNewsClick();
+                          _showMenuDialog(const WhatsNew());
+                        },
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },
@@ -149,6 +161,7 @@ class StreamFunctionStates extends State<StreamFunction> {
               return Visibility(
                 visible: value,
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
                       iconSize: 48,

@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -82,14 +84,15 @@ class _VbsOTAState extends State<VbsOTA> {
             crossAxisAlignment: WrapCrossAlignment.center,
             spacing: 10,
             children: <Widget>[
-              IconButton(
-                iconSize: 48,
-                onPressed: () {
-                  Process.run('reboot', <String>[]);
-                },
-                icon: const Image(
+              FocusIconButton(
+                child: const Image(
                   image: Svg('assets/images/ic_power_settings.svg'),
                 ),
+                hasFocusSize: AppUIConstant.iconHasFocusSize,
+                notFocusSize: AppUIConstant.iconNotFocusSize,
+                onClick: () {
+                  Process.run('reboot', <String>[]);
+                },
               ),
               Visibility(
                 visible: _systemOTAEnableUI,

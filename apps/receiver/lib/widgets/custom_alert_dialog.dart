@@ -1,5 +1,7 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
@@ -28,66 +30,64 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
       backgroundColor: AppColors.primary_dialog,
       alignment: Alignment.centerLeft,
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Container(
-        margin: const EdgeInsets.all(15.0),
-        width: MediaQuery.of(context).size.width * 0.2,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              widget.description,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.25,
+        child: Container(
+          margin: const EdgeInsets.all(15.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                widget.description,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Container(
-                  width: 80,
-                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3),
-                    color: Colors.white,
-                  ),
-                  child: InkWell(
-                    onTap: () {
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  FocusElevatedButton(
+                    child: AutoSizeText(
+                      S.of(context).moderator_cancel,
+                      style: const TextStyle(color: AppColors.primary_grey),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      onPrimary: Colors.white,
+                      primary: Colors.white,
+                    ),
+                    hasFocusWidth: 120,
+                    notFocusWidth: 110,
+                    hasFocusHeight: 30,
+                    notFocusHeight: 25,
+                    onClick: () {
                       widget.onNegative.call();
                       navService.goBack();
                     },
-                    child: Center(
-                      child: Text(
-                        S.of(context).moderator_cancel,
-                        style: const TextStyle(color: AppColors.primary_grey),
-                      ),
+                  ),
+                  FocusElevatedButton(
+                    child: AutoSizeText(
+                      widget.positiveButton,
+                      style: const TextStyle(color: Colors.white),
                     ),
-                  ),
-                ),
-                Container(
-                  width: 80,
-                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3),
-                    color: AppColors.primary_red,
-                  ),
-                  child: InkWell(
-                    onTap: () {
+                    style: ElevatedButton.styleFrom(
+                      onPrimary: AppColors.primary_red,
+                      primary: AppColors.primary_red,
+                    ),
+                    hasFocusWidth: 120,
+                    notFocusWidth: 110,
+                    hasFocusHeight: 30,
+                    notFocusHeight: 25,
+                    onClick: () {
                       navService.goBack();
                       widget.onPositive.call();
                     },
-                    child: Center(
-                      child: Text(
-                        widget.positiveButton,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
                   ),
-                ),
-              ],
-            )
-          ],
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

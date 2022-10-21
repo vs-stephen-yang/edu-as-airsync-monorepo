@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
+import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -77,42 +78,58 @@ class _EulaState extends State<Eula> {
           Container(
             width: MediaQuery.of(context).size.width,
             padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Stack(
-              alignment: Alignment.center,
+            child: Wrap(
+              direction: Axis.horizontal,
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 10,
               children: <Widget>[
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 3,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton(
-                      onPressed: () {
-                        if (Platform.isAndroid) {
-                          SystemNavigator.pop();
-                        } else if (Platform.isIOS) {
-                          exit(0);
-                        } else {
-                          // todo: support other platform.
-                        }
-                      },
-                      child: Text(
-                        S.of(context).eula_disagree,
-                        style: const TextStyle(fontSize: 18),
-                      ),
+                FocusElevatedButton(
+                  child: Text(
+                    S.of(context).eula_disagree,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.blue,
                     ),
                   ),
+                  style: ElevatedButton.styleFrom(
+                    onPrimary: Colors.white,
+                    primary: Colors.white,
+                  ),
+                  hasFocusWidth: 130,
+                  notFocusWidth: 120,
+                  hasFocusHeight: 55,
+                  notFocusHeight: 48,
+                  onClick: () {
+                    if (Platform.isAndroid) {
+                      SystemNavigator.pop();
+                    } else if (Platform.isIOS) {
+                      exit(0);
+                    } else {
+                      // todo: support other platform.
+                    }
+                  },
                 ),
-                Align(
-                  alignment: Alignment.center,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      AppPreferences().set(showEULA: false);
-                      navService.pushNamedAndRemoveUntil('/home');
-                    },
-                    child: Text(
-                      S.of(context).eula_agree,
-                      style: const TextStyle(fontSize: 18),
+                FocusElevatedButton(
+                  child: Text(
+                    S.of(context).eula_agree,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
                     ),
                   ),
+                  style: ElevatedButton.styleFrom(
+                    onPrimary: Colors.blue,
+                    primary: Colors.blue,
+                  ),
+                  hasFocusWidth: 130,
+                  notFocusWidth: 120,
+                  hasFocusHeight: 55,
+                  notFocusHeight: 48,
+                  onClick: () {
+                    AppPreferences().set(showEULA: false);
+                    navService.pushNamedAndRemoveUntil('/home');
+                  },
                 ),
               ],
             ),
