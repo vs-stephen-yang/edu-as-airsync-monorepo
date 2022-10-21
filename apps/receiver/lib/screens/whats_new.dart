@@ -1,6 +1,7 @@
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -30,12 +31,14 @@ class _WhatsNewState extends State<WhatsNew> {
               children: [
                 FittedBox(
                   fit: BoxFit.fitHeight,
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
+                  child: FocusIconButton(
+                    child: const Icon(
+                      Icons.arrow_back_ios_new,
                       color: AppColors.primary_white,
                     ),
-                    onPressed: () {
+                    splashRadius: 20,
+                    focusColor: Colors.grey,
+                    onClick: () {
                       navService.popUntil('/home');
                     },
                   ),

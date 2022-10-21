@@ -113,7 +113,11 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
-        nativeView,
+        Focus(
+          child: nativeView,
+          descendantsAreFocusable: false,
+          canRequestFocus: false,
+        ),
         Align(
           alignment: Alignment.topCenter,
           child: Visibility(

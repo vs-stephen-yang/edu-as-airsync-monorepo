@@ -9,6 +9,7 @@ import 'package:display_flutter/model/moderator_socket.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/custom_alert_dialog.dart';
+import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:display_flutter/widgets/presenter_list.dart';
 import 'package:flutter/material.dart';
@@ -193,10 +194,12 @@ class _ModeratorViewState extends State<ModeratorView> {
                           flex: 15,
                           child: FittedBox(
                             fit: BoxFit.fitHeight,
-                            child: IconButton(
-                              icon: const Icon(Icons.arrow_back_ios,
+                            child: FocusIconButton(
+                              child: const Icon(Icons.arrow_back_ios_new,
                                   color: AppColors.primary_white),
-                              onPressed: () {
+                              splashRadius: 20,
+                              focusColor: Colors.grey,
+                              onClick: () {
                                 AppAnalytics().trackEventModeratorPanelClose();
                                 navService.popUntil('/home');
                               },
@@ -221,9 +224,11 @@ class _ModeratorViewState extends State<ModeratorView> {
                           flex: 15,
                           child: FittedBox(
                             fit: BoxFit.fitHeight,
-                            child: IconButton(
-                              icon: SpiltIcon(_splitIconKey),
-                              onPressed: () {
+                            child: FocusIconButton(
+                              child: SpiltIcon(_splitIconKey),
+                              splashRadius: 20,
+                              focusColor: Colors.grey,
+                              onClick: () {
                                 if (Displays().getDisplays().isNotEmpty) {
                                   _callSplitScreenDialog();
                                 }
@@ -235,9 +240,11 @@ class _ModeratorViewState extends State<ModeratorView> {
                           flex: 15,
                           child: FittedBox(
                             fit: BoxFit.fitHeight,
-                            child: IconButton(
-                              icon: EditIcon(_editIconKey),
-                              onPressed: () {
+                            child: FocusIconButton(
+                              child: EditIcon(_editIconKey),
+                              splashRadius: 20,
+                              focusColor: Colors.grey,
+                              onClick: () {
                                 if (Displays()
                                     .getSelectedDisplay()
                                     .peerList
@@ -255,7 +262,25 @@ class _ModeratorViewState extends State<ModeratorView> {
                           flex: 15,
                           child: FittedBox(
                             fit: BoxFit.fitHeight,
-                            child: getLogOutIcon(),
+                            child: FocusIconButton(
+                              child: LogoutIcon(_logoutIconKey),
+                              splashRadius: 20,
+                              focusColor: Colors.grey,
+                              onClick: () {
+                                if (!bLogInClick) {
+                                  bLogInClick = true;
+                                  if (Displays().getDisplays().isEmpty) {
+                                    verifyCode().then((value) {
+                                      updateLogoutIconState();
+                                      bLogInClick = false;
+                                    });
+                                  } else {
+                                    _callLogOutDialog();
+                                    bLogInClick = false;
+                                  }
+                                }
+                              },
+                            ),
                           ),
                         ),
                       ],
@@ -357,26 +382,6 @@ class _ModeratorViewState extends State<ModeratorView> {
         bEditClick = isEditMode;
       });
     });
-  }
-
-  Widget getLogOutIcon() {
-    return IconButton(
-      icon: LogoutIcon(_logoutIconKey),
-      onPressed: () {
-        if (!bLogInClick) {
-          bLogInClick = true;
-          if (Displays().getDisplays().isEmpty) {
-            verifyCode().then((value) {
-              updateLogoutIconState();
-              bLogInClick = false;
-            });
-          } else {
-            _callLogOutDialog();
-            bLogInClick = false;
-          }
-        }
-      },
-    );
   }
 
   Future<void> _queryDisplay(

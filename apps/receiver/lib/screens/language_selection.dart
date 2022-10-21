@@ -3,6 +3,8 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/main_common.dart';
 import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/widgets/focus_elevated_button.dart';
+import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -32,12 +34,14 @@ class _LanguageSelectionState extends State<LanguageSelection> {
               children: [
                 FittedBox(
                   fit: BoxFit.fitHeight,
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
+                  child: FocusIconButton(
+                    child: const Icon(
+                      Icons.arrow_back_ios_new,
                       color: AppColors.primary_white,
                     ),
-                    onPressed: () {
+                    splashRadius: 20,
+                    focusColor: Colors.grey,
+                    onClick: () {
                       navService.popUntil('/home');
                     },
                   ),
@@ -66,6 +70,28 @@ class _LanguageSelectionState extends State<LanguageSelection> {
               padding: const EdgeInsets.all(8),
               itemCount: AppPreferences.localeMap.length,
               itemBuilder: (BuildContext context, int index) {
+                return FocusElevatedButton(
+                  child: Text(
+                    AppPreferences.localeMap.keys.elementAt(index),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    alignment: Alignment.centerLeft,
+                    primary: (AppPreferences().language ==
+                        AppPreferences.localeMap.keys.elementAt(index))
+                        ? AppColors.primary_blue
+                        : AppColors.primary_grey_dark,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0)
+                    ),
+                  ),
+                  onClick: () {
+                    setState(() {
+                      MyApp.setNewLocale(context, index);
+                    });
+                  },
+                );
                 return InkWell(
                   onTap: () {
                     setState(() {
@@ -92,7 +118,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
               },
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider(
-                  height: 10,
+                  height: 0,
                   color: Colors.transparent,
                 );
               },

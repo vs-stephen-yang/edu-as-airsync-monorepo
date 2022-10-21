@@ -11,6 +11,7 @@ import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/moderator_view.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/privilege_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -241,18 +242,18 @@ class _MainInfoState extends State<MainInfo> {
                                     );
                                   },
                                 ),
-                                IconButton(
-                                  onPressed: () {
-                                    AppAnalytics().trackEventAppOTPMaskClick();
-                                    _isEyeOpen.value = !_isEyeOpen.value;
-                                  },
-                                  icon: Image.asset(
+                                FocusIconButton(
+                                  child: Image.asset(
                                     value
                                         ? 'assets/images/ic_eye_open.png'
                                         : 'assets/images/ic_eye_close.png',
-                                    width: 48,
-                                    height: 48,
                                   ),
+                                  hasFocusSize: 56,
+                                  notFocusSize: 48,
+                                  onClick: () {
+                                    AppAnalytics().trackEventAppOTPMaskClick();
+                                    _isEyeOpen.value = !_isEyeOpen.value;
+                                  },
                                 ),
                               ],
                             );

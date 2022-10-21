@@ -1,5 +1,6 @@
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/focus_text_button.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/text_clock.dart';
 import 'package:flutter/material.dart';
@@ -18,14 +19,7 @@ class TitleBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              TextButton(
-                onPressed: () {
-                  if (AppConfig.of(context)?.settings.isDevelopEnvironment ??
-                      false) {
-                    StreamFunction.showDebugFunction.value =
-                        !StreamFunction.showDebugFunction.value;
-                  }
-                },
+              FocusTextButton(
                 child: Text(
                   'Ver ${appConfig?.appVersion ?? ' '}',
                   style: const TextStyle(
@@ -34,6 +28,14 @@ class TitleBar extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
+                onClick:
+                    (AppConfig.of(context)?.settings.isDevelopEnvironment ??
+                            false)
+                        ? () {
+                            StreamFunction.showDebugFunction.value =
+                                !StreamFunction.showDebugFunction.value;
+                          }
+                        : null,
               ),
               const TextClock(),
             ],

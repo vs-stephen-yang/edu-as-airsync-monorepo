@@ -4,6 +4,7 @@ import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -93,10 +94,7 @@ class PrivilegeDialog extends StatelessWidget {
           ),
           Flexible(
             flex: 1,
-            child: ElevatedButton(
-              onPressed: () {
-                navService.popUntil('/home');
-              },
+            child: FocusElevatedButton(
               child: AutoSizeText(
                 S.of(context).main_privilege_close,
                 style: const TextStyle(
@@ -110,6 +108,9 @@ class PrivilegeDialog extends StatelessWidget {
                 primary: Colors.white,
                 minimumSize: const Size(80, 15),
               ),
+              onClick: () {
+                navService.popUntil('/home');
+              },
             ),
           ),
         ],
