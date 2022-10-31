@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
+import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
@@ -279,84 +281,84 @@ class _HomeState extends State<Home> {
         child: ValueListenableBuilder(
           valueListenable: Home.isSplitScreenMenuList,
           builder: (BuildContext context, List<bool> value, Widget? child) {
-            return Stack(
-              children: <Widget>[
-                Visibility(
-                  visible: !value[index],
-                  child: IconButton(
-                    icon: const Image(
-                      image: Svg(
-                        'assets/images/ic_split_screen_menu.svg',
-                        size: Size.square(48),
-                      ),
+            return Container(
+              height: AppUIConstant.featureContainerHeight,
+              alignment: Alignment.center,
+              child: Stack(
+                children: <Widget>[
+                  Visibility(
+                    visible: !value[index],
+                    child: FocusIconButton(
+                      child: const Image(
+                          image: Svg('assets/images/ic_split_screen_menu.svg')),
+                      hasFocusSize: AppUIConstant.iconHasFocusSize,
+                      notFocusSize: AppUIConstant.iconNotFocusSize,
+                      onClick: () {
+                        Home.isSplitScreenMenuList.value[index] = true;
+                        // Using below method to trigger value changed.
+                        // https://github.com/flutter/flutter/issues/29958
+                        Home.isSplitScreenMenuList.value =
+                            List.from(Home.isSplitScreenMenuList.value);
+                      },
                     ),
-                    onPressed: () {
-                      Home.isSplitScreenMenuList.value[index] = true;
-                      // Using below method to trigger value changed.
-                      // https://github.com/flutter/flutter/issues/29958
-                      Home.isSplitScreenMenuList.value =
-                          List.from(Home.isSplitScreenMenuList.value);
-                      // _updateSizeForSelected(index);
-                    },
                   ),
-                ),
-                Visibility(
-                  visible: value[index],
-                  child: Wrap(
-                    textDirection: (index == 0 || index == 2)
-                        ? TextDirection.ltr
-                        : TextDirection.rtl,
-                    children: <Widget>[
-                      IconButton(
-                        icon: const Image(
-                          image: Svg(
-                            'assets/images/ic_connection_close.svg',
-                            size: Size.square(48),
-                          ),
+                  Visibility(
+                    visible: value[index],
+                    child: Wrap(
+                      textDirection: (index == 0 || index == 2)
+                          ? TextDirection.ltr
+                          : TextDirection.rtl,
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: <Widget>[
+                        FocusIconButton(
+                          child: const Image(
+                              image:
+                                  Svg('assets/images/ic_connection_close.svg')),
+                          hasFocusSize: AppUIConstant.iconHasFocusSize,
+                          notFocusSize: AppUIConstant.iconNotFocusSize,
+                          onClick: () {
+                            AppAnalytics()
+                                .trackEventSplitScreenDisconnectClick();
+                            Home.isSplitScreenMenuList.value.fillRange(0,
+                                Home.isSplitScreenMenuList.value.length, false);
+                            ControlSocket().removePresenterBy(index);
+                          },
                         ),
-                        onPressed: () {
-                          AppAnalytics().trackEventSplitScreenDisconnectClick();
-                          Home.isSplitScreenMenuList.value.fillRange(0,
-                              Home.isSplitScreenMenuList.value.length, false);
-                          ControlSocket().removePresenterBy(index);
-                        },
-                      ),
-                      IconButton(
-                        icon: const Image(
-                          image: Svg(
-                            'assets/images/ic_zoom_in.svg',
-                            size: Size.square(48),
-                          ),
+                        FocusIconButton(
+                          child: const Image(
+                              image: Svg('assets/images/ic_zoom_in.svg')),
+                          hasFocusSize: AppUIConstant.iconHasFocusSize,
+                          notFocusSize: AppUIConstant.iconNotFocusSize,
+                          onClick: () {
+                            AppAnalytics()
+                                .trackEventSplitScreenFullScreenClick();
+                            Home.isSplitScreenMenuList.value.fillRange(0,
+                                Home.isSplitScreenMenuList.value.length, false);
+                            _updateSizeForSelected(index);
+                          },
                         ),
-                        onPressed: () {
-                          AppAnalytics().trackEventSplitScreenFullScreenClick();
-                          Home.isSplitScreenMenuList.value.fillRange(0,
-                              Home.isSplitScreenMenuList.value.length, false);
-                          _updateSizeForSelected(index);
-                        },
-                      ),
-                      IconButton(
-                        icon: Image(
-                          image: Svg(
-                            (index == 0 || index == 2)
+                        FocusIconButton(
+                          child: Image(
+                            image: Svg((index == 0 || index == 2)
                                 ? 'assets/images/ic_arrow_right.svg'
-                                : 'assets/images/ic_arrow_left.svg',
-                            size: const Size.square(48),
+                                : 'assets/images/ic_arrow_left.svg'),
                           ),
+                          hasFocusSize: AppUIConstant.iconHasFocusSize,
+                          notFocusSize: AppUIConstant.iconNotFocusSize,
+                          onClick: () {
+                            Home.isSplitScreenMenuList.value[index] = false;
+                            // Using below method to trigger value changed.
+                            // https://github.com/flutter/flutter/issues/29958
+                            Home.isSplitScreenMenuList.value =
+                                List.from(Home.isSplitScreenMenuList.value);
+                          },
                         ),
-                        onPressed: () {
-                          Home.isSplitScreenMenuList.value[index] = false;
-                          // Using below method to trigger value changed.
-                          // https://github.com/flutter/flutter/issues/29958
-                          Home.isSplitScreenMenuList.value =
-                              List.from(Home.isSplitScreenMenuList.value);
-                          // _updateSizeForSelected(index);
-                        },
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           },
         ),
@@ -372,14 +374,11 @@ class _HomeState extends State<Home> {
         visible: SplitScreen.mapSplitScreen.value[keySplitScreenEnable] &&
             ControlSocket().isPresenting() &&
             Home.isSelectedList.value[index],
-        child: IconButton(
-          icon: const Image(
-            image: Svg(
-              'assets/images/ic_zoom_out.svg',
-              size: Size.square(48),
-            ),
-          ),
-          onPressed: () {
+        child: FocusIconButton(
+          child: const Image(image: Svg('assets/images/ic_zoom_out.svg')),
+          hasFocusSize: AppUIConstant.iconHasFocusSize,
+          notFocusSize: AppUIConstant.iconNotFocusSize,
+          onClick: () {
             _updateSizeForSelected(index);
           },
         ),

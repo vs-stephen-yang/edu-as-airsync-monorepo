@@ -129,62 +129,68 @@ class StreamFunctionStates extends State<StreamFunction> {
             ));
             break;
           case stateMenuOff:
-            childList.add(IconButton(
-              iconSize: 48,
-              onPressed: () {
+            childList.add(FocusIconButton(
+              child: const Image(
+                  image: Svg('assets/images/ic_streaming_menu.svg')),
+              hasFocusSize: AppUIConstant.iconHasFocusSize,
+              notFocusSize: AppUIConstant.iconNotFocusSize,
+              onClick: () {
                 StreamFunction.streamFunctionState.value = stateMenuOn;
               },
-              icon: const Image(
-                  image: Svg('assets/images/ic_streaming_menu.svg')),
             ));
             break;
           case stateMenuOn:
-            childList.add(IconButton(
-              iconSize: 48,
-              onPressed: ControlSocket().moderator != null
+            childList.add(FocusIconButton(
+              child: Image(image: Svg(iconSplitScreen)),
+              hasFocusSize: AppUIConstant.iconHasFocusSize,
+              notFocusSize: AppUIConstant.iconNotFocusSize,
+              onClick: ControlSocket().moderator != null
                   ? null
                   : () {
                       _showSplitScreen(true);
                     },
-              icon: Image(image: Svg(iconSplitScreen)),
             ));
-            childList.add(IconButton(
-              iconSize: 48,
-              onPressed: (ControlSocket().moderator == null &&
+            childList.add(FocusIconButton(
+              child: Image(image: Svg(iconModerator)),
+              hasFocusSize: AppUIConstant.iconHasFocusSize,
+              notFocusSize: AppUIConstant.iconNotFocusSize,
+              onClick: (ControlSocket().moderator == null &&
                       SplitScreen.mapSplitScreen.value[keySplitScreenEnable])
                   ? null
                   : () {
                       _showModerator(true);
                     },
-              icon: Image(image: Svg(iconModerator)),
             ));
-            childList.add(IconButton(
-              iconSize: 48,
-              onPressed: () {
+            childList.add(FocusIconButton(
+              child: const Image(
+                  image: Svg('assets/images/ic_show_display_code.svg')),
+              hasFocusSize: AppUIConstant.iconHasFocusSize,
+              notFocusSize: AppUIConstant.iconNotFocusSize,
+              onClick: () {
                 StreamFunction.streamFunctionState.value = stateBackArrow;
                 MainInfo.showMainInfo.value = true;
               },
-              icon: const Image(
-                  image: Svg('assets/images/ic_show_display_code.svg')),
             ));
-            childList.add(IconButton(
-              iconSize: 48,
-              onPressed: () {
+            childList.add(FocusIconButton(
+              child: const Image(
+                  image: Svg('assets/images/ic_display_code_arrow.svg')),
+              hasFocusSize: AppUIConstant.iconHasFocusSize,
+              notFocusSize: AppUIConstant.iconNotFocusSize,
+              onClick: () {
                 StreamFunction.streamFunctionState.value = stateMenuOff;
               },
-              icon: const Image(
-                  image: Svg('assets/images/ic_display_code_arrow.svg')),
             ));
             break;
           case stateBackArrow:
-            childList.add(IconButton(
-              iconSize: 48,
-              onPressed: () {
+            childList.add(FocusIconButton(
+              child: const Image(
+                  image: Svg('assets/images/ic_display_code_arrow.svg')),
+              hasFocusSize: AppUIConstant.iconHasFocusSize,
+              notFocusSize: AppUIConstant.iconNotFocusSize,
+              onClick: () {
                 MainInfo.showMainInfo.value = false;
                 StreamFunction.streamFunctionState.value = stateMenuOff;
               },
-              icon: const Image(
-                  image: Svg('assets/images/ic_display_code_arrow.svg')),
             ));
             break;
         }
