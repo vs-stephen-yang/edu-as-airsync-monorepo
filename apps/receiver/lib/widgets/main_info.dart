@@ -5,6 +5,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
+import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/blocs/main_info_bloc.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
@@ -248,8 +249,8 @@ class _MainInfoState extends State<MainInfo> {
                                         ? 'assets/images/ic_eye_open.png'
                                         : 'assets/images/ic_eye_close.png',
                                   ),
-                                  hasFocusSize: 56,
-                                  notFocusSize: 48,
+                                  hasFocusSize: AppUIConstant.iconHasFocusSize,
+                                  notFocusSize: AppUIConstant.iconNotFocusSize,
                                   onClick: () {
                                     AppAnalytics().trackEventAppOTPMaskClick();
                                     _isEyeOpen.value = !_isEyeOpen.value;

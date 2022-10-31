@@ -26,7 +26,6 @@ class _LanguageSelectionState extends State<LanguageSelection> {
       child: Column(
         children: [
           Container(
-            // alignment: Alignment.center,
             height: MediaQuery.of(context).size.height * 0.06,
             margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
             color: Colors.transparent,
@@ -79,12 +78,11 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                     elevation: 0,
                     alignment: Alignment.centerLeft,
                     primary: (AppPreferences().language ==
-                        AppPreferences.localeMap.keys.elementAt(index))
+                            AppPreferences.localeMap.keys.elementAt(index))
                         ? AppColors.primary_blue
                         : AppColors.primary_grey_dark,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0)
-                    ),
+                        borderRadius: BorderRadius.circular(30.0)),
                   ),
                   onClick: () {
                     setState(() {
@@ -92,35 +90,9 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                     });
                   },
                 );
-                return InkWell(
-                  onTap: () {
-                    setState(() {
-                      MyApp.setNewLocale(context, index);
-                    });
-                  },
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(30)),
-                      color: (AppPreferences().language ==
-                              AppPreferences.localeMap.keys.elementAt(index))
-                          ? AppColors.primary_blue
-                          : AppColors.primary_grey_dark,
-                    ),
-                    child: Text(
-                      AppPreferences.localeMap.keys.elementAt(index),
-                      style: const TextStyle(color: AppColors.primary_white),
-                    ),
-                  ),
-                );
               },
               separatorBuilder: (BuildContext context, int index) {
-                return const Divider(
-                  height: 0,
-                  color: Colors.transparent,
-                );
+                return const Divider(height: 0, color: Colors.transparent);
               },
             ),
           ),
