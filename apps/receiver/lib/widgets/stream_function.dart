@@ -13,14 +13,23 @@ import 'package:display_flutter/widgets/privilege_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
+// Empty, Basic streaming
+const String stateEmpty = 'empty';
+// SplitScreen, Moderator, Language, WhatsNew,
+const String stateStandby = 'standby';
+// Display Cloud,
+const String stateMenuOff = 'menuOff';
+// SplitScreen, Moderator, Show Display Code, BackArrow
+const String stateMenuOn = 'menuOn';
+// BackArrow Only (for close display code)
+const String stateBackArrow = 'backArrow';
+
 class StreamFunction extends StatefulWidget {
   const StreamFunction({Key? key}) : super(key: key);
 
-  static ValueNotifier<bool> showDebugFunction = ValueNotifier(false);
-  static ValueNotifier<bool> showWaitFunction = ValueNotifier(true);
-  static ValueNotifier<bool> showPresentFunction = ValueNotifier(false);
-  static ValueNotifier<bool> showArrowMenu = ValueNotifier(true);
-  static ValueNotifier<bool> showStreamMenu = ValueNotifier(false);
+  static bool showDebugFunction = false;
+  static ValueNotifier<String> streamFunctionState =
+      ValueNotifier(stateStandby);
 
   @override
   State<StatefulWidget> createState() => StreamFunctionStates();
@@ -29,222 +38,177 @@ class StreamFunction extends StatefulWidget {
 class StreamFunctionStates extends State<StreamFunction> {
   @override
   Widget build(BuildContext context) {
-    // region SplitScreen icon
-    String iconSplitScreen = '';
-    if (ControlSocket().moderator != null) {
-      iconSplitScreen = 'assets/images/ic_split_screen_off.svg';
-    } else {
-      if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-        iconSplitScreen = 'assets/images/ic_split_screen_activate.svg';
-      } else {
-        iconSplitScreen = 'assets/images/ic_split_screen_on.svg';
-      }
-    }
-    // endregion
+    return ValueListenableBuilder(
+      valueListenable: StreamFunction.streamFunctionState,
+      builder: (BuildContext context, String value, Widget? child) {
+        // region SplitScreen icon
+        String iconSplitScreen = '';
+        if (ControlSocket().moderator != null) {
+          iconSplitScreen = 'assets/images/ic_split_screen_off.svg';
+        } else {
+          if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+            iconSplitScreen = 'assets/images/ic_split_screen_activate.svg';
+          } else {
+            iconSplitScreen = 'assets/images/ic_split_screen_on.svg';
+          }
+        }
+        // endregion
 
-    // region Moderator icon
-    String iconModerator = '';
-    if (ControlSocket().moderator == null &&
-        SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      iconModerator = 'assets/images/ic_moderator_off.svg';
-    } else {
-      if (ControlSocket().moderator != null) {
-        iconModerator = 'assets/images/ic_moderator_activate.svg';
-      } else {
-        iconModerator = 'assets/images/ic_moderator_on.svg';
-      }
-    }
-    // endregion
+        // region Moderator icon
+        String iconModerator = '';
+        if (ControlSocket().moderator == null &&
+            SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+          iconModerator = 'assets/images/ic_moderator_off.svg';
+        } else {
+          if (ControlSocket().moderator != null) {
+            iconModerator = 'assets/images/ic_moderator_activate.svg';
+          } else {
+            iconModerator = 'assets/images/ic_moderator_on.svg';
+          }
+        }
+        // endregion
 
-    return Stack(
-      alignment: Alignment.bottomLeft,
-      children: <Widget>[
-        Container(
-          margin: const EdgeInsets.only(bottom: 140),
-          child: ValueListenableBuilder(
-            valueListenable: StreamFunction.showWaitFunction,
-            builder: (BuildContext context, bool value, Widget? child) {
-              return Visibility(
-                visible: value,
-                child: Container(
-                  width: AppUIConstant.featureContainerWidth,
-                  alignment: Alignment.center,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ValueListenableBuilder(
-                        valueListenable: StreamFunction.showDebugFunction,
-                        builder:
-                            (BuildContext context, bool value, Widget? child) {
-                          return Visibility(
-                            visible: value,
-                            child: FocusIconButton(
-                              child: const Icon(
-                                Icons.build_outlined,
-                                color: Colors.white,
-                              ),
-                              hasFocusSize: AppUIConstant.iconHasFocusSize,
-                              notFocusSize: AppUIConstant.iconNotFocusSize,
-                              onClick: () {
-                                _showMenuDialog(const DebugSwitch());
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                      Visibility(
-                        visible: !AppInstanceCreate().isDisableAdvance,
-                        child: FocusIconButton(
-                          child: Image(
-                            image: Svg(iconSplitScreen),
-                          ),
-                          hasFocusSize: AppUIConstant.iconHasFocusSize,
-                          notFocusSize: AppUIConstant.iconNotFocusSize,
-                          onClick: ControlSocket().moderator == null
-                              ? () {
-                                  _showSplitScreen(false);
-                                }
-                              : null,
-                        ),
-                      ),
-                      Visibility(
-                        visible: !AppInstanceCreate().isDisableAdvance,
-                        child: FocusIconButton(
-                          child: Image(
-                            image: Svg(iconModerator),
-                          ),
-                          hasFocusSize: AppUIConstant.iconHasFocusSize,
-                          notFocusSize: AppUIConstant.iconNotFocusSize,
-                          onClick: (ControlSocket().moderator == null &&
-                                  SplitScreen.mapSplitScreen
-                                      .value[keySplitScreenEnable])
-                              ? null
-                              : () {
-                                  _showModerator(false);
-                                },
-                        ),
-                      ),
-                      FocusIconButton(
-                        child: const Image(
-                          image: Svg('assets/images/ic_language.svg'),
-                        ),
-                        hasFocusSize: AppUIConstant.iconHasFocusSize,
-                        notFocusSize: AppUIConstant.iconNotFocusSize,
-                        onClick: () {
-                          AppAnalytics().trackEventAppLanguageClick();
-                          _showMenuDialog(const LanguageSelection());
-                        },
-                      ),
-                      FocusIconButton(
-                        child: const Image(
-                          image: Svg('assets/images/ic_whats_news.svg'),
-                        ),
-                        hasFocusSize: AppUIConstant.iconHasFocusSize,
-                        notFocusSize: AppUIConstant.iconNotFocusSize,
-                        onClick: () {
-                          AppAnalytics().trackEventAppWhatsNewsClick();
-                          _showMenuDialog(const WhatsNew());
-                        },
-                      ),
-                    ],
-                  ),
+        List<Widget> childList = <Widget>[];
+        switch (value) {
+          case stateStandby:
+            if (StreamFunction.showDebugFunction) {
+              childList.add(FocusIconButton(
+                child: const Icon(
+                  Icons.build_outlined,
+                  color: Colors.white,
                 ),
-              );
-            },
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(bottom: 20),
-          child: ValueListenableBuilder(
-            valueListenable: StreamFunction.showPresentFunction,
-            builder: (BuildContext context, bool value, Widget? child) {
-              return Visibility(
-                visible: value,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      iconSize: 48,
-                      onPressed: ControlSocket().moderator != null
-                          ? null
-                          : () {
-                              _showSplitScreen(true);
-                            },
-                      icon: Image(
-                        image: Svg(iconSplitScreen),
-                      ),
-                    ),
-                    IconButton(
-                      iconSize: 48,
-                      onPressed: (ControlSocket().moderator == null &&
-                              SplitScreen
-                                  .mapSplitScreen.value[keySplitScreenEnable])
-                          ? null
-                          : () {
-                              _showModerator(true);
-                            },
-                      icon: Image(
-                        image: Svg(iconModerator),
-                      ),
-                    ),
-                    IconButton(
-                      iconSize: 48,
-                      onPressed: () {
-                        MainInfo.showMainInfo.value =
-                            !MainInfo.showMainInfo.value;
+                hasFocusSize: AppUIConstant.iconHasFocusSize,
+                notFocusSize: AppUIConstant.iconNotFocusSize,
+                onClick: () {
+                  _showMenuDialog(const DebugSwitch());
+                },
+              ));
+            }
+            if (!AppInstanceCreate().isDisableAdvance) {
+              childList.add(FocusIconButton(
+                child: Image(image: Svg(iconSplitScreen)),
+                hasFocusSize: AppUIConstant.iconHasFocusSize,
+                notFocusSize: AppUIConstant.iconNotFocusSize,
+                onClick: ControlSocket().moderator == null
+                    ? () {
+                        _showSplitScreen(false);
+                      }
+                    : null,
+              ));
+              childList.add(FocusIconButton(
+                child: Image(
+                  image: Svg(iconModerator),
+                ),
+                hasFocusSize: AppUIConstant.iconHasFocusSize,
+                notFocusSize: AppUIConstant.iconNotFocusSize,
+                onClick: (ControlSocket().moderator == null &&
+                        SplitScreen.mapSplitScreen.value[keySplitScreenEnable])
+                    ? null
+                    : () {
+                        _showModerator(false);
                       },
-                      icon: const Image(
-                        image: Svg('assets/images/ic_show_display_code.svg'),
-                      ),
-                    ),
-                    ValueListenableBuilder(
-                      valueListenable: StreamFunction.showArrowMenu,
-                      builder:
-                          (BuildContext context, bool value, Widget? child) {
-                        return Visibility(
-                          visible: value,
-                          child: IconButton(
-                            iconSize: 48,
-                            onPressed: () {
-                              StreamFunction.showPresentFunction.value = false;
-                              StreamFunction.showStreamMenu.value = true;
-                            },
-                            icon: const Image(
-                              image: Svg(
-                                  'assets/images/ic_display_code_arrow.svg'),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(bottom: 20),
-          child: ValueListenableBuilder(
-            valueListenable: StreamFunction.showStreamMenu,
-            builder: (BuildContext context, bool value, Widget? child) {
-              return Visibility(
-                visible: value,
-                child: IconButton(
-                  iconSize: 48,
-                  onPressed: () {
-                    StreamFunction.showPresentFunction.value = true;
-                    StreamFunction.showStreamMenu.value = false;
-                  },
-                  icon: const Image(
-                    image: Svg('assets/images/ic_streaming_menu.svg'),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
+              ));
+            }
+            childList.add(FocusIconButton(
+              child: const Image(image: Svg('assets/images/ic_language.svg')),
+              hasFocusSize: AppUIConstant.iconHasFocusSize,
+              notFocusSize: AppUIConstant.iconNotFocusSize,
+              onClick: () {
+                AppAnalytics().trackEventAppLanguageClick();
+                _showMenuDialog(const LanguageSelection());
+              },
+            ));
+            childList.add(FocusIconButton(
+              child: const Image(image: Svg('assets/images/ic_whats_news.svg')),
+              hasFocusSize: AppUIConstant.iconHasFocusSize,
+              notFocusSize: AppUIConstant.iconNotFocusSize,
+              onClick: () {
+                AppAnalytics().trackEventAppWhatsNewsClick();
+                _showMenuDialog(const WhatsNew());
+              },
+            ));
+            break;
+          case stateMenuOff:
+            childList.add(IconButton(
+              iconSize: 48,
+              onPressed: () {
+                StreamFunction.streamFunctionState.value = stateMenuOn;
+              },
+              icon: const Image(
+                  image: Svg('assets/images/ic_streaming_menu.svg')),
+            ));
+            break;
+          case stateMenuOn:
+            childList.add(IconButton(
+              iconSize: 48,
+              onPressed: ControlSocket().moderator != null
+                  ? null
+                  : () {
+                      _showSplitScreen(true);
+                    },
+              icon: Image(image: Svg(iconSplitScreen)),
+            ));
+            childList.add(IconButton(
+              iconSize: 48,
+              onPressed: (ControlSocket().moderator == null &&
+                      SplitScreen.mapSplitScreen.value[keySplitScreenEnable])
+                  ? null
+                  : () {
+                      _showModerator(true);
+                    },
+              icon: Image(image: Svg(iconModerator)),
+            ));
+            childList.add(IconButton(
+              iconSize: 48,
+              onPressed: () {
+                StreamFunction.streamFunctionState.value = stateBackArrow;
+                MainInfo.showMainInfo.value = true;
+              },
+              icon: const Image(
+                  image: Svg('assets/images/ic_show_display_code.svg')),
+            ));
+            childList.add(IconButton(
+              iconSize: 48,
+              onPressed: () {
+                StreamFunction.streamFunctionState.value = stateMenuOff;
+              },
+              icon: const Image(
+                  image: Svg('assets/images/ic_display_code_arrow.svg')),
+            ));
+            break;
+          case stateBackArrow:
+            childList.add(IconButton(
+              iconSize: 48,
+              onPressed: () {
+                MainInfo.showMainInfo.value = false;
+                StreamFunction.streamFunctionState.value = stateMenuOff;
+              },
+              icon: const Image(
+                  image: Svg('assets/images/ic_display_code_arrow.svg')),
+            ));
+            break;
+        }
+
+        double bottomInset = 20;
+        if (value == stateStandby) {
+          bottomInset = 140;
+        }
+
+        return Stack(
+          alignment: Alignment.bottomLeft,
+          children: <Widget>[
+            Container(
+              width: AppUIConstant.featureContainerWidth,
+              alignment: Alignment.center,
+              margin: EdgeInsets.only(bottom: bottomInset),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: childList,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -263,7 +227,7 @@ class StreamFunctionStates extends State<StreamFunction> {
     if (ControlSocket().featureList.contains('SplitScreen')) {
       _showMenuDialog(const SplitScreen());
       if (leavePresentFunction) {
-        StreamFunction.showPresentFunction.value = false;
+        StreamFunction.streamFunctionState.value = stateMenuOff;
       }
     } else {
       // todo: multi language
@@ -276,7 +240,7 @@ class StreamFunctionStates extends State<StreamFunction> {
     if (ControlSocket().featureList.contains('Moderator')) {
       _showMenuDialog(ModeratorView());
       if (leavePresentFunction) {
-        StreamFunction.showPresentFunction.value = false;
+        StreamFunction.streamFunctionState.value = stateMenuOff;
       }
     } else {
       AppAnalytics().trackEventLicenseInsufficientPrivilege();
