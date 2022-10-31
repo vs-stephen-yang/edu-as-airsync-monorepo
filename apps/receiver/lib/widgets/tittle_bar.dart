@@ -28,14 +28,19 @@ class TitleBar extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                onClick:
-                    (AppConfig.of(context)?.settings.isDevelopEnvironment ??
-                            false)
-                        ? () {
-                            StreamFunction.showDebugFunction.value =
-                                !StreamFunction.showDebugFunction.value;
-                          }
-                        : null,
+                onClick: (AppConfig.of(context)
+                            ?.settings
+                            .isDevelopEnvironment ??
+                        false)
+                    ? () {
+                        String currentState =
+                            StreamFunction.streamFunctionState.value;
+                        StreamFunction.showDebugFunction =
+                            !StreamFunction.showDebugFunction;
+                        StreamFunction.streamFunctionState.value = stateEmpty;
+                        StreamFunction.streamFunctionState.value = currentState;
+                      }
+                    : null,
               ),
               const TextClock(),
             ],

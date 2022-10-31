@@ -130,15 +130,15 @@ class ControlSocket {
           _handleQualityUpdate(controller);
 
           Home.showTitleBottomBar.value = false;
-          StreamFunction.showWaitFunction.value = false;
-          StreamFunction.showStreamMenu.value = true;
 
           if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+            StreamFunction.streamFunctionState.value = stateMenuOff;
             if (moderator != null && navService.canPop()) {
               ModeratorHelper.getInstance().refresh();
             }
           } else {
             if (moderator != null && navService.canPop()) {
+              StreamFunction.streamFunctionState.value = stateMenuOff;
               ModeratorHelper.getInstance().refresh();
             } else {
               navService.popUntil('/home');
@@ -181,9 +181,7 @@ class ControlSocket {
                 ModeratorHelper.getInstance().refresh();
               }
               Home.showTitleBottomBar.value = true;
-              StreamFunction.showWaitFunction.value = true;
-              StreamFunction.showStreamMenu.value = false;
-              StreamFunction.showPresentFunction.value = false;
+              StreamFunction.streamFunctionState.value = stateStandby;
               MainInfo.showMainInfo.value = true;
             } else {
               Home.isSelectedList.value
@@ -196,9 +194,7 @@ class ControlSocket {
               ModeratorHelper.getInstance().refresh();
             }
             Home.showTitleBottomBar.value = true;
-            StreamFunction.showWaitFunction.value = true;
-            StreamFunction.showStreamMenu.value = false;
-            StreamFunction.showPresentFunction.value = false;
+            StreamFunction.streamFunctionState.value = stateStandby;
             MainInfo.showMainInfo.value = true;
           }
           break;
@@ -293,7 +289,7 @@ class ControlSocket {
               }
 
               MainInfo.showMainInfo.value = false;
-              StreamFunction.showWaitFunction.value = false;
+              StreamFunction.streamFunctionState.value = stateEmpty;
 
               selectedController.nativeViewState.switchConnectionState(true);
               var arg = {
@@ -326,7 +322,7 @@ class ControlSocket {
               _handleDisplayStateUpdate(selectedController);
 
               MainInfo.showMainInfo.value = true;
-              StreamFunction.showWaitFunction.value = true;
+              StreamFunction.streamFunctionState.value = stateStandby;
             }
           } else {
             log('selectedController is null!');
