@@ -47,7 +47,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_privilege_message":
             MessageLookupByLibrary.simpleMessage("權限不足，請聯繫IT管理員"),
         "main_register_display_code_failure":
-            MessageLookupByLibrary.simpleMessage("註冊投影辨識碼失敗"),
+            MessageLookupByLibrary.simpleMessage("取得投影辨識碼失敗，請稍後再試"),
         "main_split_screen_question":
             MessageLookupByLibrary.simpleMessage("啟動分割畫面?"),
         "main_split_screen_title": MessageLookupByLibrary.simpleMessage("分割畫面"),
