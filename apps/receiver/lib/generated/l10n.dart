@@ -160,10 +160,10 @@ class S {
     );
   }
 
-  /// `To share screen: Use the above URL, Display Code, and One Time Password.\nOptional: IT Admin can use Companion App to scan and enroll`
+  /// `To share screen: Use the above URL, Display Code, and One Time Password.\nOptional: IT Admin can use Companion App to scan and enroll.`
   String get main_content_scan_to_enroll {
     return Intl.message(
-      'To share screen: Use the above URL, Display Code, and One Time Password.\nOptional: IT Admin can use Companion App to scan and enroll',
+      'To share screen: Use the above URL, Display Code, and One Time Password.\nOptional: IT Admin can use Companion App to scan and enroll.',
       name: 'main_content_scan_to_enroll',
       desc: '',
       args: [],
@@ -290,10 +290,10 @@ class S {
     );
   }
 
-  /// `Display App registration failed. Please try again.`
+  /// `Failure to get Display Code and One Time Password. This may be due to a network or server issue. Please try again later when connection is restored.`
   String get main_register_display_code_failure {
     return Intl.message(
-      'Display App registration failed. Please try again.',
+      'Failure to get Display Code and One Time Password. This may be due to a network or server issue. Please try again later when connection is restored.',
       name: 'main_register_display_code_failure',
       desc: '',
       args: [],

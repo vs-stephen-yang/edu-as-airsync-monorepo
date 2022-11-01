@@ -37,7 +37,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Failed to refresh password.\nPlease wait for 30 seconds before retrying."),
         "main_content_scan_or": MessageLookupByLibrary.simpleMessage("or"),
         "main_content_scan_to_enroll": MessageLookupByLibrary.simpleMessage(
-            "To share screen: Use the above URL, Display Code, and One Time Password.\nOptional: IT Admin can use Companion App to scan and enroll"),
+            "To share screen: Use the above URL, Display Code, and One Time Password.\nOptional: IT Admin can use Companion App to scan and enroll."),
         "main_get_display_code_failure": MessageLookupByLibrary.simpleMessage(
             "Failed to get display code. Wait for network connectivity to resume, or restart the app."),
         "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
@@ -47,9 +47,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_privilege_close": MessageLookupByLibrary.simpleMessage("Close"),
         "main_privilege_message": MessageLookupByLibrary.simpleMessage(
             "This is a Display Advanced feature. Please contact your IT administrator for more information."),
-        "main_register_display_code_failure":
-            MessageLookupByLibrary.simpleMessage(
-                "Display App registration failed. Please try again."),
+        "main_register_display_code_failure": MessageLookupByLibrary.simpleMessage(
+            "Failure to get Display Code and One Time Password. This may be due to a network or server issue. Please try again later when connection is restored."),
         "main_split_screen_question": MessageLookupByLibrary.simpleMessage(
             "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once."),
         "main_split_screen_title":
