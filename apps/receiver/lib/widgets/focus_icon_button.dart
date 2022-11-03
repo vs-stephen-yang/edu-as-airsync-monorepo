@@ -23,10 +23,10 @@ class FocusIconButton extends StatefulWidget {
   final Color? focusColor;
 
   @override
-  State createState() => FocusIconButtonState();
+  State createState() => _FocusIconButtonState();
 }
 
-class FocusIconButtonState extends State<FocusIconButton> {
+class _FocusIconButtonState extends State<FocusIconButton> {
   late FocusNode _focusNode;
 
   @override
