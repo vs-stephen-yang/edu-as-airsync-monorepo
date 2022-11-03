@@ -41,10 +41,10 @@ class FocusTextButton extends StatefulWidget {
   final double? notFocusHeight;
 
   @override
-  State createState() => FocusTextButtonState();
+  State createState() => _FocusTextButtonState();
 }
 
-class FocusTextButtonState extends State<FocusTextButton> {
+class _FocusTextButtonState extends State<FocusTextButton> {
   late FocusNode _focusNode;
   final _childKey = GlobalKey();
   Size? _childSize;

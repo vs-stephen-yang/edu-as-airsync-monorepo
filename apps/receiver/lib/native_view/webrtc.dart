@@ -24,10 +24,10 @@ class WebRTCNativeView extends StatefulWidget {
   final WebRTCNativeViewCreatedCallback onWebRTCNativeViewCreatedCallback;
 
   @override
-  State createState() => WebRTCNativeViewState();
+  State createState() => _WebRTCNativeViewState();
 }
 
-class WebRTCNativeViewState extends State<WebRTCNativeView>
+class _WebRTCNativeViewState extends State<WebRTCNativeView>
     with TickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
@@ -230,7 +230,7 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
 }
 
 class WebRTCNativeViewController {
-  late WebRTCNativeViewState nativeViewState;
+  late _WebRTCNativeViewState nativeViewState;
   late MethodChannel channel;
 
   PresentationState presentationState = PresentationState.stopStreaming;
@@ -240,7 +240,7 @@ class WebRTCNativeViewController {
   String peerToken = '';
   String peerId = '';
 
-  WebRTCNativeViewController(WebRTCNativeViewState viewState, int id) {
+  WebRTCNativeViewController(_WebRTCNativeViewState viewState, int id) {
     nativeViewState = viewState;
     channel = MethodChannel('com.mvbcast.crosswalk/webrtc_native_view_$id');
   }
