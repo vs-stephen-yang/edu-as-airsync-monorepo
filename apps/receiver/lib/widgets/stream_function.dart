@@ -68,132 +68,16 @@ class StreamFunctionStates extends State<StreamFunction> {
         }
         // endregion
 
-        List<Widget> childList = <Widget>[];
-        switch (value) {
-          case stateStandby:
-            if (StreamFunction.showDebugFunction) {
-              childList.add(FocusIconButton(
-                child: const Icon(
-                  Icons.build_outlined,
-                  color: Colors.white,
-                ),
-                hasFocusSize: AppUIConstant.iconHasFocusSize,
-                notFocusSize: AppUIConstant.iconNotFocusSize,
-                onClick: () {
-                  _showMenuDialog(const DebugSwitch());
-                },
-              ));
-            }
-            if (!AppInstanceCreate().isDisableAdvance) {
-              childList.add(FocusIconButton(
-                child: Image(image: Svg(iconSplitScreen)),
-                hasFocusSize: AppUIConstant.iconHasFocusSize,
-                notFocusSize: AppUIConstant.iconNotFocusSize,
-                onClick: ControlSocket().moderator == null
-                    ? () {
-                        _showSplitScreen(false);
-                      }
-                    : null,
-              ));
-              childList.add(FocusIconButton(
-                child: Image(
-                  image: Svg(iconModerator),
-                ),
-                hasFocusSize: AppUIConstant.iconHasFocusSize,
-                notFocusSize: AppUIConstant.iconNotFocusSize,
-                onClick: (ControlSocket().moderator == null &&
-                        SplitScreen.mapSplitScreen.value[keySplitScreenEnable])
-                    ? null
-                    : () {
-                        _showModerator(false);
-                      },
-              ));
-            }
-            childList.add(FocusIconButton(
-              child: const Image(image: Svg('assets/images/ic_language.svg')),
-              hasFocusSize: AppUIConstant.iconHasFocusSize,
-              notFocusSize: AppUIConstant.iconNotFocusSize,
-              onClick: () {
-                AppAnalytics().trackEventAppLanguageClick();
-                _showMenuDialog(const LanguageSelection());
-              },
-            ));
-            childList.add(FocusIconButton(
-              child: const Image(image: Svg('assets/images/ic_whats_news.svg')),
-              hasFocusSize: AppUIConstant.iconHasFocusSize,
-              notFocusSize: AppUIConstant.iconNotFocusSize,
-              onClick: () {
-                AppAnalytics().trackEventAppWhatsNewsClick();
-                _showMenuDialog(const WhatsNew());
-              },
-            ));
-            break;
-          case stateMenuOff:
-            childList.add(FocusIconButton(
-              child: const Image(
-                  image: Svg('assets/images/ic_streaming_menu.svg')),
-              hasFocusSize: AppUIConstant.iconHasFocusSize,
-              notFocusSize: AppUIConstant.iconNotFocusSize,
-              onClick: () {
-                StreamFunction.streamFunctionState.value = stateMenuOn;
-              },
-            ));
-            break;
-          case stateMenuOn:
-            childList.add(FocusIconButton(
-              child: Image(image: Svg(iconSplitScreen)),
-              hasFocusSize: AppUIConstant.iconHasFocusSize,
-              notFocusSize: AppUIConstant.iconNotFocusSize,
-              onClick: ControlSocket().moderator != null
-                  ? null
-                  : () {
-                      _showSplitScreen(true);
-                    },
-            ));
-            childList.add(FocusIconButton(
-              child: Image(image: Svg(iconModerator)),
-              hasFocusSize: AppUIConstant.iconHasFocusSize,
-              notFocusSize: AppUIConstant.iconNotFocusSize,
-              onClick: (ControlSocket().moderator == null &&
-                      SplitScreen.mapSplitScreen.value[keySplitScreenEnable])
-                  ? null
-                  : () {
-                      _showModerator(true);
-                    },
-            ));
-            childList.add(FocusIconButton(
-              child: const Image(
-                  image: Svg('assets/images/ic_show_display_code.svg')),
-              hasFocusSize: AppUIConstant.iconHasFocusSize,
-              notFocusSize: AppUIConstant.iconNotFocusSize,
-              onClick: () {
-                StreamFunction.streamFunctionState.value = stateBackArrow;
-                MainInfo.showMainInfo.value = true;
-              },
-            ));
-            childList.add(FocusIconButton(
-              child: const Image(
-                  image: Svg('assets/images/ic_display_code_arrow.svg')),
-              hasFocusSize: AppUIConstant.iconHasFocusSize,
-              notFocusSize: AppUIConstant.iconNotFocusSize,
-              onClick: () {
-                StreamFunction.streamFunctionState.value = stateMenuOff;
-              },
-            ));
-            break;
-          case stateBackArrow:
-            childList.add(FocusIconButton(
-              child: const Image(
-                  image: Svg('assets/images/ic_display_code_arrow.svg')),
-              hasFocusSize: AppUIConstant.iconHasFocusSize,
-              notFocusSize: AppUIConstant.iconNotFocusSize,
-              onClick: () {
-                MainInfo.showMainInfo.value = false;
-                StreamFunction.streamFunctionState.value = stateMenuOff;
-              },
-            ));
-            break;
+        // region Main icon
+        String iconMain = '';
+        if (value == stateStandby) {
+          iconMain = 'assets/images/ic_whats_news.svg';
+        } else if (value == stateMenuOff || value == stateEmpty) {
+          iconMain = 'assets/images/ic_streaming_menu.svg';
+        } else {
+          iconMain = 'assets/images/ic_display_code_arrow.svg';
         }
+        // endregion
 
         double bottomInset = 20;
         if (value == stateStandby) {
@@ -209,7 +93,99 @@ class StreamFunctionStates extends State<StreamFunction> {
               margin: EdgeInsets.only(bottom: bottomInset),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: childList,
+                children: <Widget>[
+                  Visibility(
+                    visible: StreamFunction.showDebugFunction,
+                    child: FocusIconButton(
+                      child: const Icon(
+                        Icons.build_outlined,
+                        color: Colors.white,
+                      ),
+                      hasFocusSize: AppUIConstant.iconHasFocusSize,
+                      notFocusSize: AppUIConstant.iconNotFocusSize,
+                      onClick: () {
+                        _showMenuDialog(const DebugSwitch());
+                      },
+                    ),
+                  ),
+                  Visibility(
+                    visible: (value == stateStandby || value == stateMenuOn) &&
+                        !AppInstanceCreate().isDisableAdvance,
+                    child: FocusIconButton(
+                      child: Image(image: Svg(iconSplitScreen)),
+                      hasFocusSize: AppUIConstant.iconHasFocusSize,
+                      notFocusSize: AppUIConstant.iconNotFocusSize,
+                      onClick: ControlSocket().moderator == null
+                          ? () {
+                              _showSplitScreen(value == stateMenuOn);
+                            }
+                          : null,
+                    ),
+                  ),
+                  Visibility(
+                    visible: (value == stateStandby || value == stateMenuOn) &&
+                        !AppInstanceCreate().isDisableAdvance,
+                    child: FocusIconButton(
+                      child: Image(image: Svg(iconModerator)),
+                      hasFocusSize: AppUIConstant.iconHasFocusSize,
+                      notFocusSize: AppUIConstant.iconNotFocusSize,
+                      onClick: (ControlSocket().moderator == null &&
+                              SplitScreen
+                                  .mapSplitScreen.value[keySplitScreenEnable])
+                          ? null
+                          : () {
+                              _showModerator(value == stateMenuOn);
+                            },
+                    ),
+                  ),
+                  Visibility(
+                    visible: value == stateStandby || value == stateMenuOn,
+                    child: FocusIconButton(
+                      child: Image(
+                        image: Svg(value == stateStandby
+                            ? 'assets/images/ic_language.svg'
+                            : 'assets/images/ic_show_display_code.svg'),
+                      ),
+                      hasFocusSize: AppUIConstant.iconHasFocusSize,
+                      notFocusSize: AppUIConstant.iconNotFocusSize,
+                      onClick: () {
+                        if (value == stateStandby) {
+                          AppAnalytics().trackEventAppLanguageClick();
+                          _showMenuDialog(const LanguageSelection());
+                        } else if (value == stateMenuOn) {
+                          // _showMenuDialog(const MainInfo());
+                          StreamFunction.streamFunctionState.value =
+                              stateBackArrow;
+                          MainInfo.showMainInfo.value = true;
+                        }
+                      },
+                    ),
+                  ),
+                  Visibility(
+                    visible: value != stateEmpty,
+                    child: FocusIconButton(
+                      child: Image(image: Svg(iconMain)),
+                      hasFocusSize: AppUIConstant.iconHasFocusSize,
+                      notFocusSize: AppUIConstant.iconNotFocusSize,
+                      onClick: () {
+                        if (value == stateStandby) {
+                          AppAnalytics().trackEventAppWhatsNewsClick();
+                          _showMenuDialog(const WhatsNew());
+                        } else if (value == stateMenuOff) {
+                          StreamFunction.streamFunctionState.value =
+                              stateMenuOn;
+                        } else if (value == stateMenuOn) {
+                          StreamFunction.streamFunctionState.value =
+                              stateMenuOff;
+                        } else if (value == stateBackArrow) {
+                          MainInfo.showMainInfo.value = false;
+                          StreamFunction.streamFunctionState.value =
+                              stateMenuOff;
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -219,6 +195,7 @@ class StreamFunctionStates extends State<StreamFunction> {
   }
 
   _showMenuDialog(Widget widget) {
+    FocusScope.of(context).unfocus();
     showDialog(
       context: context,
       barrierDismissible: false,
