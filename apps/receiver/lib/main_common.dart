@@ -152,7 +152,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       //add
       supportedLocales: S.delegate.supportedLocales,
       locale: _locale,
-      title: 'Display',
+      title: 'myViewBoard Display',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
