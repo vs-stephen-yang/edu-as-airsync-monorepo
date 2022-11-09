@@ -1,11 +1,11 @@
 {
-    "name": "Display",
-    "short_name": "Display",
+    "name": "myViewBoard Display",
+    "short_name": "myViewBoard Display",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Display for Flutter [Android(java), iOS(swift), MacOS, Web, Windows)]",
+    "description": "myViewBoard Display for Flutter [Android(java), iOS(swift), MacOS, Web, Windows)]",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
