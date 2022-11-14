@@ -17,6 +17,7 @@ const String keySplitScreenLastId = 'lastId';
 
 class SplitScreen extends StatefulWidget {
   const SplitScreen({Key? key}) : super(key: key);
+
   static ValueNotifier<Map<String, dynamic>> mapSplitScreen =
       ValueNotifier({keySplitScreenEnable: false, keySplitScreenCount: 0});
 
@@ -58,47 +59,45 @@ class _SplitScreenState extends State<SplitScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.06,
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            color: Colors.transparent,
-            child: Row(
-              children: [
-                FittedBox(
-                  fit: BoxFit.fitHeight,
-                  child: FocusIconButton(
-                    child: const Icon(
-                      Icons.arrow_back_ios_new,
-                      color: AppColors.primary_white,
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Row(
+                children: <Widget>[
+                  FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: FocusIconButton(
+                      child: const Icon(
+                        Icons.arrow_back_ios_new,
+                        color: AppColors.primary_white,
+                      ),
+                      splashRadius: 20,
+                      focusColor: Colors.grey,
+                      onClick: () {
+                        AppAnalytics().trackEventSplitScreenPanelClose();
+                        navService.popUntil('/home');
+                      },
                     ),
-                    splashRadius: 20,
-                    focusColor: Colors.grey,
-                    onClick: () {
-                      AppAnalytics().trackEventSplitScreenPanelClose();
-                      navService.popUntil('/home');
-                    },
                   ),
-                ),
-                Expanded(
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      child: Text(
-                        S.of(context).main_split_screen_title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary_white,
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 5),
+                        child: Text(
+                          S.of(context).main_split_screen_title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary_white,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: FittedBox(
-                    alignment: Alignment.centerRight,
+                  FittedBox(
                     fit: BoxFit.fitHeight,
                     child: FocusIconButton(
                       child: Image(
@@ -116,29 +115,34 @@ class _SplitScreenState extends State<SplitScreen>
                       },
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Expanded(
+            flex: 7,
             child: Container(
-              padding: EdgeInsets.symmetric(
-                vertical: MediaQuery.of(context).size.height * 0.2,
-                horizontal: 30,
-              ),
+              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Visibility(
                     visible:
                         SplitScreen.mapSplitScreen.value[keySplitScreenEnable],
-                    child: RotationTransition(
-                      turns: _animation,
-                      child: const Image(
-                        image: Svg(
-                          'assets/images/ic_loading.svg',
-                          size: Size.square(32),
+                    child: Wrap(
+                      direction: Axis.vertical,
+                      children: [
+                        RotationTransition(
+                          turns: _animation,
+                          child: const Image(
+                            image: Svg(
+                              'assets/images/ic_loading.svg',
+                              size: Size.square(32),
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 32),
+                      ],
                     ),
                   ),
                   Text(

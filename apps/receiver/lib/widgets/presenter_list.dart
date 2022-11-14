@@ -10,9 +10,8 @@ import 'package:flutter/material.dart';
 class PresenterList extends StatefulWidget {
   bool isSplit = false;
   Key? listKey;
-  final ValueChanged<bool> updateEditIcon;
 
-  PresenterList(this.listKey, this.updateEditIcon, this.isSplit)
+  PresenterList(this.listKey, this.isSplit)
       : super(key: listKey);
 
   @override
@@ -149,7 +148,6 @@ class PresenterListState extends State<PresenterList> {
                       onTap: () {
                         setState(() {
                           bEditNotifier = false;
-                          widget.updateEditIcon(bEditNotifier);
                         });
                       },
                       child: Container(
@@ -203,7 +201,6 @@ class PresenterListState extends State<PresenterList> {
                           }
                         }
                         bEditNotifier = false;
-                        widget.updateEditIcon(bEditNotifier);
                       },
                       child: Container(
                           height: MediaQuery.of(context).size.height * 0.05,
