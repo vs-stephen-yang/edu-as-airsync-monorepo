@@ -22,60 +22,63 @@ class _DebugSwitchState extends State<DebugSwitch> {
     return MenuDialog(
       backgroundColor: AppColors.primary_grey,
       child: Column(
-        children: [
-          Container(
-            // alignment: Alignment.center,
-            height: MediaQuery.of(context).size.height * 0.06,
-            margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-            color: Colors.transparent,
-            child: Row(
-              children: [
-                FittedBox(
-                  fit: BoxFit.fitHeight,
-                  child: FocusIconButton(
-                    child: const Icon(
-                      Icons.arrow_back_ios_new,
-                      color: AppColors.primary_white,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Row(
+                children: <Widget>[
+                  FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: FocusIconButton(
+                      child: const Icon(
+                        Icons.arrow_back_ios_new,
+                        color: AppColors.primary_white,
+                      ),
+                      splashRadius: 20,
+                      focusColor: Colors.grey,
+                      onClick: () {
+                        navService.popUntil('/home');
+                      },
                     ),
-                    splashRadius: 20,
-                    focusColor: Colors.grey,
-                    onClick: () {
-                      navService.popUntil('/home');
-                    },
                   ),
-                ),
-                Expanded(
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                      child: const Text(
-                        'Debug Switch',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primary_white,
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 5),
+                        child: const Text(
+                          'Debug Switch',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary_white,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.06,
-            margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-            color: Colors.transparent,
-            child: FocusTextButton(
-              child: const Text('-- Toggle webrtc logger panel --',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary_blue,
-                  )),
-              onClick: () {
-                _debugSwitch.invokeMethod('toggleDebugInfoVisible');
-              },
+          Flexible(
+            flex: 7,
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+              child: FocusTextButton(
+                child: const Text('-- Toggle webrtc logger panel --',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary_blue,
+                    )),
+                onClick: () {
+                  _debugSwitch.invokeMethod('toggleDebugInfoVisible');
+                },
+              ),
             ),
           ),
         ],
