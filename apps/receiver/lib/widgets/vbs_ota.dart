@@ -1,11 +1,11 @@
 import 'dart:io';
 
+import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class VbsOTA extends StatefulWidget {
   const VbsOTA({Key? key}) : super(key: key);
@@ -85,9 +85,9 @@ class _VbsOTAState extends State<VbsOTA> {
             spacing: 10,
             children: <Widget>[
               FocusIconButton(
-                child: const Image(
-                  image: Svg('assets/images/ic_power_settings.svg'),
-                ),
+                icons: Icons.power_settings_new,
+                iconForegroundColor: AppColors.iconStandbyForeground,
+                iconBackgroundColor: AppColors.iconStandbyBackground,
                 hasFocusSize: AppUIConstant.iconHasFocusSize,
                 notFocusSize: AppUIConstant.iconNotFocusSize,
                 onClick: () {

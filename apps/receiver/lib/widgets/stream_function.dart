@@ -1,4 +1,5 @@
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/model/control_socket.dart';
@@ -55,27 +56,55 @@ class StreamFunctionStates extends State<StreamFunction> {
         // endregion
 
         // region Moderator icon
-        String iconModerator = '';
+        Color? colorModeratorForeground, colorModeratorBackground;
         if (ControlSocket().moderator == null &&
             SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-          iconModerator = 'assets/images/ic_moderator_off.svg';
+          if (value == stateMenuOn) {
+            colorModeratorForeground =
+                AppColors.iconDisablePresentingForeground;
+            colorModeratorBackground =
+                AppColors.iconDisablePresentingBackground;
+          } else {
+            colorModeratorForeground = AppColors.iconDisableStandbyForeground;
+            colorModeratorBackground = AppColors.iconDisableStandbyBackground;
+          }
         } else {
           if (ControlSocket().moderator != null) {
-            iconModerator = 'assets/images/ic_moderator_activate.svg';
+            colorModeratorForeground = AppColors.iconFeatureOnStandbyForeground;
+            colorModeratorBackground = AppColors.iconFeatureOnStandbyBackground;
           } else {
-            iconModerator = 'assets/images/ic_moderator_on.svg';
+            if (value == stateMenuOn) {
+              colorModeratorForeground = AppColors.iconPresentingForeground;
+              colorModeratorBackground = AppColors.iconPresentingBackground;
+            } else {
+              colorModeratorForeground = AppColors.iconStandbyForeground;
+              colorModeratorBackground = AppColors.iconStandbyBackground;
+            }
           }
         }
         // endregion
 
-        // region Main icon
-        String iconMain = '';
+        // region Language icon
+        IconData? iconLanguage;
+        Image? iconLanguageImage;
         if (value == stateStandby) {
-          iconMain = 'assets/images/ic_whats_news.svg';
+          iconLanguage = Icons.language;
+        } else if (value == stateMenuOn) {
+          iconLanguageImage =
+              const Image(image: Svg('assets/images/ic_show_display_code.svg'));
+        }
+        // endregion
+
+        // region Main icon
+        IconData? iconMain;
+        Image? iconMainImage;
+        if (value == stateStandby) {
+          iconMain = Icons.campaign;
         } else if (value == stateMenuOff || value == stateEmpty) {
-          iconMain = 'assets/images/ic_streaming_menu.svg';
+          iconMainImage =
+              const Image(image: Svg('assets/images/ic_streaming_menu.svg'));
         } else {
-          iconMain = 'assets/images/ic_display_code_arrow.svg';
+          iconMain = Icons.arrow_back_ios_new;
         }
         // endregion
 
@@ -97,10 +126,11 @@ class StreamFunctionStates extends State<StreamFunction> {
                   Visibility(
                     visible: StreamFunction.showDebugFunction,
                     child: FocusIconButton(
-                      child: const Icon(
-                        Icons.build_outlined,
-                        color: Colors.white,
-                      ),
+                      icons: Icons.build_outlined,
+                      iconForegroundColor: AppColors.iconStandbyForeground,
+                      iconBackgroundColor: AppColors.iconStandbyBackground,
+                      iconFocusBackgroundColor:
+                          AppColors.iconFeatureOnStandbyBackground,
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
                       onClick: () {
@@ -126,9 +156,14 @@ class StreamFunctionStates extends State<StreamFunction> {
                     visible: (value == stateStandby || value == stateMenuOn) &&
                         !AppInstanceCreate().isDisableAdvance,
                     child: FocusIconButton(
-                      child: Image(image: Svg(iconModerator)),
+                      icons: Icons.groups,
+                      iconForegroundColor: colorModeratorForeground,
+                      iconBackgroundColor: colorModeratorBackground,
+                      iconFocusBackgroundColor:
+                          AppColors.iconFeatureOnStandbyBackground,
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
+                      isAddGreenDot: ControlSocket().moderator != null,
                       onClick: (ControlSocket().moderator == null &&
                               SplitScreen
                                   .mapSplitScreen.value[keySplitScreenEnable])
@@ -141,11 +176,16 @@ class StreamFunctionStates extends State<StreamFunction> {
                   Visibility(
                     visible: value == stateStandby || value == stateMenuOn,
                     child: FocusIconButton(
-                      child: Image(
-                        image: Svg(value == stateStandby
-                            ? 'assets/images/ic_language.svg'
-                            : 'assets/images/ic_show_display_code.svg'),
-                      ),
+                      icons: iconLanguage,
+                      child: iconLanguageImage,
+                      iconForegroundColor: value == stateStandby
+                          ? AppColors.iconStandbyForeground
+                          : AppColors.iconPresentingForeground,
+                      iconBackgroundColor: value == stateStandby
+                          ? AppColors.iconStandbyBackground
+                          : AppColors.iconPresentingForeground,
+                      iconFocusBackgroundColor:
+                          AppColors.iconFeatureOnStandbyBackground,
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
                       onClick: () {
@@ -164,7 +204,16 @@ class StreamFunctionStates extends State<StreamFunction> {
                   Visibility(
                     visible: value != stateEmpty,
                     child: FocusIconButton(
-                      child: Image(image: Svg(iconMain)),
+                      icons: iconMain,
+                      child: iconMainImage,
+                      iconForegroundColor: value == stateStandby
+                          ? AppColors.iconStandbyForeground
+                          : AppColors.iconPresentingForeground,
+                      iconBackgroundColor: value == stateStandby
+                          ? AppColors.iconStandbyBackground
+                          : AppColors.iconPresentingForeground,
+                      iconFocusBackgroundColor:
+                          AppColors.iconFeatureOnStandbyBackground,
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
                       onClick: () {
