@@ -29,6 +29,7 @@ class _FocusSingleChildScrollViewState
   Widget build(BuildContext context) {
     return Focus(
       child: RawScrollbar(
+        controller: _scrollController,
         isAlwaysShown: true,
         thumbColor: Colors.white,
         child: SingleChildScrollView(
