@@ -1,18 +1,26 @@
+import 'package:display_flutter/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class FocusIconButton extends StatefulWidget {
   const FocusIconButton(
       {Key? key,
-      required this.child,
+      this.icons,
+      this.child,
       this.onClick,
       this.hasFocusSize,
       this.notFocusSize,
       this.splashRadius,
-      this.focusColor})
+      this.focusColor,
+      this.iconForegroundColor,
+      this.iconBackgroundColor,
+      this.iconFocusForegroundColor,
+      this.iconFocusBackgroundColor,
+      this.isAddGreenDot = false})
       : super(key: key);
 
-  final Widget child;
+  final IconData? icons;
+  final Widget? child;
 
   final VoidCallback? onClick;
 
@@ -21,6 +29,14 @@ class FocusIconButton extends StatefulWidget {
 
   final double? splashRadius;
   final Color? focusColor;
+
+  final Color? iconForegroundColor;
+  final Color? iconBackgroundColor;
+
+  final Color? iconFocusForegroundColor;
+  final Color? iconFocusBackgroundColor;
+
+  final bool isAddGreenDot;
 
   @override
   State createState() => _FocusIconButtonState();
@@ -49,9 +65,59 @@ class _FocusIconButtonState extends State<FocusIconButton> {
         builder: (context) {
           final FocusNode focusNode = Focus.of(context);
           final bool hasFocus = focusNode.hasFocus;
+          double? iconSize;
+          if (hasFocus) {
+            if (widget.hasFocusSize != null) {
+              iconSize = widget.hasFocusSize! - 12; // reduce size for padding.
+            }
+          } else {
+            if (widget.notFocusSize != null) {
+              iconSize = widget.notFocusSize! - 12; // reduce size for padding.
+            }
+          }
           return IconButton(
             focusNode: _focusNode,
-            icon: widget.child,
+            icon: widget.icons != null
+                ? Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: hasFocus
+                          ? widget.iconFocusBackgroundColor ??
+                              widget.iconBackgroundColor
+                          : widget.iconBackgroundColor,
+                    ),
+                    child: Stack(
+                      children: [
+                        Icon(
+                          widget.icons!,
+                          color: hasFocus
+                              ? widget.iconFocusForegroundColor ??
+                                  widget.iconForegroundColor
+                              : widget.iconForegroundColor,
+                          size: iconSize,
+                        ),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: Visibility(
+                            visible: widget.isAddGreenDot,
+                            child: const SizedBox(
+                              width: 10,
+                              height: 10,
+                              child: CircleAvatar(
+                                backgroundColor:
+                                    AppColors.iconFeatureOnGreenDot,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : widget.child != null
+                    ? widget.child!
+                    : const SizedBox(),
             iconSize: hasFocus ? widget.hasFocusSize : widget.notFocusSize,
             splashRadius: widget.splashRadius,
             focusColor: widget.focusColor,

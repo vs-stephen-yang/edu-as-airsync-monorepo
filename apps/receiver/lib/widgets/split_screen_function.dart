@@ -1,10 +1,10 @@
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class SplitScreenFunction extends StatelessWidget {
   const SplitScreenFunction({Key? key, required this.index, this.updateSize})
@@ -69,9 +69,12 @@ class SplitScreenFunction extends StatelessWidget {
                         visible:
                             !Home.isSelectedList.value[index] && value[index],
                         child: FocusIconButton(
-                          child: const Image(
-                              image:
-                                  Svg('assets/images/ic_connection_close.svg')),
+                          icons: Icons.close,
+                          iconForegroundColor: Colors.white,
+                          iconBackgroundColor:
+                              AppColors.iconPresentingBackground,
+                          iconFocusBackgroundColor:
+                              AppColors.iconFeatureOnStandbyBackground,
                           hasFocusSize: AppUIConstant.iconHasFocusSize,
                           notFocusSize: AppUIConstant.iconNotFocusSize,
                           onClick: () {
@@ -89,8 +92,12 @@ class SplitScreenFunction extends StatelessWidget {
                         visible:
                             !Home.isSelectedList.value[index] && value[index],
                         child: FocusIconButton(
-                          child: const Image(
-                              image: Svg('assets/images/ic_zoom_in.svg')),
+                          icons: Icons.crop_free_sharp,
+                          iconForegroundColor: Colors.white,
+                          iconBackgroundColor:
+                              AppColors.iconPresentingBackground,
+                          iconFocusBackgroundColor:
+                              AppColors.iconFeatureOnStandbyBackground,
                           hasFocusSize: AppUIConstant.iconHasFocusSize,
                           notFocusSize: AppUIConstant.iconNotFocusSize,
                           onClick: () {
@@ -106,19 +113,21 @@ class SplitScreenFunction extends StatelessWidget {
                       ),
                       // Using same button to show focus status at same button area.
                       FocusIconButton(
-                        child: Image(
-                          image: Svg(Home.isSelectedList.value[index]
-                              // Full screen mode
-                              ? 'assets/images/ic_zoom_out.svg'
-                              // Split screen mode
-                              : value[index]
-                                  // Menu On: display left/right
-                                  ? ((index == 0 || index == 2)
-                                      ? 'assets/images/ic_arrow_right.svg'
-                                      : 'assets/images/ic_arrow_left.svg')
-                                  // Menu Off: display cloud icon
-                                  : 'assets/images/ic_split_screen_menu.svg'),
-                        ),
+                        icons: Home.isSelectedList.value[index]
+                            // Full screen mode
+                            ? Icons.close_fullscreen
+                            // Split screen mode
+                            : (value[index])
+                                // Menu On: display left/right
+                                ? (index == 0 || index == 2)
+                                    ? Icons.chevron_right
+                                    : Icons.chevron_left
+                                // Menu Off: display cloud icon
+                                : Icons.more_vert,
+                        iconForegroundColor: Colors.white,
+                        iconBackgroundColor: AppColors.iconPresentingBackground,
+                        iconFocusBackgroundColor:
+                            AppColors.iconFeatureOnStandbyBackground,
                         hasFocusSize: AppUIConstant.iconHasFocusSize,
                         notFocusSize: AppUIConstant.iconNotFocusSize,
                         onClick: () {
