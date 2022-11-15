@@ -37,28 +37,30 @@ dependencies:
   no_context_navigation: ^2.1.2
   shared_preferences: ^2.0.15
   package_info_plus: ^1.4.2
-  device_info_plus: ^2.2.0
+  # https://github.com/fluttercommunity/plus_plugins/blob/b9951b7e99d7ffc495a886def9154eef5cb1ab9d/packages/device_info_plus/device_info_plus/CHANGELOG.md#400
+  # 4.x.x and above will remove androidId, need use another package to get androidId: android_id
+  device_info_plus: ^3.2.4
   device_info_vs:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Droid/_git/Device_Info_VS
   encrypt: ^5.0.1
-  uuid: ^3.0.6
-  http: ^0.13.4
+  uuid: ^3.0.7
+  http: ^0.13.5
   path_provider: ^2.0.11
-  http_parser: ^4.0.1
+  http_parser: ^4.0.2
   intl: ^0.17.0
-  flutter_bloc: ^8.0.1
+  flutter_bloc: ^8.1.1
   socket_io_client: ^1.0.2
   qr_flutter: ^4.0.0
   flutter_svg_provider: ^1.0.3
-  rxdart: ^0.27.4
+  rxdart: ^0.27.6
   flutter_localizations:
     sdk: flutter
   easy_debounce: ^2.0.2+1
   flutter_appcenter_bundle:
     path: ./plugin/flutter_appcenter_bundle-3.3.2
   auto_size_text: ^3.0.0
-  provider: ^6.0.1
+  provider: ^6.0.4
 
 dev_dependencies:
   flutter_test:
