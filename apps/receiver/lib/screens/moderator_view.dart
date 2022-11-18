@@ -67,7 +67,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                   FittedBox(
                     fit: BoxFit.fitHeight,
                     child: FocusIconButton(
-                      child: const Icon(
+                      childNotFocus: const Icon(
                         Icons.arrow_back_ios_new,
                         color: AppColors.primary_white,
                       ),
@@ -98,7 +98,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                   FittedBox(
                     fit: BoxFit.fitHeight,
                     child: FocusIconButton(
-                      child: Image(
+                      childNotFocus: Image(
                         image: Svg(Displays().getDisplays().isEmpty
                             ? 'assets/images/ic_moderator_split_screen_off.svg'
                             : SplitScreen
@@ -120,7 +120,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                   FittedBox(
                     fit: BoxFit.fitHeight,
                     child: FocusIconButton(
-                      child: Image(
+                      childNotFocus: Image(
                         image: Svg((Displays().getDisplays().isNotEmpty)
                             ? 'assets/images/ic_activate_on.svg'
                             : 'assets/images/ic_activate_off.svg'),

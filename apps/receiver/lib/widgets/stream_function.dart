@@ -8,6 +8,7 @@ import 'package:display_flutter/screens/language_selection.dart';
 import 'package:display_flutter/screens/moderator_view.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/screens/whats_new.dart';
+import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/privilege_dialog.dart';
@@ -43,14 +44,38 @@ class StreamFunctionStates extends State<StreamFunction> {
       valueListenable: StreamFunction.streamFunctionState,
       builder: (BuildContext context, String value, Widget? child) {
         // region SplitScreen icon
-        String iconSplitScreen = '';
+        Color? colorSplitScreenForeground, colorSplitScreenBackground;
         if (ControlSocket().moderator != null) {
-          iconSplitScreen = 'assets/images/ic_split_screen_off.svg';
+          if (value == stateMenuOn) {
+            colorSplitScreenForeground =
+                AppColors.iconDisablePresentingForeground;
+            colorSplitScreenBackground =
+                AppColors.iconDisablePresentingBackground;
+          } else {
+            colorSplitScreenForeground = AppColors.iconDisableStandbyForeground;
+            colorSplitScreenBackground = AppColors.iconDisableStandbyBackground;
+          }
         } else {
           if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-            iconSplitScreen = 'assets/images/ic_split_screen_activate.svg';
+            if (value == stateMenuOn) {
+              colorSplitScreenForeground =
+                  AppColors.iconFeatureOnPresentingForeground;
+              colorSplitScreenBackground =
+                  AppColors.iconFeatureOnPresentingBackground;
+            } else {
+              colorSplitScreenForeground =
+                  AppColors.iconFeatureOnStandbyForeground;
+              colorSplitScreenBackground =
+                  AppColors.iconFeatureOnStandbyBackground;
+            }
           } else {
-            iconSplitScreen = 'assets/images/ic_split_screen_on.svg';
+            if (value == stateMenuOn) {
+              colorSplitScreenForeground = AppColors.iconPresentingForeground;
+              colorSplitScreenBackground = AppColors.iconPresentingBackground;
+            } else {
+              colorSplitScreenForeground = AppColors.iconStandbyForeground;
+              colorSplitScreenBackground = AppColors.iconStandbyBackground;
+            }
           }
         }
         // endregion
@@ -86,23 +111,24 @@ class StreamFunctionStates extends State<StreamFunction> {
 
         // region Language icon
         IconData? iconLanguage;
-        Image? iconLanguageImage;
         if (value == stateStandby) {
           iconLanguage = Icons.language;
         } else if (value == stateMenuOn) {
-          iconLanguageImage =
-              const Image(image: Svg('assets/images/ic_show_display_code.svg'));
+          iconLanguage = Icons.password;
         }
         // endregion
 
         // region Main icon
         IconData? iconMain;
-        Image? iconMainImage;
+        Image? iconMainImageHasFocus;
+        Image? iconMainImageNotFocus;
         if (value == stateStandby) {
           iconMain = Icons.campaign;
         } else if (value == stateMenuOff || value == stateEmpty) {
-          iconMainImage =
-              const Image(image: Svg('assets/images/ic_streaming_menu.svg'));
+          iconMainImageHasFocus =
+              const Image(image: Svg('assets/images/ic_streaming_menu_on.svg'));
+          iconMainImageNotFocus = const Image(
+              image: Svg('assets/images/ic_streaming_menu_off.svg'));
         } else {
           iconMain = Icons.arrow_back_ios_new;
         }
@@ -142,9 +168,15 @@ class StreamFunctionStates extends State<StreamFunction> {
                     visible: (value == stateStandby || value == stateMenuOn) &&
                         !AppInstanceCreate().isDisableAdvance,
                     child: FocusIconButton(
-                      child: Image(image: Svg(iconSplitScreen)),
+                      icons: CustomIcons.split_screen,
+                      iconForegroundColor: colorSplitScreenForeground,
+                      iconBackgroundColor: colorSplitScreenBackground,
+                      iconFocusBackgroundColor:
+                          AppColors.iconFeatureOnStandbyBackground,
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
+                      isAddGreenDot: (SplitScreen
+                          .mapSplitScreen.value[keySplitScreenEnable]),
                       onClick: ControlSocket().moderator == null
                           ? () {
                               _showSplitScreen(value == stateMenuOn);
@@ -177,7 +209,6 @@ class StreamFunctionStates extends State<StreamFunction> {
                     visible: value == stateStandby || value == stateMenuOn,
                     child: FocusIconButton(
                       icons: iconLanguage,
-                      child: iconLanguageImage,
                       iconForegroundColor: value == stateStandby
                           ? AppColors.iconStandbyForeground
                           : AppColors.iconPresentingForeground,
@@ -205,7 +236,8 @@ class StreamFunctionStates extends State<StreamFunction> {
                     visible: value != stateEmpty,
                     child: FocusIconButton(
                       icons: iconMain,
-                      child: iconMainImage,
+                      childNotFocus: iconMainImageNotFocus,
+                      childHasFocus: iconMainImageHasFocus,
                       iconForegroundColor: value == stateStandby
                           ? AppColors.iconStandbyForeground
                           : AppColors.iconPresentingForeground,

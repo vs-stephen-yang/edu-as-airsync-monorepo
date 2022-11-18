@@ -34,7 +34,7 @@ class _WhatsNewState extends State<WhatsNew> {
                   FittedBox(
                     fit: BoxFit.fitHeight,
                     child: FocusIconButton(
-                      child: const Icon(
+                      childNotFocus: const Icon(
                         Icons.arrow_back_ios_new,
                         color: AppColors.primary_white,
                       ),

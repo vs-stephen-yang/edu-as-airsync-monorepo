@@ -19,12 +19,25 @@ class _VbsOTAState extends State<VbsOTA> {
   static const _autoStartUp =
       MethodChannel('com.mvbcast.crosswalk/auto_startup');
 
+  late FocusNode _focusNode;
   bool _systemOTAEnableUI = false;
   int _downloadProgress = 0;
 
   Future<bool> _getAutoStartUpSettings() async {
     return await _autoStartUp
         .invokeMethod('getAutoStartupValue', <String, dynamic>{});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -52,19 +65,35 @@ class _VbsOTAState extends State<VbsOTA> {
               FutureBuilder(
                 future: _getAutoStartUpSettings(),
                 builder: (context, snapshot) {
-                  return SizedBox(
-                    width: 25,
-                    height: 25,
-                    child: Checkbox(
-                      side: MaterialStateBorderSide.resolveWith((states) =>
-                          const BorderSide(width: 1.0, color: Colors.white)),
-                      value: (snapshot.hasData) ? snapshot.data as bool : null,
-                      tristate: true,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _autoStartUp.invokeMethod('setAutoStartupValue',
-                              <String, dynamic>{'startup': value});
-                        });
+                  return Focus(
+                    canRequestFocus: false,
+                    child: Builder(
+                      builder: (context) {
+                        final FocusNode focusNode = Focus.of(context);
+                        final bool hasFocus = focusNode.hasFocus;
+                        return Transform.scale(
+                          scale: hasFocus ? 1.4 : 1.0,
+                          child: SizedBox(
+                            width: 25,
+                            height: 25,
+                            child: Checkbox(
+                              side: MaterialStateBorderSide.resolveWith(
+                                  (states) =>
+                                      const BorderSide(color: Colors.white)),
+                              value: (snapshot.hasData)
+                                  ? snapshot.data as bool
+                                  : null,
+                              tristate: true,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _autoStartUp.invokeMethod(
+                                      'setAutoStartupValue',
+                                      <String, dynamic>{'startup': value});
+                                });
+                              },
+                            ),
+                          ),
+                        );
                       },
                     ),
                   );

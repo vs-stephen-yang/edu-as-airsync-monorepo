@@ -1,7 +1,7 @@
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class CheckBoxSwitch extends StatefulWidget {
   bool bOpen, bEdit, bRemove, bSplit, bWait;
@@ -144,11 +144,9 @@ class CheckBoxSwitchState extends State<CheckBoxSwitch>
   Widget buildRotationLoadingIcon() {
     return RotationTransition(
       turns: _animation,
-      child: const Image(
-        image: Svg(
-          'assets/images/ic_loading.svg',
-          size: Size.square(32),
-        ),
+      child: const Icon(
+        CustomIcons.loading,
+        color: Colors.white,
       ),
     );
   }

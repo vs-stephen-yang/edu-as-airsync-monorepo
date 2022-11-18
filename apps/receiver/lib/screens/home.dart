@@ -15,7 +15,6 @@ import 'package:display_flutter/widgets/tittle_bar.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 final GlobalKey<StreamFunctionStates> streamFunctionKey = GlobalKey();
 
@@ -156,8 +155,7 @@ class _HomeState extends State<Home> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          const Image(
-                              image: Svg('assets/images/ic_cloud_off.svg')),
+                          const Icon(Icons.cloud_off, color: Colors.red, size: 120,),
                           const SizedBox(width: 20),
                           Text(
                             S.of(context).main_status_no_network,
