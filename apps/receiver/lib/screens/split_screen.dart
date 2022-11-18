@@ -4,6 +4,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/home.dart';
+import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +70,7 @@ class _SplitScreenState extends State<SplitScreen>
                   FittedBox(
                     fit: BoxFit.fitHeight,
                     child: FocusIconButton(
-                      child: const Icon(
+                      childNotFocus: const Icon(
                         Icons.arrow_back_ios_new,
                         color: AppColors.primary_white,
                       ),
@@ -100,7 +101,7 @@ class _SplitScreenState extends State<SplitScreen>
                   FittedBox(
                     fit: BoxFit.fitHeight,
                     child: FocusIconButton(
-                      child: Image(
+                      childNotFocus: Image(
                         image: Svg((SplitScreen
                                 .mapSplitScreen.value[keySplitScreenEnable])
                             ? 'assets/images/ic_activate_on.svg'
@@ -134,11 +135,9 @@ class _SplitScreenState extends State<SplitScreen>
                       children: [
                         RotationTransition(
                           turns: _animation,
-                          child: const Image(
-                            image: Svg(
-                              'assets/images/ic_loading.svg',
-                              size: Size.square(32),
-                            ),
+                          child: const Icon(
+                            CustomIcons.loading,
+                            color: Colors.white,
                           ),
                         ),
                         const SizedBox(height: 32),

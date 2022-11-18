@@ -3,12 +3,12 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/split_screen.dart';
+import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 typedef WebRTCNativeViewCreatedCallback = void Function(
     WebRTCNativeViewController webRTCNativeViewController);
@@ -194,11 +194,9 @@ class _WebRTCNativeViewState extends State<WebRTCNativeView>
                     height: 32,
                     child: RotationTransition(
                       turns: _animation,
-                      child: const Image(
-                        image: Svg(
-                          'assets/images/ic_loading.svg',
-                          size: Size.square(32),
-                        ),
+                      child: const Icon(
+                        CustomIcons.loading,
+                        color: Colors.white,
                       ),
                     ),
                   ),

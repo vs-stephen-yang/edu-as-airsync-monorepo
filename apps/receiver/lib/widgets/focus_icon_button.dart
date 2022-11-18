@@ -6,7 +6,8 @@ class FocusIconButton extends StatefulWidget {
   const FocusIconButton(
       {Key? key,
       this.icons,
-      this.child,
+      this.childHasFocus,
+      this.childNotFocus,
       this.onClick,
       this.hasFocusSize,
       this.notFocusSize,
@@ -20,7 +21,8 @@ class FocusIconButton extends StatefulWidget {
       : super(key: key);
 
   final IconData? icons;
-  final Widget? child;
+  final Widget? childHasFocus;
+  final Widget? childNotFocus;
 
   final VoidCallback? onClick;
 
@@ -115,9 +117,11 @@ class _FocusIconButtonState extends State<FocusIconButton> {
                       ],
                     ),
                   )
-                : widget.child != null
-                    ? widget.child!
-                    : const SizedBox(),
+                : hasFocus
+                    ? widget.childHasFocus ??
+                        widget.childNotFocus ??
+                        const SizedBox()
+                    : widget.childNotFocus ?? const SizedBox(),
             iconSize: hasFocus ? widget.hasFocusSize : widget.notFocusSize,
             splashRadius: widget.splashRadius,
             focusColor: widget.focusColor,

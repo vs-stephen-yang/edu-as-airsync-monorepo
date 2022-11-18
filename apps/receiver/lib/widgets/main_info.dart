@@ -244,7 +244,7 @@ class _MainInfoState extends State<MainInfo> {
                                   },
                                 ),
                                 FocusIconButton(
-                                  child: Image.asset(
+                                  childNotFocus: Image.asset(
                                     value
                                         ? 'assets/images/ic_eye_open.png'
                                         : 'assets/images/ic_eye_close.png',
