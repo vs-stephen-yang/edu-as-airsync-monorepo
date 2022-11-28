@@ -3,7 +3,6 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
-import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
@@ -17,10 +16,11 @@ const String keySplitScreenCount = 'count';
 const String keySplitScreenLastId = 'lastId';
 
 class SplitScreen extends StatefulWidget {
-  const SplitScreen({Key? key}) : super(key: key);
+  const SplitScreen({Key? key, this.onUpdateParentUI}) : super(key: key);
 
   static ValueNotifier<Map<String, dynamic>> mapSplitScreen =
       ValueNotifier({keySplitScreenEnable: false, keySplitScreenCount: 0});
+  final VoidCallback? onUpdateParentUI;
 
   @override
   State createState() => _SplitScreenState();
@@ -110,9 +110,7 @@ class _SplitScreenState extends State<SplitScreen>
                       splashRadius: 20,
                       focusColor: Colors.grey,
                       onClick: () {
-                        setState(() {
-                          _switchSplitScreen();
-                        });
+                        _switchSplitScreenOnOff();
                       },
                     ),
                   ),
@@ -162,32 +160,41 @@ class _SplitScreenState extends State<SplitScreen>
     );
   }
 
-  _switchSplitScreen() {
-    SplitScreen.mapSplitScreen.value[keySplitScreenEnable] =
-        !SplitScreen.mapSplitScreen.value[keySplitScreenEnable];
-    // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
-    SplitScreen.mapSplitScreen.value =
-        Map.from(SplitScreen.mapSplitScreen.value);
-
-    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+  _switchSplitScreenOnOff() async {
+    if (!SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       AppAnalytics().setEventProperties(meetingId: const Uuid().v4());
       AppAnalytics().trackEventSplitScreenOn();
-      ConnectionTimer.getInstance().startRemainingTimeTimer(() {
+      ConnectionTimer.getInstance().startRemainingTimeTimer(() async {
         AppAnalytics().setEventProperties(meetingId: '');
-        streamFunctionKey.currentState?.setState(() {
-          SplitScreen.mapSplitScreen.value[keySplitScreenEnable] = false;
-          ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-          ControlSocket().removeAllPresenters();
-        });
+        await ControlSocket().removeAllPresenters();
+        // Need remove all presenters first, due to enable/disable will dispose
+        // view and will disconnectedP2pClient before send stopVideo
+        // cause web presenter did not update status
+        SplitScreen.mapSplitScreen.value[keySplitScreenEnable] = false;
+        // Using below method to trigger value changed.
+        // https://github.com/flutter/flutter/issues/29958
+        SplitScreen.mapSplitScreen.value =
+            Map.from(SplitScreen.mapSplitScreen.value);
+        widget.onUpdateParentUI?.call();
+        setState(() {});
       });
     } else {
       AppAnalytics().trackEventSplitScreenOff();
-      AppAnalytics().setEventProperties(meetingId: '');
       ConnectionTimer.getInstance().stopRemainingTimeTimer();
-      ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-      ControlSocket().removeAllPresenters();
+      AppAnalytics().setEventProperties(meetingId: '');
+      await ControlSocket().removeAllPresenters();
     }
 
-    streamFunctionKey.currentState?.setState(() {});
+    // Need remove all presenters first, due to enable/disable will dispose
+    // view and will disconnectedP2pClient before send stopVideo
+    // cause web presenter did not update status
+    SplitScreen.mapSplitScreen.value[keySplitScreenEnable] =
+        !SplitScreen.mapSplitScreen.value[keySplitScreenEnable];
+    // Using below method to trigger value changed.
+    // https://github.com/flutter/flutter/issues/29958
+    SplitScreen.mapSplitScreen.value =
+        Map.from(SplitScreen.mapSplitScreen.value);
+    widget.onUpdateParentUI?.call();
+    setState(() {});
   }
 }

@@ -51,7 +51,7 @@ class SplitScreenFunction extends StatelessWidget {
           bottom: bottom,
           child: Visibility(
             // More than 1 presenting will show this function button.
-            visible: ControlSocket().presenterQty() > 1,
+            visible: ControlSocket().getPresentingQuantity() > 1,
             child: ValueListenableBuilder(
               valueListenable: SplitScreenFunction.isMenuOnList,
               builder: (BuildContext context, List<bool> value, Widget? child) {

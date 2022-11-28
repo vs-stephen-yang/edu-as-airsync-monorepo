@@ -87,10 +87,7 @@ class _MainInfoState extends State<MainInfo> {
               if (ControlSocket().featureList.isEmpty) {
                 AppAnalytics().trackEventLicenseRevoked();
                 // Disable SplitScreen and Moderator features.
-                ModeratorView().logout();
-                streamFunctionKey.currentState?.setState(() {
-                  ControlSocket().moderator = null;
-                });
+                const ModeratorView().logout();
               } else {
                 AppAnalytics().trackEventLicenseGranted();
               }

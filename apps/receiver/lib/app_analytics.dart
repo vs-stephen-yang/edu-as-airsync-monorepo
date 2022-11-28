@@ -253,10 +253,6 @@ class AppAnalytics {
     _trackEventWithProperties('moderator_panel_close', _eventProperties);
   }
 
-  trackEventModeratorEdit() {
-    _trackEventWithProperties('moderator_edit', _eventProperties);
-  }
-
   trackEventModeratorSplitScreenOn() {
     _trackEventWithProperties('moderator_splitscreen_on', _eventProperties);
   }
