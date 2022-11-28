@@ -38,6 +38,7 @@ class ConnectionTimer {
       } else if (timer.tick == 30) {
         // onFinish
         timer.cancel();
+        mConnectionTimeTimeout.add(0);
         log('ConnectionTimeout onFinish');
         onFinish(controller, nextId);
       }
@@ -69,12 +70,14 @@ class ConnectionTimer {
           StatusBar.showReamingTimeAlert.value = false;
         }
       } else if (timer.tick == remainingTimeLimit) {
-        // onFinish
-        StatusBar.showReamingTime.value = false;
         AppAnalytics().trackEventSessionTimeout();
-        onFinish();
-        timer.cancel();
+        StatusBar.showReamingTime.value = false;
+        mRemainingTimeTimer?.cancel();
+        mRemainingTimeTimer = null;
+        mRemainingTimeTimeout.sink.add(0);
         log('RemainingTimeTimeout onFinish');
+        // onFinish
+        onFinish();
       }
     });
   }
