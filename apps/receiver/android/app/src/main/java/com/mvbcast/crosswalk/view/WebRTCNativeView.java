@@ -105,7 +105,7 @@ public class WebRTCNativeView implements PlatformView,
         synchronized (lock) {
             mRenderUsedList.remove((Object) mRenderId);
         }
-        disconnectP2pClient(false);
+        disconnectP2pClient(false, null);
 
         if (mActivityRef.get() != null) {
             mActivityRef.get().runOnUiThread(() -> methodChannel.invokeMethod("disposed", null));
@@ -131,7 +131,7 @@ public class WebRTCNativeView implements PlatformView,
                 connectP2pClient(call.argument("token"), call.argument("peerId"), result);
                 break;
             case "connectionTimeTimeOut":
-                disconnectP2pClient(true);
+                disconnectP2pClient(true, null);
                 break;
             case "enableAudio":
                 controlAudio(true);
@@ -191,7 +191,7 @@ public class WebRTCNativeView implements PlatformView,
             @Override
             public void onEnded() {
                 setStateMachine("onEnded");
-                disconnectP2pClient(false);
+                disconnectP2pClient(false, null);
             }
 
             @Override
@@ -309,7 +309,7 @@ public class WebRTCNativeView implements PlatformView,
         });
     }
 
-    private void disconnectP2pClient(boolean sendAnalytics) {
+    private void disconnectP2pClient(boolean sendAnalytics, MethodChannel.Result result) {
         if (mP2pClient != null) {
             setStateMachine(String.format(Locale.US, "disconnect uid: %s", mP2pClient.id()));
             mP2pClient.disconnect();
@@ -327,6 +327,9 @@ public class WebRTCNativeView implements PlatformView,
             }
             if (methodChannel != null) {
                 methodChannel.invokeMethod("disconnectedP2pClient", sendAnalytics);
+            }
+            if (result != null) {
+                result.success(null);
             }
         });
     }
@@ -355,14 +358,12 @@ public class WebRTCNativeView implements PlatformView,
     private void streamStop(@NonNull MethodChannel.Result result) {
         setStateMachine("streamStop()");
 
-        disconnectP2pClient(true);
+        disconnectP2pClient(true, result);
 
         mActivityRef.get().runOnUiThread(() -> {
             if (mRemoteStream != null) {
                 mRemoteStream.disableVideo();
             }
-
-            result.success(null);
         });
     }
 

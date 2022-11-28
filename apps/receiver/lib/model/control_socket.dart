@@ -186,7 +186,8 @@ class ControlSocket {
             } else {
               Home.isSelectedList.value
                   .fillRange(0, Home.isSelectedList.value.length, false);
-              // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
+              // Using below method to trigger value changed.
+              // https://github.com/flutter/flutter/issues/29958
               Home.isSelectedList.value = List.from(Home.isSelectedList.value);
             }
           } else {
@@ -222,10 +223,7 @@ class ControlSocket {
 
           if (ConnectionTimer.getInstance().mRemainingTimeTimer == null) {
             ConnectionTimer.getInstance().startRemainingTimeTimer(() {
-              ModeratorView().logout();
-              streamFunctionKey.currentState?.setState(() {
-                ControlSocket().moderator = null;
-              });
+              const ModeratorView().logout();
             });
           }
           break;
@@ -243,16 +241,16 @@ class ControlSocket {
           WebRTCNativeViewController? selectedController;
           if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
             for (WebRTCNativeViewController controller in _webRtcController) {
-              if (controller.presentationState ==
-                  PresentationState.stopStreaming) {
+              if (controller.presentationState.index <=
+                  PresentationState.occupied.index) {
                 selectedController = controller;
                 break;
               }
             }
           } else {
             if (_webRtcController.isNotEmpty) {
-              if (_webRtcController[0].presentationState ==
-                  PresentationState.stopStreaming) {
+              if (_webRtcController[0].presentationState.index <=
+                  PresentationState.occupied.index) {
                 selectedController = _webRtcController[0];
               }
             }
@@ -452,7 +450,8 @@ class ControlSocket {
     }
     SplitScreen.mapSplitScreen.value[keySplitScreenCount] = connecting;
     SplitScreen.mapSplitScreen.value[keySplitScreenLastId] = lastID;
-    // Using below method to trigger value changed. https://github.com/flutter/flutter/issues/29958
+    // Using below method to trigger value changed.
+    // https://github.com/flutter/flutter/issues/29958
     SplitScreen.mapSplitScreen.value =
         Map.from(SplitScreen.mapSplitScreen.value);
   }
@@ -559,12 +558,25 @@ class ControlSocket {
     _controlSocketIO?.emit(displayCode, json.decode(content));
   }
 
+  bool occupyAvailableWebRTCNativeViewController() {
+    for (int i = 0; i < _webRtcController.length; i++) {
+      if (_webRtcController[i].presentationState.index <
+          PresentationState.occupied.index) {
+        _webRtcController[i].presentationState = PresentationState.occupied;
+        return true;
+      }
+    }
+    return false;
+  }
+
   bool isPresenting({index}) {
     bool presenting = false;
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       if (index != null && _webRtcController.length > index) {
         if (_webRtcController[index].presentationState ==
-            PresentationState.streaming) presenting = true;
+            PresentationState.streaming) {
+          presenting = true;
+        }
       } else {
         for (WebRTCNativeViewController controller in _webRtcController) {
           if (controller.presentationState == PresentationState.streaming) {
@@ -582,17 +594,48 @@ class ControlSocket {
     return presenting;
   }
 
-  int presenterQty() {
-    int qty = 0;
+  int getPresentingQuantity() {
+    int quantity = 0;
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       for (WebRTCNativeViewController controller in _webRtcController) {
         if (controller.presentationState == PresentationState.streaming) {
-          qty++;
+          quantity++;
         }
       }
     }
-    print('zz presenterQty ${qty}');
-    return qty;
+    return quantity;
+  }
+
+  bool isPresenterWaitForStream(String presenterId) {
+    for (WebRTCNativeViewController controller in _webRtcController) {
+      if (controller.presenterId == presenterId &&
+          controller.presentationState == PresentationState.waitForStream) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool isPresenterStreaming(String presenterId) {
+    for (WebRTCNativeViewController controller in _webRtcController) {
+      if (controller.presenterId == presenterId &&
+          controller.presentationState == PresentationState.streaming) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool isPresenterNotStopStreaming(String presenterId) {
+    for (WebRTCNativeViewController controller in _webRtcController) {
+      if (controller.presenterId == presenterId &&
+          controller.presentationState.index >=
+              PresentationState.waitForStream.index) {
+        // waitForStream and streaming
+        return true;
+      }
+    }
+    return false;
   }
 
   unbindModerator(String apiGateway, Moderator moderator) async {
@@ -620,7 +663,9 @@ class ControlSocket {
       if (selectedController.presenterId.isNotEmpty) {
         try {
           await selectedController.channel.invokeMethod('stopVideo');
-          ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+          // need some delay to prevent exception:
+          // 'package:flutter/src/rendering/object.dart': Failed assertion: line 2250 pos 12: '!_debugDisposed': is not true.
+          await Future.delayed(const Duration(milliseconds: 300));
         } on PlatformException catch (e) {
           log(e.toString());
         }
@@ -668,6 +713,7 @@ class ControlSocket {
 
 enum PresentationState {
   stopStreaming,
+  occupied,
   waitForStream,
   streaming,
 }

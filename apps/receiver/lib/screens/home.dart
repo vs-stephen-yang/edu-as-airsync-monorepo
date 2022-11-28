@@ -16,8 +16,6 @@ import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-final GlobalKey<StreamFunctionStates> streamFunctionKey = GlobalKey();
-
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
   static ValueNotifier<bool> showTitleBottomBar = ValueNotifier(true);
@@ -137,10 +135,10 @@ class _HomeState extends State<Home> {
               ),
               Visibility(
                 visible: !AppInstanceCreate().isNoneTouchModel,
-                child: Positioned(
+                child: const Positioned(
                   left: 20,
                   bottom: 0,
-                  child: StreamFunction(key: streamFunctionKey),
+                  child: StreamFunction(),
                 ),
               ),
               ValueListenableBuilder(

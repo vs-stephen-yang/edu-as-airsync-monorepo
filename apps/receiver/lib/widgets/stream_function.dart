@@ -289,7 +289,9 @@ class StreamFunctionStates extends State<StreamFunction> {
   _showSplitScreen(bool leavePresentFunction) {
     AppAnalytics().trackEventAppSplitScreenClick();
     if (ControlSocket().featureList.contains('SplitScreen')) {
-      _showMenuDialog(const SplitScreen());
+      _showMenuDialog(SplitScreen(onUpdateParentUI: () {
+        setState(() {});
+      }));
       if (leavePresentFunction) {
         StreamFunction.streamFunctionState.value = stateMenuOff;
       }
@@ -302,7 +304,9 @@ class StreamFunctionStates extends State<StreamFunction> {
   _showModerator(bool leavePresentFunction) {
     AppAnalytics().trackEventAppModeratorClick();
     if (ControlSocket().featureList.contains('Moderator')) {
-      _showMenuDialog(ModeratorView());
+      _showMenuDialog(ModeratorView(onUpdateParentUI: () {
+        setState(() {});
+      }));
       if (leavePresentFunction) {
         StreamFunction.streamFunctionState.value = stateMenuOff;
       }
