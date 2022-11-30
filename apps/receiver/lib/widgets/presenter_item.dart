@@ -97,6 +97,10 @@ class PresenterItemState extends State<PresenterItem>
           FittedBox(
             fit: BoxFit.fitHeight,
             child: FocusIconButton(
+              childHasFocus: const CircleAvatar(
+                child: Icon(Icons.delete, color: Colors.red),
+                backgroundColor: Color.fromRGBO(0x89, 0x89, 0x89, 1),
+              ),
               childNotFocus: const CircleAvatar(
                 child: Icon(Icons.delete, color: Colors.red),
                 backgroundColor: Colors.white,
