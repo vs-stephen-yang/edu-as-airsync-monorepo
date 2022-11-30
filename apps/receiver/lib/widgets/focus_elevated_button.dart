@@ -86,6 +86,9 @@ class _FocusElevatedButtonState extends State<FocusElevatedButton> {
             primary: hasFocus // button color
                 ? widget.hasFocusBackgroundColor
                 : widget.notFocusBackgroundColor,
+            side: hasFocus
+                ? const BorderSide(color: Colors.white, width: 2)
+                : null,
           );
 
           double? childWidth, childHeight;

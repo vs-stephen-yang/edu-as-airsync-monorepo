@@ -126,7 +126,7 @@ class PresenterListState extends State<PresenterList> {
                             return PresenterItem(index: index);
                           },
                           separatorBuilder: (BuildContext context, int index) {
-                            return const SizedBox(height: 10);
+                            return const Divider(height: 0, color: Colors.transparent);
                           },
                         ),
                 );
