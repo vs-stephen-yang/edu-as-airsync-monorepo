@@ -7,6 +7,7 @@ class FocusElevatedButton extends StatefulWidget {
       required this.child,
       this.onClick,
       this.style,
+      this.showWhiteBorder = false,
       this.hasFocusTextColor,
       this.notFocusTextColor,
       this.hasFocusBackgroundColor,
@@ -24,6 +25,8 @@ class FocusElevatedButton extends StatefulWidget {
   final VoidCallback? onClick;
 
   final ButtonStyle? style;
+
+  final bool showWhiteBorder;
 
   final Color? hasFocusTextColor;
   final Color? notFocusTextColor;
@@ -86,7 +89,7 @@ class _FocusElevatedButtonState extends State<FocusElevatedButton> {
             primary: hasFocus // button color
                 ? widget.hasFocusBackgroundColor
                 : widget.notFocusBackgroundColor,
-            side: hasFocus
+            side: widget.showWhiteBorder & hasFocus
                 ? const BorderSide(color: Colors.white, width: 2)
                 : null,
           );

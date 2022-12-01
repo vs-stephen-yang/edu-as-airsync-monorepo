@@ -90,6 +90,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0)),
                     ),
+                    showWhiteBorder: true,
                     onClick: () {
                       setState(() {
                         MyApp.setNewLocale(context, index);

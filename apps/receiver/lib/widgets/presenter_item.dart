@@ -88,6 +88,7 @@ class PresenterItemState extends State<PresenterItem>
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
+              showWhiteBorder: true,
               onClick: () {
                 _controller.repeat(reverse: false);
                 _presenterOnOff(presenterId, peer);

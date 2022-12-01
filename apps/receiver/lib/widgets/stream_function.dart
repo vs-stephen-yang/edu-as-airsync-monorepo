@@ -176,7 +176,8 @@ class StreamFunctionStates extends State<StreamFunction> {
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
                       isAddGreenDot: (SplitScreen
-                          .mapSplitScreen.value[keySplitScreenEnable]),
+                              .mapSplitScreen.value[keySplitScreenEnable] &&
+                          ControlSocket().moderator == null),
                       onClick: ControlSocket().moderator == null
                           ? () {
                               _showSplitScreen(value == stateMenuOn);
