@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -88,7 +88,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation project(path: ':libwebrtc')
     implementation project(':base')
@@ -104,10 +104,10 @@ dependencies {
     // endregion
 
     // region FireBase for "store"
-    storeImplementation 'com.google.firebase:firebase-core:21.0.0'
+    storeImplementation 'com.google.firebase:firebase-core:21.1.1'
     // *** Use 21.1.0 may cause "Remote Config HTTP errors for some RTL locales" ***
     // https://github.com/firebase/firebase-android-sdk/issues/3757
-    storeImplementation 'com.google.firebase:firebase-config:21.0.2'
+    storeImplementation 'com.google.firebase:firebase-config:21.2.0'
     // endregion
 
     // region SystemAPI
