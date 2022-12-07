@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -153,8 +154,12 @@ public class EulaActivity extends FlutterActivity {
         Log.e(TAG, "setAlarmOTA !!!!!");
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(context, 0, new Intent(context, AppAlarmOTA.class), 0);
+        PendingIntent pendingIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, AppAlarmOTA.class), PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, AppAlarmOTA.class), 0);
+        }
 
         // noinspection ConstantConditions
         if (BuildConfig.BUILD_TYPE.equals("debug")) {
