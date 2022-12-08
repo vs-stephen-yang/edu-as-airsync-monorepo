@@ -50,6 +50,8 @@ class ControlSocket {
   bool isShowCode = false;
 
   void connect(String apiGateway) {
+    _controlSocketIO?.dispose();
+
     _controlSocketIO = io(
         apiGateway,
         OptionBuilder()
