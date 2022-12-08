@@ -113,8 +113,9 @@ class AppInstanceCreate {
       _modelName = '';
     } else {
       if (Platform.isAndroid) {
+        String? androidId = await DeviceInfoVs.getAndridID;
         AndroidDeviceInfo info = await deviceInfo.androidInfo;
-        deviceId = info.androidId!;
+        deviceId = androidId!;
         _modelName = info.model ?? '';
       } else if (Platform.isIOS) {
         IosDeviceInfo info = await deviceInfo.iosInfo;
@@ -195,16 +196,17 @@ class AppInstanceCreate {
       };
     } else {
       if (Platform.isAndroid) {
+        String? androidId = await DeviceInfoVs.getAndridID;
         AndroidDeviceInfo info = await deviceInfo.androidInfo;
         hardwareProperty = {
           'TimeStamp': DateTime.now().millisecondsSinceEpoch.toString(),
-          'Android ID': info.androidId,
+          'Android ID': androidId,
           'Android Release': info.version.release,
           'Brand': info.brand,
           'Hardware': info.hardware,
           'Manufacturer': info.manufacturer,
           'Model': info.model,
-          'Serial': info.androidId,
+          'Serial': _serialNumber,
           'Support_abi32': info.supported32BitAbis.toString(),
           'Support_abi64': info.supported64BitAbis.toString(),
           'Support_abi': info.supportedAbis.toString(),
