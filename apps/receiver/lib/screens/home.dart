@@ -6,6 +6,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/split_screen.dart';
+import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/split_screen_function.dart';
@@ -183,7 +184,7 @@ class _HomeState extends State<Home> {
               _androidAppRetain.invokeMethod('sendToBackground');
               return Future.value(false);
             } catch (e) {
-              print(e);
+              printInDebug(e, type: runtimeType);
               return Future.value(true);
             }
           }

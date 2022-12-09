@@ -8,6 +8,7 @@ import 'package:display_flutter/model/stream/StreamResponse.dart';
 import 'package:display_flutter/model/stream/StreamSocket.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/ApiResponseFactory.dart';
+import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart';
@@ -31,13 +32,13 @@ class ModeratorSocket {
   ModeratorRole createModerator(String name, String id) {
     var _name = name.isNotEmpty ? name : 'name';
     var _id = id.isNotEmpty ? id : uuid.v4();
-    print('moderator[name: $_name id:$_id]');
+    printInDebug('moderator[name: $_name id:$_id]', type: runtimeType);
     return moderator = ModeratorRole(
         id: _id, name: _name, remark: 'remark', status: 'sss', extra: {});
   }
 
   Socket connectAndListen(BuildContext context) {
-    print('ConnectionBloc connectAndListen');
+    printInDebug('ConnectionBloc connectAndListen', type: runtimeType);
     gatewayUrl = AppConfig.of(context)!.settings.apiGateway;
     socket = io(
         gatewayUrl,
@@ -64,7 +65,7 @@ class ModeratorSocket {
   }
 
   disconnect() {
-    print('ConnectionBloc disconnect');
+    printInDebug('ConnectionBloc disconnect', type: runtimeType);
     if (socketInit) socket.dispose();
   }
 
@@ -130,7 +131,7 @@ class ModeratorSocket {
         messageId: uuid.v4(),
         nextId: uuid.v4());
     socket.emit('peer-action', message.toJson());
-    print('peer-action: ${message.toJson()}');
+    printInDebug('peer-action: ${message.toJson()}', type: runtimeType);
   }
 
   sendPeerListRequest(code) {
@@ -176,7 +177,7 @@ class ModeratorSocket {
       'Authorization': 'Bearer $token'
     };
     var api = Uri.parse('$gatewayUrl/presentation/displays/moderator/unbind');
-    print('api: $api');
+    printInDebug('api: $api', type: runtimeType);
     var request = http.Request('PATCH', api);
     request.body = json.encode({'code': code, 'moderator': moderator});
     request.headers.addAll(headers);
@@ -189,7 +190,7 @@ class ModeratorSocket {
       unsetModeratorHasNewData = true;
       return response;
     } catch (err) {
-      print('err: $err');
+      printInDebug('err: $err', type: runtimeType);
       setModeratorResponse.addResponseMessage({0 as dynamic: err});
       unsetModeratorHasNewData = true;
     }
@@ -201,7 +202,7 @@ class ModeratorSocket {
       'Authorization': 'Bearer $token'
     };
     var api = Uri.parse('$gatewayUrl/presentation/displays/moderator');
-    print('bindToDisplay api: $api');
+    printInDebug('bindToDisplay api: $api', type: runtimeType);
     var request = http.Request('POST', api);
     request.body =
         json.encode({'code': code, 'otp': otp, 'moderator': moderator});
@@ -210,14 +211,14 @@ class ModeratorSocket {
     try {
       dynamic response =
           await ApiResponseFactory.returnResponse(streamedResponse);
-      print('bindToDisplay: $response');
+      printInDebug('bindToDisplay: $response', type: runtimeType);
       setModeratorResponse.addResponseMessage(response);
       setModeratorHasNewData = true;
 
       getDisplayState(code);
       return response;
     } catch (err) {
-      print('bindToDisplay err: $err');
+      printInDebug('bindToDisplay err: $err', type: runtimeType);
       setModeratorResponse.addResponseMessage({0 as dynamic: err});
       setModeratorHasNewData = true;
       throw err;
@@ -227,7 +228,7 @@ class ModeratorSocket {
   Future queryDisplay(code) async {
     var headers = {'Content-Type': 'application/json'};
     var api = Uri.parse('$gatewayUrl/presentation/displays?code=$code');
-    print('api: $api');
+    printInDebug('api: $api', type: runtimeType);
     var request = http.Request('GET', api);
     request.headers.addAll(headers);
     http.StreamedResponse streamedResponse = await request.send();
@@ -242,7 +243,7 @@ class ModeratorSocket {
       sendPeerListRequest(code);
       return response;
     } catch (err) {
-      print('err: $err');
+      printInDebug('err: $err', type: runtimeType);
       setModeratorResponse.addResponseMessage({0 as dynamic: err});
       setModeratorHasNewData = true;
       rethrow;
