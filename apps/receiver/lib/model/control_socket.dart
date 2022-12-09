@@ -11,6 +11,7 @@ import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/moderator_view.dart';
 import 'package:display_flutter/screens/split_screen.dart';
+import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/utility/get_string.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
@@ -51,7 +52,7 @@ class ControlSocket {
 
   void connect(String apiGateway) {
     if (_controlSocketIO != null) {
-      print('stop reconnecting the former url');
+      printInDebug('stop reconnecting the former url', type: runtimeType);
       _controlSocketIO?.dispose();
     }
 
@@ -210,7 +211,8 @@ class ControlSocket {
   }
 
   void _printControlSocketLog(String? event, dynamic args) {
-    print('mControlSocketIO: $event ${args.toString()}');
+    printInDebug('mControlSocketIO: $event ${args.toString()}',
+        type: runtimeType);
   }
 
   void _handleDisplayResponse(dynamic arg) async {
@@ -442,7 +444,8 @@ class ControlSocket {
       'messageId': GetString.getRandomString(21),
       'nextId': GetString.getRandomString(21),
     });
-    print('mControlSocketIO: send _handleDisplayStateUpdate: $content');
+    printInDebug('mControlSocketIO: send _handleDisplayStateUpdate: $content',
+        type: runtimeType);
     _controlSocketIO?.emit(displayCode, json.decode(content));
 
     int connecting = 0, lastID = 0;
@@ -501,7 +504,8 @@ class ControlSocket {
       'messageId': nextId,
       'nextId': GetString.getRandomString(21)
     });
-    print('mControlSocketIO: _handleP2PClientSuccess: $content');
+    printInDebug('mControlSocketIO: _handleP2PClientSuccess: $content',
+        type: runtimeType);
     _controlSocketIO?.emit(displayCode, json.decode(content));
     AppAnalytics().trackEventPresentReadySent(
         controller.presentId, controller.presenterId);
@@ -520,7 +524,8 @@ class ControlSocket {
       },
       'messageId': nextId,
     });
-    print('mControlSocketIO: _handleP2PClientReject: $content');
+    printInDebug('mControlSocketIO: _handleP2PClientReject: $content',
+        type: runtimeType);
     _controlSocketIO?.emit(displayCode, json.decode(content));
     if (reason == 'timeout') {
       AppAnalytics().trackEventPresentRejectTimeOutSent(presentId, presenterId);
@@ -543,7 +548,8 @@ class ControlSocket {
       'messageId': nextId,
       'nextId': GetString.getRandomString(21)
     });
-    print('mControlSocketIO: _handleStreamPauseSuccess: $content');
+    printInDebug('mControlSocketIO: _handleStreamPauseSuccess: $content',
+        type: runtimeType);
     _controlSocketIO?.emit(displayCode, json.decode(content));
   }
 
@@ -559,7 +565,8 @@ class ControlSocket {
         },
       },
     });
-    print('mControlSocketIO: _handleChangeQuality: $content');
+    printInDebug('mControlSocketIO: _handleChangeQuality: $content',
+        type: runtimeType);
     _controlSocketIO?.emit(displayCode, json.decode(content));
   }
 
@@ -652,10 +659,10 @@ class ControlSocket {
         },
         body: json.encode({'code': displayCode, 'moderator': moderator}),
       );
-      print('unbind status: ${response.statusCode}');
+      printInDebug('unbind status: ${response.statusCode}', type: runtimeType);
       // every thing else
     } catch (e) {
-      print('unbind failure: $e');
+      printInDebug('unbind failure: $e', type: runtimeType);
       // http.post maybe no network connection.
     }
   }
