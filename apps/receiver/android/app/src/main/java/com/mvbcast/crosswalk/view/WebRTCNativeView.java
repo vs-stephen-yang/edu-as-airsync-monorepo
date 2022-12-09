@@ -72,6 +72,10 @@ public class WebRTCNativeView implements PlatformView,
         mSurfaceViewRenderer.setKeepScreenOn(true);
         mSurfaceViewRenderer.init(WebRTCHelper.getInstance().getRootEglBaseContext(), this);
 
+        TextView textView = webrtc_render.findViewById(R.id.textStateID);
+        String str = textView.getText().toString();
+        textView.setText(String.format("%s View ID: %s", str, mId));
+
         WebRTCHelper.getInstance().getDebugInfoVisible().observe((EulaActivity) activity,
                 s -> webrtc_render.findViewById(R.id.layoutDebugInfo)
                         .setVisibility(s ? View.VISIBLE : View.GONE));
@@ -82,6 +86,10 @@ public class WebRTCNativeView implements PlatformView,
                             .setText(String.format("Decoder: %s", s));
                     myLogDebug(String.format("Decoder: %s", s));
                 });
+
+        mStateMachine.observe((EulaActivity) activity,
+                s -> ((TextView) webrtc_render.findViewById(R.id.textLastState))
+                        .setText(String.format("Last State: %s", s)));
 
         mRenderName = activity.getResources().getResourceEntryName(mRenderId);
         WebRTCHelper.getInstance().getFPS(mRenderName).observe((EulaActivity) activity,
@@ -410,8 +418,8 @@ public class WebRTCNativeView implements PlatformView,
 
         String msg = String.format("(%s) %s", getShortTimeString(), state);
         StringBuilder sb = new StringBuilder(msg);
-        sb.append("\n").append(String.format("mId: %s, History:", mId));
-        for (String s : mStateMachineHistory) {
+        sb.append("\n").append("History:");
+        for (String s : new ArrayList<>(mStateMachineHistory)) {
             sb.append("\n").append(s);
         }
         mStateMachine.postValue(sb.toString());
