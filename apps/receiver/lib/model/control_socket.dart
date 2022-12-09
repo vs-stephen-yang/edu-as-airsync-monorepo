@@ -50,7 +50,10 @@ class ControlSocket {
   bool isShowCode = false;
 
   void connect(String apiGateway) {
-    _controlSocketIO?.dispose();
+    if (_controlSocketIO != null) {
+      print('stop reconnecting the former url');
+      _controlSocketIO?.dispose();
+    }
 
     _controlSocketIO = io(
         apiGateway,
