@@ -63,6 +63,7 @@ class ControlSocket {
             .disableAutoConnect()
             .enableForceNew()
             .enableReconnection()
+            .setReconnectionDelay(2000)
             .setReconnectionAttempts(_maxReconnectAttempts)
             .setQuery({
               'socketCustomEvent': displayCode,
