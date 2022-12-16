@@ -15,10 +15,10 @@ class PresenterItem extends StatefulWidget {
   final int index;
 
   @override
-  State createState() => PresenterItemState();
+  State createState() => _PresenterItemState();
 }
 
-class PresenterItemState extends State<PresenterItem>
+class _PresenterItemState extends State<PresenterItem>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
@@ -47,11 +47,11 @@ class PresenterItemState extends State<PresenterItem>
   Widget build(BuildContext context) {
     String presenterId = DisplayInfo().peerList[widget.index].id;
     String presenterName =
-    DisplayInfo().peerList[widget.index].presenter.replaceAll('\n', ' ');
+        DisplayInfo().peerList[widget.index].presenter.replaceAll('\n', ' ');
     dynamic peer = DisplayInfo().peerList[widget.index].peer;
 
     if (presenterName.length > 10) {
-      presenterName = presenterName.substring(0, 10) + '..';
+      presenterName = '${presenterName.substring(0, 10)}..';
     }
 
     return SizedBox(
@@ -59,6 +59,21 @@ class PresenterItemState extends State<PresenterItem>
         children: [
           Expanded(
             child: FocusElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                backgroundColor:
+                    ControlSocket().isPresenterStreaming(presenterId)
+                        ? AppColors.primary_blue
+                        : AppColors.toggle_bg,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+              showWhiteBorder: true,
+              onClick: () {
+                _controller.repeat(reverse: false);
+                _presenterOnOff(presenterId, peer);
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -68,7 +83,7 @@ class PresenterItemState extends State<PresenterItem>
                   ),
                   Visibility(
                     visible:
-                    ControlSocket().isPresenterWaitForStream(presenterId),
+                        ControlSocket().isPresenterWaitForStream(presenterId),
                     child: RotationTransition(
                       turns: _animation,
                       child: const Icon(
@@ -79,32 +94,18 @@ class PresenterItemState extends State<PresenterItem>
                   ),
                 ],
               ),
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                primary: ControlSocket().isPresenterStreaming(presenterId)
-                    ? AppColors.primary_blue
-                    : AppColors.toggle_bg,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-              showWhiteBorder: true,
-              onClick: () {
-                _controller.repeat(reverse: false);
-                _presenterOnOff(presenterId, peer);
-              },
             ),
           ),
           FittedBox(
             fit: BoxFit.fitHeight,
             child: FocusIconButton(
               childHasFocus: const CircleAvatar(
-                child: Icon(Icons.delete, color: Colors.red),
                 backgroundColor: Color.fromRGBO(0x89, 0x89, 0x89, 1),
+                child: Icon(Icons.delete, color: Colors.red),
               ),
               childNotFocus: const CircleAvatar(
-                child: Icon(Icons.delete, color: Colors.red),
                 backgroundColor: Colors.white,
+                child: Icon(Icons.delete, color: Colors.red),
               ),
               splashRadius: 20,
               focusColor: Colors.white,

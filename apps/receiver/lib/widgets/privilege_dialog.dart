@@ -95,6 +95,14 @@ class PrivilegeDialog extends StatelessWidget {
           Flexible(
             flex: 1,
             child: FocusElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: AppColors.neutral1,
+                backgroundColor: Colors.white,
+                minimumSize: const Size(80, 15),
+              ),
+              onClick: () {
+                navService.popUntil('/home');
+              },
               child: AutoSizeText(
                 S.of(context).main_privilege_close,
                 style: const TextStyle(
@@ -103,14 +111,6 @@ class PrivilegeDialog extends StatelessWidget {
                 ),
                 maxLines: 1,
               ),
-              style: ElevatedButton.styleFrom(
-                onPrimary: AppColors.neutral1,
-                primary: Colors.white,
-                minimumSize: const Size(80, 15),
-              ),
-              onClick: () {
-                navService.popUntil('/home');
-              },
             ),
           ),
         ],

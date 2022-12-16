@@ -3,13 +3,12 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:bloc/bloc.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart';
 
 part 'main_info_event.dart';
 

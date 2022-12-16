@@ -34,10 +34,10 @@ class StreamFunction extends StatefulWidget {
       ValueNotifier(stateStandby);
 
   @override
-  State<StatefulWidget> createState() => StreamFunctionStates();
+  State createState() => _StreamFunctionStates();
 }
 
-class StreamFunctionStates extends State<StreamFunction> {
+class _StreamFunctionStates extends State<StreamFunction> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(

@@ -63,7 +63,7 @@ class _FocusTextButtonState extends State<FocusTextButton> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (_childKey.currentContext != null) {
         RenderObject? renderObject =
             _childKey.currentContext!.findRenderObject();
@@ -80,7 +80,7 @@ class _FocusTextButtonState extends State<FocusTextButton> {
           final FocusNode focusNode = Focus.of(context);
           final bool hasFocus = focusNode.hasFocus;
           ButtonStyle style = TextButton.styleFrom(
-            primary: hasFocus // text color
+            foregroundColor: hasFocus // text color
                 ? widget.hasFocusTextColor
                 : widget.notFocusTextColor,
             backgroundColor: hasFocus // background color
@@ -117,7 +117,6 @@ class _FocusTextButtonState extends State<FocusTextButton> {
             child: TextButton(
               key: _childKey,
               focusNode: _focusNode,
-              child: widget.child,
               style: style.merge(widget.style),
               onPressed: widget.onClick != null
                   ? () {
@@ -125,6 +124,7 @@ class _FocusTextButtonState extends State<FocusTextButton> {
                       widget.onClick?.call();
                     }
                   : null,
+              child: widget.child,
             ),
           );
         },

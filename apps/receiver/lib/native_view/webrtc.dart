@@ -24,10 +24,10 @@ class WebRTCNativeView extends StatefulWidget {
   final WebRTCNativeViewCreatedCallback onWebRTCNativeViewCreatedCallback;
 
   @override
-  State createState() => _WebRTCNativeViewState();
+  State createState() => WebRTCNativeViewState();
 }
 
-class _WebRTCNativeViewState extends State<WebRTCNativeView>
+class WebRTCNativeViewState extends State<WebRTCNativeView>
     with TickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
@@ -107,16 +107,16 @@ class _WebRTCNativeViewState extends State<WebRTCNativeView>
     if (_webRTCNativeViewController != null) {
       presenterName = _webRTCNativeViewController!.presenterName;
       if (presenterName.length > 10) {
-        presenterName = presenterName.substring(0, 10) + '..';
+        presenterName = '${presenterName.substring(0, 10)}..';
       }
     }
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
         Focus(
-          child: nativeView,
           descendantsAreFocusable: false,
           canRequestFocus: false,
+          child: nativeView,
         ),
         Align(
           alignment: Alignment.topCenter,
@@ -228,7 +228,7 @@ class _WebRTCNativeViewState extends State<WebRTCNativeView>
 }
 
 class WebRTCNativeViewController {
-  late _WebRTCNativeViewState nativeViewState;
+  late WebRTCNativeViewState nativeViewState;
   late MethodChannel channel;
 
   PresentationState presentationState = PresentationState.stopStreaming;
@@ -238,7 +238,7 @@ class WebRTCNativeViewController {
   String peerToken = '';
   String peerId = '';
 
-  WebRTCNativeViewController(_WebRTCNativeViewState viewState, int id) {
+  WebRTCNativeViewController(WebRTCNativeViewState viewState, int id) {
     nativeViewState = viewState;
     channel = MethodChannel('com.mvbcast.crosswalk/webrtc_native_view_$id');
   }

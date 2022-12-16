@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -12,7 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart' as io_client;
 import 'package:http_parser/http_parser.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -83,11 +81,11 @@ class AppExceptionReport {
       String message = error.length > 90 ? error.substring(0, 90) : error;
       message = message.replaceAll('/', '_');
       final time = DateFormat('yyyy-MM-dd-HH-mm-ss-SSS').format(DateTime.now());
-      String fileName = time + '-' + message + '.txt';
+      String fileName = '$time-$message.txt';
 
       // create local file
-      File file = File('$_exceptionDirectory/' + fileName);
-      file.writeAsStringSync(_deviceInfo + '\n\n' + error + '\n' + stackTrace);
+      File file = File('$_exceptionDirectory/$fileName');
+      file.writeAsStringSync('$_deviceInfo\n\n$error\n$stackTrace');
 
       // upload exception file to server
       Uint8List uint8ListBytes;

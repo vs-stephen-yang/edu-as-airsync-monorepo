@@ -76,16 +76,9 @@ class _EulaState extends State<Eula> {
             spacing: 10,
             children: <Widget>[
               FocusElevatedButton(
-                child: Text(
-                  S.of(context).eula_disagree,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.blue,
-                  ),
-                ),
                 style: ElevatedButton.styleFrom(
-                  onPrimary: Colors.white,
-                  primary: Colors.white,
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.white,
                 ),
                 hasFocusWidth: 130,
                 notFocusWidth: 120,
@@ -100,18 +93,18 @@ class _EulaState extends State<Eula> {
                     // todo: support other platform.
                   }
                 },
-              ),
-              FocusElevatedButton(
                 child: Text(
-                  S.of(context).eula_agree,
+                  S.of(context).eula_disagree,
                   style: const TextStyle(
                     fontSize: 18,
-                    color: Colors.white,
+                    color: Colors.blue,
                   ),
                 ),
+              ),
+              FocusElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  onPrimary: Colors.blue,
-                  primary: Colors.blue,
+                  foregroundColor: Colors.blue,
+                  backgroundColor: Colors.blue,
                 ),
                 hasFocusWidth: 130,
                 notFocusWidth: 120,
@@ -121,6 +114,13 @@ class _EulaState extends State<Eula> {
                   AppPreferences().set(showEULA: false);
                   navService.pushNamedAndRemoveUntil('/home');
                 },
+                child: Text(
+                  S.of(context).eula_agree,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ],
           ),

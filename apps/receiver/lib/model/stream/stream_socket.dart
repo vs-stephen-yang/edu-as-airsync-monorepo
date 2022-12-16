@@ -1,5 +1,5 @@
 // STEP1:  Stream setup
-import 'package:display_flutter/model/stream/StreamResponse.dart';
+import 'package:display_flutter/model/stream/stream_response.dart';
 
 class StreamSocket extends StreamResponse {}
 
