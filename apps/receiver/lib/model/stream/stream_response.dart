@@ -5,7 +5,7 @@ import 'package:rxdart/rxdart.dart';
 // STEP1:  Stream setup
 class StreamResponse {
   final _response = BehaviorSubject<Map>();
-  final _error_response = BehaviorSubject<Exception>();
+  final _errorResponse = BehaviorSubject<Exception>();
 
   void addResponseMessage(message) {
     _response.add(message);
@@ -17,11 +17,11 @@ class StreamResponse {
 
   Stream<Map> get getResponse => _response.stream;
 
-  Stream<Exception> get getErrorResponse => _error_response.stream;
+  Stream<Exception> get getErrorResponse => _errorResponse.stream;
 
   void dispose() {
     _response.close();
-    _error_response.close();
+    _errorResponse.close();
   }
 }
 

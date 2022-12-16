@@ -76,17 +76,13 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                 itemCount: AppPreferences.localeMap.length,
                 itemBuilder: (BuildContext context, int index) {
                   return FocusElevatedButton(
-                    child: Text(
-                      AppPreferences.localeMap.keys.elementAt(index),
-                      style: const TextStyle(color: Colors.white),
-                    ),
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
-                      alignment: Alignment.centerLeft,
-                      primary: (AppPreferences().language ==
+                      backgroundColor: (AppPreferences().language ==
                               AppPreferences.localeMap.keys.elementAt(index))
                           ? AppColors.primary_blue
                           : AppColors.primary_grey_dark,
+                      alignment: Alignment.centerLeft,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0)),
                     ),
@@ -96,6 +92,10 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                         MyApp.setNewLocale(context, index);
                       });
                     },
+                    child: Text(
+                      AppPreferences.localeMap.keys.elementAt(index),
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   );
                 },
                 separatorBuilder: (BuildContext context, int index) {

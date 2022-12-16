@@ -19,7 +19,7 @@ class CustomAlertDialog extends StatefulWidget {
   final VoidCallback onPositive, onNegative;
 
   @override
-  _CustomAlertDialogState createState() => _CustomAlertDialogState();
+  State createState() => _CustomAlertDialogState();
 }
 
 class _CustomAlertDialogState extends State<CustomAlertDialog> {
@@ -49,13 +49,9 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   FocusElevatedButton(
-                    child: AutoSizeText(
-                      S.of(context).moderator_cancel,
-                      style: const TextStyle(color: AppColors.primary_grey),
-                    ),
                     style: ElevatedButton.styleFrom(
-                      onPrimary: Colors.white,
-                      primary: Colors.white,
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.white,
                     ),
                     hasFocusWidth: 120,
                     notFocusWidth: 110,
@@ -65,15 +61,15 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                       widget.onNegative.call();
                       navService.goBack();
                     },
+                    child: AutoSizeText(
+                      S.of(context).moderator_cancel,
+                      style: const TextStyle(color: AppColors.primary_grey),
+                    ),
                   ),
                   FocusElevatedButton(
-                    child: AutoSizeText(
-                      widget.positiveButton,
-                      style: const TextStyle(color: Colors.white),
-                    ),
                     style: ElevatedButton.styleFrom(
-                      onPrimary: AppColors.primary_red,
-                      primary: AppColors.primary_red,
+                      foregroundColor: AppColors.primary_red,
+                      backgroundColor: AppColors.primary_red,
                     ),
                     hasFocusWidth: 120,
                     notFocusWidth: 110,
@@ -83,6 +79,10 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                       navService.goBack();
                       widget.onPositive.call();
                     },
+                    child: AutoSizeText(
+                      widget.positiveButton,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               )

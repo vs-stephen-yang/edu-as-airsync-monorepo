@@ -1,15 +1,14 @@
 import 'dart:convert';
 
-import 'package:display_flutter/model/bean/role.dart';
-
-class ModeratorRole extends Role {
+class ModeratorRole {
   ModeratorRole({
     required this.id,
     required this.name,
     required this.remark,
     required this.status,
     this.extra,
-  }) : super(id: id);
+  });
+
   String id;
   String name;
   String remark;
@@ -30,7 +29,7 @@ class ModeratorRole extends Role {
       );
 
   factory ModeratorRole.create(id) => ModeratorRole(
-      id: id, name: 'name', remark: 'remark', status: 'sss', extra: new Map());
+      id: id, name: 'name', remark: 'remark', status: 'sss', extra: {});
 
   Map<String, dynamic> toJson() => {
         'id': id,

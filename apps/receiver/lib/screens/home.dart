@@ -25,7 +25,7 @@ class Home extends StatefulWidget {
       ValueNotifier(List.filled(4, false, growable: false));
 
   @override
-  State<StatefulWidget> createState() => _HomeState();
+  State createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {

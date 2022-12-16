@@ -4,10 +4,10 @@ import 'dart:developer';
 
 import 'package:display_flutter/model/bean/moderator_peer_message.dart';
 import 'package:display_flutter/model/bean/moderator_role.dart';
-import 'package:display_flutter/model/stream/StreamResponse.dart';
-import 'package:display_flutter/model/stream/StreamSocket.dart';
+import 'package:display_flutter/model/stream/stream_response.dart';
+import 'package:display_flutter/model/stream/stream_socket.dart';
 import 'package:display_flutter/settings/app_config.dart';
-import 'package:display_flutter/utility/ApiResponseFactory.dart';
+import 'package:display_flutter/utility/api_response_factory.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -30,11 +30,11 @@ class ModeratorSocket {
   late ModeratorRole moderator;
 
   ModeratorRole createModerator(String name, String id) {
-    var _name = name.isNotEmpty ? name : 'name';
-    var _id = id.isNotEmpty ? id : uuid.v4();
-    printInDebug('moderator[name: $_name id:$_id]', type: runtimeType);
+    var name1 = name.isNotEmpty ? name : 'name';
+    var id1 = id.isNotEmpty ? id : uuid.v4();
+    printInDebug('moderator[name: $name1 id:$id1]', type: runtimeType);
     return moderator = ModeratorRole(
-        id: _id, name: _name, remark: 'remark', status: 'sss', extra: {});
+        id: id1, name: name1, remark: 'remark', status: 'sss', extra: {});
   }
 
   Socket connectAndListen(BuildContext context) {
@@ -81,24 +81,24 @@ class ModeratorSocket {
     }
   }
 
-  static const String DISMISS = 'dismiss';
-  static const String EVENT = 'event';
-  static const String UPDATE_DISPLAY_LIST = 'update_display_list';
-  static const String DISPLAY_STATE_UPDATE = 'display-state-update';
-  static const String UNSET_MODERATOR = 'unset-moderator';
+  static const String cmdDismiss = 'dismiss';
+  static const String cmdEvent = 'event';
+  static const String cmdUpdateDisplayList = 'update_display_list';
+  static const String cmdDisplayStateUpdate = 'display-state-update';
+  static const String cmdUnsetModerator = 'unset-moderator';
 
   setupCustomEventStreamSocket() {
     var socketEvent = [
-      DISMISS,
-      EVENT,
-      UPDATE_DISPLAY_LIST,
-      DISPLAY_STATE_UPDATE,
-      UNSET_MODERATOR,
+      cmdDismiss,
+      cmdEvent,
+      cmdUpdateDisplayList,
+      cmdDisplayStateUpdate,
+      cmdUnsetModerator,
     ];
     for (var element in socketEvent) {
       socket.on(element, (_) async {
         log('$element: $_');
-        if (element == UNSET_MODERATOR) {
+        if (element == cmdUnsetModerator) {
           setModeratorResponse.addResponseMessage(_);
           unsetModeratorHasNewData = true;
         } else {
@@ -221,7 +221,7 @@ class ModeratorSocket {
       printInDebug('bindToDisplay err: $err', type: runtimeType);
       setModeratorResponse.addResponseMessage({0 as dynamic: err});
       setModeratorHasNewData = true;
-      throw err;
+      rethrow;
     }
   }
 

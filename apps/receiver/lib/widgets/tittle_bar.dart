@@ -20,14 +20,6 @@ class TitleBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               FocusTextButton(
-                child: Text(
-                  'Ver ${appConfig?.appVersion ?? ' '}',
-                  style: const TextStyle(
-                    color: AppColors.primaryWhiteA50,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
                 onClick: (AppConfig.of(context)
                             ?.settings
                             .isDevelopEnvironment ??
@@ -41,6 +33,14 @@ class TitleBar extends StatelessWidget {
                         StreamFunction.streamFunctionState.value = currentState;
                       }
                     : null,
+                child: Text(
+                  'Ver ${appConfig?.appVersion ?? ' '}',
+                  style: const TextStyle(
+                    color: AppColors.primaryWhiteA50,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
               const TextClock(),
             ],

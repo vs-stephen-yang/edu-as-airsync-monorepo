@@ -133,7 +133,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                             verifyCode().then((value) {
                               _isLogInClicked = false;
                               WidgetsBinding.instance
-                                  ?.addPostFrameCallback((timeStamp) {
+                                  .addPostFrameCallback((timeStamp) {
                                 setState(() {});
                               });
                             });

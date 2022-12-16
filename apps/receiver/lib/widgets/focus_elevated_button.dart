@@ -66,7 +66,7 @@ class _FocusElevatedButtonState extends State<FocusElevatedButton> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (_childKey.currentContext != null) {
         RenderObject? renderObject =
             _childKey.currentContext!.findRenderObject();
@@ -83,10 +83,10 @@ class _FocusElevatedButtonState extends State<FocusElevatedButton> {
           final FocusNode focusNode = Focus.of(context);
           final bool hasFocus = focusNode.hasFocus;
           ButtonStyle style = ElevatedButton.styleFrom(
-            onPrimary: hasFocus // focus blend color
+            foregroundColor: hasFocus // focus blend color
                 ? widget.hasFocusTextColor
                 : widget.notFocusTextColor,
-            primary: hasFocus // button color
+            backgroundColor: hasFocus // button color
                 ? widget.hasFocusBackgroundColor
                 : widget.notFocusBackgroundColor,
             side: widget.showWhiteBorder & hasFocus
@@ -123,7 +123,6 @@ class _FocusElevatedButtonState extends State<FocusElevatedButton> {
             child: ElevatedButton(
               key: _childKey,
               focusNode: _focusNode,
-              child: widget.child,
               style: style.merge(widget.style),
               onPressed: widget.onClick != null
                   ? () {
@@ -131,6 +130,7 @@ class _FocusElevatedButtonState extends State<FocusElevatedButton> {
                       widget.onClick?.call();
                     }
                   : null,
+              child: widget.child,
             ),
           );
         },

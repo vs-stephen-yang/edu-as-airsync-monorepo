@@ -15,10 +15,10 @@ class PresenterList extends StatefulWidget {
   final VoidCallback? onUnSetLogOut;
 
   @override
-  State createState() => PresenterListState();
+  State createState() => _PresenterListState();
 }
 
-class PresenterListState extends State<PresenterList> {
+class _PresenterListState extends State<PresenterList> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
@@ -86,10 +86,10 @@ class PresenterListState extends State<PresenterList> {
                   var messageFor = socketSnapshot.data!['messageFor'];
                   var action = socketSnapshot.data!['action'];
                   switch (action) {
-                    case ModeratorSocket.DISPLAY_STATE_UPDATE:
+                    case ModeratorSocket.cmdDisplayStateUpdate:
                       // Deprecated (show display code, delegate)
                       break;
-                    case ModeratorSocket.UPDATE_DISPLAY_LIST:
+                    case ModeratorSocket.cmdUpdateDisplayList:
                       if (messageFor == AppPreferences().moderatorId) {
                         dynamic displayIds =
                             socketSnapshot.data!['extra']['displays'];

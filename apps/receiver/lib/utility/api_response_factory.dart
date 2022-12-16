@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:display_flutter/utility/ApiException.dart';
+import 'package:display_flutter/utility/api_exception.dart';
 import 'package:http/http.dart' as http;
 
 class ApiResponseFactory {

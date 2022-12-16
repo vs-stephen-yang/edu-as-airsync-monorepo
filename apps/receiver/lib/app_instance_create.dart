@@ -116,7 +116,7 @@ class AppInstanceCreate {
         String? androidId = await DeviceInfoVs.getAndridID;
         AndroidDeviceInfo info = await deviceInfo.androidInfo;
         deviceId = androidId!;
-        _modelName = info.model ?? '';
+        _modelName = info.model;
       } else if (Platform.isIOS) {
         IosDeviceInfo info = await deviceInfo.iosInfo;
         deviceId = info.identifierForVendor!;

@@ -30,7 +30,7 @@ class _FocusSingleChildScrollViewState
     return Focus(
       child: RawScrollbar(
         controller: _scrollController,
-        isAlwaysShown: true,
+        thumbVisibility: true,
         thumbColor: Colors.white,
         child: SingleChildScrollView(
           controller: _scrollController,
