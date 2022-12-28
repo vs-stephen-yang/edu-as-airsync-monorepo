@@ -42,9 +42,9 @@ dependencies:
   device_info_plus: ^8.0.0
   device_info_vs:
     git:
-      version: ^1.0.1
-      url: https://viewsonic-ssi.visualstudio.com/Droid/_git/Device_Info_VS
-      homepage : https://viewsonic-ssi.visualstudio.com/Droid/_git/Device_Info_VS?path=/README.md
+      version: ^1.0.2
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS
+      homepage : https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS?path=/README.md
   encrypt: ^5.0.1
   uuid: ^3.0.7
   http: ^0.13.5
