@@ -104,10 +104,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "37c4d0d1bea5af063ed18d1bb26e3914c510fa32"
-      url: "https://viewsonic-ssi.visualstudio.com/Droid/_git/Device_Info_VS"
+      resolved-ref: "660cf8e74a76287fd6d29768e292c15f5f654330"
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS"
     source: git
-    version: "1.0.1"
+    version: "1.0.2"
   easy_debounce:
     dependency: "direct main"
     description:
