@@ -24,12 +24,23 @@ class MainInfo extends StatefulWidget {
   // Update Display Privilege Status,...
   static bool updateDisplayStatus = false;
 
+  static MainInfoBloc? _mainInfoBloc;
+  static Timer? _mGetOTPTimer;
+
   @override
   State createState() => _MainInfoState();
+
+  static void cancelGetOTPTimer() {
+    _mGetOTPTimer?.cancel();
+    _mGetOTPTimer = null;
+  }
+
+  static void addGetOTPEvent() {
+    _mainInfoBloc?.add(GetOneTimePassword());
+  }
 }
 
 class _MainInfoState extends State<MainInfo> {
-  late MainInfoBloc _mainInfoBloc;
   static const int maxCountDown = 30;
   static final ValueNotifier<bool> _isEyeOpen = ValueNotifier(true);
   static final ValueNotifier<double> _countDownProgress = ValueNotifier(1);
@@ -38,7 +49,7 @@ class _MainInfoState extends State<MainInfo> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _mainInfoBloc = MainInfoBloc(
+    MainInfo._mainInfoBloc = MainInfoBloc(
         AppConfig.of(context)!.settings.apiGateway,
         AppInstanceCreate().displayInstanceID,
         AppConfig.of(context)!.appVersion)
@@ -49,7 +60,7 @@ class _MainInfoState extends State<MainInfo> {
   Widget build(BuildContext context) {
     AppConfig? appConfig = AppConfig.of(context);
     return BlocProvider(
-      create: (_) => _mainInfoBloc,
+      create: (_) => MainInfo._mainInfoBloc!,
       child: BlocListener<MainInfoBloc, MainInfoState>(
         listener: (context, state) {
           switch (state) {
@@ -104,7 +115,8 @@ class _MainInfoState extends State<MainInfo> {
               });
               break;
             case MainInfoState.getOneTimePasswordSuccess:
-              Timer.periodic(const Duration(milliseconds: 100), (timer) {
+              MainInfo._mGetOTPTimer =
+                  Timer.periodic(const Duration(milliseconds: 100), (timer) {
                 if (timer.tick < maxCountDown * 10) {
                   _countDownProgress.value =
                       1 - (timer.tick / 10 / maxCountDown);

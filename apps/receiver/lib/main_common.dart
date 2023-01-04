@@ -13,6 +13,7 @@ import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/main_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -105,8 +106,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     log('AppLifecycleState: $state');
     if (state == AppLifecycleState.inactive) {
       ControlSocket().updateAllAudioEnableState(false);
+      MainInfo.cancelGetOTPTimer();
     } else if (state == AppLifecycleState.resumed) {
       ControlSocket().updateAllAudioEnableState(true);
+      MainInfo.addGetOTPEvent();
     }
   }
 
