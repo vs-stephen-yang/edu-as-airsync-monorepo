@@ -31,11 +31,13 @@ class MainInfo extends StatefulWidget {
   State createState() => _MainInfoState();
 
   static void cancelGetOTPTimer() {
+    // print('_TAG_, _mGetOTPTimer->cancel');
     _mGetOTPTimer?.cancel();
     _mGetOTPTimer = null;
   }
 
   static void addGetOTPEvent() {
+    // print('_TAG_, addGetOTPEvent->add(GetOneTimePassword())');
     _mainInfoBloc?.add(GetOneTimePassword());
   }
 }
@@ -115,8 +117,12 @@ class _MainInfoState extends State<MainInfo> {
               });
               break;
             case MainInfoState.getOneTimePasswordSuccess:
+              MainInfo._mGetOTPTimer?.cancel();
               MainInfo._mGetOTPTimer =
                   Timer.periodic(const Duration(milliseconds: 100), (timer) {
+                // if (timer.tick % 10 == 0) {
+                //   print('_TAG_, _mGetOTPTimer->tick: ${timer.tick / 10}');
+                // }
                 if (timer.tick < maxCountDown * 10) {
                   _countDownProgress.value =
                       1 - (timer.tick / 10 / maxCountDown);

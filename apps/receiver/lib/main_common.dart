@@ -64,6 +64,8 @@ class MyApp extends StatefulWidget {
   // This widget is the root of your application.
   const MyApp({Key? key}) : super(key: key);
   static ValueNotifier<bool> updatedLocale = ValueNotifier(false);
+  static bool isInBackgroundMode = false;
+  static Timer? _timerControlSocket;
 
   static void setNewLocale(BuildContext context, int index) async {
     String newLanguage = AppPreferences.localeMap.keys.elementAt(index);
@@ -73,6 +75,38 @@ class MyApp extends StatefulWidget {
     state?.changeLanguage(AppPreferences().locale);
 
     updatedLocale.value = !updatedLocale.value;
+  }
+
+  static void disconnectControlSocket() {
+    isInBackgroundMode = true;
+    if (!ControlSocket().hasPresenterOccupied()) {
+      // due to disconnectedP2pClient may call many times.
+      _timerControlSocket?.cancel();
+      _timerControlSocket = Timer.periodic(const Duration(seconds: 1), (timer) {
+        // print('_TAG_, _timerControlSocket->tick: ${timer.tick}');
+        if (timer.tick >= 30) {
+          timer.cancel();
+          _timerControlSocket?.cancel();
+          _timerControlSocket = null;
+          ControlSocket().disconnect();
+        }
+      });
+    }
+  }
+
+  static void connectControlSocket(BuildContext context) {
+    isInBackgroundMode = false;
+    if (_timerControlSocket != null) {
+      // print('_TAG_, _timerControlSocket->cancel');
+      _timerControlSocket?.cancel();
+      _timerControlSocket = null;
+    }
+    if (ControlSocket().isControlSocketNull()) {
+      AppConfig? appConfig = AppConfig.of(context);
+      if (appConfig != null) {
+        ControlSocket().connect(appConfig.settings.apiGateway);
+      }
+    }
   }
 
   @override
@@ -105,9 +139,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     log('AppLifecycleState: $state');
     if (state == AppLifecycleState.inactive) {
+      MyApp.disconnectControlSocket();
       ControlSocket().updateAllAudioEnableState(false);
       MainInfo.cancelGetOTPTimer();
     } else if (state == AppLifecycleState.resumed) {
+      MyApp.connectControlSocket(context);
       ControlSocket().updateAllAudioEnableState(true);
       MainInfo.addGetOTPEvent();
     }
@@ -119,7 +155,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       NavigatorState? navigatorState =
           NavigationService.navigationKey.currentState;
       if (navigatorState != null && !navigatorState.canPop()) {
-        ControlSocket().disconnectControlSocket();
+        ControlSocket().disconnect();
         AppAnalytics().trackEventAppTerminated();
 
         Moderator? moderator = ControlSocket().moderator;

@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/main_common.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/moderator_helper.dart';
@@ -112,9 +113,14 @@ class ControlSocket {
     _controlSocketIO?.connect();
   }
 
-  void disconnectControlSocket() {
+  bool isControlSocketNull() {
+    return _controlSocketIO == null;
+  }
+
+  void disconnect() {
     // https://github.com/rikulo/socket.io-client-dart/issues/108
     _controlSocketIO?.dispose();
+    _controlSocketIO = null;
   }
 
   void addWebRtcController(WebRTCNativeViewController controller) {
@@ -205,6 +211,9 @@ class ControlSocket {
             StreamFunction.streamFunctionState.value = stateStandby;
             MainInfo.showMainInfo.value = true;
           }
+          if (MyApp.isInBackgroundMode) {
+            MyApp.disconnectControlSocket();
+          }
           break;
       }
       return;
@@ -212,7 +221,8 @@ class ControlSocket {
   }
 
   void _printControlSocketLog(String? event, dynamic args) {
-    printInDebug('mControlSocketIO: $event ${args.toString()}',
+    printInDebug(
+        'mControlSocketIO{${_controlSocketIO?.id}}: $event ${args.toString()}',
         type: runtimeType);
   }
 
@@ -601,6 +611,31 @@ class ControlSocket {
       if (_webRtcController.isNotEmpty &&
           _webRtcController[0].presentationState ==
               PresentationState.streaming) {
+        presenting = true;
+      }
+    }
+    return presenting;
+  }
+
+  bool hasPresenterOccupied({index}) {
+    bool presenting = false;
+    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+      if (index != null && _webRtcController.length > index) {
+        if (_webRtcController[index].presentationState !=
+            PresentationState.stopStreaming) {
+          presenting = true;
+        }
+      } else {
+        for (WebRTCNativeViewController controller in _webRtcController) {
+          if (controller.presentationState != PresentationState.stopStreaming) {
+            presenting |= true;
+          }
+        }
+      }
+    } else {
+      if (_webRtcController.isNotEmpty &&
+          _webRtcController[0].presentationState !=
+              PresentationState.stopStreaming) {
         presenting = true;
       }
     }
