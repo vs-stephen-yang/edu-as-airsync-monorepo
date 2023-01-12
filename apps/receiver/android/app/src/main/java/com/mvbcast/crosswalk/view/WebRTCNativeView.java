@@ -295,7 +295,7 @@ public class WebRTCNativeView implements PlatformView,
 
         JSONObject loginObj = new JSONObject();
         try {
-            loginObj.put("host", "https://mrtc.myviewboard.cloud");
+            loginObj.put("host", WebRTCHelper.getInstance().getSignalServer());
             loginObj.put("token", token);
         } catch (JSONException e) {
             e.printStackTrace();

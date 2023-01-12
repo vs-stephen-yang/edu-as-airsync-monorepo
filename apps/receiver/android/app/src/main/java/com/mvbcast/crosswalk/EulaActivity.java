@@ -60,7 +60,14 @@ public class EulaActivity extends FlutterActivity {
 
         WebRTCHelper.getInstance().initWebRTCContext(this);
 
-        WebRTCHelper.getInstance().getAndSetConfigOfIceServers();
+        MethodChannel setServerSettings = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/settings");
+        setServerSettings.setMethodCallHandler((call, result) -> {
+            if (call.method.equals("setServerSettings")) {
+                WebRTCHelper.getInstance().setSignalServer((String) call.argument("signalServer"));
+                WebRTCHelper.getInstance().setGetIceServer((String) call.argument("getIceServer"));
+                WebRTCHelper.getInstance().getAndSetConfigOfIceServers();
+            }
+        });
 
         MethodChannel autoEnroll = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/auto_enroll");
         autoEnroll.setMethodCallHandler((call, result) -> {
