@@ -25,6 +25,8 @@ abstract class ConfigSettings {
   late bool isDevelopEnvironment;
 
   late String apiGateway;
+  late String signalServer;
+  late String getIceServer;
   late String mainDisplayUrl;
   late String prefixQRCode;
 

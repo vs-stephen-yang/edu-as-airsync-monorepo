@@ -8,6 +8,12 @@ class StageConfig implements ConfigSettings {
   String apiGateway = 'https://presentation-gateway.stage.myviewboard.cloud';
 
   @override
+  String signalServer = 'https://signal.stage.myviewboard.cloud';
+
+  @override
+  String getIceServer = 'https://getice.stage.myviewboard.cloud';
+
+  @override
   String mainDisplayUrl = 'https://stage.myviewboarddisplay.com/display';
 
   @override

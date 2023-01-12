@@ -8,6 +8,12 @@ class DevConfig implements ConfigSettings {
   String apiGateway = 'https://presentation-gateway.dev.myviewboard.cloud';
 
   @override
+  String signalServer = 'https://signal.stage.myviewboard.cloud';
+
+  @override
+  String getIceServer = 'https://getice.stage.myviewboard.cloud';
+
+  @override
   String mainDisplayUrl = 'https://dev.myviewboarddisplay.com/display';
 
   @override

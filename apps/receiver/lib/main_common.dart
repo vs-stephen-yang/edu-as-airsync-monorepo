@@ -27,6 +27,13 @@ Future<void> commonEntry(ConfigSettings settings) async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   await AppInstanceCreate.ensureInitialized(settings, packageInfo);
 
+  MethodChannel setServerSettings =
+      const MethodChannel('com.mvbcast.crosswalk/settings');
+  setServerSettings.invokeMethod('setServerSettings', <String, String>{
+    'signalServer': settings.signalServer,
+    'getIceServer': settings.getIceServer,
+  });
+
   var configureApp = AppConfig(
       settings: settings,
       appName: packageInfo.appName,

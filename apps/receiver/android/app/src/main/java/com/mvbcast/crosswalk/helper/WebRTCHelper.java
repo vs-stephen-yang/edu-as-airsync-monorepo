@@ -115,6 +115,20 @@ public class WebRTCHelper {
         return mRootEglBase.getEglBaseContext();
     }
 
+    public String getSignalServer() {
+        return mSignalServer;
+    }
+
+    public void setSignalServer(String signalServer) {
+        mSignalServer = signalServer;
+        Log.e("_TAG_", "signalServer: " + mSignalServer);
+    }
+
+    public void setGetIceServer(String getIceServer) {
+        mGetIceServer = getIceServer;
+        Log.e("_TAG_", "getIceServer: " + mGetIceServer);
+    }
+
     public P2PClientConfiguration getAndSetConfigOfIceServers() {
 
         if (mP2pConfig != null) return mP2pConfig;
@@ -204,6 +218,7 @@ public class WebRTCHelper {
     //-------------------------------------------------------------------------
 
     private P2PClientConfiguration mP2pConfig;
+    private String mSignalServer, mGetIceServer;
     private final MutableLiveData<Boolean> mIsDebugInfoVisible = new MutableLiveData<>();
 
     {
@@ -232,7 +247,7 @@ public class WebRTCHelper {
         BufferedReader reader = null;
 
         try {
-            URL url = new URL("https://getice.myviewboard.cloud");
+            URL url = new URL(mGetIceServer);
             connection = (HttpsURLConnection) url.openConnection();
             myLogDebug(TAG, "connecting");
             connection.connect();
