@@ -121,12 +121,12 @@ public class WebRTCHelper {
 
     public void setSignalServer(String signalServer) {
         mSignalServer = signalServer;
-        Log.e("_TAG_", "signalServer: " + mSignalServer);
+        myLogDebug(TAG, "signalServer: " + mSignalServer);
     }
 
     public void setGetIceServer(String getIceServer) {
         mGetIceServer = getIceServer;
-        Log.e("_TAG_", "getIceServer: " + mGetIceServer);
+        myLogDebug(TAG, "getIceServer: " + mGetIceServer);
     }
 
     public P2PClientConfiguration getAndSetConfigOfIceServers() {
