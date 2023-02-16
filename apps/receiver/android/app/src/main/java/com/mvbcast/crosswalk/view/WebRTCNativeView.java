@@ -136,7 +136,7 @@ public class WebRTCNativeView implements PlatformView,
         myLogDebug(String.format(Locale.US, "onMethodCall: %s, object: %s", call.method, msg));
         switch (call.method) {
             case "connectP2pClient":
-                connectP2pClient(call.argument("token"), call.argument("peerId"), result);
+                connectP2pClient(call.argument("token"), call.argument("displayCode"), call.argument("peerId"), result);
                 break;
             case "connectionTimeTimeOut":
                 disconnectP2pClient(true, null);
@@ -286,7 +286,7 @@ public class WebRTCNativeView implements PlatformView,
         return true;
     }
 
-    private void connectP2pClient(String token, String peerId, @NonNull MethodChannel.Result methodResult) {
+    private void connectP2pClient(String token, String displayCode, String peerId, @NonNull MethodChannel.Result methodResult) {
         setStateMachine(String.format(Locale.US, "connect token: %s, peerId: %s", token, peerId));
 
         if (!initP2PClient()) { // Try init again, return if init again failure.
@@ -297,6 +297,7 @@ public class WebRTCNativeView implements PlatformView,
         try {
             loginObj.put("host", WebRTCHelper.getInstance().getSignalServer());
             loginObj.put("token", token);
+            loginObj.put("displayCode", displayCode);
         } catch (JSONException e) {
             e.printStackTrace();
         }

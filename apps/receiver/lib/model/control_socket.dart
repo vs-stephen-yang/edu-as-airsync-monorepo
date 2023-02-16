@@ -310,6 +310,7 @@ class ControlSocket {
               selectedController.nativeViewState.switchConnectionState(true);
               var arg = {
                 'token': signal.token,
+                'displayCode': displayCode,
                 'peerId': signal.peerId,
               };
               AppAnalytics().trackEventPresentStarting(

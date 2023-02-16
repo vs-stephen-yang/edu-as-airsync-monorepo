@@ -136,14 +136,16 @@ public class SocketSignalingChannel implements SignalingChannelInterface {
     public void connect(String userInfo, ActionCallback<String> callback) {
         JSONObject loginObject;
         String token;
+        String displayCode;
         String url;
         try {
             connectCallback = callback;
             loginObject = new JSONObject(userInfo);
             token = URLEncoder.encode(loginObject.getString("token"), "UTF-8");
+            displayCode = URLEncoder.encode(loginObject.getString("displayCode"), "UTF-8");
             url = loginObject.getString("host");
             url += "?token=" + token + CLIENT_TYPE + CLIENT_TYPE_VALUE + CLIENT_VERSION
-                    + CLIENT_VERSION_VALUE;
+                    + CLIENT_VERSION_VALUE + "&displayCode=" + displayCode;
             if (!isValid(url)) {
                 callback.onFailure(new OwtError(P2P_CLIENT_ILLEGAL_ARGUMENT.value, "Invalid URL"));
                 return;
