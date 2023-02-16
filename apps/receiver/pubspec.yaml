@@ -37,9 +37,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.5
   no_context_navigation: ^2.1.2
-  shared_preferences: ^2.0.15
-  package_info_plus: ^3.0.2
-  device_info_plus: ^8.0.0
+  shared_preferences: ^2.0.17
+  package_info_plus: ^3.0.3
+  device_info_plus: ^8.1.0
   device_info_vs:
     git:
       version: ^1.0.2
@@ -48,15 +48,15 @@ dependencies:
   encrypt: ^5.0.1
   uuid: ^3.0.7
   http: ^0.13.5
-  path_provider: ^2.0.11
+  path_provider: ^2.0.12
   http_parser: ^4.0.2
   intl: ^0.17.0
-  flutter_bloc: ^8.1.1
+  flutter_bloc: ^8.1.2
   socket_io_client: ^1.0.2
   qr_flutter: ^4.0.0
   flutter_svg_provider: ^1.0.3
   rxdart: ^0.27.7
-  easy_debounce: ^2.0.2+1
+  easy_debounce: ^2.0.3
   flutter_appcenter_bundle:
     path: ./plugin/flutter_appcenter_bundle-3.3.2
   auto_size_text: ^3.0.0
