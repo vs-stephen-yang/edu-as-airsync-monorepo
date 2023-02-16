@@ -76,21 +76,25 @@ class Extra {
 class Signal {
   String? token;
   String? peerId;
+  String? url;
 
   Signal({
     this.token,
     this.peerId,
+    this.url,
   });
 
   Signal.fromJson(Map<String, dynamic> json) {
     token = json['token'];
     peerId = json['peerId'];
+    url = json['url'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['token'] = token;
     data['peerId'] = peerId;
+    data['url'] = url;
     return data;
   }
 }

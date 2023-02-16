@@ -237,6 +237,7 @@ class WebRTCNativeViewController {
   String presenterName = '';
   String peerToken = '';
   String peerId = '';
+  String? signalURL;
 
   WebRTCNativeViewController(WebRTCNativeViewState viewState, int id) {
     nativeViewState = viewState;
