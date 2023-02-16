@@ -312,6 +312,7 @@ class ControlSocket {
                 'token': signal.token,
                 'displayCode': displayCode,
                 'peerId': signal.peerId,
+                'url': signal.url,
               };
               AppAnalytics().trackEventPresentStarting(
                   selectedController.presentId, selectedController.presenterId);
@@ -320,6 +321,7 @@ class ControlSocket {
 
               selectedController.peerToken = signal.token ?? '';
               selectedController.peerId = signal.peerId ?? '';
+              selectedController.signalURL = signal.url;
 
               _handleP2PClientSuccess(
                   selectedController, resp.nextId ?? '', result);
@@ -512,6 +514,9 @@ class ControlSocket {
             },
           },
         },
+        'signal': {
+          'url': controller.signalURL,
+        }
       },
       'messageId': nextId,
       'nextId': GetString.getRandomString(21)
