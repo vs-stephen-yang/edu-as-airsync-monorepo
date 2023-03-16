@@ -84,6 +84,7 @@ class WebRTCNativeViewState extends State<WebRTCNativeView>
                   WebRTCNativeViewController(this, id);
               widget.onWebRTCNativeViewCreatedCallback(
                   _webRTCNativeViewController!);
+              params.onPlatformViewCreated(id);
             });
             viewController.create();
             return viewController;
