@@ -16,6 +16,17 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+          url 'https://viewsonic-ssi.pkgs.visualstudio.com/_packaging/myViewBoard_Artifacts/maven/v1'
+          name 'myViewBoard_Artifacts'
+          authentication {
+              basic(BasicAuthentication)
+          }
+          credentials {
+              username project.AZURE_ARTIFACTS_USERNAME
+              password project.AZURE_ARTIFACTS_PASSWORD
+          }
+        }
     }
 }
 
@@ -23,6 +34,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 31
+    ndkVersion '23.2.8568313'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -30,6 +42,27 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 21
+        externalNativeBuild {
+            cmake {
+                abiFilters "armeabi-v7a", "arm64-v8a", "x86_64"
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
     }
+
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
+    }
+    buildFeatures {
+        prefab true
+    }
+}
+
+dependencies {
+    implementation 'com.google.oboe:oboe:1.7.0'
+    implementation 'com.viewsonic.airplay:airplay:0.9.8'
 }

@@ -1,6 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_mirror_method_channel.dart';
+import 'flutter_mirror_listener.dart';
 
 abstract class FlutterMirrorPlatform extends PlatformInterface {
   /// Constructs a FlutterMirrorPlatform.
@@ -23,7 +24,19 @@ abstract class FlutterMirrorPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  void registerListener(FlutterMirrorListener listener) {
+    throw UnimplementedError('registerListener() has not been implemented.');
+  }
+
+  Future<void> initialize() {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  Future<void> startAirplay(String name) async {
+    throw UnimplementedError('startAirplay() has not been implemented.');
+  }
+
+  Future<void> stopMirror(String mirrorId) async {
+    throw UnimplementedError('stopMirror() has not been implemented.');
   }
 }
