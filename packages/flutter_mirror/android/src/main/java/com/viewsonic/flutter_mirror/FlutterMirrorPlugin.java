@@ -8,31 +8,276 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
+import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.view.TextureRegistry;
+import io.flutter.view.TextureRegistry.SurfaceTextureEntry;
+import io.flutter.plugin.common.EventChannel;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ExecutionException;
+
+import java.lang.InterruptedException;
+
+import android.graphics.SurfaceTexture;
+import android.util.Log;
+import android.view.Surface;
+import android.os.Handler;
+import android.os.Looper;
+
 /** FlutterMirrorPlugin */
-public class FlutterMirrorPlugin implements FlutterPlugin, MethodCallHandler {
-  /// The MethodChannel that will the communication between Flutter and native Android
+public class FlutterMirrorPlugin implements
+    FlutterPlugin,
+    TexRegistry,
+    MirrorListener,
+    MethodCallHandler {
+  private static final String TAG = "FlutterMirrorPlugin";
+
+  // A wrapper for SurfaceTextureEntry
+  class Texture {
+    private SurfaceTextureEntry entry_;
+    Surface surface_;
+
+    Texture(SurfaceTextureEntry entry) {
+      entry_ = entry;
+
+      SurfaceTexture surfaceTexture = entry_.surfaceTexture();
+      surface_ = new Surface(surfaceTexture);
+    }
+
+    public long id() {
+      return entry_.id();
+    }
+
+    public Surface surface() {
+      return surface_;
+    }
+
+    public void release() {
+      entry_.release();
+    }
+  }
+
+  /// The MethodChannel that will the communication between Flutter and native
+  /// Android
   ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
+  /// This local reference serves to register the plugin with the Flutter Engine
+  /// and unregister it
   /// when the Flutter Engine is detached from the Activity
-  private MethodChannel channel;
+  private MethodChannel channel_;
+
+  private TextureRegistry textureRegistry_;
+  private BinaryMessenger messenger_;
+
+  private HashMap<Long, Texture> textures_ = new HashMap<Long, Texture>();
+  private Handler handler_ = new Handler(Looper.getMainLooper());
+
+  private MirrorReceiver mirrorReceiver_;
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-    channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "flutter_mirror");
-    channel.setMethodCallHandler(this);
+    Log.d(TAG, "FlutterMirrorPlugin::onAttachedToEngine()");
+
+    textureRegistry_ = flutterPluginBinding.getTextureRegistry();
+    messenger_ = flutterPluginBinding.getBinaryMessenger();
+
+    channel_ = new MethodChannel(messenger_, "flutter_mirror");
+    channel_.setMethodCallHandler(this);
   }
 
   @Override
-  public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    if (call.method.equals("getPlatformVersion")) {
-      result.success("Android " + android.os.Build.VERSION.RELEASE);
+  public void onMethodCall(@NonNull MethodCall call, @NonNull Result res) {
+    // onMethodCall() is called on the platform thread
+
+    Log.d(TAG, "FlutterMirrorPlugin::onMethodCall() " + call.method);
+
+    Result result = new AnyThreadResult(res);
+
+    if (call.method.equals("initialize")) {
+      initialize();
+
+      Map<String, Long> reply = new HashMap<>();
+      result.success(reply);
+    } else if (call.method.equals("startAirplay")) {
+      String name = call.argument("name");
+
+      startAirplay(
+          name);
+
+      Map<String, Long> reply = new HashMap<>();
+      result.success(reply);
+    } else if (call.method.equals("stopMirror")) {
+      String mirrorId = call.argument("mirrorId");
+
+      stopMirror(mirrorId);
+
+      Map<String, Long> reply = new HashMap<>();
+      result.success(reply);
     } else {
       result.notImplemented();
     }
   }
 
+  private void initialize() {
+    mirrorReceiver_ = new MirrorReceiver(this,this);
+  }
+
+  private void startAirplay(String name) {
+    assert mirrorReceiver_ != null;
+
+    mirrorReceiver_.startAirplay(name);
+  }
+
+  private void stopMirror(String mirrorId) {
+    assert mirrorReceiver_ != null;
+
+    mirrorReceiver_.stopMirror(mirrorId);
+  }
+
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-    channel.setMethodCallHandler(null);
+    channel_.setMethodCallHandler(null);
+  }
+
+  // create a surface and return its id
+  @Override
+  public long createSurfaceTexture() throws java.lang.Exception {
+    Log.d(TAG, "FlutterMirrorPlugin::createSurfaceTexture()");
+
+    // Must run on the platform thread
+    return post(() -> {
+      Texture tex = new Texture(
+          textureRegistry_.createSurfaceTexture());
+
+      textures_.put(tex.id(), tex);
+
+      Log.d(TAG, "surface texture has been created " + tex.id());
+
+      return tex.id();
+    });
+  }
+
+  @Override
+  public Surface getSurfaceTexture(long textureId) throws java.lang.Exception {
+    Log.d(TAG, "FlutterMirrorPlugin::getSurfaceTexture()");
+
+    // Must run on the platform thread
+    return post(() -> {
+      Texture tex = textures_.get(textureId);
+      assert tex != null;
+
+      return tex.surface();
+    });
+  }
+
+  // release a surface
+  @Override
+  public void releaseSurfaceTexture(long textureId) throws java.lang.Exception {
+    Log.d(TAG, "FlutterMirrorPlugin::releaseSurfaceTexture() " + textureId);
+
+    // Must run on the platform thread
+    post(() -> {
+      Texture tex = textures_.get(textureId);
+      if (tex == null) {
+        Log.w(TAG, "no such surface texture " + textureId);
+        return;
+      }
+
+      textures_.remove(textureId);
+      tex.release();
+
+      Log.d(TAG, "surface texture has been released " + textureId);
+      Log.d(TAG, "remaining surface textures " + textures_.size());
+    });
+  }
+
+  public void onMirrorAuth(String pin, int timeoutSec) {
+    Log.d(TAG, "FlutterMirrorPlugin::onMirrorAuth() " + pin);
+
+    // Must run on the platform thread
+    post(() -> {
+      Map<String, Object> arguments = new HashMap<>();
+      arguments.put("pin", pin);
+      arguments.put("timeoutSec", timeoutSec);
+
+      channel_.invokeMethod("onMirrorAuth", arguments);
+    });
+  }
+
+  public void onMirrorStart(String mirrorId, long textureId) {
+    Log.d(TAG, "FlutterMirrorPlugin::onMirrorStart() " + mirrorId);
+
+    // Must run on the platform thread
+    post(() -> {
+      Map<String, Object> arguments = new HashMap<>();
+      arguments.put("mirrorId", mirrorId);
+      arguments.put("textureId", textureId);
+
+      channel_.invokeMethod("onMirrorStart", arguments);
+    });
+  }
+
+  public void onMirrorStop(String mirrorId) {
+    Log.d(TAG, "FlutterMirrorPlugin::onMirrorStop() " + mirrorId);
+
+    // Must run on the platform thread
+    post(() -> {
+      Map<String, Object> arguments = new HashMap<>();
+      arguments.put("mirrorId", mirrorId);
+
+      channel_.invokeMethod("onMirrorStop", arguments);
+    });
+  }
+
+  public void onMirrorVideoResize(String mirrorId, int width, int height)  {
+    Log.d(TAG, "FlutterMirrorPlugin::onMirrorVideoResize() " + mirrorId);
+
+    // Must run on the platform thread
+    post(() -> {
+      Map<String, Object> arguments = new HashMap<>();
+      arguments.put("mirrorId", mirrorId);
+      arguments.put("width", width);
+      arguments.put("height", height);
+
+      channel_.invokeMethod("onMirrorVideoResize", arguments);
+    });
+  }
+
+  private boolean isOnPlatformThread() {
+    return Looper.getMainLooper() == Looper.myLooper();
+  }
+
+  // make sure that the task runs on the platform thread
+  private <T> T post(Callable<T> c) throws java.lang.Exception {
+    if (isOnPlatformThread()) {
+      return c.call();
+    }
+
+    // Run the task on the platform thread
+    FutureTask<T> task = new FutureTask<T>(c);
+    handler_.post(task);
+
+    // block until the task is done
+    return task.get();
+  }
+
+  // make sure that the task runs on the platform thread
+  private void post(Runnable r) {
+    if (isOnPlatformThread()) {
+      r.run();
+      return;
+    }
+
+    // Run the task on the platform thread
+    handler_.post(r);
+  }
+
+  static {
+    Log.d(TAG, "loading flutter_mirror library");
+    System.loadLibrary("flutter_mirror");
+    Log.d(TAG, "flutter_mirror library has been loaded");
   }
 }

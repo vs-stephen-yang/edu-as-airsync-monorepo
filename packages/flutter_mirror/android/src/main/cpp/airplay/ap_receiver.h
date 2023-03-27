@@ -1,0 +1,46 @@
+#ifndef FLUTTER_MIRROR_PLUGIN_AP_RECEIVER_H_
+#define FLUTTER_MIRROR_PLUGIN_AP_RECEIVER_H_
+
+#include "airplay/airplay_receiver.h"
+#include "airplay/airplay_receiver_host.h"
+
+#include <thread>
+#include "airplay/ap_mirror_session.h"
+
+class ApReceiver
+    : public ap::AirplayReceiver::Listener {
+ public:
+  ApReceiver(
+      MirrorListener& mirror_listener,
+      jni::TextureRegistry& text_registry);
+
+  ~ApReceiver();
+
+  bool Init();
+
+  bool Start(
+      const ap::AirplayReceiver::Config& config);
+
+  void Stop();
+
+  // implements AirplayReceiver::Listener
+  virtual void OnAuthRequest(
+      const std::string& pin,
+      unsigned int expiry_sec) override;
+
+  virtual bool OnMirrorStart(
+      ap::AirplayMirrorSessionPtr session) override;
+
+ private:
+  MirrorListener& mirror_listener_;
+  jni::TextureRegistry& text_registry_;
+
+  ap::AirplayReceiverHostPtr host_;
+  ap::AirplayReceiverPtr receiver_;
+
+  std::unique_ptr<std::thread> thread_;
+
+  unsigned int mirror_increment_seq_ = 0;
+};
+
+#endif  // FLUTTER_MIRROR_PLUGIN_AP_RECEIVER_H_

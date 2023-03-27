@@ -1,0 +1,59 @@
+#ifndef FLUTTER_MIRROR_PLUGIN_JNI_MIRROR_RECEIVER_H_
+#define FLUTTER_MIRROR_PLUGIN_JNI_MIRROR_RECEIVER_H_
+
+#include <jni.h>
+#include <memory>
+
+namespace jni {
+
+class MirrorReceiver {
+ public:
+  MirrorReceiver(
+      JavaVM* vm,
+      JNIEnv* env,
+      jobject obj);
+
+  ~MirrorReceiver();
+
+  // when requesting auth
+  void OnMirrorAuth(
+      const std::string& pin,
+      unsigned int timeout_sec);
+
+  // when a mirror session starts
+  void OnMirrorStart(
+      const std::string& mirror_id,
+      int64_t texture_id);
+
+  // when a mirror session stops
+  void OnMirrorStop(
+      const std::string& mirror_id);
+
+  // when the size of the texture changes
+  void OnMirrorVideoResize(
+      const std::string& mirror_id,
+      int width,
+      int height);
+
+ private:
+  void InitMethods(
+      JNIEnv* env,
+      jobject obj);
+
+ private:
+  jobject obj_ = nullptr;
+  JavaVM* vm_ = nullptr;
+
+  // Methods of MirrorReceiver Java class
+  jmethodID onMirrorAuth = nullptr;
+  jmethodID onMirrorStart = nullptr;
+  jmethodID onMirrorStop = nullptr;
+
+  jmethodID onMirrorVideoResize = nullptr;
+};
+
+typedef std::unique_ptr<MirrorReceiver> MirrorReceiverPtr;
+
+}  // namespace jni
+
+#endif  // FLUTTER_MIRROR_PLUGIN_JNI_MIRROR_RECEIVER_H_
