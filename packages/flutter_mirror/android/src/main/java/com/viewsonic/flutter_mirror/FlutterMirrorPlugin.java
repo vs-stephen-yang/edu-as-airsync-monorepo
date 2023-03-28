@@ -109,6 +109,16 @@ public class FlutterMirrorPlugin implements
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
+    } else if (call.method.equals("startGooglecast")) {
+      String name = call.argument("name");
+      Map<String, Object> credentials = call.argument("credentials");
+
+      startGooglecast(
+          name,
+          GooglecastCredentials.fromMap(credentials));
+
+      Map<String, Long> reply = new HashMap<>();
+      result.success(reply);
     } else if (call.method.equals("stopMirror")) {
       String mirrorId = call.argument("mirrorId");
 
@@ -122,13 +132,19 @@ public class FlutterMirrorPlugin implements
   }
 
   private void initialize() {
-    mirrorReceiver_ = new MirrorReceiver(this,this);
+    mirrorReceiver_ = new MirrorReceiver(this, this);
   }
 
   private void startAirplay(String name) {
     assert mirrorReceiver_ != null;
 
     mirrorReceiver_.startAirplay(name);
+  }
+
+  private void startGooglecast(String name, GooglecastCredentials credentials) {
+    assert mirrorReceiver_ != null;
+
+    mirrorReceiver_.startGooglecast(name, credentials);
   }
 
   private void stopMirror(String mirrorId) {
@@ -232,7 +248,7 @@ public class FlutterMirrorPlugin implements
     });
   }
 
-  public void onMirrorVideoResize(String mirrorId, int width, int height)  {
+  public void onMirrorVideoResize(String mirrorId, int width, int height) {
     Log.d(TAG, "FlutterMirrorPlugin::onMirrorVideoResize() " + mirrorId);
 
     // Must run on the platform thread
@@ -243,6 +259,23 @@ public class FlutterMirrorPlugin implements
       arguments.put("height", height);
 
       channel_.invokeMethod("onMirrorVideoResize", arguments);
+    });
+  }
+
+  public void onCredentialsUpdate(
+      int year,
+      int month,
+      int day) {
+    Log.d(TAG, "FlutterMirrorPlugin::onCredentialsUpdate() ");
+
+    // Must run on the platform thread
+    post(() -> {
+      Map<String, Object> arguments = new HashMap<>();
+      arguments.put("year", year);
+      arguments.put("month", month);
+      arguments.put("day", day);
+
+      channel_.invokeMethod("onCredentialsUpdate", arguments);
     });
   }
 

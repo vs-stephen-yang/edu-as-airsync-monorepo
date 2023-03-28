@@ -29,6 +29,16 @@ public class MirrorReceiver implements
         name);
   }
 
+  // start googlecast
+  public void startGooglecast(String name, GooglecastCredentials credentials) {
+    assert instance_ != 0;
+
+    startGooglecastNative(
+        instance_,
+        name,
+        credentials);
+  }
+
   // stop a mirror session by its Id
   public void stopMirror(String mirrorId) {
     assert instance_ != 0;
@@ -58,17 +68,34 @@ public class MirrorReceiver implements
     mirrorListener_.onMirrorVideoResize(mirrorId, width, height);
   }
 
+  @Override
+  public void onCredentialsUpdate(
+      int year,
+      int month,
+      int day) {
+    mirrorListener_.onCredentialsUpdate(year, month, day);
+  }
+
   private native long createInstanceNative(
       TexRegistry textureRegistry);
 
   private native void DestroyInstanceNative(
       long instance);
 
+  private native void stopMirrorNative(
+      long instance,
+      String mirrorId);
+
   private native void startAirplayNative(
       long instance,
       String name);
 
-  private native void stopMirrorNative(
+  public native void startGooglecastNative(
       long instance,
-      String mirrorId);
+      String name,
+      GooglecastCredentials credentials);
+
+  public native void updateGooglecastCredentialNative(
+      long instance,
+      GooglecastCredentials credentials);
 }

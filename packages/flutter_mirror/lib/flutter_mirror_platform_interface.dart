@@ -3,6 +3,8 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'flutter_mirror_method_channel.dart';
 import 'flutter_mirror_listener.dart';
 
+import 'credentials.dart';
+
 abstract class FlutterMirrorPlatform extends PlatformInterface {
   /// Constructs a FlutterMirrorPlatform.
   FlutterMirrorPlatform() : super(token: _token);
@@ -34,6 +36,10 @@ abstract class FlutterMirrorPlatform extends PlatformInterface {
 
   Future<void> startAirplay(String name) async {
     throw UnimplementedError('startAirplay() has not been implemented.');
+  }
+
+  Future<void> startGooglecast(String name, Credentials credentials) async {
+    throw UnimplementedError('startGooglecast() has not been implemented.');
   }
 
   Future<void> stopMirror(String mirrorId) async {

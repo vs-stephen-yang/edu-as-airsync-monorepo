@@ -55,6 +55,8 @@ android {
     }
     packagingOptions {
         pickFirst '**/libairplayreceiver.so'
+        pickFirst '**/libevent*.so'
+        pickFirst '**/libcast.so'
     }
 }
 

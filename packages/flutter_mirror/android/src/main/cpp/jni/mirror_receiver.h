@@ -35,6 +35,11 @@ class MirrorReceiver {
       int width,
       int height);
 
+  void OnCredentialsUpdate(
+      int year,
+      int month,
+      int day);
+
  private:
   void InitMethods(
       JNIEnv* env,
@@ -50,6 +55,8 @@ class MirrorReceiver {
   jmethodID onMirrorStop = nullptr;
 
   jmethodID onMirrorVideoResize = nullptr;
+
+  jmethodID onCredentialsUpdate = nullptr;
 };
 
 typedef std::unique_ptr<MirrorReceiver> MirrorReceiverPtr;

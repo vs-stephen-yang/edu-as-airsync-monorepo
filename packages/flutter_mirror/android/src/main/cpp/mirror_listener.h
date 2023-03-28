@@ -10,7 +10,7 @@ class MirrorListener {
 
   virtual void OnMirrorAuth(
       const std::string& pin_code,
-      unsigned int expiry_sec) = 0;
+      unsigned int timeout_sec) = 0;
 
   virtual void OnMirrorStart(
       MirrorSessionPtr session) = 0;
@@ -22,6 +22,12 @@ class MirrorListener {
       MirrorSession* session,
       int width,
       int height) = 0;
+
+  // for Googlecast device authentication
+  virtual void OnCredentialsUpdate(
+      int year,
+      int month,
+      int day) = 0;
 };
 
 #endif  // FLUTTER_MIRROR_PLUGIN_MIRROR_LISTENER_H_

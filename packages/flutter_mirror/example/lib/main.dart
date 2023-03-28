@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
 
+import 'credential_store.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -41,9 +43,16 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
 
     try {
       _plugin.registerListener(this);
-
       await _plugin.initialize();
+
+      // start airplay
       await _plugin.startAirplay("display-1");
+
+      // load today's credentials
+      final credentials = await CredentialsStore.loadToday();
+
+      // start googlecast
+      await _plugin.startGooglecast("display-1", credentials);
     } on PlatformException {}
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -106,6 +115,11 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
         _aspectRatio = width / height;
       });
     });
+  }
+
+  @override
+  void onCredentialsUpdate(int year, int month, int day) {
+    if (!mounted) return;
   }
 
   void stopMirror() {

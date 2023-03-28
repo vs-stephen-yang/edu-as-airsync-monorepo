@@ -76,6 +76,20 @@ void MirrorReceiver::OnMirrorVideoResize(
       height);
 }
 
+void MirrorReceiver::OnCredentialsUpdate(
+    int year,
+    int month,
+    int day) {
+  jni::ScopedEnv env(vm_);
+
+  env->CallVoidMethod(
+      obj_,
+      onCredentialsUpdate,
+      year,
+      month,
+      day);
+}
+
 void MirrorReceiver::InitMethods(
     JNIEnv* env,
     jobject obj) {
@@ -92,6 +106,9 @@ void MirrorReceiver::InitMethods(
 
   // void onMirrorVideoResize(int mirrorId, int width, int height)
   DEFINE_METHOD(onMirrorVideoResize, "(Ljava/lang/String;II)V");
+
+  // void onCredentialsUpdate(int year, int month, int day)
+  DEFINE_METHOD(onCredentialsUpdate, "(III)V");
 }
 
 }  // namespace jni

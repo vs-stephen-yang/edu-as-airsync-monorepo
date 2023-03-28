@@ -2,12 +2,15 @@
 #define FLUTTER_MIRROR_PLUGIN_MIRROR_RECEIVER_H_
 
 #include <map>
+
 #include "jni/mirror_receiver.h"
 #include "jni/texture_registry.h"
+
 #include "mirror_listener.h"
 #include "mirror_session.h"
 
 #include "airplay/ap_receiver.h"
+#include "googlecast/googlecast_receiver.h"
 
 class MirrorReceiver
     : public MirrorListener {
@@ -22,6 +25,10 @@ class MirrorReceiver
   void StartAirplay(
       const ap::AirplayReceiver::Config& config);
 
+  // start googlecast
+  void StartGooglecast(
+      const openscreen::cast::CastReceiver::Config& config);
+
   // stop a mirror session by its Id
   void StopMirror(
       const std::string& mirror_id);
@@ -29,7 +36,7 @@ class MirrorReceiver
   // MirrorListener
   virtual void OnMirrorAuth(
       const std::string& pin_code,
-      unsigned int expiry_sec) override;
+      unsigned int timeout_sec) override;
 
   virtual void OnMirrorStart(
       MirrorSessionPtr session) override;
@@ -42,6 +49,11 @@ class MirrorReceiver
       int width,
       int height) override;
 
+  virtual void OnCredentialsUpdate(
+      int year,
+      int month,
+      int day) override;
+
  private:
   void RemoveMirror(const std::string& mirror_id);
 
@@ -53,6 +65,9 @@ class MirrorReceiver
 
   // airplay
   std::unique_ptr<ApReceiver> ap_receiver_;
+
+  // googlecast
+  std::unique_ptr<GooglecastReceiver> googlecast_receiver_;
 };
 
 #endif  // FLUTTER_MIRROR_PLUGIN_MIRROR_RECEIVER_H_
