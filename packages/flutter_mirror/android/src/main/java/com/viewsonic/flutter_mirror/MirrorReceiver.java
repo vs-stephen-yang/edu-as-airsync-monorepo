@@ -1,5 +1,8 @@
 package com.viewsonic.flutter_mirror;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class MirrorReceiver implements
     MirrorListener {
 
