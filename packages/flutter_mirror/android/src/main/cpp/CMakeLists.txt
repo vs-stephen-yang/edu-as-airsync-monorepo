@@ -11,6 +11,7 @@ project("flutter_mirror")
 find_package(oboe REQUIRED CONFIG)
 
 add_subdirectory(airplay)
+add_subdirectory(googlecast)
 
 aux_source_directory(./ src)
 aux_source_directory(./util/jni util_jni_src)
@@ -54,7 +55,5 @@ target_link_libraries( # Specifies the target library.
   android
   mediandk
   flutter_airplay
-
-  # Links the target library to the log library
-  # included in the NDK.
+  flutter_googlecast
   ${log-lib})

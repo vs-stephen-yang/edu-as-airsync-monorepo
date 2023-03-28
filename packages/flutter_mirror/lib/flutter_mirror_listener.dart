@@ -5,4 +5,6 @@ abstract class FlutterMirrorListener {
   void onMirrorStop(String mirrorId);
 
   void onMirrorVideoResize(String mirrorId, int width, int height);
+
+  void onCredentialsUpdate(int year, int month, int day);
 }

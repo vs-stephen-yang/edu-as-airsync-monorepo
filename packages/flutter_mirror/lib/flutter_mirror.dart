@@ -1,3 +1,5 @@
+import 'package:flutter_mirror/credentials.dart';
+
 import 'flutter_mirror_platform_interface.dart';
 import 'flutter_mirror_listener.dart';
 
@@ -12,6 +14,10 @@ class FlutterMirror {
 
   Future<void> startAirplay(String name) {
     return FlutterMirrorPlatform.instance.startAirplay(name);
+  }
+
+  Future<void> startGooglecast(String name, Credentials credentials) {
+    return FlutterMirrorPlatform.instance.startGooglecast(name, credentials);
   }
 
   Future<void> stopMirror(String mirrorId) {

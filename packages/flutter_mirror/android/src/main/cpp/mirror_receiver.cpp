@@ -29,6 +29,23 @@ void MirrorReceiver::StartAirplay(
   ap_receiver_->Init();
   ap_receiver_->Start(config);
 }
+
+void MirrorReceiver::StartGooglecast(
+    const openscreen::cast::CastReceiver::Config& config) {
+  ALOGD("Starting googlecast");
+
+  if (googlecast_receiver_) {
+    return;
+  }
+
+  googlecast_receiver_ = std::make_unique<GooglecastReceiver>(
+      *this,
+      *texture_registry_);
+
+  googlecast_receiver_->Init();
+  googlecast_receiver_->Start(config);
+}
+
 void MirrorReceiver::StopMirror(
     const std::string& mirror_id) {
   // TODO
@@ -81,6 +98,12 @@ void MirrorReceiver::OnMirrorVideoResize(
       mirror_id,
       width,
       height);
+}
+
+void MirrorReceiver::OnCredentialsUpdate(
+    int year,
+    int month,
+    int day) {
 }
 
 void MirrorReceiver::RemoveMirror(const std::string& mirror_id) {

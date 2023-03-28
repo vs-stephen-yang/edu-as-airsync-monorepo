@@ -4,12 +4,17 @@
 #include <string>
 
 #include "airplay/ap_receiver.h"
+#include "googlecast/googlecast_receiver.h"
+
+#include "mirror_receiver.h"
+
 #include "jni/mirror_receiver.h"
 #include "jni/texture_registry.h"
-#include "mirror_receiver.h"
+
 #include "util/jni/scoped_env.h"
 #include "util/jni/string.h"
 #include "util/log.h"
+#include "jni/credentials.h"
 
 #define CAST(instance) \
   reinterpret_cast<MirrorReceiver*>(instance);
@@ -71,6 +76,39 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startAirplayNative(
   config.pin_expiry_sec = 30;
 
   receiver->StartAirplay(config);
+}
+
+JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startGooglecastNative(
+    JNIEnv* env,
+    jobject thiz,
+    jlong instance,
+    jstring jname,
+    jobject credentials) {
+  assert(instance != 0);
+  ALOGV("startGooglecastNative()");
+
+  MirrorReceiver* receiver = CAST(instance);
+
+  jni::String str(env);
+  jni::Credentials creds(env, credentials);
+
+  openscreen::cast::CastReceiver::Config config;
+
+  config.friendly_name = str.ToUtf8(jname);
+  config.unique_id = "id";
+  config.model_name = "IFP";
+  config.interface_name = "eth0";
+  config.credentials = creds.FromJObject();
+
+  receiver->StartGooglecast(config);
+}
+JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1mirror_MirrorReceiver_updateGooglecastCredentialNative(
+    JNIEnv* env,
+    jobject thiz,
+    jlong instance,
+    jobject credentials) {
 }
 
 JNIEXPORT void JNICALL

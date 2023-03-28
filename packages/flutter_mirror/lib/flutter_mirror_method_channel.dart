@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'flutter_mirror_platform_interface.dart';
 import 'flutter_mirror_listener.dart';
 
+import 'credentials.dart';
+
 /// An implementation of [FlutterMirrorPlatform] that uses method channels.
 class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
   /// The method channel used to interact with the native platform.
@@ -16,6 +18,19 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
     methodChannel.setMethodCallHandler(onMethodCallFromNative);
   }
 
+  Map<String, Object> credentialToMap(Credentials cred) {
+    return {
+      'year': cred.year,
+      'month': cred.month,
+      'day': cred.day,
+      'deviceCert': cred.deviceCertDer,
+      'icaCert': cred.icaCertDer,
+      'tlsCert': cred.tlsCertDer,
+      'tlsKey': cred.tlsKeyDer,
+      'signature': cred.signature,
+    };
+  }
+
   @override
   Future<void> initialize() async {
     await methodChannel.invokeMethod('initialize');
@@ -25,6 +40,14 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
   Future<void> startAirplay(String name) async {
     await methodChannel.invokeMethod('startAirplay', {
       "name": name,
+    });
+  }
+
+  @override
+  Future<void> startGooglecast(String name, Credentials credentials) async {
+    await methodChannel.invokeMethod('startGooglecast', {
+      "name": name,
+      "credentials": credentialToMap(credentials),
     });
   }
 
@@ -63,6 +86,12 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
         int timeoutSec = call.arguments["timeoutSec"];
 
         _listener?.onMirrorAuth(pin, timeoutSec);
+      } else if (call.method == 'onCredentialsUpdate') {
+        int year = call.arguments["year"];
+        int month = call.arguments["month"];
+        int day = call.arguments["day"];
+
+        _listener?.onCredentialsUpdate(year, month, day);
       }
     } catch (e) {
       print("Malformed method call from native: ${call.method}. $e");

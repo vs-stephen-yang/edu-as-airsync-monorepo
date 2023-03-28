@@ -9,4 +9,9 @@ public interface MirrorListener {
   public void onMirrorStop(String mirrorId);
 
   public void onMirrorVideoResize(String mirrorId, int width, int height);
+
+  public void onCredentialsUpdate(
+      int year,
+      int month,
+      int day);
 }
