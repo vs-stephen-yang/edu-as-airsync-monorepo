@@ -1,5 +1,6 @@
 package com.viewsonic.flutter_mirror;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -29,6 +30,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 /** FlutterMirrorPlugin */
+@Keep
 public class FlutterMirrorPlugin implements
     FlutterPlugin,
     TexRegistry,

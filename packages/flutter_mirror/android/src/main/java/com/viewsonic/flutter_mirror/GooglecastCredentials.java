@@ -1,7 +1,10 @@
 package com.viewsonic.flutter_mirror;
 
+import androidx.annotation.Keep;
+
 import java.util.Map;
 
+@Keep
 public class GooglecastCredentials {
   // In UTC time
   public int year;
