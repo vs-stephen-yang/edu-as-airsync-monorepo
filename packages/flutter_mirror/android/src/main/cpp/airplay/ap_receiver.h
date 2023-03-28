@@ -26,7 +26,7 @@ class ApReceiver
   // implements AirplayReceiver::Listener
   virtual void OnAuthRequest(
       const std::string& pin,
-      unsigned int expiry_sec) override;
+      unsigned int timeout_sec) override;
 
   virtual bool OnMirrorStart(
       ap::AirplayMirrorSessionPtr session) override;

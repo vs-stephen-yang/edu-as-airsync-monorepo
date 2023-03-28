@@ -1,6 +1,5 @@
 #include "./airplay/ap_mirror_session.h"
 #include <assert.h>
-#include "airplay/ap_receiver.h"
 #include "media/audio_decoder.h"
 #include "media/video_decoder_ndk.h"
 #include "util/log.h"
