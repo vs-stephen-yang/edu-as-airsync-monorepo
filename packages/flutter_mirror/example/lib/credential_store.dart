@@ -35,6 +35,8 @@ String pad2digits(int v) {
 }
 
 class CredentialsStore {
+  static const credentialsPath = "packages/flutter_mirror/assets/credentials";
+
   // load today's credentials
   static Future<Credentials> loadToday() async {
     final now = DateTime.now().toUtc();
@@ -51,7 +53,7 @@ class CredentialsStore {
     final m = pad2digits(month);
     final d = pad2digits(day);
 
-    final path = "assets/credentials/cooked_$year-$m-$d.json";
+    final path = "$credentialsPath/cooked_$year-$m-$d.json";
 
     String json = await rootBundle.loadString(path);
     return parse(json, year, month, day);
