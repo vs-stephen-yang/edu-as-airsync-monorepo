@@ -52,6 +52,13 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
   }
 
   @override
+  Future<void> startMiracast(String name) async {
+    await methodChannel.invokeMethod('startMiracast', {
+      "name": name,
+    });
+  }
+
+  @override
   Future<void> stopMirror(String mirrorId) async {
     await methodChannel.invokeMethod('stopMirror', {
       "mirrorId": mirrorId,
