@@ -16,7 +16,7 @@ import java.util.Map;
 public class MiraMgr {
   private WiFiDirectMgr wifiDirectMgr_;
   private OnMirrorListener onMiraCastListener_;
-  private FlutterMiracastPlugin flutterPlugin_;
+  private MiraMgrListener listener_;
 
   private Handler miraHandler_;
 
@@ -78,7 +78,7 @@ public class MiraMgr {
     miraHandler_ = new Handler(mMiraHandlerThread.getLooper());
   }
 
-  public void start(Context context, Activity activity, FlutterMiracastPlugin plugin, String receiverName) {
+  public void start(Context context, Activity activity, MiraMgrListener listener, String receiverName) {
     context_ = context;
     activity_ = activity;
     receiverName_ = receiverName;
@@ -86,8 +86,8 @@ public class MiraMgr {
       miraHandler_.post(wifiDirectRunnable_);
     }
 
-    if (plugin != null) {
-      flutterPlugin_ = plugin;
+    if (listener != null) {
+      listener_ = listener;
     }
   }
 
@@ -140,9 +140,8 @@ public class MiraMgr {
   private void connectionPrompt(String peerName, String peerIp, int peerPort) {
     MiraSession session = createSession(peerName, peerIp, peerPort, receiverName_);
     session.startRtsp();
-    if (flutterPlugin_ != null) {
-      flutterPlugin_.onSessionBegin(session.getId());
-      return;
+    if (listener_ != null) {
+      listener_.onSessionBegin(session.getId());
     }
 
     AlertDialog.Builder builder = new AlertDialog.Builder(activity_);
@@ -154,8 +153,8 @@ public class MiraMgr {
         dialog.dismiss();
         MiraSession session = createSession(peerName, peerIp, peerPort, receiverName_);
         session.startRtsp();
-        if (flutterPlugin_ != null) {
-          flutterPlugin_.onSessionBegin(session.getId());
+        if (listener_ != null) {
+          listener_.onSessionBegin(session.getId());
         }
       }
     });
@@ -200,17 +199,17 @@ public class MiraMgr {
         Log.d(TAG, "onPeerDisconnected:" + ip);
         int removeSessionId = removeSessionByIp(ip);
         if (removeSessionId >= 0) {
-          if (flutterPlugin_ != null) {
-            flutterPlugin_.onSessionEnd(removeSessionId);
+          if (listener_ != null) {
+            listener_.onSessionEnd(removeSessionId);
           }
         }
       }
 
       @Override
       public void onMirrorData(int sessionId, long seqNum, long lastSeqNum, byte[] data, int size) {
-        if (flutterPlugin_ != null) {
+        if (listener_ != null) {
           try {
-            flutterPlugin_.onMirrorData(sessionId, seqNum, lastSeqNum, data, size);
+            listener_.onMirrorData(sessionId, seqNum, lastSeqNum, data, size);
           } catch (Exception e) {
             Log.e(TAG, "Failed to onMirrorData() ", e);
           }
@@ -219,9 +218,9 @@ public class MiraMgr {
 
       @Override
       public void onAudioFormatUpdate(int sessionId, String codecName, int sampleRate, int channelCount) {
-        if (flutterPlugin_ != null) {
+        if (listener_ != null) {
           try {
-            flutterPlugin_.onAudioFormatUpdate(sessionId, codecName, sampleRate, channelCount);
+            listener_.onAudioFormatUpdate(sessionId, codecName, sampleRate, channelCount);
           } catch (Exception e) {
             Log.e(TAG, "Failed to onAudioFormatUpdate() ", e);
           }
