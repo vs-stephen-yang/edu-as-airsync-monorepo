@@ -4,6 +4,8 @@ import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -23,6 +25,8 @@ import java.util.concurrent.ExecutionException;
 
 import java.lang.InterruptedException;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.util.Log;
 import android.view.Surface;
@@ -33,6 +37,7 @@ import android.os.Looper;
 @Keep
 public class FlutterMirrorPlugin implements
     FlutterPlugin,
+    ActivityAware,
     TexRegistry,
     MirrorListener,
     MethodCallHandler {
@@ -73,6 +78,8 @@ public class FlutterMirrorPlugin implements
 
   private TextureRegistry textureRegistry_;
   private BinaryMessenger messenger_;
+  private Context context_;
+  private Activity activity_;
 
   private HashMap<Long, Texture> textures_ = new HashMap<Long, Texture>();
   private Handler handler_ = new Handler(Looper.getMainLooper());
@@ -85,9 +92,34 @@ public class FlutterMirrorPlugin implements
 
     textureRegistry_ = flutterPluginBinding.getTextureRegistry();
     messenger_ = flutterPluginBinding.getBinaryMessenger();
+    context_ = flutterPluginBinding.getApplicationContext();
 
     channel_ = new MethodChannel(messenger_, "flutter_mirror");
     channel_.setMethodCallHandler(this);
+  }
+
+  @Override
+  public void onAttachedToActivity(@NonNull ActivityPluginBinding activityPluginBinding) {
+    Log.d(TAG, "FlutterMirrorPlugin::onAttachedToActivity()");
+    activity_ = activityPluginBinding.getActivity();
+  }
+
+  @Override
+  public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding activityPluginBinding) {
+    Log.d(TAG, "FlutterMirrorPlugin::onReattachedToActivityForConfigChanges()");
+    onAttachedToActivity(activityPluginBinding);
+  }
+
+  @Override
+  public void onDetachedFromActivity() {
+    Log.d(TAG, "FlutterMirrorPlugin::onDetachedFromActivity()");
+    activity_ = null;
+  }
+
+  @Override
+  public void onDetachedFromActivityForConfigChanges() {
+    Log.d(TAG, "FlutterMirrorPlugin::onDetachedFromActivityForConfigChanges()");
+    onDetachedFromActivity();
   }
 
   @Override
@@ -121,6 +153,14 @@ public class FlutterMirrorPlugin implements
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
+    } else if (call.method.equals("startMiracast")) {
+      String name = call.argument("name");
+
+      startMiracast(
+          name);
+
+      Map<String, Long> reply = new HashMap<>();
+      result.success(reply);
     } else if (call.method.equals("stopMirror")) {
       String mirrorId = call.argument("mirrorId");
 
@@ -149,6 +189,17 @@ public class FlutterMirrorPlugin implements
     mirrorReceiver_.startGooglecast(name, credentials);
   }
 
+  private void startMiracast(String name) {
+    assert mirrorReceiver_ != null;
+    assert context_ != null;
+    assert activity_ != null;
+
+    mirrorReceiver_.startMiracast(
+        name,
+        context_,
+        activity_);
+  }
+
   private void stopMirror(String mirrorId) {
     assert mirrorReceiver_ != null;
 
@@ -157,6 +208,9 @@ public class FlutterMirrorPlugin implements
 
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+    Log.d(TAG, "FlutterMirrorPlugin::onDetachedFromEngine()");
+    mirrorReceiver_.stop();
+
     channel_.setMethodCallHandler(null);
   }
 

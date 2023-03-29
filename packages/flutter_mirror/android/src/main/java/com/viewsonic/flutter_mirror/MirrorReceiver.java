@@ -1,10 +1,19 @@
 package com.viewsonic.flutter_mirror;
 
 import androidx.annotation.Keep;
+import android.app.Activity;
+import android.content.Context;
+import android.util.Log;
+
+import com.viewsonic.miracast.MiraMgr;
+import com.viewsonic.miracast.MiraMgrListener;
 
 @Keep
 public class MirrorReceiver implements
+    MiraMgrListener,
     MirrorListener {
+
+  private static final String TAG = "MirrorReceiver";
 
   private long instance_;
   private MirrorListener mirrorListener_;
@@ -42,6 +51,27 @@ public class MirrorReceiver implements
         credentials);
   }
 
+  // start miracast
+  public void startMiracast(
+      String name,
+      Context context,
+      Activity activity) {
+    assert instance_ != 0;
+    assert context != null;
+    assert activity != null;
+
+    MiraMgr.getInstance().start(
+        context,
+        activity,
+        this,
+        name);
+  }
+
+  public void stop() {
+    // TODO: stop all receivers
+    MiraMgr.getInstance().stop();
+  }
+
   // stop a mirror session by its Id
   public void stopMirror(String mirrorId) {
     assert instance_ != 0;
@@ -77,6 +107,32 @@ public class MirrorReceiver implements
       int month,
       int day) {
     mirrorListener_.onCredentialsUpdate(year, month, day);
+  }
+
+  // implements MiraMgrListener
+  public void onSessionBegin(int sessionId) {
+
+  }
+
+  public void onSessionEnd(int sessionId) {
+
+  }
+
+  public void onMirrorData(
+      int sessionId,
+      long seqNum,
+      long lastRTPSeqNum,
+      byte[] data,
+      int size) throws Exception {
+
+  }
+
+  public void onAudioFormatUpdate(
+      int sessionId,
+      String codecName,
+      int sampleRate,
+      int channelCount) {
+
   }
 
   private native long createInstanceNative(

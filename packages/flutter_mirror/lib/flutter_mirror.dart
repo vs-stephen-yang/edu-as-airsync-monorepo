@@ -20,6 +20,10 @@ class FlutterMirror {
     return FlutterMirrorPlatform.instance.startGooglecast(name, credentials);
   }
 
+  Future<void> startMiracast(String name) {
+    return FlutterMirrorPlatform.instance.startMiracast(name);
+  }
+
   Future<void> stopMirror(String mirrorId) {
     return FlutterMirrorPlatform.instance.stopMirror(mirrorId);
   }
