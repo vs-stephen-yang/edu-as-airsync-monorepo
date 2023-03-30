@@ -62,7 +62,7 @@ void MiracastReceiver::OnVideoFormatChanged(
       height);
 }
 
-void MiracastReceiver::OnPacket(int mirrorId, uint8_t* data, int length) {
+void MiracastReceiver::OnPacket(int mirrorId, const uint8_t* data, int length) {
   auto itr = mirror_sessions_.find(mirrorId);
   if (itr == mirror_sessions_.end()) {
     return;
