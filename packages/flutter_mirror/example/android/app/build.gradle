@@ -6,6 +6,13 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+def props = new Properties()
+def propFile = rootProject.file("../keystore.properties")
+if (propFile.exists()) {
+    // Load your keystore.properties file into the keystoreProperties object.
+    props.load(new FileInputStream(propFile))
+}
+
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
@@ -46,13 +53,24 @@ android {
         versionName flutterVersionName
     }
 
-    buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+    signingConfigs {
+        MVBA {
+            storeFile file(props['storeFile'])
+            storePassword props['storePassword']
+            keyAlias props['keyAlias']
+            keyPassword props['keyPassword']
         }
     }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.MVBA
+        }
+        debug {
+            signingConfig signingConfigs.MVBA
+        }
+    }
+
     packagingOptions {
         pickFirst '**/libairplayreceiver.so'
         pickFirst '**/libevent*.so'
