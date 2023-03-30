@@ -10,8 +10,11 @@ project("flutter_mirror")
 
 find_package(oboe REQUIRED CONFIG)
 
+add_subdirectory(mpeg2ts)
+
 add_subdirectory(airplay)
 add_subdirectory(googlecast)
+add_subdirectory(miracast)
 
 aux_source_directory(./ src)
 aux_source_directory(./util/jni util_jni_src)
@@ -56,4 +59,5 @@ target_link_libraries( # Specifies the target library.
   mediandk
   flutter_airplay
   flutter_googlecast
+  flutter_miracast
   ${log-lib})
