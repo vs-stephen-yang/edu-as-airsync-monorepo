@@ -5,19 +5,25 @@
 
 #include "airplay/ap_receiver.h"
 #include "googlecast/googlecast_receiver.h"
+#include "miracast/miracast_receiver.h"
 
 #include "mirror_receiver.h"
 
+#include "jni/credentials.h"
+#include "jni/miracast_receiver.h"
 #include "jni/mirror_receiver.h"
 #include "jni/texture_registry.h"
 
+#include "util/jni/byte_array.h"
 #include "util/jni/scoped_env.h"
 #include "util/jni/string.h"
 #include "util/log.h"
-#include "jni/credentials.h"
 
-#define CAST(instance) \
+#define MIRROR(instance) \
   reinterpret_cast<MirrorReceiver*>(instance);
+
+#define MIRACAST(instance) \
+  reinterpret_cast<MiracastReceiver*>(instance);
 
 JavaVM* g_vm = nullptr;
 
@@ -65,7 +71,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startAirplayNative(
   assert(instance != 0);
   ALOGV("startAirplayNative()");
 
-  MirrorReceiver* receiver = CAST(instance);
+  MirrorReceiver* receiver = MIRROR(instance);
 
   jni::String str(env);
 
@@ -88,7 +94,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startGooglecastNative(
   assert(instance != 0);
   ALOGV("startGooglecastNative()");
 
-  MirrorReceiver* receiver = CAST(instance);
+  MirrorReceiver* receiver = MIRROR(instance);
 
   jni::String str(env);
   jni::Credentials creds(env, credentials);
@@ -120,7 +126,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_stopMirrorNative(
   assert(instance != 0);
   ALOGV("stopMirrorNative()");
 
-  MirrorReceiver* receiver = CAST(instance);
+  MirrorReceiver* receiver = MIRROR(instance);
 
   jni::String str(env);
   receiver->StopMirror(
@@ -135,7 +141,102 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_destroyInstanceNative(
   assert(instance != 0);
   ALOGV("destroyInstanceNative()");
 
-  MirrorReceiver* receiver = CAST(instance);
+  MirrorReceiver* receiver = MIRROR(instance);
   delete receiver;
+}
+
+// MiracastReceiver
+JNIEXPORT jlong JNICALL
+Java_com_viewsonic_flutter_1mirror_MiracastReceiver_createInstanceNative(
+    JNIEnv* env,
+    jobject thiz,
+    jobject jtexture_registry) {
+  assert(g_vm);
+  ALOGV("MiracastReceiver_createInstanceNative()");
+
+  auto miracast_receiver = std::make_unique<jni::MiracastReceiver>(
+      g_vm,
+      env,
+      thiz);
+
+  auto texture_registry = std::make_unique<jni::TextureRegistry>(
+      g_vm,
+      env,
+      jtexture_registry);
+
+  MiracastReceiver* receiver = new MiracastReceiver(
+      std::move(miracast_receiver),
+      std::move(texture_registry));
+
+  return reinterpret_cast<long>(receiver);
+}
+
+JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1mirror_MiracastReceiver_onSessionBeginNative(
+    JNIEnv* env,
+    jobject thiz,
+    jlong instance,
+    jint sessionId) {
+  assert(instance != 0);
+  ALOGV("MiracastReceiver_onMirrorStartNative()");
+
+  MiracastReceiver* receiver = MIRACAST(instance);
+  receiver->OnMirrorStart(sessionId);
+}
+
+JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1mirror_MiracastReceiver_onSessionEndNative(
+    JNIEnv* env,
+    jobject thiz,
+    jlong instance,
+    jint sessionId) {
+  assert(instance != 0);
+  ALOGV("MiracastReceiver_onMirrorStopNative()");
+
+  MiracastReceiver* receiver = MIRACAST(instance);
+  receiver->OnMirrorStop(sessionId);
+}
+
+JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1mirror_MiracastReceiver_onPacketNative(
+    JNIEnv* env,
+    jobject thiz,
+    jlong instance,
+    jint sessionId,
+    jbyteArray data,
+    jint size) {
+  assert(instance != 0);
+
+  MiracastReceiver* receiver = MIRACAST(instance);
+
+  jni::ScopedByteArrayBuffer ba(env, data);
+
+  receiver->OnPacket(
+      sessionId,
+      reinterpret_cast<uint8_t*>(ba.Data()),
+      size);
+}
+
+JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1mirror_MiracastReceiver_onAudioFormatUpdateNative(
+    JNIEnv* env,
+    jobject thiz,
+    jlong instance,
+    jint sessionId,
+    jstring codecName,
+    jint sampleRate,
+    jint channelCount) {
+  assert(instance != 0);
+  ALOGV("MiracastReceiver_onAudioFormatUpdateNative()");
+
+  MiracastReceiver* receiver = MIRACAST(instance);
+
+  jni::String str(env);
+
+  receiver->OnAudioFormatUpdate(
+      sessionId,
+      str.ToUtf8(codecName),
+      sampleRate,
+      channelCount);
 }
 }
