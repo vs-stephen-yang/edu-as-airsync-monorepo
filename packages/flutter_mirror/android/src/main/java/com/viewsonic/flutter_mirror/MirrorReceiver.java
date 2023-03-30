@@ -5,18 +5,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
-import com.viewsonic.miracast.MiraMgr;
-import com.viewsonic.miracast.MiraMgrListener;
-
 @Keep
 public class MirrorReceiver implements
-    MiraMgrListener,
     MirrorListener {
 
   private static final String TAG = "MirrorReceiver";
 
   private long instance_;
   private MirrorListener mirrorListener_;
+
+  // Miracast
+  private MiracastReceiver miracastReceiver_;
 
   public MirrorReceiver(
       MirrorListener mirrorListener,
@@ -26,6 +25,12 @@ public class MirrorReceiver implements
 
     mirrorListener_ = mirrorListener;
 
+    // create Miracast receiver
+    miracastReceiver_ = new MiracastReceiver(
+        this,
+        textureRegistry);
+
+    // create C++ MirrorReceiver
     instance_ = createInstanceNative(
         textureRegistry);
 
@@ -56,20 +61,18 @@ public class MirrorReceiver implements
       String name,
       Context context,
       Activity activity) {
-    assert instance_ != 0;
     assert context != null;
     assert activity != null;
 
-    MiraMgr.getInstance().start(
+    miracastReceiver_.start(
+        name,
         context,
-        activity,
-        this,
-        name);
+        activity);
   }
 
   public void stop() {
     // TODO: stop all receivers
-    MiraMgr.getInstance().stop();
+    miracastReceiver_.stop();
   }
 
   // stop a mirror session by its Id
@@ -107,32 +110,6 @@ public class MirrorReceiver implements
       int month,
       int day) {
     mirrorListener_.onCredentialsUpdate(year, month, day);
-  }
-
-  // implements MiraMgrListener
-  public void onSessionBegin(int sessionId) {
-
-  }
-
-  public void onSessionEnd(int sessionId) {
-
-  }
-
-  public void onMirrorData(
-      int sessionId,
-      long seqNum,
-      long lastRTPSeqNum,
-      byte[] data,
-      int size) throws Exception {
-
-  }
-
-  public void onAudioFormatUpdate(
-      int sessionId,
-      String codecName,
-      int sampleRate,
-      int channelCount) {
-
   }
 
   private native long createInstanceNative(
