@@ -135,6 +135,20 @@ public class FlutterMirrorPlugin implements
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
+    } else if (call.method.equals("onMirrorTouch")) {
+      String mirrorId = call.argument("mirrorId");
+      int touchId = call.argument("touchId");
+      boolean touch = call.argument("touchDown");
+      double x = call.argument("x");
+      double y = call.argument("y");
+
+      mirrorReceiver_.onMirrorTouch(
+          mirrorId,
+          touchId,
+          touch,
+          x,
+          y);
+      result.success(new HashMap<>());
     } else if (call.method.equals("startAirplay")) {
       String name = call.argument("name");
 

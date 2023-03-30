@@ -66,6 +66,18 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
   }
 
   @override
+  Future<void> onMirrorTouch(
+      String mirrorId, int touchId, bool touchDown, double x, double y) async {
+    await methodChannel.invokeMethod('onMirrorTouch', {
+      "mirrorId": mirrorId,
+      "touchId": touchId,
+      "touchDown": touchDown,
+      "x": x,
+      "y": y,
+    });
+  }
+
+  @override
   void registerListener(FlutterMirrorListener listener) {
     _listener = listener;
   }

@@ -27,4 +27,10 @@ class FlutterMirror {
   Future<void> stopMirror(String mirrorId) {
     return FlutterMirrorPlatform.instance.stopMirror(mirrorId);
   }
+
+  Future<void> onMirrorTouch(
+      String mirrorId, int touchId, bool touchDown, double x, double y) async {
+    return FlutterMirrorPlatform.instance
+        .onMirrorTouch(mirrorId, touchId, touchDown, x, y);
+  }
 }
