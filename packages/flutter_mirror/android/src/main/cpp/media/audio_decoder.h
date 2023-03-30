@@ -14,6 +14,11 @@ class AudioDecoder {
   virtual void Stop() = 0;
 
   virtual bool Decode(
+      const uint8_t* frame,
+      size_t frameSize,
+      int64_t presentationTimeUs) = 0;
+
+  virtual bool Decode(
       std::shared_ptr<std::vector<uint8_t>> frame,
       int64_t presentationTimeUs) = 0;
 };
