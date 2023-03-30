@@ -17,7 +17,7 @@
 //#define LOG_NDEBUG 0
 //#define LOG_TAG "ATSParser"
 
-#include "log.h"
+#include "util/log.h"
 #include "ATSParser.h"
 #include "ABitReader.h"
 #include "ABuffer.h"
