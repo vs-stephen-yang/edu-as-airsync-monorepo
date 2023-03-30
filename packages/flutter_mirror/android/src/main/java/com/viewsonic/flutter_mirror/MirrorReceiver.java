@@ -84,6 +84,20 @@ public class MirrorReceiver implements
         mirrorId);
   }
 
+  public void onMirrorTouch(
+      String mirrorId,
+      int touchId,
+      boolean touch,
+      double x,
+      double y) {
+    miracastReceiver_.onMirrorTouch(
+        Integer.parseInt(mirrorId),
+        touchId,
+        touch,
+        x,
+        y);
+  }
+
   @Override
   public void onMirrorAuth(String pin, int timeoutSec) {
     mirrorListener_.onMirrorAuth(pin, timeoutSec);

@@ -46,6 +46,20 @@ public class MiracastReceiver implements
 
   }
 
+  public void onMirrorTouch(
+      int sessionId,
+      int touchId,
+      boolean touch,
+      double x,
+      double y) {
+    MiraMgr.getInstance().onTouchEvent(
+        sessionId,
+        touchId,
+        touch,
+        x,
+        y);
+  }
+
   // A mirror session starts. Called from native
   public void onMirrorStart(int sessionId, long textureId) {
     mirrorListener_.onMirrorStart(

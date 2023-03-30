@@ -49,4 +49,9 @@ abstract class FlutterMirrorPlatform extends PlatformInterface {
   Future<void> stopMirror(String mirrorId) async {
     throw UnimplementedError('stopMirror() has not been implemented.');
   }
+
+  Future<void> onMirrorTouch(
+      String mirrorId, int touchId, bool touchDown, double x, double y) async {
+    throw UnimplementedError('onMirrorTouch() has not been implemented.');
+  }
 }
