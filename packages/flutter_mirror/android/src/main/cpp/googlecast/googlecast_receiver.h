@@ -6,6 +6,7 @@
 
 #include <thread>
 #include "googlecast/googlecast_mirror_session.h"
+#include "jni/texture_registry.h"
 
 class GooglecastReceiver
     : public openscreen::cast::CastReceiver::Listener {
