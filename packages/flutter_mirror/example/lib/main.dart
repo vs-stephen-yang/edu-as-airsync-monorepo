@@ -46,13 +46,16 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
       await _plugin.initialize();
 
       // start airplay
-      await _plugin.startAirplay("display-1");
+      //await _plugin.startAirplay("display-1");
 
       // load today's credentials
       final credentials = await CredentialsStore.loadToday();
 
       // start googlecast
-      await _plugin.startGooglecast("display-1", credentials);
+      // await _plugin.startGooglecast("display-1", credentials);
+
+      // start miracast
+      await _plugin.startMiracast("display-1");
     } on PlatformException {}
 
     // If the widget was removed from the tree while the asynchronous platform
