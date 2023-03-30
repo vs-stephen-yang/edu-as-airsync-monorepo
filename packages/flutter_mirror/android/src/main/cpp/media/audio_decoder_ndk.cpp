@@ -170,6 +170,13 @@ void AudioDecoderNdk::Stop() {
 }
 
 bool AudioDecoderNdk::Decode(std::shared_ptr<std::vector<uint8_t>> frame, int64_t presentation_time_us) {
+  return Decode(frame->data(), frame->size(), presentation_time_us);
+}
+
+bool AudioDecoderNdk::Decode(
+    const uint8_t* frame,
+    size_t frame_size,
+    int64_t presentation_time_us) {
   int64_t timeout_us = 10 * 1000;
 
   ssize_t buf_idx = AMediaCodec_dequeueInputBuffer(codec_, timeout_us);
@@ -181,11 +188,11 @@ bool AudioDecoderNdk::Decode(std::shared_ptr<std::vector<uint8_t>> frame, int64_
   size_t buf_size = 0;
   uint8_t* buf = AMediaCodec_getInputBuffer(codec_, buf_idx, &buf_size);
 
-  memcpy(buf, frame->data(), frame->size());
+  memcpy(buf, frame, frame_size);
   uint32_t flags = 0;
 
   // Do not submit multiple input buffers with the same timestamp (unless it is codec-specific data marked as such).
-  media_status_t status = AMediaCodec_queueInputBuffer(codec_, buf_idx, 0, frame->size(), presentation_time_us, flags);
+  media_status_t status = AMediaCodec_queueInputBuffer(codec_, buf_idx, 0, frame_size, presentation_time_us, flags);
   if (status != AMEDIA_OK) {
     ALOGE("AMediaCodec_queueInputBuffer() fails. %d", (int)status);
   }

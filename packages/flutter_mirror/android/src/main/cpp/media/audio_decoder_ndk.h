@@ -22,6 +22,11 @@ class AudioDecoderNdk
   virtual bool Start() override;
   virtual void Stop() override;
 
+  bool Decode(
+      const uint8_t* frame,
+      size_t frame_size,
+      int64_t presentation_time_us) override;
+
   virtual bool Decode(
       std::shared_ptr<std::vector<uint8_t>> frame,
       int64_t presentationTimeUs) override;
