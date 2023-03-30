@@ -1,4 +1,5 @@
 #include "miracast/miracast_receiver.h"
+#include <assert.h>
 #include "miracast/miracast_mirror_session.h"
 #include "util/log.h"
 
@@ -16,10 +17,12 @@ void MiracastReceiver::OnMirrorStart(int mirrorId) {
       mirrorId,
       *texture_registry_proxy_,
       *this);
-  SurfaceTexture texture = session->GetTexture();
 
   // start the mirror session
   session->StartMirror();
+
+  SurfaceTexture texture = session->GetTexture();
+  assert(texture.wnd != nullptr);
 
   mirror_sessions_[mirrorId] = std::move(session);
 
