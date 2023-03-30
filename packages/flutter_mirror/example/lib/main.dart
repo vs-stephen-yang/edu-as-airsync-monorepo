@@ -23,12 +23,17 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
   int? _textureId;
 
   double _aspectRatio = 3 / 2;
+  bool _sizeChanged = false;
+  Size _videoWidgetSize = Size(0, 0);
+  Offset _videoWidgetOffset = Offset(0, 0);
 
   String _pin = "";
   bool _pinVisibility = false;
   Timer? _pinTimer;
 
   final _plugin = FlutterMirror();
+
+  GlobalKey stickyKey = GlobalKey();
 
   @override
   void initState() {
@@ -116,6 +121,7 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
     setState(() {
       setState(() {
         _aspectRatio = width / height;
+        _sizeChanged = true;
       });
     });
   }
@@ -123,6 +129,39 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
   @override
   void onCredentialsUpdate(int year, int month, int day) {
     if (!mounted) return;
+  }
+
+  void _getWidgetInfo(_) {
+    final RenderBox renderBox =
+        stickyKey.currentContext?.findRenderObject() as RenderBox;
+    //stickyKey.currentContext?.size;
+    _sizeChanged = false;
+
+    _videoWidgetSize = renderBox.size;
+    print(
+        'Video widget size: ${_videoWidgetSize.width}, ${_videoWidgetSize.height}');
+
+    _videoWidgetOffset = renderBox.localToGlobal(Offset.zero);
+    print(
+        'Video widget fffset: ${_videoWidgetOffset.dx}, ${_videoWidgetOffset.dy}');
+  }
+
+  void _onTouchEvent(PointerEvent event) {
+    if (_mirrorId == null) {
+      return;
+    }
+    if (_sizeChanged) {
+      _getWidgetInfo(null);
+    }
+
+    _plugin.onMirrorTouch(
+        _mirrorId!,
+        event.pointer,
+        event.down,
+        ((event.position.dx.toInt() - _videoWidgetOffset.dx.toInt()) /
+            _videoWidgetSize.width.toInt()),
+        ((event.position.dy.toInt() - _videoWidgetOffset.dy.toInt()) /
+            _videoWidgetSize.height.toInt()));
   }
 
   void stopMirror() {
@@ -141,6 +180,7 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
   @override
   Widget build(BuildContext context) {
     var video = AspectRatio(
+      key: stickyKey,
       aspectRatio: _aspectRatio,
       child: _textureId != null
           ? Texture(textureId: _textureId!)
@@ -149,7 +189,17 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
 
     var videos = Container(
       color: Colors.black,
-      child: Row(children: <Widget>[Expanded(child: Center(child: video))]),
+      child: Row(children: <Widget>[
+        Expanded(
+          child: Center(
+            child: Listener(
+                onPointerDown: _onTouchEvent,
+                onPointerMove: _onTouchEvent,
+                onPointerUp: _onTouchEvent,
+                child: video),
+          ),
+        ),
+      ]),
     );
 
     var pin = Center(
