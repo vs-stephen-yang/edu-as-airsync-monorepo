@@ -99,38 +99,17 @@ bool AudioDecoderNdk::Init() {
     return false;
   }
 
-  oboe::AudioStreamBuilder builder;
-
-  builder.setChannelCount(2)
-      ->setPerformanceMode(oboe::PerformanceMode::LowLatency)
-      ->setSampleRate(48000)
-      ->setDirection(oboe::Direction::Output)
-      //->setSharingMode(oboe::SharingMode::Exclusive)
-      ->setFormat(oboe::AudioFormat::I16);
-
-  oboe::Result result = builder.openStream(stream_);
-  if (result != oboe::Result::OK) {
-    ALOGE("AudioStream::openStream() failed. %s", oboe::convertToText(result));
+  audio_sink_ = std::make_unique<AudioSinkOboe>();
+  if (!audio_sink_->Init(48000, 2)) {
     return false;
   }
-
-  // requested number of frames that can be filled without blocking
-  // TODO: This cannot be set higher than getBufferCapacity().
-  int32_t requestedFrames = stream_->getFramesPerBurst() * 10;
-
-  // This can be used to adjust the latency of the buffer by changing the threshold where blocking will occur
-  result = stream_->setBufferSizeInFrames(requestedFrames);
-  if (result != oboe::Result::OK) {
-    ALOGE("AudioStream::setBufferSizeInFrames() failed. %s", oboe::convertToText(result));
-    return false;
-  }
-
   return true;
 }
 
 bool AudioDecoderNdk::Start() {
   assert(codec_);
   assert(format_);
+  assert(audio_sink_);
 
   media_status_t status = AMediaCodec_start(codec_);
 
@@ -139,22 +118,9 @@ bool AudioDecoderNdk::Start() {
     return false;
   }
 
-  oboe::Result result = stream_->start();
-  if (result != oboe::Result::OK) {
-    ALOGE("AudioStream::start() failed. %s", oboe::convertToText(result));
+  if (!audio_sink_->Start()) {
     return false;
   }
-
-  oboe::AudioFormat fmt = stream_->getFormat();
-
-  ALOGI("Audio DeviceId:%d Fmt:%s SampleRate:%d ChannelCount:%d BytesPerFrame:%d BytesPerSample:%d",
-        stream_->getDeviceId(),
-        oboe::convertToText(fmt),
-        stream_->getSampleRate(),
-        stream_->getChannelCount(),
-        stream_->getBytesPerFrame(),
-        stream_->getBytesPerSample());
-
   running_ = true;
   thread_ = std::make_unique<std::thread>([this]() {
     ALOGD("Audio decoder thread starts");
@@ -169,8 +135,8 @@ bool AudioDecoderNdk::Start() {
   return true;
 }
 void AudioDecoderNdk::Stop() {
-  if (stream_) {
-    stream_->close();
+  if (audio_sink_) {
+    audio_sink_->Stop();
   }
 
   running_ = false;
@@ -223,15 +189,9 @@ bool AudioDecoderNdk::DeliverDecodedFrame() {
     size_t buf_size = 0;
     uint8_t* buf = AMediaCodec_getOutputBuffer(codec_, buf_idx, &buf_size);
 
-    oboe::ResultWithValue<int32_t> result = stream_->write(
-        buf,
-        4096 / stream_->getBytesPerFrame(),
-        1000 * oboe::kNanosPerMillisecond);
-
-    if (!result) {
-      ALOGE("AudioStream::write() failed. %s", oboe::convertToText(result.error()));
+    if (audio_sink_) {
+      audio_sink_->Write(buf, buf_size);
     }
-
     AMediaCodec_releaseOutputBuffer(codec_, buf_idx, false);
 
     return true;
