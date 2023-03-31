@@ -1,9 +1,13 @@
 #include "media/audio_decoder_ndk.h"
 #include <assert.h>
+#include <algorithm>
 #include "util/log.h"
 
 static const std::string kMimeAac = "audio/mp4a-latm";
 static const std::string kMimeOpus = "audio/opus";
+
+// https://wiki.multimedia.cx/index.php/MPEG-4_Audio
+static const unsigned int kAacLc = 2;  // AAC LC (Low Complexity)
 
 static void MakeOpusCsd(
     AMediaFormat* fmt,
@@ -44,23 +48,31 @@ static void MakeOpusCsd(
 
 static bool MakeAacCsd(
     AMediaFormat* fmt,
-    unsigned profile,
-    unsigned sampling_freq_index,
-    unsigned channel_configuration) {
+    unsigned int profile,
+    unsigned int sampling_freq,
+    unsigned int channel_configuration) {
   assert(fmt);
-  assert(sampling_freq_index < 12u);
-
-  if (sampling_freq_index > 11u) {
-    return false;
-  }
-
-  uint8_t csd[2];
-  csd[0] = (profile << 3) | (sampling_freq_index >> 1);
-  csd[1] = ((sampling_freq_index << 7) & 0x80) | (channel_configuration << 3);
 
   static const int32_t kSamplingFreq[] = {
       96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050,
       16000, 12000, 11025, 8000};
+
+  auto freq_itr = std::find(
+      std::begin(kSamplingFreq),
+      std::end(kSamplingFreq),
+      sampling_freq);
+
+  if (freq_itr == std::end(kSamplingFreq)) {
+    return false;
+  }
+
+  unsigned int sampling_freq_index = std::distance(
+      std::begin(kSamplingFreq),
+      freq_itr);
+
+  uint8_t csd[2];
+  csd[0] = (profile << 3) | (sampling_freq_index >> 1);
+  csd[1] = ((sampling_freq_index << 7) & 0x80) | (channel_configuration << 3);
 
   AMediaFormat_setBuffer(fmt, "csd-0", csd, sizeof(csd));
 
@@ -293,8 +305,11 @@ AudioDecoderPtr CreateAacDecoder(
       sample_rate,
       channel_count);
 
-  // https://wiki.multimedia.cx/index.php/MPEG-4_Audio
-  MakeAacCsd(fmt, 2, 3, 2);
+  MakeAacCsd(
+      fmt,
+      kAacLc,  // AAC LC (Low Complexity)
+      sample_rate,
+      channel_count);
 
   AMediaFormat_setInt32(
       fmt,
