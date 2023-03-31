@@ -3,13 +3,13 @@
 
 #include <media/NdkMediaCodec.h>
 #include <media/NdkMediaError.h>
-#include <oboe/Oboe.h>
 
 #include <memory>
 #include <thread>
 #include <vector>
 
 #include "media/audio_decoder.h"
+#include "media/audio_sink_oboe.h"
 
 class AudioDecoderNdk
     : public AudioDecoder {
@@ -40,7 +40,7 @@ class AudioDecoderNdk
   std::unique_ptr<std::thread> thread_ = nullptr;
   volatile bool running_ = false;
 
-  std::shared_ptr<oboe::AudioStream> stream_;
+  std::unique_ptr<AudioSinkOboe> audio_sink_;
 };
 
 #endif  // FLUTTER_MIRROR_PLUGIN_AUDIO_DECODER_NDK_H_
