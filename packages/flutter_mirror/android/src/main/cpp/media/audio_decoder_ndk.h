@@ -33,6 +33,7 @@ class AudioDecoderNdk
 
  private:
   bool DeliverDecodedFrame();
+  bool StartAudioSink(unsigned int sample_rate, unsigned int channel_count);
 
   AMediaCodec* codec_ = nullptr;
   AMediaFormat* format_ = nullptr;

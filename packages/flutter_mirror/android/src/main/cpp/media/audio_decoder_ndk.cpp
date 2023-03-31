@@ -99,17 +99,12 @@ bool AudioDecoderNdk::Init() {
     return false;
   }
 
-  audio_sink_ = std::make_unique<AudioSinkOboe>();
-  if (!audio_sink_->Init(48000, 2)) {
-    return false;
-  }
   return true;
 }
 
 bool AudioDecoderNdk::Start() {
   assert(codec_);
   assert(format_);
-  assert(audio_sink_);
 
   media_status_t status = AMediaCodec_start(codec_);
 
@@ -118,9 +113,6 @@ bool AudioDecoderNdk::Start() {
     return false;
   }
 
-  if (!audio_sink_->Start()) {
-    return false;
-  }
   running_ = true;
   thread_ = std::make_unique<std::thread>([this]() {
     ALOGD("Audio decoder thread starts");
@@ -205,12 +197,36 @@ bool AudioDecoderNdk::DeliverDecodedFrame() {
 
     ALOGI("Audio format changed. Sample Rate:%d Channels:%d",
           sample_rate, channel_count);
+
+    if (!StartAudioSink(sample_rate, channel_count)) {
+      ALOGE("Failed to start audio sink");
+    }
   } else if (status == AMEDIACODEC_INFO_TRY_AGAIN_LATER) {
   } else {
     // unexpected
   }
 
   return false;
+}
+
+bool AudioDecoderNdk::StartAudioSink(
+    unsigned int sample_rate,
+    unsigned int channel_count) {
+  assert(sample_rate > 0);
+  assert(channel_count > 0);
+
+  auto audio_sink = std::make_unique<AudioSinkOboe>();
+
+  if (!audio_sink->Init(sample_rate, channel_count)) {
+    return false;
+  }
+
+  if (!audio_sink->Start()) {
+    return false;
+  }
+
+  audio_sink_ = std::move(audio_sink);
+  return true;
 }
 
 AMediaFormat* CreateAudioFormat(
