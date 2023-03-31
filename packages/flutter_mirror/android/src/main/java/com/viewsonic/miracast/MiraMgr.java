@@ -143,47 +143,6 @@ public class MiraMgr {
     if (listener_ != null) {
       listener_.onSessionBegin(session.getId());
     }
-
-    AlertDialog.Builder builder = new AlertDialog.Builder(activity_);
-    builder.setMessage("Do you agree " + peerName + " to share screen?");
-    builder.setPositiveButton("Allow", new DialogInterface.OnClickListener() {
-      @Override
-      public void onClick(DialogInterface dialog, int which) {
-        Log.d(TAG, "Allow");
-        dialog.dismiss();
-        MiraSession session = createSession(peerName, peerIp, peerPort, receiverName_);
-        session.startRtsp();
-        if (listener_ != null) {
-          listener_.onSessionBegin(session.getId());
-        }
-      }
-    });
-
-    builder.setNegativeButton("Deny", new DialogInterface.OnClickListener() {
-      @Override
-      public void onClick(DialogInterface dialog, int which) {
-        Log.d(TAG, "Deny");
-        dialog.dismiss();
-        // disconnect the connected p2p peer
-        MiraSession session = createSession(peerName, peerIp, peerPort, receiverName_);
-        session.stopAfterStartRtsp();
-      }
-    });
-
-    AlertDialog alert = builder.create();
-    alert.show();
-
-    // Set a 10-seconds timeout to dismiss the dialog
-    miraHandler_.postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        if (alert.isShowing()) {
-          alert.dismiss();
-          MiraSession session = createSession(peerName, peerIp, peerPort, receiverName_);
-          session.stopAfterStartRtsp();
-        }
-      }
-    }, 10000); // 10 seconds
   }
 
   private void initMiraListener() {
