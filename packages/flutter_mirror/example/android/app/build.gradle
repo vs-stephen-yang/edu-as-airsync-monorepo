@@ -6,11 +6,19 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def props = new Properties()
-def propFile = rootProject.file("../keystore.properties")
-if (propFile.exists()) {
+def keystoreExist = false
+
+def keystoreProperties = new Properties()
+
+// load keystore from C:\Users\<user>\keystore\keystore.properties
+def homePath = System.properties['user.home']
+def keystorePath = "${homePath}${File.separator}keystore${File.separator}keystore.properties"
+
+def keystorePropertiesFile = new File(keystorePath)
+if (keystorePropertiesFile.exists()) {
     // Load your keystore.properties file into the keystoreProperties object.
-    props.load(new FileInputStream(propFile))
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    keystoreExist = keystoreProperties.getProperty("storeFile") != null
 }
 
 def flutterRoot = localProperties.getProperty('flutter.sdk')
@@ -53,22 +61,30 @@ android {
         versionName flutterVersionName
     }
 
-    signingConfigs {
-        MVBA {
-            storeFile file(props['storeFile'])
-            storePassword props['storePassword']
-            keyAlias props['keyAlias']
-            keyPassword props['keyPassword']
+    if (keystoreExist) {
+      signingConfigs {
+        ifp {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
         }
-    }
+      }
 
-    buildTypes {
-        release {
-            signingConfig signingConfigs.MVBA
-        }
+      buildTypes {
         debug {
-            signingConfig signingConfigs.MVBA
+          signingConfig signingConfigs.ifp
         }
+        release {
+          signingConfig signingConfigs.ifp
+        }
+      }
+    } else {
+      buildTypes {
+        release {
+          signingConfig signingConfigs.debug
+        }
+      }
     }
 
     packagingOptions {
