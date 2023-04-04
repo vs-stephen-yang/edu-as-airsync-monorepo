@@ -10,7 +10,7 @@ checks your environment and displays a report of the status of your Flutter inst
 flutter doctor
 ```
 
-## Add credential for Azure Artifacts
+## Add credentials for Azure Artifacts
 
 1. Add or edit the gradle.properties file in %USERPROFILE%\.gradle\
  ```
@@ -18,6 +18,15 @@ flutter doctor
   AZURE_ARTIFACTS_PASSWORD=
  ```
 2. On Azure DevOps, generate a Personal Access Tokens with Packaging read & write scopes. Paste the token into the AZURE_ARTIFACTS_PASSWORD.
+
+## Copy IFP keystore files
+1. Create a `keystore` folder under %USERPROFILE%
+2. Copy the keystore file (.jks) and its properties file (e.g. `keystore.properties`) to the `keystore` folder
+3. Edit the keystore path in `keystore.properties`
+```
+storeFile=c:/users/<user>/keystore/keystore.jks
+```
+
 
 # Development
 1. Run `flutter pub get` in the root folder
@@ -50,6 +59,6 @@ flutter.sdk not set in local.properties. Expression: (flutterSdkPath != null). V
 Run `flutter pub get`
 
 ```
-Because flutter_airplay requires SDK version >=2.18.5 <3.0.0, version solving failed
+Because flutter_airplay requires SDK version >=2.18.6 <3.0.0, version solving failed
 ```
 Upgrade flutter to the latest version. Run `flutter upgrade`
