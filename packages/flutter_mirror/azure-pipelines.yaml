@@ -7,6 +7,7 @@ trigger:
   - main
 
 variables:
+  - group: ifp-keystore-secrets
   - name: Flutter.Version
     value: "3.3.10"
   - name: Flutter.Url
@@ -74,6 +75,16 @@ steps:
   - script: ./gradlew --stop
     displayName: Stop Gradle daemon
     workingDirectory: "$(Build.SourcesDirectory)/example/android"
+
+  - task: AndroidSigning@3
+    inputs:
+      apkFiles: "**/*.apk"
+      apksign: true
+      apksignerKeystoreFile: "ifp.keystore"
+      apksignerKeystorePassword: "$(keystore.password)"
+      apksignerKeystoreAlias: "$(keystore.alias)"
+      apksignerKeyPassword: "$(key.password)"
+      zipalign: true
 
   - task: CopyFiles@2
     inputs:
