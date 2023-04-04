@@ -4,8 +4,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
-
-import 'credential_store.dart';
+import 'package:flutter_mirror/credential_store.dart';
 
 void main() {
   runApp(const MyApp());
@@ -57,7 +56,7 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
       final credentials = await CredentialsStore.loadToday();
 
       // start googlecast
-      // await _plugin.startGooglecast("display-1", credentials);
+      await _plugin.startGooglecast("display-1", credentials);
 
       // start miracast
       await _plugin.startMiracast("display-1");
