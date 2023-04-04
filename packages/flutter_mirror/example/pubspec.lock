@@ -110,7 +110,7 @@ packages:
     source: hosted
     version: "1.8.2"
   pem:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: pem
       url: "https://pub.dartlang.org"
