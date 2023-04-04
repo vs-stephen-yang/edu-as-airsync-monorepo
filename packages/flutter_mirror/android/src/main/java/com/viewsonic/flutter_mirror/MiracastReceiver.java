@@ -1,5 +1,6 @@
 package com.viewsonic.flutter_mirror;
 
+import androidx.annotation.Keep;
 import android.app.Activity;
 import android.content.Context;
 
@@ -7,6 +8,7 @@ import com.viewsonic.miracast.MiraMgr;
 import com.viewsonic.miracast.MiraMgrListener;
 import android.util.Log;
 
+@Keep
 public class MiracastReceiver implements
     MiraMgrListener {
 
