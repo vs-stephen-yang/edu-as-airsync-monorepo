@@ -12,12 +12,12 @@ flutter doctor
 
 ## Add credentials for Azure Artifacts
 
-1. Add or edit the gradle.properties file in %USERPROFILE%\.gradle\
+1. Add or edit the `gradle.properties` file under Gradle user home directory (which defaults to <home directory of the current user>/.gradle if not set)
  ```
   AZURE_ARTIFACTS_USERNAME=viewsonic-ssi
   AZURE_ARTIFACTS_PASSWORD=
  ```
-2. On Azure DevOps, generate a Personal Access Tokens with Packaging read & write scopes. Paste the token into the AZURE_ARTIFACTS_PASSWORD.
+2. On Azure DevOps, [generate a Personal Access Tokens](https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows#create-a-pat) with Packaging read & write scopes. Paste the token into the AZURE_ARTIFACTS_PASSWORD.
 
 ## Copy IFP keystore files
 1. Create a `keystore` folder under %USERPROFILE%
