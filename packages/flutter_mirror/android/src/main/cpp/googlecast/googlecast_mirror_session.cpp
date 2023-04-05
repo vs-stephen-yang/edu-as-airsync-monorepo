@@ -90,15 +90,15 @@ bool GooglecastMirrorSession::CreateAudioDecoder(
   switch (formats.audio_codec) {
     case cast::CastMirrorSession::AudioCodec::kAac:
       audio_decoder_ = CreateAacDecoder(
-          48000,
-          2,
+          formats.sample_rate,
+          formats.channel_count,
           true);  // has_adts
       break;
 
     case cast::CastMirrorSession::AudioCodec::kOpus:
       audio_decoder_ = CreateOpusDecoder(
-          48000,
-          2);
+          formats.sample_rate,
+          formats.channel_count);
       break;
     default:
       assert(0);
