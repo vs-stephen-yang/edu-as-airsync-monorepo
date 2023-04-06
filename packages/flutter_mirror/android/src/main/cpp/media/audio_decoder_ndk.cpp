@@ -9,6 +9,11 @@ static const std::string kMimeOpus = "audio/opus";
 // https://wiki.multimedia.cx/index.php/MPEG-4_Audio
 static const unsigned int kAacLc = 2;  // AAC LC (Low Complexity)
 
+// keep these values in sync with AudioFormat.java
+// https://developer.android.com/reference/android/media/AudioFormat#ENCODING_PCM_16BIT
+#define ENCODING_PCM_16BIT 2
+#define ENCODING_PCM_8BIT 3
+
 static void MakeOpusCsd(
     AMediaFormat* fmt,
     unsigned int sample_rate,
@@ -17,6 +22,8 @@ static void MakeOpusCsd(
   assert(sample_rate > 0);
   assert(channel_count > 0);
 
+  // Opus Identification Header
+  // https://www.rfc-editor.org/rfc/rfc7845#section-5.1
   uint8_t csd0[] = {
       // O,p,u,s
       0x4f, 0x70, 0x75, 0x73,
@@ -28,7 +35,7 @@ static void MakeOpusCsd(
       (uint8_t)channel_count,
       // Pre skip
       0x00, 0x00,
-      // Input Sample Rate (Hz),
+      // Input Sample Rate (Hz), little endian
       0x28, 0xa0, 0x00, 0x00,
       // Output Gain (Q7.8 in dB)
       0x00, 0x00,
@@ -200,6 +207,10 @@ bool AudioDecoderNdk::DeliverDecodedFrame() {
 
     AMediaFormat_getInt32(format, AMEDIAFORMAT_KEY_SAMPLE_RATE, &sample_rate);
     AMediaFormat_getInt32(format, AMEDIAFORMAT_KEY_CHANNEL_COUNT, &channel_count);
+
+    // TODO: handle PCM format other than 16 bit per sample
+    // int32_t sample_format = ENCODING_PCM_16BIT;
+    // AMediaFormat_getInt32(format, AMEDIAFORMAT_KEY_PCM_ENCODING, &sample_format);
 
     ALOGI("Audio format changed. Sample Rate:%d Channels:%d",
           sample_rate, channel_count);
