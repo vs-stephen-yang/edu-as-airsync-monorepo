@@ -66,7 +66,7 @@ bool AudioSinkOboe::Write(const uint8_t* buf, size_t size) {
 
   oboe::ResultWithValue<int32_t> result = stream_->write(
       buf,
-      4096 / stream_->getBytesPerFrame(),
+      size / stream_->getBytesPerFrame(),
       1000 * oboe::kNanosPerMillisecond);
 
   if (!result) {
