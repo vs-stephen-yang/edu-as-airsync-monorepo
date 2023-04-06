@@ -104,7 +104,6 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startGooglecastNative(
   config.friendly_name = str.ToUtf8(jname);
   config.unique_id = "id";
   config.model_name = "IFP";
-  config.interface_name = "eth0";
   config.credentials = creds.FromJObject();
 
   receiver->StartGooglecast(config);
