@@ -126,7 +126,7 @@ public class FlutterMirrorPlugin implements
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result res) {
     // onMethodCall() is called on the platform thread
 
-    Log.v(TAG, "FlutterMirrorPlugin::onMethodCall() " + call.method);
+    // Log.v(TAG, "FlutterMirrorPlugin::onMethodCall() " + call.method);
 
     Result result = new AnyThreadResult(res);
 
