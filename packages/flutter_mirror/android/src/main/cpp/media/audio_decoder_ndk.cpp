@@ -181,9 +181,15 @@ bool AudioDecoderNdk::DeliverDecodedFrame() {
     size_t buf_size = 0;
     uint8_t* buf = AMediaCodec_getOutputBuffer(codec_, buf_idx, &buf_size);
 
-    if (audio_sink_) {
-      audio_sink_->Write(buf, buf_size);
+    if (info.size > 0 &&
+        buf) {
+      if (audio_sink_) {
+        audio_sink_->Write(
+            buf + info.offset,  // offset: The start-offset of the data in the buffer
+            info.size);         // The amount of data (in bytes) in the buffer
+      }
     }
+
     AMediaCodec_releaseOutputBuffer(codec_, buf_idx, false);
 
     return true;
