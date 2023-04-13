@@ -7,8 +7,11 @@
 #include "generated_plugin_registrant.h"
 
 #include <device_info_vs/device_info_vs_plugin.h>
+#include <flutter_webrtc/flutter_web_r_t_c_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
   DeviceInfoVsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("DeviceInfoVsPlugin"));
+  FlutterWebRTCPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("FlutterWebRTCPlugin"));
 }

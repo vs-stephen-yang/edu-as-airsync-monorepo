@@ -4,7 +4,6 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
-import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
@@ -14,6 +13,7 @@ import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/tittle_bar.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
+import 'package:display_flutter/widgets/webrtc_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -81,11 +81,14 @@ class _HomeState extends State<Home> {
                               height: _getWidthHeight(index, false),
                               child: Stack(
                                 children: <Widget>[
-                                  WebRTCNativeView(
-                                    useHybrid: false,
-                                    onWebRTCNativeViewCreatedCallback:
-                                        ControlSocket().addWebRtcController,
+                                  WebRTCFlutterView(
+                                    callback: ControlSocket().addWebRtcController,
                                   ),
+                                  // WebRTCNativeView(
+                                  //   useHybrid: false,
+                                  //   onWebRTCNativeViewCreatedCallback:
+                                  //       ControlSocket().addWebRtcController,
+                                  // ),
                                   Visibility(
                                     visible: SplitScreen.mapSplitScreen
                                             .value[keySplitScreenEnable] &&
@@ -193,6 +196,14 @@ class _HomeState extends State<Home> {
         }
       },
     );
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+
+
   }
 
   _showSnackBarMessage(String message) {
