@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:display_flutter/app_analytics.dart';
-import 'package:display_flutter/native_view/webrtc.dart';
 import 'package:display_flutter/widgets/status_bar.dart';
+import 'package:display_flutter/widgets/webrtc_view.dart';
 import 'package:flutter/material.dart';
 
 typedef ConnectionTimerCallback = void Function(
-    WebRTCNativeViewController controller, String nextId);
+    WebRTCFlutterViewController controller, String nextId);
 
 class ConnectionTimer {
   Timer? mConnectionTimeoutTimer, mRemainingTimeTimer;
@@ -24,7 +24,7 @@ class ConnectionTimer {
 
   ConnectionTimer.internal();
 
-  void startConnectionTimeoutTimer(WebRTCNativeViewController controller,
+  void startConnectionTimeoutTimer(WebRTCFlutterViewController controller,
       String nextId, ConnectionTimerCallback onFinish) {
     if (mConnectionTimeoutTimer != null) stopConnectionTimeoutTimer();
 

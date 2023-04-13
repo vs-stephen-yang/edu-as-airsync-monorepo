@@ -122,7 +122,7 @@ class _PresenterItemState extends State<PresenterItem>
   _presenterOnOff(String presenterId, dynamic peer) async {
     if (!(ControlSocket().isPresenterNotStopStreaming(presenterId))) {
       if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-        if (!ControlSocket().occupyAvailableWebRTCNativeViewController()) {
+        if (!ControlSocket().occupyAvailableWebRTCViewController()) {
           return;
         }
       } else {
