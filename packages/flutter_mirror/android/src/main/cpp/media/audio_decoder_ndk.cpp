@@ -90,30 +90,28 @@ static bool MakeAacCsd(
 }
 
 AudioDecoderNdk::AudioDecoderNdk(
-    AMediaCodec* codec,
-    AMediaFormat* format)
-    : codec_(codec),
-      format_(format),
+    AMediaCodecPtr codec,
+    AMediaFormatPtr format)
+    : codec_(std::move(codec)),
+      format_(std::move(format)),
       running_(false) {
-  assert(codec);
-  assert(format);
+  assert(codec_);
+  assert(format_);
 }
 
 AudioDecoderNdk::~AudioDecoderNdk() {
-  if (codec_) {
-    AMediaCodec_delete(codec_);
-  }
-
-  if (format_) {
-    AMediaFormat_delete(format_);
-  }
 }
 
 bool AudioDecoderNdk::Init() {
   assert(codec_);
   assert(format_);
 
-  media_status_t status = AMediaCodec_configure(codec_, format_, nullptr, nullptr, 0);
+  media_status_t status = AMediaCodec_configure(
+      codec_.get(),
+      format_.get(),
+      nullptr,
+      nullptr,
+      0);
 
   if (status != AMEDIA_OK) {
     ALOGE("AMediaCodec_configure() failed. %d", (int)status);
@@ -127,7 +125,7 @@ bool AudioDecoderNdk::Start() {
   assert(codec_);
   assert(format_);
 
-  media_status_t status = AMediaCodec_start(codec_);
+  media_status_t status = AMediaCodec_start(codec_.get());
 
   if (status != AMEDIA_OK) {
     ALOGE("AMediaCodec_start() failed. %d", (int)status);
@@ -156,7 +154,7 @@ void AudioDecoderNdk::Stop() {
   }
 
   if (codec_) {
-    AMediaCodec_stop(codec_);
+    AMediaCodec_stop(codec_.get());
   }
 
   if (audio_sink_) {
@@ -173,7 +171,7 @@ bool AudioDecoderNdk::Decode(
     size_t frame_size,
     int64_t presentation_time_us) {
   ssize_t buf_idx = AMediaCodec_dequeueInputBuffer(
-      codec_,
+      codec_.get(),
       kDequeueInputTimeoutUs);
 
   if (buf_idx < 0) {
@@ -181,13 +179,13 @@ bool AudioDecoderNdk::Decode(
   }
 
   size_t buf_size = 0;
-  uint8_t* buf = AMediaCodec_getInputBuffer(codec_, buf_idx, &buf_size);
+  uint8_t* buf = AMediaCodec_getInputBuffer(codec_.get(), buf_idx, &buf_size);
 
   memcpy(buf, frame, frame_size);
   uint32_t flags = 0;
 
   // Do not submit multiple input buffers with the same timestamp (unless it is codec-specific data marked as such).
-  media_status_t status = AMediaCodec_queueInputBuffer(codec_, buf_idx, 0, frame_size, presentation_time_us, flags);
+  media_status_t status = AMediaCodec_queueInputBuffer(codec_.get(), buf_idx, 0, frame_size, presentation_time_us, flags);
   if (status != AMEDIA_OK) {
     ALOGE("AMediaCodec_queueInputBuffer() fails. %d", (int)status);
   }
@@ -199,14 +197,14 @@ bool AudioDecoderNdk::DeliverDecodedFrame() {
   AMediaCodecBufferInfo info;
 
   ssize_t status = AMediaCodec_dequeueOutputBuffer(
-      codec_,
+      codec_.get(),
       &info,
       kDequeueOutputTimeoutUs);
 
   if (status >= 0) {
     int buf_idx = status;
     size_t buf_size = 0;
-    uint8_t* buf = AMediaCodec_getOutputBuffer(codec_, buf_idx, &buf_size);
+    uint8_t* buf = AMediaCodec_getOutputBuffer(codec_.get(), buf_idx, &buf_size);
 
     if (info.size > 0 &&
         buf) {
@@ -217,12 +215,12 @@ bool AudioDecoderNdk::DeliverDecodedFrame() {
       }
     }
 
-    AMediaCodec_releaseOutputBuffer(codec_, buf_idx, false);
+    AMediaCodec_releaseOutputBuffer(codec_.get(), buf_idx, false);
 
     return true;
   } else if (status == AMEDIACODEC_INFO_OUTPUT_BUFFERS_CHANGED) {
   } else if (status == AMEDIACODEC_INFO_OUTPUT_FORMAT_CHANGED) {
-    AMediaFormat* format = AMediaCodec_getOutputFormat(codec_);
+    AMediaFormat* format = AMediaCodec_getOutputFormat(codec_.get());
     int32_t sample_rate, channel_count;
 
     AMediaFormat_getInt32(format, AMEDIAFORMAT_KEY_SAMPLE_RATE, &sample_rate);
@@ -266,18 +264,18 @@ bool AudioDecoderNdk::StartAudioSink(
   return true;
 }
 
-AMediaFormat* CreateAudioFormat(
+AMediaFormatPtr CreateAudioFormat(
     const std::string& mime,
     unsigned int sample_rate,
     unsigned int channel_count) {
   assert(sample_rate > 0);
   assert(channel_count > 0);
 
-  AMediaFormat* fmt = AMediaFormat_new();
+  AMediaFormatPtr fmt(AMediaFormat_new());
 
-  AMediaFormat_setString(fmt, AMEDIAFORMAT_KEY_MIME, mime.c_str());
-  AMediaFormat_setInt32(fmt, AMEDIAFORMAT_KEY_SAMPLE_RATE, sample_rate);
-  AMediaFormat_setInt32(fmt, AMEDIAFORMAT_KEY_CHANNEL_COUNT, channel_count);
+  AMediaFormat_setString(fmt.get(), AMEDIAFORMAT_KEY_MIME, mime.c_str());
+  AMediaFormat_setInt32(fmt.get(), AMEDIAFORMAT_KEY_SAMPLE_RATE, sample_rate);
+  AMediaFormat_setInt32(fmt.get(), AMEDIAFORMAT_KEY_CHANNEL_COUNT, channel_count);
 
   return fmt;
 }
@@ -290,16 +288,22 @@ AudioDecoderPtr CreateOpusDecoder(
 
   const std::string& mime = kMimeOpus;
 
-  AMediaCodec* codec = AMediaCodec_createDecoderByType(mime.c_str());
+  AMediaCodecPtr codec(
+      AMediaCodec_createDecoderByType(mime.c_str()));
 
-  AMediaFormat* fmt = CreateAudioFormat(
+  AMediaFormatPtr fmt = CreateAudioFormat(
       mime,
       sample_rate,
       channel_count);
 
-  MakeOpusCsd(fmt, sample_rate, channel_count);
+  MakeOpusCsd(
+      fmt.get(),
+      sample_rate,
+      channel_count);
 
-  return std::make_unique<AudioDecoderNdk>(codec, fmt);
+  return std::make_unique<AudioDecoderNdk>(
+      std::move(codec),
+      std::move(fmt));
 }
 
 AudioDecoderPtr CreateAacDecoder(
@@ -311,23 +315,26 @@ AudioDecoderPtr CreateAacDecoder(
 
   const std::string& mime = kMimeAac;
 
-  AMediaCodec* codec = AMediaCodec_createDecoderByType(mime.c_str());
+  AMediaCodecPtr codec(
+      AMediaCodec_createDecoderByType(mime.c_str()));
 
-  AMediaFormat* fmt = CreateAudioFormat(
+  AMediaFormatPtr fmt = CreateAudioFormat(
       mime,
       sample_rate,
       channel_count);
 
   MakeAacCsd(
-      fmt,
+      fmt.get(),
       kAacLc,  // AAC LC (Low Complexity)
       sample_rate,
       channel_count);
 
   AMediaFormat_setInt32(
-      fmt,
+      fmt.get(),
       AMEDIAFORMAT_KEY_IS_ADTS,
       has_adts ? 1 : 0);
 
-  return std::make_unique<AudioDecoderNdk>(codec, fmt);
+  return std::make_unique<AudioDecoderNdk>(
+      std::move(codec),
+      std::move(fmt));
 }

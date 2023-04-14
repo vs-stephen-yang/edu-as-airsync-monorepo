@@ -15,9 +15,6 @@ VideoDecoderNdk::VideoDecoderNdk(
 }
 
 VideoDecoderNdk::~VideoDecoderNdk() {
-  if (codec_) {
-    AMediaCodec_delete(codec_);
-  }
 }
 
 bool VideoDecoderNdk::Init(
@@ -25,18 +22,25 @@ bool VideoDecoderNdk::Init(
     ANativeWindow* surface) {
   assert(surface != nullptr);
 
-  codec_ = AMediaCodec_createDecoderByType(mime.c_str());
+  codec_.reset(
+      AMediaCodec_createDecoderByType(mime.c_str()));
   assert(codec_);
 
-  AMediaFormat* fmt = AMediaFormat_new();
+  AMediaFormatPtr fmt(AMediaFormat_new());
 
-  AMediaFormat_setString(fmt, AMEDIAFORMAT_KEY_MIME, mime.c_str());
+  AMediaFormat_setString(fmt.get(), AMEDIAFORMAT_KEY_MIME, mime.c_str());
 
   // TODO: Do we need to specify valid width and height?
-  AMediaFormat_setInt32(fmt, AMEDIAFORMAT_KEY_WIDTH, 100);
-  AMediaFormat_setInt32(fmt, AMEDIAFORMAT_KEY_HEIGHT, 100);
+  AMediaFormat_setInt32(fmt.get(), AMEDIAFORMAT_KEY_WIDTH, 100);
+  AMediaFormat_setInt32(fmt.get(), AMEDIAFORMAT_KEY_HEIGHT, 100);
 
-  media_status_t status = AMediaCodec_configure(codec_, fmt, surface, nullptr /* crypto */, 0);
+  media_status_t status = AMediaCodec_configure(
+      codec_.get(),
+      fmt.get(),
+      surface,
+      nullptr /* crypto */,
+      0);
+
   if (status != AMEDIA_OK) {
     ALOGE("AMediaCodec_configure() failed. %d", (int)status);
     return false;
@@ -46,7 +50,7 @@ bool VideoDecoderNdk::Init(
 }
 
 bool VideoDecoderNdk::Start() {
-  media_status_t status = AMediaCodec_start(codec_);
+  media_status_t status = AMediaCodec_start(codec_.get());
 
   if (status != AMEDIA_OK) {
     ALOGE("AMediaCodec_start() failed. %d", (int)status);
@@ -78,24 +82,24 @@ void VideoDecoderNdk::Stop() {
   }
 
   if (codec_) {
-    AMediaCodec_stop(codec_);
+    AMediaCodec_stop(codec_.get());
   }
 }
 
 bool VideoDecoderNdk::Decode(const uint8_t* frame, size_t frameSize, uint64_t presentationTimeUs) {
   ssize_t bufIdx = AMediaCodec_dequeueInputBuffer(
-      codec_,
+      codec_.get(),
       kDequeueInputTimeoutUs);
 
   if (bufIdx >= 0) {
     size_t buf_size = 0;
-    uint8_t* buf = AMediaCodec_getInputBuffer(codec_, bufIdx, &buf_size);
+    uint8_t* buf = AMediaCodec_getInputBuffer(codec_.get(), bufIdx, &buf_size);
 
     memcpy(buf, frame, frameSize);
     uint32_t flags = 0;
 
     // Do not submit multiple input buffers with the same timestamp (unless it is codec-specific data marked as such).
-    AMediaCodec_queueInputBuffer(codec_, bufIdx, 0, frameSize, presentationTimeUs, flags);
+    AMediaCodec_queueInputBuffer(codec_.get(), bufIdx, 0, frameSize, presentationTimeUs, flags);
   }
   return true;
 }
@@ -104,22 +108,22 @@ bool VideoDecoderNdk::DeliverDecodedFrame() {
   AMediaCodecBufferInfo info;
 
   ssize_t status = AMediaCodec_dequeueOutputBuffer(
-      codec_,
+      codec_.get(),
       &info,
       kDequeueOutputTimeoutUs);
 
   if (status >= 0) {
     int buf_idx = status;
     size_t buf_size = 0;
-    uint8_t* buf = AMediaCodec_getOutputBuffer(codec_, buf_idx, &buf_size);
+    uint8_t* buf = AMediaCodec_getOutputBuffer(codec_.get(), buf_idx, &buf_size);
 
     // render each output buffer on the surface
-    AMediaCodec_releaseOutputBuffer(codec_, buf_idx, true);
+    AMediaCodec_releaseOutputBuffer(codec_.get(), buf_idx, true);
 
     return true;
   } else if (status == AMEDIACODEC_INFO_OUTPUT_BUFFERS_CHANGED) {
   } else if (status == AMEDIACODEC_INFO_OUTPUT_FORMAT_CHANGED) {
-    AMediaFormat* format = AMediaCodec_getOutputFormat(codec_);
+    AMediaFormat* format = AMediaCodec_getOutputFormat(codec_.get());
 
     int32_t width, height, color, stride;
 
