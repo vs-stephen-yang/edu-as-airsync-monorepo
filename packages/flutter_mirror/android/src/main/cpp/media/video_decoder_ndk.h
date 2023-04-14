@@ -4,6 +4,7 @@
 #include <media/NdkMediaCodec.h>
 #include <media/NdkMediaError.h>
 
+#include "media/ndk_media_util.h"
 #include "media/video_decoder.h"
 
 #include <atomic>
@@ -35,7 +36,7 @@ class VideoDecoderNdk
  private:
   bool DeliverDecodedFrame();
 
-  AMediaCodec* codec_ = nullptr;
+  AMediaCodecPtr codec_;
 
   std::unique_ptr<std::thread> thread_;
 
