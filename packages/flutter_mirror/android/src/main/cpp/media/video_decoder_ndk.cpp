@@ -6,7 +6,7 @@ const std::string VideoDecoderNdk::kMimeH264 = "video/avc";
 const std::string VideoDecoderNdk::kMimeVp8 = "video/x-vnd.on2.vp8";
 
 static const int64_t kDequeueInputTimeoutUs = 1000 * 1000;  // in microseconds
-static const int64_t kDequeueOutputTimeoutUs = 500 * 1000;  // in microseconds
+static const int64_t kDequeueOutputTimeoutUs = 100 * 1000;  // in microseconds
 
 VideoDecoderNdk::VideoDecoderNdk(
     VideoDecoder::Callback* callback)
