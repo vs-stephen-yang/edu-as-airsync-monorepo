@@ -5,6 +5,9 @@
 const std::string VideoDecoderNdk::kMimeH264 = "video/avc";
 const std::string VideoDecoderNdk::kMimeVp8 = "video/x-vnd.on2.vp8";
 
+static const int64_t kDequeueInputTimeoutUs = 1000 * 1000;  // in microseconds
+static const int64_t kDequeueOutputTimeoutUs = 500 * 1000;  // in microseconds
+
 VideoDecoderNdk::VideoDecoderNdk(
     VideoDecoder::Callback* callback)
     : callback_(callback),
@@ -80,8 +83,9 @@ void VideoDecoderNdk::Stop() {
 }
 
 bool VideoDecoderNdk::Decode(const uint8_t* frame, size_t frameSize, uint64_t presentationTimeUs) {
-  int64_t timeout_us = 1000 * 1000;
-  ssize_t bufIdx = AMediaCodec_dequeueInputBuffer(codec_, timeout_us);
+  ssize_t bufIdx = AMediaCodec_dequeueInputBuffer(
+      codec_,
+      kDequeueInputTimeoutUs);
 
   if (bufIdx >= 0) {
     size_t buf_size = 0;
@@ -98,9 +102,12 @@ bool VideoDecoderNdk::Decode(const uint8_t* frame, size_t frameSize, uint64_t pr
 
 bool VideoDecoderNdk::DeliverDecodedFrame() {
   AMediaCodecBufferInfo info;
-  int64_t timeout_us = 500 * 1000;
 
-  ssize_t status = AMediaCodec_dequeueOutputBuffer(codec_, &info, timeout_us);
+  ssize_t status = AMediaCodec_dequeueOutputBuffer(
+      codec_,
+      &info,
+      kDequeueOutputTimeoutUs);
+
   if (status >= 0) {
     int buf_idx = status;
     size_t buf_size = 0;

@@ -6,6 +6,9 @@
 static const std::string kMimeAac = "audio/mp4a-latm";
 static const std::string kMimeOpus = "audio/opus";
 
+static const int64_t kDequeueInputTimeoutUs = 10 * 1000;    // in microseconds
+static const int64_t kDequeueOutputTimeoutUs = 100 * 1000;  // in microseconds
+
 // https://wiki.multimedia.cx/index.php/MPEG-4_Audio
 static const unsigned int kAacLc = 2;  // AAC LC (Low Complexity)
 
@@ -169,9 +172,9 @@ bool AudioDecoderNdk::Decode(
     const uint8_t* frame,
     size_t frame_size,
     int64_t presentation_time_us) {
-  int64_t timeout_us = 10 * 1000;
-
-  ssize_t buf_idx = AMediaCodec_dequeueInputBuffer(codec_, timeout_us);
+  ssize_t buf_idx = AMediaCodec_dequeueInputBuffer(
+      codec_,
+      kDequeueInputTimeoutUs);
 
   if (buf_idx < 0) {
     return false;
@@ -194,9 +197,11 @@ bool AudioDecoderNdk::Decode(
 
 bool AudioDecoderNdk::DeliverDecodedFrame() {
   AMediaCodecBufferInfo info;
-  int64_t timeout_us = 100 * 1000;
 
-  ssize_t status = AMediaCodec_dequeueOutputBuffer(codec_, &info, timeout_us);
+  ssize_t status = AMediaCodec_dequeueOutputBuffer(
+      codec_,
+      &info,
+      kDequeueOutputTimeoutUs);
 
   if (status >= 0) {
     int buf_idx = status;
