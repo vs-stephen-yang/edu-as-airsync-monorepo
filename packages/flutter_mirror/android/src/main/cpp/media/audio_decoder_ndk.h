@@ -4,6 +4,7 @@
 #include <media/NdkMediaCodec.h>
 #include <media/NdkMediaError.h>
 
+#include <atomic>
 #include <memory>
 #include <thread>
 #include <vector>
@@ -41,7 +42,7 @@ class AudioDecoderNdk
   AMediaFormat* format_ = nullptr;
 
   std::unique_ptr<std::thread> thread_;
-  volatile bool running_ = false;
+  std::atomic_bool running_;
 
   std::unique_ptr<AudioSinkOboe> audio_sink_;
 };
