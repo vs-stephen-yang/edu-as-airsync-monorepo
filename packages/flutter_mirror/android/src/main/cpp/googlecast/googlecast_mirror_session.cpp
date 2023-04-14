@@ -82,6 +82,8 @@ void GooglecastMirrorSession::StopMirror() {
     audio_decoder_->Stop();
   }
 
+  texture_registry_.ReleaseSurfaceTexture(texture_);
+
   ALOGI("The googlecast mirror session has stopped");
 }
 
