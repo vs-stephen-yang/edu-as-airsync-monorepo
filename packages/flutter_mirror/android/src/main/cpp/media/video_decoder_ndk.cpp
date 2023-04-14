@@ -11,6 +11,9 @@ VideoDecoderNdk::VideoDecoderNdk(
 }
 
 VideoDecoderNdk::~VideoDecoderNdk() {
+  if (codec_) {
+    AMediaCodec_delete(codec_);
+  }
 }
 
 bool VideoDecoderNdk::Init(
@@ -48,7 +51,7 @@ bool VideoDecoderNdk::Start() {
 
   running_ = true;
 
-  thread_ = new std::thread(
+  thread_ = std::make_unique<std::thread>(
       [this]() {
         ALOGD("Video decoder thread is starting");
 
@@ -68,6 +71,10 @@ void VideoDecoderNdk::Stop() {
   if (thread_) {
     ALOGD("Stopping video decoder thread");
     thread_->join();
+  }
+
+  if (codec_) {
+    AMediaCodec_stop(codec_);
   }
 }
 
