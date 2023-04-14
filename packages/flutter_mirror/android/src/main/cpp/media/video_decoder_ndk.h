@@ -6,6 +6,7 @@
 
 #include "media/video_decoder.h"
 
+#include <atomic>
 #include <thread>
 
 class VideoDecoderNdk
@@ -38,7 +39,7 @@ class VideoDecoderNdk
 
   std::unique_ptr<std::thread> thread_;
 
-  volatile bool running_ = false;
+  std::atomic_bool running_;
 
   Callback* callback_ = nullptr;
 };

@@ -90,7 +90,8 @@ AudioDecoderNdk::AudioDecoderNdk(
     AMediaCodec* codec,
     AMediaFormat* format)
     : codec_(codec),
-      format_(format) {
+      format_(format),
+      running_(false) {
   assert(codec);
   assert(format);
 }

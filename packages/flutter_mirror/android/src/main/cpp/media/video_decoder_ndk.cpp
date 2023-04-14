@@ -7,7 +7,8 @@ const std::string VideoDecoderNdk::kMimeVp8 = "video/x-vnd.on2.vp8";
 
 VideoDecoderNdk::VideoDecoderNdk(
     VideoDecoder::Callback* callback)
-    : callback_(callback) {
+    : callback_(callback),
+      running_(false) {
 }
 
 VideoDecoderNdk::~VideoDecoderNdk() {
