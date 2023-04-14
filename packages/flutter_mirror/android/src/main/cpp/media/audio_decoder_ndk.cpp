@@ -95,6 +95,16 @@ AudioDecoderNdk::AudioDecoderNdk(
   assert(format);
 }
 
+AudioDecoderNdk::~AudioDecoderNdk() {
+  if (codec_) {
+    AMediaCodec_delete(codec_);
+  }
+
+  if (format_) {
+    AMediaFormat_delete(format_);
+  }
+}
+
 bool AudioDecoderNdk::Init() {
   assert(codec_);
   assert(format_);
@@ -134,15 +144,19 @@ bool AudioDecoderNdk::Start() {
   return true;
 }
 void AudioDecoderNdk::Stop() {
-  if (audio_sink_) {
-    audio_sink_->Stop();
-  }
-
   running_ = false;
 
   if (thread_) {
     ALOGD("Stopping audio decoder thread");
     thread_->join();
+  }
+
+  if (codec_) {
+    AMediaCodec_stop(codec_);
+  }
+
+  if (audio_sink_) {
+    audio_sink_->Stop();
   }
 }
 

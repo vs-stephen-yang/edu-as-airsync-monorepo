@@ -18,6 +18,8 @@ class AudioDecoderNdk
       AMediaCodec* codec,
       AMediaFormat* format);
 
+  ~AudioDecoderNdk() override;
+
   virtual bool Init() override;
   virtual bool Start() override;
   virtual void Stop() override;
@@ -38,7 +40,7 @@ class AudioDecoderNdk
   AMediaCodec* codec_ = nullptr;
   AMediaFormat* format_ = nullptr;
 
-  std::unique_ptr<std::thread> thread_ = nullptr;
+  std::unique_ptr<std::thread> thread_;
   volatile bool running_ = false;
 
   std::unique_ptr<AudioSinkOboe> audio_sink_;

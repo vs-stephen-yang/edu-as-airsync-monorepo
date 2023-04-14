@@ -36,7 +36,7 @@ class VideoDecoderNdk
 
   AMediaCodec* codec_ = nullptr;
 
-  std::thread* thread_ = nullptr;
+  std::unique_ptr<std::thread> thread_;
 
   volatile bool running_ = false;
 
