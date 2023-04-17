@@ -8,6 +8,9 @@ cmake_minimum_required(VERSION 3.18.1)
 # Declares and names the project.
 project("flutter_mirror")
 
+# C++ 17
+set(CMAKE_CXX_STANDARD 17)
+
 find_package(oboe REQUIRED CONFIG)
 
 add_subdirectory(mpeg2ts)
