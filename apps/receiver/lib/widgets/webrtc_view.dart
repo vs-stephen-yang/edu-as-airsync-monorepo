@@ -3,15 +3,21 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:uuid/uuid.dart';
+
+import 'custom_icons_icons.dart';
 
 typedef WebRTCFlutterViewCreatedCallback = void Function(
     WebRTCFlutterViewController controller);
@@ -24,16 +30,27 @@ class WebRTCFlutterView extends StatefulWidget {
   State createState() => WebRTCFlutterViewState();
 }
 
-class WebRTCFlutterViewState extends State<WebRTCFlutterView> {
-  WebRTCFlutterViewController controller = WebRTCFlutterViewController();
+class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProviderStateMixin {
+  final WebRTCFlutterViewController _viewController = WebRTCFlutterViewController();
   bool _showConnectionInfo = false;
+  late final AnimationController _animationController;
+  late final Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
     print('zz initState');
-    controller.init(const Uuid().v4(), this);
-    widget.callback(controller);
+    _viewController.init(const Uuid().v4(), this);
+    widget.callback(_viewController);
+
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: false);
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.linear,
+    );
   }
 
   @override
@@ -42,21 +59,126 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> {
     print('zz deactivate');
   }
 
-
   @override
   void dispose() {
     super.dispose();
     print('zz dispose');
-    controller.disconnect();
-    ControlSocket().removeWebRtcController(controller);
+    _viewController.disconnect();
+    ControlSocket().removeWebRtcController(_viewController);
+    _animationController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    String presenterName = '';
+    presenterName = _viewController.presenterName;
+    if (presenterName.length > 10) {
+      presenterName = '${presenterName.substring(0, 10)}..';
+    }
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
-        RTCVideoView(controller.renderer),
+        Focus(
+          descendantsAreFocusable: false,
+          canRequestFocus: false,
+          child: RTCVideoView(_viewController.renderer),
+        ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: Visibility(
+            visible: _viewController.presentationState ==
+                PresentationState.streaming &&
+                _viewController.presenterName.isNotEmpty &&
+                SplitScreen.mapSplitScreen.value[keySplitScreenEnable],
+            child: Container(
+              width: 120,
+              height: 30,
+              padding: const EdgeInsets.all(5),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: AppColors.primaryBlackA50,
+              ),
+              child: AutoSizeText(
+                presenterName,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+                maxLines: 1,
+              ),
+            ),
+          ),
+        ),
+        Visibility(
+          visible: showConnectionInfo,
+          child: Transform.scale(
+            scale: SplitScreen.mapSplitScreen.value[keySplitScreenEnable] &&
+                SplitScreen.mapSplitScreen.value[keySplitScreenCount] > 1
+                ? 0.5
+                : 1.0,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width / 2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Visibility(
+                    visible: ControlSocket().moderator != null,
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          S.of(context).main_wait_up_next,
+                          style: const TextStyle(
+                            color: AppColors.primary_white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 25,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          _viewController.presenterName,
+                          style: const TextStyle(
+                            color: AppColors.primary_blue,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 30,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: RotationTransition(
+                      turns: _animation,
+                      child: const Icon(
+                        CustomIcons.loading,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    S.of(context).main_wait_title,
+                    style: const TextStyle(
+                      color: AppColors.primary_blue,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 25,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -90,7 +212,6 @@ class WebRTCFlutterViewController {
   final _remoteRenderer = RTCVideoRenderer();
 
   RTCVideoRenderer get renderer => _remoteRenderer;
-  Timer? _statsTimer;
 
   String get sdpSemantics => 'unified-plan';
 
@@ -208,10 +329,11 @@ class WebRTCFlutterViewController {
     }
 
     // close connection
+    _remoteRenderer.dispose();
     _socket.close();
     await _pc?.close();
+    await _pc?.dispose();
     _pc = null;
-    _remoteRenderer.dispose();
 
     // change state
     presentationState = PresentationState.stopStreaming;
@@ -295,38 +417,13 @@ class WebRTCFlutterViewController {
   void _onTrack(RTCTrackEvent event) async {
     print('zz onTrack ${event.track.id}');
     if (event.track.kind == 'video') {
-      // onMute/onEnded/onUnMute are not wired up
-      // event.track.onEnded = () {
-      //   print('!!!! Ended');
-      //   setState(() {
-      //     _remoteRenderer.srcObject = null;
-      //   });
-      // };
-      // event.track.onUnMute = () async {
-      //   print('!!!! UnMute');
-      //   var stream = await createLocalMediaStream(event.track.id!);
-      //   await stream.addTrack(event.track);
-      //   setState(() {
-      //     _remoteRenderer.srcObject = stream;
-      //   });
-      // };
-      // event.track.onMute = () {
-      //   print('!!!! OnMute');
-      //   setState(() {
-      //     _remoteRenderer.srcObject = null;
-      //   });
-      // };
-
-      // var stream = await createLocalMediaStream(event.track.label!);
-      // await stream.addTrack(event.track);
       mViewState.setState(() {
-        // _remoteRenderer.srcObject = event.streams[0]; //stream;
-        _remoteRenderer.setSrcObject(stream: event.streams.first);
-        _remoteRenderer.srcObject?.getTracks().first.onEnded = () {
-            print('zz ended');
-            disconnect();
-          };
+        _remoteRenderer.srcObject = event.streams[0]; //stream;
       });
+      _remoteRenderer.srcObject?.getTracks().first.onEnded = () {
+        print('zz ended');
+        disconnect();
+      };
       // _startReportStats();
     }
   }
