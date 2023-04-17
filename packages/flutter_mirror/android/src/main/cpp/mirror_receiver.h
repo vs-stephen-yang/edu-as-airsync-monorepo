@@ -16,7 +16,7 @@ class MirrorReceiver
     : public MirrorListener {
  public:
   MirrorReceiver(
-      jni::MirrorReceiverPtr&& mirror_receiver,
+      jni::MirrorReceiverPtr&& proxy,
       jni::TextureRegistryPtr&& texture_registry);
 
   ~MirrorReceiver();
@@ -63,7 +63,7 @@ class MirrorReceiver
   void RemoveMirror(const std::string& mirror_id);
 
  private:
-  jni::MirrorReceiverPtr mirror_receiver_;
+  jni::MirrorReceiverPtr proxy_;
   jni::TextureRegistryPtr texture_registry_;
 
   // TODO: protect sessions_ with mutex

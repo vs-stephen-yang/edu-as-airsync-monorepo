@@ -8,8 +8,8 @@
 class MiracastReceiver {
  public:
   MiracastReceiver(
-      jni::MiracastReceiverPtr miracast_receiver_proxy,
-      jni::TextureRegistryPtr texture_registry_proxy);
+      jni::MiracastReceiverPtr proxy,
+      jni::TextureRegistryPtr texture_registry);
 
   void OnMirrorStart(int mirrorId);
 
@@ -34,8 +34,8 @@ class MiracastReceiver {
   void SendIdrRequest(int mirrorId);
 
  private:
-  jni::MiracastReceiverPtr miracast_receiver_proxy_;
-  jni::TextureRegistryPtr texture_registry_proxy_;
+  jni::MiracastReceiverPtr proxy_;
+  jni::TextureRegistryPtr texture_registry_;
 
   std::map<int, MiracastMirrorSessionPtr> mirror_sessions_;
 };
