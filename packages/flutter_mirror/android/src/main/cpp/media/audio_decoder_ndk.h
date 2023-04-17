@@ -26,6 +26,8 @@ class AudioDecoderNdk
   virtual bool Start() override;
   virtual void Stop() override;
 
+  virtual void EnablePlayback(bool enable) override;
+
   bool Decode(
       const uint8_t* frame,
       size_t frame_size,
@@ -46,6 +48,8 @@ class AudioDecoderNdk
   std::atomic_bool running_;
 
   std::unique_ptr<AudioSinkOboe> audio_sink_;
+
+  std::atomic<bool> enable_playback_;
 };
 
 #endif  // FLUTTER_MIRROR_PLUGIN_AUDIO_DECODER_NDK_H_

@@ -29,6 +29,10 @@ class MirrorReceiver
   void StartGooglecast(
       const openscreen::cast::CastReceiver::Config& config);
 
+  void EnableAudio(
+      const std::string& mirror_id,
+      bool enable);
+
   // stop a mirror session by its Id
   void StopMirror(
       const std::string& mirror_id);
@@ -55,12 +59,14 @@ class MirrorReceiver
       int day) override;
 
  private:
+  MirrorSessionPtr FindSession(const std::string& mirror_id);
   void RemoveMirror(const std::string& mirror_id);
 
  private:
   jni::MirrorReceiverPtr mirror_receiver_;
   jni::TextureRegistryPtr texture_registry_;
 
+  // TODO: protect sessions_ with mutex
   std::map<std::string, MirrorSessionPtr> sessions_;
 
   // airplay

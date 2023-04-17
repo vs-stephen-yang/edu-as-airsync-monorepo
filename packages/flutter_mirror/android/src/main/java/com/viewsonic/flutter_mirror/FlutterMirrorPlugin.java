@@ -182,6 +182,14 @@ public class FlutterMirrorPlugin implements
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
+    } else if (call.method.equals("enableAudio")) {
+      String mirrorId = call.argument("mirrorId");
+      boolean enable = call.argument("enable");
+
+      enableAudio(mirrorId, enable);
+
+      Map<String, Long> reply = new HashMap<>();
+      result.success(reply);
     } else {
       result.notImplemented();
     }
@@ -218,6 +226,12 @@ public class FlutterMirrorPlugin implements
     assert mirrorReceiver_ != null;
 
     mirrorReceiver_.stopMirror(mirrorId);
+  }
+
+  private void enableAudio(String mirrorId, boolean enable) {
+    assert mirrorReceiver_ != null;
+
+    mirrorReceiver_.enableAudio(mirrorId, enable);
   }
 
   @Override

@@ -33,6 +33,7 @@ class ApMirrorSession
 
   virtual MirrorType GetMirrorType() override;
 
+  virtual void EnableAudio(bool enable) override;
   virtual void StopMirror() override;
 
   // implements VideoDecoder::Callback

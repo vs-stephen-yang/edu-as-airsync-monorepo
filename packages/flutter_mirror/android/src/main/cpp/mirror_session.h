@@ -22,9 +22,11 @@ class MirrorSession {
 
   virtual MirrorType GetMirrorType() = 0;
 
+  virtual void EnableAudio(bool enable) = 0;
+
   virtual void StopMirror() = 0;
 };
 
-typedef std::unique_ptr<MirrorSession> MirrorSessionPtr;
+typedef std::shared_ptr<MirrorSession> MirrorSessionPtr;
 
 #endif  // FLUTTER_MIRROR_PLUGIN_MIRROR_SESSION_H_

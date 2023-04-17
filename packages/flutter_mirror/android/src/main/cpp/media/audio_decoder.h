@@ -13,6 +13,8 @@ class AudioDecoder {
   virtual bool Start() = 0;
   virtual void Stop() = 0;
 
+  virtual void EnablePlayback(bool enable) = 0;
+
   virtual bool Decode(
       const uint8_t* frame,
       size_t frameSize,

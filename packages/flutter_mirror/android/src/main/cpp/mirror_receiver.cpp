@@ -46,6 +46,16 @@ void MirrorReceiver::StartGooglecast(
   googlecast_receiver_->Start(config);
 }
 
+void MirrorReceiver::EnableAudio(
+    const std::string& mirror_id,
+    bool enable) {
+  MirrorSessionPtr session = FindSession(mirror_id);
+  if (!session) {
+    return;
+  }
+  session->EnableAudio(enable);
+}
+
 void MirrorReceiver::StopMirror(
     const std::string& mirror_id) {
   // TODO
@@ -67,7 +77,7 @@ void MirrorReceiver::OnMirrorStart(
   std::string mirror_id = session->GetMirrorId();
   SurfaceTexture tex = session->GetTexture();
 
-  sessions_[mirror_id] = std::move(session);
+  sessions_[mirror_id] = session;
 
   mirror_receiver_->OnMirrorStart(mirror_id, tex.id);
 }
@@ -106,7 +116,17 @@ void MirrorReceiver::OnCredentialsUpdate(
     int day) {
 }
 
+MirrorSessionPtr MirrorReceiver::FindSession(const std::string& mirror_id) {
+  // TODO: protect sessions_ with mutex
+  auto itr = sessions_.find(mirror_id);
+  if (itr == sessions_.end()) {
+    return {};
+  }
+
+  return itr->second;
+}
 void MirrorReceiver::RemoveMirror(const std::string& mirror_id) {
+  // TODO: protect sessions_ with mutex
   auto itr = sessions_.find(mirror_id);
 
   assert(itr != sessions_.end());

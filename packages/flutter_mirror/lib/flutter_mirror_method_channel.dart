@@ -66,6 +66,14 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
   }
 
   @override
+  Future<void> enableAudio(String mirrorId, bool enable) async {
+    await methodChannel.invokeMethod('enableAudio', {
+      "mirrorId": mirrorId,
+      "enable": enable,
+    });
+  }
+
+  @override
   Future<void> onMirrorTouch(
       String mirrorId, int touchId, bool touchDown, double x, double y) async {
     await methodChannel.invokeMethod('onMirrorTouch', {

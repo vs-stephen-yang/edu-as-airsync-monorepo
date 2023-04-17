@@ -28,6 +28,10 @@ class FlutterMirror {
     return FlutterMirrorPlatform.instance.stopMirror(mirrorId);
   }
 
+  Future<void> enableAudio(String mirrorId, bool enable) {
+    return FlutterMirrorPlatform.instance.enableAudio(mirrorId, enable);
+  }
+
   Future<void> onMirrorTouch(
       String mirrorId, int touchId, bool touchDown, double x, double y) async {
     return FlutterMirrorPlatform.instance
