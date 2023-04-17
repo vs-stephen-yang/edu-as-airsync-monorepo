@@ -84,11 +84,6 @@ class _HomeState extends State<Home> {
                                   WebRTCFlutterView(
                                     callback: ControlSocket().addWebRtcController,
                                   ),
-                                  // WebRTCNativeView(
-                                  //   useHybrid: false,
-                                  //   onWebRTCNativeViewCreatedCallback:
-                                  //       ControlSocket().addWebRtcController,
-                                  // ),
                                   Visibility(
                                     visible: SplitScreen.mapSplitScreen
                                             .value[keySplitScreenEnable] &&
@@ -196,14 +191,6 @@ class _HomeState extends State<Home> {
         }
       },
     );
-  }
-
-
-  @override
-  void dispose() {
-    super.dispose();
-
-
   }
 
   _showSnackBarMessage(String message) {
