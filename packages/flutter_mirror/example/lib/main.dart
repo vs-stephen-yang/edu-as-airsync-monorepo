@@ -21,6 +21,8 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
   String? _mirrorId;
   int? _textureId;
 
+  bool _audioEnabled = false;
+
   double _aspectRatio = 3 / 2;
   bool _sizeChanged = false;
   Size _videoWidgetSize = Size(0, 0);
@@ -91,10 +93,16 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
     _pinTimer?.cancel();
     _pin = "";
     _pinVisibility = false;
+    _audioEnabled = false;
 
     if (_mirrorId != null) {
       _plugin.stopMirror(_mirrorId!);
     }
+
+    // enable audio
+    _plugin.enableAudio(mirrorId, true);
+    _audioEnabled = true;
+
     if (!mounted) return;
 
     setState(() {
@@ -163,6 +171,14 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
             _videoWidgetSize.height.toInt()));
   }
 
+  void toggleAudio() {
+    if (_mirrorId == null) {
+      return;
+    }
+    _audioEnabled = !_audioEnabled;
+    _plugin.enableAudio(_mirrorId!, _audioEnabled);
+  }
+
   void stopMirror() {
     if (_mirrorId == null) {
       return;
@@ -214,19 +230,46 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
                   style: const TextStyle(fontSize: 25),
                 )))));
 
+    var closeButton = FloatingActionButton.extended(
+      onPressed: () {
+        stopMirror();
+      },
+      label: const Text('close'),
+      icon: const Icon(Icons.close),
+      backgroundColor: Colors.pink,
+    );
+
+    var toggleAudioButton = FloatingActionButton.extended(
+      onPressed: () {
+        toggleAudio();
+      },
+      label: const Text('audio'),
+      icon: const Icon(Icons.music_note),
+      backgroundColor: Colors.lightBlue,
+    );
+
+    var buttons = Container(
+      padding: const EdgeInsets.symmetric(
+        vertical: 0,
+        horizontal: 10.0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          toggleAudioButton,
+          closeButton,
+        ],
+      ),
+    );
+
     return MaterialApp(
-        home: Scaffold(
-      body: Stack(
-        children: <Widget>[videos, pin],
+      home: Scaffold(
+        body: Stack(
+          children: <Widget>[videos, pin],
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: buttons,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          stopMirror();
-        },
-        label: const Text('Close'),
-        icon: const Icon(Icons.close),
-        backgroundColor: Colors.pink,
-      ),
-    ));
+    );
   }
 }
