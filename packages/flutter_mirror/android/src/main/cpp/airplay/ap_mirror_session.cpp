@@ -21,6 +21,8 @@ void ApMirrorSession::StartMirror() {
   ALOGI("Starting an Airplay mirror session");
 
   CreateVideoDecoder();
+
+  CreateAudioDecoder();
 }
 
 void ApMirrorSession::StopMirror() {
@@ -55,10 +57,6 @@ void ApMirrorSession::CreateVideoDecoder() {
 }
 
 void ApMirrorSession::CreateAudioDecoder() {
-  if (audio_decoder_) {
-    audio_decoder_->Stop();
-  }
-
   audio_decoder_ = CreateAacDecoder(
       44100,
       2,
@@ -79,9 +77,6 @@ void ApMirrorSession::OnVideoFormatChanged(
 void ApMirrorSession::OnMirrorEvent(
     ap::AirplayMirrorSession::Listener::Event ev) {
   switch (ev) {
-    case ap::AirplayMirrorSession::Listener::Event::kAudioStart:
-      CreateAudioDecoder();
-      break;
     case ap::AirplayMirrorSession::Listener::Event::kMirrorStop:
       mirror_listener_.OnMirrorStop(this);
       break;
