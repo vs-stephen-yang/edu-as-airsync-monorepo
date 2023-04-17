@@ -45,7 +45,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_createInstanceNative(
   assert(g_vm);
   ALOGV("createInstanceNative()");
 
-  auto mirror_receiver = std::make_unique<jni::MirrorReceiver>(
+  auto proxy = std::make_unique<jni::MirrorReceiver>(
       g_vm,
       env,
       thiz);
@@ -56,7 +56,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_createInstanceNative(
       jtexture_registry);
 
   MirrorReceiver* receiver = new MirrorReceiver(
-      std::move(mirror_receiver),
+      std::move(proxy),
       std::move(texture_registry));
 
   return reinterpret_cast<long>(receiver);
@@ -172,7 +172,7 @@ Java_com_viewsonic_flutter_1mirror_MiracastReceiver_createInstanceNative(
   assert(g_vm);
   ALOGV("MiracastReceiver_createInstanceNative()");
 
-  auto miracast_receiver = std::make_unique<jni::MiracastReceiver>(
+  auto proxy = std::make_unique<jni::MiracastReceiver>(
       g_vm,
       env,
       thiz);
@@ -183,7 +183,7 @@ Java_com_viewsonic_flutter_1mirror_MiracastReceiver_createInstanceNative(
       jtexture_registry);
 
   MiracastReceiver* receiver = new MiracastReceiver(
-      std::move(miracast_receiver),
+      std::move(proxy),
       std::move(texture_registry));
 
   return reinterpret_cast<long>(receiver);

@@ -4,10 +4,10 @@
 #include "util/log.h"
 
 MiracastReceiver::MiracastReceiver(
-    jni::MiracastReceiverPtr miracast_receiver_proxy,
-    jni::TextureRegistryPtr texture_registry_proxy)
-    : miracast_receiver_proxy_(std::move(miracast_receiver_proxy)),
-      texture_registry_proxy_(std::move(texture_registry_proxy)) {
+    jni::MiracastReceiverPtr proxy,
+    jni::TextureRegistryPtr texture_registry)
+    : proxy_(std::move(proxy)),
+      texture_registry_(std::move(texture_registry)) {
 }
 
 // a mirror session starts
@@ -15,7 +15,7 @@ void MiracastReceiver::OnMirrorStart(int mirrorId) {
   // create a wrapper for the mirror session
   auto session = std::make_unique<MiracastMirrorSession>(
       mirrorId,
-      *texture_registry_proxy_,
+      *texture_registry_,
       *this);
 
   // start the mirror session
@@ -26,7 +26,7 @@ void MiracastReceiver::OnMirrorStart(int mirrorId) {
 
   mirror_sessions_[mirrorId] = std::move(session);
 
-  miracast_receiver_proxy_->onMirrorStart(mirrorId, texture.id);
+  proxy_->onMirrorStart(mirrorId, texture.id);
 }
 
 void MiracastReceiver::OnMirrorStop(int mirrorId) {
@@ -59,7 +59,7 @@ void MiracastReceiver::OnVideoFormatChanged(
     MiracastMirrorSession& session,
     int width,
     int height) {
-  miracast_receiver_proxy_->onMirrorVideoResize(
+  proxy_->onMirrorVideoResize(
       session.Id(),
       width,
       height);
@@ -76,5 +76,5 @@ void MiracastReceiver::OnPacket(int mirrorId, const uint8_t* data, int length) {
 }
 
 void MiracastReceiver::SendIdrRequest(int mirrorId) {
-  miracast_receiver_proxy_->sendIdrRequest(mirrorId);
+  proxy_->sendIdrRequest(mirrorId);
 }

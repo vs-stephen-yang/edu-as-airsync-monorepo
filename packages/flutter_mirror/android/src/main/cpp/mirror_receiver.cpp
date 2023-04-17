@@ -3,9 +3,9 @@
 #include "util/log.h"
 
 MirrorReceiver::MirrorReceiver(
-    jni::MirrorReceiverPtr&& mirror_receiver,
+    jni::MirrorReceiverPtr&& proxy,
     jni::TextureRegistryPtr&& texture_registry)
-    : mirror_receiver_(std::move(mirror_receiver)),
+    : proxy_(std::move(proxy)),
       texture_registry_(std::move(texture_registry)) {
   ALOGV("MirrorReceiver()");
 }
@@ -65,7 +65,7 @@ void MirrorReceiver::StopMirror(
 void MirrorReceiver::OnMirrorAuth(
     const std::string& pin,
     unsigned int timeout_sec) {
-  mirror_receiver_->OnMirrorAuth(
+  proxy_->OnMirrorAuth(
       pin,
       timeout_sec);
 }
@@ -79,7 +79,7 @@ void MirrorReceiver::OnMirrorStart(
 
   sessions_[mirror_id] = session;
 
-  mirror_receiver_->OnMirrorStart(mirror_id, tex.id);
+  proxy_->OnMirrorStart(mirror_id, tex.id);
 }
 
 void MirrorReceiver::OnMirrorStop(
@@ -93,7 +93,7 @@ void MirrorReceiver::OnMirrorStop(
   // delete the mirror session
   RemoveMirror(mirror_id);
 
-  mirror_receiver_->OnMirrorStop(mirror_id);
+  proxy_->OnMirrorStop(mirror_id);
 }
 
 void MirrorReceiver::OnMirrorVideoResize(
@@ -104,7 +104,7 @@ void MirrorReceiver::OnMirrorVideoResize(
 
   std::string mirror_id = session->GetMirrorId();
 
-  mirror_receiver_->OnMirrorVideoResize(
+  proxy_->OnMirrorVideoResize(
       mirror_id,
       width,
       height);
