@@ -169,9 +169,11 @@ VideoDecoderPtr CreateVideoDecoder(
 
   auto decoder = std::make_unique<VideoDecoderNdk>(callback);
 
-  decoder->Init(
-      CodecType2Mime(codec_type),
-      surface);
+  if (!decoder->Init(
+          CodecType2Mime(codec_type),
+          surface)) {
+    return {};
+  }
 
   return decoder;
 }

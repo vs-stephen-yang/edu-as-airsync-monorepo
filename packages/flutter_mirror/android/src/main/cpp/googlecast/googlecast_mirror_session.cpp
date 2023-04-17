@@ -38,8 +38,12 @@ bool GooglecastMirrorSession::StartMirror() {
   cast::CastMirrorSession::MediaFormats formats;
   session_->GetMediaFormats(formats);
 
-  CreateVideoDecoder(formats);
-  CreateAudioDecoder(formats);
+  if (!CreateVideoDecoder(formats)) {
+    return false;
+  }
+  if (!CreateAudioDecoder(formats)) {
+    return false;
+  }
 
   return true;
 }
@@ -62,6 +66,9 @@ bool GooglecastMirrorSession::CreateVideoDecoder(
       *codec_type,
       texture_.wnd,
       this);
+  if (!decoder) {
+    return false;
+  }
 
   video_decoder_ = std::move(decoder);
   video_decoder_->Start();

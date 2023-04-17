@@ -36,6 +36,9 @@ bool MiracastMirrorSession::StartMirror() {
       VideoDecoder::CodecType::kH264,
       texture_.wnd,
       this);
+  if (!decoder) {
+    return false;
+  }
 
   video_decoder_ = std::move(decoder);
   video_decoder_->Start();
