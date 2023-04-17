@@ -46,6 +46,9 @@ void ApMirrorSession::CreateVideoDecoder() {
       VideoDecoder::CodecType::kH264,
       texture_.wnd,
       this);
+  if (!decoder) {
+    return;
+  }
 
   video_decoder_ = std::move(decoder);
   video_decoder_->Start();
