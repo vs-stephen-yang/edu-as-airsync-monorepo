@@ -134,3 +134,9 @@ std::string ApMirrorSession::GetSourceDisplayName() {
 MirrorType ApMirrorSession::GetMirrorType() {
   return MirrorType::Airplay;
 }
+
+void ApMirrorSession::EnableAudio(bool enable) {
+  if (audio_decoder_) {
+    audio_decoder_->EnablePlayback(enable);
+  }
+}

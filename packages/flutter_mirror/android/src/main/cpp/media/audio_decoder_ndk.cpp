@@ -94,7 +94,8 @@ AudioDecoderNdk::AudioDecoderNdk(
     AMediaFormatPtr format)
     : codec_(std::move(codec)),
       format_(std::move(format)),
-      running_(false) {
+      running_(false),
+      enable_playback_(false) {
   assert(codec_);
   assert(format_);
 }
@@ -145,6 +146,10 @@ bool AudioDecoderNdk::Start() {
 
   return true;
 }
+void AudioDecoderNdk::EnablePlayback(bool enable) {
+  enable_playback_ = enable;
+}
+
 void AudioDecoderNdk::Stop() {
   running_ = false;
 
@@ -208,7 +213,8 @@ bool AudioDecoderNdk::DeliverDecodedFrame() {
 
     if (info.size > 0 &&
         buf) {
-      if (audio_sink_) {
+      if (audio_sink_ &&
+          enable_playback_) {
         audio_sink_->Write(
             buf + info.offset,  // offset: The start-offset of the data in the buffer
             info.size);         // The amount of data (in bytes) in the buffer

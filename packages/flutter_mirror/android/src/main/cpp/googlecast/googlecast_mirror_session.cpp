@@ -48,6 +48,11 @@ bool GooglecastMirrorSession::StartMirror() {
   return true;
 }
 
+void GooglecastMirrorSession::EnableAudio(bool enable) {
+  if (audio_decoder_) {
+    audio_decoder_->EnablePlayback(enable);
+  }
+}
 bool GooglecastMirrorSession::CreateVideoDecoder(
     const cast::CastMirrorSession::MediaFormats& formats) {
   assert(!video_decoder_);

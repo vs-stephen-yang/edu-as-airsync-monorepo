@@ -84,6 +84,15 @@ public class MirrorReceiver implements
         mirrorId);
   }
 
+  public void enableAudio(String mirrorId, boolean enable) {
+    assert instance_ != 0;
+
+    enableAudioNative(
+        instance_,
+        mirrorId,
+        enable);
+  }
+
   public void onMirrorTouch(
       String mirrorId,
       int touchId,
@@ -135,6 +144,11 @@ public class MirrorReceiver implements
   private native void stopMirrorNative(
       long instance,
       String mirrorId);
+
+  private native void enableAudioNative(
+      long instance,
+      String mirrorId,
+      boolean enable);
 
   private native void startAirplayNative(
       long instance,

@@ -117,6 +117,25 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_updateGooglecastCredentialNati
 }
 
 JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1mirror_MirrorReceiver_enableAudioNative(
+    JNIEnv* env,
+    jobject thiz,
+    jlong instance,
+    jstring jmirror_id,
+    jboolean enable) {
+  assert(instance != 0);
+  ALOGV("enableAudioNative()");
+
+  MirrorReceiver* receiver = MIRROR(instance);
+
+  jni::String str(env);
+
+  receiver->EnableAudio(
+      str.ToUtf8(jmirror_id),
+      enable == JNI_TRUE);
+}
+
+JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1mirror_MirrorReceiver_stopMirrorNative(
     JNIEnv* env,
     jobject thiz,
