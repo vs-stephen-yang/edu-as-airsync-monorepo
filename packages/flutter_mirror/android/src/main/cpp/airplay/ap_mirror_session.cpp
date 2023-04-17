@@ -1,7 +1,6 @@
 #include "./airplay/ap_mirror_session.h"
 #include <assert.h>
 #include "media/audio_decoder.h"
-#include "media/video_decoder_ndk.h"
 #include "util/log.h"
 
 ApMirrorSession::ApMirrorSession(
@@ -43,11 +42,10 @@ void ApMirrorSession::CreateVideoDecoder() {
   assert(texture_.wnd);
 
   // create a video decoder that renders to the surface texture
-  auto decoder = std::make_unique<VideoDecoderNdk>(this);
-
-  decoder->Init(
-      VideoDecoderNdk::kMimeH264,
-      texture_.wnd);
+  auto decoder = ::CreateVideoDecoder(
+      VideoDecoder::CodecType::kH264,
+      texture_.wnd,
+      this);
 
   video_decoder_ = std::move(decoder);
   video_decoder_->Start();

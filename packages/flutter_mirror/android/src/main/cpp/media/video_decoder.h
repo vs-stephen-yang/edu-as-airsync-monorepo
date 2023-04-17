@@ -35,6 +35,7 @@ typedef std::unique_ptr<VideoDecoder> VideoDecoderPtr;
 
 VideoDecoderPtr CreateVideoDecoder(
     VideoDecoder::CodecType codec_type,
-    ANativeWindow* surface);
+    ANativeWindow* surface,
+    VideoDecoder::Callback* callback);
 
 #endif  // FLUTTER_MIRROR_PLUGIN_VIDEO_DECODER_H_

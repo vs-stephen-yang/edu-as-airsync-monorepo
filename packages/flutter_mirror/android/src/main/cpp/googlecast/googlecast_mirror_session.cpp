@@ -1,20 +1,20 @@
 #include "googlecast/googlecast_mirror_session.h"
 #include <assert.h>
+#include <optional>
 #include "media/audio_decoder.h"
-#include "media/video_decoder_ndk.h"
 #include "util/log.h"
 
 using namespace openscreen;
 
-std::string VideoCodecToMime(cast::CastMirrorSession::VideoCodec codec) {
+static std::optional<VideoDecoder::CodecType> MapVideoCodec(cast::CastMirrorSession::VideoCodec codec) {
   switch (codec) {
     case cast::CastMirrorSession::VideoCodec::kH264:
-      return VideoDecoderNdk::kMimeH264;
+      return VideoDecoder::CodecType::kH264;
     case cast::CastMirrorSession::VideoCodec::kVp8:
-      return VideoDecoderNdk::kMimeVp8;
+      return VideoDecoder::CodecType::kVp8;
     default:
       assert(0);
-      return "";
+      return {};
   };
 }
 
@@ -52,19 +52,16 @@ bool GooglecastMirrorSession::CreateVideoDecoder(
   texture_ = texture_registry_.CreateSurfaceTexture();
   assert(texture_.wnd);
 
-  std::string mime = VideoCodecToMime(formats.video_codec);
-  if (mime.empty()) {
+  std::optional<VideoDecoder::CodecType> codec_type = MapVideoCodec(formats.video_codec);
+  if (!codec_type) {
     return false;
   }
 
   // create a video decoder that renders to the surface texture
-  auto decoder = std::make_unique<VideoDecoderNdk>(this);
-
-  if (!decoder->Init(
-          mime,
-          texture_.wnd)) {
-    return false;
-  }
+  auto decoder = ::CreateVideoDecoder(
+      *codec_type,
+      texture_.wnd,
+      this);
 
   video_decoder_ = std::move(decoder);
   video_decoder_->Start();
