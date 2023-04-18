@@ -148,11 +148,11 @@ bool VideoDecoderNdk::DeliverDecodedFrame() {
   return false;
 }
 
-std::string CodecType2Mime(VideoDecoder::CodecType codec_type) {
+std::string CodecType2Mime(VideoCodecType codec_type) {
   switch (codec_type) {
-    case VideoDecoder::CodecType::kH264:
+    case VideoCodecType::kH264:
       return VideoDecoderNdk::kMimeH264;
-    case VideoDecoder::CodecType::kVp8:
+    case VideoCodecType::kVp8:
       return VideoDecoderNdk::kMimeVp8;
     default:
       // won't reach
@@ -161,7 +161,7 @@ std::string CodecType2Mime(VideoDecoder::CodecType codec_type) {
 }
 
 VideoDecoderPtr CreateVideoDecoder(
-    VideoDecoder::CodecType codec_type,
+    VideoCodecType codec_type,
     ANativeWindow* surface,
     VideoDecoder::Callback* callback) {
   assert(surface);

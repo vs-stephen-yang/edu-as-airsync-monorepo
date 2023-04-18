@@ -286,6 +286,27 @@ AMediaFormatPtr CreateAudioFormat(
   return fmt;
 }
 
+AudioDecoderPtr CreateAudioDecoder(
+    AudioCodecType codec_type,
+    AudioFormat format) {
+  switch (codec_type) {
+    case AudioCodecType::kAac:
+      return CreateAacDecoder(
+          format.sample_rate,
+          format.channel_count,
+          format.has_adts);
+
+    case AudioCodecType::kOpus:
+      return CreateOpusDecoder(
+          format.sample_rate,
+          format.channel_count);
+
+    default:
+      assert(0);
+      return {};
+  }
+}
+
 AudioDecoderPtr CreateOpusDecoder(
     unsigned int sample_rate,
     unsigned int channel_count) {

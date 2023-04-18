@@ -11,8 +11,7 @@ class ApReceiver
     : public ap::AirplayReceiver::Listener {
  public:
   ApReceiver(
-      MirrorListener& mirror_listener,
-      jni::TextureRegistry& text_registry);
+      MirrorListener& mirror_listener);
 
   ~ApReceiver();
 
@@ -33,7 +32,6 @@ class ApReceiver
 
  private:
   MirrorListener& mirror_listener_;
-  jni::TextureRegistry& text_registry_;
 
   ap::AirplayReceiverHostPtr host_;
   ap::AirplayReceiverPtr receiver_;

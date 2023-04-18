@@ -17,10 +17,8 @@ static std::string FormatMirrorId(unsigned int seq) {
 }
 
 ApReceiver::ApReceiver(
-    MirrorListener& mirror_listener,
-    jni::TextureRegistry& text_registry)
-    : mirror_listener_(mirror_listener),
-      text_registry_(text_registry) {
+    MirrorListener& mirror_listener)
+    : mirror_listener_(mirror_listener) {
   ALOGV("ApReceiver()");
 }
 
@@ -93,17 +91,14 @@ bool ApReceiver::OnMirrorStart(
   std::string mirror_id = FormatMirrorId(mirror_increment_seq_);
 
   // create a wrapper for the mirror session
-  auto session = std::make_unique<ApMirrorSession>(
+  auto session = std::make_shared<ApMirrorSession>(
       mirror_id,
       mirror_listener_,
-      text_registry_,
       sess);
-
-  session->StartMirror();
 
   // notify that a mirror starts
   mirror_listener_.OnMirrorStart(
-      std::move(session));
+      session);
 
   return true;
 }

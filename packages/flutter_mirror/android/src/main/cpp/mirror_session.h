@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include "media/media_session.h"
 #include "media/surface_texture.h"
 
 enum class MirrorType {
@@ -14,6 +15,9 @@ enum class MirrorType {
 class MirrorSession {
  public:
   virtual ~MirrorSession() = default;
+
+  virtual bool StartMirror(
+      MediaSessionPtr media_session) = 0;
 
   virtual std::string GetMirrorId() = 0;
   virtual SurfaceTexture GetTexture() = 0;

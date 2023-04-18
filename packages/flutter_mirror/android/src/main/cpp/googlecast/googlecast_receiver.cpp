@@ -15,10 +15,8 @@ static std::string FormatMirrorId(unsigned int seq) {
 }
 
 GooglecastReceiver::GooglecastReceiver(
-    MirrorListener& mirror_listener,
-    jni::TextureRegistry& text_registry)
-    : mirror_listener_(mirror_listener),
-      texture_registry_(text_registry) {
+    MirrorListener& mirror_listener)
+    : mirror_listener_(mirror_listener) {
   ALOGV("GooglecastReceiver()");
 }
 
@@ -85,17 +83,14 @@ bool GooglecastReceiver::OnMirrorStart(
   std::string mirror_id = FormatMirrorId(mirror_increment_seq_);
 
   // create a wrapper for the mirror session
-  auto session = std::make_unique<GooglecastMirrorSession>(
+  auto session = std::make_shared<GooglecastMirrorSession>(
       mirror_id,
       mirror_listener_,
-      texture_registry_,
       sess);
-
-  session->StartMirror();
 
   // notify that a mirror starts
   mirror_listener_.OnMirrorStart(
-      std::move(session));
+      session);
 
   return true;
 }
