@@ -25,14 +25,14 @@ public class MirrorReceiver implements
 
     mirrorListener_ = mirrorListener;
 
-    // create Miracast receiver
-    miracastReceiver_ = new MiracastReceiver(
-        this,
-        textureRegistry);
-
     // create C++ MirrorReceiver
     instance_ = createInstanceNative(
         textureRegistry);
+
+    assert instance_ != 0;
+
+    miracastReceiver_ = new MiracastReceiver(
+        instance_);
 
     assert (instance_ != 0);
   }
@@ -138,7 +138,7 @@ public class MirrorReceiver implements
   private native long createInstanceNative(
       TexRegistry textureRegistry);
 
-  private native void DestroyInstanceNative(
+  private native void destroyInstanceNative(
       long instance);
 
   private native void stopMirrorNative(

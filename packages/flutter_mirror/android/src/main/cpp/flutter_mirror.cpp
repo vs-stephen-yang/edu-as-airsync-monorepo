@@ -168,8 +168,9 @@ JNIEXPORT jlong JNICALL
 Java_com_viewsonic_flutter_1mirror_MiracastReceiver_createInstanceNative(
     JNIEnv* env,
     jobject thiz,
-    jobject jtexture_registry) {
+    jlong mirror_listener_instance) {
   assert(g_vm);
+  assert(mirror_listener_instance);
   ALOGV("MiracastReceiver_createInstanceNative()");
 
   auto proxy = std::make_unique<jni::MiracastReceiver>(
@@ -177,14 +178,12 @@ Java_com_viewsonic_flutter_1mirror_MiracastReceiver_createInstanceNative(
       env,
       thiz);
 
-  auto texture_registry = std::make_unique<jni::TextureRegistry>(
-      g_vm,
-      env,
-      jtexture_registry);
+  MirrorListener* mirror_listener =
+      reinterpret_cast<MirrorListener*>(mirror_listener_instance);
 
   MiracastReceiver* receiver = new MiracastReceiver(
       std::move(proxy),
-      std::move(texture_registry));
+      *mirror_listener);
 
   return reinterpret_cast<long>(receiver);
 }

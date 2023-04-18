@@ -9,7 +9,9 @@ class MiracastReceiver {
  public:
   MiracastReceiver(
       jni::MiracastReceiverPtr proxy,
-      jni::TextureRegistryPtr texture_registry);
+      MirrorListener& mirror_listener);
+
+  void StopMirror(int mirrorId);
 
   void OnMirrorStart(int mirrorId);
 
@@ -20,12 +22,6 @@ class MiracastReceiver {
       const std::string& codecName,
       int sampleRate,
       int channelCount);
-
-  void OnVideoFormatChanged(
-      MiracastMirrorSession& session,
-      int width,
-      int height);
-
   void OnPacket(
       int mirrorId,
       const uint8_t* data,
@@ -34,8 +30,13 @@ class MiracastReceiver {
   void SendIdrRequest(int mirrorId);
 
  private:
+  MiracastMirrorSessionPtr FindSession(int mirrorId);
+
+  void RemoveSession(int mirrorId);
+
+ private:
   jni::MiracastReceiverPtr proxy_;
-  jni::TextureRegistryPtr texture_registry_;
+  MirrorListener& mirror_listener_;
 
   std::map<int, MiracastMirrorSessionPtr> mirror_sessions_;
 };
