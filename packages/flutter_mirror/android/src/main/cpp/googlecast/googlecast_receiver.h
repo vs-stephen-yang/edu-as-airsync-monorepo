@@ -12,8 +12,7 @@ class GooglecastReceiver
     : public openscreen::cast::CastReceiver::Listener {
  public:
   GooglecastReceiver(
-      MirrorListener& mirror_listener,
-      jni::TextureRegistry& text_registry);
+      MirrorListener& mirror_listener);
   ~GooglecastReceiver();
 
   bool Init();
@@ -37,7 +36,6 @@ class GooglecastReceiver
 
  private:
   MirrorListener& mirror_listener_;
-  jni::TextureRegistry& texture_registry_;
 
   openscreen::cast::CastReceiverHostPtr host_;
   openscreen::cast::CastReceiverPtr receiver_;

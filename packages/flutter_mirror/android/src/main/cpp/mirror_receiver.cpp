@@ -23,8 +23,7 @@ void MirrorReceiver::StartAirplay(
   }
 
   ap_receiver_ = std::make_unique<ApReceiver>(
-      *this,
-      *texture_registry_);
+      *this);
 
   ap_receiver_->Init();
   ap_receiver_->Start(config);
@@ -39,8 +38,7 @@ void MirrorReceiver::StartGooglecast(
   }
 
   googlecast_receiver_ = std::make_unique<GooglecastReceiver>(
-      *this,
-      *texture_registry_);
+      *this);
 
   googlecast_receiver_->Init();
   googlecast_receiver_->Start(config);
@@ -73,6 +71,14 @@ void MirrorReceiver::OnMirrorAuth(
 void MirrorReceiver::OnMirrorStart(
     MirrorSessionPtr session) {
   assert(session);
+
+  auto media_session = std::make_unique<MediaSession>(
+      *texture_registry_);
+
+  if (!session->StartMirror(
+          std::move(media_session))) {
+    return;
+  }
 
   std::string mirror_id = session->GetMirrorId();
   SurfaceTexture tex = session->GetTexture();

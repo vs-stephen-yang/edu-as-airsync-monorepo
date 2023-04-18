@@ -1,17 +1,29 @@
 #include "googlecast/googlecast_mirror_session.h"
 #include <assert.h>
 #include <optional>
-#include "media/audio_decoder.h"
 #include "util/log.h"
 
 using namespace openscreen;
 
-static std::optional<VideoDecoder::CodecType> MapVideoCodec(cast::CastMirrorSession::VideoCodec codec) {
+static std::optional<VideoCodecType> MapVideoCodec(cast::CastMirrorSession::VideoCodec codec) {
   switch (codec) {
     case cast::CastMirrorSession::VideoCodec::kH264:
-      return VideoDecoder::CodecType::kH264;
+      return VideoCodecType::kH264;
     case cast::CastMirrorSession::VideoCodec::kVp8:
-      return VideoDecoder::CodecType::kVp8;
+      return VideoCodecType::kVp8;
+    default:
+      assert(0);
+      return {};
+  };
+}
+
+static std::optional<AudioCodecType> MapAudioCodec(
+    cast::CastMirrorSession::AudioCodec codec) {
+  switch (codec) {
+    case cast::CastMirrorSession::AudioCodec::kAac:
+      return AudioCodecType::kAac;
+    case cast::CastMirrorSession::AudioCodec::kOpus:
+      return AudioCodecType::kOpus;
     default:
       assert(0);
       return {};
@@ -21,105 +33,58 @@ static std::optional<VideoDecoder::CodecType> MapVideoCodec(cast::CastMirrorSess
 GooglecastMirrorSession::GooglecastMirrorSession(
     const std::string& mirror_id,
     MirrorListener& mirror_listener,
-    jni::TextureRegistry& texture_registry,
     cast::CastMirrorSessionPtr session)
     : mirror_id_(mirror_id),
       mirror_listener_(mirror_listener),
-      texture_registry_(texture_registry),
       session_(session) {
   assert(session);
 
   session_->RegisterListener(this);
 }
 
-bool GooglecastMirrorSession::StartMirror() {
+bool GooglecastMirrorSession::StartMirror(
+    MediaSessionPtr media_session) {
   ALOGI("Starting a Googlecast mirror session");
 
   cast::CastMirrorSession::MediaFormats formats;
   session_->GetMediaFormats(formats);
 
-  if (!CreateVideoDecoder(formats)) {
-    return false;
-  }
-  if (!CreateAudioDecoder(formats)) {
-    return false;
-  }
+  std::optional<VideoCodecType> video_codec = MapVideoCodec(formats.video_codec);
+  std::optional<AudioCodecType> audio_codec = MapAudioCodec(formats.audio_codec);
 
-  return true;
+  if (!video_codec ||
+      !audio_codec) {
+    return false;
+  }
+  AudioFormat audio_format;
+  audio_format.sample_rate = formats.sample_rate;
+  audio_format.channel_count = formats.channel_count;
+  audio_format.has_adts = true;
+
+  media_session_ = std::move(media_session);
+
+  return media_session_->Start(
+      this,
+      *video_codec,
+      *audio_codec,
+      audio_format);
 }
 
 void GooglecastMirrorSession::EnableAudio(bool enable) {
-  if (audio_decoder_) {
-    audio_decoder_->EnablePlayback(enable);
+  if (media_session_) {
+    media_session_->EnableAudio(enable);
   }
-}
-bool GooglecastMirrorSession::CreateVideoDecoder(
-    const cast::CastMirrorSession::MediaFormats& formats) {
-  assert(!video_decoder_);
-
-  // create a surface texture
-  texture_ = texture_registry_.CreateSurfaceTexture();
-  assert(texture_.wnd);
-
-  std::optional<VideoDecoder::CodecType> codec_type = MapVideoCodec(formats.video_codec);
-  if (!codec_type) {
-    return false;
-  }
-
-  // create a video decoder that renders to the surface texture
-  auto decoder = ::CreateVideoDecoder(
-      *codec_type,
-      texture_.wnd,
-      this);
-  if (!decoder) {
-    return false;
-  }
-
-  video_decoder_ = std::move(decoder);
-  video_decoder_->Start();
-  return true;
 }
 
 void GooglecastMirrorSession::StopMirror() {
   ALOGI("Stopping the googlecast mirror session");
   session_->Stop();
 
-  if (video_decoder_) {
-    video_decoder_->Stop();
+  if (media_session_) {
+    media_session_->Stop();
   }
-  if (audio_decoder_) {
-    audio_decoder_->Stop();
-  }
-
-  texture_registry_.ReleaseSurfaceTexture(texture_);
 
   ALOGI("The googlecast mirror session has stopped");
-}
-
-bool GooglecastMirrorSession::CreateAudioDecoder(
-    const cast::CastMirrorSession::MediaFormats& formats) {
-  switch (formats.audio_codec) {
-    case cast::CastMirrorSession::AudioCodec::kAac:
-      audio_decoder_ = CreateAacDecoder(
-          formats.sample_rate,
-          formats.channel_count,
-          true);  // has_adts
-      break;
-
-    case cast::CastMirrorSession::AudioCodec::kOpus:
-      audio_decoder_ = CreateOpusDecoder(
-          formats.sample_rate,
-          formats.channel_count);
-      break;
-    default:
-      assert(0);
-      return false;
-  }
-
-  audio_decoder_->Init();
-  audio_decoder_->Start();
-
-  return true;
 }
 
 void GooglecastMirrorSession::OnVideoFormatChanged(
@@ -145,12 +110,11 @@ void GooglecastMirrorSession::OnMirrorEvent(
 void GooglecastMirrorSession::OnAudioFrame(
     std::shared_ptr<std::vector<uint8_t>> frame,
     uint64_t timestamp_us) {
-  if (!audio_decoder_) {
+  if (!media_session_) {
     return;
   }
 
-  // decode audio frame
-  audio_decoder_->Decode(
+  media_session_->OnAudioFrame(
       frame,
       timestamp_us);
 }
@@ -159,14 +123,13 @@ void GooglecastMirrorSession::OnVideoFrame(
     bool key_frame,
     std::shared_ptr<std::vector<uint8_t>> frame,
     uint64_t timestamp_us) {
-  if (!video_decoder_) {
+  if (!media_session_) {
     return;
   }
 
-  // decode video frame
-  video_decoder_->Decode(
-      frame->data(),
-      frame->size(),
+  media_session_->OnVideoFrame(
+      key_frame,
+      frame,
       timestamp_us);
 }
 
@@ -175,7 +138,7 @@ std::string GooglecastMirrorSession::GetMirrorId() {
 }
 
 SurfaceTexture GooglecastMirrorSession::GetTexture() {
-  return texture_;
+  return media_session_->GetTexture();
 }
 std::string GooglecastMirrorSession::GetSourceDisplayName() {
   return "";

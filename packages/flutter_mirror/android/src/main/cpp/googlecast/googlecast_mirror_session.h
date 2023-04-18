@@ -11,19 +11,19 @@
 #include "mirror_session.h"
 
 class GooglecastMirrorSession
-    : public VideoDecoder::Callback,
-      public MirrorSession,
+    : public MirrorSession,
+      public MediaSession::Listener,
       public openscreen::cast::CastMirrorSession::Listener {
  public:
   GooglecastMirrorSession(
       const std::string& mirror_id,
       MirrorListener& mirror_listener,
-      jni::TextureRegistry& texture_registry,
       openscreen::cast::CastMirrorSessionPtr session);
 
-  bool StartMirror();
-
   // implements MirrorSession
+  virtual bool StartMirror(
+      MediaSessionPtr media_session) override;
+
   virtual std::string GetMirrorId() override;
   virtual SurfaceTexture GetTexture() override;
   virtual std::string GetSourceDisplayName() override;
@@ -33,7 +33,7 @@ class GooglecastMirrorSession
   virtual void EnableAudio(bool enable) override;
   virtual void StopMirror() override;
 
-  // implements VideoDecoder::Callback
+  // implements MediaSession::Listener
   virtual void OnVideoFormatChanged(
       int width,
       int height) override;
@@ -52,26 +52,13 @@ class GooglecastMirrorSession
       uint64_t timestamp_us) override;
 
  private:
-  bool CreateVideoDecoder(
-      const openscreen::cast::CastMirrorSession::MediaFormats& formats);
-  bool CreateAudioDecoder(
-      const openscreen::cast::CastMirrorSession::MediaFormats& formats);
-
- private:
   const std::string mirror_id_;
   MirrorListener& mirror_listener_;
 
-  jni::TextureRegistry& texture_registry_;
-
   openscreen::cast::CastMirrorSessionPtr session_;
 
-  // video
-  std::unique_ptr<VideoDecoder> video_decoder_;
-  SurfaceTexture texture_;
-
-  // audio
-  std::unique_ptr<AudioDecoder> audio_decoder_;
+  MediaSessionPtr media_session_;
 };
-typedef std::unique_ptr<GooglecastMirrorSession> GooglecastMirrorSessionPtr;
+typedef std::shared_ptr<GooglecastMirrorSession> GooglecastMirrorSessionPtr;
 
 #endif  // FLUTTER_MIRROR_PLUGIN_GOOGLECAST_MIRROR_SESSION_H_

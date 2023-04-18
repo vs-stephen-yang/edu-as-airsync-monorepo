@@ -33,7 +33,7 @@ bool MiracastMirrorSession::StartMirror() {
 
   // create a video decoder that renders to the surface texture
   auto decoder = ::CreateVideoDecoder(
-      VideoDecoder::CodecType::kH264,
+      VideoCodecType::kH264,
       texture_.wnd,
       this);
   if (!decoder) {

@@ -4,6 +4,8 @@
 #include <memory>
 #include <vector>
 
+#include "media/media_format.h"
+
 class AudioDecoder {
  public:
   virtual ~AudioDecoder() = default;
@@ -25,6 +27,10 @@ class AudioDecoder {
       int64_t presentationTimeUs) = 0;
 };
 typedef std::unique_ptr<AudioDecoder> AudioDecoderPtr;
+
+AudioDecoderPtr CreateAudioDecoder(
+    AudioCodecType codec_type,
+    AudioFormat format);
 
 AudioDecoderPtr CreateOpusDecoder(
     unsigned int sample_rate,

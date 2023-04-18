@@ -1,15 +1,12 @@
 #ifndef FLUTTER_MIRROR_PLUGIN_VIDEO_DECODER_H_
 #define FLUTTER_MIRROR_PLUGIN_VIDEO_DECODER_H_
 
+#include <android/native_window_jni.h>
 #include <memory>
+#include "media/media_format.h"
 
 class VideoDecoder {
  public:
-  enum class CodecType {
-    kH264,
-    kVp8
-  };
-
   class Callback {
    public:
     virtual ~Callback() = default;
@@ -34,7 +31,7 @@ class VideoDecoder {
 typedef std::unique_ptr<VideoDecoder> VideoDecoderPtr;
 
 VideoDecoderPtr CreateVideoDecoder(
-    VideoDecoder::CodecType codec_type,
+    VideoCodecType codec_type,
     ANativeWindow* surface,
     VideoDecoder::Callback* callback);
 
