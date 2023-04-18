@@ -42,17 +42,8 @@ struct ATSParser {
     virtual ~Callback() {}
 
     virtual void OnAudioFrame(
-        std::shared_ptr<std::vector<uint8_t>> frame,
-        uint64_t timestamp_us) = 0;
-
-    virtual void OnAudioFrame(
         const uint8_t* frame,
         size_t frameSize,
-        uint64_t timestamp_us) = 0;
-
-    virtual void OnVideoFrame(
-        bool key_frame,
-        std::shared_ptr<std::vector<uint8_t>> frame,
         uint64_t timestamp_us) = 0;
 
     virtual void OnVideoFrame(

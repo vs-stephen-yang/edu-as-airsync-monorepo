@@ -25,26 +25,6 @@ MiracastReceiver::~MiracastReceiver() {
   env->DeleteGlobalRef(obj_);
 }
 
-void MiracastReceiver::onMirrorStart(int mirrorId, long textureId) {
-  jni::ScopedEnv env(vm_);
-
-  env->CallVoidMethod(
-      obj_,
-      onMirrorStartMID,
-      mirrorId,
-      textureId);
-}
-
-void MiracastReceiver::onMirrorVideoResize(int mirrorId, int width, int height) {
-  jni::ScopedEnv env(vm_);
-
-  env->CallVoidMethod(
-      obj_,
-      onMirrorVideoResizeMID,
-      mirrorId,
-      width,
-      height);
-}
 
 void MiracastReceiver::sendIdrRequest(int mirrorId) {
   jni::ScopedEnv env(vm_);
@@ -59,13 +39,6 @@ void MiracastReceiver::InitMethods(
     JNIEnv* env,
     jobject obj) {
   jclass cls = env->GetObjectClass(obj);
-
-  // Methods of MiracastReceiver Java class
-  // void onMirrorStart(int mirrorId, long textureId)
-  DEFINE_METHOD(onMirrorStart, "(IJ)V");
-
-  // void onMirrorVideoResize(int mirrorId, int width, int height)
-  DEFINE_METHOD(onMirrorVideoResize, "(III)V");
 
   // void sendIdrRequest(int mirrorId)
   DEFINE_METHOD(sendIdrRequest, "(I)V");

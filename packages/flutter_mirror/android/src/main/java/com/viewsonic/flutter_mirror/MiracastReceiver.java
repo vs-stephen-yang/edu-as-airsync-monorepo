@@ -14,17 +14,13 @@ public class MiracastReceiver implements
 
   private static final String TAG = "MiracastReceiver";
   private long instance_;
-  private MirrorListener mirrorListener_;
 
   public MiracastReceiver(
-      MirrorListener mirrorListener,
-      TexRegistry textureRegistry) {
-    assert textureRegistry != null;
+      long mirrorListenerInstance) {
 
-    mirrorListener_ = mirrorListener;
-
+    // create a C++ MiracastReceiver object
     instance_ = createInstanceNative(
-        textureRegistry);
+        mirrorListenerInstance);
 
     assert (instance_ != 0);
   }
@@ -62,21 +58,6 @@ public class MiracastReceiver implements
         y);
   }
 
-  // A mirror session starts. Called from native
-  public void onMirrorStart(int sessionId, long textureId) {
-    mirrorListener_.onMirrorStart(
-        String.valueOf(sessionId),
-        textureId);
-  }
-
-  // The size the mirror video changes. Called from native
-  public void onMirrorVideoResize(int sessionId, int width, int height) {
-    mirrorListener_.onMirrorVideoResize(
-        String.valueOf(sessionId),
-        width,
-        height);
-  }
-
   // Called from native
   public void sendIdrRequest(int sessionId) {
     MiraMgr.getInstance().rtspRequestIdr(sessionId);
@@ -93,9 +74,6 @@ public class MiracastReceiver implements
   @Override
   public void onSessionEnd(int sessionId) {
     assert instance_ != 0;
-
-    mirrorListener_.onMirrorStop(
-        String.valueOf(sessionId));
 
     onSessionEndNative(instance_, sessionId);
   }
@@ -147,9 +125,9 @@ public class MiracastReceiver implements
 
   // Native methods
   private native long createInstanceNative(
-      TexRegistry textureRegistry);
+      long mirrorListenerInstance);
 
-  private native void DestroyInstanceNative(
+  private native void destroyInstanceNative(
       long instance);
 
   private native void onSessionBeginNative(

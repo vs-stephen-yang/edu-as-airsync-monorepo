@@ -9,39 +9,40 @@ using namespace std;
 
 MiracastMirrorSession::MiracastMirrorSession(
     int id,
-    jni::TextureRegistry& texture_registry,
+    MirrorListener& mirror_listener,
     MiracastReceiver& receiver)
     : id_(id),
-      texture_registry_(texture_registry),
-      receiver_(receiver) {
+      receiver_(receiver),
+      mirror_listener_(mirror_listener) {
+  mirror_id_ = std::to_string(id_);
 }
 
 int MiracastMirrorSession::Id() const {
   return id_;
 }
 
-SurfaceTexture MiracastMirrorSession::GetTexture() const {
-  return texture_;
+SurfaceTexture MiracastMirrorSession::GetTexture() {
+  return media_session_->GetTexture();
 }
 
-bool MiracastMirrorSession::StartMirror() {
-  ALOGI("Starting the mirror session");
+bool MiracastMirrorSession::StartMirror(
+    MediaSessionPtr media_session) {
+  ALOGI("Starting a Miracast mirror session");
 
-  // create a surface texture
-  texture_ = texture_registry_.CreateSurfaceTexture();
-  assert(texture_.wnd);
+  media_session_ = std::move(media_session);
 
-  // create a video decoder that renders to the surface texture
-  auto decoder = ::CreateVideoDecoder(
-      VideoCodecType::kH264,
-      texture_.wnd,
-      this);
-  if (!decoder) {
+  AudioFormat audio_format;
+  audio_format.sample_rate = 44100;
+  audio_format.channel_count = 2;
+  audio_format.has_adts = true;
+
+  if (!media_session_->Start(
+          this,
+          VideoCodecType::kH264,
+          AudioCodecType::kAac,
+          audio_format)) {
     return false;
   }
-
-  video_decoder_ = std::move(decoder);
-  video_decoder_->Start();
 
   // create a TS parser
   ts_parser_ = std::make_unique<ATSParser>(this);
@@ -52,14 +53,11 @@ bool MiracastMirrorSession::StartMirror() {
 void MiracastMirrorSession::StopMirror() {
   ALOGI("Stopping the mirror session");
 
-  if (video_decoder_) {
-    video_decoder_->Stop();
-  }
-  if (audio_decoder_) {
-    audio_decoder_->Stop();
-  }
+  receiver_.StopMirror(id_);
 
-  texture_registry_.ReleaseSurfaceTexture(texture_);
+  if (media_session_) {
+    media_session_->Stop();
+  }
 
   ALOGI("The mirror session #%d has stopped", id_);
 }
@@ -73,30 +71,11 @@ void MiracastMirrorSession::UpdateAudioFormat(
   channel_count_ = channelCount;
 }
 
-void MiracastMirrorSession::CreateAudioDecoder() {
-  if (audio_decoder_) {
-    audio_decoder_->Stop();
-  }
-
-  if (codec_name_ != "AAC") {
-    ALOGE("Unsupported codec %s", codec_name_.c_str());
-    return;
-  }
-
-  audio_decoder_ = CreateAacDecoder(
-      sample_rate_,
-      channel_count_,
-      true);
-
-  audio_decoder_->Init();
-  audio_decoder_->Start();
-}
-
 void MiracastMirrorSession::OnVideoFormatChanged(
     int width,
     int height) {
-  receiver_.OnVideoFormatChanged(
-      *this,
+  mirror_listener_.OnMirrorVideoResize(
+      this,
       width,
       height);
 }
@@ -105,23 +84,17 @@ void MiracastMirrorSession::OnAudioFrame(
     const uint8_t* frame,
     size_t frameSize,
     uint64_t timestamp_us) {
-  if (!audio_decoder_) {
-    CreateAudioDecoder();
+  if (!media_session_) {
     return;
   }
-  // decode audio frame
-  audio_decoder_->Decode(
-      frame,
-      frameSize,
-      timestamp_us);
-}
 
-void MiracastMirrorSession::OnAudioFrame(
-    std::shared_ptr<std::vector<uint8_t>> frame,
-    uint64_t timestamp_us) {
-  OnAudioFrame(frame->data(),
-               frame->size(),
-               timestamp_us);
+  auto buf = std::make_shared<std::vector<uint8_t>>(
+      frame,
+      frame + frameSize);
+
+  media_session_->OnAudioFrame(
+      buf,
+      timestamp_us);
 }
 
 void MiracastMirrorSession::OnVideoFrame(
@@ -129,25 +102,18 @@ void MiracastMirrorSession::OnVideoFrame(
     const uint8_t* frame,
     size_t frameSize,
     uint64_t timestamp_us) {
-  if (!video_decoder_) {
+  if (!media_session_) {
     return;
   }
 
-  // decode video frame
-  video_decoder_->Decode(
+  auto buf = std::make_shared<std::vector<uint8_t>>(
       frame,
-      frameSize,
-      timestamp_us);
-}
+      frame + frameSize);
 
-void MiracastMirrorSession::OnVideoFrame(
-    bool key_frame,
-    std::shared_ptr<std::vector<uint8_t>> frame,
-    uint64_t timestamp_us) {
-  OnVideoFrame(key_frame,
-               frame->data(),
-               frame->size(),
-               timestamp_us);
+  media_session_->OnVideoFrame(
+      key_frame,
+      buf,
+      timestamp_us);
 }
 
 void MiracastMirrorSession::OnPacketLoss() {
@@ -227,3 +193,25 @@ void MiracastMirrorSession::processRTPData(const uint8_t* data, int length) {
     ts_parser_->feedTSPacket((void*)(data + payloadOffset), kTSPacketSize);
   }
 };
+
+std::string MiracastMirrorSession::GetMirrorId() {
+  return mirror_id_;
+}
+
+std::string MiracastMirrorSession::GetSourceDisplayName() {
+  return "";
+}
+
+MirrorType MiracastMirrorSession::GetMirrorType() {
+  return MirrorType::Miracast;
+}
+
+void MiracastMirrorSession::EnableAudio(bool enable) {
+  if (media_session_) {
+    media_session_->EnableAudio(enable);
+  }
+}
+
+void MiracastMirrorSession::OnMirrorStop() {
+  mirror_listener_.OnMirrorStop(this);
+}

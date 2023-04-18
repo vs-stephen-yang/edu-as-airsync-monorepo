@@ -15,10 +15,6 @@ class MiracastReceiver {
 
   ~MiracastReceiver();
 
-  void onMirrorStart(int mirrorId, long textureId);
-
-  void onMirrorVideoResize(int mirrorId, int width, int height);
-
   void sendIdrRequest(int mirrorId);
 
  private:
@@ -31,8 +27,6 @@ class MiracastReceiver {
   JavaVM* vm_ = nullptr;
 
   // Methods of MiracastReceiver Java class
-  jmethodID onMirrorStartMID = nullptr;
-  jmethodID onMirrorVideoResizeMID = nullptr;
   jmethodID sendIdrRequestMID = nullptr;
 };
 

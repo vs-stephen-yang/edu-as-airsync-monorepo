@@ -14,20 +14,33 @@
 class MiracastReceiver;
 
 class MiracastMirrorSession
-    : public VideoDecoder::Callback,
+    : public MirrorSession,
+      public MediaSession::Listener,
       public ATSParser::Callback {
  public:
   MiracastMirrorSession(
       int id,
-      jni::TextureRegistry& texture_registry,
+      MirrorListener& mirror_listener,
       MiracastReceiver& receiver);
 
   int Id() const;
-  SurfaceTexture GetTexture() const;
 
-  bool StartMirror();
+  // implements MirrorSession
+  virtual bool StartMirror(
+      MediaSessionPtr media_session) override;
 
-  void StopMirror();
+  virtual std::string GetMirrorId() override;
+  virtual SurfaceTexture GetTexture() override;
+  virtual std::string GetSourceDisplayName() override;
+
+  virtual MirrorType GetMirrorType() override;
+
+  virtual void EnableAudio(bool enable) override;
+
+  virtual void StopMirror() override;
+
+  //
+  void OnMirrorStop();
 
   void processRTPData(const uint8_t* data, int length);
 
@@ -38,17 +51,8 @@ class MiracastMirrorSession
 
   // implements ATSParser::Callback
   virtual void OnAudioFrame(
-      std::shared_ptr<std::vector<uint8_t>> frame,
-      uint64_t timestamp_us) override;
-
-  virtual void OnAudioFrame(
       const uint8_t* frame,
       size_t frameSize,
-      uint64_t timestamp_us) override;
-
-  virtual void OnVideoFrame(
-      bool key_frame,
-      std::shared_ptr<std::vector<uint8_t>> frame,
       uint64_t timestamp_us) override;
 
   virtual void OnVideoFrame(
@@ -59,27 +63,22 @@ class MiracastMirrorSession
 
   virtual void OnPacketLoss() override;
 
-  // implements VideoDecoder::Callback
+  // implements MediaSession::Listener
   virtual void OnVideoFormatChanged(
       int width,
       int height) override;
 
  private:
-  void CreateAudioDecoder();
-
- private:
   const int id_ = 0;
-  jni::TextureRegistry& texture_registry_;
+  std::string mirror_id_;
+
   MiracastReceiver& receiver_;
+  MirrorListener& mirror_listener_;
+
+  MediaSessionPtr media_session_;
 
   ATSParserPtr ts_parser_;
 
-  // video
-  std::unique_ptr<VideoDecoder> video_decoder_;
-  SurfaceTexture texture_;
-
-  // audio
-  std::unique_ptr<AudioDecoder> audio_decoder_;
   std::string codec_name_;
   int sample_rate_ = 0;
   int channel_count_ = 0;
@@ -87,5 +86,5 @@ class MiracastMirrorSession
   int64_t num_packets_received_ = 0;
   uint64_t packets_offset_ = 0;
 };
-typedef std::unique_ptr<MiracastMirrorSession> MiracastMirrorSessionPtr;
+typedef std::shared_ptr<MiracastMirrorSession> MiracastMirrorSessionPtr;
 #endif  // FLUTTER_MIRROR_PLUGIN_MIRACAST_MIRROR_SESSION_H_
