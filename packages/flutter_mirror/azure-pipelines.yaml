@@ -4,7 +4,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/android
 
 trigger:
-  - main
+  batch: true
+  branches:
+    include:
+      - main
 
 variables:
   - group: ifp-keystore-secrets
