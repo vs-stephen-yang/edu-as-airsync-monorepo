@@ -38,12 +38,13 @@ public class MirrorReceiver implements
   }
 
   // start airplay
-  public void startAirplay(String name) {
+  public void startAirplay(String name, String security) {
     assert instance_ != 0;
 
     startAirplayNative(
         instance_,
-        name);
+        name,
+        security);
   }
 
   // start googlecast
@@ -152,7 +153,8 @@ public class MirrorReceiver implements
 
   private native void startAirplayNative(
       long instance,
-      String name);
+      String name,
+      String security);
 
   public native void startGooglecastNative(
       long instance,

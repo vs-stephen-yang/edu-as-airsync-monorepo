@@ -151,9 +151,11 @@ public class FlutterMirrorPlugin implements
       result.success(new HashMap<>());
     } else if (call.method.equals("startAirplay")) {
       String name = call.argument("name");
+      String security = call.argument("security");
 
       startAirplay(
-          name);
+          name,
+          security);
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
@@ -199,10 +201,10 @@ public class FlutterMirrorPlugin implements
     mirrorReceiver_ = new MirrorReceiver(this, this);
   }
 
-  private void startAirplay(String name) {
+  private void startAirplay(String name, String security) {
     assert mirrorReceiver_ != null;
 
-    mirrorReceiver_.startAirplay(name);
+    mirrorReceiver_.startAirplay(name, security);
   }
 
   private void startGooglecast(String name, GooglecastCredentials credentials) {

@@ -4,6 +4,7 @@ import 'flutter_mirror_method_channel.dart';
 import 'flutter_mirror_listener.dart';
 
 import 'credentials.dart';
+import 'airplay_config.dart';
 
 abstract class FlutterMirrorPlatform extends PlatformInterface {
   /// Constructs a FlutterMirrorPlatform.
@@ -34,7 +35,7 @@ abstract class FlutterMirrorPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  Future<void> startAirplay(String name) async {
+  Future<void> startAirplay(AirplayConfig config) async {
     throw UnimplementedError('startAirplay() has not been implemented.');
   }
 

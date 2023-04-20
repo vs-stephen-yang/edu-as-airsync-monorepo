@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
 import 'package:flutter_mirror/credential_store.dart';
+import 'package:flutter_mirror/airplay_config.dart';
 
 void main() {
   runApp(const MyApp());
@@ -52,7 +53,10 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
       await _plugin.initialize();
 
       // start airplay
-      await _plugin.startAirplay("display-1");
+      await _plugin.startAirplay(const AirplayConfig(
+        name: "display-1",
+        security: AirplaySecurity.none,
+      ));
 
       // load today's credentials
       final credentials = await CredentialsStore.loadToday();
