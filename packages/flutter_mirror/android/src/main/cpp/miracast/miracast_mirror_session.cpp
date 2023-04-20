@@ -32,7 +32,7 @@ bool MiracastMirrorSession::StartMirror(
   media_session_ = std::move(media_session);
 
   AudioFormat audio_format;
-  audio_format.sample_rate = 44100;
+  audio_format.sample_rate = 48000;
   audio_format.channel_count = 2;
   audio_format.has_adts = true;
 
