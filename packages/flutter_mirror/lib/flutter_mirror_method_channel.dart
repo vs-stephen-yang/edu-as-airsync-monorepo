@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mirror/airplay_config.dart';
 
 import 'flutter_mirror_platform_interface.dart';
 import 'flutter_mirror_listener.dart';
@@ -37,9 +38,10 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
   }
 
   @override
-  Future<void> startAirplay(String name) async {
+  Future<void> startAirplay(AirplayConfig config) async {
     await methodChannel.invokeMethod('startAirplay', {
-      "name": name,
+      "name": config.name,
+      "security": config.security.name,
     });
   }
 

@@ -67,7 +67,8 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startAirplayNative(
     JNIEnv* env,
     jobject thiz,
     jlong instance,
-    jstring jname) {
+    jstring jname,
+    jstring jsecurity) {
   assert(instance != 0);
   ALOGV("startAirplayNative()");
 
@@ -77,8 +78,10 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startAirplayNative(
 
   ap::AirplayReceiver::Config config;
 
+  std::string security = str.ToUtf8(jsecurity);
+
   config.name = str.ToUtf8(jname);
-  config.enable_auth = true;
+  config.enable_auth = (security == "onscreenCode");
   config.pin_expiry_sec = 30;
 
   receiver->StartAirplay(config);
