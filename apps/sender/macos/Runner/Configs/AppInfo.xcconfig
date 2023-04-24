@@ -8,7 +8,7 @@
 PRODUCT_NAME = display_cast_flutter
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.viewsonic.displayCastFlutter
+PRODUCT_BUNDLE_IDENTIFIER = com.viewsonic.display.cast
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2023 com.viewsonic. All rights reserved.
