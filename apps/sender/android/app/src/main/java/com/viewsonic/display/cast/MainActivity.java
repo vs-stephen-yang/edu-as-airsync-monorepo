@@ -1,4 +1,4 @@
-package com.viewsonic.display_cast_flutter;
+package com.viewsonic.display.cast;
 
 import io.flutter.embedding.android.FlutterActivity;
 
