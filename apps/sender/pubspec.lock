@@ -115,6 +115,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.0"
+  no_context_navigation:
+    dependency: "direct main"
+    description:
+      name: no_context_navigation
+      sha256: "8bf0549c9c06cee77182a70e4a6a982fcb2d0d1dc06e712295f2c69a56fe3e19"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.2"
   path:
     dependency: transitive
     description:
