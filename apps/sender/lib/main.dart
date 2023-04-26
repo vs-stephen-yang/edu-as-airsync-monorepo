@@ -1,5 +1,7 @@
+import 'package:display_cast_flutter/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:no_context_navigation/no_context_navigation.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,28 +26,21 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.black, // Set app background color
       ),
-      home: const MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[],
-        ),
-      ),
+      initialRoute: "/home",
+      navigatorKey: NavigationService.navigationKey,
+      routes: {
+        // for "navService.popUntil('/home')"
+        '/home': (context) => const Home(),
+      },
+      onGenerateRoute: (routeSettings) {
+        switch (routeSettings.name) {
+          case '/home':
+            return MaterialPageRoute<String>(
+                builder: (context) => const Home());
+        }
+        return null;
+      },
+      // home: const Home(),
     );
   }
 }
