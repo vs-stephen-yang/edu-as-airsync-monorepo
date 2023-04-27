@@ -309,7 +309,11 @@ public class FlutterMirrorPlugin implements
     });
   }
 
-  public void onMirrorStart(String mirrorId, long textureId) {
+  public void onMirrorStart(
+      String mirrorId,
+      long textureId,
+      String deviceName,
+      String mirrorType) {
     Log.d(TAG, "FlutterMirrorPlugin::onMirrorStart() " + mirrorId);
 
     // Must run on the platform thread
@@ -317,6 +321,8 @@ public class FlutterMirrorPlugin implements
       Map<String, Object> arguments = new HashMap<>();
       arguments.put("mirrorId", mirrorId);
       arguments.put("textureId", textureId);
+      arguments.put("deviceName", deviceName);
+      arguments.put("mirrorType", mirrorType);
 
       channel_.invokeMethod("onMirrorStart", arguments);
     });

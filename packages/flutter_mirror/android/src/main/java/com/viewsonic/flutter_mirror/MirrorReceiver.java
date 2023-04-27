@@ -114,8 +114,16 @@ public class MirrorReceiver implements
   }
 
   @Override
-  public void onMirrorStart(String mirrorId, long textureId) {
-    mirrorListener_.onMirrorStart(mirrorId, textureId);
+  public void onMirrorStart(
+      String mirrorId,
+      long textureId,
+      String deviceName,
+      String mirrorType) {
+    mirrorListener_.onMirrorStart(
+        mirrorId,
+        textureId,
+        deviceName,
+        mirrorType);
   }
 
   @Override

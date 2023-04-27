@@ -40,14 +40,18 @@ void MirrorReceiver::OnMirrorAuth(
 // when a mirror session starts
 void MirrorReceiver::OnMirrorStart(
     const std::string& mirror_id,
-    int64_t texture_id) {
+    int64_t texture_id,
+    const std::string& device_name,
+    const std::string& mirror_type) {
   jni::ScopedEnv env(vm_);
 
   env->CallVoidMethod(
       obj_,
       onMirrorStart,
       env->NewStringUTF(mirror_id.c_str()),
-      texture_id);
+      texture_id,
+      env->NewStringUTF(device_name.c_str()),
+      env->NewStringUTF(mirror_type.c_str()));
 }
 
 // when a mirror session stops
@@ -99,8 +103,8 @@ void MirrorReceiver::InitMethods(
 
   // void OnMirrorAuth(String pin, int timeoutSec)
   DEFINE_METHOD(onMirrorAuth, "(Ljava/lang/String;I)V");
-  // void onMirrorStart(String mirrorId, long textureId)
-  DEFINE_METHOD(onMirrorStart, "(Ljava/lang/String;J)V");
+  // void onMirrorStart(String mirrorId, long textureId, String deviceName, String mirrorType)
+  DEFINE_METHOD(onMirrorStart, "(Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)V");
   // void onMirrorStop(String mirrorId)
   DEFINE_METHOD(onMirrorStop, "(Ljava/lang/String;)V");
 

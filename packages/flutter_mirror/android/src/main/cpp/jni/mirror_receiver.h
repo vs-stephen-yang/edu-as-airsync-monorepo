@@ -23,7 +23,9 @@ class MirrorReceiver {
   // when a mirror session starts
   void OnMirrorStart(
       const std::string& mirror_id,
-      int64_t texture_id);
+      int64_t texture_id,
+      const std::string& device_name,
+      const std::string& mirror_type);
 
   // when a mirror session stops
   void OnMirrorStop(

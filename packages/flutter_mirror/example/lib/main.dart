@@ -6,6 +6,7 @@ import 'package:flutter_mirror/flutter_mirror.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
 import 'package:flutter_mirror/credential_store.dart';
 import 'package:flutter_mirror/airplay_config.dart';
+import 'package:flutter_mirror/mirror_type.dart';
 
 void main() {
   runApp(const MyApp());
@@ -93,7 +94,14 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
   }
 
   @override
-  void onMirrorStart(String mirrorId, int textureId) {
+  void onMirrorStart(
+    String mirrorId,
+    int textureId,
+    String deviceName,
+    MirrorType mirrorType,
+  ) {
+    print('Mirror type: $mirrorType');
+
     _pinTimer?.cancel();
     _pin = "";
     _pinVisibility = false;
