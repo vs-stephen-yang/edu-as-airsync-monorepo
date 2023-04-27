@@ -56,7 +56,7 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
       // start airplay
       await _plugin.startAirplay(const AirplayConfig(
         name: "display-1",
-        security: AirplaySecurity.none,
+        security: AirplaySecurity.onscreenCode,
       ));
 
       // load today's credentials
