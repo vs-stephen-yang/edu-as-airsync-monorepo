@@ -25,6 +25,17 @@
 #define MIRACAST(instance) \
   reinterpret_cast<MiracastReceiver*>(instance);
 
+struct AirplaySecurity {
+  static const std::string kNone;
+  static const std::string kOnscreenCode;
+  static const std::string kPassword;
+};
+
+// the values must be same with the ones defined in lib\airplay_config.dart
+const std::string AirplaySecurity::kNone("none");
+const std::string AirplaySecurity::kOnscreenCode("onscreenCode");
+const std::string AirplaySecurity::kPassword("password");
+
 JavaVM* g_vm = nullptr;
 
 extern "C" {
@@ -81,7 +92,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startAirplayNative(
   std::string security = str.ToUtf8(jsecurity);
 
   config.name = str.ToUtf8(jname);
-  config.enable_auth = (security == "onscreenCode");
+  config.enable_auth = (security == AirplaySecurity::kOnscreenCode);
   config.pin_expiry_sec = 30;
 
   receiver->StartAirplay(config);
