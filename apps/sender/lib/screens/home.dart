@@ -1,4 +1,5 @@
-import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/widgets/bottom_bar.dart';
+import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -11,23 +12,23 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    AppConfig? appConfig = AppConfig.of(context);
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              appConfig?.appName ?? '',
-              style: const TextStyle(color: Colors.white),
+      body: ConstrainedBox(
+        constraints: const BoxConstraints.expand(),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            const Positioned(
+              left: 0,
+              top: 0,
+              right: 0,
+              child: TitleBar(),
             ),
-            Text(
-              appConfig?.appVersion ?? '',
-              style: const TextStyle(color: Colors.white),
-            ),
-            Text(
-              appConfig?.appVersionCode.toString() ?? '',
-              style: const TextStyle(color: Colors.white),
+            const Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: BottomBar(),
             ),
           ],
         ),
