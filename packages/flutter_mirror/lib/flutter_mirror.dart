@@ -39,4 +39,9 @@ class FlutterMirror {
     return FlutterMirrorPlatform.instance
         .onMirrorTouch(mirrorId, touchId, touchDown, x, y);
   }
+
+  // update googlecast's credentials for device authentication
+  Future<void> updateCredentials(Credentials credentials) async {
+    return FlutterMirrorPlatform.instance.updateCredentials(credentials);
+  }
 }

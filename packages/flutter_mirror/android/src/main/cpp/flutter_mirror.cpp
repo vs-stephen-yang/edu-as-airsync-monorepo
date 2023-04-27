@@ -117,6 +117,16 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_updateGooglecastCredentialNati
     jobject thiz,
     jlong instance,
     jobject credentials) {
+  assert(instance != 0);
+  assert(credentials != nullptr);
+  ALOGV("updateGooglecastCredentialNative()");
+
+  MirrorReceiver* receiver = MIRROR(instance);
+
+  jni::Credentials creds(env, credentials);
+
+  receiver->UpdateGooglecastCredentials(
+      creds.FromJObject());
 }
 
 JNIEXPORT void JNICALL

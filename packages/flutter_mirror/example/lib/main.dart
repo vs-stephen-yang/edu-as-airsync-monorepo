@@ -145,8 +145,17 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
     });
   }
 
+  // update googlecast's credentials
+  void updateCredentials(int year, int month, int day) async {
+    final credentials = await CredentialsStore.load(year, month, day);
+
+    _plugin.updateCredentials(credentials);
+  }
+
   @override
   void onCredentialsUpdate(int year, int month, int day) {
+    updateCredentials(year, month, day);
+
     if (!mounted) return;
   }
 

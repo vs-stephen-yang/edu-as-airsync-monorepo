@@ -192,6 +192,14 @@ public class FlutterMirrorPlugin implements
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
+    } else if (call.method.equals("updateCredentials")) {
+      Map<String, Object> credentials = call.argument("credentials");
+
+      updateCredentials(
+          GooglecastCredentials.fromMap(credentials));
+
+      Map<String, Long> reply = new HashMap<>();
+      result.success(reply);
     } else {
       result.notImplemented();
     }
@@ -211,6 +219,10 @@ public class FlutterMirrorPlugin implements
     assert mirrorReceiver_ != null;
 
     mirrorReceiver_.startGooglecast(name, credentials);
+  }
+
+  private void updateCredentials(GooglecastCredentials credentials) {
+    mirrorReceiver_.updateCredentials(credentials);
   }
 
   private void startMiracast(String name) {
