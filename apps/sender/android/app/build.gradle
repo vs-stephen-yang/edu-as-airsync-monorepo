@@ -45,6 +45,22 @@ android {
         versionName flutterVersionName
     }
 
+    flavorDimensions("channel")
+    productFlavors {
+        ifp {
+            dimension "channel"
+        }
+        open {
+            dimension "channel"
+        }
+        store {
+            dimension "channel"
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
