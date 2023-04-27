@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/airplay_config.dart';
+import 'package:flutter_mirror/mirror_type.dart';
 
 import 'flutter_mirror_platform_interface.dart';
 import 'flutter_mirror_listener.dart';
@@ -98,8 +99,15 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
       if (call.method == 'onMirrorStart') {
         String mirrorId = call.arguments["mirrorId"];
         int textureId = call.arguments["textureId"];
+        String deviceName = call.arguments["deviceName"];
+        String mirrorType = call.arguments["mirrorType"];
 
-        _listener?.onMirrorStart(mirrorId, textureId);
+        _listener?.onMirrorStart(
+          mirrorId,
+          textureId,
+          deviceName,
+          MirrorType.values.byName(mirrorType),
+        );
       } else if (call.method == 'onMirrorStop') {
         String mirrorId = call.arguments["mirrorId"];
 

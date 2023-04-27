@@ -2,6 +2,18 @@
 #include <assert.h>
 #include "util/log.h"
 
+std::string MirrorTypeToName(MirrorType mirror_type) {
+  // The values must be same with the ones defined in lib\mirror_type.dart
+  switch (mirror_type) {
+    case MirrorType::Airplay:
+      return "airplay";
+    case MirrorType::Googlecast:
+      return "googlecast";
+    case MirrorType::Miracast:
+      return "miracast";
+  }
+}
+
 MirrorReceiver::MirrorReceiver(
     jni::MirrorReceiverPtr&& proxy,
     jni::TextureRegistryPtr&& texture_registry)
@@ -84,9 +96,16 @@ void MirrorReceiver::OnMirrorStart(
   std::string mirror_id = session->GetMirrorId();
   SurfaceTexture tex = session->GetTexture();
 
+  std::string device_name = session->GetSourceDisplayName();
+  MirrorType mirror_type = session->GetMirrorType();
+
   sessions_[mirror_id] = session;
 
-  proxy_->OnMirrorStart(mirror_id, tex.id);
+  proxy_->OnMirrorStart(
+      mirror_id,
+      tex.id,
+      device_name,
+      MirrorTypeToName(mirror_type));
 }
 
 void MirrorReceiver::OnMirrorStop(
