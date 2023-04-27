@@ -89,6 +89,13 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
   }
 
   @override
+  Future<void> updateCredentials(Credentials credentials) async {
+    await methodChannel.invokeMethod('updateCredentials', {
+      "credentials": credentialToMap(credentials),
+    });
+  }
+
+  @override
   void registerListener(FlutterMirrorListener listener) {
     _listener = listener;
   }

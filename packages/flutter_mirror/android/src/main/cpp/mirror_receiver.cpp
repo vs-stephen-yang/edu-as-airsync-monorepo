@@ -72,6 +72,15 @@ void MirrorReceiver::StopMirror(
   // TODO
 }
 
+void MirrorReceiver::UpdateGooglecastCredentials(
+    const openscreen::cast::CastReceiver::Credentials& credetials) {
+  if (!googlecast_receiver_) {
+    return;
+  }
+
+  googlecast_receiver_->UpdateCredentials(credetials);
+}
+
 // MirrorListener
 void MirrorReceiver::OnMirrorAuth(
     const std::string& pin,

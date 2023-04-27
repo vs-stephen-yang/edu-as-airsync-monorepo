@@ -37,6 +37,10 @@ class MirrorReceiver
   void StopMirror(
       const std::string& mirror_id);
 
+  // update googlecast's credentials for device authentication
+  void UpdateGooglecastCredentials(
+      const openscreen::cast::CastReceiver::Credentials& credetials);
+
   // MirrorListener
   virtual void OnMirrorAuth(
       const std::string& pin_code,

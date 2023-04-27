@@ -99,8 +99,18 @@ void GooglecastReceiver::OnCredentialsRequest(
     int year,
     int month,
     int day) {
+  ALOGD("OnCredentialsRequest()");
+
   mirror_listener_.OnCredentialsUpdate(
       year,
       month,
       day);
+}
+
+void GooglecastReceiver::UpdateCredentials(
+    const openscreen::cast::CastReceiver::Credentials& creds) {
+  ALOGD("UpdateCredentials()");
+
+  receiver_->UpdateCredentials(
+      creds);
 }

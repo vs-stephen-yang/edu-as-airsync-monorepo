@@ -7,6 +7,7 @@
 
 namespace jni {
 
+// Googlecast's credentials for device authentication
 class Credentials {
  public:
   Credentials(

@@ -59,4 +59,9 @@ abstract class FlutterMirrorPlatform extends PlatformInterface {
       String mirrorId, int touchId, bool touchDown, double x, double y) async {
     throw UnimplementedError('onMirrorTouch() has not been implemented.');
   }
+
+  // update googlecast's credentials for device authentication
+  Future<void> updateCredentials(Credentials credentials) async {
+    throw UnimplementedError('updateCredentials() has not been implemented.');
+  }
 }

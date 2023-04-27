@@ -85,6 +85,15 @@ public class MirrorReceiver implements
         mirrorId);
   }
 
+  // update googlecast's credentials
+  public void updateCredentials(GooglecastCredentials credentials) {
+    assert instance_ != 0;
+
+    updateGooglecastCredentialNative(
+        instance_,
+        credentials);
+  }
+
   public void enableAudio(String mirrorId, boolean enable) {
     assert instance_ != 0;
 
