@@ -1,10 +1,13 @@
 import 'package:display_cast_flutter/screens/home.dart';
+import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
-void main() {
-  runApp(const MyApp());
+void commonEntry(ConfigSettings settings) {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(AppConfig(settings: settings, child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -20,7 +23,7 @@ class MyApp extends StatelessWidget {
     );
 
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Display Cast',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,

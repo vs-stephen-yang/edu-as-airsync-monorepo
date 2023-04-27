@@ -2,15 +2,23 @@
 
 Display Cast for Flutter [Android(java), iOS(swift), MacOS, Web, Windows)]
 
-## Getting Started
+## Configurations description
+Android will using "productFlavors" to separate different deploy channel: IFP, OPEN, STORE.
 
-This project is a starting point for a Flutter application.
+Configurations name will combination environment name and this "productFlavors" to naming.
 
-A few resources to get you started if this is your first Flutter project:
+#### environment:
+* **Dev**: for dev environment (Developer)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+* **Production**: for production environment (EndUser)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* **Stage**: for stage environment (Internal Test)
+
+#### productFlavors:
+* **no_flavor**: This is no flavor required App (none Android)
+
+* **ifp**: This is Android system App, sign with viewsonic Platform key.
+
+* **open**: This is Android normal App, sign with viewsonic key. Download link in myViewboard.com for other brand device
+
+* **store**: This is Android normal App, sign with viewsonic key. Deploy to Google Play Store.
