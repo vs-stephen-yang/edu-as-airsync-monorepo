@@ -3,11 +3,19 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-void commonEntry(ConfigSettings settings) {
+void commonEntry(ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-  runApp(AppConfig(settings: settings, child: const MyApp()));
+  runApp(AppConfig(
+    settings: settings,
+    appName: packageInfo.appName,
+    appVersion: packageInfo.version,
+    appVersionCode: int.parse(packageInfo.buildNumber),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
