@@ -1,6 +1,6 @@
 {
-    "name": "display_cast_flutter",
-    "short_name": "display_cast_flutter",
+    "name": "Display Cast",
+    "short_name": "Display Cast",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
