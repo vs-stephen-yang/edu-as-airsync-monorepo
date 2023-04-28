@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.viewsonic.display.cast">
    <application
-        android:label="display_cast_flutter"
+        android:label="Display Cast"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
