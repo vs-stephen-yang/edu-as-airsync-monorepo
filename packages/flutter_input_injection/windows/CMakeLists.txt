@@ -16,6 +16,8 @@ set(PLUGIN_NAME "flutter_input_injection_plugin")
 list(APPEND PLUGIN_SOURCES
   "flutter_input_injection_plugin.cpp"
   "flutter_input_injection_plugin.h"
+  "touch_injector_win.cc"
+  "touch_injector_win.h"
 )
 
 # Define the plugin library target. Its name must not be changed (see comment

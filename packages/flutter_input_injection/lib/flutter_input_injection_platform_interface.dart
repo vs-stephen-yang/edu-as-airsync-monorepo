@@ -26,4 +26,8 @@ abstract class FlutterInputInjectionPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<void> sendTouch(int action, int id, int x, int y) {
+    throw UnimplementedError('sendTouch() has not been implemented.');
+  }
 }

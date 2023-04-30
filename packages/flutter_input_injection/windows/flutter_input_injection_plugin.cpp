@@ -12,6 +12,9 @@
 
 #include <memory>
 #include <sstream>
+#include "touch_injector_win.h"
+
+remoting::TouchInjectorWin injector;
 
 namespace flutter_input_injection {
 
@@ -33,7 +36,9 @@ void FlutterInputInjectionPlugin::RegisterWithRegistrar(
   registrar->AddPlugin(std::move(plugin));
 }
 
-FlutterInputInjectionPlugin::FlutterInputInjectionPlugin() {}
+FlutterInputInjectionPlugin::FlutterInputInjectionPlugin() {
+  injector.Init();
+}
 
 FlutterInputInjectionPlugin::~FlutterInputInjectionPlugin() {}
 
@@ -51,6 +56,34 @@ void FlutterInputInjectionPlugin::HandleMethodCall(
       version_stream << "7";
     }
     result->Success(flutter::EncodableValue(version_stream.str()));
+  } else if (method_call.method_name().compare("sendTouch") == 0) {
+    const auto *arguments = std::get_if<flutter::EncodableMap>(method_call.arguments());
+    if (arguments) {
+      //const flutter::EncodableMap *argsList = std::get_if<flutter::EncodableMap>(call.arguments());
+      //we will get values in pairs ie., first::"action" second::1.
+      //we get the second part
+      int action = static_cast<int>(std::get<int>((arguments->find(flutter::EncodableValue("action")))->second));
+      int id = static_cast<int>(std::get<int>((arguments->find(flutter::EncodableValue("id")))->second));
+      int x = static_cast<int>(std::get<int>((arguments->find(flutter::EncodableValue("x")))->second));
+      int y = static_cast<int>(std::get<int>((arguments->find(flutter::EncodableValue("y")))->second));
+
+      remoting::protocol::TouchEvent event;
+      remoting::protocol::TouchEventPoint tp;
+      tp.id_ = id;
+      tp.x_ = x;
+      tp.y_ = y;
+      tp.angle_ = 0;
+
+      event.event_type_ = action;
+      event.points_.push_back(tp);
+
+      injector.InjectTouchEvent(event);
+
+      //result->Success(flutter::EncodableValue("Cpp-SendTouch-action: " + std::to_string(action) + " id: " + std::to_string(id) + " x: " + std::to_string(x) + " y: " + std::to_string(y)));
+      result->Success(flutter::EncodableValue(true));
+    } else {
+      result->Error("InvalidArgument", "Invalid argument");
+    }
   } else {
     result->NotImplemented();
   }

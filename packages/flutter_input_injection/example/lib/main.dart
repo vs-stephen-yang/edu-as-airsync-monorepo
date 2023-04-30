@@ -47,16 +47,50 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<void> testTouchInject() async {
+    await Future.delayed(Duration(seconds: 5));
+
+    int x = 200, y = 200;
+
+    int id = 9;
+    for (int j = 0; j < 3; ++j) {
+      await _flutterInputInjectionPlugin.sendTouch(0, id, x, y);
+      for (int i = 0; i < 50; ++i) {
+        await _flutterInputInjectionPlugin.sendTouch(1, id, x, y);
+        y += 10;
+        await Future.delayed(Duration(milliseconds: 10));
+      }
+      await _flutterInputInjectionPlugin.sendTouch(2, id, x, y);
+
+      x += 50;
+      await _flutterInputInjectionPlugin.sendTouch(0, id, x, y);
+      for (int i = 0; i < 50; ++i) {
+        await _flutterInputInjectionPlugin.sendTouch(1, id, x, y);
+        y -= 10;
+        await Future.delayed(Duration(milliseconds: 10));
+      }
+      await _flutterInputInjectionPlugin.sendTouch(2, id, x, y);
+
+      x += 50;
+      id += 1;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Input injection plugin example app'),
         ),
         body: Center(
           child: Text('Running on: $_platformVersion\n'),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: testTouchInject,
+          tooltip: 'Test',
+          child: const Icon(Icons.play_arrow),
+        )
       ),
     );
   }
