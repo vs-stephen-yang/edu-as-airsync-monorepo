@@ -5,4 +5,8 @@ class FlutterInputInjection {
   Future<String?> getPlatformVersion() {
     return FlutterInputInjectionPlatform.instance.getPlatformVersion();
   }
+
+  Future<void> sendTouch(int action, int id, int x, int y) {
+    return FlutterInputInjectionPlatform.instance.sendTouch(action, id, x, y);
+  }
 }

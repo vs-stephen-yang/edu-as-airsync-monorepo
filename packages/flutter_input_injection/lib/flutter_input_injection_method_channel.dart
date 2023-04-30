@@ -14,4 +14,14 @@ class MethodChannelFlutterInputInjection extends FlutterInputInjectionPlatform {
     final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
+
+  @override
+  Future<void> sendTouch(int action, int id, int x, int y) async {
+    await methodChannel.invokeMethod<void>('sendTouch', {
+      'action': action,
+      'id': id,
+      'x': x,
+      'y': y,
+    });
+  }
 }
