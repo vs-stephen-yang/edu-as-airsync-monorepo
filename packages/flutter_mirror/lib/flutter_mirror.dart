@@ -18,8 +18,8 @@ class FlutterMirror {
     return FlutterMirrorPlatform.instance.startAirplay(config);
   }
 
-  Future<void> startGooglecast(String name, Credentials credentials) {
-    return FlutterMirrorPlatform.instance.startGooglecast(name, credentials);
+  Future<void> startGooglecast(String name) {
+    return FlutterMirrorPlatform.instance.startGooglecast(name);
   }
 
   Future<void> startMiracast(String name) {
@@ -38,10 +38,5 @@ class FlutterMirror {
       String mirrorId, int touchId, bool touchDown, double x, double y) async {
     return FlutterMirrorPlatform.instance
         .onMirrorTouch(mirrorId, touchId, touchDown, x, y);
-  }
-
-  // update googlecast's credentials for device authentication
-  Future<void> updateCredentials(Credentials credentials) async {
-    return FlutterMirrorPlatform.instance.updateCredentials(credentials);
   }
 }

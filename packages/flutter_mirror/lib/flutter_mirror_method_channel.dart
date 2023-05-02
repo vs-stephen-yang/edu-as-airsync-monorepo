@@ -5,7 +5,7 @@ import 'package:flutter_mirror/mirror_type.dart';
 
 import 'flutter_mirror_platform_interface.dart';
 import 'flutter_mirror_listener.dart';
-
+import 'package:flutter_mirror/credential_store.dart';
 import 'credentials.dart';
 
 /// An implementation of [FlutterMirrorPlatform] that uses method channels.
@@ -47,7 +47,10 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
   }
 
   @override
-  Future<void> startGooglecast(String name, Credentials credentials) async {
+  Future<void> startGooglecast(String name) async {
+    // load today's credentials
+    final credentials = await CredentialsStore.loadToday();
+
     await methodChannel.invokeMethod('startGooglecast', {
       "name": name,
       "credentials": credentialToMap(credentials),
@@ -88,7 +91,6 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
     });
   }
 
-  @override
   Future<void> updateCredentials(Credentials credentials) async {
     await methodChannel.invokeMethod('updateCredentials', {
       "credentials": credentialToMap(credentials),
@@ -135,7 +137,8 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
         int month = call.arguments["month"];
         int day = call.arguments["day"];
 
-        _listener?.onCredentialsUpdate(year, month, day);
+        final credentials = await CredentialsStore.load(year, month, day);
+        await updateCredentials(credentials);
       }
     } catch (e) {
       print("Malformed method call from native: ${call.method}. $e");
