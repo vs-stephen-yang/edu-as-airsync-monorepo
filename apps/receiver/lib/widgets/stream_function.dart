@@ -11,7 +11,6 @@ import 'package:display_flutter/screens/whats_new.dart';
 import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/main_info.dart';
-import 'package:display_flutter/widgets/privilege_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
@@ -290,32 +289,21 @@ class _StreamFunctionStates extends State<StreamFunction> {
 
   _showSplitScreen(bool leavePresentFunction) {
     AppAnalytics().trackEventAppSplitScreenClick();
-    if (ControlSocket().featureList.contains('SplitScreen')) {
-      _showMenuDialog(SplitScreen(onUpdateParentUI: () {
-        setState(() {});
-      }));
-      if (leavePresentFunction) {
-        StreamFunction.streamFunctionState.value = stateMenuOff;
-      }
-    } else {
-      // todo: multi language
-      _showMenuDialog(const PrivilegeDialog(title: 'Split Screen'));
+    _showMenuDialog(SplitScreen(onUpdateParentUI: () {
+      setState(() {});
+    }));
+    if (leavePresentFunction) {
+      StreamFunction.streamFunctionState.value = stateMenuOff;
     }
   }
 
   _showModerator(bool leavePresentFunction) {
     AppAnalytics().trackEventAppModeratorClick();
-    if (ControlSocket().featureList.contains('Moderator')) {
-      _showMenuDialog(ModeratorView(onUpdateParentUI: () {
-        setState(() {});
-      }));
-      if (leavePresentFunction) {
-        StreamFunction.streamFunctionState.value = stateMenuOff;
-      }
-    } else {
-      AppAnalytics().trackEventLicenseInsufficientPrivilege();
-      // todo: multi language
-      _showMenuDialog(const PrivilegeDialog(title: 'Moderator'));
+    _showMenuDialog(ModeratorView(onUpdateParentUI: () {
+      setState(() {});
+    }));
+    if (leavePresentFunction) {
+      StreamFunction.streamFunctionState.value = stateMenuOff;
     }
   }
 }
