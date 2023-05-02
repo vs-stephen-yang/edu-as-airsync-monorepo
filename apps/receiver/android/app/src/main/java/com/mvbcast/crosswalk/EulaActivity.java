@@ -7,8 +7,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
@@ -49,25 +47,6 @@ public class EulaActivity extends FlutterActivity {
             // TODO:
         });
         OTAHelper.getInstance().clearForceCheckVersion();
-
-        MethodChannel autoEnroll = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/auto_enroll");
-        autoEnroll.setMethodCallHandler((call, result) -> {
-            if (call.method.equals("getEnrollInformation")) {
-                Uri uri = Uri.parse("content://com.viewsonic.dmagent.provider/entity");
-                try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
-                    if (cursor != null && cursor.moveToFirst()) {
-                        String entity = cursor.getString(0);
-                        result.success(entity);
-                    } else {
-                        result.error("0", "Get entity failure.", null);
-                    }
-                } catch (Exception e) {
-                    result.error("0", "Get entity failure:" + e.getMessage(), null);
-                }
-            } else {
-                result.notImplemented();
-            }
-        });
 
         MethodChannel bootMethodChannel = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/auto_startup");
         bootMethodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
