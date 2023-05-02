@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
-import 'package:flutter_mirror/credential_store.dart';
 import 'package:flutter_mirror/airplay_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
 
@@ -59,11 +58,8 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
         security: AirplaySecurity.onscreenCode,
       ));
 
-      // load today's credentials
-      final credentials = await CredentialsStore.loadToday();
-
       // start googlecast
-      await _plugin.startGooglecast("display-1", credentials);
+      await _plugin.startGooglecast("display-1");
 
       // start miracast
       await _plugin.startMiracast("display-1");
@@ -143,20 +139,6 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
         _sizeChanged = true;
       });
     });
-  }
-
-  // update googlecast's credentials
-  void updateCredentials(int year, int month, int day) async {
-    final credentials = await CredentialsStore.load(year, month, day);
-
-    _plugin.updateCredentials(credentials);
-  }
-
-  @override
-  void onCredentialsUpdate(int year, int month, int day) {
-    updateCredentials(year, month, day);
-
-    if (!mounted) return;
   }
 
   void _getWidgetInfo(_) {

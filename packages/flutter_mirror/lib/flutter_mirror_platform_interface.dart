@@ -39,7 +39,7 @@ abstract class FlutterMirrorPlatform extends PlatformInterface {
     throw UnimplementedError('startAirplay() has not been implemented.');
   }
 
-  Future<void> startGooglecast(String name, Credentials credentials) async {
+  Future<void> startGooglecast(String name) async {
     throw UnimplementedError('startGooglecast() has not been implemented.');
   }
 
@@ -58,10 +58,5 @@ abstract class FlutterMirrorPlatform extends PlatformInterface {
   Future<void> onMirrorTouch(
       String mirrorId, int touchId, bool touchDown, double x, double y) async {
     throw UnimplementedError('onMirrorTouch() has not been implemented.');
-  }
-
-  // update googlecast's credentials for device authentication
-  Future<void> updateCredentials(Credentials credentials) async {
-    throw UnimplementedError('updateCredentials() has not been implemented.');
   }
 }
