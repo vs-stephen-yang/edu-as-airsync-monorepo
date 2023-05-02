@@ -68,15 +68,6 @@ class MainInfoBloc extends Bloc<MainInfoEvent, MainInfoState> {
         if (json.containsKey('property')) {
           Map<String, dynamic> property = json['property'];
 
-          if (property.containsKey('features')) {
-            List<dynamic> features = property['features'];
-
-            ControlSocket().featureList.clear();
-            for (String feature in features) {
-              ControlSocket().featureList.add(feature);
-            }
-          }
-
           if (property.containsKey('limitTimeBySecond')) {
             ConnectionTimer.getInstance().remainingTimeLimit =
                 property['limitTimeBySecond'];

@@ -10,19 +10,14 @@ import 'package:display_flutter/blocs/main_info_bloc.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/home.dart';
-import 'package:display_flutter/screens/moderator_view.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
-import 'package:display_flutter/widgets/privilege_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainInfo extends StatefulWidget {
   const MainInfo({Key? key}) : super(key: key);
   static ValueNotifier<bool> showMainInfo = ValueNotifier(true);
-
-  // Update Display Privilege Status,...
-  static bool updateDisplayStatus = false;
 
   static MainInfoBloc? _mainInfoBloc;
   static Timer? _mGetOTPTimer;
@@ -82,28 +77,6 @@ class _MainInfoState extends State<MainInfo> {
               BlocProvider.of<MainInfoBloc>(context).add(RegisterDisplayCode());
               break;
             case MainInfoState.getDisplayCodeInfoSuccess:
-              PrivilegeDialog.showPrivilegeQrCode.value =
-                  !PrivilegeDialog.showPrivilegeQrCode.value;
-              if (AppPreferences().entityId.isNotEmpty &&
-                  ControlSocket().entityId.isEmpty) {
-                AppAnalytics().trackEventUnenrolled();
-                AppAnalytics()
-                    .setEventProperties(entityId: ControlSocket().entityId);
-              } else if (AppPreferences().entityId.isEmpty &&
-                  ControlSocket().entityId.isNotEmpty) {
-                AppAnalytics()
-                    .setEventProperties(entityId: ControlSocket().entityId);
-                AppAnalytics().trackEventEnrolled();
-              }
-              AppPreferences().set(entityId: ControlSocket().entityId);
-
-              if (ControlSocket().featureList.isEmpty) {
-                AppAnalytics().trackEventLicenseRevoked();
-                // Disable SplitScreen and Moderator features.
-                const ModeratorView().logout();
-              } else {
-                AppAnalytics().trackEventLicenseGranted();
-              }
               break;
             case MainInfoState.registerDisplayCodeSuccess:
               BlocProvider.of<MainInfoBloc>(context).add(GetDisplayCode());
@@ -157,16 +130,6 @@ class _MainInfoState extends State<MainInfo> {
             return ValueListenableBuilder(
               valueListenable: MainInfo.showMainInfo,
               builder: (BuildContext context, bool value, Widget? child) {
-                if (value) {
-                  if (!ControlSocket().isPresenting() &&
-                      ControlSocket().moderator == null &&
-                      MainInfo.updateDisplayStatus) {
-                    MainInfo.updateDisplayStatus = false;
-                    BlocProvider.of<MainInfoBloc>(context)
-                        .add(GetDisplayCodeInfo());
-                  }
-                }
-
                 return Visibility(
                   visible: value,
                   child: Container(

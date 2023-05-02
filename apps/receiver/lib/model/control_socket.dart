@@ -42,7 +42,6 @@ class ControlSocket {
   String token = '';
   String displayCode = '';
   String otpCode = '';
-  List<String> featureList = [];
 
   Moderator? moderator;
 
@@ -401,17 +400,6 @@ class ControlSocket {
           }
           break;
         // endregion  Present
-        // region Communication
-        case 'mode-update':
-          // Set updateDisplayStatus true, and wait disconnectedP2pClient set
-          // MainInfo.showMainInfo.value to update privilege status.
-          MainInfo.updateDisplayStatus = true;
-          if (!isPresenting()) {
-            MainInfo.showMainInfo.value = false;
-            MainInfo.showMainInfo.value = true;
-          }
-          break;
-        // endregion
       }
     }
   }
