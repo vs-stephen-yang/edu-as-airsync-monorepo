@@ -22,79 +22,111 @@ variables:
   - name: Maven.Settings
     value: /Users/runner/.m2/settings.xml
     #value: $env:USERPROFILE\.m2\settings.xml
-pool:
-  vmImage: "macOS-12"
+  - group: shiftleft-token
 
-steps:
-  - task: JavaToolInstaller@0
-    inputs:
-      versionSpec: "11"
-      jdkArchitectureOption: "x64"
-      jdkSourceOption: "PreInstalled"
+jobs:
+  - job: build
+    pool:
+      vmImage: "macOS-12"
+    steps:
+      - task: JavaToolInstaller@0
+        inputs:
+          versionSpec: "11"
+          jdkArchitectureOption: "x64"
+          jdkSourceOption: "PreInstalled"
 
-  - script: curl $(Flutter.Url) --output $(Pipeline.Workspace)/flutter.zip
-    displayName: Download the flutter SDK
+      - script: curl $(Flutter.Url) --output $(Pipeline.Workspace)/flutter.zip
+        displayName: Download the flutter SDK
 
-  - task: ExtractFiles@1
-    displayName: Extract the flutter SDK
-    inputs:
-      archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
-      destinationFolder: "$(Pipeline.Workspace)/flutter"
+      - task: ExtractFiles@1
+        displayName: Extract the flutter SDK
+        inputs:
+          archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
+          destinationFolder: "$(Pipeline.Workspace)/flutter"
 
-  - task: MavenAuthenticate@0
-    displayName: "Provides maven credentials for Azure Artifacts"
-    inputs:
-      artifactsFeeds: "myViewBoard_Artifacts"
+      - task: MavenAuthenticate@0
+        displayName: "Provides maven credentials for Azure Artifacts"
+        inputs:
+          artifactsFeeds: "myViewBoard_Artifacts"
 
-  - task: PowerShell@2
-    displayName: Extract the credentials of Azure Artifacts
-    inputs:
-      targetType: "inline"
-      script: |
-        [xml]$doc = Get-Content -path $(Maven.Settings)
-        $username=$doc.settings.servers.server.username
-        $password=$doc.settings.servers.server.password
-        Write-Host "##vso[task.setvariable variable=artifacts.username]$username"
-        Write-Host "##vso[task.setvariable variable=artifacts.password;issecret=true]$password"
+      - task: PowerShell@2
+        displayName: Extract the credentials of Azure Artifacts
+        inputs:
+          targetType: "inline"
+          script: |
+            [xml]$doc = Get-Content -path $(Maven.Settings)
+            $username=$doc.settings.servers.server.username
+            $password=$doc.settings.servers.server.password
+            Write-Host "##vso[task.setvariable variable=artifacts.username]$username"
+            Write-Host "##vso[task.setvariable variable=artifacts.password;issecret=true]$password"
 
-  - task: Cache@2
-    displayName: Configure Gradle caching
-    enabled: "true"
-    inputs:
-      key: 'gradle | "$(Agent.OS)" | android/build.gradle, example/android/app/build.gradle, example/android/build.gradle'
-      restoreKeys: |
-        gradle | "$(Agent.OS)"
-        gradle
-      path: $(GRADLE_USER_HOME)
+      - task: Cache@2
+        displayName: Configure Gradle caching
+        enabled: "true"
+        inputs:
+          key: 'gradle | "$(Agent.OS)" | android/build.gradle, example/android/app/build.gradle, example/android/build.gradle'
+          restoreKeys: |
+            gradle | "$(Agent.OS)"
+            gradle
+          path: $(GRADLE_USER_HOME)
 
-  - script: $(Flutter.Bin) build apk
-    displayName: Build the plugin and the example App
-    workingDirectory: "$(Build.SourcesDirectory)/example"
-    env:
-      GRADLE_OPTS: "-Dorg.gradle.caching=true"
-      ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME: $(artifacts.username)
-      ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD: $(artifacts.password)
+      - script: $(Flutter.Bin) build apk
+        displayName: Build the plugin and the example App
+        workingDirectory: "$(Build.SourcesDirectory)/example"
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.caching=true"
+          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME: $(artifacts.username)
+          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD: $(artifacts.password)
 
-  - script: ./gradlew --stop
-    displayName: Stop Gradle daemon
-    workingDirectory: "$(Build.SourcesDirectory)/example/android"
+      - script: ./gradlew --stop
+        displayName: Stop Gradle daemon
+        workingDirectory: "$(Build.SourcesDirectory)/example/android"
 
-  - task: AndroidSigning@3
-    inputs:
-      apkFiles: "**/*.apk"
-      apksign: true
-      apksignerKeystoreFile: "ifp.keystore"
-      apksignerKeystorePassword: "$(keystore.password)"
-      apksignerKeystoreAlias: "$(keystore.alias)"
-      apksignerKeyPassword: "$(key.password)"
-      zipalign: true
+      - task: AndroidSigning@3
+        inputs:
+          apkFiles: "**/*.apk"
+          apksign: true
+          apksignerKeystoreFile: "ifp.keystore"
+          apksignerKeystorePassword: "$(keystore.password)"
+          apksignerKeystoreAlias: "$(keystore.alias)"
+          apksignerKeyPassword: "$(key.password)"
+          zipalign: true
 
-  - task: CopyFiles@2
-    inputs:
-      SourceFolder: "$(Build.SourcesDirectory)/example/build/app/outputs/flutter-apk/"
-      contents: "**"
-      targetFolder: "$(Build.ArtifactStagingDirectory)"
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: "$(Build.SourcesDirectory)/example/build/app/outputs/flutter-apk/"
+          contents: "**"
+          targetFolder: "$(Build.ArtifactStagingDirectory)"
 
-  - task: PublishBuildArtifacts@1
-    inputs:
-      pathToPublish: "$(Build.ArtifactStagingDirectory)"
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: "$(Build.ArtifactStagingDirectory)"
+
+  - job: code_scanning
+    pool:
+      vmImage: "windows-2022"
+    steps:
+      # Download ShiftLeft
+      - task: PowerShell@2
+        displayName: Download ShiftLeft cli
+        inputs:
+          targetType: "inline"
+          script: |
+            Invoke-WebRequest -Uri 'https://cdn.shiftleft.io/download/sl-latest-windows-x64.zip' -OutFile $(Agent.HomeDirectory)\sl.zip
+            Expand-Archive -Force -Path $(Agent.HomeDirectory)\sl.zip -DestinationPath $(Agent.HomeDirectory)\
+      # Install Java Runtime
+      - task: JavaToolInstaller@0
+        displayName: Install Java Tool
+        inputs:
+          versionSpec: "11"
+          jdkArchitectureOption: "x64"
+          jdkSourceOption: "PreInstalled"
+      # Analyze with ShiftLeft
+      - task: CmdLine@2
+        displayName: Analyze with NG SAST - C/C++
+        inputs:
+          script: |
+            $(Agent.HomeDirectory)\sl.exe analyze --app $(Build.Repository.Name)-cpp --tag branch=$(Build.SourceBranchName) --cpg --c
+          workingDirectory: "$(Build.SourcesDirectory)"
+        env:
+          SHIFTLEFT_ACCESS_TOKEN: $(SHIFTLEFT_ACCESS_TOKEN)
