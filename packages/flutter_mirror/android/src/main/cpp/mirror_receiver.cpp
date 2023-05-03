@@ -153,12 +153,14 @@ void MirrorReceiver::OnCredentialsUpdate(
 void MirrorReceiver::AddSession(MirrorSessionPtr session) {
   std::string mirror_id = session->GetMirrorId();
 
-  // TODO: protect sessions_ with mutex
+  std::lock_guard<std::mutex> lock(mutex_);
+
   sessions_[mirror_id] = session;
 }
 
 MirrorSessionPtr MirrorReceiver::FindSession(const std::string& mirror_id) {
-  // TODO: protect sessions_ with mutex
+  std::lock_guard<std::mutex> lock(mutex_);
+
   auto itr = sessions_.find(mirror_id);
   if (itr == sessions_.end()) {
     return {};
@@ -167,7 +169,8 @@ MirrorSessionPtr MirrorReceiver::FindSession(const std::string& mirror_id) {
   return itr->second;
 }
 void MirrorReceiver::RemoveSession(const std::string& mirror_id) {
-  // TODO: protect sessions_ with mutex
+  std::lock_guard<std::mutex> lock(mutex_);
+
   auto itr = sessions_.find(mirror_id);
 
   assert(itr != sessions_.end());
