@@ -124,7 +124,7 @@ void MiracastMirrorSession::processRTPData(const uint8_t* data, int length) {
   size_t size = length;
   if (size < 12) {
     // Too short to be a valid RTP header.
-    ALOGE("Size:%d Too short to be a valid RTP header.", size);
+    ALOGE("Size:%u Too short to be a valid RTP header.", (unsigned int)size);
     return;
   }
 
@@ -142,7 +142,7 @@ void MiracastMirrorSession::processRTPData(const uint8_t* data, int length) {
     if (paddingLength + 12 > size) {
       // If we removed this much padding we'd end up with something
       // that's too short to be a valid RTP header.
-      ALOGE("Invalid header. Size:%d PaddingLength:%d", size, paddingLength);
+      ALOGE("Invalid header. Size:%u PaddingLength:%u", (unsigned int)size, (unsigned int)paddingLength);
       return;
     }
 
