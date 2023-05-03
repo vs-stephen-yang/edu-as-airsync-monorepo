@@ -108,8 +108,7 @@ void MirrorReceiver::OnMirrorStart(
   std::string device_name = session->GetSourceDisplayName();
   MirrorType mirror_type = session->GetMirrorType();
 
-  sessions_[mirror_id] = session;
-
+  AddSession(session);
   proxy_->OnMirrorStart(
       mirror_id,
       tex.id,
@@ -126,7 +125,7 @@ void MirrorReceiver::OnMirrorStop(
   std::string mirror_id = session->GetMirrorId();
 
   // delete the mirror session
-  RemoveMirror(mirror_id);
+  RemoveSession(mirror_id);
 
   proxy_->OnMirrorStop(mirror_id);
 }
@@ -151,6 +150,13 @@ void MirrorReceiver::OnCredentialsUpdate(
     int day) {
 }
 
+void MirrorReceiver::AddSession(MirrorSessionPtr session) {
+  std::string mirror_id = session->GetMirrorId();
+
+  // TODO: protect sessions_ with mutex
+  sessions_[mirror_id] = session;
+}
+
 MirrorSessionPtr MirrorReceiver::FindSession(const std::string& mirror_id) {
   // TODO: protect sessions_ with mutex
   auto itr = sessions_.find(mirror_id);
@@ -160,7 +166,7 @@ MirrorSessionPtr MirrorReceiver::FindSession(const std::string& mirror_id) {
 
   return itr->second;
 }
-void MirrorReceiver::RemoveMirror(const std::string& mirror_id) {
+void MirrorReceiver::RemoveSession(const std::string& mirror_id) {
   // TODO: protect sessions_ with mutex
   auto itr = sessions_.find(mirror_id);
 
