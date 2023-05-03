@@ -462,7 +462,7 @@ status_t ATSParser::Stream::parse(
     // Increment in multiples of 64K.
     neededSize = (neededSize + 65535) & ~65535;
 
-    ALOGI("resizing buffer to %d bytes", neededSize);
+    ALOGI("resizing buffer to %u bytes", (unsigned int)neededSize);
 
     std::shared_ptr<ABuffer> newBuffer = std::make_shared<ABuffer>(neededSize);
     memcpy(newBuffer->data(), mBuffer->data(), mBuffer->size());
@@ -644,8 +644,8 @@ status_t ATSParser::Stream::parsePES(ABitReader* br) {
       if (br->numBitsLeft() < dataLength * 8) {
         ALOGE(
             "PES packet does not carry enough data to contain "
-            "payload. (numBitsLeft = %d, required = %d)",
-            br->numBitsLeft(), dataLength * 8);
+            "payload. (numBitsLeft = %u, required = %u)",
+            (unsigned int)br->numBitsLeft(), (unsigned int)(dataLength * 8));
 
         return BAD_VALUE;
       }
