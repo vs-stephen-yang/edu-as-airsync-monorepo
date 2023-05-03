@@ -63,8 +63,9 @@ class MirrorReceiver
       int day) override;
 
  private:
+  void AddSession(MirrorSessionPtr session);
   MirrorSessionPtr FindSession(const std::string& mirror_id);
-  void RemoveMirror(const std::string& mirror_id);
+  void RemoveSession(const std::string& mirror_id);
 
  private:
   jni::MirrorReceiverPtr proxy_;
