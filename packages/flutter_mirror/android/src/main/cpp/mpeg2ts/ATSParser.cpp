@@ -20,9 +20,9 @@
 #include "ATSParser.h"
 #include "ABitReader.h"
 #include "ABuffer.h"
-#include "ADebug.h"
 #include "Utils.h"
 #include "util/log.h"
+#include "ADebug.h"
 
 // I want the expression "y" evaluated even if verbose logging is off.
 #define MY_LOGV(x, y) \
