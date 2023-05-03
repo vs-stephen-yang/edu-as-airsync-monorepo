@@ -54,22 +54,22 @@ class _MyAppState extends State<MyApp> {
 
     int id = 9;
     for (int j = 0; j < 3; ++j) {
-      await _flutterInputInjectionPlugin.sendTouch(0, id, x, y);
+      await _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_START, id, x, y);
       for (int i = 0; i < 50; ++i) {
-        await _flutterInputInjectionPlugin.sendTouch(1, id, x, y);
+        await _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_MOVE, id, x, y);
         y += 10;
         await Future.delayed(Duration(milliseconds: 10));
       }
-      await _flutterInputInjectionPlugin.sendTouch(2, id, x, y);
+      await _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_END, id, x, y);
 
       x += 50;
-      await _flutterInputInjectionPlugin.sendTouch(0, id, x, y);
+      await _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_START, id, x, y);
       for (int i = 0; i < 50; ++i) {
-        await _flutterInputInjectionPlugin.sendTouch(1, id, x, y);
+        await _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_MOVE, id, x, y);
         y -= 10;
         await Future.delayed(Duration(milliseconds: 10));
       }
-      await _flutterInputInjectionPlugin.sendTouch(2, id, x, y);
+      await _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_END, id, x, y);
 
       x += 50;
       id += 1;
