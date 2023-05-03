@@ -142,6 +142,10 @@ public class FlutterMirrorPlugin implements
       double x = call.argument("x");
       double y = call.argument("y");
 
+      if (mirrorReceiver_ == null) {
+        return;
+      }
+
       mirrorReceiver_.onMirrorTouch(
           mirrorId,
           touchId,
@@ -206,29 +210,43 @@ public class FlutterMirrorPlugin implements
   }
 
   private void initialize() {
+    if (mirrorReceiver_ != null) {
+      return;
+    }
     mirrorReceiver_ = new MirrorReceiver(this, this);
   }
 
   private void startAirplay(String name, String security) {
-    assert mirrorReceiver_ != null;
+    if (mirrorReceiver_ == null) {
+      return;
+    }
 
     mirrorReceiver_.startAirplay(name, security);
   }
 
   private void startGooglecast(String name, GooglecastCredentials credentials) {
-    assert mirrorReceiver_ != null;
+    if (mirrorReceiver_ == null) {
+      return;
+    }
 
     mirrorReceiver_.startGooglecast(name, credentials);
   }
 
   private void updateCredentials(GooglecastCredentials credentials) {
+    if (mirrorReceiver_ == null) {
+      return;
+    }
+
     mirrorReceiver_.updateCredentials(credentials);
   }
 
   private void startMiracast(String name) {
-    assert mirrorReceiver_ != null;
     assert context_ != null;
     assert activity_ != null;
+
+    if (mirrorReceiver_ == null) {
+      return;
+    }
 
     mirrorReceiver_.startMiracast(
         name,
@@ -237,13 +255,17 @@ public class FlutterMirrorPlugin implements
   }
 
   private void stopMirror(String mirrorId) {
-    assert mirrorReceiver_ != null;
+    if (mirrorReceiver_ == null) {
+      return;
+    }
 
     mirrorReceiver_.stopMirror(mirrorId);
   }
 
   private void enableAudio(String mirrorId, boolean enable) {
-    assert mirrorReceiver_ != null;
+    if (mirrorReceiver_ == null) {
+      return;
+    }
 
     mirrorReceiver_.enableAudio(mirrorId, enable);
   }
@@ -251,7 +273,9 @@ public class FlutterMirrorPlugin implements
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     Log.d(TAG, "FlutterMirrorPlugin::onDetachedFromEngine()");
-    mirrorReceiver_.stop();
+    if (mirrorReceiver_ != null) {
+      mirrorReceiver_.stop();
+    }
 
     channel_.setMethodCallHandler(null);
   }
