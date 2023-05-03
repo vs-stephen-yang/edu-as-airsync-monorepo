@@ -2,6 +2,7 @@
 #define FLUTTER_MIRROR_PLUGIN_MIRROR_RECEIVER_H_
 
 #include <map>
+#include <thread>
 
 #include "jni/mirror_receiver.h"
 #include "jni/texture_registry.h"
@@ -71,7 +72,7 @@ class MirrorReceiver
   jni::MirrorReceiverPtr proxy_;
   jni::TextureRegistryPtr texture_registry_;
 
-  // TODO: protect sessions_ with mutex
+  std::mutex mutex_;
   std::map<std::string, MirrorSessionPtr> sessions_;
 
   // airplay
