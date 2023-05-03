@@ -24,11 +24,13 @@
 #include "util/log.h"
 #include "ADebug.h"
 
+#define DLOG(x, y) //ALOGV(x, y)
+
 // I want the expression "y" evaluated even if verbose logging is off.
 #define MY_LOGV(x, y) \
   do {                \
     unsigned tmp = y; \
-    ALOGV(x, tmp);    \
+    DLOG(x, tmp);    \
   } while (0)
 
 struct ATSParser::Program {
