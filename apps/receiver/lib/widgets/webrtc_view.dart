@@ -14,7 +14,8 @@ import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
-import 'package:socket_io_client/socket_io_client.dart';
+import 'package:logging/logging.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:uuid/uuid.dart';
 
 import 'custom_icons_icons.dart';
@@ -51,21 +52,31 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
       parent: _animationController,
       curve: Curves.linear,
     );
+    // init logger
+    Logger.root.level = Level.ALL; // defaults to Level.INFO
+    Logger.root.onRecord.listen((record) {
+      print('${record.level.name}: ${record.time}: ${record.message}');
+    });
   }
 
   @override
   void deactivate() {
-    super.deactivate();
     print('zz deactivate');
+    if (_viewController._socket != null && _viewController._socket!.connected) {
+      _viewController.disconnect().then((value) {
+        ControlSocket().removeWebRtcController(_viewController);
+        super.deactivate();
+      });
+    } else {
+      super.deactivate();
+    }
   }
 
   @override
   void dispose() {
-    super.dispose();
     print('zz dispose');
-    _viewController.disconnect();
-    ControlSocket().removeWebRtcController(_viewController);
     _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -208,8 +219,8 @@ class WebRTCFlutterViewController {
   String? _peerId;
 
   RTCPeerConnection? _pc;
-  late Socket _socket;
-  final _remoteRenderer = RTCVideoRenderer();
+  IO.Socket? _socket;
+  var _remoteRenderer = RTCVideoRenderer();
 
   RTCVideoRenderer get renderer => _remoteRenderer;
 
@@ -267,27 +278,28 @@ class WebRTCFlutterViewController {
 
     _token = token;
     _peerId = peerId;
-
-    _socket = io(
+    _socket = IO.io(
         url, //'https://signal.stage.myviewboard.cloud'
-        OptionBuilder()
-            .enableForceNew()
+        IO.OptionBuilder()
+            // .enableForceNew()
             .enableForceNewConnection()
             .setTransports(['websocket'])
             .disableAutoConnect()
-            .enableReconnection()
-            .setReconnectionAttempts(5)
+            .disableReconnection()
+            .setTimeout(2000)
+            // .enableReconnection()
+            // .setReconnectionAttempts(5)
             .setQuery({
           'token': _token,
           'displayCode': displayCode
         })
             .build());
 
-    _socket.onConnect((_) async {
+    _socket?.onConnect((_) async {
       print('zz connect');
     });
 
-    _socket.on('owt-message', (data) async {
+    _socket?.on('owt-message', (data) async {
       print('zz owt-message $data');
       final msg = jsonDecode(data['data']);
       final type = msg['type'];
@@ -297,43 +309,80 @@ class WebRTCFlutterViewController {
       }
     });
 
-    _socket.on('server-authenticated', (data) async {
+    _socket?.on('server-authenticated', (data) async {
       print('zz server-authenticated: ${data.toString()}');
       callback(true);
     });
 
-    _socket.onDisconnect((_) {
-      print('zz _socket disconnect');
-      // onServerDisconnected
-      ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+    _socket?.onDisconnect((_) async {
+      print('zz _socket onDisconnect ${_socket?.disconnected}');
+      await Future.delayed(const Duration(seconds: 1)).then((value) {
+
+        print('zz zz _socket onDisconnect 2');
+        // unbinds a specific event listeners
+        // _socket?.clearListeners(); // unbinds all the listeners
+        IO.cache.forEach((key, value) {
+          print('zz key $key $value');
+        });
+        IO.cache.clear();
+        _socket?.io.destroy(_socket);
+        _socket?.io.destroy(_socket?.io.engine);
+        _socket?.io.disconnect();
+        _socket?.io.engine.close();
+        _socket?.io.engine.flush();
+        _socket = null;
+        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+      });
     });
 
-    _socket.onConnectError((data) {
+    _socket?.onConnectError((data) {
       print('zz ConnectError: $data');
       // onServerDisconnected
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
     });
 
-    _socket.on('server-disconnect', (data) {
+    _socket?.on('server-disconnect', (data) {
       print('zz server-disconnect: $data');
       // onServerDisconnected
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
     });
 
-    _socket.open();
+    _socket?.onConnecting((data) => print('zz onConnecting: $data'));
+    _socket?.onConnectTimeout((data) => print('zz onConnectTimeout: $data'));
+    _socket?.onError((data) => print('zz onError: $data'));
+    _socket?.onReconnect((data) => print('zz onReconnect: $data'));
+    _socket?.onReconnectAttempt((data) => print('zz onReconnectAttempt: $data'));
+    _socket?.onReconnectError((data) => print('zz onReconnectError: $data'));
+    _socket?.onReconnectFailed((data) => print('zz onReconnectFailed: $data'));
+    _socket?.onReconnecting((data) => print('zz onReconnecting: $data'));
+    _socket?.onPing((data) => print('zz onPing: $data'));
+    _socket?.onPong((data) => print('zz onPong: $data'));
+    _socket?.on('error', (data) => print("zz error $data"));
+
+    _socket?.connect();
   }
 
   Future<void> disconnect({bool sendAnalytics = false}) async {
+    print('zz disconnect process ');
     if (sendAnalytics) {
       AppAnalytics().trackEventPresentStopped(presentId, presenterId);
     }
 
     // close connection
-    _remoteRenderer.dispose();
-    _socket.close();
+    if (_remoteRenderer.textureId != null && _remoteRenderer.renderVideo) {
+      _remoteRenderer.srcObject = null;
+      await _remoteRenderer.dispose();
+      _remoteRenderer = RTCVideoRenderer();
+    }
     await _pc?.close();
     await _pc?.dispose();
     _pc = null;
+    if (_socket != null && _socket!.connected) {
+      print('zz disconnect _socket');
+      _socket?.disconnect();
+      _socket?.close();
+      _socket?.destroy();
+    }
 
     // change state
     presentationState = PresentationState.stopStreaming;
@@ -362,7 +411,9 @@ class WebRTCFlutterViewController {
   }
 
   void showConnectionInfo(bool enable) {
-    mViewState.showConnectionInfo = enable;
+    if (mViewState.mounted) {
+      mViewState.showConnectionInfo = enable;
+    }
   }
 
   //region PeerConnection interface
@@ -467,7 +518,7 @@ class WebRTCFlutterViewController {
       'to': _peerId
     };
 
-    _socket.emit('owt-message', data);
+    _socket?.emit('owt-message', data);
   }
 
   Future<void> _handleSignal(msg) async {
