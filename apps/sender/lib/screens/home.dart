@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/widgets/bottom_bar.dart';
 import 'package:display_cast_flutter/widgets/present_idle.dart';
+import 'package:display_cast_flutter/widgets/present_present_start.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
@@ -74,21 +75,7 @@ class _HomeState extends State<Home> {
                         ],
                       );
                     case ViewState.presentStart:
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Present Start',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              provider.presentStop();
-                            },
-                            child: const Text('Stop'),
-                          ),
-                        ],
-                      );
+                      return PresentPresentStart();
                     default:
                       return const SizedBox();
                   }
