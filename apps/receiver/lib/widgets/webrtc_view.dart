@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
@@ -9,6 +10,8 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
+import 'package:display_flutter/protoc/internal.pb.dart';
+import 'package:display_flutter/protoc/event.pb.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/foundation.dart';
@@ -36,6 +39,10 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
   bool _showConnectionInfo = false;
   late final AnimationController _animationController;
   late final Animation<double> _animation;
+  GlobalKey _widgetKey = GlobalKey();
+  bool _textureSizeChanged = true;
+  Size _textureSize = Size(0, 0);
+  Offset _textureOffset = Offset(0, 0);
 
   @override
   void initState() {
@@ -72,6 +79,76 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
     super.dispose();
   }
 
+  void _getTextureInfo() {
+    Element? textureElement;
+    void textureVisitor(Element element) {
+      if (textureElement != null) return;
+
+      if (element.widget is Texture) {
+        textureElement = element;
+      } else {
+        element.visitChildElements(textureVisitor);
+      }
+    }
+
+    _widgetKey.currentContext?.visitChildElements(textureVisitor);
+    if(textureElement == null) {
+      print('texture widget not found');
+      return;
+    } else {
+      final RenderBox renderBox = textureElement!.findRenderObject() as RenderBox;
+      _textureSize = renderBox.size;
+      print('texture widget size: ${_textureSize.width}, ${_textureSize.height}');
+      _textureOffset = renderBox.localToGlobal(Offset.zero);
+      print('texture widget offset: ${_textureOffset.dx}, ${_textureOffset.dy}');
+    }
+  }
+
+  void _onTouchStart(PointerEvent event) {
+    _onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_START,event);
+  }
+
+  void _onTouchMove(PointerEvent event) {
+    _onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_MOVE,event);
+  }
+
+  void _onTouchEnd(PointerEvent event) {
+    _onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_END,event);
+  }
+
+  void _onTouchEvent(TouchEvent_TouchEventType eventType, PointerEvent event) {
+    if (_textureSizeChanged) {
+      _getTextureInfo();
+    }
+
+    final curTouchEventPoint = TouchEventPoint();
+    curTouchEventPoint.x = (event.position.dx-_textureOffset.dx)/_textureSize.width;
+    /* make curTouchEventPoint.x between 0.0 ~ 1.0 */
+    if (curTouchEventPoint.x < 0.0) {
+      curTouchEventPoint.x = 0.0;
+    } else if (curTouchEventPoint.x > 1.0) {
+      curTouchEventPoint.x = 1.0;
+    }
+    curTouchEventPoint.y = (event.position.dy-_textureOffset.dy)/_textureSize.height;
+    /* make curTouchEventPoint.y between 0.0 ~ 1.0 */
+    if (curTouchEventPoint.y < 0.0) {
+      curTouchEventPoint.y = 0.0;
+    } else if (curTouchEventPoint.y > 1.0) {
+      curTouchEventPoint.y = 1.0;
+    }
+
+    curTouchEventPoint.id = event.pointer;
+
+    final curTouchEvent = TouchEvent();
+    curTouchEvent.eventType = eventType;
+    curTouchEvent.touchPoints.add(curTouchEventPoint);
+
+    final curEventMessage = EventMessage();
+    curEventMessage.touchEvent = curTouchEvent;
+
+    _viewController.sendData(curEventMessage.writeToBuffer());
+  }
+
   @override
   Widget build(BuildContext context) {
     String presenterName = '';
@@ -85,7 +162,12 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
         Focus(
           descendantsAreFocusable: false,
           canRequestFocus: false,
-          child: RTCVideoView(_viewController.renderer),
+          child: Listener(
+            onPointerDown: _onTouchStart,
+            onPointerMove: _onTouchMove,
+            onPointerUp: _onTouchEnd,
+            child: RTCVideoView(_viewController.renderer,key: _widgetKey),
+          ),
         ),
         Align(
           alignment: Alignment.topCenter,
@@ -213,6 +295,7 @@ class WebRTCFlutterViewController {
 
   RTCPeerConnection? _pc;
   io.Socket? _socket;
+  RTCDataChannel? _dc;
   var _remoteRenderer = RTCVideoRenderer();
 
   RTCVideoRenderer get renderer => _remoteRenderer;
@@ -269,6 +352,7 @@ class WebRTCFlutterViewController {
     _pc!.onTrack = _onTrack;
     _pc!.onAddTrack = _onAddTrack; // iOS, macOS did not use this event.
     _pc!.onRemoveTrack = _onRemoveTrack;
+    _pc!.onDataChannel = _onDataChannel;
   }
 
   void _signalConnect(String displayCode, String url, Function(bool result) callback) {
@@ -461,6 +545,17 @@ class WebRTCFlutterViewController {
     // stream
     if (_remoteRenderer.srcObject?.id == stream.id) {
       _remoteRenderer.srcObject = null;
+    }
+  }
+
+  void _onDataChannel(RTCDataChannel channel) {
+    print('zz _onDataChannel: ${channel.label}');
+    _dc = channel;
+  }
+
+  void sendData(Uint8List data) {
+    if(_dc != null && _dc!.state == RTCDataChannelState.RTCDataChannelOpen) {
+      _dc!.send(RTCDataChannelMessage.fromBinary(data));
     }
   }
 

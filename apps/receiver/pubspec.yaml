@@ -64,6 +64,7 @@ dependencies:
   crypto: ^3.0.3
   flutter_webrtc: 0.9.28 # use "^" will update to latest version, temporary remove "^"
   logging: ^1.2.0
+  protobuf:
 
 dev_dependencies:
   flutter_test:
