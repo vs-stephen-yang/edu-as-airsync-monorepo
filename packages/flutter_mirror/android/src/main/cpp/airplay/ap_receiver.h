@@ -2,7 +2,6 @@
 #define FLUTTER_MIRROR_PLUGIN_AP_RECEIVER_H_
 
 #include "airplay/airplay_receiver.h"
-#include "airplay/airplay_receiver_host.h"
 
 #include <thread>
 #include "airplay/ap_mirror_session.h"
@@ -33,7 +32,6 @@ class ApReceiver
  private:
   MirrorListener& mirror_listener_;
 
-  ap::AirplayReceiverHostPtr host_;
   ap::AirplayReceiverPtr receiver_;
 
   std::unique_ptr<std::thread> thread_;
