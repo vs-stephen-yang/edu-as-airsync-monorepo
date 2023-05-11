@@ -27,6 +27,8 @@ ApReceiver::~ApReceiver() {
 }
 
 bool ApReceiver::Init() {
+  ap::InitOnce();
+
   ap::InitLogger(ap::LogLevel::kInfo);
 
   return true;
