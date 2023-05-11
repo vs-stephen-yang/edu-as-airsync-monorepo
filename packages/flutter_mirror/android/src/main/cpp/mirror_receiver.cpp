@@ -1,6 +1,7 @@
 #include "mirror_receiver.h"
 #include <assert.h>
 #include "util/log.h"
+#include "util/thread_checker.h"
 
 std::string MirrorTypeToName(MirrorType mirror_type) {
   // The values must be same with the ones defined in lib\mirror_type.dart
@@ -20,14 +21,20 @@ MirrorReceiver::MirrorReceiver(
     : proxy_(std::move(proxy)),
       texture_registry_(std::move(texture_registry)) {
   ALOGV("MirrorReceiver()");
+
+  thread_id_ = std::this_thread::get_id();
 }
 
 MirrorReceiver::~MirrorReceiver() {
+  DCHECK_RUN_ON(thread_id_);
+
   ALOGV("~MirrorReceiver()");
 }
 
 void MirrorReceiver::StartAirplay(
     const ap::AirplayReceiver::Config& config) {
+  DCHECK_RUN_ON(thread_id_);
+
   ALOGD("Starting airplay auth:%s",
         config.enable_auth ? "on" : "off");
 
@@ -44,6 +51,8 @@ void MirrorReceiver::StartAirplay(
 
 void MirrorReceiver::StartGooglecast(
     const openscreen::cast::CastReceiver::Config& config) {
+  DCHECK_RUN_ON(thread_id_);
+
   ALOGD("Starting googlecast");
 
   if (googlecast_receiver_) {
@@ -60,6 +69,8 @@ void MirrorReceiver::StartGooglecast(
 void MirrorReceiver::EnableAudio(
     const std::string& mirror_id,
     bool enable) {
+  DCHECK_RUN_ON(thread_id_);
+
   MirrorSessionPtr session = FindSession(mirror_id);
   if (!session) {
     return;
@@ -69,6 +80,8 @@ void MirrorReceiver::EnableAudio(
 
 void MirrorReceiver::StopMirror(
     const std::string& mirror_id) {
+  DCHECK_RUN_ON(thread_id_);
+
   MirrorSessionPtr session = FindSession(mirror_id);
 
   if (!session) {
@@ -81,6 +94,8 @@ void MirrorReceiver::StopMirror(
 
 void MirrorReceiver::UpdateGooglecastCredentials(
     const openscreen::cast::CastReceiver::Credentials& credetials) {
+  DCHECK_RUN_ON(thread_id_);
+
   if (!googlecast_receiver_) {
     return;
   }
