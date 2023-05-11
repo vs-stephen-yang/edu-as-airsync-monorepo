@@ -1,5 +1,6 @@
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/widgets/bottom_bar.dart';
+import 'package:display_cast_flutter/widgets/present_idle.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,21 +42,7 @@ class _HomeState extends State<Home> {
                   print('PresentState: ${provider.state}');
                   switch (provider.state) {
                     case ViewState.idle:
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'StandBy',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              provider.presentTo();
-                            },
-                            child: const Text('present to'),
-                          ),
-                        ],
-                      );
+                      return PresentIdle();
                     case ViewState.waitReady:
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
