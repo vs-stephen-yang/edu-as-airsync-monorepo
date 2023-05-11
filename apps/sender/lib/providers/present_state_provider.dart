@@ -29,7 +29,9 @@ class PresentStateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> presentTo() async {
+  Future<void> presentTo(
+      {required String displayCode, required String otp}) async {
+    print('presentTo: displayCode: $displayCode, otp: $otp');
     setViewState(ViewState.waitReady);
     _presentTimer = Timer(const Duration(seconds: 30), () {
       presentStop();
