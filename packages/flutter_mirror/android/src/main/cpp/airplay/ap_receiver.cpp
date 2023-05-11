@@ -27,30 +27,19 @@ ApReceiver::~ApReceiver() {
 }
 
 bool ApReceiver::Init() {
-  assert(!host_);
-  assert(!receiver_);
-
-  // create a airplay receiver host
-  host_ = ap::CreateAirplayReceiverHost();
-  host_->InitLogger(ap::LogLevel::kInfo);
-
-  // create a receiver from the host
-  receiver_ = host_->CreateReceiver();
-
-  // Run the event loop in the host
-  thread_ = std::make_unique<std::thread>([this]() {
-    host_->Run();
-  });
+  ap::InitLogger(ap::LogLevel::kInfo);
 
   return true;
 }
 
 bool ApReceiver::Start(
     const ap::AirplayReceiver::Config& config) {
-  assert(receiver_);
-  if (!receiver_) {
+  if (receiver_) {
     return false;
   }
+
+  // create a receiver from the host
+  receiver_ = ap::CreateReceiver();
 
   receiver_->Start(
       config,
