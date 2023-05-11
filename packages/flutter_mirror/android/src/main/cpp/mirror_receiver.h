@@ -72,6 +72,7 @@ class MirrorReceiver
   jni::MirrorReceiverPtr proxy_;
   jni::TextureRegistryPtr texture_registry_;
 
+  std::thread::id thread_id_;
   std::mutex mutex_;
   std::map<std::string, MirrorSessionPtr> sessions_;
 
