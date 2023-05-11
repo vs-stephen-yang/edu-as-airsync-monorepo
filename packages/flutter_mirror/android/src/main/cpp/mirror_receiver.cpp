@@ -69,7 +69,14 @@ void MirrorReceiver::EnableAudio(
 
 void MirrorReceiver::StopMirror(
     const std::string& mirror_id) {
-  // TODO
+  MirrorSessionPtr session = FindSession(mirror_id);
+
+  if (!session) {
+    return;
+  }
+  session->StopMirror();
+
+  RemoveSession(mirror_id);
 }
 
 void MirrorReceiver::UpdateGooglecastCredentials(
