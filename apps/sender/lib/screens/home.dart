@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/widgets/bottom_bar.dart';
 import 'package:display_cast_flutter/widgets/present_idle.dart';
+import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -44,21 +45,7 @@ class _HomeState extends State<Home> {
                     case ViewState.idle:
                       return PresentIdle();
                     case ViewState.waitReady:
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Countdown Timer',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              provider.presentSelectScreen();
-                            },
-                            child: const Text('Select Screen'),
-                          ),
-                        ],
-                      );
+                      return PresentWaitReady();
                     case ViewState.selectScreen:
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
