@@ -52,9 +52,16 @@ void MirrorReceiver::StartAirplay(
 void MirrorReceiver::StopAirplay() {
   DCHECK_RUN_ON(thread_id_);
 
-  ALOGD("Stopping airplay");
+  if (!ap_receiver_) {
+    return;
+  }
 
-  // TODO:
+  ALOGD("Stopping airplay");
+  ap_receiver_->Stop();
+  ALOGD("Airplay has stopped");
+
+  ap_receiver_.reset();
+  ALOGD("Airplay has been freed");
 }
 
 void MirrorReceiver::StartGooglecast(
