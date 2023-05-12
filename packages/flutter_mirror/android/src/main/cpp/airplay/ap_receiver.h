@@ -34,8 +34,6 @@ class ApReceiver
 
   ap::AirplayReceiverPtr receiver_;
 
-  std::unique_ptr<std::thread> thread_;
-
   unsigned int mirror_increment_seq_ = 0;
 };
 
