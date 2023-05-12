@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:flutter/material.dart';
 
 enum ViewState {
@@ -12,7 +13,7 @@ enum ViewState {
 
 class PresentStateProvider extends ChangeNotifier {
   PresentStateProvider(BuildContext context) {
-    print(
+    debugModePrint(
         'appConfig apiGateway: ${AppConfig.of(context)!.settings.urlGateway}');
   }
 
@@ -31,7 +32,7 @@ class PresentStateProvider extends ChangeNotifier {
 
   Future<void> presentTo(
       {required String displayCode, required String otp}) async {
-    print('presentTo: displayCode: $displayCode, otp: $otp');
+    debugModePrint('presentTo: displayCode: $displayCode, otp: $otp');
     setViewState(ViewState.waitReady);
     _presentTimer = Timer(const Duration(seconds: 30), () {
       presentStop();

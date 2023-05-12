@@ -1,4 +1,5 @@
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/widgets/bottom_bar.dart';
 import 'package:display_cast_flutter/widgets/present_idle.dart';
 import 'package:display_cast_flutter/widgets/present_present_start.dart';
@@ -41,7 +42,7 @@ class _HomeState extends State<Home> {
               ),
               Consumer<PresentStateProvider>(
                 builder: (context, provider, child) {
-                  print('PresentState: ${provider.state}');
+                  debugModePrint('PresentState: ${provider.state}');
                   switch (provider.state) {
                     case ViewState.idle:
                       return PresentIdle();
