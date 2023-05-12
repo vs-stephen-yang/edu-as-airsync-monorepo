@@ -52,17 +52,7 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
       _plugin.registerListener(this);
       await _plugin.initialize();
 
-      // start airplay
-      await _plugin.startAirplay(const AirplayConfig(
-        name: "display-1",
-        security: AirplaySecurity.onscreenCode,
-      ));
-
-      // start googlecast
-      await _plugin.startGooglecast("display-1");
-
-      // start miracast
-      await _plugin.startMiracast("display-1");
+      await startServices();
     } on PlatformException {}
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -174,6 +164,26 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
             _videoWidgetSize.height.toInt()));
   }
 
+  Future<void> startServices() async {
+    // start airplay
+    await _plugin.startAirplay(const AirplayConfig(
+      name: "display-1",
+      security: AirplaySecurity.onscreenCode,
+    ));
+
+    // start googlecast
+    await _plugin.startGooglecast("display-1");
+
+    // start miracast
+    await _plugin.startMiracast("display-1");
+  }
+
+  Future<void> stopServices() async {
+    await _plugin.stopAirplay();
+    await _plugin.stopGooglecast();
+    await _plugin.stopMiracast();
+  }
+
   void toggleAudio() {
     if (_mirrorId == null) {
       return;
@@ -242,6 +252,24 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
       backgroundColor: Colors.pink,
     );
 
+    var startButton = FloatingActionButton.extended(
+      onPressed: () {
+        startServices();
+      },
+      label: const Text('start'),
+      icon: const Icon(Icons.start),
+      backgroundColor: Colors.green,
+    );
+
+    var stopButton = FloatingActionButton.extended(
+      onPressed: () {
+        stopServices();
+      },
+      label: const Text('stop'),
+      icon: const Icon(Icons.stop),
+      backgroundColor: Colors.green,
+    );
+
     var toggleAudioButton = FloatingActionButton.extended(
       onPressed: () {
         toggleAudio();
@@ -261,6 +289,8 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
         children: <Widget>[
           toggleAudioButton,
           closeButton,
+          startButton,
+          stopButton,
         ],
       ),
     );
