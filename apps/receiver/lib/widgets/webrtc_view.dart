@@ -11,11 +11,12 @@ import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:uuid/uuid.dart';
 
 import 'custom_icons_icons.dart';
@@ -55,19 +56,22 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
     // init logger
     Logger.root.level = Level.ALL; // defaults to Level.INFO
     Logger.root.onRecord.listen((record) {
-      print('${record.level.name}: ${record.time}: ${record.message}');
+      print('${_viewController.mUid}: ${record.time}: ${record.message}');
     });
   }
 
   @override
   void deactivate() {
     print('zz deactivate');
+    Logger.root.clearListeners();
     if (_viewController._socket != null && _viewController._socket!.connected) {
       _viewController.disconnect().then((value) {
         ControlSocket().removeWebRtcController(_viewController);
         super.deactivate();
       });
     } else {
+      print('zz deactivate 2 ');
+      _viewController._socket = null;
       super.deactivate();
     }
   }
@@ -214,17 +218,15 @@ class WebRTCFlutterViewController {
   String peerToken = '';
   String peerId = '';
   String? signalURL;
-
+  final Map<String, dynamic> _streamInfo = {};
   String? _token;
   String? _peerId;
 
   RTCPeerConnection? _pc;
-  IO.Socket? _socket;
+  io.Socket? _socket;
   var _remoteRenderer = RTCVideoRenderer();
 
   RTCVideoRenderer get renderer => _remoteRenderer;
-
-  String get sdpSemantics => 'unified-plan';
 
   Future<void> init(String uid, WebRTCFlutterViewState state) async {
     mUid = uid;
@@ -278,17 +280,16 @@ class WebRTCFlutterViewController {
 
     _token = token;
     _peerId = peerId;
-    _socket = IO.io(
+    _socket = io.io(
         url, //'https://signal.stage.myviewboard.cloud'
-        IO.OptionBuilder()
-            // .enableForceNew()
-            .enableForceNewConnection()
+        io.OptionBuilder()
             .setTransports(['websocket'])
             .disableAutoConnect()
-            .disableReconnection()
-            .setTimeout(2000)
-            // .enableReconnection()
-            // .setReconnectionAttempts(5)
+            .enableForceNew()
+            .enableForceNewConnection()
+            .enableReconnection()
+            .setReconnectionAttempts(5)
+            .enableMultiplex()
             .setQuery({
           'token': _token,
           'displayCode': displayCode
@@ -307,6 +308,13 @@ class WebRTCFlutterViewController {
       if (type == "chat-signal") {
         await _handleSignal(msg['data']);
       }
+      if (type == 'chat-ua') {
+        _send('chat-ua', {'sdk':{'type':_getPlatform,'version':5},'capabilities':{'continualIceGathering':true,'unifiedPlan':true,'streamRemovable':true}});
+      }
+      if (type == 'chat-stream-info') {
+        var info = msg['data'];
+        _streamInfo[info['id'].toString()] = info;
+      }
     });
 
     _socket?.on('server-authenticated', (data) async {
@@ -316,33 +324,12 @@ class WebRTCFlutterViewController {
 
     _socket?.onDisconnect((_) async {
       print('zz _socket onDisconnect ${_socket?.disconnected}');
-      await Future.delayed(const Duration(seconds: 1)).then((value) {
-
-        print('zz zz _socket onDisconnect 2');
-        // unbinds a specific event listeners
-        // _socket?.clearListeners(); // unbinds all the listeners
-        IO.cache.forEach((key, value) {
-          print('zz key $key $value');
-        });
-        IO.cache.clear();
-        _socket?.io.destroy(_socket);
-        _socket?.io.destroy(_socket?.io.engine);
-        _socket?.io.disconnect();
-        _socket?.io.engine.close();
-        _socket?.io.engine.flush();
-        _socket = null;
-        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-      });
+      _socket = null;
+      ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
     });
 
     _socket?.onConnectError((data) {
       print('zz ConnectError: $data');
-      // onServerDisconnected
-      ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-    });
-
-    _socket?.on('server-disconnect', (data) {
-      print('zz server-disconnect: $data');
       // onServerDisconnected
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
     });
@@ -357,31 +344,29 @@ class WebRTCFlutterViewController {
     _socket?.onReconnecting((data) => print('zz onReconnecting: $data'));
     _socket?.onPing((data) => print('zz onPing: $data'));
     _socket?.onPong((data) => print('zz onPong: $data'));
-    _socket?.on('error', (data) => print("zz error $data"));
 
     _socket?.connect();
   }
 
   Future<void> disconnect({bool sendAnalytics = false}) async {
-    print('zz disconnect process ');
+    print('zz disconnect process');
     if (sendAnalytics) {
       AppAnalytics().trackEventPresentStopped(presentId, presenterId);
     }
 
-    // close connection
+    // clear renderer and close connection
     if (_remoteRenderer.textureId != null && _remoteRenderer.renderVideo) {
       _remoteRenderer.srcObject = null;
       await _remoteRenderer.dispose();
       _remoteRenderer = RTCVideoRenderer();
     }
-    await _pc?.close();
-    await _pc?.dispose();
-    _pc = null;
+    if (_pc != null) {
+      await _pc?.close();
+      await _pc?.dispose();
+      _pc = null;
+    }
     if (_socket != null && _socket!.connected) {
-      print('zz disconnect _socket');
-      _socket?.disconnect();
       _socket?.close();
-      _socket?.destroy();
     }
 
     // change state
@@ -452,16 +437,18 @@ class WebRTCFlutterViewController {
   }
 
   void _onRenegotiationNeeded() {
-    print('!!!! RenegotiationNeeded');
+    print('zz RenegotiationNeeded');
   }
 
   void _onAddStream(MediaStream stream) {
-    print('zz _onAddStream');
+    print('zz _onAddStream ${stream.getTracks().first.id}');
     ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
     presentationState = PresentationState.streaming;
     showConnectionInfo(false);
     ControlSocket().handleAddStreamState(this);
-
+    if (_streamInfo.containsKey(stream.id)) {
+      _send('chat-tracks-added', _streamInfo[stream.id]['tracks']);
+    }
     AppAnalytics().trackEventPresentStarted(presentId, presenterId);
   }
 
@@ -475,16 +462,13 @@ class WebRTCFlutterViewController {
         print('zz ended');
         disconnect();
       };
-      // _startReportStats();
+      controlAudio(true);
     }
   }
 
   /// iOS, macOS did not use this event.
   void _onAddTrack(MediaStream stream, MediaStreamTrack track) {
     print('zz _onAddTrack ${track.id}');
-    // if (track.kind == 'video') {
-    //   _remoteRenderer.srcObject = stream;
-    // }
   }
 
   void _onRemoveTrack(MediaStream stream, MediaStreamTrack track) {
@@ -497,27 +481,12 @@ class WebRTCFlutterViewController {
 
   //endregion
 
-  // void _startReportStats() {
-  //   _statsTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-  //     var stats = await _pc?.getStats(null);
-  //     stats?.forEach((st) {
-  //       //print('!!!! ${st.id} ${st.type}');
-  //       if (st.type.contains('ssrc')) {
-  //         print(
-  //             '!!!! ${st.values['ssrc']},Decoded,${st.values['googFrameRateDecoded']}, Received,${st.values['googFrameRateReceived']},Output,${st.values['googFrameRateOutput']},Decode,${st.values['googDecodeMs']},Delay,${st.values['googCurrentDelayMs']}');
-  //       }
-  //     });
-  //     mViewState.setState(() {});
-  //   });
-  // }
-
   void _send(type, message) {
-    print('zz _send $type');
     var data = {
       'data': jsonEncode({'type': type, 'data': message}),
       'to': _peerId
     };
-
+    print('zz _send $data');
     _socket?.emit('owt-message', data);
   }
 
@@ -561,5 +530,21 @@ class WebRTCFlutterViewController {
       // http.get maybe no network connection.
       return {};
     }
+  }
+
+  String _getPlatform() {
+    String platform;
+    if (kIsWeb) {
+      platform = 'Web';
+    } else {
+      if (Platform.isIOS) {
+        platform = 'iOS';
+      } else if (Platform.isAndroid) {
+        platform = 'Android';
+      } else {
+        platform = ''; // todo: support other platform.
+      }
+    }
+    return platform;
   }
 }

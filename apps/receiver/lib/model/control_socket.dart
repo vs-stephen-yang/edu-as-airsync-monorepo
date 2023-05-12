@@ -342,7 +342,7 @@ class ControlSocket {
                 selectedController.presentId, selectedController.presenterId);
 
             try {
-              selectedController.disconnect(sendAnalytics: true);
+              await selectedController.disconnect(sendAnalytics: true);
               ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
               if (moderator == null &&
                   !SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
@@ -689,7 +689,7 @@ class ControlSocket {
       selectedController = temp[i];
       if (selectedController.presenterId.isNotEmpty) {
         try {
-          selectedController.disconnect(sendAnalytics: true);
+          await selectedController.disconnect(sendAnalytics: true);
           // need some delay to prevent exception:
           // 'package:flutter/src/rendering/object.dart': Failed assertion: line 2250 pos 12: '!_debugDisposed': is not true.
           await Future.delayed(const Duration(milliseconds: 300));
@@ -704,7 +704,7 @@ class ControlSocket {
     WebRTCFlutterViewController? selectedController = _webRtcController[index];
     if (selectedController.presenterId.isNotEmpty) {
       try {
-        selectedController.disconnect(sendAnalytics: true);
+        await selectedController.disconnect(sendAnalytics: true);
         ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       } on PlatformException catch (e) {
         log(e.toString());
