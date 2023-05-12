@@ -57,9 +57,6 @@ void ApReceiver::Stop() {
   }
 
   receiver_->Stop();
-
-  // TODO:
-  thread_->join();
 }
 
 void ApReceiver::OnAuthRequest(
