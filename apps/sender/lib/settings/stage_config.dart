@@ -6,4 +6,10 @@ class StageConfig implements ConfigSettings {
 
   @override
   String versionPostfix = '-s';
+
+  @override
+  String urlGateway = 'https://presentation-gateway.stage.myviewboard.cloud';
+
+  @override
+  String urlGetIce = 'https://getice.stage.myviewboard.cloud';
 }

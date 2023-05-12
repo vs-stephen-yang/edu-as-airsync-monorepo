@@ -16,7 +16,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: PresentStateProvider()),
+        ChangeNotifierProvider.value(value: PresentStateProvider(context)),
       ],
       child: Scaffold(
         body: ConstrainedBox(
