@@ -6,4 +6,10 @@ class ProductionConfig implements ConfigSettings {
 
   @override
   String versionPostfix = '';
+
+  @override
+  String urlGateway = 'https://presentation-gateway.myviewboard.cloud';
+
+  @override
+  String urlGetIce = 'https://getice.myviewboard.cloud';
 }

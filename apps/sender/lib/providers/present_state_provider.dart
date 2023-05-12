@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 
 enum ViewState {
@@ -10,7 +11,10 @@ enum ViewState {
 }
 
 class PresentStateProvider extends ChangeNotifier {
-  PresentStateProvider();
+  PresentStateProvider(BuildContext context) {
+    print(
+        'appConfig apiGateway: ${AppConfig.of(context)!.settings.urlGateway}');
+  }
 
   ViewState get state => _currentState;
   ViewState _currentState = ViewState.idle;

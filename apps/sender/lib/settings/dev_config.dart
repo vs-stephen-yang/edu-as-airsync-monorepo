@@ -6,4 +6,10 @@ class DevConfig implements ConfigSettings {
 
   @override
   String versionPostfix = '-d';
+
+  @override
+  String urlGateway = 'https://presentation-gateway.dev.myviewboard.cloud';
+
+  @override
+  String urlGetIce = 'https://getice.stage.myviewboard.cloud';
 }
