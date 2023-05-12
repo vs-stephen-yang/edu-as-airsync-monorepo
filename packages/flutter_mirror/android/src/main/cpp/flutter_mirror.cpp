@@ -99,6 +99,19 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startAirplayNative(
 }
 
 JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1mirror_MirrorReceiver_stopAirplayNative(
+    JNIEnv* env,
+    jobject thiz,
+    jlong instance) {
+  assert(instance != 0);
+  ALOGV("stopAirplayNative()");
+
+  MirrorReceiver* receiver = MIRROR(instance);
+
+  receiver->StopAirplay();
+}
+
+JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startGooglecastNative(
     JNIEnv* env,
     jobject thiz,
@@ -122,6 +135,20 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startGooglecastNative(
 
   receiver->StartGooglecast(config);
 }
+
+JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1mirror_MirrorReceiver_stopGooglecastNative(
+    JNIEnv* env,
+    jobject thiz,
+    jlong instance) {
+  assert(instance != 0);
+  ALOGV("stopGooglecastNative()");
+
+  MirrorReceiver* receiver = MIRROR(instance);
+
+  receiver->StopGooglecast();
+}
+
 JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1mirror_MirrorReceiver_updateGooglecastCredentialNative(
     JNIEnv* env,

@@ -39,12 +39,24 @@ abstract class FlutterMirrorPlatform extends PlatformInterface {
     throw UnimplementedError('startAirplay() has not been implemented.');
   }
 
+  Future<void> stopAirplay() async {
+    throw UnimplementedError('stopAirplay() has not been implemented.');
+  }
+
   Future<void> startGooglecast(String name) async {
     throw UnimplementedError('startGooglecast() has not been implemented.');
   }
 
+  Future<void> stopGooglecast() async {
+    throw UnimplementedError('stopGooglecast() has not been implemented.');
+  }
+
   Future<void> startMiracast(String name) async {
     throw UnimplementedError('startMiracast() has not been implemented.');
+  }
+
+  Future<void> stopMiracast() async {
+    throw UnimplementedError('stopMiracast() has not been implemented.');
   }
 
   Future<void> stopMirror(String mirrorId) async {

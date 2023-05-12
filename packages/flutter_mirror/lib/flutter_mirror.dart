@@ -18,12 +18,24 @@ class FlutterMirror {
     return FlutterMirrorPlatform.instance.startAirplay(config);
   }
 
+  Future<void> stopAirplay() {
+    return FlutterMirrorPlatform.instance.stopAirplay();
+  }
+
   Future<void> startGooglecast(String name) {
     return FlutterMirrorPlatform.instance.startGooglecast(name);
   }
 
+  Future<void> stopGooglecast() {
+    return FlutterMirrorPlatform.instance.stopGooglecast();
+  }
+
   Future<void> startMiracast(String name) {
     return FlutterMirrorPlatform.instance.startMiracast(name);
+  }
+
+  Future<void> stopMiracast() {
+    return FlutterMirrorPlatform.instance.stopMiracast();
   }
 
   Future<void> stopMirror(String mirrorId) {

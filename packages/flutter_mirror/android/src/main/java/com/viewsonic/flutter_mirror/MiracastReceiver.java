@@ -41,7 +41,7 @@ public class MiracastReceiver implements
   }
 
   public void stop() {
-
+    // TODO:
   }
 
   public void onMirrorTouch(
