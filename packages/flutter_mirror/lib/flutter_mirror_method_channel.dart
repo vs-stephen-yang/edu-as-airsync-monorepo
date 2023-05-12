@@ -47,6 +47,11 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
   }
 
   @override
+  Future<void> stopAirplay() async {
+    await methodChannel.invokeMethod('stopAirplay', {});
+  }
+
+  @override
   Future<void> startGooglecast(String name) async {
     // load today's credentials
     final credentials = await CredentialsStore.loadToday();
@@ -58,10 +63,20 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
   }
 
   @override
+  Future<void> stopGooglecast() async {
+    await methodChannel.invokeMethod('stopGooglecast', {});
+  }
+
+  @override
   Future<void> startMiracast(String name) async {
     await methodChannel.invokeMethod('startMiracast', {
       "name": name,
     });
+  }
+
+  @override
+  Future<void> stopMiracast() async {
+    await methodChannel.invokeMethod('stopMiracast', {});
   }
 
   @override

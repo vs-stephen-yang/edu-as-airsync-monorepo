@@ -163,6 +163,11 @@ public class FlutterMirrorPlugin implements
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
+    } else if (call.method.equals("stopAirplay")) {
+      stopAirplay();
+
+      Map<String, Long> reply = new HashMap<>();
+      result.success(reply);
     } else if (call.method.equals("startGooglecast")) {
       String name = call.argument("name");
       Map<String, Object> credentials = call.argument("credentials");
@@ -173,11 +178,21 @@ public class FlutterMirrorPlugin implements
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
+    } else if (call.method.equals("stopGooglecast")) {
+      stopGooglecast();
+
+      Map<String, Long> reply = new HashMap<>();
+      result.success(reply);
     } else if (call.method.equals("startMiracast")) {
       String name = call.argument("name");
 
       startMiracast(
           name);
+
+      Map<String, Long> reply = new HashMap<>();
+      result.success(reply);
+    } else if (call.method.equals("stopMiracast")) {
+      stopMiracast();
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
@@ -224,12 +239,36 @@ public class FlutterMirrorPlugin implements
     mirrorReceiver_.startAirplay(name, security);
   }
 
+  private void stopAirplay() {
+    if (mirrorReceiver_ == null) {
+      return;
+    }
+
+    mirrorReceiver_.stopAirplay();
+  }
+
   private void startGooglecast(String name, GooglecastCredentials credentials) {
     if (mirrorReceiver_ == null) {
       return;
     }
 
     mirrorReceiver_.startGooglecast(name, credentials);
+  }
+
+  private void stopGooglecast() {
+    if (mirrorReceiver_ == null) {
+      return;
+    }
+
+    mirrorReceiver_.stopGooglecast();
+  }
+
+  private void stopMiracast() {
+    if (mirrorReceiver_ == null) {
+      return;
+    }
+
+    mirrorReceiver_.stopMiracast();
   }
 
   private void updateCredentials(GooglecastCredentials credentials) {

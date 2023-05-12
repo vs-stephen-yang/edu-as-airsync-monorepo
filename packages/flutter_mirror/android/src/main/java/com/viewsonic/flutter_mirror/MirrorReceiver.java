@@ -47,6 +47,14 @@ public class MirrorReceiver implements
         security);
   }
 
+  // stop airplay
+  public void stopAirplay() {
+    assert instance_ != 0;
+
+    stopAirplayNative(
+        instance_);
+  }
+
   // start googlecast
   public void startGooglecast(String name, GooglecastCredentials credentials) {
     assert instance_ != 0;
@@ -55,6 +63,14 @@ public class MirrorReceiver implements
         instance_,
         name,
         credentials);
+  }
+
+  // stop googlecast
+  public void stopGooglecast() {
+    assert instance_ != 0;
+
+    stopGooglecastNative(
+        instance_);
   }
 
   // start miracast
@@ -69,6 +85,13 @@ public class MirrorReceiver implements
         name,
         context,
         activity);
+  }
+
+  // stop miracast
+  public void stopMiracast() {
+    if (miracastReceiver_ != null) {
+      miracastReceiver_.stop();
+    }
   }
 
   public void stop() {
@@ -173,10 +196,16 @@ public class MirrorReceiver implements
       String name,
       String security);
 
+  private native void stopAirplayNative(
+      long instance);
+
   public native void startGooglecastNative(
       long instance,
       String name,
       GooglecastCredentials credentials);
+
+  private native void stopGooglecastNative(
+      long instance);
 
   public native void updateGooglecastCredentialNative(
       long instance,

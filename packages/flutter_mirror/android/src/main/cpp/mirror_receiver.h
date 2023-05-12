@@ -26,9 +26,15 @@ class MirrorReceiver
   void StartAirplay(
       const ap::AirplayReceiver::Config& config);
 
+  // stop airplay
+  void StopAirplay();
+
   // start googlecast
   void StartGooglecast(
       const openscreen::cast::CastReceiver::Config& config);
+
+  // stop Googlecast
+  void StopGooglecast();
 
   void EnableAudio(
       const std::string& mirror_id,

@@ -49,6 +49,14 @@ void MirrorReceiver::StartAirplay(
   ap_receiver_->Start(config);
 }
 
+void MirrorReceiver::StopAirplay() {
+  DCHECK_RUN_ON(thread_id_);
+
+  ALOGD("Stopping airplay");
+
+  // TODO:
+}
+
 void MirrorReceiver::StartGooglecast(
     const openscreen::cast::CastReceiver::Config& config) {
   DCHECK_RUN_ON(thread_id_);
@@ -64,6 +72,14 @@ void MirrorReceiver::StartGooglecast(
 
   googlecast_receiver_->Init();
   googlecast_receiver_->Start(config);
+}
+
+void MirrorReceiver::StopGooglecast() {
+  DCHECK_RUN_ON(thread_id_);
+
+  ALOGD("Stopping googlecast");
+
+  // TODO:
 }
 
 void MirrorReceiver::EnableAudio(
