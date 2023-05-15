@@ -26,7 +26,9 @@ ApReceiver::~ApReceiver() {
   ALOGV("~ApReceiver()");
 }
 
-bool ApReceiver::Init() {
+bool ApReceiver::InitOnce() {
+  ALOGD("ApReceiver::InitOnce()");
+
   ap::InitOnce();
 
   ap::InitLogger(ap::LogLevel::kInfo);

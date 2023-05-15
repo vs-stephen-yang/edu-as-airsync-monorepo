@@ -14,7 +14,7 @@ class ApReceiver
 
   ~ApReceiver();
 
-  bool Init();
+  static bool InitOnce();
 
   bool Start(
       const ap::AirplayReceiver::Config& config);

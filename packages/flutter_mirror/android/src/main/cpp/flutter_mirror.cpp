@@ -45,6 +45,9 @@ JNI_OnLoad(JavaVM* vm, void* reserved) {
   ALOGV("JNI_OnLoad()");
 
   g_vm = vm;
+
+  MirrorReceiver::InitializeOnce();
+
   return JNI_VERSION_1_4;
 }
 
