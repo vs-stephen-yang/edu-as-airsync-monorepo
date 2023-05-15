@@ -22,6 +22,8 @@ class MirrorReceiver
 
   ~MirrorReceiver();
 
+  static void InitializeOnce();
+
   // start airplay
   void StartAirplay(
       const ap::AirplayReceiver::Config& config);

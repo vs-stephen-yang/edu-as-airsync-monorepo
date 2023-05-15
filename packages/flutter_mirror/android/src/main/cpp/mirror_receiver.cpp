@@ -15,6 +15,12 @@ std::string MirrorTypeToName(MirrorType mirror_type) {
   }
 }
 
+void MirrorReceiver::InitializeOnce() {
+  ALOGD("MirrorReceiver::InitializeOnce()");
+
+  ApReceiver::InitOnce();
+}
+
 MirrorReceiver::MirrorReceiver(
     jni::MirrorReceiverPtr&& proxy,
     jni::TextureRegistryPtr&& texture_registry)
@@ -45,7 +51,6 @@ void MirrorReceiver::StartAirplay(
   ap_receiver_ = std::make_unique<ApReceiver>(
       *this);
 
-  ap_receiver_->Init();
   ap_receiver_->Start(config);
 }
 
