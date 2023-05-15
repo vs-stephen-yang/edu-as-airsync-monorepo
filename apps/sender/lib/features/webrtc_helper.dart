@@ -19,16 +19,27 @@ class WebRTCHelper {
 
   String? _token;
   String? _peerId;
+  dynamic _deviceId;
 
   RTCPeerConnection? _pc;
   io.Socket? _socket;
 
   Timer? _statsTimer;
 
-  Future<void> makeCall(String signalUrl, String token, String peerId) async {
+  Future<void> makeCall(
+      String signalUrl, String token, String peerId, dynamic source) async {
     _token = token;
     _peerId = peerId;
+    dynamic deviceId;
 
+    if (Platform.isAndroid) {
+    } else if (Platform.isIOS) {
+      deviceId = 'broadcast';
+    } else {
+      deviceId = {'exact': source.id};
+    }
+
+    _deviceId = deviceId;
     _signalConnect(signalUrl);
     await _peerConnectionConnect();
   }
@@ -126,27 +137,10 @@ class WebRTCHelper {
   }
 
   Future<void> _publish() async {
-    dynamic deviceId;
-
-    if (Platform.isAndroid) {
-    } else if (Platform.isIOS) {
-      deviceId = 'broadcast';
-    } else {
-      const sourceType = SourceType.Screen;
-      final sources = await desktopCapturer.getSources(types: [sourceType]);
-
-      for (var element in sources) {
-        debugModePrint(
-            'name: ${element.name}, id: ${element.id}, type: ${element.type}',
-            type: runtimeType);
-        deviceId = {'exact': element.id};
-      }
-    }
-
     final constraints = <String, dynamic>{
       'audio': true,
       'video': {
-        'deviceId': deviceId,
+        'deviceId': _deviceId,
         'mandatory': {'frameRate': 30.0}
       }
     };

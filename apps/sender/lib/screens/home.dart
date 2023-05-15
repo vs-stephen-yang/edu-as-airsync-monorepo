@@ -3,6 +3,7 @@ import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/widgets/bottom_bar.dart';
 import 'package:display_cast_flutter/widgets/present_idle.dart';
 import 'package:display_cast_flutter/widgets/present_present_start.dart';
+import 'package:display_cast_flutter/widgets/present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
@@ -49,32 +50,7 @@ class _HomeState extends State<Home> {
                     case ViewState.waitReady:
                       return PresentWaitReady();
                     case ViewState.selectScreen:
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Select Screen',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  provider.presentStop();
-                                },
-                                child: const Text('Cancel'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  provider.presentStart();
-                                },
-                                child: const Text('Share'),
-                              ),
-                            ],
-                          )
-                        ],
-                      );
+                      return const PresentPresentSelectScreen();
                     case ViewState.presentStart:
                       return PresentPresentStart();
                     default:
