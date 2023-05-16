@@ -11,11 +11,11 @@ import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
-import 'package:logging/logging.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:uuid/uuid.dart';
 
@@ -41,7 +41,6 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
   @override
   void initState() {
     super.initState();
-    print('zz initState');
     _viewController.init(const Uuid().v4(), this);
     widget.callback(_viewController);
 
@@ -53,24 +52,15 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
       parent: _animationController,
       curve: Curves.linear,
     );
-    // init logger
-    Logger.root.level = Level.ALL; // defaults to Level.INFO
-    Logger.root.onRecord.listen((record) {
-      print('${_viewController.mUid}: ${record.time}: ${record.message}');
-    });
   }
 
   @override
   void deactivate() {
-    print('zz deactivate');
-    Logger.root.clearListeners();
     if (_viewController._socket != null && _viewController._socket!.connected) {
       _viewController.disconnect().then((value) {
-        ControlSocket().removeWebRtcController(_viewController);
         super.deactivate();
       });
     } else {
-      print('zz deactivate 2 ');
       _viewController._socket = null;
       super.deactivate();
     }
@@ -78,7 +68,7 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
 
   @override
   void dispose() {
-    print('zz dispose');
+    ControlSocket().removeWebRtcController(_viewController);
     _animationController.dispose();
     super.dispose();
   }
@@ -229,6 +219,7 @@ class WebRTCFlutterViewController {
   RTCVideoRenderer get renderer => _remoteRenderer;
 
   Future<void> init(String uid, WebRTCFlutterViewState state) async {
+    _printWebRTCViewSocketLog('init', null);
     mUid = uid;
     mViewState = state;
   }
@@ -275,7 +266,6 @@ class WebRTCFlutterViewController {
   }
 
   Future<void> connectClient(String token, String displayCode, String peerId, String url, Function(bool result) callback) async {
-    log('zz connectClient 1');
     if (_pc == null) await initPeerConnection();
 
     _token = token;
@@ -297,11 +287,11 @@ class WebRTCFlutterViewController {
             .build());
 
     _socket?.onConnect((_) async {
-      print('zz connect');
+      _printWebRTCViewSocketLog('onConnect', _);
     });
 
     _socket?.on('owt-message', (data) async {
-      print('zz owt-message $data');
+      _printWebRTCViewSocketLog('owt-message', data);
       final msg = jsonDecode(data['data']);
       final type = msg['type'];
 
@@ -318,38 +308,32 @@ class WebRTCFlutterViewController {
     });
 
     _socket?.on('server-authenticated', (data) async {
-      print('zz server-authenticated: ${data.toString()}');
+      _printWebRTCViewSocketLog('server-authenticated', data);
       callback(true);
     });
 
     _socket?.onDisconnect((_) async {
-      print('zz _socket onDisconnect ${_socket?.disconnected}');
+      _printWebRTCViewSocketLog('onDisconnect', _);
       _socket = null;
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
     });
 
     _socket?.onConnectError((data) {
-      print('zz ConnectError: $data');
-      // onServerDisconnected
+      _printWebRTCViewSocketLog('onConnectError', data);
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
     });
 
-    _socket?.onConnecting((data) => print('zz onConnecting: $data'));
-    _socket?.onConnectTimeout((data) => print('zz onConnectTimeout: $data'));
-    _socket?.onError((data) => print('zz onError: $data'));
-    _socket?.onReconnect((data) => print('zz onReconnect: $data'));
-    _socket?.onReconnectAttempt((data) => print('zz onReconnectAttempt: $data'));
-    _socket?.onReconnectError((data) => print('zz onReconnectError: $data'));
-    _socket?.onReconnectFailed((data) => print('zz onReconnectFailed: $data'));
-    _socket?.onReconnecting((data) => print('zz onReconnecting: $data'));
-    _socket?.onPing((data) => print('zz onPing: $data'));
-    _socket?.onPong((data) => print('zz onPong: $data'));
+    _socket?.onConnectTimeout((data) => _printWebRTCViewSocketLog('onConnectTimeout', data));
+    _socket?.onError((data) => _printWebRTCViewSocketLog('onError', data));
+    _socket?.onReconnect((data) => _printWebRTCViewSocketLog('onReconnect', data));
+    _socket?.onReconnectError((data) => _printWebRTCViewSocketLog('onReconnectError', data));
+    _socket?.onReconnectFailed((data) => _printWebRTCViewSocketLog('onReconnectFailed', data));
 
     _socket?.connect();
   }
 
   Future<void> disconnect({bool sendAnalytics = false}) async {
-    print('zz disconnect process');
+    _printWebRTCViewSocketLog('disconnect', sendAnalytics);
     if (sendAnalytics) {
       AppAnalytics().trackEventPresentStopped(presentId, presenterId);
     }
@@ -403,25 +387,24 @@ class WebRTCFlutterViewController {
 
   //region PeerConnection interface
   void _onSignalingState(RTCSignalingState state) {
-    print('zz _onSignalingState ${state.name}');
+    _printPeerConnectionLog('_onSignalingState', state);
   }
 
   void _onIceGatheringState(RTCIceGatheringState state) {
-    print('zz _onIceGatheringState ${state.name}');
+    _printPeerConnectionLog('_onIceGatheringState', state);
   }
 
   void _onIceConnectionState(RTCIceConnectionState state) {
-    print('zz _onIceConnectionState ${state.name}');
+    _printPeerConnectionLog('_onIceConnectionState', state);
   }
 
   void _onPeerConnectionState(RTCPeerConnectionState state) {
-    print('zz _onPeerConnectionState ${state.name}');
+    _printPeerConnectionLog('_onPeerConnectionState', state);
   }
 
   Future<void> _onIceCandidate(RTCIceCandidate candidate) async {
-    print('zz _onIceCandidate: ${candidate.candidate}');
+    _printPeerConnectionLog('_onIceCandidate', candidate);
 
-    // _pc?.addCandidate(candidate);
     // send candidates to the peer
     // This delay is needed to allow enough time to try an ICE candidate
     // before skipping to the next one. 1 second is just an heuristic value
@@ -437,11 +420,11 @@ class WebRTCFlutterViewController {
   }
 
   void _onRenegotiationNeeded() {
-    print('zz RenegotiationNeeded');
+    _printPeerConnectionLog('_onRenegotiationNeeded', null);
   }
 
   void _onAddStream(MediaStream stream) {
-    print('zz _onAddStream ${stream.getTracks().first.id}');
+    _printPeerConnectionLog('_onAddStream', stream);
     ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
     presentationState = PresentationState.streaming;
     showConnectionInfo(false);
@@ -453,13 +436,12 @@ class WebRTCFlutterViewController {
   }
 
   void _onTrack(RTCTrackEvent event) async {
-    print('zz onTrack ${event.track.id}');
+    _printPeerConnectionLog('_onTrack', event);
     if (event.track.kind == 'video') {
       mViewState.setState(() {
         _remoteRenderer.srcObject = event.streams[0]; //stream;
       });
       _remoteRenderer.srcObject?.getTracks().first.onEnded = () {
-        print('zz ended');
         disconnect();
       };
       controlAudio(true);
@@ -468,11 +450,11 @@ class WebRTCFlutterViewController {
 
   /// iOS, macOS did not use this event.
   void _onAddTrack(MediaStream stream, MediaStreamTrack track) {
-    print('zz _onAddTrack ${track.id}');
+    _printPeerConnectionLog('_onAddTrack', track);
   }
 
   void _onRemoveTrack(MediaStream stream, MediaStreamTrack track) {
-    print('zz _onRemoveTrack');
+    _printPeerConnectionLog('_onRemoveTrack', track);
     // stream
     if (_remoteRenderer.srcObject?.id == stream.id) {
       _remoteRenderer.srcObject = null;
@@ -486,13 +468,13 @@ class WebRTCFlutterViewController {
       'data': jsonEncode({'type': type, 'data': message}),
       'to': _peerId
     };
-    print('zz _send $data');
+    _printWebRTCViewSocketLog('_send', data);
     _socket?.emit('owt-message', data);
   }
 
   Future<void> _handleSignal(msg) async {
     final type = msg['type'];
-    print('zz _handleSignal $type');
+    _printWebRTCViewSocketLog('_handleSignal', type);
 
     if (type == 'offer') {
       // handle offer from the peer
@@ -546,5 +528,17 @@ class WebRTCFlutterViewController {
       }
     }
     return platform;
+  }
+
+  void _printWebRTCViewSocketLog(String? event, dynamic args) {
+    printInDebug(
+        'mWebRTCViewSocket{${mUid}}: $event ${args.toString()}',
+        type: runtimeType);
+  }
+
+  void _printPeerConnectionLog(String? event, dynamic args) {
+    printInDebug(
+        'mPeerConnect{$event ${args.toString()}',
+        type: runtimeType);
   }
 }
