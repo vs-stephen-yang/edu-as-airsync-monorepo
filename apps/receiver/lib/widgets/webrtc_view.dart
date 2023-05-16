@@ -219,9 +219,9 @@ class WebRTCFlutterViewController {
   RTCVideoRenderer get renderer => _remoteRenderer;
 
   Future<void> init(String uid, WebRTCFlutterViewState state) async {
-    _printWebRTCViewSocketLog('init', null);
     mUid = uid;
     mViewState = state;
+    _printWebRTCViewSocketLog('init', null);
   }
 
   Future<void> initPeerConnection() async {

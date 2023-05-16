@@ -15,9 +15,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.mvbcast.crosswalk.helper.OTAHelper;
-//import com.mvbcast.crosswalk.helper.WebRTCHelper;
 import com.mvbcast.crosswalk.vbsota.SystemImageOTAHelper;
-//import com.mvbcast.crosswalk.view.WebRTCNativeViewFactory;
 
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
@@ -37,12 +35,6 @@ public class EulaActivity extends FlutterActivity {
         super.configureFlutterEngine(flutterEngine);
         BinaryMessenger binaryMessenger = flutterEngine.getDartExecutor().getBinaryMessenger();
 
-//        flutterEngine
-//                .getPlatformViewsController()
-//                .getRegistry()
-//                .registerViewFactory("com.mvbcast.crosswalk/webrtc_native_view",
-//                        new WebRTCNativeViewFactory(this, binaryMessenger));
-
         MethodChannel mAndroidRetain = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/android_app_retain");
         mAndroidRetain.setMethodCallHandler((call, result) -> {
             if (call.method.equals("sendToBackground")) {
@@ -57,19 +49,6 @@ public class EulaActivity extends FlutterActivity {
             // TODO:
         });
         OTAHelper.getInstance().clearForceCheckVersion();
-
-//        WebRTCHelper.getInstance().initWebRTCContext(this);
-
-        MethodChannel setServerSettings = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/settings");
-        setServerSettings.setMethodCallHandler((call, result) -> {
-            if (call.method.equals("setServerSettings")) {
-//                Log.e(TAG, "configureFlutterEngine: "+(String) call.argument("signalServer"));
-//                Log.e(TAG, "configureFlutterEngine: "+(String) call.argument("getIceServer"));
-//                WebRTCHelper.getInstance().setSignalServer((String) call.argument("signalServer"));
-//                WebRTCHelper.getInstance().setGetIceServer((String) call.argument("getIceServer"));
-//                WebRTCHelper.getInstance().getAndSetConfigOfIceServers();
-            }
-        });
 
         MethodChannel autoEnroll = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/auto_enroll");
         autoEnroll.setMethodCallHandler((call, result) -> {
@@ -89,14 +68,6 @@ public class EulaActivity extends FlutterActivity {
                 result.notImplemented();
             }
         });
-
-        MethodChannel debugInfo = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/debug_switch");
-        debugInfo.setMethodCallHandler(((call, result) -> {
-            if (call.method.equals("toggleDebugInfoVisible")) {
-//                Boolean value = WebRTCHelper.getInstance().getDebugInfoVisible().getValue();
-//                WebRTCHelper.getInstance().setDebugInfoVisible(value != null && !value);
-            }
-        }));
 
         MethodChannel bootMethodChannel = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/auto_startup");
         bootMethodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
@@ -132,8 +103,6 @@ public class EulaActivity extends FlutterActivity {
 
     @Override
     protected void onDestroy() {
-//        WebRTCHelper.getInstance().onActivityDestroy();
-
         OTAHelper.getInstance().removeDownloadProcess(EulaActivity.this);
 
         SystemImageOTAHelper.getInstance().unregisterBroadcastReceiver(EulaActivity.this);
