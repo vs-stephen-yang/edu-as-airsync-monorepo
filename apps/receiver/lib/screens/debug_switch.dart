@@ -14,8 +14,6 @@ class DebugSwitch extends StatefulWidget {
 }
 
 class _DebugSwitchState extends State<DebugSwitch> {
-  static const _debugSwitch =
-      MethodChannel('com.mvbcast.crosswalk/debug_switch');
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +74,8 @@ class _DebugSwitchState extends State<DebugSwitch> {
                       color: AppColors.primary_blue,
                     )),
                 onClick: () {
-                  _debugSwitch.invokeMethod('toggleDebugInfoVisible');
+                  // TODO: debug panel
+                  // _debugSwitch.invokeMethod('toggleDebugInfoVisible');
                 },
               ),
             ),
