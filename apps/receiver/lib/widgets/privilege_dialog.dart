@@ -58,7 +58,7 @@ class PrivilegeDialog extends StatelessWidget {
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           color: Colors.white,
                         ),
-                        child: QrImage(
+                        child: QrImageView(
                           data: appConfig != null
                               ? appConfig.settings.prefixQRCode +
                                   AppInstanceCreate().displayInstanceID
@@ -68,9 +68,9 @@ class PrivilegeDialog extends StatelessWidget {
                           padding: const EdgeInsets.all(5),
                           embeddedImage:
                               const Svg('assets/images/ic_logo_my.svg'),
-                          embeddedImageStyle: QrEmbeddedImageStyle(
+                          embeddedImageStyle: const QrEmbeddedImageStyle(
                             // Cannot set too large, will scan failure!!
-                            size: const Size(30, 30),
+                            size: Size(30, 30),
                           ),
                         ),
                       ),
