@@ -113,7 +113,7 @@ class AppInstanceCreate {
       _modelName = '';
     } else {
       if (Platform.isAndroid) {
-        String? androidId = await DeviceInfoVs.getAndridID;
+        String? androidId = await DeviceInfoVs.getAndroidID;
         AndroidDeviceInfo info = await deviceInfo.androidInfo;
         deviceId = androidId!;
         _modelName = info.model;
@@ -196,7 +196,7 @@ class AppInstanceCreate {
       };
     } else {
       if (Platform.isAndroid) {
-        String? androidId = await DeviceInfoVs.getAndridID;
+        String? androidId = await DeviceInfoVs.getAndroidID;
         AndroidDeviceInfo info = await deviceInfo.androidInfo;
         hardwareProperty = {
           'TimeStamp': DateTime.now().millisecondsSinceEpoch.toString(),
