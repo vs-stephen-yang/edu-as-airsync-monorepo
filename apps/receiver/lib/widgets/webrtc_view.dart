@@ -40,6 +40,7 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
   late final AnimationController _animationController;
   late final Animation<double> _animation;
   GlobalKey _widgetKey = GlobalKey();
+  bool _textureSizeChanged = true;
   Size _textureSize = Size(0, 0);
   Offset _textureOffset = Offset(0, 0);
 
@@ -97,14 +98,16 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
     } else {
       final RenderBox renderBox = textureElement!.findRenderObject() as RenderBox;
       _textureSize = renderBox.size;
-      print('texture widget size: ${_textureSize.width}, ${_textureSize.height}');
       _textureOffset = renderBox.localToGlobal(Offset.zero);
-      print('texture widget offset: ${_textureOffset.dx}, ${_textureOffset.dy}');
+      print('texture widget size: (${_textureSize.width.toStringAsFixed(2)}, ${_textureSize.height.toStringAsFixed(2)}), offset: (${_textureOffset.dx.toStringAsFixed(2)}, ${_textureOffset.dy.toStringAsFixed(2)})');
+      _textureSizeChanged = false;
     }
   }
 
   void _onVideoResize(int width, int height) {
     print('onVideoResize: $width x $height');
+    _textureSizeChanged = true;
+    /* ToDo: This callback is not triggered by the video texture, so it's not sufficiently reliable.*/
     /* texture widget size is not updated immediately, retrieve texture info after one second. */
     Timer(Duration(seconds: 1), () {
       _getTextureInfo();
@@ -124,6 +127,10 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
   }
 
   void _onTouchEvent(TouchEvent_TouchEventType eventType, PointerEvent event) {
+    if (_textureSizeChanged) {
+      _getTextureInfo();
+    }
+
     final curTouchEventPoint = TouchEventPoint();
     curTouchEventPoint.x = (event.position.dx-_textureOffset.dx)/_textureSize.width;
     /* make curTouchEventPoint.x between 0.0 ~ 1.0 */
@@ -165,11 +172,20 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
         Focus(
           descendantsAreFocusable: false,
           canRequestFocus: false,
-          child: Listener(
-            onPointerDown: _onTouchStart,
-            onPointerMove: _onTouchMove,
-            onPointerUp: _onTouchEnd,
-            child: RTCVideoView(_viewController.renderer,key: _widgetKey),
+          child: NotificationListener<SizeChangedLayoutNotification>(
+            onNotification: (notification) {
+              print('onVideoWidgetResize');
+              _textureSizeChanged = true;
+              return false;
+            },
+            child: SizeChangedLayoutNotifier(
+              child: Listener(
+                onPointerDown: _onTouchStart,
+                onPointerMove: _onTouchMove,
+                onPointerUp: _onTouchEnd,
+                child: RTCVideoView(_viewController.renderer,key: _widgetKey),
+              ),
+            ),
           ),
         ),
         Align(
