@@ -1,5 +1,5 @@
 // DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a en locale. All the
+// This is a library that provides messages for a zh locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
 
@@ -18,22 +18,18 @@ final messages = new MessageLookup();
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'en';
+  String get localeName => 'zh';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "main_language_title": MessageLookupByLibrary.simpleMessage("Language"),
-        "present_display_code":
-            MessageLookupByLibrary.simpleMessage("Display Code *"),
+        "main_language_title": MessageLookupByLibrary.simpleMessage("語言"),
+        "present_display_code": MessageLookupByLibrary.simpleMessage("投影辨識碼 *"),
         "present_display_code_description":
-            MessageLookupByLibrary.simpleMessage(
-                "*Display Code contains 9-10 digits"),
-        "present_fill_out":
-            MessageLookupByLibrary.simpleMessage("Please fill out this field."),
-        "present_otp_code":
-            MessageLookupByLibrary.simpleMessage("One Time Password *"),
-        "present_otp_code_description": MessageLookupByLibrary.simpleMessage(
-            "*One Time Password contains 4 digits"),
-        "present_start": MessageLookupByLibrary.simpleMessage("PRESENT")
+            MessageLookupByLibrary.simpleMessage("*9到10碼投影辨識碼"),
+        "present_fill_out": MessageLookupByLibrary.simpleMessage("請填寫此字段。"),
+        "present_otp_code": MessageLookupByLibrary.simpleMessage("一次性密碼 *"),
+        "present_otp_code_description":
+            MessageLookupByLibrary.simpleMessage("*4碼一次性密碼"),
+        "present_start": MessageLookupByLibrary.simpleMessage("投影")
       };
 }

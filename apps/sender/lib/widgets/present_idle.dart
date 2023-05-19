@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,11 +29,11 @@ class PresentIdle extends StatelessWidget {
           CustomTextFormField(
             key: codeKey,
             controller: _codeController,
-            labelText: 'Display Code *',
-            errorText: '*Display Code contains 9-10 digits',
+            labelText: S.of(context).present_display_code,
+            errorText: S.of(context).present_display_code_description,
             inputFormatter: [
               MaskedInputFormatter(
-                "000-000-000-0",
+                '000-000-000-0',
                 allowedCharMatcher: RegExp('[1-9]'),
               )
             ],
@@ -40,11 +41,11 @@ class PresentIdle extends StatelessWidget {
           CustomTextFormField(
             key: otpKey,
             controller: _otpController,
-            labelText: 'One Time Password *',
-            errorText: '*One Time Password contains 4 digits',
+            labelText: S.of(context).present_otp_code,
+            errorText: S.of(context).present_otp_code_description,
             inputFormatter: [
               MaskedInputFormatter(
-                "0000",
+                '0000',
                 allowedCharMatcher: RegExp('[1-9]'),
               )
             ],
@@ -69,9 +70,9 @@ class PresentIdle extends StatelessWidget {
                 color: Colors.blue,
               ),
             ),
-            child: const Text(
-              'PRESENT',
-              style: TextStyle(
+            child: Text(
+              S.of(context).present_start,
+              style: const TextStyle(
                 color: Colors.blue,
                 fontSize: 14,
               ),
@@ -102,14 +103,14 @@ class PresentIdle extends StatelessWidget {
               width: overlayWidth,
               height: overlayHeight,
               child: Row(
-                children: const [
-                  Icon(
+                children: [
+                  const Icon(
                     Icons.info,
                     color: Colors.amber,
                   ),
                   Text(
-                    'Please fill out this field.',
-                    style: TextStyle(color: Colors.black),
+                    S.of(context).present_fill_out,
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ],
               ),

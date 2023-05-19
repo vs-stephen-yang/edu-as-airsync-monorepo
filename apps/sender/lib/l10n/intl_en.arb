@@ -1,1 +1,9 @@
-{}
+{
+  "main_language_title": "Language",
+  "present_display_code": "Display Code *",
+  "present_display_code_description": "*Display Code contains 9-10 digits",
+  "present_otp_code": "One Time Password *",
+  "present_otp_code_description": "*One Time Password contains 4 digits",
+  "present_start": "PRESENT",
+  "present_fill_out": "Please fill out this field."
+}
