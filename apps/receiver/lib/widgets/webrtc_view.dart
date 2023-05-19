@@ -104,16 +104,6 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
     }
   }
 
-  void _onVideoResize(int width, int height) {
-    print('onVideoResize: $width x $height');
-    _textureSizeChanged = true;
-    /* ToDo: This callback is not triggered by the video texture, so it's not sufficiently reliable.*/
-    /* texture widget size is not updated immediately, retrieve texture info after one second. */
-    Timer(Duration(seconds: 1), () {
-      _getTextureInfo();
-    });
-  }
-
   void _onTouchStart(PointerEvent event) {
     _onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_START,event);
   }
@@ -178,13 +168,11 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
               _textureSizeChanged = true;
               return false;
             },
-            child: SizeChangedLayoutNotifier(
-              child: Listener(
-                onPointerDown: _onTouchStart,
-                onPointerMove: _onTouchMove,
-                onPointerUp: _onTouchEnd,
-                child: RTCVideoView(_viewController.renderer,key: _widgetKey),
-              ),
+            child: Listener(
+              onPointerDown: _onTouchStart,
+              onPointerMove: _onTouchMove,
+              onPointerUp: _onTouchEnd,
+              child: RTCVideoView(_viewController.renderer,key: _widgetKey),
             ),
           ),
         ),
@@ -332,13 +320,8 @@ class WebRTCFlutterViewController {
     _signalConnect(displayCode, url, callback);
   }
 
-  void onResize() {
-    mViewState._onVideoResize(_remoteRenderer.videoWidth, _remoteRenderer.videoHeight);
-  }
-
   Future<void> _peerConnectionConnect() async {
     await _remoteRenderer.initialize();
-    _remoteRenderer.onResize = onResize;
     Map<String, dynamic> iceServerList = await _getIceServer();
     var configuration = <String, dynamic>{
       'iceServers': [
