@@ -6,6 +6,7 @@ import 'package:display_cast_flutter/widgets/present_present_start.dart';
 import 'package:display_cast_flutter/widgets/present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
+import 'package:display_cast_flutter/widgets/tool_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +41,12 @@ class _HomeState extends State<Home> {
                 right: 0,
                 bottom: 0,
                 child: BottomBar(),
+              ),
+              const Positioned(
+                left: 0,
+                top: 0,
+                bottom: 80,
+                child: ToolBar(),
               ),
               Consumer<PresentStateProvider>(
                 builder: (context, provider, child) {
