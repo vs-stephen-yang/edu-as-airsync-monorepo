@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -291,17 +290,17 @@ class WebRTCFlutterViewController {
     });
 
     _socket?.on('owt-message', (data) async {
-      _printWebRTCViewSocketLog('owt-message', data);
+      _printWebRTCViewSocketLog(OwtMessageType.owt_message.value, data);
       final msg = jsonDecode(data['data']);
       final type = msg['type'];
 
-      if (type == "chat-signal") {
+      if (type == OwtMessageType.signaling_message.value) { //"chat-signal"
         await _handleSignal(msg['data']);
       }
-      if (type == 'chat-ua') {
-        _send('chat-ua', {'sdk':{'type':_getPlatform,'version':5},'capabilities':{'continualIceGathering':true,'unifiedPlan':true,'streamRemovable':true}});
+      if (type == OwtMessageType.chat_ua.value) { //'chat-ua'
+        _send(OwtMessageType.chat_ua.value, {'sdk':{'type':_getPlatform(),'version':5},'capabilities':{'continualIceGathering':true,'unifiedPlan':true,'streamRemovable':true}});
       }
-      if (type == 'chat-stream-info') {
+      if (type == OwtMessageType.stream_info.value) { //'chat-stream-info'
         var info = msg['data'];
         _streamInfo[info['id'].toString()] = info;
       }
@@ -314,6 +313,7 @@ class WebRTCFlutterViewController {
 
     _socket?.onDisconnect((_) async {
       _printWebRTCViewSocketLog('onDisconnect', _);
+      _socket?.clearListeners();
       _socket = null;
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
     });
@@ -411,7 +411,7 @@ class WebRTCFlutterViewController {
     // and should be thoroughly tested in your own environment.
     await Future.delayed(
         const Duration(milliseconds: 500),
-            () => _send('chat-signal', {
+            () => _send(OwtMessageType.signaling_message.value, {
           'type': 'candidates',
           'candidate': candidate.candidate,
           'sdpMid': candidate.sdpMid,
@@ -430,7 +430,7 @@ class WebRTCFlutterViewController {
     showConnectionInfo(false);
     ControlSocket().handleAddStreamState(this);
     if (_streamInfo.containsKey(stream.id)) {
-      _send('chat-tracks-added', _streamInfo[stream.id]['tracks']);
+      _send(OwtMessageType.track_add_ack.value, _streamInfo[stream.id]['tracks']); //'chat-tracks-added'
     }
     AppAnalytics().trackEventPresentStarted(presentId, presenterId);
   }
@@ -469,7 +469,7 @@ class WebRTCFlutterViewController {
       'to': _peerId
     };
     _printWebRTCViewSocketLog('_send', data);
-    _socket?.emit('owt-message', data);
+    _socket?.emit(OwtMessageType.owt_message.value, data); //'owt-message'
   }
 
   Future<void> _handleSignal(msg) async {
@@ -485,7 +485,7 @@ class WebRTCFlutterViewController {
       final answer = await _pc!.createAnswer();
       await _pc!.setLocalDescription(answer);
       // send answer to the peer
-      _send('chat-signal', {'type': answer.type, 'sdp': answer.sdp});
+      _send(OwtMessageType.signaling_message.value, {'type': answer.type, 'sdp': answer.sdp});
 
     } else if (type == 'candidates') {
       // add candidates from the peer
@@ -532,7 +532,7 @@ class WebRTCFlutterViewController {
 
   void _printWebRTCViewSocketLog(String? event, dynamic args) {
     printInDebug(
-        'mWebRTCViewSocket{${mUid}}: $event ${args.toString()}',
+        'mWebRTCViewSocket{$mUid}: $event ${args.toString()}',
         type: runtimeType);
   }
 
@@ -540,5 +540,42 @@ class WebRTCFlutterViewController {
     printInDebug(
         'mPeerConnect{$event ${args.toString()}',
         type: runtimeType);
+  }
+}
+
+enum OwtMessageType{
+  owt_message,
+  signaling_message,
+  track_add_ack,
+  track_info,
+  stream_info,
+  chat_ua,
+  chat_data_ack,
+  chat_closed,
+  invalid_type,
+}
+
+extension OwtMessageTypeExt on OwtMessageType {
+  String get value {
+    switch (this) {
+      case OwtMessageType.owt_message:
+        return 'owt-message';
+      case OwtMessageType.signaling_message:
+        return 'chat-signal';
+      case OwtMessageType.track_add_ack:
+        return 'chat-tracks-added';
+      case OwtMessageType.track_info:
+        return 'chat-track-sources';
+      case OwtMessageType.stream_info:
+        return 'chat-stream-info';
+      case OwtMessageType.chat_ua:
+        return 'chat-ua';
+      case OwtMessageType.chat_data_ack:
+        return 'chat-data-received';
+      case OwtMessageType.chat_closed:
+        return 'chat-closed';
+      default:
+        return '';
+    }
   }
 }
