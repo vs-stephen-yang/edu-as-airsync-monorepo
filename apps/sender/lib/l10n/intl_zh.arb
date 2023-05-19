@@ -1,0 +1,9 @@
+{
+  "main_language_title": "語言",
+  "present_display_code": "投影辨識碼 *",
+  "present_display_code_description": "*9到10碼投影辨識碼",
+  "present_otp_code": "一次性密碼 *",
+  "present_otp_code_description": "*4碼一次性密碼",
+  "present_start": "投影",
+  "present_fill_out": "請填寫此字段。"
+}

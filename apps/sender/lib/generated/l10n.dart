@@ -49,6 +49,76 @@ class S {
   static S? maybeOf(BuildContext context) {
     return Localizations.of<S>(context, S);
   }
+
+  /// `Language`
+  String get main_language_title {
+    return Intl.message(
+      'Language',
+      name: 'main_language_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Display Code *`
+  String get present_display_code {
+    return Intl.message(
+      'Display Code *',
+      name: 'present_display_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `*Display Code contains 9-10 digits`
+  String get present_display_code_description {
+    return Intl.message(
+      '*Display Code contains 9-10 digits',
+      name: 'present_display_code_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `One Time Password *`
+  String get present_otp_code {
+    return Intl.message(
+      'One Time Password *',
+      name: 'present_otp_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `*One Time Password contains 4 digits`
+  String get present_otp_code_description {
+    return Intl.message(
+      '*One Time Password contains 4 digits',
+      name: 'present_otp_code_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PRESENT`
+  String get present_start {
+    return Intl.message(
+      'PRESENT',
+      name: 'present_start',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please fill out this field.`
+  String get present_fill_out {
+    return Intl.message(
+      'Please fill out this field.',
+      name: 'present_fill_out',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -57,6 +127,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'zh'),
     ];
   }
 

@@ -1,4 +1,5 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/screens/home.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 
 void commonEntry(ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,35 +34,45 @@ class MyApp extends StatelessWidget {
       overlays: [SystemUiOverlay.bottom],
     );
 
-    return MaterialApp(
-      title: 'Display Cast',
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: PrefLanguageProvider()),
       ],
-      supportedLocales: S.delegate.supportedLocales,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.black, // Set app background color
+      child: Consumer<PrefLanguageProvider>(
+        builder: (context, languageModel, child) {
+          return MaterialApp(
+            title: 'Display Cast',
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            locale: languageModel.locale,
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              scaffoldBackgroundColor: Colors.black, // Set app background color
+            ),
+            initialRoute: '/home',
+            navigatorKey: NavigationService.navigationKey,
+            routes: {
+              // for 'navService.popUntil('/home')'
+              '/home': (context) => const Home(),
+            },
+            onGenerateRoute: (routeSettings) {
+              switch (routeSettings.name) {
+                case '/home':
+                  return MaterialPageRoute<String>(
+                      builder: (context) => const Home());
+              }
+              return null;
+            },
+            // home: const Home(),
+          );
+        },
       ),
-      initialRoute: "/home",
-      navigatorKey: NavigationService.navigationKey,
-      routes: {
-        // for "navService.popUntil('/home')"
-        '/home': (context) => const Home(),
-      },
-      onGenerateRoute: (routeSettings) {
-        switch (routeSettings.name) {
-          case '/home':
-            return MaterialPageRoute<String>(
-                builder: (context) => const Home());
-        }
-        return null;
-      },
-      // home: const Home(),
     );
   }
 }

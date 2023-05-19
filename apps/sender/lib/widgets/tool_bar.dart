@@ -1,3 +1,4 @@
+import 'package:display_cast_flutter/widgets/tool_language_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -15,7 +16,15 @@ class ToolBar extends StatelessWidget {
         children: [
           ToolButton(
             icons: Icons.language,
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) {
+                  return const LanguageSelection();
+                },
+              );
+            },
           ),
           ToolButton(
             icons: Icons.help_outline,
