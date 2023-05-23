@@ -8,9 +8,9 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
-import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -223,7 +223,14 @@ class WebRTCFlutterViewController {
     _printWebRTCViewSocketLog('init', null);
   }
 
-  Future<void> initPeerConnection() async {
+  Future<void> connectClient(String token, String displayCode, String peerId, String url, Function(bool result) callback) async {
+    _token = token;
+    _peerId = peerId;
+    if (_pc == null) await _peerConnectionConnect();
+    _signalConnect(displayCode, url, callback);
+  }
+
+  Future<void> _peerConnectionConnect() async {
     await _remoteRenderer.initialize();
     Map<String, dynamic> iceServerList = await _getIceServer();
     var configuration = <String, dynamic>{
@@ -264,11 +271,7 @@ class WebRTCFlutterViewController {
     _pc!.onRemoveTrack = _onRemoveTrack;
   }
 
-  Future<void> connectClient(String token, String displayCode, String peerId, String url, Function(bool result) callback) async {
-    if (_pc == null) await initPeerConnection();
-
-    _token = token;
-    _peerId = peerId;
+  void _signalConnect(String displayCode, String url, Function(bool result) callback) {
     _socket = io.io(
         url, //'https://signal.stage.myviewboard.cloud'
         io.OptionBuilder()
@@ -531,15 +534,17 @@ class WebRTCFlutterViewController {
   }
 
   void _printWebRTCViewSocketLog(String? event, dynamic args) {
-    printInDebug(
-        'mWebRTCViewSocket{$mUid}: $event ${args.toString()}',
-        type: runtimeType);
+    if (kDebugMode) {
+      print('$runtimeType,  mWebRTCViewSocket{$mUid}: $event ${args.toString()}');
+      DebugSwitch().write('mWebRTCViewSocket{$mUid}: $event ${args.toString()}');
+    }
   }
 
   void _printPeerConnectionLog(String? event, dynamic args) {
-    printInDebug(
-        'mPeerConnect{$event ${args.toString()}',
-        type: runtimeType);
+    if (kDebugMode) {
+      print('$runtimeType, mPeerConnect{$event ${args.toString()}');
+      DebugSwitch().write('mPeerConnect{$event ${args.toString()}');
+    }
   }
 }
 
