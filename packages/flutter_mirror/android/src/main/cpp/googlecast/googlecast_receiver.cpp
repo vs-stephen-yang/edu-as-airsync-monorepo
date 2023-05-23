@@ -24,7 +24,9 @@ GooglecastReceiver::~GooglecastReceiver() {
   ALOGV("~GooglecastReceiver()");
 }
 
-bool GooglecastReceiver::Init() {
+bool GooglecastReceiver::InitOnce() {
+  openscreen::cast::InitOnce();
+
   return true;
 }
 

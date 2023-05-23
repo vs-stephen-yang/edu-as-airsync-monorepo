@@ -19,6 +19,7 @@ void MirrorReceiver::InitializeOnce() {
   ALOGD("MirrorReceiver::InitializeOnce()");
 
   ApReceiver::InitOnce();
+  GooglecastReceiver::InitOnce();
 }
 
 MirrorReceiver::MirrorReceiver(
@@ -82,7 +83,6 @@ void MirrorReceiver::StartGooglecast(
   googlecast_receiver_ = std::make_unique<GooglecastReceiver>(
       *this);
 
-  googlecast_receiver_->Init();
   googlecast_receiver_->Start(config);
 }
 
