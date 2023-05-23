@@ -27,7 +27,8 @@ class GooglecastReceiver
 
   // implements CastReceiver::Listener
   virtual bool OnMirrorStart(
-      openscreen::cast::CastMirrorSessionPtr session) override;
+      openscreen::cast::CastMirrorSessionPtr session,
+      const openscreen::cast::MediaFormats& formats) override;
 
   virtual void OnCredentialsRequest(
       int year,
@@ -39,8 +40,6 @@ class GooglecastReceiver
 
   openscreen::cast::CastReceiverHostPtr host_;
   openscreen::cast::CastReceiverPtr receiver_;
-
-  std::unique_ptr<std::thread> thread_;
 
   unsigned int mirror_increment_seq_ = 0;
 };

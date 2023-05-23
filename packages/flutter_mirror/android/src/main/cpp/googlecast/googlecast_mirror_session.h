@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "cast/cast_mirror_session.h"
+#include "cast/media_formats.h"
 #include "jni/texture_registry.h"
 #include "media/audio_decoder.h"
 #include "media/video_decoder.h"
@@ -18,7 +19,8 @@ class GooglecastMirrorSession
   GooglecastMirrorSession(
       const std::string& mirror_id,
       MirrorListener& mirror_listener,
-      openscreen::cast::CastMirrorSessionPtr session);
+      openscreen::cast::CastMirrorSessionPtr session,
+      const openscreen::cast::MediaFormats& formats);
 
   // implements MirrorSession
   virtual bool StartMirror(
@@ -58,6 +60,7 @@ class GooglecastMirrorSession
   openscreen::cast::CastMirrorSessionPtr session_;
 
   MediaSessionPtr media_session_;
+  openscreen::cast::MediaFormats formats_;
 };
 typedef std::shared_ptr<GooglecastMirrorSession> GooglecastMirrorSessionPtr;
 

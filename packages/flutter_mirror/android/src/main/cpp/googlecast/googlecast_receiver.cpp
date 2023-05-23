@@ -26,33 +26,25 @@ GooglecastReceiver::~GooglecastReceiver() {
 
 bool GooglecastReceiver::Init() {
   assert(!host_);
-  assert(!receiver_);
 
-  if (host_ ||
-      receiver_) {
+  if (host_) {
     return false;
   }
 
   // create a receiver host
   host_ = openscreen::cast::CreateCastReceiverHost();
 
-  // create a receiver from the host
-  receiver_ = host_->CreateReceiver();
-
-  // Run the event loop in the host
-  thread_ = std::make_unique<std::thread>([this]() {
-    host_->Run();
-  });
-
   return true;
 }
 
 bool GooglecastReceiver::Start(
     const openscreen::cast::CastReceiver::Config& config) {
-  assert(receiver_);
-  if (!receiver_) {
+  if (receiver_) {
     return false;
   }
+
+  // create a receiver from the host
+  receiver_ = host_->CreateReceiver();
 
   receiver_->Start(
       config,
@@ -68,14 +60,12 @@ void GooglecastReceiver::Stop() {
   }
 
   receiver_->Stop();
-
-  // TODO:
-  thread_->join();
 }
 
 // a mirror session starts
 bool GooglecastReceiver::OnMirrorStart(
-    openscreen::cast::CastMirrorSessionPtr sess) {
+    openscreen::cast::CastMirrorSessionPtr sess,
+    const openscreen::cast::MediaFormats& media_formats) {
   ALOGD("OnMirrorStart()");
 
   mirror_increment_seq_ += 1;
@@ -86,7 +76,8 @@ bool GooglecastReceiver::OnMirrorStart(
   auto session = std::make_shared<GooglecastMirrorSession>(
       mirror_id,
       mirror_listener_,
-      sess);
+      sess,
+      media_formats);
 
   // notify that a mirror starts
   mirror_listener_.OnMirrorStart(

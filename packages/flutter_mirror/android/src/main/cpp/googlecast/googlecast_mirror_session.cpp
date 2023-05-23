@@ -1,15 +1,16 @@
 #include "googlecast/googlecast_mirror_session.h"
 #include <assert.h>
 #include <optional>
+#include "cast/media_formats.h"
 #include "util/log.h"
 
 using namespace openscreen;
 
-static std::optional<VideoCodecType> MapVideoCodec(cast::CastMirrorSession::VideoCodec codec) {
+static std::optional<VideoCodecType> MapVideoCodec(cast::MediaFormats::VideoCodec codec) {
   switch (codec) {
-    case cast::CastMirrorSession::VideoCodec::kH264:
+    case cast::MediaFormats::VideoCodec::kH264:
       return VideoCodecType::kH264;
-    case cast::CastMirrorSession::VideoCodec::kVp8:
+    case cast::MediaFormats::VideoCodec::kVp8:
       return VideoCodecType::kVp8;
     default:
       assert(0);
@@ -18,11 +19,11 @@ static std::optional<VideoCodecType> MapVideoCodec(cast::CastMirrorSession::Vide
 }
 
 static std::optional<AudioCodecType> MapAudioCodec(
-    cast::CastMirrorSession::AudioCodec codec) {
+    cast::MediaFormats::AudioCodec codec) {
   switch (codec) {
-    case cast::CastMirrorSession::AudioCodec::kAac:
+    case cast::MediaFormats::AudioCodec::kAac:
       return AudioCodecType::kAac;
-    case cast::CastMirrorSession::AudioCodec::kOpus:
+    case cast::MediaFormats::AudioCodec::kOpus:
       return AudioCodecType::kOpus;
     default:
       assert(0);
@@ -33,10 +34,12 @@ static std::optional<AudioCodecType> MapAudioCodec(
 GooglecastMirrorSession::GooglecastMirrorSession(
     const std::string& mirror_id,
     MirrorListener& mirror_listener,
-    cast::CastMirrorSessionPtr session)
+    cast::CastMirrorSessionPtr session,
+    const openscreen::cast::MediaFormats& formats)
     : mirror_id_(mirror_id),
       mirror_listener_(mirror_listener),
-      session_(session) {
+      session_(session),
+      formats_(formats) {
   assert(session);
 
   session_->RegisterListener(this);
@@ -46,19 +49,16 @@ bool GooglecastMirrorSession::StartMirror(
     MediaSessionPtr media_session) {
   ALOGI("Starting a Googlecast mirror session");
 
-  cast::CastMirrorSession::MediaFormats formats;
-  session_->GetMediaFormats(formats);
-
-  std::optional<VideoCodecType> video_codec = MapVideoCodec(formats.video_codec);
-  std::optional<AudioCodecType> audio_codec = MapAudioCodec(formats.audio_codec);
+  std::optional<VideoCodecType> video_codec = MapVideoCodec(formats_.video_codec);
+  std::optional<AudioCodecType> audio_codec = MapAudioCodec(formats_.audio_codec);
 
   if (!video_codec ||
       !audio_codec) {
     return false;
   }
   AudioFormat audio_format;
-  audio_format.sample_rate = formats.sample_rate;
-  audio_format.channel_count = formats.channel_count;
+  audio_format.sample_rate = formats_.sample_rate;
+  audio_format.channel_count = formats_.channel_count;
   audio_format.has_adts = true;
 
   media_session_ = std::move(media_session);
