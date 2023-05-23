@@ -89,9 +89,16 @@ void MirrorReceiver::StartGooglecast(
 void MirrorReceiver::StopGooglecast() {
   DCHECK_RUN_ON(thread_id_);
 
-  ALOGD("Stopping googlecast");
+  if (!googlecast_receiver_) {
+    return;
+  }
 
-  // TODO:
+  ALOGD("Stopping googlecast");
+  googlecast_receiver_->Stop();
+  ALOGD("googlecast has stopped");
+
+  googlecast_receiver_.reset();
+  ALOGD("Googlecast has been freed");
 }
 
 void MirrorReceiver::EnableAudio(
