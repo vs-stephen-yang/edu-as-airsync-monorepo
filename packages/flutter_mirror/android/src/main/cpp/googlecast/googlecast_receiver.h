@@ -14,7 +14,7 @@ class GooglecastReceiver
       MirrorListener& mirror_listener);
   ~GooglecastReceiver();
 
-  bool Init();
+  static bool InitOnce();
 
   bool Start(
       const openscreen::cast::CastReceiver::Config& config);
