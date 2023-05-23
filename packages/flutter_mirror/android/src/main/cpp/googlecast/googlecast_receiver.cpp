@@ -25,15 +25,6 @@ GooglecastReceiver::~GooglecastReceiver() {
 }
 
 bool GooglecastReceiver::Init() {
-  assert(!host_);
-
-  if (host_) {
-    return false;
-  }
-
-  // create a receiver host
-  host_ = openscreen::cast::CreateCastReceiverHost();
-
   return true;
 }
 
@@ -44,7 +35,7 @@ bool GooglecastReceiver::Start(
   }
 
   // create a receiver from the host
-  receiver_ = host_->CreateReceiver();
+  receiver_ = openscreen::cast::CreateReceiver();
 
   receiver_->Start(
       config,
