@@ -159,8 +159,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
                       onClick: () {
-                        // TODO: Debug panel
-                        // _showMenuDialog(const DebugSwitch());
+                        _showMenuDialog(const DebugSwitch());
                       },
                     ),
                   ),

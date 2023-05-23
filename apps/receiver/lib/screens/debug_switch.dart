@@ -7,10 +7,16 @@ import 'package:flutter/services.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class DebugSwitch extends StatefulWidget {
+  static ValueNotifier<String> debugPanelLog = ValueNotifier('');
+  static StringBuffer log = StringBuffer();
   const DebugSwitch({Key? key}) : super(key: key);
 
   @override
   State createState() => _DebugSwitchState();
+
+  void write(String event) {
+    debugPanelLog.value = event;
+  }
 }
 
 class _DebugSwitchState extends State<DebugSwitch> {
@@ -64,22 +70,38 @@ class _DebugSwitchState extends State<DebugSwitch> {
             ),
           ),
           Flexible(
-            flex: 7,
+            flex: 1,
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
               child: FocusTextButton(
-                child: const Text('-- Toggle webrtc logger panel --',
+                child: const Text('-- clear --',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: AppColors.primary_blue,
                     )),
                 onClick: () {
-                  // TODO: debug panel
-                  // _debugSwitch.invokeMethod('toggleDebugInfoVisible');
+                  DebugSwitch.log.clear();
+                  DebugSwitch.debugPanelLog.value ='';
                 },
               ),
             ),
           ),
+          Expanded(
+              flex: 7,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
+                child: ValueListenableBuilder(
+                  valueListenable: DebugSwitch.debugPanelLog,
+                  builder: (BuildContext context, String value, Widget? child) {
+                    DebugSwitch.log.write('$value \n');
+                    return Text(DebugSwitch.log.toString(),
+                        style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary_blue,
+                    ));
+                  }
+                ),
+          )),
         ],
       ),
     );
