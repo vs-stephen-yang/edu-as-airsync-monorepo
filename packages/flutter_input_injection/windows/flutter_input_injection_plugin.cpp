@@ -69,7 +69,7 @@ void FlutterInputInjectionPlugin::HandleMethodCall(
 
       remoting::protocol::TouchEvent event;
       remoting::protocol::TouchEventPoint tp;
-      tp.id_ = id;
+      tp.id_ = id % kMaxSimultaneousTouchCount;
       tp.x_ = x;
       tp.y_ = y;
       tp.angle_ = 0;

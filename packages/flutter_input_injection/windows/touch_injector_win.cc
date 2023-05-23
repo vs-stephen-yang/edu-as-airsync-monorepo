@@ -26,7 +26,7 @@ namespace {
 typedef BOOL(NTAPI* InitializeTouchInjectionFunction)(UINT32, DWORD);
 typedef BOOL(NTAPI* InjectTouchInputFunction)(UINT32,
                                               const POINTER_TOUCH_INFO*);
-const uint32_t kMaxSimultaneousTouchCount = 10;
+const uint32_t kMaxSimultaneousTouchCount = 255;
 
 // This is used to reinject all points that have not changed as "move"ed points,
 // even if they have not actually moved.
@@ -148,7 +148,7 @@ bool TouchInjectorWin::Init() {
   if (!delegate_)
     return false;
 
-  InitializeTouchInjection(255, TOUCH_FEEDBACK_DEFAULT);
+  InitializeTouchInjection(kMaxSimultaneousTouchCount, TOUCH_FEEDBACK_DEFAULT);
   
   /*if (!delegate_->InitializeTouchInjection(
     //      kMaxSimultaneousTouchCount, TOUCH_FEEDBACK_NONE)) {
@@ -171,7 +171,7 @@ void TouchInjectorWin::Deinitialize() {
 
 void TouchInjectorWin::InjectTouchEvent(const TouchEvent& event) {
   if (!delegate_) {
-    std::cout << "Touch injection functions are not initialized.";
+    std::cout << "Touch injection functions are not initialized." << std::endl;
     return;
   }
 
@@ -225,7 +225,7 @@ void TouchInjectorWin::AddNewTouchPoints(const TouchEvent& event) {
   }
 
   if (InjectTouchInput((UINT32)touches.size(), touches.data()) == 0) {
-    std::cout << "Failed to inject a touch start event.";
+    std::cout << "Failed to inject a touch start event. " << GetLastError() << std::endl;
   }
 }
 
@@ -245,7 +245,7 @@ void TouchInjectorWin::MoveTouchPoints(const TouchEvent& event) {
   // Must inject already touching points as move events.
   AppendMapValuesToVector(&touches_in_contact_, &touches);
   if (InjectTouchInput((UINT32)touches.size(), touches.data()) == 0) {
-    std::cout << "Failed to inject a touch move event." << GetLastError() << std::endl;
+    std::cout << "Failed to inject a touch move event. " << GetLastError() << std::endl;
   }
 }
 
@@ -264,7 +264,7 @@ void TouchInjectorWin::EndTouchPoints(const TouchEvent& event) {
 
   AppendMapValuesToVector(&touches_in_contact_, &touches);
   if (InjectTouchInput((UINT32)touches.size(), touches.data()) == 0) {
-    std::cout << "Failed to inject a touch end event.";
+    std::cout << "Failed to inject a touch end event. " << GetLastError() << std::endl;
   }
 }
 
@@ -284,7 +284,7 @@ void TouchInjectorWin::CancelTouchPoints(const TouchEvent& event) {
 
   AppendMapValuesToVector(&touches_in_contact_, &touches);
   if (InjectTouchInput((UINT32)touches.size(), touches.data()) == 0) {
-    std::cout << "Failed to inject a touch cancel event.";
+    std::cout << "Failed to inject a touch cancel event. " << GetLastError() << std::endl;
   }
 }
 

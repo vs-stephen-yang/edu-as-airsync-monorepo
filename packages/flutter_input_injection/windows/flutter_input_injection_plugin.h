@@ -11,6 +11,7 @@ namespace flutter_input_injection {
 class FlutterInputInjectionPlugin : public flutter::Plugin {
  public:
   static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
+  static const int kMaxSimultaneousTouchCount = 255;
 
   FlutterInputInjectionPlugin();
 
