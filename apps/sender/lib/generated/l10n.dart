@@ -119,6 +119,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Name *`
+  String get present_name {
+    return Intl.message(
+      'Name *',
+      name: 'present_name',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
