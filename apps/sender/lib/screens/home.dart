@@ -54,6 +54,8 @@ class _HomeState extends State<Home> {
                   switch (provider.state) {
                     case ViewState.idle:
                       return PresentIdle();
+                    case ViewState.enterModeratorName:
+                      return PresentIdle(displayCode: provider.displayCode, otp: provider.otp );
                     case ViewState.waitReady:
                       return PresentWaitReady();
                     case ViewState.selectScreen:

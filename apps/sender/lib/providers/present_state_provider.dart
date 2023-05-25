@@ -1,17 +1,23 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:display_cast_flutter/features/webrtc_helper.dart';
+import 'package:display_cast_flutter/model/moderator.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
 enum ViewState {
   idle,
   waitReady,
   selectScreen,
   presentStart,
+
+  //moderator
+  enterModeratorName,
 }
 
 class PresentStateProvider extends ChangeNotifier {
@@ -29,6 +35,10 @@ class PresentStateProvider extends ChangeNotifier {
   late WebRTCHelper? _webRTCHelper;
   late io.Socket? _socket;
 
+  Moderator? moderator;
+  String? displayCode;
+  String? otp;
+
   setViewState(ViewState newViewState) {
     _currentState = newViewState;
     if (_presentTimer != null) {
@@ -38,13 +48,64 @@ class PresentStateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 2023Q2, Presenter generates OTP.
+  /// 2023Q3, it's possible to be generated OTP from this Send App. And this should be removed.
+  Future<bool> checkDisplayOTP({required String? displayCode, required String? otp}) async {
+    var api = Uri.parse('$_urlGateway/presentation/displays/?code=$displayCode&otp=$otp');
+    var response = await http.get(api);
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> checkModeratorOTP({required String displayCode, required String otp}) async {
+    print('zz checkModeratorOTP');
+    var api = Uri.parse('$_urlGateway/presentation/displays/moderator?code=$displayCode&otp=$otp');
+    var response = await http.get(api);
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        // 有開moderator 有往下跑 顯示UI
+        Map<String, dynamic> body = jsonDecode(response.body);
+        moderator = Moderator.fromJson(body);
+        this.displayCode = displayCode;
+        this.otp = otp;
+        setViewState(ViewState.enterModeratorName);
+        notifyListeners();
+        print('zz checkOTP 200 ${response.body} ${moderator?.id}');
+        // break;
+      return true;
+      case 204:
+        // 沒開moderator 有往下跑
+        this.displayCode = displayCode;
+        this.otp = otp;
+        print('zz checkOTP 204');
+        // break;
+      return true;
+      case 403:
+      // 403 -> Reach maximum presenters
+      case 404:
+      // 404 -> sendToV1
+      case 406:
+        // 有開Moderator otp錯誤 沒有往下跑
+        // 406 -> Invalid one time password
+        // break;
+      return false;
+      default:
+        //log
+        // break;
+      return false;
+    }
+    // return response;
+  }
+
   Future<void> presentTo(
-      {required String displayCode, required String otp}) async {
+      {required String? displayCode, required String otp}) async {
     debugModePrint('presentTo: displayCode: $displayCode, otp: $otp');
     _presentTimer = Timer(const Duration(seconds: 30), () {
       presentStop();
     });
-    displayCode = displayCode.replaceAll('-', '');
 
     _socket = io.io(
         _urlGateway,
@@ -79,6 +140,7 @@ class PresentStateProvider extends ChangeNotifier {
             "status": "",
             "extra": {}
           },
+          // "moderator": moderator.toString(),
           "display": {"code": displayCode, "token": ""}
         }
       });
@@ -95,11 +157,48 @@ class PresentStateProvider extends ChangeNotifier {
             "status": "",
             "extra": {}
           },
-          "moderator": null,
+          // "moderator": moderator.toString(),
           "display": {"code": displayCode, "setId": "5tovgl636ge"}
         }
       });
     });
+
+    _socket?.on('dismiss', (msg) {
+      print('zz _socket.dismiss $msg');
+    });
+
+    _socket?.on('set-moderator', (msg) {
+      print('zz _socket.set-moderator $msg');
+      if (msg['action'] == 'set-moderator') {
+        moderator = Moderator.fromJson(msg['extra']['moderator']);
+        _socket?.emit('join-display', {
+          "messageFor": displayCode,
+          "action": "join",
+          "status": "open",
+          "extra": {
+            "presenter": {
+              "id": _userId,
+              "name": null,
+              "remark": "",
+              "status": "",
+              "extra": {}
+            },
+            // "moderator": moderator,
+            "display": {"code": displayCode, "setId": "5tovgl636ge"},
+            "signal": {
+              "url": '',
+            }
+          }
+        });
+      }
+    });
+
+    _socket?.on('unset-moderator', (msg) => {
+      if(msg['action'] == 'unset-moderator') {
+        // TODO: 導回首頁
+      }
+    });
+
     setViewState(ViewState.waitReady);
   }
 
