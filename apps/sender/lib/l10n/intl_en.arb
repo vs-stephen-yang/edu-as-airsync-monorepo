@@ -5,5 +5,6 @@
   "present_otp_code": "One Time Password *",
   "present_otp_code_description": "*One Time Password contains 4 digits",
   "present_start": "PRESENT",
-  "present_fill_out": "Please fill out this field."
+  "present_fill_out": "Please fill out this field.",
+  "present_name": "Name *"
 }

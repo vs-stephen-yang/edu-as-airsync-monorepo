@@ -30,6 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "*Display Code contains 9-10 digits"),
         "present_fill_out":
             MessageLookupByLibrary.simpleMessage("Please fill out this field."),
+        "present_name": MessageLookupByLibrary.simpleMessage("Name *"),
         "present_otp_code":
             MessageLookupByLibrary.simpleMessage("One Time Password *"),
         "present_otp_code_description": MessageLookupByLibrary.simpleMessage(

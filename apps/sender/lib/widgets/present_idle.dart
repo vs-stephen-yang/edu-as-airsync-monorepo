@@ -8,27 +8,37 @@ import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:provider/provider.dart';
 
 class PresentIdle extends StatelessWidget {
-  PresentIdle({super.key});
+  PresentIdle({super.key, this.displayCode, this.otp}) {
+    _codeController = TextEditingController(text: displayCode);
+    _otpController = TextEditingController(text: otp);
+  }
 
-  final TextEditingController _codeController = TextEditingController();
-  final TextEditingController _otpController = TextEditingController();
+  late final TextEditingController _codeController;
+  late final TextEditingController _otpController;
+  final TextEditingController _nameController = TextEditingController();
   final codeKey = GlobalKey();
   final otpKey = GlobalKey();
+  final nameKey = GlobalKey();
+
+  final String? displayCode;
+  final String? otp;
 
   @override
   Widget build(BuildContext context) {
     PresentStateProvider presentStateProvider =
         Provider.of<PresentStateProvider>(context);
+    print('zz p ${presentStateProvider.moderator?.id}');
     return Container(
       width: 400,
-      height: 280,
       padding: const EdgeInsets.all(30),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           CustomTextFormField(
             key: codeKey,
             controller: _codeController,
+            // initialValue: displayCode,
             labelText: S.of(context).present_display_code,
             errorText: S.of(context).present_display_code_description,
             inputFormatter: [
@@ -38,9 +48,11 @@ class PresentIdle extends StatelessWidget {
               )
             ],
           ),
+          const Padding(padding: EdgeInsets.all(10)),
           CustomTextFormField(
             key: otpKey,
             controller: _otpController,
+            // initialValue: otp,
             labelText: S.of(context).present_otp_code,
             errorText: S.of(context).present_otp_code_description,
             inputFormatter: [
@@ -50,17 +62,57 @@ class PresentIdle extends StatelessWidget {
               )
             ],
           ),
+          const Padding(padding: EdgeInsets.all(10)),
+          Visibility(
+              visible: presentStateProvider.state == ViewState.enterModeratorName,
+              child: CustomTextFormField(
+                key: nameKey,
+                controller: _nameController,
+                labelText: S.of(context).present_name,
+                inputFormatter: [
+                  FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]'),
+                  )
+                ],
+              )),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (_codeController.text.isEmpty) {
                 _showOverlayMessage(context, codeKey);
               } else if (_otpController.text.isEmpty) {
                 _showOverlayMessage(context, otpKey);
+              } else if (presentStateProvider.state == ViewState.enterModeratorName) {
+              if (_nameController.text.isEmpty) {
+                _showOverlayMessage(context, nameKey);
+              } else if (displayCode != null) {
+                presentStateProvider.moderator?.name = _nameController.text;
+                  bool display = await presentStateProvider.checkDisplayOTP(
+                      displayCode: displayCode, otp: _otpController.text);
+                  if (display) {
+                    presentStateProvider.presentTo(
+                      displayCode: displayCode,
+                      otp: _otpController.text,
+                    );
+                  }
+                }
               } else {
-                presentStateProvider.presentTo(
-                  displayCode: _codeController.text,
-                  otp: _otpController.text,
-                );
+                print('zz ElevatedButton');
+                var displayCode = _codeController.text.replaceAll('-', '');
+                bool moderator = await presentStateProvider.checkModeratorOTP(
+                    displayCode: displayCode,
+                    otp: _otpController.text);
+                if (!moderator) return;
+                // await name
+                if (presentStateProvider.state == ViewState.enterModeratorName) return;
+
+                bool display = await presentStateProvider.checkDisplayOTP(
+                    displayCode: displayCode,
+                    otp: _otpController.text);
+                if (display) {
+                  presentStateProvider.presentTo(
+                    displayCode: displayCode,
+                    otp: _otpController.text,
+                  );
+                }
               }
             },
             style: ElevatedButton.styleFrom(
@@ -131,12 +183,14 @@ class PresentIdle extends StatelessWidget {
 class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField(
       {this.controller,
+      // this.initialValue,
       this.labelText,
       this.errorText,
       this.inputFormatter,
       super.key});
 
   final TextEditingController? controller;
+  // final String? initialValue;
   final String? labelText;
   final String? errorText;
   final List<TextInputFormatter>? inputFormatter;
@@ -154,6 +208,7 @@ class CustomTextFormField extends StatelessWidget {
     );
     return TextFormField(
       controller: controller,
+      // initialValue: initialValue,
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: textStyleGrey,
