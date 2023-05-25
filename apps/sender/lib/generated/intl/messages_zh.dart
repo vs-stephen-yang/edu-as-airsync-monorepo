@@ -27,6 +27,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "present_display_code_description":
             MessageLookupByLibrary.simpleMessage("*9到10碼投影辨識碼"),
         "present_fill_out": MessageLookupByLibrary.simpleMessage("請填寫此字段。"),
+        "present_name": MessageLookupByLibrary.simpleMessage("投影人員姓名 *"),
         "present_otp_code": MessageLookupByLibrary.simpleMessage("一次性密碼 *"),
         "present_otp_code_description":
             MessageLookupByLibrary.simpleMessage("*4碼一次性密碼"),
