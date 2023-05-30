@@ -168,9 +168,20 @@ void AString::append(const char *s, size_t size) {
     makeMutable();
 
     if (mSize + size + 1 > mAllocSize) {
-        mAllocSize = (mAllocSize + size + 31) & -32;
-        mData = (char *)realloc(mData, mAllocSize);
-        CHECK(mData != NULL);
+        size_t newAllocSize = (mAllocSize + size + 31) & -32; 
+        
+        char* newData = (char* )malloc(newAllocSize);
+        CHECK(newData != NULL);
+        if (newData == NULL) {
+            return;
+        }
+
+        memset(newData, 0x00, newAllocSize);
+        memcpy(newData, mData, mSize);
+        free(mData);
+
+        mData = newData;
+        mAllocSize = newAllocSize;
     }
 
     memcpy(&mData[mSize], s, size);
@@ -272,9 +283,20 @@ void AString::insert(const char *from, size_t size, size_t insertionPos) {
     makeMutable();
 
     if (mSize + size + 1 > mAllocSize) {
-        mAllocSize = (mAllocSize + size + 31) & -32;
-        mData = (char *)realloc(mData, mAllocSize);
-        CHECK(mData != NULL);
+        size_t newAllocSize = (mAllocSize + size + 31) & -32;
+        
+        char* newData = (char *)malloc(newAllocSize);
+        CHECK(newData != NULL);
+        if (newData == NULL) {
+            return;
+        }
+        
+        memset(newData, 0x00, newAllocSize);
+        memcpy(newData, mData, mSize);
+        free(mData);
+        
+        mData = newData;
+        mAllocSize = newAllocSize;
     }
 
     memmove(&mData[insertionPos + size],
