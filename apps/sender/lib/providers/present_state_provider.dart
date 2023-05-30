@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:display_cast_flutter/features/webrtc_helper.dart';
 import 'package:display_cast_flutter/model/moderator.dart';
+import 'package:display_cast_flutter/model/presenter.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ enum ViewState {
 
   //moderator
   enterModeratorName,
+  waitModeratorSelect,
 }
 
 class PresentStateProvider extends ChangeNotifier {
@@ -35,6 +37,7 @@ class PresentStateProvider extends ChangeNotifier {
   late WebRTCHelper? _webRTCHelper;
   late io.Socket? _socket;
 
+  Presenter? presenter = Presenter(id: const Uuid().v4());
   Moderator? moderator;
   String? displayCode;
   String? otp;
@@ -113,11 +116,13 @@ class PresentStateProvider extends ChangeNotifier {
             .setTransports(['websocket'])
             .enableForceNew()
             .setQuery({
-              "userid": _userId,
+              "userid": presenter?.id,
               "socketCustomEvent": displayCode,
               "role": "presenter",
             })
             .build());
+    
+    _socket?.onConnecting((data) => print('zz onConnecting ${data.toString()}'));
 
     _socket?.onConnect((_) {
       debugModePrint('connected to display');
@@ -133,14 +138,7 @@ class PresentStateProvider extends ChangeNotifier {
         "action": "join",
         "status": "open",
         "extra": {
-          "presenter": {
-            "id": _userId,
-            "name": null,
-            "remark": "",
-            "status": "",
-            "extra": {}
-          },
-          // "moderator": moderator.toString(),
+          "presenter": presenter?.toJson(),
           "display": {"code": displayCode, "token": ""}
         }
       });
@@ -150,15 +148,12 @@ class PresentStateProvider extends ChangeNotifier {
         "action": "join",
         "status": "open",
         "extra": {
-          "presenter": {
-            "id": _userId,
-            "name": null,
-            "remark": "",
-            "status": "",
-            "extra": {}
-          },
-          // "moderator": moderator.toString(),
-          "display": {"code": displayCode, "setId": "5tovgl636ge"}
+          "presenter": presenter?.toJson(),
+          "moderator": moderator?.toJson(),
+          "display": {"code": displayCode, "setId": "5tovgl636ge"},
+          "signal": {
+            "url": "",
+          }
         }
       });
     });
@@ -176,14 +171,8 @@ class PresentStateProvider extends ChangeNotifier {
           "action": "join",
           "status": "open",
           "extra": {
-            "presenter": {
-              "id": _userId,
-              "name": null,
-              "remark": "",
-              "status": "",
-              "extra": {}
-            },
-            // "moderator": moderator,
+            "presenter": presenter?.toJson(),
+            "moderator": moderator?.toJson(),
             "display": {"code": displayCode, "setId": "5tovgl636ge"},
             "signal": {
               "url": '',
