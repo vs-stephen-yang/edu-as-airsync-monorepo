@@ -121,10 +121,20 @@ class S {
   }
 
   /// `Name *`
-  String get present_name {
+  String get moderator_name {
     return Intl.message(
       'Name *',
-      name: 'present_name',
+      name: 'moderator_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please wait for your turn... Moderator will select presenters`
+  String get moderator_wait {
+    return Intl.message(
+      'Please wait for your turn... Moderator will select presenters',
+      name: 'moderator_wait',
       desc: '',
       args: [],
     );

@@ -23,6 +23,9 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "main_language_title": MessageLookupByLibrary.simpleMessage("Language"),
+        "moderator_name": MessageLookupByLibrary.simpleMessage("Name *"),
+        "moderator_wait": MessageLookupByLibrary.simpleMessage(
+            "Please wait for your turn... Moderator will select presenters"),
         "present_display_code":
             MessageLookupByLibrary.simpleMessage("Display Code *"),
         "present_display_code_description":
@@ -30,7 +33,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "*Display Code contains 9-10 digits"),
         "present_fill_out":
             MessageLookupByLibrary.simpleMessage("Please fill out this field."),
-        "present_name": MessageLookupByLibrary.simpleMessage("Name *"),
         "present_otp_code":
             MessageLookupByLibrary.simpleMessage("One Time Password *"),
         "present_otp_code_description": MessageLookupByLibrary.simpleMessage(
