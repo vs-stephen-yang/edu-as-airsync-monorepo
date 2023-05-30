@@ -1,10 +1,11 @@
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/widgets/bottom_bar.dart';
+import 'package:display_cast_flutter/widgets/moderator_idle.dart';
+import 'package:display_cast_flutter/widgets/moderator_wait.dart';
 import 'package:display_cast_flutter/widgets/present_idle.dart';
 import 'package:display_cast_flutter/widgets/present_present_start.dart';
 import 'package:display_cast_flutter/widgets/present_select_screen.dart';
-import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:display_cast_flutter/widgets/tool_bar.dart';
 import 'package:flutter/material.dart';
@@ -54,10 +55,10 @@ class _HomeState extends State<Home> {
                   switch (provider.state) {
                     case ViewState.idle:
                       return PresentIdle();
-                    case ViewState.enterModeratorName:
-                      return PresentIdle(displayCode: provider.displayCode, otp: provider.otp );
-                    case ViewState.waitReady:
-                      return PresentWaitReady();
+                    case ViewState.moderatorIdle:
+                      return ModeratorIdle(displayCode: provider.displayCode, otp: provider.otp);
+                    case ViewState.moderatorWait:
+                      return const ModeratorWait();
                     case ViewState.selectScreen:
                       return const PresentPresentSelectScreen();
                     case ViewState.presentStart:

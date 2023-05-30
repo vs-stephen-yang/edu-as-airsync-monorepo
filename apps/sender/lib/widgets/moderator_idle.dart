@@ -7,25 +7,28 @@ import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:provider/provider.dart';
 
-class PresentIdle extends StatelessWidget {
-  PresentIdle({super.key, this.displayCode, this.otp}) {
+class ModeratorIdle extends StatelessWidget {
+  ModeratorIdle({super.key, this.displayCode, this.otp}) {
+
     _codeController = TextEditingController(text: displayCode);
     _otpController = TextEditingController(text: otp);
   }
 
   late final TextEditingController _codeController;
   late final TextEditingController _otpController;
+  final TextEditingController _nameController = TextEditingController();
   final codeKey = GlobalKey();
   final otpKey = GlobalKey();
+  final nameKey = GlobalKey();
 
   final String? displayCode;
   final String? otp;
 
   @override
   Widget build(BuildContext context) {
+
     PresentStateProvider presentStateProvider =
         Provider.of<PresentStateProvider>(context);
-    print('zz p ${presentStateProvider.moderator?.id}');
     return Container(
       width: 400,
       padding: const EdgeInsets.all(30),
@@ -61,19 +64,44 @@ class PresentIdle extends StatelessWidget {
             ],
           ),
           const Padding(padding: EdgeInsets.all(10)),
+          CustomTextFormField(
+            key: nameKey,
+            controller: _nameController,
+            labelText: S.of(context).moderator_name,
+            inputFormatter: [
+              FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]'),
+              )
+            ],
+          ),
+          const Padding(padding: EdgeInsets.all(10)),
           ElevatedButton(
             onPressed: () async {
               if (_codeController.text.isEmpty) {
                 _showOverlayMessage(context, codeKey);
               } else if (_otpController.text.isEmpty) {
                 _showOverlayMessage(context, otpKey);
+              } else if (presentStateProvider.state == ViewState.moderatorIdle) {
+              if (_nameController.text.isEmpty) {
+                _showOverlayMessage(context, nameKey);
+              } else if (displayCode != null) {
+                presentStateProvider.presenter?.name = _nameController.text;
+                  bool display = await presentStateProvider.checkDisplayOTP(
+                      displayCode: displayCode, otp: _otpController.text);
+                  if (display) {
+                    presentStateProvider.presentTo(
+                      displayCode: displayCode,
+                      otp: _otpController.text,
+                    ).whenComplete(() => presentStateProvider.setViewState(ViewState.moderatorWait));
+                  }
+                }
               } else {
                 var displayCode = _codeController.text.replaceAll('-', '');
                 bool moderator = await presentStateProvider.checkModeratorOTP(
                     displayCode: displayCode,
                     otp: _otpController.text);
-                if (!moderator || presentStateProvider.state == ViewState.moderatorIdle) return;
-
+                if (!moderator || presentStateProvider.state == ViewState.moderatorIdle) {
+                  return;
+                }
                 bool display = await presentStateProvider.checkDisplayOTP(
                     displayCode: displayCode,
                     otp: _otpController.text);

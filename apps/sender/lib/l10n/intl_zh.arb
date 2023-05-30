@@ -6,5 +6,6 @@
   "present_otp_code_description": "*4碼一次性密碼",
   "present_start": "投影",
   "present_fill_out": "請填寫此字段。",
-  "present_name": "投影人員姓名 *"
+  "moderator_name": "投影人員姓名 *",
+  "moderator_wait": "請等待主持人選擇投影人員"
 }

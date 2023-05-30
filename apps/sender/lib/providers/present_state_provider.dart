@@ -18,8 +18,8 @@ enum ViewState {
   presentStart,
 
   //moderator
-  enterModeratorName,
-  waitModeratorSelect,
+  moderatorIdle,
+  moderatorWait,
 }
 
 class PresentStateProvider extends ChangeNotifier {
@@ -31,7 +31,6 @@ class PresentStateProvider extends ChangeNotifier {
   ViewState get state => _currentState;
   ViewState _currentState = ViewState.idle;
   Timer? _presentTimer;
-  final _userId = (const Uuid()).v4();
   late final String _urlGateway;
   late dynamic _msgDisplay;
   late WebRTCHelper? _webRTCHelper;
@@ -74,7 +73,7 @@ class PresentStateProvider extends ChangeNotifier {
         moderator = Moderator.fromJson(body);
         this.displayCode = displayCode;
         this.otp = otp;
-        setViewState(ViewState.enterModeratorName);
+        setViewState(ViewState.moderatorIdle);
         notifyListeners();
         print('zz checkOTP 200 ${response.body} ${moderator?.id}');
         // break;
@@ -156,6 +155,14 @@ class PresentStateProvider extends ChangeNotifier {
           }
         }
       });
+    });
+
+    _socket?.on("display-state-update", (msg) async {
+      debugModePrint('display-state-update: $msg');
+    });
+
+    _socket?.on("presenter-peer-action", (msg) async {
+      debugModePrint('presenter-peer-action: $msg');
     });
 
     _socket?.on('dismiss', (msg) {
