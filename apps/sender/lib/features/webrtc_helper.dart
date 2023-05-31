@@ -259,7 +259,7 @@ class SdpUtil {
     //a=rtpmap:35 H264/90000
     final parts = line.split(' ');
 
-    return parts[0].contains(payloadType);
+    return parts[0].contains(payloadType) && (parts[0].contains('rtpmap') || parts[0].contains('rtcp') || parts[0].contains('fmtp'));
   }
 
   static String? removeCodec(String sdp, String encodingName) {
