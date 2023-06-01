@@ -247,12 +247,13 @@ Java_com_viewsonic_flutter_1mirror_MiracastReceiver_onSessionBeginNative(
     JNIEnv* env,
     jobject thiz,
     jlong instance,
-    jint sessionId) {
+    jstring jmirror_id) {
   assert(instance != 0);
   ALOGV("MiracastReceiver_onMirrorStartNative()");
 
   MiracastReceiver* receiver = MIRACAST(instance);
-  receiver->OnMirrorStart(sessionId);
+  jni::String str(env);
+  receiver->OnMirrorStart(str.ToUtf8(jmirror_id));
 }
 
 JNIEXPORT void JNICALL
@@ -260,12 +261,13 @@ Java_com_viewsonic_flutter_1mirror_MiracastReceiver_onSessionEndNative(
     JNIEnv* env,
     jobject thiz,
     jlong instance,
-    jint sessionId) {
+    jstring jmirror_id) {
   assert(instance != 0);
   ALOGV("MiracastReceiver_onMirrorStopNative()");
 
   MiracastReceiver* receiver = MIRACAST(instance);
-  receiver->OnMirrorStop(sessionId);
+  jni::String str(env);
+  receiver->OnMirrorStop(str.ToUtf8(jmirror_id));
 }
 
 JNIEXPORT void JNICALL
@@ -273,7 +275,7 @@ Java_com_viewsonic_flutter_1mirror_MiracastReceiver_onPacketNative(
     JNIEnv* env,
     jobject thiz,
     jlong instance,
-    jint sessionId,
+    jstring jmirror_id,
     jbyteArray data,
     jint size) {
   assert(instance != 0);
@@ -281,9 +283,9 @@ Java_com_viewsonic_flutter_1mirror_MiracastReceiver_onPacketNative(
   MiracastReceiver* receiver = MIRACAST(instance);
 
   jni::ScopedByteArrayBuffer ba(env, data);
-
+  jni::String str(env);
   receiver->OnPacket(
-      sessionId,
+      str.ToUtf8(jmirror_id),
       reinterpret_cast<uint8_t*>(ba.Data()),
       size);
 }
@@ -293,7 +295,7 @@ Java_com_viewsonic_flutter_1mirror_MiracastReceiver_onAudioFormatUpdateNative(
     JNIEnv* env,
     jobject thiz,
     jlong instance,
-    jint sessionId,
+    jstring jmirror_id,
     jstring codecName,
     jint sampleRate,
     jint channelCount) {
@@ -305,7 +307,7 @@ Java_com_viewsonic_flutter_1mirror_MiracastReceiver_onAudioFormatUpdateNative(
   jni::String str(env);
 
   receiver->OnAudioFormatUpdate(
-      sessionId,
+      str.ToUtf8(jmirror_id),
       str.ToUtf8(codecName),
       sampleRate,
       channelCount);

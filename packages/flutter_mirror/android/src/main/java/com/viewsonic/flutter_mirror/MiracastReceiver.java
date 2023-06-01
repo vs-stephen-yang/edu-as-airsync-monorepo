@@ -46,18 +46,18 @@ public class MiracastReceiver implements
     MiraMgr.getInstance().stop();
   }
 
-  public void stopMirror(int mirrorId) {
+  public void stopMirror(String mirrorId) {
     MiraMgr.getInstance().stopMirror(mirrorId);
   }
 
   public void onMirrorTouch(
-      int sessionId,
+      String mirrorId,
       int touchId,
       boolean touch,
       double x,
       double y) {
     MiraMgr.getInstance().onTouchEvent(
-        sessionId,
+        mirrorId,
         touchId,
         touch,
         x,
@@ -65,28 +65,28 @@ public class MiracastReceiver implements
   }
 
   // Called from native
-  public void sendIdrRequest(int sessionId) {
-    MiraMgr.getInstance().rtspRequestIdr(sessionId);
+  public void sendIdrRequest(String mirrorId) {
+    MiraMgr.getInstance().rtspRequestIdr(mirrorId);
   }
 
   // implements MiraMgrListener
   @Override
-  public void onSessionBegin(int sessionId) {
+  public void onSessionBegin(String mirrorId) {
     assert instance_ != 0;
 
-    onSessionBeginNative(instance_, sessionId);
+    onSessionBeginNative(instance_, mirrorId);
   }
 
   @Override
-  public void onSessionEnd(int sessionId) {
+  public void onSessionEnd(String mirrorId) {
     assert instance_ != 0;
 
-    onSessionEndNative(instance_, sessionId);
+    onSessionEndNative(instance_, mirrorId);
   }
 
   @Override
   public void onMirrorData(
-      int sessionId,
+      String mirrorId,
       long seqNum,
       long lastRTPSeqNum,
       byte[] data,
@@ -108,14 +108,14 @@ public class MiracastReceiver implements
 
     onPacketNative(
         instance_,
-        sessionId,
+        mirrorId,
         data,
         size);
   }
 
   @Override
   public void onAudioFormatUpdate(
-      int sessionId,
+      String mirrorId,
       String codecName,
       int sampleRate,
       int channelCount) {
@@ -123,7 +123,7 @@ public class MiracastReceiver implements
 
     onAudioFormatUpdateNative(
         instance_,
-        sessionId,
+        mirrorId,
         codecName,
         sampleRate,
         channelCount);
@@ -138,21 +138,21 @@ public class MiracastReceiver implements
 
   private native void onSessionBeginNative(
       long instance,
-      int sessionId);
+      String mirrorId);
 
   private native void onSessionEndNative(
       long instance,
-      int sessionId);
+      String mirrorId);
 
   private native void onPacketNative(
       long instance,
-      int sessionId,
+      String mirrorId,
       byte[] data,
       int size);
 
   private native void onAudioFormatUpdateNative(
       long instance,
-      int sessionId,
+      String mirrorId,
       String codecName,
       int sampleRate,
       int channelCount);

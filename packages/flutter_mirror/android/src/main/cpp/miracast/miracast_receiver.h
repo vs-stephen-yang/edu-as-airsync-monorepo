@@ -11,34 +11,34 @@ class MiracastReceiver {
       jni::MiracastReceiverPtr proxy,
       MirrorListener& mirror_listener);
 
-  void StopMirror(int mirrorId);
+  void StopMirror(const std::string& mirrorId);
 
-  void OnMirrorStart(int mirrorId);
+  void OnMirrorStart(const std::string& mirrorId);
 
-  void OnMirrorStop(int mirrorId);
+  void OnMirrorStop(const std::string& mirrorId);
 
   void OnAudioFormatUpdate(
-      int mirrorId,
+      const std::string& mirrorId,
       const std::string& codecName,
       int sampleRate,
       int channelCount);
   void OnPacket(
-      int mirrorId,
+      const std::string& mirrorId,
       const uint8_t* data,
       int length);
 
-  void SendIdrRequest(int mirrorId);
+  void SendIdrRequest(const std::string& mirrorId);
 
  private:
-  MiracastMirrorSessionPtr FindSession(int mirrorId);
+  MiracastMirrorSessionPtr FindSession(const std::string& mirrorId);
 
-  void RemoveSession(int mirrorId);
+  void RemoveSession(const std::string& mirrorId);
 
  private:
   jni::MiracastReceiverPtr proxy_;
   MirrorListener& mirror_listener_;
 
-  std::map<int, MiracastMirrorSessionPtr> mirror_sessions_;
+  std::map<std::string, MiracastMirrorSessionPtr> mirror_sessions_;
 };
 
 #endif  // FLUTTER_MIRROR_PLUGIN_MIRACAST_RECEIVER_H_

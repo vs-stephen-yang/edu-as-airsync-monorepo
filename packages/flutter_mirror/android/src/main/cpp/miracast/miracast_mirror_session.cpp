@@ -8,17 +8,12 @@
 using namespace std;
 
 MiracastMirrorSession::MiracastMirrorSession(
-    int id,
+    const std::string& mirrorId,
     MirrorListener& mirror_listener,
     MiracastReceiver& receiver)
-    : id_(id),
+    : mirror_id_(mirrorId),
       receiver_(receiver),
       mirror_listener_(mirror_listener) {
-  mirror_id_ = std::to_string(id_);
-}
-
-int MiracastMirrorSession::Id() const {
-  return id_;
 }
 
 SurfaceTexture MiracastMirrorSession::GetTexture() {
@@ -53,13 +48,13 @@ bool MiracastMirrorSession::StartMirror(
 void MiracastMirrorSession::StopMirror() {
   ALOGI("Stopping the mirror session");
 
-  receiver_.StopMirror(id_);
+  receiver_.StopMirror(mirror_id_);
 
   if (media_session_) {
     media_session_->Stop();
   }
 
-  ALOGI("The mirror session #%d has stopped", id_);
+  ALOGI("The mirror session %s has stopped", mirror_id_.c_str());
 }
 
 void MiracastMirrorSession::UpdateAudioFormat(
@@ -117,7 +112,7 @@ void MiracastMirrorSession::OnVideoFrame(
 }
 
 void MiracastMirrorSession::OnPacketLoss() {
-  receiver_.SendIdrRequest(id_);
+  receiver_.SendIdrRequest(mirror_id_);
 }
 
 void MiracastMirrorSession::processRTPData(const uint8_t* data, int length) {
