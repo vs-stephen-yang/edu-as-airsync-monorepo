@@ -4,6 +4,7 @@ import android.util.Log;
 import com.viewsonic.miracast.rtsp.OnReceiveRTSPListener;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
@@ -71,18 +72,28 @@ public class RTPServer {
 
       public void run() {
         DatagramPacket packet = new DatagramPacket(receiveBuffer_, MTU);
-        while (null != socket_ && !socket_.isClosed()) {
+        while(isRunning_ && null != socket_ && !socket_.isClosed()) {
           try {
             socket_.receive(packet);
             if (receiveRTPListener_ != null) {
               receiveRTPListener_.onRtpData(getMirrorSeqNum(packet.getData()), packet.getData(),
                   packet.getLength());
             }
-          } catch (IOException e) {
-            Log.e(TAG, "IOException " + e.toString());
+          } catch (SocketTimeoutException e) {
+            continue;
+          } catch (Exception e) {
+            Log.e(TAG, "Exception: " + e.toString());
             if (e.toString().contains("Socket closed")) {
               break;
             }
+          }
+        }
+
+        if (socket_ != null) {
+          try {
+            socket_.close();
+          } catch (Exception e) {
+            Log.e(TAG, "Socket close - Exception: " + e.toString());
           }
         }
       }
@@ -92,6 +103,7 @@ public class RTPServer {
     private Worker worker_;
     private DatagramSocket socket_ = null;
     private int socketBufferSize_ = 0;
+    private boolean isRunning_ = false;
 
     UDPServer(int bufferSize, int port, OnReceiveRTPListener listener) {
       init(bufferSize, port, listener);
@@ -112,22 +124,24 @@ public class RTPServer {
         if (socket_.isBound()) {
           port_ = socket_.getLocalPort();
         }
-      } catch (SocketException e) {
+        socket_.setSoTimeout(100);
+      } catch (Exception e) {
         e.printStackTrace();
       }
       worker_ = new Worker();
     }
 
     public void start() {
+      if (isRunning_) {
+        return;
+      }
+      isRunning_ = true;
       worker_.start();
     }
 
     public void stop() {
+      isRunning_ = false;
       try {
-        if (socket_ != null) {
-          socket_.close();
-          socket_ = null;
-        }
         worker_.join();
       } catch (Exception e) {
         Log.e(TAG, "udp server stop Exception " + e.toString());

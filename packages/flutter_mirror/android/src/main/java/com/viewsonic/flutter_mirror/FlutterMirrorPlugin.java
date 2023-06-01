@@ -268,6 +268,7 @@ public class FlutterMirrorPlugin implements
       return;
     }
 
+    Log.d(TAG, "stopMiracast()");
     mirrorReceiver_.stopMiracast();
   }
 

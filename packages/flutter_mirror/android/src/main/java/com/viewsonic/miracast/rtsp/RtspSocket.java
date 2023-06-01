@@ -13,6 +13,8 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.Semaphore;
 
 class RtspSocket {
@@ -27,7 +29,7 @@ class RtspSocket {
   private BufferedReader bufferedReader_;
 
   private Handler handler_;
-  private Thread receiveThread_;
+  private boolean isRunning_ = false;
 
   private OnReceiveRTSPListener receiveRTSPListener_;
 
@@ -54,19 +56,21 @@ class RtspSocket {
       outputStream_ = socket_.getOutputStream();
       inputStream_ = socket_.getInputStream();
       bufferedReader_ = new BufferedReader(new InputStreamReader(inputStream_, "UTF-8"));
+      socket_.setSoTimeout(1000);
     } catch (IOException e) {
       Log.e(TAG, "RTSPSocket start error:" + e.toString());
       return -1;
     }
 
     final Semaphore signal = new Semaphore(0);
-    receiveThread_ = new HandlerThread("RTSPSocketThread") {
+    HandlerThread receiveThread = new HandlerThread("RTSPSocketThread") {
       protected void onLooperPrepared() {
         handler_ = new Handler();
         signal.release();
       }
     };
-    receiveThread_.start();
+    isRunning_ = true;
+    receiveThread.start();
     signal.acquireUninterruptibly();
 
     if (!socket_.isClosed()) {
@@ -76,15 +80,22 @@ class RtspSocket {
   }
 
   public void close() {
-    try {
-      handler_.removeCallbacksAndMessages(null);
-      inputStream_.close();
-      outputStream_.close();
-      socket_.close();
-      receiveThread_.join();
-    } catch (IOException | InterruptedException e) {
-      e.printStackTrace();
-    }
+    Log.d(TAG, "RTSPSocket close");
+    isRunning_ = false;
+    handler_.removeCallbacksAndMessages(null);
+    handler_.post(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          Log.d(TAG, "RTSPSocket clean resource");
+          inputStream_.close();
+          outputStream_.close();
+          socket_.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    });
   }
 
   public void sendRequest(RtspRequestMessage request) {
@@ -192,12 +203,16 @@ class RtspSocket {
             Log.d(TAG, "RTSP Receive Message is null.");
           }
         }
+      } catch (SocketException e) {
+        Log.i(TAG, "SocketException:" + e.toString());
       } catch (Exception e) {
-        Log.e(TAG, "Exception:" + e.toString());
+        if(!(e instanceof SocketTimeoutException)) {
+          Log.e(TAG, "Exception:" + e.toString());
+        }
       }
 
       // Post another receive operation
-      if (!socket_.isClosed()) {
+      if (isRunning_ && !socket_.isClosed()) {
         handler_.post(receiveOperationRunnable);
       } else {
         Log.d(TAG, "RTSPSocket is closed.");

@@ -33,6 +33,7 @@ public class MiracastReceiver implements
     assert context != null;
     assert activity != null;
 
+    Log.d(TAG, "MiracastReceiver.start()");
     MiraMgr.getInstance().start(
         context,
         activity,
@@ -41,7 +42,12 @@ public class MiracastReceiver implements
   }
 
   public void stop() {
-    // TODO:
+    Log.d(TAG, "MiracastReceiver.stop()");
+    MiraMgr.getInstance().stop();
+  }
+
+  public void stopMirror(int mirrorId) {
+    MiraMgr.getInstance().stopMirror(mirrorId);
   }
 
   public void onMirrorTouch(
