@@ -1,9 +1,8 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
-
-import 'views/echo_test.dart';
-import 'views/pub_sub.dart';
+import 'package:flutter_ion/flutter_ion.dart' as ion;
+import 'package:uuid/uuid.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,50 +11,23 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class RouteItem {
-  RouteItem({
-    required this.title,
-    required this.subtitle,
-    required this.push,
-  });
-
-  final String title;
-  final String subtitle;
-  final Function(BuildContext context) push;
-}
-
 class _MyAppState extends State<MyApp> {
-  List<RouteItem> items = <RouteItem>[
-    RouteItem(
-        title: 'Echo Test (ion-sfu)',
-        subtitle: 'echo test with simulcast.',
-        push: (BuildContext context) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (BuildContext context) => EchoTest()));
-        }),
-    RouteItem(
-        title: 'Pub Sub (ion-sfu)',
-        subtitle: 'pub sub.',
-        push: (BuildContext context) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (BuildContext context) => PubSub()));
-        }),
-  ];
+  late ion.Client _client;
 
   @override
   void initState() {
     super.initState();
   }
 
-  Widget _buildRow(context, item) {
-    return ListBody(children: <Widget>[
-      ListTile(
-        title: Text(item.title),
-        onTap: () => item.push(context),
-        trailing: Icon(Icons.arrow_right),
-      ),
-      Divider()
-    ]);
+  publishStream() async {
+    var signal = ion.JsonRPCSignal("ws://172.21.6.32:7000/ws");
+    String uuid = Uuid().v4();
+    String room = "ion";
+    _client = await ion.Client.create(sid: room, uid: uuid, signal: signal);
+
+    var localStream = await ion.LocalStream.getDisplayMedia(
+        constraints: ion.Constraints.defaults..simulcast = false);
+    await _client.publish(localStream);
   }
 
   @override
@@ -65,13 +37,14 @@ class _MyAppState extends State<MyApp> {
           appBar: AppBar(
             title: Text('ION example'),
           ),
-          body: ListView.builder(
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(0.0),
-              itemCount: items.length,
-              itemBuilder: (context, i) {
-                return _buildRow(context, items[i]);
-              })),
+          body: Center(
+          child: ElevatedButton(
+            child: Text('Publish Stream'),
+            // call publishStream
+            onPressed: publishStream,
+            ),
+          ),
+      )
     );
   }
 }
