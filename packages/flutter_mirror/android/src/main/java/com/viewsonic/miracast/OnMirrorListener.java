@@ -5,7 +5,7 @@ public interface OnMirrorListener {
 
   void onPeerDisconnected(String ip);
 
-  void onMirrorData(int sessionId, long seqNum, long lastSeqNum, byte[] data, int size);
+  void onMirrorData(String mirrorId, long seqNum, long lastSeqNum, byte[] data, int size);
 
-  void onAudioFormatUpdate(int sessionId, String codecName, int sampleRate, int channelCount);
+  void onAudioFormatUpdate(String mirrorId, String codecName, int sampleRate, int channelCount);
 }

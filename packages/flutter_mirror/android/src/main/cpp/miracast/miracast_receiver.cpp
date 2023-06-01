@@ -11,7 +11,7 @@ MiracastReceiver::MiracastReceiver(
 }
 
 // a mirror session starts
-void MiracastReceiver::OnMirrorStart(int mirrorId) {
+void MiracastReceiver::OnMirrorStart(const std::string& mirrorId) {
   // create a wrapper for the mirror session
   auto session = std::make_shared<MiracastMirrorSession>(
       mirrorId,
@@ -25,7 +25,7 @@ void MiracastReceiver::OnMirrorStart(int mirrorId) {
       session);
 }
 
-void MiracastReceiver::OnMirrorStop(int mirrorId) {
+void MiracastReceiver::OnMirrorStop(const std::string& mirrorId) {
   MiracastMirrorSessionPtr session = FindSession(mirrorId);
   if (!session) {
     return;
@@ -36,12 +36,12 @@ void MiracastReceiver::OnMirrorStop(int mirrorId) {
   RemoveSession(mirrorId);
 }
 
-void MiracastReceiver::StopMirror(int mirrorId) {
+void MiracastReceiver::StopMirror(const std::string& mirrorId) {
   // TODO
 }
 
 void MiracastReceiver::OnAudioFormatUpdate(
-    int mirrorId,
+    const std::string& mirrorId,
     const std::string& codecName,
     int sampleRate,
     int channelCount) {
@@ -53,7 +53,7 @@ void MiracastReceiver::OnAudioFormatUpdate(
   session->UpdateAudioFormat(codecName, sampleRate, channelCount);
 }
 
-void MiracastReceiver::OnPacket(int mirrorId, const uint8_t* data, int length) {
+void MiracastReceiver::OnPacket(const std::string& mirrorId, const uint8_t* data, int length) {
   MiracastMirrorSessionPtr session = FindSession(mirrorId);
   if (!session) {
     return;
@@ -62,11 +62,11 @@ void MiracastReceiver::OnPacket(int mirrorId, const uint8_t* data, int length) {
   session->processRTPData(data, length);
 }
 
-void MiracastReceiver::SendIdrRequest(int mirrorId) {
+void MiracastReceiver::SendIdrRequest(const std::string& mirrorId) {
   proxy_->sendIdrRequest(mirrorId);
 }
 
-MiracastMirrorSessionPtr MiracastReceiver::FindSession(int mirrorId) {
+MiracastMirrorSessionPtr MiracastReceiver::FindSession(const std::string& mirrorId) {
   auto itr = mirror_sessions_.find(mirrorId);
   if (itr == mirror_sessions_.end()) {
     return {};
@@ -75,7 +75,7 @@ MiracastMirrorSessionPtr MiracastReceiver::FindSession(int mirrorId) {
   return itr->second;
 }
 
-void MiracastReceiver::RemoveSession(int mirrorId) {
+void MiracastReceiver::RemoveSession(const std::string& mirrorId) {
   auto itr = mirror_sessions_.find(mirrorId);
   if (itr == mirror_sessions_.end()) {
     return;

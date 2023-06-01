@@ -26,13 +26,13 @@ MiracastReceiver::~MiracastReceiver() {
 }
 
 
-void MiracastReceiver::sendIdrRequest(int mirrorId) {
+void MiracastReceiver::sendIdrRequest(const std::string& mirrorId) {
   jni::ScopedEnv env(vm_);
 
   env->CallVoidMethod(
       obj_,
       sendIdrRequestMID,
-      mirrorId);
+      env->NewStringUTF(mirrorId.c_str()));
 }
 
 void MiracastReceiver::InitMethods(
@@ -40,8 +40,8 @@ void MiracastReceiver::InitMethods(
     jobject obj) {
   jclass cls = env->GetObjectClass(obj);
 
-  // void sendIdrRequest(int mirrorId)
-  DEFINE_METHOD(sendIdrRequest, "(I)V");
+  // void sendIdrRequest(std::string& mirrorId)
+  DEFINE_METHOD(sendIdrRequest, "(Ljava/lang/String;)V");
 }
 
 }  // namespace jni

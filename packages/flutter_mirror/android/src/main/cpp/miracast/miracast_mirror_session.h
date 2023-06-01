@@ -19,11 +19,9 @@ class MiracastMirrorSession
       public ATSParser::Callback {
  public:
   MiracastMirrorSession(
-      int id,
+      const std::string& mirrorId,
       MirrorListener& mirror_listener,
       MiracastReceiver& receiver);
-
-  int Id() const;
 
   // implements MirrorSession
   virtual bool StartMirror(
@@ -69,7 +67,6 @@ class MiracastMirrorSession
       int height) override;
 
  private:
-  const int id_ = 0;
   std::string mirror_id_;
 
   MiracastReceiver& receiver_;

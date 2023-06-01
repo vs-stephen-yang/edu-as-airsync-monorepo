@@ -1,9 +1,7 @@
 package com.viewsonic.miracast;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
@@ -17,34 +15,37 @@ public class MiraMgr {
   private WiFiDirectMgr wifiDirectMgr_;
   private OnMirrorListener onMiraCastListener_;
   private MiraMgrListener listener_;
-
   private Handler miraHandler_;
+  private int mirror_increment_seq_ = 0;
+  private static final String kMirrorIdPrefix_ = "miracast-";
+  private Map<String, MiraSession> mirror_sessions_ = new HashMap<>();
 
-  int mirrorId_ = 0;
-  private Map<Integer, MiraSession> mirror_sessions_ = new HashMap<>();
+  static String formatMirrorId(int seq) {
+    return kMirrorIdPrefix_ + seq;
+  }
 
   public MiraSession createSession(String peerName, String peerIp, int peerPort, String receiverName) {
-    mirrorId_++;
+    mirror_increment_seq_++;
     MiraSession session = new MiraSession(
-        mirrorId_,
+        formatMirrorId(mirror_increment_seq_),
         peerIp,
         peerPort,
         peerName,
         receiverName,
         onMiraCastListener_);
-    mirror_sessions_.put(mirrorId_, session);
+    mirror_sessions_.put(formatMirrorId(mirror_increment_seq_), session);
     return session;
   }
 
-  public int removeSessionByIp(String ip) {
-    for (Map.Entry<Integer, MiraSession> entry : mirror_sessions_.entrySet()) {
+  public String removeSessionByIp(String ip) {
+    for (Map.Entry<String, MiraSession> entry : mirror_sessions_.entrySet()) {
       if (entry.getValue().getIp().equals(ip)) {
-        int sessionId = entry.getKey();
-        mirror_sessions_.remove(entry.getKey());
+        String sessionId = entry.getKey();
+        mirror_sessions_.remove(sessionId);
         return sessionId;
       }
     }
-    return -1;
+    return null;
   }
 
   private Runnable wifiDirectRunnable_;
@@ -92,7 +93,7 @@ public class MiraMgr {
   }
 
   public void stop() {
-    for (Map.Entry<Integer, MiraSession> entry : mirror_sessions_.entrySet()) {
+    for (Map.Entry<String, MiraSession> entry : mirror_sessions_.entrySet()) {
       entry.getValue().stop();
       mirror_sessions_.remove(entry.getKey());
       if (listener_ != null) {
@@ -105,14 +106,14 @@ public class MiraMgr {
     miraHandler_.removeCallbacks(wifiDirectRunnable_);
   }
 
-  public void rtspRequestIdr(int mirrorId) {
+  public void rtspRequestIdr(String mirrorId) {
     MiraSession session = mirror_sessions_.get(mirrorId);
     if (session != null) {
       session.requestIdr();
     }
   }
 
-  public void stopMirror(int mirrorId) {
+  public void stopMirror(String mirrorId) {
     MiraSession session = mirror_sessions_.get(mirrorId);
     if (session != null) {
       session.stop();
@@ -123,7 +124,7 @@ public class MiraMgr {
     }
   }
 
-  public void onTouchEvent(int mirrorId_, int touchId, boolean touch, double x, double y) {
+  public void onTouchEvent(String mirrorId_, int touchId, boolean touch, double x, double y) {
     MiraSession session = mirror_sessions_.get(mirrorId_);
     if (session != null) {
       session.onTouchEvent(touchId, touch, x, y);
@@ -162,8 +163,8 @@ public class MiraMgr {
       @Override
       public void onPeerDisconnected(String ip) {
         Log.d(TAG, "onPeerDisconnected:" + ip);
-        int removeSessionId = removeSessionByIp(ip);
-        if (removeSessionId >= 0) {
+        String removeSessionId = removeSessionByIp(ip);
+        if(removeSessionId != null) {
           if (listener_ != null) {
             listener_.onSessionEnd(removeSessionId);
           }
@@ -171,10 +172,10 @@ public class MiraMgr {
       }
 
       @Override
-      public void onMirrorData(int sessionId, long seqNum, long lastSeqNum, byte[] data, int size) {
+      public void onMirrorData(String mirrorId, long seqNum, long lastSeqNum, byte[] data, int size) {
         if (listener_ != null) {
           try {
-            listener_.onMirrorData(sessionId, seqNum, lastSeqNum, data, size);
+            listener_.onMirrorData(mirrorId, seqNum, lastSeqNum, data, size);
           } catch (Exception e) {
             Log.e(TAG, "Failed to onMirrorData() ", e);
           }
@@ -182,10 +183,10 @@ public class MiraMgr {
       }
 
       @Override
-      public void onAudioFormatUpdate(int sessionId, String codecName, int sampleRate, int channelCount) {
+      public void onAudioFormatUpdate(String mirrorId, String codecName, int sampleRate, int channelCount) {
         if (listener_ != null) {
           try {
-            listener_.onAudioFormatUpdate(sessionId, codecName, sampleRate, channelCount);
+            listener_.onAudioFormatUpdate(mirrorId, codecName, sampleRate, channelCount);
           } catch (Exception e) {
             Log.e(TAG, "Failed to onAudioFormatUpdate() ", e);
           }

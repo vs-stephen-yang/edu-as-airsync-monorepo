@@ -7,7 +7,7 @@ import com.viewsonic.miracast.rtsp.RtspClient;
 
 public class MiraSession {
   private static final String TAG = "MiraSession";
-  private int id_;
+  private String id_;
   private String ip_;
   private int port_;
   private String peerName_;
@@ -16,7 +16,7 @@ public class MiraSession {
   private OnMirrorListener mirrorListener_;
   private long lastRTPSeqNum_ = -1;
 
-  public MiraSession(int id, String ip, int port, String peerName, String receiverName, OnMirrorListener listener) {
+  public MiraSession(String id, String ip, int port, String peerName, String receiverName, OnMirrorListener listener) {
     id_ = id;
     ip_ = ip;
     port_ = port;
@@ -41,7 +41,7 @@ public class MiraSession {
     return ip_;
   }
 
-  public int getId() {
+  public String getId() {
     return id_;
   }
 

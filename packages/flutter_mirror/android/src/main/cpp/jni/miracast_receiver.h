@@ -15,7 +15,7 @@ class MiracastReceiver {
 
   ~MiracastReceiver();
 
-  void sendIdrRequest(int mirrorId);
+  void sendIdrRequest(const std::string& mirrorId);
 
  private:
   void InitMethods(

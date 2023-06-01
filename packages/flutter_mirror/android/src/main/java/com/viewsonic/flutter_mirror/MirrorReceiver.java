@@ -104,11 +104,13 @@ public class MirrorReceiver implements
     assert instance_ != 0;
 
     /* use different receiver by mirrorID to stop the mirror */
-    miracastReceiver_.stopMirror(Integer.parseInt(mirrorId));
-
-//    stopMirrorNative(
-//        instance_,
-//        mirrorId);
+    if(mirrorId.startsWith("miracast")) {
+      miracastReceiver_.stopMirror(mirrorId);
+    } else {
+      stopMirrorNative(
+          instance_,
+          mirrorId);
+    }
   }
 
   // update googlecast's credentials
@@ -136,7 +138,7 @@ public class MirrorReceiver implements
       double x,
       double y) {
     miracastReceiver_.onMirrorTouch(
-        Integer.parseInt(mirrorId),
+        mirrorId,
         touchId,
         touch,
         x,
