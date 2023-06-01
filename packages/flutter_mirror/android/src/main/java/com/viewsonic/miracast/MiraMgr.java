@@ -92,10 +92,12 @@ public class MiraMgr {
   }
 
   public void stop() {
-    // RTSP close
     for (Map.Entry<Integer, MiraSession> entry : mirror_sessions_.entrySet()) {
       entry.getValue().stop();
       mirror_sessions_.remove(entry.getKey());
+      if (listener_ != null) {
+        listener_.onSessionEnd(entry.getKey());
+      }
     }
 
     // Close p2p discovery
@@ -114,6 +116,10 @@ public class MiraMgr {
     MiraSession session = mirror_sessions_.get(mirrorId);
     if (session != null) {
       session.stop();
+      mirror_sessions_.remove(mirrorId);
+      if (listener_ != null) {
+        listener_.onSessionEnd(mirrorId);
+      }
     }
   }
 

@@ -128,6 +128,7 @@ public class WiFiDirectMgr {
 
   public void stop() {
     if (isStart_) {
+      Log.d(TAG, "stop WiFiDirectMgr");
       wifiP2pManager_.removeGroup(channel_, null);
       context_.unregisterReceiver(broadcastReceiver_);
       isStart_ = false;
