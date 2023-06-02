@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
@@ -9,11 +8,12 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/control_socket.dart';
-import 'package:display_flutter/screens/debug_switch.dart';
-import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/protoc/event.pb.dart';
+import 'package:display_flutter/protoc/internal.pb.dart';
+import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -34,15 +34,17 @@ class WebRTCFlutterView extends StatefulWidget {
   State createState() => WebRTCFlutterViewState();
 }
 
-class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProviderStateMixin {
-  final WebRTCFlutterViewController _viewController = WebRTCFlutterViewController();
+class WebRTCFlutterViewState extends State<WebRTCFlutterView>
+    with TickerProviderStateMixin {
+  final WebRTCFlutterViewController _viewController =
+      WebRTCFlutterViewController();
   bool _showConnectionInfo = false;
   late final AnimationController _animationController;
   late final Animation<double> _animation;
-  GlobalKey _widgetKey = GlobalKey();
+  final GlobalKey _widgetKey = GlobalKey();
   bool _textureSizeChanged = true;
-  Size _textureSize = Size(0, 0);
-  Offset _textureOffset = Offset(0, 0);
+  Size _textureSize = const Size(0, 0);
+  Offset _textureOffset = const Offset(0, 0);
 
   @override
   void initState() {
@@ -92,28 +94,30 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
     }
 
     _widgetKey.currentContext?.visitChildElements(textureVisitor);
-    if(textureElement == null) {
-      print('texture widget not found');
+    if (textureElement == null) {
+      printInDebug('texture widget not found');
       return;
     } else {
-      final RenderBox renderBox = textureElement!.findRenderObject() as RenderBox;
+      final RenderBox renderBox =
+          textureElement!.findRenderObject() as RenderBox;
       _textureSize = renderBox.size;
       _textureOffset = renderBox.localToGlobal(Offset.zero);
-      print('texture widget size: (${_textureSize.width.toStringAsFixed(2)}, ${_textureSize.height.toStringAsFixed(2)}), offset: (${_textureOffset.dx.toStringAsFixed(2)}, ${_textureOffset.dy.toStringAsFixed(2)})');
+      printInDebug(
+          'texture widget size: (${_textureSize.width.toStringAsFixed(2)}, ${_textureSize.height.toStringAsFixed(2)}), offset: (${_textureOffset.dx.toStringAsFixed(2)}, ${_textureOffset.dy.toStringAsFixed(2)})');
       _textureSizeChanged = false;
     }
   }
 
   void _onTouchStart(PointerEvent event) {
-    _onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_START,event);
+    _onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_START, event);
   }
 
   void _onTouchMove(PointerEvent event) {
-    _onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_MOVE,event);
+    _onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_MOVE, event);
   }
 
   void _onTouchEnd(PointerEvent event) {
-    _onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_END,event);
+    _onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_END, event);
   }
 
   void _onTouchEvent(TouchEvent_TouchEventType eventType, PointerEvent event) {
@@ -122,14 +126,16 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
     }
 
     final curTouchEventPoint = TouchEventPoint();
-    curTouchEventPoint.x = (event.position.dx-_textureOffset.dx)/_textureSize.width;
+    curTouchEventPoint.x =
+        (event.position.dx - _textureOffset.dx) / _textureSize.width;
     /* make curTouchEventPoint.x between 0.0 ~ 1.0 */
     if (curTouchEventPoint.x < 0.0) {
       curTouchEventPoint.x = 0.0;
     } else if (curTouchEventPoint.x > 1.0) {
       curTouchEventPoint.x = 1.0;
     }
-    curTouchEventPoint.y = (event.position.dy-_textureOffset.dy)/_textureSize.height;
+    curTouchEventPoint.y =
+        (event.position.dy - _textureOffset.dy) / _textureSize.height;
     /* make curTouchEventPoint.y between 0.0 ~ 1.0 */
     if (curTouchEventPoint.y < 0.0) {
       curTouchEventPoint.y = 0.0;
@@ -164,7 +170,7 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
           canRequestFocus: false,
           child: NotificationListener<SizeChangedLayoutNotification>(
             onNotification: (notification) {
-              print('onVideoWidgetResize');
+              printInDebug('onVideoWidgetResize');
               _textureSizeChanged = true;
               return false;
             },
@@ -172,7 +178,7 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
               onPointerDown: _onTouchStart,
               onPointerMove: _onTouchMove,
               onPointerUp: _onTouchEnd,
-              child: RTCVideoView(_viewController.renderer,key: _widgetKey),
+              child: RTCVideoView(_viewController.renderer, key: _widgetKey),
             ),
           ),
         ),
@@ -180,7 +186,7 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
           alignment: Alignment.topCenter,
           child: Visibility(
             visible: _viewController.presentationState ==
-                PresentationState.streaming &&
+                    PresentationState.streaming &&
                 _viewController.presenterName.isNotEmpty &&
                 SplitScreen.mapSplitScreen.value[keySplitScreenEnable],
             child: Container(
@@ -207,7 +213,7 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
           visible: showConnectionInfo,
           child: Transform.scale(
             scale: SplitScreen.mapSplitScreen.value[keySplitScreenEnable] &&
-                SplitScreen.mapSplitScreen.value[keySplitScreenCount] > 1
+                    SplitScreen.mapSplitScreen.value[keySplitScreenCount] > 1
                 ? 0.5
                 : 1.0,
             child: SizedBox(
@@ -279,9 +285,9 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> with TickerProvide
   bool get showConnectionInfo => _showConnectionInfo;
 
   set showConnectionInfo(bool value) {
-      setState(() {
-        _showConnectionInfo = value;
-      });
+    setState(() {
+      _showConnectionInfo = value;
+    });
   }
 }
 
@@ -317,7 +323,8 @@ class WebRTCFlutterViewController {
     _printWebRTCViewSocketLog('init', null);
   }
 
-  Future<void> connectClient(String token, String displayCode, String peerId, String url, Function(bool result) callback) async {
+  Future<void> connectClient(String token, String displayCode, String peerId,
+      String url, Function(bool result) callback) async {
     _token = token;
     _peerId = peerId;
     if (_pc == null) await _peerConnectionConnect();
@@ -345,7 +352,8 @@ class WebRTCFlutterViewController {
     _pc!.onDataChannel = _onDataChannel;
   }
 
-  void _signalConnect(String displayCode, String url, Function(bool result) callback) {
+  void _signalConnect(
+      String displayCode, String url, Function(bool result) callback) {
     _socket = io.io(
         url, //'https://signal.stage.myviewboard.cloud'
         io.OptionBuilder()
@@ -356,10 +364,7 @@ class WebRTCFlutterViewController {
             .enableReconnection()
             .setReconnectionAttempts(5)
             .enableMultiplex()
-            .setQuery({
-          'token': _token,
-          'displayCode': displayCode
-        })
+            .setQuery({'token': _token, 'displayCode': displayCode})
             .build());
 
     _socket?.onConnect((_) async {
@@ -371,13 +376,23 @@ class WebRTCFlutterViewController {
       final msg = jsonDecode(data['data']);
       final type = msg['type'];
 
-      if (type == OwtMessageType.signaling_message.value) { //"chat-signal"
+      if (type == OwtMessageType.signaling_message.value) {
+        //"chat-signal"
         await _handleSignal(msg['data']);
       }
-      if (type == OwtMessageType.chat_ua.value) { //'chat-ua'
-        _send(OwtMessageType.chat_ua.value, {'sdk':{'type':_getPlatform(),'version':5},'capabilities':{'continualIceGathering':true,'unifiedPlan':true,'streamRemovable':true}});
+      if (type == OwtMessageType.chat_ua.value) {
+        //'chat-ua'
+        _send(OwtMessageType.chat_ua.value, {
+          'sdk': {'type': _getPlatform(), 'version': 5},
+          'capabilities': {
+            'continualIceGathering': true,
+            'unifiedPlan': true,
+            'streamRemovable': true
+          }
+        });
       }
-      if (type == OwtMessageType.stream_info.value) { //'chat-stream-info'
+      if (type == OwtMessageType.stream_info.value) {
+        //'chat-stream-info'
         var info = msg['data'];
         _streamInfo[info['id'].toString()] = info;
       }
@@ -400,11 +415,15 @@ class WebRTCFlutterViewController {
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
     });
 
-    _socket?.onConnectTimeout((data) => _printWebRTCViewSocketLog('onConnectTimeout', data));
+    _socket?.onConnectTimeout(
+        (data) => _printWebRTCViewSocketLog('onConnectTimeout', data));
     _socket?.onError((data) => _printWebRTCViewSocketLog('onError', data));
-    _socket?.onReconnect((data) => _printWebRTCViewSocketLog('onReconnect', data));
-    _socket?.onReconnectError((data) => _printWebRTCViewSocketLog('onReconnectError', data));
-    _socket?.onReconnectFailed((data) => _printWebRTCViewSocketLog('onReconnectFailed', data));
+    _socket
+        ?.onReconnect((data) => _printWebRTCViewSocketLog('onReconnect', data));
+    _socket?.onReconnectError(
+        (data) => _printWebRTCViewSocketLog('onReconnectError', data));
+    _socket?.onReconnectFailed(
+        (data) => _printWebRTCViewSocketLog('onReconnectFailed', data));
 
     _socket?.connect();
   }
@@ -488,12 +507,12 @@ class WebRTCFlutterViewController {
     // and should be thoroughly tested in your own environment.
     await Future.delayed(
         const Duration(milliseconds: 500),
-            () => _send(OwtMessageType.signaling_message.value, {
-          'type': 'candidates',
-          'candidate': candidate.candidate,
-          'sdpMid': candidate.sdpMid,
-          'sdpMLineIndex': candidate.sdpMLineIndex,
-        }));
+        () => _send(OwtMessageType.signaling_message.value, {
+              'type': 'candidates',
+              'candidate': candidate.candidate,
+              'sdpMid': candidate.sdpMid,
+              'sdpMLineIndex': candidate.sdpMLineIndex,
+            }));
   }
 
   void _onRenegotiationNeeded() {
@@ -507,7 +526,8 @@ class WebRTCFlutterViewController {
     showConnectionInfo(false);
     ControlSocket().handleAddStreamState(this);
     if (_streamInfo.containsKey(stream.id)) {
-      _send(OwtMessageType.track_add_ack.value, _streamInfo[stream.id]['tracks']); //'chat-tracks-added'
+      _send(OwtMessageType.track_add_ack.value,
+          _streamInfo[stream.id]['tracks']); //'chat-tracks-added'
     }
     AppAnalytics().trackEventPresentStarted(presentId, presenterId);
   }
@@ -539,12 +559,12 @@ class WebRTCFlutterViewController {
   }
 
   void _onDataChannel(RTCDataChannel channel) {
-    print('zz _onDataChannel: ${channel.label}');
+    printInDebug('_onDataChannel: ${channel.label}');
     _dc = channel;
   }
 
   void sendData(Uint8List data) {
-    if(_dc != null && _dc!.state == RTCDataChannelState.RTCDataChannelOpen) {
+    if (_dc != null && _dc!.state == RTCDataChannelState.RTCDataChannelOpen) {
       _dc!.send(RTCDataChannelMessage.fromBinary(data));
     }
   }
@@ -573,8 +593,8 @@ class WebRTCFlutterViewController {
       final answer = await _pc!.createAnswer();
       await _pc!.setLocalDescription(answer);
       // send answer to the peer
-      _send(OwtMessageType.signaling_message.value, {'type': answer.type, 'sdp': answer.sdp});
-
+      _send(OwtMessageType.signaling_message.value,
+          {'type': answer.type, 'sdp': answer.sdp});
     } else if (type == 'candidates') {
       // add candidates from the peer
       final candidate = RTCIceCandidate(
@@ -619,20 +639,22 @@ class WebRTCFlutterViewController {
 
   void _printWebRTCViewSocketLog(String? event, dynamic args) {
     if (kDebugMode) {
-      print('$runtimeType,  mWebRTCViewSocket{$mUid}: $event ${args.toString()}');
-      DebugSwitch().write('mWebRTCViewSocket{$mUid}: $event ${args.toString()}');
+      printInDebug(
+          '$runtimeType,  mWebRTCViewSocket{$mUid}: $event ${args.toString()}');
+      const DebugSwitch()
+          .write('mWebRTCViewSocket{$mUid}: $event ${args.toString()}');
     }
   }
 
   void _printPeerConnectionLog(String? event, dynamic args) {
     if (kDebugMode) {
-      print('$runtimeType, mPeerConnect{$event ${args.toString()}');
-      DebugSwitch().write('mPeerConnect{$event ${args.toString()}');
+      printInDebug('$runtimeType, mPeerConnect{$event ${args.toString()}');
+      const DebugSwitch().write('mPeerConnect{$event ${args.toString()}');
     }
   }
 }
 
-enum OwtMessageType{
+enum OwtMessageType {
   owt_message,
   signaling_message,
   track_add_ack,
