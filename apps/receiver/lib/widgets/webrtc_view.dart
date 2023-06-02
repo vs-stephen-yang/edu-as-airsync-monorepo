@@ -464,15 +464,27 @@ class WebRTCFlutterViewController {
   }
 
   void controlAudio(bool isEnable) {
-    renderer.srcObject?.getAudioTracks().first.enabled = isEnable;
+    if (renderer.srcObject != null) {
+      if (renderer.srcObject!.getAudioTracks().isNotEmpty) {
+        renderer.srcObject!.getAudioTracks().first.enabled = isEnable;
+      }
+    }
   }
 
   void pauseVideo() {
-    renderer.srcObject?.getTracks().first.enabled = false;
+    if (renderer.srcObject != null) {
+      if (renderer.srcObject!.getTracks().isNotEmpty) {
+        renderer.srcObject!.getTracks().first.enabled = false;
+      }
+    }
   }
 
   void resumeVideo() {
-    renderer.srcObject?.getTracks().first.enabled = true;
+    if (renderer.srcObject != null) {
+      if (renderer.srcObject!.getTracks().isNotEmpty) {
+        renderer.srcObject!.getTracks().first.enabled = true;
+      }
+    }
   }
 
   void showConnectionInfo(bool enable) {
