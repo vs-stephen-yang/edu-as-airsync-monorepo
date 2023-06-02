@@ -300,6 +300,10 @@ class WebRTCFlutterViewController {
   String? _token;
   String? _peerId;
 
+  final Map<String, dynamic> _configuration = {
+    // 'sdpSemantics': 'unified-plan',
+  };
+
   RTCPeerConnection? _pc;
   io.Socket? _socket;
   RTCDataChannel? _dc;
@@ -322,32 +326,11 @@ class WebRTCFlutterViewController {
 
   Future<void> _peerConnectionConnect() async {
     await _remoteRenderer.initialize();
-    Map<String, dynamic> iceServerList = await _getIceServer();
-    var configuration = <String, dynamic>{
-      'iceServers': [
-        {
-          'url': '${iceServerList['list'][0]['url']}',  //'stun:ice.stage.myviewboard.cloud:3478'
-        },
-        {
-          'url': '${iceServerList['list'][1]['url']}', //'turn:ice.stage.myviewboard.cloud:3478?transport=udp',
-          'username': '${iceServerList['list'][1]['username']}', //'turn_stage_user',
-          'credential': '${iceServerList['list'][1]['credential']}', //'2riBFYDuyqO3v3QGxgu2H3uQEf4='
-        },
-        {
-          'url': '${iceServerList['list'][2]['url']}', //'turn:ice.stage.myviewboard.cloud:443?transport=tcp',
-          'username': '${iceServerList['list'][2]['username']}', //'turn_stage_user',
-          'credential': '${iceServerList['list'][2]['credential']}', //'2riBFYDuyqO3v3QGxgu2H3uQEf4='
-        },
-        {
-          'url': '${iceServerList['list'][3]['url']}', //'turns:ice.stage.myviewboard.cloud:443?transport=tcp',
-          'username': '${iceServerList['list'][3]['username']}', //'turn_stage_user',
-          'credential': '${iceServerList['list'][3]['credential']}', //'2riBFYDuyqO3v3QGxgu2H3uQEf4='
-        },
-      ],
-      // 'sdpSemantics': 'unified-plan'
-    };
+    if (!_configuration.containsKey('iceServers')) {
+      await _getIceServers();
+    }
 
-    _pc = await createPeerConnection(configuration);
+    _pc = await createPeerConnection(_configuration);
 
     _pc!.onSignalingState = _onSignalingState;
     _pc!.onIceGatheringState = _onIceGatheringState;
@@ -600,22 +583,21 @@ class WebRTCFlutterViewController {
     }
   }
 
-  Future<Map<String, dynamic>> _getIceServer() async {
+  Future<void> _getIceServers() async {
     try {
       http.Response response = await http.get(
-        Uri.parse(AppConfig.of(mViewState.context)!.settings.getIceServer), //'https://getice.stage.myviewboard.cloud' AppConfig.of(context)!.settings.getIceServer
+        Uri.parse(AppConfig.of(mViewState.context)!.settings.getIceServer),
       );
 
       if (response.statusCode >= HttpStatus.ok &&
           response.statusCode < HttpStatus.multiStatus) {
-        Map<String, dynamic> json = jsonDecode(response.body);
-        return json;
-      } else {
-        return {};
+        Map<String, dynamic> iceServerList = jsonDecode(response.body);
+        if (iceServerList.containsKey('list')) {
+          _configuration.putIfAbsent('iceServers', () => iceServerList['list']);
+        }
       }
     } catch (e) {
       // http.get maybe no network connection.
-      return {};
     }
   }
 
