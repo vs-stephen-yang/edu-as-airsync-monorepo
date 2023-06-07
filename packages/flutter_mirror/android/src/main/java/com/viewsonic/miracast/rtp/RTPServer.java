@@ -8,6 +8,7 @@ import java.net.SocketTimeoutException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RTPServer {
   private static final String TAG = "MiraRTPServer";
@@ -72,7 +73,7 @@ public class RTPServer {
 
       public void run() {
         DatagramPacket packet = new DatagramPacket(receiveBuffer_, MTU);
-        while(isRunning_ && null != socket_ && !socket_.isClosed()) {
+        while(isRunning_.get() && null != socket_ && !socket_.isClosed()) {
           try {
             socket_.receive(packet);
             if (receiveRTPListener_ != null) {
@@ -103,7 +104,7 @@ public class RTPServer {
     private Worker worker_;
     private DatagramSocket socket_ = null;
     private int socketBufferSize_ = 0;
-    private boolean isRunning_ = false;
+    private AtomicBoolean isRunning_ = new AtomicBoolean(false);
 
     UDPServer(int bufferSize, int port, OnReceiveRTPListener listener) {
       init(bufferSize, port, listener);
@@ -132,19 +133,22 @@ public class RTPServer {
     }
 
     public void start() {
-      if (isRunning_) {
-        return;
+      if(isRunning_.compareAndSet(false, true)) {
+        try {
+          worker_.start();
+        } catch (Exception e) {
+          Log.e(TAG, "udp server start Exception " + e.toString());
+        }
       }
-      isRunning_ = true;
-      worker_.start();
     }
 
     public void stop() {
-      isRunning_ = false;
-      try {
-        worker_.join();
-      } catch (Exception e) {
-        Log.e(TAG, "udp server stop Exception " + e.toString());
+      if(isRunning_.compareAndSet(true, false)) {
+        try {
+          worker_.join();
+        } catch (Exception e) {
+          Log.e(TAG, "udp server stop Exception " + e.toString());
+        }
       }
     }
   }
