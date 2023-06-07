@@ -73,7 +73,7 @@ public class RTPServer {
 
       public void run() {
         DatagramPacket packet = new DatagramPacket(receiveBuffer_, MTU);
-        while(isRunning_.get() && null != socket_ && !socket_.isClosed()) {
+        while(isRunning_.get() && !socket_.isClosed()) {
           try {
             socket_.receive(packet);
             if (receiveRTPListener_ != null) {
@@ -90,12 +90,10 @@ public class RTPServer {
           }
         }
 
-        if (socket_ != null) {
-          try {
-            socket_.close();
-          } catch (Exception e) {
-            Log.e(TAG, "Socket close - Exception: " + e.toString());
-          }
+        try {
+          socket_.close();
+        } catch (Exception e) {
+          Log.e(TAG, "Socket close - Exception: " + e.toString());
         }
       }
     }
@@ -126,14 +124,15 @@ public class RTPServer {
           port_ = socket_.getLocalPort();
         }
         socket_.setSoTimeout(100);
+        worker_ = new Worker();
       } catch (Exception e) {
         e.printStackTrace();
       }
-      worker_ = new Worker();
     }
 
     public void start() {
-      if(isRunning_.compareAndSet(false, true)) {
+      if(socket_ != null && isRunning_.compareAndSet(false, true)) {
+        /* Ensure socket is created before starting worker thread. */
         try {
           worker_.start();
         } catch (Exception e) {
