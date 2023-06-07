@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RTPServer {
   private static final String TAG = "MiraRTPServer";
-
+  private static final int kRTPBufferSize = 1024 * 1024;
   private UDPServer rtpSession_;
   private UDPServer rtcpSession_;
   private OnReceiveRTPListener receiveRTPListener_;
@@ -22,7 +22,7 @@ public class RTPServer {
   }
 
   public void start() {
-    rtpSession_ = new UDPServer(1024 * 1024, 0, receiveRTPListener_);
+    rtpSession_ = new UDPServer(kRTPBufferSize, 0, receiveRTPListener_);
     rtpSession_.start();
     Log.i(TAG, "RTP session is running on port " + rtpSession_.port_);
 
@@ -63,6 +63,7 @@ public class RTPServer {
    */
   static class UDPServer {
     private OnReceiveRTPListener receiveRTPListener_;
+    private static final int kSocketReceiveTimeoutMs_ = 100; //ms
 
     class Worker extends Thread {
       public static final int MTU = 10 * 1024;
@@ -123,7 +124,7 @@ public class RTPServer {
         if (socket_.isBound()) {
           port_ = socket_.getLocalPort();
         }
-        socket_.setSoTimeout(100);
+        socket_.setSoTimeout(kSocketReceiveTimeoutMs_);
         worker_ = new Worker();
       } catch (Exception e) {
         e.printStackTrace();

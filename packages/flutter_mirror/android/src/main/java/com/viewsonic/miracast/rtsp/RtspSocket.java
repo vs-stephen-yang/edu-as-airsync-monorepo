@@ -20,6 +20,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 class RtspSocket {
   private static final String TAG = "MiraRtspSocket";
+  private static final int kSocketConnectTimeoutMs_ = 5000; //ms
+  private static final int kSocketReceiveTimeoutMs_ = 100; //ms
   private Socket socket_;
 
   private String rtspHost_;
@@ -53,11 +55,11 @@ class RtspSocket {
     socket_ = new Socket();
     SocketAddress socketAddress = new InetSocketAddress(rtspHost_, rtspPort_);
     try {
-      socket_.connect(socketAddress, 5000);
+      socket_.connect(socketAddress, kSocketConnectTimeoutMs_);
       outputStream_ = socket_.getOutputStream();
       inputStream_ = socket_.getInputStream();
       bufferedReader_ = new BufferedReader(new InputStreamReader(inputStream_, "UTF-8"));
-      socket_.setSoTimeout(1000);
+      socket_.setSoTimeout(kSocketReceiveTimeoutMs_);
     } catch (IOException e) {
       Log.e(TAG, "RTSPSocket start error:" + e.toString());
       return -1;
