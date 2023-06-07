@@ -16,6 +16,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 class RtspSocket {
   private static final String TAG = "MiraRtspSocket";
@@ -29,7 +30,7 @@ class RtspSocket {
   private BufferedReader bufferedReader_;
 
   private Handler handler_;
-  private boolean isRunning_ = false;
+  private AtomicBoolean isRunning_ = new AtomicBoolean(false);
 
   private OnReceiveRTSPListener receiveRTSPListener_;
 
@@ -69,7 +70,7 @@ class RtspSocket {
         signal.release();
       }
     };
-    isRunning_ = true;
+    isRunning_.set(true);
     receiveThread.start();
     signal.acquireUninterruptibly();
 
@@ -81,7 +82,7 @@ class RtspSocket {
 
   public void close() {
     Log.d(TAG, "RTSPSocket close");
-    isRunning_ = false;
+    isRunning_.set(false);
     handler_.removeCallbacksAndMessages(null);
     handler_.post(new Runnable() {
       @Override
@@ -212,7 +213,7 @@ class RtspSocket {
       }
 
       // Post another receive operation
-      if (isRunning_ && !socket_.isClosed()) {
+      if (isRunning_.get() && !socket_.isClosed()) {
         handler_.post(receiveOperationRunnable);
       } else {
         Log.d(TAG, "RTSPSocket is closed.");
