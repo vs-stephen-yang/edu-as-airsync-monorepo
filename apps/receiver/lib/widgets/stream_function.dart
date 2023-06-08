@@ -3,6 +3,7 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/screens/cast_settings.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/language_selection.dart';
 import 'package:display_flutter/screens/moderator_view.dart';
@@ -163,6 +164,19 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       },
                     ),
                   ),
+                  if (value == stateStandby &&
+                      !AppInstanceCreate().isDisableAdvance)
+                    FocusIconButton(
+                        icons: Icons.cast,
+                        iconForegroundColor: colorSplitScreenForeground,
+                        iconBackgroundColor: colorSplitScreenBackground,
+                        iconFocusBackgroundColor:
+                            AppColors.iconFeatureOnStandbyBackground,
+                        hasFocusSize: AppUIConstant.iconHasFocusSize,
+                        notFocusSize: AppUIConstant.iconNotFocusSize,
+                        onClick: () {
+                          _showCastSettings();
+                        }),
                   Visibility(
                     visible: (value == stateStandby || value == stateMenuOn) &&
                         !AppInstanceCreate().isDisableAdvance,
@@ -284,6 +298,10 @@ class _StreamFunctionStates extends State<StreamFunction> {
         return widget;
       },
     );
+  }
+
+  _showCastSettings() {
+    _showMenuDialog(const CastSettings());
   }
 
   _showSplitScreen(bool leavePresentFunction) {

@@ -330,6 +330,56 @@ class S {
     );
   }
 
+  /// `Cast Settings`
+  String get main_cast_settings_title {
+    return Intl.message(
+      'Cast Settings',
+      name: 'main_cast_settings_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device Name:`
+  String get main_cast_settings_device_name {
+    return Intl.message(
+      'Device Name:',
+      name: 'main_cast_settings_device_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Airplay`
+  String get main_cast_settings_airplay {
+    return Intl.message(
+      'Airplay',
+      name: 'main_cast_settings_airplay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chromecast`
+  String get main_cast_settings_google_cast {
+    return Intl.message(
+      'Chromecast',
+      name: 'main_cast_settings_google_cast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Miracast`
+  String get main_cast_settings_miracast {
+    return Intl.message(
+      'Miracast',
+      name: 'main_cast_settings_miracast',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Presenters`
   String get moderator_presentersList {
     return Intl.message(

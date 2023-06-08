@@ -8,6 +8,7 @@ import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/main_info.dart';
+import 'package:display_flutter/widgets/mirror_view.dart';
 import 'package:display_flutter/widgets/split_screen_function.dart';
 import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
@@ -140,6 +141,7 @@ class _HomeState extends State<Home> {
                   child: StreamFunction(),
                 ),
               ),
+              const MirrorView(),
               ValueListenableBuilder(
                 valueListenable: Home.showCloudOff,
                 builder: (BuildContext context, bool value, Widget? child) {

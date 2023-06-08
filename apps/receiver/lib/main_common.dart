@@ -9,6 +9,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -18,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 
 Future<void> commonEntry(ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -172,41 +174,46 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       overlays: [SystemUiOverlay.bottom],
     );
 
-    return MaterialApp(
-      localizationsDelegates: const [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: MirrorStateProvider()),
       ],
-      //add
-      supportedLocales: S.delegate.supportedLocales,
-      locale: _locale,
-      title: 'myViewBoard Display',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.black, // Set app background color
+      child: MaterialApp(
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        //add
+        supportedLocales: S.delegate.supportedLocales,
+        locale: _locale,
+        title: 'myViewBoard Display',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          scaffoldBackgroundColor: Colors.black, // Set app background color
+        ),
+        initialRoute: AppPreferences().showEULA &&
+                !AppInstanceCreate().isInstalledInVBS100 &&
+                !AppInstanceCreate().isNoneTouchModel
+            ? '/eula'
+            : '/home',
+        navigatorKey: NavigationService.navigationKey,
+        routes: {
+          // for "navService.popUntil('/home')"
+          '/home': (context) => const Home(),
+        },
+        onGenerateRoute: (routeSettings) {
+          switch (routeSettings.name) {
+            case '/eula':
+              return MaterialPageRoute<String>(
+                  builder: (context) => const Eula());
+          }
+          return null;
+        },
+        // home: const Home(),
       ),
-      initialRoute: AppPreferences().showEULA &&
-              !AppInstanceCreate().isInstalledInVBS100 &&
-              !AppInstanceCreate().isNoneTouchModel
-          ? '/eula'
-          : '/home',
-      navigatorKey: NavigationService.navigationKey,
-      routes: {
-        // for "navService.popUntil('/home')"
-        '/home': (context) => const Home(),
-      },
-      onGenerateRoute: (routeSettings) {
-        switch (routeSettings.name) {
-          case '/eula':
-            return MaterialPageRoute<String>(
-                builder: (context) => const Eula());
-        }
-        return null;
-      },
-      // home: const Home(),
     );
   }
 }
