@@ -67,17 +67,11 @@ class RtspSocket {
       return -1;
     }
 
-    final Semaphore signal = new Semaphore(0);
-    handlerThread_ = new HandlerThread("RTSPSocketThread") {
-      protected void onLooperPrepared() {
-        handler_ = new Handler(Looper.myLooper());
-        signal.release();
-      }
-    };
-    isRunning_.set(true);
+    handlerThread_ = new HandlerThread("RTSPSocketThread");
     handlerThread_.start();
-    signal.acquireUninterruptibly();
+    handler_ = new Handler(handlerThread_.getLooper());
 
+    isRunning_.set(true);
     if (!socket_.isClosed()) {
       handler_.post(receiveOperationRunnable);
     }

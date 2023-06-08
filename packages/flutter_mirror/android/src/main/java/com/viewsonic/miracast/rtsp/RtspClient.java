@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
 
-import com.viewsonic.miracast.OnMirrorListener;
 import com.viewsonic.miracast.rtp.OnReceiveRTPListener;
 import com.viewsonic.miracast.rtp.RTPServer;
 import com.viewsonic.miracast.uibc.UibcClient;
@@ -14,7 +13,6 @@ import android.util.Log;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.concurrent.Semaphore;
 
 public class RtspClient {
   private final static String TAG = "MiraRtspClient";
@@ -51,9 +49,10 @@ public class RtspClient {
   private final static String KEY_WFD_UIBC_SETTING = "wfd_uibc_setting";
 
   private final static int MAX_CONN_TIME = 10;
-
+  private final static long RETRY_CONN_INTERVAL = 1000; //ms
   private final static int MIN_REQUEST_IDR_INTERVAL = 1000; //ms
 
+  HandlerThread rtspClientThread_;
   private Handler handler_;
 
   private int curConnTime_ = 0;
@@ -117,10 +116,6 @@ public class RtspClient {
     audioFormatListener_ = listener;
   }
 
-  public void stopAfterStart() {
-    handler_.post(stopAfterStartRunnable);
-  }
-
   public void start() {
     if (!isStopped())
       return;
@@ -145,6 +140,12 @@ public class RtspClient {
 
   public void stop() {
     handler_.post(stopConnectRunnable);
+    try {
+      rtspClientThread_.quitSafely();
+      rtspClientThread_.join();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
   public void requestIdr() {
@@ -220,16 +221,9 @@ public class RtspClient {
   }
 
   private void initialHandler() {
-    final Semaphore signal = new Semaphore(0);
-    HandlerThread rtspClientThread = new HandlerThread("rtspClientThread") {
-      protected void onLooperPrepared() {
-        handler_ = new Handler();
-        signal.release();
-      }
-    };
-
-    rtspClientThread.start();
-    signal.acquireUninterruptibly();
+    rtspClientThread_ = new HandlerThread("rtspClientThread");
+    rtspClientThread_.start();
+    handler_ = new Handler(rtspClientThread_.getLooper());
   }
 
   private Runnable startConnectRunnable = new Runnable() {
@@ -242,23 +236,8 @@ public class RtspClient {
   private Runnable stopConnectRunnable = new Runnable() {
     @Override
     public void run() {
-      if (curState_ == STATE_STARTING) {
-        handler_.postDelayed(stopConnectRunnable, 100);
-      } else {
-        Log.d(TAG, "stop RTSP.");
-        cleanResource();
-      }
-    }
-  };
-
-  private Runnable stopAfterStartRunnable = new Runnable() {
-    @Override
-    public void run() {
-      activate_ = false;
-      if (curState_ == STATE_STOPPED) {
-        tryConnect();
-      }
-      handler_.post(stopConnectRunnable);
+      Log.d(TAG, "stop RTSP.");
+      cleanResource();
     }
   };
 
@@ -282,7 +261,7 @@ public class RtspClient {
         curState_ = STATE_STARTED;
       } else {
         curState_ = STATE_STOPPED;
-        handler_.postDelayed(startConnectRunnable, 1000L);
+        handler_.postDelayed(startConnectRunnable, RETRY_CONN_INTERVAL);
       }
     } catch (Exception e) {
       curState_ = STATE_STOPPED;
@@ -452,6 +431,9 @@ public class RtspClient {
   private void cleanResource() {
     try {
       curState_ = STATE_STOPPED;
+
+      handler_.removeCallbacksAndMessages(null);
+
       if (rtpServer_ != null) {
         Log.d(TAG, "stop RTP&RTCP socket.");
         rtpServer_.stop();
@@ -462,17 +444,10 @@ public class RtspClient {
 
       stopUibc();
 
-      handler_.removeCallbacks(startConnectRunnable);
-
-      handler_.postDelayed(new Runnable() {
-        @Override
-        public void run() {
-          if (rtspSocket_ != null) {
-            Log.d(TAG, "stop RTSP socket.");
-            rtspSocket_.close();
-          }
-        }
-      }, 1000);
+      if (rtspSocket_ != null) {
+        Log.d(TAG, "stop RTSP socket.");
+        rtspSocket_.close();
+      }
     } catch (Exception e) {
       Log.d(TAG, "RTSP stop() Exception: " + e.toString());
     }

@@ -9,8 +9,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
-import java.util.concurrent.Semaphore;
-
 public class UibcClient {
   private static final String TAG = "UibcClient";
 
@@ -19,10 +17,12 @@ public class UibcClient {
   private final static int STATE_STOPPED = 0x03;
 
   private final static int MAX_TOUCH_NUM = 10;
+  private final static long RETRY_CONN_INTERVAL = 1000; //ms
   private final static int MAX_CONN_TIME = 10;
 
   private final static int TOUCH_DATA_SIZE = 0x49;
 
+  HandlerThread uibcClientThread_;
   private Handler handler_;
 
   private int curConnTime_ = 0;
@@ -63,6 +63,12 @@ public class UibcClient {
 
   public void stop() {
     handler_.post(stopConnectRunnable);
+    try {
+      uibcClientThread_.quitSafely();
+      uibcClientThread_.join();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
   public boolean isStarted() {
@@ -78,16 +84,9 @@ public class UibcClient {
   }
 
   private void initialHandler() {
-    final Semaphore signal = new Semaphore(0);
-    HandlerThread uibcClientThread = new HandlerThread("uibcClientThread") {
-      protected void onLooperPrepared() {
-        handler_ = new Handler();
-        signal.release();
-      }
-    };
-
-    uibcClientThread.start();
-    signal.acquireUninterruptibly();
+    uibcClientThread_ = new HandlerThread("uibcClientThread");
+    uibcClientThread_.start();
+    handler_ = new Handler(uibcClientThread_.getLooper());
   }
 
   private Runnable startConnectRunnable = new Runnable() {
@@ -289,12 +288,8 @@ public class UibcClient {
   private Runnable stopConnectRunnable = new Runnable() {
     @Override
     public void run() {
-      if (isStarting()) {
-        handler_.postDelayed(stopConnectRunnable, 100);
-      } else {
-        Log.d(TAG, "stop UIBC.");
-        cleanResource();
-      }
+      Log.d(TAG, "stop UIBC.");
+      cleanResource();
     }
   };
 
@@ -319,7 +314,7 @@ public class UibcClient {
         handler_.post(sendDataRunnableDescriptor);
       } else {
         curState_ = STATE_STOPPED;
-        handler_.postDelayed(startConnectRunnable, 1000L);
+        handler_.postDelayed(startConnectRunnable, RETRY_CONN_INTERVAL);
       }
     } catch (Exception e) {
       curState_ = STATE_STOPPED;
@@ -331,19 +326,14 @@ public class UibcClient {
     try {
       curState_ = STATE_STOPPED;
 
-      handler_.removeCallbacks(startConnectRunnable);
+      handler_.removeCallbacksAndMessages(null);
 
-      handler_.post(new Runnable() {
-        @Override
-        public void run() {
-          if (uibcSocket_ != null) {
-            Log.d(TAG, "stop UIBC socket.");
-            uibcSocket_.close();
-          }
-        }
-      });
+      if (uibcSocket_ != null) {
+        Log.d(TAG, "stop UIBC socket.");
+        uibcSocket_.close();
+      }
     } catch (Exception e) {
-      Log.d(TAG, "RTSP stop() Exception: " + e.toString());
+      Log.d(TAG, "UIBC stop() Exception: " + e.toString());
     }
   }
 }
