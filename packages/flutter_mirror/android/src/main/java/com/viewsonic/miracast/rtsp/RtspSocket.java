@@ -31,6 +31,7 @@ class RtspSocket {
   private InputStream inputStream_;
   private BufferedReader bufferedReader_;
 
+  private HandlerThread receiveThread_;
   private Handler handler_;
   private AtomicBoolean isRunning_ = new AtomicBoolean(false);
 
@@ -66,14 +67,14 @@ class RtspSocket {
     }
 
     final Semaphore signal = new Semaphore(0);
-    HandlerThread receiveThread = new HandlerThread("RTSPSocketThread") {
+    receiveThread_ = new HandlerThread("RTSPSocketThread") {
       protected void onLooperPrepared() {
         handler_ = new Handler();
         signal.release();
       }
     };
     isRunning_.set(true);
-    receiveThread.start();
+    receiveThread_.start();
     signal.acquireUninterruptibly();
 
     if (!socket_.isClosed()) {
@@ -99,6 +100,11 @@ class RtspSocket {
         }
       }
     });
+    try {
+      receiveThread_.join();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
   public void sendRequest(RtspRequestMessage request) {
@@ -127,6 +133,30 @@ class RtspSocket {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  public void postRequestIdr() {
+    Log.d(TAG, "postRequestIdr");
+    handler_.post(new Runnable() {
+      @Override
+      public void run() {
+        if (receiveRTSPListener_ != null) {
+          receiveRTSPListener_.onRequestIDR();
+        }
+      }
+    });
+  }
+
+  public void postRequestTeardown() {
+    Log.d(TAG, "postRequestTeardown");
+    handler_.post(new Runnable() {
+      @Override
+      public void run() {
+        if (receiveRTSPListener_ != null) {
+          receiveRTSPListener_.onRequestTeardown();
+        }
+      }
+    });
   }
 
   public void sendRtspData(String data) {
