@@ -71,12 +71,6 @@ public class MiraSession {
     }
   }
 
-  public void stopAfterStartRtsp() {
-    if (rtspClient_ != null) {
-      rtspClient_.stopAfterStart();
-    }
-  }
-
   private OnReceiveRTPListener initialOnReceiveRTPListener() {
     return new OnReceiveRTPListener() {
       @Override
