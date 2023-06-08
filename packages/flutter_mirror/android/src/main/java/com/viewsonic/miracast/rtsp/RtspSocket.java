@@ -2,6 +2,7 @@ package com.viewsonic.miracast.rtsp;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -31,7 +32,7 @@ class RtspSocket {
   private InputStream inputStream_;
   private BufferedReader bufferedReader_;
 
-  private HandlerThread receiveThread_;
+  private HandlerThread handlerThread_;
   private Handler handler_;
   private AtomicBoolean isRunning_ = new AtomicBoolean(false);
 
@@ -67,14 +68,14 @@ class RtspSocket {
     }
 
     final Semaphore signal = new Semaphore(0);
-    receiveThread_ = new HandlerThread("RTSPSocketThread") {
+    handlerThread_ = new HandlerThread("RTSPSocketThread") {
       protected void onLooperPrepared() {
-        handler_ = new Handler();
+        handler_ = new Handler(Looper.myLooper());
         signal.release();
       }
     };
     isRunning_.set(true);
-    receiveThread_.start();
+    handlerThread_.start();
     signal.acquireUninterruptibly();
 
     if (!socket_.isClosed()) {
@@ -101,7 +102,8 @@ class RtspSocket {
       }
     });
     try {
-      receiveThread_.join();
+      handlerThread_.quitSafely();
+      handlerThread_.join();
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
