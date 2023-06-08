@@ -28,6 +28,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("myViewBoard Display EULA"),
         "main_auto_startup":
             MessageLookupByLibrary.simpleMessage("Launch Display on startup"),
+        "main_cast_settings_airplay":
+            MessageLookupByLibrary.simpleMessage("Airplay"),
+        "main_cast_settings_device_name":
+            MessageLookupByLibrary.simpleMessage("Device Name:"),
+        "main_cast_settings_google_cast":
+            MessageLookupByLibrary.simpleMessage("Chromecast"),
+        "main_cast_settings_miracast":
+            MessageLookupByLibrary.simpleMessage("Miracast"),
+        "main_cast_settings_title":
+            MessageLookupByLibrary.simpleMessage("Cast Settings"),
         "main_content_display_code":
             MessageLookupByLibrary.simpleMessage("Display Code"),
         "main_content_one_time_password":
