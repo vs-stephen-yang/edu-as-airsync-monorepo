@@ -52,6 +52,8 @@ public class RtspClient {
 
   private final static int MAX_CONN_TIME = 10;
 
+  private final static int MIN_REQUEST_IDR_INTERVAL = 1000; //ms
+
   private Handler handler_;
 
   private int curConnTime_ = 0;
@@ -149,14 +151,14 @@ public class RtspClient {
     long now = System.currentTimeMillis();
     long elapsed = now - lastRequestIdrTime_;
 
-    if (elapsed > 1000) {
+    if (elapsed > MIN_REQUEST_IDR_INTERVAL) {
       lastRequestIdrTime_ = now;
-      handler_.post(requestIDRRunnable);
+      rtspSocket_.postRequestIdr();
     }
   }
 
   public void requestTeardown() {
-    handler_.post(requestTeardownRunnable);
+    rtspSocket_.postRequestTeardown();
   }
 
   public boolean isStarted() {
@@ -257,22 +259,6 @@ public class RtspClient {
         tryConnect();
       }
       handler_.post(stopConnectRunnable);
-    }
-  };
-
-  private Runnable requestIDRRunnable = new Runnable() {
-    @Override
-    public void run() {
-      Log.d(TAG, "requestIDRRunnable.");
-      sendRequestIdr();
-    }
-  };
-
-  private Runnable requestTeardownRunnable = new Runnable() {
-    @Override
-    public void run() {
-      Log.d(TAG, "requestTeardown.");
-      sendRequestTeardown();
     }
   };
 
@@ -450,6 +436,16 @@ public class RtspClient {
           Log.e(TAG, "Exception:" + e.toString());
         }
       }
+
+      @Override
+      public void onRequestIDR() {
+        sendRequestIdr();
+      }
+
+      @Override
+      public void onRequestTeardown() {
+        sendRequestTeardown();
+      }
     };
   }
 
@@ -581,6 +577,7 @@ public class RtspClient {
   }
 
   private void sendRequestTeardown() {
+    Log.d(TAG, "sendRequestTeardown");
     curState_ = STATE_STOPPING;
     // String request = "TEARDOWN rtsp://" + mRtspParams.host + "/wfd1.0/streamid=0
     // RTSP/1.0\r\n" + addCommonHeader();
@@ -596,6 +593,7 @@ public class RtspClient {
   }
 
   private void sendRequestIdr() {
+    Log.d(TAG, "sendRequestIdr");
     RtspRequestMessage rm = new RtspRequestMessage();
     rm.methodType = METHOD_SET_PARAMETER;
     rm.path = "rtsp://" + rtspParams_.host + "/wfd1.0/streamid=0";
