@@ -68,6 +68,10 @@ dependencies:
       ref: release-0.9.29
   logging: ^1.2.0
   protobuf: ^2.1.0
+  flutter_mirror:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror
+      ref: release-0.12.0
 
 dev_dependencies:
   flutter_test:
