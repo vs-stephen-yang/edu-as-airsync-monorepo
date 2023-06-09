@@ -29,6 +29,9 @@ jobs:
     pool:
       vmImage: "macOS-12"
     steps:
+      - checkout: self
+        persistCredentials: "true"
+
       - task: JavaToolInstaller@0
         inputs:
           versionSpec: "11"
@@ -37,6 +40,13 @@ jobs:
 
       - script: curl $(Flutter.Url) --output $(Pipeline.Workspace)/flutter.zip
         displayName: Download the flutter SDK
+
+      - task: PowerShell@2
+        inputs:
+          targetType: 'inline'
+          script: |
+            $header = "AUTHORIZATION: bearer $(System.AccessToken)"
+            git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
 
       - task: ExtractFiles@1
         displayName: Extract the flutter SDK
