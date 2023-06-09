@@ -12,7 +12,7 @@ trigger:
 variables:
   - group: ifp-keystore-secrets
   - name: Flutter.Version
-    value: "3.3.10"
+    value: "3.7.12"
   - name: Flutter.Url
     value: https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_$(Flutter.Version)-stable.zip
   - name: Flutter.Bin
