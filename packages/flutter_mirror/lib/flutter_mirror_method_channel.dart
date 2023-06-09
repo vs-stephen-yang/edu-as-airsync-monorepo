@@ -35,6 +35,7 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
 
   @override
   Future<void> initialize() async {
+    await CredentialsStore.init();
     await methodChannel.invokeMethod('initialize');
   }
 
