@@ -12,6 +12,10 @@ dependencies:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
   pem: ^2.0.2
+  libcastauth:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/libcastauth
+      ref: release-0.3.0
 
 dev_dependencies:
   flutter_test:
