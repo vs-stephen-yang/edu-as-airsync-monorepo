@@ -161,7 +161,9 @@ class WebRTCHelper {
       'audio': true,
       'video': {
         'deviceId': _deviceId,
-        'mandatory': {'frameRate': 30.0}
+        'mandatory': {'frameRate': 30.0},
+        'width': 1920,
+        'height': 1080,
       }
     };
 
