@@ -6,6 +6,7 @@ import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as io;
+import 'package:collection/collection.dart';
 
 import 'protoc/internal.pb.dart';
 import 'protoc/event.pb.dart';
@@ -303,8 +304,15 @@ class WebRTCHelper {
     debugModePrint(state, type: runtimeType);
   }
 
-  void _onPeerConnectionState(RTCPeerConnectionState state) {
+  void _onPeerConnectionState(RTCPeerConnectionState state) async{
     debugModePrint(state, type: runtimeType);
+    if(state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
+      var senders = await _pc!.getSenders();
+      var sender = senders.firstWhereOrNull((sender) => sender.track?.kind == 'video');
+      var params = sender!.parameters;
+      params.degradationPreference = RTCDegradationPreference.DISABLED;
+      await sender.setParameters(params);
+    }
   }
 
   void _onCandidate(RTCIceCandidate candidate) {
