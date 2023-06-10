@@ -7,6 +7,9 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
+import 'protoc/internal.pb.dart';
+import 'protoc/event.pb.dart';
+
 class WebRTCHelper {
   WebRTCHelper(String getIceUrl) {
     _getIceUrl = getIceUrl;
@@ -22,6 +25,7 @@ class WebRTCHelper {
   dynamic _deviceId;
 
   RTCPeerConnection? _pc;
+  RTCDataChannel? _dc;
   io.Socket? _socket;
 
   Timer? _statsTimer;
@@ -137,6 +141,9 @@ class WebRTCHelper {
   }
 
   Future<void> _publish() async {
+    _dc = await _pc!.createDataChannel('pc-dc', RTCDataChannelInit()..id = 1);
+    _setDataChannelListeners(_dc!);
+
     final constraints = <String, dynamic>{
       'audio': true,
       'video': {
@@ -223,6 +230,23 @@ class WebRTCHelper {
 
   void _onAddTrack(MediaStream stream, MediaStreamTrack track) {
     debugModePrint('onAddTrack: ${track.kind}', type: runtimeType);
+  }
+
+  void _setDataChannelListeners(RTCDataChannel dc) {
+    dc.onDataChannelState = _onDataChannelState;
+    dc.onMessage = _onMessage;
+  }
+
+  void _onDataChannelState(RTCDataChannelState state) {
+    debugModePrint('onDataChannelState: $state');
+  }
+
+  void _onMessage(RTCDataChannelMessage data) async {
+    if(data.isBinary) {
+      EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
+    } else {
+      debugModePrint(data.text);
+    }
   }
 
   void _onSignalingState(RTCSignalingState state) {
