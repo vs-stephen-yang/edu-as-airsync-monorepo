@@ -9,6 +9,8 @@ import 'package:socket_io_client/socket_io_client.dart' as io;
 
 import 'protoc/internal.pb.dart';
 import 'protoc/event.pb.dart';
+import 'package:flutter_input_injection/flutter_input_injection.dart';
+import 'package:window_size/window_size.dart';
 
 class WebRTCHelper {
   WebRTCHelper(String getIceUrl) {
@@ -27,8 +29,11 @@ class WebRTCHelper {
   RTCPeerConnection? _pc;
   RTCDataChannel? _dc;
   io.Socket? _socket;
+  double _screenWidth = 1920.0;
+  double _screenHeight = 1080.0;
 
   Timer? _statsTimer;
+  final _flutterInputInjectionPlugin = FlutterInputInjection();
 
   Future<void> makeCall(
       String signalUrl, String token, String peerId, dynamic source) async {
@@ -140,6 +145,14 @@ class WebRTCHelper {
     }
   }
 
+  Future<void> updateScreenSize() async{
+    Screen? screen = await getCurrentScreen();
+    if(screen != null) {
+      _screenWidth = screen.frame.width;
+      _screenHeight = screen.frame.height;
+    }
+  }
+
   Future<void> _publish() async {
     _dc = await _pc!.createDataChannel('pc-dc', RTCDataChannelInit()..id = 1);
     _setDataChannelListeners(_dc!);
@@ -244,6 +257,33 @@ class WebRTCHelper {
   void _onMessage(RTCDataChannelMessage data) async {
     if(data.isBinary) {
       EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
+      if(eventMessage.hasTouchEvent()) {
+        int action = FlutterInputInjection.TOUCH_POINT_START;
+        if(eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_START){
+          action = FlutterInputInjection.TOUCH_POINT_START;
+        } else if(eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_MOVE){
+          action = FlutterInputInjection.TOUCH_POINT_MOVE;
+        } else if(eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_END){
+          action = FlutterInputInjection.TOUCH_POINT_END;
+        }
+        int id = eventMessage.touchEvent.touchPoints[0].id;
+        double remoteX = eventMessage.touchEvent.touchPoints[0].x;
+        double remoteY = eventMessage.touchEvent.touchPoints[0].y;
+        await updateScreenSize();
+        int injectX = (remoteX * _screenWidth).toInt();
+        if(injectX < 0) {
+          injectX = 0;
+        } else if(injectX > _screenWidth.toInt() - 1) {
+          injectX = _screenWidth.toInt() - 1;
+        }
+        int injectY = (remoteY * _screenHeight).toInt();
+        if(injectY < 0) {
+          injectY = 0;
+        } else if(injectY > _screenHeight.toInt() - 1) {
+          injectY = _screenHeight.toInt() - 1;
+        }
+        _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
+      }
     } else {
       debugModePrint(data.text);
     }
