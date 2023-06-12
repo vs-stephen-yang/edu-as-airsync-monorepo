@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
-class PresentPresentSelectScreen extends StatelessWidget {
-  const PresentPresentSelectScreen({super.key});
+class PresentSelectScreen extends StatelessWidget {
+  const PresentSelectScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
