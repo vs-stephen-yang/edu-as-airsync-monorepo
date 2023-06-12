@@ -60,7 +60,7 @@ class _HomeState extends State<Home> {
                     case ViewState.moderatorWait:
                       return const ModeratorWait();
                     case ViewState.selectScreen:
-                      return const PresentPresentSelectScreen();
+                      return const PresentSelectScreen();
                     case ViewState.presentStart:
                       return PresentPresentStart();
                     default:
