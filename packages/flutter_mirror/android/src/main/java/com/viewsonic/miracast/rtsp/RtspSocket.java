@@ -2,7 +2,6 @@ package com.viewsonic.miracast.rtsp;
 
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -16,13 +15,13 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 class RtspSocket {
   private static final String TAG = "MiraRtspSocket";
   private static final int kSocketConnectTimeoutMs_ = 5000; //ms
   private static final int kSocketReceiveTimeoutMs_ = 100; //ms
+  private static final int kRequestIdrMinIntervalMs_ = 1000; //ms
   private Socket socket_;
 
   private String rtspHost_;
@@ -37,6 +36,10 @@ class RtspSocket {
   private AtomicBoolean isRunning_ = new AtomicBoolean(false);
 
   private OnReceiveRTSPListener receiveRTSPListener_;
+
+  private long lastRequestIdrTime_ = 0;
+
+  private boolean isRequestIdrQueued_ = false;
 
   public RtspSocket(String host, int port) {
     rtspHost_ = host;
@@ -131,16 +134,32 @@ class RtspSocket {
     }
   }
 
-  public void postRequestIdr() {
-    Log.d(TAG, "postRequestIdr");
-    handler_.post(new Runnable() {
-      @Override
-      public void run() {
-        if (receiveRTSPListener_ != null) {
-          receiveRTSPListener_.onRequestIDR();
-        }
+  private Runnable requestIdrRunnable = new Runnable() {
+    @Override
+    public void run() {
+      isRequestIdrQueued_ = false;
+      if (receiveRTSPListener_ != null) {
+        lastRequestIdrTime_ = System.currentTimeMillis();
+        receiveRTSPListener_.onRequestIDR();
       }
-    });
+    }
+  };
+
+  public void postRequestIdr() {
+    long now = System.currentTimeMillis();
+    if(isRequestIdrQueued_) {
+      // Request IDR already queued, do nothing
+      return;
+    }
+
+    if(now - lastRequestIdrTime_ < kRequestIdrMinIntervalMs_) {
+      // Request IDR too frequently, delay it
+      isRequestIdrQueued_ = true;
+      handler_.postDelayed (requestIdrRunnable, kRequestIdrMinIntervalMs_ - (now - lastRequestIdrTime_));
+    } else {
+      isRequestIdrQueued_ = true;
+      handler_.post(requestIdrRunnable);
+    }
   }
 
   public void postRequestTeardown() {
