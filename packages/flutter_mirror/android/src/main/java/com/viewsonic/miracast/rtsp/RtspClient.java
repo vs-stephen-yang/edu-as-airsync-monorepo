@@ -50,7 +50,6 @@ public class RtspClient {
 
   private final static int MAX_CONN_TIME = 10;
   private final static long RETRY_CONN_INTERVAL = 1000; //ms
-  private final static int MIN_REQUEST_IDR_INTERVAL = 1000; //ms
 
   HandlerThread rtspClientThread_;
   private Handler handler_;
@@ -149,13 +148,7 @@ public class RtspClient {
   }
 
   public void requestIdr() {
-    long now = System.currentTimeMillis();
-    long elapsed = now - lastRequestIdrTime_;
-
-    if (elapsed > MIN_REQUEST_IDR_INTERVAL) {
-      lastRequestIdrTime_ = now;
-      rtspSocket_.postRequestIdr();
-    }
+    rtspSocket_.postRequestIdr();
   }
 
   public void requestTeardown() {
