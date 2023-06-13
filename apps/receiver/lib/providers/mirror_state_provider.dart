@@ -83,6 +83,8 @@ class MirrorStateProvider extends ChangeNotifier
     _mirrorId = mirrorId;
     _textureId = textureId;
 
+    _plugin?.enableAudio(mirrorId, true);
+
     _setMirrorState(MirrorState.mirroring);
   }
 
