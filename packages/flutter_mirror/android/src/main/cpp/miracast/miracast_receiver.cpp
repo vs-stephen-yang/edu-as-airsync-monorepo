@@ -37,6 +37,8 @@ void MiracastReceiver::OnMirrorStop(const std::string& mirrorId) {
 }
 
 void MiracastReceiver::StopMirror(const std::string& mirrorId) {
+  RemoveSession(mirrorId);
+
   proxy_->StopMirror(mirrorId);
 }
 
