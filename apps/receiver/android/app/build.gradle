@@ -25,6 +25,26 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+// Region of Signing the app for release. Do NOT EDIT.
+def suffixNameExist = false
+def ifpKeyExist = false
+def storeKeyExist = false
+
+def keystoreProperties = new Properties()
+
+def propertiesFile = rootProject.file('../../keystore.properties')
+
+if (propertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(propertiesFile))
+
+    // Check suffix name settings is exist or not. This settings only available in debug mode!
+    suffixNameExist = keystoreProperties.getProperty("suffixName") != null
+    // Check each key settings is exist or not.
+    ifpKeyExist = keystoreProperties.getProperty("ifpStoreFile") != null
+    storeKeyExist = keystoreProperties.getProperty("storeStoreFile") != null
+}
+// End of Region of Signing the app for release. Do NOT EDIT.
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     ndkVersion "23.2.8568313"
@@ -33,6 +53,27 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    // Region of Signing the app for release. Do NOT EDIT.
+    signingConfigs {
+        if (ifpKeyExist) {
+            IFP {
+                storeFile file(keystoreProperties['ifpStoreFile'])
+                storePassword keystoreProperties['ifpStorePassword']
+                keyAlias keystoreProperties['ifpKeyAlias']
+                keyPassword keystoreProperties['ifpKeyPassword']
+            }
+        }
+        if (storeKeyExist) {
+            STORE {
+                storeFile file(keystoreProperties['storeStoreFile'])
+                storePassword keystoreProperties['storeStorePassword']
+                keyAlias keystoreProperties['storeKeyAlias']
+                keyPassword keystoreProperties['storeKeyPassword']
+            }
+        }
+    }
+    // End of Region of Signing the app for release. Do NOT EDIT.
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
@@ -76,11 +117,44 @@ android {
     }
 
     buildTypes {
+        debug {
+            if (ifpKeyExist) {
+                signingConfig signingConfigs.IFP
+            }
+            if (suffixNameExist) {
+                applicationIdSuffix keystoreProperties["suffixName"]
+            }
+        }
+        profile {
+            if (ifpKeyExist) {
+                signingConfig signingConfigs.IFP
+            }
+        }
         release {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            productFlavors {
+                ifp {
+                    if (ifpKeyExist) {
+                        signingConfig signingConfigs.IFP
+                    } else {
+                        signingConfig signingConfigs.debug
+                    }
+                }
+                open {
+                    if (storeKeyExist) {
+                        signingConfig signingConfigs.STORE
+                    } else {
+                        signingConfig signingConfigs.debug
+                    }
+                }
+                store {
+                    if (storeKeyExist) {
+                        signingConfig signingConfigs.STORE
+                    } else {
+                        signingConfig signingConfigs.debug
+                    }
+                }
+            }
         }
     }
     lint {
