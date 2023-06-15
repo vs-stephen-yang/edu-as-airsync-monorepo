@@ -74,7 +74,6 @@ public class RtspClient {
   private OnReceiveRTPListener rtpListener_;
   private AudioFormatListener audioFormatListener_;
   private boolean activate_ = true;
-  private long lastRequestIdrTime_ = 0;
   private String receiverName_ = "";
 
   public RtspClient(String method, String address) {
