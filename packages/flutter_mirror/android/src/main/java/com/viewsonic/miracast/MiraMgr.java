@@ -118,9 +118,6 @@ public class MiraMgr {
     if (session != null) {
       session.stop();
       mirror_sessions_.remove(mirrorId);
-      if (listener_ != null) {
-        listener_.onSessionEnd(mirrorId);
-      }
     }
   }
 
@@ -164,7 +161,7 @@ public class MiraMgr {
       public void onPeerDisconnected(String ip) {
         Log.d(TAG, "onPeerDisconnected:" + ip);
         String removeSessionId = removeSessionByIp(ip);
-        if(removeSessionId != null) {
+        if (removeSessionId != null) {
           if (listener_ != null) {
             listener_.onSessionEnd(removeSessionId);
           }
