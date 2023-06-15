@@ -103,14 +103,9 @@ public class MirrorReceiver implements
   public void stopMirror(String mirrorId) {
     assert instance_ != 0;
 
-    /* use different receiver by mirrorID to stop the mirror */
-    if(mirrorId.startsWith("miracast")) {
-      miracastReceiver_.stopMirror(mirrorId);
-    } else {
-      stopMirrorNative(
-          instance_,
-          mirrorId);
-    }
+    stopMirrorNative(
+        instance_,
+        mirrorId);
   }
 
   // update googlecast's credentials

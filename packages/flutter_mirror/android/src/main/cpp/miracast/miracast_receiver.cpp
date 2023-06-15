@@ -37,7 +37,7 @@ void MiracastReceiver::OnMirrorStop(const std::string& mirrorId) {
 }
 
 void MiracastReceiver::StopMirror(const std::string& mirrorId) {
-  // TODO
+  proxy_->StopMirror(mirrorId);
 }
 
 void MiracastReceiver::OnAudioFormatUpdate(

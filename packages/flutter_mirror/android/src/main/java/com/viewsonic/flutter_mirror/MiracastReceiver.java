@@ -46,6 +46,7 @@ public class MiracastReceiver implements
     MiraMgr.getInstance().stop();
   }
 
+  // Called from native
   public void stopMirror(String mirrorId) {
     MiraMgr.getInstance().stopMirror(mirrorId);
   }
