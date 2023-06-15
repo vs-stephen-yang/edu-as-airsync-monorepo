@@ -15,6 +15,8 @@ class MiracastReceiver {
 
   ~MiracastReceiver();
 
+  void StopMirror(const std::string& mirrorId);
+
   void sendIdrRequest(const std::string& mirrorId);
 
  private:
@@ -28,6 +30,7 @@ class MiracastReceiver {
 
   // Methods of MiracastReceiver Java class
   jmethodID sendIdrRequestMID = nullptr;
+  jmethodID stopMirrorMID = nullptr;
 };
 
 typedef std::unique_ptr<MiracastReceiver> MiracastReceiverPtr;

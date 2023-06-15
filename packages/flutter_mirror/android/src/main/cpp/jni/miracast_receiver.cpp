@@ -25,6 +25,14 @@ MiracastReceiver::~MiracastReceiver() {
   env->DeleteGlobalRef(obj_);
 }
 
+void MiracastReceiver::StopMirror(const std::string& mirrorId) {
+  jni::ScopedEnv env(vm_);
+
+  env->CallVoidMethod(
+      obj_,
+      stopMirrorMID,
+      env->NewStringUTF(mirrorId.c_str()));
+}
 
 void MiracastReceiver::sendIdrRequest(const std::string& mirrorId) {
   jni::ScopedEnv env(vm_);
@@ -42,6 +50,8 @@ void MiracastReceiver::InitMethods(
 
   // void sendIdrRequest(std::string& mirrorId)
   DEFINE_METHOD(sendIdrRequest, "(Ljava/lang/String;)V");
+  // void stopMirror(std::string& mirrorId)
+  DEFINE_METHOD(stopMirror, "(Ljava/lang/String;)V");
 }
 
 }  // namespace jni
