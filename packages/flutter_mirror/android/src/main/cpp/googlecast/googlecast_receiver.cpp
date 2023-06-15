@@ -59,7 +59,7 @@ void GooglecastReceiver::Stop() {
 bool GooglecastReceiver::OnMirrorStart(
     openscreen::cast::CastMirrorSessionPtr sess,
     const openscreen::cast::MediaFormats& media_formats) {
-  ALOGD("OnMirrorStart()");
+  ALOGD("GooglecastReceiver::OnMirrorStart()");
 
   mirror_increment_seq_ += 1;
 
@@ -83,7 +83,7 @@ void GooglecastReceiver::OnCredentialsRequest(
     int year,
     int month,
     int day) {
-  ALOGD("OnCredentialsRequest()");
+  ALOGD("GooglecastReceiver::OnCredentialsRequest(%d,%d,%d)", year, month, day);
 
   mirror_listener_.OnCredentialsUpdate(
       year,
@@ -93,7 +93,10 @@ void GooglecastReceiver::OnCredentialsRequest(
 
 void GooglecastReceiver::UpdateCredentials(
     const openscreen::cast::CastReceiver::Credentials& creds) {
-  ALOGD("UpdateCredentials()");
+  ALOGD("GooglecastReceiver::UpdateCredentials(%d,%d,%d)",
+        creds.year,
+        creds.month,
+        creds.day);
 
   receiver_->UpdateCredentials(
       creds);

@@ -101,6 +101,7 @@ AudioDecoderNdk::AudioDecoderNdk(
 }
 
 AudioDecoderNdk::~AudioDecoderNdk() {
+  ALOGV("~AudioDecoderNdk()");
 }
 
 bool AudioDecoderNdk::Init() {

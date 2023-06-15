@@ -41,6 +41,7 @@ GooglecastMirrorSession::GooglecastMirrorSession(
       session_(session),
       formats_(formats) {
   assert(session);
+  ALOGV("GooglecastMirrorSession()");
 
   session_->RegisterListener(this);
 }
@@ -51,7 +52,7 @@ GooglecastMirrorSession::~GooglecastMirrorSession() {
 
 bool GooglecastMirrorSession::StartMirror(
     MediaSessionPtr media_session) {
-  ALOGI("Starting a Googlecast mirror session");
+  ALOGD("GooglecastMirrorSession::StartMirror()");
 
   std::optional<VideoCodecType> video_codec = MapVideoCodec(formats_.video_codec);
   std::optional<AudioCodecType> audio_codec = MapAudioCodec(formats_.audio_codec);
@@ -81,17 +82,19 @@ void GooglecastMirrorSession::EnableAudio(bool enable) {
 }
 
 void GooglecastMirrorSession::StopMirror() {
-  ALOGI("Stopping the googlecast mirror session");
+  ALOGD("GooglecastMirrorSession::StopMirror()");
   session_->Stop();
 
   if (media_session_) {
     media_session_->Stop();
   }
 
-  ALOGI("The googlecast mirror session has stopped");
+  ALOGD("GooglecastMirrorSession::StopMirror() done");
 }
 
 void GooglecastMirrorSession::OnMirrorStop() {
+  ALOGD("GooglecastMirrorSession::OnMirrorStop()");
+
   if (media_session_) {
     media_session_->Stop();
   }

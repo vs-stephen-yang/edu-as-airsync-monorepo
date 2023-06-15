@@ -12,6 +12,8 @@ MiracastReceiver::MiracastReceiver(
 
 // a mirror session starts
 void MiracastReceiver::OnMirrorStart(const std::string& mirrorId) {
+  ALOGD("MiracastReceiver::OnMirrorStart(%s)", mirrorId.c_str());
+
   // create a wrapper for the mirror session
   auto session = std::make_shared<MiracastMirrorSession>(
       mirrorId,
@@ -26,6 +28,8 @@ void MiracastReceiver::OnMirrorStart(const std::string& mirrorId) {
 }
 
 void MiracastReceiver::OnMirrorStop(const std::string& mirrorId) {
+  ALOGD("MiracastReceiver::OnMirrorStop(%s)", mirrorId.c_str());
+
   MiracastMirrorSessionPtr session = FindSession(mirrorId);
   if (!session) {
     return;
@@ -37,6 +41,8 @@ void MiracastReceiver::OnMirrorStop(const std::string& mirrorId) {
 }
 
 void MiracastReceiver::StopMirror(const std::string& mirrorId) {
+  ALOGD("MiracastReceiver::StopMirror(%s)", mirrorId.c_str());
+
   RemoveSession(mirrorId);
 
   proxy_->StopMirror(mirrorId);
@@ -78,6 +84,8 @@ MiracastMirrorSessionPtr MiracastReceiver::FindSession(const std::string& mirror
 }
 
 void MiracastReceiver::RemoveSession(const std::string& mirrorId) {
+  ALOGD("MiracastReceiver::RemoveSession(%s)", mirrorId.c_str());
+
   auto itr = mirror_sessions_.find(mirrorId);
   if (itr == mirror_sessions_.end()) {
     return;

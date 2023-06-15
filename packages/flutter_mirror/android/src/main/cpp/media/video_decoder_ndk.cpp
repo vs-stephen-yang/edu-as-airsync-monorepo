@@ -15,6 +15,7 @@ VideoDecoderNdk::VideoDecoderNdk(
 }
 
 VideoDecoderNdk::~VideoDecoderNdk() {
+  ALOGV("~VideoDecoderNdk()");
 }
 
 bool VideoDecoderNdk::Init(

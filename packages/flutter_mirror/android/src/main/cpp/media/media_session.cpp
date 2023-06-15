@@ -7,6 +7,10 @@ MediaSession::MediaSession(
     : texture_registry_(texture_registry) {
 }
 
+MediaSession::~MediaSession() {
+  ALOGV("~MediaSession()");
+}
+
 bool MediaSession::Start(
     MediaSession::Listener* listener,
     VideoCodecType video_codec,
