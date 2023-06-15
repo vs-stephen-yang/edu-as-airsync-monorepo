@@ -33,7 +33,6 @@ class WebRTCHelper {
   double _screenWidth = 1920.0;
   double _screenHeight = 1080.0;
 
-  Timer? _statsTimer;
   final _flutterInputInjectionPlugin = FlutterInputInjection();
 
   Future<void> makeCall(
@@ -185,9 +184,10 @@ class WebRTCHelper {
     final offer = await _pc!.createOffer(offerConstraints);
 
     offer.sdp = SdpUtil.removeCodec(offer.sdp!, "AV1");
+    RTCSessionDescription fixedOffer = SdpUtil._fixSdp(offer);
 
     try {
-      await _pc!.setLocalDescription(offer);
+      await _pc!.setLocalDescription(fixedOffer);
 
       _send('chat-signal', {'type': offer.type, 'sdp': offer.sdp});
     } catch (e) {
@@ -215,7 +215,8 @@ class WebRTCHelper {
 
       // create answer
       final answer = await _pc!.createAnswer();
-      await _pc!.setLocalDescription(answer);
+      RTCSessionDescription fixedAnswer = SdpUtil._fixSdp(answer);
+      await _pc!.setLocalDescription(fixedAnswer);
       // send answer to the peer
       _send('chat-signal', {'type': answer.type, 'sdp': answer.sdp});
     } else if (type == 'answer') {
@@ -228,20 +229,6 @@ class WebRTCHelper {
       // add candidates from the peer
       _pc!.addCandidate(candidate);
     }
-  }
-
-  void _startReportStats() {
-    _statsTimer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-      var stats = await _pc?.getStats(null);
-      stats?.forEach((st) {
-        //debugModePrint('${st.id} ${st.type}', type: runtimeType);
-        if (st.type.contains('ssrc')) {
-          debugModePrint(
-              '${st.values['ssrc']},Decoded,${st.values['googFrameRateDecoded']}, Received,${st.values['googFrameRateReceived']},Output,${st.values['googFrameRateOutput']},Decode,${st.values['googDecodeMs']},Delay,${st.values['googCurrentDelayMs']}',
-              type: runtimeType);
-        }
-      });
-    });
   }
 
   void _onAddTrack(MediaStream stream, MediaStreamTrack track) {
@@ -361,6 +348,13 @@ class SdpUtil {
 
     sdp = sdp.replaceFirst(videoLine, newVideoLine);
     return sdp;
+  }
+
+  static RTCSessionDescription _fixSdp(RTCSessionDescription s) {
+    var sdp = s.sdp;
+    s.sdp =
+        sdp!.replaceAll('profile-level-id=640c1f', 'profile-level-id=42e032');
+    return s;
   }
 
   // remove payload types from m= line
