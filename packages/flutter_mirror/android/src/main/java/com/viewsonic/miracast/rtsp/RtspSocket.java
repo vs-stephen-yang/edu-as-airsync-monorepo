@@ -16,6 +16,7 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 class RtspSocket {
   private static final String TAG = "MiraRtspSocket";
@@ -37,9 +38,11 @@ class RtspSocket {
 
   private OnReceiveRTSPListener receiveRTSPListener_;
 
-  private long lastRequestIdrTime_ = 0;
+  //private long lastRequestIdrTime_ = 0;
+  private AtomicLong lastRequestIdrTime_ = new AtomicLong(0);
 
-  private boolean isRequestIdrQueued_ = false;
+  //private boolean isRequestIdrQueued_ = false;
+  private AtomicBoolean isRequestIdrQueued_ = new AtomicBoolean(false);
 
   public RtspSocket(String host, int port) {
     rtspHost_ = host;
@@ -137,27 +140,27 @@ class RtspSocket {
   private Runnable requestIdrRunnable = new Runnable() {
     @Override
     public void run() {
-      isRequestIdrQueued_ = false;
       if (receiveRTSPListener_ != null) {
-        lastRequestIdrTime_ = System.currentTimeMillis();
+        lastRequestIdrTime_.set(System.currentTimeMillis());
         receiveRTSPListener_.onRequestIDR();
       }
+      isRequestIdrQueued_.set(false);
     }
   };
 
   public void postRequestIdr() {
     long now = System.currentTimeMillis();
-    if(isRequestIdrQueued_) {
+    if(isRequestIdrQueued_.get()) {
       // Request IDR already queued, do nothing
       return;
     }
 
-    if(now - lastRequestIdrTime_ < kRequestIdrMinIntervalMs_) {
+    if(now - lastRequestIdrTime_.get() < kRequestIdrMinIntervalMs_) {
       // Request IDR too frequently, delay it
-      isRequestIdrQueued_ = true;
-      handler_.postDelayed (requestIdrRunnable, kRequestIdrMinIntervalMs_ - (now - lastRequestIdrTime_));
+      isRequestIdrQueued_.set(true);
+      handler_.postDelayed (requestIdrRunnable, kRequestIdrMinIntervalMs_ - (now - lastRequestIdrTime_.get()));
     } else {
-      isRequestIdrQueued_ = true;
+      isRequestIdrQueued_.set(true);
       handler_.post(requestIdrRunnable);
     }
   }
