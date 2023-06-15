@@ -21,6 +21,8 @@ class MediaSession
   MediaSession(
       jni::TextureRegistry& texture_registry);
 
+  ~MediaSession();
+
   bool Start(
       MediaSession::Listener* listener,
       VideoCodecType video_codec,

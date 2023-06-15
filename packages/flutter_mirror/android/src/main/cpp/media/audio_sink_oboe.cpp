@@ -2,6 +2,10 @@
 #include <assert.h>
 #include "util/log.h"
 
+AudioSinkOboe::~AudioSinkOboe() {
+  ALOGV("~AudioSinkOboe()");
+}
+
 bool AudioSinkOboe::Init(
     unsigned int sample_rate,
     unsigned int channel_count) {

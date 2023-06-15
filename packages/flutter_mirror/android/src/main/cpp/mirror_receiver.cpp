@@ -105,6 +105,7 @@ void MirrorReceiver::EnableAudio(
     const std::string& mirror_id,
     bool enable) {
   DCHECK_RUN_ON(thread_id_);
+  ALOGD("MirrorReceiver::EnableAudio(%s)", mirror_id.c_str());
 
   MirrorSessionPtr session = FindSession(mirror_id);
   if (!session) {
@@ -116,6 +117,7 @@ void MirrorReceiver::EnableAudio(
 void MirrorReceiver::StopMirror(
     const std::string& mirror_id) {
   DCHECK_RUN_ON(thread_id_);
+  ALOGD("MirrorReceiver::StopMirror(%s)", mirror_id.c_str());
 
   MirrorSessionPtr session = FindSession(mirror_id);
 
@@ -151,6 +153,9 @@ void MirrorReceiver::OnMirrorStart(
     MirrorSessionPtr session) {
   assert(session);
 
+  std::string mirror_id = session->GetMirrorId();
+  ALOGD("MirrorReceiver::OnMirrorStart(%s)", mirror_id.c_str());
+
   auto media_session = std::make_unique<MediaSession>(
       *texture_registry_);
 
@@ -159,7 +164,6 @@ void MirrorReceiver::OnMirrorStart(
     return;
   }
 
-  std::string mirror_id = session->GetMirrorId();
   SurfaceTexture tex = session->GetTexture();
 
   std::string device_name = session->GetSourceDisplayName();
@@ -178,6 +182,7 @@ void MirrorReceiver::OnMirrorStop(
   assert(session);
 
   std::string mirror_id = session->GetMirrorId();
+  ALOGD("MirrorReceiver::OnMirrorStop(%s)", mirror_id.c_str());
 
   // delete the mirror session
   RemoveSession(mirror_id);
@@ -192,6 +197,7 @@ void MirrorReceiver::OnMirrorVideoResize(
   assert(session);
 
   std::string mirror_id = session->GetMirrorId();
+  ALOGD("MirrorReceiver::OnMirrorVideoResize(%s,%d,%d)", mirror_id.c_str(), width, height);
 
   proxy_->OnMirrorVideoResize(
       mirror_id,
@@ -224,6 +230,8 @@ MirrorSessionPtr MirrorReceiver::FindSession(const std::string& mirror_id) {
   return itr->second;
 }
 void MirrorReceiver::RemoveSession(const std::string& mirror_id) {
+  ALOGD("MirrorReceiver::RemoveSession(%s)", mirror_id.c_str());
+
   std::lock_guard<std::mutex> lock(mutex_);
 
   auto itr = sessions_.find(mirror_id);

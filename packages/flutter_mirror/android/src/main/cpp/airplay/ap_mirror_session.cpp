@@ -10,6 +10,7 @@ ApMirrorSession::ApMirrorSession(
       mirror_listener_(mirror_listener),
       session_(session) {
   assert(session);
+  ALOGV("ApMirrorSession()");
 
   session_->RegisterListener(this);
 }
@@ -20,7 +21,7 @@ ApMirrorSession::~ApMirrorSession() {
 
 bool ApMirrorSession::StartMirror(
     MediaSessionPtr media_session) {
-  ALOGI("Starting an Airplay mirror session");
+  ALOGD("ApMirrorSession::StartMirror()");
 
   media_session_ = std::move(media_session);
 
@@ -37,14 +38,20 @@ bool ApMirrorSession::StartMirror(
 }
 
 void ApMirrorSession::StopMirror() {
+  ALOGD("ApMirrorSession::StopMirror()");
+
   session_->Stop();
 
   if (media_session_) {
     media_session_->Stop();
   }
+
+  ALOGD("ApMirrorSession::StopMirror() done");
 }
 
 void ApMirrorSession::OnMirrorStop() {
+  ALOGD("ApMirrorSession::OnMirrorStop()");
+
   if (media_session_) {
     media_session_->Stop();
   }

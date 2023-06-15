@@ -64,7 +64,7 @@ void ApReceiver::Stop() {
 void ApReceiver::OnAuthRequest(
     const std::string& pin,
     unsigned int timeout_sec) {
-  ALOGD("OnAuthRequest()");
+  ALOGD("ApReceiver::OnAuthRequest(%s)", pin.c_str());
 
   mirror_listener_.OnMirrorAuth(
       pin,
@@ -74,7 +74,7 @@ void ApReceiver::OnAuthRequest(
 // a mirror session starts
 bool ApReceiver::OnMirrorStart(
     ap::AirplayMirrorSessionPtr sess) {
-  ALOGD("OnMirrorStart()");
+  ALOGD("ApReceiver::OnMirrorStart()");
 
   mirror_increment_seq_ += 1;
 

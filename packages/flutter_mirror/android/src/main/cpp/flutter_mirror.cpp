@@ -57,7 +57,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_createInstanceNative(
     jobject thiz,
     jobject jtexture_registry) {
   assert(g_vm);
-  ALOGV("createInstanceNative()");
+  ALOGV("MirrorReceiver_createInstanceNative()");
 
   auto proxy = std::make_unique<jni::MirrorReceiver>(
       g_vm,
@@ -84,7 +84,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startAirplayNative(
     jstring jname,
     jstring jsecurity) {
   assert(instance != 0);
-  ALOGV("startAirplayNative()");
+  ALOGV("MirrorReceiver_startAirplayNative()");
 
   MirrorReceiver* receiver = MIRROR(instance);
 
@@ -107,7 +107,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_stopAirplayNative(
     jobject thiz,
     jlong instance) {
   assert(instance != 0);
-  ALOGV("stopAirplayNative()");
+  ALOGV("MirrorReceiver_stopAirplayNative()");
 
   MirrorReceiver* receiver = MIRROR(instance);
 
@@ -122,7 +122,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startGooglecastNative(
     jstring jname,
     jobject credentials) {
   assert(instance != 0);
-  ALOGV("startGooglecastNative()");
+  ALOGV("MirrorReceiver_startGooglecastNative()");
 
   MirrorReceiver* receiver = MIRROR(instance);
 
@@ -145,7 +145,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_stopGooglecastNative(
     jobject thiz,
     jlong instance) {
   assert(instance != 0);
-  ALOGV("stopGooglecastNative()");
+  ALOGV("MirrorReceiver_stopGooglecastNative()");
 
   MirrorReceiver* receiver = MIRROR(instance);
 
@@ -160,7 +160,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_updateGooglecastCredentialNati
     jobject credentials) {
   assert(instance != 0);
   assert(credentials != nullptr);
-  ALOGV("updateGooglecastCredentialNative()");
+  ALOGV("MirrorReceiver_updateGooglecastCredentialNative()");
 
   MirrorReceiver* receiver = MIRROR(instance);
 
@@ -178,7 +178,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_enableAudioNative(
     jstring jmirror_id,
     jboolean enable) {
   assert(instance != 0);
-  ALOGV("enableAudioNative()");
+  ALOGV("MirrorReceiver_enableAudioNative()");
 
   MirrorReceiver* receiver = MIRROR(instance);
 
@@ -196,7 +196,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_stopMirrorNative(
     jlong instance,
     jstring jmirror_id) {
   assert(instance != 0);
-  ALOGV("stopMirrorNative()");
+  ALOGV("MirrorReceiver_stopMirrorNative()");
 
   MirrorReceiver* receiver = MIRROR(instance);
 
@@ -249,7 +249,7 @@ Java_com_viewsonic_flutter_1mirror_MiracastReceiver_onSessionBeginNative(
     jlong instance,
     jstring jmirror_id) {
   assert(instance != 0);
-  ALOGV("MiracastReceiver_onMirrorStartNative()");
+  ALOGV("MiracastReceiver_onSessionBeginNative()");
 
   MiracastReceiver* receiver = MIRACAST(instance);
   jni::String str(env);
@@ -263,7 +263,7 @@ Java_com_viewsonic_flutter_1mirror_MiracastReceiver_onSessionEndNative(
     jlong instance,
     jstring jmirror_id) {
   assert(instance != 0);
-  ALOGV("MiracastReceiver_onMirrorStopNative()");
+  ALOGV("MiracastReceiver_onSessionEndNative()");
 
   MiracastReceiver* receiver = MIRACAST(instance);
   jni::String str(env);

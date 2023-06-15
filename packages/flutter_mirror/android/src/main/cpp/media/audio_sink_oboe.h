@@ -5,6 +5,8 @@
 
 class AudioSinkOboe {
  public:
+  ~AudioSinkOboe();
+
   bool Init(
       unsigned int sample_rate,
       unsigned int channel_count);
