@@ -16,6 +16,10 @@ MiracastMirrorSession::MiracastMirrorSession(
       mirror_listener_(mirror_listener) {
 }
 
+MiracastMirrorSession::~MiracastMirrorSession() {
+  ALOGV("~MiracastMirrorSession()");
+}
+
 SurfaceTexture MiracastMirrorSession::GetTexture() {
   return media_session_->GetTexture();
 }
@@ -208,5 +212,9 @@ void MiracastMirrorSession::EnableAudio(bool enable) {
 }
 
 void MiracastMirrorSession::OnMirrorStop() {
+  if (media_session_) {
+    media_session_->Stop();
+  }
+
   mirror_listener_.OnMirrorStop(this);
 }

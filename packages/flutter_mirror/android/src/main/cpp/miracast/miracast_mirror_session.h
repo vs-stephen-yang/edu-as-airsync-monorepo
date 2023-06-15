@@ -23,6 +23,8 @@ class MiracastMirrorSession
       MirrorListener& mirror_listener,
       MiracastReceiver& receiver);
 
+  ~MiracastMirrorSession();
+
   // implements MirrorSession
   virtual bool StartMirror(
       MediaSessionPtr media_session) override;
