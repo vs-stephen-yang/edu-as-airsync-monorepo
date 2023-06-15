@@ -19,6 +19,8 @@ class ApMirrorSession
       MirrorListener& mirror_listener,
       ap::AirplayMirrorSessionPtr session);
 
+  ~ApMirrorSession();
+
   // implements MirrorSession
   virtual bool StartMirror(
       MediaSessionPtr media_session) override;
@@ -51,6 +53,8 @@ class ApMirrorSession
       uint64_t timestamp_us) override;
 
  private:
+  void OnMirrorStop();
+
  private:
   std::string mirror_id_;
   MirrorListener& mirror_listener_;

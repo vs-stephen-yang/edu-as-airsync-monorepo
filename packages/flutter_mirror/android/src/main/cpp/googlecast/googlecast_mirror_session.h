@@ -22,6 +22,8 @@ class GooglecastMirrorSession
       openscreen::cast::CastMirrorSessionPtr session,
       const openscreen::cast::MediaFormats& formats);
 
+  ~GooglecastMirrorSession();
+
   // implements MirrorSession
   virtual bool StartMirror(
       MediaSessionPtr media_session) override;
@@ -54,6 +56,8 @@ class GooglecastMirrorSession
       uint64_t timestamp_us) override;
 
  private:
+  void OnMirrorStop();
+
   const std::string mirror_id_;
   MirrorListener& mirror_listener_;
 
