@@ -45,6 +45,10 @@ GooglecastMirrorSession::GooglecastMirrorSession(
   session_->RegisterListener(this);
 }
 
+GooglecastMirrorSession::~GooglecastMirrorSession() {
+  ALOGV("~GooglecastMirrorSession()");
+}
+
 bool GooglecastMirrorSession::StartMirror(
     MediaSessionPtr media_session) {
   ALOGI("Starting a Googlecast mirror session");
@@ -87,6 +91,14 @@ void GooglecastMirrorSession::StopMirror() {
   ALOGI("The googlecast mirror session has stopped");
 }
 
+void GooglecastMirrorSession::OnMirrorStop() {
+  if (media_session_) {
+    media_session_->Stop();
+  }
+
+  mirror_listener_.OnMirrorStop(this);
+}
+
 void GooglecastMirrorSession::OnVideoFormatChanged(
     int width,
     int height) {
@@ -100,7 +112,7 @@ void GooglecastMirrorSession::OnMirrorEvent(
     cast::CastMirrorSession::Listener::Event ev) {
   switch (ev) {
     case cast::CastMirrorSession::Listener::Event::kMirrorStop:
-      mirror_listener_.OnMirrorStop(this);
+      OnMirrorStop();
       break;
     default:
       break;

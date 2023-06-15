@@ -14,6 +14,10 @@ ApMirrorSession::ApMirrorSession(
   session_->RegisterListener(this);
 }
 
+ApMirrorSession::~ApMirrorSession() {
+  ALOGV("~ApMirrorSession()");
+}
+
 bool ApMirrorSession::StartMirror(
     MediaSessionPtr media_session) {
   ALOGI("Starting an Airplay mirror session");
@@ -40,6 +44,14 @@ void ApMirrorSession::StopMirror() {
   }
 }
 
+void ApMirrorSession::OnMirrorStop() {
+  if (media_session_) {
+    media_session_->Stop();
+  }
+
+  mirror_listener_.OnMirrorStop(this);
+}
+
 void ApMirrorSession::OnVideoFormatChanged(
     int width,
     int height) {
@@ -53,7 +65,7 @@ void ApMirrorSession::OnMirrorEvent(
     ap::AirplayMirrorSession::Listener::Event ev) {
   switch (ev) {
     case ap::AirplayMirrorSession::Listener::Event::kMirrorStop:
-      mirror_listener_.OnMirrorStop(this);
+      OnMirrorStop();
       break;
     default:
       break;

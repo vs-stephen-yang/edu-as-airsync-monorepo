@@ -177,8 +177,6 @@ void MirrorReceiver::OnMirrorStop(
     MirrorSession* session) {
   assert(session);
 
-  session->StopMirror();
-
   std::string mirror_id = session->GetMirrorId();
 
   // delete the mirror session
