@@ -1,3 +1,4 @@
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,13 +13,41 @@ class MirrorView extends StatelessWidget {
         switch (mirror.state) {
           case MirrorState.showPinCode:
             return Container(
-              color: Colors.white,
-              width: 160,
-              height: 90,
+              width: MediaQuery.of(context).size.width / 3,
+              height: MediaQuery.of(context).size.height / 2,
+              decoration: const BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+              ),
               child: Center(
-                child: Text(
-                  mirror.pinCode,
-                  style: const TextStyle(fontSize: 25),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.airplay,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          S.of(context).main_airplay_pin_code,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      mirror.pinCode,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
