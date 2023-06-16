@@ -228,4 +228,32 @@ class PresentStateProvider extends ChangeNotifier {
     }
     setViewState(ViewState.idle);
   }
+
+  Future<void> presentPause() async {
+    _socket?.emit('presenter-action', {
+      "action": "pause",
+      "extra": {
+        "presenter": presenter?.toJson(),
+        "moderator": moderator?.toJson(),
+        "display": {"code": displayCode, "setId": "5tovgl636ge"},
+      }
+    });
+
+    // handle stream
+    _webRTCHelper?.streamPause();
+  }
+
+  Future<void> presentResume() async {
+    _socket?.emit('presenter-action', {
+      "action": "resume",
+      "extra": {
+        "presenter": presenter?.toJson(),
+        "moderator": moderator?.toJson(),
+        "display": {"code": displayCode, "setId": "5tovgl636ge"},
+      }
+    });
+
+    // handle stream
+    _webRTCHelper?.streamResume();
+  }
 }
