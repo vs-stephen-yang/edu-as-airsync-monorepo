@@ -92,8 +92,12 @@ class PresentPresentStart extends StatelessWidget {
               builder: (BuildContext context, bool value, Widget? child) {
                 return ElevatedButton.icon(
                   onPressed: () {
-                    // Todo: Pause and Resume
                     _presentingState.value = !_presentingState.value;
+                    if(_presentingState.value) {
+                      presentStateProvider.presentResume();
+                    } else {
+                      presentStateProvider.presentPause();
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,

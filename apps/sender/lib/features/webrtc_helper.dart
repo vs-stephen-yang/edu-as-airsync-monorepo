@@ -58,6 +58,18 @@ class WebRTCHelper {
     _signalDisconnect();
   }
 
+  void streamPause() {
+    _pc?.getLocalStreams().forEach((element) {
+      element?.getTracks().first.enabled = false;
+    });
+  }
+
+  void streamResume() {
+    _pc?.getLocalStreams().forEach((element) {
+      element?.getTracks().first.enabled = true;
+    });
+  }
+
   void _signalConnect(String signalUrl) {
     _socket = io.io(
         signalUrl,
