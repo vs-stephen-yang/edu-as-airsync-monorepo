@@ -380,6 +380,16 @@ class S {
     );
   }
 
+  /// `Airplay Code`
+  String get main_airplay_pin_code {
+    return Intl.message(
+      'Airplay Code',
+      name: 'main_airplay_pin_code',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Presenters`
   String get moderator_presentersList {
     return Intl.message(

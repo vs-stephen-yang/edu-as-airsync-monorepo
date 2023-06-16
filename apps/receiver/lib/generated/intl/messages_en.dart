@@ -26,6 +26,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "eula_disagree": MessageLookupByLibrary.simpleMessage("I Disagree"),
         "eula_title":
             MessageLookupByLibrary.simpleMessage("myViewBoard Display EULA"),
+        "main_airplay_pin_code":
+            MessageLookupByLibrary.simpleMessage("Airplay Code"),
         "main_auto_startup":
             MessageLookupByLibrary.simpleMessage("Launch Display on startup"),
         "main_cast_settings_airplay":

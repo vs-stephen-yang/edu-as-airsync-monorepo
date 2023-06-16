@@ -32,6 +32,7 @@
   "main_cast_settings_airplay": "Airplay",
   "main_cast_settings_google_cast": "Chromecast",
   "main_cast_settings_miracast": "Miracast",
+  "main_airplay_pin_code": "Airplay Code",
   "moderator_presentersList": "Presenters",
   "moderator_activate": "Activate",
   "moderator_verifyCode_fail": "Something went wrong. Please try again.",
