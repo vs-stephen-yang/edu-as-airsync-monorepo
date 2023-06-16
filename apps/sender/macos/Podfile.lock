@@ -1,4 +1,6 @@
 PODS:
+  - flutter_input_injection (0.0.1):
+    - FlutterMacOS
   - flutter_webrtc (0.9.25):
     - FlutterMacOS
     - WebRTC-SDK (= 104.5112.16)
@@ -14,20 +16,26 @@ PODS:
   - url_launcher_macos (0.0.1):
     - FlutterMacOS
   - WebRTC-SDK (104.5112.16)
+  - window_size (0.0.2):
+    - FlutterMacOS
 
 DEPENDENCIES:
+  - flutter_input_injection (from `Flutter/ephemeral/.symlinks/plugins/flutter_input_injection/macos`)
   - flutter_webrtc (from `Flutter/ephemeral/.symlinks/plugins/flutter_webrtc/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
+  - window_size (from `Flutter/ephemeral/.symlinks/plugins/window_size/macos`)
 
 SPEC REPOS:
   trunk:
     - WebRTC-SDK
 
 EXTERNAL SOURCES:
+  flutter_input_injection:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_input_injection/macos
   flutter_webrtc:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_webrtc/macos
   FlutterMacOS:
@@ -40,15 +48,19 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/macos
   url_launcher_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
+  window_size:
+    :path: Flutter/ephemeral/.symlinks/plugins/window_size/macos
 
 SPEC CHECKSUMS:
+  flutter_input_injection: 0103e805a95614dabd37a068a73e04b3a5b04e39
   flutter_webrtc: b84df13e005a497c20fa4d8d597f318584f0faa5
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   package_info_plus: 02d7a575e80f194102bef286361c6c326e4c29ce
-  path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
+  path_provider_foundation: eaf5b3e458fc0e5fbb9940fb09980e853fe058b8
   shared_preferences_foundation: e2dae3258e06f44cc55f49d42024fd8dd03c590c
   url_launcher_macos: 5335912b679c073563f29d89d33d10d459f95451
   WebRTC-SDK: 566e58d2916cb79d770350169a449ea523f5db7c
+  window_size: 339dafa0b27a95a62a843042038fa6c3c48de195
 
 PODFILE CHECKSUM: 353c8bcc5d5b0994e508d035b5431cfe18c1dea7
 
