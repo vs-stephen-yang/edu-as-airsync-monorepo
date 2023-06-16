@@ -189,7 +189,7 @@ class WebRTCHelper {
     try {
       await _pc!.setLocalDescription(fixedOffer);
 
-      _send('chat-signal', {'type': offer.type, 'sdp': offer.sdp});
+      _send('chat-signal', {'type': fixedOffer.type, 'sdp': fixedOffer.sdp});
     } catch (e) {
       debugModePrint(e, type: runtimeType);
       hangUp(); //todo: message?
@@ -218,7 +218,7 @@ class WebRTCHelper {
       RTCSessionDescription fixedAnswer = SdpUtil._fixSdp(answer);
       await _pc!.setLocalDescription(fixedAnswer);
       // send answer to the peer
-      _send('chat-signal', {'type': answer.type, 'sdp': answer.sdp});
+      _send('chat-signal', {'type': fixedAnswer.type, 'sdp': fixedAnswer.sdp});
     } else if (type == 'answer') {
       // handle answer from the peer
       final answer = RTCSessionDescription(msg['sdp'], type);
