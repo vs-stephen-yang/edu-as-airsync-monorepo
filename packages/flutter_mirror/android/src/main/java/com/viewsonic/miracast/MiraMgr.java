@@ -42,6 +42,8 @@ public class MiraMgr {
       if (entry.getValue().getIp().equals(ip)) {
         String sessionId = entry.getKey();
         mirror_sessions_.remove(sessionId);
+
+        Log.d(TAG, String.format("Remaining mira sessions = %d", mirror_sessions_.size()));
         return sessionId;
       }
     }
