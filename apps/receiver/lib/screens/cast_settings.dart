@@ -1,5 +1,6 @@
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
@@ -65,6 +66,7 @@ class CastSettings extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Consumer<MirrorStateProvider>(
                 builder: (context, mirror, child) {
+                  mirror.setDeviceName(ControlSocket().displayCode);
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
