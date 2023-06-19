@@ -26,7 +26,7 @@ SurfaceTexture MiracastMirrorSession::GetTexture() {
 
 bool MiracastMirrorSession::StartMirror(
     MediaSessionPtr media_session) {
-  ALOGI("Starting a Miracast mirror session");
+  ALOGD("MiracastMirrorSession::StartMirror()");
 
   media_session_ = std::move(media_session);
 
@@ -50,10 +50,9 @@ bool MiracastMirrorSession::StartMirror(
 }
 
 void MiracastMirrorSession::StopMirror() {
-  ALOGI("Stopping the mirror session");
+  ALOGD("MiracastMirrorSession::StopMirror()");
 
   receiver_.StopMirror(mirror_id_);
-  ALOGI("The mirror session %s has stopped", mirror_id_.c_str());
 }
 
 void MiracastMirrorSession::UpdateAudioFormat(
@@ -207,6 +206,8 @@ void MiracastMirrorSession::EnableAudio(bool enable) {
 }
 
 void MiracastMirrorSession::OnMirrorStop() {
+  ALOGD("MiracastMirrorSession::OnMirrorStop()");
+
   if (media_session_) {
     media_session_->Stop();
   }
