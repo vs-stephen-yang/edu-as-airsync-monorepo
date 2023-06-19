@@ -119,7 +119,7 @@ class PresentPresentStart extends StatelessWidget {
             width: 200,
             child: ElevatedButton.icon(
               onPressed: () {
-                presentStateProvider.presentStop();
+                presentStateProvider.presentEnd();
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
