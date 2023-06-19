@@ -114,6 +114,8 @@ public class MiraMgr {
   }
 
   public void stopMirror(String mirrorId) {
+    Log.d(TAG, String.format("MiraMgr.stopMirror(%s)", mirrorId));
+
     MiraSession session = mirror_sessions_.get(mirrorId);
     if (session != null) {
       session.stop();
