@@ -17,6 +17,7 @@ bool MediaSession::Start(
     AudioCodecType audio_codec,
     AudioFormat audio_format) {
   assert(listener);
+  ALOGD("MediaSession::Start()");
 
   listener_ = listener;
 
@@ -48,6 +49,8 @@ SurfaceTexture MediaSession::GetTexture() {
 }
 
 void MediaSession::Stop() {
+  ALOGD("MediaSession::Stop()");
+
   if (video_decoder_) {
     video_decoder_->Stop();
   }
@@ -56,10 +59,14 @@ void MediaSession::Stop() {
   if (audio_decoder_) {
     audio_decoder_->Stop();
   }
+
+  ALOGD("MediaSession::Stop() done");
 }
 
 bool MediaSession::CreateVideoDecoder(
     VideoCodecType codec_type) {
+  ALOGD("MediaSession::CreateVideoDecoder()");
+
   // create a surface texture
   texture_ = texture_registry_.CreateSurfaceTexture();
   if (!texture_.wnd) {
@@ -84,6 +91,8 @@ bool MediaSession::CreateVideoDecoder(
 bool MediaSession::CreateAudioDecoder(
     AudioCodecType audio_codec,
     AudioFormat audio_format) {
+  ALOGD("MediaSession::CreateAudioDecoder()");
+
   audio_decoder_ = ::CreateAudioDecoder(
       audio_codec,
       audio_format);
@@ -120,6 +129,10 @@ void MediaSession::OnVideoFrame(
     bool key_frame,
     std::shared_ptr<std::vector<uint8_t>> frame,
     uint64_t timestamp_us) {
+  if (key_frame) {
+    ALOGD("Received video key frame");
+  }
+
   if (!video_decoder_) {
     return;
   }
@@ -132,6 +145,8 @@ void MediaSession::OnVideoFrame(
 }
 
 void MediaSession::EnableAudio(bool enable) {
+  ALOGD("MediaSession::EnableAudio(%d)", enable);
+
   if (audio_decoder_) {
     audio_decoder_->EnablePlayback(enable);
   }

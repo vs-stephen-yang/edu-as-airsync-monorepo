@@ -51,6 +51,8 @@ bool VideoDecoderNdk::Init(
 }
 
 bool VideoDecoderNdk::Start() {
+  ALOGD("VideoDecoderNdk::Start()");
+
   media_status_t status = AMediaCodec_start(codec_.get());
 
   if (status != AMEDIA_OK) {
@@ -75,6 +77,8 @@ bool VideoDecoderNdk::Start() {
 }
 
 void VideoDecoderNdk::Stop() {
+  ALOGD("VideoDecoderNdk::Stop()");
+
   running_ = false;
 
   if (thread_) {
