@@ -58,6 +58,13 @@ class WebRTCHelper {
     _signalDisconnect();
   }
 
+  void streamStop() {
+    _pc?.getLocalStreams().forEach((element) {
+      element?.getTracks().first.enabled = false;
+      element?.getTracks().first.stop();
+    });
+  }
+
   void streamPause() {
     _pc?.getLocalStreams().forEach((element) {
       element?.getTracks().first.enabled = false;

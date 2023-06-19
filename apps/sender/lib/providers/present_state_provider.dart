@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:display_cast_flutter/features/webrtc_helper.dart';
+import 'package:display_cast_flutter/model/message.dart';
 import 'package:display_cast_flutter/model/moderator.dart';
 import 'package:display_cast_flutter/model/presenter.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
@@ -106,7 +107,7 @@ class PresentStateProvider extends ChangeNotifier {
       {required String? displayCode, required String otp}) async {
     debugModePrint('presentTo: displayCode: $displayCode, otp: $otp');
     _presentTimer = Timer(const Duration(seconds: 30), () {
-      presentStop();
+      presentEnd();
     });
 
     _socket = io.io(
@@ -161,8 +162,33 @@ class PresentStateProvider extends ChangeNotifier {
       debugModePrint('display-state-update: $msg');
     });
 
+    _socket?.on('update-display-state', (msg) async {
+      debugModePrint('update-display-state: $msg');
+    });
+
     _socket?.on("presenter-peer-action", (msg) async {
       debugModePrint('presenter-peer-action: $msg');
+      Message message = Message.fromJson(msg);
+      if (message.action == 'remove') {
+        // stream end
+        presentEnd();
+      }
+      if (message.action == 'stopVideo') {
+        // stream stop
+        presentStop();
+      }
+      if (message.action == 'pause' && message.status == 'pause') {
+        //stream pause
+        presentPause();
+      }
+      if (message.action == 'resume' && message.status == 'pause') {
+        // stream resume
+        presentResume();
+      }
+    });
+
+    _socket?.on('reject-present', (msg) {
+      print('zz reject-present $msg');
     });
 
     _socket?.on('dismiss', (msg) {
@@ -216,7 +242,7 @@ class PresentStateProvider extends ChangeNotifier {
     setViewState(ViewState.presentStart);
   }
 
-  Future<void> presentStop() async {
+  Future<void> presentEnd() async {
     try {
       await _webRTCHelper?.hangUp();
 
@@ -226,7 +252,15 @@ class PresentStateProvider extends ChangeNotifier {
     } catch (e) {
       debugModePrint(e);
     }
+    resetMessage();
     setViewState(ViewState.idle);
+  }
+
+  Future<void> presentStop() async {
+    // handle stream
+    _webRTCHelper?.streamStop();
+
+    setViewState(ViewState.moderatorWait);
   }
 
   Future<void> presentPause() async {
@@ -255,5 +289,10 @@ class PresentStateProvider extends ChangeNotifier {
 
     // handle stream
     _webRTCHelper?.streamResume();
+  }
+
+  resetMessage() {
+    presenter = Presenter(id: const Uuid().v4());
+    moderator = null;
   }
 }

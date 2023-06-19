@@ -22,7 +22,7 @@ class PresentSelectScreen extends StatelessWidget {
         if (value != null) {
           provider.presentStart(selectedSource: value);
         } else {
-          provider.presentStop();
+          provider.presentEnd();
         }
       });
     });
