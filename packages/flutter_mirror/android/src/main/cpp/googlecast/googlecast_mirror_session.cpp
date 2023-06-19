@@ -83,13 +83,10 @@ void GooglecastMirrorSession::EnableAudio(bool enable) {
 
 void GooglecastMirrorSession::StopMirror() {
   ALOGD("GooglecastMirrorSession::StopMirror()");
+
+  // Note that Stop() is asynchronous.
+  // Stop() will stop the mirror and trigger OnMirrorStop callback
   session_->Stop();
-
-  if (media_session_) {
-    media_session_->Stop();
-  }
-
-  ALOGD("GooglecastMirrorSession::StopMirror() done");
 }
 
 void GooglecastMirrorSession::OnMirrorStop() {

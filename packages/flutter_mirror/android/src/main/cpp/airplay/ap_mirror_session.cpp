@@ -40,13 +40,9 @@ bool ApMirrorSession::StartMirror(
 void ApMirrorSession::StopMirror() {
   ALOGD("ApMirrorSession::StopMirror()");
 
+  // Note that Stop() is asynchronous.
+  // Stop() will stop the mirror and trigger OnMirrorStop callback
   session_->Stop();
-
-  if (media_session_) {
-    media_session_->Stop();
-  }
-
-  ALOGD("ApMirrorSession::StopMirror() done");
 }
 
 void ApMirrorSession::OnMirrorStop() {

@@ -125,8 +125,6 @@ void MirrorReceiver::StopMirror(
     return;
   }
   session->StopMirror();
-
-  RemoveSession(mirror_id);
 }
 
 void MirrorReceiver::UpdateGooglecastCredentials(
