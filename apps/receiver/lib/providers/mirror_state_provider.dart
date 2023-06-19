@@ -42,7 +42,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   FlutterMirror? _plugin;
   String _deviceName =
-      'Display-${Random().nextInt(9999).toString().padLeft(4, '0')}';
+      'AirSync-${Random().nextInt(9999).toString().padLeft(4, '0')}';
   final GlobalKey _mirrorViewKey = GlobalKey();
   MirrorState _currentState = MirrorState.idle;
   bool _airplayEnabled = false;
@@ -108,7 +108,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   // region Public method
   setDeviceName(String deviceName) {
-    _deviceName = deviceName;
+    _deviceName = 'AirSync-$deviceName';
   }
 
   onTouchEvent(PointerEvent event) {
