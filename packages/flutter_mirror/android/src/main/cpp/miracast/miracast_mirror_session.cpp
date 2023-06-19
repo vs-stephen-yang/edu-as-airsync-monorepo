@@ -53,11 +53,6 @@ void MiracastMirrorSession::StopMirror() {
   ALOGI("Stopping the mirror session");
 
   receiver_.StopMirror(mirror_id_);
-
-  if (media_session_) {
-    media_session_->Stop();
-  }
-
   ALOGI("The mirror session %s has stopped", mirror_id_.c_str());
 }
 

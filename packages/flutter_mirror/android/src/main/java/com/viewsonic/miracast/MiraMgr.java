@@ -119,7 +119,6 @@ public class MiraMgr {
     MiraSession session = mirror_sessions_.get(mirrorId);
     if (session != null) {
       session.stop();
-      mirror_sessions_.remove(mirrorId);
     }
   }
 

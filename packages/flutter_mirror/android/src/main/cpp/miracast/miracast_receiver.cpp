@@ -43,8 +43,6 @@ void MiracastReceiver::OnMirrorStop(const std::string& mirrorId) {
 void MiracastReceiver::StopMirror(const std::string& mirrorId) {
   ALOGD("MiracastReceiver::StopMirror(%s)", mirrorId.c_str());
 
-  RemoveSession(mirrorId);
-
   proxy_->StopMirror(mirrorId);
 }
 
