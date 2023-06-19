@@ -603,10 +603,10 @@ class WebRTCFlutterViewController {
 
       // create answer
       final answer = await _pc!.createAnswer();
-      await _pc!.setLocalDescription(answer);
+      RTCSessionDescription fixedAnswer = _fixSdp(answer);
+      await _pc!.setLocalDescription(fixedAnswer);
       // send answer to the peer
-      _send(OwtMessageType.signaling_message.value,
-          {'type': answer.type, 'sdp': answer.sdp});
+      _send(OwtMessageType.signaling_message.value, {'type': fixedAnswer.type, 'sdp': fixedAnswer.sdp});
     } else if (type == 'candidates') {
       // add candidates from the peer
       final candidate = RTCIceCandidate(
@@ -631,6 +631,13 @@ class WebRTCFlutterViewController {
     } catch (e) {
       // http.get maybe no network connection.
     }
+  }
+
+  RTCSessionDescription _fixSdp(RTCSessionDescription s) {
+    var sdp = s.sdp;
+    s.sdp =
+        sdp!.replaceAll('profile-level-id=640c1f', 'profile-level-id=42e032');
+    return s;
   }
 
   String _getPlatform() {
