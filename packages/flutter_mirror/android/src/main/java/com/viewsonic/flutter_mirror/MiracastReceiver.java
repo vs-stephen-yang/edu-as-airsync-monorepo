@@ -48,6 +48,8 @@ public class MiracastReceiver implements
 
   // Called from native
   public void stopMirror(String mirrorId) {
+    Log.d(TAG, String.format("MiracastReceiver.stopMirror(%s)", mirrorId));
+
     MiraMgr.getInstance().stopMirror(mirrorId);
   }
 
@@ -75,12 +77,16 @@ public class MiracastReceiver implements
   public void onSessionBegin(String mirrorId) {
     assert instance_ != 0;
 
+    Log.d(TAG, String.format("MiracastReceiver.onSessionBegin(%s)", mirrorId));
+
     onSessionBeginNative(instance_, mirrorId);
   }
 
   @Override
   public void onSessionEnd(String mirrorId) {
     assert instance_ != 0;
+
+    Log.d(TAG, String.format("MiracastReceiver.onSessionEnd(%s)", mirrorId));
 
     onSessionEndNative(instance_, mirrorId);
   }

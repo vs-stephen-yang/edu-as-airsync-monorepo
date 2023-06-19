@@ -295,6 +295,8 @@ public class FlutterMirrorPlugin implements
   }
 
   private void stopMirror(String mirrorId) {
+    Log.d(TAG, String.format("FlutterMirrorPlugin.stopMirror(%s)", mirrorId));
+
     if (mirrorReceiver_ == null) {
       return;
     }
@@ -312,7 +314,7 @@ public class FlutterMirrorPlugin implements
 
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-    Log.d(TAG, "FlutterMirrorPlugin::onDetachedFromEngine()");
+    Log.d(TAG, "FlutterMirrorPlugin.onDetachedFromEngine()");
     if (mirrorReceiver_ != null) {
       mirrorReceiver_.stop();
     }
@@ -323,7 +325,7 @@ public class FlutterMirrorPlugin implements
   // create a surface and return its id
   @Override
   public long createSurfaceTexture() throws java.lang.Exception {
-    Log.d(TAG, "FlutterMirrorPlugin::createSurfaceTexture()");
+    Log.d(TAG, "FlutterMirrorPlugin.createSurfaceTexture()");
 
     // Must run on the platform thread
     return post(() -> {
@@ -340,7 +342,7 @@ public class FlutterMirrorPlugin implements
 
   @Override
   public Surface getSurfaceTexture(long textureId) throws java.lang.Exception {
-    Log.d(TAG, "FlutterMirrorPlugin::getSurfaceTexture()");
+    Log.d(TAG, "FlutterMirrorPlugin.getSurfaceTexture()");
 
     // Must run on the platform thread
     return post(() -> {
@@ -354,7 +356,7 @@ public class FlutterMirrorPlugin implements
   // release a surface
   @Override
   public void releaseSurfaceTexture(long textureId) throws java.lang.Exception {
-    Log.d(TAG, "FlutterMirrorPlugin::releaseSurfaceTexture() " + textureId);
+    Log.d(TAG, "FlutterMirrorPlugin.releaseSurfaceTexture() " + textureId);
 
     // Must run on the platform thread
     post(() -> {
@@ -373,7 +375,7 @@ public class FlutterMirrorPlugin implements
   }
 
   public void onMirrorAuth(String pin, int timeoutSec) {
-    Log.d(TAG, "FlutterMirrorPlugin::onMirrorAuth() " + pin);
+    Log.d(TAG, "FlutterMirrorPlugin.onMirrorAuth() " + pin);
 
     // Must run on the platform thread
     post(() -> {
@@ -390,7 +392,7 @@ public class FlutterMirrorPlugin implements
       long textureId,
       String deviceName,
       String mirrorType) {
-    Log.d(TAG, "FlutterMirrorPlugin::onMirrorStart() " + mirrorId);
+    Log.d(TAG, "FlutterMirrorPlugin.onMirrorStart() " + mirrorId);
 
     // Must run on the platform thread
     post(() -> {
@@ -405,7 +407,7 @@ public class FlutterMirrorPlugin implements
   }
 
   public void onMirrorStop(String mirrorId) {
-    Log.d(TAG, "FlutterMirrorPlugin::onMirrorStop() " + mirrorId);
+    Log.d(TAG, "FlutterMirrorPlugin.onMirrorStop() " + mirrorId);
 
     // Must run on the platform thread
     post(() -> {
@@ -417,7 +419,7 @@ public class FlutterMirrorPlugin implements
   }
 
   public void onMirrorVideoResize(String mirrorId, int width, int height) {
-    Log.d(TAG, "FlutterMirrorPlugin::onMirrorVideoResize() " + mirrorId);
+    Log.d(TAG, "FlutterMirrorPlugin.onMirrorVideoResize() " + mirrorId);
 
     // Must run on the platform thread
     post(() -> {
@@ -434,7 +436,7 @@ public class FlutterMirrorPlugin implements
       int year,
       int month,
       int day) {
-    Log.d(TAG, "FlutterMirrorPlugin::onCredentialsUpdate() ");
+    Log.d(TAG, "FlutterMirrorPlugin.onCredentialsUpdate() ");
 
     // Must run on the platform thread
     post(() -> {
