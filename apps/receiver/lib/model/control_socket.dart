@@ -8,6 +8,7 @@ import 'package:display_flutter/main_common.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/moderator_helper.dart';
+import 'package:display_flutter/model/webrtc_view_socket.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/moderator_view.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -15,7 +16,6 @@ import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/utility/get_string.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
-import 'package:display_flutter/widgets/webrtc_view.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -35,8 +35,8 @@ class ControlSocket {
   final int _maxReconnectAttempts = 5;
   int _displayReconnectAttempts = 0;
 
-  final List<WebRTCFlutterViewController> _webRtcController =
-      <WebRTCFlutterViewController>[];
+  final List<WebRTCFlutterViewSocket> _webRtcController =
+      <WebRTCFlutterViewSocket>[];
 
   String entityId = '';
   String token = '';
@@ -123,15 +123,15 @@ class ControlSocket {
     _controlSocketIO = null;
   }
 
-  void addWebRtcController(WebRTCFlutterViewController controller) {
+  void addWebRtcController(WebRTCFlutterViewSocket controller) {
     _webRtcController.add(controller);
   }
 
-  void removeWebRtcController(WebRTCFlutterViewController controller) {
+  void removeWebRtcController(WebRTCFlutterViewSocket controller) {
     _webRtcController.remove(controller);
   }
 
-  void handleAddStreamState(WebRTCFlutterViewController controller) {
+  void handleAddStreamState(WebRTCFlutterViewSocket controller) {
     // update state and quality
     _handleDisplayStateUpdate(controller);
 
@@ -156,7 +156,7 @@ class ControlSocket {
     }
   }
 
-  void handleRtcControllerDisconnect(WebRTCFlutterViewController controller) {
+  void handleRtcControllerDisconnect(WebRTCFlutterViewSocket controller) {
     // update state and quality
     _handleDisplayStateUpdate(controller);
 
@@ -165,7 +165,7 @@ class ControlSocket {
 
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       bool presenting = false;
-      for (WebRTCFlutterViewController controller in _webRtcController) {
+      for (WebRTCFlutterViewSocket controller in _webRtcController) {
         if (controller.presentationState !=
             PresentationState.stopStreaming) {
           presenting |= true;
@@ -234,9 +234,9 @@ class ControlSocket {
         // endregion Moderator
         // region Present
         case 'start-present':
-          WebRTCFlutterViewController? selectedController;
+          WebRTCFlutterViewSocket? selectedController;
           if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-            for (WebRTCFlutterViewController controller in _webRtcController) {
+            for (WebRTCFlutterViewSocket controller in _webRtcController) {
               if (controller.presentationState.index <=
                   PresentationState.occupied.index) {
                 selectedController = controller;
@@ -265,8 +265,7 @@ class ControlSocket {
               AppAnalytics().trackEventPresentStartReceived(
                   selectedController.presentId, selectedController.presenterId);
               // Send wait for stream
-              selectedController.presentationState =
-                  PresentationState.waitForStream;
+              selectedController.presentationState = PresentationState.waitForStream;
               _handleDisplayStateUpdate(selectedController);
               // Send wait for stream
 
@@ -290,10 +289,6 @@ class ControlSocket {
                   selectedController.presentId, selectedController.presenterId);
               await selectedController.connectClient(signal.token!, displayCode, signal.peerId!, signal.url!, (result) {
                 if (result) {
-                  selectedController?.peerToken = signal.token ?? '';
-                  selectedController?.peerId = signal.peerId ?? '';
-                  selectedController?.signalURL = signal.url;
-
                   _handleP2PClientSuccess(
                       selectedController!, resp.nextId ?? '');
                 }
@@ -328,8 +323,8 @@ class ControlSocket {
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
 
-          WebRTCFlutterViewController? selectedController;
-          for (WebRTCFlutterViewController controller in _webRtcController) {
+          WebRTCFlutterViewSocket? selectedController;
+          for (WebRTCFlutterViewSocket controller in _webRtcController) {
             if (controller.presenterId == presenter.id) {
               selectedController = controller;
               break;
@@ -356,8 +351,8 @@ class ControlSocket {
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
 
-          WebRTCFlutterViewController? selectedController;
-          for (WebRTCFlutterViewController controller in _webRtcController) {
+          WebRTCFlutterViewSocket? selectedController;
+          for (WebRTCFlutterViewSocket controller in _webRtcController) {
             if (controller.presenterId == presenter.id) {
               selectedController = controller;
               break;
@@ -380,8 +375,8 @@ class ControlSocket {
           Extra extra = Extra.fromJson(resp.extra);
           Presenter presenter = Presenter.fromJson(extra.presenter);
 
-          WebRTCFlutterViewController? selectedController;
-          for (WebRTCFlutterViewController controller in _webRtcController) {
+          WebRTCFlutterViewSocket? selectedController;
+          for (WebRTCFlutterViewSocket controller in _webRtcController) {
             if (controller.presenterId == presenter.id) {
               selectedController = controller;
               break;
@@ -404,7 +399,7 @@ class ControlSocket {
     }
   }
 
-  void _handleDisplayStateUpdate(WebRTCFlutterViewController controller) {
+  void _handleDisplayStateUpdate(WebRTCFlutterViewSocket controller) {
     var content = json.encode({
       'messageFor': controller.presenterId,
       'action': 'display-state-update',
@@ -439,16 +434,16 @@ class ControlSocket {
         Map.from(SplitScreen.mapSplitScreen.value);
   }
 
-  void _handleQualityUpdate(WebRTCFlutterViewController controller) {
+  void _handleQualityUpdate(WebRTCFlutterViewSocket controller) {
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
-        for (WebRTCFlutterViewController viewController in _webRtcController) {
+        for (WebRTCFlutterViewSocket viewController in _webRtcController) {
           if (viewController.presentationState == PresentationState.streaming) {
             _handleChangeQuality(viewController, true, true);
           }
         }
       } else {
-        for (WebRTCFlutterViewController viewController in _webRtcController) {
+        for (WebRTCFlutterViewSocket viewController in _webRtcController) {
           if (viewController.presenterId.isNotEmpty) {
             _handleChangeQuality(viewController, false, true);
           }
@@ -460,7 +455,7 @@ class ControlSocket {
   }
 
   void _handleP2PClientSuccess(
-      WebRTCFlutterViewController controller, String nextId) {
+      WebRTCFlutterViewSocket controller, String nextId) {
     var content = json.encode({
       'messageFor': displayCode,
       'action': 'start-present',
@@ -513,7 +508,7 @@ class ControlSocket {
   }
 
   void _handleStreamPauseSuccess(
-      WebRTCFlutterViewController controller, String? nextId) {
+      WebRTCFlutterViewSocket controller, String? nextId) {
     var content = json.encode({
       'messageFor': displayCode,
       'action': 'pause-present',
@@ -531,7 +526,7 @@ class ControlSocket {
     _controlSocketIO?.emit(displayCode, json.decode(content));
   }
 
-  void _handleChangeQuality(WebRTCFlutterViewController controller,
+  void _handleChangeQuality(WebRTCFlutterViewSocket controller,
       bool isFullHeight, bool isFullFrameRate) async {
     var content = json.encode({
       'messageFor': controller.presenterId,
@@ -568,7 +563,7 @@ class ControlSocket {
           presenting = true;
         }
       } else {
-        for (WebRTCFlutterViewController controller in _webRtcController) {
+        for (WebRTCFlutterViewSocket controller in _webRtcController) {
           if (controller.presentationState == PresentationState.streaming) {
             presenting |= true;
           }
@@ -593,7 +588,7 @@ class ControlSocket {
           presenting = true;
         }
       } else {
-        for (WebRTCFlutterViewController controller in _webRtcController) {
+        for (WebRTCFlutterViewSocket controller in _webRtcController) {
           if (controller.presentationState != PresentationState.stopStreaming) {
             presenting |= true;
           }
@@ -612,7 +607,7 @@ class ControlSocket {
   int getPresentingQuantity() {
     int quantity = 0;
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      for (WebRTCFlutterViewController controller in _webRtcController) {
+      for (WebRTCFlutterViewSocket controller in _webRtcController) {
         if (controller.presentationState == PresentationState.streaming) {
           quantity++;
         }
@@ -622,7 +617,7 @@ class ControlSocket {
   }
 
   bool isPresenterWaitForStream(String presenterId) {
-    for (WebRTCFlutterViewController controller in _webRtcController) {
+    for (WebRTCFlutterViewSocket controller in _webRtcController) {
       if (controller.presenterId == presenterId &&
           controller.presentationState == PresentationState.waitForStream) {
         return true;
@@ -632,7 +627,7 @@ class ControlSocket {
   }
 
   bool isPresenterStreaming(String presenterId) {
-    for (WebRTCFlutterViewController controller in _webRtcController) {
+    for (WebRTCFlutterViewSocket controller in _webRtcController) {
       if (controller.presenterId == presenterId &&
           controller.presentationState == PresentationState.streaming) {
         return true;
@@ -642,7 +637,7 @@ class ControlSocket {
   }
 
   bool isPresenterNotStopStreaming(String presenterId) {
-    for (WebRTCFlutterViewController controller in _webRtcController) {
+    for (WebRTCFlutterViewSocket controller in _webRtcController) {
       if (controller.presenterId == presenterId &&
           controller.presentationState.index >=
               PresentationState.waitForStream.index) {
@@ -671,8 +666,8 @@ class ControlSocket {
   }
 
   removeAllPresenters() async {
-    WebRTCFlutterViewController? selectedController;
-    List<WebRTCFlutterViewController> temp = List.from(_webRtcController);
+    WebRTCFlutterViewSocket? selectedController;
+    List<WebRTCFlutterViewSocket> temp = List.from(_webRtcController);
     for (int i = temp.length - 1; i >= 0; i--) {
       selectedController = temp[i];
       if (selectedController.presenterId.isNotEmpty) {
@@ -689,7 +684,7 @@ class ControlSocket {
   }
 
   removePresenterBy(int index) async {
-    WebRTCFlutterViewController? selectedController = _webRtcController[index];
+    WebRTCFlutterViewSocket? selectedController = _webRtcController[index];
     if (selectedController.presenterId.isNotEmpty) {
       try {
         await selectedController.disconnect(sendAnalytics: true);
@@ -716,7 +711,7 @@ class ControlSocket {
   }
 
   updateAllAudioEnableState(bool enable) {
-    for (WebRTCFlutterViewController controller in _webRtcController) {
+    for (WebRTCFlutterViewSocket controller in _webRtcController) {
       controller.controlAudio(enable);
     }
   }
