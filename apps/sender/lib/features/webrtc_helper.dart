@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show HttpStatus, Platform;
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
@@ -93,14 +94,24 @@ class WebRTCHelper {
       await _publish();
     });
 
-    _socket!.on('server-authenticated', (data) {
+    _socket!.on('server-authenticated', (data) async {
       debugModePrint("server-authenticated: ${data['uid']}", type: runtimeType);
+      _send('chat-closed');
+      _send('chat-ua', message: await getUserAgent());
     });
 
     _socket!.on('owt-message', (data) async {
       debugModePrint(data, type: runtimeType);
       final msg = jsonDecode(data['data']);
       final type = msg['type'];
+
+      if (type == 'chat-ua') {
+        await _publish();
+      }
+
+      if (type == 'chat-track-sources') {
+
+      }
 
       if (type == "chat-signal") {
         await _handleSignal(msg['data']);
@@ -190,6 +201,17 @@ class WebRTCHelper {
     for (MediaStreamTrack track in stream.getTracks()) {
       debugModePrint('track: ${track.kind}', type: runtimeType);
       _pc!.addTrack(track, stream);
+      _send('chat-track-sources', message: [
+        {
+          'id': track.id,
+          'source': 'screen-cast',
+        }
+      ]);
+      _send('chat-stream-info', message: {
+        'id': stream.id,
+        'tracks': [track.id],
+        'source': {'audio':'screen-cast', 'video':'screen-cast'}
+      });
     }
 
     final offerConstraints = <String, dynamic>{
@@ -208,16 +230,18 @@ class WebRTCHelper {
     try {
       await _pc!.setLocalDescription(fixedOffer);
 
-      _send('chat-signal', {'type': fixedOffer.type, 'sdp': fixedOffer.sdp});
+      _send('chat-signal', message: {'type': fixedOffer.type, 'sdp': fixedOffer.sdp});
     } catch (e) {
       debugModePrint(e, type: runtimeType);
       hangUp(); //todo: message?
     }
   }
 
-  void _send(type, message) {
+  void _send(type, {message}) {
     var data = {
-      'data': jsonEncode({'type': type, 'data': message}),
+      'data': message != null
+          ? jsonEncode({'type': type, 'data': message})
+          : jsonEncode({'type': type}),
       'to': _peerId
     };
 
@@ -237,7 +261,7 @@ class WebRTCHelper {
       RTCSessionDescription fixedAnswer = SdpUtil._fixSdp(answer);
       await _pc!.setLocalDescription(fixedAnswer);
       // send answer to the peer
-      _send('chat-signal', {'type': fixedAnswer.type, 'sdp': fixedAnswer.sdp});
+      _send('chat-signal', message: {'type': fixedAnswer.type, 'sdp': fixedAnswer.sdp});
     } else if (type == 'answer') {
       // handle answer from the peer
       final answer = RTCSessionDescription(msg['sdp'], type);
@@ -325,12 +349,36 @@ class WebRTCHelper {
     debugModePrint('onCandidate: ${candidate.candidate}', type: runtimeType);
 
     // send candidates to the peer
-    _send('chat-signal', {
+    _send('chat-signal', message: {
       'type': 'candidates',
       'candidate': candidate.candidate,
       'sdpMid': candidate.sdpMid,
       'sdpMLineIndex': candidate.sdpMLineIndex,
     });
+  }
+
+  Future<dynamic> getUserAgent() async {
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    String? version, type;
+    if (WebRTC.platformIsMacOS) {
+      final macOsInfo = await deviceInfo.macOsInfo;
+      version = '${macOsInfo.majorVersion}.${macOsInfo.minorVersion}.${macOsInfo.patchVersion}';
+      type = 'Mac OS';
+    } else if (WebRTC.platformIsWindows) {
+      final windowsInfo = await deviceInfo.windowsInfo;
+      version = '${windowsInfo.productName} (Build ${windowsInfo.buildNumber})';
+      type = 'Windows';
+    } else {
+      // other platform
+    }
+    return {
+      'sdk': {'version': version, 'type': type},
+      'capabilities': {
+        'continualIceGathering': true,
+        'unifiedPlan': true,
+        'streamRemovable': true
+      }
+    };
   }
 }
 
