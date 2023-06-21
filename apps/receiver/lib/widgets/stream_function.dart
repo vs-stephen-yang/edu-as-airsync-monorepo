@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
@@ -14,6 +16,7 @@ import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:move_to_background/move_to_background.dart';
 
 // Empty, Basic streaming
 const String stateEmpty = 'empty';
@@ -164,6 +167,32 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       },
                     ),
                   ),
+                  if (AppInstanceCreate().isInstalledInVBS200 &&
+                      value == stateStandby &&
+                      !AppInstanceCreate().isDisableAdvance)
+                    Column(
+                      children: [
+                        Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.rotationY(math.pi),
+                          child: FocusIconButton(
+                              icons: Icons.exit_to_app,
+                              iconForegroundColor: colorSplitScreenForeground,
+                              iconBackgroundColor: colorSplitScreenBackground,
+                              iconFocusBackgroundColor:
+                              AppColors.iconFeatureOnStandbyBackground,
+                              hasFocusSize: AppUIConstant.iconHasFocusSize,
+                              notFocusSize: AppUIConstant.iconNotFocusSize,
+                              onClick: () {
+                                MoveToBackground.moveTaskToBack();
+                              }),
+                        ),
+                        const SizedBox(
+                          width: 48,
+                          child: Divider(color: Colors.white, height: 1),
+                        ),
+                      ],
+                    ),
                   if (value == stateStandby &&
                       !AppInstanceCreate().isDisableAdvance)
                     FocusIconButton(
