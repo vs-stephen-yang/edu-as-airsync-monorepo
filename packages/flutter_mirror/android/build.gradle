@@ -65,5 +65,5 @@ android {
 dependencies {
     implementation 'com.google.oboe:oboe:1.7.0'
     implementation 'com.viewsonic.airplay:airplay:0.10.2'
-    implementation 'com.viewsonic.googlecast:googlecast:0.2.5'
+    implementation 'com.viewsonic.googlecast:googlecast:0.3.0'
 }
