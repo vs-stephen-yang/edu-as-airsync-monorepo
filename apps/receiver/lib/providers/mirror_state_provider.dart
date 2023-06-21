@@ -90,8 +90,6 @@ class MirrorStateProvider extends ChangeNotifier
 
   @override
   void onMirrorStop(String mirrorId) {
-    _plugin?.stopMirror(mirrorId);
-
     _mirrorId = null;
     _textureId = null;
     _setMirrorState(MirrorState.idle);
