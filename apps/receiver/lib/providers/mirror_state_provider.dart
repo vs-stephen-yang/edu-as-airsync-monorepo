@@ -90,6 +90,10 @@ class MirrorStateProvider extends ChangeNotifier
 
   @override
   void onMirrorStop(String mirrorId) {
+    if(_mirrorId != mirrorId) {
+      // ignore the onMirrorStop that is not for the current mirror session
+      return;
+    }
     _mirrorId = null;
     _textureId = null;
     _setMirrorState(MirrorState.idle);
