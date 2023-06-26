@@ -4,7 +4,6 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'flutter_mirror_method_channel.dart';
 import 'flutter_mirror_listener.dart';
 
-import 'credentials.dart';
 import 'airplay_config.dart';
 
 abstract class FlutterMirrorPlatform extends PlatformInterface {

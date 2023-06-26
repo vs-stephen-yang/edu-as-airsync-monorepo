@@ -2,9 +2,6 @@ import 'package:flutter_mirror/credentials.dart';
 import 'dart:async' show Future;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:libcastauth/libcastauth.dart';
-import 'package:pem/pem.dart';
-import 'dart:convert';
-import 'dart:typed_data';
 
 class CredentialsStore {
   static const _secureDataDir = "packages/flutter_mirror/assets/credentials";

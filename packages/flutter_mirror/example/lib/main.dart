@@ -27,8 +27,8 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
 
   double _aspectRatio = 3 / 2;
   bool _sizeChanged = false;
-  Size _videoWidgetSize = Size(0, 0);
-  Offset _videoWidgetOffset = Offset(0, 0);
+  Size _videoWidgetSize = const Size(0, 0);
+  Offset _videoWidgetOffset = const Offset(0, 0);
 
   String _pin = "";
   bool _pinVisibility = false;
@@ -54,7 +54,9 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
       await _plugin.initialize();
 
       await startServices();
-    } on PlatformException {}
+    } on PlatformException {
+      //
+    }
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
