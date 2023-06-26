@@ -1,8 +1,5 @@
 import 'package:flutter_mirror/airplay_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
-import 'package:flutter_mirror/mirror_type.dart';
-import 'package:flutter_mirror/credentials.dart';
-
 import 'flutter_mirror_platform_interface.dart';
 import 'flutter_mirror_listener.dart';
 
