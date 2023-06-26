@@ -24,7 +24,7 @@ class MirrorListener {
       int height) = 0;
 
   // for Googlecast device authentication
-  virtual void OnCredentialsUpdate(
+  virtual void OnCredentialsRequest(
       int year,
       int month,
       int day) = 0;

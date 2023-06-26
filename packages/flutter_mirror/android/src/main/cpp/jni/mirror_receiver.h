@@ -37,7 +37,7 @@ class MirrorReceiver {
       int width,
       int height);
 
-  void OnCredentialsUpdate(
+  void OnCredentialsRequest(
       int year,
       int month,
       int day);
@@ -58,7 +58,7 @@ class MirrorReceiver {
 
   jmethodID onMirrorVideoResize = nullptr;
 
-  jmethodID onCredentialsUpdate = nullptr;
+  jmethodID onCredentialsRequest = nullptr;
 };
 
 typedef std::unique_ptr<MirrorReceiver> MirrorReceiverPtr;

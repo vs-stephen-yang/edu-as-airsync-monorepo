@@ -176,11 +176,11 @@ public class MirrorReceiver implements
   }
 
   @Override
-  public void onCredentialsUpdate(
+  public void onCredentialsRequest(
       int year,
       int month,
       int day) {
-    mirrorListener_.onCredentialsUpdate(year, month, day);
+    mirrorListener_.onCredentialsRequest(year, month, day);
   }
 
   private native long createInstanceNative(

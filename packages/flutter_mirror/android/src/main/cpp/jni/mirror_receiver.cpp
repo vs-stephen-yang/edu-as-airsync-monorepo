@@ -80,7 +80,7 @@ void MirrorReceiver::OnMirrorVideoResize(
       height);
 }
 
-void MirrorReceiver::OnCredentialsUpdate(
+void MirrorReceiver::OnCredentialsRequest(
     int year,
     int month,
     int day) {
@@ -88,7 +88,7 @@ void MirrorReceiver::OnCredentialsUpdate(
 
   env->CallVoidMethod(
       obj_,
-      onCredentialsUpdate,
+      onCredentialsRequest,
       year,
       month,
       day);
@@ -111,8 +111,8 @@ void MirrorReceiver::InitMethods(
   // void onMirrorVideoResize(int mirrorId, int width, int height)
   DEFINE_METHOD(onMirrorVideoResize, "(Ljava/lang/String;II)V");
 
-  // void onCredentialsUpdate(int year, int month, int day)
-  DEFINE_METHOD(onCredentialsUpdate, "(III)V");
+  // void onCredentialsRequest(int year, int month, int day)
+  DEFINE_METHOD(onCredentialsRequest, "(III)V");
 }
 
 }  // namespace jni
