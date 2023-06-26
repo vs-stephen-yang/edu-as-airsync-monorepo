@@ -42,8 +42,9 @@ void MirrorReceiver::StartAirplay(
     const ap::AirplayReceiver::Config& config) {
   DCHECK_RUN_ON(thread_id_);
 
-  ALOGD("Starting airplay auth:%s",
-        config.enable_auth ? "on" : "off");
+  ALOGD("Starting airplay auth:%s device ID:%s",
+        config.enable_auth ? "on" : "off",
+        config.device_id.c_str());
 
   if (ap_receiver_) {
     return;
