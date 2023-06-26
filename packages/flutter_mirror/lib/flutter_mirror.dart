@@ -1,4 +1,5 @@
 import 'package:flutter_mirror/airplay_config.dart';
+import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
 import 'package:flutter_mirror/credentials.dart';
 
@@ -22,8 +23,8 @@ class FlutterMirror {
     return FlutterMirrorPlatform.instance.stopAirplay();
   }
 
-  Future<void> startGooglecast(String name) {
-    return FlutterMirrorPlatform.instance.startGooglecast(name);
+  Future<void> startGooglecast(GooglecastConfig config) {
+    return FlutterMirrorPlatform.instance.startGooglecast(config);
   }
 
   Future<void> stopGooglecast() {

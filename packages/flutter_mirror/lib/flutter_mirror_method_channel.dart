@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/airplay_config.dart';
+import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
 
 import 'flutter_mirror_platform_interface.dart';
@@ -53,12 +54,13 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
   }
 
   @override
-  Future<void> startGooglecast(String name) async {
+  Future<void> startGooglecast(GooglecastConfig config) async {
     // load today's credentials
     final credentials = await CredentialsStore.loadToday();
 
     await methodChannel.invokeMethod('startGooglecast', {
-      "name": name,
+      "name": config.name,
+      "uniqueId": config.uniqueId,
       "credentials": credentialToMap(credentials),
     });
   }

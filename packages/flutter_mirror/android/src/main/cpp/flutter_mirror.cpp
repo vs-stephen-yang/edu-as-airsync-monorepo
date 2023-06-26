@@ -120,6 +120,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startGooglecastNative(
     jobject thiz,
     jlong instance,
     jstring jname,
+    jstring junique_id,
     jobject credentials) {
   assert(instance != 0);
   ALOGV("MirrorReceiver_startGooglecastNative()");
@@ -132,7 +133,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startGooglecastNative(
   openscreen::cast::CastReceiver::Config config;
 
   config.friendly_name = str.ToUtf8(jname);
-  config.unique_id = "id";
+  config.unique_id = str.ToUtf8(junique_id);
   config.model_name = "IFP";
   config.credentials = creds.FromJObject();
 

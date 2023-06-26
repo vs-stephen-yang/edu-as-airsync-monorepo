@@ -170,10 +170,13 @@ public class FlutterMirrorPlugin implements
       result.success(reply);
     } else if (call.method.equals("startGooglecast")) {
       String name = call.argument("name");
+      String uniqueId = call.argument("uniqueId");
+
       Map<String, Object> credentials = call.argument("credentials");
 
       startGooglecast(
           name,
+          uniqueId,
           GooglecastCredentials.fromMap(credentials));
 
       Map<String, Long> reply = new HashMap<>();
@@ -247,12 +250,15 @@ public class FlutterMirrorPlugin implements
     mirrorReceiver_.stopAirplay();
   }
 
-  private void startGooglecast(String name, GooglecastCredentials credentials) {
+  private void startGooglecast(
+      String name,
+      String uniqueId,
+      GooglecastCredentials credentials) {
     if (mirrorReceiver_ == null) {
       return;
     }
 
-    mirrorReceiver_.startGooglecast(name, credentials);
+    mirrorReceiver_.startGooglecast(name, uniqueId, credentials);
   }
 
   private void stopGooglecast() {
