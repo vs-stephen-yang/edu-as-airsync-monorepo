@@ -101,6 +101,10 @@ class MirrorStateProvider extends ChangeNotifier
 
   @override
   void onMirrorVideoResize(String mirrorId, int width, int height) {
+    if(_mirrorId != mirrorId) {
+      // ignore the onMirrorStop that is not for the current mirror session
+      return;
+    }
     _aspectRatio = width / height;
     _sizeChanged = true;
     notifyListeners();
