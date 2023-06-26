@@ -66,7 +66,7 @@ class MirrorReceiver
       int width,
       int height) override;
 
-  virtual void OnCredentialsUpdate(
+  virtual void OnCredentialsRequest(
       int year,
       int month,
       int day) override;

@@ -204,7 +204,7 @@ void MirrorReceiver::OnMirrorVideoResize(
       height);
 }
 
-void MirrorReceiver::OnCredentialsUpdate(
+void MirrorReceiver::OnCredentialsRequest(
     int year,
     int month,
     int day) {

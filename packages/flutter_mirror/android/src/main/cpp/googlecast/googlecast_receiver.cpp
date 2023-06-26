@@ -85,7 +85,7 @@ void GooglecastReceiver::OnCredentialsRequest(
     int day) {
   ALOGD("GooglecastReceiver::OnCredentialsRequest(%d,%d,%d)", year, month, day);
 
-  mirror_listener_.OnCredentialsUpdate(
+  mirror_listener_.OnCredentialsRequest(
       year,
       month,
       day);

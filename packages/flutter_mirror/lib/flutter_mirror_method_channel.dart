@@ -150,7 +150,7 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
         int timeoutSec = call.arguments["timeoutSec"];
 
         _listener?.onMirrorAuth(pin, timeoutSec);
-      } else if (call.method == 'onCredentialsUpdate') {
+      } else if (call.method == 'onCredentialsRequest') {
         int year = call.arguments["year"];
         int month = call.arguments["month"];
         int day = call.arguments["day"];

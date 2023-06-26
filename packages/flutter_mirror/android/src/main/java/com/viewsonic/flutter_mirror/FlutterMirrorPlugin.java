@@ -438,11 +438,11 @@ public class FlutterMirrorPlugin implements
     });
   }
 
-  public void onCredentialsUpdate(
+  public void onCredentialsRequest(
       int year,
       int month,
       int day) {
-    Log.d(TAG, "FlutterMirrorPlugin.onCredentialsUpdate() ");
+    Log.d(TAG, "FlutterMirrorPlugin.onCredentialsRequest() ");
 
     // Must run on the platform thread
     post(() -> {
@@ -451,7 +451,7 @@ public class FlutterMirrorPlugin implements
       arguments.put("month", month);
       arguments.put("day", day);
 
-      channel_.invokeMethod("onCredentialsUpdate", arguments);
+      channel_.invokeMethod("onCredentialsRequest", arguments);
     });
   }
 
