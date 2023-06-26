@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
 import 'package:flutter_mirror/airplay_config.dart';
+import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
 
 void main() {
@@ -172,7 +173,10 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
     ));
 
     // start googlecast
-    await _plugin.startGooglecast("display-1");
+    await _plugin.startGooglecast(const GooglecastConfig(
+      name: "display-1",
+      uniqueId: "123",
+    ));
 
     // start miracast
     await _plugin.startMiracast("display-1");

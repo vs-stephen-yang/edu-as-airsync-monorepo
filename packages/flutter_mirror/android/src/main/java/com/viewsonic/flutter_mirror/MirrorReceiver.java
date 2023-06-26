@@ -56,12 +56,16 @@ public class MirrorReceiver implements
   }
 
   // start googlecast
-  public void startGooglecast(String name, GooglecastCredentials credentials) {
+  public void startGooglecast(
+      String name,
+      String uniqueId,
+      GooglecastCredentials credentials) {
     assert instance_ != 0;
 
     startGooglecastNative(
         instance_,
         name,
+        uniqueId,
         credentials);
   }
 
@@ -202,6 +206,7 @@ public class MirrorReceiver implements
   public native void startGooglecastNative(
       long instance,
       String name,
+      String uniqueId,
       GooglecastCredentials credentials);
 
   private native void stopGooglecastNative(

@@ -1,3 +1,4 @@
+import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_mirror_method_channel.dart';
@@ -43,7 +44,7 @@ abstract class FlutterMirrorPlatform extends PlatformInterface {
     throw UnimplementedError('stopAirplay() has not been implemented.');
   }
 
-  Future<void> startGooglecast(String name) async {
+  Future<void> startGooglecast(GooglecastConfig config) async {
     throw UnimplementedError('startGooglecast() has not been implemented.');
   }
 
