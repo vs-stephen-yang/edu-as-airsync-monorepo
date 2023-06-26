@@ -208,6 +208,10 @@ void MirrorReceiver::OnCredentialsRequest(
     int year,
     int month,
     int day) {
+  proxy_->OnCredentialsRequest(
+      year,
+      month,
+      day);
 }
 
 void MirrorReceiver::AddSession(MirrorSessionPtr session) {
