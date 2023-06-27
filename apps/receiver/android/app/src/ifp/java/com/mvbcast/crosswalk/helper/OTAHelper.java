@@ -4,12 +4,14 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -26,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
@@ -33,20 +36,26 @@ import androidx.core.content.FileProvider;
 import com.mvbcast.crosswalk.BuildConfig;
 import com.mvbcast.crosswalk.EulaActivity;
 import com.mvbcast.crosswalk.R;
-import com.viewsonic.systemapi.SystemUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Observable;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -164,7 +173,7 @@ public final class OTAHelper extends Observable {
             new Handler(Looper.getMainLooper()).post(() -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     // for IFP52, IFP32 (Android 9): can not use Runtime command install
-                    SystemUtil.installAppSilently(activity, mFile.getPath());
+                    installAppSilently(activity, mFile.getPath());
                 } else {
                     try {
                         String command = "pm install -r -i com.mvbcast.crosswalk --user 0 " + mFile.getPath();
@@ -390,6 +399,155 @@ public final class OTAHelper extends Observable {
         final long min = TimeUnit.MILLISECONDS.toMinutes(newTime.getTime() - oldTime.getTime());
         Log.d(TAG, "min: " + min + ", over 5 min? " + (min > 5));
         return min > 5;
+    }
+
+    private boolean installAppSilently(final Context context, final String filePath) {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                ? installViaPackageInstaller(context, filePath)
+                : installViaCommandExe(context, filePath);
+    }
+
+    /**
+     * Executing command will hang the UI, move to new Thread to execute.
+     */
+    private boolean installViaCommandExe(Context context, String filePath) {
+        final AtomicBoolean result = new AtomicBoolean(false);
+        Thread thread = new Thread(() -> {
+            try {
+                String command = "pm install -r -i " + context.getPackageName() + " --user 0 " + filePath;
+                Log.d(TAG, command);
+
+                Process p = Runtime.getRuntime().exec(command);
+                p.waitFor();
+
+                BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+                String s;
+                while ((s = stdInput.readLine()) != null) {
+                    Log.d(TAG, "stdInput s = " + s);
+                    result.set(true);
+                }
+                // read any errors from the attempted command
+                while ((s = stdError.readLine()) != null) {
+                    Log.d(TAG, "stdError s = " + s);
+                    result.set(false);
+                }
+            } catch (IOException | InterruptedException e) {
+                Log.d(TAG, "installAppSilently e = " + e);
+                e.printStackTrace();
+                result.set(false);
+            }
+        });
+
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            Log.d(TAG, "installAppSilently e = " + e);
+            e.printStackTrace();
+            result.set(false);
+        }
+        Log.d(TAG, "installAppSilently result: " + result.get());
+        return result.get();
+    }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    public boolean installViaPackageInstaller(Context context, String apkFilePath) {
+        Log.d(TAG, "installViaPackageInstaller path=" + apkFilePath);
+        File apkFile = new File(apkFilePath);
+        PackageInstaller packageInstaller = context.getPackageManager().getPackageInstaller();
+        PackageInstaller.SessionParams sessionParams
+                = new PackageInstaller.SessionParams(PackageInstaller
+                .SessionParams.MODE_FULL_INSTALL);
+        sessionParams.setSize(apkFile.length());
+
+        int sessionId = createSession(packageInstaller, sessionParams);
+        Log.d(TAG, "installViaPackageInstaller  sessionId=" + sessionId);
+        if (sessionId != -1) {
+            boolean copySuccess = copyInstallFile(packageInstaller, sessionId, apkFilePath);
+            Log.d(TAG, "installViaPackageInstaller  copySuccess=" + copySuccess);
+            if (copySuccess) {
+                execInstallCommand(context, packageInstaller, sessionId);
+            }
+        }
+        return true;
+    }
+
+    private int createSession(PackageInstaller packageInstaller,
+                                     PackageInstaller.SessionParams sessionParams) {
+        int sessionId = -1;
+        try {
+            sessionId = packageInstaller.createSession(sessionParams);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sessionId;
+    }
+
+    private boolean copyInstallFile(PackageInstaller packageInstaller,
+                                           int sessionId, String apkFilePath) {
+        InputStream in = null;
+        OutputStream out = null;
+        PackageInstaller.Session session = null;
+        boolean success = false;
+        try {
+            File apkFile = new File(apkFilePath);
+            session = packageInstaller.openSession(sessionId);
+            out = session.openWrite("base.apk", 0, apkFile.length());
+            in = new FileInputStream(apkFile);
+            int total = 0, c;
+            byte[] buffer = new byte[65536];
+            while ((c = in.read(buffer)) != -1) {
+                total += c;
+                out.write(buffer, 0, c);
+            }
+            session.fsync(out);
+            Log.i(TAG, "streamed " + total + " bytes");
+            success = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            closeQuietly(out);
+            closeQuietly(in);
+            closeQuietly(session);
+        }
+        return success;
+    }
+
+    private void execInstallCommand(Context context, PackageInstaller packageInstaller, int sessionId) {
+        PackageInstaller.Session session = null;
+        try {
+            session = packageInstaller.openSession(sessionId);
+            Intent intent = new Intent("com.viewsonic.action.SILENT_INSTALL_APK_RESULT");
+            PendingIntent pendingIntent;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                pendingIntent = PendingIntent.getBroadcast(context,
+                        1, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            } else {
+                pendingIntent = PendingIntent.getBroadcast(context,
+                        1, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+            session.commit(pendingIntent.getIntentSender());
+            Log.i(TAG, "begin session");
+        } catch (Exception e) {
+            Log.i(TAG, "execInstallCommand exception: "+ e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeQuietly(session);
+        }
+    }
+
+    private void closeQuietly(Closeable c) {
+        if (c != null) {
+            try {
+                c.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
     //-------------------------------------------------------------------------
     // endregion private Implementation
