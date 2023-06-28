@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:uuid/uuid.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/airplay_config.dart';
+import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
 import 'package:flutter_mirror/mirror_type.dart';
@@ -152,7 +154,10 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> startGoogleCast() async {
-    await _plugin?.startGooglecast(_deviceName);
+    await _plugin?.startGooglecast(GooglecastConfig(
+      name: _deviceName,
+      uniqueId: (const Uuid()).v4(),
+    ));
     _googleCastEnabled = true;
     notifyListeners();
   }
