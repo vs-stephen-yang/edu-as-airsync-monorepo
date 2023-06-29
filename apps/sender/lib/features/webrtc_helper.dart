@@ -91,7 +91,6 @@ class WebRTCHelper {
 
     _socket!.onConnect((_) async {
       debugModePrint('connect', type: runtimeType);
-      await _publish();
     });
 
     _socket!.on('server-authenticated', (data) async {
