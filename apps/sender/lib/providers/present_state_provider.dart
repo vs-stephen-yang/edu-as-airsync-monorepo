@@ -63,7 +63,6 @@ class PresentStateProvider extends ChangeNotifier {
   }
 
   Future<bool> checkModeratorOTP({required String displayCode, required String otp}) async {
-    print('zz checkModeratorOTP');
     var api = Uri.parse('$_urlGateway/presentation/displays/moderator?code=$displayCode&otp=$otp');
     var response = await http.get(api);
     switch (response.statusCode) {
@@ -76,14 +75,12 @@ class PresentStateProvider extends ChangeNotifier {
         this.otp = otp;
         setViewState(ViewState.moderatorIdle);
         notifyListeners();
-        print('zz checkOTP 200 ${response.body} ${moderator?.id}');
         // break;
       return true;
       case 204:
         // 沒開moderator 有往下跑
         this.displayCode = displayCode;
         this.otp = otp;
-        print('zz checkOTP 204');
         // break;
       return true;
       case 403:
@@ -122,7 +119,7 @@ class PresentStateProvider extends ChangeNotifier {
             })
             .build());
     
-    _socket?.onConnecting((data) => print('zz onConnecting ${data.toString()}'));
+    _socket?.onConnecting((data) => debugModePrint('onConnecting: $data'));
 
     _socket?.onConnect((_) {
       debugModePrint('connected to display');
@@ -160,6 +157,16 @@ class PresentStateProvider extends ChangeNotifier {
 
     _socket?.on("display-state-update", (msg) async {
       debugModePrint('display-state-update: $msg');
+      Message message = Message.fromJson(msg);
+      Extra extra = Extra.fromJson(message.extra);
+      if (extra.presentationState == 'stopStreaming') {
+        // moderator mode
+        if (moderator != null) {
+          presentStop();
+        } else {
+          presentEnd();
+        }
+      }
     });
 
     _socket?.on('update-display-state', (msg) async {
@@ -188,15 +195,15 @@ class PresentStateProvider extends ChangeNotifier {
     });
 
     _socket?.on('reject-present', (msg) {
-      print('zz reject-present $msg');
+      debugModePrint('reject-present: $msg');
     });
 
     _socket?.on('dismiss', (msg) {
-      print('zz _socket.dismiss $msg');
+      debugModePrint('dismiss: $msg');
     });
 
     _socket?.on('set-moderator', (msg) {
-      print('zz _socket.set-moderator $msg');
+      debugModePrint('set-moderator: $msg');
       if (msg['action'] == 'set-moderator') {
         moderator = Moderator.fromJson(msg['extra']['moderator']);
         _socket?.emit('join-display', {
@@ -217,7 +224,7 @@ class PresentStateProvider extends ChangeNotifier {
 
     _socket?.on('unset-moderator', (msg) => {
       if(msg['action'] == 'unset-moderator') {
-        // TODO: 導回首頁
+        presentEnd()
       }
     });
 
