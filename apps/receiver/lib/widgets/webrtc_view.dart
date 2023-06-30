@@ -79,6 +79,7 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView>
       // clear renderer
       setState(() {
         _remoteRenderer.srcObject = null;
+        _remoteRenderer.dispose();
         _remoteRenderer = RTCVideoRenderer();
       });
     });
