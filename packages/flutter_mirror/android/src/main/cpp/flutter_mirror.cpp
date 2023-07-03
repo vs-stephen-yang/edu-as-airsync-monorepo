@@ -36,6 +36,8 @@ const std::string AirplaySecurity::kNone("none");
 const std::string AirplaySecurity::kOnscreenCode("onscreenCode");
 const std::string AirplaySecurity::kPassword("password");
 
+const unsigned int kAirplayPinExpirySec = 30;
+
 JavaVM* g_vm = nullptr;
 
 extern "C" {
@@ -98,7 +100,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startAirplayNative(
   config.name = str.ToUtf8(jname);
   config.device_id = str.ToUtf8(jdevice_id);
   config.enable_auth = (security == AirplaySecurity::kOnscreenCode);
-  config.pin_expiry_sec = 30;
+  config.pin_expiry_sec = kAirplayPinExpirySec;
 
   receiver->StartAirplay(config);
 }
