@@ -36,7 +36,7 @@ const std::string AirplaySecurity::kNone("none");
 const std::string AirplaySecurity::kOnscreenCode("onscreenCode");
 const std::string AirplaySecurity::kPassword("password");
 
-const unsigned int kAirplayPinExpirySec = 30;
+const unsigned int kAirplayPinExpirySec = 40;
 
 JavaVM* g_vm = nullptr;
 
