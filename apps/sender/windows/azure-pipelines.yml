@@ -1,0 +1,112 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+variables:
+  - name: Flutter.Version
+    value: "3.7.12"
+  - name: WindowsKit.Version
+    value: "10.0.22000.0"
+  - name: Flutter.Bin
+    value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
+  - name: AdvancedInstaller.Bin
+    value: 'C:\Program Files (x86)\Caphyon\Advanced Installer 18.5\bin\x86\AdvancedInstaller.com'
+  - name: Installer.Dir
+    value: "$(Build.SourcesDirectory)/windows/package/"
+  - name: Build.Dir
+    value: "$(Build.SourcesDirectory)/build/windows/runner/Release"
+  - name: mt.Bin
+    value: "C:/Program Files (x86)/Windows Kits/10/bin/$(WindowsKit.Version)/x86/mt.exe"
+  - name: Manifest.Path
+    value: "windows/runner/runner.exe-uipi.manifest"
+  - name: Executable.Path
+    value: "$(Build.Dir)/Display_Cast.exe"
+
+pool:
+  name: 'Windows Build Servers'
+  demands:
+  - EVKey -equals 1
+steps:
+- checkout: self
+  persistCredentials: "true"
+  lfs: "true"
+
+# install flutter SDK
+- script: curl https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_$(Flutter.Version)-stable.zip --output $(Pipeline.Workspace)/flutter.zip
+  displayName: Download the flutter SDK
+
+- task: ExtractFiles@1
+  displayName: Extract the flutter SDK
+  inputs:
+    archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
+    destinationFolder: "$(Pipeline.Workspace)/flutter"
+
+# build dev
+- script: $(Flutter.Bin) build windows -t ./lib/main_dev.dart
+  displayName: Build dev
+
+- script: '"$(mt.Bin)" -manifest "$(Manifest.Path)" -outputresource:"$(Executable.Path)";#1'
+  displayName: Overrite app manifest
+
+# package dev
+- script: '"$(AdvancedInstaller.Bin)" /build windows/installer.aip'
+  displayName: Package prod
+
+# copy dev
+- task: CopyFiles@2
+  displayName: Copy dev
+  inputs:
+    SourceFolder: "$(Installer.Dir)"
+    contents: "*.msi"
+    targetFolder: "$(Build.ArtifactStagingDirectory)/dev/"
+
+
+# build stage
+- script: $(Flutter.Bin) build windows -t ./lib/main_stage.dart
+  displayName: Build stage
+
+- script: '"$(mt.Bin)" -manifest "$(Manifest.Path)" -outputresource:"$(Executable.Path)";#1'
+  displayName: Overrite app manifest
+
+# package stage
+- script: '"$(AdvancedInstaller.Bin)" /build windows/installer.aip'
+  displayName: Package stage
+
+# copy stage
+- task: CopyFiles@2
+  displayName: Copy stage
+  inputs:
+    SourceFolder: "$(Installer.Dir)"
+    contents: "*.msi"
+    targetFolder: "$(Build.ArtifactStagingDirectory)/stage/"
+
+
+# build prod
+- script: $(Flutter.Bin) build windows -t ./lib/main_production.dart
+  displayName: Build prod
+
+- script: '"$(mt.Bin)" -manifest "$(Manifest.Path)" -outputresource:"$(Executable.Path)";#1'
+  displayName: Overrite app manifest
+
+# package prod
+- script: '"$(AdvancedInstaller.Bin)" /build windows/installer.aip'
+  displayName: Package stage
+
+# copy prod
+- task: CopyFiles@2
+  displayName: Copy prod
+  inputs:
+    SourceFolder: "$(Installer.Dir)"
+    contents: "*.msi"
+    targetFolder: "$(Build.ArtifactStagingDirectory)/prod/"
+
+# Publish artifacts
+- task: PublishBuildArtifacts@1
+  displayName: Publish build
+  inputs:
+    pathToPublish: "$(Build.ArtifactStagingDirectory)"
+    Parallel: true
+
+
