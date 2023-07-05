@@ -7,8 +7,6 @@ trigger:
 variables:
   - name: Flutter.Version
     value: "3.7.12"
-  - name: WindowsKit.Version
-    value: "10.0.22000.0"
   - name: Flutter.Bin
     value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
   - name: AdvancedInstaller.Bin
@@ -17,12 +15,8 @@ variables:
     value: "$(Build.SourcesDirectory)/windows/package/"
   - name: Build.Dir
     value: "$(Build.SourcesDirectory)/build/windows/runner/Release"
-  - name: mt.Bin
-    value: "C:/Program Files (x86)/Windows Kits/10/bin/$(WindowsKit.Version)/x86/mt.exe"
-  - name: Manifest.Path
-    value: "windows/runner/runner.exe-uipi.manifest"
-  - name: Executable.Path
-    value: "$(Build.Dir)/Display_Cast.exe"
+  - name: Package.Bin
+    value: "$(Build.SourcesDirectory)/windows/scripts/package.ps1"
 
 pool:
   name: 'Windows Build Servers'
@@ -47,19 +41,19 @@ steps:
 - script: $(Flutter.Bin) build windows -t ./lib/main_dev.dart
   displayName: Build dev
 
-- script: '"$(mt.Bin)" -manifest "$(Manifest.Path)" -outputresource:"$(Executable.Path)";#1'
-  displayName: Overrite app manifest
-
-# package dev
-- script: '"$(AdvancedInstaller.Bin)" /build windows/installer.aip'
-  displayName: Package prod
+- task: PowerShell@2
+  displayName: 'Package dev'
+  inputs:
+    filePath: '"$(Package.Bin)"'
+    arguments: 'dev'
+    pwsh: true
 
 # copy dev
 - task: CopyFiles@2
   displayName: Copy dev
   inputs:
     SourceFolder: "$(Installer.Dir)"
-    contents: "*.msi"
+    contents: "**"
     targetFolder: "$(Build.ArtifactStagingDirectory)/dev/"
 
 
@@ -67,19 +61,20 @@ steps:
 - script: $(Flutter.Bin) build windows -t ./lib/main_stage.dart
   displayName: Build stage
 
-- script: '"$(mt.Bin)" -manifest "$(Manifest.Path)" -outputresource:"$(Executable.Path)";#1'
-  displayName: Overrite app manifest
 
-# package stage
-- script: '"$(AdvancedInstaller.Bin)" /build windows/installer.aip'
-  displayName: Package stage
+- task: PowerShell@2
+  displayName: 'Package stage'
+  inputs:
+    filePath: '"$(Package.Bin)"'
+    arguments: 'stage'
+    pwsh: true
 
 # copy stage
 - task: CopyFiles@2
   displayName: Copy stage
   inputs:
     SourceFolder: "$(Installer.Dir)"
-    contents: "*.msi"
+    contents: "**"
     targetFolder: "$(Build.ArtifactStagingDirectory)/stage/"
 
 
@@ -87,19 +82,20 @@ steps:
 - script: $(Flutter.Bin) build windows -t ./lib/main_production.dart
   displayName: Build prod
 
-- script: '"$(mt.Bin)" -manifest "$(Manifest.Path)" -outputresource:"$(Executable.Path)";#1'
-  displayName: Overrite app manifest
 
-# package prod
-- script: '"$(AdvancedInstaller.Bin)" /build windows/installer.aip'
-  displayName: Package stage
+- task: PowerShell@2
+  displayName: 'Package prod'
+  inputs:
+    filePath: '"$(Package.Bin)"'
+    arguments: 'prod'
+    pwsh: true
 
 # copy prod
 - task: CopyFiles@2
   displayName: Copy prod
   inputs:
     SourceFolder: "$(Installer.Dir)"
-    contents: "*.msi"
+    contents: "**"
     targetFolder: "$(Build.ArtifactStagingDirectory)/prod/"
 
 # Publish artifacts
