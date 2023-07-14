@@ -101,6 +101,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startAirplayNative(
   config.device_id = str.ToUtf8(jdevice_id);
   config.enable_auth = (security == AirplaySecurity::kOnscreenCode);
   config.pin_expiry_sec = kAirplayPinExpirySec;
+  config.use_external_dnssd = true;
 
   receiver->StartAirplay(config);
 }

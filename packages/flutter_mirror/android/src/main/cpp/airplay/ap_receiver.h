@@ -22,6 +22,12 @@ class ApReceiver
   void Stop();
 
   // implements AirplayReceiver::Listener
+  virtual bool OnServiceRegister(
+      const ap::ServiceInfo& info) override;
+
+  virtual bool OnServiceUnregister(
+      const std::string& service_name) override;
+
   virtual void OnAuthRequest(
       const std::string& pin,
       unsigned int timeout_sec) override;

@@ -6,6 +6,7 @@
 #include "util/log.h"
 
 #include <sstream>
+#include "airplay/ap_utils.h"
 
 static const std::string kMirrorIdPrefix = "airplay-";
 
@@ -59,6 +60,17 @@ void ApReceiver::Stop() {
   }
 
   receiver_->Stop();
+}
+
+bool ApReceiver::OnServiceRegister(
+    const ap::ServiceInfo& ap_info) {
+  ServiceInfo info = ToServiceInfo(ap_info);
+
+  return mirror_listener_.OnServiceRegister(info);
+}
+bool ApReceiver::OnServiceUnregister(
+    const std::string& service_name) {
+  return mirror_listener_.OnServiceUnregister(service_name);
 }
 
 void ApReceiver::OnAuthRequest(
