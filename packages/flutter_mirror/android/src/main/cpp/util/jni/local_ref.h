@@ -13,11 +13,10 @@ template <class T>
 class LocalRef {
  public:
   LocalRef(
-      JNIEnv* env,
-      T obj)
-      : env_(env),
-        obj_(obj) {
+      JNIEnv* env)
+      : env_(env) {
   }
+
   LocalRef(
       JNIEnv* env,
       jobject obj)
@@ -26,19 +25,29 @@ class LocalRef {
   }
 
   ~LocalRef() {
-    env_->DeleteLocalRef(obj_);
+    if (obj_) {
+      env_->DeleteLocalRef(obj_);
+    }
+  }
+
+  void reset(T obj) {
+    if (obj_) {
+      env_->DeleteLocalRef(obj_);
+    }
+    obj_ = obj;
+  }
+
+  jobject get() {
+    return obj_;
   }
 
   operator T() {
     return obj_;
   }
-  jobject operator*() {
-    return obj_;
-  }
 
  private:
   JNIEnv* env_ = nullptr;
-  T obj_;
+  T obj_ = nullptr;
 };
 
 }  // namespace jni

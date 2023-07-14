@@ -10,6 +10,8 @@ class String {
  public:
   String(JNIEnv* env);
 
+  jstring NewString(const std::string& str) const;
+
   std::string ToUtf8(jstring str) const;
 
  private:

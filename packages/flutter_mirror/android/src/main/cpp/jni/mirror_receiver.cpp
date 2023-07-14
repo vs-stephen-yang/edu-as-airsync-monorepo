@@ -1,5 +1,6 @@
 #include "jni/mirror_receiver.h"
 #include <assert.h>
+#include "jni/service_info_proxy.h"
 #include "util/jni/scoped_env.h"
 #include "util/jni/string.h"
 #include "util/log.h"
@@ -23,6 +24,32 @@ MirrorReceiver::~MirrorReceiver() {
   jni::ScopedEnv env(vm_);
 
   env->DeleteGlobalRef(obj_);
+}
+
+bool MirrorReceiver::OnServiceRegister(
+    const ServiceInfo& info) {
+  jni::ScopedEnv env(vm_);
+
+  jni::ServiceInfoProxy jinfo(*env, info);
+
+  jboolean result = env->CallBooleanMethod(
+      obj_,
+      onServiceRegister,
+      jinfo.get());
+
+  return result == JNI_TRUE;
+}
+
+bool MirrorReceiver::OnServiceUnregister(
+    const std::string& service_name) {
+  jni::ScopedEnv env(vm_);
+
+  jboolean result = env->CallBooleanMethod(
+      obj_,
+      onServiceUnregister,
+      env->NewStringUTF(service_name.c_str()));
+
+  return result == JNI_TRUE;
 }
 
 void MirrorReceiver::OnMirrorAuth(
@@ -100,6 +127,12 @@ void MirrorReceiver::InitMethods(
   jclass cls = env->GetObjectClass(obj);
 
   // Methods of MirrorReceiver Java class
+
+  // void onServiceRegister(ServiceInfo info)
+  DEFINE_METHOD(onServiceRegister, "(Lcom/viewsonic/flutter_mirror/ServiceInfo;)Z");
+
+  // void onServiceUnregister(String info)
+  DEFINE_METHOD(onServiceUnregister, "(Ljava/lang/String;)Z");
 
   // void OnMirrorAuth(String pin, int timeoutSec)
   DEFINE_METHOD(onMirrorAuth, "(Ljava/lang/String;I)V");

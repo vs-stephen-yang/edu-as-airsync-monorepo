@@ -3,10 +3,17 @@
 
 #include <string>
 #include "mirror_session.h"
+#include "service_info.h"
 
 class MirrorListener {
  public:
   virtual ~MirrorListener() = default;
+
+  virtual bool OnServiceRegister(
+      const ServiceInfo& info) = 0;
+
+  virtual bool OnServiceUnregister(
+      const std::string& service_name) = 0;
 
   virtual void OnMirrorAuth(
       const std::string& pin_code,
