@@ -10,6 +10,10 @@ String::String(JNIEnv* env)
   method_getBytes_ = env_->GetMethodID(class_, "getBytes", "(Ljava/lang/String;)[B");
 }
 
+jstring String::NewString(const std::string& str) const {
+  return env_->NewStringUTF(str.c_str());
+}
+
 std::string String::ToUtf8(jstring str) const {
   if (str == nullptr) {
     return std::string();
@@ -24,7 +28,7 @@ std::string String::ToUtf8(jstring str) const {
       env_->CallObjectMethod(
           str,
           method_getBytes_,
-          *charset_name));
+          charset_name.get()));
 
   jsize len = env_->GetArrayLength(byte_array);
   if (len <= 0) {

@@ -140,6 +140,15 @@ void MirrorReceiver::UpdateGooglecastCredentials(
 }
 
 // MirrorListener
+bool MirrorReceiver::OnServiceRegister(
+    const ServiceInfo& info) {
+  return proxy_->OnServiceRegister(info);
+}
+bool MirrorReceiver::OnServiceUnregister(
+    const std::string& service_name) {
+  return proxy_->OnServiceUnregister(service_name);
+}
+
 void MirrorReceiver::OnMirrorAuth(
     const std::string& pin,
     unsigned int timeout_sec) {

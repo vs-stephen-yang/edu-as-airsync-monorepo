@@ -3,7 +3,12 @@ package com.viewsonic.flutter_mirror;
 import androidx.annotation.Keep;
 import android.app.Activity;
 import android.content.Context;
+import android.net.nsd.NsdManager;
+import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Keep
 public class MirrorReceiver implements
@@ -14,12 +19,17 @@ public class MirrorReceiver implements
   private long instance_;
   private MirrorListener mirrorListener_;
 
+  // dns-sd services
+  NsdManager nsdManager_;
+  Map<String, NsdManager.RegistrationListener> services_ = new HashMap<>();
+
   // Miracast
   private MiracastReceiver miracastReceiver_;
 
   public MirrorReceiver(
       MirrorListener mirrorListener,
-      TexRegistry textureRegistry) {
+      TexRegistry textureRegistry,
+      Context context) {
     assert mirrorListener != null;
     assert textureRegistry != null;
 
@@ -35,6 +45,8 @@ public class MirrorReceiver implements
         instance_);
 
     assert (instance_ != 0);
+
+    nsdManager_ = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
   }
 
   // start airplay
@@ -145,6 +157,102 @@ public class MirrorReceiver implements
         touch,
         x,
         y);
+  }
+
+  private NsdServiceInfo toServiceInfo(ServiceInfo info) {
+    NsdServiceInfo serviceInfo = new NsdServiceInfo();
+
+    serviceInfo.setServiceName(info.serviceName);
+    serviceInfo.setServiceType(info.serviceType);
+
+    info.attributes.forEach(
+        (k, v) -> serviceInfo.setAttribute(k, v));
+
+    serviceInfo.setPort(info.port);
+
+    return serviceInfo;
+  }
+
+  private NsdManager.RegistrationListener createServiceListener() {
+    return new NsdManager.RegistrationListener() {
+      @Override
+      public void onServiceRegistered(NsdServiceInfo serviceInfo) {
+        Log.i(TAG, String.format("onServiceRegistered %s",
+            serviceInfo.getServiceName()));
+      }
+
+      @Override
+      public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
+        Log.e(TAG, "onRegistrationFailed");
+        Log.e(TAG, String.format("onRegistrationFailed %s %d",
+            serviceInfo.getServiceName(),
+            errorCode));
+      }
+
+      @Override
+      public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
+        Log.i(TAG, String.format("onServiceUnregistered %s",
+            serviceInfo.getServiceName()));
+      }
+
+      @Override
+      public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
+        Log.e(TAG, String.format("onUnregistrationFailed %s %d",
+            serviceInfo.getServiceName(),
+            errorCode));
+      }
+    };
+  }
+
+  public boolean onServiceRegister(ServiceInfo info) {
+    assert nsdManager_ != null;
+
+    if (nsdManager_ == null) {
+      return false;
+    }
+
+    // register service
+    Log.i(TAG, String.format("Registering DNS-SD service %s %s %d",
+        info.serviceName,
+        info.serviceType,
+        info.port));
+
+    NsdServiceInfo serviceInfo = toServiceInfo(info);
+
+    NsdManager.RegistrationListener listener = createServiceListener();
+
+    nsdManager_.registerService(
+        serviceInfo,
+        NsdManager.PROTOCOL_DNS_SD,
+        listener);
+
+    // store the listener
+    if (services_.put(info.serviceName, listener) != null) {
+      Log.w(TAG, "The previous listener is not unregistered");
+    }
+
+    return true;
+  }
+
+  public boolean onServiceUnregister(String serviceName) {
+    assert nsdManager_ != null;
+
+    if (nsdManager_ == null) {
+      return false;
+    }
+
+    Log.i(TAG, String.format("Unregistering DNS-SD service %s ",
+        serviceName));
+
+    NsdManager.RegistrationListener listener = services_.get(serviceName);
+    if (listener == null) {
+      return false;
+    }
+
+    // unregister service
+    nsdManager_.unregisterService(listener);
+
+    return true;
   }
 
   @Override

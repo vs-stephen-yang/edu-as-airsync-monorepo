@@ -51,6 +51,12 @@ class MirrorReceiver
       const openscreen::cast::CastReceiver::Credentials& credetials);
 
   // MirrorListener
+  virtual bool OnServiceRegister(
+      const ServiceInfo& info) override;
+
+  virtual bool OnServiceUnregister(
+      const std::string& service_name) override;
+
   virtual void OnMirrorAuth(
       const std::string& pin_code,
       unsigned int timeout_sec) override;

@@ -94,6 +94,8 @@ public class FlutterMirrorPlugin implements
     messenger_ = flutterPluginBinding.getBinaryMessenger();
     context_ = flutterPluginBinding.getApplicationContext();
 
+    assert context_ != null;
+
     channel_ = new MethodChannel(messenger_, "flutter_mirror");
     channel_.setMethodCallHandler(this);
   }
@@ -228,10 +230,13 @@ public class FlutterMirrorPlugin implements
   }
 
   private void initialize() {
+    assert context_ != null;
+
     if (mirrorReceiver_ != null) {
       return;
     }
-    mirrorReceiver_ = new MirrorReceiver(this, this);
+
+    mirrorReceiver_ = new MirrorReceiver(this, this, context_);
   }
 
   private void startAirplay(String name, String security) {

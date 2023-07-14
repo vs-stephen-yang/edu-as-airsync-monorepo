@@ -3,6 +3,7 @@
 
 #include <jni.h>
 #include <memory>
+#include "service_info.h"
 
 namespace jni {
 
@@ -14,6 +15,12 @@ class MirrorReceiver {
       jobject obj);
 
   ~MirrorReceiver();
+
+  bool OnServiceRegister(
+      const ServiceInfo& info);
+
+  bool OnServiceUnregister(
+      const std::string& service_name);
 
   // when requesting auth
   void OnMirrorAuth(
@@ -52,6 +59,8 @@ class MirrorReceiver {
   JavaVM* vm_ = nullptr;
 
   // Methods of MirrorReceiver Java class
+  jmethodID onServiceRegister = nullptr;
+  jmethodID onServiceUnregister = nullptr;
   jmethodID onMirrorAuth = nullptr;
   jmethodID onMirrorStart = nullptr;
   jmethodID onMirrorStop = nullptr;
