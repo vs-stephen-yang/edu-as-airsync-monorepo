@@ -25,6 +25,12 @@ class GooglecastReceiver
       const openscreen::cast::CastReceiver::Credentials& creds);
 
   // implements CastReceiver::Listener
+  virtual bool OnServiceRegister(
+      const openscreen::cast::ServiceInfo& info) override;
+
+  virtual bool OnServiceUnregister(
+      const std::string& service_name) override;
+
   virtual bool OnMirrorStart(
       openscreen::cast::CastMirrorSessionPtr session,
       const openscreen::cast::MediaFormats& formats) override;
