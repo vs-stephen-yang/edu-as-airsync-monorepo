@@ -1,9 +1,9 @@
 #include "googlecast/googlecast_receiver.h"
 #include <assert.h>
-
-#include "util/log.h"
-
 #include <sstream>
+#include "service_info.h"
+#include "util/log.h"
+#include "googlecast_utils.h"
 
 static const std::string kMirrorIdPrefix = "googlecast-";
 
@@ -53,6 +53,18 @@ void GooglecastReceiver::Stop() {
   }
 
   receiver_->Stop();
+}
+
+bool GooglecastReceiver::OnServiceRegister(
+    const openscreen::cast::ServiceInfo& gc_info) {
+  ServiceInfo info = ToServiceInfo(gc_info);
+
+  return mirror_listener_.OnServiceRegister(info);
+}
+
+bool GooglecastReceiver::OnServiceUnregister(
+    const std::string& service_name) {
+  return mirror_listener_.OnServiceUnregister(service_name);
 }
 
 // a mirror session starts

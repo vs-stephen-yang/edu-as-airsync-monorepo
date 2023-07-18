@@ -4,6 +4,7 @@ add_library(
   flutter_googlecast
   STATIC
   googlecast_mirror_session.cpp
+  googlecast_utils.cpp
   googlecast_receiver.cpp)
 
 target_include_directories(
