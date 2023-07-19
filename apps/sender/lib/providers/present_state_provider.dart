@@ -102,7 +102,9 @@ class PresentStateProvider extends ChangeNotifier {
 
   Future<void> presentTo(
       {required String? displayCode, required String otp}) async {
-    debugModePrint('presentTo: displayCode: $displayCode, otp: $otp');
+    debugModePrint(
+        '${presenter?.id} presentTo: displayCode: $displayCode, otp: $otp',
+        type: runtimeType);
     _presentTimer = Timer(const Duration(seconds: 30), () {
       presentEnd();
     });
@@ -118,14 +120,18 @@ class PresentStateProvider extends ChangeNotifier {
               "role": "presenter",
             })
             .build());
-    
-    _socket?.onConnecting((data) => debugModePrint('onConnecting: $data'));
+
+    _socket?.onConnecting((data) {
+      debugModePrint('${presenter?.id} onConnecting: $data', type: runtimeType);
+    });
 
     _socket?.onConnect((_) {
-      debugModePrint('connected to display');
+      debugModePrint('${presenter?.id} connected to display',
+          type: runtimeType);
 
-      _socket?.on("display-ready", (msg) async {
-        debugModePrint('display-ready: $msg');
+      _socket?.on("display-ready", (msg) {
+        debugModePrint('${presenter?.id} display-ready: $msg',
+            type: runtimeType);
         _msgDisplay = msg;
         presentSelectScreen();
       });
@@ -155,55 +161,65 @@ class PresentStateProvider extends ChangeNotifier {
       });
     });
 
-    _socket?.on("display-state-update", (msg) async {
-      debugModePrint('display-state-update: $msg');
+    _socket?.on("display-state-update", (msg) {
+      debugModePrint('${presenter?.id} display-state-update: $msg',
+          type: runtimeType);
       Message message = Message.fromJson(msg);
-      Extra extra = Extra.fromJson(message.extra);
-      if (extra.presentationState == 'stopStreaming') {
-        // moderator mode
-        if (moderator != null) {
-          presentStop();
-        } else {
-          presentEnd();
+      String? messageFor = message.messageFor;
+      if (messageFor != null && messageFor == presenter?.id) {
+        Extra extra = Extra.fromJson(message.extra);
+        if (extra.presentationState == 'stopStreaming') {
+          // moderator mode
+          if (moderator != null) {
+            presentStop();
+          } else {
+            presentEnd();
+          }
         }
       }
     });
 
-    _socket?.on('update-display-state', (msg) async {
-      debugModePrint('update-display-state: $msg');
+    _socket?.on('update-display-state', (msg) {
+      debugModePrint('${presenter?.id} update-display-state: $msg',
+          type: runtimeType);
     });
 
-    _socket?.on("presenter-peer-action", (msg) async {
-      debugModePrint('presenter-peer-action: $msg');
+    _socket?.on("presenter-peer-action", (msg) {
+      debugModePrint('${presenter?.id} presenter-peer-action: $msg',
+          type: runtimeType);
       Message message = Message.fromJson(msg);
-      if (message.action == 'remove') {
-        // stream end
-        presentEnd();
-      }
-      if (message.action == 'stopVideo') {
-        // stream stop
-        presentStop();
-      }
-      if (message.action == 'pause' && message.status == 'pause') {
-        //stream pause
-        presentPause();
-      }
-      if (message.action == 'resume' && message.status == 'pause') {
-        // stream resume
-        presentResume();
+      String? messageFor = message.messageFor;
+      if (messageFor != null && messageFor == presenter?.id) {
+        if (message.action == 'remove') {
+          // stream end
+          presentEnd();
+        }
+        if (message.action == 'stopVideo') {
+          // stream stop
+          presentStop();
+        }
+        if (message.action == 'pause' && message.status == 'pause') {
+          //stream pause
+          presentPause();
+        }
+        if (message.action == 'resume' && message.status == 'pause') {
+          // stream resume
+          presentResume();
+        }
       }
     });
 
     _socket?.on('reject-present', (msg) {
-      debugModePrint('reject-present: $msg');
+      debugModePrint('${presenter?.id} reject-present: $msg',
+          type: runtimeType);
     });
 
     _socket?.on('dismiss', (msg) {
-      debugModePrint('dismiss: $msg');
+      debugModePrint('${presenter?.id} dismiss: $msg', type: runtimeType);
     });
 
     _socket?.on('set-moderator', (msg) {
-      debugModePrint('set-moderator: $msg');
+      debugModePrint('${presenter?.id} set-moderator: $msg', type: runtimeType);
       if (msg['action'] == 'set-moderator') {
         moderator = Moderator.fromJson(msg['extra']['moderator']);
         _socket?.emit('join-display', {
@@ -222,9 +238,11 @@ class PresentStateProvider extends ChangeNotifier {
       }
     });
 
-    _socket?.on('unset-moderator', (msg) => {
-      if(msg['action'] == 'unset-moderator') {
-        presentEnd()
+    _socket?.on('unset-moderator', (msg) {
+      debugModePrint('${presenter?.id} unset-moderator: $msg',
+          type: runtimeType);
+      if (msg['action'] == 'unset-moderator') {
+        presentEnd();
       }
     });
 
@@ -257,7 +275,7 @@ class PresentStateProvider extends ChangeNotifier {
       _socket?.dispose();
       _socket = null;
     } catch (e) {
-      debugModePrint(e);
+      debugModePrint(e, type: runtimeType);
     }
     resetMessage();
     setViewState(ViewState.idle);
