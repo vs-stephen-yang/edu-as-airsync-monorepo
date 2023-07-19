@@ -168,8 +168,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                     ),
                   ),
                   if (AppInstanceCreate().isInstalledInVBS200 &&
-                      value == stateStandby &&
-                      !AppInstanceCreate().isDisableAdvance)
+                      value == stateStandby)
                     Column(
                       children: [
                         Transform(
