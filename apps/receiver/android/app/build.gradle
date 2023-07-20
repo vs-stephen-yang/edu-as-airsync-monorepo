@@ -169,7 +169,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 //    implementation project(path: ':libwebrtc')
 //    implementation project(':base')
@@ -188,7 +188,7 @@ dependencies {
     storeImplementation 'com.google.firebase:firebase-core:21.1.1'
     // *** Use 21.1.0 may cause "Remote Config HTTP errors for some RTL locales" ***
     // https://github.com/firebase/firebase-android-sdk/issues/3757
-    storeImplementation 'com.google.firebase:firebase-config:21.2.1'
+    storeImplementation 'com.google.firebase:firebase-config:21.4.1'
     // endregion
 }
 
