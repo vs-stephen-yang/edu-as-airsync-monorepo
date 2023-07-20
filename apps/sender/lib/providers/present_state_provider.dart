@@ -62,7 +62,7 @@ class PresentStateProvider extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> checkModeratorOTP({required String displayCode, required String otp}) async {
+  Future<int> checkModeratorOTP({required String displayCode, required String otp}) async {
     var api = Uri.parse('$_urlGateway/presentation/displays/moderator?code=$displayCode&otp=$otp');
     var response = await http.get(api);
     switch (response.statusCode) {
@@ -75,29 +75,29 @@ class PresentStateProvider extends ChangeNotifier {
         this.otp = otp;
         setViewState(ViewState.moderatorIdle);
         notifyListeners();
-        // break;
-      return true;
+        break;
       case 204:
         // 沒開moderator 有往下跑
         this.displayCode = displayCode;
         this.otp = otp;
-        // break;
-      return true;
+        break;
       case 403:
       // 403 -> Reach maximum presenters
+        break;
       case 404:
       // 404 -> sendToV1
+        this.displayCode = displayCode;
+        break;
       case 406:
         // 有開Moderator otp錯誤 沒有往下跑
         // 406 -> Invalid one time password
         // break;
-      return false;
+      // return false;
       default:
         //log
-        // break;
-      return false;
+        break;
     }
-    // return response;
+    return response.statusCode;
   }
 
   Future<void> presentTo(

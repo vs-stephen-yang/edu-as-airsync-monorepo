@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:provider/provider.dart';
+import 'custom_text_form_field.dart';
 
 class PresentIdle extends StatelessWidget {
   PresentIdle({super.key, this.displayCode, this.otp}) {
@@ -16,7 +16,7 @@ class PresentIdle extends StatelessWidget {
   late final TextEditingController _codeController;
   late final TextEditingController _otpController;
   final codeKey = GlobalKey();
-  final otpKey = GlobalKey();
+  GlobalKey<CustomTextFormFieldState> otpKey = GlobalKey();
 
   final String? displayCode;
   final String? otp;
@@ -69,10 +69,26 @@ class PresentIdle extends StatelessWidget {
                 _showOverlayMessage(context, otpKey);
               } else {
                 var displayCode = _codeController.text.replaceAll('-', '');
-                bool moderator = await presentStateProvider.checkModeratorOTP(
+                int moderator = await presentStateProvider.checkModeratorOTP(
                     displayCode: displayCode,
                     otp: _otpController.text);
-                if (!moderator || presentStateProvider.state == ViewState.moderatorIdle) return;
+                if (moderator > 204 || presentStateProvider.state == ViewState.moderatorIdle) {
+                  switch (moderator) {
+                    case 403:
+                    // 403 -> Reach maximum presenters
+                      otpKey.currentState?.setErrorMsg('Reach maximum presenters');
+                      break;
+                    case 404:
+                    // 404 -> sendToV1
+                      break;
+                    case 406:
+                    // Display's moderator mode is on,  but the otp is wrong
+                    // 406 -> Invalid one time password
+                      otpKey.currentState?.setErrorMsg('Invalid one time password');
+                      break;
+                  }
+                  return;
+                }
 
                 bool display = await presentStateProvider.checkDisplayOTP(
                     displayCode: displayCode,
@@ -150,54 +166,3 @@ class PresentIdle extends StatelessWidget {
   }
 }
 
-class CustomTextFormField extends StatelessWidget {
-  const CustomTextFormField(
-      {this.controller,
-      // this.initialValue,
-      this.labelText,
-      this.errorText,
-      this.inputFormatter,
-      super.key});
-
-  final TextEditingController? controller;
-  // final String? initialValue;
-  final String? labelText;
-  final String? errorText;
-  final List<TextInputFormatter>? inputFormatter;
-
-  @override
-  Widget build(BuildContext context) {
-    TextStyle textStyleBlue = const TextStyle(color: Colors.blue);
-    TextStyle textStyleGrey = const TextStyle(color: Colors.grey);
-    TextStyle textStyleWhite = const TextStyle(color: Colors.white);
-    OutlineInputBorder outlineInputBorderBlue = const OutlineInputBorder(
-      borderSide: BorderSide(width: 2, color: Colors.blue),
-    );
-    OutlineInputBorder outlineInputBorderGrey = const OutlineInputBorder(
-      borderSide: BorderSide(width: 2, color: Colors.grey),
-    );
-    return TextFormField(
-      controller: controller,
-      // initialValue: initialValue,
-      decoration: InputDecoration(
-        labelText: labelText,
-        labelStyle: textStyleGrey,
-        floatingLabelStyle:
-            MaterialStateTextStyle.resolveWith((Set<MaterialState> states) {
-          return states.contains(MaterialState.focused)
-              ? textStyleBlue
-              : textStyleGrey;
-        }),
-        errorText: errorText,
-        errorStyle: textStyleGrey,
-        border: outlineInputBorderBlue,
-        enabledBorder: outlineInputBorderGrey,
-        errorBorder: outlineInputBorderGrey,
-        focusedErrorBorder: outlineInputBorderBlue,
-      ),
-      style: textStyleWhite,
-      inputFormatters: inputFormatter,
-      // onChanged: (_) {},
-    );
-  }
-}
