@@ -244,7 +244,7 @@ public class MirrorReceiver implements
     Log.i(TAG, String.format("Unregistering DNS-SD service %s ",
         serviceName));
 
-    NsdManager.RegistrationListener listener = services_.get(serviceName);
+    NsdManager.RegistrationListener listener = services_.remove(serviceName);
     if (listener == null) {
       return false;
     }
