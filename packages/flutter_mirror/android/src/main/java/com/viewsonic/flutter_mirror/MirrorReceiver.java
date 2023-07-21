@@ -53,7 +53,7 @@ public class MirrorReceiver implements
   public void startAirplay(String name, String security) {
     assert instance_ != 0;
 
-    String deviceId = NetUtils.getMacAddressOfFirstUpInterface();
+    String deviceId = NetUtils.getRandomMacAddress();
 
     startAirplayNative(
         instance_,
