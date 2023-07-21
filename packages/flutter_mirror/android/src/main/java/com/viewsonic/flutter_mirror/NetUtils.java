@@ -1,11 +1,14 @@
 package com.viewsonic.flutter_mirror;
 
 import java.net.NetworkInterface;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class NetUtils {
+
+  static final int MAC_SIZE = 6; // 6-byte
 
   // returns true if the interface is up and not a loopback one.
   public static boolean IsUpPhysical(NetworkInterface intf)
@@ -55,10 +58,20 @@ public class NetUtils {
 
       NetworkInterface first = interfaces.get(0);
 
+      // on Android versions 6 and higher, access to MAC addresses is restricted to
+      // system apps. Third-party apps can't access them.
       return formatMacAddress(first.getHardwareAddress());
     } catch (java.net.SocketException e) {
       return null;
     }
   }
 
+  public static String getRandomMacAddress() {
+    SecureRandom random = new SecureRandom();
+
+    byte bytes[] = new byte[MAC_SIZE];
+    random.nextBytes(bytes);
+
+    return formatMacAddress(bytes);
+  }
 }
