@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -14,12 +15,19 @@ class PresentSelectScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       PresentStateProvider provider =
           Provider.of<PresentStateProvider>(context, listen: false);
+      var dialog = SelectScreenDialog();
+      // start timeout timer (30 sec)
+      ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
+        // onFinish
+        dialog._cancel(context);
+      });
       await showDialog<DesktopCapturerSource>(
         context: context,
-        builder: (context) => SelectScreenDialog(),
+        builder: (context) => dialog,
       ).then((value) {
         debugModePrint('selectedSource: $value');
-        if (value != null) {
+        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+        if (WebRTC.platformIsIOS || value != null) {
           provider.presentStart(selectedSource: value);
         } else {
           provider.presentEnd();

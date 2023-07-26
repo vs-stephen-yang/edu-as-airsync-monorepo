@@ -80,6 +80,18 @@ class PresentIdle extends StatelessWidget {
                       break;
                     case 404:
                     // 404 -> sendToV1
+                      await presentStateProvider.presentToV1(displayCode: displayCode, otp: _otpController.text, callback: (result) async {
+                        // handle UI
+                        if (result == 'connect') {
+                          // web: open a new window
+                        } else if (result == 'denied') {
+                          otpKey.currentState?.setErrorMsg('Invalid password');
+                        } else if (result == 'blocked') {
+                          otpKey.currentState?.setErrorMsg('Display host is connected by another client. Please try again later');
+                        } else if (result == 'timeout') {
+                          otpKey.currentState?.setErrorMsg('Your connection has been terminated because no stream was provided for more than 30 seconds. Please try to reconnect.');
+                        }
+                      });
                       break;
                     case 406:
                     // Display's moderator mode is on,  but the otp is wrong

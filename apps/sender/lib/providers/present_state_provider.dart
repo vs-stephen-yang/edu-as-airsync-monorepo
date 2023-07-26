@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:display_cast_flutter/features/webrtc_helper.dart';
+import 'package:display_cast_flutter/features/webrtc_helper_v1.dart';
 import 'package:display_cast_flutter/model/message.dart';
 import 'package:display_cast_flutter/model/moderator.dart';
 import 'package:display_cast_flutter/model/presenter.dart';
@@ -26,21 +27,22 @@ enum ViewState {
 class PresentStateProvider extends ChangeNotifier {
   PresentStateProvider(BuildContext context) {
     _urlGateway = AppConfig.of(context)!.settings.urlGateway;
-    _webRTCHelper = WebRTCHelper(AppConfig.of(context)!.settings.urlGetIce);
+    _urlIce = AppConfig.of(context)!.settings.urlGetIce;
   }
 
   ViewState get state => _currentState;
   ViewState _currentState = ViewState.idle;
   Timer? _presentTimer;
-  late final String _urlGateway;
+  late final String _urlGateway, _urlIce;
   late dynamic _msgDisplay;
-  late WebRTCHelper? _webRTCHelper;
+  WebRTCHelper? _webRTCHelper;
   late io.Socket? _socket;
 
   Presenter? presenter = Presenter(id: const Uuid().v4());
   Moderator? moderator;
   String? displayCode;
   String? otp;
+  bool v1 = false;
 
   setViewState(ViewState newViewState) {
     _currentState = newViewState;
@@ -105,6 +107,7 @@ class PresentStateProvider extends ChangeNotifier {
     debugModePrint(
         '${presenter?.id} presentTo: displayCode: $displayCode, otp: $otp',
         type: runtimeType);
+    v1 = false;
     _presentTimer = Timer(const Duration(seconds: 30), () {
       presentEnd();
     });
@@ -249,6 +252,55 @@ class PresentStateProvider extends ChangeNotifier {
     setViewState(ViewState.waitReady);
   }
 
+  Future<void> presentToV1(
+      {required String displayCode, required String otp, required Function(String result) callback}) async {
+    debugModePrint(
+        '${presenter?.id} presentToV1: displayCode: $displayCode, otp: $otp',
+        type: runtimeType);
+    v1 = true;
+    _socket = io.io(
+        'https://control-io.myviewboard.cloud/',
+        io.OptionBuilder()
+            .setTransports(['websocket'])
+            .enableForceNew()
+            .enableForceNewConnection()
+            .setQuery({
+          "userid": presenter?.id,
+          "socketCustomEvent": displayCode,
+          "role": "presenter",
+        })
+            .build());
+
+    _socket?.onConnect((_) {
+      debugModePrint('connected to display $_ ${_socket?.id} ${_socket?.json} ${_socket?.query}');
+
+      _socket?.on(displayCode, (data) async {
+        debugModePrint('displayCode1 $data');
+        Message message = Message.fromJson(data);
+        if(message.messageFor != presenter?.id) return;
+
+        if (message.action == 'connect') {
+          presentSelectScreen();
+        } else {
+          presentEnd(idleState: false);
+        }
+        callback(message.action!); //'denied', 'blocked', 'timeout'
+      });
+
+      _socket?.on('$displayCode/disconnect', (data) {
+
+      });
+
+      _socket?.emit(displayCode, {
+        'messageFor': displayCode,
+        'userid': presenter?.id,
+        'otp': otp,
+      });
+    });
+
+
+  }
+
   Future<void> presentSelectScreen() async {
     setViewState(ViewState.selectScreen);
   }
@@ -258,18 +310,41 @@ class PresentStateProvider extends ChangeNotifier {
   }
 
   Future<void> presentStart({required dynamic selectedSource}) async {
-    await _webRTCHelper?.makeCall(
-      _msgDisplay['extra']['signal']['url'],
-      _msgDisplay['extra']['setClientId'],
-      _msgDisplay['extra']['setAllowedPeer'],
-      selectedSource,
-    );
-    setViewState(ViewState.presentStart);
+    if (v1) {
+      _webRTCHelper = WebRTCHelperV1(_urlIce);
+      await _webRTCHelper?.makeCall(
+        'https://control-io.myviewboard.cloud/',
+        presenter?.id ?? '',
+        displayCode!,
+        selectedSource,
+      );
+      setViewState(ViewState.presentStart);
+    } else {
+      _webRTCHelper = WebRTCHelper(_urlIce);
+      await _webRTCHelper?.makeCall(
+        _msgDisplay['extra']['signal']['url'],
+        _msgDisplay['extra']['setClientId'],
+        _msgDisplay['extra']['setAllowedPeer'],
+        selectedSource,
+      );
+      setViewState(ViewState.presentStart);
+    }
   }
 
-  Future<void> presentEnd() async {
+  Future<void> presentEnd({bool idleState = true}) async {
     try {
-      await _webRTCHelper?.hangUp();
+      if (v1) {
+        _socket?.emit(displayCode!, {
+          'messageFor': displayCode!,
+          'userid': presenter?.id,
+          "action": "disconnect",
+          'exact': {
+            'triggerBy': 'presentStop'
+          }
+        });
+      }
+      if (_webRTCHelper != null) await _webRTCHelper?.hangUp();
+      _webRTCHelper = null;
 
       _socket?.disconnect();
       _socket?.dispose();
@@ -278,7 +353,7 @@ class PresentStateProvider extends ChangeNotifier {
       debugModePrint(e, type: runtimeType);
     }
     resetMessage();
-    setViewState(ViewState.idle);
+    if (idleState) setViewState(ViewState.idle);
   }
 
   Future<void> presentStop() async {
@@ -289,28 +364,44 @@ class PresentStateProvider extends ChangeNotifier {
   }
 
   Future<void> presentPause() async {
-    _socket?.emit('presenter-action', {
-      "action": "pause",
-      "extra": {
-        "presenter": presenter?.toJson(),
-        "moderator": moderator?.toJson(),
-        "display": {"code": displayCode, "setId": "5tovgl636ge"},
-      }
-    });
+    if (v1) {
+      _socket?.emit(displayCode!, {
+        'messageFor': displayCode!,
+        'userid': presenter?.id,
+        "action": "pauseVideo",
+      });
+    } else {
+      _socket?.emit('presenter-action', {
+        "action": "pause",
+        "extra": {
+          "presenter": presenter?.toJson(),
+          "moderator": moderator?.toJson(),
+          "display": {"code": displayCode, "setId": "5tovgl636ge"},
+        }
+      });
+    }
 
     // handle stream
     _webRTCHelper?.streamPause();
   }
 
   Future<void> presentResume() async {
-    _socket?.emit('presenter-action', {
-      "action": "resume",
-      "extra": {
-        "presenter": presenter?.toJson(),
-        "moderator": moderator?.toJson(),
-        "display": {"code": displayCode, "setId": "5tovgl636ge"},
-      }
-    });
+    if (v1) {
+      _socket?.emit(displayCode!, {
+        'messageFor': displayCode!,
+        'userid': presenter?.id,
+        "action": "resumeVideo",
+      });
+    } else {
+      _socket?.emit('presenter-action', {
+        "action": "resume",
+        "extra": {
+          "presenter": presenter?.toJson(),
+          "moderator": moderator?.toJson(),
+          "display": {"code": displayCode, "setId": "5tovgl636ge"},
+        }
+      });
+    }
 
     // handle stream
     _webRTCHelper?.streamResume();
