@@ -2,6 +2,7 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/widgets/bottom_bar.dart';
 import 'package:display_cast_flutter/widgets/moderator_idle.dart';
+import 'package:display_cast_flutter/widgets/moderator_present_start.dart';
 import 'package:display_cast_flutter/widgets/moderator_wait.dart';
 import 'package:display_cast_flutter/widgets/present_idle.dart';
 import 'package:display_cast_flutter/widgets/present_present_start.dart';
@@ -63,6 +64,8 @@ class _HomeState extends State<Home> {
                       return const PresentSelectScreen();
                     case ViewState.presentStart:
                       return PresentPresentStart();
+                    case ViewState.moderatorStart:
+                      return ModeratorPresentStart();
                     default:
                       return const SizedBox();
                   }
