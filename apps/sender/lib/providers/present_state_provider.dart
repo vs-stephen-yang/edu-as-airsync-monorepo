@@ -22,6 +22,7 @@ enum ViewState {
   //moderator
   moderatorIdle,
   moderatorWait,
+  moderatorStart
 }
 
 class PresentStateProvider extends ChangeNotifier {
@@ -318,7 +319,6 @@ class PresentStateProvider extends ChangeNotifier {
         displayCode!,
         selectedSource,
       );
-      setViewState(ViewState.presentStart);
     } else {
       _webRTCHelper = WebRTCHelper(_urlIce);
       await _webRTCHelper?.makeCall(
@@ -327,6 +327,10 @@ class PresentStateProvider extends ChangeNotifier {
         _msgDisplay['extra']['setAllowedPeer'],
         selectedSource,
       );
+    }
+    if (moderator != null) {
+      setViewState(ViewState.moderatorStart);
+    } else {
       setViewState(ViewState.presentStart);
     }
   }
@@ -356,9 +360,40 @@ class PresentStateProvider extends ChangeNotifier {
     if (idleState) setViewState(ViewState.idle);
   }
 
-  Future<void> presentStop() async {
+  Future<void> presentStop({bool moderatorStart = false}) async {
+    if (moderatorStart) {
+      _webRTCHelper?.streamStop();
+      _socket?.emit('presenter-action', {
+        "action": "stop",
+        "extra": {
+          "presenter": presenter?.toJson(),
+          "moderator": moderator?.toJson(),
+          "display": {"code": displayCode, "setId": "5tovgl636ge"},
+        }
+      });
+      _socket?.emit(displayCode!, {
+        'messageFor': displayCode,
+        'userid': presenter?.id,
+        'action': 'disconnect',
+      });
+      return;
+    }
+    
     // handle stream
     _webRTCHelper?.streamStop();
+    _socket?.emit('presenter-action', {
+      "action": "stop",
+      "extra": {
+        "presenter": presenter?.toJson(),
+        "display": {"code": displayCode, "setId": "5tovgl636ge"},
+      }
+    });
+    _socket?.emit(displayCode!, {
+      'messageFor': displayCode,
+      'userid': presenter?.id,
+      'action': 'disconnect',
+    });
+    _webRTCHelper?.hangUp();
 
     setViewState(ViewState.moderatorWait);
   }
