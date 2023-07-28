@@ -30,6 +30,9 @@ class PresentSelectScreen extends StatelessWidget {
         if (WebRTC.platformIsIOS || value != null) {
           provider.presentStart(selectedSource: value);
         } else {
+          for (var element in dialog._subscriptions) {
+            element.cancel();
+          }
           provider.presentEnd();
         }
       });
