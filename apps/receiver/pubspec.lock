@@ -101,10 +101,10 @@ packages:
     dependency: transitive
     description:
       name: dart_webrtc
-      sha256: a34e59ac1559cac954e48c9fe156164992163d2f4b7e75d5b0e927ee2f1e4922
+      sha256: "8949301071ac7c3fb8f78ef7dffc48652db16f2ec63d84078b608f2ca27cca38"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.16"
+    version: "1.0.17"
   device_info_plus:
     dependency: "direct main"
     description:
@@ -250,11 +250,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.9.29"
-      resolved-ref: eca9fe5385295cb14432080d127bf8f8f29e8410
+      ref: "release-0.9.36"
+      resolved-ref: d869acb06fa67a7bf20d75d31a6d509d9263f343
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc-plugin"
     source: git
-    version: "0.9.29"
+    version: "0.9.36"
   http:
     dependency: "direct main"
     description:
@@ -713,10 +713,10 @@ packages:
     dependency: transitive
     description:
       name: webrtc_interface
-      sha256: "0ac4693f921c81005edefd2f43b9fe84b0ed54481474fe1ee16b789b0c84a77c"
+      sha256: "0dd96f4d7fb6ba9895930644cebd3f1adb5179caa83cb1760061b2fe9cba5aad"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.13"
+    version: "1.1.0"
   win32:
     dependency: transitive
     description:
