@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as io;
+import 'package:device_info_vs/device_info_vs.dart';
 
 import 'connect_timer.dart';
 import 'control_socket.dart';
@@ -59,6 +60,11 @@ class WebRTCFlutterViewSocket {
     if (_pc != null) return;
     if (!_configuration.containsKey('iceServers')) {
       await _getIceServers();
+    }
+
+    String? deviceType = await DeviceInfoVs.deviceType;
+    if (deviceType == 'IFP50_2' || deviceType == 'IFP52_K') {
+      _configuration['enablePrerendererSmoothing'] = false;
     }
 
     _pc = await createPeerConnection(_configuration);
