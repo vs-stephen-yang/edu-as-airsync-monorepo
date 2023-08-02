@@ -16,7 +16,7 @@ class PresentIdle extends StatelessWidget {
   late final TextEditingController _codeController;
   late final TextEditingController _otpController;
   final codeKey = GlobalKey();
-  GlobalKey<CustomTextFormFieldState> otpKey = GlobalKey();
+  final GlobalKey<CustomTextFormFieldState> otpKey = GlobalKey();
 
   final String? displayCode;
   final String? otp;
@@ -25,7 +25,6 @@ class PresentIdle extends StatelessWidget {
   Widget build(BuildContext context) {
     PresentStateProvider presentStateProvider =
         Provider.of<PresentStateProvider>(context);
-    print('zz p ${presentStateProvider.moderator?.id}');
     return Container(
       width: 400,
       padding: const EdgeInsets.all(30),
