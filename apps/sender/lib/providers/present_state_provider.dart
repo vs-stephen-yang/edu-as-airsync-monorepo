@@ -8,6 +8,7 @@ import 'package:display_cast_flutter/model/moderator.dart';
 import 'package:display_cast_flutter/model/presenter.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
+import 'package:display_cast_flutter/widgets/present_select_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:uuid/uuid.dart';
@@ -177,6 +178,9 @@ class PresentStateProvider extends ChangeNotifier {
           if (moderator != null) {
             presentStop();
           } else {
+            if (state == ViewState.selectScreen) {
+              PresentSelectScreen.selectScreenDialog.cancel();
+            }
             presentEnd();
           }
         }
@@ -250,6 +254,14 @@ class PresentStateProvider extends ChangeNotifier {
       }
     });
 
+    _socket?.on('$displayCode/disconnect', (data) {
+      if (state == ViewState.selectScreen) {
+        PresentSelectScreen.selectScreenDialog.cancel();
+      } else {
+        presentEnd();
+      }
+    });
+
     setViewState(ViewState.waitReady);
   }
 
@@ -283,13 +295,17 @@ class PresentStateProvider extends ChangeNotifier {
         if (message.action == 'connect') {
           presentSelectScreen();
         } else {
-          presentEnd(idleState: false);
+          presentEnd(goIdleState: false);
         }
         callback(message.action!); //'denied', 'blocked', 'timeout'
       });
 
       _socket?.on('$displayCode/disconnect', (data) {
-
+        if (state == ViewState.selectScreen) {
+          PresentSelectScreen.selectScreenDialog.cancel();
+        } else {
+          presentEnd();
+        }
       });
 
       _socket?.emit(displayCode, {
@@ -335,7 +351,7 @@ class PresentStateProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> presentEnd({bool idleState = true}) async {
+  Future<void> presentEnd({bool goIdleState = true}) async {
     try {
       if (v1) {
         _socket?.emit(displayCode!, {
@@ -357,7 +373,9 @@ class PresentStateProvider extends ChangeNotifier {
       debugModePrint(e, type: runtimeType);
     }
     resetMessage();
-    if (idleState) setViewState(ViewState.idle);
+    if (goIdleState) {
+      setViewState(ViewState.idle);
+    }
   }
 
   Future<void> presentStop({bool moderatorStart = false}) async {

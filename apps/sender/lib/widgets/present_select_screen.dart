@@ -10,27 +10,31 @@ import 'package:provider/provider.dart';
 class PresentSelectScreen extends StatelessWidget {
   const PresentSelectScreen({super.key});
 
+  static final selectScreenDialog = SelectScreenDialog();
+
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       PresentStateProvider provider =
           Provider.of<PresentStateProvider>(context, listen: false);
-      var dialog = SelectScreenDialog();
       // start timeout timer (30 sec)
       ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
         // onFinish
-        dialog._cancel(context);
+        if (context.mounted) {
+          selectScreenDialog.cancel();
+        }
       });
       await showDialog<DesktopCapturerSource>(
         context: context,
-        builder: (context) => dialog,
+        builder: (context) => selectScreenDialog,
       ).then((value) {
         debugModePrint('selectedSource: $value');
         ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
         if (WebRTC.platformIsIOS || value != null) {
           provider.presentStart(selectedSource: value);
         } else {
-          for (var element in dialog._subscriptions) {
+          SelectScreenDialog._timer?.cancel();
+          for (var element in selectScreenDialog._subscriptions) {
             element.cancel();
           }
           provider.presentEnd();
@@ -68,9 +72,11 @@ class SelectScreenDialog extends Dialog {
   static DesktopCapturerSource? _selectedSource;
   static StateSetter? _stateSetter;
   static Timer? _timer;
+  late BuildContext ctx;
 
   @override
   Widget build(BuildContext context) {
+    ctx = context;
     return Material(
       type: MaterialType.transparency,
       child: Center(
@@ -95,7 +101,7 @@ class SelectScreenDialog extends Dialog {
                       alignment: Alignment.topRight,
                       child: InkWell(
                         child: const Icon(Icons.close),
-                        onTap: () => _cancel(context),
+                        onTap: () => cancel(),
                       ),
                     ),
                   ],
@@ -203,7 +209,7 @@ class SelectScreenDialog extends Dialog {
                         style: TextStyle(color: Colors.black),
                       ),
                       onPressed: () {
-                        _cancel(context);
+                        cancel();
                       },
                     ),
                     MaterialButton(
@@ -212,7 +218,7 @@ class SelectScreenDialog extends Dialog {
                         'Share',
                       ),
                       onPressed: () {
-                        _ok(context);
+                        _ok();
                       },
                     ),
                   ],
@@ -225,20 +231,20 @@ class SelectScreenDialog extends Dialog {
     );
   }
 
-  void _ok(context) async {
+  void cancel() async {
     _timer?.cancel();
     for (var element in _subscriptions) {
       element.cancel();
     }
-    Navigator.pop<DesktopCapturerSource>(context, _selectedSource);
+    Navigator.pop<DesktopCapturerSource>(ctx, null);
   }
 
-  void _cancel(context) async {
+  void _ok() async {
     _timer?.cancel();
     for (var element in _subscriptions) {
       element.cancel();
     }
-    Navigator.pop<DesktopCapturerSource>(context, null);
+    Navigator.pop<DesktopCapturerSource>(ctx, _selectedSource);
   }
 
   Future<void> _getSources(SourceType sourceType) async {
