@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:display_cast_flutter/features/webrtc_helper.dart';
 import 'package:display_cast_flutter/features/webrtc_helper_v1.dart';
+import 'package:display_cast_flutter/model/displayer.dart';
 import 'package:display_cast_flutter/model/message.dart';
 import 'package:display_cast_flutter/model/moderator.dart';
 import 'package:display_cast_flutter/model/presenter.dart';
@@ -42,8 +44,10 @@ class PresentStateProvider extends ChangeNotifier {
 
   Presenter? presenter = Presenter(id: const Uuid().v4());
   Moderator? moderator;
+  Displayer? displayer;
   String? displayCode;
   String? otp;
+  String? setId;
   bool v1 = false;
 
   setViewState(ViewState newViewState) {
@@ -59,7 +63,8 @@ class PresentStateProvider extends ChangeNotifier {
   /// 2023Q3, it's possible to be generated OTP from this Send App. And this should be removed.
   Future<bool> checkDisplayOTP({required String? displayCode, required String? otp}) async {
     var api = Uri.parse('$_urlGateway/presentation/displays/?code=$displayCode&otp=$otp');
-    var response = await http.get(api);
+    http.Response response = await http.get(api);
+    displayer = Displayer.fromJson(jsonDecode(response.body));
     if (response.statusCode == 200) {
       return true;
     }
@@ -158,7 +163,7 @@ class PresentStateProvider extends ChangeNotifier {
         "extra": {
           "presenter": presenter?.toJson(),
           "moderator": moderator?.toJson(),
-          "display": {"code": displayCode, "setId": "5tovgl636ge"},
+          "display": {"code": displayCode, "setId": _getRandomString()},
           "signal": {
             "url": "",
           }
@@ -237,7 +242,7 @@ class PresentStateProvider extends ChangeNotifier {
           "extra": {
             "presenter": presenter?.toJson(),
             "moderator": moderator?.toJson(),
-            "display": {"code": displayCode, "setId": "5tovgl636ge"},
+            "display": {"code": displayCode, "setId": _getRandomString()},
             "signal": {
               "url": '',
             }
@@ -386,7 +391,7 @@ class PresentStateProvider extends ChangeNotifier {
         "extra": {
           "presenter": presenter?.toJson(),
           "moderator": moderator?.toJson(),
-          "display": {"code": displayCode, "setId": "5tovgl636ge"},
+          "display": displayer?.toJson(),
         }
       });
       _socket?.emit(displayCode!, {
@@ -403,7 +408,7 @@ class PresentStateProvider extends ChangeNotifier {
       "action": "stop",
       "extra": {
         "presenter": presenter?.toJson(),
-        "display": {"code": displayCode, "setId": "5tovgl636ge"},
+        "display": displayer?.toJson(),
       }
     });
     _socket?.emit(displayCode!, {
@@ -429,7 +434,7 @@ class PresentStateProvider extends ChangeNotifier {
         "extra": {
           "presenter": presenter?.toJson(),
           "moderator": moderator?.toJson(),
-          "display": {"code": displayCode, "setId": "5tovgl636ge"},
+          "display": displayer?.toJson(),
         }
       });
     }
@@ -451,7 +456,7 @@ class PresentStateProvider extends ChangeNotifier {
         "extra": {
           "presenter": presenter?.toJson(),
           "moderator": moderator?.toJson(),
-          "display": {"code": displayCode, "setId": "5tovgl636ge"},
+          "display": displayer?.toJson(),
         }
       });
     }
@@ -463,5 +468,10 @@ class PresentStateProvider extends ChangeNotifier {
   resetMessage() {
     presenter = Presenter(id: const Uuid().v4());
     moderator = null;
+  }
+
+  String _getRandomString() {
+    String a = BigInt.parse((Random().nextDouble()*DateTime.now().millisecond).toString().replaceAll(RegExp(r'\.'), '')).toRadixString(36);
+    return a;
   }
 }
