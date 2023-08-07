@@ -182,6 +182,7 @@ class PresentStateProvider extends ChangeNotifier {
           // moderator mode
           if (moderator != null) {
             presentStop();
+            setViewState(ViewState.moderatorWait);
           } else {
             if (state == ViewState.selectScreen) {
               PresentSelectScreen.selectScreenDialog.cancel();
@@ -203,13 +204,15 @@ class PresentStateProvider extends ChangeNotifier {
       Message message = Message.fromJson(msg);
       String? messageFor = message.messageFor;
       if (messageFor != null && messageFor == presenter?.id) {
-        if (message.action == 'remove') {
+        if (message.action == 'remove') { // moderator mode
           // stream end
+          presentStop();
           presentEnd();
         }
-        if (message.action == 'stopVideo') {
+        if (message.action == 'stopVideo') { // moderator mode
           // stream stop
           presentStop();
+          setViewState(ViewState.moderatorWait);
         }
         if (message.action == 'pause' && message.status == 'pause') {
           //stream pause
@@ -383,31 +386,16 @@ class PresentStateProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> presentStop({bool moderatorStart = false}) async {
-    if (moderatorStart) {
-      _webRTCHelper?.streamStop();
-      _socket?.emit('presenter-action', {
-        "action": "stop",
-        "extra": {
-          "presenter": presenter?.toJson(),
-          "moderator": moderator?.toJson(),
-          "display": displayer?.toJson(),
-        }
-      });
-      _socket?.emit(displayCode!, {
-        'messageFor': displayCode,
-        'userid': presenter?.id,
-        'action': 'disconnect',
-      });
-      return;
-    }
-    
+  Future<void> presentStop() async {
     // handle stream
     _webRTCHelper?.streamStop();
+    _webRTCHelper?.hangUp();
     _socket?.emit('presenter-action', {
       "action": "stop",
       "extra": {
         "presenter": presenter?.toJson(),
+        if (moderator != null)
+          "moderator": moderator?.toJson(),
         "display": displayer?.toJson(),
       }
     });
@@ -416,9 +404,6 @@ class PresentStateProvider extends ChangeNotifier {
       'userid': presenter?.id,
       'action': 'disconnect',
     });
-    _webRTCHelper?.hangUp();
-
-    setViewState(ViewState.moderatorWait);
   }
 
   Future<void> presentPause() async {

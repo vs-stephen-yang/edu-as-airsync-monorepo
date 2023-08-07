@@ -37,7 +37,13 @@ class PresentSelectScreen extends StatelessWidget {
           for (var element in selectScreenDialog._subscriptions) {
             element.cancel();
           }
-          provider.presentEnd();
+          // moderator mode
+          if (provider.moderator != null) {
+            provider.presentStop();
+          } else {
+            provider.presentStop();
+            provider.presentEnd();
+          }
         }
       });
     });

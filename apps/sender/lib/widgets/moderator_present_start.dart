@@ -149,7 +149,7 @@ class ModeratorPresentStart extends StatelessWidget {
                   width: 200,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      presentStateProvider.presentStop(moderatorStart: true);
+                      presentStateProvider.presentStop();
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
