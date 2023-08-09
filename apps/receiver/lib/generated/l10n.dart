@@ -390,6 +390,36 @@ class S {
     );
   }
 
+  /// `%s would like to join in to the mirror.`
+  String get main_mirror_from_client {
+    return Intl.message(
+      '%s would like to join in to the mirror.',
+      name: 'main_mirror_from_client',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get main_mirror_prompt_cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'main_mirror_prompt_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accept`
+  String get main_mirror_prompt_accept {
+    return Intl.message(
+      'Accept',
+      name: 'main_mirror_prompt_accept',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Presenters`
   String get moderator_presentersList {
     return Intl.message(

@@ -1,20 +1,29 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:uuid/uuid.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/airplay_config.dart';
-import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
+import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
+import 'package:uuid/uuid.dart';
 
 enum MirrorState {
   idle,
-  showPinCode,
   mirroring,
+}
+
+class MirrorRequest {
+  String? mirrorId;
+  int textureId;
+  String? deviceName;
+  MirrorType? mirrorType;
+
+  MirrorRequest(
+      this.mirrorId, this.textureId, this.deviceName, this.mirrorType);
 }
 
 class MirrorStateProvider extends ChangeNotifier
@@ -28,7 +37,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   get mirrorViewKey => _mirrorViewKey;
 
-  get state => _currentState;
+  get isMirroring => _mirrorState == MirrorState.mirroring;
 
   get airplayEnabled => _airplayEnabled;
 
@@ -36,7 +45,9 @@ class MirrorStateProvider extends ChangeNotifier
 
   get miracastEnabled => _miracastEnabled;
 
-  get textureId => _textureId;
+  get requestingMirror => _requestingMirror;
+
+  get textureId => _acceptedTextureId;
 
   get pinCode => _pinCode;
 
@@ -46,13 +57,14 @@ class MirrorStateProvider extends ChangeNotifier
   String _deviceName =
       'AirSync-${Random().nextInt(9999).toString().padLeft(4, '0')}';
   final GlobalKey _mirrorViewKey = GlobalKey();
-  MirrorState _currentState = MirrorState.idle;
+  MirrorState _mirrorState = MirrorState.idle;
   bool _airplayEnabled = false;
   bool _googleCastEnabled = false;
   bool _miracastEnabled = false;
-  String? _mirrorId;
-  int? _textureId;
-  String _pinCode = "";
+  final List<MirrorRequest> _requestingMirror = [];
+  String? _acceptedMirrorId;
+  int? _acceptedTextureId;
+  String _pinCode = '';
   Timer? _pinTimer;
   double _aspectRatio = 3 / 2;
   bool _sizeChanged = false;
@@ -63,47 +75,42 @@ class MirrorStateProvider extends ChangeNotifier
   @override
   void onMirrorAuth(String pin, int timeoutSec) {
     _pinCode = pin;
-    _setMirrorState(MirrorState.showPinCode);
 
     _pinTimer?.cancel();
     _pinTimer = Timer(Duration(seconds: timeoutSec), () {
-      _pinCode = "";
-      _setMirrorState(MirrorState.idle);
+      _pinCode = '';
+      notifyListeners();
     });
+    notifyListeners();
   }
 
   @override
   void onMirrorStart(String mirrorId, int textureId, String deviceName,
       MirrorType mirrorType) {
     _pinTimer?.cancel();
-    _pinCode = "";
+    _pinCode = '';
 
-    if (_mirrorId != null) {
-      _plugin?.stopMirror(_mirrorId!);
-    }
+    _requestingMirror
+        .addAll({MirrorRequest(mirrorId, textureId, deviceName, mirrorType)});
 
-    _mirrorId = mirrorId;
-    _textureId = textureId;
-
-    _plugin?.enableAudio(mirrorId, true);
-
-    _setMirrorState(MirrorState.mirroring);
+    notifyListeners();
   }
 
   @override
   void onMirrorStop(String mirrorId) {
-    if(_mirrorId != mirrorId) {
+    if (_acceptedMirrorId != mirrorId) {
       // ignore the onMirrorStop that is not for the current mirror session
       return;
     }
-    _mirrorId = null;
-    _textureId = null;
-    _setMirrorState(MirrorState.idle);
+    _acceptedMirrorId = null;
+    _acceptedTextureId = null;
+    _mirrorState = MirrorState.idle;
+    notifyListeners();
   }
 
   @override
   void onMirrorVideoResize(String mirrorId, int width, int height) {
-    if(_mirrorId != mirrorId) {
+    if (_acceptedMirrorId == null || _acceptedMirrorId != mirrorId) {
       // ignore the onMirrorStop that is not for the current mirror session
       return;
     }
@@ -119,8 +126,34 @@ class MirrorStateProvider extends ChangeNotifier
     _deviceName = 'AirSync-$deviceName';
   }
 
+  clearRequestMirrorId(int index) {
+    if (_requestingMirror.length > index) {
+      _requestingMirror.removeAt(index);
+    }
+    notifyListeners();
+  }
+
+  setAcceptMirrorId(int index) {
+    if (_requestingMirror.isNotEmpty) {
+      if (_acceptedMirrorId != null) {
+        _plugin?.stopMirror(_acceptedMirrorId!);
+      }
+
+      _acceptedMirrorId = _requestingMirror[index].mirrorId;
+      _acceptedTextureId = _requestingMirror[index].textureId;
+
+      if (_acceptedMirrorId != null) {
+        _plugin?.enableAudio(_acceptedMirrorId!, true);
+      }
+
+      _requestingMirror.removeAt(index);
+      _mirrorState = MirrorState.mirroring;
+      notifyListeners();
+    }
+  }
+
   onTouchEvent(PointerEvent event) {
-    if (_mirrorId == null) {
+    if (_acceptedMirrorId == null) {
       return;
     }
 
@@ -129,7 +162,7 @@ class MirrorStateProvider extends ChangeNotifier
     }
 
     _plugin?.onMirrorTouch(
-        _mirrorId!,
+        _acceptedMirrorId!,
         event.pointer,
         event.down,
         ((event.position.dx.toInt() - _videoWidgetOffset.dx.toInt()) /
@@ -193,11 +226,6 @@ class MirrorStateProvider extends ChangeNotifier
     } on PlatformException {
       printInDebug('Mirror initialize failure.');
     }
-  }
-
-  _setMirrorState(MirrorState mirrorState) {
-    _currentState = mirrorState;
-    notifyListeners();
   }
 
   void _getWidgetInfo() {
