@@ -56,6 +56,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_language_title": MessageLookupByLibrary.simpleMessage("Language"),
         "main_limit_time_message":
             MessageLookupByLibrary.simpleMessage("5 minutes left"),
+        "main_mirror_from_client": MessageLookupByLibrary.simpleMessage(
+            "%s would like to join in to the mirror."),
+        "main_mirror_prompt_accept":
+            MessageLookupByLibrary.simpleMessage("Accept"),
+        "main_mirror_prompt_cancel":
+            MessageLookupByLibrary.simpleMessage("Cancel"),
         "main_privilege_close": MessageLookupByLibrary.simpleMessage("Close"),
         "main_privilege_message": MessageLookupByLibrary.simpleMessage(
             "This is a Display Advanced feature. Please contact your IT administrator for more information."),
