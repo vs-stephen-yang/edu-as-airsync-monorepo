@@ -7,26 +7,28 @@ class TitleBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppConfig? appConfig = AppConfig.of(context);
-    return Container(
-      padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
-      child: Stack(
-        alignment: Alignment.center,
+    return SizedBox(
+      width: 300,
+      child: Row(
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
+          Image.asset('assets/images/ic_launcher.png', height: 46,),
+          const Padding(
+            padding: EdgeInsets.only(left: 6),
             child: Text(
-              'Ver ${appConfig?.appVersion}',
+              'AirSync',
               style: TextStyle(
-                color: Colors.white.withAlpha(128),
-                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 20,
               ),
             ),
           ),
-          const Text(
-            'myViewBoard Display',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 40,
+          const Spacer(),
+          Text(
+            'Ver ${appConfig?.appVersion}',
+            style: const TextStyle(
+              color: Colors.white38,
+              fontSize: 12,
             ),
           ),
         ],

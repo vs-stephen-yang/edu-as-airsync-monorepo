@@ -37,6 +37,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("One Time Password *"),
         "present_otp_code_description": MessageLookupByLibrary.simpleMessage(
             "*One Time Password contains 4 digits"),
-        "present_start": MessageLookupByLibrary.simpleMessage("PRESENT")
+        "present_start": MessageLookupByLibrary.simpleMessage("PRESENT"),
+        "setting": MessageLookupByLibrary.simpleMessage("Settings"),
+        "touchback": MessageLookupByLibrary.simpleMessage("Touchback")
       };
 }

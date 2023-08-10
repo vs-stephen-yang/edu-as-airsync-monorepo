@@ -8,20 +8,14 @@ class BottomBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
       child: Stack(
-        alignment: Alignment.bottomCenter,
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image.asset(
-                'assets/images/ic_logo_my_viewboard.png',
-                width: 276,
-                height: 78,
-              ),
-              Image.asset(
                 'assets/images/ic_logo_build_by.png',
-                width: 234,
-                height: 88,
+                width: 130,
+                // height: 88,
               ),
             ],
           ),

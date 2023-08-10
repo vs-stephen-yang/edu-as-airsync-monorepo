@@ -25,7 +25,10 @@ enum ViewState {
   //moderator
   moderatorIdle,
   moderatorWait,
-  moderatorStart
+  moderatorStart,
+
+  settings,
+  language,
 }
 
 class PresentStateProvider extends ChangeNotifier {
