@@ -27,11 +27,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "eula_title":
             MessageLookupByLibrary.simpleMessage("myViewBoard Display EULA"),
         "main_airplay_pin_code":
-            MessageLookupByLibrary.simpleMessage("Airplay Code"),
+            MessageLookupByLibrary.simpleMessage("AirPlay Code"),
         "main_auto_startup":
             MessageLookupByLibrary.simpleMessage("Launch Display on startup"),
         "main_cast_settings_airplay":
-            MessageLookupByLibrary.simpleMessage("Airplay"),
+            MessageLookupByLibrary.simpleMessage("AirPlay"),
         "main_cast_settings_device_name":
             MessageLookupByLibrary.simpleMessage("Device Name:"),
         "main_cast_settings_google_cast":

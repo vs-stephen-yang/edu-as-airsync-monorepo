@@ -350,10 +350,10 @@ class S {
     );
   }
 
-  /// `Airplay`
+  /// `AirPlay`
   String get main_cast_settings_airplay {
     return Intl.message(
-      'Airplay',
+      'AirPlay',
       name: 'main_cast_settings_airplay',
       desc: '',
       args: [],
@@ -380,10 +380,10 @@ class S {
     );
   }
 
-  /// `Airplay Code`
+  /// `AirPlay Code`
   String get main_airplay_pin_code {
     return Intl.message(
-      'Airplay Code',
+      'AirPlay Code',
       name: 'main_airplay_pin_code',
       desc: '',
       args: [],
