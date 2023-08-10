@@ -6,6 +6,7 @@ class Displayer {
   String? entityId = '';
   String? sort = '';
   String? token = '';
+  String? windowState;
 
   Displayer({this.code, this.property, this.enrolledAt, this.updatedAt, this.entityId, this.sort, this.token});
 

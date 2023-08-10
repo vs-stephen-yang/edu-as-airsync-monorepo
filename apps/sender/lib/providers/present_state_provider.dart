@@ -113,7 +113,7 @@ class PresentStateProvider extends ChangeNotifier {
   }
 
   Future<void> presentTo(
-      {required String? displayCode, required String otp}) async {
+      {required String? displayCode, required String? otp}) async {
     debugModePrint(
         '${presenter?.id} presentTo: displayCode: $displayCode, otp: $otp',
         type: runtimeType);
@@ -181,6 +181,9 @@ class PresentStateProvider extends ChangeNotifier {
       String? messageFor = message.messageFor;
       if (messageFor != null && messageFor == presenter?.id) {
         Extra extra = Extra.fromJson(message.extra);
+        if (extra.windowState != null) {
+          displayer?.windowState = extra.windowState;
+        }
         if (extra.presentationState == 'stopStreaming') {
           // moderator mode
           if (moderator != null) {
@@ -451,6 +454,17 @@ class PresentStateProvider extends ChangeNotifier {
 
     // handle stream
     _webRTCHelper?.streamResume();
+  }
+
+  Future<void> presentFullscreen() async {
+    _socket?.emit('set-window-state', {
+      'messageFor': displayCode!,
+      'status': displayer?.windowState == 'normal'? 'fullscreen': 'normal',
+      'action': "set-window-state",
+      'exact': {},
+      'messageId':'',
+      'nextId':'',
+    });
   }
 
   resetMessage() {
