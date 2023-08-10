@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:display_cast_flutter/widgets/custom_icons.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
+
+import 'custom_icons_icons.dart';
 
 class PresentWaitReady extends StatefulWidget {
   const PresentWaitReady({super.key});

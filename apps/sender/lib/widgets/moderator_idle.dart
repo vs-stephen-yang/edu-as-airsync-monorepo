@@ -4,141 +4,120 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'custom_text_form_field.dart';
 
-class ModeratorIdle extends StatelessWidget {
+class ModeratorIdle extends StatefulWidget {
   ModeratorIdle({super.key, this.displayCode, this.otp}) {
-
-    _codeController = TextEditingController(text: displayCode);
-    _otpController = TextEditingController(text: otp);
+    displayCode = displayCode;
+    otp = otp;
   }
 
-  late final TextEditingController _codeController;
-  late final TextEditingController _otpController;
-  final TextEditingController _nameController = TextEditingController();
-  final codeKey = GlobalKey();
-  final nameKey = GlobalKey();
-  GlobalKey<CustomTextFormFieldState> otpKey = GlobalKey();
+  String? displayCode, otp;
 
-  final String? displayCode;
-  final String? otp;
+  @override
+  State<ModeratorIdle> createState() => _ModeratorIdleState();
+}
+
+class _ModeratorIdleState extends State<ModeratorIdle> {
+  final TextEditingController _nameController = TextEditingController();
+  final nameKey = GlobalKey();
+  bool presentBtnEnable = false;
 
   @override
   Widget build(BuildContext context) {
 
-    PresentStateProvider presentStateProvider =
-        Provider.of<PresentStateProvider>(context);
-    return Container(
-      width: 400,
-      padding: const EdgeInsets.all(30),
+    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
+    return SizedBox(
+      width: 300,
+      height: 400,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          CustomTextFormField(
-            key: codeKey,
-            controller: _codeController,
-            // initialValue: displayCode,
-            labelText: S.of(context).present_display_code,
-            errorText: S.of(context).present_display_code_description,
-            inputFormatter: [
-              MaskedInputFormatter(
-                '000-000-000-0',
-                allowedCharMatcher: RegExp('[1-9]'),
-              )
+          Row(
+            children: [
+              Expanded(child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                      onTap: () {
+                        presentStateProvider.resetMessage();
+                        presentStateProvider.setViewState(ViewState.idle);
+                      },
+                      child: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white,)),
+                  const Icon(Icons.groups, color: Colors.white,),
+                ],
+              )),
+              const Padding(
+                padding: EdgeInsets.only(left: 6),
+                child: Text(
+                  'Moderator',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              const Spacer(flex: 1,),
             ],
           ),
-          const Padding(padding: EdgeInsets.all(10)),
-          CustomTextFormField(
-            key: otpKey,
-            controller: _otpController,
-            // initialValue: otp,
-            labelText: S.of(context).present_otp_code,
-            errorText: S.of(context).present_otp_code_description,
-            inputFormatter: [
-              MaskedInputFormatter(
-                '0000',
-                allowedCharMatcher: RegExp('[1-9]'),
-              )
-            ],
+          // const Padding(padding: EdgeInsets.all(10)),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
+            child: Divider(color: Colors.white12,),
           ),
-          const Padding(padding: EdgeInsets.all(10)),
-          CustomTextFormField(
-            key: nameKey,
-            controller: _nameController,
-            labelText: S.of(context).moderator_name,
-            inputFormatter: [
-              FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]'),
-              )
-            ],
+          SizedBox(
+            height: 40,
+            child: CustomTextFormField(
+              key: nameKey,
+              controller: _nameController,
+              labelText: S.of(context).moderator_name,
+              inputFormatter: [
+                FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]'),
+                )
+              ],
+              onChanged: (text) {
+                if (text.isNotEmpty) {
+                  presentBtnEnable = true;
+                } else {
+                  presentBtnEnable = false;
+                }
+                setState(() {});
+              },
+            ),
           ),
           const Padding(padding: EdgeInsets.all(10)),
           ElevatedButton(
             onPressed: () async {
-              if (_codeController.text.isEmpty) {
-                _showOverlayMessage(context, codeKey);
-              } else if (_otpController.text.isEmpty) {
-                _showOverlayMessage(context, otpKey);
-              } else if (presentStateProvider.state == ViewState.moderatorIdle) {
-              if (_nameController.text.isEmpty) {
-                _showOverlayMessage(context, nameKey);
-              } else if (displayCode != null) {
-                presentStateProvider.presenter?.name = _nameController.text;
+              if (presentStateProvider.state == ViewState.moderatorIdle) {
+                if (_nameController.text.isEmpty) {
+                  _showOverlayMessage(context, nameKey);
+                } else if (widget.displayCode != null) {
+                  presentStateProvider.presenter?.name = _nameController.text;
                   bool display = await presentStateProvider.checkDisplayOTP(
-                      displayCode: displayCode, otp: _otpController.text);
+                      displayCode: widget.displayCode, otp: widget.otp);
                   if (display) {
                     presentStateProvider.presentTo(
-                      displayCode: displayCode,
-                      otp: _otpController.text,
-                    ).whenComplete(() => presentStateProvider.setViewState(ViewState.moderatorWait));
+                          displayCode: widget.displayCode,
+                          otp: widget.otp,
+                        ).whenComplete(() => presentStateProvider
+                            .setViewState(ViewState.moderatorWait));
                   }
-                }
-              } else {
-                var displayCode = _codeController.text.replaceAll('-', '');
-                int moderator = await presentStateProvider.checkModeratorOTP(
-                    displayCode: displayCode,
-                    otp: _otpController.text);
-                if (moderator > 204 || presentStateProvider.state == ViewState.moderatorIdle) {
-                  switch (moderator) {
-                    case 403:
-                    // 403 -> Reach maximum presenters
-                      otpKey.currentState?.setErrorMsg('Reach maximum presenters');
-                      break;
-                    case 404:
-                    // 404 -> sendToV1
-                      break;
-                    case 406:
-                    // Display's moderator mode is on,  but the otp is wrong
-                    // 406 -> Invalid one time password
-                      otpKey.currentState?.setErrorMsg('Invalid one time password');
-                      break;
-                  }
-                  return;
-                }
-                bool display = await presentStateProvider.checkDisplayOTP(
-                    displayCode: displayCode,
-                    otp: _otpController.text);
-                if (display) {
-                  presentStateProvider.presentTo(
-                    displayCode: displayCode,
-                    otp: _otpController.text,
-                  );
                 }
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              side: const BorderSide(
-                width: 1.0,
-                color: Colors.blue,
+              backgroundColor: presentBtnEnable? const Color.fromARGB(255, 41, 121, 255) : const Color.fromARGB(128, 242, 242, 242),
+              fixedSize: const Size(300, 30),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
               ),
             ),
             child: Text(
               S.of(context).present_start,
-              style: const TextStyle(
-                color: Colors.blue,
+              style: TextStyle(
+                color: presentBtnEnable? Colors.white : const Color.fromARGB(255, 153, 153, 153),
                 fontSize: 14,
               ),
             ),
