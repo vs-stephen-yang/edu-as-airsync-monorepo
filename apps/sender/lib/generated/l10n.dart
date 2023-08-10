@@ -139,6 +139,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Touchback`
+  String get touchback {
+    return Intl.message(
+      'Touchback',
+      name: 'touchback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings`
+  String get setting {
+    return Intl.message(
+      'Settings',
+      name: 'setting',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -7,5 +7,7 @@
   "present_start": "PRESENT",
   "present_fill_out": "Please fill out this field.",
   "moderator_name": "Name *",
-  "moderator_wait": "Please wait for your turn... Moderator will select presenters"
+  "moderator_wait": "Please wait for your turn... Moderator will select presenters",
+  "touchback": "Touchback",
+  "setting": "Settings"
 }
