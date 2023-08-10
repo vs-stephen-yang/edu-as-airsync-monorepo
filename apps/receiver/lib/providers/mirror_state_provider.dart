@@ -126,6 +126,12 @@ class MirrorStateProvider extends ChangeNotifier
     _deviceName = 'AirSync-$deviceName';
   }
 
+  clearPinCode() {
+    _pinTimer?.cancel();
+    _pinCode = '';
+    notifyListeners();
+  }
+
   clearRequestMirrorId(int index) {
     if (_requestingMirror.length > index) {
       _requestingMirror.removeAt(index);
