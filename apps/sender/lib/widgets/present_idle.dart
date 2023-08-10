@@ -2,12 +2,15 @@ import 'dart:async';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 import 'custom_text_form_field.dart';
+import 'focus_icon_button.dart';
 
-class PresentIdle extends StatelessWidget {
+class PresentIdle extends StatefulWidget {
   PresentIdle({super.key, this.displayCode, this.otp}) {
     _codeController = TextEditingController(text: displayCode);
     _otpController = TextEditingController(text: otp);
@@ -15,62 +18,94 @@ class PresentIdle extends StatelessWidget {
 
   late final TextEditingController _codeController;
   late final TextEditingController _otpController;
-  final codeKey = GlobalKey();
-  final GlobalKey<CustomTextFormFieldState> otpKey = GlobalKey();
-
   final String? displayCode;
   final String? otp;
+
+  @override
+  State<PresentIdle> createState() => _PresentIdleState();
+}
+
+class _PresentIdleState extends State<PresentIdle> {
+  final codeKey = GlobalKey();
+  final GlobalKey<CustomTextFormFieldState> otpKey = GlobalKey();
+  final presentBtnKey = GlobalKey();
+  bool presentBtnEnable = false;
 
   @override
   Widget build(BuildContext context) {
     PresentStateProvider presentStateProvider =
         Provider.of<PresentStateProvider>(context);
-    return Container(
-      width: 400,
-      padding: const EdgeInsets.all(30),
+    return SizedBox(
+      width: 300,
+      height: 400,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          CustomTextFormField(
-            key: codeKey,
-            controller: _codeController,
-            // initialValue: displayCode,
-            labelText: S.of(context).present_display_code,
-            errorText: S.of(context).present_display_code_description,
-            inputFormatter: [
-              MaskedInputFormatter(
-                '000-000-000-0',
-                allowedCharMatcher: RegExp('[1-9]'),
-              )
-            ],
+          const TitleBar(),
+          const Padding(
+            padding: EdgeInsets.only(top: 20),
+          ),
+          SizedBox(
+            height: 66,
+            child: CustomTextFormField(
+              key: codeKey,
+              controller: widget._codeController,
+              // initialValue: displayCode,
+              labelText: S.of(context).present_display_code,
+              errorText: S.of(context).present_display_code_description,
+              inputFormatter: [
+                MaskedInputFormatter(
+                  '000-000-000-0',
+                  allowedCharMatcher: RegExp('[1-9]'),
+                )
+              ],
+              onChanged: (text) {
+                if (text.length > 8 && widget._otpController.text.length == 4) {
+                  presentBtnEnable = true;
+                } else {
+                  presentBtnEnable = false;
+                }
+                setState(() {});
+              },
+            ),
           ),
           const Padding(padding: EdgeInsets.all(10)),
-          CustomTextFormField(
-            key: otpKey,
-            controller: _otpController,
-            // initialValue: otp,
-            labelText: S.of(context).present_otp_code,
-            errorText: S.of(context).present_otp_code_description,
-            inputFormatter: [
-              MaskedInputFormatter(
-                '0000',
-                allowedCharMatcher: RegExp('[1-9]'),
-              )
-            ],
+          SizedBox(
+            height: 60,
+            child: CustomTextFormField(
+              key: otpKey,
+              controller: widget._otpController,
+              // initialValue: otp,
+              labelText: S.of(context).present_otp_code,
+              errorText: S.of(context).present_otp_code_description,
+              inputFormatter: [
+                MaskedInputFormatter(
+                  '0000',
+                  allowedCharMatcher: RegExp('[1-9]'),
+                )
+              ],
+              onChanged: (text) {
+                if (widget._codeController.text.length > 8 && text.length == 4) {
+                  presentBtnEnable = true;
+                } else {
+                  presentBtnEnable = false;
+                }
+                setState(() {});
+              },
+            ),
           ),
           const Padding(padding: EdgeInsets.all(10)),
           ElevatedButton(
             onPressed: () async {
-              if (_codeController.text.isEmpty) {
+              if (widget._codeController.text.isEmpty) {
                 _showOverlayMessage(context, codeKey);
-              } else if (_otpController.text.isEmpty) {
+              } else if (widget._otpController.text.isEmpty) {
                 _showOverlayMessage(context, otpKey);
               } else {
-                var displayCode = _codeController.text.replaceAll('-', '');
+                var displayCode = widget._codeController.text.replaceAll('-', '');
                 int moderator = await presentStateProvider.checkModeratorOTP(
                     displayCode: displayCode,
-                    otp: _otpController.text);
+                    otp: widget._otpController.text);
                 if (moderator > 204 || presentStateProvider.state == ViewState.moderatorIdle) {
                   switch (moderator) {
                     case 403:
@@ -79,7 +114,7 @@ class PresentIdle extends StatelessWidget {
                       break;
                     case 404:
                     // 404 -> sendToV1
-                      await presentStateProvider.presentToV1(displayCode: displayCode, otp: _otpController.text, callback: (result) async {
+                      await presentStateProvider.presentToV1(displayCode: displayCode, otp: widget._otpController.text, callback: (result) async {
                         // handle UI
                         if (result == 'connect') {
                           // web: open a new window
@@ -103,29 +138,107 @@ class PresentIdle extends StatelessWidget {
 
                 bool display = await presentStateProvider.checkDisplayOTP(
                     displayCode: displayCode,
-                    otp: _otpController.text);
+                    otp: widget._otpController.text);
                 if (display) {
                   presentStateProvider.presentTo(
                     displayCode: displayCode,
-                    otp: _otpController.text,
+                    otp: widget._otpController.text,
                   );
                 }
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              side: const BorderSide(
-                width: 1.0,
-                color: Colors.blue,
+              backgroundColor: presentBtnEnable? const Color.fromARGB(255, 41, 121, 255) : const Color.fromARGB(128, 242, 242, 242),
+              fixedSize: const Size(300, 30),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
               ),
             ),
             child: Text(
               S.of(context).present_start,
-              style: const TextStyle(
-                color: Colors.blue,
+              style: TextStyle(
+                color: presentBtnEnable? Colors.white : const Color.fromARGB(255, 153, 153, 153),
                 fontSize: 14,
               ),
             ),
+          ),
+          const Padding(padding: EdgeInsets.all(8.0)),
+          const Divider(color: Colors.white10,),
+          InkWell(
+            onTap: () {
+              // TODO: TOUCH BACK
+            },
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.only(right: 5),
+                    child: const Image(
+                      height: 18,
+                      image: Svg('assets/images/touch_app_black.svg'),
+                    ),
+                  ),
+                ),
+                Text(
+                  S.of(context).touchback,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: FocusIconButton(
+                      childNotFocus: const Image(
+                        image: Svg(
+                            'assets/images/ic_activate_off.svg'), // assets/images/ic_activate_off.svg
+                      ),
+                      splashRadius: 20,
+                      focusColor: Colors.grey,
+                      onClick: () {},
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              presentStateProvider.setViewState(ViewState.settings);
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 5),
+                      child: const Icon(
+                        Icons.settings,
+                        size: 18,
+                        color: Colors.white,
+                      ),
+                    )),
+                Text(
+                  S.of(context).setting,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                ),
+                const Expanded(flex: 1, child: SizedBox()),
+              ],
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Divider(color: Colors.white10,),
           ),
         ],
       ),

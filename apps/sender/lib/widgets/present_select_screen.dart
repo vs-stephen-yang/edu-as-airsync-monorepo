@@ -89,7 +89,7 @@ class SelectScreenDialog extends Dialog {
         child: Container(
           width: 640,
           height: 560,
-          color: Colors.white,
+          color: const Color.fromARGB(255, 63, 63, 63),
           child: Column(
             children: <Widget>[
               Padding(
@@ -100,13 +100,13 @@ class SelectScreenDialog extends Dialog {
                       alignment: Alignment.topLeft,
                       child: Text(
                         'Choose what to share',
-                        style: TextStyle(fontSize: 16, color: Colors.black87),
+                        style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
                     ),
                     Align(
                       alignment: Alignment.topRight,
                       child: InkWell(
-                        child: const Icon(Icons.close),
+                        child: const Icon(Icons.close, color: Colors.white),
                         onTap: () => cancel(),
                       ),
                     ),
@@ -140,12 +140,12 @@ class SelectScreenDialog extends Dialog {
                                     Tab(
                                         child: Text(
                                       'Entire Screen',
-                                      style: TextStyle(color: Colors.black54),
+                                      style: TextStyle(color: Colors.white60),
                                     )),
                                     Tab(
                                         child: Text(
                                       'Window',
-                                      style: TextStyle(color: Colors.black54),
+                                      style: TextStyle(color: Colors.white60),
                                     )),
                                   ]),
                             ),
@@ -212,14 +212,14 @@ class SelectScreenDialog extends Dialog {
                     MaterialButton(
                       child: const Text(
                         'Cancel',
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(color: Color.fromARGB(255, 41, 121, 255),),
                       ),
                       onPressed: () {
                         cancel();
                       },
                     ),
                     MaterialButton(
-                      color: Theme.of(context).primaryColor,
+                      color: const Color.fromARGB(255, 41, 121, 255),
                       child: const Text(
                         'Share',
                       ),

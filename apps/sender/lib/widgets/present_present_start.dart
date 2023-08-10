@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,8 +16,7 @@ class PresentPresentStart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PresentStateProvider presentStateProvider =
-        Provider.of<PresentStateProvider>(context);
+    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     _countSecondsValue.value = 0;
     _countMinutesValue.value = 0;
     _countHoursValue.value = 0;
@@ -37,22 +37,27 @@ class PresentPresentStart extends StatelessWidget {
       }
     });
 
-    var textStyle20 = const TextStyle(color: Colors.white, fontSize: 20);
-    var textStyle30 = const TextStyle(color: Colors.white, fontSize: 30);
-    return Container(
-      width: 400,
-      height: 280,
-      padding: const EdgeInsets.all(30),
+    var textStyle20 = const TextStyle(color: Colors.white, fontSize: 16);
+    var textStyle30 = const TextStyle(color: Colors.white, fontSize: 20);
+    return SizedBox(
+      width: 300,
+      height: 400,
+      // padding: const EdgeInsets.all(30),
+      // color: Colors.grey,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          const Text(
-            'Presentation time',
-            style: TextStyle(color: Colors.white, fontSize: 20),
+          const TitleBar(),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(0, 50, 0, 30),
+            child: Text(
+              'Presentation time',
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ValueListenableBuilder(
                   valueListenable: _countHoursValue,
@@ -85,57 +90,128 @@ class PresentPresentStart extends StatelessWidget {
               Text('Sec', style: textStyle20),
             ],
           ),
-          SizedBox(
-            width: 200,
-            child: ValueListenableBuilder(
-              valueListenable: _presentingState,
-              builder: (BuildContext context, bool value, Widget? child) {
-                return ElevatedButton.icon(
-                  onPressed: () {
-                    _presentingState.value = !_presentingState.value;
-                    if(_presentingState.value) {
-                      presentStateProvider.presentResume();
-                    } else {
-                      presentStateProvider.presentPause();
-                    }
+          const Padding(
+            padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+            child: Divider(color: Colors.white12,),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: ValueListenableBuilder(
+                  valueListenable: _presentingState,
+                  builder: (BuildContext context, value, Widget? child) {
+                    return InkWell(
+                      onTap: () {
+                        _presentingState.value = !_presentingState.value;
+                        if (_presentingState.value) {
+                          presentStateProvider.presentResume();
+                        } else {
+                          presentStateProvider.presentPause();
+                        }
+                      },
+                      child: Column(
+                        children: [
+                          Icon(
+                            value
+                                ? Icons.smart_display_outlined
+                                : Icons.pause_presentation,
+                            color: Colors.white,
+                          ),
+                          Text(value ? 'PAUSE' : 'RESUME',
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 10)),
+                        ],
+                      ),
+                    );
                   },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.white,
+                  // child: ,
+                ),
+              ),
+              if (presentStateProvider.displayer?.property!['platform'] == 'windows')
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      presentStateProvider.presentFullscreen();
+                    },
+                    child: Column(
+                      children: [
+                        Icon(
+                          presentStateProvider.displayer?.windowState == 'normal' ? Icons.fullscreen : Icons.fullscreen_exit,
+                          color: Colors.white,
+                        ),
+                        Text(presentStateProvider.displayer?.windowState == 'normal' ? 'Full screen': 'Exit Full screen',
+                            style: const TextStyle(color: Colors.white, fontSize: 10)),
+                      ],
+                    ),
                   ),
-                  icon: Icon(
-                    value ? Icons.pause_presentation : Icons.slideshow,
-                    color: Colors.black,
+                ),
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    presentStateProvider.presentStop();
+                    presentStateProvider.presentEnd();
+                  },
+                  child: Column(
+                    children: const [
+                      Icon(Icons.cancel_presentation, color: Colors.white,),
+                      Text('Stop Presenting', style: TextStyle(color: Colors.white, fontSize: 10)),
+                    ],
                   ),
-                  label: Text(
-                    value ? 'PAUSE' : 'RESUME',
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                );
-              },
-            ),
+                ),
+              ),
+            ],
           ),
-          SizedBox(
-            width: 200,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                presentStateProvider.presentStop();
-                presentStateProvider.presentEnd();
-              },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.white,
-              ),
-              icon: const Icon(
-                Icons.cancel_presentation,
-                color: Colors.black,
-              ),
-              label: const Text(
-                'STOP PRESENTING',
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-          ),
+          // SizedBox(
+          //   width: 200,
+          //   child: ValueListenableBuilder(
+          //     valueListenable: _presentingState,
+          //     builder: (BuildContext context, bool value, Widget? child) {
+          //       return ElevatedButton.icon(
+          //         onPressed: () {
+          //           _presentingState.value = !_presentingState.value;
+          //           if(_presentingState.value) {
+          //             presentStateProvider.presentResume();
+          //           } else {
+          //             presentStateProvider.presentPause();
+          //           }
+          //         },
+          //         style: ElevatedButton.styleFrom(
+          //           foregroundColor: Colors.white,
+          //           backgroundColor: Colors.white,
+          //         ),
+          //         icon: Icon(
+          //           value ? Icons.pause_presentation : Icons.slideshow,
+          //           color: Colors.black,
+          //         ),
+          //         label: Text(
+          //           value ? 'PAUSE' : 'RESUME',
+          //           style: const TextStyle(color: Colors.black),
+          //         ),
+          //       );
+          //     },
+          //   ),
+          // ),
+          // SizedBox(
+          //   width: 200,
+          //   child: ElevatedButton.icon(
+          //     onPressed: () {
+          //       presentStateProvider.presentStop();
+          //       presentStateProvider.presentEnd();
+          //     },
+          //     style: ElevatedButton.styleFrom(
+          //       foregroundColor: Colors.white,
+          //       backgroundColor: Colors.white,
+          //     ),
+          //     icon: const Icon(
+          //       Icons.cancel_presentation,
+          //       color: Colors.black,
+          //     ),
+          //     label: const Text(
+          //       'STOP PRESENTING',
+          //       style: TextStyle(color: Colors.black),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
