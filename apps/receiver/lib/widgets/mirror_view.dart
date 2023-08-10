@@ -1,8 +1,10 @@
 import 'dart:math';
 
+import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
+import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
@@ -38,10 +40,6 @@ class MirrorView extends StatelessWidget {
         // endregion
 
         // region Show Prompt mechanism
-        print(
-            '_LOREN_, _showPromptDialog savedPromptBuildContext: ${savedPromptBuildContext.length}');
-        print(
-            '_LOREN_, _showPromptDialog requestingMirror: ${mirror.requestingMirror.length}');
         if (mirror.requestingMirror.isNotEmpty &&
             savedPromptBuildContext.isEmpty) {
           Future.delayed(Duration.zero, () {
@@ -118,19 +116,31 @@ class MirrorView extends StatelessWidget {
                 color: Colors.grey,
                 borderRadius: BorderRadius.circular(15),
               ),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
+              child: Stack(
+                children: [
+                  Center(
+                    child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(
-                          Icons.airplay,
-                          color: Colors.white,
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.airplay,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              S.of(context).main_airplay_pin_code,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 28,
+                              ),
+                            ),
+                          ],
                         ),
+                        const SizedBox(height: 10),
                         Text(
-                          S.of(context).main_airplay_pin_code,
+                          mirrorStateProvider.pinCode,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 28,
@@ -138,16 +148,21 @@ class MirrorView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      mirrorStateProvider.pinCode,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                      ),
+                  ),
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: FocusIconButton(
+                      icons: Icons.cancel_outlined,
+                      iconForegroundColor: Colors.white,
+                      hasFocusSize: AppUIConstant.iconHasFocusSize,
+                      notFocusSize: AppUIConstant.iconNotFocusSize,
+                      onClick: () {
+                        mirrorStateProvider.clearPinCode();
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
