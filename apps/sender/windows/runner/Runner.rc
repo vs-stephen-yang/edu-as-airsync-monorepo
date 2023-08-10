@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "ViewSonic" "\0"
-            VALUE "FileDescription", "Display Cast" "\0"
+            VALUE "FileDescription", "AirSync Sender" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "Display Cast" "\0"
+            VALUE "InternalName", "AirSync Sender" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 ViewSonic. All rights reserved." "\0"
-            VALUE "OriginalFilename", "Display_Cast.exe" "\0"
-            VALUE "ProductName", "Display Cast" "\0"
+            VALUE "OriginalFilename", "AirSync_Sender.exe" "\0"
+            VALUE "ProductName", "AirSync Sender" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

@@ -1,9 +1,9 @@
 $ai_bin = '"C:\Program Files (x86)\Caphyon\Advanced Installer 18.5\bin\x86\AdvancedInstaller.com"'
-$url_base = 'https://store2.myviewboard.com/uploads/DisplayCast'
-$version_reg_key = 'HKUD\Software\ViewSonic\Display Cast\Version'
+$url_base = 'https://store2.myviewboard.com/uploads/AirSyncSender'
+$version_reg_key = 'HKUD\Software\ViewSonic\AirSync Sender\Version'
 
 $update_ai_path = '.\windows\update.aip'
-$executable_path = '.\build\windows\runner\Release\Display_Cast.exe'
+$executable_path = '.\build\windows\runner\Release\AirSync_Sender.exe'
 
 $update_name = 'Update'
 
@@ -26,7 +26,7 @@ if ($env -eq "prod") {
 # extract executable version
 $ver = (Get-Item $executable_path).VersionInfo.FileVersionRaw
 
-$msi_file = "DisplayCast-${ver}${env_suffix}.msi"
+$msi_file = "AirSyncSender-${ver}${env_suffix}.msi"
 $msi_path = "windows\package\$msi_file"
 
 $main_url = "$url_base$env_suffix/$msi_file"

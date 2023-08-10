@@ -5,7 +5,7 @@ project(display_cast_flutter LANGUAGES CXX)
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
 # VS: Below BINARY_NAME cannot use "space", so we use "underline"
-set(BINARY_NAME "Display_Cast")
+set(BINARY_NAME "AirSync_Sender")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
