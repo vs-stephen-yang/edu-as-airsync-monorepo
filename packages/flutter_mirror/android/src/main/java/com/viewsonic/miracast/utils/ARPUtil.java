@@ -14,7 +14,7 @@ import android.util.Log;
 public class ARPUtil {
   private final static String TAG = "MiraARPUtil";
 
-  public static String getIPFromMac(String macAddr) {
+  public static String getIPFromMac(String macAddr,String interfaceName) {
     /* check macAddr format */
     if (macAddr == null || macAddr.length() != 17) {
       Log.e(TAG, "getIPFromMac error: macAddr format error");
@@ -31,7 +31,7 @@ public class ARPUtil {
           String mac = splitted[3];
           String device = splitted[5];
           if (mac.matches("..:..:..:..:..:..")) {
-            if (device.contains("p2p")) {
+            if (device.contains(interfaceName)) {
               int mismatchCount = 0;
               for (int i = 0; i < macAddr.length(); i++) {
                 if (macAddr.charAt(i) != mac.charAt(i)) {

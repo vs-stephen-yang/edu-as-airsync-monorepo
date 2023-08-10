@@ -357,7 +357,7 @@ public class WiFiDirectMgr {
                 break;
               }
 
-              sourceIpStr = ARPUtil.getIPFromMac(sourceMacAddr_);
+              sourceIpStr = ARPUtil.getIPFromMac(sourceMacAddr_, p2pInterfaceName_);
               if (!TextUtils.isEmpty(sourceIpStr)) {
                 sourceIp = sourceIpStr;
                 Log.d(TAG, "ARPUtil.getIPFromMac ret:" + sourceIp);
