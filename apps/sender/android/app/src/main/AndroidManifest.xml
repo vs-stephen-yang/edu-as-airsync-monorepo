@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:label="Display Cast"
+        android:label="AirSync Sender"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

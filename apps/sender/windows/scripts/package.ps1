@@ -9,7 +9,7 @@ $manifest_path = "${pwd}\windows\runner\runner.exe-uipi.manifest"
 $edit_update_cmd = "${pwd}\windows\scripts\patch-update.ps1"
 
 $build_dir = "build\windows\runner\Release"
-$executable_path = "${build_dir}\Display_Cast.exe"
+$executable_path = "${build_dir}\AirSync_Sender.exe"
 $installer_out_dir = "windows\package"
 
 function Run {

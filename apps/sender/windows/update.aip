@@ -5,17 +5,17 @@
     <ROW Path="&lt;AI_DICTS&gt;aiu-ue_en.ail"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.UpdaterEditorComponent">
-    <ROW Section="Update" Key="Name" Value="Display Cast"/>
+    <ROW Section="Update" Key="Name" Value="AirSync Sender"/>
     <ROW Section="Update" Key="ProductVersion" Value="2.0.0" ValueLocId="-"/>
-    <ROW Section="Update" Key="URL" Value="https://store2.myviewboard.com/uploads/DisplayCast/DisplayCast-2.0.0.msi" ValueLocId="-"/>
-    <ROW Section="Update" Key="Size" Value="package\DisplayCast-2.0.0.msi" ValueLocId="-"/>
-    <ROW Section="Update" Key="SHA256" Value="package\DisplayCast-2.0.0.msi" ValueLocId="-"/>
-    <ROW Section="Update" Key="MD5" Value="package\DisplayCast-2.0.0.msi" ValueLocId="-"/>
-    <ROW Section="Update" Key="ServerFileName" Value="DisplayCast-2.0.0.msi" ValueLocId="-"/>
+    <ROW Section="Update" Key="URL" Value="https://store2.myviewboard.com/uploads/AirSyncSender/AirSyncSender-2.0.0.msi" ValueLocId="-"/>
+    <ROW Section="Update" Key="Size" Value="package\AirSyncSender-2.0.0.msi" ValueLocId="-"/>
+    <ROW Section="Update" Key="SHA256" Value="package\AirSyncSender-2.0.0.msi" ValueLocId="-"/>
+    <ROW Section="Update" Key="MD5" Value="package\AirSyncSender-2.0.0.msi" ValueLocId="-"/>
+    <ROW Section="Update" Key="ServerFileName" Value="AirSyncSender-2.0.0.msi" ValueLocId="-"/>
     <ROW Section="Update" Key="Flags" Value="Sys64|Os64" ValueLocId="-"/>
-    <ROW Section="Update" Key="RegistryKey" Value="HKUD\Software\ViewSonic\Display Cast\Version" ValueLocId="-"/>
+    <ROW Section="Update" Key="RegistryKey" Value="HKUD\Software\ViewSonic\AirSync Sender\Version" ValueLocId="-"/>
     <ROW Section="Update" Key="Version" Value="2.0.0" ValueLocId="-"/>
-    <ROW Section="Update" Key="AutoCloseApplication" Value="[APPDIR]Display_Cast.exe|;;AlwaysRestart" ValueLocId="-"/>
+    <ROW Section="Update" Key="AutoCloseApplication" Value="[APPDIR]AirSync_Sender.exe|;;AlwaysRestart" ValueLocId="-"/>
     <ATTRIBUTE name="OutputFileName" value="updates.txt"/>
     <ATTRIBUTE name="OutputFolder" value="package"/>
   </COMPONENT>

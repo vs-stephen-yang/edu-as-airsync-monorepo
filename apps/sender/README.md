@@ -1,6 +1,6 @@
 # display_cast_flutter
 
-Display Cast for Flutter [Android(java), iOS(swift), MacOS, Web, Windows)]
+AirSync Sender for Flutter [Android(java), iOS(swift), MacOS, Web, Windows)]
 
 ## Configurations description
 Android will using "productFlavors" to separate different deploy channel: IFP, OPEN, STORE.

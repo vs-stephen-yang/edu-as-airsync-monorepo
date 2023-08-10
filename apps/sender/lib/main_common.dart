@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<PrefLanguageProvider>(
         builder: (context, languageModel, child) {
           return MaterialApp(
-            title: 'Display Cast',
+            title: 'AirSync Sender',
             debugShowCheckedModeBanner: false,
             localizationsDelegates: const [
               S.delegate,
