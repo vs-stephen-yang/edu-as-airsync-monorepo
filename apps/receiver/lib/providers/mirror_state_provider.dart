@@ -69,7 +69,7 @@ class MirrorStateProvider extends ChangeNotifier
   double _aspectRatio = 3 / 2;
   bool _sizeChanged = false;
   Size _videoWidgetSize = const Size(0, 0);
-  final Offset _videoWidgetOffset = const Offset(0, 0);
+  Offset _videoWidgetOffset = const Offset(0, 0);
 
   // region FlutterMirrorListener
   @override
@@ -177,6 +177,10 @@ class MirrorStateProvider extends ChangeNotifier
             _videoWidgetSize.height.toInt()));
   }
 
+  onWidgetSizeChanged() {
+    _sizeChanged = true;
+  }
+
   Future<void> startAirPlay() async {
     await _plugin?.startAirplay(AirplayConfig(
       name: _deviceName,
@@ -237,10 +241,10 @@ class MirrorStateProvider extends ChangeNotifier
   void _getWidgetInfo() {
     final RenderBox renderBox =
         mirrorViewKey.currentContext?.findRenderObject() as RenderBox;
-    //stickyKey.currentContext?.size;
     _sizeChanged = false;
 
     _videoWidgetSize = renderBox.size;
+    _videoWidgetOffset = renderBox.localToGlobal(Offset.zero);
   }
 // endregion
 }
