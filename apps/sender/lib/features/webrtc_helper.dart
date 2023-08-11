@@ -14,7 +14,6 @@ import 'protoc/internal.pb.dart';
 import 'protoc/event.pb.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:window_size/window_size.dart';
-import 'package:mutex/mutex.dart';
 
 class WebRTCHelper {
   WebRTCHelper(String getIceUrl) {
@@ -38,7 +37,6 @@ class WebRTCHelper {
   double _screenHeight = 1080.0;
 
   final _flutterInputInjectionPlugin = FlutterInputInjection();
-  final _mutex = Mutex();
 
   Future<void> makeCall(
       String signalUrl, String token, String peerId, dynamic source) async {
@@ -65,17 +63,15 @@ class WebRTCHelper {
   }
 
   Future<void> disposeStream() async{
-    await _mutex.protect(() async {
-      // critical section
-      try {
-        if(_localStream != null){
-          await _localStream!.dispose();
-          _localStream = null;
-        }
-      } catch (e) {
-        debugModePrint(e, type: runtimeType);
+    try {
+      if(_localStream != null){
+        var stream = _localStream!;
+        _localStream = null;
+        await stream?.dispose();
       }
-    });
+    } catch (e) {
+      debugModePrint(e, type: runtimeType);
+    }
   }
 
   void streamStop() {
