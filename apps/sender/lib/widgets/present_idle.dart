@@ -71,7 +71,7 @@ class _PresentIdleState extends State<PresentIdle> {
           ),
           const Padding(padding: EdgeInsets.all(10)),
           SizedBox(
-            height: 60,
+            height: 66,
             child: CustomTextFormField(
               key: otpKey,
               controller: widget._otpController,
@@ -162,8 +162,10 @@ class _PresentIdleState extends State<PresentIdle> {
               ),
             ),
           ),
-          const Padding(padding: EdgeInsets.all(8.0)),
-          const Divider(color: Colors.white10,),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Divider(color: Colors.white10),
+          ),
           InkWell(
             onTap: () {
               // TODO: TOUCH BACK
@@ -238,7 +240,7 @@ class _PresentIdleState extends State<PresentIdle> {
           ),
           const Padding(
             padding: EdgeInsets.all(8.0),
-            child: Divider(color: Colors.white10,),
+            child: Divider(color: Colors.white10),
           ),
         ],
       ),
