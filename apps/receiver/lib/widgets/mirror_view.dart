@@ -68,14 +68,22 @@ class MirrorView extends StatelessWidget {
                 Container(
                   color: Colors.black,
                   child: Center(
-                    child: Listener(
-                      onPointerDown: mirror.onTouchEvent,
-                      onPointerMove: mirror.onTouchEvent,
-                      onPointerUp: mirror.onTouchEvent,
-                      child: AspectRatio(
-                        key: mirror.mirrorViewKey,
-                        aspectRatio: mirror.aspectRatio,
-                        child: Texture(textureId: mirror.textureId!),
+                    child: NotificationListener<SizeChangedLayoutNotification>(
+                      onNotification: (notification) {
+                        mirror.onWidgetSizeChanged();
+                        return true;
+                      },
+                      child: SizeChangedLayoutNotifier(
+                        child: Listener(
+                          onPointerDown: mirror.onTouchEvent,
+                          onPointerMove: mirror.onTouchEvent,
+                          onPointerUp: mirror.onTouchEvent,
+                          child: AspectRatio(
+                            key: mirror.mirrorViewKey,
+                            aspectRatio: mirror.aspectRatio,
+                            child: Texture(textureId: mirror.textureId!),
+                          ),
+                        ),
                       ),
                     ),
                   ),
