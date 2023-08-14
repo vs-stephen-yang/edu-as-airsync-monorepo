@@ -1,3 +1,4 @@
+import 'package:desktop_window/desktop_window.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/screens/home.dart';
@@ -12,6 +13,9 @@ import 'package:provider/provider.dart';
 void commonEntry(ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+  await DesktopWindow.setWindowSize(const Size(1280,720));
+  await DesktopWindow.setMinWindowSize(const Size(1280,720));
 
   runApp(AppConfig(
     settings: settings,
