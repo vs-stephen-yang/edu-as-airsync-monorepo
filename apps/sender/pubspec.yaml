@@ -62,6 +62,8 @@ dependencies:
   shared_preferences: ^2.1.1
   device_info_plus: ^8.2.0
   flutter_svg_provider: ^1.0.4
+  desktop_window: ^0.4.0
+#  flutter_window_size: ^0.1.4
 
 dev_dependencies:
   flutter_test:

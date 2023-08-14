@@ -6,12 +6,15 @@
 
 #include "generated_plugin_registrant.h"
 
+#include <desktop_window/desktop_window_plugin.h>
 #include <flutter_input_injection/flutter_input_injection_plugin_c_api.h>
 #include <flutter_webrtc/flutter_web_r_t_c_plugin.h>
 #include <url_launcher_windows/url_launcher_windows.h>
 #include <window_size/window_size_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
+  DesktopWindowPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("DesktopWindowPlugin"));
   FlutterInputInjectionPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterInputInjectionPluginCApi"));
   FlutterWebRTCPluginRegisterWithRegistrar(
