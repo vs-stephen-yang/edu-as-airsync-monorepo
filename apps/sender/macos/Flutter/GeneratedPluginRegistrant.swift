@@ -5,6 +5,7 @@
 import FlutterMacOS
 import Foundation
 
+import desktop_window
 import device_info_plus
 import flutter_input_injection
 import flutter_webrtc
@@ -15,6 +16,7 @@ import url_launcher_macos
 import window_size
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
+  DesktopWindowPlugin.register(with: registry.registrar(forPlugin: "DesktopWindowPlugin"))
   DeviceInfoPlusMacosPlugin.register(with: registry.registrar(forPlugin: "DeviceInfoPlusMacosPlugin"))
   FlutterInputInjectionPlugin.register(with: registry.registrar(forPlugin: "FlutterInputInjectionPlugin"))
   FlutterWebRTCPlugin.register(with: registry.registrar(forPlugin: "FlutterWebRTCPlugin"))

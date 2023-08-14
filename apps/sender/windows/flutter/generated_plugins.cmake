@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  desktop_window
   flutter_input_injection
   flutter_webrtc
   url_launcher_windows
