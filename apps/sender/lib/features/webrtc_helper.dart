@@ -31,6 +31,7 @@ class WebRTCHelper {
 
   RTCPeerConnection? _pc;
   RTCDataChannel? _dc;
+  MediaStream? _localStream;
   io.Socket? _socket;
   double _screenWidth = 1920.0;
   double _screenHeight = 1080.0;
@@ -56,8 +57,21 @@ class WebRTCHelper {
   }
 
   Future<void> hangUp() async {
+    await disposeStream();
     await _peerConnectionDisconnect();
     _signalDisconnect();
+  }
+
+  Future<void> disposeStream() async{
+    try {
+      if(_localStream != null){
+        var stream = _localStream!;
+        _localStream = null;
+        await stream?.dispose();
+      }
+    } catch (e) {
+      debugModePrint(e, type: runtimeType);
+    }
   }
 
   void streamStop() {
@@ -197,10 +211,10 @@ class WebRTCHelper {
       }
     };
 
-    var stream = await navigator.mediaDevices.getDisplayMedia(constraints);
-    for (MediaStreamTrack track in stream.getTracks()) {
+    _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+    for (MediaStreamTrack track in _localStream!.getTracks()) {
       debugModePrint('track: ${track.kind}', type: runtimeType);
-      _pc!.addTrack(track, stream);
+      _pc!.addTrack(track, _localStream!);
       _send('chat-track-sources', message: [
         {
           'id': track.id,
@@ -208,7 +222,7 @@ class WebRTCHelper {
         }
       ]);
       _send('chat-stream-info', message: {
-        'id': stream.id,
+        'id': _localStream!.id,
         'tracks': [track.id],
         'source': {'audio':'screen-cast', 'video':'screen-cast'}
       });
