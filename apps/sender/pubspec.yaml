@@ -63,7 +63,7 @@ dependencies:
   device_info_plus: ^8.2.0
   flutter_svg_provider: ^1.0.4
   desktop_window: ^0.4.0
-#  flutter_window_size: ^0.1.4
+  flutter_window_close: ^0.2.2
 
 dev_dependencies:
   flutter_test:
