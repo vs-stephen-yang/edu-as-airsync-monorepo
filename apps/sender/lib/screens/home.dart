@@ -52,6 +52,12 @@ class _HomeState extends State<Home> {
                 Consumer<PresentStateProvider>(
                   builder: (context, provider, child) {
                     debugModePrint('PresentState: ${provider.state}');
+                    FlutterWindowClose.setWindowShouldCloseHandler(() async {
+                      await provider.presentStop();
+                      await provider.presentEnd(goIdleState: false);
+                      return true;
+                    });
+
                     switch (provider.state) {
                       case ViewState.idle:
                         return PresentIdle();

@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   desktop_window
   flutter_input_injection
   flutter_webrtc
+  flutter_window_close
   url_launcher_windows
   window_size
 )
