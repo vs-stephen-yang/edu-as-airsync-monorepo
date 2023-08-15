@@ -1,7 +1,7 @@
-import 'dart:async';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/widgets/present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
@@ -10,31 +10,20 @@ import 'package:provider/provider.dart';
 import 'custom_text_form_field.dart';
 import 'focus_icon_button.dart';
 
-class PresentIdle extends StatefulWidget {
-  PresentIdle({super.key, this.displayCode, this.otp}) {
-    _codeController = TextEditingController(text: displayCode);
-    _otpController = TextEditingController(text: otp);
-  }
+class PresentIdle extends StatelessWidget {
+  PresentIdle({super.key});
 
-  late final TextEditingController _codeController;
-  late final TextEditingController _otpController;
-  final String? displayCode;
-  final String? otp;
-
-  @override
-  State<PresentIdle> createState() => _PresentIdleState();
-}
-
-class _PresentIdleState extends State<PresentIdle> {
+  final TextEditingController _codeController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
   final codeKey = GlobalKey();
   final GlobalKey<CustomTextFormFieldState> otpKey = GlobalKey();
-  final presentBtnKey = GlobalKey();
-  bool presentBtnEnable = false;
+  final GlobalKey<PresentIdleButtonState> presentBtnKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     PresentStateProvider presentStateProvider =
         Provider.of<PresentStateProvider>(context);
+    bool presentBtnEnable = false;
     return SizedBox(
       width: 300,
       height: 400,
@@ -49,7 +38,7 @@ class _PresentIdleState extends State<PresentIdle> {
             height: 66,
             child: CustomTextFormField(
               key: codeKey,
-              controller: widget._codeController,
+              controller: _codeController,
               // initialValue: displayCode,
               labelText: S.of(context).present_display_code,
               errorText: S.of(context).present_display_code_description,
@@ -60,12 +49,12 @@ class _PresentIdleState extends State<PresentIdle> {
                 )
               ],
               onChanged: (text) {
-                if (text.length > 8 && widget._otpController.text.length == 4) {
+                if (text.length >= 11 && _otpController.text.length == 4) {
                   presentBtnEnable = true;
                 } else {
                   presentBtnEnable = false;
                 }
-                setState(() {});
+                presentBtnKey.currentState?.setEnable(presentBtnEnable, displayCode: text, password: _otpController.text );
               },
             ),
           ),
@@ -74,7 +63,7 @@ class _PresentIdleState extends State<PresentIdle> {
             height: 66,
             child: CustomTextFormField(
               key: otpKey,
-              controller: widget._otpController,
+              controller: _otpController,
               // initialValue: otp,
               labelText: S.of(context).present_otp_code,
               errorText: S.of(context).present_otp_code_description,
@@ -85,83 +74,70 @@ class _PresentIdleState extends State<PresentIdle> {
                 )
               ],
               onChanged: (text) {
-                if (widget._codeController.text.length > 8 && text.length == 4) {
+                if (_codeController.text.length >= 11 && text.length == 4) {
                   presentBtnEnable = true;
                 } else {
                   presentBtnEnable = false;
                 }
-                setState(() {});
+                presentBtnKey.currentState?.setEnable(presentBtnEnable, displayCode: _codeController.text, password: text );
               },
             ),
           ),
           const Padding(padding: EdgeInsets.all(10)),
-          ElevatedButton(
-            onPressed: () async {
-              if (widget._codeController.text.isEmpty) {
-                _showOverlayMessage(context, codeKey);
-              } else if (widget._otpController.text.isEmpty) {
-                _showOverlayMessage(context, otpKey);
-              } else {
-                var displayCode = widget._codeController.text.replaceAll('-', '');
-                int moderator = await presentStateProvider.checkModeratorOTP(
-                    displayCode: displayCode,
-                    otp: widget._otpController.text);
-                if (moderator > 204 || presentStateProvider.state == ViewState.moderatorIdle) {
-                  switch (moderator) {
-                    case 403:
-                    // 403 -> Reach maximum presenters
-                      otpKey.currentState?.setErrorMsg('Reach maximum presenters');
-                      break;
-                    case 404:
-                    // 404 -> sendToV1
-                      await presentStateProvider.presentToV1(displayCode: displayCode, otp: widget._otpController.text, callback: (result) async {
+          PresentIdleButton(key: presentBtnKey, onPressed: () async {
+            await presentStateProvider.presentEnd(goIdleState: false);
+
+            var displayCode = _codeController.text.replaceAll('-', '');
+            int moderator = await presentStateProvider.checkModeratorOTP(
+                displayCode: displayCode, otp: _otpController.text);
+            if (moderator > 204 ||
+                presentStateProvider.state == ViewState.moderatorIdle) {
+              switch (moderator) {
+                case 403:
+                // 403 -> Reach maximum presenters
+                  otpKey.currentState
+                      ?.setErrorMsg('Reach maximum presenters');
+                  break;
+                case 404:
+                // 404 -> sendToV1
+                  await presentStateProvider.presentToV1(
+                      displayCode: displayCode,
+                      otp: _otpController.text,
+                      callback: (result) async {
                         // handle UI
                         if (result == 'connect') {
                           // web: open a new window
                         } else if (result == 'denied') {
-                          otpKey.currentState?.setErrorMsg('Invalid password');
+                          otpKey.currentState
+                              ?.setErrorMsg('Invalid password');
                         } else if (result == 'blocked') {
-                          otpKey.currentState?.setErrorMsg('Display host is connected by another client. Please try again later');
+                          otpKey.currentState?.setErrorMsg(
+                              'Display host is connected by another client. Please try again later');
                         } else if (result == 'timeout') {
-                          otpKey.currentState?.setErrorMsg('Your connection has been terminated because no stream was provided for more than 30 seconds. Please try to reconnect.');
+                          otpKey.currentState?.setErrorMsg(
+                              'Your connection has been terminated because no stream was provided for more than 30 seconds. Please try to reconnect.');
                         }
                       });
-                      break;
-                    case 406:
-                    // Display's moderator mode is on,  but the otp is wrong
-                    // 406 -> Invalid one time password
-                      otpKey.currentState?.setErrorMsg('Invalid one time password');
-                      break;
-                  }
-                  return;
-                }
-
-                bool display = await presentStateProvider.checkDisplayOTP(
-                    displayCode: displayCode,
-                    otp: widget._otpController.text);
-                if (display) {
-                  presentStateProvider.presentTo(
-                    displayCode: displayCode,
-                    otp: widget._otpController.text,
-                  );
-                }
+                  break;
+                case 406:
+                // Display's moderator mode is on,  but the otp is wrong
+                // 406 -> Invalid one time password
+                  otpKey.currentState
+                      ?.setErrorMsg('Invalid one time password');
+                  break;
               }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: presentBtnEnable? const Color.fromARGB(255, 41, 121, 255) : const Color.fromARGB(128, 242, 242, 242),
-              fixedSize: const Size(300, 30),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-            ),
-            child: Text(
-              S.of(context).present_start,
-              style: TextStyle(
-                color: presentBtnEnable? Colors.white : const Color.fromARGB(255, 153, 153, 153),
-                fontSize: 14,
-              ),
-            ),
-          ),
+              return;
+            }
+
+            bool display = await presentStateProvider.checkDisplayOTP(
+                displayCode: displayCode, otp: _otpController.text);
+            if (display) {
+              presentStateProvider.presentTo(
+                displayCode: displayCode,
+                otp: _otpController.text,
+              );
+            }
+          }),
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: Divider(color: Colors.white10),
@@ -245,50 +221,6 @@ class _PresentIdleState extends State<PresentIdle> {
         ],
       ),
     );
-  }
-
-  void _showOverlayMessage(BuildContext context, GlobalKey widgetKey) {
-    const overlayWidth = 200.0;
-    const overlayHeight = 30.0;
-    RenderBox renderBox =
-        widgetKey.currentContext!.findRenderObject() as RenderBox;
-    Offset position = renderBox.localToGlobal(Offset.zero);
-
-    OverlayEntry overlayEntry = OverlayEntry(builder: (context) {
-      return Positioned(
-        left: position.dx + (renderBox.size.width - overlayWidth) / 2,
-        top: position.dy + (renderBox.size.height - overlayHeight) / 2,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Material(
-            child: Container(
-              alignment: Alignment.center,
-              color: Colors.white,
-              width: overlayWidth,
-              height: overlayHeight,
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.info,
-                    color: Colors.amber,
-                  ),
-                  Text(
-                    S.of(context).present_fill_out,
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    });
-
-    Overlay.of(context).insert(overlayEntry);
-
-    Timer(const Duration(seconds: 5), () {
-      overlayEntry.remove();
-    });
   }
 }
 
