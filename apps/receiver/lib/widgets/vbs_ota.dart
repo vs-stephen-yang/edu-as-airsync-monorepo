@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
@@ -108,51 +109,52 @@ class _VbsOTAState extends State<VbsOTA> {
               ),
             ],
           ),
-          Wrap(
-            direction: Axis.horizontal,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 10,
-            children: <Widget>[
-              FocusIconButton(
-                icons: Icons.power_settings_new,
-                iconForegroundColor: AppColors.iconStandbyForeground,
-                iconBackgroundColor: AppColors.iconStandbyBackground,
-                hasFocusSize: AppUIConstant.iconHasFocusSize,
-                notFocusSize: AppUIConstant.iconNotFocusSize,
-                onClick: () {
-                  Process.run('reboot', <String>[]);
-                },
-              ),
-              Visibility(
-                visible: _systemOTAEnableUI,
-                child: IntrinsicWidth(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        S.of(context).vbs_ota_progress_msg,
-                        style: const TextStyle(
-                          fontSize: 10,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                        child: Center(
-                          child: LinearProgressIndicator(
-                            value: (_downloadProgress / 100),
-                            backgroundColor: Colors.grey,
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                                Colors.white),
+          if (AppInstanceCreate().isInstalledInVBS100)
+            Wrap(
+              direction: Axis.horizontal,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 10,
+              children: <Widget>[
+                FocusIconButton(
+                  icons: Icons.power_settings_new,
+                  iconForegroundColor: AppColors.iconStandbyForeground,
+                  iconBackgroundColor: AppColors.iconStandbyBackground,
+                  hasFocusSize: AppUIConstant.iconHasFocusSize,
+                  notFocusSize: AppUIConstant.iconNotFocusSize,
+                  onClick: () {
+                    Process.run('reboot', <String>[]);
+                  },
+                ),
+                Visibility(
+                  visible: _systemOTAEnableUI,
+                  child: IntrinsicWidth(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          S.of(context).vbs_ota_progress_msg,
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Colors.white,
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(
+                          height: 20,
+                          child: Center(
+                            child: LinearProgressIndicator(
+                              value: (_downloadProgress / 100),
+                              backgroundColor: Colors.grey,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                  Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
         ],
       ),
     );

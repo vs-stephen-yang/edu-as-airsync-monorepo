@@ -17,7 +17,7 @@ public class BootDeviceReceiver extends BroadcastReceiver {
         boolean autoStartUp = context.getSharedPreferences("display", Context.MODE_PRIVATE)
                 .getBoolean("autoStartup", true);
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) && autoStartUp) {
-            if (Build.MODEL.equals("VBS100")) {
+            if (Build.MODEL.equals("VBS100") || Build.MODEL.contains("VBS200")) {
                 Intent activityIntent = new Intent(context, EulaActivity.class);
                 activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(activityIntent);

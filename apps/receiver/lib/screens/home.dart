@@ -119,11 +119,9 @@ class _HomeState extends State<Home> {
                             left: 0, top: 0, right: 0, child: TitleBar()),
                         const Positioned(
                             left: 0, right: 0, bottom: 0, child: BottomBar()),
-                        Visibility(
-                          visible: AppInstanceCreate().isInstalledInVBS100,
-                          child: const Positioned(
+                        if (AppInstanceCreate().isInstalledInVBS100 | AppInstanceCreate().isInstalledInVBS200)
+                          const Positioned(
                               left: 0, right: 0, bottom: 0, child: VbsOTA()),
-                        ),
                       ],
                     ),
                   );
