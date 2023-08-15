@@ -3,12 +3,12 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
+import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 import 'custom_text_form_field.dart';
-import 'focus_icon_button.dart';
 
 class PresentIdle extends StatelessWidget {
   PresentIdle({super.key});
@@ -18,6 +18,8 @@ class PresentIdle extends StatelessWidget {
   final codeKey = GlobalKey();
   final GlobalKey<CustomTextFormFieldState> otpKey = GlobalKey();
   final GlobalKey<PresentIdleButtonState> presentBtnKey = GlobalKey();
+  final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
+  bool touchBackBtn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -142,47 +144,41 @@ class PresentIdle extends StatelessWidget {
             padding: EdgeInsets.all(8.0),
             child: Divider(color: Colors.white10),
           ),
-          InkWell(
-            onTap: () {
-              // TODO: TOUCH BACK
-            },
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.only(right: 5),
-                    child: const Image(
-                      height: 18,
-                      image: Svg('assets/images/touch_app_black.svg'),
-                    ),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 5),
+                  child: const Image(
+                    height: 18,
+                    image: Svg('assets/images/touch_app_black.svg'),
                   ),
                 ),
-                Text(
-                  S.of(context).touchback,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
+              ),
+              Text(
+                S.of(context).touchback,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: TouchBackButton(
+                    key: touchBtnKey,
+                    onPressed: () {
+                      touchBackBtn = !touchBackBtn;
+                      presentStateProvider.setTouchBack(touchBackBtn);
+                      touchBtnKey.currentState?.setEnable(touchBackBtn);
+                    },
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: FocusIconButton(
-                      childNotFocus: const Image(
-                        image: Svg(
-                            'assets/images/ic_activate_off.svg'), // assets/images/ic_activate_off.svg
-                      ),
-                      splashRadius: 20,
-                      focusColor: Colors.grey,
-                      onClick: () {},
-                    ),
-                  ),
-                )
-              ],
-            ),
+              )
+            ],
           ),
           InkWell(
             onTap: () {
@@ -190,7 +186,6 @@ class PresentIdle extends StatelessWidget {
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              // crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                     flex: 1,
