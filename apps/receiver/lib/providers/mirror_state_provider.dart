@@ -21,6 +21,7 @@ class MirrorRequest {
   int textureId;
   String? deviceName;
   MirrorType? mirrorType;
+  double aspectRatio = 3 / 2;
 
   MirrorRequest(
       this.mirrorId, this.textureId, this.deviceName, this.mirrorType);
@@ -111,6 +112,12 @@ class MirrorStateProvider extends ChangeNotifier
   @override
   void onMirrorVideoResize(String mirrorId, int width, int height) {
     if (_acceptedMirrorId == null || _acceptedMirrorId != mirrorId) {
+      for (int i = 0; i < _requestingMirror.length; i++) {
+        if (_requestingMirror[i].mirrorId == mirrorId) {
+          _requestingMirror[i].aspectRatio = width / height;
+          break;
+        }
+      }
       // ignore the onMirrorStop that is not for the current mirror session
       return;
     }
@@ -151,6 +158,9 @@ class MirrorStateProvider extends ChangeNotifier
       if (_acceptedMirrorId != null) {
         _plugin?.enableAudio(_acceptedMirrorId!, true);
       }
+
+      _aspectRatio = _requestingMirror[index].aspectRatio;
+      _sizeChanged = true;
 
       _requestingMirror.removeAt(index);
       _mirrorState = MirrorState.mirroring;
