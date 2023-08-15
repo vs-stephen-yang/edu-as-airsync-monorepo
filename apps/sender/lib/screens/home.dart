@@ -12,6 +12,7 @@ import 'package:display_cast_flutter/widgets/present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {

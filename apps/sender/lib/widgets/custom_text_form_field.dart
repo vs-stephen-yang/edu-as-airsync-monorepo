@@ -26,6 +26,7 @@ class CustomTextFormField extends StatefulWidget {
 class CustomTextFormFieldState extends State<CustomTextFormField> {
 
   TextStyle errorTextStyle = const TextStyle(color: Colors.white38);
+  bool displayPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +52,25 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
         enabledBorder: outlineInputBorderGrey,
         errorBorder: outlineInputBorderGrey,
         focusedErrorBorder: outlineInputBorderBlue,
-        suffixIcon: widget.isPassword? const Icon(Icons.remove_red_eye, color: Colors.white38,): null,
+        suffixIcon: widget.isPassword
+            ? InkWell(
+                onTap: () {
+                  setState(() {
+                    displayPassword = !displayPassword;
+                  });
+                },
+                child: displayPassword? const Icon(
+                  Icons.password,
+                  color: Colors.white38,
+                ): const Icon(
+                  Icons.remove_red_eye,
+                  color: Colors.white38,
+                ))
+            : null,
       ),
       style: textStyleWhite,
       inputFormatters: widget.inputFormatter,
+      obscureText: widget.isPassword && !displayPassword,
       onChanged: (_) {
         if (widget.onChanged != null) widget.onChanged!(_);
       },
