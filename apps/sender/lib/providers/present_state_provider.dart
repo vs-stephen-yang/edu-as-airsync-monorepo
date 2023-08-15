@@ -43,7 +43,7 @@ class PresentStateProvider extends ChangeNotifier {
   late final String _urlGateway, _urlIce;
   late dynamic _msgDisplay;
   WebRTCHelper? _webRTCHelper;
-  late io.Socket? _socket;
+  io.Socket? _socket;
 
   Presenter? presenter = Presenter(id: const Uuid().v4());
   Moderator? moderator;
@@ -380,8 +380,10 @@ class PresentStateProvider extends ChangeNotifier {
       if (_webRTCHelper != null) await _webRTCHelper?.hangUp();
       _webRTCHelper = null;
 
-      _socket?.disconnect();
-      _socket?.dispose();
+      if (_socket != null) {
+        _socket?.disconnect();
+        _socket?.dispose();
+      }
       _socket = null;
     } catch (e) {
       debugModePrint(e, type: runtimeType);
