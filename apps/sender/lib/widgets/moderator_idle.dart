@@ -62,7 +62,6 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
               const Spacer(flex: 1,),
             ],
           ),
-          // const Padding(padding: EdgeInsets.all(10)),
           const Padding(
             padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
             child: Divider(color: Colors.white12,),
