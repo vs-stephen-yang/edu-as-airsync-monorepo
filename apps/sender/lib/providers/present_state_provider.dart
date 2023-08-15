@@ -51,7 +51,9 @@ class PresentStateProvider extends ChangeNotifier {
   String? displayCode;
   String? otp;
   String? setId;
-  bool v1 = false;
+  bool _v1 = false;
+  bool _touchBack = false;
+  bool get touchBack => _touchBack;
 
   setViewState(ViewState newViewState) {
     _currentState = newViewState;
@@ -60,6 +62,10 @@ class PresentStateProvider extends ChangeNotifier {
       _presentTimer = null;
     }
     notifyListeners();
+  }
+
+  setTouchBack(bool touchBack) {
+    _touchBack = touchBack;
   }
 
   /// 2023Q2, Presenter generates OTP.
@@ -117,7 +123,7 @@ class PresentStateProvider extends ChangeNotifier {
     debugModePrint(
         '${presenter?.id} presentTo: displayCode: $displayCode, otp: $otp',
         type: runtimeType);
-    v1 = false;
+    _v1 = false;
     _presentTimer = Timer(const Duration(seconds: 30), () {
       presentEnd();
     });
@@ -284,7 +290,7 @@ class PresentStateProvider extends ChangeNotifier {
     debugModePrint(
         '${presenter?.id} presentToV1: displayCode: $displayCode, otp: $otp',
         type: runtimeType);
-    v1 = true;
+    _v1 = true;
     _socket = io.io(
         'https://control-io.myviewboard.cloud/',
         io.OptionBuilder()
@@ -341,7 +347,7 @@ class PresentStateProvider extends ChangeNotifier {
   }
 
   Future<void> presentStart({required dynamic selectedSource}) async {
-    if (v1) {
+    if (_v1) {
       _webRTCHelper = WebRTCHelperV1(_urlIce);
       await _webRTCHelper?.makeCall(
         'https://control-io.myviewboard.cloud/',
@@ -350,7 +356,7 @@ class PresentStateProvider extends ChangeNotifier {
         selectedSource,
       );
     } else {
-      _webRTCHelper = WebRTCHelper(_urlIce);
+      _webRTCHelper = WebRTCHelper(_urlIce, touchBack: touchBack);
       await _webRTCHelper?.makeCall(
         _msgDisplay['extra']['signal']['url'],
         _msgDisplay['extra']['setClientId'],
@@ -367,7 +373,7 @@ class PresentStateProvider extends ChangeNotifier {
 
   Future<void> presentEnd({bool goIdleState = true}) async {
     try {
-      if (v1) {
+      if (_v1) {
         _socket?.emit(displayCode!, {
           'messageFor': displayCode!,
           'userid': presenter?.id,
@@ -388,8 +394,9 @@ class PresentStateProvider extends ChangeNotifier {
     } catch (e) {
       debugModePrint(e, type: runtimeType);
     }
-    resetMessage();
+
     if (goIdleState) {
+      resetMessage();
       setViewState(ViewState.idle);
     }
   }
@@ -415,7 +422,7 @@ class PresentStateProvider extends ChangeNotifier {
   }
 
   Future<void> presentPause() async {
-    if (v1) {
+    if (_v1) {
       _socket?.emit(displayCode!, {
         'messageFor': displayCode!,
         'userid': presenter?.id,
@@ -437,7 +444,7 @@ class PresentStateProvider extends ChangeNotifier {
   }
 
   Future<void> presentResume() async {
-    if (v1) {
+    if (_v1) {
       _socket?.emit(displayCode!, {
         'messageFor': displayCode!,
         'userid': presenter?.id,
@@ -472,6 +479,7 @@ class PresentStateProvider extends ChangeNotifier {
   resetMessage() {
     presenter = Presenter(id: const Uuid().v4());
     moderator = null;
+    _touchBack = false;
   }
 
   String _getRandomString() {

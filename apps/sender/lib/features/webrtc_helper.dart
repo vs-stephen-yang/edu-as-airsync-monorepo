@@ -16,8 +16,9 @@ import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:window_size/window_size.dart';
 
 class WebRTCHelper {
-  WebRTCHelper(String getIceUrl) {
+  WebRTCHelper(String getIceUrl, {bool touchBack = false}) {
     _getIceUrl = getIceUrl;
+    _touchBack = touchBack;
   }
 
   late final String _getIceUrl;
@@ -35,6 +36,7 @@ class WebRTCHelper {
   io.Socket? _socket;
   double _screenWidth = 1920.0;
   double _screenHeight = 1080.0;
+  bool _touchBack = false;
 
   final _flutterInputInjectionPlugin = FlutterInputInjection();
 
@@ -82,14 +84,14 @@ class WebRTCHelper {
   }
 
   void streamPause() {
-    _pc?.getLocalStreams().forEach((element) {
-      element?.getTracks().first.enabled = false;
+    _localStream?.getTracks().forEach((element) {
+      element.enabled = false;
     });
   }
 
   void streamResume() {
-    _pc?.getLocalStreams().forEach((element) {
-      element?.getTracks().first.enabled = true;
+    _localStream?.getTracks().forEach((element) {
+      element.enabled = true;
     });
   }
 
@@ -302,7 +304,7 @@ class WebRTCHelper {
   }
 
   void _onMessage(RTCDataChannelMessage data) async {
-    if(data.isBinary) {
+    if(_touchBack && data.isBinary && _localStream!.getTracks().first.enabled) {
       EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
       if(eventMessage.hasTouchEvent()) {
         int action = FlutterInputInjection.TOUCH_POINT_START;
