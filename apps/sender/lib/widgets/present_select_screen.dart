@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class PresentSelectScreen extends StatelessWidget {
   const PresentSelectScreen({super.key});
 
-  static final selectScreenDialog = SelectScreenDialog();
+  static SelectScreenDialog? selectScreenDialog;
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +21,12 @@ class PresentSelectScreen extends StatelessWidget {
       ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
         // onFinish
         if (context.mounted) {
-          selectScreenDialog.cancel();
+          selectScreenDialog?.cancel();
         }
       });
       await showDialog<DesktopCapturerSource>(
         context: context,
-        builder: (context) => selectScreenDialog,
+        builder: (context) => selectScreenDialog = SelectScreenDialog(),
       ).then((value) {
         debugModePrint('selectedSource: $value');
         ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
@@ -34,7 +34,7 @@ class PresentSelectScreen extends StatelessWidget {
           provider.presentStart(selectedSource: value);
         } else {
           SelectScreenDialog._timer?.cancel();
-          for (var element in selectScreenDialog._subscriptions) {
+          for (var element in selectScreenDialog!._subscriptions) {
             element.cancel();
           }
           // moderator mode
