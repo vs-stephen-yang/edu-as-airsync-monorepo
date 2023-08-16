@@ -109,8 +109,8 @@ class PresentPresentStart extends StatelessWidget {
                         children: [
                           Icon(
                             value
-                                ? Icons.smart_display_outlined
-                                : Icons.pause_presentation,
+                                ? Icons.pause_presentation
+                                : Icons.smart_display_outlined,
                             color: Colors.white,
                           ),
                           Text(value ? 'PAUSE' : 'RESUME',
