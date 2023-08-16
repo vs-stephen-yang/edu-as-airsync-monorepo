@@ -197,7 +197,7 @@ class PresentStateProvider extends ChangeNotifier {
             setViewState(ViewState.moderatorWait);
           } else {
             if (state == ViewState.selectScreen) {
-              PresentSelectScreen.selectScreenDialog.cancel();
+              PresentSelectScreen.selectScreenDialog?.cancel();
             }
             presentEnd();
           }
@@ -276,7 +276,7 @@ class PresentStateProvider extends ChangeNotifier {
 
     _socket?.on('$displayCode/disconnect', (data) {
       if (state == ViewState.selectScreen) {
-        PresentSelectScreen.selectScreenDialog.cancel();
+        PresentSelectScreen.selectScreenDialog?.cancel();
       } else {
         presentEnd();
       }
@@ -322,7 +322,7 @@ class PresentStateProvider extends ChangeNotifier {
 
       _socket?.on('$displayCode/disconnect', (data) {
         if (state == ViewState.selectScreen) {
-          PresentSelectScreen.selectScreenDialog.cancel();
+          PresentSelectScreen.selectScreenDialog?.cancel();
         } else {
           presentEnd();
         }
