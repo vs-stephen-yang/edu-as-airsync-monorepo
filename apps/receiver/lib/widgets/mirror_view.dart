@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
@@ -86,6 +87,42 @@ class MirrorView extends StatelessWidget {
                         ),
                       ),
                     ),
+                  ),
+                ),
+              if (mirror.isMirroring)
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      FocusIconButton(
+                        icons: mirror.audioEnable
+                            ? Icons.volume_off_outlined
+                            : Icons.volume_up_outlined,
+                        iconForegroundColor: Colors.white,
+                        iconBackgroundColor: AppColors.iconPresentingBackground,
+                        iconFocusBackgroundColor:
+                            AppColors.iconFeatureOnStandbyBackground,
+                        hasFocusSize: AppUIConstant.iconHasFocusSize,
+                        notFocusSize: AppUIConstant.iconNotFocusSize,
+                        onClick: () {
+                          mirror.setAudioEnable(!mirror.audioEnable);
+                        },
+                      ),
+                      FocusIconButton(
+                        icons: Icons.close,
+                        iconForegroundColor: Colors.white,
+                        iconBackgroundColor: AppColors.iconPresentingBackground,
+                        iconFocusBackgroundColor:
+                            AppColors.iconFeatureOnStandbyBackground,
+                        hasFocusSize: AppUIConstant.iconHasFocusSize,
+                        notFocusSize: AppUIConstant.iconNotFocusSize,
+                        onClick: () {
+                          mirror.stopAcceptedMirror();
+                        },
+                      ),
+                    ],
                   ),
                 ),
             ],
