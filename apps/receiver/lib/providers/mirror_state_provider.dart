@@ -54,6 +54,8 @@ class MirrorStateProvider extends ChangeNotifier
 
   get aspectRatio => _aspectRatio;
 
+  get audioEnable => _audioEnabled;
+
   FlutterMirror? _plugin;
   String _deviceName =
       'AirSync-${Random().nextInt(9999).toString().padLeft(4, '0')}';
@@ -71,6 +73,7 @@ class MirrorStateProvider extends ChangeNotifier
   bool _sizeChanged = false;
   Size _videoWidgetSize = const Size(0, 0);
   Offset _videoWidgetOffset = const Offset(0, 0);
+  bool _audioEnabled = true;
 
   // region FlutterMirrorListener
   @override
@@ -156,7 +159,7 @@ class MirrorStateProvider extends ChangeNotifier
       _acceptedTextureId = _requestingMirror[index].textureId;
 
       if (_acceptedMirrorId != null) {
-        _plugin?.enableAudio(_acceptedMirrorId!, true);
+        _plugin?.enableAudio(_acceptedMirrorId!, _audioEnabled);
       }
 
       _aspectRatio = _requestingMirror[index].aspectRatio;
@@ -166,6 +169,24 @@ class MirrorStateProvider extends ChangeNotifier
       _mirrorState = MirrorState.mirroring;
       notifyListeners();
     }
+  }
+
+  stopAcceptedMirror() {
+    if (_acceptedMirrorId != null) {
+      _plugin?.stopMirror(_acceptedMirrorId!);
+    }
+    notifyListeners();
+  }
+
+  setAudioEnable(bool enable, {bool apply = true}) {
+    if (apply) {
+      _audioEnabled = enable;
+    }
+
+    if (_acceptedMirrorId != null) {
+      _plugin?.enableAudio(_acceptedMirrorId!, enable);
+    }
+    notifyListeners();
   }
 
   onTouchEvent(PointerEvent event) {
