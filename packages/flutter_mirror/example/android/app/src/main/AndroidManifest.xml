@@ -1,23 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   package="com.viewsonic.flutter_mirror_example"
-  android:sharedUserId="android.uid.system">
+  android:sharedUserId="android.uid.system"
+  tools:node="merge">
 
-  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-  <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-  <uses-permission android:name="android.permission.INTERNET" />
-
-  <uses-permission
-    android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-    android:maxSdkVersion="28" />
-  <uses-permission
-    android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-  />
-  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-  <uses-permission
-    android:name="android.permission.ACCESS_FINE_LOCATION"
-    android:maxSdkVersion="32" />
 
   <application
     android:label="flutter_mirror_example"
