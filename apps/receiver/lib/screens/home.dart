@@ -4,6 +4,7 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
@@ -17,6 +18,7 @@ import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:display_flutter/widgets/webrtc_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -29,10 +31,33 @@ class Home extends StatefulWidget {
   State createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver {
   double _fullWidth = 0, _fullHeight = 0, _halfWidth = 0, _halfHeight = 0;
   static const _androidAppRetain =
       MethodChannel('com.mvbcast.crosswalk/android_app_retain');
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    MirrorStateProvider mirrorStateProvider =
+        Provider.of<MirrorStateProvider>(context, listen: false);
+    if (state == AppLifecycleState.inactive) {
+      mirrorStateProvider.updateAudioEnable(false);
+    } else if (state == AppLifecycleState.resumed) {
+      mirrorStateProvider.updateAudioEnable(true);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
