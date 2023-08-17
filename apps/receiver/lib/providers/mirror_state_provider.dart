@@ -178,15 +178,18 @@ class MirrorStateProvider extends ChangeNotifier
     notifyListeners();
   }
 
-  setAudioEnable(bool enable, {bool apply = true}) {
-    if (apply) {
-      _audioEnabled = enable;
-    }
-
+  setAudioEnable(bool enable) {
+    _audioEnabled = enable;
     if (_acceptedMirrorId != null) {
       _plugin?.enableAudio(_acceptedMirrorId!, enable);
     }
     notifyListeners();
+  }
+
+  updateAudioEnable(bool enable) {
+    if (_acceptedMirrorId != null) {
+      _plugin?.enableAudio(_acceptedMirrorId!, enable & _audioEnabled);
+    }
   }
 
   onTouchEvent(PointerEvent event) {
