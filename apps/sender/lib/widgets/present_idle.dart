@@ -15,7 +15,6 @@ class PresentIdle extends StatelessWidget {
   final GlobalKey<PresentIdleTextFieldState> fieldKey = GlobalKey();
   final GlobalKey<PresentIdleButtonState> presentBtnKey = GlobalKey();
   final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
-  bool touchBackBtn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -131,10 +130,9 @@ class PresentIdle extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: TouchBackButton(
                     key: touchBtnKey,
-                    onPressed: () {
-                      touchBackBtn = !touchBackBtn;
-                      presentStateProvider.setTouchBack(touchBackBtn);
-                      touchBtnKey.currentState?.setEnable(touchBackBtn);
+                    initialValue: presentStateProvider.touchBack,
+                    onPressed: (state) {
+                      presentStateProvider.setTouchBack(state);
                     },
                   ),
                 ),

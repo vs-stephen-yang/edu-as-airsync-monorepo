@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class TouchBackButton extends StatefulWidget {
-  const TouchBackButton({Key? key, required this.onPressed}) : super(key: key);
+  const TouchBackButton({Key? key, required this.onPressed, required this.initialValue}) : super(key: key);
 
-  final VoidCallback? onPressed;
+  final ValueChanged<bool> onPressed;
+  final bool initialValue;
 
   @override
   State<TouchBackButton> createState() => TouchBackButtonState();
@@ -13,11 +14,10 @@ class TouchBackButton extends StatefulWidget {
 class TouchBackButtonState extends State<TouchBackButton> {
   bool isButtonEnabled = false;
 
-  void setEnable(bool touchBtnEnable) {
-    setState(() {
-      // update the button state
-      isButtonEnabled = touchBtnEnable;
-    });
+  @override
+  void initState() {
+    super.initState();
+    isButtonEnabled = widget.initialValue;
   }
 
   @override
@@ -30,7 +30,11 @@ class TouchBackButtonState extends State<TouchBackButton> {
               'assets/images/ic_activate_off.svg'),),
         splashRadius: 20,
         focusColor: Colors.grey,
-        onPressed: widget.onPressed,
+        onPressed: () {
+          isButtonEnabled = !isButtonEnabled;
+          widget.onPressed(isButtonEnabled);
+          setState(() {});
+        },
       );
   }
 }

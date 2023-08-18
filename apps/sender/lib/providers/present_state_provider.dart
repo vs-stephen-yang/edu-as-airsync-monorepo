@@ -479,7 +479,6 @@ class PresentStateProvider extends ChangeNotifier {
   resetMessage() {
     presenter = Presenter(id: const Uuid().v4());
     moderator = null;
-    _touchBack = false;
   }
 
   String _getRandomString() {
