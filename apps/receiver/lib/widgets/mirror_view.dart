@@ -184,12 +184,16 @@ class MirrorView extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        Text(
-                          mirrorStateProvider.pinCode,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                          ),
+                        Consumer<MirrorStateProvider>(
+                          builder: (context, mirror, child) {
+                            return Text(
+                              mirror.pinCode,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 28,
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
