@@ -2,21 +2,17 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
+import 'package:display_cast_flutter/widgets/present_idle_textfield.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
-import 'custom_text_form_field.dart';
 
 class PresentIdle extends StatelessWidget {
   PresentIdle({super.key});
 
-  final TextEditingController _codeController = TextEditingController();
-  final TextEditingController _otpController = TextEditingController();
-  final codeKey = GlobalKey();
-  final GlobalKey<CustomTextFormFieldState> otpKey = GlobalKey();
+  final GlobalKey<PresentIdleTextFieldState> fieldKey = GlobalKey();
   final GlobalKey<PresentIdleButtonState> presentBtnKey = GlobalKey();
   final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
   bool touchBackBtn = false;
@@ -26,6 +22,7 @@ class PresentIdle extends StatelessWidget {
     PresentStateProvider presentStateProvider =
         Provider.of<PresentStateProvider>(context);
     bool presentBtnEnable = false;
+    String displayCode = '', password ='';
     return SizedBox(
       width: 300,
       height: 400,
@@ -36,88 +33,51 @@ class PresentIdle extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.only(top: 20),
           ),
-          SizedBox(
-            height: 66,
-            child: CustomTextFormField(
-              key: codeKey,
-              controller: _codeController,
-              // initialValue: displayCode,
-              labelText: S.of(context).present_display_code,
-              errorText: S.of(context).present_display_code_description,
-              inputFormatter: [
-                MaskedInputFormatter(
-                  '000-000-000-0',
-                  allowedCharMatcher: RegExp('[1-9]'),
-                )
-              ],
-              onChanged: (text) {
-                if (text.length >= 11 && _otpController.text.length == 4) {
-                  presentBtnEnable = true;
-                } else {
-                  presentBtnEnable = false;
-                }
-                presentBtnKey.currentState?.setEnable(presentBtnEnable, displayCode: text, password: _otpController.text );
-              },
-            ),
+          PresentIdleTextField(
+            key: fieldKey,
+            onFieldChanged: (result) {
+              presentBtnEnable = result.enable;
+              displayCode = result.displayCode.replaceAll('-', '');
+              password = result.password;
+              presentBtnKey.currentState?.setEnable(result.enable,
+                  displayCode: result.displayCode, password: result.password);
+            },
+            onPasswordEnterEvent: (text) {
+              if (presentBtnEnable) {
+                presentBtnKey.currentState?.widget.onPressed!();
+              }
+            },
           ),
-          const Padding(padding: EdgeInsets.all(10)),
-          SizedBox(
-            height: 66,
-            child: CustomTextFormField(
-              key: otpKey,
-              controller: _otpController,
-              // initialValue: otp,
-              labelText: S.of(context).present_otp_code,
-              errorText: S.of(context).present_otp_code_description,
-              inputFormatter: [
-                MaskedInputFormatter(
-                  '0000',
-                  allowedCharMatcher: RegExp('[1-9]'),
-                )
-              ],
-              isPassword: true,
-              onChanged: (text) {
-                if (_codeController.text.length >= 11 && text.length == 4) {
-                  presentBtnEnable = true;
-                } else {
-                  presentBtnEnable = false;
-                }
-                presentBtnKey.currentState?.setEnable(presentBtnEnable, displayCode: _codeController.text, password: text );
-              },
-            ),
-          ),
-          const Padding(padding: EdgeInsets.all(10)),
           PresentIdleButton(key: presentBtnKey, onPressed: () async {
             await presentStateProvider.presentEnd(goIdleState: false);
 
-            var displayCode = _codeController.text.replaceAll('-', '');
+            displayCode = displayCode.replaceAll('-', '');
             int moderator = await presentStateProvider.checkModeratorOTP(
-                displayCode: displayCode, otp: _otpController.text);
+                displayCode: displayCode, otp: password);
             if (moderator > 204 ||
                 presentStateProvider.state == ViewState.moderatorIdle) {
               switch (moderator) {
                 case 403:
                 // 403 -> Reach maximum presenters
-                  otpKey.currentState
-                      ?.setErrorMsg('Reach maximum presenters');
+                  fieldKey.currentState?.setOtpErrorMsg('Reach maximum presenters');
                   break;
                 case 404:
                 // 404 -> sendToV1
                   await presentStateProvider.presentToV1(
                       displayCode: displayCode,
-                      otp: _otpController.text,
+                      otp: password,
                       callback: (result) async {
                         // handle UI
                         if (result == 'connect') {
                           // web: open a new window
                         } else if (result == 'denied') {
-                          otpKey.currentState
-                              ?.setErrorMsg('Invalid password');
+                          fieldKey.currentState
+                              ?.setOtpErrorMsg('Invalid password');
                         } else if (result == 'blocked') {
-                          otpKey.currentState?.setErrorMsg(
+                          fieldKey.currentState?.setOtpErrorMsg(
                               'Display host is connected by another client. Please try again later');
                         } else if (result == 'timeout') {
-                          otpKey.currentState?.setErrorMsg(
+                          fieldKey.currentState?.setOtpErrorMsg(
                               'Your connection has been terminated because no stream was provided for more than 30 seconds. Please try to reconnect.');
                         }
                       });
@@ -125,24 +85,24 @@ class PresentIdle extends StatelessWidget {
                 case 406:
                 // Display's moderator mode is on,  but the otp is wrong
                 // 406 -> Invalid one time password
-                  otpKey.currentState
-                      ?.setErrorMsg('Invalid one time password');
+                  fieldKey.currentState
+                      ?.setOtpErrorMsg('Invalid one time password');
                   break;
               }
               return;
             }
 
             bool display = await presentStateProvider.checkDisplayOTP(
-                displayCode: displayCode, otp: _otpController.text);
+                displayCode: displayCode, otp: password);
             if (display) {
               presentStateProvider.presentTo(
                 displayCode: displayCode,
-                otp: _otpController.text,
+                otp: password,
               );
             }
           }),
           const Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.only(top: 16), //EdgeInsets.all(8),
             child: Divider(color: Colors.white10),
           ),
           Row(
@@ -211,7 +171,7 @@ class PresentIdle extends StatelessWidget {
             ),
           ),
           const Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.only(top: 16),
             child: Divider(color: Colors.white10),
           ),
         ],

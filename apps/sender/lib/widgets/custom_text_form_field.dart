@@ -8,7 +8,7 @@ class CustomTextFormField extends StatefulWidget {
         this.labelText,
         this.errorText,
         this.inputFormatter,
-        this.isPassword = false, this.onChanged});
+        this.isPassword = false, this.onChanged, required this.focusNode, required this.onFieldSubmitted});
 
   final TextEditingController? controller;
   final String? labelText;
@@ -16,6 +16,8 @@ class CustomTextFormField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatter;
   bool isPassword = false;
   ValueChanged<String>? onChanged;
+  final FocusNode focusNode;
+  final ValueChanged<String> onFieldSubmitted;
 
   @override
   State<StatefulWidget> createState() {
@@ -41,6 +43,7 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
     );
     return TextFormField(
       controller: widget.controller,
+      focusNode: widget.focusNode,
       // initialValue: initialValue,
       decoration: InputDecoration(
         labelText: widget.labelText,
@@ -73,6 +76,9 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
       obscureText: widget.isPassword && !displayPassword,
       onChanged: (_) {
         if (widget.onChanged != null) widget.onChanged!(_);
+      },
+      onFieldSubmitted: (value) {
+        widget.onFieldSubmitted(value);
       },
     );
   }

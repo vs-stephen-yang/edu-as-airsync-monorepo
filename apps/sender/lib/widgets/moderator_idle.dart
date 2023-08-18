@@ -21,6 +21,7 @@ class ModeratorIdle extends StatefulWidget {
 
 class _ModeratorIdleState extends State<ModeratorIdle> {
   final TextEditingController _nameController = TextEditingController();
+  final FocusNode _nameFocusNode = FocusNode();
   final nameKey = GlobalKey();
   bool presentBtnEnable = false;
 
@@ -28,6 +29,26 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
   Widget build(BuildContext context) {
 
     PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
+
+    Future<void> clickPresent() async {
+      if (presentStateProvider.state == ViewState.moderatorIdle) {
+        if (_nameController.text.isEmpty) {
+          _showOverlayMessage(context, nameKey);
+        } else if (widget.displayCode != null) {
+          presentStateProvider.presenter?.name = _nameController.text;
+          bool display = await presentStateProvider.checkDisplayOTP(
+              displayCode: widget.displayCode, otp: widget.otp);
+          if (display) {
+            presentStateProvider.presentTo(
+              displayCode: widget.displayCode,
+              otp: widget.otp,
+            ).whenComplete(() => presentStateProvider
+                .setViewState(ViewState.moderatorWait));
+          }
+        }
+      }
+    }
+
     return SizedBox(
       width: 300,
       height: 400,
@@ -71,9 +92,11 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
             child: CustomTextFormField(
               key: nameKey,
               controller: _nameController,
+              focusNode: _nameFocusNode,
               labelText: S.of(context).moderator_name,
               inputFormatter: [
-                FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]'),
+                FilteringTextInputFormatter.allow(
+                  RegExp('[a-zA-Z0-9]'),
                 )
               ],
               onChanged: (text) {
@@ -84,27 +107,17 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
                 }
                 setState(() {});
               },
+              onFieldSubmitted: (String value) async {
+                if (presentBtnEnable) {
+                  await clickPresent();
+                }
+              },
             ),
           ),
           const Padding(padding: EdgeInsets.all(10)),
           ElevatedButton(
             onPressed: () async {
-              if (presentStateProvider.state == ViewState.moderatorIdle) {
-                if (_nameController.text.isEmpty) {
-                  _showOverlayMessage(context, nameKey);
-                } else if (widget.displayCode != null) {
-                  presentStateProvider.presenter?.name = _nameController.text;
-                  bool display = await presentStateProvider.checkDisplayOTP(
-                      displayCode: widget.displayCode, otp: widget.otp);
-                  if (display) {
-                    presentStateProvider.presentTo(
-                          displayCode: widget.displayCode,
-                          otp: widget.otp,
-                        ).whenComplete(() => presentStateProvider
-                            .setViewState(ViewState.moderatorWait));
-                  }
-                }
-              }
+              await clickPresent();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: presentBtnEnable? const Color.fromARGB(255, 41, 121, 255) : const Color.fromARGB(128, 242, 242, 242),
