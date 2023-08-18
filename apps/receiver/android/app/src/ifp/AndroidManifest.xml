@@ -3,6 +3,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	package="com.mvbcast.crosswalk"
 	android:sharedUserId="android.uid.system"
+	android:sharedUserMaxSdkVersion="32"
 	tools:node="merge">
 
 	<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
