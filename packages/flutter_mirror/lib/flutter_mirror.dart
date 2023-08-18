@@ -1,5 +1,6 @@
 import 'package:flutter_mirror/airplay_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'flutter_mirror_platform_interface.dart';
 import 'flutter_mirror_listener.dart';
 
@@ -8,8 +9,27 @@ class FlutterMirror {
     return FlutterMirrorPlatform.instance.registerListener(listener);
   }
 
-  Future<void> initialize() {
+  Future<void> initialize() async{
+    await requestPermissions();
     return FlutterMirrorPlatform.instance.initialize();
+  }
+
+  Future<void> requestPermissions() async{
+    var status = await Permission.location.status;
+    if(status != PermissionStatus.granted) {
+      print("location permission status: $status");
+      status = await Permission.location.request();
+      print("update location permission status: $status");
+    }
+
+    status = await Permission.nearbyWifiDevices.status;
+    if(status != PermissionStatus.granted) {
+      print("nearbyWifiDevices permission status: $status");
+      status = await Permission.nearbyWifiDevices.request();
+      print("update nearbyWifiDevices permission status: $status");
+    }
+
+    return;
   }
 
   Future<void> startAirplay(AirplayConfig config) {
