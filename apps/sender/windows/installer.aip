@@ -45,16 +45,18 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
     <ROW Component="AI_INSTALLPERUSER" ComponentId="{FB8000D6-B9B6-4045-84EF-D7A0FD5AB707}" Directory_="APPDIR" Attributes="260" KeyPath="AI_INSTALLPERUSER" Options="1"/>
     <ROW Component="APPDIR" ComponentId="{65CC1664-DF5F-4669-ADF1-C2A16799FE5D}" Directory_="APPDIR" Attributes="0"/>
+    <ROW Component="AirSync_Sender.exe" ComponentId="{78575E77-7E7F-42EB-ADF1-6353527D3308}" Directory_="APPDIR" Attributes="256" KeyPath="AirSync_Sender.exe"/>
     <ROW Component="AssetManifest.json" ComponentId="{C233CABF-42C3-4755-8968-AF26B5B39ADC}" Directory_="flutter_assets_Dir" Attributes="0" KeyPath="AssetManifest.json" Type="0"/>
     <ROW Component="CupertinoIcons.ttf" ComponentId="{CB321FD7-AF8F-448E-BF3C-B37FF34EC0C3}" Directory_="assets_1_Dir" Attributes="0" Type="0"/>
-    <ROW Component="AirSync_Sender.exe" ComponentId="{78575E77-7E7F-42EB-ADF1-6353527D3308}" Directory_="APPDIR" Attributes="256" KeyPath="AirSync_Sender.exe"/>
     <ROW Component="MaterialIconsRegular.otf" ComponentId="{F2644C5C-CFD0-4EF0-8F98-A046F072A00C}" Directory_="fonts_Dir" Attributes="0" KeyPath="MaterialIconsRegular.otf" Type="0"/>
     <ROW Component="ProductInformation" ComponentId="{4B1841DC-601F-47AA-89A4-610F5A65E9D1}" Directory_="APPDIR" Attributes="260" KeyPath="Version"/>
     <ROW Component="SHORTCUTDIR" ComponentId="{8A6E9F44-DB30-4AE3-9A31-A96F629A8E58}" Directory_="SHORTCUTDIR" Attributes="0"/>
     <ROW Component="ad.png" ComponentId="{F28B77EC-08A8-4467-BC63-EE5B910422F0}" Directory_="png_Dir" Attributes="0" KeyPath="ad.png" Type="0"/>
     <ROW Component="app.so" ComponentId="{52CC9D60-5A70-4B8A-85E2-473FB4282BFE}" Directory_="data_Dir" Attributes="0" KeyPath="app.so" Type="0"/>
+    <ROW Component="desktop_window_plugin.dll" ComponentId="{B7E1C053-6C8C-419C-B685-FD39090ED214}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_window_plugin.dll"/>
     <ROW Component="flutter_input_injection_plugin.dll" ComponentId="{B7367AEA-D814-4555-9017-16C35CF5176B}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_input_injection_plugin.dll"/>
     <ROW Component="flutter_webrtc_plugin.dll" ComponentId="{01693031-1DF1-4607-8D12-2BD024DB7490}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_webrtc_plugin.dll"/>
+    <ROW Component="flutter_window_close_plugin.dll" ComponentId="{AF719A2D-7860-40A5-8573-101B6B08B5E9}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_window_close_plugin.dll"/>
     <ROW Component="flutter_windows.dll" ComponentId="{621A2294-FC37-49A2-A131-2AD2D7293608}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_windows.dll"/>
     <ROW Component="ic_logo_build_by.png" ComponentId="{F503A4DA-F05F-4089-B92D-70517F282B36}" Directory_="images_Dir" Attributes="0" KeyPath="ic_logo_build_by.png" Type="0"/>
     <ROW Component="ink_sparkle.frag" ComponentId="{5BDB1027-95B6-4DA6-88A8-262351E3787F}" Directory_="shaders_Dir" Attributes="0" KeyPath="ink_sparkle.frag" Type="0"/>
@@ -348,6 +350,8 @@
     <ROW File="vcruntime140_1.dll" Component_="vcruntime140_1.dll" FileName="VCRUNT~2.DLL|vcruntime140_1.dll" Attributes="0" SourcePath="redist\vcruntime140_1.dll" SelfReg="false"/>
     <ROW File="msvcp140.dll" Component_="msvcp140.dll" FileName="msvcp140.dll" Attributes="0" SourcePath="redist\msvcp140.dll" SelfReg="false"/>
     <ROW File="updater.exe" Component_="updater.exe" FileName="updater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="&lt;AI_STUBS&gt;updater.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="desktop_window_plugin.dll" Component_="desktop_window_plugin.dll" FileName="DESKTO~1.DLL|desktop_window_plugin.dll" Attributes="0" SourcePath="..\build\windows\runner\Release\desktop_window_plugin.dll" SelfReg="false"/>
+    <ROW File="flutter_window_close_plugin.dll" Component_="flutter_window_close_plugin.dll" FileName="FLUTTE~4.DLL|flutter_window_close_plugin.dll" Attributes="0" SourcePath="..\build\windows\runner\Release\flutter_window_close_plugin.dll" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AiPersistentPropComponent">
     <ROW Property="AI_INSTALLPERUSER" Registry="AI_INSTALLPERUSER" HklmSearch="AI_INSTALLPERUSER" HkcuSearch="AI_INSTALLPERUSER_1" Hklm64Search="AI_INSTALLPERUSER_2" Hkcu64Search="AI_INSTALLPERUSER_3"/>
@@ -461,6 +465,8 @@
     <ROW Feature_="MainFeature" Component_="vcruntime140_1.dll"/>
     <ROW Feature_="MainFeature" Component_="msvcp140.dll"/>
     <ROW Feature_="MainFeature" Component_="updater.exe"/>
+    <ROW Feature_="MainFeature" Component_="desktop_window_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="flutter_window_close_plugin.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="AirSync_Sender.exe" SourcePath="..\build\windows\runner\Release\AirSync_Sender.exe" Index="0"/>
