@@ -341,6 +341,8 @@ class ControlSocket {
               if (moderator == null &&
                   !SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
                 ConnectionTimer.getInstance().stopRemainingTimeTimer();
+              } else if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] > 0) {
+                StreamFunction.streamFunctionState.value = stateMenuOff;
               }
             } on PlatformException catch (e) {
               log(e.toString());
