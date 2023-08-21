@@ -18,91 +18,169 @@ variables:
   - name: Package.Bin
     value: "$(Build.SourcesDirectory)/windows/scripts/package.ps1"
 
-pool:
-  name: 'Windows Build Servers'
-  demands:
-  - EVKey -equals 1
-steps:
-- checkout: self
-  persistCredentials: "true"
-  lfs: "true"
+jobs:
+  - job: Build
+    pool:
+      vmImage: 'windows-2022'
+    steps:
+      - checkout: self
+        persistCredentials: "true"
+        lfs: "true"
 
-# install flutter SDK
-- script: curl https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_$(Flutter.Version)-stable.zip --output $(Pipeline.Workspace)/flutter.zip
-  displayName: Download the flutter SDK
+      - task: PowerShell@2
+        displayName: Authenticates git repos
+        inputs:
+          targetType: 'inline'
+          script: |
+            $header = "AUTHORIZATION: bearer $(System.AccessToken)"
+            git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
 
-- task: ExtractFiles@1
-  displayName: Extract the flutter SDK
-  inputs:
-    archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
-    destinationFolder: "$(Pipeline.Workspace)/flutter"
+      # install flutter SDK
+      - script: curl https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_$(Flutter.Version)-stable.zip --output $(Pipeline.Workspace)/flutter.zip
+        displayName: Download the flutter SDK
 
-# build dev
-- script: $(Flutter.Bin) build windows -t ./lib/main_dev.dart
-  displayName: Build dev
+      - task: ExtractFiles@1
+        displayName: Extract the flutter SDK
+        inputs:
+          archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
+          destinationFolder: "$(Pipeline.Workspace)/flutter"
 
-- task: PowerShell@2
-  displayName: 'Package dev'
-  inputs:
-    filePath: '"$(Package.Bin)"'
-    arguments: 'dev'
-    pwsh: true
+      # build dev
+      - script: $(Flutter.Bin) build windows -t ./lib/main_dev.dart
+        displayName: Build dev
 
-# copy dev
-- task: CopyFiles@2
-  displayName: Copy dev
-  inputs:
-    SourceFolder: "$(Installer.Dir)"
-    contents: "**"
-    targetFolder: "$(Build.ArtifactStagingDirectory)/dev/"
+      # copy dev
+      - task: CopyFiles@2
+        displayName: Copy dev
+        inputs:
+          SourceFolder: "$(Build.Dir)"
+          contents: "**"
+          targetFolder: "$(Build.ArtifactStagingDirectory)/dev/"
 
+      # build stage
+      - script: $(Flutter.Bin) build windows -t ./lib/main_stage.dart
+        displayName: Build stage
 
-# build stage
-- script: $(Flutter.Bin) build windows -t ./lib/main_stage.dart
-  displayName: Build stage
+      # copy stage
+      - task: CopyFiles@2
+        displayName: Copy stage
+        inputs:
+          SourceFolder: "$(Build.Dir)"
+          contents: "**"
+          targetFolder: "$(Build.ArtifactStagingDirectory)/stage/"
 
+      # build prod
+      - script: $(Flutter.Bin) build windows -t ./lib/main_production.dart
+        displayName: Build prod
 
-- task: PowerShell@2
-  displayName: 'Package stage'
-  inputs:
-    filePath: '"$(Package.Bin)"'
-    arguments: 'stage'
-    pwsh: true
+      # copy prod
+      - task: CopyFiles@2
+        displayName: Copy prod
+        inputs:
+          SourceFolder: "$(Build.Dir)"
+          contents: "**"
+          targetFolder: "$(Build.ArtifactStagingDirectory)/prod/"
 
-# copy stage
-- task: CopyFiles@2
-  displayName: Copy stage
-  inputs:
-    SourceFolder: "$(Installer.Dir)"
-    contents: "**"
-    targetFolder: "$(Build.ArtifactStagingDirectory)/stage/"
+      # Publish artifacts
+      - task: PublishBuildArtifacts@1
+        displayName: Publish build
+        inputs:
+          pathToPublish: "$(Build.ArtifactStagingDirectory)"
+          artifactName: build
+          Parallel: true
 
+  - job: Package
+    dependsOn: Build
+    pool:
+      name: 'Windows Build Servers'
+      demands:
+        - EVKey -equals 1
+    steps:
+      - task: DownloadBuildArtifacts@0
+        displayName: 'Download build'
+        inputs:
+          artifactName: 'build'
+          downloadPath: '$(System.ArtifactsDirectory)'
 
-# build prod
-- script: $(Flutter.Bin) build windows -t ./lib/main_production.dart
-  displayName: Build prod
+      # restore dev
+      - task: CopyFiles@2
+        displayName: Restore dev
+        inputs:
+          OverWrite: true
+          SourceFolder: "$(System.ArtifactsDirectory)/build/dev/"
+          contents: "**"
+          targetFolder: "$(Build.Dir)"
 
+      # package dev
+      - task: PowerShell@2
+        displayName: 'Package dev'
+        inputs:
+          filePath: '"$(Package.Bin)"'
+          arguments: 'dev'
+          pwsh: true
 
-- task: PowerShell@2
-  displayName: 'Package prod'
-  inputs:
-    filePath: '"$(Package.Bin)"'
-    arguments: 'prod'
-    pwsh: true
+      # copy dev
+      - task: CopyFiles@2
+        displayName: Copy dev
+        inputs:
+          SourceFolder: "$(Installer.Dir)"
+          contents: "**"
+          targetFolder: "$(Build.ArtifactStagingDirectory)/package/dev"
 
-# copy prod
-- task: CopyFiles@2
-  displayName: Copy prod
-  inputs:
-    SourceFolder: "$(Installer.Dir)"
-    contents: "**"
-    targetFolder: "$(Build.ArtifactStagingDirectory)/prod/"
+      # restore stage
+      - task: CopyFiles@2
+        displayName: Restore stage
+        inputs:
+          OverWrite: true
+          SourceFolder: "$(System.ArtifactsDirectory)/build/stage/"
+          contents: "**"
+          targetFolder: "$(Build.Dir)"
 
-# Publish artifacts
-- task: PublishBuildArtifacts@1
-  displayName: Publish build
-  inputs:
-    pathToPublish: "$(Build.ArtifactStagingDirectory)"
-    Parallel: true
+      # package stage
+      - task: PowerShell@2
+        displayName: 'Package stage'
+        inputs:
+          filePath: '"$(Package.Bin)"'
+          arguments: 'stage'
+          pwsh: true
 
+      # copy stage
+      - task: CopyFiles@2
+        displayName: Copy stage
+        inputs:
+          SourceFolder: "$(Installer.Dir)"
+          contents: "**"
+          targetFolder: "$(Build.ArtifactStagingDirectory)/package/stage"
 
+      # restore prod
+      - task: CopyFiles@2
+        displayName: Restore prod
+        inputs:
+          OverWrite: true
+          SourceFolder: "$(System.ArtifactsDirectory)/build/prod/"
+          contents: "**"
+          targetFolder: "$(Build.Dir)"
+
+      # package prod
+      - task: PowerShell@2
+        displayName: 'Package prod'
+        inputs:
+          filePath: '"$(Package.Bin)"'
+          arguments: 'prod'
+          pwsh: true
+
+      # copy prod
+      - task: CopyFiles@2
+        displayName: Copy prod
+        inputs:
+          SourceFolder: "$(Installer.Dir)"
+          contents: "**"
+          targetFolder: "$(Build.ArtifactStagingDirectory)/package/prod"
+
+        # Publish artifacts
+      - task: PublishBuildArtifacts@1
+        displayName: Publish package
+        inputs:
+          pathToPublish: "$(Build.ArtifactStagingDirectory)/package"
+          artifactName: package
+          Parallel: true
