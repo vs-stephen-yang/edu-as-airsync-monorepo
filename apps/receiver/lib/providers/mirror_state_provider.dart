@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:display_flutter/utility/print_in_debug.dart';
+import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/airplay_config.dart';
@@ -167,6 +168,7 @@ class MirrorStateProvider extends ChangeNotifier
 
       _requestingMirror.removeAt(index);
       _mirrorState = MirrorState.mirroring;
+      StreamFunction.streamFunctionState.value = stateCast;
       notifyListeners();
     }
   }
