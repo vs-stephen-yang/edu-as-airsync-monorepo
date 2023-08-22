@@ -8,13 +8,12 @@ class CustomTextFormField extends StatefulWidget {
         this.labelText,
         this.errorText,
         this.inputFormatter,
-        this.isPassword = false, this.onChanged, required this.focusNode, required this.onFieldSubmitted});
+        this.onChanged, required this.focusNode, required this.onFieldSubmitted});
 
   final TextEditingController? controller;
   final String? labelText;
   String? errorText;
   final List<TextInputFormatter>? inputFormatter;
-  bool isPassword = false;
   ValueChanged<String>? onChanged;
   final FocusNode focusNode;
   final ValueChanged<String> onFieldSubmitted;
@@ -28,7 +27,6 @@ class CustomTextFormField extends StatefulWidget {
 class CustomTextFormFieldState extends State<CustomTextFormField> {
 
   TextStyle errorTextStyle = const TextStyle(color: Colors.white38);
-  bool displayPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,25 +53,9 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
         enabledBorder: outlineInputBorderGrey,
         errorBorder: outlineInputBorderGrey,
         focusedErrorBorder: outlineInputBorderBlue,
-        suffixIcon: widget.isPassword
-            ? InkWell(
-                onTap: () {
-                  setState(() {
-                    displayPassword = !displayPassword;
-                  });
-                },
-                child: displayPassword? const Icon(
-                  Icons.password,
-                  color: Colors.white38,
-                ): const Icon(
-                  Icons.remove_red_eye,
-                  color: Colors.white38,
-                ))
-            : null,
       ),
       style: textStyleWhite,
       inputFormatters: widget.inputFormatter,
-      obscureText: widget.isPassword && !displayPassword,
       onChanged: (_) {
         if (widget.onChanged != null) widget.onChanged!(_);
       },
