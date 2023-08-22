@@ -26,6 +26,8 @@ const String stateStandby = 'standby';
 const String stateMenuOff = 'menuOff';
 // SplitScreen, Moderator, Show Display Code, BackArrow
 const String stateMenuOn = 'menuOn';
+// CastSettings
+const String stateCast = 'cast';
 // BackArrow Only (for close display code)
 const String stateBackArrow = 'backArrow';
 
@@ -192,8 +194,8 @@ class _StreamFunctionStates extends State<StreamFunction> {
                         ),
                       ],
                     ),
-                  if (value == stateStandby &&
-                      !AppInstanceCreate().isDisableAdvance)
+                  if ((value == stateStandby &&
+                      !AppInstanceCreate().isDisableAdvance|| value == stateCast))
                     FocusIconButton(
                         icons: Icons.cast,
                         iconForegroundColor: colorSplitScreenForeground,
@@ -275,7 +277,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                     ),
                   ),
                   Visibility(
-                    visible: value != stateEmpty,
+                    visible: value != stateEmpty && value != stateCast ,
                     child: FocusIconButton(
                       icons: iconMain,
                       childNotFocus: iconMainImageNotFocus,

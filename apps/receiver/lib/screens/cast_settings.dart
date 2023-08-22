@@ -14,60 +14,62 @@ class CastSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MenuDialog(
-      backgroundColor: AppColors.primary_grey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            flex: 1,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Row(
-                children: [
-                  FittedBox(
-                    fit: BoxFit.fitHeight,
-                    child: FocusIconButton(
-                      childNotFocus: const Icon(
-                        Icons.arrow_back_ios_new,
-                        color: AppColors.primary_white,
-                      ),
-                      splashRadius: 20,
-                      focusColor: Colors.grey,
-                      onClick: () {
-                        navService.popUntil('/home');
-                      },
-                    ),
-                  ),
-                  Expanded(
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 5),
-                        child: Text(
-                          S.of(context).main_cast_settings_title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+    return Consumer<MirrorStateProvider>(
+      builder: (context, mirror, child) {
+        mirror.setDeviceName(ControlSocket().displayCode);
+        return MenuDialog(
+          backgroundColor: mirror.isMirroring? AppColors.primary_grey_tran : AppColors.primary_grey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Row(
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: FocusIconButton(
+                          childNotFocus: const Icon(
+                            Icons.arrow_back_ios_new,
                             color: AppColors.primary_white,
+                          ),
+                          splashRadius: 20,
+                          focusColor: Colors.grey,
+                          onClick: () {
+                            navService.popUntil('/home');
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 5),
+                            child: Text(
+                              S.of(context).main_cast_settings_title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary_white,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-          Expanded(
-            flex: 7,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Consumer<MirrorStateProvider>(
-                builder: (context, mirror, child) {
-                  mirror.setDeviceName(ControlSocket().displayCode);
-                  return Column(
+              Expanded(
+                flex: 7,
+                child: Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Row(
@@ -126,13 +128,13 @@ class CastSettings extends StatelessWidget {
                         },
                       ),
                     ],
-                  );
-                },
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -153,6 +153,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 },
               ),
               const MainInfo(),
+              const MirrorView(),
               const Positioned(
                 child: StatusBar(),
               ),
@@ -164,7 +165,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   child: StreamFunction(),
                 ),
               ),
-              const MirrorView(),
               ValueListenableBuilder(
                 valueListenable: Home.showCloudOff,
                 builder: (BuildContext context, bool value, Widget? child) {
