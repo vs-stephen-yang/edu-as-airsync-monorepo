@@ -98,7 +98,6 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                 allowedCharMatcher: RegExp('[1-9]'),
               )
             ],
-            isPassword: true,
             onChanged: (text) {
               bool presentBtnEnable = false;
               if (_codeController.text.length >= 11 && text.length == 4) {
