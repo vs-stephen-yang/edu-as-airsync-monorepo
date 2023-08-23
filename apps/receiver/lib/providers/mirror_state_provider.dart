@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
@@ -110,6 +112,17 @@ class MirrorStateProvider extends ChangeNotifier
     _acceptedMirrorId = null;
     _acceptedTextureId = null;
     _mirrorState = MirrorState.idle;
+    if (ControlSocket().moderator != null || SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+      if (ControlSocket().isPresenting()) {
+        StreamFunction.streamFunctionState.value = stateMenuOff;
+      } else {
+        StreamFunction.streamFunctionState.value = stateStandby;
+      }
+    } else if (ControlSocket().isPresenting()){
+      StreamFunction.streamFunctionState.value = stateEmpty;
+    } else {
+      StreamFunction.streamFunctionState.value = stateStandby;
+    }
     notifyListeners();
   }
 

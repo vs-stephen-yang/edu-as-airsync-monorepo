@@ -3,12 +3,9 @@ import 'dart:math';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
-import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
-import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
@@ -123,17 +120,6 @@ class MirrorView extends StatelessWidget {
                         notFocusSize: AppUIConstant.iconNotFocusSize,
                         onClick: () {
                           mirror.stopAcceptedMirror();
-                          if (ControlSocket().moderator != null || SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-                            if (ControlSocket().isPresenting()) {
-                              StreamFunction.streamFunctionState.value = stateMenuOff;
-                            } else {
-                              StreamFunction.streamFunctionState.value = stateStandby;
-                            }
-                          } else if (ControlSocket().isPresenting()){
-                            StreamFunction.streamFunctionState.value = stateEmpty;
-                          } else {
-                            StreamFunction.streamFunctionState.value = stateStandby;
-                          }
                         },
                       ),
                     ],
