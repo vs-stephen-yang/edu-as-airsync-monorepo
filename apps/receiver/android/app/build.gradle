@@ -79,7 +79,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.mvbcast.crosswalk"
         minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         // https://developer.android.com/studio/build/build-variants#resolve_matching_errors
