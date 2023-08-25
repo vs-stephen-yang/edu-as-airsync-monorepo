@@ -149,14 +149,10 @@ class MirrorView extends StatelessWidget {
           onWillPop: () async => false,
           child: Dialog(
             backgroundColor: Colors.transparent,
-            alignment: mirrorStateProvider.isMirroring
-                ? Alignment.bottomRight
-                : Alignment.center,
+            alignment: Alignment.bottomRight,
             child: Container(
-              width: MediaQuery.of(context).size.width /
-                  (mirrorStateProvider.isMirroring ? 5 : 3),
-              height: MediaQuery.of(context).size.height /
-                  (mirrorStateProvider.isMirroring ? 4 : 2),
+              width: MediaQuery.of(context).size.width / 3,
+              height: MediaQuery.of(context).size.height / 4,
               decoration: BoxDecoration(
                 color: Colors.grey,
                 borderRadius: BorderRadius.circular(15),
@@ -237,12 +233,10 @@ class MirrorView extends StatelessWidget {
           onWillPop: () async => false,
           child: Dialog(
             backgroundColor: Colors.transparent,
-            alignment: mirrorStateProvider.isMirroring
-                ? Alignment.bottomRight
-                : Alignment.center,
+            alignment: Alignment.bottomRight,
             child: Consumer<MirrorStateProvider>(
               builder: (context, mirror, child) {
-                var width = MediaQuery.of(context).size.width / 5;
+                var width = MediaQuery.of(context).size.width / 3;
                 var height = MediaQuery.of(context).size.height / 4;
                 double minHeight = min(
                     (mirror.requestingMirror.length * height).toDouble(),
