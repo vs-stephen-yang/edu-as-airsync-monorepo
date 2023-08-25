@@ -22,3 +22,24 @@ Configurations name will combination environment name and this "productFlavors" 
 * **open**: This is Android normal App, sign with viewsonic key. Download link in myViewboard.com for other brand device
 
 * **store**: This is Android normal App, sign with viewsonic key. Deploy to Google Play Store.
+
+## Version control description
+
+A version number is three numbers separated by dots, like 1.2.43
+followed by an optional build number separated by a +.
+
+#### Version number:
+##### Major, Minor, Point(build)
+
+* **Major**: Modify this number when has Big changed like using different program language or main framework has change, etc (Demand)
+
+* **Minor**: Modify this number when each Production Release (Quarterly)
+
+* **Point(build)**: Modify this number when each Stage Release (Bi-Weekly)
+
+#### Build number:
+##### Upload to App Store will using build number to deploy to different channel.
+
+* **Even number**: Production
+
+* **Odd number**: Stage (Apple Store: TestFlight, Google Play Store: Testing-Closed testing)
