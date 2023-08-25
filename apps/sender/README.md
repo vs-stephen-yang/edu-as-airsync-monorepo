@@ -38,8 +38,15 @@ followed by an optional build number separated by a +.
 * **Point(build)**: Modify this number when each Stage Release (Bi-Weekly)
 
 #### Build number:
-##### Upload to App Store will using build number to deploy to different channel.
+##### <font color=red>**DO NOT**</font> using this "Build number" to identify Production/ Stage/ Dev settings, using "ConfigSettings" to set different environment settings.
+##### Upload to App Store will using  this "Build number" to deploy to different channel.
+![Image](/README_TestFlight.png)
 
-* **Even number**: Production
+* **Even number**:
+    * Apple App Store: Production
+    * Google Play Store: Production
 
-* **Odd number**: Stage (Apple Store: TestFlight, Google Play Store: Testing-Closed testing)
+* **Odd number**:
+    * Apple App Store: TestFlight
+    * Google Play Store: Testing -> Closed testing
+

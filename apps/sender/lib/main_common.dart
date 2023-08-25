@@ -21,7 +21,6 @@ void commonEntry(ConfigSettings settings) async {
     settings: settings,
     appName: packageInfo.appName,
     appVersion: packageInfo.version,
-    appVersionCode: int.parse(packageInfo.buildNumber),
     child: const MyApp(),
   ));
 }
