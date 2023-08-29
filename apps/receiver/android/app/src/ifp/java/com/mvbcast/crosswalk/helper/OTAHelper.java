@@ -36,6 +36,9 @@ import androidx.core.content.FileProvider;
 import com.mvbcast.crosswalk.BuildConfig;
 import com.mvbcast.crosswalk.EulaActivity;
 import com.mvbcast.crosswalk.R;
+import com.viewsonic.vsapi.VSContext;
+import com.viewsonic.vsapi.VSServiceManager;
+import com.viewsonic.vsapi.VSSystemManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -46,6 +49,7 @@ import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -104,6 +108,8 @@ public final class OTAHelper extends Observable {
 
     // region private Implementation
     //-------------------------------------------------------------------------
+    // Add "dot" to hide this temp folder.
+    private String HIDDEN_TEMP_FOLDER = ".myViewBoardDisplayTemp";
     private boolean mIsChecking = false;
     private long mDownloadID = -1;
     private DownloadManager mDownloadManager;
@@ -173,7 +179,8 @@ public final class OTAHelper extends Observable {
             new Handler(Looper.getMainLooper()).post(() -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     // for IFP52, IFP32 (Android 9): can not use Runtime command install
-                    installAppSilently(activity, mFile.getPath());
+                    boolean result = installAppSilently(activity, mFile.getPath());
+                    Log.d(TAG, "installAppSilently result:" + result);
                 } else {
                     try {
                         String command = "pm install -r -i com.mvbcast.crosswalk --user 0 " + mFile.getPath();
@@ -402,6 +409,13 @@ public final class OTAHelper extends Observable {
     }
 
     private boolean installAppSilently(final Context context, final String filePath) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (installViaVsApi(context, filePath)) {
+                Log.d(TAG, "installViaVsApi success.");
+                return true;
+            }
+            Log.e(TAG, "installViaVsApi failure. Fall back to old mechanism.");
+        }
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
                 ? installViaPackageInstaller(context, filePath)
                 : installViaCommandExe(context, filePath);
@@ -434,7 +448,7 @@ public final class OTAHelper extends Observable {
                     result.set(false);
                 }
             } catch (IOException | InterruptedException e) {
-                Log.d(TAG, "installAppSilently e = " + e);
+                Log.d(TAG, "installViaCommandExe e = " + e);
                 e.printStackTrace();
                 result.set(false);
             }
@@ -444,12 +458,88 @@ public final class OTAHelper extends Observable {
         try {
             thread.join();
         } catch (InterruptedException e) {
-            Log.d(TAG, "installAppSilently e = " + e);
+            Log.d(TAG, "installViaCommandExe e = " + e);
             e.printStackTrace();
             result.set(false);
         }
-        Log.d(TAG, "installAppSilently result: " + result.get());
+        Log.d(TAG, "installViaCommandExe result: " + result.get());
         return result.get();
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private boolean installViaVsApi(Context context, String filePath) {
+        final AtomicBoolean result = new AtomicBoolean(false);
+        Thread thread = new Thread(() -> {
+            try {
+                VSSystemManager vsSystemManager = (VSSystemManager) VSServiceManager.getService(context, VSContext.VS_SYSTEM_SERVICE);
+                if (vsSystemManager != null) {
+                    vsSystemManager.installApp(copyFileToPublicFolder(new File(filePath)).getPath());
+                    result.set(true);
+                } else {
+                    result.set(false);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                result.set(false);
+            }
+        });
+
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            Log.e(TAG, "installViaVsApi e = " + e);
+            e.printStackTrace();
+            result.set(false);
+        }
+        Log.d(TAG, "installViaVsApi result: " + result.get());
+        return result.get();
+    }
+
+    private File createTempFolderIfNotExists() {
+        File publicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File temp = new File(publicDirectory, HIDDEN_TEMP_FOLDER);
+        if (!temp.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            temp.mkdir();
+        }
+        return temp;
+    }
+
+    private void removeTempFolder() {
+        File temp = createTempFolderIfNotExists();
+        deleteRecursive(temp);
+    }
+
+    private boolean deleteRecursive(File fileOrDirectory) {
+        boolean fail = false;
+        if (fileOrDirectory.isDirectory()) {
+            File[] children = fileOrDirectory.listFiles();
+            if (children != null) {
+                for (File child : children)
+                    fail |= !deleteRecursive(child);
+            }
+        }
+
+        fail |= !fileOrDirectory.delete();
+        return fail;
+    }
+
+    @SuppressWarnings("IOStreamConstructor")
+    private File copyFileToPublicFolder(File src) throws IOException {
+        File temp = createTempFolderIfNotExists();
+        File dest = new File(temp, src.getName());
+        Log.d(TAG, "dest path: " + dest.getPath());
+        try (InputStream is = new FileInputStream(src); OutputStream os = new FileOutputStream(dest)) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = is.read(buffer)) != -1) {
+                os.write(buffer, 0, len);
+            }
+            //noinspection ResultOfMethodCallIgnored
+            src.delete();
+        }
+        return dest;
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
@@ -577,6 +667,7 @@ public final class OTAHelper extends Observable {
             mActivityRef = new WeakReference<>((EulaActivity) activity);
         }
 
+        removeTempFolder();
         Date currentTime = Calendar.getInstance().getTime();
         if (isTimeDiffExceeded(lastTime, currentTime) || mForceCheckVersion) {
 
