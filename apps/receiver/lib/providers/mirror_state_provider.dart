@@ -77,6 +77,11 @@ class MirrorStateProvider extends ChangeNotifier
   Size _videoWidgetSize = const Size(0, 0);
   Offset _videoWidgetOffset = const Offset(0, 0);
   bool _audioEnabled = true;
+  Map<MirrorType, bool> mirrorTypeState = {
+    MirrorType.airplay: false,
+    MirrorType.googlecast: false,
+    MirrorType.miracast: false,
+  };
 
   // region FlutterMirrorListener
   @override
@@ -270,6 +275,27 @@ class MirrorStateProvider extends ChangeNotifier
     await _plugin?.stopMiracast();
     _miracastEnabled = false;
     notifyListeners();
+  }
+
+  Future<void> pauseMirror() async {
+    mirrorTypeState[MirrorType.airplay] = _airplayEnabled;
+    mirrorTypeState[MirrorType.googlecast] = _googleCastEnabled;
+    mirrorTypeState[MirrorType.miracast] = _miracastEnabled;
+    stopAirPlay();
+    stopGoogleCast();
+    stopMiracast();
+  }
+
+  Future<void> resumeMirror() async {
+    if (mirrorTypeState[MirrorType.airplay]!) {
+      startAirPlay();
+    }
+    if (mirrorTypeState[MirrorType.googlecast]!) {
+      startGoogleCast();
+    }
+    if (mirrorTypeState[MirrorType.miracast]!) {
+      startMiracast();
+    }
   }
 
   // endregion
