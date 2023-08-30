@@ -3,7 +3,10 @@ import 'dart:math';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/model/present_helper.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +68,7 @@ class MirrorView extends StatelessWidget {
           constraints: const BoxConstraints.expand(),
           child: Stack(
             children: [
-              if (mirror.isMirroring)
+              if (MirrorStateProvider.isMirroring)
                 Container(
                   color: Colors.black,
                   child: Center(
@@ -89,7 +92,7 @@ class MirrorView extends StatelessWidget {
                     ),
                   ),
                 ),
-              if (mirror.isMirroring)
+              if (MirrorStateProvider.isMirroring)
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Wrap(
@@ -219,8 +222,6 @@ class MirrorView extends StatelessWidget {
   _showPromptDialog(
       BuildContext context, List<BuildContext> savedPromptBuildContext) {
     FocusScope.of(context).unfocus();
-    MirrorStateProvider mirrorStateProvider =
-        Provider.of<MirrorStateProvider>(context, listen: false);
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -245,7 +246,7 @@ class MirrorView extends StatelessWidget {
                   width: width,
                   height: minHeight,
                   child: ListView.separated(
-                    reverse: mirrorStateProvider.isMirroring,
+                    reverse: MirrorStateProvider.isMirroring,
                     itemCount: mirror.requestingMirror.length,
                     itemBuilder: (BuildContext buildContext, int index) {
                       return Container(
@@ -285,6 +286,7 @@ class MirrorView extends StatelessWidget {
                                   hasFocusHeight: 30,
                                   notFocusHeight: 25,
                                   onClick: () {
+                                    //TODO: found that AirPlay icon on iMac keeps under working state even calling clearRequestMirrorId()
                                     mirror.clearRequestMirrorId(index);
                                   },
                                   child: Text(
@@ -304,7 +306,17 @@ class MirrorView extends StatelessWidget {
                                   notFocusWidth: 100,
                                   hasFocusHeight: 30,
                                   notFocusHeight: 25,
-                                  onClick: () {
+                                  onClick: () async {
+                                    // Don't change the order of the conditions
+                                    if (ControlSocket().moderator != null ) {
+                                      // moderator
+                                    } else if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+                                      // split screen
+                                      await PresentHelper.getInstance().splitScreenOff();
+                                    } else if (ControlSocket().isPresenting()) {
+                                      // basic
+                                      await PresentHelper.getInstance().basicStreamOff();
+                                    }
                                     mirror.setAcceptMirrorId(index);
                                   },
                                   child: Text(

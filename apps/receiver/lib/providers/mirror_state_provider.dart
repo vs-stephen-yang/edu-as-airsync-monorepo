@@ -41,7 +41,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   get mirrorViewKey => _mirrorViewKey;
 
-  get isMirroring => _mirrorState == MirrorState.mirroring;
+  static get isMirroring => _mirrorState == MirrorState.mirroring;
 
   get airplayEnabled => _airplayEnabled;
 
@@ -63,7 +63,7 @@ class MirrorStateProvider extends ChangeNotifier
   String _deviceName =
       'AirSync-${Random().nextInt(9999).toString().padLeft(4, '0')}';
   final GlobalKey _mirrorViewKey = GlobalKey();
-  MirrorState _mirrorState = MirrorState.idle;
+  static MirrorState _mirrorState = MirrorState.idle;
   bool _airplayEnabled = false;
   bool _googleCastEnabled = false;
   bool _miracastEnabled = false;

@@ -205,7 +205,9 @@ class _StreamFunctionStates extends State<StreamFunction> {
                         hasFocusSize: AppUIConstant.iconHasFocusSize,
                         notFocusSize: AppUIConstant.iconNotFocusSize,
                         onClick: () {
-                          _showCastSettings();
+                          if (ControlSocket().moderator == null) {
+                            _showCastSettings();
+                          }
                         }),
                   Visibility(
                     visible: (value == stateStandby || value == stateMenuOn) &&

@@ -18,7 +18,7 @@ class CastSettings extends StatelessWidget {
       builder: (context, mirror, child) {
         mirror.setDeviceName(ControlSocket().displayCode);
         return MenuDialog(
-          backgroundColor: mirror.isMirroring? AppColors.primary_grey_tran : AppColors.primary_grey,
+          backgroundColor: MirrorStateProvider.isMirroring? AppColors.primary_grey_tran : AppColors.primary_grey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,

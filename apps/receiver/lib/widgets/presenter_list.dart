@@ -3,7 +3,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/model/display_info.dart';
-import 'package:display_flutter/model/moderator_helper.dart';
+import 'package:display_flutter/model/present_helper.dart';
 import 'package:display_flutter/model/moderator_socket.dart';
 import 'package:display_flutter/widgets/presenter_item.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +22,8 @@ class _PresenterListState extends State<PresenterList> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider.value(
-      value: ModeratorHelper.getInstance(),
-      child: Consumer<ModeratorHelper>(builder: (context, model, child) {
+      value: PresentHelper.getInstance(),
+      child: Consumer<PresentHelper>(builder: (context, model, child) {
         return StreamBuilder(
           stream: moderatorSocket.setModeratorResponse.getResponse,
           builder: (BuildContext context, AsyncSnapshot<Map> peerlistSnapshot) {

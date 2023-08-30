@@ -4,6 +4,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/model/display_info.dart';
+import 'package:display_flutter/model/present_helper.dart';
 import 'package:display_flutter/model/moderator_socket.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/custom_alert_dialog.dart';
@@ -21,29 +22,6 @@ class ModeratorView extends StatefulWidget {
 
   @override
   State createState() => _ModeratorViewState();
-
-  void logout() async {
-    // remove all presenter
-    await ControlSocket().removeAllPresenters();
-    // Need remove all presenters first, due to enable/disable will dispose
-    // view and will disconnectedP2pClient before send stopVideo
-    // cause web presenter did not update status
-    SplitScreen.mapSplitScreen.value[keySplitScreenEnable] = false;
-    SplitScreen.mapSplitScreen.value[keySplitScreenCount] = 0;
-    // Using below method to trigger value changed.
-    // https://github.com/flutter/flutter/issues/29958
-    SplitScreen.mapSplitScreen.value =
-        Map.from(SplitScreen.mapSplitScreen.value);
-
-    ControlSocket().moderator = null;
-    onUpdateParentUI?.call();
-    moderatorSocket.unBindFromDisplay(
-        ControlSocket().displayCode, ControlSocket().token);
-    moderatorSocket.disconnect();
-    DisplayInfo().removeBindToDisplayInfo();
-    AppPreferences().set(moderatorId: '');
-    navService.popUntil('/home');
-  }
 }
 
 class _ModeratorViewState extends State<ModeratorView> {
@@ -130,7 +108,7 @@ class _ModeratorViewState extends State<ModeratorView> {
                         if (!_isLogInClicked) {
                           _isLogInClicked = true;
                           if (DisplayInfo().isBound == false) {
-                            verifyCode().then((value) {
+                            _verifyCode().then((value) {
                               _isLogInClicked = false;
                               WidgetsBinding.instance
                                   .addPostFrameCallback((timeStamp) {
@@ -155,7 +133,8 @@ class _ModeratorViewState extends State<ModeratorView> {
               children: [
                 Expanded(
                   child: PresenterList(onUnSetLogOut: () {
-                    widget.logout();
+                    PresentHelper.getInstance().moderatorOff();
+                    widget.onUpdateParentUI?.call();
                     setState(() {});
                   }),
                 ),
@@ -223,7 +202,8 @@ class _ModeratorViewState extends State<ModeratorView> {
           positiveButton: S.of(context).moderator_exit,
           onPositive: () {
             AppAnalytics().trackEventModeratorOff();
-            widget.logout();
+            PresentHelper.getInstance().moderatorOff();
+            widget.onUpdateParentUI?.call();
             setState(() {});
           },
           onNegative: () {},
@@ -232,7 +212,7 @@ class _ModeratorViewState extends State<ModeratorView> {
     );
   }
 
-  Future<bool> verifyCode() async {
+  Future<bool> _verifyCode() async {
     var moderator = moderatorSocket.createModerator('Guest', '');
     AppPreferences().set(moderatorId: moderator.id);
     moderatorSocket.connectAndListen(context);
