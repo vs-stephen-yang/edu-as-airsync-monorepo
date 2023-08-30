@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
@@ -252,6 +253,11 @@ class WebRTCFlutterViewSocket {
   void _onAddStream(MediaStream stream) {
     _printPeerConnectionLog('_onAddStream', stream);
     ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+    if (MirrorStateProvider.isMirroring) {
+      // check the mirror state and disconnect the webrtc connection
+      ControlSocket().handleConflictWithMirror();
+      return;
+    }
     presentationState = PresentationState.streaming;
     showConnectionInfo(false);
     ControlSocket().handleAddStreamState(this);

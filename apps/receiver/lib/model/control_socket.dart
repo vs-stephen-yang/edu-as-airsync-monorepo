@@ -7,10 +7,10 @@ import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/main_common.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/connect_timer.dart';
-import 'package:display_flutter/model/moderator_helper.dart';
+import 'package:display_flutter/model/present_helper.dart';
 import 'package:display_flutter/model/webrtc_view_socket.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/home.dart';
-import 'package:display_flutter/screens/moderator_view.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/utility/get_string.dart';
@@ -144,12 +144,12 @@ class ControlSocket {
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
       if (moderator != null && navService.canPop()) {
-        ModeratorHelper.getInstance().refresh();
+        PresentHelper.getInstance().refreshPresentList();
       }
     } else {
       if (moderator != null && navService.canPop()) {
         StreamFunction.streamFunctionState.value = stateMenuOff;
-        ModeratorHelper.getInstance().refresh();
+        PresentHelper.getInstance().refreshPresentList();
       } else {
         navService.popUntil('/home');
       }
@@ -173,10 +173,14 @@ class ControlSocket {
       }
       if (!presenting) {
         if (moderator != null && navService.canPop()) {
-          ModeratorHelper.getInstance().refresh();
+          PresentHelper.getInstance().refreshPresentList();
         }
         Home.showTitleBottomBar.value = true;
-        StreamFunction.streamFunctionState.value = stateStandby;
+        if (MirrorStateProvider.isMirroring) {
+          StreamFunction.streamFunctionState.value = stateCast;
+        } else {
+          StreamFunction.streamFunctionState.value = stateStandby;
+        }
         MainInfo.showMainInfo.value = true;
       } else {
         Home.isSelectedList.value
@@ -187,14 +191,30 @@ class ControlSocket {
       }
     } else {
       if (moderator != null && navService.canPop()) {
-        ModeratorHelper.getInstance().refresh();
+        PresentHelper.getInstance().refreshPresentList();
       }
       Home.showTitleBottomBar.value = true;
-      StreamFunction.streamFunctionState.value = stateStandby;
+      if (MirrorStateProvider.isMirroring) {
+        StreamFunction.streamFunctionState.value = stateCast;
+      } else {
+        StreamFunction.streamFunctionState.value = stateStandby;
+      }
       MainInfo.showMainInfo.value = true;
     }
     if (MyApp.isInBackgroundMode) {
       MyApp.disconnectControlSocket();
+    }
+  }
+
+  void handleConflictWithMirror() {
+    if (moderator != null) {
+      // moderator
+    } else if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+      // split screen
+      PresentHelper.getInstance().splitScreenOff();
+    } else {
+      // basic
+      PresentHelper.getInstance().basicStreamOff();
     }
   }
 
@@ -219,7 +239,7 @@ class ControlSocket {
 
           if (ConnectionTimer.getInstance().mRemainingTimeTimer == null) {
             ConnectionTimer.getInstance().startRemainingTimeTimer(() {
-              const ModeratorView().logout();
+              PresentHelper.getInstance().moderatorOff();
             });
           }
           break;
@@ -282,7 +302,11 @@ class ControlSocket {
               }
 
               MainInfo.showMainInfo.value = false;
-              StreamFunction.streamFunctionState.value = stateEmpty;
+              if (MirrorStateProvider.isMirroring) {
+                StreamFunction.streamFunctionState.value = stateCast;
+              } else {
+                StreamFunction.streamFunctionState.value = stateEmpty;
+              }
 
               selectedController.showConnectionInfo(true);
               AppAnalytics().trackEventPresentStarting(
