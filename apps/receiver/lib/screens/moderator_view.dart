@@ -6,6 +6,7 @@ import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/model/display_info.dart';
 import 'package:display_flutter/model/present_helper.dart';
 import 'package:display_flutter/model/moderator_socket.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/custom_alert_dialog.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
@@ -14,6 +15,7 @@ import 'package:display_flutter/widgets/presenter_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:provider/provider.dart';
 
 class ModeratorView extends StatefulWidget {
   const ModeratorView({Key? key, this.onUpdateParentUI}) : super(key: key);
@@ -29,6 +31,7 @@ class _ModeratorViewState extends State<ModeratorView> {
 
   @override
   Widget build(BuildContext context) {
+    MirrorStateProvider mirrorStateProvider = Provider.of<MirrorStateProvider>(context);
     return MenuDialog(
       backgroundColor: ControlSocket().isPresenting()
           ? AppColors.primary_grey_tran
@@ -114,6 +117,8 @@ class _ModeratorViewState extends State<ModeratorView> {
                                   .addPostFrameCallback((timeStamp) {
                                 setState(() {});
                               });
+                              // disable the mirror function and remember the setting
+                              mirrorStateProvider.pauseMirror();
                             });
                           } else {
                             _callLogOutDialog();
@@ -196,6 +201,7 @@ class _ModeratorViewState extends State<ModeratorView> {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) {
+        MirrorStateProvider mirrorStateProvider = Provider.of<MirrorStateProvider>(context);
         return CustomAlertDialog(
           title: '',
           description: S.of(context).moderator_exit_dialog,
@@ -205,6 +211,8 @@ class _ModeratorViewState extends State<ModeratorView> {
             PresentHelper.getInstance().moderatorOff();
             widget.onUpdateParentUI?.call();
             setState(() {});
+            // enable the mirror function
+            mirrorStateProvider.resumeMirror();
           },
           onNegative: () {},
         );
