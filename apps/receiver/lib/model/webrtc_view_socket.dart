@@ -64,7 +64,7 @@ class WebRTCFlutterViewSocket {
     }
 
     String? deviceType = await DeviceInfoVs.deviceType;
-    if (deviceType == 'IFP50_2' || deviceType == 'IFP52_K') {
+    if (deviceType == 'IFP50_2' || deviceType == 'IFP52_K' || deviceType == 'IFP50_3_9850' || deviceType == 'IFP50_3') {
       _configuration['enablePrerendererSmoothing'] = false;
     }
 
