@@ -110,6 +110,17 @@ class MirrorStateProvider extends ChangeNotifier
 
   @override
   void onMirrorStop(String mirrorId) {
+    bool needNotify = false;
+    _requestingMirror.removeWhere((element) {
+      if (element.mirrorId == mirrorId) {
+        needNotify = true;
+        return true;
+      } else {
+        return false;
+      }
+    });
+    if (needNotify) notifyListeners();
+
     if (_acceptedMirrorId != mirrorId) {
       // ignore the onMirrorStop that is not for the current mirror session
       return;
