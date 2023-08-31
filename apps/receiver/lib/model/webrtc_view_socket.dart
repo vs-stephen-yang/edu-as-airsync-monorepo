@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:display_flutter/app_analytics.dart';
@@ -33,6 +34,14 @@ class WebRTCFlutterViewSocket {
     'sdpSemantics': 'unified-plan',
   };
 
+  // the following device should not enable webrtc prerendererSmoothing flag
+  final List<String> _prerendererSmoothingExcludedDevices = [
+    'IFP50_2',
+    'IFP52_K',
+    'IFP50_3',
+    'IFP50_3_9850',
+  ];
+
   RTCPeerConnection? _pc;
   RTCDataChannel? _dc;
   io.Socket? socket;
@@ -64,7 +73,7 @@ class WebRTCFlutterViewSocket {
     }
 
     String? deviceType = await DeviceInfoVs.deviceType;
-    if (deviceType == 'IFP50_2' || deviceType == 'IFP52_K' || deviceType == 'IFP50_3_9850' || deviceType == 'IFP50_3') {
+    if (_prerendererSmoothingExcludedDevices.contains(deviceType)) {
       _configuration['enablePrerendererSmoothing'] = false;
     }
 
