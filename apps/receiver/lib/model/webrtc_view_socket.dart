@@ -235,6 +235,11 @@ class WebRTCFlutterViewSocket {
 
   void _onPeerConnectionState(RTCPeerConnectionState state) {
     _printPeerConnectionLog('_onPeerConnectionState', state);
+    if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
+      ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+      ConnectionTimer.getInstance().stopRemainingTimeTimer();
+      disconnect();
+    }
   }
 
   Future<void> _onIceCandidate(RTCIceCandidate candidate) async {
