@@ -116,9 +116,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
   }
 
   void setOtpErrorMsg(String text) {
-    setState(() {
-      otpKey.currentState?.setErrorMsg(text);
-    });
+    otpKey.currentState?.setErrorMsg(text);
   }
 }
 
