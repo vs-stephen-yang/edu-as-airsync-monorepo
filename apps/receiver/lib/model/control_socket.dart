@@ -390,7 +390,6 @@ class ControlSocket {
                 selectedController.presentId, selectedController.presenterId);
 
             try {
-              selectedController.pauseVideo();
               _handleStreamPauseSuccess(selectedController, resp.nextId);
             } on PlatformException catch (e) {
               log(e.toString());
@@ -412,12 +411,6 @@ class ControlSocket {
           if (selectedController != null) {
             AppAnalytics().trackEventPresentResumeReceived(
                 selectedController.presentId, selectedController.presenterId);
-
-            try {
-              selectedController.resumeVideo();
-            } on PlatformException catch (e) {
-              log(e.toString());
-            }
           }
           break;
         // endregion  Present
