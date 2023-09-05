@@ -69,11 +69,11 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
                   const Icon(Icons.groups, color: Colors.white,),
                 ],
               )),
-              const Padding(
-                padding: EdgeInsets.only(left: 6),
+              Padding(
+                padding: const EdgeInsets.only(left: 6),
                 child: Text(
-                  'Moderator',
-                  style: TextStyle(
+                  S.of(context).moderator,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                     fontSize: 16,
@@ -127,7 +127,7 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
               ),
             ),
             child: Text(
-              S.of(context).present_start,
+              S.of(context).main_present,
               style: TextStyle(
                 color: presentBtnEnable? Colors.white : const Color.fromARGB(255, 153, 153, 153),
                 fontSize: 14,
@@ -165,7 +165,7 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
                     color: Colors.amber,
                   ),
                   Text(
-                    S.of(context).present_fill_out,
+                    S.of(context).moderator_fill_out,
                     style: const TextStyle(color: Colors.black),
                   ),
                 ],

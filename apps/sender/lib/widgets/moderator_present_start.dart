@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
@@ -37,19 +38,19 @@ class ModeratorPresentStart extends StatelessWidget {
       }
     });
 
-    var textStyle20 = const TextStyle(color: Colors.white, fontSize: 20);
-    var textStyle30 = const TextStyle(color: Colors.white, fontSize: 30);
+    var textStyle20 = const TextStyle(color: Colors.white, fontSize: 16);
+    var textStyle30 = const TextStyle(color: Colors.white, fontSize: 20);
     return SizedBox(
       width: 300,
       height: 400,
       child: Column(
         children: [
           const TitleBar(),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(0, 50, 0, 30),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 50, 0, 30),
             child: Text(
-              'Presentation time',
-              style: TextStyle(color: Colors.white, fontSize: 16),
+              S.of(context).present_time,
+              style: const TextStyle(color: Colors.white, fontSize: 16),
             ),
           ),
           Row(
@@ -63,7 +64,7 @@ class ModeratorPresentStart extends StatelessWidget {
                       style: textStyle30,
                     );
                   }),
-              Text('Hour', style: textStyle20),
+              Text(S.of(context).present_time_unit_hour, style: textStyle20),
               Text(':', style: textStyle30),
               ValueListenableBuilder(
                   valueListenable: _countMinutesValue,
@@ -73,7 +74,7 @@ class ModeratorPresentStart extends StatelessWidget {
                       style: textStyle30,
                     );
                   }),
-              Text('Min', style: textStyle20),
+              Text(S.of(context).present_time_unit_min, style: textStyle20),
               Text(':', style: textStyle30),
               ValueListenableBuilder(
                   valueListenable: _countSecondsValue,
@@ -83,7 +84,7 @@ class ModeratorPresentStart extends StatelessWidget {
                       style: textStyle30,
                     );
                   }),
-              Text('Sec', style: textStyle20),
+              Text(S.of(context).present_time_unit_sec, style: textStyle20),
             ],
           ),
           const Padding(
@@ -113,7 +114,7 @@ class ModeratorPresentStart extends StatelessWidget {
                                 : Icons.smart_display_outlined,
                             color: Colors.white,
                           ),
-                          Text(value ? 'PAUSE' : 'RESUME',
+                          Text(value ? S.of(context).present_state_pause : S.of(context).present_state_resume,
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 10)),
                         ],
@@ -134,7 +135,7 @@ class ModeratorPresentStart extends StatelessWidget {
                           presentStateProvider.displayer?.windowState == 'normal' ? Icons.fullscreen : Icons.fullscreen_exit,
                           color: Colors.white,
                         ),
-                        Text(presentStateProvider.displayer?.windowState == 'normal' ? 'Full screen': 'Exit Full screen',
+                        Text(presentStateProvider.displayer?.windowState == 'normal' ? S.of(context).present_state_full_screen: S.of(context).present_state_normal_screen,
                             style: const TextStyle(color: Colors.white, fontSize: 10)),
                       ],
                     ),
@@ -147,9 +148,9 @@ class ModeratorPresentStart extends StatelessWidget {
                     presentStateProvider.presentEnd();
                   },
                   child: Column(
-                    children: const [
-                      Icon(Icons.cancel_presentation, color: Colors.white,),
-                      Text('Stop Presenting', style: TextStyle(color: Colors.white, fontSize: 10)),
+                    children: [
+                      const Icon(Icons.cancel_presentation, color: Colors.white,),
+                      Text(S.of(context).present_state_stop, style: const TextStyle(color: Colors.white, fontSize: 10)),
                     ],
                   ),
                 ),

@@ -17,8 +17,8 @@ class ModeratorWait extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Expanded(
+            children: [
+              const Expanded(
                   child: Align(
                       alignment: Alignment.centerRight,
                       child: Icon(
@@ -26,17 +26,17 @@ class ModeratorWait extends StatelessWidget {
                         color: Colors.white,
                       ))),
               Padding(
-                padding: EdgeInsets.only(left: 6),
+                padding: const EdgeInsets.only(left: 6),
                 child: Text(
-                  'Moderator',
-                  style: TextStyle(
+                  S.of(context).moderator,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                     fontSize: 16,
                   ),
                 ),
               ),
-              Spacer(flex: 1,),
+              const Spacer(flex: 1,),
             ],
           ),
           const Padding(
@@ -48,6 +48,7 @@ class ModeratorWait extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
             child: Text(
               S.of(context).moderator_wait,
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
@@ -69,9 +70,9 @@ class ModeratorWait extends StatelessWidget {
                 ),
               ),
               // icon: const Image(image: Svg('assets/images/ic_exit.svg')),
-              child: const Text(
-                'EXIT',
-                style: TextStyle(color: Colors.white),
+              child: Text(
+                S.of(context).moderator_exit,
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           )

@@ -58,7 +58,7 @@ class PresentIdle extends StatelessWidget {
               switch (moderator) {
                 case 403:
                 // 403 -> Reach maximum presenters
-                  fieldKey.currentState?.setOtpErrorMsg('Reach maximum presenters');
+                  fieldKey.currentState?.setOtpErrorMsg(S.of(context).main_display_code_exceed);
                   break;
                 case 404:
                 // 404 -> sendToV1
@@ -85,7 +85,7 @@ class PresentIdle extends StatelessWidget {
                 // Display's moderator mode is on,  but the otp is wrong
                 // 406 -> Invalid one time password
                   fieldKey.currentState
-                      ?.setOtpErrorMsg('Invalid one time password');
+                      ?.setOtpErrorMsg(S.of(context).main_password_invalid);
                   break;
               }
               return;
@@ -118,7 +118,7 @@ class PresentIdle extends StatelessWidget {
                 ),
               ),
               Text(
-                S.of(context).touchback,
+                S.of(context).main_touch_back,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
@@ -158,7 +158,7 @@ class PresentIdle extends StatelessWidget {
                       ),
                     )),
                 Text(
-                  S.of(context).setting,
+                  S.of(context).main_setting,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
