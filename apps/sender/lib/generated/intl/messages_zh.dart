@@ -22,16 +22,12 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "main_language_title": MessageLookupByLibrary.simpleMessage("語言"),
-        "moderator_name": MessageLookupByLibrary.simpleMessage("投影人員姓名 *"),
-        "moderator_wait": MessageLookupByLibrary.simpleMessage("請等待主持人選擇投影人員"),
-        "present_display_code": MessageLookupByLibrary.simpleMessage("投影辨識碼 *"),
-        "present_display_code_description":
+        "main_display_code": MessageLookupByLibrary.simpleMessage("投影辨識碼 *"),
+        "main_display_code_description":
             MessageLookupByLibrary.simpleMessage("*9到10碼投影辨識碼"),
-        "present_fill_out": MessageLookupByLibrary.simpleMessage("請填寫此字段。"),
-        "present_otp_code": MessageLookupByLibrary.simpleMessage("一次性密碼 *"),
-        "present_otp_code_description":
-            MessageLookupByLibrary.simpleMessage("*4碼一次性密碼"),
-        "present_start": MessageLookupByLibrary.simpleMessage("投影")
+        "main_language": MessageLookupByLibrary.simpleMessage("語言"),
+        "moderator_fill_out": MessageLookupByLibrary.simpleMessage("請填寫此字段。"),
+        "moderator_name": MessageLookupByLibrary.simpleMessage("投影人員姓名 *"),
+        "moderator_wait": MessageLookupByLibrary.simpleMessage("請等待主持人選擇投影人員")
       };
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -69,7 +70,7 @@ class _PresentWaitReadyState extends State<PresentWaitReady> with TickerProvider
             valueListenable: _countDownValue,
             builder: (context, int value, child) {
               return Text(
-                'Please select to share screen in $value seconds.',
+                S.of(context).present_wait(value),
                 style: const TextStyle(
                   color: Colors.grey,
                   fontSize: 14,

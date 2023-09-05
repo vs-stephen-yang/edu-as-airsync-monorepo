@@ -33,7 +33,7 @@ class PresentIdleButtonState extends State<PresentIdleButton> {
         ),
       ),
       child: Text(
-        S.of(context).present_start,
+        S.of(context).main_present,
         style: TextStyle(
           color: isButtonEnabled? Colors.white : const Color.fromARGB(255, 153, 153, 153),
           fontSize: 14,

@@ -48,7 +48,7 @@ class LanguageSelection extends StatelessWidget {
                         child: Container(
                           margin: const EdgeInsets.symmetric(vertical: 5),
                           child: Text(
-                            S.of(context).main_language_title,
+                            S.of(context).main_language,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,

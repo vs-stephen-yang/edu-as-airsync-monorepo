@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
@@ -96,11 +97,11 @@ class SelectScreenDialog extends Dialog {
                 padding: const EdgeInsets.all(10),
                 child: Stack(
                   children: <Widget>[
-                    const Align(
+                    Align(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        'Choose what to share',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        S.of(context).present_select_screen_description,
+                        style: const TextStyle(fontSize: 16, color: Colors.white),
                       ),
                     ),
                     Align(
@@ -136,16 +137,16 @@ class SelectScreenDialog extends Dialog {
                                             ? SourceType.Screen
                                             : SourceType.Window);
                                       }),
-                                  tabs: const [
+                                  tabs: [
                                     Tab(
                                         child: Text(
-                                      'Entire Screen',
-                                      style: TextStyle(color: Colors.white60),
+                                      S.of(context).present_select_screen_entire,
+                                      style: const TextStyle(color: Colors.white60),
                                     )),
                                     Tab(
                                         child: Text(
-                                      'Window',
-                                      style: TextStyle(color: Colors.white60),
+                                          S.of(context).present_select_screen_window,
+                                      style: const TextStyle(color: Colors.white60),
                                     )),
                                   ]),
                             ),
@@ -210,9 +211,9 @@ class SelectScreenDialog extends Dialog {
                 child: ButtonBar(
                   children: <Widget>[
                     MaterialButton(
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(color: Color.fromARGB(255, 41, 121, 255),),
+                      child: Text(
+                        S.of(context).present_select_screen_cancel,
+                        style: const TextStyle(color: Color.fromARGB(255, 41, 121, 255),),
                       ),
                       onPressed: () {
                         cancel();
@@ -220,8 +221,8 @@ class SelectScreenDialog extends Dialog {
                     ),
                     MaterialButton(
                       color: const Color.fromARGB(255, 41, 121, 255),
-                      child: const Text(
-                        'Share',
+                      child: Text(
+                        S.of(context).present_select_screen_share,
                       ),
                       onPressed: () {
                         _ok();

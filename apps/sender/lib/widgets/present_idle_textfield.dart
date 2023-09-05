@@ -62,8 +62,8 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
             controller: _codeController,
             focusNode: _codeFocusNode,
             // initialValue: displayCode,
-            labelText: S.of(context).present_display_code,
-            errorText: S.of(context).present_display_code_description,
+            labelText: S.of(context).main_display_code,
+            errorText: S.of(context).main_display_code_description,
             inputFormatter: [
               MaskedInputFormatter(
                 '000-000-000-0',
@@ -90,8 +90,8 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
             controller: _otpController,
             focusNode: _otpFocusNode,
             // initialValue: otp,
-            labelText: S.of(context).present_otp_code,
-            errorText: S.of(context).present_otp_code_description,
+            labelText: S.of(context).main_password,
+            errorText: S.of(context).main_password_description,
             inputFormatter: [
               MaskedInputFormatter(
                 '0000',

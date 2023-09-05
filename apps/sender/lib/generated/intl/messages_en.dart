@@ -20,25 +20,58 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
+  static String m0(value) =>
+      "Please select a screen to share within ${value} seconds...";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "main_language_title": MessageLookupByLibrary.simpleMessage("Language"),
-        "moderator_name": MessageLookupByLibrary.simpleMessage("Name *"),
+        "main_display_code":
+            MessageLookupByLibrary.simpleMessage("Display Code"),
+        "main_display_code_description":
+            MessageLookupByLibrary.simpleMessage("9 or 10-digit display code"),
+        "main_display_code_exceed":
+            MessageLookupByLibrary.simpleMessage("Reach maximum presenters"),
+        "main_language": MessageLookupByLibrary.simpleMessage("Language"),
+        "main_password": MessageLookupByLibrary.simpleMessage("Password"),
+        "main_password_description":
+            MessageLookupByLibrary.simpleMessage("4-digit one-time password"),
+        "main_password_invalid":
+            MessageLookupByLibrary.simpleMessage("Invalid one time password"),
+        "main_present": MessageLookupByLibrary.simpleMessage("PRESENT"),
+        "main_setting": MessageLookupByLibrary.simpleMessage("Settings"),
+        "main_touch_back": MessageLookupByLibrary.simpleMessage("Touchback"),
+        "moderator": MessageLookupByLibrary.simpleMessage("Moderator"),
+        "moderator_exit": MessageLookupByLibrary.simpleMessage("EXIT"),
+        "moderator_fill_out":
+            MessageLookupByLibrary.simpleMessage("Field required"),
+        "moderator_name": MessageLookupByLibrary.simpleMessage("Name"),
         "moderator_wait": MessageLookupByLibrary.simpleMessage(
-            "Please wait for your turn... Moderator will select presenters"),
-        "present_display_code":
-            MessageLookupByLibrary.simpleMessage("Display Code *"),
-        "present_display_code_description":
+            "Please wait while the moderator selects presenters..."),
+        "present_select_screen_cancel":
+            MessageLookupByLibrary.simpleMessage("Cancel"),
+        "present_select_screen_description":
             MessageLookupByLibrary.simpleMessage(
-                "*Display Code contains 9-10 digits"),
-        "present_fill_out":
-            MessageLookupByLibrary.simpleMessage("Please fill out this field."),
-        "present_otp_code":
-            MessageLookupByLibrary.simpleMessage("One Time Password *"),
-        "present_otp_code_description": MessageLookupByLibrary.simpleMessage(
-            "*One Time Password contains 4 digits"),
-        "present_start": MessageLookupByLibrary.simpleMessage("PRESENT"),
-        "setting": MessageLookupByLibrary.simpleMessage("Settings"),
-        "touchback": MessageLookupByLibrary.simpleMessage("Touchback")
+                "Choose a view to share with the receiving screen."),
+        "present_select_screen_entire":
+            MessageLookupByLibrary.simpleMessage("Entire screen"),
+        "present_select_screen_share":
+            MessageLookupByLibrary.simpleMessage("Share"),
+        "present_select_screen_window":
+            MessageLookupByLibrary.simpleMessage("Window"),
+        "present_state_full_screen":
+            MessageLookupByLibrary.simpleMessage("Full screen"),
+        "present_state_normal_screen":
+            MessageLookupByLibrary.simpleMessage("Exit full screen"),
+        "present_state_pause": MessageLookupByLibrary.simpleMessage("Pause"),
+        "present_state_resume": MessageLookupByLibrary.simpleMessage("Resume"),
+        "present_state_stop":
+            MessageLookupByLibrary.simpleMessage("Stop presenting"),
+        "present_time": MessageLookupByLibrary.simpleMessage("Time elapsed"),
+        "present_time_unit_hour": MessageLookupByLibrary.simpleMessage("hr"),
+        "present_time_unit_min": MessageLookupByLibrary.simpleMessage("min"),
+        "present_time_unit_sec": MessageLookupByLibrary.simpleMessage("sec"),
+        "present_wait": m0,
+        "settings_knowledge_base":
+            MessageLookupByLibrary.simpleMessage("Knowledge Base")
       };
 }
