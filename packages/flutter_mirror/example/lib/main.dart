@@ -116,6 +116,9 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
   void onMirrorStop(String mirrorId) {
     _plugin.stopMirror(mirrorId);
 
+    if (_mirrorId != mirrorId) {
+      return;
+    }
     setState(() {
       _mirrorId = null;
       _textureId = null;
@@ -213,6 +216,7 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
 
   @override
   Widget build(BuildContext context) {
+    print('_textureId, $_textureId');
     var video = AspectRatio(
       key: stickyKey,
       aspectRatio: _aspectRatio,
