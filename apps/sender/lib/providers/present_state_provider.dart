@@ -54,6 +54,9 @@ class PresentStateProvider extends ChangeNotifier {
   bool _v1 = false;
   bool _touchBack = false;
   bool get touchBack => _touchBack;
+  bool _exceedMaximumPresenters = false;
+
+  bool get exceedMaximumPresenters => _exceedMaximumPresenters;
 
   setViewState(ViewState newViewState) {
     _currentState = newViewState;
@@ -241,6 +244,14 @@ class PresentStateProvider extends ChangeNotifier {
     _socket?.on('reject-present', (msg) {
       debugModePrint('${presenter?.id} reject-present: $msg',
           type: runtimeType);
+      if (msg['action'] == 'reject-present') {
+        if (msg['extra']['reason'] == 'blocked') {
+          // split-screen: exceeded maximum presenters
+          _exceedMaximumPresenters = true;
+          //  back to idle
+          setViewState(ViewState.idle);
+        }
+      }
     });
 
     _socket?.on('dismiss', (msg) {
@@ -480,6 +491,7 @@ class PresentStateProvider extends ChangeNotifier {
   resetMessage() {
     presenter = Presenter(id: const Uuid().v4());
     moderator = null;
+    _exceedMaximumPresenters = false;
   }
 
   String _getRandomString() {

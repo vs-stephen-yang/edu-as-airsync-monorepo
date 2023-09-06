@@ -1,8 +1,10 @@
 
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
+import 'package:provider/provider.dart';
 
 import 'custom_text_form_field.dart';
 
@@ -23,7 +25,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
   final TextEditingController _otpController = TextEditingController();
   final FocusNode _codeFocusNode = FocusNode();
   final FocusNode _otpFocusNode = FocusNode();
-  final GlobalKey codeKey = GlobalKey();
+  final GlobalKey<CustomTextFormFieldState> codeKey = GlobalKey();
   final GlobalKey<CustomTextFormFieldState> otpKey = GlobalKey();
 
   @override
@@ -53,6 +55,13 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
 
   @override
   Widget build(BuildContext context) {
+    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
+    WidgetsBinding.instance.addPostFrameCallback((callback) {
+      if (presentStateProvider.exceedMaximumPresenters) {
+        codeKey.currentState?.setErrorMsg(S.of(context).main_display_code_exceed);
+      }
+    });
+
     return Column(
       children: [
         SizedBox(
