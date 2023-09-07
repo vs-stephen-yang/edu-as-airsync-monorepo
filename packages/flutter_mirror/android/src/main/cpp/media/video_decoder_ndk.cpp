@@ -7,6 +7,8 @@ const std::string VideoDecoderNdk::kMimeVp8 = "video/x-vnd.on2.vp8";
 
 static const int64_t kDequeueInputTimeoutUs = 1000 * 1000;  // in microseconds
 static const int64_t kDequeueOutputTimeoutUs = 100 * 1000;  // in microseconds
+static const int64_t kDefaultDecoderWidth = 1920;
+static const int64_t kDefaultDecoderHeight = 1080;
 
 VideoDecoderNdk::VideoDecoderNdk(
     VideoDecoder::Callback* callback)
@@ -32,8 +34,8 @@ bool VideoDecoderNdk::Init(
   AMediaFormat_setString(fmt.get(), AMEDIAFORMAT_KEY_MIME, mime.c_str());
 
   // TODO: Do we need to specify valid width and height?
-  AMediaFormat_setInt32(fmt.get(), AMEDIAFORMAT_KEY_WIDTH, 100);
-  AMediaFormat_setInt32(fmt.get(), AMEDIAFORMAT_KEY_HEIGHT, 100);
+  AMediaFormat_setInt32(fmt.get(), AMEDIAFORMAT_KEY_WIDTH, kDefaultDecoderWidth);
+  AMediaFormat_setInt32(fmt.get(), AMEDIAFORMAT_KEY_HEIGHT, kDefaultDecoderHeight);
 
   media_status_t status = AMediaCodec_configure(
       codec_.get(),
