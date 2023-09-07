@@ -1,11 +1,12 @@
 package com.viewsonic.miracast.wifidirect;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
 import android.net.NetworkInfo;
 import android.net.wifi.p2p.*;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
@@ -23,6 +24,8 @@ import com.viewsonic.miracast.utils.ARPUtil;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import com.viewsonic.miracast.OnMirrorListener;
@@ -103,6 +106,21 @@ public class WiFiDirectMgr {
       }
     });
 
+    if (needsDiscoverPeers()) {
+      Log.d(TAG, "discoverPeers");
+      wifiP2pManager_.discoverPeers(channel_, new ActionListener() {
+        @Override
+        public void onSuccess() {
+          Log.d(TAG, "Successfully discoverPeers");
+        }
+
+        @Override
+        public void onFailure(int reason) {
+          Log.e(TAG, "Failed to discoverPeers with reason " + reason + ".");
+        }
+      });
+    }
+
     if (checkGroupExist()) {
       removeGroupSync();
     }
@@ -129,6 +147,21 @@ public class WiFiDirectMgr {
   public void stop() {
     if (isStart_) {
       Log.d(TAG, "stop WiFiDirectMgr");
+      if (needsDiscoverPeers()) {
+        Log.d(TAG, "stopPeerDiscovery");
+        wifiP2pManager_.stopPeerDiscovery(channel_, new ActionListener() {
+          @Override
+          public void onSuccess() {
+            Log.d(TAG, "Successfully stopPeerDiscovery");
+          }
+
+          @Override
+          public void onFailure(int reason) {
+            Log.e(TAG, "Failed to stopPeerDiscovery with reason " + reason + ".");
+          }
+        });
+      }
+
       wifiP2pManager_.removeGroup(channel_, null);
       context_.unregisterReceiver(broadcastReceiver_);
       isStart_ = false;
@@ -504,5 +537,22 @@ public class WiFiDirectMgr {
 
   private String getReceiverName() {
     return receiverName_;
+  }
+
+  private boolean needsDiscoverPeers() {
+    // traverse usb device list to find specific product id
+    UsbManager usbManager = (UsbManager) context_.getSystemService(Context.USB_SERVICE);
+    HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
+    Iterator<UsbDevice> deviceIterator = deviceList.values().iterator();
+    Log.d(TAG, "Usb device list:");
+    while (deviceIterator.hasNext()) {
+      UsbDevice device = deviceIterator.next();
+      Log.d(TAG, "vendorId: " + device.getVendorId() + " productId: " + device.getProductId() + " deviceName: "
+          + device.getDeviceName());
+      if (device.getProductId() == PRODUCT_ID_VB_WIFI_004) {
+        return true;
+      }
+    }
+    return false;
   }
 }
