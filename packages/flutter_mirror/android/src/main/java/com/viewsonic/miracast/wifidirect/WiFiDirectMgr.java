@@ -32,13 +32,15 @@ import com.viewsonic.miracast.OnMirrorListener;
 
 public class WiFiDirectMgr {
   private static final String TAG = "MiraWiFiDirectMgr";
+  private static final int DEFALUT_SOURCE_PORT = 7236;
+  private static final int PRODUCT_ID_VB_WIFI_004 = 34817;
 
   private boolean isStart_ = false;
   private boolean isGroupFormed_ = false;
   private boolean isGroupOwner_ = false;
   private String p2pInterfaceName_ = "";
   private int groupClientNum_ = 0;
-  private int sourcePort_ = 7236;
+  private int sourcePort_ = DEFALUT_SOURCE_PORT;
   private String sourceIp_ = "";
   private String sourceMacAddr_ = "";
   private String sourceDeviceName_ = "";
@@ -352,17 +354,19 @@ public class WiFiDirectMgr {
    * networkId: 0
    */
   private void setGroupInfo(String groupInfo) {
-    if (!TextUtils.isEmpty(groupInfo)) {
-      // sourceMacAddr_ = groupInfo.substring(
-      // groupInfo.lastIndexOf("deviceAddress") + 15,
-      // groupInfo.lastIndexOf("deviceAddress") + 32).trim();
-      // Log.d(TAG, "sourceMacAddr:" + sourceMacAddr_);
-      String sourcePortStr = groupInfo.substring(
-          groupInfo.lastIndexOf("WFD CtrlPort") + 14, groupInfo.lastIndexOf("WFD MaxThroughput")).trim();
-      if (!TextUtils.isEmpty(sourcePortStr)) {
-        int tmp = Integer.parseInt(sourcePortStr);
-        sourcePort_ = (tmp == 0) ? 7236 : tmp;
-        Log.d(TAG, "sourcePort:" + sourcePort_);
+    sourcePort_ = DEFALUT_SOURCE_PORT;
+    if (!TextUtils.isEmpty(groupInfo) && groupInfo.contains("WFD CtrlPort: ")
+        && groupInfo.contains("WFD MaxThroughput")) {
+      try {
+        String sourcePortStr = groupInfo.substring(
+            groupInfo.lastIndexOf("WFD CtrlPort: ") + 14, groupInfo.lastIndexOf("WFD MaxThroughput")).trim();
+        if (!TextUtils.isEmpty(sourcePortStr)) {
+          int tmp = Integer.parseInt(sourcePortStr);
+          sourcePort_ = (tmp > 0) ? tmp : DEFALUT_SOURCE_PORT;
+          Log.d(TAG, "sourcePort:" + sourcePort_);
+        }
+      } catch (RuntimeException e) {
+        Log.e(TAG, "setGroupInfo exception: " + e.getMessage());
       }
     }
   }
