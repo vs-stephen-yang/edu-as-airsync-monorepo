@@ -75,7 +75,7 @@ public class WiFiDirectMgr {
     // Indicates a change in the Wi-Fi P2P status.
     intentFilter_.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
     // Indicates a change in the list of available peers.
-    // intentFilter_.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+    intentFilter_.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
     // Indicates the state of Wi-Fi P2P connectivity has changed.
     intentFilter_.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
     context_.registerReceiver(broadcastReceiver_, intentFilter_, null, null);
@@ -243,9 +243,10 @@ public class WiFiDirectMgr {
       List<WifiP2pDevice> peerList = new ArrayList<>(peers.getDeviceList());
       Log.d(TAG, peerList.size() + " device(s) found");
       for (WifiP2pDevice peer : peerList) {
-        Log.d(TAG, String.format("peer: %s - %s",
+        Log.d(TAG, String.format("peer: %s - %s - status: %d",
             peer.deviceName,
-            peer.deviceAddress));
+            peer.deviceAddress,
+            peer.status));
       }
     }
   };
