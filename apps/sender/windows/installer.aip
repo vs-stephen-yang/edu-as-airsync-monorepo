@@ -29,329 +29,28 @@
     <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
     <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
-    <ROW Directory="assets_1_Dir" Directory_Parent="cupertino_icons_Dir" DefaultDir="assets"/>
-    <ROW Directory="assets_Dir" Directory_Parent="flutter_assets_Dir" DefaultDir="assets"/>
-    <ROW Directory="cupertino_icons_Dir" Directory_Parent="packages_Dir" DefaultDir="CUPERT~1|cupertino_icons"/>
-    <ROW Directory="data_Dir" Directory_Parent="APPDIR" DefaultDir="data"/>
-    <ROW Directory="flags_Dir" Directory_Parent="flutter_multi_formatter_Dir" DefaultDir="flags"/>
-    <ROW Directory="flutter_assets_Dir" Directory_Parent="data_Dir" DefaultDir="FLUTTE~1|flutter_assets"/>
-    <ROW Directory="flutter_multi_formatter_Dir" Directory_Parent="packages_Dir" DefaultDir="FLUTTE~1|flutter_multi_formatter"/>
-    <ROW Directory="fonts_Dir" Directory_Parent="flutter_assets_Dir" DefaultDir="fonts"/>
-    <ROW Directory="images_Dir" Directory_Parent="assets_Dir" DefaultDir="images"/>
-    <ROW Directory="packages_Dir" Directory_Parent="flutter_assets_Dir" DefaultDir="packages"/>
-    <ROW Directory="png_Dir" Directory_Parent="flags_Dir" DefaultDir="png"/>
-    <ROW Directory="shaders_Dir" Directory_Parent="flutter_assets_Dir" DefaultDir="shaders"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
     <ROW Component="AI_INSTALLPERUSER" ComponentId="{FB8000D6-B9B6-4045-84EF-D7A0FD5AB707}" Directory_="APPDIR" Attributes="260" KeyPath="AI_INSTALLPERUSER" Options="1"/>
     <ROW Component="APPDIR" ComponentId="{65CC1664-DF5F-4669-ADF1-C2A16799FE5D}" Directory_="APPDIR" Attributes="0"/>
     <ROW Component="AirSync_Sender.exe" ComponentId="{78575E77-7E7F-42EB-ADF1-6353527D3308}" Directory_="APPDIR" Attributes="256" KeyPath="AirSync_Sender.exe"/>
-    <ROW Component="AssetManifest.json" ComponentId="{C233CABF-42C3-4755-8968-AF26B5B39ADC}" Directory_="flutter_assets_Dir" Attributes="0" KeyPath="AssetManifest.json" Type="0"/>
-    <ROW Component="CupertinoIcons.ttf" ComponentId="{CB321FD7-AF8F-448E-BF3C-B37FF34EC0C3}" Directory_="assets_1_Dir" Attributes="0" Type="0"/>
-    <ROW Component="MaterialIconsRegular.otf" ComponentId="{F2644C5C-CFD0-4EF0-8F98-A046F072A00C}" Directory_="fonts_Dir" Attributes="0" KeyPath="MaterialIconsRegular.otf" Type="0"/>
     <ROW Component="ProductInformation" ComponentId="{4B1841DC-601F-47AA-89A4-610F5A65E9D1}" Directory_="APPDIR" Attributes="260" KeyPath="Version"/>
     <ROW Component="SHORTCUTDIR" ComponentId="{8A6E9F44-DB30-4AE3-9A31-A96F629A8E58}" Directory_="SHORTCUTDIR" Attributes="0"/>
-    <ROW Component="ad.png" ComponentId="{F28B77EC-08A8-4467-BC63-EE5B910422F0}" Directory_="png_Dir" Attributes="0" KeyPath="ad.png" Type="0"/>
-    <ROW Component="app.so" ComponentId="{52CC9D60-5A70-4B8A-85E2-473FB4282BFE}" Directory_="data_Dir" Attributes="0" KeyPath="app.so" Type="0"/>
-    <ROW Component="desktop_window_plugin.dll" ComponentId="{B7E1C053-6C8C-419C-B685-FD39090ED214}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_window_plugin.dll"/>
-    <ROW Component="flutter_input_injection_plugin.dll" ComponentId="{B7367AEA-D814-4555-9017-16C35CF5176B}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_input_injection_plugin.dll"/>
-    <ROW Component="flutter_webrtc_plugin.dll" ComponentId="{01693031-1DF1-4607-8D12-2BD024DB7490}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_webrtc_plugin.dll"/>
-    <ROW Component="flutter_window_close_plugin.dll" ComponentId="{AF719A2D-7860-40A5-8573-101B6B08B5E9}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_window_close_plugin.dll"/>
-    <ROW Component="flutter_windows.dll" ComponentId="{621A2294-FC37-49A2-A131-2AD2D7293608}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_windows.dll"/>
-    <ROW Component="ic_logo_build_by.png" ComponentId="{F503A4DA-F05F-4089-B92D-70517F282B36}" Directory_="images_Dir" Attributes="0" KeyPath="ic_logo_build_by.png" Type="0"/>
-    <ROW Component="ink_sparkle.frag" ComponentId="{5BDB1027-95B6-4DA6-88A8-262351E3787F}" Directory_="shaders_Dir" Attributes="0" KeyPath="ink_sparkle.frag" Type="0"/>
-    <ROW Component="libwebrtc.dll" ComponentId="{BC5F1413-7A51-453B-9385-04A7520C58EC}" Directory_="APPDIR" Attributes="256" KeyPath="libwebrtc.dll"/>
-    <ROW Component="msvcp140.dll" ComponentId="{10DFDCDD-D329-4532-A6F8-E6744CAC4086}" Directory_="APPDIR" Attributes="256" KeyPath="msvcp140.dll"/>
+    <ROW Component="msvcp140.dll" ComponentId="{23249871-6713-42B8-9882-26ACF4BD7D2B}" Directory_="APPDIR" Attributes="256" KeyPath="msvcp140.dll"/>
     <ROW Component="updater.exe" ComponentId="{79C846D7-470C-49C0-854C-DCBFAD4170CC}" Directory_="APPDIR" Attributes="0" KeyPath="updater.exe"/>
-    <ROW Component="url_launcher_windows_plugin.dll" ComponentId="{C9F3BC81-7F7E-4CC8-9CB6-118F56AACAE6}" Directory_="APPDIR" Attributes="256" KeyPath="url_launcher_windows_plugin.dll"/>
-    <ROW Component="vcruntime140.dll" ComponentId="{6CE88FA6-A0BA-4953-8128-E3A0EFA9088F}" Directory_="APPDIR" Attributes="256" KeyPath="vcruntime140.dll"/>
-    <ROW Component="vcruntime140_1.dll" ComponentId="{20D56D10-EBC7-4E79-AF3F-71F64D4C1112}" Directory_="APPDIR" Attributes="256" KeyPath="vcruntime140_1.dll"/>
-    <ROW Component="window_size_plugin.dll" ComponentId="{E375003D-89CC-4BA5-9488-69DA13CE9F36}" Directory_="APPDIR" Attributes="256" KeyPath="window_size_plugin.dll"/>
+    <ROW Component="vcruntime140.dll" ComponentId="{7D964E36-BAEF-4697-9748-6D927C4B8E2E}" Directory_="APPDIR" Attributes="256" KeyPath="vcruntime140.dll"/>
+    <ROW Component="vcruntime140_1.dll" ComponentId="{E175E220-6237-43EF-B4E3-F43F53F3CC58}" Directory_="APPDIR" Attributes="256" KeyPath="vcruntime140_1.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="app.so" Component_="app.so" FileName="app.so" Attributes="0" SourcePath="..\build\windows\runner\Release\data\app.so" SelfReg="false"/>
-    <ROW File="AssetManifest.json" Component_="AssetManifest.json" FileName="ASSETM~1.JSO|AssetManifest.json" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\AssetManifest.json" SelfReg="false"/>
-    <ROW File="ic_logo_build_by.png" Component_="ic_logo_build_by.png" FileName="IC_LOG~1.PNG|ic_logo_build_by.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\assets\images\ic_logo_build_by.png" SelfReg="false"/>
-    <ROW File="ic_logo_my_viewboard.png" Component_="ic_logo_build_by.png" FileName="IC_LOG~2.PNG|ic_logo_my_viewboard.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\assets\images\ic_logo_my_viewboard.png" SelfReg="false"/>
-    <ROW File="FontManifest.json" Component_="AssetManifest.json" FileName="FONTMA~1.JSO|FontManifest.json" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\FontManifest.json" SelfReg="false"/>
-    <ROW File="MaterialIconsRegular.otf" Component_="MaterialIconsRegular.otf" FileName="MATERI~1.OTF|MaterialIcons-Regular.otf" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\fonts\MaterialIcons-Regular.otf" SelfReg="false"/>
-    <ROW File="NOTICES.Z" Component_="AssetManifest.json" FileName="NOTICES.Z" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\NOTICES.Z" SelfReg="false"/>
-    <ROW File="CupertinoIcons.ttf" Component_="CupertinoIcons.ttf" FileName="CUPERT~1.TTF|CupertinoIcons.ttf" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\cupertino_icons\assets\CupertinoIcons.ttf" SelfReg="false"/>
-    <ROW File="ad.png" Component_="ad.png" FileName="ad.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ad.png" SelfReg="false"/>
-    <ROW File="ae.png" Component_="ad.png" FileName="ae.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ae.png" SelfReg="false"/>
-    <ROW File="af.png" Component_="ad.png" FileName="af.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\af.png" SelfReg="false"/>
-    <ROW File="ag.png" Component_="ad.png" FileName="ag.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ag.png" SelfReg="false"/>
-    <ROW File="ai.png" Component_="ad.png" FileName="ai.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ai.png" SelfReg="false"/>
-    <ROW File="al.png" Component_="ad.png" FileName="al.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\al.png" SelfReg="false"/>
-    <ROW File="am.png" Component_="ad.png" FileName="am.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\am.png" SelfReg="false"/>
-    <ROW File="an.png" Component_="ad.png" FileName="an.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\an.png" SelfReg="false"/>
-    <ROW File="ao.png" Component_="ad.png" FileName="ao.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ao.png" SelfReg="false"/>
-    <ROW File="aq.png" Component_="ad.png" FileName="aq.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\aq.png" SelfReg="false"/>
-    <ROW File="ar.png" Component_="ad.png" FileName="ar.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ar.png" SelfReg="false"/>
-    <ROW File="as.png" Component_="ad.png" FileName="as.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\as.png" SelfReg="false"/>
-    <ROW File="at.png" Component_="ad.png" FileName="at.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\at.png" SelfReg="false"/>
-    <ROW File="au.png" Component_="ad.png" FileName="au.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\au.png" SelfReg="false"/>
-    <ROW File="aw.png" Component_="ad.png" FileName="aw.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\aw.png" SelfReg="false"/>
-    <ROW File="ax.png" Component_="ad.png" FileName="ax.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ax.png" SelfReg="false"/>
-    <ROW File="az.png" Component_="ad.png" FileName="az.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\az.png" SelfReg="false"/>
-    <ROW File="ba.png" Component_="ad.png" FileName="ba.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ba.png" SelfReg="false"/>
-    <ROW File="bb.png" Component_="ad.png" FileName="bb.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bb.png" SelfReg="false"/>
-    <ROW File="bd.png" Component_="ad.png" FileName="bd.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bd.png" SelfReg="false"/>
-    <ROW File="be.png" Component_="ad.png" FileName="be.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\be.png" SelfReg="false"/>
-    <ROW File="bf.png" Component_="ad.png" FileName="bf.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bf.png" SelfReg="false"/>
-    <ROW File="bg.png" Component_="ad.png" FileName="bg.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bg.png" SelfReg="false"/>
-    <ROW File="bh.png" Component_="ad.png" FileName="bh.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bh.png" SelfReg="false"/>
-    <ROW File="bi.png" Component_="ad.png" FileName="bi.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bi.png" SelfReg="false"/>
-    <ROW File="bj.png" Component_="ad.png" FileName="bj.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bj.png" SelfReg="false"/>
-    <ROW File="bl.png" Component_="ad.png" FileName="bl.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bl.png" SelfReg="false"/>
-    <ROW File="bm.png" Component_="ad.png" FileName="bm.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bm.png" SelfReg="false"/>
-    <ROW File="bn.png" Component_="ad.png" FileName="bn.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bn.png" SelfReg="false"/>
-    <ROW File="bo.png" Component_="ad.png" FileName="bo.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bo.png" SelfReg="false"/>
-    <ROW File="bq.png" Component_="ad.png" FileName="bq.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bq.png" SelfReg="false"/>
-    <ROW File="br.png" Component_="ad.png" FileName="br.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\br.png" SelfReg="false"/>
-    <ROW File="bs.png" Component_="ad.png" FileName="bs.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bs.png" SelfReg="false"/>
-    <ROW File="bt.png" Component_="ad.png" FileName="bt.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bt.png" SelfReg="false"/>
-    <ROW File="bv.png" Component_="ad.png" FileName="bv.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bv.png" SelfReg="false"/>
-    <ROW File="bw.png" Component_="ad.png" FileName="bw.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bw.png" SelfReg="false"/>
-    <ROW File="by.png" Component_="ad.png" FileName="by.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\by.png" SelfReg="false"/>
-    <ROW File="bz.png" Component_="ad.png" FileName="bz.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\bz.png" SelfReg="false"/>
-    <ROW File="ca.png" Component_="ad.png" FileName="ca.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ca.png" SelfReg="false"/>
-    <ROW File="cc.png" Component_="ad.png" FileName="cc.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cc.png" SelfReg="false"/>
-    <ROW File="cd.png" Component_="ad.png" FileName="cd.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cd.png" SelfReg="false"/>
-    <ROW File="cf.png" Component_="ad.png" FileName="cf.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cf.png" SelfReg="false"/>
-    <ROW File="cg.png" Component_="ad.png" FileName="cg.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cg.png" SelfReg="false"/>
-    <ROW File="ch.png" Component_="ad.png" FileName="ch.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ch.png" SelfReg="false"/>
-    <ROW File="ci.png" Component_="ad.png" FileName="ci.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ci.png" SelfReg="false"/>
-    <ROW File="ck.png" Component_="ad.png" FileName="ck.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ck.png" SelfReg="false"/>
-    <ROW File="cl.png" Component_="ad.png" FileName="cl.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cl.png" SelfReg="false"/>
-    <ROW File="cm.png" Component_="ad.png" FileName="cm.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cm.png" SelfReg="false"/>
-    <ROW File="cn.png" Component_="ad.png" FileName="cn.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cn.png" SelfReg="false"/>
-    <ROW File="co.png" Component_="ad.png" FileName="co.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\co.png" SelfReg="false"/>
-    <ROW File="cr.png" Component_="ad.png" FileName="cr.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cr.png" SelfReg="false"/>
-    <ROW File="cu.png" Component_="ad.png" FileName="cu.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cu.png" SelfReg="false"/>
-    <ROW File="cv.png" Component_="ad.png" FileName="cv.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cv.png" SelfReg="false"/>
-    <ROW File="cw.png" Component_="ad.png" FileName="cw.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cw.png" SelfReg="false"/>
-    <ROW File="cx.png" Component_="ad.png" FileName="cx.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cx.png" SelfReg="false"/>
-    <ROW File="cy.png" Component_="ad.png" FileName="cy.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cy.png" SelfReg="false"/>
-    <ROW File="cz.png" Component_="ad.png" FileName="cz.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\cz.png" SelfReg="false"/>
-    <ROW File="de.png" Component_="ad.png" FileName="de.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\de.png" SelfReg="false"/>
-    <ROW File="dj.png" Component_="ad.png" FileName="dj.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\dj.png" SelfReg="false"/>
-    <ROW File="dk.png" Component_="ad.png" FileName="dk.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\dk.png" SelfReg="false"/>
-    <ROW File="dm.png" Component_="ad.png" FileName="dm.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\dm.png" SelfReg="false"/>
-    <ROW File="do.png" Component_="ad.png" FileName="do.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\do.png" SelfReg="false"/>
-    <ROW File="dz.png" Component_="ad.png" FileName="dz.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\dz.png" SelfReg="false"/>
-    <ROW File="ec.png" Component_="ad.png" FileName="ec.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ec.png" SelfReg="false"/>
-    <ROW File="ee.png" Component_="ad.png" FileName="ee.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ee.png" SelfReg="false"/>
-    <ROW File="eg.png" Component_="ad.png" FileName="eg.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\eg.png" SelfReg="false"/>
-    <ROW File="eh.png" Component_="ad.png" FileName="eh.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\eh.png" SelfReg="false"/>
-    <ROW File="er.png" Component_="ad.png" FileName="er.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\er.png" SelfReg="false"/>
-    <ROW File="es.png" Component_="ad.png" FileName="es.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\es.png" SelfReg="false"/>
-    <ROW File="et.png" Component_="ad.png" FileName="et.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\et.png" SelfReg="false"/>
-    <ROW File="eu.png" Component_="ad.png" FileName="eu.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\eu.png" SelfReg="false"/>
-    <ROW File="fi.png" Component_="ad.png" FileName="fi.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\fi.png" SelfReg="false"/>
-    <ROW File="fj.png" Component_="ad.png" FileName="fj.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\fj.png" SelfReg="false"/>
-    <ROW File="fk.png" Component_="ad.png" FileName="fk.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\fk.png" SelfReg="false"/>
-    <ROW File="fm.png" Component_="ad.png" FileName="fm.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\fm.png" SelfReg="false"/>
-    <ROW File="fo.png" Component_="ad.png" FileName="fo.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\fo.png" SelfReg="false"/>
-    <ROW File="fr.png" Component_="ad.png" FileName="fr.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\fr.png" SelfReg="false"/>
-    <ROW File="ga.png" Component_="ad.png" FileName="ga.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ga.png" SelfReg="false"/>
-    <ROW File="gbeng.png" Component_="ad.png" FileName="gb-eng.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gb-eng.png" SelfReg="false"/>
-    <ROW File="gbnir.png" Component_="ad.png" FileName="gb-nir.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gb-nir.png" SelfReg="false"/>
-    <ROW File="gbsct.png" Component_="ad.png" FileName="gb-sct.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gb-sct.png" SelfReg="false"/>
-    <ROW File="gbwls.png" Component_="ad.png" FileName="gb-wls.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gb-wls.png" SelfReg="false"/>
-    <ROW File="gb.png" Component_="ad.png" FileName="gb.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gb.png" SelfReg="false"/>
-    <ROW File="gd.png" Component_="ad.png" FileName="gd.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gd.png" SelfReg="false"/>
-    <ROW File="ge.png" Component_="ad.png" FileName="ge.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ge.png" SelfReg="false"/>
-    <ROW File="gf.png" Component_="ad.png" FileName="gf.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gf.png" SelfReg="false"/>
-    <ROW File="gg.png" Component_="ad.png" FileName="gg.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gg.png" SelfReg="false"/>
-    <ROW File="gh.png" Component_="ad.png" FileName="gh.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gh.png" SelfReg="false"/>
-    <ROW File="gi.png" Component_="ad.png" FileName="gi.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gi.png" SelfReg="false"/>
-    <ROW File="gl.png" Component_="ad.png" FileName="gl.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gl.png" SelfReg="false"/>
-    <ROW File="gm.png" Component_="ad.png" FileName="gm.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gm.png" SelfReg="false"/>
-    <ROW File="gn.png" Component_="ad.png" FileName="gn.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gn.png" SelfReg="false"/>
-    <ROW File="gp.png" Component_="ad.png" FileName="gp.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gp.png" SelfReg="false"/>
-    <ROW File="gq.png" Component_="ad.png" FileName="gq.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gq.png" SelfReg="false"/>
-    <ROW File="gr.png" Component_="ad.png" FileName="gr.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gr.png" SelfReg="false"/>
-    <ROW File="gs.png" Component_="ad.png" FileName="gs.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gs.png" SelfReg="false"/>
-    <ROW File="gt.png" Component_="ad.png" FileName="gt.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gt.png" SelfReg="false"/>
-    <ROW File="gu.png" Component_="ad.png" FileName="gu.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gu.png" SelfReg="false"/>
-    <ROW File="gw.png" Component_="ad.png" FileName="gw.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gw.png" SelfReg="false"/>
-    <ROW File="gy.png" Component_="ad.png" FileName="gy.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\gy.png" SelfReg="false"/>
-    <ROW File="hk.png" Component_="ad.png" FileName="hk.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\hk.png" SelfReg="false"/>
-    <ROW File="hm.png" Component_="ad.png" FileName="hm.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\hm.png" SelfReg="false"/>
-    <ROW File="hn.png" Component_="ad.png" FileName="hn.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\hn.png" SelfReg="false"/>
-    <ROW File="hr.png" Component_="ad.png" FileName="hr.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\hr.png" SelfReg="false"/>
-    <ROW File="ht.png" Component_="ad.png" FileName="ht.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ht.png" SelfReg="false"/>
-    <ROW File="hu.png" Component_="ad.png" FileName="hu.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\hu.png" SelfReg="false"/>
-    <ROW File="id.png" Component_="ad.png" FileName="id.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\id.png" SelfReg="false"/>
-    <ROW File="ie.png" Component_="ad.png" FileName="ie.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ie.png" SelfReg="false"/>
-    <ROW File="il.png" Component_="ad.png" FileName="il.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\il.png" SelfReg="false"/>
-    <ROW File="im.png" Component_="ad.png" FileName="im.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\im.png" SelfReg="false"/>
-    <ROW File="in.png" Component_="ad.png" FileName="in.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\in.png" SelfReg="false"/>
-    <ROW File="io.png" Component_="ad.png" FileName="io.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\io.png" SelfReg="false"/>
-    <ROW File="iq.png" Component_="ad.png" FileName="iq.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\iq.png" SelfReg="false"/>
-    <ROW File="ir.png" Component_="ad.png" FileName="ir.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ir.png" SelfReg="false"/>
-    <ROW File="is.png" Component_="ad.png" FileName="is.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\is.png" SelfReg="false"/>
-    <ROW File="it.png" Component_="ad.png" FileName="it.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\it.png" SelfReg="false"/>
-    <ROW File="je.png" Component_="ad.png" FileName="je.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\je.png" SelfReg="false"/>
-    <ROW File="jm.png" Component_="ad.png" FileName="jm.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\jm.png" SelfReg="false"/>
-    <ROW File="jo.png" Component_="ad.png" FileName="jo.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\jo.png" SelfReg="false"/>
-    <ROW File="jp.png" Component_="ad.png" FileName="jp.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\jp.png" SelfReg="false"/>
-    <ROW File="ke.png" Component_="ad.png" FileName="ke.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ke.png" SelfReg="false"/>
-    <ROW File="kg.png" Component_="ad.png" FileName="kg.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kg.png" SelfReg="false"/>
-    <ROW File="kh.png" Component_="ad.png" FileName="kh.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kh.png" SelfReg="false"/>
-    <ROW File="ki.png" Component_="ad.png" FileName="ki.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ki.png" SelfReg="false"/>
-    <ROW File="km.png" Component_="ad.png" FileName="km.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\km.png" SelfReg="false"/>
-    <ROW File="kn.png" Component_="ad.png" FileName="kn.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kn.png" SelfReg="false"/>
-    <ROW File="kp.png" Component_="ad.png" FileName="kp.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kp.png" SelfReg="false"/>
-    <ROW File="kr.png" Component_="ad.png" FileName="kr.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kr.png" SelfReg="false"/>
-    <ROW File="kw.png" Component_="ad.png" FileName="kw.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kw.png" SelfReg="false"/>
-    <ROW File="ky.png" Component_="ad.png" FileName="ky.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ky.png" SelfReg="false"/>
-    <ROW File="kz.png" Component_="ad.png" FileName="kz.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\kz.png" SelfReg="false"/>
-    <ROW File="la.png" Component_="ad.png" FileName="la.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\la.png" SelfReg="false"/>
-    <ROW File="lb.png" Component_="ad.png" FileName="lb.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lb.png" SelfReg="false"/>
-    <ROW File="lc.png" Component_="ad.png" FileName="lc.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lc.png" SelfReg="false"/>
-    <ROW File="li.png" Component_="ad.png" FileName="li.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\li.png" SelfReg="false"/>
-    <ROW File="lk.png" Component_="ad.png" FileName="lk.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lk.png" SelfReg="false"/>
-    <ROW File="lr.png" Component_="ad.png" FileName="lr.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lr.png" SelfReg="false"/>
-    <ROW File="ls.png" Component_="ad.png" FileName="ls.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ls.png" SelfReg="false"/>
-    <ROW File="lt.png" Component_="ad.png" FileName="lt.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lt.png" SelfReg="false"/>
-    <ROW File="lu.png" Component_="ad.png" FileName="lu.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lu.png" SelfReg="false"/>
-    <ROW File="lv.png" Component_="ad.png" FileName="lv.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\lv.png" SelfReg="false"/>
-    <ROW File="ly.png" Component_="ad.png" FileName="ly.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ly.png" SelfReg="false"/>
-    <ROW File="ma.png" Component_="ad.png" FileName="ma.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ma.png" SelfReg="false"/>
-    <ROW File="mc.png" Component_="ad.png" FileName="mc.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mc.png" SelfReg="false"/>
-    <ROW File="md.png" Component_="ad.png" FileName="md.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\md.png" SelfReg="false"/>
-    <ROW File="me.png" Component_="ad.png" FileName="me.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\me.png" SelfReg="false"/>
-    <ROW File="mf.png" Component_="ad.png" FileName="mf.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mf.png" SelfReg="false"/>
-    <ROW File="mg.png" Component_="ad.png" FileName="mg.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mg.png" SelfReg="false"/>
-    <ROW File="mh.png" Component_="ad.png" FileName="mh.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mh.png" SelfReg="false"/>
-    <ROW File="mk.png" Component_="ad.png" FileName="mk.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mk.png" SelfReg="false"/>
-    <ROW File="ml.png" Component_="ad.png" FileName="ml.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ml.png" SelfReg="false"/>
-    <ROW File="mm.png" Component_="ad.png" FileName="mm.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mm.png" SelfReg="false"/>
-    <ROW File="mn.png" Component_="ad.png" FileName="mn.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mn.png" SelfReg="false"/>
-    <ROW File="mo.png" Component_="ad.png" FileName="mo.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mo.png" SelfReg="false"/>
-    <ROW File="mp.png" Component_="ad.png" FileName="mp.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mp.png" SelfReg="false"/>
-    <ROW File="mq.png" Component_="ad.png" FileName="mq.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mq.png" SelfReg="false"/>
-    <ROW File="mr.png" Component_="ad.png" FileName="mr.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mr.png" SelfReg="false"/>
-    <ROW File="ms.png" Component_="ad.png" FileName="ms.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ms.png" SelfReg="false"/>
-    <ROW File="mt.png" Component_="ad.png" FileName="mt.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mt.png" SelfReg="false"/>
-    <ROW File="mu.png" Component_="ad.png" FileName="mu.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mu.png" SelfReg="false"/>
-    <ROW File="mv.png" Component_="ad.png" FileName="mv.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mv.png" SelfReg="false"/>
-    <ROW File="mw.png" Component_="ad.png" FileName="mw.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mw.png" SelfReg="false"/>
-    <ROW File="mx.png" Component_="ad.png" FileName="mx.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mx.png" SelfReg="false"/>
-    <ROW File="my.png" Component_="ad.png" FileName="my.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\my.png" SelfReg="false"/>
-    <ROW File="mz.png" Component_="ad.png" FileName="mz.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\mz.png" SelfReg="false"/>
-    <ROW File="na.png" Component_="ad.png" FileName="na.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\na.png" SelfReg="false"/>
-    <ROW File="nc.png" Component_="ad.png" FileName="nc.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\nc.png" SelfReg="false"/>
-    <ROW File="ne.png" Component_="ad.png" FileName="ne.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ne.png" SelfReg="false"/>
-    <ROW File="nf.png" Component_="ad.png" FileName="nf.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\nf.png" SelfReg="false"/>
-    <ROW File="ng.png" Component_="ad.png" FileName="ng.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ng.png" SelfReg="false"/>
-    <ROW File="ni.png" Component_="ad.png" FileName="ni.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ni.png" SelfReg="false"/>
-    <ROW File="nl.png" Component_="ad.png" FileName="nl.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\nl.png" SelfReg="false"/>
-    <ROW File="no.png" Component_="ad.png" FileName="no.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\no.png" SelfReg="false"/>
-    <ROW File="np.png" Component_="ad.png" FileName="np.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\np.png" SelfReg="false"/>
-    <ROW File="nr.png" Component_="ad.png" FileName="nr.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\nr.png" SelfReg="false"/>
-    <ROW File="nu.png" Component_="ad.png" FileName="nu.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\nu.png" SelfReg="false"/>
-    <ROW File="nz.png" Component_="ad.png" FileName="nz.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\nz.png" SelfReg="false"/>
-    <ROW File="om.png" Component_="ad.png" FileName="om.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\om.png" SelfReg="false"/>
-    <ROW File="pa.png" Component_="ad.png" FileName="pa.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pa.png" SelfReg="false"/>
-    <ROW File="pe.png" Component_="ad.png" FileName="pe.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pe.png" SelfReg="false"/>
-    <ROW File="pf.png" Component_="ad.png" FileName="pf.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pf.png" SelfReg="false"/>
-    <ROW File="pg.png" Component_="ad.png" FileName="pg.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pg.png" SelfReg="false"/>
-    <ROW File="ph.png" Component_="ad.png" FileName="ph.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ph.png" SelfReg="false"/>
-    <ROW File="pk.png" Component_="ad.png" FileName="pk.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pk.png" SelfReg="false"/>
-    <ROW File="pl.png" Component_="ad.png" FileName="pl.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pl.png" SelfReg="false"/>
-    <ROW File="pm.png" Component_="ad.png" FileName="pm.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pm.png" SelfReg="false"/>
-    <ROW File="pn.png" Component_="ad.png" FileName="pn.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pn.png" SelfReg="false"/>
-    <ROW File="pr.png" Component_="ad.png" FileName="pr.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pr.png" SelfReg="false"/>
-    <ROW File="ps.png" Component_="ad.png" FileName="ps.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ps.png" SelfReg="false"/>
-    <ROW File="pt.png" Component_="ad.png" FileName="pt.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pt.png" SelfReg="false"/>
-    <ROW File="pw.png" Component_="ad.png" FileName="pw.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\pw.png" SelfReg="false"/>
-    <ROW File="py.png" Component_="ad.png" FileName="py.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\py.png" SelfReg="false"/>
-    <ROW File="qa.png" Component_="ad.png" FileName="qa.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\qa.png" SelfReg="false"/>
-    <ROW File="re.png" Component_="ad.png" FileName="re.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\re.png" SelfReg="false"/>
-    <ROW File="ro.png" Component_="ad.png" FileName="ro.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ro.png" SelfReg="false"/>
-    <ROW File="rs.png" Component_="ad.png" FileName="rs.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\rs.png" SelfReg="false"/>
-    <ROW File="ru.png" Component_="ad.png" FileName="ru.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ru.png" SelfReg="false"/>
-    <ROW File="rw.png" Component_="ad.png" FileName="rw.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\rw.png" SelfReg="false"/>
-    <ROW File="sa.png" Component_="ad.png" FileName="sa.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sa.png" SelfReg="false"/>
-    <ROW File="sb.png" Component_="ad.png" FileName="sb.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sb.png" SelfReg="false"/>
-    <ROW File="sc.png" Component_="ad.png" FileName="sc.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sc.png" SelfReg="false"/>
-    <ROW File="sd.png" Component_="ad.png" FileName="sd.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sd.png" SelfReg="false"/>
-    <ROW File="se.png" Component_="ad.png" FileName="se.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\se.png" SelfReg="false"/>
-    <ROW File="sg.png" Component_="ad.png" FileName="sg.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sg.png" SelfReg="false"/>
-    <ROW File="sh.png" Component_="ad.png" FileName="sh.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sh.png" SelfReg="false"/>
-    <ROW File="si.png" Component_="ad.png" FileName="si.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\si.png" SelfReg="false"/>
-    <ROW File="sj.png" Component_="ad.png" FileName="sj.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sj.png" SelfReg="false"/>
-    <ROW File="sk.png" Component_="ad.png" FileName="sk.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sk.png" SelfReg="false"/>
-    <ROW File="sl.png" Component_="ad.png" FileName="sl.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sl.png" SelfReg="false"/>
-    <ROW File="sm.png" Component_="ad.png" FileName="sm.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sm.png" SelfReg="false"/>
-    <ROW File="sn.png" Component_="ad.png" FileName="sn.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sn.png" SelfReg="false"/>
-    <ROW File="so.png" Component_="ad.png" FileName="so.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\so.png" SelfReg="false"/>
-    <ROW File="sr.png" Component_="ad.png" FileName="sr.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sr.png" SelfReg="false"/>
-    <ROW File="ss.png" Component_="ad.png" FileName="ss.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ss.png" SelfReg="false"/>
-    <ROW File="st.png" Component_="ad.png" FileName="st.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\st.png" SelfReg="false"/>
-    <ROW File="sv.png" Component_="ad.png" FileName="sv.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sv.png" SelfReg="false"/>
-    <ROW File="sx.png" Component_="ad.png" FileName="sx.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sx.png" SelfReg="false"/>
-    <ROW File="sy.png" Component_="ad.png" FileName="sy.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sy.png" SelfReg="false"/>
-    <ROW File="sz.png" Component_="ad.png" FileName="sz.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\sz.png" SelfReg="false"/>
-    <ROW File="tc.png" Component_="ad.png" FileName="tc.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tc.png" SelfReg="false"/>
-    <ROW File="td.png" Component_="ad.png" FileName="td.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\td.png" SelfReg="false"/>
-    <ROW File="tf.png" Component_="ad.png" FileName="tf.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tf.png" SelfReg="false"/>
-    <ROW File="tg.png" Component_="ad.png" FileName="tg.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tg.png" SelfReg="false"/>
-    <ROW File="th.png" Component_="ad.png" FileName="th.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\th.png" SelfReg="false"/>
-    <ROW File="tj.png" Component_="ad.png" FileName="tj.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tj.png" SelfReg="false"/>
-    <ROW File="tk.png" Component_="ad.png" FileName="tk.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tk.png" SelfReg="false"/>
-    <ROW File="tl.png" Component_="ad.png" FileName="tl.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tl.png" SelfReg="false"/>
-    <ROW File="tm.png" Component_="ad.png" FileName="tm.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tm.png" SelfReg="false"/>
-    <ROW File="tn.png" Component_="ad.png" FileName="tn.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tn.png" SelfReg="false"/>
-    <ROW File="to.png" Component_="ad.png" FileName="to.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\to.png" SelfReg="false"/>
-    <ROW File="tr.png" Component_="ad.png" FileName="tr.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tr.png" SelfReg="false"/>
-    <ROW File="tt.png" Component_="ad.png" FileName="tt.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tt.png" SelfReg="false"/>
-    <ROW File="tv.png" Component_="ad.png" FileName="tv.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tv.png" SelfReg="false"/>
-    <ROW File="tw.png" Component_="ad.png" FileName="tw.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tw.png" SelfReg="false"/>
-    <ROW File="tz.png" Component_="ad.png" FileName="tz.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\tz.png" SelfReg="false"/>
-    <ROW File="ua.png" Component_="ad.png" FileName="ua.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ua.png" SelfReg="false"/>
-    <ROW File="ug.png" Component_="ad.png" FileName="ug.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ug.png" SelfReg="false"/>
-    <ROW File="um.png" Component_="ad.png" FileName="um.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\um.png" SelfReg="false"/>
-    <ROW File="us.png" Component_="ad.png" FileName="us.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\us.png" SelfReg="false"/>
-    <ROW File="uy.png" Component_="ad.png" FileName="uy.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\uy.png" SelfReg="false"/>
-    <ROW File="uz.png" Component_="ad.png" FileName="uz.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\uz.png" SelfReg="false"/>
-    <ROW File="va.png" Component_="ad.png" FileName="va.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\va.png" SelfReg="false"/>
-    <ROW File="vc.png" Component_="ad.png" FileName="vc.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\vc.png" SelfReg="false"/>
-    <ROW File="ve.png" Component_="ad.png" FileName="ve.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ve.png" SelfReg="false"/>
-    <ROW File="vg.png" Component_="ad.png" FileName="vg.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\vg.png" SelfReg="false"/>
-    <ROW File="vi.png" Component_="ad.png" FileName="vi.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\vi.png" SelfReg="false"/>
-    <ROW File="vn.png" Component_="ad.png" FileName="vn.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\vn.png" SelfReg="false"/>
-    <ROW File="vu.png" Component_="ad.png" FileName="vu.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\vu.png" SelfReg="false"/>
-    <ROW File="wf.png" Component_="ad.png" FileName="wf.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\wf.png" SelfReg="false"/>
-    <ROW File="ws.png" Component_="ad.png" FileName="ws.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ws.png" SelfReg="false"/>
-    <ROW File="xk.png" Component_="ad.png" FileName="xk.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\xk.png" SelfReg="false"/>
-    <ROW File="ye.png" Component_="ad.png" FileName="ye.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\ye.png" SelfReg="false"/>
-    <ROW File="yt.png" Component_="ad.png" FileName="yt.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\yt.png" SelfReg="false"/>
-    <ROW File="za.png" Component_="ad.png" FileName="za.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\za.png" SelfReg="false"/>
-    <ROW File="zm.png" Component_="ad.png" FileName="zm.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\zm.png" SelfReg="false"/>
-    <ROW File="zw.png" Component_="ad.png" FileName="zw.png" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\packages\flutter_multi_formatter\flags\png\zw.png" SelfReg="false"/>
-    <ROW File="ink_sparkle.frag" Component_="ink_sparkle.frag" FileName="INK_SP~1.FRA|ink_sparkle.frag" Attributes="0" SourcePath="..\build\windows\runner\Release\data\flutter_assets\shaders\ink_sparkle.frag" SelfReg="false"/>
-    <ROW File="icudtl.dat" Component_="app.so" FileName="icudtl.dat" Attributes="0" SourcePath="..\build\windows\runner\Release\data\icudtl.dat" SelfReg="false"/>
     <ROW File="AirSync_Sender.exe" Component_="AirSync_Sender.exe" FileName="DISPLA~1.EXE|AirSync_Sender.exe" Attributes="0" SourcePath="..\build\windows\runner\Release\AirSync_Sender.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="flutter_input_injection_plugin.dll" Component_="flutter_input_injection_plugin.dll" FileName="FLUTTE~1.DLL|flutter_input_injection_plugin.dll" Attributes="0" SourcePath="..\build\windows\runner\Release\flutter_input_injection_plugin.dll" SelfReg="false"/>
-    <ROW File="flutter_webrtc_plugin.dll" Component_="flutter_webrtc_plugin.dll" FileName="FLUTTE~2.DLL|flutter_webrtc_plugin.dll" Attributes="0" SourcePath="..\build\windows\runner\Release\flutter_webrtc_plugin.dll" SelfReg="false"/>
-    <ROW File="flutter_windows.dll" Component_="flutter_windows.dll" FileName="FLUTTE~3.DLL|flutter_windows.dll" Attributes="0" SourcePath="..\build\windows\runner\Release\flutter_windows.dll" SelfReg="false"/>
-    <ROW File="libwebrtc.dll" Component_="libwebrtc.dll" FileName="LIBWEB~1.DLL|libwebrtc.dll" Attributes="0" SourcePath="..\build\windows\runner\Release\libwebrtc.dll" SelfReg="false"/>
-    <ROW File="url_launcher_windows_plugin.dll" Component_="url_launcher_windows_plugin.dll" FileName="URL_LA~1.DLL|url_launcher_windows_plugin.dll" Attributes="0" SourcePath="..\build\windows\runner\Release\url_launcher_windows_plugin.dll" SelfReg="false"/>
-    <ROW File="window_size_plugin.dll" Component_="window_size_plugin.dll" FileName="WINDOW~1.DLL|window_size_plugin.dll" Attributes="0" SourcePath="..\build\windows\runner\Release\window_size_plugin.dll" SelfReg="false"/>
+    <ROW File="updater.exe" Component_="updater.exe" FileName="updater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="&lt;AI_STUBS&gt;updater.exe" SelfReg="false" DigSign="true"/>
     <ROW File="vcruntime140.dll" Component_="vcruntime140.dll" FileName="VCRUNT~1.DLL|vcruntime140.dll" Attributes="0" SourcePath="redist\vcruntime140.dll" SelfReg="false"/>
     <ROW File="vcruntime140_1.dll" Component_="vcruntime140_1.dll" FileName="VCRUNT~2.DLL|vcruntime140_1.dll" Attributes="0" SourcePath="redist\vcruntime140_1.dll" SelfReg="false"/>
     <ROW File="msvcp140.dll" Component_="msvcp140.dll" FileName="msvcp140.dll" Attributes="0" SourcePath="redist\msvcp140.dll" SelfReg="false"/>
-    <ROW File="updater.exe" Component_="updater.exe" FileName="updater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="&lt;AI_STUBS&gt;updater.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="desktop_window_plugin.dll" Component_="desktop_window_plugin.dll" FileName="DESKTO~1.DLL|desktop_window_plugin.dll" Attributes="0" SourcePath="..\build\windows\runner\Release\desktop_window_plugin.dll" SelfReg="false"/>
-    <ROW File="flutter_window_close_plugin.dll" Component_="flutter_window_close_plugin.dll" FileName="FLUTTE~4.DLL|flutter_window_close_plugin.dll" Attributes="0" SourcePath="..\build\windows\runner\Release\flutter_window_close_plugin.dll" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AiPersistentPropComponent">
     <ROW Property="AI_INSTALLPERUSER" Registry="AI_INSTALLPERUSER" HklmSearch="AI_INSTALLPERUSER" HkcuSearch="AI_INSTALLPERUSER_1" Hklm64Search="AI_INSTALLPERUSER_2" Hkcu64Search="AI_INSTALLPERUSER_3"/>
@@ -445,28 +144,13 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatCompsComponent">
     <ROW Feature_="MainFeature" Component_="APPDIR"/>
     <ROW Feature_="MainFeature" Component_="ProductInformation"/>
-    <ROW Feature_="MainFeature" Component_="app.so"/>
-    <ROW Feature_="MainFeature" Component_="AssetManifest.json"/>
-    <ROW Feature_="MainFeature" Component_="ic_logo_build_by.png"/>
-    <ROW Feature_="MainFeature" Component_="MaterialIconsRegular.otf"/>
-    <ROW Feature_="MainFeature" Component_="CupertinoIcons.ttf"/>
-    <ROW Feature_="MainFeature" Component_="ad.png"/>
-    <ROW Feature_="MainFeature" Component_="ink_sparkle.frag"/>
-    <ROW Feature_="MainFeature" Component_="AirSync_Sender.exe"/>
-    <ROW Feature_="MainFeature" Component_="flutter_input_injection_plugin.dll"/>
-    <ROW Feature_="MainFeature" Component_="flutter_webrtc_plugin.dll"/>
-    <ROW Feature_="MainFeature" Component_="flutter_windows.dll"/>
-    <ROW Feature_="MainFeature" Component_="libwebrtc.dll"/>
-    <ROW Feature_="MainFeature" Component_="url_launcher_windows_plugin.dll"/>
-    <ROW Feature_="MainFeature" Component_="window_size_plugin.dll"/>
-    <ROW Feature_="MainFeature" Component_="AI_INSTALLPERUSER"/>
-    <ROW Feature_="MainFeature" Component_="SHORTCUTDIR"/>
     <ROW Feature_="MainFeature" Component_="vcruntime140.dll"/>
     <ROW Feature_="MainFeature" Component_="vcruntime140_1.dll"/>
     <ROW Feature_="MainFeature" Component_="msvcp140.dll"/>
+    <ROW Feature_="MainFeature" Component_="AirSync_Sender.exe"/>
+    <ROW Feature_="MainFeature" Component_="AI_INSTALLPERUSER"/>
+    <ROW Feature_="MainFeature" Component_="SHORTCUTDIR"/>
     <ROW Feature_="MainFeature" Component_="updater.exe"/>
-    <ROW Feature_="MainFeature" Component_="desktop_window_plugin.dll"/>
-    <ROW Feature_="MainFeature" Component_="flutter_window_close_plugin.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="AirSync_Sender.exe" SourcePath="..\build\windows\runner\Release\AirSync_Sender.exe" Index="0"/>
@@ -528,6 +212,9 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
     <ROW UpgradeCode="[|UpgradeCode]" VersionMin="0.0.1" VersionMax="[|ProductVersion]" Attributes="257" ActionProperty="OLDPRODUCTS"/>
     <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
+    <ROW Directory_="APPDIR" SourcePath="..\build\windows\runner\Release" Feature="MainFeature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6" FileAddOptions="4"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.UpdaterComponent">
     <ROW Updater="updater.exe" URL="URL" SearchFreq="CheckFrequency" DownloadsFolder="DownloadsFolder" ID="ID" TargetDir="AppDir" AppName="ApplicationName" AppVersion="ApplicationVersion" CompanyName="CompanyName" DefCommandLine="DefaultCommandLine" Flags="Flags" IconIndex="0" UnistallCASeq="AI_UPDATER_UNINSTALL" Description="[|UpdaterName] [|ProductVersion][|EnvSuffix]"/>
