@@ -83,16 +83,40 @@ class WebRTCHelper {
     });
   }
 
-  void streamPause() {
-    _localStream?.getTracks().forEach((element) {
-      element.enabled = false;
-    });
+  Future<void> streamPause() async {
+    var constraints = <String, dynamic>{
+      'audio': true,
+      'video': {
+        'deviceId': _deviceId,
+        'mandatory': {'frameRate': 0.0},
+      }
+    };
+    _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+    for (MediaStreamTrack track in _localStream!.getTracks()) {
+      await _pc?.getSenders().then((value) async {
+        for (var element in value) {
+          await element.replaceTrack(track);
+        }
+      });
+    }
   }
 
-  void streamResume() {
-    _localStream?.getTracks().forEach((element) {
-      element.enabled = true;
-    });
+  Future<void> streamResume() async {
+    var constraints = <String, dynamic>{
+      'audio': true,
+      'video': {
+        'deviceId': _deviceId,
+        'mandatory': {'frameRate': 30.0},
+      }
+    };
+    _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+    for (MediaStreamTrack track in _localStream!.getTracks()) {
+      await _pc?.getSenders().then((value) async {
+        for (var element in value) {
+          await element.replaceTrack(track);
+        }
+      });
+    }
   }
 
   void _signalConnect(String signalUrl) {

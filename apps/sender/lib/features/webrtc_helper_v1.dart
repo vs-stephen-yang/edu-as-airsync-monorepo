@@ -59,17 +59,41 @@ class WebRTCHelperV1 extends WebRTCHelper {
   }
 
   @override
-  void streamPause() {
-    _pc?.getLocalStreams().forEach((element) {
-      element?.getTracks().first.enabled = false;
-    });
+  Future<void> streamPause() async {
+    var constraints = <String, dynamic>{
+      'audio': true,
+      'video': {
+        'deviceId': _deviceId,
+        'mandatory': {'frameRate': 0.0},
+      }
+    };
+    var localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+    for (MediaStreamTrack track in localStream.getTracks()) {
+      await _pc?.getSenders().then((value) async {
+        for (var element in value) {
+          await element.replaceTrack(track);
+        }
+      });
+    }
   }
 
   @override
-  void streamResume() {
-    _pc?.getLocalStreams().forEach((element) {
-      element?.getTracks().first.enabled = true;
-    });
+  Future<void> streamResume() async {
+    var constraints = <String, dynamic>{
+      'audio': true,
+      'video': {
+        'deviceId': _deviceId,
+        'mandatory': {'frameRate': 30.0},
+      }
+    };
+    var localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+    for (MediaStreamTrack track in localStream.getTracks()) {
+      await _pc?.getSenders().then((value) async {
+        for (var element in value) {
+          await element.replaceTrack(track);
+        }
+      });
+    }
   }
 
   Future<void> _signalConnect(String signalUrl, String id) async {
