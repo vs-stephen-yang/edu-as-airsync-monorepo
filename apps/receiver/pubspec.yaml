@@ -65,7 +65,7 @@ dependencies:
   flutter_webrtc:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc-plugin
-      ref: release-0.9.36
+      ref: release-0.9.36-2
   logging: ^1.2.0
   protobuf: ^2.1.0
   flutter_mirror:
