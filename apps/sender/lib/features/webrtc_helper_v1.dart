@@ -61,7 +61,7 @@ class WebRTCHelperV1 extends WebRTCHelper {
   @override
   Future<void> streamPause() async {
     var constraints = <String, dynamic>{
-      'audio': true,
+      'audio': false,
       'video': {
         'deviceId': _deviceId,
         'mandatory': {'frameRate': 0.0},

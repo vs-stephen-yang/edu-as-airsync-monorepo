@@ -214,6 +214,14 @@ class PresentStateProvider extends ChangeNotifier {
           type: runtimeType);
     });
 
+    _socket?.on('presenter-change-quality', (msg) {
+      debugModePrint('${presenter?.id} presenter-change-quality: $msg',
+          type: runtimeType);
+      if (_webRTCHelper?.trackHeight != msg['extra']['constraints']['height']) {
+        _webRTCHelper?.changeStreamFrameRate(msg['extra']['constraints']['frameRate'], msg['extra']['constraints']['height']);
+      }
+    });
+
     _socket?.on("presenter-peer-action", (msg) {
       debugModePrint('${presenter?.id} presenter-peer-action: $msg',
           type: runtimeType);
