@@ -36,9 +36,14 @@ class WebRTCHelper {
   io.Socket? _socket;
   double _screenWidth = 1920.0;
   double _screenHeight = 1080.0;
+  double _trackWidth = 1920.0;
+  double _trackHeight = 1080.0;
   bool _touchBack = false;
 
+  double get trackHeight => _trackHeight;
   final _flutterInputInjectionPlugin = FlutterInputInjection();
+
+  //region public methods
 
   Future<void> makeCall(
       String signalUrl, String token, String peerId, dynamic source) async {
@@ -85,7 +90,7 @@ class WebRTCHelper {
 
   Future<void> streamPause() async {
     var constraints = <String, dynamic>{
-      'audio': true,
+      'audio': false,
       'video': {
         'deviceId': _deviceId,
         'mandatory': {'frameRate': 0.0},
@@ -118,6 +123,35 @@ class WebRTCHelper {
       });
     }
   }
+
+  Future<void> changeStreamFrameRate(int frameRate, int height) async {
+    _trackWidth = 1920/(1080/height);
+    _trackHeight = height.toDouble();
+    final constraints = <String, dynamic>{
+      'audio': true,
+      'video': !WebRTC.platformIsDesktop ? true : {
+        'deviceId': _deviceId,
+        'mandatory': {
+          'maxWidth': _trackWidth.toString(),
+          'maxHeight': _trackHeight.toString(),
+          'frameRate': frameRate,
+        },
+        'width': _trackWidth.toString(),
+        'height': _trackHeight.toString(),
+        'facingMode': 'user',
+        'optional': [],
+      }
+    };
+
+    _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+    for (MediaStreamTrack track in _localStream!.getTracks()) {
+      _pc?.getSenders().then((value) async {
+        await value.first.replaceTrack(track);
+      });
+    }
+  }
+
+  //endregion
 
   void _signalConnect(String signalUrl) {
     _socket = io.io(
@@ -232,8 +266,8 @@ class WebRTCHelper {
       'video': {
         'deviceId': _deviceId,
         'mandatory': {'frameRate': 30.0},
-        'width': 1920,
-        'height': 1080,
+        'width': _trackWidth = 1920,
+        'height': _trackHeight = 1080,
       }
     };
 
