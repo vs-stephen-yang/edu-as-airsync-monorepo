@@ -254,5 +254,5 @@ void MirrorReceiver::RemoveSession(const std::string& mirror_id) {
   }
 
   sessions_.erase(itr);
-  ALOGD("Remaining mirror sessions = %d", sessions_.size());
+  ALOGD("Remaining mirror sessions = %u", (unsigned int)sessions_.size());
 }

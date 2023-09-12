@@ -91,5 +91,5 @@ void MiracastReceiver::RemoveSession(const std::string& mirrorId) {
 
   mirror_sessions_.erase(itr);
 
-  ALOGD("Remaining miracast sessions = %d", mirror_sessions_.size());
+  ALOGD("Remaining miracast sessions = %u", (unsigned int)mirror_sessions_.size());
 }
