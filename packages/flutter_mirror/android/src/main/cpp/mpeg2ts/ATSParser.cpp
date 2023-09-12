@@ -705,7 +705,7 @@ void ATSParser::Stream::onPayloadData(
   if (isSupportedAudio()) {
     mParser->callback_->OnAudioFrame(data, size, timeUs);
   } else if (isSupportedVideo()) {
-    mParser->callback_->OnVideoFrame(true, data, size, timeUs);
+    mParser->callback_->OnVideoFrame(false, data, size, timeUs);
   }
 }
 
