@@ -34,10 +34,12 @@ bool MediaSession::Start(
   }
 
   if (!video_decoder_->Start()) {
+    ALOGE("Failed to start video decoder");
     return false;
   }
 
   if (!audio_decoder_->Start()) {
+    ALOGE("Failed to start audio decoder");
     return false;
   }
 
@@ -70,6 +72,7 @@ bool MediaSession::CreateVideoDecoder(
   // create a surface texture
   texture_ = texture_registry_.CreateSurfaceTexture();
   if (!texture_.wnd) {
+    ALOGE("Failed to create surface texture");
     return false;
   }
 
@@ -80,6 +83,7 @@ bool MediaSession::CreateVideoDecoder(
       this);
 
   if (!decoder) {
+    ALOGE("Failed to create video decoder");
     return false;
   }
 
@@ -98,6 +102,7 @@ bool MediaSession::CreateAudioDecoder(
       audio_format);
 
   if (!audio_decoder_) {
+    ALOGE("Failed to create audio decoder");
     return false;
   }
 
