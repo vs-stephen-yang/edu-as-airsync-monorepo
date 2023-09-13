@@ -158,8 +158,13 @@ void MirrorReceiver::OnMirrorAuth(
 }
 
 void MirrorReceiver::OnMirrorStart(
-    MirrorSessionPtr session) {
-  assert(session);
+    MirrorSessionPtr sess) {
+  assert(sess);
+
+  MirrorSession* session = sess.get();
+  // After calling AddSession(sess),
+  // sess has been moved and is no longer available!
+  AddSession(sess);
 
   std::string mirror_id = session->GetMirrorId();
   ALOGD("MirrorReceiver::OnMirrorStart(%s)", mirror_id.c_str());
@@ -169,6 +174,10 @@ void MirrorReceiver::OnMirrorStart(
 
   if (!session->StartMirror(
           std::move(media_session))) {
+    session->StopMirror();
+
+    // TODO: Should we always notify when a mirror session starts,
+    // even if something goes wrong?
     return;
   }
 
@@ -177,7 +186,6 @@ void MirrorReceiver::OnMirrorStart(
   std::string device_name = session->GetSourceDisplayName();
   MirrorType mirror_type = session->GetMirrorType();
 
-  AddSession(session);
   proxy_->OnMirrorStart(
       mirror_id,
       tex.id,
