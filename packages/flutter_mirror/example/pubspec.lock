@@ -126,10 +126,10 @@ packages:
     dependency: transitive
     description:
       name: intl
-      sha256: "910f85bce16fb5c6f614e117efa303e85a1731bb0081edf3604a2ae6e9a3cc91"
+      sha256: "3bc132a9dbce73a7e4a21a17d06e1878839ffbf975568bc875c60537824b0c4d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.17.0"
+    version: "0.18.1"
   js:
     dependency: transitive
     description:
@@ -142,8 +142,8 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: "release-0.5.0"
-      resolved-ref: "741ae93503ab15def2c4a57ded4fb6546f64a2b9"
+      ref: "release-0.6.0"
+      resolved-ref: "18f8ea902625330c433e4fe7684fa11ec7b0da14"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/libcastauth"
     source: git
     version: "1.0.0"
