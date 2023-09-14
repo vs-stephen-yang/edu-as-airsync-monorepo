@@ -50,7 +50,7 @@ dependencies:
   http: ^0.13.6
   path_provider: ^2.1.1
   http_parser: ^4.0.2
-  intl: ^0.17.0
+  intl: ^0.18.1
   flutter_bloc: ^8.1.2
   socket_io_client: ^1.0.2
   qr_flutter: ^4.1.0
@@ -71,7 +71,7 @@ dependencies:
   flutter_mirror:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror
-      ref: release-0.18.1
+      ref: release-0.20.0
   move_to_background: ^1.0.2
   sprintf: ^7.0.0
 
