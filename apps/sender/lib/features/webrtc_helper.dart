@@ -39,6 +39,7 @@ class WebRTCHelper {
   double _trackWidth = 1920.0;
   double _trackHeight = 1080.0;
   bool _touchBack = false;
+  bool _isSourceTypeWindow = false;
 
   double get trackHeight => _trackHeight;
   final _flutterInputInjectionPlugin = FlutterInputInjection();
@@ -56,6 +57,7 @@ class WebRTCHelper {
       deviceId = 'broadcast';
     } else {
       deviceId = {'exact': source.id};
+      _isSourceTypeWindow = (source.type == SourceType.Window);
     }
 
     _deviceId = deviceId;
@@ -108,7 +110,7 @@ class WebRTCHelper {
 
   Future<void> streamResume() async {
     var constraints = <String, dynamic>{
-      'audio': true,
+      'audio': _isSourceTypeWindow?false:true,
       'video': {
         'deviceId': _deviceId,
         'mandatory': {'frameRate': 30.0},
@@ -128,7 +130,7 @@ class WebRTCHelper {
     _trackWidth = 1920/(1080/height);
     _trackHeight = height.toDouble();
     final constraints = <String, dynamic>{
-      'audio': true,
+      'audio': _isSourceTypeWindow?false:true,
       'video': !WebRTC.platformIsDesktop ? true : {
         'deviceId': _deviceId,
         'mandatory': {
@@ -262,7 +264,7 @@ class WebRTCHelper {
     _setDataChannelListeners(_dc!);
 
     final constraints = <String, dynamic>{
-      'audio': true,
+      'audio': _isSourceTypeWindow?false:true,
       'video': {
         'deviceId': _deviceId,
         'mandatory': {'frameRate': 30.0},
@@ -362,36 +364,40 @@ class WebRTCHelper {
   }
 
   void _onMessage(RTCDataChannelMessage data) async {
-    if(_touchBack && data.isBinary && _localStream!.getTracks().first.enabled) {
-      EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
-      if(eventMessage.hasTouchEvent()) {
-        int action = FlutterInputInjection.TOUCH_POINT_START;
-        if(eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_START){
-          action = FlutterInputInjection.TOUCH_POINT_START;
-        } else if(eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_MOVE){
-          action = FlutterInputInjection.TOUCH_POINT_MOVE;
-        } else if(eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_END){
-          action = FlutterInputInjection.TOUCH_POINT_END;
+    if(data.isBinary ) {
+      // touch event data
+      if(!_isSourceTypeWindow && _touchBack && _localStream!.getTracks().first.enabled) {
+        EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
+        if(eventMessage.hasTouchEvent()) {
+          int action = FlutterInputInjection.TOUCH_POINT_START;
+          if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_START) {
+            action = FlutterInputInjection.TOUCH_POINT_START;
+          } else if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
+            action = FlutterInputInjection.TOUCH_POINT_MOVE;
+          } else if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_END) {
+            action = FlutterInputInjection.TOUCH_POINT_END;
+          }
+          int id = eventMessage.touchEvent.touchPoints[0].id;
+          double remoteX = eventMessage.touchEvent.touchPoints[0].x;
+          double remoteY = eventMessage.touchEvent.touchPoints[0].y;
+          await updateScreenSize();
+          int injectX = (remoteX * _screenWidth).toInt();
+          if (injectX < 0) {
+            injectX = 0;
+          } else if (injectX > _screenWidth.toInt() - 1) {
+            injectX = _screenWidth.toInt() - 1;
+          }
+          int injectY = (remoteY * _screenHeight).toInt();
+          if (injectY < 0) {
+            injectY = 0;
+          } else if (injectY > _screenHeight.toInt() - 1) {
+            injectY = _screenHeight.toInt() - 1;
+          }
+          _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
         }
-        int id = eventMessage.touchEvent.touchPoints[0].id;
-        double remoteX = eventMessage.touchEvent.touchPoints[0].x;
-        double remoteY = eventMessage.touchEvent.touchPoints[0].y;
-        await updateScreenSize();
-        int injectX = (remoteX * _screenWidth).toInt();
-        if(injectX < 0) {
-          injectX = 0;
-        } else if(injectX > _screenWidth.toInt() - 1) {
-          injectX = _screenWidth.toInt() - 1;
-        }
-        int injectY = (remoteY * _screenHeight).toInt();
-        if(injectY < 0) {
-          injectY = 0;
-        } else if(injectY > _screenHeight.toInt() - 1) {
-          injectY = _screenHeight.toInt() - 1;
-        }
-        _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
       }
     } else {
+      // text message
       debugModePrint(data.text);
     }
   }
