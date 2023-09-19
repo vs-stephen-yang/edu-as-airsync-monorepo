@@ -1,4 +1,3 @@
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -8,12 +7,10 @@ import 'package:display_flutter/protoc/event.pb.dart';
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
-import 'package:flutter/foundation.dart';
+import 'package:display_flutter/widgets/loading_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:uuid/uuid.dart';
-
-import 'custom_icons_icons.dart';
 
 typedef WebRTCFlutterViewCreatedCallback = void Function(
     WebRTCFlutterViewSocket controller);
@@ -26,13 +23,9 @@ class WebRTCFlutterView extends StatefulWidget {
   State createState() => WebRTCFlutterViewState();
 }
 
-class WebRTCFlutterViewState extends State<WebRTCFlutterView>
-    with TickerProviderStateMixin {
-  final WebRTCFlutterViewSocket _socket =
-      WebRTCFlutterViewSocket();
+class WebRTCFlutterViewState extends State<WebRTCFlutterView> {
+  final WebRTCFlutterViewSocket _socket = WebRTCFlutterViewSocket();
   bool _showConnectionInfo = false;
-  late final AnimationController _animationController;
-  late final Animation<double> _animation;
   final GlobalKey _widgetKey = GlobalKey();
   bool _textureSizeChanged = true;
   Size _textureSize = const Size(0, 0);
@@ -44,15 +37,6 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView>
     super.initState();
     initSignalSocket();
     widget.callback(_socket);
-
-    _animationController = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    )..repeat(reverse: false);
-    _animation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.linear,
-    );
   }
 
   initSignalSocket() async {
@@ -63,10 +47,10 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView>
     });
 
     _socket.onAddRemoteStream = ((stream) {
-     setState(() {
-       _remoteRenderer.srcObject = stream;
-       controlAudio(true);
-     });
+      setState(() {
+        _remoteRenderer.srcObject = stream;
+        controlAudio(true);
+      });
     });
 
     _socket.onRemoveRemoteStream = ((stream) {
@@ -101,7 +85,6 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView>
   @override
   void dispose() {
     ControlSocket().removeWebRtcController(_socket);
-    _animationController.dispose();
     super.dispose();
   }
 
@@ -209,8 +192,7 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView>
         Align(
           alignment: Alignment.topCenter,
           child: Visibility(
-            visible: _socket.presentationState ==
-                    PresentationState.streaming &&
+            visible: _socket.presentationState == PresentationState.streaming &&
                 _socket.presenterName.isNotEmpty &&
                 SplitScreen.mapSplitScreen.value[keySplitScreenEnable],
             child: Container(
@@ -233,9 +215,8 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView>
             ),
           ),
         ),
-        Visibility(
-          visible: showConnectionInfo,
-          child: Transform.scale(
+        if (showConnectionInfo)
+          Transform.scale(
             scale: SplitScreen.mapSplitScreen.value[keySplitScreenEnable] &&
                     SplitScreen.mapSplitScreen.value[keySplitScreenCount] > 1
                 ? 0.5
@@ -275,16 +256,10 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView>
                   const SizedBox(
                     height: 20,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 32,
                     height: 32,
-                    child: RotationTransition(
-                      turns: _animation,
-                      child: const Icon(
-                        CustomIcons.loading,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: LoadingIcon(),
                   ),
                   const SizedBox(
                     height: 20,
@@ -301,7 +276,6 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView>
               ),
             ),
           ),
-        ),
       ],
     );
   }
