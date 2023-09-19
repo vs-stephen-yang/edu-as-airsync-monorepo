@@ -61,11 +61,13 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> {
 
     _socket.onDisconnect = (() async {
       // clear renderer
-      setState(() {
+      if (_remoteRenderer.textureId != null && _remoteRenderer.renderVideo) {
+        // onDisconnect may come-in many times, need check textureId first.
         _remoteRenderer.srcObject = null;
-        _remoteRenderer.dispose();
+        await _remoteRenderer.dispose();
         _remoteRenderer = RTCVideoRenderer();
-      });
+      }
+      setState(() {});
     });
   }
 
