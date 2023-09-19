@@ -22,33 +22,36 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 Future<void> commonEntry(ConfigSettings settings) async {
-  WidgetsFlutterBinding.ensureInitialized();
+  runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  await AppPreferences.ensureInitialized();
-  PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  await AppInstanceCreate.ensureInitialized(settings, packageInfo);
+    await AppPreferences.ensureInitialized();
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    await AppInstanceCreate.ensureInitialized(settings, packageInfo);
 
-  var configureApp = AppConfig(
-      settings: settings,
-      appName: packageInfo.appName,
-      appVersion: packageInfo.version,
-      child: const MyApp());
+    var configureApp = AppConfig(
+        settings: settings,
+        appName: packageInfo.appName,
+        appVersion: packageInfo.version,
+        child: const MyApp());
 
-  await AppExceptionReport().ensureInitialized(settings, packageInfo);
-  await AppAnalytics().ensureInitialized(settings);
-  AppAnalytics().setEventProperties(
-      entityId: AppPreferences().entityId,
-      instanceId: AppInstanceCreate().displayInstanceID);
+    await AppExceptionReport().ensureInitialized(settings, packageInfo);
+    await AppAnalytics().ensureInitialized(settings);
+    AppAnalytics().setEventProperties(
+        entityId: AppPreferences().entityId,
+        instanceId: AppInstanceCreate().displayInstanceID);
 
-  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.onError = (FlutterErrorDetails details) async {
+      // Report errors to a service
+      await AppExceptionReport().sendToServer(settings, packageInfo,
+          details.exceptionAsString(), details.stack.toString());
+    };
+
+    runApp(configureApp);
+  }, (error, stack) async {
     // Report errors to a service
-    AppExceptionReport().sendToServer(settings, packageInfo,
-        details.exceptionAsString(), details.stack.toString());
-  };
-
-  runZonedGuarded(() => runApp(configureApp), (error, stack) {
-    // Report errors to a service
-    AppExceptionReport().sendToServer(
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    await AppExceptionReport().sendToServer(
         settings, packageInfo, error.toString(), stack.toString());
   });
 }
