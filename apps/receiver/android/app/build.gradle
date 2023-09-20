@@ -88,6 +88,9 @@ android {
 
     flavorDimensions("channel", "stage")
     productFlavors {
+        edla {
+            dimension "channel"
+        }
         ifp {
             dimension "channel"
         }
@@ -133,6 +136,13 @@ android {
         release {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             productFlavors {
+                edla {
+                    if (ifpKeyExist) {
+                        signingConfig signingConfigs.IFP
+                    } else {
+                        signingConfig signingConfigs.debug
+                    }
+                }
                 ifp {
                     if (ifpKeyExist) {
                         signingConfig signingConfigs.IFP
