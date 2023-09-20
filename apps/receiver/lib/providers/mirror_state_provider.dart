@@ -256,6 +256,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopAirPlay() async {
+    stopAcceptedMirror();
     await _plugin?.stopAirplay();
     _airplayEnabled = false;
     notifyListeners();
@@ -271,6 +272,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopGoogleCast() async {
+    stopAcceptedMirror();
     await _plugin?.stopGooglecast();
     _googleCastEnabled = false;
     notifyListeners();
@@ -283,6 +285,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopMiracast() async {
+    stopAcceptedMirror();
     await _plugin?.stopMiracast();
     _miracastEnabled = false;
     notifyListeners();
