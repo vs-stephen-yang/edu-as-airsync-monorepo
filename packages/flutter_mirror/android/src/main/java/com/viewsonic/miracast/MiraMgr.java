@@ -6,8 +6,10 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import com.viewsonic.miracast.net.EventBase;
 import com.viewsonic.miracast.wifidirect.WiFiDirectMgr;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +21,8 @@ public class MiraMgr {
   private int mirror_increment_seq_ = 0;
   private static final String kMirrorIdPrefix_ = "miracast-";
   private Map<String, MiraSession> mirror_sessions_ = new HashMap<>();
+
+  private EventBase eventBase_ = new EventBase();
 
   static String formatMirrorId(int seq) {
     return kMirrorIdPrefix_ + seq;
@@ -32,6 +36,7 @@ public class MiraMgr {
         peerPort,
         peerName,
         receiverName,
+        eventBase_,
         onMiraCastListener_);
     mirror_sessions_.put(formatMirrorId(mirror_increment_seq_), session);
     return session;
@@ -74,6 +79,13 @@ public class MiraMgr {
       wifiDirectMgr_ = new WiFiDirectMgr(onMiraCastListener_);
     }
 
+    try {
+      eventBase_.init();
+      eventBase_.start();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
     initWiFiDirectRunnable();
 
     HandlerThread mMiraHandlerThread = new HandlerThread("miraMgrThread");
@@ -109,10 +121,12 @@ public class MiraMgr {
   }
 
   public void rtspRequestIdr(String mirrorId) {
-    MiraSession session = mirror_sessions_.get(mirrorId);
-    if (session != null) {
-      session.requestIdr();
-    }
+    eventBase_.post(()->{
+      MiraSession session = mirror_sessions_.get(mirrorId);
+      if (session != null) {
+        session.requestIdr();
+      }
+    });
   }
 
   public void stopMirror(String mirrorId) {
@@ -125,10 +139,12 @@ public class MiraMgr {
   }
 
   public void onTouchEvent(String mirrorId_, int touchId, boolean touch, double x, double y) {
-    MiraSession session = mirror_sessions_.get(mirrorId_);
-    if (session != null) {
-      session.onTouchEvent(touchId, touch, x, y);
-    }
+    eventBase_.post(() -> {
+      MiraSession session = mirror_sessions_.get(mirrorId_);
+      if (session != null) {
+        session.onTouchEvent(touchId, touch, x, y);
+      }
+    });
   }
 
   private void initWiFiDirectRunnable() {
@@ -157,18 +173,23 @@ public class MiraMgr {
       @Override
       public void onPeerConnected(String name, String ip, int port) {
         Log.d(TAG, "onPeerConnected.");
-        connectionPrompt(name, ip, port);
+        eventBase_.post(() -> {
+          connectionPrompt(name, ip, port);
+        });
+
       }
 
       @Override
       public void onPeerDisconnected(String ip) {
         Log.d(TAG, "onPeerDisconnected:" + ip);
-        String removeSessionId = removeSessionByIp(ip);
-        if (removeSessionId != null) {
-          if (listener_ != null) {
-            listener_.onSessionEnd(removeSessionId);
+        eventBase_.post(() -> {
+          String removeSessionId = removeSessionByIp(ip);
+          if (removeSessionId != null) {
+            if (listener_ != null) {
+              listener_.onSessionEnd(removeSessionId);
+            }
           }
-        }
+        });
       }
 
       @Override

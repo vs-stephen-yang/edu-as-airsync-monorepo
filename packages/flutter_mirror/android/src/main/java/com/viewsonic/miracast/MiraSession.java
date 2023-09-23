@@ -2,28 +2,71 @@ package com.viewsonic.miracast;
 
 import android.util.Log;
 
+import com.viewsonic.miracast.net.EventBase;
+import com.viewsonic.miracast.net.TcpConnection;
+import com.viewsonic.miracast.net.TcpConnectionListener;
 import com.viewsonic.miracast.rtp.OnReceiveRTPListener;
 import com.viewsonic.miracast.rtp.RTPServer;
 import com.viewsonic.miracast.rtsp.RtspClient;
 import com.viewsonic.miracast.rtsp.RtspHandler;
+import com.viewsonic.miracast.rtsp.RtspMessage;
+import com.viewsonic.miracast.rtsp.RtspParser;
+import com.viewsonic.miracast.rtsp.RtspRequestMessage;
+import com.viewsonic.miracast.rtsp.RtspResponseMessage;
+import com.viewsonic.miracast.rtsp.RtspSender;
 import com.viewsonic.miracast.uibc.UibcClient;
+import com.viewsonic.miracast.uibc.UibcSender;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.List;
 
 public class MiraSession
-    implements RtspHandler {
+    implements RtspHandler, RtspSender, UibcSender {
   private static final String TAG = "MiraSession";
+  private static final int RTSP_BUFFER_CAPACITY = 1024 * 16;
+  private static final int UIBC_BUFFER_CAPACITY = 1024 * 2;
+  private static final int kRequestIdrMinIntervalMs_ = 1000; // ms
+
   private String id_;
   private String ip_;
   private int port_;
   private String peerName_;
   private String receiverName_;
+
+  // RTSP
   private RtspClient rtspClient_;
+  private TcpConnection rtspConnection_;
+  private final ByteBuffer rtspReadBuffer_ = ByteBuffer.allocate(RTSP_BUFFER_CAPACITY);
+  private final ByteBuffer rtspWriteBuffer_ = ByteBuffer.allocate(RTSP_BUFFER_CAPACITY);
+  private RtspParser rtspParser_;
+
+  // IDR request
+  long lastRequestIdrTime_;
+  boolean isRequestIdrQueued_ = false;
+
   private OnMirrorListener mirrorListener_;
   private long lastRTPSeqNum_ = -1;
 
   private RTPServer rtpServer_;
-  private UibcClient uibcClient_;
 
-  public MiraSession(String id, String ip, int port, String peerName, String receiverName, OnMirrorListener listener) {
+  // UIBC
+  private UibcClient uibcClient_;
+  private TcpConnection uibcConnection_;
+  private boolean uibcConnected_ = false;
+  private final ByteBuffer uibcWriteBuffer_ = ByteBuffer.allocate(UIBC_BUFFER_CAPACITY);
+  private byte[] pendingUibiData_;
+
+  private final EventBase eventBase_;
+
+  public MiraSession(
+      String id,
+      String ip,
+      int port,
+      String peerName,
+      String receiverName,
+      EventBase eventBase,
+      OnMirrorListener listener) {
     id_ = id;
     ip_ = ip;
     port_ = port;
@@ -31,10 +74,10 @@ public class MiraSession
     receiverName_ = receiverName;
     rtspClient_ = new RtspClient("rtsp://" + ip_ + "/", port_);
     mirrorListener_ = listener;
-
-    initialOnReceiveRTPListener();
+    eventBase_ = eventBase;
 
     rtspClient_.setRtspHandler(this);
+    rtspClient_.setRtspSender(this);
     rtspClient_.setReceiverName(receiverName_);
     rtspClient_.setAudioFormatListener(new RtspClient.AudioFormatListener() {
       @Override
@@ -56,16 +99,46 @@ public class MiraSession
   }
 
   public void requestIdr() {
-    if (rtspClient_ != null) {
+    if (rtspClient_ == null) {
+      return;
+    }
+
+    long now = System.currentTimeMillis();
+
+    if (now - lastRequestIdrTime_ >= kRequestIdrMinIntervalMs_) {
+      lastRequestIdrTime_ = now;
+
       rtspClient_.requestIdr();
+      return;
+    }
+
+    // Request IDR too frequently, delay it
+    if (!isRequestIdrQueued_) {
+      long delayMs = kRequestIdrMinIntervalMs_ - (now - lastRequestIdrTime_);
+
+      isRequestIdrQueued_ = true;
+
+      eventBase_.setTimer(() -> {
+        isRequestIdrQueued_ = false;
+        lastRequestIdrTime_ = System.currentTimeMillis();
+
+        rtspClient_.requestIdr();
+      }, delayMs);
     }
   }
 
   public void stop() {
     if (rtspClient_ != null) {
       rtspClient_.requestTeardown();
-      rtspClient_.stop();
       rtspClient_ = null;
+    }
+
+    if (rtspConnection_ != null) {
+      try {
+        rtspConnection_.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
 
     if (rtpServer_ != null) {
@@ -84,8 +157,13 @@ public class MiraSession
   }
 
   public void startRtsp() {
-    if (rtspClient_ != null) {
-      rtspClient_.start();
+    try {
+      rtspConnection_ = new TcpConnection(eventBase_, buildRtspConnectionListener());
+
+      rtspConnection_.connect(ip_, port_);
+    } catch (IOException e) {
+      // TODO
+      e.printStackTrace();
     }
   }
 
@@ -113,16 +191,207 @@ public class MiraSession
 
   @Override
   public void startUibc(String host, int port) {
-    uibcClient_ = new UibcClient(host, port);
-    uibcClient_.start();
+    try {
+      uibcClient_ = new UibcClient(this);
+
+      uibcConnection_ = new TcpConnection(eventBase_, buildUibcConnectionListener());
+      uibcConnection_.connect(host, port);
+    } catch (IOException e) {
+      // TODO
+      e.printStackTrace();
+    }
   }
 
   @Override
   public void stopUibc() {
-    if (uibcClient_ != null) {
-      Log.d(TAG, "stop UIBC connection.");
-      uibcClient_.stop();
-      uibcClient_ = null;
+    try {
+      if (uibcConnection_ != null) {
+        uibcConnection_.close();
+        uibcConnection_ = null;
+      }
+    } catch (IOException e) {
+      // TODO
+      e.printStackTrace();
+    }
+  }
+
+  private TcpConnectionListener buildRtspConnectionListener() {
+    return new TcpConnectionListener() {
+      @Override
+      public void onConnected(TcpConnection connection) {
+        onRtspConnected();
+      }
+
+      @Override
+      public void onConnectFailed(TcpConnection connection) {
+        // TODO
+      }
+
+      @Override
+      public void onReadable(TcpConnection connection) {
+        onRtspReadable();
+      }
+
+      @Override
+      public void onWritable(TcpConnection connection) {
+        // TODO
+      }
+    };
+  }
+
+  private void onRtspConnected() {
+    Log.i(TAG, "RTSP connected");
+    rtspParser_ = new RtspParser();
+  }
+
+  private void onRtspReadable() {
+    assert rtspParser_ != null;
+
+    try {
+      // read some data from rtsp connection
+      rtspConnection_.read(rtspReadBuffer_);
+      rtspReadBuffer_.flip(); // switch to read mode
+
+      // parse rtsp messages
+      List<RtspMessage> messages = rtspParser_.parse(rtspReadBuffer_);
+
+      assert !rtspReadBuffer_.hasRemaining();
+
+      rtspReadBuffer_.clear(); // switch to write mode
+
+      // handle rtsp messages
+      for (RtspMessage message : messages) {
+        onRtspMessage(message);
+      }
+    } catch (Exception e) {
+      // TODO
+      e.printStackTrace();
+    }
+  }
+
+  // handle rtsp message
+  private void onRtspMessage(RtspMessage message) {
+    if (message instanceof RtspRequestMessage) {
+      // handle rtsp request
+      rtspClient_.onRtspRequest((RtspRequestMessage) message);
+    } else {
+      // handle rtsp response
+      rtspClient_.onRtspResponse((RtspResponseMessage) message);
+    }
+  }
+
+  // send rtsp response
+  @Override
+  public void sendResponse(RtspResponseMessage response) {
+    sendRtspMessage(response);
+  }
+
+  // send rtsp request
+  @Override
+  public void sendRequest(RtspRequestMessage request) {
+    sendRtspMessage(request);
+  }
+
+  private void sendRtspMessage(RtspMessage message) {
+    try {
+      byte[] data = message.toByteArray(false);
+
+      rtspWriteBuffer_.put(data);
+
+      rtspWriteBuffer_.flip(); // switch to read mode
+
+      rtspConnection_.write(rtspWriteBuffer_);
+
+      rtspWriteBuffer_.compact(); // In case of partial write
+    } catch (Exception e) {
+      // TODO
+      e.printStackTrace();
+    }
+  }
+
+  private TcpConnectionListener buildUibcConnectionListener() {
+    return new TcpConnectionListener() {
+      @Override
+      public void onConnected(TcpConnection connection) {
+        onUibcConnected();
+      }
+
+      @Override
+      public void onConnectFailed(TcpConnection connection) {
+        // TODO
+      }
+
+      @Override
+      public void onReadable(TcpConnection connection) {
+      }
+
+      @Override
+      public void onWritable(TcpConnection connection) {
+        onUibcWritable();
+      }
+    };
+  }
+
+  private void onUibcConnected() {
+    Log.i(TAG, "UIBC connected");
+    uibcConnected_ = true;
+
+    uibcClient_.start();
+  }
+
+  @Override
+  public void sendUibcData(byte[] data) {
+    assert uibcConnection_ != null;
+    assert pendingUibiData_ == null;
+
+    if (!uibcConnected_) {
+      // TODO
+      return;
+    }
+
+    boolean sent = doSendUibcData(data);
+
+    if (!sent) {
+      Log.d(TAG, "Pause uibc");
+      uibcClient_.pause();
+      // send it later
+      pendingUibiData_ = data.clone();
+      // enable writable event
+      uibcConnection_.enableWritableEvent(true);
+    }
+  }
+
+  private void onUibcWritable() {
+    assert pendingUibiData_ != null;
+
+    if (doSendUibcData(pendingUibiData_)) {
+      pendingUibiData_ = null;
+      // disable writable event
+      uibcConnection_.enableWritableEvent(false);
+
+      Log.d(TAG, "Resume uibc");
+      uibcClient_.resume();
+    }
+  }
+
+  private boolean doSendUibcData(byte[] data) {
+    try {
+      if (uibcWriteBuffer_.remaining() < data.length) {
+        // buffer is full
+        return false;
+      }
+      uibcWriteBuffer_.put(data);
+
+      uibcWriteBuffer_.flip(); // switch to read mode
+
+      uibcConnection_.write(uibcWriteBuffer_);
+      uibcWriteBuffer_.compact(); // In case of partial write
+
+      return true;
+    } catch (Exception e) {
+      // TODO
+      e.printStackTrace();
+      return false;
     }
   }
 }
