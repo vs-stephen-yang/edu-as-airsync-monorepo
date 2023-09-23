@@ -13,6 +13,7 @@ public class TcpConnection
 
   EventBase eventBase_;
   SocketChannel socket_;
+  SelectionKey key_;
   TcpConnectionListener listener_;
 
   public TcpConnection(
@@ -40,11 +41,23 @@ public class TcpConnection
 
     socket_.connect(new InetSocketAddress(host, port));
 
-    eventBase_.registerChannel(socket_, SelectionKey.OP_CONNECT, this);
+    key_ = eventBase_.registerChannel(socket_, SelectionKey.OP_CONNECT, this);
   }
 
   public int read(ByteBuffer buffer) throws IOException {
     return socket_.read(buffer);
+  }
+
+  public void enableWritableEvent(boolean enable) {
+    assert key_ != null;
+
+    int oldOps = key_.interestOps();
+
+    int newOps = enable
+        ? oldOps | SelectionKey.OP_WRITE
+        : oldOps & ~SelectionKey.OP_WRITE;
+
+    key_.interestOps(newOps);
   }
 
   public int write(ByteBuffer buffer) throws IOException {
