@@ -3,7 +3,7 @@ package com.viewsonic.miracast.rtsp;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
-abstract class RtspMessage {
+public abstract class RtspMessage {
   HashMap<String, String> headers = new HashMap<>();
   HashMap<String, String> bodyMap = new HashMap<>();
 
