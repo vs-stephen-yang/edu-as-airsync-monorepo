@@ -1,8 +1,8 @@
 package com.viewsonic.miracast.rtsp;
 
 public interface OnReceiveRTSPListener {
-    void onRtspRequest(RtspRequestMessage request);
-    void onRtspResponse(RtspResponseMessage response);
-    void onRequestIDR();
-    void onRequestTeardown();
+  void onRtspRequest(RtspRequestMessage request);
+
+  void onRtspResponse(RtspResponseMessage response);
+
 }

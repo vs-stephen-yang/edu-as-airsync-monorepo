@@ -10,7 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-public class RtspClient {
+public class RtspClient
+    implements OnReceiveRTSPListener {
   private final static String TAG = "MiraRtspClient";
 
   private final static String METHOD_UDP = "udp";
@@ -44,14 +45,6 @@ public class RtspClient {
   private final static String KEY_WFD_UIBC_CAP = "wfd_uibc_capability";
   private final static String KEY_WFD_UIBC_SETTING = "wfd_uibc_setting";
 
-  private final static int MAX_CONN_TIME = 10;
-  private final static long RETRY_CONN_INTERVAL = 1000; // ms
-
-  HandlerThread rtspClientThread_;
-  private Handler handler_;
-
-  private int curConnTime_ = 0;
-  private RtspSocket rtspSocket_;
   private int rtpPort_;
 
   private RtspParameters rtspParams_;
@@ -69,6 +62,7 @@ public class RtspClient {
   private String receiverName_ = "";
 
   private RtspHandler rtspHandler_;
+  private RtspSender sender_;
 
   public RtspClient(String method, String address) {
     String url = address.substring(address.indexOf("//") + 2);
@@ -79,21 +73,18 @@ public class RtspClient {
     } else if (tmp.length == 2) {
       initClientConfig(method, tmp[0], address, Integer.parseInt(tmp[1]));
     }
-    initialHandler();
   }
 
   public RtspClient(String address, int port) {
     String host = address.substring(address.indexOf("//") + 2);
     host = host.substring(0, host.indexOf("/"));
     initClientConfig("udp", host, address, port);
-    initialHandler();
   }
 
   public RtspClient(String method, String address, int port) {
     String host = address.substring(address.indexOf("//") + 2);
     host = host.substring(0, host.indexOf("/"));
     initClientConfig(method, host, address, port);
-    initialHandler();
   }
 
   public void setReceiverName(String name) {
@@ -104,14 +95,12 @@ public class RtspClient {
     rtspHandler_ = handler;
   }
 
-  public void setAudioFormatListener(AudioFormatListener listener) {
-    audioFormatListener_ = listener;
+  public void setRtspSender(RtspSender sender) {
+    sender_ = sender;
   }
 
-  public void start() {
-    if (!isStopped())
-      return;
-    handler_.post(startConnectRunnable);
+  public void setAudioFormatListener(AudioFormatListener listener) {
+    audioFormatListener_ = listener;
   }
 
   public void pause() {
@@ -130,22 +119,12 @@ public class RtspClient {
     activate_ = activate;
   }
 
-  public void stop() {
-    handler_.post(stopConnectRunnable);
-    try {
-      rtspClientThread_.quitSafely();
-      rtspClientThread_.join();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
-
   public void requestIdr() {
-    rtspSocket_.postRequestIdr();
+    sendRequestIdr();
   }
 
   public void requestTeardown() {
-    rtspSocket_.postRequestTeardown();
+    sendRequestTeardown();
   }
 
   public boolean isStarted() {
@@ -200,214 +179,141 @@ public class RtspClient {
     audioCodec_ = new WfdAudioCodec();
   }
 
-  private void initialHandler() {
-    rtspClientThread_ = new HandlerThread("rtspClientThread");
-    rtspClientThread_.start();
-    handler_ = new Handler(rtspClientThread_.getLooper());
-  }
+  @Override
+  public void onRtspResponse(RtspResponseMessage rParams) {
+    if (activate_ == false)
+      return;
 
-  private Runnable startConnectRunnable = new Runnable() {
-    @Override
-    public void run() {
-      tryConnect();
-    }
-  };
-
-  private Runnable stopConnectRunnable = new Runnable() {
-    @Override
-    public void run() {
-      Log.d(TAG, "stop RTSP.");
-      cleanResource();
-    }
-  };
-
-  private void tryConnect() {
-    try {
-      if (curConnTime_ >= MAX_CONN_TIME) {
-        Log.d(TAG, "try connect to the RTSP Socket " + MAX_CONN_TIME + " time failed.");
+    if (rParams.statusCode == 200) { // 200 ok
+      if (!TextUtils.isEmpty(rParams.headers.get(KEY_SESSION))
+          && !TextUtils.isEmpty(rParams.headers.get(KEY_TRANSPORT))) {// source -> sink M6 response
+        rtspParams_.session = rParams.headers.get(KEY_SESSION);
+        sendRequestPlay();
         return;
       }
-
-      Log.d(TAG, "start try to connect the RTSP Socket,"
-          + "socket host:" + rtspParams_.host + ", port:" + rtspParams_.port);
-
-      curConnTime_++;
-
-      curState_ = STATE_STARTING;
-
-      rtspSocket_ = new RtspSocket(rtspParams_.host, rtspParams_.port);
-      int ret = rtspSocket_.start(initialOnReceiveRTSPListener());
-      if (ret == 0) {
-        curState_ = STATE_STARTED;
-      } else {
-        curState_ = STATE_STOPPED;
-        handler_.postDelayed(startConnectRunnable, RETRY_CONN_INTERVAL);
-      }
-    } catch (Exception e) {
-      curState_ = STATE_STOPPED;
-      Log.e(TAG, "tryConnect Exception:" + e.toString());
+      // source -> sink M2/M7 response or TEARDOWN/PAUSE/PLAY OK response
+    } else {
+      Log.e(TAG,
+          "onRtspResponse failed, reason:" + RtspResponseMessage.RTSP_STATUS.get(rParams.statusCode));
     }
   }
 
-  private OnReceiveRTSPListener initialOnReceiveRTSPListener() {
-    return new OnReceiveRTSPListener() {
-      @Override
-      public void onRtspResponse(RtspResponseMessage rParams) {
-        if (activate_ == false)
-          return;
+  @Override
+  public void onRtspRequest(RtspRequestMessage rParams) {
+    if (activate_ == false)
+      return;
 
-        if (rParams.statusCode == 200) { // 200 ok
-          if (!TextUtils.isEmpty(rParams.headers.get(KEY_SESSION))
-              && !TextUtils.isEmpty(rParams.headers.get(KEY_TRANSPORT))) {// source -> sink M6 response
-            rtspParams_.session = rParams.headers.get(KEY_SESSION);
-            sendRequestPlay();
-            return;
-          }
-          // source -> sink M2/M7 response or TEARDOWN/PAUSE/PLAY OK response
-        } else {
-          Log.e(TAG,
-              "onRtspResponse failed, reason:" + RtspResponseMessage.RTSP_STATUS.get(rParams.statusCode));
-        }
+    try {
+      if (TextUtils.isEmpty(rParams.headers.get(KEY_CSEQ))) {
+        Log.e(TAG, "Cseq is null.");
+        return;
       }
-
-      @Override
-      public void onRtspRequest(RtspRequestMessage rParams) {
-        if (activate_ == false)
-          return;
-
-        try {
-          if (TextUtils.isEmpty(rParams.headers.get(KEY_CSEQ))) {
-            Log.e(TAG, "Cseq is null.");
-            return;
+      // CSeq adjustment
+      rtspParams_.cSeq = Integer.parseInt(rParams.headers.get(KEY_CSEQ));
+      if (!TextUtils.isEmpty(rParams.methodType)) {
+        switch (rParams.methodType) {
+          case METHOD_OPTIONS: {
+            startRTPReceiver();
+            sendResponseM1();
+            sendRequestM2();
+            break;
           }
-          // CSeq adjustment
-          rtspParams_.cSeq = Integer.parseInt(rParams.headers.get(KEY_CSEQ));
-          if (!TextUtils.isEmpty(rParams.methodType)) {
-            switch (rParams.methodType) {
-              case METHOD_OPTIONS: {
-                startRTPReceiver();
-                sendResponseM1();
-                sendRequestM2();
-                break;
-              }
-              case METHOD_GET_PARAMETER: {
-                if (TextUtils.isEmpty(rParams.bodyStr)) {
-                  sendResponseOK();
-                } else {
-                  sendResponseM3();
+          case METHOD_GET_PARAMETER: {
+            if (TextUtils.isEmpty(rParams.bodyStr)) {
+              sendResponseOK();
+            } else {
+              sendResponseM3();
+            }
+            break;
+          }
+          case METHOD_SET_PARAMETER: {
+            if (TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_TRIGGER_METHOD))) { // source->sink M4
+                                                                                  // request
+              WfdAudioCodec audioCodecInfo = new WfdAudioCodec();
+              if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_AUDIO_CODECS))) {
+                audioCodecs_ = rParams.bodyMap.get(KEY_WFD_AUDIO_CODECS);
+                parseAudioCodecs(audioCodecs_, audioCodecInfo);
+                if (audioFormatListener_ != null) {
+                  audioFormatListener_.onAudioFormatUpdate(audioCodecInfo.name,
+                      audioCodecInfo.sampleRate,
+                      audioCodecInfo.channelCount);
                 }
-                break;
               }
-              case METHOD_SET_PARAMETER: {
-                if (TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_TRIGGER_METHOD))) { // source->sink M4
+              if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_VIDEO_FORMATS))) {
+                videoFormats_ = rParams.bodyMap.get(KEY_WFD_VIDEO_FORMATS);
+              }
+              if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_UIBC_CAP))) {
+                // uibcap e.g.
+                // "input_category_list=HIDC;generic_cap_list=none;hidc_cap_list=Keyboard/USB,
+                // Mouse/USB, MultiTouch/USB, Gesture/USB, RemoteControl/USB,
+                // Joystick/USB;port=50000\r\n"
+                String uibcCap = rParams.bodyMap.get(KEY_WFD_UIBC_CAP);
+                // Parse port from uibcCap
+                String[] uibcCapArray = uibcCap.split(";");
+                for (String uibcCapItem : uibcCapArray) {
+                  if (uibcCapItem.contains("port=")) {
+                    String[] uibcCapItemArray = uibcCapItem.split("=");
+                    if (uibcCapItemArray.length == 2) {
+                      uibcPort_ = Integer.parseInt(uibcCapItemArray[1]);
+                      break;
+                    }
+                  }
+                }
+                Log.d(TAG, "UIBC port: " + uibcPort_);
+              }
+
+              if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_UIBC_SETTING))) {
+                // uibSetting e.g. "enable\r\n"
+                String uibcSetting = rParams.bodyMap.get(KEY_WFD_UIBC_SETTING);
+                boolean uibcEnable = false;
+                if (uibcSetting.contains("enable")) {
+                  if (uibcPort_ != 0) {
+                    uibcEnable = true;
+                  }
+                } else {
+                  uibcEnable = false;
+                }
+
+                if (uibcEnable != isUibcEnable_) {
+                  isUibcEnable_ = uibcEnable;
+                  if (isUibcEnable_) {
+                    startUibc();
+                  } else {
+                    stopUibc();
+                  }
+                }
+              }
+
+              Log.d(TAG, "Get audioCodecs: " + audioCodecs_ + ", videoFormats: " + videoFormats_);
+              sendResponseOK();
+            } else {
+              if (rParams.bodyMap.get(KEY_WFD_TRIGGER_METHOD).equals(METHOD_SETUP)) { // source->sink
+                                                                                      // M5
                                                                                       // request
-                  WfdAudioCodec audioCodecInfo = new WfdAudioCodec();
-                  if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_AUDIO_CODECS))) {
-                    audioCodecs_ = rParams.bodyMap.get(KEY_WFD_AUDIO_CODECS);
-                    parseAudioCodecs(audioCodecs_, audioCodecInfo);
-                    if (audioFormatListener_ != null) {
-                      audioFormatListener_.onAudioFormatUpdate(audioCodecInfo.name,
-                          audioCodecInfo.sampleRate,
-                          audioCodecInfo.channelCount);
-                    }
-                  }
-                  if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_VIDEO_FORMATS))) {
-                    videoFormats_ = rParams.bodyMap.get(KEY_WFD_VIDEO_FORMATS);
-                  }
-                  if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_UIBC_CAP))) {
-                    // uibcap e.g.
-                    // "input_category_list=HIDC;generic_cap_list=none;hidc_cap_list=Keyboard/USB,
-                    // Mouse/USB, MultiTouch/USB, Gesture/USB, RemoteControl/USB,
-                    // Joystick/USB;port=50000\r\n"
-                    String uibcCap = rParams.bodyMap.get(KEY_WFD_UIBC_CAP);
-                    // Parse port from uibcCap
-                    String[] uibcCapArray = uibcCap.split(";");
-                    for (String uibcCapItem : uibcCapArray) {
-                      if (uibcCapItem.contains("port=")) {
-                        String[] uibcCapItemArray = uibcCapItem.split("=");
-                        if (uibcCapItemArray.length == 2) {
-                          uibcPort_ = Integer.parseInt(uibcCapItemArray[1]);
-                          break;
-                        }
-                      }
-                    }
-                    Log.d(TAG, "UIBC port: " + uibcPort_);
-                  }
-
-                  if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_UIBC_SETTING))) {
-                    // uibSetting e.g. "enable\r\n"
-                    String uibcSetting = rParams.bodyMap.get(KEY_WFD_UIBC_SETTING);
-                    boolean uibcEnable = false;
-                    if (uibcSetting.contains("enable")) {
-                      if (uibcPort_ != 0) {
-                        uibcEnable = true;
-                      }
-                    } else {
-                      uibcEnable = false;
-                    }
-
-                    if (uibcEnable != isUibcEnable_) {
-                      isUibcEnable_ = uibcEnable;
-                      if (isUibcEnable_) {
-                        startUibc();
-                      } else {
-                        stopUibc();
-                      }
-                    }
-                  }
-
-                  Log.d(TAG, "Get audioCodecs: " + audioCodecs_ + ", videoFormats: " + videoFormats_);
-                  sendResponseOK();
-                } else {
-                  if (rParams.bodyMap.get(KEY_WFD_TRIGGER_METHOD).equals(METHOD_SETUP)) { // source->sink
-                                                                                          // M5
-                                                                                          // request
-                    sendResponseOK();
-                    sendRequestM6();
-                  }
-                  if (rParams.bodyMap.get(KEY_WFD_TRIGGER_METHOD).equals(METHOD_TEARDOWN)) { // source->sink
-                                                                                             // TearDown
-                                                                                             // request
-                    sendResponseTeardown();
-                    cleanResource();
-                  }
-                }
-                break;
+                sendResponseOK();
+                sendRequestM6();
+              }
+              if (rParams.bodyMap.get(KEY_WFD_TRIGGER_METHOD).equals(METHOD_TEARDOWN)) { // source->sink
+                                                                                         // TearDown
+                                                                                         // request
+                sendResponseTeardown();
+                cleanResource();
               }
             }
-          } else {
-            Log.d(TAG, "methodType is null.");
+            break;
           }
-        } catch (Exception e) {
-          Log.e(TAG, "Exception:" + e.toString());
         }
+      } else {
+        Log.d(TAG, "methodType is null.");
       }
-
-      @Override
-      public void onRequestIDR() {
-        sendRequestIdr();
-      }
-
-      @Override
-      public void onRequestTeardown() {
-        sendRequestTeardown();
-      }
-    };
+    } catch (Exception e) {
+      Log.e(TAG, "Exception:" + e.toString());
+    }
   }
 
   private void cleanResource() {
-    try {
-      curState_ = STATE_STOPPED;
+    curState_ = STATE_STOPPED;
 
-      handler_.removeCallbacksAndMessages(null);
-
-      if (rtspSocket_ != null) {
-        Log.d(TAG, "stop RTSP socket.");
-        rtspSocket_.close();
-      }
-    } catch (Exception e) {
-      Log.d(TAG, "RTSP stop() Exception: " + e.toString());
-    }
   }
 
   private void sendResponseM1() {
@@ -419,7 +325,7 @@ public class RtspClient {
     SimpleDateFormat sdf = new SimpleDateFormat(date);
     rm.headers.put(KEY_DATE, sdf.format(new Date()));
     rm.headers.put(KEY_PUBLIC, "org.wfa.wfd1.0, GET_PARAMETER, SET_PARAMETER");
-    rtspSocket_.sendResponse(rm);
+    sendResponse(rm);
   }
 
   private void sendRequestM2() {
@@ -429,7 +335,7 @@ public class RtspClient {
     rm.protocolVersion = KEY_RTSP_VERSION;
     rm.headers = addCommonHeader();
     rm.headers.put(KEY_REQUIRE, "org.wfa.wfd1.0");
-    rtspSocket_.sendRequest(rm);
+    sendRequest(rm);
   }
 
   private void sendResponseM3() {
@@ -462,7 +368,7 @@ public class RtspClient {
         "microsoft_rtcp_capability: supported\r\n" +
         "microsoft_max_bitrate: 15000000\r\n" +
         "wfd_connector_type: 05\r\n";
-    rtspSocket_.sendResponse(rm);
+    sendResponse(rm);
   }
 
   /**
@@ -473,7 +379,7 @@ public class RtspClient {
     rm.protocolVersion = KEY_RTSP_VERSION;
     rm.statusCode = 200;
     rm.headers = addCommonHeader();
-    rtspSocket_.sendResponse(rm);
+    sendResponse(rm);
   }
 
   private void sendResponseTeardown() {
@@ -482,7 +388,7 @@ public class RtspClient {
     rm.protocolVersion = KEY_RTSP_VERSION;
     rm.statusCode = 200;
     rm.headers = addCommonHeader();
-    rtspSocket_.sendResponse(rm);
+    sendResponse(rm);
   }
 
   private void sendRequestM6() {
@@ -493,7 +399,7 @@ public class RtspClient {
     rm.headers = addCommonHeader();
     rm.headers.put(KEY_TRANSPORT,
         "RTP/AVP/" + (rtspParams_.isTCPTranslate ? "TCP;" : "UDP;") + "unicast;client_port=" + rtpPort_);
-    rtspSocket_.sendRequest(rm);
+    sendRequest(rm);
   }
 
   private void sendRequestPlay() {
@@ -505,7 +411,7 @@ public class RtspClient {
     rm.protocolVersion = KEY_RTSP_VERSION;
     rm.headers = addCommonHeader();
     rm.headers.put(KEY_SESSION, rtspParams_.session);
-    rtspSocket_.sendRequest(rm);
+    sendRequest(rm);
   }
 
   private void sendRequestTeardown() {
@@ -521,7 +427,7 @@ public class RtspClient {
     rm.headers = addCommonHeader();
     rm.headers.put(KEY_SESSION, rtspParams_.session);
     rm.bodyStr = "wfd_trigger_method: TEARDOWN";
-    rtspSocket_.sendRequest(rm);
+    sendRequest(rm);
   }
 
   private void sendRequestIdr() {
@@ -533,7 +439,7 @@ public class RtspClient {
     rm.headers = addCommonHeader();
     rm.headers.put(KEY_SESSION, rtspParams_.session);
     rm.bodyStr = "wfd_idr_request";
-    rtspSocket_.sendRequest(rm);
+    sendRequest(rm);
   }
 
   private void sendRequestPause() {
@@ -543,7 +449,7 @@ public class RtspClient {
     rm.path = "rtsp://" + rtspParams_.host + "/wfd1.0/streamid=0";
     rm.protocolVersion = KEY_RTSP_VERSION;
     rm.headers = addCommonHeader();
-    rtspSocket_.sendRequest(rm);
+    sendRequest(rm);
   }
 
   private HashMap<String, String> addCommonHeader() {
@@ -643,6 +549,14 @@ public class RtspClient {
   private void stopUibc() {
     assert rtspHandler_ != null;
     rtspHandler_.stopUibc();
+  }
+
+  private void sendRequest(RtspRequestMessage rm) {
+    sender_.sendRequest(rm);
+  }
+
+  private void sendResponse(RtspResponseMessage rm) {
+    sender_.sendResponse(rm);
   }
 
   private class RtspParameters {
