@@ -6,6 +6,8 @@ import android.content.Context;
 
 import com.viewsonic.miracast.MiraMgr;
 import com.viewsonic.miracast.MiraMgrListener;
+import com.viewsonic.miracast.MiraMgrProxy;
+
 import android.util.Log;
 
 @Keep
@@ -34,7 +36,7 @@ public class MiracastReceiver implements
     assert activity != null;
 
     Log.d(TAG, "MiracastReceiver.start()");
-    MiraMgr.getInstance().start(
+    MiraMgrProxy.getInstance().start(
         context,
         activity,
         this,
@@ -43,14 +45,14 @@ public class MiracastReceiver implements
 
   public void stop() {
     Log.d(TAG, "MiracastReceiver.stop()");
-    MiraMgr.getInstance().stop();
+    MiraMgrProxy.getInstance().stop();
   }
 
   // Called from native
   public void stopMirror(String mirrorId) {
     Log.d(TAG, String.format("MiracastReceiver.stopMirror(%s)", mirrorId));
 
-    MiraMgr.getInstance().stopMirror(mirrorId);
+    MiraMgrProxy.getInstance().stopMirror(mirrorId);
   }
 
   public void onMirrorTouch(
@@ -59,7 +61,7 @@ public class MiracastReceiver implements
       boolean touch,
       double x,
       double y) {
-    MiraMgr.getInstance().onTouchEvent(
+    MiraMgrProxy.getInstance().onTouchEvent(
         mirrorId,
         touchId,
         touch,
@@ -69,7 +71,7 @@ public class MiracastReceiver implements
 
   // Called from native
   public void sendIdrRequest(String mirrorId) {
-    MiraMgr.getInstance().rtspRequestIdr(mirrorId);
+    MiraMgrProxy.getInstance().rtspRequestIdr(mirrorId);
   }
 
   // implements MiraMgrListener
