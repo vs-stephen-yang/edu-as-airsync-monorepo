@@ -45,7 +45,7 @@ public class MiraSession
   long lastRequestIdrTime_;
   boolean isRequestIdrQueued_ = false;
 
-  private OnMirrorListener mirrorListener_;
+  private MiraSessionListener mirrorListener_;
   private long lastRTPSeqNum_ = -1;
 
   private RTPServer rtpServer_;
@@ -66,7 +66,7 @@ public class MiraSession
       String peerName,
       String receiverName,
       EventBase eventBase,
-      OnMirrorListener listener) {
+      MiraSessionListener listener) {
     id_ = id;
     ip_ = ip;
     port_ = port;

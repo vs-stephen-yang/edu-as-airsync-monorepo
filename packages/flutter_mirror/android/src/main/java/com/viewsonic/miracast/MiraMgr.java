@@ -7,15 +7,16 @@ import android.os.HandlerThread;
 import android.util.Log;
 
 import com.viewsonic.miracast.net.EventBase;
+import com.viewsonic.miracast.wifidirect.WiFiDirectListener;
 import com.viewsonic.miracast.wifidirect.WiFiDirectMgr;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MiraMgr {
+public class MiraMgr
+    implements WiFiDirectListener, MiraSessionListener {
   private WiFiDirectMgr wifiDirectMgr_;
-  private OnMirrorListener onMiraCastListener_;
   private MiraMgrListener listener_;
   private Handler miraHandler_;
   private int mirror_increment_seq_ = 0;
@@ -37,7 +38,7 @@ public class MiraMgr {
         peerName,
         receiverName,
         eventBase_,
-        onMiraCastListener_);
+        this);
     mirror_sessions_.put(formatMirrorId(mirror_increment_seq_), session);
     return session;
   }
@@ -73,10 +74,8 @@ public class MiraMgr {
   }
 
   private MiraMgr() {
-    initMiraListener();
-
     if (wifiDirectMgr_ == null) {
-      wifiDirectMgr_ = new WiFiDirectMgr(onMiraCastListener_);
+      wifiDirectMgr_ = new WiFiDirectMgr(this);
     }
 
     try {
@@ -121,7 +120,7 @@ public class MiraMgr {
   }
 
   public void rtspRequestIdr(String mirrorId) {
-    eventBase_.post(()->{
+    eventBase_.post(() -> {
       MiraSession session = mirror_sessions_.get(mirrorId);
       if (session != null) {
         session.requestIdr();
@@ -168,51 +167,47 @@ public class MiraMgr {
     }
   }
 
-  private void initMiraListener() {
-    onMiraCastListener_ = new OnMirrorListener() {
-      @Override
-      public void onPeerConnected(String name, String ip, int port) {
-        Log.d(TAG, "onPeerConnected.");
-        eventBase_.post(() -> {
-          connectionPrompt(name, ip, port);
-        });
+  @Override
+  public void onPeerConnected(String name, String ip, int port) {
+    Log.d(TAG, "onPeerConnected.");
+    eventBase_.post(() -> {
+      connectionPrompt(name, ip, port);
+    });
 
-      }
+  }
 
-      @Override
-      public void onPeerDisconnected(String ip) {
-        Log.d(TAG, "onPeerDisconnected:" + ip);
-        eventBase_.post(() -> {
-          String removeSessionId = removeSessionByIp(ip);
-          if (removeSessionId != null) {
-            if (listener_ != null) {
-              listener_.onSessionEnd(removeSessionId);
-            }
-          }
-        });
-      }
-
-      @Override
-      public void onMirrorData(String mirrorId, long seqNum, long lastSeqNum, byte[] data, int size) {
+  @Override
+  public void onPeerDisconnected(String ip) {
+    Log.d(TAG, "onPeerDisconnected:" + ip);
+    eventBase_.post(() -> {
+      String removeSessionId = removeSessionByIp(ip);
+      if (removeSessionId != null) {
         if (listener_ != null) {
-          try {
-            listener_.onMirrorData(mirrorId, seqNum, lastSeqNum, data, size);
-          } catch (Exception e) {
-            Log.e(TAG, "Failed to onMirrorData() ", e);
-          }
+          listener_.onSessionEnd(removeSessionId);
         }
       }
+    });
+  }
 
-      @Override
-      public void onAudioFormatUpdate(String mirrorId, String codecName, int sampleRate, int channelCount) {
-        if (listener_ != null) {
-          try {
-            listener_.onAudioFormatUpdate(mirrorId, codecName, sampleRate, channelCount);
-          } catch (Exception e) {
-            Log.e(TAG, "Failed to onAudioFormatUpdate() ", e);
-          }
-        }
+  @Override
+  public void onMirrorData(String mirrorId, long seqNum, long lastSeqNum, byte[] data, int size) {
+    if (listener_ != null) {
+      try {
+        listener_.onMirrorData(mirrorId, seqNum, lastSeqNum, data, size);
+      } catch (Exception e) {
+        Log.e(TAG, "Failed to onMirrorData() ", e);
       }
-    };
+    }
+  }
+
+  @Override
+  public void onAudioFormatUpdate(String mirrorId, String codecName, int sampleRate, int channelCount) {
+    if (listener_ != null) {
+      try {
+        listener_.onAudioFormatUpdate(mirrorId, codecName, sampleRate, channelCount);
+      } catch (Exception e) {
+        Log.e(TAG, "Failed to onAudioFormatUpdate() ", e);
+      }
+    }
   }
 }
