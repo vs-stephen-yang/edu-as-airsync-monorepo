@@ -4,10 +4,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
 
-import com.viewsonic.miracast.rtp.OnReceiveRTPListener;
-import com.viewsonic.miracast.rtp.RTPServer;
-import com.viewsonic.miracast.uibc.UibcClient;
-
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -49,7 +45,7 @@ public class RtspClient {
   private final static String KEY_WFD_UIBC_SETTING = "wfd_uibc_setting";
 
   private final static int MAX_CONN_TIME = 10;
-  private final static long RETRY_CONN_INTERVAL = 1000; //ms
+  private final static long RETRY_CONN_INTERVAL = 1000; // ms
 
   HandlerThread rtspClientThread_;
   private Handler handler_;
@@ -62,19 +58,17 @@ public class RtspClient {
 
   private int curState_;
 
-  private RTPServer rtpServer_;
-  private UibcClient uibcClient_;
-
   private String audioCodecs_ = "";
   private WfdAudioCodec audioCodec_;
   private String videoFormats_ = "";
   private int uibcPort_ = 0;
   private boolean isUibcEnable_ = false;
 
-  private OnReceiveRTPListener rtpListener_;
   private AudioFormatListener audioFormatListener_;
   private boolean activate_ = true;
   private String receiverName_ = "";
+
+  private RtspHandler rtspHandler_;
 
   public RtspClient(String method, String address) {
     String url = address.substring(address.indexOf("//") + 2);
@@ -102,12 +96,12 @@ public class RtspClient {
     initialHandler();
   }
 
-  public void setRtpListener(OnReceiveRTPListener listener) {
-    rtpListener_ = listener;
-  }
-
   public void setReceiverName(String name) {
     receiverName_ = name;
+  }
+
+  public void setRtspHandler(RtspHandler handler) {
+    rtspHandler_ = handler;
   }
 
   public void setAudioFormatListener(AudioFormatListener listener) {
@@ -176,12 +170,6 @@ public class RtspClient {
 
   public boolean isPlaying() {
     return curState_ == STATE_PLAYING;
-  }
-
-  public void onTouchEvent(int touchId, boolean touchDown, double x, double y) {
-    if (uibcClient_ != null) {
-      uibcClient_.onTouchEvent(touchId, touchDown, x, y);
-    }
   }
 
   public interface AudioFormatListener {
@@ -259,19 +247,6 @@ public class RtspClient {
       curState_ = STATE_STOPPED;
       Log.e(TAG, "tryConnect Exception:" + e.toString());
     }
-  }
-
-  private OnReceiveRTPListener initialOnReceiveRTPListener() {
-    return new OnReceiveRTPListener() {
-      @Override
-      public void onRtpData(long seqNum, byte[] data, int size) {
-        if (activate_ == false)
-          return;
-        if (rtpListener_ != null) {
-          rtpListener_.onRtpData(seqNum, data, size);
-        }
-      }
-    };
   }
 
   private OnReceiveRTSPListener initialOnReceiveRTSPListener() {
@@ -425,16 +400,6 @@ public class RtspClient {
       curState_ = STATE_STOPPED;
 
       handler_.removeCallbacksAndMessages(null);
-
-      if (rtpServer_ != null) {
-        Log.d(TAG, "stop RTP&RTCP socket.");
-        rtpServer_.stop();
-        rtpServer_ = null;
-      }
-
-      rtpListener_ = null;
-
-      stopUibc();
 
       if (rtspSocket_ != null) {
         Log.d(TAG, "stop RTSP socket.");
@@ -664,23 +629,20 @@ public class RtspClient {
   }
 
   private void startRTPReceiver() {
-    rtpServer_ = new RTPServer(initialOnReceiveRTPListener());
-    rtpServer_.start();
-    rtpPort_ = rtpServer_.getRtpPort();
-    Log.d(TAG, "Start to connect the RTP Server. RTP Port is: " + rtpPort_);
+    assert rtspHandler_ != null;
+
+    rtpPort_ = rtspHandler_.startRTPReceiver();
   }
 
   private void startUibc() {
-    uibcClient_ = new UibcClient(rtspParams_.host, uibcPort_);
-    uibcClient_.start();
+    assert rtspHandler_ != null;
+
+    rtspHandler_.startUibc(rtspParams_.host, uibcPort_);
   }
 
   private void stopUibc() {
-    if (uibcClient_ != null) {
-      Log.d(TAG, "stop UIBC connection.");
-      uibcClient_.stop();
-      uibcClient_ = null;
-    }
+    assert rtspHandler_ != null;
+    rtspHandler_.stopUibc();
   }
 
   private class RtspParameters {

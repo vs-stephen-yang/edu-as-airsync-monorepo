@@ -3,9 +3,13 @@ package com.viewsonic.miracast;
 import android.util.Log;
 
 import com.viewsonic.miracast.rtp.OnReceiveRTPListener;
+import com.viewsonic.miracast.rtp.RTPServer;
 import com.viewsonic.miracast.rtsp.RtspClient;
+import com.viewsonic.miracast.rtsp.RtspHandler;
+import com.viewsonic.miracast.uibc.UibcClient;
 
-public class MiraSession {
+public class MiraSession
+    implements RtspHandler {
   private static final String TAG = "MiraSession";
   private String id_;
   private String ip_;
@@ -16,6 +20,9 @@ public class MiraSession {
   private OnMirrorListener mirrorListener_;
   private long lastRTPSeqNum_ = -1;
 
+  private RTPServer rtpServer_;
+  private UibcClient uibcClient_;
+
   public MiraSession(String id, String ip, int port, String peerName, String receiverName, OnMirrorListener listener) {
     id_ = id;
     ip_ = ip;
@@ -24,7 +31,10 @@ public class MiraSession {
     receiverName_ = receiverName;
     rtspClient_ = new RtspClient("rtsp://" + ip_ + "/", port_);
     mirrorListener_ = listener;
-    rtspClient_.setRtpListener(initialOnReceiveRTPListener());
+
+    initialOnReceiveRTPListener();
+
+    rtspClient_.setRtspHandler(this);
     rtspClient_.setReceiverName(receiverName_);
     rtspClient_.setAudioFormatListener(new RtspClient.AudioFormatListener() {
       @Override
@@ -57,11 +67,19 @@ public class MiraSession {
       rtspClient_.stop();
       rtspClient_ = null;
     }
+
+    if (rtpServer_ != null) {
+      Log.d(TAG, "stop RTP&RTCP socket.");
+      rtpServer_.stop();
+      rtpServer_ = null;
+    }
+
+    stopUibc();
   }
 
   public void onTouchEvent(int touchId, boolean touchDown, double x, double y) {
-    if (rtspClient_ != null) {
-      rtspClient_.onTouchEvent(touchId, touchDown, x, y);
+    if (uibcClient_ != null) {
+      uibcClient_.onTouchEvent(touchId, touchDown, x, y);
     }
   }
 
@@ -81,5 +99,30 @@ public class MiraSession {
         }
       }
     };
+  }
+
+  @Override
+  public int startRTPReceiver() {
+    rtpServer_ = new RTPServer(initialOnReceiveRTPListener());
+    rtpServer_.start();
+    int port = rtpServer_.getRtpPort();
+    Log.d(TAG, "Start to connect the RTP Server. RTP Port is: " + port);
+
+    return port;
+  }
+
+  @Override
+  public void startUibc(String host, int port) {
+    uibcClient_ = new UibcClient(host, port);
+    uibcClient_.start();
+  }
+
+  @Override
+  public void stopUibc() {
+    if (uibcClient_ != null) {
+      Log.d(TAG, "stop UIBC connection.");
+      uibcClient_.stop();
+      uibcClient_ = null;
+    }
   }
 }
