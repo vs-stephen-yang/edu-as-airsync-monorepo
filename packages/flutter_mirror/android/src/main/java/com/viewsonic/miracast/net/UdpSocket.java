@@ -30,6 +30,10 @@ public class UdpSocket
     channel_.configureBlocking(false);
   }
 
+  public void setReceiveBufferSize(int size) throws SocketException {
+    channel_.socket().setReceiveBufferSize(size);
+  }
+
   public void enableRead() throws ClosedChannelException {
     eventBase_.registerChannel(channel_, OP_READ, this);
   }

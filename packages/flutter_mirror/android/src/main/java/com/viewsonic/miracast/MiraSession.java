@@ -181,12 +181,16 @@ public class MiraSession
 
   @Override
   public int startRTPReceiver() {
-    rtpServer_ = new RTPServer(initialOnReceiveRTPListener());
-    rtpServer_.start();
-    int port = rtpServer_.getRtpPort();
-    Log.d(TAG, "Start to connect the RTP Server. RTP Port is: " + port);
-
-    return port;
+    try {
+      rtpServer_ = new RTPServer(eventBase_, initialOnReceiveRTPListener());
+      rtpServer_.start();
+      int port = rtpServer_.getRtpPort();
+      Log.d(TAG, "Start to connect the RTP Server. RTP Port is: " + port);
+      return port;
+    } catch (Exception e) {
+      // TODO
+      return 0;
+    }
   }
 
   @Override
