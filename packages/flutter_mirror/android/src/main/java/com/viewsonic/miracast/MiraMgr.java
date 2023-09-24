@@ -1,29 +1,21 @@
 package com.viewsonic.miracast;
 
-import android.app.Activity;
-import android.content.Context;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.util.Log;
 
 import com.viewsonic.miracast.net.EventBase;
 import com.viewsonic.miracast.wifidirect.WiFiDirectListener;
-import com.viewsonic.miracast.wifidirect.WiFiDirectMgr;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MiraMgr
     implements WiFiDirectListener, MiraSessionListener {
-  private WiFiDirectMgr wifiDirectMgr_;
   private MiraMgrListener listener_;
-  private Handler miraHandler_;
   private int mirror_increment_seq_ = 0;
   private static final String kMirrorIdPrefix_ = "miracast-";
   private Map<String, MiraSession> mirror_sessions_ = new HashMap<>();
 
-  private EventBase eventBase_ = new EventBase();
+  private EventBase eventBase_;
 
   static String formatMirrorId(int seq) {
     return kMirrorIdPrefix_ + seq;
@@ -56,49 +48,18 @@ public class MiraMgr
     return null;
   }
 
-  private Runnable wifiDirectRunnable_;
-
-  private Context context_;
-  private Activity activity_;
   private String receiverName_;
 
   private static final String TAG = "MiraMgr";
 
-  private static MiraMgr instance_ = null;
+  MiraMgr(EventBase eventBase) {
+    assert eventBase != null;
 
-  public static MiraMgr getInstance() {
-    if (instance_ == null) {
-      instance_ = new MiraMgr();
-    }
-    return instance_;
+    eventBase_ = eventBase;
   }
 
-  private MiraMgr() {
-    if (wifiDirectMgr_ == null) {
-      wifiDirectMgr_ = new WiFiDirectMgr(this);
-    }
-
-    try {
-      eventBase_.init();
-      eventBase_.start();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    initWiFiDirectRunnable();
-
-    HandlerThread mMiraHandlerThread = new HandlerThread("miraMgrThread");
-    mMiraHandlerThread.start();
-    miraHandler_ = new Handler(mMiraHandlerThread.getLooper());
-  }
-
-  public void start(Context context, Activity activity, MiraMgrListener listener, String receiverName) {
-    context_ = context;
-    activity_ = activity;
+  public void start(MiraMgrListener listener, String receiverName) {
     receiverName_ = receiverName;
-    if (miraHandler_ != null) {
-      miraHandler_.post(wifiDirectRunnable_);
-    }
 
     if (listener != null) {
       listener_ = listener;
@@ -113,19 +74,13 @@ public class MiraMgr
         listener_.onSessionEnd(entry.getKey());
       }
     }
-
-    // Close p2p discovery
-    wifiDirectMgr_.stop();
-    miraHandler_.removeCallbacks(wifiDirectRunnable_);
   }
 
   public void rtspRequestIdr(String mirrorId) {
-    eventBase_.post(() -> {
-      MiraSession session = mirror_sessions_.get(mirrorId);
-      if (session != null) {
-        session.requestIdr();
-      }
-    });
+    MiraSession session = mirror_sessions_.get(mirrorId);
+    if (session != null) {
+      session.requestIdr();
+    }
   }
 
   public void stopMirror(String mirrorId) {
@@ -138,25 +93,10 @@ public class MiraMgr
   }
 
   public void onTouchEvent(String mirrorId_, int touchId, boolean touch, double x, double y) {
-    eventBase_.post(() -> {
-      MiraSession session = mirror_sessions_.get(mirrorId_);
-      if (session != null) {
-        session.onTouchEvent(touchId, touch, x, y);
-      }
-    });
-  }
-
-  private void initWiFiDirectRunnable() {
-    wifiDirectRunnable_ = new Runnable() {
-      @Override
-      public void run() {
-        if (wifiDirectMgr_ == null) {
-          Log.e(TAG, "WiFiDirectMgr is null.");
-          return;
-        }
-        wifiDirectMgr_.start(context_, receiverName_);
-      }
-    };
+    MiraSession session = mirror_sessions_.get(mirrorId_);
+    if (session != null) {
+      session.onTouchEvent(touchId, touch, x, y);
+    }
   }
 
   private void connectionPrompt(String peerName, String peerIp, int peerPort) {
@@ -170,23 +110,19 @@ public class MiraMgr
   @Override
   public void onPeerConnected(String name, String ip, int port) {
     Log.d(TAG, "onPeerConnected.");
-    eventBase_.post(() -> {
-      connectionPrompt(name, ip, port);
-    });
+    connectionPrompt(name, ip, port);
 
   }
 
   @Override
   public void onPeerDisconnected(String ip) {
     Log.d(TAG, "onPeerDisconnected:" + ip);
-    eventBase_.post(() -> {
-      String removeSessionId = removeSessionByIp(ip);
-      if (removeSessionId != null) {
-        if (listener_ != null) {
-          listener_.onSessionEnd(removeSessionId);
-        }
+    String removeSessionId = removeSessionByIp(ip);
+    if (removeSessionId != null) {
+      if (listener_ != null) {
+        listener_.onSessionEnd(removeSessionId);
       }
-    });
+    }
   }
 
   @Override
