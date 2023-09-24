@@ -28,8 +28,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import com.viewsonic.miracast.OnMirrorListener;
-
 public class WiFiDirectMgr {
   private static final String TAG = "MiraWiFiDirectMgr";
   private static final int DEFALUT_SOURCE_PORT = 7236;
@@ -53,10 +51,10 @@ public class WiFiDirectMgr {
   }
 
   private List<PeerInfo> peerInfos_ = new ArrayList<>();
-  private OnMirrorListener onMirrorListener_;
+  private WiFiDirectListener listener_;
 
-  public WiFiDirectMgr(OnMirrorListener listener) {
-    onMirrorListener_ = listener;
+  public WiFiDirectMgr(WiFiDirectListener listener) {
+    listener_ = listener;
   }
 
   private Context context_;
@@ -300,7 +298,7 @@ public class WiFiDirectMgr {
 
             if (!isClientExist) {
               Log.d(TAG, "peer disconnected - " + peerInfo.deviceName_ + " - " + peerInfo.macAddr_);
-              onMirrorListener_.onPeerDisconnected(peerInfo.ip_);
+              listener_.onPeerDisconnected(peerInfo.ip_);
             }
           }
         }
@@ -424,7 +422,7 @@ public class WiFiDirectMgr {
       peerInfo.deviceName_ = sourceDeviceName_;
       peerInfo.macAddr_ = sourceMacAddr_;
       peerInfos_.add(peerInfo);
-      onMirrorListener_.onPeerConnected(sourceDeviceName_, sourceIp_, sourcePort_);
+      listener_.onPeerConnected(sourceDeviceName_, sourceIp_, sourcePort_);
     }
   }
 
