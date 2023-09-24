@@ -159,7 +159,7 @@ public class MiraSession
   public void startRtsp() {
     try {
       rtspConnection_ = new TcpConnection(eventBase_, buildRtspConnectionListener());
-
+      rtspConnection_.setNoDelay();
       rtspConnection_.connect(ip_, port_);
     } catch (IOException e) {
       // TODO
@@ -199,6 +199,7 @@ public class MiraSession
       uibcClient_ = new UibcClient(this);
 
       uibcConnection_ = new TcpConnection(eventBase_, buildUibcConnectionListener());
+      uibcConnection_.setNoDelay();
       uibcConnection_.connect(host, port);
     } catch (IOException e) {
       // TODO
