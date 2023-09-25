@@ -81,7 +81,7 @@ class RtspParserTest {
   }
 
   @Test
-  void parse_MultipleMessages() {
+  void parse_MultipleRequests() {
     // Arrange
 
     // Action
@@ -91,5 +91,17 @@ class RtspParserTest {
     // Assert
     assertEquals(1, actual1.size());
     assertEquals(1, actual2.size());
+  }
+
+  @Test
+  void parse_MultipleRequestsInOneMessage() {
+    // Arrange
+    String message = REUQEST1 + REUQEST2;
+
+    // Action
+    List<RtspMessage> actual = parse(message, 0, message.length());
+
+    // Assert
+    assertEquals(2, actual.size());
   }
 }

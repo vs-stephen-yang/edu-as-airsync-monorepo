@@ -60,6 +60,8 @@ public class RtspParser {
 
     int remaining = str.length() - offset;
 
+    assert remaining >= 0;
+
     if (remaining < contentLength_) {
       return 0;
     }
@@ -91,7 +93,7 @@ public class RtspParser {
       return 0;
     }
 
-    String header = data_.substring(offset, offset + pos + 2);
+    String header = str.substring(offset, pos + 2);
     parseHeaders(header);
 
     if (contentLength_ > 0) {
@@ -100,7 +102,10 @@ public class RtspParser {
       messages_.add(message_);
     }
 
-    return pos + 4;
+    int consumed = pos + 4 - offset;
+    assert consumed > 0;
+
+    return consumed;
   }
 
   private void parseRequestOrStatusLine(String line) {
