@@ -12,17 +12,17 @@ public class UibcClient {
   private final static int MAX_TOUCH_NUM = 10;
 
   private final static int TOUCH_DATA_SIZE = 0x49;
-  private UibcSender sender_;
+  private final UibcSender sender_;
 
-  private class TouchInfo {
+  private static class TouchInfo {
     public int id_ = -1;
     public boolean down_ = false;
     public double x_ = 0;
     public double y_ = 0;
   }
 
-  private TouchInfo[] touch_infos_ = new TouchInfo[MAX_TOUCH_NUM];
-  private byte[] uibcDataBytes_ = new byte[TOUCH_DATA_SIZE];
+  private final TouchInfo[] touch_infos_ = new TouchInfo[MAX_TOUCH_NUM];
+  private final byte[] uibcDataBytes_ = new byte[TOUCH_DATA_SIZE];
   private boolean paused_ = false;
   private long lastTouchDataSendTime_ = 0;
 

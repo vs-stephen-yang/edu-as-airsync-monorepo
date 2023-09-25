@@ -4,16 +4,9 @@ import android.util.Log;
 
 import com.viewsonic.miracast.net.EventBase;
 import com.viewsonic.miracast.net.UdpSocket;
-import com.viewsonic.miracast.net.UdpSocketListener;
-import com.viewsonic.miracast.rtsp.OnReceiveRTSPListener;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ClosedChannelException;
 
 public class RTPServer {
   private static final String TAG = "MiraRTPServer";
@@ -23,10 +16,10 @@ public class RTPServer {
   private UdpSocket rtpSession_;
   private UdpSocket rtcpSession_;
 
-  private ByteBuffer rtpReadBuffer_ = ByteBuffer.allocate(MTU);
-  private OnReceiveRTPListener receiveRTPListener_;
+  private final ByteBuffer rtpReadBuffer_ = ByteBuffer.allocate(MTU);
+  private final OnReceiveRTPListener receiveRTPListener_;
 
-  private EventBase eventBase_;
+  private final EventBase eventBase_;
 
   public RTPServer(
       EventBase eventBase,
@@ -37,18 +30,14 @@ public class RTPServer {
 
   public void start() throws IOException {
     // RTP
-    rtpSession_ = new UdpSocket(eventBase_, socket -> {
-      onRtpPacket();
-    });
+    rtpSession_ = new UdpSocket(eventBase_, socket -> onRtpPacket());
     rtpSession_.setReceiveBufferSize(kRTPBufferSize);
     rtpSession_.enableRead();
     rtpSession_.bind(0);
     Log.i(TAG, "RTP session is running on port " + rtpSession_.getLocalPort());
 
     // RTCP
-    rtcpSession_ = new UdpSocket(eventBase_, socket -> {
-      onRtcpPacket();
-    });
+    rtcpSession_ = new UdpSocket(eventBase_, socket -> onRtcpPacket());
     rtcpSession_.setReceiveBufferSize(kRTPBufferSize);
     rtcpSession_.enableRead();
     rtcpSession_.bind(0);
@@ -88,14 +77,6 @@ public class RTPServer {
   public int getRtpPort() {
     if (null != rtpSession_) {
       return rtpSession_.getLocalPort();
-    }
-
-    return 0;
-  }
-
-  public int getRtcpPort() {
-    if (null != rtcpSession_) {
-      return rtcpSession_.getLocalPort();
     }
 
     return 0;
