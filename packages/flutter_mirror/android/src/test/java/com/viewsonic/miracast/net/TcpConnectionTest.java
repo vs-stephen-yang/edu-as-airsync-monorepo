@@ -2,18 +2,21 @@ package com.viewsonic.miracast.net;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.time.Clock;
 
 class TcpConnectionTest {
 
@@ -104,5 +107,34 @@ class TcpConnectionTest {
     assertArrayEquals(
         "abcd".getBytes(),
         TestUtil.readBytes(readBuffer, 4));
+  }
+
+  @Tag("slow")
+  @Test
+  void NotReachable_ShouldConnectTimeout() throws IOException {
+    // arrange
+    int kNotBoundPort = 100;
+
+    // action
+    run(() -> {
+      connection.setReconnectAttempts(100, 3);
+
+      connection.connect("localhost", kNotBoundPort);
+    });
+
+    // assert
+    // onConnectTimeout() should be called once
+    verify(listener,
+        timeout(1000).times(1))
+        .onConnectTimeout(any());
+
+    // onReconnect() should be called 3 times
+    verify(listener,
+        times(3))
+        .onReconnect(any(), anyInt());
+
+    // onConnected() should never be called
+    verify(listener, never())
+        .onConnected(any());
   }
 }
