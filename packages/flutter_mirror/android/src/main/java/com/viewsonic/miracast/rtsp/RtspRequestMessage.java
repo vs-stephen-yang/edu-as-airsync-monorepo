@@ -70,7 +70,7 @@ public class RtspRequestMessage extends RtspMessage {
         System.arraycopy(bodyByte, 0, data, h.length, bodyByte.length);
       }
     } catch (UnsupportedEncodingException e) {
-      Log.e(TAG, "UnsupportedEncodingException:" + e.toString());
+      Log.e(TAG, "UnsupportedEncodingException:" + e);
     }
     return data;
   }

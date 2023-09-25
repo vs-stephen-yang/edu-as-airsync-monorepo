@@ -109,7 +109,7 @@ public class RtspParser {
   }
 
   private void parseRequestOrStatusLine(String line) {
-    String tokens[] = line.split("\\s");
+    String[] tokens = line.split("\\s");
     if (tokens.length != 3) {
       throw new RuntimeException("Invalid RTSP message");
     }

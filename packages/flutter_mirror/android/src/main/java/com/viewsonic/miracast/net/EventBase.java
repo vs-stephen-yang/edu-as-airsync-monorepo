@@ -1,9 +1,10 @@
 package com.viewsonic.miracast.net;
 
-import android.graphics.Point;
-
 import java.io.IOException;
-import java.nio.channels.*;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.SelectableChannel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

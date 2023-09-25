@@ -13,9 +13,9 @@ public class MiraMgr
   private MiraMgrListener listener_;
   private int mirror_increment_seq_ = 0;
   private static final String kMirrorIdPrefix_ = "miracast-";
-  private Map<String, MiraSession> mirror_sessions_ = new HashMap<>();
+  private final Map<String, MiraSession> mirror_sessions_ = new HashMap<>();
 
-  private EventBase eventBase_;
+  private final EventBase eventBase_;
 
   static String formatMirrorId(int seq) {
     return kMirrorIdPrefix_ + seq;

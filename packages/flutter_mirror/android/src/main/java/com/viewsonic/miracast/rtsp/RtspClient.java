@@ -1,7 +1,5 @@
 package com.viewsonic.miracast.rtsp;
 
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.text.TextUtils;
 
 import android.util.Log;
@@ -307,7 +305,7 @@ public class RtspClient
         Log.d(TAG, "methodType is null.");
       }
     } catch (Exception e) {
-      Log.e(TAG, "Exception:" + e.toString());
+      Log.e(TAG, "Exception:" + e);
     }
   }
 
@@ -462,7 +460,7 @@ public class RtspClient
     return "AAC 00000001 00";
   }
 
-  private class WfdAudioCodec {
+  private static class WfdAudioCodec {
     public String name = "AAC";
     public int sampleRate = 48000;
     public int channelCount = 2;
@@ -559,7 +557,7 @@ public class RtspClient
     sender_.sendResponse(rm);
   }
 
-  private class RtspParameters {
+  private static class RtspParameters {
     int cSeq = 0;
     Boolean isTCPTranslate = false;
     String host = "";
