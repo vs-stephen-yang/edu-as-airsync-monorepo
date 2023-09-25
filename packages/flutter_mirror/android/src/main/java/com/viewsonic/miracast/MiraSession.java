@@ -228,8 +228,13 @@ public class MiraSession
       }
 
       @Override
-      public void onConnectFailed(TcpConnection connection) {
-        // TODO
+      public void onDisconnected(TcpConnection connection) {
+
+      }
+
+      @Override
+      public void onConnectTimeout(TcpConnection connection) {
+
       }
 
       @Override
@@ -240,6 +245,16 @@ public class MiraSession
       @Override
       public void onWritable(TcpConnection connection) {
         // TODO
+      }
+
+      @Override
+      public void onError(TcpConnection connection) {
+
+      }
+
+      @Override
+      public void onReconnect(TcpConnection connection, int attempts) {
+
       }
     };
   }
@@ -322,8 +337,13 @@ public class MiraSession
       }
 
       @Override
-      public void onConnectFailed(TcpConnection connection) {
-        // TODO
+      public void onDisconnected(TcpConnection connection) {
+
+      }
+
+      @Override
+      public void onConnectTimeout(TcpConnection connection) {
+
       }
 
       @Override
@@ -333,6 +353,16 @@ public class MiraSession
       @Override
       public void onWritable(TcpConnection connection) {
         onUibcWritable();
+      }
+
+      @Override
+      public void onError(TcpConnection connection) {
+
+      }
+
+      @Override
+      public void onReconnect(TcpConnection connection, int attempts) {
+
       }
     };
   }

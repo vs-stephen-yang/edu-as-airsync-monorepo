@@ -1,8 +1,11 @@
 package com.viewsonic.miracast.net;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
@@ -16,32 +19,97 @@ public class TcpConnection
   SelectionKey key_;
   TcpConnectionListener listener_;
 
+  private String host_;
+  private int port_;
+
+  // socket options
+  boolean tcpNoDelay_ = false;
+
+  // reconnect
+  private int reconnectionDelayMs_ = 1000;// ms
+  private int reconnectionMaxAttempts_ = 5;
+
+  private Object connectTimer_;
+  private int reconnectionAttempts_;
+
   public TcpConnection(
       EventBase eventBase,
-      TcpConnectionListener listener)
-      throws IOException {
+      TcpConnectionListener listener) {
     eventBase_ = eventBase;
     listener_ = listener;
-
-    socket_ = SocketChannel.open();
   }
 
   public void close() throws IOException {
-    socket_.close();
+    if (socket_ != null) {
+      socket_.close();
+      socket_ = null;
+    }
+
+    if (key_ != null) {
+      key_.cancel();
+      key_ = null;
+    }
+
+    if (connectTimer_ != null) {
+      eventBase_.clearTimer(connectTimer_);
+      connectTimer_ = null;
+    }
   }
 
-  public void setNoDelay() throws IOException {
-    socket_.socket().setTcpNoDelay(true);
+  public void setNoDelay() {
+    tcpNoDelay_ = true;
   }
 
   public void connect(String host, int port) throws IOException {
+    host_ = host;
+    port_ = port;
+
+    doConnect();
+  }
+
+  private void doConnect() throws IOException {
+    close();
+
+    socket_ = SocketChannel.open();
 
     // configure non-blocking
     socket_.configureBlocking(false);
+    socket_.socket().setTcpNoDelay(tcpNoDelay_);
 
-    socket_.connect(new InetSocketAddress(host, port));
+    assert host_ != null;
+    assert port_ > 0;
+
+    socket_.connect(new InetSocketAddress(host_, port_));
 
     key_ = eventBase_.registerChannel(socket_, SelectionKey.OP_CONNECT, this);
+
+    connectTimer_ = eventBase_.setTimer(() -> {
+      onConnectTimeout();
+    }, reconnectionDelayMs_);
+  }
+
+  private void onConnectTimeout() {
+    if (reconnectionAttempts_ >= reconnectionMaxAttempts_) {
+      Log.w(TAG, "Connect timeout");
+
+      listener_.onConnectTimeout(this);
+      return;
+    }
+
+    reconnectionAttempts_ += 1;
+    listener_.onReconnect(this, reconnectionAttempts_);
+
+    try {
+      doConnect();
+    } catch (IOException e) {
+      e.printStackTrace();
+      listener_.onError(this);
+    }
+  }
+
+  public void setReconnectAttempts(int delayMs, int maxAttempts) {
+    reconnectionDelayMs_ = delayMs;
+    reconnectionMaxAttempts_ = maxAttempts;
   }
 
   public int read(ByteBuffer buffer) throws IOException {
@@ -72,7 +140,7 @@ public class TcpConnection
         onReadable(key);
       }
     } catch (IOException e) {
-      // TODO:
+      listener_.onError(this);
     }
   }
 
@@ -82,6 +150,9 @@ public class TcpConnection
     if (!channel.isConnectionPending()) {
       return;
     }
+    // cancel connect timer
+    eventBase_.clearTimer(connectTimer_);
+    connectTimer_ = null;
 
     channel.finishConnect();
 
