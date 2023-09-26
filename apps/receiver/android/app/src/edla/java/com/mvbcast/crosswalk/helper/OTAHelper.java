@@ -175,54 +175,11 @@ public final class OTAHelper extends Observable {
      */
     @SuppressWarnings("ConstantConditions")
     private void OpenNewVersion(Activity activity) {
-        if (BuildConfig.FLAVOR_channel.equals("ifp")) {
-            new Handler(Looper.getMainLooper()).post(() -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    // for IFP52, IFP32 (Android 9): can not use Runtime command install
-                    boolean result = installAppSilently(activity, mFile.getPath());
-                    Log.d(TAG, "installAppSilently result:" + result);
-                } else {
-                    try {
-                        String command = "pm install -r -i com.mvbcast.crosswalk --user 0 " + mFile.getPath();
-                        Log.d(TAG, command);
-                        Process proc = Runtime.getRuntime().exec(command);
-                        proc.waitFor();
-                        int exitValue = proc.exitValue();
-                        if (mAlertDialog != null && mAlertDialog.isShowing())
-                            mAlertDialog.dismiss();
-                        if (exitValue != 0) {
-                            Toast.makeText(activity, activity.getString(R.string.update_ota_failure_retry), Toast.LENGTH_LONG).show();
-                            //noinspection ResultOfMethodCallIgnored
-                            mFile.delete();
-                            mForceCheckVersion = true;
-                            mIsChecking = false;
-                            checkLatestVersion(activity, mCheckLatestVersion);
-                        }
-                    } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        } else if (BuildConfig.FLAVOR_channel.equals("open")) {
-            mIsChecking = false;
-            new AlertDialog.Builder(activity)
-                    .setIcon(R.mipmap.ic_launcher)
-                    .setTitle(activity.getText(R.string.update_title))
-                    .setMessage(activity.getText(R.string.update_message))
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.update_install_now, (dialog, which) -> {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-                                !activity.getPackageManager().canRequestPackageInstalls()) {
-                            ActivityCompat.requestPermissions(activity,
-                                    new String[]{Manifest.permission.REQUEST_INSTALL_PACKAGES},
-                                    INSTALL_PACKAGES_REQUEST_CODE);
-                        } else {
-                            installAPK(activity);
-                        }
-                    })
-                    .create()
-                    .show();
-        }
+        // Start from Android 13, EDLA/IFP OTA will using VSAPI to install Apk
+        new Handler(Looper.getMainLooper()).post(() -> {
+            boolean result = installAppSilently(activity, mFile.getPath());
+            Log.d(TAG, "installAppSilently result:" + result);
+        });
     }
 
     private void installAPK(final Activity activity) {
