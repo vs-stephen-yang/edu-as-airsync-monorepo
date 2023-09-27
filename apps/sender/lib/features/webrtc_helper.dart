@@ -36,12 +36,14 @@ class WebRTCHelper {
   io.Socket? _socket;
   double _screenWidth = 1920.0;
   double _screenHeight = 1080.0;
-  double _trackWidth = 1920.0;
-  double _trackHeight = 1080.0;
+  static const int _maxTrackWidth = 1920;
+  static const int _maxTrackHeight = 1080;
+  int _trackWidth = _maxTrackWidth;
+  int _trackHeight = _maxTrackHeight;
   bool _touchBack = false;
   bool _isSourceTypeWindow = false;
 
-  double get trackHeight => _trackHeight;
+  int get trackHeight => _trackHeight;
   final _flutterInputInjectionPlugin = FlutterInputInjection();
 
   //region public methods
@@ -127,21 +129,19 @@ class WebRTCHelper {
   }
 
   Future<void> changeStreamFrameRate(int frameRate, int height) async {
-    _trackWidth = 1920/(1080/height);
-    _trackHeight = height.toDouble();
+    if(height < _maxTrackHeight) {
+      _trackWidth = (_maxTrackWidth/(_maxTrackHeight/height)).toInt();
+      _trackHeight = height;
+    }
     final constraints = <String, dynamic>{
       'audio': _isSourceTypeWindow?false:true,
       'video': !WebRTC.platformIsDesktop ? true : {
         'deviceId': _deviceId,
         'mandatory': {
-          'maxWidth': _trackWidth.toString(),
-          'maxHeight': _trackHeight.toString(),
           'frameRate': frameRate,
         },
         'width': _trackWidth.toString(),
         'height': _trackHeight.toString(),
-        'facingMode': 'user',
-        'optional': [],
       }
     };
 
@@ -268,8 +268,8 @@ class WebRTCHelper {
       'video': {
         'deviceId': _deviceId,
         'mandatory': {'frameRate': 30.0},
-        'width': _trackWidth = 1920,
-        'height': _trackHeight = 1080,
+        'width': _trackWidth = _maxTrackWidth,
+        'height': _trackHeight = _maxTrackHeight,
       }
     };
 
