@@ -128,11 +128,12 @@ public class EventBase {
 
     while (keyIterator.hasNext()) {
       SelectionKey key = keyIterator.next();
+      if (key.isValid()) {
 
-      ChannelListener listener = (ChannelListener) key.attachment();
+        ChannelListener listener = (ChannelListener) key.attachment();
 
-      listener.onOpsReady(key);
-
+        listener.onOpsReady(key);
+      }
       keyIterator.remove();
     }
   }
