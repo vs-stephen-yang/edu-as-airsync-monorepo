@@ -291,6 +291,10 @@ public class MiraSession
 
   // handle rtsp message
   private void onRtspMessage(RtspMessage message) {
+    Log.d(TAG, ">>>>>>>>>> RTSP Receive Message:\r\n" +
+        message.toStringMsg(true) +
+        "<<<<<<<<<<");
+
     if (message instanceof RtspRequestMessage) {
       // handle rtsp request
       rtspClient_.onRtspRequest((RtspRequestMessage) message);
@@ -303,12 +307,20 @@ public class MiraSession
   // send rtsp response
   @Override
   public void sendResponse(RtspResponseMessage response) {
+    Log.d(TAG, ">>>>>>>>>> RTSP Send Message:\r\n" +
+        response.toStringMsg(false) +
+        "<<<<<<<<<<");
+
     sendRtspMessage(response);
   }
 
   // send rtsp request
   @Override
   public void sendRequest(RtspRequestMessage request) {
+    Log.d(TAG, ">>>>>>>>>> RTSP Send Message:\r\n" +
+        request.toStringMsg(false) +
+        "<<<<<<<<<<");
+
     sendRtspMessage(request);
   }
 
