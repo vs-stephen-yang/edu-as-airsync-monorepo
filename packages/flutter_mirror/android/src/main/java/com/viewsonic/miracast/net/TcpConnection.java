@@ -64,6 +64,7 @@ public class TcpConnection
     host_ = host;
     port_ = port;
 
+    Log.i(TAG, "Connecting");
     doConnect();
   }
 
@@ -96,6 +97,7 @@ public class TcpConnection
       return;
     }
 
+    Log.i(TAG, "Trying to reconnect");
     reconnectionAttempts_ += 1;
     listener_.onReconnect(this, reconnectionAttempts_);
 
