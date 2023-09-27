@@ -112,7 +112,7 @@ class WebRTCHelper {
 
   Future<void> streamResume() async {
     var constraints = <String, dynamic>{
-      'audio': _isSourceTypeWindow?false:true,
+      'audio': _isAudioCaptureAllowed(),
       'video': {
         'deviceId': _deviceId,
         'mandatory': {'frameRate': 30.0},
@@ -130,11 +130,12 @@ class WebRTCHelper {
 
   Future<void> changeStreamFrameRate(int frameRate, int height) async {
     if(height < _maxTrackHeight) {
+      // make sure the width/height is not greater than the max width
       _trackWidth = (_maxTrackWidth/(_maxTrackHeight/height)).toInt();
       _trackHeight = height;
     }
     final constraints = <String, dynamic>{
-      'audio': _isSourceTypeWindow?false:true,
+      'audio': _isAudioCaptureAllowed(),
       'video': !WebRTC.platformIsDesktop ? true : {
         'deviceId': _deviceId,
         'mandatory': {
@@ -154,6 +155,14 @@ class WebRTCHelper {
   }
 
   //endregion
+
+  bool _isTouchBackAllowed(){
+    return !_isSourceTypeWindow && _touchBack && _localStream!.getTracks().first.enabled;
+  }
+
+  bool _isAudioCaptureAllowed(){
+    return !_isSourceTypeWindow;
+  }
 
   void _signalConnect(String signalUrl) {
     _socket = io.io(
@@ -264,7 +273,7 @@ class WebRTCHelper {
     _setDataChannelListeners(_dc!);
 
     final constraints = <String, dynamic>{
-      'audio': _isSourceTypeWindow?false:true,
+      'audio': _isAudioCaptureAllowed(),
       'video': {
         'deviceId': _deviceId,
         'mandatory': {'frameRate': 30.0},
@@ -366,7 +375,7 @@ class WebRTCHelper {
   void _onMessage(RTCDataChannelMessage data) async {
     if(data.isBinary ) {
       // touch event data
-      if(!_isSourceTypeWindow && _touchBack && _localStream!.getTracks().first.enabled) {
+      if(_isTouchBackAllowed()) {
         EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
         if(eventMessage.hasTouchEvent()) {
           int action = FlutterInputInjection.TOUCH_POINT_START;
