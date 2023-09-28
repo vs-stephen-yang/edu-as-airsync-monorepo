@@ -36,11 +36,14 @@ class WebRTCHelper {
   io.Socket? _socket;
   double _screenWidth = 1920.0;
   double _screenHeight = 1080.0;
-  double _trackWidth = 1920.0;
-  double _trackHeight = 1080.0;
+  static const int _maxTrackWidth = 1920;
+  static const int _maxTrackHeight = 1080;
+  int _trackWidth = _maxTrackWidth;
+  int _trackHeight = _maxTrackHeight;
   bool _touchBack = false;
+  bool _isSourceTypeWindow = false;
 
-  double get trackHeight => _trackHeight;
+  int get trackHeight => _trackHeight;
   final _flutterInputInjectionPlugin = FlutterInputInjection();
 
   //region public methods
@@ -56,6 +59,7 @@ class WebRTCHelper {
       deviceId = 'broadcast';
     } else {
       deviceId = {'exact': source.id};
+      _isSourceTypeWindow = (source.type == SourceType.Window);
     }
 
     _deviceId = deviceId;
@@ -108,7 +112,7 @@ class WebRTCHelper {
 
   Future<void> streamResume() async {
     var constraints = <String, dynamic>{
-      'audio': true,
+      'audio': _isAudioCaptureAllowed(),
       'video': {
         'deviceId': _deviceId,
         'mandatory': {'frameRate': 30.0},
@@ -125,21 +129,20 @@ class WebRTCHelper {
   }
 
   Future<void> changeStreamFrameRate(int frameRate, int height) async {
-    _trackWidth = 1920/(1080/height);
-    _trackHeight = height.toDouble();
+    if(height < _maxTrackHeight) {
+      // make sure the width/height is not greater than the max width
+      _trackWidth = (_maxTrackWidth/(_maxTrackHeight/height)).toInt();
+      _trackHeight = height;
+    }
     final constraints = <String, dynamic>{
-      'audio': true,
+      'audio': _isAudioCaptureAllowed(),
       'video': !WebRTC.platformIsDesktop ? true : {
         'deviceId': _deviceId,
         'mandatory': {
-          'maxWidth': _trackWidth.toString(),
-          'maxHeight': _trackHeight.toString(),
           'frameRate': frameRate,
         },
         'width': _trackWidth.toString(),
         'height': _trackHeight.toString(),
-        'facingMode': 'user',
-        'optional': [],
       }
     };
 
@@ -152,6 +155,14 @@ class WebRTCHelper {
   }
 
   //endregion
+
+  bool _isTouchBackAllowed(){
+    return !_isSourceTypeWindow && _touchBack && _localStream!.getTracks().first.enabled;
+  }
+
+  bool _isAudioCaptureAllowed(){
+    return !_isSourceTypeWindow;
+  }
 
   void _signalConnect(String signalUrl) {
     _socket = io.io(
@@ -262,12 +273,12 @@ class WebRTCHelper {
     _setDataChannelListeners(_dc!);
 
     final constraints = <String, dynamic>{
-      'audio': true,
+      'audio': _isAudioCaptureAllowed(),
       'video': {
         'deviceId': _deviceId,
         'mandatory': {'frameRate': 30.0},
-        'width': _trackWidth = 1920,
-        'height': _trackHeight = 1080,
+        'width': _trackWidth = _maxTrackWidth,
+        'height': _trackHeight = _maxTrackHeight,
       }
     };
 
@@ -362,36 +373,40 @@ class WebRTCHelper {
   }
 
   void _onMessage(RTCDataChannelMessage data) async {
-    if(_touchBack && data.isBinary && _localStream!.getTracks().first.enabled) {
-      EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
-      if(eventMessage.hasTouchEvent()) {
-        int action = FlutterInputInjection.TOUCH_POINT_START;
-        if(eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_START){
-          action = FlutterInputInjection.TOUCH_POINT_START;
-        } else if(eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_MOVE){
-          action = FlutterInputInjection.TOUCH_POINT_MOVE;
-        } else if(eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_END){
-          action = FlutterInputInjection.TOUCH_POINT_END;
+    if(data.isBinary ) {
+      // touch event data
+      if(_isTouchBackAllowed()) {
+        EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
+        if(eventMessage.hasTouchEvent()) {
+          int action = FlutterInputInjection.TOUCH_POINT_START;
+          if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_START) {
+            action = FlutterInputInjection.TOUCH_POINT_START;
+          } else if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
+            action = FlutterInputInjection.TOUCH_POINT_MOVE;
+          } else if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_END) {
+            action = FlutterInputInjection.TOUCH_POINT_END;
+          }
+          int id = eventMessage.touchEvent.touchPoints[0].id;
+          double remoteX = eventMessage.touchEvent.touchPoints[0].x;
+          double remoteY = eventMessage.touchEvent.touchPoints[0].y;
+          await updateScreenSize();
+          int injectX = (remoteX * _screenWidth).toInt();
+          if (injectX < 0) {
+            injectX = 0;
+          } else if (injectX > _screenWidth.toInt() - 1) {
+            injectX = _screenWidth.toInt() - 1;
+          }
+          int injectY = (remoteY * _screenHeight).toInt();
+          if (injectY < 0) {
+            injectY = 0;
+          } else if (injectY > _screenHeight.toInt() - 1) {
+            injectY = _screenHeight.toInt() - 1;
+          }
+          _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
         }
-        int id = eventMessage.touchEvent.touchPoints[0].id;
-        double remoteX = eventMessage.touchEvent.touchPoints[0].x;
-        double remoteY = eventMessage.touchEvent.touchPoints[0].y;
-        await updateScreenSize();
-        int injectX = (remoteX * _screenWidth).toInt();
-        if(injectX < 0) {
-          injectX = 0;
-        } else if(injectX > _screenWidth.toInt() - 1) {
-          injectX = _screenWidth.toInt() - 1;
-        }
-        int injectY = (remoteY * _screenHeight).toInt();
-        if(injectY < 0) {
-          injectY = 0;
-        } else if(injectY > _screenHeight.toInt() - 1) {
-          injectY = _screenHeight.toInt() - 1;
-        }
-        _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
       }
     } else {
+      // text message
       debugModePrint(data.text);
     }
   }
