@@ -262,6 +262,10 @@ public class MiraSession
   private void onRtspConnected() {
     Log.i(TAG, "RTSP connected");
     rtspParser_ = new RtspParser();
+
+    if (mirrorListener_ != null) {
+      mirrorListener_.onRtspConnected(id_);
+    }
   }
 
   private void onRtspReadable() {

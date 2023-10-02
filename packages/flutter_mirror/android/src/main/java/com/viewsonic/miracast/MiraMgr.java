@@ -102,9 +102,6 @@ public class MiraMgr
   private void connectionPrompt(String peerName, String peerIp, int peerPort) {
     MiraSession session = createSession(peerName, peerIp, peerPort, receiverName_);
     session.startRtsp();
-    if (listener_ != null) {
-      listener_.onSessionBegin(session.getId());
-    }
   }
 
   @Override
@@ -122,6 +119,13 @@ public class MiraMgr
       if (listener_ != null) {
         listener_.onSessionEnd(removeSessionId);
       }
+    }
+  }
+
+  @Override
+  public void onRtspConnected(String mirrorId) {
+    if (listener_ != null) {
+      listener_.onSessionBegin(mirrorId);
     }
   }
 
