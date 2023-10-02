@@ -42,7 +42,7 @@ void ApMirrorSession::StopMirror() {
 
   // Note that Stop() is asynchronous.
   // Stop() will stop the mirror and trigger OnMirrorStop callback
-  session_->Stop();
+  session_->StopMirror();
 }
 
 void ApMirrorSession::OnMirrorStop() {
