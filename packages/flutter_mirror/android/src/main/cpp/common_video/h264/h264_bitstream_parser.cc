@@ -14,9 +14,9 @@
 #include <cstdint>
 #include <vector>
 
+#include "common_video/bitstream_reader.h"
 #include "common_video/h264/h264_common.h"
-#include "rtc_base/bitstream_reader.h"
-#include "rtc_base/logging.h"
+#include "util/log.h"
 
 namespace webrtc {
 namespace {
@@ -37,7 +37,7 @@ H264BitstreamParser::Result H264BitstreamParser::ParseNonParameterSetNalu(
   if (!sps_ || !pps_)
     return kInvalidStream;
 
-  last_slice_qp_delta_ = absl::nullopt;
+  last_slice_qp_delta_ = std::nullopt;
   const std::vector<uint8_t> slice_rbsp =
       H264::ParseRbsp(source, source_length);
   if (slice_rbsp.size() < H264::kNaluTypeSize)
@@ -129,7 +129,7 @@ H264BitstreamParser::Result H264BitstreamParser::ParseNonParameterSetNalu(
   }
   // assume nal_unit_type != 20 && nal_unit_type != 21:
   if (nalu_type == 20 || nalu_type == 21) {
-    RTC_LOG(LS_ERROR) << "Unsupported nal unit type.";
+    ALOGE("Unsupported nal unit type.");
     return kUnsupportedStream;
   }
   // if (nal_unit_type == 20 || nal_unit_type == 21)
@@ -184,7 +184,7 @@ H264BitstreamParser::Result H264BitstreamParser::ParseNonParameterSetNalu(
   if ((pps_->weighted_pred_flag && (slice_type == H264::SliceType::kP ||
                                     slice_type == H264::SliceType::kSp)) ||
       (pps_->weighted_bipred_idc == 1 && slice_type == H264::SliceType::kB)) {
-    RTC_LOG(LS_ERROR) << "Streams with pred_weight_table unsupported.";
+    ALOGE("Streams with pred_weight_table unsupported.");
     return kUnsupportedStream;
   }
   // if ((weighted_pred_flag && (slice_type == P || slice_type == SP)) ||
@@ -239,7 +239,7 @@ H264BitstreamParser::Result H264BitstreamParser::ParseNonParameterSetNalu(
   }
   if (abs(last_slice_qp_delta) > kMaxAbsQpDeltaValue) {
     // Something has gone wrong, and the parsed value is invalid.
-    RTC_LOG(LS_WARNING) << "Parsed QP value out of range.";
+    ALOGW("Parsed QP value out of range.");
     return kInvalidStream;
   }
 
@@ -254,14 +254,14 @@ void H264BitstreamParser::ParseSlice(const uint8_t* slice, size_t length) {
       sps_ = SpsParser::ParseSps(slice + H264::kNaluTypeSize,
                                  length - H264::kNaluTypeSize);
       if (!sps_)
-        RTC_DLOG(LS_WARNING) << "Unable to parse SPS from H264 bitstream.";
+        ALOGW("Unable to parse SPS from H264 bitstream.");
       break;
     }
     case H264::NaluType::kPps: {
       pps_ = PpsParser::ParsePps(slice + H264::kNaluTypeSize,
                                  length - H264::kNaluTypeSize);
       if (!pps_)
-        RTC_DLOG(LS_WARNING) << "Unable to parse PPS from H264 bitstream.";
+        ALOGW("Unable to parse PPS from H264 bitstream.");
       break;
     }
     case H264::NaluType::kAud:
@@ -269,15 +269,15 @@ void H264BitstreamParser::ParseSlice(const uint8_t* slice, size_t length) {
     case H264::NaluType::kPrefix:
       break;  // Ignore these nalus, as we don't care about their contents.
     default:
-      Result res = ParseNonParameterSetNalu(slice, length, nalu_type);
-      if (res != kOk)
-        RTC_DLOG(LS_INFO) << "Failed to parse bitstream. Error: " << res;
+      // Result res = ParseNonParameterSetNalu(slice, length, nalu_type);
+      // if (res != kOk)
+      //   ALOGI("Failed to parse bitstream. Error: %d", res);
       break;
   }
 }
 
 void H264BitstreamParser::ParseBitstream(
-    rtc::ArrayView<const uint8_t> bitstream) {
+    std::span<const uint8_t> bitstream) {
   std::vector<H264::NaluIndex> nalu_indices =
       H264::FindNaluIndices(bitstream.data(), bitstream.size());
   for (const H264::NaluIndex& index : nalu_indices)
@@ -285,13 +285,13 @@ void H264BitstreamParser::ParseBitstream(
                index.payload_size);
 }
 
-absl::optional<int> H264BitstreamParser::GetLastSliceQp() const {
+std::optional<int> H264BitstreamParser::GetLastSliceQp() const {
   if (!last_slice_qp_delta_ || !pps_)
-    return absl::nullopt;
+    return std::nullopt;
   const int qp = 26 + pps_->pic_init_qp_minus26 + *last_slice_qp_delta_;
   if (qp < kMinQpValue || qp > kMaxQpValue) {
-    RTC_LOG(LS_ERROR) << "Parsed invalid QP from bitstream.";
-    return absl::nullopt;
+    ALOGE("Parsed invalid QP from bitstream.");
+    return std::nullopt;
   }
   return qp;
 }

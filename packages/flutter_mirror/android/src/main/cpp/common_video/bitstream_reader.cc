@@ -8,21 +8,18 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-#include "rtc_base/bitstream_reader.h"
+#include "common_video/bitstream_reader.h"
 
 #include <stdint.h>
 
 #include <limits>
-
-#include "absl/numeric/bits.h"
-#include "rtc_base/checks.h"
-#include "rtc_base/numerics/safe_conversions.h"
+#include "common_video/bit_width.h"
 
 namespace webrtc {
 
 uint64_t BitstreamReader::ReadBits(int bits) {
-  RTC_DCHECK_GE(bits, 0);
-  RTC_DCHECK_LE(bits, 64);
+  // RTC_DCHECK_GE(bits, 0);
+  // RTC_DCHECK_LE(bits, 64);
   set_last_read_is_verified(false);
 
   if (remaining_bits_ < bits) {
@@ -79,7 +76,7 @@ int BitstreamReader::ReadBit() {
 }
 
 void BitstreamReader::ConsumeBits(int bits) {
-  RTC_DCHECK_GE(bits, 0);
+  // RTC_DCHECK_GE(bits, 0);
   set_last_read_is_verified(false);
   if (remaining_bits_ < bits) {
     Invalidate();
@@ -93,10 +90,10 @@ void BitstreamReader::ConsumeBits(int bits) {
 }
 
 uint32_t BitstreamReader::ReadNonSymmetric(uint32_t num_values) {
-  RTC_DCHECK_GT(num_values, 0);
-  RTC_DCHECK_LE(num_values, uint32_t{1} << 31);
+  // RTC_DCHECK_GT(num_values, 0);
+  // RTC_DCHECK_LE(num_values, uint32_t{1} << 31);
 
-  int width = absl::bit_width(num_values);
+  int width = bit_width(num_values);
   uint32_t num_min_bits_values = (uint32_t{1} << width) - num_values;
 
   uint64_t val = ReadBits(width - 1);
@@ -120,7 +117,7 @@ uint32_t BitstreamReader::ReadExponentialGolomb() {
   // The bit count of the value is the number of zeros + 1.
   // However the first '1' was already read above.
   return (uint32_t{1} << zero_bit_count) +
-         rtc::dchecked_cast<uint32_t>(ReadBits(zero_bit_count)) - 1;
+         static_cast<uint32_t>(ReadBits(zero_bit_count)) - 1;
 }
 
 int BitstreamReader::ReadSignedExponentialGolomb() {

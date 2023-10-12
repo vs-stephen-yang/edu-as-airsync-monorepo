@@ -16,8 +16,6 @@
 
 #include <vector>
 
-#include "rtc_base/buffer.h"
-
 namespace webrtc {
 
 namespace H264 {
@@ -47,7 +45,11 @@ enum NaluType : uint8_t {
   kFuA = 28
 };
 
-enum SliceType : uint8_t { kP = 0, kB = 1, kI = 2, kSp = 3, kSi = 4 };
+enum SliceType : uint8_t { kP = 0,
+                           kB = 1,
+                           kI = 2,
+                           kSp = 3,
+                           kSi = 4 };
 
 struct NaluIndex {
   // Start index of NALU, including start sequence.
@@ -81,10 +83,6 @@ NaluType ParseNaluType(uint8_t data);
 // Parse the given data and remove any emulation byte escaping.
 std::vector<uint8_t> ParseRbsp(const uint8_t* data, size_t length);
 
-// Write the given data to the destination buffer, inserting and emulation
-// bytes in order to escape any data the could be interpreted as a start
-// sequence.
-void WriteRbsp(const uint8_t* bytes, size_t length, rtc::Buffer* destination);
 }  // namespace H264
 }  // namespace webrtc
 

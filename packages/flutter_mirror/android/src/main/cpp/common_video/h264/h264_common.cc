@@ -89,28 +89,5 @@ std::vector<uint8_t> ParseRbsp(const uint8_t* data, size_t length) {
   return out;
 }
 
-void WriteRbsp(const uint8_t* bytes, size_t length, rtc::Buffer* destination) {
-  static const uint8_t kZerosInStartSequence = 2;
-  static const uint8_t kEmulationByte = 0x03u;
-  size_t num_consecutive_zeros = 0;
-  destination->EnsureCapacity(destination->size() + length);
-
-  for (size_t i = 0; i < length; ++i) {
-    uint8_t byte = bytes[i];
-    if (byte <= kEmulationByte &&
-        num_consecutive_zeros >= kZerosInStartSequence) {
-      // Need to escape.
-      destination->AppendData(kEmulationByte);
-      num_consecutive_zeros = 0;
-    }
-    destination->AppendData(byte);
-    if (byte == 0) {
-      ++num_consecutive_zeros;
-    } else {
-      num_consecutive_zeros = 0;
-    }
-  }
-}
-
 }  // namespace H264
 }  // namespace webrtc
