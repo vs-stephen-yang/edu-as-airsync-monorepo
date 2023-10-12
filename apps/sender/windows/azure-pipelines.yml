@@ -6,7 +6,7 @@ trigger:
 
 variables:
   - name: Flutter.Version
-    value: "3.7.12"
+    value: "3.13.4"
   - name: Flutter.Bin
     value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
   - name: AdvancedInstaller.Bin
