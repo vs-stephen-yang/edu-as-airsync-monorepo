@@ -12,12 +12,8 @@
 #define RTC_BASE_BITSTREAM_READER_H_
 
 #include <stdint.h>
-
-#include "absl/base/attributes.h"
-#include "absl/strings/string_view.h"
-#include "api/array_view.h"
-#include "rtc_base/checks.h"
-#include "rtc_base/numerics/safe_conversions.h"
+#include <span>
+#include <string>
 
 namespace webrtc {
 
@@ -30,9 +26,7 @@ namespace webrtc {
 class BitstreamReader {
  public:
   explicit BitstreamReader(
-      rtc::ArrayView<const uint8_t> bytes ABSL_ATTRIBUTE_LIFETIME_BOUND);
-  explicit BitstreamReader(
-      absl::string_view bytes ABSL_ATTRIBUTE_LIFETIME_BOUND);
+      std::span<const uint8_t> bytes);
   BitstreamReader(const BitstreamReader&) = default;
   BitstreamReader& operator=(const BitstreamReader&) = default;
   ~BitstreamReader();
@@ -51,27 +45,27 @@ class BitstreamReader {
   void ConsumeBits(int bits);
 
   // Reads single bit. Returns 0 or 1.
-  ABSL_MUST_USE_RESULT int ReadBit();
+  int ReadBit();
 
   // Reads `bits` from the bitstream. `bits` must be in range [0, 64].
   // Returns an unsigned integer in range [0, 2^bits - 1].
   // On failure sets `BitstreamReader` into the failure state and returns 0.
-  ABSL_MUST_USE_RESULT uint64_t ReadBits(int bits);
+  uint64_t ReadBits(int bits);
 
   // Reads unsigned integer of fixed width.
   template <typename T,
             typename std::enable_if<std::is_unsigned<T>::value &&
                                     !std::is_same<T, bool>::value &&
                                     sizeof(T) <= 8>::type* = nullptr>
-  ABSL_MUST_USE_RESULT T Read() {
-    return rtc::dchecked_cast<T>(ReadBits(sizeof(T) * 8));
+  T Read() {
+    return static_cast<T>(ReadBits(sizeof(T) * 8));
   }
 
   // Reads single bit as boolean.
   template <
       typename T,
       typename std::enable_if<std::is_same<T, bool>::value>::type* = nullptr>
-  ABSL_MUST_USE_RESULT bool Read() {
+  bool Read() {
     return ReadBit() != 0;
   }
 
@@ -123,16 +117,12 @@ class BitstreamReader {
   mutable bool last_read_is_verified_ = true;
 };
 
-inline BitstreamReader::BitstreamReader(rtc::ArrayView<const uint8_t> bytes)
+inline BitstreamReader::BitstreamReader(std::span<const uint8_t> bytes)
     : bytes_(bytes.data()), remaining_bits_(bytes.size() * 8) {}
 
-inline BitstreamReader::BitstreamReader(absl::string_view bytes)
-    : bytes_(reinterpret_cast<const uint8_t*>(bytes.data())),
-      remaining_bits_(bytes.size() * 8) {}
-
 inline BitstreamReader::~BitstreamReader() {
-  RTC_DCHECK(last_read_is_verified_) << "Latest calls to Read or ConsumeBit "
-                                        "were not checked with Ok function.";
+  // RTC_DCHECK(last_read_is_verified_) << "Latest calls to Read or ConsumeBit "
+  //                                       "were not checked with Ok function.";
 }
 
 inline void BitstreamReader::set_last_read_is_verified(bool value) const {

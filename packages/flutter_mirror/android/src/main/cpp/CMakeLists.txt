@@ -8,8 +8,8 @@ cmake_minimum_required(VERSION 3.18.1)
 # Declares and names the project.
 project("flutter_mirror")
 
-# C++ 17
-set(CMAKE_CXX_STANDARD 17)
+# C++ 20
+set(CMAKE_CXX_STANDARD 20)
 
 find_package(oboe REQUIRED CONFIG)
 
@@ -18,6 +18,7 @@ add_subdirectory(mpeg2ts)
 add_subdirectory(airplay)
 add_subdirectory(googlecast)
 add_subdirectory(miracast)
+add_subdirectory(common_video)
 
 aux_source_directory(./ src)
 aux_source_directory(./util/jni util_jni_src)
@@ -60,6 +61,7 @@ target_link_libraries( # Specifies the target library.
   oboe::oboe
   android
   mediandk
+  common_video
   flutter_airplay
   flutter_googlecast
   flutter_miracast

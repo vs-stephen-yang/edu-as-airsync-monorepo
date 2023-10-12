@@ -14,8 +14,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "absl/types/optional.h"
-#include "api/array_view.h"
+#include <optional>
+#include <span>
 
 namespace webrtc {
 
@@ -38,21 +38,21 @@ class PpsParser {
   };
 
   // Unpack RBSP and parse PPS state from the supplied buffer.
-  static absl::optional<PpsState> ParsePps(const uint8_t* data, size_t length);
+  static std::optional<PpsState> ParsePps(const uint8_t* data, size_t length);
 
   static bool ParsePpsIds(const uint8_t* data,
                           size_t length,
                           uint32_t* pps_id,
                           uint32_t* sps_id);
 
-  static absl::optional<uint32_t> ParsePpsIdFromSlice(const uint8_t* data,
-                                                      size_t length);
+  static std::optional<uint32_t> ParsePpsIdFromSlice(const uint8_t* data,
+                                                     size_t length);
 
  protected:
   // Parse the PPS state, for a buffer where RBSP decoding has already been
   // performed.
-  static absl::optional<PpsState> ParseInternal(
-      rtc::ArrayView<const uint8_t> buffer);
+  static std::optional<PpsState> ParseInternal(
+      std::span<const uint8_t> buffer);
 };
 
 }  // namespace webrtc
