@@ -6,8 +6,10 @@ PODS:
   - flutter_input_injection (0.0.1):
     - FlutterMacOS
   - flutter_webrtc (0.9.36):
+    - flutter_webrtc/WebRTC-SDK (= 0.9.36)
     - FlutterMacOS
-    - WebRTC-SDK (= 114.5735.02)
+  - flutter_webrtc/WebRTC-SDK (0.9.36):
+    - FlutterMacOS
   - flutter_window_close (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
@@ -21,7 +23,6 @@ PODS:
     - FlutterMacOS
   - url_launcher_macos (0.0.1):
     - FlutterMacOS
-  - WebRTC-SDK (114.5735.02)
   - window_size (0.0.2):
     - FlutterMacOS
 
@@ -37,10 +38,6 @@ DEPENDENCIES:
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
   - window_size (from `Flutter/ephemeral/.symlinks/plugins/window_size/macos`)
-
-SPEC REPOS:
-  trunk:
-    - WebRTC-SDK
 
 EXTERNAL SOURCES:
   desktop_window:
@@ -70,16 +67,15 @@ SPEC CHECKSUMS:
   desktop_window: fb7c4f12c1129f947ac482296b6f14059d57a3c3
   device_info_plus: 5401765fde0b8d062a2f8eb65510fb17e77cf07f
   flutter_input_injection: 0103e805a95614dabd37a068a73e04b3a5b04e39
-  flutter_webrtc: b7de006ffa89334a52103ea577b6596c437e6b9e
+  flutter_webrtc: 3593bbff2741516f34f270bbf473b27d601d14e4
   flutter_window_close: ee4a6b81ca6fafe93b7cba48b0a18976e3f48e39
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   package_info_plus: 02d7a575e80f194102bef286361c6c326e4c29ce
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   url_launcher_macos: d2691c7dd33ed713bf3544850a623080ec693d95
-  WebRTC-SDK: dd913fd31cfbf1d43b9a22d83f4c6354c960c623
   window_size: 339dafa0b27a95a62a843042038fa6c3c48de195
 
 PODFILE CHECKSUM: 353c8bcc5d5b0994e508d035b5431cfe18c1dea7
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.13.0
