@@ -32,6 +32,8 @@ typedef std::unique_ptr<VideoDecoder> VideoDecoderPtr;
 
 VideoDecoderPtr CreateVideoDecoder(
     VideoCodecType codec_type,
+    unsigned int width,
+    unsigned int height,
     ANativeWindow* surface,
     VideoDecoder::Callback* callback);
 

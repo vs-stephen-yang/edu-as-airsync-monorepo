@@ -65,6 +65,12 @@ class MediaSession
   std::unique_ptr<VideoDecoder> video_decoder_;
   SurfaceTexture texture_;
 
+  static const unsigned int kDefaultWidth = 1920;
+  static const unsigned int kDefaultHeight = 1080;
+
+  unsigned int width_ = kDefaultWidth;
+  unsigned int height_ = kDefaultHeight;
+
   // audio
   std::unique_ptr<AudioDecoder> audio_decoder_;
 };
