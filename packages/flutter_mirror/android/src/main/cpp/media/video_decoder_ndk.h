@@ -23,6 +23,8 @@ class VideoDecoderNdk
 
   bool Init(
       const std::string& mime,
+      unsigned int width,
+      unsigned int height,
       ANativeWindow* surface);
 
   virtual bool Start();
