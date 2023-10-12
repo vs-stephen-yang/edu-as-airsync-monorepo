@@ -57,6 +57,12 @@ class MediaSession
       int height);
 
  private:
+  void HandleVideoSizeChange(
+      const uint8_t* frame,
+      size_t size);
+
+  void ResetVideoDecoder();
+
   MediaSession::Listener* listener_ = nullptr;
 
   jni::TextureRegistry& texture_registry_;
@@ -64,6 +70,7 @@ class MediaSession
   // video
   std::unique_ptr<VideoDecoder> video_decoder_;
   SurfaceTexture texture_;
+  VideoCodecType video_codec_;
 
   static const unsigned int kDefaultWidth = 1920;
   static const unsigned int kDefaultHeight = 1080;
