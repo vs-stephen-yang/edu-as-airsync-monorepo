@@ -1,6 +1,7 @@
 
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,9 +13,8 @@ class Language extends StatelessWidget {
     PrefLanguageProvider provider = Provider.of<PrefLanguageProvider>(context);
     PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     return SizedBox(
-      width: 300,
-      height: 400,
-
+      width: AppConstants.viewStateMenuWidth,
+      height: AppConstants.viewStateMenuHeight,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -1,5 +1,6 @@
 
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,9 +12,8 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     return SizedBox(
-      width: 300,
-      height: 400,
-
+      width: AppConstants.viewStateMenuWidth,
+      height: AppConstants.viewStateMenuHeight,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
