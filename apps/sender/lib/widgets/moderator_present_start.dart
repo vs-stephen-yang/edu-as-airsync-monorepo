@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,8 +42,8 @@ class ModeratorPresentStart extends StatelessWidget {
     var textStyle20 = const TextStyle(color: Colors.white, fontSize: 16);
     var textStyle30 = const TextStyle(color: Colors.white, fontSize: 20);
     return SizedBox(
-      width: 300,
-      height: 400,
+      width: AppConstants.viewStateMenuWidth,
+      height: AppConstants.viewStateMenuHeight,
       child: Column(
         children: [
           const TitleBar(),

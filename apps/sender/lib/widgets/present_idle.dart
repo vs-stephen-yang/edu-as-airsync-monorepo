@@ -1,6 +1,7 @@
 
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/present_idle_textfield.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
@@ -23,8 +24,8 @@ class PresentIdle extends StatelessWidget {
     bool presentBtnEnable = false;
     String displayCode = '', password ='';
     return SizedBox(
-      width: 300,
-      height: 400,
+      width: AppConstants.viewStateMenuWidth,
+      height: AppConstants.viewStateMenuHeight,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
