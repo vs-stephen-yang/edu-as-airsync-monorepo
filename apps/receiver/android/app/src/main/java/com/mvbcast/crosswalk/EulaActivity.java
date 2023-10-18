@@ -91,6 +91,14 @@ public class EulaActivity extends FlutterActivity {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (OTAHelper.getInstance().onRequestPermissionsResult(EulaActivity.this, requestCode, permissions, grantResults)) {
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (OTAHelper.getInstance().onActivityResult(EulaActivity.this, requestCode, resultCode, data)) {
             return;
