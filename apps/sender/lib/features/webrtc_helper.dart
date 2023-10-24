@@ -63,8 +63,8 @@ class WebRTCHelper {
     }
 
     _deviceId = deviceId;
-    _signalConnect(signalUrl);
     await _peerConnectionConnect();
+    _signalConnect(signalUrl);
   }
 
   Future<void> hangUp() async {
@@ -78,7 +78,7 @@ class WebRTCHelper {
       if(_localStream != null){
         var stream = _localStream!;
         _localStream = null;
-        await stream?.dispose();
+        await stream.dispose();
       }
     } catch (e) {
       debugModePrint(e, type: runtimeType);
