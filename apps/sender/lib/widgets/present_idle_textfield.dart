@@ -1,7 +1,7 @@
 
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +27,9 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
   final FocusNode _otpFocusNode = FocusNode();
   final GlobalKey<CustomTextFormFieldState> codeKey = GlobalKey();
   final GlobalKey<CustomTextFormFieldState> otpKey = GlobalKey();
+  late OverlayEntry _overlayEntry;
+  final LayerLink _layerLink = LayerLink();
+  bool _isOverlayVisible = false;
 
   @override
   void initState() {
@@ -53,6 +56,65 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
     super.dispose();
   }
 
+  /// the height of every item is 40
+  /// the scroll bar should show up when over 5 items
+  /// the max height of the overlay area is 200
+  OverlayEntry _createOverlayEntry() {
+    return OverlayEntry(builder: (builder) {
+      return Stack(
+        children: <Widget>[
+          // Check range outside listview
+          GestureDetector(
+            onTap: () {
+              _isOverlayVisible = false;
+              _overlayEntry.remove();
+            },
+            child: Container(
+              color: Colors.transparent, // 設置為透明色
+              width: double.infinity,
+              height: double.infinity,
+            ),
+          ),
+          Positioned(
+              width: 300,
+              height: DataDisplayCode.getInstance().displayCodeList!.length > 5
+                  ? 200
+                  : DataDisplayCode.getInstance().displayCodeList!.length * 40,
+              child: CompositedTransformFollower(
+                offset: const Offset(0, 50),
+                link: _layerLink,
+                child: Material(
+                  child: DataDisplayCode.getInstance().displayCodeList == null
+                      ? const SizedBox()
+                      : Scrollbar(
+                          child: ListView.builder(
+                          itemCount: DataDisplayCode.getInstance()
+                              .displayCodeList!
+                              .length,
+                          itemBuilder: (BuildContext context, int index) {
+                            List list =
+                                DataDisplayCode.getInstance().displayCodeList!;
+                            return InkWell(
+                              child: Container(
+                                  height: 40,
+                                  alignment: Alignment.centerLeft,
+                                  padding: const EdgeInsets.only(left: 15),
+                                  child: Text(list[index])),
+                              onTap: () {
+                                _codeController.text = list[index];
+                                _isOverlayVisible = false;
+                                _overlayEntry.remove();
+                              },
+                            );
+                          },
+                        )),
+                ),
+              ))
+        ],
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
@@ -61,34 +123,44 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         codeKey.currentState?.setErrorMsg(S.of(context).main_display_code_exceed);
       }
     });
-
     return Column(
       children: [
         SizedBox(
           height: 66,
-          child: CustomTextFormField(
-            key: codeKey,
-            controller: _codeController,
-            focusNode: _codeFocusNode,
-            // initialValue: displayCode,
-            labelText: S.of(context).main_display_code,
-            errorText: S.of(context).main_display_code_description,
-            inputFormatter: [
-              MaskedInputFormatter(
-                '000-000-000-0',
-                allowedCharMatcher: RegExp('[1-9]'),
-              )
-            ],
-            onChanged: (text) {
-              bool presentBtnEnable = false;
-              if (text.length >= 11 && _otpController.text.length == 4) {
-                presentBtnEnable = true;
-              }
-              widget.onFieldChanged(FieldResult(enable: presentBtnEnable, displayCode: text, password: _otpController.text));
-            },
-            onFieldSubmitted: (text) {
-              _otpFocusNode.requestFocus();
-            },
+          child: CompositedTransformTarget(
+            link: _layerLink,
+            child: CustomTextFormField(
+              key: codeKey,
+              controller: _codeController,
+              focusNode: _codeFocusNode,
+              // initialValue: displayCode,
+              labelText: S.of(context).main_display_code,
+              errorText: S.of(context).main_display_code_description,
+              inputFormatter: [
+                MaskedInputFormatter(
+                  '000-000-000-0',
+                  allowedCharMatcher: RegExp('[1-9]'),
+                )
+              ],
+              onChanged: (text) {
+                bool presentBtnEnable = false;
+                if (text.length >= 11 && _otpController.text.length == 4) {
+                  presentBtnEnable = true;
+                }
+                widget.onFieldChanged(FieldResult(enable: presentBtnEnable, displayCode: text, password: _otpController.text));
+              },
+              onTap: () async {
+                await DataDisplayCode.getInstance().load();
+                if (!_isOverlayVisible && DataDisplayCode.getInstance().displayCodeList != null) {
+                  _isOverlayVisible = true;
+                  _overlayEntry = _createOverlayEntry();
+                  Overlay.of(context).insert(_overlayEntry);
+                }
+              },
+              onFieldSubmitted: (text) {
+                _otpFocusNode.requestFocus();
+              },
+            ),
           ),
         ),
         const Padding(padding: EdgeInsets.all(10)),

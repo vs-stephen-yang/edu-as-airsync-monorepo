@@ -4,17 +4,22 @@ import 'package:flutter/services.dart';
 
 class CustomTextFormField extends StatefulWidget {
   CustomTextFormField(
-      {super.key, this.controller,
-        this.labelText,
-        this.errorText,
-        this.inputFormatter,
-        this.onChanged, required this.focusNode, required this.onFieldSubmitted});
+      {super.key,
+      this.controller,
+      this.labelText,
+      this.errorText,
+      this.inputFormatter,
+      this.onChanged,
+      this.onTap,
+      required this.focusNode,
+      required this.onFieldSubmitted});
 
   final TextEditingController? controller;
   final String? labelText;
   String? errorText;
   final List<TextInputFormatter>? inputFormatter;
   ValueChanged<String>? onChanged;
+  GestureTapCallback? onTap;
   final FocusNode focusNode;
   final ValueChanged<String> onFieldSubmitted;
 
@@ -58,6 +63,9 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
       inputFormatters: widget.inputFormatter,
       onChanged: (_) {
         if (widget.onChanged != null) widget.onChanged!(_);
+      },
+      onTap: () {
+        if (widget.onTap != null) widget.onTap!();
       },
       onFieldSubmitted: (value) {
         widget.onFieldSubmitted(value);

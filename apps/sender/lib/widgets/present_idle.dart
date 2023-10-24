@@ -2,6 +2,7 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
+import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/present_idle_textfield.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
@@ -22,7 +23,7 @@ class PresentIdle extends StatelessWidget {
     PresentStateProvider presentStateProvider =
         Provider.of<PresentStateProvider>(context);
     bool presentBtnEnable = false;
-    String displayCode = '', password ='';
+    String displayCode = '', password ='', displayCodeOriginal = '';
     return SizedBox(
       width: AppConstants.viewStateMenuWidth,
       height: AppConstants.viewStateMenuHeight,
@@ -37,6 +38,7 @@ class PresentIdle extends StatelessWidget {
             key: fieldKey,
             onFieldChanged: (result) {
               presentBtnEnable = result.enable;
+              displayCodeOriginal = result.displayCode;
               displayCode = result.displayCode.replaceAll('-', '');
               password = result.password;
               presentBtnKey.currentState?.setEnable(result.enable,
@@ -95,6 +97,7 @@ class PresentIdle extends StatelessWidget {
             bool display = await presentStateProvider.checkDisplayOTP(
                 displayCode: displayCode, otp: password);
             if (display) {
+              DataDisplayCode.getInstance().save(displayCodeOriginal);
               presentStateProvider.presentTo(
                 displayCode: displayCode,
                 otp: password,
