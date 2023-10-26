@@ -55,6 +55,8 @@ class PresentStateProvider extends ChangeNotifier {
   bool _touchBack = false;
   bool get touchBack => _touchBack;
   bool _exceedMaximumPresenters = false;
+  bool _systemAudio = false;
+  bool get systemAudio => _systemAudio;
 
   bool get exceedMaximumPresenters => _exceedMaximumPresenters;
 
@@ -118,7 +120,6 @@ class PresentStateProvider extends ChangeNotifier {
         //log
         break;
     }
-    print('zz checkModeratorOTP ${response.statusCode}');
     return response.statusCode;
   }
 
@@ -366,7 +367,7 @@ class PresentStateProvider extends ChangeNotifier {
     setViewState(ViewState.idle);
   }
 
-  Future<void> presentStart({required dynamic selectedSource}) async {
+  Future<void> presentStart({required dynamic selectedSource, bool systemAudio = false}) async {
     if (_v1) {
       _webRTCHelper = WebRTCHelperV1(_urlIce);
       await _webRTCHelper?.makeCall(
@@ -376,7 +377,7 @@ class PresentStateProvider extends ChangeNotifier {
         selectedSource,
       );
     } else {
-      _webRTCHelper = WebRTCHelper(_urlIce, touchBack: touchBack);
+      _webRTCHelper = WebRTCHelper(_urlIce, touchBack: touchBack, systemAudio: systemAudio);
       await _webRTCHelper?.makeCall(
         _msgDisplay['extra']['signal']['url'],
         _msgDisplay['extra']['setClientId'],

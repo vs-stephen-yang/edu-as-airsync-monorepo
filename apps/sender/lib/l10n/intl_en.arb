@@ -147,5 +147,7 @@
     },
 
     "main_password_invalid": "Invalid one time password",
-    "main_display_code_exceed": "Reach maximum presenters"
+    "main_display_code_exceed": "Reach maximum presenters",
+
+    "present_select_screen_share_audio": "Share screen audio"
 }

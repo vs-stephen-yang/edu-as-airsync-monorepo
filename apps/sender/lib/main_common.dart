@@ -65,6 +65,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.blue,
               scaffoldBackgroundColor: Colors.black, // Set app background color
+              unselectedWidgetColor: Colors.white,
             ),
             initialRoute: '/home',
             navigatorKey: NavigationService.navigationKey,

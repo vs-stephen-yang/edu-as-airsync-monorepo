@@ -56,6 +56,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Entire screen"),
         "present_select_screen_share":
             MessageLookupByLibrary.simpleMessage("Share"),
+        "present_select_screen_share_audio":
+            MessageLookupByLibrary.simpleMessage("Share screen audio"),
         "present_select_screen_window":
             MessageLookupByLibrary.simpleMessage("Window"),
         "present_state_full_screen":
