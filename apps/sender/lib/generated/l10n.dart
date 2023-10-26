@@ -359,6 +359,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Share screen audio`
+  String get present_select_screen_share_audio {
+    return Intl.message(
+      'Share screen audio',
+      name: 'present_select_screen_share_audio',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

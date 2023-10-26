@@ -16,9 +16,10 @@ import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:window_size/window_size.dart';
 
 class WebRTCHelper {
-  WebRTCHelper(String getIceUrl, {bool touchBack = false}) {
+  WebRTCHelper(String getIceUrl, {bool touchBack = false, bool systemAudio = false}) {
     _getIceUrl = getIceUrl;
     _touchBack = touchBack;
+    _systemAudio = systemAudio;
   }
 
   late final String _getIceUrl;
@@ -41,7 +42,8 @@ class WebRTCHelper {
   int _trackWidth = _maxTrackWidth;
   int _trackHeight = _maxTrackHeight;
   bool _touchBack = false;
-  bool _isSourceTypeWindow = false;
+  bool _isSourceTypeScreen = false;
+  bool _systemAudio = false;
 
   int get trackHeight => _trackHeight;
   final _flutterInputInjectionPlugin = FlutterInputInjection();
@@ -59,7 +61,7 @@ class WebRTCHelper {
       deviceId = 'broadcast';
     } else {
       deviceId = {'exact': source.id};
-      _isSourceTypeWindow = (source.type == SourceType.Window);
+      _isSourceTypeScreen = (source.type == SourceType.Screen);
     }
 
     _deviceId = deviceId;
@@ -157,11 +159,14 @@ class WebRTCHelper {
   //endregion
 
   bool _isTouchBackAllowed(){
-    return !_isSourceTypeWindow && _touchBack && _localStream!.getTracks().first.enabled;
+    return _isSourceTypeScreen && _touchBack && _localStream!.getTracks().first.enabled;
   }
 
   bool _isAudioCaptureAllowed(){
-    return !_isSourceTypeWindow;
+    if (WebRTC.platformIsWindows) {
+      return _isSourceTypeScreen && _systemAudio;
+    }
+    return true;
   }
 
   void _signalConnect(String signalUrl) {
