@@ -38,8 +38,8 @@ dependencies:
   cupertino_icons: ^1.0.6
   no_context_navigation: ^2.1.2
   shared_preferences: ^2.2.2
-  package_info_plus: ^4.1.0
-  device_info_plus: ^9.0.3
+  package_info_plus: ^4.2.0
+  device_info_plus: ^9.1.0
   device_info_vs:
     git:
       ref: 1.0.6
