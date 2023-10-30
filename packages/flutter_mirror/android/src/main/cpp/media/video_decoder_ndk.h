@@ -9,6 +9,7 @@
 
 #include <atomic>
 #include <thread>
+#include "media/video_csd.h"
 
 class VideoDecoderNdk
     : public VideoDecoder {
@@ -23,8 +24,7 @@ class VideoDecoderNdk
 
   bool Init(
       const std::string& mime,
-      unsigned int width,
-      unsigned int height,
+      const VideoCsd& csd,
       ANativeWindow* surface);
 
   virtual bool Start();

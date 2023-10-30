@@ -1,42 +1,12 @@
 #include "media/media_session.h"
 #include <assert.h>
-#include "common_video/h264/h264_bitstream_parser.h"
+#include "media/video_csd_util.h"
 #include "util/log.h"
 
 namespace {
 
-struct VideoSize {
-  unsigned int width;
-  unsigned int height;
-};
-
-std::optional<VideoSize> ParseH264VideoSize(
-    std::span<const uint8_t> frame) {
-  webrtc::H264BitstreamParser parser;
-
-  parser.ParseBitstream(frame);
-
-  if (!parser.sps_.has_value()) {
-    return std::nullopt;
-  }
-
-  return VideoSize{
-      parser.sps_->width,
-      parser.sps_->height};
-}
-
-std::optional<VideoSize> ParseVideoSize(
-    VideoCodecType codec_type,
-    std::span<const uint8_t> frame) {
-  switch (codec_type) {
-    case VideoCodecType::kH264:
-      return ParseH264VideoSize(frame);
-
-    default:
-      return std::nullopt;
-  }
-}
-
+static const unsigned int kDefaultWidth = 1920;
+static const unsigned int kDefaultHeight = 1080;
 }  // namespace
 MediaSession::MediaSession(
     jni::TextureRegistry& texture_registry)
@@ -66,6 +36,10 @@ bool MediaSession::Start(
 
   // create video decoder
   video_codec_ = video_codec;
+  csd_ = std::make_optional<VideoCsd>(
+      kDefaultWidth,
+      kDefaultHeight);
+
   if (!CreateVideoDecoder(video_codec)) {
     return false;
   }
@@ -112,12 +86,12 @@ void MediaSession::Stop() {
 bool MediaSession::CreateVideoDecoder(
     VideoCodecType codec_type) {
   ALOGD("MediaSession::CreateVideoDecoder()");
+  assert(csd_);
 
   // create a video decoder that renders to the surface texture
   auto decoder = ::CreateVideoDecoder(
       codec_type,
-      width_,
-      height_,
+      *csd_,
       texture_.wnd,
       this);
 
@@ -200,31 +174,28 @@ void MediaSession::EnableAudio(bool enable) {
   }
 }
 
-void MediaSession::HandleVideoSizeChange(
+void MediaSession::HandleVideoCsd(
     const uint8_t* frame,
     size_t size) {
-  std::optional<VideoSize> video_size = ParseVideoSize(
+  std::optional<VideoCsd> csd = ParseVideoCsd(
       video_codec_,
       std::span(frame, frame + size));
 
-  if (!video_size.has_value()) {
+  if (!csd.has_value()) {
     return;
   }
 
-  if (video_size->width == width_ &&
-      video_size->height == height_) {
+  if (csd_.has_value() &&
+      csd->width == csd_->width &&
+      csd->height == csd_->height) {
     return;
   }
 
-  ALOGI("Video size has changed. %ux%u->%ux%u",
-        width_,
-        height_,
-        video_size->width,
-        video_size->height);
+  ALOGI("The video size has changed to %ux%u",
+        csd->width,
+        csd->height);
 
-  // Resolution has changed. Reset decoder
-  width_ = video_size->width;
-  height_ = video_size->height;
+  csd_ = csd;
 
   ResetVideoDecoder();
 }

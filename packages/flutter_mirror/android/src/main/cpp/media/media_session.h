@@ -2,8 +2,10 @@
 #define FLUTTER_MIRROR_PLUGIN_MEDIA_SESSION_H_
 
 #include <memory>
+#include <optional>
 #include "jni/texture_registry.h"
 #include "media/audio_decoder.h"
+#include "media/video_csd.h"
 #include "media/video_decoder.h"
 
 class MediaSession
@@ -57,7 +59,7 @@ class MediaSession
       int height);
 
  private:
-  void HandleVideoSizeChange(
+  void HandleVideoCsd(
       const uint8_t* frame,
       size_t size);
 
@@ -71,12 +73,7 @@ class MediaSession
   std::unique_ptr<VideoDecoder> video_decoder_;
   SurfaceTexture texture_;
   VideoCodecType video_codec_;
-
-  static const unsigned int kDefaultWidth = 1920;
-  static const unsigned int kDefaultHeight = 1080;
-
-  unsigned int width_ = kDefaultWidth;
-  unsigned int height_ = kDefaultHeight;
+  std::optional<VideoCsd> csd_;  // codec-specific data
 
   // audio
   std::unique_ptr<AudioDecoder> audio_decoder_;

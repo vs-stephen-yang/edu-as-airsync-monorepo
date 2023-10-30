@@ -4,6 +4,7 @@
 #include <android/native_window_jni.h>
 #include <memory>
 #include "media/media_format.h"
+#include "media/video_csd.h"
 
 class VideoDecoder {
  public:
@@ -32,8 +33,7 @@ typedef std::unique_ptr<VideoDecoder> VideoDecoderPtr;
 
 VideoDecoderPtr CreateVideoDecoder(
     VideoCodecType codec_type,
-    unsigned int width,
-    unsigned int height,
+    const VideoCsd&,
     ANativeWindow* surface,
     VideoDecoder::Callback* callback);
 
