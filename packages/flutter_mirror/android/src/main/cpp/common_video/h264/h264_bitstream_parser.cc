@@ -251,6 +251,8 @@ void H264BitstreamParser::ParseSlice(const uint8_t* slice, size_t length) {
   H264::NaluType nalu_type = H264::ParseNaluType(slice[0]);
   switch (nalu_type) {
     case H264::NaluType::kSps: {
+      raw_sps_.assign(slice, slice + length);
+
       sps_ = SpsParser::ParseSps(slice + H264::kNaluTypeSize,
                                  length - H264::kNaluTypeSize);
       if (!sps_)
@@ -258,6 +260,8 @@ void H264BitstreamParser::ParseSlice(const uint8_t* slice, size_t length) {
       break;
     }
     case H264::NaluType::kPps: {
+      raw_pps_.assign(slice, slice + length);
+
       pps_ = PpsParser::ParsePps(slice + H264::kNaluTypeSize,
                                  length - H264::kNaluTypeSize);
       if (!pps_)

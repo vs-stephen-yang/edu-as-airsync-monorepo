@@ -8,6 +8,17 @@ const std::string VideoDecoderNdk::kMimeVp8 = "video/x-vnd.on2.vp8";
 static const int64_t kDequeueInputTimeoutUs = 1000 * 1000;  // in microseconds
 static const int64_t kDequeueOutputTimeoutUs = 100 * 1000;  // in microseconds
 
+namespace {
+
+void SetFmtCsd(AMediaFormat* fmt, const char* name, const std::vector<uint8_t>& csd) {
+  if (csd.empty()) {
+    return;
+  }
+
+  AMediaFormat_setBuffer(fmt, name, csd.data(), csd.size());
+}
+
+}  // namespace
 VideoDecoderNdk::VideoDecoderNdk(
     VideoDecoder::Callback* callback)
     : callback_(callback),
@@ -35,6 +46,10 @@ bool VideoDecoderNdk::Init(
   // TODO: Do we need to specify valid width and height?
   AMediaFormat_setInt32(fmt.get(), AMEDIAFORMAT_KEY_WIDTH, csd.width);
   AMediaFormat_setInt32(fmt.get(), AMEDIAFORMAT_KEY_HEIGHT, csd.height);
+
+  // codec-specific data
+  SetFmtCsd(fmt.get(), "csd-0", csd.csd0);
+  SetFmtCsd(fmt.get(), "csd-1", csd.csd1);
 
   media_status_t status = AMediaCodec_configure(
       codec_.get(),

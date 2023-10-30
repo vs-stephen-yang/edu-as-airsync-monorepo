@@ -3,11 +3,6 @@
 #include "media/video_csd_util.h"
 #include "util/log.h"
 
-namespace {
-
-static const unsigned int kDefaultWidth = 1920;
-static const unsigned int kDefaultHeight = 1080;
-}  // namespace
 MediaSession::MediaSession(
     jni::TextureRegistry& texture_registry)
     : texture_registry_(texture_registry) {
@@ -33,26 +28,12 @@ bool MediaSession::Start(
     ALOGE("Failed to create surface texture");
     return false;
   }
-
-  // create video decoder
   video_codec_ = video_codec;
-  csd_ = std::make_optional<VideoCsd>(
-      kDefaultWidth,
-      kDefaultHeight);
-
-  if (!CreateVideoDecoder(video_codec)) {
-    return false;
-  }
 
   // create audio decoder
   if (!CreateAudioDecoder(
           audio_codec,
           audio_format)) {
-    return false;
-  }
-
-  if (!video_decoder_->Start()) {
-    ALOGE("Failed to start video decoder");
     return false;
   }
 
@@ -151,13 +132,13 @@ void MediaSession::OnVideoFrame(
     ALOGD("Received video key frame");
   }
 
+  HandleVideoCsd(
+      frame->data(),
+      frame->size());
+
   if (!video_decoder_) {
     return;
   }
-
-  HandleVideoSizeChange(
-      frame->data(),
-      frame->size());
 
   // decode video frame
   video_decoder_->Decode(

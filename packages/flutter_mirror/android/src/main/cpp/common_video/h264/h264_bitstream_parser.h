@@ -14,7 +14,7 @@
 #include <stdint.h>
 
 #include <optional>
-
+#include <vector>
 #include "common_video/h264/pps_parser.h"
 #include "common_video/h264/sps_parser.h"
 
@@ -34,7 +34,7 @@ class H264BitstreamParser {
   void ParseBitstream(std::span<const uint8_t> bitstream);
   std::optional<int> GetLastSliceQp() const;
 
-public:
+ public:
   enum Result {
     kOk,
     kInvalidStream,
@@ -48,6 +48,9 @@ public:
   // SPS/PPS state, updated when parsing new SPS/PPS, used to parse slices.
   std::optional<SpsParser::SpsState> sps_;
   std::optional<PpsParser::PpsState> pps_;
+
+  std::vector<uint8_t> raw_sps_;  // SPS NALU without start codes
+  std::vector<uint8_t> raw_pps_;  // PPS NALU without start codes
 
   // Last parsed slice QP.
   std::optional<int32_t> last_slice_qp_delta_;
