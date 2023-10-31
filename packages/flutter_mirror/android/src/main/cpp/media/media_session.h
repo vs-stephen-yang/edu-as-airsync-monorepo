@@ -47,8 +47,9 @@ class MediaSession
       uint64_t timestamp_us);
 
  private:
-  bool CreateVideoDecoder(
-      VideoCodecType codec_type);
+  bool InitVideoDecoder(
+      VideoCodecType codec_type,
+      bool use_software_decoder);
 
   bool CreateAudioDecoder(
       AudioCodecType audio_codec,
@@ -64,6 +65,9 @@ class MediaSession
       size_t size);
 
   void ResetVideoDecoder();
+
+  bool InitHardwareVideoDecoder();
+  bool InitSoftwareVideoDecoder();
 
   MediaSession::Listener* listener_ = nullptr;
 
