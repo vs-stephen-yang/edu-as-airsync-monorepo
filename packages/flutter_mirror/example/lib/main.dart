@@ -214,8 +214,7 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildVideoWidget() {
     print('_textureId, $_textureId');
     var video = AspectRatio(
       key: stickyKey,
@@ -240,6 +239,10 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
       ]),
     );
 
+    return videos;
+  }
+
+  Widget buildPinWidget() {
     var pin = Center(
         child: Visibility(
             visible: _pinVisibility,
@@ -252,7 +255,10 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
                   _pin,
                   style: const TextStyle(fontSize: 25),
                 )))));
+    return pin;
+  }
 
+  Widget buildActionButton() {
     var closeButton = FloatingActionButton.extended(
       onPressed: () {
         stopMirror();
@@ -304,6 +310,15 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
         ],
       ),
     );
+
+    return buttons;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final videos = buildVideoWidget();
+    final buttons = buildActionButton();
+    final pin = buildPinWidget();
 
     return MaterialApp(
       home: Scaffold(
