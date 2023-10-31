@@ -18,6 +18,7 @@ class VideoDecoderNdk
   static const std::string kMimeVp8;
 
   VideoDecoderNdk(
+      AMediaCodec* codec,
       VideoDecoder::Callback* callback);
 
   ~VideoDecoderNdk();
