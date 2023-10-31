@@ -64,21 +64,28 @@ void MediaSession::Stop() {
   ALOGD("MediaSession::Stop() done");
 }
 
-bool MediaSession::CreateVideoDecoder(
-    VideoCodecType codec_type) {
-  ALOGD("MediaSession::CreateVideoDecoder()");
+bool MediaSession::InitVideoDecoder(
+    VideoCodecType codec_type,
+    bool use_software_decoder) {
+  ALOGD("MediaSession::InitVideoDecoder()");
   assert(csd_);
 
   // create a video decoder that renders to the surface texture
   auto decoder = ::CreateVideoDecoder(
       codec_type,
-      false,
+      use_software_decoder,
       *csd_,
       texture_.wnd,
       this);
 
   if (!decoder) {
     ALOGE("Failed to create video decoder");
+    return false;
+  }
+
+  if (!decoder->Start()) {
+    ALOGE("Failed to start video decoder");
+    decoder->Stop();
     return false;
   }
 
@@ -182,6 +189,14 @@ void MediaSession::HandleVideoCsd(
   ResetVideoDecoder();
 }
 
+bool MediaSession::InitHardwareVideoDecoder() {
+  return InitVideoDecoder(video_codec_, false);
+}
+
+bool MediaSession::InitSoftwareVideoDecoder() {
+  return InitVideoDecoder(video_codec_, true);
+}
+
 void MediaSession::ResetVideoDecoder() {
   ALOGI("Reset video decoder");
 
@@ -190,13 +205,18 @@ void MediaSession::ResetVideoDecoder() {
   }
   video_decoder_.reset();
 
-  // create video decoder
-  if (!CreateVideoDecoder(video_codec_)) {
+  // initialize hardware video decoder
+  if (InitHardwareVideoDecoder()) {
+    return;
+  }
+  ALOGW("Falling back to software decoding");
+
+  // initialize software video decoder
+  if (InitSoftwareVideoDecoder()) {
     return;
   }
 
-  if (!video_decoder_->Start()) {
-    ALOGE("Failed to start video decoder");
-    return;
-  }
+  ALOGE("Failed to initialize video decoder");
+  // TODO:
+  return;
 }
