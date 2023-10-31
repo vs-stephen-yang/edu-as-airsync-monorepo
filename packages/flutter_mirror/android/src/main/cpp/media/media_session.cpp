@@ -72,6 +72,7 @@ bool MediaSession::CreateVideoDecoder(
   // create a video decoder that renders to the surface texture
   auto decoder = ::CreateVideoDecoder(
       codec_type,
+      false,
       *csd_,
       texture_.wnd,
       this);

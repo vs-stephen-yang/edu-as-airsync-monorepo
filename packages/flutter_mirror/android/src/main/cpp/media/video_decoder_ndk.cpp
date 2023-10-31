@@ -20,8 +20,10 @@ void SetFmtCsd(AMediaFormat* fmt, const char* name, const std::vector<uint8_t>& 
 
 }  // namespace
 VideoDecoderNdk::VideoDecoderNdk(
+    AMediaCodec* codec,
     VideoDecoder::Callback* callback)
-    : callback_(callback),
+    : codec_(codec),
+      callback_(callback),
       running_(false) {
 }
 
@@ -34,10 +36,6 @@ bool VideoDecoderNdk::Init(
     const VideoCsd& csd,
     ANativeWindow* surface) {
   assert(surface != nullptr);
-
-  codec_.reset(
-      AMediaCodec_createDecoderByType(mime.c_str()));
-  assert(codec_);
 
   AMediaFormatPtr fmt(AMediaFormat_new());
 
@@ -168,6 +166,17 @@ bool VideoDecoderNdk::DeliverDecodedFrame() {
 
   return false;
 }
+std::string GetSoftwareDecoderNameForCodecType(VideoCodecType codec_type) {
+  switch (codec_type) {
+    case VideoCodecType::kH264:
+      return "OMX.google.h264.decoder";
+    case VideoCodecType::kVp8:
+      return "OMX.google.vp8.decoder";
+    default:
+      // won't reach
+      assert(false);
+  }
+}
 
 std::string CodecType2Mime(VideoCodecType codec_type) {
   switch (codec_type) {
@@ -183,16 +192,34 @@ std::string CodecType2Mime(VideoCodecType codec_type) {
 
 VideoDecoderPtr CreateVideoDecoder(
     VideoCodecType codec_type,
+    bool use_software_decoder,
     const VideoCsd& csd,
     ANativeWindow* surface,
     VideoDecoder::Callback* callback) {
   assert(surface);
   assert(callback);
 
-  auto decoder = std::make_unique<VideoDecoderNdk>(callback);
+  AMediaCodec* codec = nullptr;
+
+  std::string mime_type = CodecType2Mime(codec_type);
+
+  if (use_software_decoder) {
+    std::string name = GetSoftwareDecoderNameForCodecType(codec_type);
+    codec = AMediaCodec_createCodecByName(name.c_str());
+  } else {
+    codec = AMediaCodec_createDecoderByType(mime_type.c_str());
+  }
+
+  if (!codec) {
+    return {};
+  }
+
+  auto decoder = std::make_unique<VideoDecoderNdk>(
+      codec,
+      callback);
 
   if (!decoder->Init(
-          CodecType2Mime(codec_type),
+          mime_type,
           csd,
           surface)) {
     return {};
