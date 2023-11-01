@@ -19,24 +19,35 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+class _Mirror {
+  String mirrorId;
+  int textureId;
+  bool audioEnabled = false;
+
+  double aspectRatio = 3 / 2;
+  bool sizeChanged = false;
+
+  Size videoWidgetSize = const Size(0, 0);
+  Offset videoWidgetOffset = const Offset(0, 0);
+
+  GlobalKey stickyKey = GlobalKey();
+
+  _Mirror(this.mirrorId, this.textureId);
+
+  void updateSize(int width, int height) {
+    aspectRatio = width / height;
+    sizeChanged = true;
+  }
+}
+
 class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
-  String? _mirrorId;
-  int? _textureId;
-
-  bool _audioEnabled = false;
-
-  double _aspectRatio = 3 / 2;
-  bool _sizeChanged = false;
-  Size _videoWidgetSize = const Size(0, 0);
-  Offset _videoWidgetOffset = const Offset(0, 0);
+  final _mirrors = <String, _Mirror>{};
 
   String _pin = "";
   bool _pinVisibility = false;
   Timer? _pinTimer;
 
   final _plugin = FlutterMirror();
-
-  GlobalKey stickyKey = GlobalKey();
 
   @override
   void initState() {
@@ -94,80 +105,71 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
     _pinTimer?.cancel();
     _pin = "";
     _pinVisibility = false;
-    _audioEnabled = false;
 
-    if (_mirrorId != null) {
-      _plugin.stopMirror(_mirrorId!);
-    }
+    final mirror = _Mirror(
+      mirrorId,
+      textureId,
+    );
+
+    _mirrors[mirrorId] = mirror;
 
     // enable audio
     _plugin.enableAudio(mirrorId, true);
-    _audioEnabled = true;
+    mirror.audioEnabled = true;
 
     if (!mounted) return;
 
-    setState(() {
-      _mirrorId = mirrorId;
-      _textureId = textureId;
-    });
+    setState(() {});
   }
 
   @override
   void onMirrorStop(String mirrorId) {
     _plugin.stopMirror(mirrorId);
 
-    if (_mirrorId != mirrorId) {
-      return;
-    }
-    setState(() {
-      _mirrorId = null;
-      _textureId = null;
-    });
+    _mirrors.remove(mirrorId);
+    setState(() {});
   }
 
   @override
   void onMirrorVideoResize(String mirrorId, int width, int height) {
     if (!mounted) return;
 
-    setState(() {
-      setState(() {
-        _aspectRatio = width / height;
-        _sizeChanged = true;
-      });
-    });
+    final mirror = _mirrors[mirrorId];
+
+    mirror?.updateSize(width, height);
+
+    setState(() {});
   }
 
-  void _getWidgetInfo(_) {
+  void _getWidgetInfo(_Mirror mirror) {
     final RenderBox renderBox =
-        stickyKey.currentContext?.findRenderObject() as RenderBox;
+        mirror.stickyKey.currentContext?.findRenderObject() as RenderBox;
     //stickyKey.currentContext?.size;
-    _sizeChanged = false;
 
-    _videoWidgetSize = renderBox.size;
+    mirror.videoWidgetSize = renderBox.size;
     print(
-        'Video widget size: ${_videoWidgetSize.width}, ${_videoWidgetSize.height}');
+        'Video widget size: ${mirror.videoWidgetSize.width}, ${mirror.videoWidgetSize.height}');
 
-    _videoWidgetOffset = renderBox.localToGlobal(Offset.zero);
+    mirror.videoWidgetOffset = renderBox.localToGlobal(Offset.zero);
     print(
-        'Video widget fffset: ${_videoWidgetOffset.dx}, ${_videoWidgetOffset.dy}');
+        'Video widget fffset: ${mirror.videoWidgetOffset.dx}, ${mirror.videoWidgetOffset.dy}');
   }
 
-  void _onTouchEvent(PointerEvent event) {
-    if (_mirrorId == null) {
-      return;
-    }
-    if (_sizeChanged) {
-      _getWidgetInfo(null);
+  void _onTouchEvent(_Mirror mirror, PointerEvent event) {
+    if (mirror.sizeChanged) {
+      _getWidgetInfo(mirror);
+
+      mirror.sizeChanged = false;
     }
 
     _plugin.onMirrorTouch(
-        _mirrorId!,
+        mirror.mirrorId,
         event.pointer,
         event.down,
-        ((event.position.dx.toInt() - _videoWidgetOffset.dx.toInt()) /
-            _videoWidgetSize.width.toInt()),
-        ((event.position.dy.toInt() - _videoWidgetOffset.dy.toInt()) /
-            _videoWidgetSize.height.toInt()));
+        ((event.position.dx.toInt() - mirror.videoWidgetOffset.dx.toInt()) /
+            mirror.videoWidgetSize.width.toInt()),
+        ((event.position.dy.toInt() - mirror.videoWidgetOffset.dy.toInt()) /
+            mirror.videoWidgetSize.height.toInt()));
   }
 
   Future<void> startServices() async {
@@ -193,53 +195,72 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
     await _plugin.stopMiracast();
   }
 
-  void toggleAudio() {
-    if (_mirrorId == null) {
-      return;
-    }
-    _audioEnabled = !_audioEnabled;
-    _plugin.enableAudio(_mirrorId!, _audioEnabled);
+  void toggleAudio(_Mirror mirror) {
+    mirror.audioEnabled = !mirror.audioEnabled;
+    _plugin.enableAudio(mirror.mirrorId, mirror.audioEnabled);
   }
 
-  void stopMirror() {
-    if (_mirrorId == null) {
-      return;
-    }
+  void stopMirror(_Mirror mirror) {
+    _mirrors.remove(mirror.mirrorId);
 
-    _plugin.stopMirror(_mirrorId!);
+    _plugin.stopMirror(mirror.mirrorId);
 
-    setState(() {
-      _mirrorId = null;
-      _textureId = null;
-    });
+    setState(() {});
   }
 
-  Widget buildVideoWidget() {
-    print('_textureId, $_textureId');
-    var video = AspectRatio(
-      key: stickyKey,
-      aspectRatio: _aspectRatio,
-      child: _textureId != null
-          ? Texture(textureId: _textureId!)
-          : const Text('video'),
+  Widget buildVideoWidget(_Mirror mirror) {
+    print('textureId, ${mirror.textureId}');
+
+    final closeButton = ElevatedButton(
+      onPressed: () {
+        stopMirror(mirror);
+      },
+      child: const Text("Close"),
     );
 
-    var videos = Container(
-      color: Colors.black,
-      child: Row(children: <Widget>[
-        Expanded(
-          child: Center(
-            child: Listener(
-                onPointerDown: _onTouchEvent,
-                onPointerMove: _onTouchEvent,
-                onPointerUp: _onTouchEvent,
-                child: video),
-          ),
+    final toggleAudioButton = ElevatedButton(
+      onPressed: () {
+        toggleAudio(mirror);
+      },
+      child: const Text("Mute"),
+    );
+
+    final buttons = Align(
+      alignment: Alignment.topRight,
+      child: Row(
+        children: [
+          closeButton,
+          toggleAudioButton,
+        ],
+      ),
+    );
+
+    final video = Listener(
+      onPointerDown: (PointerEvent event) {
+        _onTouchEvent(mirror, event);
+      },
+      onPointerMove: (PointerEvent event) {
+        _onTouchEvent(mirror, event);
+      },
+      onPointerUp: (PointerEvent event) {
+        _onTouchEvent(mirror, event);
+      },
+      child: AspectRatio(
+        key: mirror.stickyKey,
+        aspectRatio: mirror.aspectRatio,
+        child: Texture(textureId: mirror.textureId),
+      ),
+    );
+
+    return Stack(
+      children: [
+        Container(
+          color: Colors.black87,
+          child: Center(child: video),
         ),
-      ]),
+        buttons,
+      ],
     );
-
-    return videos;
   }
 
   Widget buildPinWidget() {
@@ -259,15 +280,6 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
   }
 
   Widget buildActionButton() {
-    var closeButton = FloatingActionButton.extended(
-      onPressed: () {
-        stopMirror();
-      },
-      label: const Text('close'),
-      icon: const Icon(Icons.close),
-      backgroundColor: Colors.pink,
-    );
-
     var startButton = FloatingActionButton.extended(
       onPressed: () {
         startServices();
@@ -286,15 +298,6 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
       backgroundColor: Colors.green,
     );
 
-    var toggleAudioButton = FloatingActionButton.extended(
-      onPressed: () {
-        toggleAudio();
-      },
-      label: const Text('audio'),
-      icon: const Icon(Icons.music_note),
-      backgroundColor: Colors.lightBlue,
-    );
-
     var buttons = Container(
       padding: const EdgeInsets.symmetric(
         vertical: 0,
@@ -303,8 +306,6 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          toggleAudioButton,
-          closeButton,
           startButton,
           stopButton,
         ],
@@ -314,16 +315,63 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
     return buttons;
   }
 
+  Widget buildVideoWidgets() {
+    if (_mirrors.isEmpty) {
+      return Container(color: Colors.grey);
+    }
+
+    if (_mirrors.length == 1) {
+      final mirror = _mirrors.entries.first.value;
+      return buildVideoWidget(mirror);
+    }
+
+    final videos = <Widget>[
+      Container(color: Colors.blue),
+      Container(color: Colors.blue),
+      Container(color: Colors.blue),
+      Container(color: Colors.blue),
+    ];
+
+    var index = 0;
+    for (var mirror in _mirrors.values) {
+      videos[index] = buildVideoWidget(mirror);
+      index += 1;
+    }
+
+    return Column(
+      children: [
+        Expanded(
+          flex: 1,
+          child: Row(children: [
+            Expanded(flex: 1, child: videos[0]),
+            Expanded(flex: 1, child: videos[1]),
+          ]),
+        ),
+        Expanded(
+          flex: 1,
+          child: Row(children: [
+            Expanded(flex: 1, child: videos[2]),
+            Expanded(flex: 1, child: videos[3]),
+          ]),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final videos = buildVideoWidget();
+    Widget videos = buildVideoWidgets();
+
     final buttons = buildActionButton();
     final pin = buildPinWidget();
 
     return MaterialApp(
       home: Scaffold(
         body: Stack(
-          children: <Widget>[videos, pin],
+          children: <Widget>[
+            videos,
+            pin,
+          ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: buttons,
