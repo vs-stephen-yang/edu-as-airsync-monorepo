@@ -245,7 +245,7 @@ public final class OTAHelper extends Observable {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             activity.finish();
             System.exit(0);
-        }, 1000);
+        }, (isArc(activity) ? 5000 : 1000));
     }
 
     private final BroadcastReceiver onComplete = new BroadcastReceiver() {
@@ -638,6 +638,14 @@ public final class OTAHelper extends Observable {
                 e.printStackTrace();
             }
         }
+    }
+
+    private boolean isArc(Context context) {
+        // Android Runtime for Chrome (ARC)
+        // https://stackoverflow.com/questions/39784415/how-to-detect-programmatically-if-android-app-is-running-in-chrome-book-or-in
+        // https://github.com/google/talkback/blame/9b1d5132b074174d02886faccf731e814d69363c/utils/src/main/java/FeatureSupport.java
+        boolean arc = context.getPackageManager().hasSystemFeature("org.chromium.arc.device_management");
+        return (Build.DEVICE != null && Build.DEVICE.matches(".+_cheets|cheets_.+")) || arc;
     }
     //-------------------------------------------------------------------------
     // endregion private Implementation
