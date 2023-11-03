@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 
 class AppConfig extends InheritedWidget {
   const AppConfig(
-      {Key? key,
+      {super.key,
       required this.settings,
       required String appName,
       required String appVersion,
-      required Widget child})
+      required super.child})
       : _appName = appName,
-        _appVersion = appVersion,
-        super(key: key, child: child);
+        _appVersion = appVersion;
 
   final ConfigSettings settings;
 
