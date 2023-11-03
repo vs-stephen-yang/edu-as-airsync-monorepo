@@ -1,10 +1,8 @@
-
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class DataDisplayCode {
-
   static final DataDisplayCode _instance = DataDisplayCode._internal();
+
   DataDisplayCode._internal();
 
   static DataDisplayCode getInstance() => _instance;
@@ -41,7 +39,6 @@ class DataDisplayCode {
         _displayCodeBox?.add(displayCode);
       }
     }
-
   }
 
   Future<List?> load() async {

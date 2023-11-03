@@ -73,15 +73,6 @@ class MyApp extends StatelessWidget {
               // for 'navService.popUntil('/home')'
               '/home': (context) => const Home(),
             },
-            onGenerateRoute: (routeSettings) {
-              switch (routeSettings.name) {
-                case '/home':
-                  return MaterialPageRoute<String>(
-                      builder: (context) => const Home());
-              }
-              return null;
-            },
-            // home: const Home(),
           );
         },
       ),

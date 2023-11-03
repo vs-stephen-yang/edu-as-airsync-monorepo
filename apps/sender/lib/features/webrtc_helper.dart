@@ -2,21 +2,21 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show HttpStatus, Platform;
 
+import 'package:collection/collection.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:display_cast_flutter/features/protoc/event.pb.dart';
+import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
+import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as io;
-import 'package:collection/collection.dart';
-
-import 'protoc/internal.pb.dart';
-import 'protoc/event.pb.dart';
-import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:window_size/window_size.dart';
 
 class WebRTCHelper {
-  WebRTCHelper(String getIceUrl, {bool touchBack = false, bool systemAudio = false}) {
+  WebRTCHelper(String getIceUrl,
+      {bool touchBack = false, bool systemAudio = false}) {
     _getIceUrl = getIceUrl;
     _touchBack = touchBack;
     _systemAudio = systemAudio;
@@ -75,9 +75,9 @@ class WebRTCHelper {
     _signalDisconnect();
   }
 
-  Future<void> disposeStream() async{
+  Future<void> disposeStream() async {
     try {
-      if(_localStream != null){
+      if (_localStream != null) {
         var stream = _localStream!;
         _localStream = null;
         await stream.dispose();
@@ -131,21 +131,23 @@ class WebRTCHelper {
   }
 
   Future<void> changeStreamFrameRate(int frameRate, int height) async {
-    if(height < _maxTrackHeight) {
+    if (height < _maxTrackHeight) {
       // make sure the width/height is not greater than the max width
-      _trackWidth = (_maxTrackWidth/(_maxTrackHeight/height)).toInt();
+      _trackWidth = _maxTrackWidth ~/ (_maxTrackHeight / height);
       _trackHeight = height;
     }
     final constraints = <String, dynamic>{
       'audio': _isAudioCaptureAllowed(),
-      'video': !WebRTC.platformIsDesktop ? true : {
-        'deviceId': _deviceId,
-        'mandatory': {
-          'frameRate': frameRate,
-        },
-        'width': _trackWidth.toString(),
-        'height': _trackHeight.toString(),
-      }
+      'video': !WebRTC.platformIsDesktop
+          ? true
+          : {
+              'deviceId': _deviceId,
+              'mandatory': {
+                'frameRate': frameRate,
+              },
+              'width': _trackWidth.toString(),
+              'height': _trackHeight.toString(),
+            }
     };
 
     _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
@@ -158,11 +160,13 @@ class WebRTCHelper {
 
   //endregion
 
-  bool _isTouchBackAllowed(){
-    return _isSourceTypeScreen && _touchBack && _localStream!.getTracks().first.enabled;
+  bool _isTouchBackAllowed() {
+    return _isSourceTypeScreen &&
+        _touchBack &&
+        _localStream!.getTracks().first.enabled;
   }
 
-  bool _isAudioCaptureAllowed(){
+  bool _isAudioCaptureAllowed() {
     if (WebRTC.platformIsWindows) {
       return _isSourceTypeScreen && _systemAudio;
     }
@@ -199,9 +203,7 @@ class WebRTCHelper {
         await _publish();
       }
 
-      if (type == 'chat-track-sources') {
-
-      }
+      if (type == 'chat-track-sources') {}
 
       if (type == "chat-signal") {
         await _handleSignal(msg['data']);
@@ -265,9 +267,9 @@ class WebRTCHelper {
     }
   }
 
-  Future<void> updateScreenSize() async{
+  Future<void> updateScreenSize() async {
     Screen? screen = await getCurrentScreen();
-    if(screen != null) {
+    if (screen != null) {
       _screenWidth = screen.frame.width;
       _screenHeight = screen.frame.height;
     }
@@ -300,7 +302,7 @@ class WebRTCHelper {
       _send('chat-stream-info', message: {
         'id': _localStream!.id,
         'tracks': [track.id],
-        'source': {'audio':'screen-cast', 'video':'screen-cast'}
+        'source': {'audio': 'screen-cast', 'video': 'screen-cast'}
       });
     }
 
@@ -320,7 +322,8 @@ class WebRTCHelper {
     try {
       await _pc!.setLocalDescription(fixedOffer);
 
-      _send('chat-signal', message: {'type': fixedOffer.type, 'sdp': fixedOffer.sdp});
+      _send('chat-signal',
+          message: {'type': fixedOffer.type, 'sdp': fixedOffer.sdp});
     } catch (e) {
       debugModePrint(e, type: runtimeType);
       hangUp(); //todo: message?
@@ -351,7 +354,8 @@ class WebRTCHelper {
       RTCSessionDescription fixedAnswer = SdpUtil.fixSdp(answer);
       await _pc!.setLocalDescription(fixedAnswer);
       // send answer to the peer
-      _send('chat-signal', message: {'type': fixedAnswer.type, 'sdp': fixedAnswer.sdp});
+      _send('chat-signal',
+          message: {'type': fixedAnswer.type, 'sdp': fixedAnswer.sdp});
     } else if (type == 'answer') {
       // handle answer from the peer
       final answer = RTCSessionDescription(msg['sdp'], type);
@@ -378,17 +382,20 @@ class WebRTCHelper {
   }
 
   void _onMessage(RTCDataChannelMessage data) async {
-    if(data.isBinary ) {
+    if (data.isBinary) {
       // touch event data
-      if(_isTouchBackAllowed()) {
+      if (_isTouchBackAllowed()) {
         EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
-        if(eventMessage.hasTouchEvent()) {
+        if (eventMessage.hasTouchEvent()) {
           int action = FlutterInputInjection.TOUCH_POINT_START;
-          if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_START) {
+          if (eventMessage.touchEvent.eventType ==
+              TouchEvent_TouchEventType.TOUCH_POINT_START) {
             action = FlutterInputInjection.TOUCH_POINT_START;
-          } else if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
+          } else if (eventMessage.touchEvent.eventType ==
+              TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
             action = FlutterInputInjection.TOUCH_POINT_MOVE;
-          } else if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_END) {
+          } else if (eventMessage.touchEvent.eventType ==
+              TouchEvent_TouchEventType.TOUCH_POINT_END) {
             action = FlutterInputInjection.TOUCH_POINT_END;
           }
           int id = eventMessage.touchEvent.touchPoints[0].id;
@@ -428,11 +435,12 @@ class WebRTCHelper {
     debugModePrint(state, type: runtimeType);
   }
 
-  void _onPeerConnectionState(RTCPeerConnectionState state) async{
+  void _onPeerConnectionState(RTCPeerConnectionState state) async {
     debugModePrint(state, type: runtimeType);
-    if(state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
+    if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
       var senders = await _pc!.getSenders();
-      var sender = senders.firstWhereOrNull((sender) => sender.track?.kind == 'video');
+      var sender =
+          senders.firstWhereOrNull((sender) => sender.track?.kind == 'video');
       var params = sender!.parameters;
       params.degradationPreference = RTCDegradationPreference.DISABLED;
       await sender.setParameters(params);
@@ -456,7 +464,8 @@ class WebRTCHelper {
     String? version, type;
     if (WebRTC.platformIsMacOS) {
       final macOsInfo = await deviceInfo.macOsInfo;
-      version = '${macOsInfo.majorVersion}.${macOsInfo.minorVersion}.${macOsInfo.patchVersion}';
+      version =
+          '${macOsInfo.majorVersion}.${macOsInfo.minorVersion}.${macOsInfo.patchVersion}';
       type = 'Mac OS';
     } else if (WebRTC.platformIsWindows) {
       final windowsInfo = await deviceInfo.windowsInfo;
@@ -475,4 +484,3 @@ class WebRTCHelper {
     };
   }
 }
-
