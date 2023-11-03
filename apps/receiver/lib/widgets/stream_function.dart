@@ -32,7 +32,7 @@ const String stateCast = 'cast';
 const String stateBackArrow = 'backArrow';
 
 class StreamFunction extends StatefulWidget {
-  const StreamFunction({Key? key}) : super(key: key);
+  const StreamFunction({super.key});
 
   static bool showDebugFunction = false;
   static ValueNotifier<String> streamFunctionState =

@@ -2,7 +2,7 @@ import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:flutter/material.dart';
 
 class LoadingIcon extends StatefulWidget {
-  const LoadingIcon({Key? key}) : super(key: key);
+  const LoadingIcon({super.key});
 
   @override
   State<StatefulWidget> createState() => LoadingIconState();

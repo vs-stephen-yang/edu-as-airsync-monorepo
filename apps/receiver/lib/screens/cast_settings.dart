@@ -10,7 +10,7 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
 class CastSettings extends StatelessWidget {
-  const CastSettings({Key? key}) : super(key: key);
+  const CastSettings({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -141,12 +141,11 @@ class CastSettings extends StatelessWidget {
 
 class CastSettingItem extends StatelessWidget {
   const CastSettingItem(
-      {Key? key,
+      {super.key,
       required this.iconData,
       required this.name,
       required this.enabled,
-      required this.callback})
-      : super(key: key);
+      required this.callback});
 
   final IconData iconData;
   final String name;

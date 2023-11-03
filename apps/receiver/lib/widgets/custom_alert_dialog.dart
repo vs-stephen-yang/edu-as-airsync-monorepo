@@ -7,13 +7,13 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 
 class CustomAlertDialog extends StatefulWidget {
   const CustomAlertDialog({
-    Key? key,
+    super.key,
     required this.title,
     required this.description,
     required this.positiveButton,
     required this.onPositive,
     required this.onNegative,
-  }) : super(key: key);
+  });
 
   final String title, description, positiveButton;
   final VoidCallback onPositive, onNegative;

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TextClock extends StatefulWidget {
-  const TextClock({Key? key}) : super(key: key);
+  const TextClock({super.key});
 
   @override
   State createState() => _TextClockState();

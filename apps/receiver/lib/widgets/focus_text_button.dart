@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 class FocusTextButton extends StatefulWidget {
   const FocusTextButton(
-      {Key? key,
+      {super.key,
       required this.child,
       this.onClick,
       this.style,
@@ -16,8 +16,7 @@ class FocusTextButton extends StatefulWidget {
       this.hasFocusWidth,
       this.hasFocusHeight,
       this.notFocusWidth,
-      this.notFocusHeight})
-      : super(key: key);
+      this.notFocusHeight});
 
   final Widget child;
 

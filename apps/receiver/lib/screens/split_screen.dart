@@ -16,7 +16,7 @@ const String keySplitScreenCount = 'count';
 const String keySplitScreenLastId = 'lastId';
 
 class SplitScreen extends StatefulWidget {
-  const SplitScreen({Key? key, this.onUpdateParentUI}) : super(key: key);
+  const SplitScreen({super.key, this.onUpdateParentUI});
 
   static ValueNotifier<Map<String, dynamic>> mapSplitScreen =
       ValueNotifier({keySplitScreenEnable: false, keySplitScreenCount: 0});

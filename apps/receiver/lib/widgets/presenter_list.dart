@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PresenterList extends StatefulWidget {
-  const PresenterList({Key? key, this.onUnSetLogOut}) : super(key: key);
+  const PresenterList({super.key, this.onUnSetLogOut});
 
   final VoidCallback? onUnSetLogOut;
 

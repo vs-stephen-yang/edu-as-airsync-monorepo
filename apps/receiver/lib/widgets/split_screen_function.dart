@@ -7,8 +7,7 @@ import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 
 class SplitScreenFunction extends StatelessWidget {
-  const SplitScreenFunction({Key? key, required this.index, this.updateSize})
-      : super(key: key);
+  const SplitScreenFunction({super.key, required this.index, this.updateSize});
   static ValueNotifier<List<bool>> isMenuOnList =
       ValueNotifier(List.filled(4, false, growable: false));
 

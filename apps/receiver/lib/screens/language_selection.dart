@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class LanguageSelection extends StatefulWidget {
-  const LanguageSelection({Key? key}) : super(key: key);
+  const LanguageSelection({super.key});
 
   @override
   State createState() => _LanguageSelectionState();

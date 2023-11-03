@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 
 class FocusIconButton extends StatefulWidget {
   const FocusIconButton(
-      {Key? key,
+      {super.key,
       this.icons,
       this.childHasFocus,
       this.childNotFocus,
@@ -17,8 +17,7 @@ class FocusIconButton extends StatefulWidget {
       this.iconBackgroundColor,
       this.iconFocusForegroundColor,
       this.iconFocusBackgroundColor,
-      this.isAddGreenDot = false})
-      : super(key: key);
+      this.isAddGreenDot = false});
 
   final IconData? icons;
   final Widget? childHasFocus;

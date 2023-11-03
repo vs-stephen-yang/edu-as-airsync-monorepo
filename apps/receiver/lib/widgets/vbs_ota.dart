@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class VbsOTA extends StatefulWidget {
-  const VbsOTA({Key? key}) : super(key: key);
+  const VbsOTA({super.key});
 
   @override
   State createState() => _VbsOTAState();

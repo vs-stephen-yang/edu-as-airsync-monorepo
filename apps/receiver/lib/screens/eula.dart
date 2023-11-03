@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class Eula extends StatefulWidget {
-  const Eula({Key? key}) : super(key: key);
+  const Eula({super.key});
 
   @override
   State createState() => _EulaState();

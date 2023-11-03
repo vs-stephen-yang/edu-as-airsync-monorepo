@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
 
 class MirrorView extends StatelessWidget {
-  const MirrorView({Key? key}) : super(key: key);
+  const MirrorView({super.key});
 
   @override
   Widget build(BuildContext context) {
