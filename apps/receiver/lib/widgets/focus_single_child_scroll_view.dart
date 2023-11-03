@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 
 class FocusSingleChildScrollView extends StatefulWidget {
   const FocusSingleChildScrollView({
-    Key? key,
+    super.key,
     required this.textContent,
     this.textColor,
-  }) : super(key: key);
+  });
 
   final String textContent;
   final Color? textColor;

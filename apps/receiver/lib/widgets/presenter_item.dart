@@ -10,7 +10,7 @@ import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 
 class PresenterItem extends StatefulWidget {
-  const PresenterItem({Key? key, required this.index}) : super(key: key);
+  const PresenterItem({super.key, required this.index});
 
   final int index;
 

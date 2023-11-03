@@ -18,7 +18,7 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
 class ModeratorView extends StatefulWidget {
-  const ModeratorView({Key? key, this.onUpdateParentUI}) : super(key: key);
+  const ModeratorView({super.key, this.onUpdateParentUI});
   static ValueNotifier<bool> showModeratorMessage = ValueNotifier(false);
   final VoidCallback? onUpdateParentUI;
 

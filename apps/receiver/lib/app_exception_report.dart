@@ -212,7 +212,7 @@ class CloseableMultipartRequest extends http.MultipartRequest
   io_client.IOClient client = io_client.IOClient(HttpClient());
   bool _isCloseByUser = false;
 
-  CloseableMultipartRequest(String method, Uri uri) : super(method, uri) {
+  CloseableMultipartRequest(super.method, super.uri) {
     _isCloseByUser = false;
   }
 

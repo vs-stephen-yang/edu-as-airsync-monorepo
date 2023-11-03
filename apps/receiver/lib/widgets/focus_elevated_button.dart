@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 class FocusElevatedButton extends StatefulWidget {
   const FocusElevatedButton(
-      {Key? key,
+      {super.key,
       required this.child,
       this.onClick,
       this.style,
@@ -17,8 +17,7 @@ class FocusElevatedButton extends StatefulWidget {
       this.hasFocusWidth,
       this.hasFocusHeight,
       this.notFocusWidth,
-      this.notFocusHeight})
-      : super(key: key);
+      this.notFocusHeight});
 
   final Widget child;
 

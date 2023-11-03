@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class WhatsNew extends StatefulWidget {
-  const WhatsNew({Key? key}) : super(key: key);
+  const WhatsNew({super.key});
 
   @override
   State createState() => _WhatsNewState();

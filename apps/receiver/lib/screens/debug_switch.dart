@@ -3,13 +3,12 @@ import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/focus_text_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class DebugSwitch extends StatefulWidget {
   static ValueNotifier<String> debugPanelLog = ValueNotifier('');
   static StringBuffer log = StringBuffer();
-  const DebugSwitch({Key? key}) : super(key: key);
+  const DebugSwitch({super.key});
 
   @override
   State createState() => _DebugSwitchState();

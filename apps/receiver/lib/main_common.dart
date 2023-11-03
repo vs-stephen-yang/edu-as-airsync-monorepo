@@ -58,7 +58,7 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
   static ValueNotifier<bool> updatedLocale = ValueNotifier(false);
   static bool isInBackgroundMode = false;
   static Timer? _timerControlSocket;

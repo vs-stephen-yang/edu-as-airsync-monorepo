@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class StatusBar extends StatefulWidget {
-  const StatusBar({Key? key}) : super(key: key);
+  const StatusBar({super.key});
   static ValueNotifier<bool> showReamingTime = ValueNotifier(false);
   static ValueNotifier<bool> showReamingTimeAlert = ValueNotifier(false);
   static ValueNotifier<bool> showNetworkStatus = ValueNotifier(false);

@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 
 class MenuDialog extends StatelessWidget {
   const MenuDialog(
-      {Key? key,
+      {super.key,
       this.backgroundColor,
       this.alignment = Alignment.bottomLeft,
       this.edgeInsets = const EdgeInsets.fromLTRB(20, 0, 0, 140),
       this.menuSize,
-      this.child})
-      : super(key: key);
+      this.child});
 
   final Color? backgroundColor;
   final AlignmentGeometry? alignment;

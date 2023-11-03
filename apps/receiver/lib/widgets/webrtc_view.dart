@@ -16,7 +16,7 @@ typedef WebRTCFlutterViewCreatedCallback = void Function(
     WebRTCFlutterViewSocket controller);
 
 class WebRTCFlutterView extends StatefulWidget {
-  const WebRTCFlutterView({Key? key, required this.callback}) : super(key: key);
+  const WebRTCFlutterView({super.key, required this.callback});
   final WebRTCFlutterViewCreatedCallback callback;
 
   @override

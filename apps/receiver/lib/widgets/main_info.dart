@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainInfo extends StatefulWidget {
-  const MainInfo({Key? key}) : super(key: key);
+  const MainInfo({super.key});
   static ValueNotifier<bool> showMainInfo = ValueNotifier(true);
 
   static MainInfoBloc? _mainInfoBloc;
