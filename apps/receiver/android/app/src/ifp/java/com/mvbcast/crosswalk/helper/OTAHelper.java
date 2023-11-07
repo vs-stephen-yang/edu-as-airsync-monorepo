@@ -1,5 +1,8 @@
 package com.mvbcast.crosswalk.helper;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -33,6 +36,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.mvbcast.crosswalk.BuildConfig;
 import com.mvbcast.crosswalk.EulaActivity;
 import com.mvbcast.crosswalk.R;
@@ -647,6 +651,16 @@ public final class OTAHelper extends Observable {
         boolean arc = context.getPackageManager().hasSystemFeature("org.chromium.arc.device_management");
         return (Build.DEVICE != null && Build.DEVICE.matches(".+_cheets|cheets_.+")) || arc;
     }
+
+    private boolean isCastSDKAvailable(Context context) {
+        // check Google Play services availability
+        int googlePlayServicesAvailability =
+                GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context);
+
+        // check Cast SDK availability
+        return googlePlayServicesAvailability ==
+                com.google.android.gms.common.ConnectionResult.SUCCESS;
+    }
     //-------------------------------------------------------------------------
     // endregion private Implementation
 
@@ -825,7 +839,13 @@ public final class OTAHelper extends Observable {
         boolean handle = false;
         if (requestCode == GET_UNKNOWN_APP_SOURCES) {
             handle = true;
-            if (resultCode == -1) {
+            if (resultCode == RESULT_OK) {
+                OpenNewVersion(activity);
+            } else if (resultCode == RESULT_CANCELED && isCastSDKAvailable(activity)) {
+                // Duo to Chromecast use different UI,
+                // user will use "Back" key to return previous menu.
+                // However the "Back" key will sent "RESULT_CANCELED",
+                // we need some workaround here to install apk.
                 OpenNewVersion(activity);
             } else {
                 Toast.makeText(activity, activity.getString(R.string.update_permission), Toast.LENGTH_LONG).show();
