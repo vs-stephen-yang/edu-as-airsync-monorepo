@@ -7,7 +7,8 @@ class TitleBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AppConfig? appConfig = AppConfig.of(context);
-    return SizedBox(
+    return Container(
+      padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
       width: 300,
       child: Row(
         children: [
@@ -23,7 +24,7 @@ class TitleBar extends StatelessWidget {
               ),
             ),
           ),
-          const Spacer(),
+          const Padding(padding: EdgeInsets.all(5.0)),
           Text(
             'Ver ${appConfig?.appVersion}',
             style: const TextStyle(

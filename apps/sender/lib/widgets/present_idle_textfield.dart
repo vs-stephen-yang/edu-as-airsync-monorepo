@@ -99,6 +99,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                                   height: 40,
                                   alignment: Alignment.centerLeft,
                                   padding: const EdgeInsets.only(left: 15),
+                                  color: Colors.black12,
                                   child: Text(list[index])),
                               onTap: () {
                                 _codeController.text = list[index];
