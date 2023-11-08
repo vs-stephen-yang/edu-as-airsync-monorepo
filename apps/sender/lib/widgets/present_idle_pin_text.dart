@@ -8,25 +8,22 @@ import 'package:provider/provider.dart';
 
 import 'custom_text_form_field.dart';
 
-class PresentIdleTextField extends StatefulWidget {
-  const PresentIdleTextField({super.key, required this.onFieldChanged, required this.onPasswordEnterEvent});
+class PresentIdlePinText extends StatefulWidget {
+  const PresentIdlePinText({super.key, required this.onFieldChanged, required this.onPasswordEnterEvent});
 
   final ValueChanged<FieldResult> onFieldChanged;
   final ValueChanged<String> onPasswordEnterEvent;
 
   @override
-  State<StatefulWidget> createState() => PresentIdleTextFieldState();
+  State<StatefulWidget> createState() => PresentIdlePinTextState();
 
 }
 
-class PresentIdleTextFieldState extends State<PresentIdleTextField> {
+class PresentIdlePinTextState extends State<PresentIdlePinText> {
 
   final TextEditingController _codeController = TextEditingController();
-  final TextEditingController _otpController = TextEditingController();
   final FocusNode _codeFocusNode = FocusNode();
-  final FocusNode _otpFocusNode = FocusNode();
   final GlobalKey<CustomTextFormFieldState> codeKey = GlobalKey();
-  final GlobalKey<CustomTextFormFieldState> otpKey = GlobalKey();
   late OverlayEntry _overlayEntry;
   final LayerLink _layerLink = LayerLink();
   bool _isOverlayVisible = false;
@@ -40,19 +37,12 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         _codeController.selection = TextSelection(baseOffset: 0, extentOffset: _codeController.text.length);
       }
     });
-    _otpFocusNode.addListener(() {
-      if (_otpFocusNode.hasFocus) {
-        _otpController.selection = TextSelection(baseOffset: 0, extentOffset: _otpController.text.length);
-      }
-    });
   }
 
   @override
   void dispose() {
     _codeController.dispose();
-    _otpController.dispose();
     _codeFocusNode.dispose();
-    _otpFocusNode.dispose();
     super.dispose();
   }
 
@@ -135,20 +125,20 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               controller: _codeController,
               focusNode: _codeFocusNode,
               // initialValue: displayCode,
-              labelText: S.of(context).main_display_code,
+              labelText: 'PIN code',
               errorText: S.of(context).main_display_code_description,
               inputFormatter: [
                 MaskedInputFormatter(
-                  '000-000-000-0',
+                  '0000',
                   allowedCharMatcher: RegExp('[1-9]'),
                 )
               ],
               onChanged: (text) {
                 bool presentBtnEnable = false;
-                if (text.length >= 11 && _otpController.text.length == 4) {
+                if (text.length == 4) {
                   presentBtnEnable = true;
                 }
-                widget.onFieldChanged(FieldResult(enable: presentBtnEnable, displayCode: text, password: _otpController.text));
+                widget.onFieldChanged(FieldResult(enable: presentBtnEnable, displayCode: text));
               },
               onTap: () async {
                 await DataDisplayCode.getInstance().load();
@@ -159,38 +149,9 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                 }
               },
               onFieldSubmitted: (text) {
-                _otpFocusNode.requestFocus();
+
               },
             ),
-          ),
-        ),
-        const Padding(padding: EdgeInsets.all(10)),
-        SizedBox(
-          width: 250,
-          height: 66,
-          child: CustomTextFormField(
-            key: otpKey,
-            controller: _otpController,
-            focusNode: _otpFocusNode,
-            // initialValue: otp,
-            labelText: S.of(context).main_password,
-            errorText: S.of(context).main_password_description,
-            inputFormatter: [
-              MaskedInputFormatter(
-                '0000',
-                allowedCharMatcher: RegExp('[1-9]'),
-              )
-            ],
-            onChanged: (text) {
-              bool presentBtnEnable = false;
-              if (_codeController.text.length >= 11 && text.length == 4) {
-                presentBtnEnable = true;
-              }
-              widget.onFieldChanged(FieldResult(enable: presentBtnEnable, displayCode: _codeController.text, password: text));
-            },
-            onFieldSubmitted: (text) {
-              widget.onPasswordEnterEvent(text);
-            },
           ),
         ),
         const Padding(padding: EdgeInsets.all(10)),
@@ -199,14 +160,13 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
   }
 
   void setOtpErrorMsg(String text) {
-    otpKey.currentState?.setErrorMsg(text);
+
   }
 }
 
 class FieldResult {
   bool enable = false;
   String displayCode;
-  String password;
 
-  FieldResult({required this.enable, required this.displayCode, required this.password});
+  FieldResult({required this.enable, required this.displayCode});
 }
