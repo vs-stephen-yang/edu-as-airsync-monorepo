@@ -1,3 +1,4 @@
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
@@ -28,6 +29,7 @@ class _HomeState extends State<Home> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: PresentStateProvider(context)),
+        ChangeNotifierProvider.value(value: ChannelProvider(context)),
       ],
       child: Scaffold(
         body: ConstrainedBox(
@@ -50,20 +52,20 @@ class _HomeState extends State<Home> {
                   bottom: 0,
                   child: BottomBar(),
                 ),
-                Consumer<PresentStateProvider>(
-                  builder: (context, provider, child) {
-                    debugModePrint('PresentState: ${provider.state}');
+                Consumer2<PresentStateProvider, ChannelProvider>(
+                  builder: (context, present, channel, child) {
+                    debugModePrint('PresentState: ${present.state}');
                     FlutterWindowClose.setWindowShouldCloseHandler(() async {
-                      await provider.presentStop();
-                      await provider.presentEnd(goIdleState: false);
+                      await present.presentStop();
+                      await present.presentEnd(goIdleState: false);
                       return true;
                     });
 
-                    switch (provider.state) {
+                    switch (present.state) {
                       case ViewState.idle:
                         return PresentIdle();
                       case ViewState.moderatorIdle:
-                        return ModeratorIdle(displayCode: provider.displayCode, otp: provider.otp);
+                        return ModeratorIdle(displayCode: present.displayCode, otp: present.otp);
                       case ViewState.moderatorWait:
                         return const ModeratorWait();
                       case ViewState.waitReady:
