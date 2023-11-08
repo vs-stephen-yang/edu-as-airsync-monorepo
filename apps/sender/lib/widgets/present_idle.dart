@@ -1,11 +1,14 @@
 
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
-import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
+import 'package:display_cast_flutter/widgets/present_idle_lan_off.dart';
+import 'package:display_cast_flutter/widgets/present_idle_lan_on.dart';
+import 'package:display_cast_flutter/widgets/present_idle_net_off.dart';
+import 'package:display_cast_flutter/widgets/present_idle_net_on.dart';
 import 'package:display_cast_flutter/widgets/present_idle_textfield.dart';
-import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -20,105 +23,52 @@ class PresentIdle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PresentStateProvider presentStateProvider =
-        Provider.of<PresentStateProvider>(context);
-    bool presentBtnEnable = false;
-    String displayCode = '', password ='', displayCodeOriginal = '';
-    return SizedBox(
-      width: AppConstants.viewStateMenuWidth,
-      height: AppConstants.viewStateMenuHeight,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const TitleBar(),
-          const Padding(
-            padding: EdgeInsets.only(top: 20),
-          ),
-          PresentIdleTextField(
-            key: fieldKey,
-            onFieldChanged: (result) {
-              presentBtnEnable = result.enable;
-              displayCodeOriginal = result.displayCode;
-              displayCode = result.displayCode.replaceAll('-', '');
-              password = result.password;
-              presentBtnKey.currentState?.setEnable(result.enable,
-                  displayCode: result.displayCode, password: result.password);
-            },
-            onPasswordEnterEvent: (text) {
-              if (presentBtnEnable) {
-                presentBtnKey.currentState?.widget.onPressed!();
-              }
-            },
-          ),
-          PresentIdleButton(key: presentBtnKey, onPressed: () async {
-            await presentStateProvider.presentEnd(goIdleState: false);
-
-            displayCode = displayCode.replaceAll('-', '');
-            int moderator = await presentStateProvider.checkModeratorOTP(
-                displayCode: displayCode, otp: password);
-            if (moderator > 204 ||
-                presentStateProvider.state == ViewState.moderatorIdle) {
-              switch (moderator) {
-                case 403:
-                // 403 -> Reach maximum presenters
-                  fieldKey.currentState?.setOtpErrorMsg(S.of(context).main_display_code_exceed);
-                  break;
-                case 404:
-                // 404 -> sendToV1
-                  await presentStateProvider.presentToV1(
-                      displayCode: displayCode,
-                      otp: password,
-                      callback: (result) async {
-                        // handle UI
-                        if (result == 'connect') {
-                          // web: open a new window
-                        } else if (result == 'denied') {
-                          fieldKey.currentState
-                              ?.setOtpErrorMsg('Invalid password');
-                        } else if (result == 'blocked') {
-                          fieldKey.currentState?.setOtpErrorMsg(
-                              'Display host is connected by another client. Please try again later');
-                        } else if (result == 'timeout') {
-                          fieldKey.currentState?.setOtpErrorMsg(
-                              'Your connection has been terminated because no stream was provided for more than 30 seconds. Please try to reconnect.');
-                        }
-                      });
-                  break;
-                case 406:
-                // Display's moderator mode is on,  but the otp is wrong
-                // 406 -> Invalid one time password
-                  fieldKey.currentState
-                      ?.setOtpErrorMsg(S.of(context).main_password_invalid);
-                  break;
-              }
-              return;
-            }
-
-            bool display = await presentStateProvider.checkDisplayOTP(
-                displayCode: displayCode, otp: password);
-            if (display) {
-              DataDisplayCode.getInstance().save(displayCodeOriginal);
-              presentStateProvider.presentTo(
-                displayCode: displayCode,
-                otp: password,
-              );
-            }
-          }),
-          const Padding(
-            padding: EdgeInsets.only(top: 16), //EdgeInsets.all(8),
-            child: Divider(color: Colors.white10),
-          ),
-          Row(
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: AppConstants.viewStateMenuWidth,
+              child: channelProvider.currentMode == Mode.internet? PresentIdleNetOn(): PresentIdleNetOff(),
+            ),
+            SizedBox(
+              width: AppConstants.viewStateMenuWidth,
+              child: channelProvider.currentMode == Mode.lan? PresentIdleLanOn(): PresentIdleLanOff(),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 80,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                flex: 1,
-                child: Container(
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 5),
-                  child: const Image(
-                    height: 18,
-                    image: Svg('assets/images/touch_app_black.svg'),
-                  ),
+              Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.only(right: 5),
+                child: const Icon(
+                  Icons.settings,
+                  size: 18,
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+                S.of(context).main_setting,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(width: 20,),
+              Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.only(right: 5),
+                child: const Image(
+                  height: 18,
+                  image: Svg('assets/images/touch_app_black.svg'),
                 ),
               ),
               Text(
@@ -128,56 +78,20 @@ class PresentIdle extends StatelessWidget {
                   fontSize: 14,
                 ),
               ),
-              Expanded(
-                flex: 1,
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: TouchBackButton(
-                    key: touchBtnKey,
-                    initialValue: presentStateProvider.touchBack,
-                    onPressed: (state) {
-                      presentStateProvider.setTouchBack(state);
-                    },
-                  ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TouchBackButton(
+                  key: touchBtnKey,
+                  initialValue: presentStateProvider.touchBack,
+                  onPressed: (state) {
+                    presentStateProvider.setTouchBack(state);
+                  },
                 ),
-              )
+              ),
             ],
           ),
-          InkWell(
-            onTap: () {
-              presentStateProvider.setViewState(ViewState.settings);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                    flex: 1,
-                    child: Container(
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.only(right: 5),
-                      child: const Icon(
-                        Icons.settings,
-                        size: 18,
-                        color: Colors.white,
-                      ),
-                    )),
-                Text(
-                  S.of(context).main_setting,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                  ),
-                ),
-                const Expanded(flex: 1, child: SizedBox()),
-              ],
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(top: 16),
-            child: Divider(color: Colors.white10),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

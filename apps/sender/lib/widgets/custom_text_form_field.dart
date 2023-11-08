@@ -31,11 +31,11 @@ class CustomTextFormField extends StatefulWidget {
 }
 class CustomTextFormFieldState extends State<CustomTextFormField> {
 
-  TextStyle errorTextStyle = const TextStyle(color: Colors.white38);
+  TextStyle errorTextStyle = const TextStyle(color: Color.fromRGBO(153, 153, 153, 1));
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyleWhite = const TextStyle(color: Colors.white);
+    TextStyle textStyleWhite = const TextStyle(color: Colors.grey);
     OutlineInputBorder outlineInputBorderBlue = const OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(6.0)),
       borderSide: BorderSide(width: 1, color: Colors.blue),
@@ -49,6 +49,8 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
       focusNode: widget.focusNode,
       // initialValue: initialValue,
       decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
         labelText: widget.labelText,
         labelStyle: textStyleWhite,
         floatingLabelStyle: textStyleWhite,
