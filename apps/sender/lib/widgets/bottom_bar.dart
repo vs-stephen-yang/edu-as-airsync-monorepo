@@ -10,7 +10,7 @@ class BottomBar extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Image.asset(
                 'assets/images/ic_logo_build_by.png',

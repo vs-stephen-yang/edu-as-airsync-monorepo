@@ -59,7 +59,10 @@ class PresentIdleLanOn extends StatelessWidget {
             },
           ),
           const Spacer(),
-          PresentIdleButton(key: presentBtnKey, onPressed: () async {}),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 25),
+            child: PresentIdleButton(key: presentBtnKey, onPressed: () async {}),
+          ),
         ],
       ),
     );

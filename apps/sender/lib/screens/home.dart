@@ -12,6 +12,7 @@ import 'package:display_cast_flutter/widgets/present_present_start.dart';
 import 'package:display_cast_flutter/widgets/present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/settings.dart';
+import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
@@ -52,6 +53,11 @@ class _HomeState extends State<Home> {
                   bottom: 0,
                   child: BottomBar(),
                 ),
+                const Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    child: TitleBar()),
                 Consumer2<PresentStateProvider, ChannelProvider>(
                   builder: (context, present, channel, child) {
                     debugModePrint('PresentState: ${present.state}');

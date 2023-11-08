@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
-import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,7 +45,6 @@ class PresentPresentStart extends StatelessWidget {
       height: AppConstants.viewStateMenuHeight,
       child: Column(
         children: [
-          const TitleBar(),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 50, 0, 30),
             child: Text(

@@ -41,55 +41,88 @@ class PresentIdle extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(
-          height: 80,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.only(right: 5),
-                child: const Icon(
-                  Icons.settings,
-                  size: 18,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                S.of(context).main_setting,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(width: 20,),
-              Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.only(right: 5),
-                child: const Image(
-                  height: 18,
-                  image: Svg('assets/images/touch_app_black.svg'),
-                ),
-              ),
-              Text(
-                S.of(context).main_touch_back,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TouchBackButton(
-                  key: touchBtnKey,
-                  initialValue: presentStateProvider.touchBack,
-                  onPressed: (state) {
-                    presentStateProvider.setTouchBack(state);
+        const Padding(padding: EdgeInsets.all(10)),
+        // const SizedBox(
+        //   height: 20,
+        // ),
+        Row(
+          children: [
+            const Spacer(),
+            Flexible(child: Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    presentStateProvider.setViewState(ViewState.settings);
                   },
+                  child: Row(
+                    children: [
+                      Flexible(
+                          flex: 1,
+                          child: Container(
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.only(right: 5),
+                            child: const Icon(
+                              Icons.settings,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                          )),
+                      Flexible(
+                        flex: 1,
+                        child: Text(
+                          S.of(context).main_setting,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
+                        ),),
+                      const Flexible(flex: 1, child: SizedBox()),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
+                Row(
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 5),
+                        child: const Image(
+                          height: 18,
+                          image: Svg('assets/images/touch_app_black.svg'),
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: Text(
+                        S.of(context).main_touch_back,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child:
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: TouchBackButton(
+                          key: touchBtnKey,
+                          initialValue: presentStateProvider.touchBack,
+                          onPressed: (state) {
+                            presentStateProvider.setTouchBack(state);
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            )),
+            const Spacer(),
+          ],
         ),
       ],
     );

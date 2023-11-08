@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
-import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/material.dart';
 
 import 'custom_icons_icons.dart';
@@ -56,7 +55,6 @@ class _PresentWaitReadyState extends State<PresentWaitReady> with TickerProvider
         mainAxisSize: MainAxisSize.min,
         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const TitleBar(),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 40, 0, 30),
             child: RotationTransition(
