@@ -1,0 +1,44 @@
+# Android
+# Build your Android project with Gradle.
+# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/android
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+variables:
+  - name: Flutter.Version
+    value: "3.13.4"
+  - name: Flutter.Url
+    value: https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_$(Flutter.Version)-stable.zip
+  - name: Flutter.Bin
+    value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
+
+jobs:
+  - job: unittest
+    pool:
+      vmImage: "macOS-12"
+    steps:
+      - checkout: self
+
+      - task: JavaToolInstaller@0
+        inputs:
+          versionSpec: "11"
+          jdkArchitectureOption: "x64"
+          jdkSourceOption: "PreInstalled"
+
+      - script: curl $(Flutter.Url) --output $(Pipeline.Workspace)/flutter.zip
+        displayName: Download the flutter SDK
+
+      - task: ExtractFiles@1
+        displayName: Extract the flutter SDK
+        inputs:
+          archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
+          destinationFolder: "$(Pipeline.Workspace)/flutter"
+
+      - script: $(Flutter.Bin) test
+        displayName: Run unit test
+        workingDirectory: "$(Build.SourcesDirectory)"
