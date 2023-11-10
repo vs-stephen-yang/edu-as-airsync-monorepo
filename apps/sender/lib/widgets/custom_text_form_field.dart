@@ -8,6 +8,8 @@ class CustomTextFormField extends StatefulWidget {
       this.controller,
       this.labelText,
       this.errorText,
+      this.labelBackgroundColor = Colors.white,
+      this.labelTextColor = Colors.grey,
       this.inputFormatter,
       this.onChanged,
       this.onTap,
@@ -17,6 +19,8 @@ class CustomTextFormField extends StatefulWidget {
   final TextEditingController? controller;
   final String? labelText;
   String? errorText;
+  final Color? labelBackgroundColor;
+  final Color? labelTextColor;
   final List<TextInputFormatter>? inputFormatter;
   ValueChanged<String>? onChanged;
   GestureTapCallback? onTap;
@@ -35,7 +39,7 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyleWhite = const TextStyle(color: Colors.grey);
+    TextStyle textStyle = TextStyle(color: widget.labelTextColor);
     OutlineInputBorder outlineInputBorderBlue = const OutlineInputBorder(
       borderRadius: BorderRadius.all(Radius.circular(6.0)),
       borderSide: BorderSide(width: 1, color: Colors.blue),
@@ -47,13 +51,12 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
     return TextFormField(
       controller: widget.controller,
       focusNode: widget.focusNode,
-      // initialValue: initialValue,
       decoration: InputDecoration(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: widget.labelBackgroundColor,
         labelText: widget.labelText,
-        labelStyle: textStyleWhite,
-        floatingLabelStyle: textStyleWhite,
+        labelStyle: textStyle,
+        floatingLabelStyle: textStyle,
         errorText: widget.errorText,
         errorStyle: errorTextStyle,
         border: outlineInputBorderBlue,
@@ -61,7 +64,7 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
         errorBorder: outlineInputBorderGrey,
         focusedErrorBorder: outlineInputBorderBlue,
       ),
-      style: textStyleWhite,
+      style: textStyle,
       inputFormatters: widget.inputFormatter,
       onChanged: (_) {
         if (widget.onChanged != null) widget.onChanged!(_);

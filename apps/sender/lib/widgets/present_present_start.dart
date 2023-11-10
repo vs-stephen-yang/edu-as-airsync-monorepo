@@ -38,21 +38,21 @@ class PresentPresentStart extends StatelessWidget {
       }
     });
 
-    var textStyle20 = const TextStyle(color: Colors.white, fontSize: 16);
-    var textStyle30 = const TextStyle(color: Colors.white, fontSize: 20);
-    return SizedBox(
-      width: AppConstants.viewStateMenuWidth,
-      height: AppConstants.viewStateMenuHeight,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 50, 0, 30),
-            child: Text(
-              S.of(context).present_time,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
-            ),
+    var textStyle20 = const TextStyle(color: Colors.white, fontSize: 20);
+    var textStyle30 = const TextStyle(color: Colors.white, fontSize: 28);
+    return Column(
+      children: [
+        const Expanded(flex:2, child: SizedBox()),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
+          child: Text(
+            S.of(context).present_time,
+            style: textStyle30,
           ),
-          Row(
+        ),
+        SizedBox(
+          width: AppConstants.viewStateMenuWidth,
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ValueListenableBuilder(
@@ -86,13 +86,14 @@ class PresentPresentStart extends StatelessWidget {
               Text(S.of(context).present_time_unit_sec, style: textStyle20),
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-            child: Divider(color: Colors.white12,),
-          ),
-          Row(
-            children: [
-              Expanded(
+        ),
+        Expanded(flex:3, child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 38.0),
                 child: ValueListenableBuilder(
                   valueListenable: _presentingState,
                   builder: (BuildContext context, value, Widget? child) {
@@ -105,7 +106,7 @@ class PresentPresentStart extends StatelessWidget {
                           presentStateProvider.presentPause();
                         }
                       },
-                      child: Column(
+                      child: Row(
                         children: [
                           Icon(
                             value
@@ -113,51 +114,76 @@ class PresentPresentStart extends StatelessWidget {
                                 : Icons.smart_display_outlined,
                             color: Colors.white,
                           ),
-                          Text(value ? S.of(context).present_state_pause : S.of(context).present_state_resume,
+                          const Padding(padding: EdgeInsets.only(left: 8)),
+                          Text(
+                              value
+                                  ? S.of(context).present_state_pause
+                                  : S.of(context).present_state_resume,
                               style: const TextStyle(
-                                  color: Colors.white, fontSize: 10)),
+                                  color: Colors.white, fontSize: 14)),
                         ],
                       ),
                     );
                   },
                 ),
               ),
-              if (presentStateProvider.displayer?.property!['platform'] == 'windows')
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      presentStateProvider.presentFullscreen();
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          presentStateProvider.displayer?.windowState == 'normal' ? Icons.fullscreen : Icons.fullscreen_exit,
-                          color: Colors.white,
-                        ),
-                        Text(presentStateProvider.displayer?.windowState == 'normal' ? S.of(context).present_state_full_screen: S.of(context).present_state_normal_screen,
-                            style: const TextStyle(color: Colors.white, fontSize: 10)),
-                      ],
-                    ),
-                  ),
-                ),
-              Expanded(
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 38.0, top: 20.0),
                 child: InkWell(
                   onTap: () {
                     presentStateProvider.presentStop();
                     presentStateProvider.presentEnd();
                   },
-                  child: Column(
+                  child: Row(
                     children: [
-                      const Icon(Icons.cancel_presentation, color: Colors.white,),
-                      Text(S.of(context).present_state_stop, style: const TextStyle(color: Colors.white, fontSize: 10)),
+                      const Icon(
+                        Icons.cancel_presentation,
+                        color: Colors.white,
+                      ),
+                      const Padding(padding: EdgeInsets.only(left: 8)),
+                      Text(S.of(context).present_state_stop,
+                          style:
+                          const TextStyle(color: Colors.white, fontSize: 14)),
                     ],
                   ),
                 ),
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
+            if (presentStateProvider.displayer?.property!['platform'] == 'windows')
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 38.0, top: 20.0),
+                  child: InkWell(
+                    onTap: () {
+                      presentStateProvider.presentFullscreen();
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          presentStateProvider.displayer?.windowState == 'normal'
+                              ? Icons.fullscreen
+                              : Icons.fullscreen_exit,
+                          color: Colors.white,
+                        ),
+                        const Padding(padding: EdgeInsets.only(left: 8)),
+                        Text(
+                            presentStateProvider.displayer?.windowState == 'normal'
+                                ? S.of(context).present_state_full_screen
+                                : S.of(context).present_state_normal_screen,
+                            style:
+                            const TextStyle(color: Colors.white, fontSize: 14)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        )),
+      ],
     );
   }
 }

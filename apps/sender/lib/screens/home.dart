@@ -48,16 +48,16 @@ class _HomeState extends State<Home> {
               alignment: Alignment.center,
               children: [
                 const Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    child: TitleBar()),
+                const Positioned(
                   left: 0,
                   right: 0,
                   bottom: 0,
                   child: BottomBar(),
                 ),
-                const Positioned(
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    child: TitleBar()),
                 Consumer2<PresentStateProvider, ChannelProvider>(
                   builder: (context, present, channel, child) {
                     debugModePrint('PresentState: ${present.state}');

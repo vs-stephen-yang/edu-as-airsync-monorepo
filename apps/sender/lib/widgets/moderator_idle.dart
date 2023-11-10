@@ -51,93 +51,112 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
       }
     }
 
-    return SizedBox(
-      width: AppConstants.viewStateMenuWidth,
-      height: AppConstants.viewStateMenuHeight,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Expanded(child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Stack(
+      children: [
+        Positioned(
+          left: 30,
+          top: 100,
+          child: InkWell(
+              onTap: () {
+                presentStateProvider.resetMessage();
+                presentStateProvider.setViewState(ViewState.idle);
+              },
+              child: const Row(
                 children: [
-                  InkWell(
-                      onTap: () {
-                        presentStateProvider.resetMessage();
-                        presentStateProvider.setViewState(ViewState.idle);
-                      },
-                      child: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white,)),
-                  const Icon(Icons.groups, color: Colors.white,),
+                  Icon(
+                    Icons.arrow_back_ios_new_outlined,
+                    color: Colors.white,
+                    size: 14,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 8),
+                    child: Text("Back", style: TextStyle(color: Colors.white, fontSize: 14),),
+                  ),
                 ],
               )),
-              Padding(
-                padding: const EdgeInsets.only(left: 6),
-                child: Text(
-                  S.of(context).moderator,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 16,
+        ),
+        Center(
+          child: SizedBox(
+            width: AppConstants.viewStateMenuWidth,
+            height: AppConstants.viewStateMenuHeight,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.groups,
+                      color: Colors.white,
+                      size: 26,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 6),
+                      child: Text(
+                        S.of(context).moderator,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 26,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const Padding(padding: EdgeInsets.all(16)),
+                SizedBox(
+                  height: 40,
+                  child: CustomTextFormField(
+                    key: nameKey,
+                    controller: _nameController,
+                    focusNode: _nameFocusNode,
+                    labelText: S.of(context).moderator_name,
+                    labelBackgroundColor: Colors.transparent,
+                    labelTextColor: Colors.white,
+                    inputFormatter: const [],
+                    onChanged: (text) {
+                      if (text.isNotEmpty) {
+                        presentBtnEnable = true;
+                      } else {
+                        presentBtnEnable = false;
+                      }
+                      setState(() {});
+                    },
+                    onFieldSubmitted: (String value) async {
+                      if (presentBtnEnable) {
+                        await clickPresent();
+                      }
+                    },
                   ),
                 ),
-              ),
-              const Spacer(flex: 1,),
-            ],
-          ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
-            child: Divider(color: Colors.white12,),
-          ),
-          SizedBox(
-            height: 40,
-            child: CustomTextFormField(
-              key: nameKey,
-              controller: _nameController,
-              focusNode: _nameFocusNode,
-              labelText: S.of(context).moderator_name,
-              inputFormatter: [
-                FilteringTextInputFormatter.allow(
-                  RegExp('[a-zA-Z0-9]'),
-                )
+                const Padding(padding: EdgeInsets.all(16)),
+                ElevatedButton(
+                  onPressed: () async {
+                    await clickPresent();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: presentBtnEnable
+                        ? const Color.fromARGB(255, 41, 121, 255)
+                        : const Color.fromARGB(128, 242, 242, 242),
+                    fixedSize: const Size(300, 30),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                  ),
+                  child: Text(
+                    S.of(context).main_present,
+                    style: TextStyle(
+                      color: presentBtnEnable
+                          ? Colors.white
+                          : const Color.fromARGB(255, 153, 153, 153),
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
               ],
-              onChanged: (text) {
-                if (text.isNotEmpty) {
-                  presentBtnEnable = true;
-                } else {
-                  presentBtnEnable = false;
-                }
-                setState(() {});
-              },
-              onFieldSubmitted: (String value) async {
-                if (presentBtnEnable) {
-                  await clickPresent();
-                }
-              },
             ),
           ),
-          const Padding(padding: EdgeInsets.all(10)),
-          ElevatedButton(
-            onPressed: () async {
-              await clickPresent();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: presentBtnEnable? const Color.fromARGB(255, 41, 121, 255) : const Color.fromARGB(128, 242, 242, 242),
-              fixedSize: const Size(300, 30),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-            ),
-            child: Text(
-              S.of(context).main_present,
-              style: TextStyle(
-                color: presentBtnEnable? Colors.white : const Color.fromARGB(255, 153, 153, 153),
-                fontSize: 14,
-              ),
-            ),
-          ),
-        ],
-      ),
+        )
+      ],
     );
   }
 

@@ -150,14 +150,18 @@ class SelectScreenDialog extends Dialog {
                                         Tab(
                                             child: Text(
                                           S.of(context).present_select_screen_entire,
-                                          style: const TextStyle(color: Colors.white60),
+                                          // style: const TextStyle(color: Colors.white60),
                                         )),
                                         Tab(
                                             child: Text(
                                               S.of(context).present_select_screen_window,
-                                          style: const TextStyle(color: Colors.white60),
+                                          // style: const TextStyle(color: Colors.white60),
                                         )),
-                                      ]),
+                                      ],
+                                    labelColor: const Color.fromARGB(255, 147, 179, 242),
+                                    unselectedLabelColor: Colors.white60,
+                                    indicatorColor: const Color.fromARGB(255, 147, 179, 242),
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 2,
@@ -231,27 +235,31 @@ class SelectScreenDialog extends Dialog {
                   ),
                 ),
               ),
-              SizedBox(
+              Container(
                 width: double.infinity,
+                padding: const EdgeInsets.all(10.0),
                 child: ButtonBar(
                   children: <Widget>[
-                    MaterialButton(
+                    OutlinedButton(
                       child: Text(
                         S.of(context).present_select_screen_cancel,
-                        style: const TextStyle(color: Color.fromARGB(255, 41, 121, 255),),
+                        style: const TextStyle(color: Color.fromARGB(255, 147, 179, 242)),
                       ),
                       onPressed: () {
                         cancel();
                       },
                     ),
-                    MaterialButton(
-                      color: const Color.fromARGB(255, 41, 121, 255),
-                      child: Text(
-                        S.of(context).present_select_screen_share,
+                    ElevatedButton(
+                      style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll<Color>(Color.fromARGB(255, 147, 179, 242)),
                       ),
                       onPressed: () {
                         _ok(_selectedSource, _systemAudio);
                       },
+                      child: Text(
+                        S.of(context).present_select_screen_share,
+                        style: const TextStyle(color: Color.fromARGB(255, 63, 63, 63)),
+                      ),
                     ),
                   ],
                 ),

@@ -14,13 +14,13 @@ class TitleBar extends StatelessWidget {
         children: [
           Image.asset('assets/images/ic_launcher.png', height: 46,),
           const Padding(
-            padding: EdgeInsets.only(left: 6),
+            padding: EdgeInsets.only(left: 10),
             child: Text(
               'AirSync',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
-                fontSize: 20,
+                fontSize: 28,
               ),
             ),
           ),
