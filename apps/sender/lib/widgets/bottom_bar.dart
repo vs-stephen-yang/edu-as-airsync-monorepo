@@ -14,7 +14,7 @@ class BottomBar extends StatelessWidget {
             children: <Widget>[
               Image.asset(
                 'assets/images/ic_logo_build_by.png',
-                width: 130,
+                width: 150,
                 // height: 88,
               ),
             ],

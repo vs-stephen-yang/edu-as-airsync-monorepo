@@ -19,13 +19,11 @@ class ModeratorWait extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Expanded(
-                  child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Icon(
-                        Icons.groups,
-                        color: Colors.white,
-                      ))),
+              const Icon(
+                Icons.groups,
+                color: Colors.white,
+                size: 26,
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 6),
                 child: Text(
@@ -33,20 +31,15 @@ class ModeratorWait extends StatelessWidget {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: 26,
                   ),
                 ),
               ),
-              const Spacer(flex: 1,),
             ],
-          ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-            child: Divider(color: Colors.white12,),
           ),
           Container(
             alignment: Alignment.center,
-            padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+            padding: const EdgeInsets.fromLTRB(0, 32, 0, 16),
             child: Text(
               S.of(context).moderator_wait,
               textAlign: TextAlign.center,

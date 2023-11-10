@@ -49,14 +49,14 @@ class _PresentWaitReadyState extends State<PresentWaitReady> with TickerProvider
       }
     });
     return SizedBox(
-      width: AppConstants.viewStateMenuWidth,
+      // width: 360,
       height: AppConstants.viewStateMenuHeight,
       child: Column(
+        // mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(0, 40, 0, 30),
+            padding: const EdgeInsets.fromLTRB(0, 60, 0, 40),
             child: RotationTransition(
               turns: _animation,
               child: const Icon(
@@ -71,8 +71,8 @@ class _PresentWaitReadyState extends State<PresentWaitReady> with TickerProvider
               return Text(
                 S.of(context).present_wait(value),
                 style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 14,
+                  color: Colors.white,
+                  fontSize: 16,
                 ),
               );
             },
