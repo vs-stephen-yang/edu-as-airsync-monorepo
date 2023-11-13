@@ -39,6 +39,8 @@ class WebRTCFlutterViewSocket {
     'IFP52_K',
     'IFP50_3',
     'IFP50_3_9850',
+    'IFP70',
+    'IFP52_1C',
   ];
 
   RTCPeerConnection? _pc;
