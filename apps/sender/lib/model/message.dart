@@ -1,3 +1,4 @@
+
 class Message {
   String? messageFor;
   String? action = '';
@@ -44,4 +45,17 @@ class Extra {
     data['presentationState'] = presentationState;
     return data;
   }
+}
+
+class PresentChangeQualityMessage {
+  String? sessionId;
+  int frameRate = 0;
+  int height = 0;
+
+  PresentChangeQualityMessage(this.sessionId, this.frameRate, this.height);
+
+  PresentChangeQualityMessage.fromJson(Map<String, dynamic> json)
+      : sessionId = json['data']['sessionId'] as String?,
+        frameRate = json['data']['constraints']['frameRate'] as int,
+        height = json['data']['constraints']['height'] as int;
 }
