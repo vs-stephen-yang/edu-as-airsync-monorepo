@@ -57,7 +57,7 @@ dependencies:
   flutter_multi_formatter: ^2.11.16
   socket_io_client: ^1.0.2
   http: ^1.1.0
-  uuid: ^3.0.7
+  uuid: ^4.0.0
   url_launcher: ^6.2.1
   shared_preferences: ^2.2.2
   device_info_plus: ^9.1.0
@@ -67,6 +67,10 @@ dependencies:
   hive: ^2.0.4
   hive_flutter: ^1.1.0
   collection: ^1.17.2
+  display_channel:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
+      ref: release-0.0.1
 
 dev_dependencies:
   flutter_test:
