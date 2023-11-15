@@ -22,7 +22,6 @@ class ChannelProvider extends ChangeNotifier {
 
   WebRTCConnector? webRTCConnector;
   List<RtcIceServer>? _iceServerList;
-
   bool _moderatorStatus = false;
   bool get moderatorStatus => _moderatorStatus;
   bool _exceedMaximumPresenters = false;
@@ -44,6 +43,9 @@ class ChannelProvider extends ChangeNotifier {
   Timer? _presentTimer;
   bool _touchBack = false;
   bool get touchBack => _touchBack;
+  set touchBack(bool touchBack) {
+    _touchBack = touchBack;
+  }
   bool _systemAudio = false;
   bool get systemAudio => _systemAudio;
 
@@ -61,16 +63,32 @@ class ChannelProvider extends ChangeNotifier {
     setViewState(ViewState.idle);
   }
 
-  Future<void> presentSelectScreen() async {
+  Future<void> presentSelectScreenPage() async {
     setViewState(ViewState.selectScreen);
   }
 
-  Future<void> presentBasicStart() async {
+  Future<void> presentBasicStartPage() async {
     setViewState(ViewState.presentStart);
   }
 
-  Future<void> presentModeratorStart() async {
+  Future<void> presentModeratorNamePage() async {
+    setViewState(ViewState.moderatorIdle);
+  }
+
+  Future<void> presentModeratorWaitPage() async {
+    setViewState(ViewState.moderatorWait);
+  }
+
+  Future<void> presentModeratorStartPage() async {
     setViewState(ViewState.moderatorStart);
+  }
+
+  Future<void> presentSettingPage() async {
+    setViewState(ViewState.settings);
+  }
+
+  Future<void> presentLanguagePage() async {
+    setViewState(ViewState.settings);
   }
   //endregion
 
@@ -94,6 +112,19 @@ class ChannelProvider extends ChangeNotifier {
     _channel?.onStateChange = (ChannelState state) {
       debugModePrint('startLanModeConnect onStateChange $state',
           type: runtimeType);
+      switch (state) {
+        case ChannelState.initialized:
+          break;
+        case ChannelState.connecting:
+          break;
+        case ChannelState.connected:
+          break;
+        case ChannelState.disconnected:
+          presentEnd();
+          break;
+        case ChannelState.failed:
+          break;
+      }
     };
     _channel?.onChannelMessage = (message) {
       debugModePrint('startLanModeConnect onChannelMessage $message',
@@ -109,11 +140,19 @@ class ChannelProvider extends ChangeNotifier {
           break;
         case ChannelMessageType.presentAccepted:
           // select screen
-          presentSelectScreen();
+          if (moderatorStatus) {
+            presentModeratorWaitPage();
+          } else {
+            presentSelectScreenPage();
+          }
           break;
         case ChannelMessageType.presentRejected:
           // show a message
-        //TODO:check the rejected reason
+          // TODO:check the rejected reason
+          if (moderatorStatus) {
+            presentMainPage();
+          }
+          presentEnd();
           break;
         case ChannelMessageType.presentSignal:
           webRTCConnector?.handleSignal(message as PresentSignalMessage);
@@ -123,9 +162,15 @@ class ChannelProvider extends ChangeNotifier {
           break;
         case ChannelMessageType.stopPresent:
           // split-screen / moderator mode
+          if (moderatorStatus) {
+            presentStop();
+            presentModeratorWaitPage();
+          }
           break;
         case ChannelMessageType.allowPresent:
           // moderator mode
+          // _startPresent();
+          presentSelectScreenPage();
           break;
         default:
           break;
@@ -138,6 +183,8 @@ class ChannelProvider extends ChangeNotifier {
       _channel?.openDirectChannel(token);
     }
   }
+
+  checkOTP() {}
 
   Future<void> presentStart({required dynamic selectedSource, bool systemAudio = false}) async {
     // PeerConnect
@@ -152,12 +199,12 @@ class ChannelProvider extends ChangeNotifier {
         _channel?.send(PresentSignalMessage.fromJson(json));
       },
     );
-    webRTCConnector?.makeCall(_clientId, selectedSource, _iceServerList); // TODO: _clientId
+    await webRTCConnector?.makeCall(_clientId, selectedSource, _iceServerList); // TODO: _clientId
 
     if (moderatorStatus) {
-      presentModeratorStart();
+      presentModeratorStartPage();
     } else {
-      presentBasicStart();
+      presentBasicStartPage();
     }
   }
 
@@ -173,7 +220,7 @@ class ChannelProvider extends ChangeNotifier {
     }
 
     if (goIdleState) {
-      _resetMessage();
+      resetMessage();
       presentMainPage();
     }
   }
@@ -196,7 +243,11 @@ class ChannelProvider extends ChangeNotifier {
     webRTCConnector?.streamResume();
   }
 
-  _resetMessage() {
+  void setModeratorName(String name) {
+    _joinDisplay(name: name);
+  }
+
+  void resetMessage() {
     _exceedMaximumPresenters = false;
   }
 
@@ -205,7 +256,7 @@ class ChannelProvider extends ChangeNotifier {
     _iceServerList = message.configuration?.iceServers;
     _moderatorStatus = message.status!.moderator!;
     if(_moderatorStatus) {
-
+      presentModeratorNamePage();
     } else {
       _joinDisplay();
       _startPresent();
@@ -213,8 +264,11 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   //region sendMessage
-  void _joinDisplay() {
-    final msg = JoinDisplayMessage(_clientId);
+  void _joinDisplay({String? name}) {
+    JoinDisplayMessage msg = JoinDisplayMessage(_clientId);
+    if (name != null) {
+      msg.name = name;
+    }
     _channel?.send(msg);
   }
 
