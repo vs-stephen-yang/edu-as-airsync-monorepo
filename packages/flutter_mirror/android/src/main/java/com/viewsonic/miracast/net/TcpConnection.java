@@ -26,8 +26,8 @@ public class TcpConnection
   boolean tcpNoDelay_ = false;
 
   // reconnect
-  private int reconnectionDelayMs_ = 1000;// ms
-  private int reconnectionMaxAttempts_ = 5;
+  private int reconnectionDelayMs_ = 500;// ms
+  private int reconnectionMaxAttempts_ = 20;
 
   private Object connectTimer_;
   private int reconnectionAttempts_;
