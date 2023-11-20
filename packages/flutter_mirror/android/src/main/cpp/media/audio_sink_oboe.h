@@ -17,6 +17,9 @@ class AudioSinkOboe {
   bool Write(const uint8_t* buf, size_t size);
 
  private:
+  bool HandleUnderrun();
+
+  int32_t lastUnderrun_ = 0;
   std::shared_ptr<oboe::AudioStream> stream_;
 };
 
