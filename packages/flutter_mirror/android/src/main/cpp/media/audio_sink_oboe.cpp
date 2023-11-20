@@ -2,6 +2,8 @@
 #include <assert.h>
 #include "util/log.h"
 
+const int32_t kUnderrunThreshold = 10;
+
 AudioSinkOboe::~AudioSinkOboe() {
   ALOGV("~AudioSinkOboe()");
 }
@@ -65,8 +67,45 @@ void AudioSinkOboe::Stop() {
   }
 }
 
+bool AudioSinkOboe::HandleUnderrun() {
+  if (!stream_->isXRunCountSupported()) {
+    return true;
+  }
+
+  oboe::ResultWithValue<int32_t> underrun = stream_->getXRunCount();
+  if (!underrun) {
+    return true;
+  }
+
+  int32_t deltaUnderrun = underrun.value() - lastUnderrun_;
+  if (deltaUnderrun < kUnderrunThreshold) {
+    return true;
+  }
+  lastUnderrun_ = underrun.value();
+
+  ALOGW("Restarting audio playback due to underrun %d", deltaUnderrun);
+
+  // restart
+  oboe::Result result = stream_->stop();
+  if (result != oboe::Result::OK) {
+    ALOGE("Failed to stop audio stream. %s", oboe::convertToText(result));
+    return false;
+  }
+
+  result = stream_->start();
+  if (result != oboe::Result::OK) {
+    ALOGE("Failed to start audio stream. %s", oboe::convertToText(result));
+    return false;
+  }
+  return true;
+}
+
 bool AudioSinkOboe::Write(const uint8_t* buf, size_t size) {
   assert(stream_);
+
+  if (!HandleUnderrun()) {
+    return false;
+  }
 
   oboe::ResultWithValue<int32_t> result = stream_->write(
       buf,
