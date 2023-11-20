@@ -152,11 +152,17 @@ public class TcpConnection
     if (!channel.isConnectionPending()) {
       return;
     }
+
+    try {
+      channel.finishConnect();
+    } catch (IOException e) {
+      Log.w(TAG, String.format("Failed to connect. %s", e));
+      return;
+    }
+
     // cancel connect timer
     eventBase_.clearTimer(connectTimer_);
     connectTimer_ = null;
-
-    channel.finishConnect();
 
     eventBase_.registerChannel(channel, SelectionKey.OP_READ, this);
 
