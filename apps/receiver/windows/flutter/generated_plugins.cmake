@@ -3,9 +3,11 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  connectivity_plus
   device_info_vs
   flutter_mirror
   flutter_webrtc
+  network_info_plus_windows
   permission_handler_windows
 )
 

@@ -4,11 +4,14 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/main_info.dart';
+import 'package:display_flutter/widgets/main_internet.dart';
+import 'package:display_flutter/widgets/main_lan.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
 import 'package:display_flutter/widgets/split_screen_function.dart';
 import 'package:display_flutter/widgets/status_bar.dart';
@@ -77,8 +80,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 valueListenable: SplitScreen.mapSplitScreen,
                 builder: (context, Map<String, dynamic> value, child) {
                   return Stack(
-                    children: List.generate(value[keySplitScreenEnable] ? 4 : 1,
-                        (index) {
+                    children: List.generate(
+                        value[keySplitScreenEnable] ? 4 : 1, (index) {
                       double? left, top, right, bottom;
                       if (index == 1) {
                         right = 0;
@@ -108,7 +111,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               child: Stack(
                                 children: <Widget>[
                                   WebRTCFlutterView(
-                                    callback: ControlSocket().addWebRtcController,
+                                    callback:
+                                        ControlSocket().addWebRtcController,
                                   ),
                                   Visibility(
                                     visible: SplitScreen.mapSplitScreen
@@ -144,7 +148,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                             left: 0, top: 0, right: 0, child: TitleBar()),
                         const Positioned(
                             left: 0, right: 0, bottom: 0, child: BottomBar()),
-                        if (AppInstanceCreate().isInstalledInVBS100 | AppInstanceCreate().isInstalledInVBS200)
+                        if (AppInstanceCreate().isInstalledInVBS100 |
+                            AppInstanceCreate().isInstalledInVBS200)
                           const Positioned(
                               left: 0, right: 0, bottom: 0, child: VbsOTA()),
                       ],
@@ -152,7 +157,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   );
                 },
               ),
-              const MainInfo(),
+              ChannelProvider.isNewUI ? Consumer<ChannelProvider>(
+                builder: (context, provider, child) {
+                  if (provider.currentMode == Mode.internet) {
+                    return const MainInternetMode();
+                  } else {
+                    return const MainLanMode();
+                  }
+                },
+              ):const MainInfo(),
               const MirrorView(),
               const Positioned(
                 child: StatusBar(),
@@ -177,7 +190,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          const Icon(Icons.cloud_off, color: Colors.red, size: 120,),
+                          const Icon(
+                            Icons.cloud_off,
+                            color: Colors.red,
+                            size: 120,
+                          ),
                           const SizedBox(width: 20),
                           Text(
                             S.of(context).main_status_no_network,
