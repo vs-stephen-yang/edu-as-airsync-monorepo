@@ -9,6 +9,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
@@ -180,6 +181,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: MirrorStateProvider()),
+        ChangeNotifierProvider.value(value: ChannelProvider(context)),
       ],
       child: MaterialApp(
         localizationsDelegates: const [
