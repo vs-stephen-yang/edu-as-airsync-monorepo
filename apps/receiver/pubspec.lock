@@ -252,7 +252,7 @@ packages:
       path: "."
       ref: "release-0.9.36-6"
       resolved-ref: "8dc2292543676895fb1fc6f743336773dc2c6b0e"
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc-plugin"
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc"
     source: git
     version: "0.9.36"
   http:

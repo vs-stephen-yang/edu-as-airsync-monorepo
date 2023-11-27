@@ -64,7 +64,7 @@ dependencies:
   crypto: ^3.0.3
   flutter_webrtc:
     git:
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc-plugin
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc
       ref: release-0.9.36-6
   logging: ^1.2.0
   protobuf: ^2.1.0
