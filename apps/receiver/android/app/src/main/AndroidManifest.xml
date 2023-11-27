@@ -40,7 +40,8 @@
         android:name="${applicationName}"
         android:banner="@drawable/banner"
         android:icon="@mipmap/ic_launcher"
-        android:label="myViewBoard Display">
+        android:label="myViewBoard Display"
+        android:resizeableActivity="true">
         <activity
             android:name=".EulaActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
