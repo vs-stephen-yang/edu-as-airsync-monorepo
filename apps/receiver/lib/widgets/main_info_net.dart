@@ -3,22 +3,14 @@ import 'dart:math' as math;
 
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
-import 'package:display_flutter/app_instance_create.dart';
-import 'package:display_flutter/app_preferences.dart';
-import 'package:display_flutter/blocs/main_info_bloc.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class MainInfoInternet extends StatefulWidget {
   const MainInfoInternet({super.key});
   static ValueNotifier<bool> showMainInfo = ValueNotifier(true);
-
-  static MainInfoBloc? _mainInfoBloc;
 
   @override
   State createState() => _MainInfoInternetState();
@@ -34,124 +26,73 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    MainInfoInternet._mainInfoBloc = MainInfoBloc(
-        AppConfig.of(context)!.settings.apiGateway,
-        AppInstanceCreate().displayInstanceID,
-        AppConfig.of(context)!.appVersion)
-      ..add(GetDisplayCode());
   }
 
   @override
   void initState() {
     super.initState();
     _otp.value = math.Random().nextInt(9000)+1000;
-    _mGetOTPTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
-      _countDownProgress.value -= 1;
-      if (_countDownProgress.value == 0) {
-        _otp.value = math.Random().nextInt(9000)+1000;
-        _countDownProgress.value = maxCountDown;
-      }
-    });
   }
 
   @override
   void dispose() {
-    _mGetOTPTimer?.cancel();
-    _mGetOTPTimer = null;
+    _cancelOTP();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    AppConfig? appConfig = AppConfig.of(context);
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
 
-    return BlocProvider(
-      create: (_) => MainInfoInternet._mainInfoBloc!,
-      child: BlocListener<MainInfoBloc, MainInfoState>(
-        listener: (context, state) {
-          switch (state) {
-            case MainInfoState.getDisplayCodeSuccess:
-              AppAnalytics()
-                  .setEventProperties(displayCode: ControlSocket().displayCode);
-              if (appConfig != null) {
-                ControlSocket().connect(appConfig.settings.apiGateway);
-              }
-              AppPreferences().set(entityId: ControlSocket().entityId);
-              AppAnalytics()
-                  .setEventProperties(entityId: AppPreferences().entityId);
-              BlocProvider.of<MainInfoBloc>(context).add(GetOneTimePassword());
-              break;
-            case MainInfoState.getDisplayCodeError:
-              _showSnackBarMessage(S.of(context).main_get_display_code_failure);
-              BlocProvider.of<MainInfoBloc>(context).add(RegisterDisplayCode());
-              break;
-            case MainInfoState.getDisplayCodeInfoSuccess:
-              break;
-            case MainInfoState.registerDisplayCodeSuccess:
-              BlocProvider.of<MainInfoBloc>(context).add(GetDisplayCode());
-              break;
-            case MainInfoState.registerDisplayCodeError:
-              _showSnackBarMessage(
-                  S.of(context).main_register_display_code_failure);
-              Timer(const Duration(seconds: 5), () async {
-                BlocProvider.of<MainInfoBloc>(context)
-                    .add(RegisterDisplayCode());
-              });
-              break;
-            default:
-              break;
-          }
-        },
-        child: BlocBuilder<MainInfoBloc, MainInfoState>(
-          builder: (context, state) {
-            return ValueListenableBuilder(
-              valueListenable: MainInfoInternet.showMainInfo,
-              builder: (BuildContext context, bool value, Widget? child) {
-                return Visibility(
-                  visible: value,
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    height: double.infinity,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: AppColors.primary_grey,
-                    ),
-                    child: channelProvider.connectNet? Wrap(
-                      direction: Axis.vertical,
-                      alignment: WrapAlignment.center,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      spacing: 16,
-                      children: <Widget>[
-                        Text(
-                          S.of(context).main_content_display_code,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 40,
-                            fontWeight: FontWeight.w700,
-                          ),
+    return ValueListenableBuilder(
+      valueListenable: MainInfoInternet.showMainInfo,
+      builder: (BuildContext context, bool value, Widget? child) {
+        return Visibility(
+          visible: value,
+          child: Container(
+            alignment: Alignment.center,
+            width: double.infinity,
+            height: double.infinity,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              color: AppColors.primary_grey,
+            ),
+            child: channelProvider.connectNet
+                ? Wrap(
+                    direction: Axis.vertical,
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 16,
+                    children: <Widget>[
+                      Text(
+                        S.of(context).main_content_display_code,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 40,
+                          fontWeight: FontWeight.w700,
                         ),
-                        Text(
-                          _getDisplayCode(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 35,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      ),
+                      Text(
+                        _getDisplayCode(channelProvider.displayCode),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 35,
+                          fontWeight: FontWeight.w500,
                         ),
-                        Text(
-                          S.of(context).main_content_one_time_password,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 40,
-                            fontWeight: FontWeight.w700,
-                          ),
+                      ),
+                      Text(
+                        S.of(context).main_content_one_time_password,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 40,
+                          fontWeight: FontWeight.w700,
                         ),
+                      ),
+                      if (channelProvider.displayCode.isNotEmpty)
                         ValueListenableBuilder(
                           valueListenable: _isEyeOpen,
-                          builder: (BuildContext context, bool value,
-                              Widget? child) {
+                          builder: (BuildContext context, bool value, Widget? child) {
+                            if (_mGetOTPTimer == null) _generateOTP();
                             return Wrap(
                               direction: Axis.horizontal,
                               alignment: WrapAlignment.center,
@@ -160,8 +101,11 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
                               children: <Widget>[
                                 ValueListenableBuilder<int>(
                                   valueListenable: _otp,
-                                  builder:
-                                      (BuildContext context, int otp, Widget? child) {
+                                  builder: (BuildContext context, int otp,
+                                      Widget? child) {
+                                    if (!channelProvider.otpList.contains(_otp.value.toString())) {
+                                      channelProvider.setOtpList(_otp.value.toString());
+                                    }
                                     return Text(
                                       value ? otp.toString() : 'XXXX',
                                       style: const TextStyle(
@@ -183,12 +127,12 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
                                         width: 26,
                                         height: 26,
                                         child: CircularProgressIndicator(
-                                          value: value/maxCountDown,
+                                          value: value / maxCountDown,
                                           strokeWidth: 4,
                                           backgroundColor: Colors.black,
                                           valueColor:
-                                          const AlwaysStoppedAnimation<
-                                              Color>(Colors.white),
+                                              const AlwaysStoppedAnimation<
+                                                  Color>(Colors.white),
                                         ),
                                       ),
                                     );
@@ -211,45 +155,58 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
                             );
                           },
                         ),
-                      ],
-                    ) : const Column(
-                      children: [
-                        Spacer(),
-                        Icon(
-                          Icons.wifi_off,
+                    ],
+                  )
+                : const Column(
+                    children: [
+                      Spacer(),
+                      Icon(
+                        Icons.wifi_off,
+                        color: AppColors.iconDisableStandbyBackground,
+                        size: 120,
+                      ),
+                      Text(
+                        'You’re currently offline',
+                        style: TextStyle(
                           color: AppColors.iconDisableStandbyBackground,
-                          size: 120,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
                         ),
-                        Text(
-                          'You’re currently offline',
-                          style: TextStyle(
-                            color: AppColors.iconDisableStandbyBackground,
-                            fontSize: 28,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Spacer(),
-                      ],
-                    ),
+                      ),
+                      Spacer(),
+                    ],
                   ),
-                );
-              },
-            );
-          },
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  _getDisplayCode() {
+  _getDisplayCode(String displayCode) {
     String result = '';
-    for (int i = 0; i < ControlSocket().displayCode.length; i++) {
+    for (int i = 0; i < displayCode.length; i++) {
       if (i % 3 == 0 && result.isNotEmpty) {
         result += '-';
       }
-      result += ControlSocket().displayCode.substring(i, i + 1);
+      result += displayCode.substring(i, i + 1);
     }
     return result;
+  }
+
+  _generateOTP() {
+    _mGetOTPTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      _countDownProgress.value -= 1;
+      if (_countDownProgress.value == 0) {
+        _otp.value = math.Random().nextInt(9000)+1000;
+        _countDownProgress.value = maxCountDown;
+      }
+    });
+  }
+
+  _cancelOTP() {
+    _mGetOTPTimer?.cancel();
+    _mGetOTPTimer = null;
+    _countDownProgress.value = maxCountDown;
   }
 
   _showSnackBarMessage(String message) {
