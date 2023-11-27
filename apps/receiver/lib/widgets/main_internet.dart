@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 class MainInternetMode extends StatelessWidget{
   const MainInternetMode({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     AppConfig? appConfig = AppConfig.of(context);

@@ -80,9 +80,7 @@ class _MainInfoState extends State<MainInfoLan> {
                                       notFocusSize: AppUIConstant
                                           .iconNotFocusSize,
                                       onClick: () {
-                                        AppAnalytics()
-                                            .trackEventAppOTPMaskClick();
-                                        // _isEyeOpen.value = !_isEyeOpen.value;
+                                        AppAnalytics().trackEventAppOTPMaskClick();
                                       },
                                     ),
                                   ],
@@ -99,57 +97,58 @@ class _MainInfoState extends State<MainInfoLan> {
                                   ),
                                 ),
                           const Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                _isPinCode.value = !_isPinCode.value;
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color.fromARGB(255, 41, 121, 255), // isButtonEnabled?
-                                fixedSize: const Size(300, 30),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(30.0),
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: value
-                                        ? Image.asset(
-                                            'assets/images/ic_pin.png',
-                                          )
-                                        : const Icon(
-                                            Icons.qr_code,
-                                            color: Colors.white,
-                                            size: 20,
-                                          ),
-                                  ),
-                                  Text(value ? 'QR Code' : 'Pin Code',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          //TODO: QR code should be implemented to the next version
+                          // Padding(
+                          //   padding: const EdgeInsets.only(bottom: 16),
+                          //   child: ElevatedButton(
+                          //     onPressed: () {
+                          //       _isPinCode.value = !_isPinCode.value;
+                          //     },
+                          //     style: ElevatedButton.styleFrom(
+                          //       backgroundColor: const Color.fromARGB(255, 41, 121, 255), // isButtonEnabled?
+                          //       fixedSize: const Size(300, 30),
+                          //       shape: RoundedRectangleBorder(
+                          //         borderRadius:
+                          //             BorderRadius.circular(30.0),
+                          //       ),
+                          //     ),
+                          //     child: Row(
+                          //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       children: [
+                          //         Padding(
+                          //           padding: const EdgeInsets.only(right: 8),
+                          //           child: value
+                          //               ? Image.asset(
+                          //                   'assets/images/ic_pin.png',
+                          //                 )
+                          //               : const Icon(
+                          //                   Icons.qr_code,
+                          //                   color: Colors.white,
+                          //                   size: 20,
+                          //                 ),
+                          //         ),
+                          //         Text(value ? 'QR Code' : 'Pin Code',
+                          //           style: const TextStyle(
+                          //             color: Colors.white,
+                          //           ),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       );
                     },
                   )
-                : Column(
+                : const Column(
                     children: [
-                      const Spacer(),
-                      const Icon(
+                      Spacer(),
+                      Icon(
                         Icons.wifi_off,
                         color: AppColors.iconDisableStandbyBackground,
                         size: 120,
                       ),
-                      const Text(
+                      Text(
                         'You’re currently offline',
                         style: TextStyle(
                           color: AppColors.iconDisableStandbyBackground,
@@ -157,53 +156,54 @@ class _MainInfoState extends State<MainInfoLan> {
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _isPinCode.value = !_isPinCode.value;
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(
-                                255, 41, 121, 255), // isButtonEnabled?
-                            fixedSize: const Size(300, 30),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                          ),
-                          child: ValueListenableBuilder(
-                              valueListenable: _isPinCode,
-                              builder: (BuildContext context,
-                                  bool value, Widget? child) {
-                                return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 8),
-                                      child: value
-                                          ? Image.asset(
-                                              'assets/images/ic_pin.png',
-                                            )
-                                          : const Icon(
-                                              Icons.qr_code,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                    ),
-                                    Text(
-                                      value ? 'QR Code' : 'Pin Code',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }),
-                        ),
-                      ),
+                      Spacer(),
+                      //TODO: QR code should be implemented to the next version
+                      // Padding(
+                      //   padding: const EdgeInsets.only(bottom: 16),
+                      //   child: ElevatedButton(
+                      //     onPressed: () {
+                      //       _isPinCode.value = !_isPinCode.value;
+                      //     },
+                      //     style: ElevatedButton.styleFrom(
+                      //       backgroundColor: const Color.fromARGB(
+                      //           255, 41, 121, 255), // isButtonEnabled?
+                      //       fixedSize: const Size(300, 30),
+                      //       shape: RoundedRectangleBorder(
+                      //         borderRadius: BorderRadius.circular(30.0),
+                      //       ),
+                      //     ),
+                      //     child: ValueListenableBuilder(
+                      //         valueListenable: _isPinCode,
+                      //         builder: (BuildContext context,
+                      //             bool value, Widget? child) {
+                      //           return Row(
+                      //             mainAxisAlignment:
+                      //                 MainAxisAlignment.center,
+                      //             children: [
+                      //               Padding(
+                      //                 padding: const EdgeInsets.only(
+                      //                     right: 8),
+                      //                 child: value
+                      //                     ? Image.asset(
+                      //                         'assets/images/ic_pin.png',
+                      //                       )
+                      //                     : const Icon(
+                      //                         Icons.qr_code,
+                      //                         color: Colors.white,
+                      //                         size: 20,
+                      //                       ),
+                      //               ),
+                      //               Text(
+                      //                 value ? 'QR Code' : 'Pin Code',
+                      //                 style: const TextStyle(
+                      //                   color: Colors.white,
+                      //                 ),
+                      //               ),
+                      //             ],
+                      //           );
+                      //         }),
+                      //   ),
+                      // ),
                     ],
                   ),
           ),
