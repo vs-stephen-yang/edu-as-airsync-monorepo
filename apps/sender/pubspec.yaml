@@ -42,7 +42,7 @@ dependencies:
   package_info_plus: ^4.2.0
   flutter_webrtc:
     git:
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc-plugin
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc
       ref: release-0.9.36-5
   window_size:
     git:
