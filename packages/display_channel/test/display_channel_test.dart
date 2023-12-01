@@ -1,5 +1,3 @@
-import 'package:display_channel/src/display_direct_server.dart';
-import 'package:display_channel/src/display_tunnel_server.dart';
 import 'package:display_channel/src/util/fake_tunnel_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
