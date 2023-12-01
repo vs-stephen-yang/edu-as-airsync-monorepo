@@ -236,6 +236,23 @@ void main() {
     expect(actual.reason!.text, 'error');
   });
 
+  test('change-present-quality', () {
+    // Arrange
+    final msg = ChangePresentQuality('12345');
+    msg.seq = 20;
+    msg.constraints = PresentQualityConstraints(frameRate: 30, height: 1080);
+
+    // action
+    final json = msg.toJson();
+    final actual = ChannelMessage.parse(json) as ChangePresentQuality;
+
+    // assert
+    expect(actual.seq, 20);
+    expect(actual.sessionId, '12345');
+    expect(actual.constraints!.frameRate, 30);
+    expect(actual.constraints!.height, 1080);
+  });
+
   test('isControlMessage should return false for non control messages', () {
     // arrange
     final messages = [
@@ -266,7 +283,7 @@ void main() {
     expect(messages[2].isControlMessage, true);
   });
 
-  test('actionNameToChannelMessageType()', () {
+  test('actionNameToChannelMessageType() should return correct enum type', () {
     // arrange
 
     //action
@@ -280,9 +297,11 @@ void main() {
       actionNameToChannelMessageType('present-rejected'),
       actionNameToChannelMessageType('stop-present'),
       actionNameToChannelMessageType('present-signal'),
-      actionNameToChannelMessageType('present-change-quality'),
+      actionNameToChannelMessageType('change-present-quality'),
       actionNameToChannelMessageType('allow-present'),
       actionNameToChannelMessageType('heartbeat'),
+      actionNameToChannelMessageType('pause-present'),
+      actionNameToChannelMessageType('resume-present'),
     ];
 
     //assert
@@ -295,9 +314,11 @@ void main() {
     expect(actual[6], ChannelMessageType.presentRejected);
     expect(actual[7], ChannelMessageType.stopPresent);
     expect(actual[8], ChannelMessageType.presentSignal);
-    expect(actual[9], ChannelMessageType.presentChangeQuality);
+    expect(actual[9], ChannelMessageType.changePresentQuality);
     expect(actual[10], ChannelMessageType.allowPresent);
     expect(actual[11], ChannelMessageType.heartbeat);
+    expect(actual[11], ChannelMessageType.pausePresent);
+    expect(actual[11], ChannelMessageType.resumePresent);
   });
 
   test('actionNameToChannelMessageType() unknown', () {
