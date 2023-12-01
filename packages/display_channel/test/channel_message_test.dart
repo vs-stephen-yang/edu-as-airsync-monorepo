@@ -54,7 +54,7 @@ void main() {
 
       // action
       final json = msg.toJson();
-      final actual = ChannelConnectedMessage.fromJson(json);
+      final actual = ChannelMessage.parse(json) as ChannelConnectedMessage;
 
       // assert
       expect(actual.heartbeatInterval, 1000);
@@ -83,7 +83,7 @@ void main() {
 
       // action
       final json = msg.toJson();
-      final actual = DisplayStatusMessage.fromJson(json);
+      final actual = ChannelMessage.parse(json) as DisplayStatusMessage;
 
       // assert
       expect(actual.name, 'Room 1');
@@ -107,7 +107,7 @@ void main() {
 
       // action
       final json = msg.toJson();
-      final actual = JoinDisplayMessage.fromJson(json);
+      final actual = ChannelMessage.parse(json) as JoinDisplayMessage;
 
       // assert
       expect(actual.name, 'Tom');
@@ -123,7 +123,22 @@ void main() {
 
       // action
       final json = msg.toJson();
-      final actual = StartPresentMessage.fromJson(json);
+      final actual = ChannelMessage.parse(json) as StartPresentMessage;
+
+      // assert
+      expect(actual.seq, 20);
+      expect(actual.sessionId, '12345');
+    });
+
+    test('stop-present', () {
+      // Arrange
+      final msg = StopPresentMessage();
+      msg.sessionId = '12345';
+      msg.seq = 20;
+
+      // action
+      final json = msg.toJson();
+      final actual = ChannelMessage.parse(json) as StopPresentMessage;
 
       // assert
       expect(actual.seq, 20);
@@ -137,7 +152,7 @@ void main() {
 
       // action
       final json = msg.toJson();
-      final actual = PausePresentMessage.fromJson(json);
+      final actual = ChannelMessage.parse(json) as PausePresentMessage;
 
       // assert
       expect(actual.seq, 20);
@@ -151,7 +166,7 @@ void main() {
 
       // action
       final json = msg.toJson();
-      final actual = ResumePresentMessage.fromJson(json);
+      final actual = ChannelMessage.parse(json) as ResumePresentMessage;
 
       // assert
       expect(actual.seq, 20);
@@ -170,7 +185,7 @@ void main() {
 
       // action
       final json = msg.toJson();
-      final actual = PresentSignalMessage.fromJson(json);
+      final actual = ChannelMessage.parse(json) as PresentSignalMessage;
 
       // assert
       expect(actual.seq, 24);
@@ -193,7 +208,7 @@ void main() {
 
       // action
       final json = msg.toJson();
-      final actual = PresentSignalMessage.fromJson(json);
+      final actual = ChannelMessage.parse(json) as PresentSignalMessage;
 
       // assert
       expect(actual.sessionId, '12345');
@@ -213,7 +228,7 @@ void main() {
 
     //action
     final json = msg.toJson();
-    final actual = PresentRejectedMessage.fromJson(json);
+    final actual = ChannelMessage.parse(json) as PresentRejectedMessage;
 
     //assert
     expect(actual.sessionId, '12345');
