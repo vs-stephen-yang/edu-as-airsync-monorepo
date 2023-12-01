@@ -10,7 +10,7 @@ enum ChannelMessageType {
   pausePresent,
   resumePresent,
   presentSignal,
-  presentChangeQuality,
+  changePresentQuality,
   allowPresent,
   heartbeat,
   unknown,
@@ -28,13 +28,14 @@ final channelMessageActionNames = <int, String>{
   ChannelMessageType.pausePresent.index: 'pause-present',
   ChannelMessageType.resumePresent.index: 'resume-present',
   ChannelMessageType.presentSignal.index: 'present-signal',
-  ChannelMessageType.presentChangeQuality.index: 'present-change-quality',
+  ChannelMessageType.changePresentQuality.index: 'change-present-quality',
   ChannelMessageType.allowPresent.index: 'allow-present',
   ChannelMessageType.heartbeat.index: 'heartbeat',
 };
 
 final channelMessageParsers = {
   ChannelMessageType.channelConnected.index: ChannelConnectedMessage.fromJson,
+  ChannelMessageType.clientConnected.index: ClientConnectedMessage.fromJson,
   ChannelMessageType.displayStatus.index: DisplayStatusMessage.fromJson,
   ChannelMessageType.joinDisplay.index: JoinDisplayMessage.fromJson,
   ChannelMessageType.startPresent.index: StartPresentMessage.fromJson,
@@ -44,6 +45,9 @@ final channelMessageParsers = {
   ChannelMessageType.pausePresent.index: PausePresentMessage.fromJson,
   ChannelMessageType.resumePresent.index: ResumePresentMessage.fromJson,
   ChannelMessageType.presentSignal.index: PresentSignalMessage.fromJson,
+  ChannelMessageType.changePresentQuality.index: ChangePresentQuality.fromJson,
+  ChannelMessageType.allowPresent.index: AllowPresentMessage.fromJson,
+  ChannelMessageType.heartbeat.index: HeartbeatMessage.fromJson,
 };
 
 ChannelMessageType actionNameToChannelMessageType(String actionName) {
@@ -468,6 +472,49 @@ class PresentRejectedMessage extends ChannelMessage {
     return super._toJson({
       'sessionId': sessionId,
       'reason': reason?.toJson(),
+    });
+  }
+}
+
+class PresentQualityConstraints {
+  int? frameRate;
+  int? height;
+
+  PresentQualityConstraints({this.frameRate, this.height});
+
+  PresentQualityConstraints.fromJson(Map<String, dynamic> json)
+      : frameRate = json['frameRate'] as int?,
+        height = json['height'] as int?;
+
+  Map<String, dynamic> toJson() => {
+        'frameRate': frameRate,
+        'height': height,
+      };
+}
+
+class ChangePresentQuality extends ChannelMessage {
+  String? sessionId;
+  PresentQualityConstraints? constraints;
+
+  ChangePresentQuality(this.sessionId)
+      : super(ChannelMessageType.changePresentQuality);
+
+  ChangePresentQuality.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.changePresentQuality, json) {
+    final data = super._fromJson(json);
+
+    sessionId = data['sessionId'] as String?;
+
+    if (data['constraints'] != null) {
+      constraints = PresentQualityConstraints.fromJson(data['constraints']);
+    }
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'sessionId': sessionId,
+      'constraints': constraints?.toJson(),
     });
   }
 }
