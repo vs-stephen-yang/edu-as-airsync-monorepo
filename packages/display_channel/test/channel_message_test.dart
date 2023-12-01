@@ -130,6 +130,34 @@ void main() {
       expect(actual.sessionId, '12345');
     });
 
+    test('pause-present', () {
+      // Arrange
+      final msg = PausePresentMessage('12345');
+      msg.seq = 20;
+
+      // action
+      final json = msg.toJson();
+      final actual = PausePresentMessage.fromJson(json);
+
+      // assert
+      expect(actual.seq, 20);
+      expect(actual.sessionId, '12345');
+    });
+
+    test('resume-present', () {
+      // Arrange
+      final msg = ResumePresentMessage('12345');
+      msg.seq = 20;
+
+      // action
+      final json = msg.toJson();
+      final actual = ResumePresentMessage.fromJson(json);
+
+      // assert
+      expect(actual.seq, 20);
+      expect(actual.sessionId, '12345');
+    });
+
     test('present-signal sdp', () {
       // Arrange
       final msg = PresentSignalMessage(

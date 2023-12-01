@@ -7,6 +7,8 @@ enum ChannelMessageType {
   presentAccepted,
   presentRejected,
   stopPresent,
+  pausePresent,
+  resumePresent,
   presentSignal,
   presentChangeQuality,
   allowPresent,
@@ -23,6 +25,8 @@ final channelMessageActionNames = <int, String>{
   ChannelMessageType.presentAccepted.index: 'present-accepted',
   ChannelMessageType.presentRejected.index: 'present-rejected',
   ChannelMessageType.stopPresent.index: 'stop-present',
+  ChannelMessageType.pausePresent.index: 'pause-present',
+  ChannelMessageType.resumePresent.index: 'resume-present',
   ChannelMessageType.presentSignal.index: 'present-signal',
   ChannelMessageType.presentChangeQuality.index: 'present-change-quality',
   ChannelMessageType.allowPresent.index: 'allow-present',
@@ -37,6 +41,8 @@ final channelMessageParsers = {
   ChannelMessageType.presentAccepted.index: PresentAcceptedMessage.fromJson,
   ChannelMessageType.presentRejected.index: PresentRejectedMessage.fromJson,
   ChannelMessageType.stopPresent.index: StopPresentMessage.fromJson,
+  ChannelMessageType.pausePresent.index: PausePresentMessage.fromJson,
+  ChannelMessageType.resumePresent.index: ResumePresentMessage.fromJson,
   ChannelMessageType.presentSignal.index: PresentSignalMessage.fromJson,
 };
 
@@ -275,6 +281,47 @@ class StopPresentMessage extends ChannelMessage {
 
   StopPresentMessage.fromJson(Map<String, dynamic> json)
       : super.fromJson(ChannelMessageType.stopPresent, json) {
+    final data = super._fromJson(json);
+
+    sessionId = data['sessionId'] as String?;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'sessionId': sessionId,
+    });
+  }
+}
+
+class PausePresentMessage extends ChannelMessage {
+  String? sessionId;
+
+  PausePresentMessage(this.sessionId) : super(ChannelMessageType.pausePresent);
+
+  PausePresentMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.pausePresent, json) {
+    final data = super._fromJson(json);
+
+    sessionId = data['sessionId'] as String?;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'sessionId': sessionId,
+    });
+  }
+}
+
+class ResumePresentMessage extends ChannelMessage {
+  String? sessionId;
+
+  ResumePresentMessage(this.sessionId)
+      : super(ChannelMessageType.resumePresent);
+
+  ResumePresentMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.resumePresent, json) {
     final data = super._fromJson(json);
 
     sessionId = data['sessionId'] as String?;
