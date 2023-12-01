@@ -39,6 +39,10 @@ jobs:
           archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
           destinationFolder: "$(Pipeline.Workspace)/flutter"
 
+      - script: $(Flutter.Bin) analyze --no-fatal-infos
+        displayName: Run lint checks
+        workingDirectory: "$(Build.SourcesDirectory)"
+
       - script: $(Flutter.Bin) test
         displayName: Run unit test
         workingDirectory: "$(Build.SourcesDirectory)"
