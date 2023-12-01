@@ -317,8 +317,8 @@ void main() {
     expect(actual[9], ChannelMessageType.changePresentQuality);
     expect(actual[10], ChannelMessageType.allowPresent);
     expect(actual[11], ChannelMessageType.heartbeat);
-    expect(actual[11], ChannelMessageType.pausePresent);
-    expect(actual[11], ChannelMessageType.resumePresent);
+    expect(actual[12], ChannelMessageType.pausePresent);
+    expect(actual[13], ChannelMessageType.resumePresent);
   });
 
   test('actionNameToChannelMessageType() unknown', () {
