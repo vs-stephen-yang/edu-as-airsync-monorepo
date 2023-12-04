@@ -5,6 +5,7 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
@@ -25,32 +26,75 @@ class PresentSelectScreen extends StatelessWidget {
           selectScreenDialog?.cancel();
         }
       });
-      await showDialog<CustomDesktopCapturerSource>(
-        context: context,
-        builder: (context) => selectScreenDialog = SelectScreenDialog(),
-      ).then((value) {
-        debugModePrint('selectedSource: $value');
-        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-        if (value != null && value.selectedSource != null) {
-          if (WebRTC.platformIsWindows && value.selectedSource?.type != SourceType.Window) {
-            provider.presentStart(selectedSource: value.selectedSource, systemAudio: value.systemAudio);
+      if (WebRTC.platformIsDesktop) {
+        await showDialog<CustomDesktopCapturerSource>(
+          context: context,
+          builder: (context) => selectScreenDialog = SelectScreenDialog(),
+        ).then((value) {
+          debugModePrint('selectedSource: $value');
+          ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+          if (value != null && value.selectedSource != null) {
+            if (WebRTC.platformIsWindows &&
+                value.selectedSource?.type != SourceType.Window) {
+              provider.presentStart(
+                  selectedSource: value.selectedSource,
+                  systemAudio: value.systemAudio);
+            } else {
+              provider.presentStart(selectedSource: value.selectedSource);
+            }
           } else {
-            provider.presentStart(selectedSource: value.selectedSource);
+            SelectScreenDialog._timer?.cancel();
+            for (var element in selectScreenDialog!._subscriptions) {
+              element.cancel();
+            }
+            // moderator mode
+            if (provider.moderator != null) {
+              provider.presentStop();
+            } else {
+              provider.presentStop();
+              provider.presentEnd();
+            }
           }
-        } else {
-          SelectScreenDialog._timer?.cancel();
-          for (var element in selectScreenDialog!._subscriptions) {
-            element.cancel();
+        });
+      } else {
+        if (WebRTC.platformIsAndroid) {
+          // Android specific
+          Future<void> requestBackgroundPermission() async {
+            // Required for android screen share.
+            try {
+              var hasPermissions = await FlutterBackground.hasPermissions;
+              const androidConfig = FlutterBackgroundAndroidConfig(
+                notificationTitle: 'Screen Sharing',
+                notificationText: 'AirSync is sharing the screen.',
+                notificationImportance: AndroidNotificationImportance.Default,
+                notificationIcon: AndroidResource(
+                  name: 'ic_launcher',
+                  defType: 'mipmap',
+                ),
+                // Above Android 12 will has some issue if set below option true.
+                shouldRequestBatteryOptimizationsOff: false,
+              );
+
+              hasPermissions = await FlutterBackground.initialize(
+                  androidConfig: androidConfig);
+
+              if (hasPermissions &&
+                  !FlutterBackground.isBackgroundExecutionEnabled) {
+                await FlutterBackground.enableBackgroundExecution();
+              }
+            } catch (e) {
+              print('could not publish video: $e');
+            }
           }
-          // moderator mode
-          if (provider.moderator != null) {
-            provider.presentStop();
-          } else {
-            provider.presentStop();
-            provider.presentEnd();
-          }
+
+          await requestBackgroundPermission();
         }
-      });
+
+        var value = CustomDesktopCapturerSource(null, true);
+        provider.presentStart(
+            selectedSource: value.selectedSource,
+            systemAudio: value.systemAudio);
+      }
     });
     return const SizedBox();
   }
