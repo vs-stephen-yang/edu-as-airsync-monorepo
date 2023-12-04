@@ -74,8 +74,8 @@ dependencies:
   flutter_background: ^1.2.0
 
 dependency_overrides:
-  dart_webrtc: ^1.1.1
-  webrtc_interface: ^1.1.2
+  dart_webrtc: 1.1.1 # need follow flutter_webrtc version
+  webrtc_interface: 1.1.0 # need follow flutter_webrtc version
 
 dev_dependencies:
   flutter_test:
