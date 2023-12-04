@@ -109,10 +109,10 @@ packages:
     dependency: "direct main"
     description:
       name: device_info_plus
-      sha256: "7035152271ff67b072a211152846e9f1259cf1be41e34cd3e0b5463d2d6b8419"
+      sha256: "0042cb3b2a76413ea5f8a2b40cec2a33e01d0c937e91f0f7c211fde4f7739ba6"
       url: "https://pub.dev"
     source: hosted
-    version: "9.1.0"
+    version: "9.1.1"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -193,10 +193,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_multi_formatter
-      sha256: "91cd9b4075e01f337f564ee3b48434a276c70e2f91261e6c758ab0c766f3a621"
+      sha256: a75e687033cb09211335b67efc63ab76ec2a66a2cb578b8a2e8d649ba197bea3
       url: "https://pub.dev"
     source: hosted
-    version: "2.11.16"
+    version: "2.12.1"
   flutter_svg:
     dependency: transitive
     description:
@@ -227,8 +227,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.9.36-5"
-      resolved-ref: "47e0f68dfc7db0fdc10b06912976163dffe5e82a"
+      ref: "release-0.9.36-7"
+      resolved-ref: f6f4eafe84922bf19525d9c1643c56879e8978e3
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc"
     source: git
     version: "0.9.36"
@@ -452,10 +452,10 @@ packages:
     dependency: transitive
     description:
       name: plugin_platform_interface
-      sha256: da3fdfeccc4d4ff2da8f8c556704c08f912542c5fb3cf2233ed75372384a034d
+      sha256: f4f88d4a900933e7267e2b353594774fc0d07fb072b47eedcd5b54e1ea3269f8
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.6"
+    version: "2.1.7"
   protobuf:
     dependency: "direct main"
     description:
@@ -649,10 +649,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_ios
-      sha256: "4ac97281cf60e2e8c5cc703b2b28528f9b50c8f7cebc71df6bdf0845f647268a"
+      sha256: bba3373219b7abb6b5e0d071b0fe66dfbe005d07517a68e38d4fc3638f35c6d3
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.0"
+    version: "6.2.1"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -753,10 +753,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: "350a11abd2d1d97e0cc7a28a81b781c08002aa2864d9e3f192ca0ffa18b06ed3"
+      sha256: b0f37db61ba2f2e9b7a78a1caece0052564d1bc70668156cf3a29d676fe4e574
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.9"
+    version: "5.1.1"
   win32_registry:
     dependency: transitive
     description:
