@@ -9,6 +9,7 @@ import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as io;
@@ -56,7 +57,8 @@ class WebRTCHelper {
     _peerId = peerId;
     dynamic deviceId;
 
-    if (Platform.isAndroid) {
+    if (kIsWeb) {
+    } else if (Platform.isAndroid) {
     } else if (Platform.isIOS) {
       deviceId = 'broadcast';
     } else {
@@ -78,6 +80,9 @@ class WebRTCHelper {
   Future<void> disposeStream() async {
     try {
       if (_localStream != null) {
+        if (kIsWeb) {
+          _localStream?.getTracks().forEach((track) => track.stop());
+        }
         var stream = _localStream!;
         _localStream = null;
         await stream.dispose();
@@ -88,6 +93,7 @@ class WebRTCHelper {
   }
 
   void streamStop() {
+    if (kIsWeb) return;
     _pc?.getLocalStreams().forEach((element) {
       element?.getTracks().first.enabled = false;
       element?.getTracks().first.stop();
@@ -97,7 +103,7 @@ class WebRTCHelper {
   Future<void> streamPause() async {
     var constraints = <String, dynamic>{
       'audio': false,
-      'video': {
+      'video': !WebRTC.platformIsDesktop ? false : {
         'deviceId': _deviceId,
         'mandatory': {'frameRate': 0.0},
       }
@@ -115,7 +121,7 @@ class WebRTCHelper {
   Future<void> streamResume() async {
     var constraints = <String, dynamic>{
       'audio': _isAudioCaptureAllowed(),
-      'video': {
+      'video': !WebRTC.platformIsDesktop ? true : {
         'deviceId': _deviceId,
         'mandatory': {'frameRate': 30.0},
       }
@@ -281,7 +287,7 @@ class WebRTCHelper {
 
     final constraints = <String, dynamic>{
       'audio': _isAudioCaptureAllowed(),
-      'video': {
+      'video': !WebRTC.platformIsDesktop ? true : {
         'deviceId': _deviceId,
         'mandatory': {'frameRate': 30.0},
         'width': _trackWidth = _maxTrackWidth,

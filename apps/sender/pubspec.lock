@@ -90,13 +90,13 @@ packages:
     source: hosted
     version: "1.0.6"
   dart_webrtc:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: dart_webrtc
-      sha256: "8949301071ac7c3fb8f78ef7dffc48652db16f2ec63d84078b608f2ca27cca38"
+      sha256: "5897a3bdd6c7fded07e80e250260ca4c9cd61f9080911aa308b516e1206745a9"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.17"
+    version: "1.1.3"
   desktop_window:
     dependency: "direct main"
     description:
@@ -750,13 +750,13 @@ packages:
     source: hosted
     version: "0.1.4-beta"
   webrtc_interface:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: webrtc_interface
-      sha256: "0dd96f4d7fb6ba9895930644cebd3f1adb5179caa83cb1760061b2fe9cba5aad"
+      sha256: "2efbd3e4e5ebeb2914253bcc51dafd3053c4b87b43f3076c74835a9deecbae3a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.2"
   win32:
     dependency: transitive
     description:

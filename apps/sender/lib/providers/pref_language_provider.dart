@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,7 +44,7 @@ class PrefLanguageProvider extends ChangeNotifier {
 
   String _getDefaultSupportedLanguage() {
     //System locale
-    String currentSystemLanguageCode = Platform.localeName.split('_')[0];
+    String currentSystemLanguageCode = (!kIsWeb) ? Platform.localeName.split('_')[0] : 'en';
 
     //default is English
     String name = 'English';

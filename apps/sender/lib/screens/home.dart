@@ -13,6 +13,7 @@ import 'package:display_cast_flutter/widgets/present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/settings.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
@@ -61,11 +62,13 @@ class _HomeState extends State<Home> {
                 Consumer2<PresentStateProvider, ChannelProvider>(
                   builder: (context, present, channel, child) {
                     debugModePrint('PresentState: ${present.state}');
-                    FlutterWindowClose.setWindowShouldCloseHandler(() async {
-                      await present.presentStop();
-                      await present.presentEnd(goIdleState: false);
-                      return true;
-                    });
+                    if (!kIsWeb) {
+                      FlutterWindowClose.setWindowShouldCloseHandler(() async {
+                        await present.presentStop();
+                        await present.presentEnd(goIdleState: false);
+                        return true;
+                      });
+                    }
 
                     switch (present.state) {
                       case ViewState.idle:
