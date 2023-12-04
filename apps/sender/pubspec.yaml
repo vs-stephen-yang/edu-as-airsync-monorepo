@@ -43,7 +43,7 @@ dependencies:
   flutter_webrtc:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc
-      ref: release-0.9.36-5
+      ref: release-0.9.36-7
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding.git
@@ -54,13 +54,13 @@ dependencies:
       ref: release-0.1.0
   protobuf: ^2.1.0
   provider: ^6.1.1
-  flutter_multi_formatter: ^2.11.16
+  flutter_multi_formatter: ^2.12.1
   socket_io_client: ^1.0.2
   http: ^1.1.0
   uuid: ^4.0.0
   url_launcher: ^6.2.1
   shared_preferences: ^2.2.2
-  device_info_plus: ^9.1.0
+  device_info_plus: ^9.1.1
   flutter_svg_provider: ^1.0.6
   desktop_window: ^0.4.0
   flutter_window_close: ^0.2.2
