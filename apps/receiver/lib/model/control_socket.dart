@@ -386,6 +386,7 @@ class ControlSocket {
           }
 
           if (selectedController != null) {
+            selectedController.pauseVideo();
             AppAnalytics().trackEventPresentPauseReceived(
                 selectedController.presentId, selectedController.presenterId);
 
@@ -409,6 +410,7 @@ class ControlSocket {
           }
 
           if (selectedController != null) {
+            selectedController.resumeVideo();
             AppAnalytics().trackEventPresentResumeReceived(
                 selectedController.presentId, selectedController.presenterId);
           }

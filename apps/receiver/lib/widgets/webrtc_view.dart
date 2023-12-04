@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -9,6 +12,7 @@ import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/loading_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:uuid/uuid.dart';
 
@@ -31,6 +35,8 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> {
   Size _textureSize = const Size(0, 0);
   Offset _textureOffset = const Offset(0, 0);
   var _remoteRenderer = RTCVideoRenderer();
+  GlobalKey repaintBoundaryKey = GlobalKey();
+  GlobalKey<PauseScreenImageState> pauseScreenImageKey = GlobalKey();
 
   @override
   void initState() {
@@ -60,6 +66,8 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> {
     });
 
     _socket.onDisconnect = (() async {
+      // clear image
+      pauseScreenImageKey.currentState?.clearImage();
       // clear renderer
       if (_remoteRenderer.textureId != null && _remoteRenderer.renderVideo) {
         // onDisconnect may come-in many times, need check textureId first.
@@ -73,6 +81,7 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> {
 
   @override
   void deactivate() {
+    pauseScreenImageKey.currentState?.clearImage();
     _remoteRenderer.dispose();
     if (_socket.socket != null && _socket.socket!.connected) {
       _socket.disconnect().then((value) {
@@ -174,20 +183,23 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> {
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
-        Focus(
-          descendantsAreFocusable: false,
-          canRequestFocus: false,
-          child: NotificationListener<SizeChangedLayoutNotification>(
-            onNotification: (notification) {
-              printInDebug('onVideoWidgetResize');
-              _textureSizeChanged = true;
-              return false;
-            },
-            child: Listener(
-              onPointerDown: _onTouchStart,
-              onPointerMove: _onTouchMove,
-              onPointerUp: _onTouchEnd,
-              child: RTCVideoView(_remoteRenderer, key: _widgetKey),
+        RepaintBoundary(
+          key: repaintBoundaryKey,
+          child: Focus(
+            descendantsAreFocusable: false,
+            canRequestFocus: false,
+            child: NotificationListener<SizeChangedLayoutNotification>(
+              onNotification: (notification) {
+                printInDebug('onVideoWidgetResize');
+                _textureSizeChanged = true;
+                return false;
+              },
+              child: Listener(
+                onPointerDown: _onTouchStart,
+                onPointerMove: _onTouchMove,
+                onPointerUp: _onTouchEnd,
+                child: RTCVideoView(_remoteRenderer, key: _widgetKey),
+              ),
             ),
           ),
         ),
@@ -217,6 +229,7 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> {
             ),
           ),
         ),
+        PauseScreenImage(key: pauseScreenImageKey),
         if (showConnectionInfo)
           Transform.scale(
             scale: SplitScreen.mapSplitScreen.value[keySplitScreenEnable] &&
@@ -298,20 +311,18 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> {
     }
   }
 
-  void pauseVideo() {
-    if (_remoteRenderer.srcObject != null) {
-      if (_remoteRenderer.srcObject!.getTracks().isNotEmpty) {
-        _remoteRenderer.srcObject!.getTracks().first.enabled = false;
-      }
-    }
+  Future<void> pauseVideo() async {
+    // screenshot RTCView
+    final boundary = repaintBoundaryKey.currentContext?.findRenderObject()
+        as RenderRepaintBoundary?;
+    final image = await boundary?.toImage();
+    final byteData = await image?.toByteData(format: ImageByteFormat.png);
+    final imageBytes = byteData?.buffer.asUint8List();
+    pauseScreenImageKey.currentState?.refresh(imageBytes);
   }
 
   void resumeVideo() {
-    if (_remoteRenderer.srcObject != null) {
-      if (_remoteRenderer.srcObject!.getTracks().isNotEmpty) {
-        _remoteRenderer.srcObject!.getTracks().first.enabled = true;
-      }
-    }
+    pauseScreenImageKey.currentState?.remove();
   }
 }
 
@@ -349,5 +360,42 @@ extension OwtMessageTypeExt on OwtMessageType {
       default:
         return '';
     }
+  }
+}
+
+class PauseScreenImage extends StatefulWidget {
+  const PauseScreenImage({super.key});
+
+  @override
+  PauseScreenImageState createState() => PauseScreenImageState();
+}
+
+class PauseScreenImageState extends State<PauseScreenImage> {
+  Uint8List? _capturedImage;
+
+  // 一个用于刷新小部件的方法
+  void refresh(Uint8List? imageBytes) {
+    if (mounted) {
+      setState(() {
+      _capturedImage = imageBytes;
+    });
+    }
+  }
+
+  void remove() {
+    if (mounted) {
+      setState(() {
+      _capturedImage = null;
+    });
+    }
+  }
+
+  void clearImage() {
+    _capturedImage = null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _capturedImage != null? Image.memory(_capturedImage!, fit:BoxFit.fill): const SizedBox();
   }
 }
