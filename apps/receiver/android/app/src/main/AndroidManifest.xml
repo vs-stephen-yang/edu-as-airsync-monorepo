@@ -44,7 +44,7 @@
         android:resizeableActivity="true">
         <activity
             android:name=".EulaActivity"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode|touchscreen"
             android:exported="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
