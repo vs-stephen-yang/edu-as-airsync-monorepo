@@ -78,9 +78,7 @@ class _HomeState extends State<Home> {
                         case ViewState.idle:
                           return PresentIdle();
                         case ViewState.moderatorIdle:
-                          return ModeratorIdle(
-                              displayCode: present.displayCode,
-                              otp: present.otp);
+                          return const ModeratorIdle();
                         case ViewState.moderatorWait:
                           return const ModeratorWait();
                         case ViewState.waitReady:
