@@ -2,7 +2,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
 class PresentIdleButton extends StatefulWidget {
-  const PresentIdleButton({Key? key, required this.onPressed}) : super(key: key);
+  const PresentIdleButton({super.key, required this.onPressed});
 
   final VoidCallback? onPressed;
 
