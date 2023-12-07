@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -31,7 +32,7 @@ class AppRetain extends StatelessWidget {
               _androidAppRetain.invokeMethod('sendToBackground');
               return Future.value(false);
             } catch (e) {
-              print(e);
+              debugModePrint(e);
               return Future.value(true);
             }
           }

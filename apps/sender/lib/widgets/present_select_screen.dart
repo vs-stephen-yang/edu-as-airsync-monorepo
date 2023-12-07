@@ -83,7 +83,7 @@ class PresentSelectScreen extends StatelessWidget {
                 await FlutterBackground.enableBackgroundExecution();
               }
             } catch (e) {
-              print('could not publish video: $e');
+              debugModePrint('could not publish video: $e');
             }
           }
 
@@ -363,11 +363,10 @@ class CustomDesktopCapturerSource {
 
 class ThumbnailWidget extends StatefulWidget {
   const ThumbnailWidget(
-      {Key? key,
+      {super.key,
       required this.source,
       required this.selected,
-      required this.onTap})
-      : super(key: key);
+      required this.onTap});
   final DesktopCapturerSource source;
   final bool selected;
   final Function(DesktopCapturerSource) onTap;
