@@ -319,10 +319,12 @@ class WebRTCFlutterViewState extends State<WebRTCFlutterView> {
     final byteData = await image?.toByteData(format: ImageByteFormat.png);
     final imageBytes = byteData?.buffer.asUint8List();
     pauseScreenImageKey.currentState?.refresh(imageBytes);
+    controlAudio(false);
   }
 
   void resumeVideo() {
     pauseScreenImageKey.currentState?.remove();
+    controlAudio(true);
   }
 }
 
