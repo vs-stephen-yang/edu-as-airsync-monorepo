@@ -103,10 +103,12 @@ class WebRTCHelper {
   Future<void> streamPause() async {
     var constraints = <String, dynamic>{
       'audio': false,
-      'video': !WebRTC.platformIsDesktop ? false : {
-        'deviceId': _deviceId,
-        'mandatory': {'frameRate': 0.0},
-      }
+      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsAndroid
+          ? false
+          : {
+              'deviceId': _deviceId,
+              'mandatory': {'frameRate': 0.0},
+            }
     };
     _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
     for (MediaStreamTrack track in _localStream!.getTracks()) {
@@ -121,10 +123,12 @@ class WebRTCHelper {
   Future<void> streamResume() async {
     var constraints = <String, dynamic>{
       'audio': _isAudioCaptureAllowed(),
-      'video': !WebRTC.platformIsDesktop ? true : {
-        'deviceId': _deviceId,
-        'mandatory': {'frameRate': 30.0},
-      }
+      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsAndroid
+          ? true
+          : {
+              'deviceId': _deviceId,
+              'mandatory': {'frameRate': 30.0},
+            }
     };
     _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
     for (MediaStreamTrack track in _localStream!.getTracks()) {
@@ -144,7 +148,7 @@ class WebRTCHelper {
     }
     final constraints = <String, dynamic>{
       'audio': _isAudioCaptureAllowed(),
-      'video': !WebRTC.platformIsDesktop
+      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsAndroid
           ? true
           : {
               'deviceId': _deviceId,
@@ -287,12 +291,14 @@ class WebRTCHelper {
 
     final constraints = <String, dynamic>{
       'audio': _isAudioCaptureAllowed(),
-      'video': !WebRTC.platformIsDesktop ? true : {
-        'deviceId': _deviceId,
-        'mandatory': {'frameRate': 30.0},
-        'width': _trackWidth = _maxTrackWidth,
-        'height': _trackHeight = _maxTrackHeight,
-      }
+      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsAndroid
+          ? true
+          : {
+              'deviceId': _deviceId,
+              'mandatory': {'frameRate': 30.0},
+              'width': _trackWidth = _maxTrackWidth,
+              'height': _trackHeight = _maxTrackHeight,
+            }
     };
 
     _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);

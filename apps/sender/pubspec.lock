@@ -235,8 +235,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.9.36-7"
-      resolved-ref: f6f4eafe84922bf19525d9c1643c56879e8978e3
+      ref: "release-0.9.36-8"
+      resolved-ref: c9efd1bc735172efb7c83943151833cfb1d05e74
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc"
     source: git
     version: "0.9.36"
