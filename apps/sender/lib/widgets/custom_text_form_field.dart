@@ -1,9 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomTextFormField extends StatefulWidget {
-  CustomTextFormField(
+  const CustomTextFormField(
       {super.key,
       this.controller,
       this.labelText,
@@ -18,12 +17,12 @@ class CustomTextFormField extends StatefulWidget {
 
   final TextEditingController? controller;
   final String? labelText;
-  String? errorText;
+  final String? errorText;
   final Color? labelBackgroundColor;
   final Color? labelTextColor;
   final List<TextInputFormatter>? inputFormatter;
-  ValueChanged<String>? onChanged;
-  GestureTapCallback? onTap;
+  final ValueChanged<String>? onChanged;
+  final GestureTapCallback? onTap;
   final FocusNode focusNode;
   final ValueChanged<String> onFieldSubmitted;
 
@@ -31,11 +30,18 @@ class CustomTextFormField extends StatefulWidget {
   State<StatefulWidget> createState() {
     return CustomTextFormFieldState();
   }
-
 }
-class CustomTextFormFieldState extends State<CustomTextFormField> {
 
-  TextStyle errorTextStyle = const TextStyle(color: Color.fromRGBO(153, 153, 153, 1));
+class CustomTextFormFieldState extends State<CustomTextFormField> {
+  String? _errorText;
+  TextStyle errorTextStyle =
+      const TextStyle(color: Color.fromRGBO(153, 153, 153, 1));
+
+  @override
+  void initState() {
+    super.initState();
+    _errorText = widget.errorText;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +63,7 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
         labelText: widget.labelText,
         labelStyle: textStyle,
         floatingLabelStyle: textStyle,
-        errorText: widget.errorText,
+        errorText: _errorText,
         errorStyle: errorTextStyle,
         border: outlineInputBorderBlue,
         enabledBorder: outlineInputBorderGrey,
@@ -81,7 +87,7 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
 
   void setErrorMsg(String text) {
     setState(() {
-      widget.errorText = text;
+      _errorText = text;
       errorTextStyle = const TextStyle(color: Colors.red);
     });
   }
