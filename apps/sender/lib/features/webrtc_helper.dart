@@ -103,7 +103,7 @@ class WebRTCHelper {
   Future<void> streamPause() async {
     var constraints = <String, dynamic>{
       'audio': false,
-      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsAndroid
+      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
           ? false
           : {
               'deviceId': _deviceId,
@@ -123,7 +123,7 @@ class WebRTCHelper {
   Future<void> streamResume() async {
     var constraints = <String, dynamic>{
       'audio': _isAudioCaptureAllowed(),
-      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsAndroid
+      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
           ? true
           : {
               'deviceId': _deviceId,
@@ -148,7 +148,7 @@ class WebRTCHelper {
     }
     final constraints = <String, dynamic>{
       'audio': _isAudioCaptureAllowed(),
-      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsAndroid
+      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
           ? true
           : {
               'deviceId': _deviceId,
@@ -291,7 +291,7 @@ class WebRTCHelper {
 
     final constraints = <String, dynamic>{
       'audio': _isAudioCaptureAllowed(),
-      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsAndroid
+      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
           ? true
           : {
               'deviceId': _deviceId,
