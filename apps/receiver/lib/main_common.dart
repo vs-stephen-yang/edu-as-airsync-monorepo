@@ -143,7 +143,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       MyApp.connectControlSocket(context);
       ControlSocket().updateAllAudioEnableState(true);
       MainInfo.addGetOTPEvent();
-      Provider.of<ChannelProvider>(context).getDisplayCode(AppInstanceCreate().displayInstanceID);
     }
   }
 
@@ -182,7 +181,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: MirrorStateProvider()),
-        ChangeNotifierProvider.value(value: ChannelProvider(context, AppConfig.of(context)!.settings.apiGateway, AppConfig.of(context)!.appVersion)),
+        ChangeNotifierProvider.value(value: ChannelProvider(context, AppConfig.of(context)!)),
       ],
       child: MaterialApp(
         localizationsDelegates: const [
