@@ -19,6 +19,7 @@ import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/tittle_bar.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:display_flutter/widgets/webrtc_view.dart';
+import 'package:display_flutter/widgets/webrtc_view_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -59,6 +60,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       mirrorStateProvider.updateAudioEnable(false);
     } else if (state == AppLifecycleState.resumed) {
       mirrorStateProvider.updateAudioEnable(true);
+      Provider.of<ChannelProvider>(context, listen: false).getDisplayCode(AppInstanceCreate().displayInstanceID);
     }
   }
 
@@ -110,7 +112,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               height: _getWidthHeight(index, false),
                               child: Stack(
                                 children: <Widget>[
-                                  WebRTCFlutterView(
+                                  ChannelProvider.isNewUI ? Consumer<ChannelProvider>(
+                                    builder: (context, provider, child) {
+                                     return WebRTCView(index: index);
+                                    },
+                                  ): WebRTCFlutterView(
                                     callback:
                                         ControlSocket().addWebRtcController,
                                   ),
@@ -159,10 +165,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               ),
               ChannelProvider.isNewUI ? Consumer<ChannelProvider>(
                 builder: (context, provider, child) {
-                  if (provider.currentMode == Mode.internet) {
-                    return const MainInternetMode();
+                  if (provider.showMode == false) {
+                    return const SizedBox();
+                  } else if (provider.currentMode == Mode.internet) {
+                    return MainInternetMode();
                   } else {
-                    return const MainLanMode();
+                    return MainLanMode();
                   }
                 },
               ):const MainInfo(),
@@ -178,37 +186,38 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   child: StreamFunction(),
                 ),
               ),
-              ValueListenableBuilder(
-                valueListenable: Home.showCloudOff,
-                builder: (BuildContext context, bool value, Widget? child) {
-                  return Visibility(
-                    visible: value,
-                    child: Container(
-                      color: Colors.black,
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          const Icon(
-                            Icons.cloud_off,
-                            color: Colors.red,
-                            size: 120,
-                          ),
-                          const SizedBox(width: 20),
-                          Text(
-                            S.of(context).main_status_no_network,
-                            style: const TextStyle(
-                              color: AppColors.primary_white,
-                              fontSize: 20,
+              if (!ChannelProvider.isNewUI)
+                ValueListenableBuilder(
+                  valueListenable: Home.showCloudOff,
+                  builder: (BuildContext context, bool value, Widget? child) {
+                    return Visibility(
+                      visible: value,
+                      child: Container(
+                        color: Colors.black,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const Icon(
+                              Icons.cloud_off,
+                              color: Colors.red,
+                              size: 120,
                             ),
-                          )
-                        ],
+                            const SizedBox(width: 20),
+                            Text(
+                              S.of(context).main_status_no_network,
+                              style: const TextStyle(
+                                color: AppColors.primary_white,
+                                fontSize: 20,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  },
+                ),
             ],
           ),
         ),
@@ -256,15 +265,23 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       // https://github.com/flutter/flutter/issues/29958
       Home.isSelectedList.value = List.from(Home.isSelectedList.value);
 
-      ControlSocket().updateAllQuality(
-          selection, Home.isSelectedList.value.contains(true));
+      if (ChannelProvider.isNewUI) { //TODO:
+      } else {
+        ControlSocket().updateAllQuality(
+            selection, Home.isSelectedList.value.contains(true));
+      }
     } else {
       Home.isSelectedList.value
           .fillRange(0, Home.isSelectedList.value.length, false);
       // Using below method to trigger value changed.
       // https://github.com/flutter/flutter/issues/29958
       Home.isSelectedList.value = List.from(Home.isSelectedList.value);
-      ControlSocket().updateAllQuality(0, true);
+
+      if (ChannelProvider.isNewUI) { //TODO:
+
+      } else {
+        ControlSocket().updateAllQuality(0, true);
+      }
     }
   }
 
