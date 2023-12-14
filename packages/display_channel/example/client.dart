@@ -61,9 +61,8 @@ main(List<String> arguments) async {
 
   final clientId = const Uuid().v4();
   const token = 'token1';
-  const displayCode = '398419855';
-  const tunnelServiceUrl =
-      'wss://yu438hq3bi.execute-api.us-east-1.amazonaws.com/dev/';
+  const displayCode = '1683441648';
+  const tunnelServiceUrl = 'wss://ap-northeast-1.gateway.dev.airsync.net';
 
   bool direct = argResults['mode'] == 'direct';
 
