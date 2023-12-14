@@ -1,5 +1,8 @@
 {
   "vbs_ota_progress_msg": "Downloading system updates",
+  "update_title": "myViewBoard Display Update",
+  "update_message": "A new version of Display is available",
+  "update_install_now": "INSTALL NOW",
   "eula_title": "myViewBoard Display EULA",
   "eula_disagree": "I Disagree",
   "eula_agree": "I Agree",

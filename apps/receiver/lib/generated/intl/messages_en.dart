@@ -105,6 +105,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "moderator_remove": MessageLookupByLibrary.simpleMessage("REMOVE"),
         "moderator_verifyCode_fail": MessageLookupByLibrary.simpleMessage(
             "Something went wrong. Please try again."),
+        "update_install_now":
+            MessageLookupByLibrary.simpleMessage("INSTALL NOW"),
+        "update_message": MessageLookupByLibrary.simpleMessage(
+            "A new version of Display is available"),
+        "update_title":
+            MessageLookupByLibrary.simpleMessage("myViewBoard Display Update"),
         "vbs_ota_progress_msg":
             MessageLookupByLibrary.simpleMessage("Downloading system updates")
       };

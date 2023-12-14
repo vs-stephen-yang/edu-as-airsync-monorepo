@@ -60,6 +60,36 @@ class S {
     );
   }
 
+  /// `myViewBoard Display Update`
+  String get update_title {
+    return Intl.message(
+      'myViewBoard Display Update',
+      name: 'update_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A new version of Display is available`
+  String get update_message {
+    return Intl.message(
+      'A new version of Display is available',
+      name: 'update_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `INSTALL NOW`
+  String get update_install_now {
+    return Intl.message(
+      'INSTALL NOW',
+      name: 'update_install_now',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `myViewBoard Display EULA`
   String get eula_title {
     return Intl.message(
