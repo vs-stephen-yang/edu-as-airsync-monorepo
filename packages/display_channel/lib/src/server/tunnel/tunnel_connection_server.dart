@@ -39,6 +39,10 @@ class TunnelConnectionServer implements TunnelMessageHandler {
     _tunnelConnection?.open();
   }
 
+  void stop() {
+    _tunnelConnection?.close();
+  }
+
   void _initTunnelConnection(String url) {
     final uri = Uri.parse(url);
 

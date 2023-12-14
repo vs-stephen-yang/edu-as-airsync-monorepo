@@ -21,4 +21,8 @@ class HttpWebSocketServer {
       }
     });
   }
+
+  void close() {
+    _httpServer?.close();
+  }
 }

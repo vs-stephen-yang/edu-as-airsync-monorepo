@@ -40,6 +40,6 @@ class DisplayDirectServer extends ChannelServer {
 
   @override
   void stop() {
-    // TODO: implement stop
+    _httpServer?.close();
   }
 }
