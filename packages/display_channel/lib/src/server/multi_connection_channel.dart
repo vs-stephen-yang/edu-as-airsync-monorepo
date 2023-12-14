@@ -90,7 +90,7 @@ class MultiConnectionChannel implements Channel {
   }
 
   @override
-  void close() {
+  Future<void> close() async {
     for (var connection in _connections) {
       connection.close();
     }

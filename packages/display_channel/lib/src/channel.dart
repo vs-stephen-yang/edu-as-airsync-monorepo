@@ -15,7 +15,7 @@ abstract class Channel {
 
   ChannelState get state;
 
-  void close();
+  Future<void> close();
 
   void send(ChannelMessage message);
 }

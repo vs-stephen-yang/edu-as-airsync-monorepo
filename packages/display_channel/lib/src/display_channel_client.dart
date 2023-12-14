@@ -126,7 +126,7 @@ class DisplayChannelClient implements Channel {
   }
 
   @override
-  void close() {
-    _connection?.close();
+  Future<void> close() async {
+    await _connection?.close();
   }
 }

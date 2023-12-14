@@ -5,7 +5,7 @@ abstract class ClientConnection {
   void Function(Map<String, dynamic> message)? onMessage;
 
   void open();
-  void close();
+  Future<void> close();
 
   void send(Map<String, dynamic> message);
 }

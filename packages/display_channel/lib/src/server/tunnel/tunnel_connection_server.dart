@@ -39,8 +39,8 @@ class TunnelConnectionServer implements TunnelMessageHandler {
     _tunnelConnection?.open();
   }
 
-  void stop() {
-    _tunnelConnection?.close();
+  Future<void> stop() async {
+    await _tunnelConnection?.close();
   }
 
   void _initTunnelConnection(String url) {
