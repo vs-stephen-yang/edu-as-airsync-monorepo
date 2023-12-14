@@ -1,5 +1,8 @@
 {
   "vbs_ota_progress_msg": "更新下載中",
+  "update_title": "myViewBoard Display 更新",
+  "update_message": "已有新版本可供安裝",
+  "update_install_now": "立即安裝",
   "eula_title": "myViewBoard Display 終端使用者授權合約",
   "eula_disagree": "不同意",
   "eula_agree": "同意",

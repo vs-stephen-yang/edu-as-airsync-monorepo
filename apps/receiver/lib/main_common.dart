@@ -6,6 +6,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_exception_report.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
+import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/control_socket.dart';
@@ -13,6 +14,7 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/app_ota_dialog.dart';
 import 'package:display_flutter/widgets/main_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,6 +42,8 @@ Future<void> commonEntry(ConfigSettings settings) async {
     AppAnalytics().setEventProperties(
         entityId: AppPreferences().entityId,
         instanceId: AppInstanceCreate().displayInstanceID);
+
+    await AppUpdateHelper().ensureInitialized(settings);
 
     FlutterError.onError = (FlutterErrorDetails details) async {
       // Report errors to a service
@@ -205,17 +209,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         navigatorKey: NavigationService.navigationKey,
         routes: {
           // for "navService.popUntil('/home')"
-          '/home': (context) => const Home(),
+          '/home': (context) => const AppOTADialog(child: Home()),
+          '/eula': (context) => const AppOTADialog(child: Eula()),
         },
-        onGenerateRoute: (routeSettings) {
-          switch (routeSettings.name) {
-            case '/eula':
-              return MaterialPageRoute<String>(
-                  builder: (context) => const Eula());
-          }
-          return null;
-        },
-        // home: const Home(),
       ),
     );
   }

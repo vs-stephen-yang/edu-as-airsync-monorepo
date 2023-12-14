@@ -15,7 +15,6 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.mvbcast.crosswalk.helper.OTAHelper;
 import com.mvbcast.crosswalk.vbsota.SystemImageOTAHelper;
 
 import java.util.Calendar;
@@ -30,6 +29,7 @@ import io.flutter.plugin.common.MethodChannel;
 public class EulaActivity extends FlutterActivity {
     private static final String TAG = EulaActivity.class.getSimpleName();
     private MethodChannel mVbsOTA;
+    private static MethodChannel mAlarmOTA;
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -46,10 +46,15 @@ public class EulaActivity extends FlutterActivity {
         mVbsOTA = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/vbs_ota");
         SystemImageOTAHelper.getInstance().registerBroadcastReceiver(EulaActivity.this);
 
-        OTAHelper.getInstance().checkLatestVersion(EulaActivity.this, () -> {
-            // TODO:
+        MethodChannel otaMethodChannel = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/app_update");
+        otaMethodChannel.setMethodCallHandler((call, result) -> {
+            if (call.method.equals("getFlavor")) {
+                result.success(BuildConfig.FLAVOR_channel);
+            } else {
+                result.success("N/A");
+            }
         });
-        OTAHelper.getInstance().clearForceCheckVersion();
+        mAlarmOTA = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/app_update_alarm");
 
         MethodChannel bootMethodChannel = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/auto_startup");
         bootMethodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
@@ -81,38 +86,10 @@ public class EulaActivity extends FlutterActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-        OTAHelper.getInstance().checkLatestVersion(EulaActivity.this, () -> {
-            // TODO:
-        });
-    }
-
-    @Override
     protected void onDestroy() {
-        OTAHelper.getInstance().removeDownloadProcess(EulaActivity.this);
-
         SystemImageOTAHelper.getInstance().unregisterBroadcastReceiver(EulaActivity.this);
-
         super.onDestroy();
         System.exit(0);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (OTAHelper.getInstance().onRequestPermissionsResult(EulaActivity.this, requestCode, permissions, grantResults)) {
-            return;
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (OTAHelper.getInstance().onActivityResult(EulaActivity.this, requestCode, resultCode, data)) {
-            return;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void setSystemOTAEnableUI(boolean enableUI) {
@@ -160,7 +137,7 @@ public class EulaActivity extends FlutterActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.e(TAG, "AppAlarmOTA onReceive");
-            OTAHelper.getInstance().checkLatestVersion();
+            mAlarmOTA.invokeMethod("AppAlarmOTA", null);
         }
     }
     // endregion

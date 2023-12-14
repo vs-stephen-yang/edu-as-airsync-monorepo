@@ -82,6 +82,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "moderator_remove": MessageLookupByLibrary.simpleMessage("移除"),
         "moderator_verifyCode_fail":
             MessageLookupByLibrary.simpleMessage("抱歉，出現問題，請稍後再試。"),
+        "update_install_now": MessageLookupByLibrary.simpleMessage("立即安裝"),
+        "update_message": MessageLookupByLibrary.simpleMessage("已有新版本可供安裝"),
+        "update_title":
+            MessageLookupByLibrary.simpleMessage("myViewBoard Display 更新"),
         "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage("更新下載中")
       };
 }
