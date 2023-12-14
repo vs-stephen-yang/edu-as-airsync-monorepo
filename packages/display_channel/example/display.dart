@@ -108,10 +108,9 @@ class MockServer {
 }
 
 main() async {
-  const tunnelServiceUrl =
-      'wss://yu438hq3bi.execute-api.us-east-1.amazonaws.com/dev/';
+  const tunnelServiceUrl = 'wss://ap-northeast-1.gateway.dev.airsync.net';
   const localDirectPort = 5100;
-  const instanceId = 'asdf0';
+  const instanceId = '0002';
 
   final server = MockServer();
 
