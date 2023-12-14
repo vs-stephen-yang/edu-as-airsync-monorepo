@@ -40,6 +40,10 @@ class WebSocketClientConnection implements ClientConnection {
   }
 
   void _connect() async {
+    if (_closed) {
+      return;
+    }
+
     onConnecting?.call();
 
     try {
