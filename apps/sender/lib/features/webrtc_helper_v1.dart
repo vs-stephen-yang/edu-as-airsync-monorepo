@@ -6,6 +6,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:display_cast_flutter/features/webrtc_helper.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as io;
@@ -33,7 +34,8 @@ class WebRTCHelperV1 extends WebRTCHelper {
   Future<void> makeCall(
       String signalUrl, String id, String code, dynamic source) async {
     _displayCode = code;
-    if (Platform.isAndroid) {
+    if (kIsWeb) {
+    } else if (Platform.isAndroid) {
     } else if (Platform.isIOS) {
       _deviceId = 'broadcast';
     } else {

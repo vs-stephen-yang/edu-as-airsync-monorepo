@@ -171,7 +171,8 @@ class WebRTCHelper {
   //endregion
 
   bool _isTouchBackAllowed() {
-    return _isSourceTypeScreen &&
+    return !kIsWeb &&
+        (Platform.isAndroid || _isSourceTypeScreen) &&
         _touchBack &&
         _localStream!.getTracks().first.enabled;
   }
