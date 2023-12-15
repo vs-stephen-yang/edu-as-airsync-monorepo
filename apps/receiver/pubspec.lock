@@ -7,7 +7,7 @@ packages:
       path: "."
       ref: "1.0.1"
       resolved-ref: e0d78b869145ec311e74eec871e1801fe5eff6e4
-      url: "https://viewsonic-ssi.visualstudio.com/Droid/_git/App_OTA_Flutter"
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/App_OTA_Flutter"
     source: git
     version: "1.0.1"
   args:
