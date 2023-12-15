@@ -9,6 +9,7 @@ import 'package:display_cast_flutter/model/message.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_channel/display_channel.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:window_size/window_size.dart';
@@ -51,7 +52,8 @@ class WebRTCConnector {
   Future<void> makeCall(String peerId, dynamic source, List<RtcIceServer>? iceServerList) async {
     dynamic deviceId;
 
-    if (Platform.isAndroid) {
+    if (kIsWeb) {
+    } else if (Platform.isAndroid) {
     } else if (Platform.isIOS) {
       deviceId = 'broadcast';
     } else {
@@ -155,7 +157,8 @@ class WebRTCConnector {
   //endregion
 
   bool _isTouchBackAllowed() {
-    return _isSourceTypeScreen &&
+    return !kIsWeb &&
+        (Platform.isAndroid || _isSourceTypeScreen) &&
         _touchBack &&
         _localStream!.getTracks().first.enabled;
   }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -19,7 +20,7 @@ class AppRetain extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (Platform.isAndroid) {
+        if (!kIsWeb && Platform.isAndroid) {
           if (Navigator.of(context).canPop()) {
             return Future.value(true);
           } else {
