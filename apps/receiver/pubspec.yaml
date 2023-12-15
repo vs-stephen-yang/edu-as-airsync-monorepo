@@ -39,8 +39,8 @@ dependencies:
   app_ota_flutter:
     git:
       ref: 1.0.1
-      url: https://viewsonic-ssi.visualstudio.com/Droid/_git/App_OTA_Flutter
-      homepage : https://viewsonic-ssi.visualstudio.com/Droid/_git/App_OTA_Flutter?path=/README.md
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/App_OTA_Flutter
+      homepage : https://viewsonic-ssi.visualstudio.com/Display%20App/_git/App_OTA_Flutter?path=/README.md
   in_app_update: ^4.2.2
   no_context_navigation: ^2.1.2
   shared_preferences: ^2.2.2
