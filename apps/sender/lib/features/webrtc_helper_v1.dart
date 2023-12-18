@@ -11,8 +11,10 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:collection/collection.dart';
-import 'package:window_size/window_size.dart';
 
+///
+/// V1 did not support touch back, remove _dc and updateScreenSize().
+///
 class WebRTCHelperV1 extends WebRTCHelper {
   WebRTCHelperV1(String getIceUrl) : super(getIceUrl) {
     _getIceUrl = getIceUrl;
@@ -27,7 +29,6 @@ class WebRTCHelperV1 extends WebRTCHelper {
   dynamic _deviceId;
 
   RTCPeerConnection? _pc;
-  RTCDataChannel? _dc;
   io.Socket? _socket;
 
   @override
@@ -209,13 +210,6 @@ class WebRTCHelperV1 extends WebRTCHelper {
       }
     } catch (e) {
       // http.get maybe no network connection.
-    }
-  }
-
-  @override
-  Future<void> updateScreenSize() async{
-    Screen? screen = await getCurrentScreen();
-    if(screen != null) {
     }
   }
 
