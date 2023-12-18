@@ -195,10 +195,20 @@ class WebRTCConnector {
   }
 
   Future<void> updateScreenSize() async {
-    Screen? screen = await getCurrentScreen();
-    if (screen != null) {
-      _screenWidth = screen.frame.width;
-      _screenHeight = screen.frame.height;
+    if (!kIsWeb && Platform.isWindows) {
+      // PlatformDispatcher did not support get windows width and height yet.
+      // Using window_size for workaround.
+      // https://github.com/flutter/flutter/issues/125938
+      // https://github.com/flutter/flutter/issues/125939
+      // todo: tracking issue status to remove this workaround.
+      Screen? screen = await getCurrentScreen();
+      if (screen != null) {
+        _screenWidth = screen.frame.width;
+        _screenHeight = screen.frame.height;
+      }
+    } else {
+      _screenWidth = PlatformDispatcher.instance.displays.first.size.width;
+      _screenHeight = PlatformDispatcher.instance.displays.first.size.height;
     }
   }
 
