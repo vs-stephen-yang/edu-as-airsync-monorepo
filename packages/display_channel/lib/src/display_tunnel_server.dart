@@ -42,6 +42,6 @@ class DisplayTunnelServer extends ChannelServer {
 
   @override
   void stop() {
-    _tunnelServer?.start();
+    _tunnelServer?.stop();
   }
 }
