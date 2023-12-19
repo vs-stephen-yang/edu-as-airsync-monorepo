@@ -5,7 +5,27 @@ enum ChannelState {
   connecting,
   connected,
   disconnected,
-  failed,
+  closed,
+}
+
+enum ChannelCloseCode {
+  close,
+  remoteClose,
+  channelNotFound,
+  authenticationError,
+  transportClose,
+  heartbeatTimeout,
+  remoteUnknown,
+}
+
+class ChannelCloseReason {
+  ChannelCloseCode code;
+  String? text;
+
+  ChannelCloseReason(
+    this.code, {
+    this.text,
+  });
 }
 
 abstract class Channel {
@@ -14,8 +34,9 @@ abstract class Channel {
   void Function(ChannelMessage message)? onChannelMessage;
 
   ChannelState get state;
+  ChannelCloseReason? get closeReason;
 
-  Future<void> close();
+  Future<void> close(ChannelCloseReason? reason);
 
   void send(ChannelMessage message);
 }

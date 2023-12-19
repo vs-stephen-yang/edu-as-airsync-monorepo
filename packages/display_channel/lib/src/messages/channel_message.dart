@@ -13,6 +13,7 @@ enum ChannelMessageType {
   changePresentQuality,
   allowPresent,
   heartbeat,
+  channelClosed,
   unknown,
 }
 
@@ -31,6 +32,7 @@ final channelMessageActionNames = <int, String>{
   ChannelMessageType.changePresentQuality.index: 'change-present-quality',
   ChannelMessageType.allowPresent.index: 'allow-present',
   ChannelMessageType.heartbeat.index: 'heartbeat',
+  ChannelMessageType.channelClosed.index: 'channel-closed',
 };
 
 final channelMessageParsers = {
@@ -48,6 +50,7 @@ final channelMessageParsers = {
   ChannelMessageType.changePresentQuality.index: ChangePresentQuality.fromJson,
   ChannelMessageType.allowPresent.index: AllowPresentMessage.fromJson,
   ChannelMessageType.heartbeat.index: HeartbeatMessage.fromJson,
+  ChannelMessageType.channelClosed.index: ChannelClosedMessage.fromJson,
 };
 
 ChannelMessageType actionNameToChannelMessageType(String actionName) {
@@ -437,14 +440,14 @@ class PresentAcceptedMessage extends ChannelMessage {
   }
 }
 
-class PresentRejectReason {
-  int? code;
+class Reason {
+  int code;
   String? text;
 
-  PresentRejectReason(this.code, this.text);
+  Reason(this.code, {this.text});
 
-  PresentRejectReason.fromJson(Map<String, dynamic> json)
-      : code = json['code'] as int?,
+  Reason.fromJson(Map<String, dynamic> json)
+      : code = json['code'] as int,
         text = json['text'] as String?;
 
   Map<String, dynamic> toJson() => {
@@ -455,7 +458,7 @@ class PresentRejectReason {
 
 class PresentRejectedMessage extends ChannelMessage {
   String? sessionId;
-  PresentRejectReason? reason;
+  Reason? reason;
 
   PresentRejectedMessage() : super(ChannelMessageType.presentRejected);
 
@@ -464,7 +467,9 @@ class PresentRejectedMessage extends ChannelMessage {
     final data = super._fromJson(json);
 
     sessionId = data['sessionId'] as String?;
-    reason = PresentRejectReason.fromJson(data['reason']);
+    if (data['reason'] != null) {
+      reason = Reason.fromJson(data['reason']);
+    }
   }
 
   @override
@@ -563,6 +568,31 @@ class ClientConnectedMessage extends ChannelMessage {
   Map<String, dynamic> toJson() {
     return super._toJson({
       'ack': ack,
+    });
+  }
+}
+
+class ChannelClosedMessage extends ChannelMessage {
+  Reason? reason;
+
+  @override
+  bool get isControlMessage => true;
+
+  ChannelClosedMessage(this.reason) : super(ChannelMessageType.channelClosed);
+
+  ChannelClosedMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.channelClosed, json) {
+    final data = super._fromJson(json);
+
+    if (data['reason'] != null) {
+      reason = Reason.fromJson(data['reason']);
+    }
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'reason': reason?.toJson(),
     });
   }
 }
