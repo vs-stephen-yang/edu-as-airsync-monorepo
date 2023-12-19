@@ -79,7 +79,13 @@ main(List<String> arguments) async {
   final channel = DisplayChannelClient(
     clientId,
     uri,
-    (url, headers) => WebSocketClientConnection(url, headers),
+    (url, headers) => WebSocketClientConnection(
+      url,
+      headers,
+      maxRetryAttempts: 5,
+      maxRetryDelay: const Duration(seconds: 2),
+      logger: (url, message) => print('$url $message'),
+    ),
   );
 
   channel.onStateChange = (ChannelState state) {
@@ -95,6 +101,7 @@ main(List<String> arguments) async {
         break;
       case ChannelState.closed:
         print('The client has closed');
+        print('${channel.closeReason?.code} ${channel.closeReason?.text}');
         break;
       default:
         break;
