@@ -1,15 +1,14 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
-import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/main_internet.dart';
 import 'package:display_flutter/widgets/main_lan.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
@@ -18,7 +17,6 @@ import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/tittle_bar.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
-import 'package:display_flutter/widgets/webrtc_view.dart';
 import 'package:display_flutter/widgets/webrtc_view_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,6 +38,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   static const _androidAppRetain =
       MethodChannel('com.mvbcast.crosswalk/android_app_retain');
 
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -54,13 +53,18 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('zz home AppLifecycleState: $state');
     MirrorStateProvider mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context, listen: false);
     if (state == AppLifecycleState.inactive) {
       mirrorStateProvider.updateAudioEnable(false);
+      // Home.disconnectServer(context);
+      Provider.of<ChannelProvider>(context, listen: false).disconnectServer();
     } else if (state == AppLifecycleState.resumed) {
       mirrorStateProvider.updateAudioEnable(true);
       Provider.of<ChannelProvider>(context, listen: false).getDisplayCode(AppInstanceCreate().displayInstanceID);
+      Provider.of<ChannelProvider>(context, listen: false).connectServer(context);
+      // widget.connectServer(context);
     }
   }
 
@@ -112,18 +116,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               height: _getWidthHeight(index, false),
                               child: Stack(
                                 children: <Widget>[
-                                  ChannelProvider.isNewUI ? Consumer<ChannelProvider>(
+                                  Consumer<ChannelProvider>(
                                     builder: (context, provider, child) {
-                                     return WebRTCView(index: index);
+                                      return WebRTCView(index: index);
                                     },
-                                  ): WebRTCFlutterView(
-                                    callback:
-                                        ControlSocket().addWebRtcController,
                                   ),
                                   Visibility(
                                     visible: SplitScreen.mapSplitScreen
                                             .value[keySplitScreenEnable] &&
-                                        ControlSocket()
+                                        context.read<ChannelProvider>()
                                             .isPresenting(index: index),
                                     child: SplitScreenFunction(
                                       index: index,
@@ -163,9 +164,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   );
                 },
               ),
-              ChannelProvider.isNewUI ? Consumer<ChannelProvider>(
+              Consumer<ChannelProvider>(
                 builder: (context, provider, child) {
-                  if (provider.showMode == false) {
+                  if (Provider.of<ChannelProvider>(context).showMode == false) {
                     return const SizedBox();
                   } else if (provider.currentMode == Mode.internet) {
                     return MainInternetMode();
@@ -173,7 +174,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     return MainLanMode();
                   }
                 },
-              ):const MainInfo(),
+              ),
               const MirrorView(),
               const Positioned(
                 child: StatusBar(),
@@ -265,11 +266,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       // https://github.com/flutter/flutter/issues/29958
       Home.isSelectedList.value = List.from(Home.isSelectedList.value);
 
-      if (ChannelProvider.isNewUI) { //TODO:
-      } else {
-        ControlSocket().updateAllQuality(
-            selection, Home.isSelectedList.value.contains(true));
-      }
+      context.read<ChannelProvider>().updateAllQuality(
+          selection, Home.isSelectedList.value.contains(true));
     } else {
       Home.isSelectedList.value
           .fillRange(0, Home.isSelectedList.value.length, false);
@@ -277,11 +275,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       // https://github.com/flutter/flutter/issues/29958
       Home.isSelectedList.value = List.from(Home.isSelectedList.value);
 
-      if (ChannelProvider.isNewUI) { //TODO:
-
-      } else {
-        ControlSocket().updateAllQuality(0, true);
-      }
+      context.read<ChannelProvider>().updateAllQuality(0, true);
     }
   }
 

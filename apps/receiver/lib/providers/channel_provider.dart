@@ -5,17 +5,17 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/main_common.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
-import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:no_context_navigation/no_context_navigation.dart';
 
 import 'mirror_state_provider.dart';
 
@@ -74,7 +74,6 @@ class ChannelProvider extends ChangeNotifier {
     _lanNetWork = value;
     notifyListeners();
   }
-
   bool showMode = true;
   String _displayCode = '';
   String get displayCode => _displayCode;
@@ -102,30 +101,23 @@ class ChannelProvider extends ChangeNotifier {
     _pinCode = value;
     notifyListeners();
   }
-  // final List<String> _pinList =[];
-  // List<String> get pinList => _pinList;
-  // setPinList(String addOTP) {
-  //   _pinList.add(addOTP);
-  //   if (_pinList.length > 2) {
-  //     _pinList.remove(_pinList.first);
-  //   }
-  // }
 
   String? host;
   int port = 5100;
   int passcode = 7;
-  bool startServer = false;
+  bool isServerStart = false;
   late DisplayDirectServer _directServer;
   late DisplayTunnelServer _tunnelServer;
   String _tunnelApiUrl ='';
   final _channelRtcConnectors = <RTCConnector>[]; // controller
   List<RTCConnector> get channelRtcConnectors => _channelRtcConnectors;
+  static bool isModeratorMode = false;
 
-  ChannelProvider(BuildContext context, this.appConfig) {
+  ChannelProvider(this.appConfig) {
+    print('zz ChannelProvider init');
     apiGateway = appConfig.settings.apiGateway;
     version = appConfig.appVersion;
 
-    _setServerSide();
     _checkConnectivity().then((value) {
       if (value) {
         if (_currentMode == Mode.internet && (displayCode.isEmpty || _tunnelApiUrl.isEmpty)) {
@@ -133,10 +125,7 @@ class ChannelProvider extends ChangeNotifier {
             if (value.isNotEmpty) {
               displayCode = value;
             }
-            if (!startServer) {
-              _startServer(AppInstanceCreate().displayInstanceID, _tunnelApiUrl, port);
-              startServer = true;
-            }
+            startServer(AppInstanceCreate().displayInstanceID);
           });
         }
         connectNet = true;
@@ -155,14 +144,27 @@ class ChannelProvider extends ChangeNotifier {
             if (value.isNotEmpty) {
               displayCode = value;
             }
-            if (!startServer) {
-              _startServer(AppInstanceCreate().displayInstanceID, _tunnelApiUrl, port);
-              startServer = true;
-            }
+            startServer(AppInstanceCreate().displayInstanceID);
           });
         }
       }
     });
+  }
+
+  void connectServer(BuildContext context) {
+    MyApp.isInBackgroundMode = false;
+    ConnectionTimer.getInstance().stopServerTimer();
+    startServer(AppInstanceCreate().displayInstanceID);
+  }
+
+  void disconnectServer() {
+    MyApp.isInBackgroundMode = true;
+    if (!hasPresenterOccupied()) {
+      ConnectionTimer.getInstance().startServerTimer(() {
+        // onFinish
+        stopServer();
+      });
+    }
   }
 
   void _setServerSide() {
@@ -188,20 +190,28 @@ class ChannelProvider extends ChangeNotifier {
     };
   }
 
-  Future<void> _startServer(
-      String instanceId,
-      String tunnelServiceUrl,
-      int localPort,
-      ) async {
+  Future<void> startServer(String instanceId) async {
+    if (isServerStart) return;
+    _setServerSide();
+
     // start the tunnel server
-    _tunnelServer.start(instanceId, tunnelServiceUrl);
+    _tunnelServer.start(instanceId, _tunnelApiUrl);
 
     // start the direct server
-    await _directServer.start(localPort);
+    await _directServer.start(port);
     // print('zz Listened on port ${_directServer.port} for direct channels');
+    isServerStart = true;
+    print('zz _startServer $_tunnelApiUrl');
   }
 
   void _onNewChannel(Channel channel, Mode mode) {
+    print('zz _onNewChannel');
+    if (_channelRtcConnectors.length >= 6) {
+      var message = PresentRejectedMessage();
+      message.reason = PresentRejectReason(401, 'block');
+      channel.send(message);
+      return;
+    }
 
     // create a client object to handle this channel
     final client = mode == Mode.internet
@@ -213,10 +223,8 @@ class ChannelProvider extends ChangeNotifier {
       updateSplitScreen();
       notifyListeners();
     });
-    client.onAddRemoteStream = ((stream) {
-      // controlAudio(true); //TODO
-      // print('zz onAddRemoteStream');
 
+    client.onAddRemoteStream = ((stream) {
       // update state and quality
       updateSplitScreen();
       _handleQualityUpdate(client);
@@ -224,31 +232,45 @@ class ChannelProvider extends ChangeNotifier {
       // hideTitleBar
       Home.showTitleBottomBar.value = false;
 
-      // TODO: handle SplitScreen & moderator
-      // if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      //   StreamFunction.streamFunctionState.value = stateMenuOff;
-      //   if (moderator != null && navService.canPop()) {
-      //     PresentHelper.getInstance().refreshPresentList();
-      //   }
-      // } else {
-      //   if (moderator != null && navService.canPop()) {
-      //     StreamFunction.streamFunctionState.value = stateMenuOff;
-      //     PresentHelper.getInstance().refreshPresentList();
-      //   } else {
-      //     navService.popUntil('/home');
-      //   }
-      // }
+      if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+        StreamFunction.streamFunctionState.value = stateMenuOff;
+      } else {
+        if (isModeratorMode && navService.canPop()) {
+          StreamFunction.streamFunctionState.value = stateMenuOff;
+        } else {
+          navService.popUntil('/home');
+        }
+      }
       notifyListeners();
     });
+
     client.onRefresh = (() {
       notifyListeners();
     });
-    client.onDisconnect = (() async {
-      // clear renderer
-      showMode = true;
+
+    client.onShowMode = ((showMode) {
+      this.showMode = showMode;
+      notifyListeners();
+    });
+
+    client.onConflictWithMirror = (() {
+      if (isModeratorMode) {
+        // moderator
+      } else if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+        // split screen
+        splitScreenOff();
+      } else {
+        // basic
+        basicStreamOff();
+      }
+    });
+
+    client.onChannelDisconnect = (() async {
+      // update SplitScreen's keySplitScreenCount
       updateSplitScreen();
-      _handleQualityUpdate(client);
+      // update UI
       if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+        print('zz onDisconnect 1');
         bool presenting = false;
         for (RTCConnector controller in _channelRtcConnectors) {
           if (controller.presentationState != PresentationState.stopStreaming) {
@@ -256,18 +278,16 @@ class ChannelProvider extends ChangeNotifier {
           }
         }
         if (!presenting) {
-          // TODO: handle SplitScreen & moderator
-          // if (moderator != null && navService.canPop()) {
-          //   PresentHelper.getInstance().refreshPresentList();
-          // }
+          print('zz onDisconnect 2');
           Home.showTitleBottomBar.value = true;
           if (MirrorStateProvider.isMirroring) {
             StreamFunction.streamFunctionState.value = stateCast;
           } else {
             StreamFunction.streamFunctionState.value = stateStandby;
           }
-          MainInfo.showMainInfo.value = true;
+          showMode = true;
         } else {
+          print('zz onDisconnect 3');
           Home.isSelectedList.value
               .fillRange(0, Home.isSelectedList.value.length, false);
           // Using below method to trigger value changed.
@@ -275,26 +295,32 @@ class ChannelProvider extends ChangeNotifier {
           Home.isSelectedList.value = List.from(Home.isSelectedList.value);
         }
       } else {
-        // TODO: handle SplitScreen & moderator
-        // if (moderator != null && navService.canPop()) {
-        //   PresentHelper.getInstance().refreshPresentList();
-        // }
+        print('zz onDisconnect 4');
         Home.showTitleBottomBar.value = true;
         if (MirrorStateProvider.isMirroring) {
           StreamFunction.streamFunctionState.value = stateCast;
         } else {
           StreamFunction.streamFunctionState.value = stateStandby;
         }
-        MainInfo.showMainInfo.value = true;
+        showMode = true;
       }
-      // TODO:
-      // if (MyApp.isInBackgroundMode) {
-      //   MyApp.disconnectControlSocket();
-      // }
+      if (MyApp.isInBackgroundMode) {
+        disconnectServer();
+      }
+
+      await client.close();
+      _channelRtcConnectors.remove(client);
       notifyListeners();
     });
 
     _channelRtcConnectors.add(client);
+  }
+
+  bool stopServer() {
+    _tunnelServer.stop();
+    _directServer.stop();
+    print('zz stopServer');
+    return isServerStart = false;
   }
 
   bool _checkOTP(String otp) {
@@ -340,6 +366,11 @@ class ChannelProvider extends ChangeNotifier {
     return _pinCode = encodePinCode(PinCode(host!, passcode));
   }
 
+  void updateModePanel() {
+    showMode = hasPresenterOccupied();
+    notifyListeners();
+  }
+
   void updateSplitScreen() {
     int connecting = 0, lastID = 0;
     for (int i = 0; i < _channelRtcConnectors.length; i++) {
@@ -357,23 +388,23 @@ class ChannelProvider extends ChangeNotifier {
         Map.from(SplitScreen.mapSplitScreen.value);
   }
 
-  void _handleQualityUpdate(RTCConnector controller) { //handleAddStreamState
+  void _handleQualityUpdate(RTCConnector controller) {
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
         for (RTCConnector connector in _channelRtcConnectors) {
           if (connector.presentationState == PresentationState.streaming) {
-            connector.changeQuality(true, true);
+            connector.sendChangeQuality(true, true);
           }
         }
       } else {
         for (RTCConnector connector in _channelRtcConnectors) {
           if (connector.clientId != null) {
-            connector.changeQuality(false, true);
+            connector.sendChangeQuality(false, true);
           }
         }
       }
     } else {
-      controller.changeQuality(true, true);
+      controller.sendChangeQuality(true, true);
     }
   }
 
@@ -450,55 +481,37 @@ class ChannelProvider extends ChangeNotifier {
     return quantity;
   }
 
-  //TODO:
-  // bool isPresenterWaitForStream(String presenterId) {
-  //   for (RTCConnector controller in _channelRtcConnectors) {
-  //     if (controller.presenterId == presenterId &&
-  //         controller.presentationState == PresentationState.waitForStream) {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
+  bool isPresenterWaitForStream(String clientId) {
+    for (RTCConnector controller in _channelRtcConnectors) {
+      if (controller.clientId == clientId &&
+          controller.presentationState == PresentationState.waitForStream) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-  // bool isPresenterStreaming(String presenterId) {
-  //   for (RTCConnector controller in _channelRtcConnectors) {
-  //     if (controller.presenterId == presenterId &&
-  //         controller.presentationState == PresentationState.streaming) {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
+  bool isPresenterStreaming(String clientId) {
+    for (RTCConnector controller in _channelRtcConnectors) {
+      if (controller.clientId == clientId &&
+          controller.presentationState.index >= PresentationState.streaming.index) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-  // bool isPresenterNotStopStreaming(String presenterId) {
-  //   for (RTCConnector controller in _channelRtcConnectors) {
-  //     if (controller.presenterId == presenterId &&
-  //         controller.presentationState.index >=
-  //             PresentationState.waitForStream.index) {
-  //       // waitForStream and streaming
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
-
-  // unbindModerator(String apiGateway, Moderator moderator) async {
-  //   try {
-  //     http.Response response = await http.patch(
-  //       Uri.parse('$apiGateway/presentation/displays/moderator/unbind'),
-  //       headers: <String, String>{
-  //         'Content-Type': 'application/json; charset=UTF-8'
-  //       },
-  //       body: json.encode({'code': displayCode, 'moderator': moderator}),
-  //     );
-  //     printInDebug('unbind status: ${response.statusCode}', type: runtimeType);
-  //     // every thing else
-  //   } catch (e) {
-  //     printInDebug('unbind failure: $e', type: runtimeType);
-  //     // http.post maybe no network connection.
-  //   }
-  // }
+  bool isPresenterNotStopStreaming(String clientId) {
+    for (RTCConnector controller in _channelRtcConnectors) {
+      if (controller.clientId == clientId &&
+          controller.presentationState.index >=
+              PresentationState.waitForStream.index) {
+        // waitForStream and streaming
+        return true;
+      }
+    }
+    return false;
+  }
 
   removeAllPresenters() async {
     RTCConnector? selectedController;
@@ -506,8 +519,35 @@ class ChannelProvider extends ChangeNotifier {
     for (int i = temp.length - 1; i >= 0; i--) {
       selectedController = temp[i];
       if (selectedController.clientId != null) {
+        print('zz selectedController.sessionId != null');
         try {
-          await selectedController.disconnect(sendAnalytics: true);
+          await selectedController.disconnectPeerConnection(sendAnalytics: true);
+          selectedController.onChannelDisconnect?.call();
+          // need some delay to prevent exception:
+          // 'package:flutter/src/rendering/object.dart': Failed assertion: line 2250 pos 12: '!_debugDisposed': is not true.
+          await Future.delayed(const Duration(milliseconds: 300));
+        } on PlatformException catch (e) {
+          log(e.toString());
+        }
+      }
+    }
+  }
+
+  /// a session ID is generated due to the act of presenting.
+  removeOtherPresenters({bool keepInList = false}) async {
+    RTCConnector? selectedController;
+    List<RTCConnector> temp = List.from(_channelRtcConnectors);
+    for (int i = temp.length - 1; i >= 0; i--) {
+      selectedController = temp[i];
+      if (selectedController.sessionId != null) {
+        print('zz selectedController.sessionId != null');
+        try {
+          await selectedController.disconnectPeerConnection(sendAnalytics: true);
+          if (!keepInList) {
+            selectedController.onChannelDisconnect?.call();
+          } else {
+            selectedController.sendStopPresent();
+          }
           // need some delay to prevent exception:
           // 'package:flutter/src/rendering/object.dart': Failed assertion: line 2250 pos 12: '!_debugDisposed': is not true.
           await Future.delayed(const Duration(milliseconds: 300));
@@ -520,9 +560,10 @@ class ChannelProvider extends ChangeNotifier {
 
   removePresenterBy(int index) async {
     RTCConnector? selectedController = _channelRtcConnectors[index];
-    if (selectedController.clientId != null) {
+    if (selectedController.sessionId != null) {
       try {
-        await selectedController.disconnect(sendAnalytics: true);
+        await selectedController.disconnectPeerConnection(sendAnalytics: true);
+        selectedController.onChannelDisconnect?.call();
         ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       } on PlatformException catch (e) {
         log(e.toString());
@@ -530,13 +571,24 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> basicStreamOff() async {
+    ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+    ConnectionTimer.getInstance().stopRemainingTimeTimer();
+    await removeAllPresenters();
+  }
+
+  Future<void> splitScreenOff() async {
+    ConnectionTimer.getInstance().stopRemainingTimeTimer();
+    await removeAllPresenters();
+  }
+
   updateAllQuality(int selection, bool hasSelected) {
     if (selection == -1) {
-      _channelRtcConnectors[0].changeQuality(true, true);
+      _channelRtcConnectors[0].sendChangeQuality(true, true);
     } else {
       for (int i = 0; i < _channelRtcConnectors.length; i++) {
         if (_channelRtcConnectors[i].clientId != null) {
-          _channelRtcConnectors[i].changeQuality(
+          _channelRtcConnectors[i].sendChangeQuality(
               (i == selection && hasSelected),
               (i == selection || !hasSelected));
         }
@@ -548,6 +600,10 @@ class ChannelProvider extends ChangeNotifier {
     for (RTCConnector controller in _channelRtcConnectors) {
       controller.controlAudio(enable);
     }
+  }
+
+  updateAudioEnableStateByIndex(int index, bool enable) {
+    _channelRtcConnectors[index].controlAudio(enable);
   }
 
   Future<bool> _checkConnectivity() async {

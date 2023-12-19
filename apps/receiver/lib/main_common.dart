@@ -6,6 +6,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_exception_report.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
+import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/control_socket.dart';
@@ -14,7 +15,7 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
-import 'package:display_flutter/widgets/main_info.dart';
+import 'package:display_flutter/widgets/app_ota_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -42,6 +43,8 @@ Future<void> commonEntry(ConfigSettings settings) async {
         entityId: AppPreferences().entityId,
         instanceId: AppInstanceCreate().displayInstanceID);
 
+    await AppUpdateHelper().ensureInitialized(settings);
+
     FlutterError.onError = (FlutterErrorDetails details) async {
       // Report errors to a service
       await AppExceptionReport().sendToServer(settings, packageInfo,
@@ -61,7 +64,7 @@ class MyApp extends StatefulWidget {
   // This widget is the root of your application.
   const MyApp({super.key});
   static ValueNotifier<bool> updatedLocale = ValueNotifier(false);
-  static bool isInBackgroundMode = false;
+  static bool isInBackgroundMode = false; // TODO: should move to home.dart
   static Timer? _timerControlSocket;
 
   static void setNewLocale(BuildContext context, int index) async {
@@ -134,15 +137,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    log('AppLifecycleState: $state');
+    log('zz app AppLifecycleState: $state');
     if (state == AppLifecycleState.inactive) {
-      MyApp.disconnectControlSocket();
-      ControlSocket().updateAllAudioEnableState(false);
-      MainInfo.cancelGetOTPTimer();
+      // MyApp.disconnectControlSocket();
+      // ControlSocket().updateAllAudioEnableState(false);
+      // MainInfo.cancelGetOTPTimer();
     } else if (state == AppLifecycleState.resumed) {
-      MyApp.connectControlSocket(context);
-      ControlSocket().updateAllAudioEnableState(true);
-      MainInfo.addGetOTPEvent();
+      // MyApp.connectControlSocket(context);
+      // ControlSocket().updateAllAudioEnableState(true);
+      // MainInfo.addGetOTPEvent();
     }
   }
 
@@ -181,7 +184,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: MirrorStateProvider()),
-        ChangeNotifierProvider.value(value: ChannelProvider(context, AppConfig.of(context)!)),
+        ChangeNotifierProvider.value(value: ChannelProvider(AppConfig.of(context)!)),
       ],
       child: MaterialApp(
         localizationsDelegates: const [
@@ -207,17 +210,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         navigatorKey: NavigationService.navigationKey,
         routes: {
           // for "navService.popUntil('/home')"
-          '/home': (context) => const Home(),
+          '/home': (context) => const AppOTADialog(child: Home()),
+          '/eula': (context) => const AppOTADialog(child: Eula()),
         },
-        onGenerateRoute: (routeSettings) {
-          switch (routeSettings.name) {
-            case '/eula':
-              return MaterialPageRoute<String>(
-                  builder: (context) => const Eula());
-          }
-          return null;
-        },
-        // home: const Home(),
       ),
     );
   }

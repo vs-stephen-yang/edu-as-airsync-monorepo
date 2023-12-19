@@ -11,7 +11,7 @@ typedef ConnectionTimerCallback = void Function(
 typedef TimeOutCallback = void Function();
 
 class ConnectionTimer {
-  Timer? mConnectionTimeoutTimer, mRemainingTimeTimer;
+  Timer? mConnectionTimeoutTimer, mRemainingTimeTimer, _stopServerTimer;
   StreamController<int> mConnectionTimeTimeout = StreamController<int>();
   StreamController<int> mRemainingTimeTimeout =
       StreamController<int>.broadcast();
@@ -67,6 +67,7 @@ class ConnectionTimer {
   }
 
   void stopConnectionTimeoutTimer() {
+    print('zz stopConnectionTimeoutTimer');
     mConnectionTimeoutTimer?.cancel();
     mConnectionTimeTimeout.add(0);
   }
@@ -108,5 +109,26 @@ class ConnectionTimer {
     mRemainingTimeTimer = null;
     StatusBar.showReamingTime.value = false;
     mRemainingTimeTimeout.sink.add(0);
+  }
+
+  void startServerTimer(VoidCallback onFinish) {
+    stopServerTimer();
+    _stopServerTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      print('zz startServerTimer: ${timer.tick}');
+      if (timer.tick >= 30) {
+        timer.cancel();
+        // stopServerTimer();
+        onFinish();
+      }
+    });
+  }
+
+  void stopServerTimer() {
+    print('zz stopServerTimer 0');
+    if (_stopServerTimer != null) {
+      print('zz stopServerTimer');
+      _stopServerTimer?.cancel();
+      _stopServerTimer = null;
+    }
   }
 }

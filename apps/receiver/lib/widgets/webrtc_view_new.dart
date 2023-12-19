@@ -36,6 +36,7 @@ class WebRTCViewState extends State<WebRTCView> {
   RTCConnector? _rtcConnector;
   GlobalKey repaintBoundaryKey = GlobalKey();
   GlobalKey<PauseScreenImageState> pauseScreenImageKey = GlobalKey();
+  late ChannelProvider channelProvider;
 
   @override
   void initState() {
@@ -124,15 +125,15 @@ class WebRTCViewState extends State<WebRTCView> {
     final curEventMessage = EventMessage();
     curEventMessage.touchEvent = curTouchEvent;
 
-    _rtcConnector?.sendData(curEventMessage.writeToBuffer());
+    _rtcConnector?.sendRTCData(curEventMessage.writeToBuffer());
   }
 
   @override
   Widget build(BuildContext context) {
     print('zz view index ${widget.index}');
-    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    if (channelProvider.channelRtcConnectors.isNotEmpty) {
-      _rtcConnector = (channelProvider.channelRtcConnectors).elementAt(widget.index);
+    channelProvider = Provider.of<ChannelProvider>(context);
+    if (channelProvider.channelRtcConnectors.isNotEmpty && channelProvider.channelRtcConnectors.length > widget.index) {
+      _rtcConnector = channelProvider.channelRtcConnectors[widget.index];
       print('zz _rtcConnector ${_rtcConnector!.presentationState}');
       if (_rtcConnector?.presentationState == PresentationState.pauseStreaming) {
         pauseVideo();
@@ -156,7 +157,7 @@ class WebRTCViewState extends State<WebRTCView> {
             canRequestFocus: false,
             child: NotificationListener<SizeChangedLayoutNotification>(
               onNotification: (notification) {
-                printInDebug('zz onVideoWidgetResize');
+                printInDebug('onVideoWidgetResize');
                 _textureSizeChanged = true;
                 return false;
               },
@@ -164,7 +165,7 @@ class WebRTCViewState extends State<WebRTCView> {
                 onPointerDown: _onTouchStart,
                 onPointerMove: _onTouchMove,
                 onPointerUp: _onTouchEnd,
-                child: RTCVideoView(_rtcConnector!.remoteRenderer!, key: _widgetKey), //TODO:renderer
+                child: RTCVideoView(_rtcConnector!.remoteRenderer!, key: _widgetKey),
               ): const SizedBox(),
             ),
           ),
@@ -209,33 +210,32 @@ class WebRTCViewState extends State<WebRTCView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  //TODO:moderator
-                  // Visibility(
-                  //   visible: ControlSocket().moderator != null,
-                  //   child: Column(
-                  //     children: <Widget>[
-                  //       Text(
-                  //         S.of(context).main_wait_up_next,
-                  //         style: const TextStyle(
-                  //           color: AppColors.primary_white,
-                  //           fontWeight: FontWeight.w700,
-                  //           fontSize: 25,
-                  //         ),
-                  //       ),
-                  //       const SizedBox(
-                  //         height: 20,
-                  //       ),
-                  //       Text(
-                  //         presenterName,
-                  //         style: const TextStyle(
-                  //           color: AppColors.primary_blue,
-                  //           fontWeight: FontWeight.w700,
-                  //           fontSize: 30,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+                  Visibility(
+                    visible: ChannelProvider.isModeratorMode,
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          S.of(context).main_wait_up_next,
+                          style: const TextStyle(
+                            color: AppColors.primary_white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 25,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          presenterName,
+                          style: const TextStyle(
+                            color: AppColors.primary_blue,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 30,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -271,15 +271,6 @@ class WebRTCViewState extends State<WebRTCView> {
     });
   }
 
-  // TODO: 由於可以從server端以及畫面使用者端得到控制訊號，所以兩方都會呼叫此方法，要刷新Provider內的renderer status
-  // void controlAudio(bool isEnable) {
-  //   if (_remoteRenderer.srcObject != null) {
-  //     if (_remoteRenderer.srcObject!.getAudioTracks().isNotEmpty) {
-  //       _remoteRenderer.srcObject!.getAudioTracks().first.enabled = isEnable;
-  //     }
-  //   }
-  // }
-
   Future<void> pauseVideo() async {
     // screenshot RTCView
     final boundary = repaintBoundaryKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
@@ -287,10 +278,12 @@ class WebRTCViewState extends State<WebRTCView> {
     final byteData = await image?.toByteData(format: ImageByteFormat.png);
     final imageBytes = byteData?.buffer.asUint8List();
     pauseScreenImageKey.currentState?.refresh(imageBytes);
+    channelProvider.updateAudioEnableStateByIndex(widget.index, false);
   }
 
   void resumeVideo() {
     pauseScreenImageKey.currentState?.remove();
+    channelProvider.updateAudioEnableStateByIndex(widget.index, true);
   }
 }
 
