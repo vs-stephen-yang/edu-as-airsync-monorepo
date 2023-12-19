@@ -67,6 +67,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "This is a Display Advanced feature. Please contact your IT administrator for more information."),
         "main_register_display_code_failure": MessageLookupByLibrary.simpleMessage(
             "Failure to get Display Code and One Time Password. This may be due to a network or server issue. Please try again later when connection is restored."),
+        "main_settings_language":
+            MessageLookupByLibrary.simpleMessage("Language"),
+        "main_settings_title": MessageLookupByLibrary.simpleMessage("Settings"),
+        "main_settings_whats_new":
+            MessageLookupByLibrary.simpleMessage("What\'s new"),
         "main_split_screen_question": MessageLookupByLibrary.simpleMessage(
             "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once."),
         "main_split_screen_title":

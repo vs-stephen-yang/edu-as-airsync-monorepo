@@ -49,5 +49,8 @@
   "moderator_remove": "REMOVE",
   "moderator_activate_split_screen": "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once.",
   "moderator_deactivate_split_screen": "Are you sure you want to end this split screen session? All screens currently shared will be terminated.",
-  "moderator_confirm": "Confirm"
+  "moderator_confirm": "Confirm",
+  "main_settings_title": "Settings",
+  "main_settings_language": "Language",
+  "main_settings_whats_new": "What's new"
 }
