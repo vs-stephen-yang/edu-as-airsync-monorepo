@@ -8,7 +8,13 @@ class WebSocketClientConnection implements ClientConnection {
   void Function()? onConnected;
 
   @override
+  void Function()? onConnectFailed;
+
+  @override
   void Function()? onConnecting;
+
+  @override
+  void Function()? onDisconnected;
 
   @override
   void Function(Map<String, dynamic> data)? onMessage;
@@ -68,14 +74,14 @@ class WebSocketClientConnection implements ClientConnection {
         onRetry: (p0) {},
       );
     } on HttpException {
-      _handleDisconnected();
+      _handleConnectFailed();
       return;
     } on WebSocketException {
       // WebSocketException: Connection to 'https://xxx' was not upgraded to websocket
-      _handleDisconnected();
+      _handleConnectFailed();
       return;
     } on SocketException {
-      _handleDisconnected();
+      _handleConnectFailed();
       return;
     }
 
@@ -103,7 +109,19 @@ class WebSocketClientConnection implements ClientConnection {
     _socket?.add(data);
   }
 
+  void _handleConnectFailed() async {
+    onConnectFailed?.call();
+
+    await _reconnect();
+  }
+
   void _handleDisconnected() async {
+    onDisconnected?.call();
+
+    await _reconnect();
+  }
+
+  Future _reconnect() async {
     await _socket?.close();
     _socket = null;
 

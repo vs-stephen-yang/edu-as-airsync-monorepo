@@ -1,6 +1,8 @@
 abstract class ClientConnection {
-  void Function()? onConnected;
   void Function()? onConnecting;
+  void Function()? onConnectFailed;
+  void Function()? onConnected;
+  void Function()? onDisconnected;
 
   void Function(Map<String, dynamic> message)? onMessage;
 
