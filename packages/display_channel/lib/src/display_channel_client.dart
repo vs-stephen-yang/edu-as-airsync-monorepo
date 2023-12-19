@@ -3,6 +3,7 @@ import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/messages/message_continuity.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
 import 'package:display_channel/src/util/channel_message_util.dart';
+import 'package:display_channel/src/util/channel_util.dart';
 
 class DisplayChannelClient implements Channel {
   @override
@@ -93,7 +94,8 @@ class DisplayChannelClient implements Channel {
 
     _connection!.onConnected = () => _changeState(ChannelState.connected);
     _connection!.onConnecting = () => _changeState(ChannelState.connecting);
-    _connection!.onDisconnected = () => _onConnectionDisconnected();
+    _connection!.onConnectFailed = (error) => _onConnectFailed(error);
+    _connection!.onDisconnected = () => _onDisconnected();
     _connection!.onMessage =
         (Map<String, dynamic> data) => _onConnectionData(data);
 
@@ -163,7 +165,17 @@ class DisplayChannelClient implements Channel {
     );
   }
 
-  Future _onConnectionDisconnected() async {
+  Future _onConnectFailed(ConnectError error) async {
+    await _closeConnection();
+
+    _closeReason = ChannelCloseReason(
+      connectErrorToChannelCloseCode(error.error),
+      text: error.message,
+    );
+    _changeState(ChannelState.closed);
+  }
+
+  Future _onDisconnected() async {
     _changeState(ChannelState.disconnected);
 
     if (_isClosed()) {
