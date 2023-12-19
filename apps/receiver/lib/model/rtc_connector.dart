@@ -1,7 +1,6 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_channel/display_channel.dart';
@@ -9,7 +8,9 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
+import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
+import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:uuid/uuid.dart';
@@ -25,7 +26,7 @@ class RTCConnector {
   String? _pin;
 
   PresentationState presentationState = PresentationState.stopStreaming;
-  String? _sessionId;
+  String? sessionId;
   String? clientId;
   String? senderName;
   String? senderVersion;
@@ -55,33 +56,30 @@ class RTCConnector {
   Function(MediaStream? stream)? onAddRemoteStream;
   Function(MediaStream stream)? onRemoveRemoteStream;
   Function()? onRefresh;
-  Function()? onDisconnect;
+  Function(bool showMode)? onShowMode;
+  Function()? onConflictWithMirror;
+  Future<void> Function()? onChannelDisconnect;
 
   RTCConnector(this.index, this._channel, this._mode, {String? iceServersApiUrl, String? host}) {
-    _printWebRTCViewSocketLog('init', null);
+    _printPeerConnectionLog('init', null);
 
-    _channel.onChannelMessage = (message) => _onMessages(message);
-    final connectedMessage = ChannelConnectedMessage(5000, '');
-    // print('zz connectedMessage ${connectedMessage.toJson().toString()}'); //zz connectedMessage {action: channel-connected, seq: null, data: {heartbeatInterval: 5000, reconnectionToken: }}
-    _channel.send(connectedMessage);
+    _channel.onChannelMessage = (message) => _onChannelMessages(message);
+    _channel.onStateChange = (state) => _onChannelState(state);
 
     if (!_configuration.containsKey('iceServers')) {
       if (_mode == Mode.internet) {
         _getIceServers(iceServersApiUrl).then((value) {
-          print('zz value $value');
           _configuration.putIfAbsent('iceServers', () => value);
-          print('zz check 1');
           sendDisplayStatus();
         });
       } else {
         _configuration.putIfAbsent('iceServers', () => [{'url': 'stun:$host'}]);
-        print('zz check 1-1');
         sendDisplayStatus();
       }
     }
   }
 
-  void _onMessages(ChannelMessage message) {
+  void _onChannelMessages(ChannelMessage message) {
     print('zz Received ${message.messageType} ${message.toJson().toString()}');
 
     switch (message.messageType) {
@@ -114,109 +112,20 @@ class RTCConnector {
     }
   }
 
-  void sendDisplayStatus() {
-    final displayStatusMessage = DisplayStatusMessage();
-    displayStatusMessage.platform = _getPlatform();
-    displayStatusMessage.status = DisplayStatus.fromJson({'moderator':false}); //TODO:moderator status
-    _channel.send(displayStatusMessage);
-  }
-
-  void onJoinDisplay(JoinDisplayMessage msg) {
-    clientId = msg.clientId;
-    senderName = msg.name;
-    senderVersion = msg.version;
-    senderPlatform = msg.platform;
-  }
-
-  Future<void> onStartPresent(StartPresentMessage msg) async {
-    // Timer
-    ConnectionTimer.getInstance().startConnectionTimer(() {
-      var message = PresentRejectedMessage();
-      message.sessionId = _sessionId;
-      message.reason = PresentRejectReason(400, 'timeout');
-      _channel.send(message);
-      disconnect(sendAnalytics: true);
-      // NativeView will invokeMethod disconnectedP2pClient to switch UI.
-    });
-
-    await _remoteRenderer?.initialize();
-    await _peerConnectionConnect();
-    final message = PresentAcceptedMessage(_sessionId = msg.sessionId);
-    _channel.send(message);
-    // await connectClient((result) => null);
-
-    presentationState = PresentationState.waitForStream;
-    onConnect?.call();
-    // Send wait for stream
-  }
-
-  void onPresentAccepted() {
-    AppAnalytics().trackEventPresentReadySent(clientId!, _sessionId!);
-  }
-
-  void onPresentRejected(PresentRejectedMessage msg) {
-    if (msg.reason?.text == 'timeout') {
-      AppAnalytics().trackEventPresentRejectTimeOutSent(clientId!, _sessionId!);
-    } else if (msg.reason?.text == 'blocked') {
-      AppAnalytics().trackEventPresentRejectBlockedSent(clientId!, _sessionId!);
-    }
-  }
-
-  Future<void> onChangeQuality(ChangePresentQuality msg) async {
-
-  }
-
-  Future<void> onPausePresent() async {
-    print('zz onPausePresent');
-    AppAnalytics().trackEventPresentPauseReceived(clientId!, _sessionId!);
-    presentationState = PresentationState.pauseStreaming;
-    onRefresh?.call();
-  }
-
-  Future<void> onResumePresent() async {
-    print('zz onResumePresent');
-    AppAnalytics().trackEventPresentResumeReceived(clientId!, _sessionId!);
-    presentationState = PresentationState.resumeStreaming;
-    onRefresh?.call();
-  }
-
-  Future<void> onStopPresent(StopPresentMessage msg) async {
-    AppAnalytics().trackEventPresentStopReceived(
-        clientId!, _sessionId!);
-    disconnect(sendAnalytics: true);
-
-    //TODO:
-    // if (moderator == null &&
-    //     !SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-    //   ConnectionTimer.getInstance().stopRemainingTimeTimer();
-    // } else if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] > 0) {
-    //   StreamFunction.streamFunctionState.value = stateMenuOff;
-    // }
-  }
-
-  Future<void> onPresentSignal(PresentSignalMessage msg) async {
-    switch (msg.signalType) {
-      case SignalMessageType.offer:
-        // handle offer from the peer
-        final offer = RTCSessionDescription(msg.sdp, 'offer');
-        await pc!.setRemoteDescription(offer);
-        // create answer
-        final answer = await pc!.createAnswer();
-        RTCSessionDescription fixedAnswer = _fixSdp(answer);
-        await pc!.setLocalDescription(fixedAnswer);
-        // send answer to the peer
-        final message = PresentSignalMessage(msg.sessionId, SignalMessageType.answer);
-        message.sdp = fixedAnswer.sdp;
-        message.sdpMLineIndex = 0;
-        // print('zz send ${message.toJson().toString()}');
-        _channel.send(message);
+  void _onChannelState(ChannelState state) {
+    print('zz _onChannelState ${state.name}');
+    switch (state) {
+      case ChannelState.initialized:
         break;
-      case SignalMessageType.candidate:
-        // add candidates from the peer
-        final candidate = RTCIceCandidate(msg.candidate, msg.sdpMid, msg.sdpMLineIndex);
-        await pc!.addCandidate(candidate);
+      case ChannelState.connecting:
         break;
-      default:
+      case ChannelState.connected:
+        break;
+      case ChannelState.disconnected:
+        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+        break;
+      case ChannelState.failed:
+        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
         break;
     }
   }
@@ -244,55 +153,196 @@ class RTCConnector {
     _pc!.onDataChannel = _onDataChannel;
   }
 
-  Future<void> disconnect({bool sendAnalytics = false}) async {
-    _printWebRTCViewSocketLog('zz disconnect', sendAnalytics);
+  void onJoinDisplay(JoinDisplayMessage msg) {
+    clientId = msg.clientId;
+    senderName = msg.name;
+    senderVersion = msg.version;
+    senderPlatform = msg.platform;
+    if (ChannelProvider.isModeratorMode) {
+      ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+      // presentationState = PresentationState.occupied;
+      onRefresh?.call();
+    }
+  }
+
+  Future<void> onStartPresent(StartPresentMessage msg) async {
+    // Timer
+    ConnectionTimer.getInstance().startConnectionTimer(() async {
+      sendRejectPresent(400, 'timeout');
+      await disconnectPeerConnection(sendAnalytics: true);
+      onChannelDisconnect?.call();
+    });
+
+    await _remoteRenderer?.initialize();
+    await _peerConnectionConnect();
+    final message = PresentAcceptedMessage(sessionId = msg.sessionId);
+    print('zz _channel.send ${message.toJson().toString()}');
+    _channel.send(message);
+
+    presentationState = PresentationState.waitForStream;
+    onConnect?.call();
+  }
+
+  void onPresentAccepted() {
+    AppAnalytics().trackEventPresentReadySent(clientId!, sessionId!);
+  }
+
+  void onPresentRejected(PresentRejectedMessage msg) {
+    if (msg.reason?.text == 'timeout') {
+      AppAnalytics().trackEventPresentRejectTimeOutSent(clientId!, sessionId!);
+    } else if (msg.reason?.text == 'blocked') {
+      AppAnalytics().trackEventPresentRejectBlockedSent(clientId!, sessionId!);
+    }
+  }
+
+  Future<void> onChangeQuality(ChangePresentQuality msg) async {
+    //TODO:
+  }
+
+  Future<void> onPausePresent() async {
+    print('zz onPausePresent');
+    AppAnalytics().trackEventPresentPauseReceived(clientId!, sessionId!);
+    presentationState = PresentationState.pauseStreaming;
+    onRefresh?.call();
+  }
+
+  Future<void> onResumePresent() async {
+    print('zz onResumePresent');
+    AppAnalytics().trackEventPresentResumeReceived(clientId!, sessionId!);
+    presentationState = PresentationState.resumeStreaming;
+    onRefresh?.call();
+  }
+
+  Future<void> onStopPresent(StopPresentMessage msg) async {
+    AppAnalytics().trackEventPresentStopReceived(
+        clientId!, sessionId!);
+
+    if (ChannelProvider.isModeratorMode) {
+      print('zz onStopPresent 2 ${presentationState.name}');
+      StreamFunction.streamFunctionState.value = stateMenuOff;
+      await disconnectPeerConnection(sendAnalytics: false);
+      // presentationState = PresentationState.occupied;
+      sessionId = null;
+      // ChannelProvider.showMode = true; // TODO: 有兩種情況：無人投影和已經有人投影
+      onShowMode?.call(true);
+      return;
+    } else if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] > 0) {
+      print('zz onStopPresent 1');
+      StreamFunction.streamFunctionState.value = stateMenuOff;
+    }
+    // disconnect the channel
+    await disconnectPeerConnection(sendAnalytics: true);
+    // clear renderer and close connection
+    onChannelDisconnect?.call();
+    // stop timer
+    ConnectionTimer.getInstance().stopRemainingTimeTimer();
+  }
+
+  Future<void> onPresentSignal(PresentSignalMessage msg) async {
+    switch (msg.signalType) {
+      case SignalMessageType.offer:
+        // handle offer from the peer
+        final offer = RTCSessionDescription(msg.sdp, 'offer');
+        await pc!.setRemoteDescription(offer);
+        // create answer
+        final answer = await pc!.createAnswer();
+        RTCSessionDescription fixedAnswer = _fixSdp(answer);
+        await pc!.setLocalDescription(fixedAnswer);
+        // send answer to the peer
+        final message = PresentSignalMessage(msg.sessionId, SignalMessageType.answer);
+        message.sdp = fixedAnswer.sdp;
+        message.sdpMLineIndex = 0;
+        print('zz send ${message.toJson().toString()}');
+        _channel.send(message);
+        break;
+      case SignalMessageType.candidate:
+        // add candidates from the peer
+        final candidate = RTCIceCandidate(msg.candidate, msg.sdpMid, msg.sdpMLineIndex);
+        await pc!.addCandidate(candidate);
+        break;
+      default:
+        break;
+    }
+  }
+
+  void sendDisplayStatus() {
+    final displayStatusMessage = DisplayStatusMessage();
+    displayStatusMessage.platform = _getPlatform();
+    displayStatusMessage.status = DisplayStatus.fromJson({'moderator': ChannelProvider.isModeratorMode});
+    print('zz _channel.send ${displayStatusMessage.toJson().toString()}');
+    _channel.send(displayStatusMessage);
+  }
+
+  void sendChangeQuality(bool isFullHeight, bool isFullFrameRate) async {
+    var message = ChangePresentQuality(sessionId);
+    message.constraints = PresentQualityConstraints(frameRate: isFullFrameRate ? 30 : 0, height: isFullHeight ? 1080 : 540);
+    // message.constraints?.frameRate = isFullFrameRate ? 30 : 0;
+    // message.constraints?.height = isFullHeight ? 1080 : 540;
+    print('zz _channel.send $sessionId ${message.toJson().toString()}');
+    _channel.send(message);
+  }
+
+  void sendAllowPresent() {
+    var message = AllowPresentMessage();
+    message.sessionId = sessionId = const Uuid().v4();
+    print('zz _channel.send ${message.toJson().toString()}');
+    _channel.send(message);
+  }
+
+  void sendRejectPresent(int errorCode, String reason) {
+    var message = PresentRejectedMessage();
+    message.sessionId = sessionId;
+    message.reason = PresentRejectReason(errorCode, reason);
+    print('zz _channel.send ${message.toJson().toString()}');
+    _channel.send(message);
+  }
+
+  void sendStopPresent() {
+    var message = StopPresentMessage();
+    message.sessionId = sessionId;
+    print('zz _channel.send ${message.toJson().toString()}');
+    _channel.send(message);
+  }
+
+  Future<void> disconnectPeerConnection({bool sendAnalytics = false}) async {
+    _printPeerConnectionLog('zz disconnectPeerConnection', sendAnalytics);
     if (sendAnalytics) {
-      AppAnalytics().trackEventPresentStopped(_sessionId!, clientId!);
+      AppAnalytics().trackEventPresentStopped(sessionId ?? '', clientId!);
     }
 
     // clear renderer
     if (_remoteRenderer?.textureId != null && _remoteRenderer!.renderVideo) {
-      // onDisconnect may come-in many times, need check textureId first.
       _remoteRenderer?.srcObject = null;
-      await _remoteRenderer?.dispose();
-      _remoteRenderer = RTCVideoRenderer();
     }
+    await _remoteRenderer?.dispose();
+    _remoteRenderer = RTCVideoRenderer();
     if (_pc != null) {
       await _pc?.close();
       await _pc?.dispose();
       _pc = null;
     }
-    _channel.close();
 
     // change state
     presentationState = PresentationState.stopStreaming;
-    // clear renderer and close connection
-    onDisconnect?.call();
-    // showConnectionInfo(false);
-    // update Display state via presenterId
-    // ControlSocket().handleRtcControllerDisconnect(this); //TODO: disconnect
+    onRefresh?.call();
+  }
 
-    // finally, clear all presenter settings
+  void disconnectChannel() {
+    onChannelDisconnect?.call();
+  }
+
+  Future<void> close() async {
+    print('zz close()');
+    _channel.close();
     _resetSetting();
   }
 
   void controlAudio(bool isEnable) {
-    // if (mViewState.mounted) {
-    //   mViewState.controlAudio(isEnable);
-    // }
-  }
-
-  void showConnectionInfo(bool enable) {
-    // if (mViewState.mounted) {
-    //   mViewState.showConnectionInfo = enable;
-    // }
-  }
-
-  void changeQuality(bool isFullHeight, bool isFullFrameRate) async {
-    var message = ChangePresentQuality(_sessionId);
-    message.constraints?.frameRate = isFullFrameRate ? 30 : 0;
-    message.constraints?.height = isFullHeight ? 1080 : 540;
-    _channel.send(message);
+    if (_remoteRenderer?.srcObject != null) {
+      if (_remoteRenderer!.srcObject!.getAudioTracks().isNotEmpty) {
+        _remoteRenderer?.srcObject!.getAudioTracks().first.enabled = isEnable;
+      }
+    }
   }
 
   //region PeerConnection interface
@@ -308,12 +358,13 @@ class RTCConnector {
     _printPeerConnectionLog('_onIceConnectionState', state);
   }
 
-  void _onPeerConnectionState(RTCPeerConnectionState state) {
+  Future<void> _onPeerConnectionState(RTCPeerConnectionState state) async {
     _printPeerConnectionLog('_onPeerConnectionState', state);
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       ConnectionTimer.getInstance().stopRemainingTimeTimer();
-      disconnect();
+      await disconnectPeerConnection();
+      onChannelDisconnect?.call();
     }
   }
 
@@ -327,11 +378,11 @@ class RTCConnector {
 
     await Future.delayed(const Duration(milliseconds: 1000), () {
       var message =
-      PresentSignalMessage(_sessionId, SignalMessageType.candidate);
+      PresentSignalMessage(sessionId, SignalMessageType.candidate);
       message.candidate = candidate.candidate;
       message.sdpMid = candidate.sdpMid;
       message.sdpMLineIndex = candidate.sdpMLineIndex;
-      // print('zz send candidate ${message.toJson().toString()}');
+      print('zz send candidate ${message.toJson().toString()}');
       _channel.send(message);
     });
   }
@@ -345,24 +396,22 @@ class RTCConnector {
     ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
     if (MirrorStateProvider.isMirroring) {
       // check the mirror state and disconnect the webrtc connection
-      // ControlSocket().handleConflictWithMirror(); //TODO:
+      onConflictWithMirror?.call();
       return;
     }
     presentationState = PresentationState.streaming;
     // showConnectionInfo(false);
-    // ControlSocket().handleAddStreamState(this); //TODO:
+    // ControlSocket().handleAddStreamState(this);
     // navService.popUntil('/home');
-    // _remoteRenderer?.srcObject = stream;
+    controlAudio(true);
     onAddRemoteStream?.call(_remoteRenderer?.srcObject);
-    AppAnalytics().trackEventPresentStarted(_sessionId!, clientId!);
+    AppAnalytics().trackEventPresentStarted(sessionId!, clientId!);
   }
 
   void _onTrack(RTCTrackEvent event) async {
     _printPeerConnectionLog('_onTrack', event.track);
     if (event.track.kind == 'video') {
-      print('zz _onTrack $index 0 ${_remoteRenderer==null}');
       _remoteRenderer?.srcObject = event.streams[0];
-      print('zz _onTrack $index 1 ${_remoteRenderer?.srcObject ==null}');
     }
   }
 
@@ -384,7 +433,7 @@ class RTCConnector {
     _dc = channel;
   }
 
-  void sendData(Uint8List data) {
+  void sendRTCData(Uint8List data) {
     if (_dc != null && _dc!.state == RTCDataChannelState.RTCDataChannelOpen) {
       _dc!.send(RTCDataChannelMessage.fromBinary(data));
     }
@@ -404,7 +453,6 @@ class RTCConnector {
         Map<String, dynamic> iceServerList = jsonDecode(response.body);
         if (iceServerList.containsKey('list')) {
           List list = iceServerList['list'];
-          // _configuration.putIfAbsent('iceServers', () => list);
           return list;
         }
       }
@@ -431,27 +479,18 @@ class RTCConnector {
       } else if (Platform.isAndroid) {
         platform = 'Android';
       } else {
-        platform = ''; // todo: support other platform.
+        platform = '';
       }
     }
     return platform;
   }
 
   void _resetSetting() {
-    _sessionId = null;
+    sessionId = null;
     clientId = null;
     senderName = null;
     senderVersion = '';
     senderPlatform = '';
-  }
-
-  void _printWebRTCViewSocketLog(String? event, dynamic args) {
-    if (kDebugMode) {
-      printInDebug(
-          '$runtimeType,  mWebRTCViewSocket{$mUid}: $event ${args.toString()}');
-      const DebugSwitch()
-          .write('mWebRTCViewSocket{$mUid}: $event ${args.toString()}');
-    }
   }
 
   void _printPeerConnectionLog(String? event, dynamic args) {
