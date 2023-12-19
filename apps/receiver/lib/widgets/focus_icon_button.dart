@@ -17,7 +17,9 @@ class FocusIconButton extends StatefulWidget {
       this.iconBackgroundColor,
       this.iconFocusForegroundColor,
       this.iconFocusBackgroundColor,
-      this.isAddGreenDot = false});
+      this.isAddGreenDot = false,
+      this.rotateX = 0.0,
+      this.rotateY = 0.0});
 
   final IconData? icons;
   final Widget? childHasFocus;
@@ -38,6 +40,8 @@ class FocusIconButton extends StatefulWidget {
   final Color? iconFocusBackgroundColor;
 
   final bool isAddGreenDot;
+  final double rotateX;
+  final double rotateY;
 
   @override
   State createState() => _FocusIconButtonState();
@@ -76,6 +80,9 @@ class _FocusIconButtonState extends State<FocusIconButton> {
               iconSize = widget.notFocusSize! - 12; // reduce size for padding.
             }
           }
+          Matrix4 matrix4 = Matrix4.identity();
+          matrix4.rotateX(widget.rotateX);
+          matrix4.rotateY(widget.rotateY);
           return IconButton(
             focusNode: _focusNode,
             icon: widget.icons != null
@@ -90,13 +97,17 @@ class _FocusIconButtonState extends State<FocusIconButton> {
                     ),
                     child: Stack(
                       children: [
-                        Icon(
-                          widget.icons!,
-                          color: hasFocus
-                              ? widget.iconFocusForegroundColor ??
-                                  widget.iconForegroundColor
-                              : widget.iconForegroundColor,
-                          size: iconSize,
+                        Transform(
+                          alignment: Alignment.center,
+                          transform: matrix4,
+                          child: Icon(
+                            widget.icons!,
+                            color: hasFocus
+                                ? widget.iconFocusForegroundColor ??
+                                    widget.iconForegroundColor
+                                : widget.iconForegroundColor,
+                            size: iconSize,
+                          ),
                         ),
                         Positioned(
                           top: 0,
