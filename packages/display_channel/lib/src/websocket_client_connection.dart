@@ -23,6 +23,8 @@ class WebSocketClientConnection implements ClientConnection {
   final Map<String, String> _headers;
   var _closed = false;
 
+  void Function(String url, String message)? logger;
+
   static const defaultPingInterval = Duration(seconds: 1);
   static const defaultConnectionTimeout = Duration(seconds: 1);
   static const defaultMaxRetryDelay = Duration(seconds: 15);
@@ -42,6 +44,7 @@ class WebSocketClientConnection implements ClientConnection {
     this.connectionTimeout = defaultConnectionTimeout,
     this.maxRetryDelay = defaultMaxRetryDelay,
     this.maxRetryAttempts = defaultMaxRetryAttempts,
+    this.logger,
   });
 
   @override
@@ -61,6 +64,7 @@ class WebSocketClientConnection implements ClientConnection {
       return;
     }
 
+    logger?.call(_url, "connect");
     onConnecting?.call();
 
     try {
@@ -78,6 +82,8 @@ class WebSocketClientConnection implements ClientConnection {
           );
         },
         retryIf: (e) {
+          logger?.call(_url, e.toString());
+
           return !_closed &&
               (e is SocketException ||
                   e is HttpException ||
@@ -107,9 +113,13 @@ class WebSocketClientConnection implements ClientConnection {
       final message = jsonDecode(data);
       onMessage?.call(message);
     }, onDone: () {
+      logger?.call(_url, 'websocket onDone');
+
       // websocket connection closed
       _handleDisconnected();
     }, onError: (error) {
+      logger?.call(_url, 'websocket onError $error');
+
       // websocket connection error
       _handleDisconnected();
     }, cancelOnError: true);
