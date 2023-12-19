@@ -1,6 +1,6 @@
 
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
@@ -118,9 +118,10 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
 
   @override
   Widget build(BuildContext context) {
-    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      if (presentStateProvider.exceedMaximumPresenters) {
+      if (channelProvider.exceedMaximumPresenters) {
         codeKey.currentState?.setErrorMsg(S.of(context).main_display_code_exceed);
       }
     });

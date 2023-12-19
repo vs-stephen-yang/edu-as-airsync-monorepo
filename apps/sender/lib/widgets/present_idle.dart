@@ -1,7 +1,6 @@
 
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
-import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/present_idle_lan_off.dart';
@@ -24,7 +23,7 @@ class PresentIdle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
+    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -52,7 +51,8 @@ class PresentIdle extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    presentStateProvider.setViewState(ViewState.settings);
+                    channelProvider.presentSettingPage();
+                    // presentStateProvider.setViewState(ViewState.settings);
                   },
                   child: Row(
                     children: [
@@ -110,9 +110,10 @@ class PresentIdle extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: TouchBackButton(
                           key: touchBtnKey,
-                          initialValue: presentStateProvider.touchBack,
+                          initialValue: channelProvider.touchBack, //presentStateProvider.touchBack,
                           onPressed: (state) {
-                            presentStateProvider.setTouchBack(state);
+                            channelProvider.touchBack = state;
+                            // presentStateProvider.setTouchBack(state);
                           },
                         ),
                       ),

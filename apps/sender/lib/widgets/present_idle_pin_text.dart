@@ -1,6 +1,6 @@
 
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:provider/provider.dart';
@@ -45,9 +45,10 @@ class PresentIdlePinTextState extends State<PresentIdlePinText> {
 
   @override
   Widget build(BuildContext context) {
-    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      if (presentStateProvider.exceedMaximumPresenters) {
+      if (channelProvider.exceedMaximumPresenters) {
         codeKey.currentState?.setErrorMsg(S.of(context).main_display_code_exceed);
       }
     });
@@ -66,16 +67,16 @@ class PresentIdlePinTextState extends State<PresentIdlePinText> {
               errorText: S.of(context).main_display_code_description,
               inputFormatter: [
                 MaskedInputFormatter(
-                  '0000',
-                  allowedCharMatcher: RegExp('[1-9]'),
+                  '###-###',
+                  allowedCharMatcher: RegExp('[0-9A-Za-z]'),
                 )
               ],
               onChanged: (text) {
                 bool presentBtnEnable = false;
-                if (text.length == 4) {
+                if (text.length == 7) {
                   presentBtnEnable = true;
                 }
-                widget.onFieldChanged(FieldResult(enable: presentBtnEnable, displayCode: text));
+                widget.onFieldChanged(FieldResult(enable: presentBtnEnable, pinCode: text));
               },
               onFieldSubmitted: (text) {
 
@@ -95,7 +96,7 @@ class PresentIdlePinTextState extends State<PresentIdlePinText> {
 
 class FieldResult {
   bool enable = false;
-  String displayCode;
+  String pinCode;
 
-  FieldResult({required this.enable, required this.displayCode});
+  FieldResult({required this.enable, required this.pinCode});
 }

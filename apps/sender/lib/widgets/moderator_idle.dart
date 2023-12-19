@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:flutter/material.dart';
@@ -23,26 +24,31 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
 
   @override
   Widget build(BuildContext context) {
-    PresentStateProvider presentStateProvider =
-        Provider.of<PresentStateProvider>(context);
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
+
     Future<void> clickPresent() async {
-      if (presentStateProvider.state == ViewState.moderatorIdle) {
+      if (channelProvider.state == ViewState.moderatorName) {
         if (_nameController.text.isEmpty) {
           _showOverlayMessage(context, nameKey);
-        } else if (presentStateProvider.displayCode != null) {
-          presentStateProvider.presenter?.name = _nameController.text;
-          bool display = await presentStateProvider.checkDisplayOTP(
-              displayCode: presentStateProvider.displayCode,
-              otp: presentStateProvider.otp);
-          if (display) {
-            presentStateProvider
-                .presentTo(
-                  displayCode: presentStateProvider.displayCode,
-                  otp: presentStateProvider.otp,
-                )
-                .whenComplete(() =>
-                    presentStateProvider.setViewState(ViewState.moderatorWait));
-          }
+        } else if (channelProvider.displayCode != null) {
+          channelProvider.setModeratorName(_nameController.text);
+          // if (channelProvider.currentMode == Mode.internet) {
+          //   channelProvider.presentInternetMode(widget.displayCode!, widget.otp!);
+          // } else {
+          //   channelProvider.presentLanMode(widget.pin!);
+          // }
+
+          // presentStateProvider.presenter?.name = _nameController.text;
+          // bool display = await presentStateProvider.checkDisplayOTP(
+          //     displayCode: widget.displayCode, otp: widget.otp);
+          // if (display) {
+          //   presentStateProvider.presentTo(
+          //     displayCode: widget.displayCode,
+          //     otp: widget.otp,
+          //   ).whenComplete(() => presentStateProvider
+          //       .setViewState(ViewState.moderatorWait));
+          // }
         }
       }
     }
@@ -54,8 +60,10 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
           top: 100,
           child: InkWell(
               onTap: () {
-                presentStateProvider.resetMessage();
-                presentStateProvider.setViewState(ViewState.idle);
+                channelProvider.resetMessage();
+                channelProvider.presentMainPage();
+                // presentStateProvider.resetMessage();
+                // presentStateProvider.setViewState(ViewState.idle);
               },
               child: const Row(
                 children: [
@@ -66,10 +74,7 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 8),
-                    child: Text(
-                      "Back",
-                      style: TextStyle(color: Colors.white, fontSize: 14),
-                    ),
+                    child: Text("Back", style: TextStyle(color: Colors.white, fontSize: 14),),
                   ),
                 ],
               )),
@@ -203,3 +208,4 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
     });
   }
 }
+

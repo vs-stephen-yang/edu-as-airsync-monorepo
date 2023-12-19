@@ -64,7 +64,7 @@ class _HomeState extends State<Home> {
                   ),
                   Consumer2<PresentStateProvider, ChannelProvider>(
                     builder: (context, present, channel, child) {
-                      debugModePrint('PresentState: ${present.state}');
+                      debugModePrint('PresentState: ${channel.state}');
                       if (!kIsWeb) {
                         FlutterWindowClose.setWindowShouldCloseHandler(
                             () async {
@@ -74,36 +74,35 @@ class _HomeState extends State<Home> {
                         });
                       }
 
-                      switch (present.state) {
-                        case ViewState.idle:
-                          return PresentIdle();
-                        case ViewState.moderatorIdle:
-                          return const ModeratorIdle();
-                        case ViewState.moderatorWait:
-                          return const ModeratorWait();
-                        case ViewState.waitReady:
-                          return const PresentWaitReady();
-                        case ViewState.selectScreen:
-                          return const PresentSelectScreen();
-                        case ViewState.presentStart:
-                          return PresentPresentStart();
-                        case ViewState.moderatorStart:
-                          return ModeratorPresentStart();
-                        case ViewState.settings:
-                          return const Settings();
-                        case ViewState.language:
-                          return const Language();
-                        default:
-                          return const SizedBox();
-                      }
-                    },
-                  ),
-                ],
-              ),
+                    switch (channel.state) {
+                      case ViewState.idle:
+                        return PresentIdle();
+                      case ViewState.moderatorName:
+                        return const ModeratorIdle();
+                      case ViewState.moderatorWait:
+                        return const ModeratorWait();
+                      case ViewState.waitReady:
+                        return const PresentWaitReady();
+                      case ViewState.selectScreen:
+                        return const PresentSelectScreen();
+                      case ViewState.presentStart:
+                        return PresentPresentStart();
+                      case ViewState.moderatorStart:
+                        return ModeratorPresentStart();
+                      case ViewState.settings:
+                        return const Settings();
+                      case ViewState.language:
+                        return const Language();
+                      default:
+                        return const SizedBox();
+                    }
+                  },
+                ),
+              ],
             ),
           ),
         ),
       ),
-    );
+    ));
   }
 }

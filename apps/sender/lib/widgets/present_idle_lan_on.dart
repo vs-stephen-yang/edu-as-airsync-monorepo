@@ -1,10 +1,12 @@
 
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/present_idle_pin_text.dart';
 import 'package:display_cast_flutter/widgets/present_idle_textfield.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PresentIdleLanOn extends StatelessWidget {
   PresentIdleLanOn({super.key});
@@ -15,7 +17,9 @@ class PresentIdleLanOn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
     bool presentBtnEnable = false;
+    String pinCode = '';
 
     return Container(
       width: 300,
@@ -49,8 +53,9 @@ class PresentIdleLanOn extends StatelessWidget {
             key: fieldKey,
             onFieldChanged: (result) {
               presentBtnEnable = result.enable;
+              pinCode = result.pinCode.toUpperCase();
               presentBtnKey.currentState
-                  ?.setEnable(result.enable, displayCode: result.displayCode);
+                  ?.setEnable(result.enable, displayCode: result.pinCode);
             },
             onPasswordEnterEvent: (text) {
               if (presentBtnEnable) {
@@ -61,7 +66,10 @@ class PresentIdleLanOn extends StatelessWidget {
           const Spacer(),
           Padding(
             padding: const EdgeInsets.only(bottom: 25),
-            child: PresentIdleButton(key: presentBtnKey, onPressed: () async {}),
+            child: PresentIdleButton(key: presentBtnKey, onPressed: () async {
+              await channelProvider.presentEnd(goIdleState: false);
+              channelProvider.presentLanMode(pinCode.replaceAll('-', ''));
+            }),
           ),
         ],
       ),
