@@ -23,7 +23,7 @@ enum ViewState {
   presentStart,
 
   //moderator
-  moderatorIdle,
+  moderatorName,
   moderatorWait,
   moderatorStart,
 
@@ -96,7 +96,7 @@ class PresentStateProvider extends ChangeNotifier {
         moderator = Moderator.fromJson(body);
         this.displayCode = displayCode;
         this.otp = otp;
-        setViewState(ViewState.moderatorIdle);
+        setViewState(ViewState.moderatorName);
         notifyListeners();
         break;
       case 204:

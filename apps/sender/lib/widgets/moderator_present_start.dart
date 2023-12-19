@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +17,8 @@ class ModeratorPresentStart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     _countSecondsValue.value = 0;
     _countMinutesValue.value = 0;
     _countHoursValue.value = 0;
@@ -103,9 +104,11 @@ class ModeratorPresentStart extends StatelessWidget {
                         onTap: () {
                           _presentingState.value = !_presentingState.value;
                           if (_presentingState.value) {
-                            presentStateProvider.presentResume();
+                            channelProvider.presentResume();
+                            // presentStateProvider.presentResume();
                           } else {
-                            presentStateProvider.presentPause();
+                            channelProvider.presentPause();
+                            // presentStateProvider.presentPause();
                           }
                         },
                         child: Row(
@@ -133,8 +136,8 @@ class ModeratorPresentStart extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 38.0, top: 20.0),
                   child: InkWell(
                     onTap: () {
-                      presentStateProvider.presentStop();
-                      presentStateProvider.presentEnd();
+                      channelProvider.presentStop();
+                      channelProvider.presentModeratorWaitPage();
                     },
                     child: Row(
                       children: [
@@ -146,29 +149,6 @@ class ModeratorPresentStart extends StatelessWidget {
                   ),
                 ),
               ),
-              if (presentStateProvider.displayer?.property!['platform'] == 'windows')
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 38.0, top: 20.0),
-                    child: InkWell(
-                      onTap: () {
-                        presentStateProvider.presentFullscreen();
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            presentStateProvider.displayer?.windowState == 'normal' ? Icons.fullscreen : Icons.fullscreen_exit,
-                            color: Colors.white,
-                          ),
-                          const Padding(padding: EdgeInsets.only(left: 8)),
-                          Text(presentStateProvider.displayer?.windowState == 'normal' ? S.of(context).present_state_full_screen: S.of(context).present_state_normal_screen,
-                              style: const TextStyle(color: Colors.white, fontSize: 14)),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
             ],
           ),
         ),

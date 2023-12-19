@@ -1,6 +1,6 @@
 
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +10,8 @@ class ModeratorWait extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     return SizedBox(
       width: AppConstants.viewStateMenuWidth,
       height: AppConstants.viewStateMenuHeight,
@@ -53,7 +54,8 @@ class ModeratorWait extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
             child: ElevatedButton(
               onPressed: () {
-                presentStateProvider.presentEnd();
+                channelProvider.presentEnd();
+                // presentStateProvider.presentEnd();
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.red,

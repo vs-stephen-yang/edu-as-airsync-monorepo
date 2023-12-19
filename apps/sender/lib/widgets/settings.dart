@@ -1,5 +1,5 @@
 
-import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +10,8 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     return SizedBox(
       width: AppConstants.viewStateMenuWidth,
       height: AppConstants.viewStateMenuHeight,
@@ -24,7 +25,8 @@ class Settings extends StatelessWidget {
                 children: [
                   InkWell(
                       onTap: () {
-                        presentStateProvider.setViewState(ViewState.idle);
+                        channelProvider.presentMainPage();
+                        // presentStateProvider.setViewState(ViewState.idle);
                       },
                       child: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white,)),
                   const Icon(Icons.settings, color: Colors.white,),
@@ -68,7 +70,8 @@ class Settings extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
             child: InkWell(
               onTap: () {
-                presentStateProvider.setViewState(ViewState.language);
+                channelProvider.presentLanguagePage();
+                // presentStateProvider.setViewState(ViewState.language);
               },
               child: const Text(
                 'Language',

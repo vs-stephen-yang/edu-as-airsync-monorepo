@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
@@ -17,8 +18,8 @@ class PresentSelectScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      PresentStateProvider provider =
-          Provider.of<PresentStateProvider>(context, listen: false);
+      ChannelProvider provider =
+      Provider.of<ChannelProvider>(context, listen: false);
       // start timeout timer (30 sec)
       ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
         // onFinish
@@ -31,14 +32,11 @@ class PresentSelectScreen extends StatelessWidget {
           context: context,
           builder: (context) => selectScreenDialog = SelectScreenDialog(),
         ).then((value) {
-          debugModePrint('selectedSource: $value');
+          debugModePrint('selectedSource: ${value?.selectedSource?.type})');
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
           if (value != null && value.selectedSource != null) {
-            if (WebRTC.platformIsWindows &&
-                value.selectedSource?.type != SourceType.Window) {
-              provider.presentStart(
-                  selectedSource: value.selectedSource,
-                  systemAudio: value.systemAudio);
+            if (WebRTC.platformIsWindows && value.selectedSource?.type != SourceType.Window) {
+              provider.presentStart(selectedSource: value.selectedSource, systemAudio: value.systemAudio);
             } else {
               provider.presentStart(selectedSource: value.selectedSource);
             }
@@ -48,8 +46,9 @@ class PresentSelectScreen extends StatelessWidget {
               element.cancel();
             }
             // moderator mode
-            if (provider.moderator != null) {
+            if (provider.moderatorStatus) {
               provider.presentStop();
+              provider.setViewState(ViewState.moderatorWait);
             } else {
               provider.presentStop();
               provider.presentEnd();

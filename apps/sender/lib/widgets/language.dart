@@ -1,4 +1,5 @@
 
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
@@ -11,7 +12,8 @@ class Language extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     PrefLanguageProvider provider = Provider.of<PrefLanguageProvider>(context);
-    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     return SizedBox(
       width: AppConstants.viewStateMenuWidth,
       height: AppConstants.viewStateMenuHeight,
@@ -26,7 +28,7 @@ class Language extends StatelessWidget {
                 children: [
                   InkWell(
                       onTap: () {
-                        presentStateProvider.setViewState(ViewState.settings);
+                        channelProvider.setViewState(ViewState.settings);
                       },
                       child: const Icon(
                         Icons.arrow_back_ios_new_outlined,

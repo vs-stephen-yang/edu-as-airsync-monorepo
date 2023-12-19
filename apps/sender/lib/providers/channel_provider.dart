@@ -1,11 +1,15 @@
 
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:display_cast_flutter/features/webrtc_connector.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
 enum Mode {
@@ -14,12 +18,14 @@ enum Mode {
 }
 
 class ChannelProvider extends ChangeNotifier {
-  ChannelProvider(BuildContext context);
+  ChannelProvider(BuildContext context){
+    _urlIce = AppConfig.of(context)!.settings.urlGetIce;
+  }
 
   DisplayChannelClient? _channel;
   final _clientId = const Uuid().v4(); // TODO:GENERATE IT? GET FROM DISPLAY?
-  final _sessionId = const Uuid().v4();
-
+  var _sessionId = const Uuid().v4();
+  int port = 5100;
   WebRTCConnector? webRTCConnector;
   List<RtcIceServer>? _iceServerList;
   bool _moderatorStatus = false;
@@ -40,6 +46,8 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  late String _urlIce, _tunnelApiUrl ='';
+  String? displayCode, otp, pinCode;
   Timer? _presentTimer;
   bool _touchBack = false;
   bool get touchBack => _touchBack;
@@ -72,7 +80,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future<void> presentModeratorNamePage() async {
-    setViewState(ViewState.moderatorIdle);
+    setViewState(ViewState.moderatorName);
   }
 
   Future<void> presentModeratorWaitPage() async {
@@ -92,25 +100,34 @@ class ChannelProvider extends ChangeNotifier {
   }
   //endregion
 
-  presentInternetMode(String displayCode, String token) {
-    startConnect(displayCode: displayCode, token: token);
+  presentInternetMode(String displayCode, String otp) {
+    print('zz presentInternetMode $displayCode $otp');
+    this.displayCode = displayCode;
+    this.otp = otp;
+    startConnect(displayCode: displayCode, token: otp);
   }
 
-  presentLanMode(String host, int port, String token) {
-    startConnect(host: host, port: port, token: token);
+  presentLanMode(String pinCode) {
+    print('zz presentLanMode $pinCode');
+    var pin = decodePinCode(this.pinCode = pinCode);
+    startConnect(host: pin.host, token: pinCode);
   }
 
-  startConnect({String? host, int? port, String? displayCode, required String token}) {
-    debugModePrint('startConnect ${currentMode.name} $host $port $displayCode $token', type: runtimeType);
-
-    Uri uri = currentMode == Mode.internet
-        ? Uri.parse('wss://yu438hq3bi.execute-api.us-east-1.amazonaws.com/dev/')
-        : Uri(scheme: 'ws', host: host, port: port);
+  startConnect({String? host, String? displayCode, required String token}) async {
+    print('zz startConnect ${currentMode.name} $host $port $displayCode $token');
+    Uri? uri;
+    if (currentMode == Mode.internet) {
+      await _getTunnelUrl(displayCode!).then((value) => _tunnelApiUrl = value);
+      uri = Uri.parse(_tunnelApiUrl);
+    } else {
+      uri = Uri(scheme: 'ws', host: host, port: port);
+    }
 
     _channel = DisplayChannelClient(_clientId, uri,
         (url, headers) => WebSocketClientConnection(url, headers));
+
     _channel?.onStateChange = (ChannelState state) {
-      debugModePrint('startLanModeConnect onStateChange $state',
+      debugModePrint('zz onStateChange $state',
           type: runtimeType);
       switch (state) {
         case ChannelState.initialized:
@@ -123,11 +140,12 @@ class ChannelProvider extends ChangeNotifier {
           presentEnd();
           break;
         case ChannelState.failed:
+          presentEnd();
           break;
       }
     };
     _channel?.onChannelMessage = (message) {
-      debugModePrint('startLanModeConnect onChannelMessage $message',
+      debugModePrint('zz receive ${message.toJson().toString()}',
           type: runtimeType);
 
       switch (message.messageType) {
@@ -141,7 +159,7 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.presentAccepted:
           // select screen
           if (moderatorStatus) {
-            presentModeratorWaitPage();
+            presentSelectScreenPage();
           } else {
             presentSelectScreenPage();
           }
@@ -157,7 +175,7 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.presentSignal:
           webRTCConnector?.handleSignal(message as PresentSignalMessage);
           break;
-        case ChannelMessageType.presentChangeQuality:
+        case ChannelMessageType.changePresentQuality:
           webRTCConnector?.changeStreamFrameRate(message.toJson());
           break;
         case ChannelMessageType.stopPresent:
@@ -169,8 +187,8 @@ class ChannelProvider extends ChangeNotifier {
           break;
         case ChannelMessageType.allowPresent:
           // moderator mode
-          // _startPresent();
-          presentSelectScreenPage();
+          _sessionId = (message as AllowPresentMessage).sessionId!;
+          _startPresent();
           break;
         default:
           break;
@@ -184,19 +202,17 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
-  checkOTP() {}
-
   Future<void> presentStart({required dynamic selectedSource, bool systemAudio = false}) async {
+    print('zz presentStart');
     // PeerConnect
-    webRTCConnector = WebRTCConnector(
+    webRTCConnector = WebRTCConnector(_urlIce,
       touchBack: touchBack,
       systemAudio: systemAudio,
       sendSignalMessage: (json) {
         // offer, answer, candidate
-        json.addAll({
-          'sessionId': _sessionId
-        });
-        _channel?.send(PresentSignalMessage.fromJson(json));
+        json.sessionId = _sessionId;
+        print('zz send SignalMessage ${json.toJson().toString()}');
+        _channel?.send(json);
       },
     );
     await webRTCConnector?.makeCall(_clientId, selectedSource, _iceServerList); // TODO: _clientId
@@ -209,11 +225,12 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future<void> presentEnd({bool goIdleState = true}) async {
+    print('zz presentEnd');
     try {
       if (webRTCConnector != null) await webRTCConnector?.hangUp();
       webRTCConnector = null;
 
-      _channel?.close();
+      await _channel?.close();
       _channel = null;
     } catch (e) {
       debugModePrint(e, type: runtimeType);
@@ -235,16 +252,19 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<void> presentPause() async {
     // handle stream
-    webRTCConnector?.streamPause();
+    var message = PausePresentMessage(_sessionId);
+    _channel?.send(message);
   }
 
   Future<void> presentResume() async {
     // handle stream
-    webRTCConnector?.streamResume();
+    var message = ResumePresentMessage(_sessionId);
+    _channel?.send(message);
   }
 
   void setModeratorName(String name) {
     _joinDisplay(name: name);
+    presentModeratorWaitPage();
   }
 
   void resetMessage() {
@@ -269,18 +289,40 @@ class ChannelProvider extends ChangeNotifier {
     if (name != null) {
       msg.name = name;
     }
+    print('zz send joinDisplay ${msg.toJson().toString()}');
     _channel?.send(msg);
   }
 
   void _startPresent() {
     final msg = StartPresentMessage(_sessionId);
+    print('zz send startPresent ${msg.toJson().toString()}');
     _channel?.send(msg);
   }
 
   void _stopPresent() {
     final msg = StopPresentMessage();
     msg.sessionId = _sessionId;
+    print('zz send stopPresent $msg');
     _channel?.send(msg);
   }
   //endregion
+
+  Future<String> _getTunnelUrl(String displayCode) async {
+    print('zz _getTunnelUrl');
+    try {
+      http.Response response = await http.get(
+        Uri.parse('https://api-us-east-1.gateway.dev.airsync.net/instances?displayCode=$displayCode'),
+      );
+      print('zz _getTunnelUrl ${response.statusCode} ${response.body}');
+      if (response.statusCode >= HttpStatus.ok &&
+          response.statusCode < HttpStatus.multiStatus) {
+        Map<String, dynamic> json = jsonDecode(response.body);
+
+        return json['tunnelApiUrl'] ?? '';
+      }
+    } catch (e) {
+      // http.get maybe no network connection.
+    }
+    return '';
+  }
 }
