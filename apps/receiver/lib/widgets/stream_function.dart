@@ -173,21 +173,18 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       value == stateStandby)
                     Column(
                       children: [
-                        Transform(
-                          alignment: Alignment.center,
-                          transform: Matrix4.rotationY(math.pi),
-                          child: FocusIconButton(
-                              icons: Icons.exit_to_app,
-                              iconForegroundColor: colorSplitScreenForeground,
-                              iconBackgroundColor: colorSplitScreenBackground,
-                              iconFocusBackgroundColor:
-                              AppColors.iconFeatureOnStandbyBackground,
-                              hasFocusSize: AppUIConstant.iconHasFocusSize,
-                              notFocusSize: AppUIConstant.iconNotFocusSize,
-                              onClick: () {
-                                MoveToBackground.moveTaskToBack();
-                              }),
-                        ),
+                        FocusIconButton(
+                            icons: Icons.exit_to_app,
+                            iconForegroundColor: colorSplitScreenForeground,
+                            iconBackgroundColor: colorSplitScreenBackground,
+                            iconFocusBackgroundColor:
+                                AppColors.iconFeatureOnStandbyBackground,
+                            hasFocusSize: AppUIConstant.iconHasFocusSize,
+                            notFocusSize: AppUIConstant.iconNotFocusSize,
+                            rotateY: math.pi,
+                            onClick: () {
+                              MoveToBackground.moveTaskToBack();
+                            }),
                         const SizedBox(
                           width: 48,
                           child: Divider(color: Colors.white, height: 1),
