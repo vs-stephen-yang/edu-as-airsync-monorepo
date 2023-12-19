@@ -26,13 +26,23 @@ class WebSocketClientConnection implements ClientConnection {
   static const defaultPingInterval = Duration(seconds: 1);
   static const defaultConnectionTimeout = Duration(seconds: 1);
   static const defaultMaxRetryDelay = Duration(seconds: 15);
+  static const defaultMaxRetryAttempts = 8;
+
+  Duration pingInterval;
+  Duration connectionTimeout;
+  Duration maxRetryDelay;
+  int maxRetryAttempts;
 
   WebSocket? _socket;
 
   WebSocketClientConnection(
     this._url,
-    this._headers,
-  );
+    this._headers, {
+    this.pingInterval = defaultPingInterval,
+    this.connectionTimeout = defaultConnectionTimeout,
+    this.maxRetryDelay = defaultMaxRetryDelay,
+    this.maxRetryAttempts = defaultMaxRetryAttempts,
+  });
 
   @override
   void open() {
@@ -42,7 +52,8 @@ class WebSocketClientConnection implements ClientConnection {
   @override
   Future<void> close() async {
     _closed = true;
-    await _socket?.close();
+
+    await _closeSocket();
   }
 
   void _connect() async {
@@ -54,10 +65,11 @@ class WebSocketClientConnection implements ClientConnection {
 
     try {
       _socket = await retry(
-        maxDelay: defaultMaxRetryDelay,
+        maxDelay: maxRetryDelay,
+        maxAttempts: maxRetryAttempts,
         () {
           final httpClient = HttpClient();
-          httpClient.connectionTimeout = defaultConnectionTimeout;
+          httpClient.connectionTimeout = connectionTimeout;
 
           return WebSocket.connect(
             _url,
@@ -85,7 +97,7 @@ class WebSocketClientConnection implements ClientConnection {
       return;
     }
 
-    _socket!.pingInterval = defaultPingInterval;
+    _socket!.pingInterval = pingInterval;
 
     // connected
     onConnected?.call();
@@ -121,9 +133,13 @@ class WebSocketClientConnection implements ClientConnection {
     await _reconnect();
   }
 
-  Future _reconnect() async {
+  Future _closeSocket() async {
     await _socket?.close();
     _socket = null;
+  }
+
+  Future _reconnect() async {
+    await _closeSocket();
 
     _connect();
   }
