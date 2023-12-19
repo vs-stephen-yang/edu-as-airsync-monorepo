@@ -1,6 +1,19 @@
+enum ConnectErrorType {
+  websocket,
+  socket,
+  http,
+}
+
+class ConnectError {
+  ConnectErrorType error;
+  String message;
+
+  ConnectError(this.error, this.message);
+}
+
 abstract class ClientConnection {
   void Function()? onConnecting;
-  void Function()? onConnectFailed;
+  void Function(ConnectError error)? onConnectFailed;
   void Function()? onConnected;
   void Function()? onDisconnected;
 
