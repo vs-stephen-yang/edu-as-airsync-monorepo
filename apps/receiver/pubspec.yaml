@@ -54,7 +54,7 @@ dependencies:
   flutter_bloc: ^8.1.2
   socket_io_client: ^1.0.2
   qr_flutter: ^4.1.0
-  flutter_svg_provider: ^1.0.6
+  flutter_svg_provider: ^1.0.7
   rxdart: ^0.27.7
   easy_debounce: ^2.0.3
   flutter_appcenter_bundle:
@@ -76,9 +76,10 @@ dependencies:
   sprintf: ^7.0.0
   connectivity_plus: ^5.0.1
   display_channel:
+#    path: /Users/chenzo/StudioProjects/display-channel
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
-#      ref: release-0.0.2
+#      ref: release-0.0.5
   network_info_plus: ^2.1.0
 
 dev_dependencies:
