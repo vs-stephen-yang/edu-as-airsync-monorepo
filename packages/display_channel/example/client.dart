@@ -83,10 +83,23 @@ main(List<String> arguments) async {
   );
 
   channel.onStateChange = (ChannelState state) {
-    print(state);
-    if (state == ChannelState.connected) {
-      print('The client has connected to the display');
+    switch (state) {
+      case ChannelState.connecting:
+        print('The client is connecting to the display');
+        break;
+      case ChannelState.connected:
+        print('The client has connected to the display');
+        break;
+      case ChannelState.disconnected:
+        print('The client has disconnected to the display');
+        break;
+      case ChannelState.closed:
+        print('The client has closed');
+        break;
+      default:
+        break;
     }
+    ;
   };
 
   MockClient(clientId, channel);
