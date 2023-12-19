@@ -34,23 +34,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("一次性密碼"),
         "main_content_one_time_password_get_fail":
             MessageLookupByLibrary.simpleMessage("無法取得一次性密碼\n30秒後將再次執行"),
-        "main_content_scan_or": MessageLookupByLibrary.simpleMessage("或"),
-        "main_content_scan_to_enroll": MessageLookupByLibrary.simpleMessage(
-            "使用投影辨識碼及一次性密碼分享畫面\nIT 管理員可使用Companion App掃描註冊"),
         "main_get_display_code_failure":
             MessageLookupByLibrary.simpleMessage("取得投影辨識碼失敗"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("繁體中文"),
         "main_language_title": MessageLookupByLibrary.simpleMessage("語言"),
         "main_limit_time_message":
             MessageLookupByLibrary.simpleMessage("五分鐘後結束"),
-        "main_privilege_close": MessageLookupByLibrary.simpleMessage("關閉"),
-        "main_privilege_message":
-            MessageLookupByLibrary.simpleMessage("權限不足，請聯繫IT管理員"),
         "main_register_display_code_failure":
             MessageLookupByLibrary.simpleMessage("取得投影辨識碼失敗，請稍後再試"),
-        "main_settings_language": MessageLookupByLibrary.simpleMessage("語言"),
-        "main_settings_title": MessageLookupByLibrary.simpleMessage("設定"),
-        "main_settings_whats_new": MessageLookupByLibrary.simpleMessage("最新消息"),
         "main_split_screen_question":
             MessageLookupByLibrary.simpleMessage("啟動分割畫面?"),
         "main_split_screen_title": MessageLookupByLibrary.simpleMessage("分割畫面"),
@@ -66,9 +57,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("感謝您使用 myViewBoard Display"),
         "main_wait_title": MessageLookupByLibrary.simpleMessage("等待投影中..."),
         "main_wait_up_next": MessageLookupByLibrary.simpleMessage("下一位投影者"),
-        "main_whats_new_content": MessageLookupByLibrary.simpleMessage("外觀調整"),
+        "main_whats_new_content":
+            MessageLookupByLibrary.simpleMessage("更新終端使用者授權合約"),
         "main_whats_new_title": MessageLookupByLibrary.simpleMessage("最新消息"),
-        "moderator_activate": MessageLookupByLibrary.simpleMessage("啟用"),
         "moderator_activate_split_screen":
             MessageLookupByLibrary.simpleMessage("確定啟用分割畫面功能嗎?最多可四人同時投影。"),
         "moderator_cancel": MessageLookupByLibrary.simpleMessage("取消"),
