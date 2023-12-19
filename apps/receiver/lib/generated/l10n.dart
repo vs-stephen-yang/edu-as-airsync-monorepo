@@ -559,6 +559,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Settings`
+  String get main_settings_title {
+    return Intl.message(
+      'Settings',
+      name: 'main_settings_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Language`
+  String get main_settings_language {
+    return Intl.message(
+      'Language',
+      name: 'main_settings_language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What's new`
+  String get main_settings_whats_new {
+    return Intl.message(
+      'What\'s new',
+      name: 'main_settings_whats_new',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -7,10 +7,9 @@ import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/screens/cast_settings.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
-import 'package:display_flutter/screens/language_selection.dart';
 import 'package:display_flutter/screens/moderator_view.dart';
+import 'package:display_flutter/screens/settings.dart';
 import 'package:display_flutter/screens/split_screen.dart';
-import 'package:display_flutter/screens/whats_new.dart';
 import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/main_info.dart';
@@ -114,21 +113,12 @@ class _StreamFunctionStates extends State<StreamFunction> {
         }
         // endregion
 
-        // region Language icon
-        IconData? iconLanguage;
-        if (value == stateStandby) {
-          iconLanguage = Icons.language;
-        } else if (value == stateMenuOn) {
-          iconLanguage = Icons.password;
-        }
-        // endregion
-
         // region Main icon
         IconData? iconMain;
         Image? iconMainImageHasFocus;
         Image? iconMainImageNotFocus;
         if (value == stateStandby) {
-          iconMain = Icons.campaign;
+          iconMain = Icons.settings;
         } else if (value == stateMenuOff || value == stateEmpty) {
           iconMainImageHasFocus =
               const Image(image: Svg('assets/images/ic_streaming_menu_on.svg'));
@@ -192,7 +182,8 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       ],
                     ),
                   if ((value == stateStandby &&
-                      !AppInstanceCreate().isDisableAdvance|| value == stateCast))
+                          !AppInstanceCreate().isDisableAdvance ||
+                      value == stateCast))
                     FocusIconButton(
                         icons: Icons.cast,
                         iconForegroundColor: colorSplitScreenForeground,
@@ -249,9 +240,10 @@ class _StreamFunctionStates extends State<StreamFunction> {
                     ),
                   ),
                   Visibility(
-                    visible: value == stateStandby || value == stateMenuOn,
+                    // only for show display code while streaming menu on
+                    visible: value == stateMenuOn,
                     child: FocusIconButton(
-                      icons: iconLanguage,
+                      icons: Icons.password,
                       iconForegroundColor: value == stateStandby
                           ? AppColors.iconStandbyForeground
                           : AppColors.iconPresentingForeground,
@@ -263,20 +255,14 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
                       onClick: () {
-                        if (value == stateStandby) {
-                          AppAnalytics().trackEventAppLanguageClick();
-                          _showMenuDialog(const LanguageSelection());
-                        } else if (value == stateMenuOn) {
-                          // _showMenuDialog(const MainInfo());
-                          StreamFunction.streamFunctionState.value =
-                              stateBackArrow;
-                          MainInfo.showMainInfo.value = true;
-                        }
+                        StreamFunction.streamFunctionState.value =
+                            stateBackArrow;
+                        MainInfo.showMainInfo.value = true;
                       },
                     ),
                   ),
                   Visibility(
-                    visible: value != stateEmpty && value != stateCast ,
+                    visible: value != stateEmpty && value != stateCast,
                     child: FocusIconButton(
                       icons: iconMain,
                       childNotFocus: iconMainImageNotFocus,
@@ -293,8 +279,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       notFocusSize: AppUIConstant.iconNotFocusSize,
                       onClick: () {
                         if (value == stateStandby) {
-                          AppAnalytics().trackEventAppWhatsNewsClick();
-                          _showMenuDialog(const WhatsNew());
+                          _showMenuDialog(const Settings());
                         } else if (value == stateMenuOff) {
                           StreamFunction.streamFunctionState.value =
                               stateMenuOn;
