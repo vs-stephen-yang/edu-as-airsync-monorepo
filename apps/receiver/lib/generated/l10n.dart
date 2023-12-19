@@ -180,26 +180,6 @@ class S {
     );
   }
 
-  /// `or`
-  String get main_content_scan_or {
-    return Intl.message(
-      'or',
-      name: 'main_content_scan_or',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `To share screen: Use the above URL, Display Code, and One Time Password.\nOptional: IT Admin can use Companion App to scan and enroll.`
-  String get main_content_scan_to_enroll {
-    return Intl.message(
-      'To share screen: Use the above URL, Display Code, and One Time Password.\nOptional: IT Admin can use Companion App to scan and enroll.',
-      name: 'main_content_scan_to_enroll',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `UP NEXT`
   String get main_wait_up_next {
     return Intl.message(
@@ -260,10 +240,10 @@ class S {
     );
   }
 
-  /// `UI adjustment.`
+  /// `Update End User License Agreement.`
   String get main_whats_new_content {
     return Intl.message(
-      'UI adjustment.',
+      'Update End User License Agreement.',
       name: 'main_whats_new_content',
       desc: '',
       args: [],
@@ -330,26 +310,6 @@ class S {
     );
   }
 
-  /// `This is a Display Advanced feature. Please contact your IT administrator for more information.`
-  String get main_privilege_message {
-    return Intl.message(
-      'This is a Display Advanced feature. Please contact your IT administrator for more information.',
-      name: 'main_privilege_message',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Close`
-  String get main_privilege_close {
-    return Intl.message(
-      'Close',
-      name: 'main_privilege_close',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Launch Display on startup`
   String get main_auto_startup {
     return Intl.message(
@@ -360,111 +320,11 @@ class S {
     );
   }
 
-  /// `Cast Settings`
-  String get main_cast_settings_title {
-    return Intl.message(
-      'Cast Settings',
-      name: 'main_cast_settings_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Device Name:`
-  String get main_cast_settings_device_name {
-    return Intl.message(
-      'Device Name:',
-      name: 'main_cast_settings_device_name',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `AirPlay`
-  String get main_cast_settings_airplay {
-    return Intl.message(
-      'AirPlay',
-      name: 'main_cast_settings_airplay',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Chromecast`
-  String get main_cast_settings_google_cast {
-    return Intl.message(
-      'Chromecast',
-      name: 'main_cast_settings_google_cast',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Miracast`
-  String get main_cast_settings_miracast {
-    return Intl.message(
-      'Miracast',
-      name: 'main_cast_settings_miracast',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `AirPlay Code`
-  String get main_airplay_pin_code {
-    return Intl.message(
-      'AirPlay Code',
-      name: 'main_airplay_pin_code',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `%s would like to join in to the mirror.`
-  String get main_mirror_from_client {
-    return Intl.message(
-      '%s would like to join in to the mirror.',
-      name: 'main_mirror_from_client',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get main_mirror_prompt_cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'main_mirror_prompt_cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Accept`
-  String get main_mirror_prompt_accept {
-    return Intl.message(
-      'Accept',
-      name: 'main_mirror_prompt_accept',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Presenters`
   String get moderator_presentersList {
     return Intl.message(
       'Presenters',
       name: 'moderator_presentersList',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Activate`
-  String get moderator_activate {
-    return Intl.message(
-      'Activate',
-      name: 'moderator_activate',
       desc: '',
       args: [],
     );
@@ -555,6 +415,96 @@ class S {
     return Intl.message(
       'Confirm',
       name: 'moderator_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cast Settings`
+  String get main_cast_settings_title {
+    return Intl.message(
+      'Cast Settings',
+      name: 'main_cast_settings_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device Name:`
+  String get main_cast_settings_device_name {
+    return Intl.message(
+      'Device Name:',
+      name: 'main_cast_settings_device_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AirPlay`
+  String get main_cast_settings_airplay {
+    return Intl.message(
+      'AirPlay',
+      name: 'main_cast_settings_airplay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chromecast`
+  String get main_cast_settings_google_cast {
+    return Intl.message(
+      'Chromecast',
+      name: 'main_cast_settings_google_cast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Miracast`
+  String get main_cast_settings_miracast {
+    return Intl.message(
+      'Miracast',
+      name: 'main_cast_settings_miracast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AirPlay Code`
+  String get main_airplay_pin_code {
+    return Intl.message(
+      'AirPlay Code',
+      name: 'main_airplay_pin_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `%s would like to join in to the mirror.`
+  String get main_mirror_from_client {
+    return Intl.message(
+      '%s would like to join in to the mirror.',
+      name: 'main_mirror_from_client',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get main_mirror_prompt_cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'main_mirror_prompt_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accept`
+  String get main_mirror_prompt_accept {
+    return Intl.message(
+      'Accept',
+      name: 'main_mirror_prompt_accept',
       desc: '',
       args: [],
     );

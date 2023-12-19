@@ -100,9 +100,9 @@ class _VbsOTAState extends State<VbsOTA> {
                   );
                 },
               ),
-              const Text(
-                'Execute Display after startup',
-                style: TextStyle(
+              Text(
+                S.of(context).main_auto_startup,
+                style: const TextStyle(
                   fontSize: 12,
                   color: Colors.white,
                 ),
