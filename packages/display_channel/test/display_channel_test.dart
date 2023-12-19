@@ -25,23 +25,35 @@ void main() {
   late DisplayTunnelServer tunnelServer;
 
   late DisplayChannelClient client;
+  late Channel serverChannel;
 
-  final clientConnected = Completer();
-  final serverChannelOpened = Completer();
-  final numberOfMessagesReached = ExpectValueCompleter(4);
+  // Completer
+  late Completer clientConnected;
+  late Completer serverChannelOpened;
+  late ExpectValueCompleter numberOfMessagesReached;
+  late Completer clientClosed;
+  late Completer serverChannelClosed;
+  late Completer tunnelConnected;
 
   // store messages received by the client
-  final clientMessages = <ChannelMessage>[];
+  late List<ChannelMessage> clientMessages;
 
   // store messages received by the server
-  final serverMessages = <ChannelMessage>[];
+  late List<ChannelMessage> serverMessages;
 
   void handleNewChannel(Channel channel) {
     serverChannelOpened.complete();
+    serverChannel = channel;
 
     channel.onChannelMessage = (message) {
       serverMessages.add(message);
       numberOfMessagesReached.updateValue(serverMessages.length);
+    };
+
+    channel.onStateChange = (state) {
+      if (state == ChannelState.closed) {
+        serverChannelClosed.complete();
+      }
     };
   }
 
@@ -69,11 +81,17 @@ void main() {
       (String token) => true,
     );
 
+    tunnelServer.onTunnelConnected = () {
+      tunnelConnected.complete();
+    };
     // start the tunnel server
     tunnelServer.start("1234", tunnelServiceUrl);
 
     // start the direct server
     await directServer.start(0);
+
+    // wait until the tunnel is established
+    await tunnelConnected.future;
   }
 
   void setupClient() {
@@ -84,6 +102,8 @@ void main() {
     client.onStateChange = (state) {
       if (state == ChannelState.connected) {
         clientConnected.complete();
+      } else if (state == ChannelState.closed) {
+        clientClosed.complete();
       }
     };
   }
@@ -102,16 +122,6 @@ void main() {
     client.openDirectChannel(
       token,
     );
-
-    client.onChannelMessage = (message) {
-      clientMessages.add(message);
-    };
-
-    client.onStateChange = (state) {
-      if (state == ChannelState.connected) {
-        clientConnected.complete();
-      }
-    };
 
     setupClient();
   }
@@ -151,6 +161,17 @@ void main() {
 
   setUp(() {
     return Future(() async {
+      clientConnected = Completer();
+      serverChannelOpened = Completer();
+      numberOfMessagesReached = ExpectValueCompleter(4);
+      clientClosed = Completer();
+      serverChannelClosed = Completer();
+      tunnelConnected = Completer();
+
+      clientMessages = <ChannelMessage>[];
+
+      serverMessages = <ChannelMessage>[];
+
       await setupServer();
     });
   });
@@ -191,5 +212,37 @@ void main() {
     expect(serverMessages[1].messageType, ChannelMessageType.joinDisplay);
     expect(serverMessages[2].messageType, ChannelMessageType.startPresent);
     expect(serverMessages[3].messageType, ChannelMessageType.presentAccepted);
+  });
+
+  test('The server-side should be notified when the client closes the channel.',
+      () async {
+    // arrange
+    openDirectChannel();
+
+    await clientConnected.future;
+    await serverChannelOpened.future;
+
+    // action
+    client.close(ChannelCloseReason(ChannelCloseCode.close));
+
+    // assert
+    await serverChannelClosed.future;
+    expect(serverChannel.closeReason!.code, ChannelCloseCode.remoteClose);
+  });
+
+  test('The client-side should be notified when the server closes the channel.',
+      () async {
+    // arrange
+    openDirectChannel();
+
+    await clientConnected.future;
+    await serverChannelOpened.future;
+
+    // action
+    serverChannel.close(ChannelCloseReason(ChannelCloseCode.close));
+
+    // assert
+    await clientClosed.future;
+    expect(client.closeReason!.code, ChannelCloseCode.remoteClose);
   });
 }

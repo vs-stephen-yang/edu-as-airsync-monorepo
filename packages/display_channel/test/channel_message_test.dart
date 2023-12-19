@@ -224,7 +224,7 @@ void main() {
     // arrange
     final msg = PresentRejectedMessage();
     msg.sessionId = '12345';
-    msg.reason = PresentRejectReason(100, 'error');
+    msg.reason = Reason(100, text: 'error');
 
     //action
     final json = msg.toJson();
@@ -253,7 +253,22 @@ void main() {
     expect(actual.constraints!.height, 1080);
   });
 
-  test('isControlMessage should return false for non control messages', () {
+  test('channel-closed message', () {
+    // Arrange
+    final msg = ChannelClosedMessage(
+      Reason(1, text: 'reason1'),
+    );
+
+    // action
+    final json = msg.toJson();
+    final actual = ChannelMessage.parse(json) as ChannelClosedMessage;
+
+    // assert
+    expect(actual.reason!.code, 1);
+    expect(actual.reason!.text, 'reason1');
+  });
+
+  test('isControlMessage() should return false for non control messages', () {
     // arrange
     final messages = [
       DisplayStatusMessage(),
@@ -267,10 +282,11 @@ void main() {
     expect(messages[1].isControlMessage, false);
   });
 
-  test('isControlMessage should return true for control messages', () {
+  test('isControlMessage() should return true for control messages', () {
     // arrange
     final messages = [
       ChannelConnectedMessage(1000, 'token1'),
+      ChannelClosedMessage(Reason(0)),
       ClientConnectedMessage(5),
       HeartbeatMessage(4),
     ];
@@ -281,6 +297,7 @@ void main() {
     expect(messages[0].isControlMessage, true);
     expect(messages[1].isControlMessage, true);
     expect(messages[2].isControlMessage, true);
+    expect(messages[3].isControlMessage, true);
   });
 
   test('actionNameToChannelMessageType() should return correct enum type', () {
@@ -302,6 +319,7 @@ void main() {
       actionNameToChannelMessageType('heartbeat'),
       actionNameToChannelMessageType('pause-present'),
       actionNameToChannelMessageType('resume-present'),
+      actionNameToChannelMessageType('channel-closed'),
     ];
 
     //assert
@@ -319,6 +337,7 @@ void main() {
     expect(actual[11], ChannelMessageType.heartbeat);
     expect(actual[12], ChannelMessageType.pausePresent);
     expect(actual[13], ChannelMessageType.resumePresent);
+    expect(actual[14], ChannelMessageType.channelClosed);
   });
 
   test('actionNameToChannelMessageType() unknown', () {
