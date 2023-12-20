@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
@@ -13,6 +13,7 @@ import 'package:flutter_mirror/flutter_mirror_listener.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
 import 'package:uuid/uuid.dart';
+import 'package:provider/provider.dart';
 
 enum MirrorState {
   idle,
@@ -32,7 +33,7 @@ class MirrorRequest {
 
 class MirrorStateProvider extends ChangeNotifier
     implements FlutterMirrorListener {
-  MirrorStateProvider() {
+  MirrorStateProvider(this.context) {
     _plugin = FlutterMirror();
     _initPlatformState();
   }
@@ -62,6 +63,7 @@ class MirrorStateProvider extends ChangeNotifier
   FlutterMirror? _plugin;
   String _deviceName =
       'AirSync-${Random().nextInt(9999).toString().padLeft(4, '0')}';
+  BuildContext context;
   final GlobalKey _mirrorViewKey = GlobalKey();
   static MirrorState _mirrorState = MirrorState.idle;
   bool _airplayEnabled = false;
@@ -128,13 +130,13 @@ class MirrorStateProvider extends ChangeNotifier
     _acceptedMirrorId = null;
     _acceptedTextureId = null;
     _mirrorState = MirrorState.idle;
-    if (ControlSocket().moderator != null || SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      if (ControlSocket().isPresenting()) {
+    if (ChannelProvider.isModeratorMode || SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+      if (context.read<ChannelProvider>().isPresenting()) {
         StreamFunction.streamFunctionState.value = stateMenuOff;
       } else {
         StreamFunction.streamFunctionState.value = stateStandby;
       }
-    } else if (ControlSocket().isPresenting()){
+    } else if (context.read<ChannelProvider>().isPresenting()){
       StreamFunction.streamFunctionState.value = stateEmpty;
     } else {
       StreamFunction.streamFunctionState.value = stateStandby;
@@ -335,5 +337,5 @@ class MirrorStateProvider extends ChangeNotifier
     _videoWidgetSize = renderBox.size;
     _videoWidgetOffset = renderBox.localToGlobal(Offset.zero);
   }
-// endregion
+  // endregion
 }

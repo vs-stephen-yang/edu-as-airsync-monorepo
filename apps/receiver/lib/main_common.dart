@@ -183,7 +183,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: MirrorStateProvider()),
+        ChangeNotifierProvider.value(value: MirrorStateProvider(context)),
         ChangeNotifierProvider.value(value: ChannelProvider(AppConfig.of(context)!)),
       ],
       child: MaterialApp(

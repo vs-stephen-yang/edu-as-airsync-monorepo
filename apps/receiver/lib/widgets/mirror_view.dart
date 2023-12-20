@@ -3,8 +3,7 @@ import 'dart:math';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/control_socket.dart';
-import 'package:display_flutter/model/present_helper.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
@@ -308,14 +307,16 @@ class MirrorView extends StatelessWidget {
                                   notFocusHeight: 25,
                                   onClick: () async {
                                     // Don't change the order of the conditions
-                                    if (ControlSocket().moderator != null ) {
+                                    if (ChannelProvider.isModeratorMode) {
                                       // moderator
                                     } else if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
                                       // split screen
-                                      await PresentHelper.getInstance().splitScreenOff();
-                                    } else if (ControlSocket().isPresenting()) {
+                                      // await PresentHelper.getInstance().splitScreenOff();
+                                      await context.read<ChannelProvider>().splitScreenOff();
+                                    } else if (context.read<ChannelProvider>().isPresenting()) {
                                       // basic
-                                      await PresentHelper.getInstance().basicStreamOff();
+                                      // await PresentHelper.getInstance().basicStreamOff();
+                                      await context.read<ChannelProvider>().basicStreamOff();
                                     }
                                     mirror.setAcceptMirrorId(index);
                                   },
