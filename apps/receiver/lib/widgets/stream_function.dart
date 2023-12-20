@@ -4,19 +4,19 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_ui_constant.dart';
-import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/cast_settings.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/language_selection.dart';
-import 'package:display_flutter/screens/moderator_view.dart';
+import 'package:display_flutter/screens/moderator_menu_view.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/screens/whats_new.dart';
 import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
-import 'package:display_flutter/widgets/main_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:move_to_background/move_to_background.dart';
+import 'package:provider/provider.dart';
 
 // Empty, Basic streaming
 const String stateEmpty = 'empty';
@@ -50,7 +50,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
       builder: (BuildContext context, String value, Widget? child) {
         // region SplitScreen icon
         Color? colorSplitScreenForeground, colorSplitScreenBackground;
-        if (ControlSocket().moderator != null) {
+        if (ChannelProvider.isModeratorMode) {
           if (value == stateMenuOn) {
             colorSplitScreenForeground =
                 AppColors.iconDisablePresentingForeground;
@@ -87,7 +87,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
 
         // region Moderator icon
         Color? colorModeratorForeground, colorModeratorBackground;
-        if (ControlSocket().moderator == null &&
+        if (!ChannelProvider.isModeratorMode &&
             SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
           if (value == stateMenuOn) {
             colorModeratorForeground =
@@ -99,7 +99,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
             colorModeratorBackground = AppColors.iconDisableStandbyBackground;
           }
         } else {
-          if (ControlSocket().moderator != null) {
+          if (ChannelProvider.isModeratorMode) {
             colorModeratorForeground = AppColors.iconFeatureOnStandbyForeground;
             colorModeratorBackground = AppColors.iconFeatureOnStandbyBackground;
           } else {
@@ -205,7 +205,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                         hasFocusSize: AppUIConstant.iconHasFocusSize,
                         notFocusSize: AppUIConstant.iconNotFocusSize,
                         onClick: () {
-                          if (ControlSocket().moderator == null) {
+                          if (!ChannelProvider.isModeratorMode) {
                             _showCastSettings();
                           }
                         }),
@@ -222,8 +222,8 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       notFocusSize: AppUIConstant.iconNotFocusSize,
                       isAddGreenDot: (SplitScreen
                               .mapSplitScreen.value[keySplitScreenEnable] &&
-                          ControlSocket().moderator == null),
-                      onClick: ControlSocket().moderator == null
+                          !ChannelProvider.isModeratorMode),
+                      onClick: !ChannelProvider.isModeratorMode
                           ? () {
                               _showSplitScreen(value == stateMenuOn);
                             }
@@ -241,8 +241,8 @@ class _StreamFunctionStates extends State<StreamFunction> {
                           AppColors.iconFeatureOnStandbyBackground,
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
-                      isAddGreenDot: ControlSocket().moderator != null,
-                      onClick: (ControlSocket().moderator == null &&
+                      isAddGreenDot: ChannelProvider.isModeratorMode,
+                      onClick: (!ChannelProvider.isModeratorMode &&
                               SplitScreen
                                   .mapSplitScreen.value[keySplitScreenEnable])
                           ? null
@@ -273,7 +273,8 @@ class _StreamFunctionStates extends State<StreamFunction> {
                           // _showMenuDialog(const MainInfo());
                           StreamFunction.streamFunctionState.value =
                               stateBackArrow;
-                          MainInfo.showMainInfo.value = true;
+                          context.read<ChannelProvider>().updateModePanel();
+                          // ChannelProvider.showMode = true;
                         }
                       },
                     ),
@@ -305,9 +306,10 @@ class _StreamFunctionStates extends State<StreamFunction> {
                           StreamFunction.streamFunctionState.value =
                               stateMenuOff;
                         } else if (value == stateBackArrow) {
-                          MainInfo.showMainInfo.value = false;
+                          // ChannelProvider.showMode = true;
                           StreamFunction.streamFunctionState.value =
                               stateMenuOff;
+                          context.read<ChannelProvider>().updateModePanel();
                         }
                       },
                     ),
@@ -348,7 +350,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
 
   _showModerator(bool leavePresentFunction) {
     AppAnalytics().trackEventAppModeratorClick();
-    _showMenuDialog(ModeratorView(onUpdateParentUI: () {
+    _showMenuDialog(ModeratorMenuView(onUpdateParentUI: () {
       setState(() {});
     }));
     if (leavePresentFunction) {
