@@ -26,3 +26,7 @@ export 'src/util/http_websocket_server.dart' show HttpWebSocketServer;
 
 export 'package:display_channel/src/websocket_client_connection.dart'
     show WebSocketClientConnection;
+
+// encoding and decoding of display code
+export 'package:display_channel/src/display_code.dart'
+    show decodeDisplayCode, encodeDisplayCode, DisplayCode;
