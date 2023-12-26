@@ -26,7 +26,3 @@ export 'src/util/http_websocket_server.dart' show HttpWebSocketServer;
 
 export 'package:display_channel/src/websocket_client_connection.dart'
     show WebSocketClientConnection;
-
-// pin code
-export 'package:display_channel/src/pin_code.dart'
-    show decodePinCode, encodePinCode, PinCode;

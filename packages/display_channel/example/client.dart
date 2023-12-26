@@ -106,7 +106,6 @@ main(List<String> arguments) async {
       default:
         break;
     }
-    ;
   };
 
   MockClient(clientId, channel);
