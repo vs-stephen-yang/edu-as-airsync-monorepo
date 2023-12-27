@@ -69,7 +69,7 @@ class MockServer {
 
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
-      (String url, headers) => WebSocketClientConnection(url, headers),
+      (String url) => WebSocketClientConnection(url),
       (Channel channel) => _onNewChannel(channel),
       (String token) => true,
     );

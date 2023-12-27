@@ -24,9 +24,9 @@ export 'package:display_channel/src/server/connection_request.dart'
 // util
 export 'src/util/http_websocket_server.dart' show HttpWebSocketServer;
 
-export 'package:display_channel/src/websocket_client_connection_none.dart'
-    if (dart.library.io) 'src/websocket_client_connection_io.dart' // dart:io implementation
-    if (dart.library.html) 'src/websocket_client_connection_html.dart'; // dart:html implementation
+export 'package:display_channel/src/websocket_client_connection_stub.dart'
+    if (dart.library.io) 'package:display_channel/src/websocket_client_connection_io.dart' // dart:io implementation
+    if (dart.library.html) 'package:display_channel/src/websocket_client_connection_html.dart'; // dart:html implementation
 
 // encoding and decoding of display code
 export 'package:display_channel/src/display_code.dart'

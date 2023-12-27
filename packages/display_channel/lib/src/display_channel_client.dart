@@ -89,7 +89,6 @@ class DisplayChannelClient implements Channel {
 
     _connection = _createConnection(
       uri.toString(),
-      {},
     );
 
     _connection!.onConnected = () => _changeState(ChannelState.connected);

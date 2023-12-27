@@ -20,7 +20,6 @@ class WebSocketClientConnection implements ClientConnection {
   void Function(Map<String, dynamic> data)? onMessage;
 
   final String _url;
-  final Map<String, String> _headers;
   var _closed = false;
 
   void Function(String url, String message)? logger;
@@ -38,8 +37,7 @@ class WebSocketClientConnection implements ClientConnection {
   WebSocket? _socket;
 
   WebSocketClientConnection(
-    this._url,
-    this._headers, {
+    this._url, {
     this.pingInterval = defaultPingInterval,
     this.connectionTimeout = defaultConnectionTimeout,
     this.maxRetryDelay = defaultMaxRetryDelay,
@@ -77,7 +75,6 @@ class WebSocketClientConnection implements ClientConnection {
 
           return WebSocket.connect(
             _url,
-            headers: _headers,
             customClient: httpClient,
           );
         },
