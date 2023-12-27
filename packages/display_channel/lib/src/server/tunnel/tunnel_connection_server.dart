@@ -53,7 +53,6 @@ class TunnelConnectionServer implements TunnelMessageHandler {
 
     _tunnelConnection = _createTunnelConnection(
       uriWithParameters.toString(),
-      {},
     );
 
     _tunnelConnection!.onConnected = () => onTunnelConnected?.call();

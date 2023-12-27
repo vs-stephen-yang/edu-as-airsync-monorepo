@@ -27,7 +27,7 @@ class DisplayTunnelServer extends ChannelServer {
     _tunnelServer = TunnelConnectionServer(
       instanceId,
       tunnelServiceUrl,
-      (String url, headers) => _createTunnelConnection(url, headers),
+      (String url) => _createTunnelConnection(url),
       (String clientId, connection) =>
           handleNewConnection(clientId, connection),
       (ConnectionRequest connectionRequest) =>

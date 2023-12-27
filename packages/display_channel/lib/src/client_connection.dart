@@ -25,5 +25,4 @@ abstract class ClientConnection {
   void send(Map<String, dynamic> message);
 }
 
-typedef CreateWebsocketClientConnection = ClientConnection Function(
-    String url, Map<String, String> headers);
+typedef CreateWebsocketClientConnection = ClientConnection Function(String url);

@@ -76,7 +76,7 @@ void main() {
     );
 
     tunnelServer = DisplayTunnelServer(
-      (String url, headers) => WebSocketClientConnection(url, headers),
+      (String url) => WebSocketClientConnection(url),
       (Channel channel) => handleNewChannel(channel),
       (String token) => true,
     );
@@ -116,7 +116,7 @@ void main() {
     client = DisplayChannelClient(
       clientId,
       Uri.parse(serverUrl),
-      (url, headers) => WebSocketClientConnection(url, headers),
+      (url) => WebSocketClientConnection(url),
     );
 
     client.openDirectChannel(
@@ -135,7 +135,7 @@ void main() {
     client = DisplayChannelClient(
       clientId,
       Uri.parse(serverUrl),
-      (url, headers) => WebSocketClientConnection(url, headers),
+      (url) => WebSocketClientConnection(url),
     );
 
     client.openTunnelChannel(

@@ -79,11 +79,8 @@ main(List<String> arguments) async {
   final channel = DisplayChannelClient(
     clientId,
     uri,
-    (url, headers) => WebSocketClientConnection(
+    (url) => WebSocketClientConnection(
       url,
-      headers,
-      maxRetryAttempts: 5,
-      maxRetryDelay: const Duration(seconds: 2),
       logger: (url, message) => print('$url $message'),
     ),
   );

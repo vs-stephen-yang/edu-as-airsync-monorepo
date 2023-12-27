@@ -5,7 +5,7 @@ void main() {
   test('stop should work', () async {
     // arrange
     final server = DisplayTunnelServer(
-      (String url, headers) => WebSocketClientConnection(url, headers),
+      (String url) => WebSocketClientConnection(url),
       (Channel channel) {},
       (String token) => true,
     );
