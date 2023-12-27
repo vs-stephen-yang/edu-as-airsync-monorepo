@@ -7,7 +7,7 @@ packages:
       path: "."
       ref: "1.0.1"
       resolved-ref: e0d78b869145ec311e74eec871e1801fe5eff6e4
-      url: "https://viewsonic-ssi.visualstudio.com/Droid/_git/App_OTA_Flutter"
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/App_OTA_Flutter"
     source: git
     version: "1.0.1"
   args:
@@ -175,8 +175,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: f17831c9ef36c5febbb343093c54820be0f8cc3c
+      ref: "release-0.0.5"
+      resolved-ref: "8db7a59fb1ac416ce05b737eb7fcd4651f0d9ed4"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel"
     source: git
     version: "0.0.1"
