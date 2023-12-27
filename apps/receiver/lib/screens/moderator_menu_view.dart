@@ -26,7 +26,6 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
 
   @override
   Widget build(BuildContext context) {
-    print('zz _ModeratorMenuViewState build');
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
     MirrorStateProvider mirrorStateProvider = Provider.of<MirrorStateProvider>(context);
     return MenuDialog(

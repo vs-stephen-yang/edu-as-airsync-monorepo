@@ -52,7 +52,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print('zz home AppLifecycleState: $state');
+    print('AppLifecycleState: $state');
     MirrorStateProvider mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context, listen: false);
     if (state == AppLifecycleState.inactive) {
