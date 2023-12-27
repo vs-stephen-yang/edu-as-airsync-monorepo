@@ -47,11 +47,10 @@ class _ParticipantItemState extends State<ParticipantItem>
 
   @override
   Widget build(BuildContext context) {
-    print('zz build _ParticipantItemState ${widget.index}');
     channelProvider = Provider.of<ChannelProvider>(context);
-    rtcConnector = channelProvider.channelRtcConnectors[widget.index];
+    rtcConnector = ChannelProvider.channelRtcConnectors[widget.index];
     String presenterId = rtcConnector.clientId!;
-    String presenterName = rtcConnector.senderName!;
+    String presenterName = rtcConnector.senderName ?? '';
 
     if (presenterName.length > 10) {
       presenterName = '${presenterName.substring(0, 10)}..';
@@ -125,43 +124,35 @@ class _ParticipantItemState extends State<ParticipantItem>
   _presenterOnOff(String presenterId) async {
     if (channelProvider.isPresenterNotStopStreaming(presenterId)) {
       // waitForStream and streaming
-      print('zz _presenterOnOff 6 $presenterId');
       _sendPresenterStop();
     } else {
       // occupied and stopStreaming
-      print('zz _presenterOnOff 1 $presenterId');
       if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-        print('zz _presenterOnOff 2 $presenterId');
-        if (!channelProvider.occupyAvailableRTCConnector()) {
-          print('zz _presenterOnOff 3 $presenterId');
+        if (!channelProvider.occupyAvailableRTCConnector(widget.index)) {
           return;
         }
       } else {
-        print('zz _presenterOnOff 4 $presenterId');
         // Remove all other presenters before send Play for Quick switch.
         await channelProvider.removeOtherPresenters(keepInList: ChannelProvider.isModeratorMode);
       }
-      print('zz _presenterOnOff 5 $presenterId');
       _sendPresenterPlay();
     }
   }
 
   _sendPresenterPlay() {
-    print('zz _sendPresenterPlay');
     AppAnalytics().trackEventModeratorPresenterPresent();
     rtcConnector.sendAllowPresent();
   }
 
   _sendPresenterStop() {
-    print('zz _sendPresenterStop');
     AppAnalytics().trackEventModeratorPresenterStop();
     rtcConnector.sendStopPresent();
+    channelProvider.updateModePanel(!channelProvider.isPresenting());
   }
 
   _sendPresenterRemove() async {
-    print('zz _sendPresenterRemove');
     AppAnalytics().trackEventModeratorPresentersRemove();
     await rtcConnector.disconnectPeerConnection();
-    rtcConnector.onChannelDisconnect?.call();
+    await rtcConnector.disconnectChannel();
   }
 }

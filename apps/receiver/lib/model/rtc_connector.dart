@@ -23,7 +23,6 @@ class RTCConnector {
   final int index;
   final Channel _channel;
   final Mode _mode;
-  String? _pin;
 
   PresentationState presentationState = PresentationState.stopStreaming;
   String? sessionId;
@@ -56,7 +55,7 @@ class RTCConnector {
   Function(MediaStream? stream)? onAddRemoteStream;
   Function(MediaStream stream)? onRemoveRemoteStream;
   Function()? onRefresh;
-  Function(bool showMode)? onShowMode;
+  Function({bool? showMode})? onShowMode;
   Function()? onConflictWithMirror;
   Future<void> Function()? onChannelDisconnect;
 
@@ -80,7 +79,6 @@ class RTCConnector {
   }
 
   void _onChannelMessages(ChannelMessage message) {
-    print('zz Received ${message.messageType} ${message.toJson().toString()}');
 
     switch (message.messageType) {
       case ChannelMessageType.joinDisplay:
@@ -107,13 +105,14 @@ class RTCConnector {
         onStopPresent(message as StopPresentMessage);
       case ChannelMessageType.presentSignal:
         onPresentSignal(message as PresentSignalMessage);
+      case ChannelMessageType.channelClosed:
+        onChannelClose(message as ChannelClosedMessage);
       default:
         break;
     }
   }
 
-  void _onChannelState(ChannelState state) {
-    print('zz _onChannelState ${state.name}');
+  Future<void> _onChannelState(ChannelState state) async {
     switch (state) {
       case ChannelState.initialized:
         break;
@@ -123,9 +122,13 @@ class RTCConnector {
         break;
       case ChannelState.disconnected:
         ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+        await disconnectPeerConnection();
+        await disconnectChannel();
         break;
-      case ChannelState.failed:
+      case ChannelState.closed:
         ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+        await disconnectPeerConnection();
+        await disconnectChannel();
         break;
     }
   }
@@ -137,7 +140,6 @@ class RTCConnector {
     if (_prerendererSmoothingExcludedDevices.contains(deviceType)) {
       _configuration['enablePrerendererSmoothing'] = false;
     }
-    // print('zz_peerConnectionConnect ${_configuration.toString()}');
     _pc = await createPeerConnection(_configuration);
 
     _pc!.onSignalingState = _onSignalingState;
@@ -170,13 +172,12 @@ class RTCConnector {
     ConnectionTimer.getInstance().startConnectionTimer(() async {
       sendRejectPresent(400, 'timeout');
       await disconnectPeerConnection(sendAnalytics: true);
-      onChannelDisconnect?.call();
+      await disconnectChannel();
     });
 
     await _remoteRenderer?.initialize();
     await _peerConnectionConnect();
     final message = PresentAcceptedMessage(sessionId = msg.sessionId);
-    print('zz _channel.send ${message.toJson().toString()}');
     _channel.send(message);
 
     presentationState = PresentationState.waitForStream;
@@ -200,14 +201,12 @@ class RTCConnector {
   }
 
   Future<void> onPausePresent() async {
-    print('zz onPausePresent');
     AppAnalytics().trackEventPresentPauseReceived(clientId!, sessionId!);
     presentationState = PresentationState.pauseStreaming;
     onRefresh?.call();
   }
 
   Future<void> onResumePresent() async {
-    print('zz onResumePresent');
     AppAnalytics().trackEventPresentResumeReceived(clientId!, sessionId!);
     presentationState = PresentationState.resumeStreaming;
     onRefresh?.call();
@@ -218,22 +217,19 @@ class RTCConnector {
         clientId!, sessionId!);
 
     if (ChannelProvider.isModeratorMode) {
-      print('zz onStopPresent 2 ${presentationState.name}');
       StreamFunction.streamFunctionState.value = stateMenuOff;
       await disconnectPeerConnection(sendAnalytics: false);
       // presentationState = PresentationState.occupied;
       sessionId = null;
-      // ChannelProvider.showMode = true; // TODO: 有兩種情況：無人投影和已經有人投影
-      onShowMode?.call(true);
+      onShowMode?.call();
       return;
     } else if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] > 0) {
-      print('zz onStopPresent 1');
       StreamFunction.streamFunctionState.value = stateMenuOff;
     }
     // disconnect the channel
     await disconnectPeerConnection(sendAnalytics: true);
     // clear renderer and close connection
-    onChannelDisconnect?.call();
+    await disconnectChannel();
     // stop timer
     ConnectionTimer.getInstance().stopRemainingTimeTimer();
   }
@@ -252,7 +248,6 @@ class RTCConnector {
         final message = PresentSignalMessage(msg.sessionId, SignalMessageType.answer);
         message.sdp = fixedAnswer.sdp;
         message.sdpMLineIndex = 0;
-        print('zz send ${message.toJson().toString()}');
         _channel.send(message);
         break;
       case SignalMessageType.candidate:
@@ -265,11 +260,14 @@ class RTCConnector {
     }
   }
 
+  Future<void> onChannelClose(ChannelClosedMessage msg) async {
+
+  }
+
   void sendDisplayStatus() {
     final displayStatusMessage = DisplayStatusMessage();
     displayStatusMessage.platform = _getPlatform();
     displayStatusMessage.status = DisplayStatus.fromJson({'moderator': ChannelProvider.isModeratorMode});
-    print('zz _channel.send ${displayStatusMessage.toJson().toString()}');
     _channel.send(displayStatusMessage);
   }
 
@@ -278,44 +276,40 @@ class RTCConnector {
     message.constraints = PresentQualityConstraints(frameRate: isFullFrameRate ? 30 : 0, height: isFullHeight ? 1080 : 540);
     // message.constraints?.frameRate = isFullFrameRate ? 30 : 0;
     // message.constraints?.height = isFullHeight ? 1080 : 540;
-    print('zz _channel.send $sessionId ${message.toJson().toString()}');
     _channel.send(message);
   }
 
   void sendAllowPresent() {
     var message = AllowPresentMessage();
     message.sessionId = sessionId = const Uuid().v4();
-    print('zz _channel.send ${message.toJson().toString()}');
     _channel.send(message);
   }
 
   void sendRejectPresent(int errorCode, String reason) {
     var message = PresentRejectedMessage();
     message.sessionId = sessionId;
-    message.reason = PresentRejectReason(errorCode, reason);
-    print('zz _channel.send ${message.toJson().toString()}');
+    message.reason = Reason(errorCode, text:reason);
     _channel.send(message);
   }
 
   void sendStopPresent() {
     var message = StopPresentMessage();
     message.sessionId = sessionId;
-    print('zz _channel.send ${message.toJson().toString()}');
     _channel.send(message);
   }
 
   Future<void> disconnectPeerConnection({bool sendAnalytics = false}) async {
-    _printPeerConnectionLog('zz disconnectPeerConnection', sendAnalytics);
+    _printPeerConnectionLog('disconnectPeerConnection', sendAnalytics);
     if (sendAnalytics) {
       AppAnalytics().trackEventPresentStopped(sessionId ?? '', clientId!);
     }
 
     // clear renderer
-    if (_remoteRenderer?.textureId != null && _remoteRenderer!.renderVideo) {
+    if (_remoteRenderer!.renderVideo) {
       _remoteRenderer?.srcObject = null;
+      await _remoteRenderer?.dispose();
+      _remoteRenderer = RTCVideoRenderer();
     }
-    await _remoteRenderer?.dispose();
-    _remoteRenderer = RTCVideoRenderer();
     if (_pc != null) {
       await _pc?.close();
       await _pc?.dispose();
@@ -324,16 +318,17 @@ class RTCConnector {
 
     // change state
     presentationState = PresentationState.stopStreaming;
+    ChannelProvider.updateSplitScreen();
+    ChannelProvider.handleQualityUpdate(this);
     onRefresh?.call();
   }
 
-  void disconnectChannel() {
-    onChannelDisconnect?.call();
+  Future<void> disconnectChannel() async {
+    await onChannelDisconnect?.call();
   }
 
-  Future<void> close() async {
-    print('zz close()');
-    _channel.close();
+  Future<void> close(ChannelCloseCode code, {String? reason}) async {
+    _channel.close(ChannelCloseReason(code, text: reason));
     _resetSetting();
   }
 
@@ -364,7 +359,7 @@ class RTCConnector {
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       ConnectionTimer.getInstance().stopRemainingTimeTimer();
       await disconnectPeerConnection();
-      onChannelDisconnect?.call();
+      await disconnectChannel();
     }
   }
 
@@ -382,7 +377,6 @@ class RTCConnector {
       message.candidate = candidate.candidate;
       message.sdpMid = candidate.sdpMid;
       message.sdpMLineIndex = candidate.sdpMLineIndex;
-      print('zz send candidate ${message.toJson().toString()}');
       _channel.send(message);
     });
   }
@@ -447,7 +441,6 @@ class RTCConnector {
         Uri.parse(iceServersApiUrl!),
       );
 
-      // print('zz _getIceServers ${response.statusCode} ${response.body}');
       if (response.statusCode >= HttpStatus.ok &&
           response.statusCode < HttpStatus.multiStatus) {
         Map<String, dynamic> iceServerList = jsonDecode(response.body);
@@ -495,8 +488,8 @@ class RTCConnector {
 
   void _printPeerConnectionLog(String? event, dynamic args) {
     if (kDebugMode) {
-      printInDebug('$runtimeType, mPeerConnect{$event ${args.toString()}');
-      const DebugSwitch().write('mPeerConnect{$event ${args.toString()}');
+      printInDebug('$runtimeType, mPeerConnect $event ${args.toString()}');
+      const DebugSwitch().write('mPeerConnect $event ${args.toString()}');
     }
   }
 }

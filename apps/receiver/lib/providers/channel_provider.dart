@@ -109,8 +109,8 @@ class ChannelProvider extends ChangeNotifier {
   late DisplayDirectServer _directServer;
   late DisplayTunnelServer _tunnelServer;
   String _tunnelApiUrl ='';
-  final _channelRtcConnectors = <RTCConnector>[]; // controller
-  List<RTCConnector> get channelRtcConnectors => _channelRtcConnectors;
+  static final List<RTCConnector> _channelRtcConnectors = <RTCConnector>[];
+  static List<RTCConnector> get channelRtcConnectors => _channelRtcConnectors;
   static bool isModeratorMode = false;
 
   ChannelProvider(this.appConfig) {
@@ -205,10 +205,9 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _onNewChannel(Channel channel, Mode mode) {
-    print('zz _onNewChannel');
     if (_channelRtcConnectors.length >= 6) {
       var message = PresentRejectedMessage();
-      message.reason = PresentRejectReason(401, 'block');
+      message.reason = Reason(401, text:'block');
       channel.send(message);
       return;
     }
@@ -219,15 +218,14 @@ class ChannelProvider extends ChangeNotifier {
         : RTCConnector(_channelRtcConnectors.length, channel, Mode.lan, host: '$host:$port');
 
     client.onConnect = ((){
-      showMode = false;
-      updateSplitScreen();
-      notifyListeners();
+      updateSplitScreen(); // TODO: Check
+      updateModePanel(false);
     });
 
     client.onAddRemoteStream = ((stream) {
       // update state and quality
       updateSplitScreen();
-      _handleQualityUpdate(client);
+      handleQualityUpdate(client);
 
       // hideTitleBar
       Home.showTitleBottomBar.value = false;
@@ -248,9 +246,12 @@ class ChannelProvider extends ChangeNotifier {
       notifyListeners();
     });
 
-    client.onShowMode = ((showMode) {
-      this.showMode = showMode;
-      notifyListeners();
+    client.onShowMode = (({showMode}) {
+      if (showMode != null) {
+        updateModePanel(showMode);
+      } else {
+        updateModePanel(!isPresenting());
+      }
     });
 
     client.onConflictWithMirror = (() {
@@ -267,7 +268,7 @@ class ChannelProvider extends ChangeNotifier {
 
     client.onChannelDisconnect = (() async {
       // update SplitScreen's keySplitScreenCount
-      updateSplitScreen();
+      // updateSplitScreen();
       // update UI
       if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
         print('zz onDisconnect 1');
@@ -308,7 +309,7 @@ class ChannelProvider extends ChangeNotifier {
         disconnectServer();
       }
 
-      await client.close();
+      await client.close(ChannelCloseCode.close);
       _channelRtcConnectors.remove(client);
       notifyListeners();
     });
@@ -366,20 +367,21 @@ class ChannelProvider extends ChangeNotifier {
     return _pinCode = encodePinCode(PinCode(host!, passcode));
   }
 
-  void updateModePanel() {
-    showMode = hasPresenterOccupied();
+  void updateModePanel(bool show) {
+    showMode = show;
     notifyListeners();
   }
 
-  void updateSplitScreen() {
+  static void updateSplitScreen() {
     int connecting = 0, lastID = 0;
-    for (int i = 0; i < _channelRtcConnectors.length; i++) {
-      if (_channelRtcConnectors[i].presentationState !=
+    for (int i = 0; i < channelRtcConnectors.length; i++) {
+      if (channelRtcConnectors[i].presentationState !=
           PresentationState.stopStreaming) {
         connecting++;
         lastID = i;
       }
     }
+    print('zz updateSplitScreen $connecting $lastID');
     SplitScreen.mapSplitScreen.value[keySplitScreenCount] = connecting;
     SplitScreen.mapSplitScreen.value[keySplitScreenLastId] = lastID;
     // Using below method to trigger value changed.
@@ -388,10 +390,10 @@ class ChannelProvider extends ChangeNotifier {
         Map.from(SplitScreen.mapSplitScreen.value);
   }
 
-  void _handleQualityUpdate(RTCConnector controller) {
+  static void handleQualityUpdate(RTCConnector controller) {
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
-        for (RTCConnector connector in _channelRtcConnectors) {
+        for (RTCConnector connector in channelRtcConnectors) {
           if (connector.presentationState == PresentationState.streaming) {
             connector.sendChangeQuality(true, true);
           }
@@ -408,11 +410,11 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
-  bool occupyAvailableRTCConnector() {
+  bool occupyAvailableRTCConnector(int index) {
     for (int i = 0; i < _channelRtcConnectors.length; i++) {
       if (_channelRtcConnectors[i].presentationState.index <
           PresentationState.occupied.index) {
-        _channelRtcConnectors[i].presentationState = PresentationState.occupied;
+        _channelRtcConnectors[index].presentationState = PresentationState.occupied;
         return true;
       }
     }
@@ -519,10 +521,9 @@ class ChannelProvider extends ChangeNotifier {
     for (int i = temp.length - 1; i >= 0; i--) {
       selectedController = temp[i];
       if (selectedController.clientId != null) {
-        print('zz selectedController.sessionId != null');
         try {
           await selectedController.disconnectPeerConnection(sendAnalytics: true);
-          selectedController.onChannelDisconnect?.call();
+          await selectedController.disconnectChannel();
           // need some delay to prevent exception:
           // 'package:flutter/src/rendering/object.dart': Failed assertion: line 2250 pos 12: '!_debugDisposed': is not true.
           await Future.delayed(const Duration(milliseconds: 300));
@@ -544,7 +545,7 @@ class ChannelProvider extends ChangeNotifier {
         try {
           await selectedController.disconnectPeerConnection(sendAnalytics: true);
           if (!keepInList) {
-            selectedController.onChannelDisconnect?.call();
+            await selectedController.disconnectChannel();
           } else {
             selectedController.sendStopPresent();
           }
@@ -563,7 +564,7 @@ class ChannelProvider extends ChangeNotifier {
     if (selectedController.sessionId != null) {
       try {
         await selectedController.disconnectPeerConnection(sendAnalytics: true);
-        selectedController.onChannelDisconnect?.call();
+        await selectedController.disconnectChannel();
         ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       } on PlatformException catch (e) {
         log(e.toString());

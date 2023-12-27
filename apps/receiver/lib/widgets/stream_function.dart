@@ -258,7 +258,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                         // _showMenuDialog(const MainInfo());
                         StreamFunction.streamFunctionState.value =
                             stateBackArrow;
-                        context.read<ChannelProvider>().updateModePanel();
+                        context.read<ChannelProvider>().updateModePanel(true);
                         // ChannelProvider.showMode = true;
                       },
                     ),
@@ -292,7 +292,8 @@ class _StreamFunctionStates extends State<StreamFunction> {
                           // ChannelProvider.showMode = true;
                           StreamFunction.streamFunctionState.value =
                               stateMenuOff;
-                          context.read<ChannelProvider>().updateModePanel();
+                          context.read<ChannelProvider>().updateModePanel(false);
+                          // Provider.of<ChannelProvider>(context).showMode = false;
                         }
                       },
                     ),

@@ -3,7 +3,6 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/participant_item.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ParticipantListView extends StatefulWidget {
   const ParticipantListView({super.key});
@@ -16,15 +15,13 @@ class _ParticipantListViewState extends State<ParticipantListView> {
 
   @override
   Widget build(BuildContext context) {
-    print('zz _ParticipantListViewState build');
-    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
         color: Colors.transparent,
       ),
-      child: channelProvider.channelRtcConnectors.isEmpty
+      child: ChannelProvider.channelRtcConnectors.isEmpty
           ? Container(
               alignment: Alignment.center,
               child: Text(
@@ -33,7 +30,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
               ),
             )
           : ListView.separated(
-              itemCount: channelProvider.channelRtcConnectors.length,
+              itemCount: ChannelProvider.channelRtcConnectors.length,
               itemBuilder: (BuildContext context, int index) {
                 if (index > 5) return const SizedBox();
 
