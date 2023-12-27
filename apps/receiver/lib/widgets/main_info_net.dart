@@ -45,8 +45,8 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
 
     return Container(
       alignment: Alignment.center,
-      width: double.infinity,
-      height: double.infinity,
+      width: 400,
+      height: 400,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
         color: AppColors.primary_grey,

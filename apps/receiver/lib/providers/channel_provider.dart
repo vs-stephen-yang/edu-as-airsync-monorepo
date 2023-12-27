@@ -95,16 +95,16 @@ class ChannelProvider extends ChangeNotifier {
       _otpList.remove(_otpList.first);
     }
   }
-  String _pinCode = '';
-  String get pinCode => _pinCode;
-  set pinCode(String value) {
-    _pinCode = value;
-    notifyListeners();
-  }
+  // String _pinCode = '';
+  // String get pinCode => _pinCode;
+  // set pinCode(String value) {
+  //   _pinCode = value;
+  //   notifyListeners();
+  // }
 
   String? host;
   int port = 5100;
-  int passcode = 7;
+  // int passcode = 7;
   bool isServerStart = false;
   late DisplayDirectServer _directServer;
   late DisplayTunnelServer _tunnelServer;
@@ -114,16 +114,32 @@ class ChannelProvider extends ChangeNotifier {
   static bool isModeratorMode = false;
 
   ChannelProvider(this.appConfig) {
-    print('zz ChannelProvider init');
+    // print('zz ChannelProvider init ${AppInstanceCreate().displayInstanceID}');
     apiGateway = appConfig.settings.apiGateway;
     version = appConfig.appVersion;
 
+    _checkNetWorkInfo().then((value) {
+      host = value;
+      if (displayCode.isEmpty || _tunnelApiUrl.isEmpty) {
+        getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
+          if (value.isNotEmpty) {
+            displayCode = encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
+          } else {
+            displayCode = encodeDisplayCode(DisplayCode(host!, 0))!;
+          }
+          startServer(AppInstanceCreate().displayInstanceID);
+        });
+      }
+    });
+
     _checkConnectivity().then((value) {
       if (value) {
-        if (_currentMode == Mode.internet && (displayCode.isEmpty || _tunnelApiUrl.isEmpty)) {
+        if (displayCode.isEmpty || _tunnelApiUrl.isEmpty) {
           getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
             if (value.isNotEmpty) {
-              displayCode = value;
+              displayCode = encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
+            } else {
+              displayCode = encodeDisplayCode(DisplayCode(host!, 0))!;
             }
             startServer(AppInstanceCreate().displayInstanceID);
           });
@@ -142,7 +158,9 @@ class ChannelProvider extends ChangeNotifier {
         if (displayCode.isEmpty) {
           getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
             if (value.isNotEmpty) {
-              displayCode = value;
+              displayCode = encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
+            } else {
+              displayCode = encodeDisplayCode(DisplayCode(host!, 0))!;
             }
             startServer(AppInstanceCreate().displayInstanceID);
           });
@@ -172,7 +190,7 @@ class ChannelProvider extends ChangeNotifier {
     // create a direct server
     _directServer = DisplayDirectServer(
           (Channel channel) => _onNewChannel(channel, Mode.lan),
-          (String token) => _checkPinCode(token),
+          (String token) => _checkOTP(token),
     );
 
     // create a tunnel server
@@ -328,9 +346,9 @@ class ChannelProvider extends ChangeNotifier {
     return otpList.contains(otp);
   }
 
-  bool _checkPinCode(String pinCode) {
-    return _pinCode == pinCode;
-  }
+  // bool _checkPinCode(String pinCode) {
+  //   return _pinCode == pinCode;
+  // }
 
   Future<String> getDisplayCode(String instanceID) async {
     print('zz getDisplayCode $instanceID $version');
@@ -362,10 +380,10 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
-  String getPinCode() {
-    if (host == null) return '';
-    return _pinCode = encodePinCode(PinCode(host!, passcode));
-  }
+  // String getPinCode() {
+  //   if (host == null) return '';
+  //   return _pinCode = encodePinCode(PinCode(host!, passcode));
+  // }
 
   void updateModePanel(bool show) {
     showMode = show;
