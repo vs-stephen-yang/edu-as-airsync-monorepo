@@ -82,10 +82,9 @@ dependencies:
   sprintf: ^7.0.0
   connectivity_plus: ^5.0.1
   display_channel:
-#    path: /Users/chenzo/StudioProjects/display-channel
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
-#      ref: release-0.0.5
+      ref: release-0.0.5
   network_info_plus: ^2.1.0
 
 dev_dependencies:
