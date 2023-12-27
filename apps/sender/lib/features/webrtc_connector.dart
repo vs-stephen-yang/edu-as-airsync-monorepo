@@ -55,7 +55,9 @@ class WebRTCConnector {
   Future<void> makeCall(String peerId, dynamic source, List<RtcIceServer>? iceServerList) async {
     dynamic deviceId;
 
-    if (Platform.isAndroid) {
+    if (kIsWeb) {
+
+    } else if (Platform.isAndroid) {
       isMainSource = true;
     } else if (Platform.isIOS) {
       deviceId = 'broadcast';
