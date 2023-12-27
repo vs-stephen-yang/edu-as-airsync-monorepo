@@ -1,3 +1,4 @@
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatelessWidget {
@@ -11,9 +12,9 @@ class BottomBar extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         children: <Widget>[
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: ChannelProvider.isNewUI ? MainAxisAlignment.start: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Image.asset(
+              ChannelProvider.isNewUI ? SizedBox() :Image.asset(
                 'assets/images/ic_logo_my_viewboard.png',
                 width: 276,
                 height: 78,

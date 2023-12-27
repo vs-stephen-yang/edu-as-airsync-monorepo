@@ -10,12 +10,12 @@ import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/bean/display_message.dart';
 import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
-import 'package:display_flutter/widgets/main_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -139,13 +139,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     log('AppLifecycleState: $state');
     if (state == AppLifecycleState.inactive) {
-      MyApp.disconnectControlSocket();
-      ControlSocket().updateAllAudioEnableState(false);
-      MainInfo.cancelGetOTPTimer();
+      // MyApp.disconnectControlSocket();
+      // ControlSocket().updateAllAudioEnableState(false);
+      // MainInfo.cancelGetOTPTimer();
     } else if (state == AppLifecycleState.resumed) {
-      MyApp.connectControlSocket(context);
-      ControlSocket().updateAllAudioEnableState(true);
-      MainInfo.addGetOTPEvent();
+      // MyApp.connectControlSocket(context);
+      // ControlSocket().updateAllAudioEnableState(true);
+      // MainInfo.addGetOTPEvent();
     }
   }
 
@@ -183,7 +183,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: MirrorStateProvider()),
+        ChangeNotifierProvider.value(value: MirrorStateProvider(context)),
+        ChangeNotifierProvider.value(value: ChannelProvider(AppConfig.of(context)!)),
       ],
       child: MaterialApp(
         localizationsDelegates: const [
