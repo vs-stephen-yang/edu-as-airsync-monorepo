@@ -55,7 +55,6 @@ class ModeratorWait extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 channelProvider.presentEnd();
-                // presentStateProvider.presentEnd();
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.red,

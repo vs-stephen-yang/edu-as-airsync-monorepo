@@ -23,7 +23,7 @@ class DataDisplayCode {
     return _displayCodeBox;
   }
 
-  save(String displayCode) async {
+  Future<void> save(String displayCode) async {
     _displayCodeBox = await _openBox();
     if (_displayCodeBox?.length == 0) {
       _displayCodeBox?.add(displayCode);

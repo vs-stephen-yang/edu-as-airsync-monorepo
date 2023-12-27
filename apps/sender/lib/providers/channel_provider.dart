@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:display_cast_flutter/features/webrtc_connector.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
@@ -101,23 +102,20 @@ class ChannelProvider extends ChangeNotifier {
   //endregion
 
   presentInternetMode(String displayCode, String otp) {
-    print('zz presentInternetMode $displayCode $otp');
-    this.displayCode = displayCode;
+    this.displayCode = displayCode.replaceAll('-', '');
     this.otp = otp;
     startConnect(displayCode: displayCode, token: otp);
   }
 
   presentLanMode(String pinCode) {
-    print('zz presentLanMode $pinCode');
     var pin = decodePinCode(this.pinCode = pinCode);
     startConnect(host: pin.host, token: pinCode);
   }
 
   startConnect({String? host, String? displayCode, required String token}) async {
-    print('zz startConnect ${currentMode.name} $host $port $displayCode $token');
     Uri? uri;
     if (currentMode == Mode.internet) {
-      await _getTunnelUrl(displayCode!).then((value) => _tunnelApiUrl = value);
+      await _getTunnelUrl(this.displayCode!).then((value) => _tunnelApiUrl = value);
       uri = Uri.parse(_tunnelApiUrl);
     } else {
       uri = Uri(scheme: 'ws', host: host, port: port);
@@ -127,8 +125,6 @@ class ChannelProvider extends ChangeNotifier {
         (url, headers) => WebSocketClientConnection(url, headers));
 
     _channel?.onStateChange = (ChannelState state) {
-      debugModePrint('zz onStateChange $state',
-          type: runtimeType);
       switch (state) {
         case ChannelState.initialized:
           break;
@@ -139,21 +135,19 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelState.disconnected:
           presentEnd();
           break;
-        case ChannelState.failed:
+        case ChannelState.closed:
           presentEnd();
           break;
       }
     };
     _channel?.onChannelMessage = (message) {
-      debugModePrint('zz receive ${message.toJson().toString()}',
-          type: runtimeType);
-
       switch (message.messageType) {
         case ChannelMessageType.channelConnected:
           // heartbeatInterval
           // reconnectionToken?
           break;
         case ChannelMessageType.displayStatus:
+          DataDisplayCode.getInstance().save(displayCode!);
           _onDisplayStatus(message as DisplayStatusMessage);
           break;
         case ChannelMessageType.presentAccepted:
@@ -196,14 +190,13 @@ class ChannelProvider extends ChangeNotifier {
     };
 
     if(currentMode == Mode.internet) {
-      _channel?.openTunnelChannel(displayCode!, token);
+      _channel?.openTunnelChannel(this.displayCode!, token);
     } else {
       _channel?.openDirectChannel(token);
     }
   }
 
   Future<void> presentStart({required dynamic selectedSource, bool systemAudio = false}) async {
-    print('zz presentStart');
     // PeerConnect
     webRTCConnector = WebRTCConnector(_urlIce,
       touchBack: touchBack,
@@ -211,7 +204,6 @@ class ChannelProvider extends ChangeNotifier {
       sendSignalMessage: (json) {
         // offer, answer, candidate
         json.sessionId = _sessionId;
-        print('zz send SignalMessage ${json.toJson().toString()}');
         _channel?.send(json);
       },
     );
@@ -225,12 +217,11 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future<void> presentEnd({bool goIdleState = true}) async {
-    print('zz presentEnd');
     try {
       if (webRTCConnector != null) await webRTCConnector?.hangUp();
       webRTCConnector = null;
 
-      await _channel?.close();
+      await _channel?.close(ChannelCloseReason(ChannelCloseCode.close));
       _channel = null;
     } catch (e) {
       debugModePrint(e, type: runtimeType);
@@ -289,31 +280,26 @@ class ChannelProvider extends ChangeNotifier {
     if (name != null) {
       msg.name = name;
     }
-    print('zz send joinDisplay ${msg.toJson().toString()}');
     _channel?.send(msg);
   }
 
   void _startPresent() {
     final msg = StartPresentMessage(_sessionId);
-    print('zz send startPresent ${msg.toJson().toString()}');
     _channel?.send(msg);
   }
 
   void _stopPresent() {
     final msg = StopPresentMessage();
     msg.sessionId = _sessionId;
-    print('zz send stopPresent $msg');
     _channel?.send(msg);
   }
   //endregion
 
   Future<String> _getTunnelUrl(String displayCode) async {
-    print('zz _getTunnelUrl');
     try {
       http.Response response = await http.get(
         Uri.parse('https://api-us-east-1.gateway.dev.airsync.net/instances?displayCode=$displayCode'),
       );
-      print('zz _getTunnelUrl ${response.statusCode} ${response.body}');
       if (response.statusCode >= HttpStatus.ok &&
           response.statusCode < HttpStatus.multiStatus) {
         Map<String, dynamic> json = jsonDecode(response.body);
