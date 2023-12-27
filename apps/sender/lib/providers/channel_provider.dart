@@ -48,7 +48,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   late String _urlIce, _tunnelApiUrl ='';
-  String? displayCode, otp, pinCode;
+  DisplayCode? displayCode;
+  String? otp;
   Timer? _presentTimer;
   bool _touchBack = false;
   bool get touchBack => _touchBack;
@@ -114,20 +115,27 @@ class ChannelProvider extends ChangeNotifier {
   //endregion
 
   presentInternetMode(String displayCode, String otp) {
-    this.displayCode = displayCode.replaceAll('-', '');
+    this.displayCode = decodeDisplayCode(displayCode.replaceAll('-', ''));
     this.otp = otp;
-    startConnect(displayCode: displayCode, token: otp);
+    if (this.displayCode != null) {
+      startConnect(
+          displayCode: this.displayCode!.instanceIndex.toString(), token: otp);
+    }
   }
 
-  presentLanMode(String pinCode) {
-    var pin = decodePinCode(this.pinCode = pinCode);
-    startConnect(host: pin.host, token: pinCode);
+  presentLanMode(String displayCode, String otp) {
+    this.displayCode = decodeDisplayCode(displayCode.replaceAll('-', ''));
+    this.otp = otp;
+    if (this.displayCode != null) {
+      startConnect(host: this.displayCode!.ipAddress, token: otp);
+    }
   }
 
-  startConnect({String? host, String? displayCode, required String token}) async {
+  startConnect(
+      {String? host, String? displayCode, required String token}) async {
     Uri? uri;
     if (currentMode == Mode.internet) {
-      await _getTunnelUrl(this.displayCode!).then((value) => _tunnelApiUrl = value);
+      await _getTunnelUrl(displayCode!).then((value) => _tunnelApiUrl = value);
       uri = Uri.parse(_tunnelApiUrl);
     } else {
       uri = Uri(scheme: 'ws', host: host, port: port);
@@ -202,7 +210,7 @@ class ChannelProvider extends ChangeNotifier {
     };
 
     if(currentMode == Mode.internet) {
-      _channel?.openTunnelChannel(this.displayCode!, token);
+      _channel?.openTunnelChannel(displayCode!, token);
     } else {
       _channel?.openDirectChannel(token);
     }

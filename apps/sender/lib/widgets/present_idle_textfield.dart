@@ -3,6 +3,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:provider/provider.dart';
 
@@ -140,9 +141,10 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               labelText: S.of(context).main_display_code,
               errorText: S.of(context).main_display_code_description,
               inputFormatter: [
+                UpperCaseTextFormatter(),
                 MaskedInputFormatter(
-                  '000-000-000-0',
-                  allowedCharMatcher: RegExp('[1-9]'),
+                  '###-###-###-##',
+                  allowedCharMatcher: RegExp('[A-Za-z1-9]'),
                 )
               ],
               onChanged: (text) {
@@ -211,4 +213,14 @@ class FieldResult {
   String password;
 
   FieldResult({required this.enable, required this.displayCode, required this.password});
+}
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
+    );
+  }
 }
