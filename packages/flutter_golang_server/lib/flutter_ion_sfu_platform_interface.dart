@@ -1,3 +1,4 @@
+import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_ion_sfu_method_channel.dart';
@@ -23,7 +24,17 @@ abstract class FlutterIonSfuPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Future<void> initialize() {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  Future<void> start(
+    FlutterIonSfuConfiguration configuration,
+  ) {
+    throw UnimplementedError('start() has not been implemented.');
+  }
+
+  Future<void> stop() {
+    throw UnimplementedError('stop() has not been implemented.');
   }
 }

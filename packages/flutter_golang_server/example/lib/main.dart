@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu.dart';
+import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String _message = '';
+
   final _flutterIonSfuPlugin = FlutterIonSfu();
 
   @override
@@ -27,14 +29,16 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
+    late String message;
     try {
-      platformVersion =
-          await _flutterIonSfuPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+      await _flutterIonSfuPlugin.initialize();
+      final configuration = FlutterIonSfuConfiguration();
+      await _flutterIonSfuPlugin.start(configuration);
+      message = "Ion SFU Server has started";
+    } on PlatformException catch (e) {
+      message = "Ion SFU Server failed to start $e";
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -43,7 +47,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      _platformVersion = platformVersion;
+      _message = message;
     });
   }
 
@@ -55,7 +59,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Text(_message),
         ),
       ),
     );
