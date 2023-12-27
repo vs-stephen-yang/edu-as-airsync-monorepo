@@ -18,7 +18,6 @@ class ModeratorPresentStart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     _countSecondsValue.value = 0;
     _countMinutesValue.value = 0;
     _countHoursValue.value = 0;

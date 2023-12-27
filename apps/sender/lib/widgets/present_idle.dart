@@ -23,7 +23,6 @@ class PresentIdle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

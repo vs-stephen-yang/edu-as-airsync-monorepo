@@ -25,30 +25,13 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
 
     Future<void> clickPresent() async {
       if (channelProvider.state == ViewState.moderatorName) {
         if (_nameController.text.isEmpty) {
           _showOverlayMessage(context, nameKey);
-        } else if (channelProvider.displayCode != null) {
+        } else if (channelProvider.displayCode != null || channelProvider.pinCode != null) {
           channelProvider.setModeratorName(_nameController.text);
-          // if (channelProvider.currentMode == Mode.internet) {
-          //   channelProvider.presentInternetMode(widget.displayCode!, widget.otp!);
-          // } else {
-          //   channelProvider.presentLanMode(widget.pin!);
-          // }
-
-          // presentStateProvider.presenter?.name = _nameController.text;
-          // bool display = await presentStateProvider.checkDisplayOTP(
-          //     displayCode: widget.displayCode, otp: widget.otp);
-          // if (display) {
-          //   presentStateProvider.presentTo(
-          //     displayCode: widget.displayCode,
-          //     otp: widget.otp,
-          //   ).whenComplete(() => presentStateProvider
-          //       .setViewState(ViewState.moderatorWait));
-          // }
         }
       }
     }
@@ -62,8 +45,6 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
               onTap: () {
                 channelProvider.resetMessage();
                 channelProvider.presentMainPage();
-                // presentStateProvider.resetMessage();
-                // presentStateProvider.setViewState(ViewState.idle);
               },
               child: const Row(
                 children: [

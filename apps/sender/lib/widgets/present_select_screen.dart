@@ -333,10 +333,6 @@ class SelectScreenDialog extends Dialog {
   Future<void> _getSources(SourceType sourceType) async {
     try {
       var sources = await desktopCapturer.getSources(types: [sourceType]);
-      for (var element in sources) {
-        debugModePrint(
-            'name: ${element.name}, id: ${element.id}, type: ${element.type}');
-      }
       _timer?.cancel();
       _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
         desktopCapturer.updateSources(types: [sourceType]);

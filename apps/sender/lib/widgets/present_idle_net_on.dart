@@ -15,7 +15,7 @@ class PresentIdleNetOn extends StatelessWidget {
   Widget build(BuildContext context) {
 
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
+
     bool presentBtnEnable = false;
     String displayCode = '', password = '';
 
@@ -54,7 +54,7 @@ class PresentIdleNetOn extends StatelessWidget {
             key: fieldKey,
             onFieldChanged: (result) {
               presentBtnEnable = result.enable;
-              displayCode = result.displayCode.replaceAll('-', '');
+              displayCode = result.displayCode;
               password = result.password;
               presentBtnKey.currentState?.setEnable(result.enable,
                   displayCode: result.displayCode, password: result.password);
@@ -69,62 +69,10 @@ class PresentIdleNetOn extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 25),
             child: PresentIdleButton(key: presentBtnKey, onPressed: () async {
-              print('zz presentBtnEnable $presentBtnEnable');
               if (!presentBtnEnable) return;
               await channelProvider.presentEnd(goIdleState: false);
-              // await presentStateProvider.presentEnd(goIdleState: false);
 
-              displayCode = displayCode.replaceAll('-', '');
               channelProvider.presentInternetMode(displayCode, password);
-              // int moderator = await presentStateProvider.checkModeratorOTP(
-              //     displayCode: displayCode, otp: password);
-              // if (moderator > 204 ||
-              //     presentStateProvider.state == ViewState.moderatorIdle) {
-              //   switch (moderator) {
-              //     case 403:
-              //     // 403 -> Reach maximum presenters
-              //       fieldKey.currentState?.setOtpErrorMsg(S.of(context).main_display_code_exceed);
-              //       break;
-              //     case 404:
-              //     // 404 -> sendToV1
-              //       await presentStateProvider.presentToV1(
-              //           displayCode: displayCode,
-              //           otp: password,
-              //           callback: (result) async {
-              //             // handle UI
-              //             if (result == 'connect') {
-              //               // web: open a new window
-              //             } else if (result == 'denied') {
-              //               fieldKey.currentState
-              //                   ?.setOtpErrorMsg('Invalid password');
-              //             } else if (result == 'blocked') {
-              //               fieldKey.currentState?.setOtpErrorMsg(
-              //                   'Display host is connected by another client. Please try again later');
-              //             } else if (result == 'timeout') {
-              //               fieldKey.currentState?.setOtpErrorMsg(
-              //                   'Your connection has been terminated because no stream was provided for more than 30 seconds. Please try to reconnect.');
-              //             }
-              //           });
-              //       break;
-              //     case 406:
-              //     // Display's moderator mode is on,  but the otp is wrong
-              //     // 406 -> Invalid one time password
-              //       fieldKey.currentState
-              //           ?.setOtpErrorMsg(S.of(context).main_password_invalid);
-              //       break;
-              //   }
-              //   return;
-              // }
-              //
-              // bool display = await presentStateProvider.checkDisplayOTP(
-              //     displayCode: displayCode, otp: password);
-              // if (display) {
-              //   DataDisplayCode.getInstance().save(displayCodeOriginal);
-              //   presentStateProvider.presentTo(
-              //     displayCode: displayCode,
-              //     otp: password,
-              //   );
-              // }
             }),
           ),
         ],

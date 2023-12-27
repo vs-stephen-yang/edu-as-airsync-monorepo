@@ -61,7 +61,7 @@ dependencies:
   url_launcher: ^6.2.2
   shared_preferences: ^2.2.2
   device_info_plus: ^9.1.1
-  flutter_svg_provider: ^1.0.6
+  flutter_svg_provider: ^1.0.7
   desktop_window: ^0.4.0
   flutter_window_close: ^0.2.2
   hive: ^2.0.4
@@ -71,7 +71,7 @@ dependencies:
 #    path: /Users/chenzo/StudioProjects/display-channel
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
-      ref: release-0.0.5
+      ref: release-0.0.6
   flutter_background: ^1.2.0
 
 dependency_overrides:
