@@ -9,6 +9,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath 'com.github.kezong:fat-aar:1.3.8'
     }
 }
 
@@ -16,10 +17,14 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.kezong.fat-aar'
 
 android {
     if (project.android.hasProperty("namespace")) {
@@ -51,4 +56,8 @@ android {
             }
         }
     }
+}
+
+dependencies {
+    embed(name:'libionsfu', ext:'aar')
 }
