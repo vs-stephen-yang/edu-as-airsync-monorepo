@@ -95,12 +95,6 @@ class ChannelProvider extends ChangeNotifier {
       _otpList.remove(_otpList.first);
     }
   }
-  // String _pinCode = '';
-  // String get pinCode => _pinCode;
-  // set pinCode(String value) {
-  //   _pinCode = value;
-  //   notifyListeners();
-  // }
 
   String? host;
   int port = 5100;
@@ -114,7 +108,6 @@ class ChannelProvider extends ChangeNotifier {
   static bool isModeratorMode = false;
 
   ChannelProvider(this.appConfig) {
-    // print('zz ChannelProvider init ${AppInstanceCreate().displayInstanceID}');
     apiGateway = appConfig.settings.apiGateway;
     version = appConfig.appVersion;
 
@@ -186,7 +179,6 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _setServerSide() {
-    // print('zz setServerSide');
     // create a direct server
     _directServer = DisplayDirectServer(
           (Channel channel) => _onNewChannel(channel, Mode.lan),
@@ -201,10 +193,10 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     _tunnelServer.onTunnelConnected = () {
-      print('zz Tunnel connected');
+      print('Tunnel connected');
     };
     _tunnelServer.onTunnelConnecting = () {
-      print('zz Tunnel is connecting');
+      print('Tunnel is connecting');
     };
   }
 
@@ -217,9 +209,7 @@ class ChannelProvider extends ChangeNotifier {
 
     // start the direct server
     await _directServer.start(port);
-    // print('zz Listened on port ${_directServer.port} for direct channels');
     isServerStart = true;
-    print('zz _startServer $_tunnelApiUrl');
   }
 
   void _onNewChannel(Channel channel, Mode mode) {
@@ -289,7 +279,6 @@ class ChannelProvider extends ChangeNotifier {
       // updateSplitScreen();
       // update UI
       if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-        print('zz onDisconnect 1');
         bool presenting = false;
         for (RTCConnector controller in _channelRtcConnectors) {
           if (controller.presentationState != PresentationState.stopStreaming) {
@@ -297,7 +286,6 @@ class ChannelProvider extends ChangeNotifier {
           }
         }
         if (!presenting) {
-          print('zz onDisconnect 2');
           Home.showTitleBottomBar.value = true;
           if (MirrorStateProvider.isMirroring) {
             StreamFunction.streamFunctionState.value = stateCast;
@@ -306,7 +294,6 @@ class ChannelProvider extends ChangeNotifier {
           }
           showMode = true;
         } else {
-          print('zz onDisconnect 3');
           Home.isSelectedList.value
               .fillRange(0, Home.isSelectedList.value.length, false);
           // Using below method to trigger value changed.
@@ -314,7 +301,6 @@ class ChannelProvider extends ChangeNotifier {
           Home.isSelectedList.value = List.from(Home.isSelectedList.value);
         }
       } else {
-        print('zz onDisconnect 4');
         Home.showTitleBottomBar.value = true;
         if (MirrorStateProvider.isMirroring) {
           StreamFunction.streamFunctionState.value = stateCast;
@@ -338,7 +324,6 @@ class ChannelProvider extends ChangeNotifier {
   bool stopServer() {
     _tunnelServer.stop();
     _directServer.stop();
-    print('zz stopServer');
     return isServerStart = false;
   }
 
@@ -351,7 +336,6 @@ class ChannelProvider extends ChangeNotifier {
   // }
 
   Future<String> getDisplayCode(String instanceID) async {
-    print('zz getDisplayCode $instanceID $version');
     try {
       http.Response response = await http.put(
         Uri.parse(
@@ -363,7 +347,6 @@ class ChannelProvider extends ChangeNotifier {
         }),
       );
 
-      print('zz ${response.body} ${response.headers} ${response.statusCode}');
       if (response.statusCode >= HttpStatus.ok &&
           response.statusCode < HttpStatus.multiStatus) {
         Map json = jsonDecode(response.body);
@@ -374,7 +357,7 @@ class ChannelProvider extends ChangeNotifier {
         return '';
       }
     } catch (e) {
-      log('zz ${e.toString()}');
+      log('${e.toString()}');
       // http.get maybe no network connection.
       return '';
     }
@@ -399,7 +382,6 @@ class ChannelProvider extends ChangeNotifier {
         lastID = i;
       }
     }
-    print('zz updateSplitScreen $connecting $lastID');
     SplitScreen.mapSplitScreen.value[keySplitScreenCount] = connecting;
     SplitScreen.mapSplitScreen.value[keySplitScreenLastId] = lastID;
     // Using below method to trigger value changed.
@@ -559,7 +541,6 @@ class ChannelProvider extends ChangeNotifier {
     for (int i = temp.length - 1; i >= 0; i--) {
       selectedController = temp[i];
       if (selectedController.sessionId != null) {
-        print('zz selectedController.sessionId != null');
         try {
           await selectedController.disconnectPeerConnection(sendAnalytics: true);
           if (!keepInList) {
@@ -641,10 +622,7 @@ class ChannelProvider extends ChangeNotifier {
         if (ethernetIp != null) {
           lanNetWork = isPrivateIp(ethernetIp);
           host = ethernetIp;
-          // print("zz Ethernet IP: $ethernetIp $lanNetWork");
           return host;
-        } else {
-          // print("zz Ethernet interface not found");
         }
         break;
       } else if (interface.name.toLowerCase().contains("wi") || interface.name.toLowerCase().contains("wlan")) { // 'wi' 或 'wlan' 通常是 WiFi
@@ -652,10 +630,7 @@ class ChannelProvider extends ChangeNotifier {
         if (wifiIp != null) {
           lanNetWork = isPrivateIp(wifiIp);
           host = wifiIp;
-          // print("zz WiFi IP: $wifiIp $lanNetWork");
           return host;
-        } else {
-          // print("zz WiFi interface not found");
         }
         break;
       } else if (interface.name.toLowerCase().contains("rmnet") || interface.name.toLowerCase().contains("wwan")) {
@@ -663,10 +638,7 @@ class ChannelProvider extends ChangeNotifier {
         if (mobileIp != null) {
           lanNetWork = isPrivateIp(mobileIp);
           host = mobileIp;
-          // print("zz Mobile Network IP: $mobileIp $lanNetWork");
           return host;
-        } else {
-          // print("zz Mobile network interface not found");
         }
         break;
       }

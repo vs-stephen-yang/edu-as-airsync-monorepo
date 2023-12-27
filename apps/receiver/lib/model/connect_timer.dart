@@ -67,7 +67,6 @@ class ConnectionTimer {
   }
 
   void stopConnectionTimeoutTimer() {
-    print('zz stopConnectionTimeoutTimer');
     mConnectionTimeoutTimer?.cancel();
     mConnectionTimeTimeout.add(0);
   }
@@ -114,7 +113,6 @@ class ConnectionTimer {
   void startServerTimer(VoidCallback onFinish) {
     stopServerTimer();
     _stopServerTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      print('zz startServerTimer: ${timer.tick}');
       if (timer.tick >= 30) {
         timer.cancel();
         // stopServerTimer();
@@ -124,9 +122,7 @@ class ConnectionTimer {
   }
 
   void stopServerTimer() {
-    print('zz stopServerTimer 0');
     if (_stopServerTimer != null) {
-      print('zz stopServerTimer');
       _stopServerTimer?.cancel();
       _stopServerTimer = null;
     }
