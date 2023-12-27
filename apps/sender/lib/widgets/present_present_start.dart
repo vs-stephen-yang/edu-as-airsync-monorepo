@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
+import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
 class PresentPresentStart extends StatelessWidget {
@@ -14,6 +16,7 @@ class PresentPresentStart extends StatelessWidget {
   final ValueNotifier<int> _countHoursValue = ValueNotifier(0);
 
   final ValueNotifier<bool> _presentingState = ValueNotifier(true);
+  final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -152,35 +155,39 @@ class PresentPresentStart extends StatelessWidget {
                 ),
               ),
             ),
-            // if (presentStateProvider.displayer?.property!['platform'] == 'windows')
-            //   Align(
-            //     alignment: Alignment.centerLeft,
-            //     child: Padding(
-            //       padding: const EdgeInsets.only(left: 38.0, top: 20.0),
-            //       child: InkWell(
-            //         onTap: () {
-            //           presentStateProvider.presentFullscreen();
-            //         },
-            //         child: Row(
-            //           children: [
-            //             Icon(
-            //               presentStateProvider.displayer?.windowState == 'normal'
-            //                   ? Icons.fullscreen
-            //                   : Icons.fullscreen_exit,
-            //               color: Colors.white,
-            //             ),
-            //             const Padding(padding: EdgeInsets.only(left: 8)),
-            //             Text(
-            //                 presentStateProvider.displayer?.windowState == 'normal'
-            //                     ? S.of(context).present_state_full_screen
-            //                     : S.of(context).present_state_normal_screen,
-            //                 style:
-            //                 const TextStyle(color: Colors.white, fontSize: 14)),
-            //           ],
-            //         ),
-            //       ),
-            //     ),
-            //   ),
+            if (channelProvider.isMainScreen())
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 38.0, top: 8.0),
+                      child: Row(
+                        children: [
+                          const SizedBox(
+                            width: 26,
+                            child: Image(
+                              height: 20,
+                              image: Svg('assets/images/touch_app_black.svg'),
+                            ),
+                          ),
+                          const Padding(padding: EdgeInsets.only(left: 8)),
+                          Text(
+                            S.of(context).main_touch_back,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                          TouchBackButton(
+                            key: touchBtnKey,
+                            initialValue: channelProvider.getTouchBack(),
+                            onPressed: (state) {
+                              channelProvider.setTouchBack(state);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
           ],
         )),
       ],
