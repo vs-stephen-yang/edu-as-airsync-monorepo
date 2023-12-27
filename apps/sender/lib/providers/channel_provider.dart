@@ -68,6 +68,18 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  setTouchBack(bool touchBack) {
+    webRTCConnector!.touchBack = touchBack;
+  }
+
+  bool getTouchBack() {
+    return webRTCConnector!.touchBack;
+  }
+
+  bool isMainScreen() {
+    return webRTCConnector!.isMainSource;
+  }
+
   Future<void> presentMainPage() async {
     setViewState(ViewState.idle);
   }
@@ -199,7 +211,6 @@ class ChannelProvider extends ChangeNotifier {
   Future<void> presentStart({required dynamic selectedSource, bool systemAudio = false}) async {
     // PeerConnect
     webRTCConnector = WebRTCConnector(_urlIce,
-      touchBack: touchBack,
       systemAudio: systemAudio,
       sendSignalMessage: (json) {
         // offer, answer, candidate

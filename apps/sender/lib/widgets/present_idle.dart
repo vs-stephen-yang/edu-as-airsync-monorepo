@@ -8,9 +8,7 @@ import 'package:display_cast_flutter/widgets/present_idle_lan_on.dart';
 import 'package:display_cast_flutter/widgets/present_idle_net_off.dart';
 import 'package:display_cast_flutter/widgets/present_idle_net_on.dart';
 import 'package:display_cast_flutter/widgets/present_idle_textfield.dart';
-import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
 class PresentIdle extends StatelessWidget {
@@ -18,7 +16,6 @@ class PresentIdle extends StatelessWidget {
 
   final GlobalKey<PresentIdleTextFieldState> fieldKey = GlobalKey();
   final GlobalKey<PresentIdleButtonState> presentBtnKey = GlobalKey();
-  final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -78,46 +75,6 @@ class PresentIdle extends StatelessWidget {
                       const Flexible(flex: 1, child: SizedBox()),
                     ],
                   ),
-                ),
-                Row(
-                  children: [
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.only(right: 5),
-                        child: const Image(
-                          height: 18,
-                          image: Svg('assets/images/touch_app_black.svg'),
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: Text(
-                        S.of(context).main_touch_back,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child:
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: TouchBackButton(
-                          key: touchBtnKey,
-                          initialValue: channelProvider.touchBack, //presentStateProvider.touchBack,
-                          onPressed: (state) {
-                            channelProvider.touchBack = state;
-                            // presentStateProvider.setTouchBack(state);
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
               ],
             )),

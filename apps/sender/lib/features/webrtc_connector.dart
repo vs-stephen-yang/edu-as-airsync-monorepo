@@ -18,8 +18,7 @@ import 'package:window_size/window_size.dart';
 
 class WebRTCConnector {
   WebRTCConnector(this._urlIce,
-      {bool touchBack = false, bool systemAudio = false, required this.sendSignalMessage}) {
-    _touchBack = touchBack;
+      {this.touchBack = false, bool systemAudio = false, required this.sendSignalMessage}) {
     _systemAudio = systemAudio;
   }
   final String _urlIce;
@@ -41,7 +40,10 @@ class WebRTCConnector {
   static const int _maxTrackHeight = 1080;
   int _trackWidth = _maxTrackWidth;
   int _trackHeight = _maxTrackHeight;
-  bool _touchBack = false;
+  bool touchBack = false;
+  bool isMainSource = false;
+  final String _macMainScreenOrder = '1';
+  final String _windowsMainScreenOrder = '0';
   bool _isSourceTypeScreen = false;
   bool _systemAudio = false;
 
@@ -53,13 +55,19 @@ class WebRTCConnector {
   Future<void> makeCall(String peerId, dynamic source, List<RtcIceServer>? iceServerList) async {
     dynamic deviceId;
 
-    if (kIsWeb) {
-    } else if (Platform.isAndroid) {
+    if (Platform.isAndroid) {
+      isMainSource = true;
     } else if (Platform.isIOS) {
       deviceId = 'broadcast';
+      isMainSource = true;
     } else {
       deviceId = {'exact': source.id};
       _isSourceTypeScreen = (source.type == SourceType.Screen);
+      if (Platform.isMacOS) {
+        isMainSource = _isSourceTypeScreen? source.id == _macMainScreenOrder : false;
+      } else if (Platform.isWindows) {
+        isMainSource = _isSourceTypeScreen? source.id == _windowsMainScreenOrder : false;
+      }
     }
 
     _deviceId = deviceId;
@@ -160,7 +168,7 @@ class WebRTCConnector {
   bool _isTouchBackAllowed() {
     return !kIsWeb &&
         (Platform.isAndroid || _isSourceTypeScreen) &&
-        _touchBack &&
+        touchBack &&
         _localStream!.getTracks().first.enabled;
   }
 
