@@ -9,8 +9,7 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
-import 'package:display_flutter/widgets/main_internet.dart';
-import 'package:display_flutter/widgets/main_lan.dart';
+import 'package:display_flutter/widgets/main_info_net.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
 import 'package:display_flutter/widgets/split_screen_function.dart';
 import 'package:display_flutter/widgets/status_bar.dart';
@@ -168,10 +167,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 builder: (context, provider, child) {
                   if (Provider.of<ChannelProvider>(context).showMode == false) {
                     return const SizedBox();
-                  } else if (provider.currentMode == Mode.internet) {
-                    return MainInternetMode();
                   } else {
-                    return MainLanMode();
+                    return MainInfoInternet();
                   }
                 },
               ),
