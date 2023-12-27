@@ -3,8 +3,6 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
-import 'package:display_cast_flutter/widgets/present_idle_lan_off.dart';
-import 'package:display_cast_flutter/widgets/present_idle_lan_on.dart';
 import 'package:display_cast_flutter/widgets/present_idle_net_off.dart';
 import 'package:display_cast_flutter/widgets/present_idle_net_on.dart';
 import 'package:display_cast_flutter/widgets/present_idle_textfield.dart';
@@ -29,10 +27,6 @@ class PresentIdle extends StatelessWidget {
             SizedBox(
               width: AppConstants.viewStateMenuWidth,
               child: channelProvider.currentMode == Mode.internet? PresentIdleNetOn(): PresentIdleNetOff(),
-            ),
-            SizedBox(
-              width: AppConstants.viewStateMenuWidth,
-              child: channelProvider.currentMode == Mode.lan? PresentIdleLanOn(): PresentIdleLanOff(),
             ),
           ],
         ),

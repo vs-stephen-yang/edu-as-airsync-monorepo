@@ -72,7 +72,6 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
       ),
       style: textStyle,
       inputFormatters: widget.inputFormatter,
-      keyboardType: const TextInputType.numberWithOptions(signed: true),
       onChanged: (_) {
         if (widget.onChanged != null) widget.onChanged!(_);
       },
