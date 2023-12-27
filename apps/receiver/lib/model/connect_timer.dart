@@ -8,9 +8,10 @@ import 'package:flutter/material.dart';
 
 typedef ConnectionTimerCallback = void Function(
     WebRTCFlutterViewSocket controller, String nextId);
+typedef TimeOutCallback = void Function();
 
 class ConnectionTimer {
-  Timer? mConnectionTimeoutTimer, mRemainingTimeTimer;
+  Timer? mConnectionTimeoutTimer, mRemainingTimeTimer, _stopServerTimer;
   StreamController<int> mConnectionTimeTimeout = StreamController<int>();
   StreamController<int> mRemainingTimeTimeout =
       StreamController<int>.broadcast();
@@ -45,7 +46,28 @@ class ConnectionTimer {
     });
   }
 
+  void startConnectionTimer(TimeOutCallback onFinish) {
+    if (mConnectionTimeoutTimer != null) stopConnectionTimeoutTimer();
+
+    var count = 30;
+    mConnectionTimeoutTimer =
+        Timer.periodic(const Duration(seconds: 1), (timer) {
+          if (timer.tick < 30) {
+            // onTick
+            count = 30 - timer.tick;
+            mConnectionTimeTimeout.add(count);
+          } else if (timer.tick == 30) {
+            // onFinish
+            timer.cancel();
+            mConnectionTimeTimeout.add(0);
+            log('ConnectionTimeout onFinish');
+            onFinish();
+          }
+        });
+  }
+
   void stopConnectionTimeoutTimer() {
+    print('zz stopConnectionTimeoutTimer');
     mConnectionTimeoutTimer?.cancel();
     mConnectionTimeTimeout.add(0);
   }
@@ -87,5 +109,26 @@ class ConnectionTimer {
     mRemainingTimeTimer = null;
     StatusBar.showReamingTime.value = false;
     mRemainingTimeTimeout.sink.add(0);
+  }
+
+  void startServerTimer(VoidCallback onFinish) {
+    stopServerTimer();
+    _stopServerTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      print('zz startServerTimer: ${timer.tick}');
+      if (timer.tick >= 30) {
+        timer.cancel();
+        // stopServerTimer();
+        onFinish();
+      }
+    });
+  }
+
+  void stopServerTimer() {
+    print('zz stopServerTimer 0');
+    if (_stopServerTimer != null) {
+      print('zz stopServerTimer');
+      _stopServerTimer?.cancel();
+      _stopServerTimer = null;
+    }
   }
 }

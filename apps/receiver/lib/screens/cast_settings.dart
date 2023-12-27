@@ -1,6 +1,6 @@
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
@@ -16,7 +16,7 @@ class CastSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<MirrorStateProvider>(
       builder: (context, mirror, child) {
-        mirror.setDeviceName(ControlSocket().displayCode);
+        mirror.setDeviceName(context.read<ChannelProvider>().displayCode);
         return MenuDialog(
           backgroundColor: MirrorStateProvider.isMirroring? AppColors.primary_grey_tran : AppColors.primary_grey,
           child: Column(

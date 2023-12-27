@@ -2,13 +2,14 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
-import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 const String keySplitScreenEnable = 'enable';
@@ -30,6 +31,7 @@ class _SplitScreenState extends State<SplitScreen>
     with TickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
+  late ChannelProvider channelProvider;
 
   @override
   void initState() {
@@ -53,8 +55,9 @@ class _SplitScreenState extends State<SplitScreen>
 
   @override
   Widget build(BuildContext context) {
+    channelProvider = Provider.of<ChannelProvider>(context);
     return MenuDialog(
-      backgroundColor: ControlSocket().isPresenting()
+      backgroundColor: channelProvider.isPresenting()
           ? AppColors.primary_grey_tran
           : AppColors.primary_grey,
       child: Column(
@@ -166,7 +169,8 @@ class _SplitScreenState extends State<SplitScreen>
       AppAnalytics().trackEventSplitScreenOn();
       ConnectionTimer.getInstance().startRemainingTimeTimer(() async {
         AppAnalytics().setEventProperties(meetingId: '');
-        await ControlSocket().removeAllPresenters();
+
+        await channelProvider.removeAllPresenters();
         // Need remove all presenters first, due to enable/disable will dispose
         // view and will disconnectedP2pClient before send stopVideo
         // cause web presenter did not update status
@@ -182,7 +186,7 @@ class _SplitScreenState extends State<SplitScreen>
       AppAnalytics().trackEventSplitScreenOff();
       ConnectionTimer.getInstance().stopRemainingTimeTimer();
       AppAnalytics().setEventProperties(meetingId: '');
-      await ControlSocket().removeAllPresenters();
+      await channelProvider.removeAllPresenters();
     }
 
     // Need remove all presenters first, due to enable/disable will dispose

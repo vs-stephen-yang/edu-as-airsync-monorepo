@@ -1,21 +1,23 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/control_socket.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
-import 'package:display_flutter/widgets/main_info.dart';
+import 'package:display_flutter/widgets/main_internet.dart';
+import 'package:display_flutter/widgets/main_lan.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
 import 'package:display_flutter/widgets/split_screen_function.dart';
 import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/tittle_bar.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
-import 'package:display_flutter/widgets/webrtc_view.dart';
+import 'package:display_flutter/widgets/webrtc_view_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +38,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   static const _androidAppRetain =
       MethodChannel('com.mvbcast.crosswalk/android_app_retain');
 
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -50,12 +53,18 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('zz home AppLifecycleState: $state');
     MirrorStateProvider mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context, listen: false);
     if (state == AppLifecycleState.inactive) {
       mirrorStateProvider.updateAudioEnable(false);
+      // Home.disconnectServer(context);
+      Provider.of<ChannelProvider>(context, listen: false).disconnectServer();
     } else if (state == AppLifecycleState.resumed) {
       mirrorStateProvider.updateAudioEnable(true);
+      Provider.of<ChannelProvider>(context, listen: false).getDisplayCode(AppInstanceCreate().displayInstanceID);
+      Provider.of<ChannelProvider>(context, listen: false).connectServer(context);
+      // widget.connectServer(context);
     }
   }
 
@@ -77,8 +86,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 valueListenable: SplitScreen.mapSplitScreen,
                 builder: (context, Map<String, dynamic> value, child) {
                   return Stack(
-                    children: List.generate(value[keySplitScreenEnable] ? 4 : 1,
-                        (index) {
+                    children: List.generate(
+                        value[keySplitScreenEnable] ? 4 : 1, (index) {
                       double? left, top, right, bottom;
                       if (index == 1) {
                         right = 0;
@@ -107,13 +116,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               height: _getWidthHeight(index, false),
                               child: Stack(
                                 children: <Widget>[
-                                  WebRTCFlutterView(
-                                    callback: ControlSocket().addWebRtcController,
+                                  Consumer<ChannelProvider>(
+                                    builder: (context, provider, child) {
+                                      return WebRTCView(index: index);
+                                    },
                                   ),
                                   Visibility(
                                     visible: SplitScreen.mapSplitScreen
                                             .value[keySplitScreenEnable] &&
-                                        ControlSocket()
+                                        context.read<ChannelProvider>()
                                             .isPresenting(index: index),
                                     child: SplitScreenFunction(
                                       index: index,
@@ -144,7 +155,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                             left: 0, top: 0, right: 0, child: TitleBar()),
                         const Positioned(
                             left: 0, right: 0, bottom: 0, child: BottomBar()),
-                        if (AppInstanceCreate().isInstalledInVBS100 | AppInstanceCreate().isInstalledInVBS200)
+                        if (AppInstanceCreate().isInstalledInVBS100 |
+                            AppInstanceCreate().isInstalledInVBS200)
                           const Positioned(
                               left: 0, right: 0, bottom: 0, child: VbsOTA()),
                       ],
@@ -152,7 +164,17 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   );
                 },
               ),
-              const MainInfo(),
+              Consumer<ChannelProvider>(
+                builder: (context, provider, child) {
+                  if (Provider.of<ChannelProvider>(context).showMode == false) {
+                    return const SizedBox();
+                  } else if (provider.currentMode == Mode.internet) {
+                    return MainInternetMode();
+                  } else {
+                    return MainLanMode();
+                  }
+                },
+              ),
               const MirrorView(),
               const Positioned(
                 child: StatusBar(),
@@ -165,33 +187,38 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   child: StreamFunction(),
                 ),
               ),
-              ValueListenableBuilder(
-                valueListenable: Home.showCloudOff,
-                builder: (BuildContext context, bool value, Widget? child) {
-                  return Visibility(
-                    visible: value,
-                    child: Container(
-                      color: Colors.black,
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          const Icon(Icons.cloud_off, color: Colors.red, size: 120,),
-                          const SizedBox(width: 20),
-                          Text(
-                            S.of(context).main_status_no_network,
-                            style: const TextStyle(
-                              color: AppColors.primary_white,
-                              fontSize: 20,
+              if (!ChannelProvider.isNewUI)
+                ValueListenableBuilder(
+                  valueListenable: Home.showCloudOff,
+                  builder: (BuildContext context, bool value, Widget? child) {
+                    return Visibility(
+                      visible: value,
+                      child: Container(
+                        color: Colors.black,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const Icon(
+                              Icons.cloud_off,
+                              color: Colors.red,
+                              size: 120,
                             ),
-                          )
-                        ],
+                            const SizedBox(width: 20),
+                            Text(
+                              S.of(context).main_status_no_network,
+                              style: const TextStyle(
+                                color: AppColors.primary_white,
+                                fontSize: 20,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  },
+                ),
             ],
           ),
         ),
@@ -239,7 +266,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       // https://github.com/flutter/flutter/issues/29958
       Home.isSelectedList.value = List.from(Home.isSelectedList.value);
 
-      ControlSocket().updateAllQuality(
+      context.read<ChannelProvider>().updateAllQuality(
           selection, Home.isSelectedList.value.contains(true));
     } else {
       Home.isSelectedList.value
@@ -247,7 +274,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       // Using below method to trigger value changed.
       // https://github.com/flutter/flutter/issues/29958
       Home.isSelectedList.value = List.from(Home.isSelectedList.value);
-      ControlSocket().updateAllQuality(0, true);
+
+      context.read<ChannelProvider>().updateAllQuality(0, true);
     }
   }
 
