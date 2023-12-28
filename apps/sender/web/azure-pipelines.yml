@@ -14,6 +14,8 @@ variables:
     value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
   - name: FlutterSdkPlatform
     value: "macos"
+  - name: PUB_CACHE
+    value: $(Pipeline.Workspace)/.pub-cache
 
 jobs:
   - job: Build
