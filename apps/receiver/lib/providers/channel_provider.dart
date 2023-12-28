@@ -338,8 +338,7 @@ class ChannelProvider extends ChangeNotifier {
   Future<String> getDisplayCode(String instanceID) async {
     try {
       http.Response response = await http.put(
-        Uri.parse(
-            'https://api-us-east-1.gateway.dev.airsync.net/instances'),
+        Uri.parse(apiGateway),
         body: json.encode({
           'instanceId': instanceID,
           'version': version,
