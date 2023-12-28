@@ -84,7 +84,7 @@ dependencies:
   display_channel:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
-      ref: release-0.0.7
+      ref: release-0.0.8
   network_info_plus: ^2.1.0
 
 dev_dependencies:
