@@ -71,7 +71,7 @@ dependencies:
 #    path: /Users/chenzo/StudioProjects/display-channel
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
-      ref: release-0.0.7
+      ref: release-0.0.8
   flutter_background: ^1.2.0
 
 dependency_overrides:

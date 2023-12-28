@@ -142,7 +142,7 @@ class ChannelProvider extends ChangeNotifier {
     }
 
     _channel = DisplayChannelClient(_clientId, uri,
-        (url, headers) => WebSocketClientConnection(url, headers));
+        (url) => WebSocketClientConnection(url));
 
     _channel?.onStateChange = (ChannelState state) {
       switch (state) {
