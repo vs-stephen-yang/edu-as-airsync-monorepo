@@ -84,6 +84,9 @@ class WebRTCConnector {
   Future<void> disposeStream() async {
     try {
       if (_localStream != null) {
+        if (kIsWeb) {
+          _localStream?.getTracks().forEach((track) => track.stop());
+        }
         var stream = _localStream!;
         _localStream = null;
         await stream.dispose();
@@ -94,6 +97,7 @@ class WebRTCConnector {
   }
 
   void streamStop() {
+    if (kIsWeb) return;
     _pc?.getLocalStreams().forEach((element) {
       element?.getTracks().first.enabled = false;
       element?.getTracks().first.stop();
@@ -103,7 +107,9 @@ class WebRTCConnector {
   // Future<void> streamPause() async {
   //   var constraints = <String, dynamic>{
   //     'audio': false,
-  //     'video': {
+  //     'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
+  //        ? false
+  //        : {
   //       'deviceId': _deviceId,
   //       'mandatory': {'frameRate': 0.0},
   //     }
@@ -121,7 +127,9 @@ class WebRTCConnector {
   // Future<void> streamResume() async {
   //   var constraints = <String, dynamic>{
   //     'audio': _isAudioCaptureAllowed(),
-  //     'video': {
+  //     'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
+  //        ? true
+  //        : {
   //       'deviceId': _deviceId,
   //       'mandatory': {'frameRate': 30.0},
   //     }
@@ -145,7 +153,7 @@ class WebRTCConnector {
     }
     final constraints = <String, dynamic>{
       'audio': _isAudioCaptureAllowed(),
-      'video': !WebRTC.platformIsDesktop
+      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
           ? true
           : {
         'deviceId': _deviceId,
@@ -249,12 +257,14 @@ class WebRTCConnector {
 
     final constraints = <String, dynamic>{
       'audio': _isAudioCaptureAllowed(),
-      'video': {
-        'deviceId': _deviceId,
-        'mandatory': {'frameRate': 30.0},
-        'width': _trackWidth = _maxTrackWidth,
-        'height': _trackHeight = _maxTrackHeight,
-      }
+      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
+          ? true
+          : {
+              'deviceId': _deviceId,
+              'mandatory': {'frameRate': 30.0},
+              'width': _trackWidth = _maxTrackWidth,
+              'height': _trackHeight = _maxTrackHeight,
+            }
     };
 
     _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
