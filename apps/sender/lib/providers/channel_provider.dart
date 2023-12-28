@@ -10,6 +10,7 @@ import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:uuid/uuid.dart';
 
 enum Mode {
@@ -179,11 +180,6 @@ class ChannelProvider extends ChangeNotifier {
           }
           break;
         case ChannelMessageType.presentRejected:
-          // show a message
-          // TODO:check the rejected reason
-          if (moderatorStatus) {
-            presentMainPage();
-          }
           presentEnd();
           break;
         case ChannelMessageType.presentSignal:
@@ -251,6 +247,7 @@ class ChannelProvider extends ChangeNotifier {
 
     if (goIdleState) {
       resetMessage();
+      navService.popUntil('/home');
       presentMainPage();
     }
   }
