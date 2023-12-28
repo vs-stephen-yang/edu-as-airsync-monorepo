@@ -100,6 +100,7 @@ class PresentSelectScreen extends StatelessWidget {
   }
 }
 
+//ignore: must_be_immutable
 class SelectScreenDialog extends Dialog {
   SelectScreenDialog({super.key}) {
     Future.delayed(const Duration(milliseconds: 100), () {
