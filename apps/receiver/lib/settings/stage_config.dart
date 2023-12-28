@@ -5,7 +5,7 @@ class StageConfig implements ConfigSettings {
   bool isDevelopEnvironment = true;
 
   @override
-  String apiGateway = 'https://presentation-gateway.stage.myviewboard.cloud';
+  String apiGateway = 'https://api-us-east-1.gateway.stage.airsync.net/instances';
 
   @override
   String signalServer = 'https://signal.stage.myviewboard.cloud';
