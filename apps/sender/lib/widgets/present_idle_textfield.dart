@@ -41,8 +41,12 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         _codeController.selection = TextSelection(
             baseOffset: 0, extentOffset: _codeController.text.length);
       } else {
-        _isOverlayVisible = false;
-        _overlayEntry.remove();
+        Future.delayed(const Duration(milliseconds: 100), (){
+          if (_isOverlayVisible) {
+            _isOverlayVisible = false;
+            _overlayEntry.remove();
+          }
+        });
       }
     });
     _otpFocusNode.addListener(() {
@@ -98,8 +102,10 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                                   child: Text(list[index])),
                               onTap: () {
                                 _codeController.text = list[index];
-                                _isOverlayVisible = false;
-                                _overlayEntry.remove();
+                                if (_isOverlayVisible) {
+                                  _isOverlayVisible = false;
+                                  _overlayEntry.remove();
+                                }
                               },
                             );
                           },
