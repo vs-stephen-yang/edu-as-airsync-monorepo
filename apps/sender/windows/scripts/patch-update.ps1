@@ -3,7 +3,7 @@ $url_base = 'https://store2.myviewboard.com/uploads/AirSyncSender'
 $version_reg_key = 'HKUD\Software\ViewSonic\AirSync Sender\Version'
 
 $update_ai_path = '.\windows\update.aip'
-$executable_path = '.\build\windows\runner\Release\AirSync_Sender.exe'
+$executable_path = '.\build\windows\x64\runner\Release\AirSync_Sender.exe'
 
 $update_name = 'Update'
 
