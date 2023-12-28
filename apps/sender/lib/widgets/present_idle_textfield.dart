@@ -144,7 +144,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                 UpperCaseTextFormatter(),
                 MaskedInputFormatter(
                   '###-###-###-##',
-                  allowedCharMatcher: RegExp('[A-Za-z1-9]'),
+                  allowedCharMatcher: RegExp('[A-Za-z0-9]'),
                 )
               ],
               onChanged: (text) {
