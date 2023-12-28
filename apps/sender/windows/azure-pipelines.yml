@@ -14,7 +14,7 @@ variables:
   - name: Installer.Dir
     value: "$(Build.SourcesDirectory)/windows/package/"
   - name: Build.Dir
-    value: "$(Build.SourcesDirectory)/build/windows/runner/Release"
+    value: "$(Build.SourcesDirectory)/build/windows/x64/runner/Release"
   - name: Package.Bin
     value: "$(Build.SourcesDirectory)/windows/scripts/package.ps1"
 
