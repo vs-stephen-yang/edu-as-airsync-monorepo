@@ -8,7 +8,7 @@ $mt_bin = "${windows_kit_bin_dir}\x86\mt.exe"
 $manifest_path = "${pwd}\windows\runner\runner.exe-uipi.manifest"
 $edit_update_cmd = "${pwd}\windows\scripts\patch-update.ps1"
 
-$build_dir = "build\windows\runner\Release"
+$build_dir = "build\windows\x64\runner\Release"
 $executable_path = "${build_dir}\AirSync_Sender.exe"
 $installer_out_dir = "windows\package"
 
