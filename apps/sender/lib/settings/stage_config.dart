@@ -8,7 +8,7 @@ class StageConfig implements ConfigSettings {
   String versionPostfix = '-s';
 
   @override
-  String urlGateway = 'https://presentation-gateway.stage.myviewboard.cloud';
+  String urlGateway = 'https://api-us-east-1.gateway.stage.airsync.net/instances';
 
   @override
   String urlGetIce = 'https://getice.stage.myviewboard.cloud';
