@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -15,11 +14,11 @@ import 'package:uuid/uuid.dart';
 
 enum Mode {
   internet,
-  lan
+  lan,
 }
 
 class ChannelProvider extends ChangeNotifier {
-  ChannelProvider(BuildContext context){
+  ChannelProvider(BuildContext context) {
     _urlIce = AppConfig.of(context)!.settings.urlGetIce;
     _apiGateway = AppConfig.of(context)!.settings.urlGateway;
   }
@@ -31,33 +30,42 @@ class ChannelProvider extends ChangeNotifier {
   WebRTCConnector? webRTCConnector;
   List<RtcIceServer>? _iceServerList;
   bool _moderatorStatus = false;
+
   bool get moderatorStatus => _moderatorStatus;
   bool _exceedMaximumPresenters = false;
+
   bool get exceedMaximumPresenters => _exceedMaximumPresenters;
 
   ViewState _currentState = ViewState.idle;
+
   ViewState get state => _currentState;
+
   set currentState(ViewState value) {
     _currentState = value;
   }
 
   Mode _currentMode = Mode.internet;
+
   Mode get currentMode => _currentMode;
+
   set currentMode(Mode value) {
     _currentMode = value;
     notifyListeners();
   }
 
-  late String _urlIce, _apiGateway, _tunnelApiUrl ='';
+  late String _urlIce, _apiGateway, _tunnelApiUrl = '';
   DisplayCode? displayCode;
-  String? otp;
   Timer? _presentTimer;
   bool _touchBack = false;
+
   bool get touchBack => _touchBack;
+
   set touchBack(bool touchBack) {
     _touchBack = touchBack;
   }
+
   bool _systemAudio = false;
+
   bool get systemAudio => _systemAudio;
 
   //region setView
@@ -113,30 +121,21 @@ class ChannelProvider extends ChangeNotifier {
   Future<void> presentLanguagePage() async {
     setViewState(ViewState.settings);
   }
+
   //endregion
 
-  presentInternetMode(String displayCode, String otp) {
-    this.displayCode = decodeDisplayCode(displayCode.replaceAll('-', ''));
-    this.otp = otp;
-    if (this.displayCode != null) {
-      startConnect(
-          displayCode: this.displayCode!.instanceIndex.toString(), token: otp);
-    }
-  }
+  startConnect({
+    required String encodedDisplayCode,
+    required String otp,
+  }) async {
+    displayCode = decodeDisplayCode(encodedDisplayCode.replaceAll('-', ''));
+    String displayIndex = displayCode!.instanceIndex.toString();
+    String host = displayCode!.ipAddress;
 
-  presentLanMode(String displayCode, String otp) {
-    this.displayCode = decodeDisplayCode(displayCode.replaceAll('-', ''));
-    this.otp = otp;
-    if (this.displayCode != null) {
-      startConnect(host: this.displayCode!.ipAddress, token: otp);
-    }
-  }
-
-  startConnect(
-      {String? host, String? displayCode, required String token}) async {
+    // todo: need connect both channel first then disconnect another one while anyone channel connected.
     Uri? uri;
     if (currentMode == Mode.internet) {
-      await _getTunnelUrl(displayCode!).then((value) => _tunnelApiUrl = value);
+      await _getTunnelUrl(displayIndex).then((value) => _tunnelApiUrl = value);
       uri = Uri.parse(_tunnelApiUrl);
     } else {
       uri = Uri(scheme: 'ws', host: host, port: port);
@@ -168,7 +167,7 @@ class ChannelProvider extends ChangeNotifier {
           // reconnectionToken?
           break;
         case ChannelMessageType.displayStatus:
-          DataDisplayCode.getInstance().save(displayCode!);
+          DataDisplayCode.getInstance().save(encodedDisplayCode);
           _onDisplayStatus(message as DisplayStatusMessage);
           break;
         case ChannelMessageType.presentAccepted:
@@ -210,16 +209,18 @@ class ChannelProvider extends ChangeNotifier {
       }
     };
 
-    if(currentMode == Mode.internet) {
-      _channel?.openTunnelChannel(displayCode!, token);
+    if (currentMode == Mode.internet) {
+      _channel?.openTunnelChannel(displayIndex, otp);
     } else {
-      _channel?.openDirectChannel(token);
+      _channel?.openDirectChannel(otp);
     }
   }
 
-  Future<void> presentStart({required dynamic selectedSource, bool systemAudio = false}) async {
+  Future<void> presentStart(
+      {required dynamic selectedSource, bool systemAudio = false}) async {
     // PeerConnect
-    webRTCConnector = WebRTCConnector(_urlIce,
+    webRTCConnector = WebRTCConnector(
+      _urlIce,
       systemAudio: systemAudio,
       sendSignalMessage: (json) {
         // offer, answer, candidate
@@ -227,7 +228,8 @@ class ChannelProvider extends ChangeNotifier {
         _channel?.send(json);
       },
     );
-    await webRTCConnector?.makeCall(_clientId, selectedSource, _iceServerList); // TODO: _clientId
+    await webRTCConnector?.makeCall(
+        _clientId, selectedSource, _iceServerList); // TODO: _clientId
 
     if (moderatorStatus) {
       presentModeratorStartPage();
@@ -286,7 +288,7 @@ class ChannelProvider extends ChangeNotifier {
   void _onDisplayStatus(DisplayStatusMessage message) {
     _iceServerList = message.configuration?.iceServers;
     _moderatorStatus = message.status!.moderator!;
-    if(_moderatorStatus) {
+    if (_moderatorStatus) {
       presentModeratorNamePage();
     } else {
       _joinDisplay();
@@ -313,12 +315,13 @@ class ChannelProvider extends ChangeNotifier {
     msg.sessionId = _sessionId;
     _channel?.send(msg);
   }
+
   //endregion
 
   Future<String> _getTunnelUrl(String displayCode) async {
     try {
-      http.Response response = await http.get(
-        Uri.parse('$_apiGateway?displayCode=$displayCode'));
+      http.Response response =
+          await http.get(Uri.parse('$_apiGateway?displayCode=$displayCode'));
       if (response.statusCode >= HttpStatus.ok &&
           response.statusCode < HttpStatus.multiStatus) {
         Map<String, dynamic> json = jsonDecode(response.body);

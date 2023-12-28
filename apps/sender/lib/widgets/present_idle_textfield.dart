@@ -1,4 +1,3 @@
-
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
@@ -10,18 +9,19 @@ import 'package:provider/provider.dart';
 import 'custom_text_form_field.dart';
 
 class PresentIdleTextField extends StatefulWidget {
-  const PresentIdleTextField({super.key, required this.onFieldChanged, required this.onPasswordEnterEvent});
+  const PresentIdleTextField(
+      {super.key,
+      required this.onFieldChanged,
+      required this.onPasswordEnterEvent});
 
   final ValueChanged<FieldResult> onFieldChanged;
   final ValueChanged<String> onPasswordEnterEvent;
 
   @override
   State<StatefulWidget> createState() => PresentIdleTextFieldState();
-
 }
 
 class PresentIdleTextFieldState extends State<PresentIdleTextField> {
-
   final TextEditingController _codeController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
   final FocusNode _codeFocusNode = FocusNode();
@@ -38,12 +38,17 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
 
     _codeFocusNode.addListener(() {
       if (_codeFocusNode.hasFocus) {
-        _codeController.selection = TextSelection(baseOffset: 0, extentOffset: _codeController.text.length);
+        _codeController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _codeController.text.length);
+      } else {
+        _isOverlayVisible = false;
+        _overlayEntry.remove();
       }
     });
     _otpFocusNode.addListener(() {
       if (_otpFocusNode.hasFocus) {
-        _otpController.selection = TextSelection(baseOffset: 0, extentOffset: _otpController.text.length);
+        _otpController.selection = TextSelection(
+            baseOffset: 0, extentOffset: _otpController.text.length);
       }
     });
   }
@@ -65,17 +70,6 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
       return Stack(
         children: <Widget>[
           // Check range outside listview
-          GestureDetector(
-            onTap: () {
-              _isOverlayVisible = false;
-              _overlayEntry.remove();
-            },
-            child: Container(
-              color: Colors.transparent, // 設置為透明色
-              width: double.infinity,
-              height: double.infinity,
-            ),
-          ),
           Positioned(
               width: 250,
               height: DataDisplayCode.getInstance().displayCodeList!.length > 5
@@ -120,10 +114,10 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       if (channelProvider.exceedMaximumPresenters) {
-        codeKey.currentState?.setErrorMsg(S.of(context).main_display_code_exceed);
+        codeKey.currentState
+            ?.setErrorMsg(S.of(context).main_display_code_exceed);
       }
     });
     return Column(
@@ -152,11 +146,15 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                 if (text.length >= 11 && _otpController.text.length == 4) {
                   presentBtnEnable = true;
                 }
-                widget.onFieldChanged(FieldResult(enable: presentBtnEnable, displayCode: text, password: _otpController.text));
+                widget.onFieldChanged(FieldResult(
+                    enable: presentBtnEnable,
+                    displayCode: text,
+                    password: _otpController.text));
               },
               onTap: () async {
                 await DataDisplayCode.getInstance().load();
-                if (!_isOverlayVisible && DataDisplayCode.getInstance().displayCodeList != null) {
+                if (!_isOverlayVisible &&
+                    DataDisplayCode.getInstance().displayCodeList != null) {
                   _isOverlayVisible = true;
                   _overlayEntry = _createOverlayEntry();
                   Overlay.of(context).insert(_overlayEntry);
@@ -190,7 +188,10 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               if (_codeController.text.length >= 11 && text.length == 4) {
                 presentBtnEnable = true;
               }
-              widget.onFieldChanged(FieldResult(enable: presentBtnEnable, displayCode: _codeController.text, password: text));
+              widget.onFieldChanged(FieldResult(
+                  enable: presentBtnEnable,
+                  displayCode: _codeController.text,
+                  password: text));
             },
             onFieldSubmitted: (text) {
               widget.onPasswordEnterEvent(text);
@@ -212,12 +213,16 @@ class FieldResult {
   String displayCode;
   String password;
 
-  FieldResult({required this.enable, required this.displayCode, required this.password});
+  FieldResult(
+      {required this.enable,
+      required this.displayCode,
+      required this.password});
 }
 
 class UpperCaseTextFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
     return TextEditingValue(
       text: newValue.text.toUpperCase(),
       selection: newValue.selection,
