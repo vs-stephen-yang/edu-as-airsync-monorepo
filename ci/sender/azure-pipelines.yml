@@ -21,12 +21,12 @@ jobs:
   - job: Build
     strategy:
       matrix:
-        mac:
-          imageName: 'macOS-latest'
-          platform: 'mac'
-          sdkPlatform: 'macos'
-          buildCommand: 'macos'
-          extraBuildOptions: ''
+        # mac:
+        #   imageName: 'macOS-latest'
+        #   platform: 'mac'
+        #   sdkPlatform: 'macos'
+        #   buildCommand: 'macos'
+        #   extraBuildOptions: ''
         windows:
           imageName: 'windows-2022'
           platform: 'windows'
