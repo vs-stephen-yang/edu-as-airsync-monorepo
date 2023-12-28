@@ -21,6 +21,7 @@ enum Mode {
 class ChannelProvider extends ChangeNotifier {
   ChannelProvider(BuildContext context){
     _urlIce = AppConfig.of(context)!.settings.urlGetIce;
+    _apiGateway = AppConfig.of(context)!.settings.urlGateway;
   }
 
   DisplayChannelClient? _channel;
@@ -47,7 +48,7 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  late String _urlIce, _tunnelApiUrl ='';
+  late String _urlIce, _apiGateway, _tunnelApiUrl ='';
   DisplayCode? displayCode;
   String? otp;
   Timer? _presentTimer;
@@ -317,8 +318,7 @@ class ChannelProvider extends ChangeNotifier {
   Future<String> _getTunnelUrl(String displayCode) async {
     try {
       http.Response response = await http.get(
-        Uri.parse('https://api-us-east-1.gateway.dev.airsync.net/instances?displayCode=$displayCode'),
-      );
+        Uri.parse('$_apiGateway?displayCode=$displayCode'));
       if (response.statusCode >= HttpStatus.ok &&
           response.statusCode < HttpStatus.multiStatus) {
         Map<String, dynamic> json = jsonDecode(response.body);

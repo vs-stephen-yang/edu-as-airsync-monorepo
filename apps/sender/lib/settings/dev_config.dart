@@ -8,7 +8,7 @@ class DevConfig implements ConfigSettings {
   String versionPostfix = '-d';
 
   @override
-  String urlGateway = 'https://presentation-gateway.dev.myviewboard.cloud';
+  String urlGateway = 'https://api-us-east-1.gateway.dev.airsync.net/instances';
 
   @override
   String urlGetIce = 'https://getice.stage.myviewboard.cloud';
