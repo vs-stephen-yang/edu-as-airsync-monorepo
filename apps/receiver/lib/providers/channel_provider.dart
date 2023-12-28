@@ -51,7 +51,6 @@ enum PresentationState {
 }
 
 class ChannelProvider extends ChangeNotifier {
-  static bool isNewUI = true;
   AppConfig appConfig;
   late String apiGateway, version;
 
@@ -228,6 +227,11 @@ class ChannelProvider extends ChangeNotifier {
     client.onConnect = ((){
       updateSplitScreen(); // TODO: Check
       updateModePanel(false);
+      if (MirrorStateProvider.isMirroring) {
+        StreamFunction.streamFunctionState.value = stateCast;
+      } else {
+        StreamFunction.streamFunctionState.value = stateEmpty;
+      }
     });
 
     client.onAddRemoteStream = ((stream) {

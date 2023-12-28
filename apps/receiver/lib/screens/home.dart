@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -184,38 +183,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   child: StreamFunction(),
                 ),
               ),
-              if (!ChannelProvider.isNewUI)
-                ValueListenableBuilder(
-                  valueListenable: Home.showCloudOff,
-                  builder: (BuildContext context, bool value, Widget? child) {
-                    return Visibility(
-                      visible: value,
-                      child: Container(
-                        color: Colors.black,
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            const Icon(
-                              Icons.cloud_off,
-                              color: Colors.red,
-                              size: 120,
-                            ),
-                            const SizedBox(width: 20),
-                            Text(
-                              S.of(context).main_status_no_network,
-                              style: const TextStyle(
-                                color: AppColors.primary_white,
-                                fontSize: 20,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
             ],
           ),
         ),
