@@ -16,6 +16,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:ion_sdk_flutter/flutter_ion.dart' as ion;
+import 'package:uuid/uuid.dart';
+import 'package:flutter_ion_sfu/flutter_ion_sfu.dart';
+import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
 
 import 'mirror_state_provider.dart';
 
@@ -105,6 +109,9 @@ class ChannelProvider extends ChangeNotifier {
   static final List<RTCConnector> _channelRtcConnectors = <RTCConnector>[];
   static List<RTCConnector> get channelRtcConnectors => _channelRtcConnectors;
   static bool isModeratorMode = false;
+
+  ion.Client? _ionSfuClient;
+  final _ionSfuServer = FlutterIonSfu();
 
   ChannelProvider(this.appConfig) {
     apiGateway = appConfig.settings.apiGateway;
@@ -199,6 +206,33 @@ class ChannelProvider extends ChangeNotifier {
     };
   }
 
+  Future _startRemoteScreenPublisher(String roomId, int port)async{
+    _ionSfuClient?.close();
+    _ionSfuClient = null;
+
+    final ionSignal = ion.JsonRPCSignal("ws://127.0.0.1:$port/ws");
+
+    final uuid = const Uuid().v4();
+    _ionSfuClient = await ion.Client.create(sid: roomId, uid: uuid, signal: ionSignal,);
+
+    var constraints = ion.Constraints.defaults;
+    constraints.codec = "h264";
+    constraints.simulcast = false;
+    constraints.audio = false;
+    constraints.resolution = "hd";
+
+    var localStream = await ion.LocalStream.getDisplayMedia(
+        constraints: constraints
+    );
+    await _ionSfuClient?.publish(localStream);
+  }
+
+  Future _startSfuServer() async{
+    final configuration = FlutterIonSfuConfiguration ();
+    await _ionSfuServer.initialize();
+    await _ionSfuServer.start(configuration);
+  }
+
   Future<void> startServer(String instanceId) async {
     if (isServerStart) return;
     _setServerSide();
@@ -209,9 +243,36 @@ class ChannelProvider extends ChangeNotifier {
     // start the direct server
     await _directServer.start(port);
     isServerStart = true;
+
+    await _startSfuServer();
+
+    //TODO: start the remote screen when someone requests it
+    await _startRemoteScreenPublisher("remote-screen", 7000);
   }
 
   void _onNewChannel(Channel channel, Mode mode) {
+    channel.onChannelMessage = (ChannelMessage message) {
+
+      switch (message.messageType) {
+        case ChannelMessageType.startRemoteScreen:
+          final remoteScreenInfoMessage = RemoteScreenInfoMessage(
+            "1111",
+            IonSfuRoom(
+              "ws://$host:7000/ws",
+              "remote-screen",
+            ),);
+          channel.send(remoteScreenInfoMessage);
+          break;
+        default:
+          break;
+      }
+    };
+
+    final displayStatusMessage = DisplayStatusMessage();
+    displayStatusMessage.status = DisplayStatus.fromJson({'moderator': ChannelProvider.isModeratorMode});
+    channel.send(displayStatusMessage);
+
+    /*
     if (_channelRtcConnectors.length >= 6) {
       var message = PresentRejectedMessage();
       message.reason = Reason(401, text:'block');
@@ -323,6 +384,7 @@ class ChannelProvider extends ChangeNotifier {
     });
 
     _channelRtcConnectors.add(client);
+    */
   }
 
   bool stopServer() {
