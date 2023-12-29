@@ -14,6 +14,10 @@ enum ChannelMessageType {
   allowPresent,
   heartbeat,
   channelClosed,
+  startRemoteScreen,
+  stopRemoteScreen,
+  remoteScreenStatus,
+  remoteScreenInfo,
   unknown,
 }
 
@@ -33,6 +37,10 @@ final channelMessageActionNames = <int, String>{
   ChannelMessageType.allowPresent.index: 'allow-present',
   ChannelMessageType.heartbeat.index: 'heartbeat',
   ChannelMessageType.channelClosed.index: 'channel-closed',
+  ChannelMessageType.startRemoteScreen.index: 'start-remote-screen',
+  ChannelMessageType.stopRemoteScreen.index: 'stop-remote-screen',
+  ChannelMessageType.remoteScreenStatus.index: 'remote-screen-status',
+  ChannelMessageType.remoteScreenInfo.index: 'remote-screen-info',
 };
 
 final channelMessageParsers = {
@@ -51,6 +59,11 @@ final channelMessageParsers = {
   ChannelMessageType.allowPresent.index: AllowPresentMessage.fromJson,
   ChannelMessageType.heartbeat.index: HeartbeatMessage.fromJson,
   ChannelMessageType.channelClosed.index: ChannelClosedMessage.fromJson,
+  ChannelMessageType.startRemoteScreen.index: StartRemoteScreenMessage.fromJson,
+  ChannelMessageType.stopRemoteScreen.index: StopRemoteScreenMessage.fromJson,
+  ChannelMessageType.remoteScreenStatus.index:
+      RemoteScreenStatusMessage.fromJson,
+  ChannelMessageType.remoteScreenInfo.index: RemoteScreenInfoMessage.fromJson,
 };
 
 ChannelMessageType actionNameToChannelMessageType(String actionName) {
@@ -613,6 +626,140 @@ class ChannelClosedMessage extends ChannelMessage {
   Map<String, dynamic> toJson() {
     return super._toJson({
       'reason': reason?.toJson(),
+    });
+  }
+}
+
+class StartRemoteScreenMessage extends ChannelMessage {
+  String? sessionId;
+
+  StartRemoteScreenMessage(this.sessionId)
+      : super(ChannelMessageType.startRemoteScreen);
+
+  StartRemoteScreenMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.startRemoteScreen, json) {
+    final data = super._fromJson(json);
+
+    sessionId = data['sessionId'] as String?;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'sessionId': sessionId,
+    });
+  }
+}
+
+class StopRemoteScreenMessage extends ChannelMessage {
+  String? sessionId;
+
+  StopRemoteScreenMessage(this.sessionId)
+      : super(ChannelMessageType.stopRemoteScreen);
+
+  StopRemoteScreenMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.stopRemoteScreen, json) {
+    final data = super._fromJson(json);
+
+    sessionId = data['sessionId'] as String?;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'sessionId': sessionId,
+    });
+  }
+}
+
+enum RemoteScreenStatus {
+  accepted,
+  rejected,
+  kicked,
+}
+
+RemoteScreenStatus stringToRemoteScreenStatus(String str) {
+  for (RemoteScreenStatus s in RemoteScreenStatus.values) {
+    if (str == s.name) {
+      return s;
+    }
+  }
+  throw ArgumentError('Invalid RemoteScreenStatus string: $str');
+}
+
+class RemoteScreenStatusMessage extends ChannelMessage {
+  String? sessionId;
+  RemoteScreenStatus? status;
+
+  RemoteScreenStatusMessage(
+    this.sessionId,
+    this.status,
+  ) : super(ChannelMessageType.remoteScreenStatus);
+
+  RemoteScreenStatusMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.remoteScreenStatus, json) {
+    final data = super._fromJson(json);
+
+    sessionId = data['sessionId'] as String?;
+
+    if (data['status'] != null) {
+      status = stringToRemoteScreenStatus(data['status'] as String);
+    }
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'sessionId': sessionId,
+      'status': status?.name,
+    });
+  }
+}
+
+class IonSfuRoom {
+  IonSfuRoom(
+    this.url,
+    this.roomId,
+  );
+
+  String? url;
+  String? roomId;
+
+  IonSfuRoom.fromJson(Map<String, dynamic> json)
+      : url = json['url'] as String?,
+        roomId = json['roomId'] as String?;
+
+  Map<String, dynamic> toJson() => {
+        'url': url,
+        'roomId': roomId,
+      };
+}
+
+class RemoteScreenInfoMessage extends ChannelMessage {
+  String? sessionId;
+  IonSfuRoom? ionSfuRoom;
+
+  RemoteScreenInfoMessage(
+    this.sessionId,
+    this.ionSfuRoom,
+  ) : super(ChannelMessageType.remoteScreenInfo);
+
+  RemoteScreenInfoMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.remoteScreenInfo, json) {
+    final data = super._fromJson(json);
+
+    sessionId = data['sessionId'] as String?;
+
+    if (data['ionSfuRoom'] != null) {
+      ionSfuRoom = IonSfuRoom.fromJson(data['ionSfuRoom']);
+    }
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'sessionId': sessionId,
+      'ionSfuRoom': ionSfuRoom?.toJson(),
     });
   }
 }
