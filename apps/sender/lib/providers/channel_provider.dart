@@ -12,6 +12,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:uuid/uuid.dart';
+import 'package:ion_sdk_flutter/flutter_ion.dart' as ion;
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 enum Mode {
   internet,
@@ -69,6 +71,11 @@ class ChannelProvider extends ChangeNotifier {
 
   bool get systemAudio => _systemAudio;
 
+  ion.Client? _client;
+
+  RTCVideoRenderer get remoteScreenRenderer =>  _remoteScreenRenderer;
+  final _remoteScreenRenderer = RTCVideoRenderer();
+
   //region setView
   setViewState(ViewState newViewState) {
     _currentState = newViewState;
@@ -101,6 +108,10 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<void> presentBasicStartPage() async {
     setViewState(ViewState.presentStart);
+  }
+
+  Future<void> presentRemoteScreenPage() async {
+    setViewState(ViewState.remoteScreen);
   }
 
   Future<void> presentModeratorNamePage() async {
@@ -200,6 +211,10 @@ class ChannelProvider extends ChangeNotifier {
           _sessionId = (message as AllowPresentMessage).sessionId!;
           _startPresent();
           break;
+
+        case ChannelMessageType.remoteScreenInfo:
+          _handleRemoteScreenInfo(message as RemoteScreenInfoMessage);
+          break;
         default:
           break;
       }
@@ -282,15 +297,43 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   /// get IceServer list and send join-display, start-present
-  void _onDisplayStatus(DisplayStatusMessage message) {
+  void _onDisplayStatus(DisplayStatusMessage message) async {
     _iceServerList = message.configuration?.iceServers;
     _moderatorStatus = message.status!.moderator!;
-    if (_moderatorStatus) {
-      presentModeratorNamePage();
-    } else {
-      _joinDisplay();
-      _startPresent();
-    }
+
+    _requestRemoteScreen();
+
+    // if (_moderatorStatus) {
+    //   presentModeratorNamePage();
+    // } else {
+    //   _joinDisplay();
+    //   _startPresent();
+    // }
+  }
+
+  Future _requestRemoteScreen() async {
+    final msg = StartRemoteScreenMessage(_clientId);
+    _channel?.send(msg);
+  }
+
+  Future _handleRemoteScreenInfo(RemoteScreenInfoMessage message) async {
+
+    final signal = ion.JsonRPCSignal(message.ionSfuRoom!.url!);
+
+    _client = await ion.Client.create(
+      sid: message.ionSfuRoom!.roomId!,
+      uid: const Uuid().v4(),
+      signal: signal,);
+
+    _client!.ontrack = (track, ion.RemoteStream remoteStream) async {
+      await _remoteScreenRenderer.initialize();
+
+      _remoteScreenRenderer.srcObject = remoteStream.stream;
+      notifyListeners();
+    };
+
+
+    presentRemoteScreenPage();
   }
 
   //region sendMessage
