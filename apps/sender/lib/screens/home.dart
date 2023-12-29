@@ -12,6 +12,7 @@ import 'package:display_cast_flutter/widgets/present_idle.dart';
 import 'package:display_cast_flutter/widgets/present_present_start.dart';
 import 'package:display_cast_flutter/widgets/present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
+import 'package:display_cast_flutter/widgets/remote_screen_widget.dart';
 import 'package:display_cast_flutter/widgets/settings.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:flutter/foundation.dart';
@@ -89,6 +90,8 @@ class _HomeState extends State<Home> {
                         return PresentPresentStart();
                       case ViewState.moderatorStart:
                         return ModeratorPresentStart();
+                      case ViewState.remoteScreen:
+                        return const RemoteScreenWidget();
                       case ViewState.settings:
                         return const Settings();
                       case ViewState.language:

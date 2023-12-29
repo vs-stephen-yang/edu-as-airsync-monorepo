@@ -52,6 +52,10 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection
       ref: release-0.1.0
+  ion_sdk_flutter:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter
+      ref: release-0.0.1
   protobuf: ^2.1.0
   provider: ^6.1.1
   flutter_multi_formatter: ^2.12.3
@@ -71,7 +75,7 @@ dependencies:
 #    path: /Users/chenzo/StudioProjects/display-channel
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
-      ref: release-0.0.8
+      ref: remote-screen
   flutter_background: ^1.2.0
 
 dependency_overrides:
