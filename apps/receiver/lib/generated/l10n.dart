@@ -480,10 +480,10 @@ class S {
     );
   }
 
-  /// `%s would like to join in to the mirror.`
+  /// `%s would like to share their screen.`
   String get main_mirror_from_client {
     return Intl.message(
-      '%s would like to join in to the mirror.',
+      '%s would like to share their screen.',
       name: 'main_mirror_from_client',
       desc: '',
       args: [],
@@ -530,10 +530,10 @@ class S {
     );
   }
 
-  /// `What's new`
+  /// `What's New?`
   String get main_settings_whats_new {
     return Intl.message(
-      'What\'s new',
+      'What\'s New?',
       name: 'main_settings_whats_new',
       desc: '',
       args: [],
