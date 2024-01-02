@@ -1,4 +1,5 @@
 
+import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:flutter/material.dart';
@@ -57,9 +58,9 @@ class Settings extends StatelessWidget {
                 var url = Uri.parse('https://myviewboard.com/kb/en_US/display');
                 await launchUrl(url);
               },
-              child: const Text(
-                'Knowledge base',
-                style: TextStyle(
+              child: Text(
+                S.of(context).settings_knowledge_base,
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
                 ),
@@ -71,11 +72,10 @@ class Settings extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 channelProvider.presentLanguagePage();
-                // presentStateProvider.setViewState(ViewState.language);
               },
-              child: const Text(
-                'Language',
-                style: TextStyle(
+              child: Text(
+                S.of(context).main_language,
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
                 ),

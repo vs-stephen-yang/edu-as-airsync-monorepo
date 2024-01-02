@@ -120,7 +120,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future<void> presentLanguagePage() async {
-    setViewState(ViewState.settings);
+    setViewState(ViewState.language);
   }
 
   //endregion
