@@ -50,7 +50,7 @@ jobs:
         displayName: Configure Gradle caching
         condition: eq(variables.platform, 'android')
         inputs:
-          key: 'gradle | "$(Agent.OS)" | android/build.gradle, android/app/build.gradle'
+          key: 'gradle | "$(Agent.OS)" | android/build.gradle, example/android/app/build.gradle'
           restoreKeys: |
             gradle | "$(Agent.OS)"
             gradle
