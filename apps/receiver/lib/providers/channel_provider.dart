@@ -8,6 +8,7 @@ import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/main_common.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
+import 'package:display_flutter/model/rtc_play_order.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -36,13 +37,6 @@ import 'mirror_state_provider.dart';
 enum Mode {
   internet,
   lan
-}
-
-enum Feature {
-  basic,
-  splitScreen,
-  moderator,
-  mirror
 }
 
 enum PresentationState {
@@ -101,13 +95,14 @@ class ChannelProvider extends ChangeNotifier {
 
   String? host;
   int port = 5100;
-  // int passcode = 7;
   bool isServerStart = false;
   late DisplayDirectServer _directServer;
   late DisplayTunnelServer _tunnelServer;
   String _tunnelApiUrl ='';
   static final List<RTCConnector> _channelRtcConnectors = <RTCConnector>[];
   static List<RTCConnector> get channelRtcConnectors => _channelRtcConnectors;
+  static final RTCPlayOrder _rtcPlayOrder = RTCPlayOrder();
+  static RTCPlayOrder get rtcPlayOrder => _rtcPlayOrder;
   static bool isModeratorMode = false;
 
   ion.Client? _ionSfuClient;
@@ -117,33 +112,22 @@ class ChannelProvider extends ChangeNotifier {
     apiGateway = appConfig.settings.apiGateway;
     version = appConfig.appVersion;
 
-    _checkNetWorkInfo().then((value) {
-      host = value;
-      if (displayCode.isEmpty || _tunnelApiUrl.isEmpty) {
-        getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
-          if (value.isNotEmpty) {
-            displayCode = encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
-          } else {
-            displayCode = encodeDisplayCode(DisplayCode(host!, 0))!;
-          }
-          startServer(AppInstanceCreate().displayInstanceID);
-        });
-      }
-    });
-
     _checkConnectivity().then((value) {
       if (value) {
-        if (displayCode.isEmpty || _tunnelApiUrl.isEmpty) {
-          getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
-            if (value.isNotEmpty) {
-              displayCode = encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
-            } else {
-              displayCode = encodeDisplayCode(DisplayCode(host!, 0))!;
-            }
-            startServer(AppInstanceCreate().displayInstanceID);
-          });
-        }
         connectNet = true;
+        _checkNetWorkInfo().then((value) {
+          host = value;
+          if (displayCode.isEmpty || _tunnelApiUrl.isEmpty) {
+            getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
+              if (value.isNotEmpty) {
+                displayCode = encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
+              } else {
+                displayCode = encodeDisplayCode(DisplayCode(host!, 0))!;
+              }
+              startServer(AppInstanceCreate().displayInstanceID);
+            });
+          }
+        });
       }
     });
 
@@ -282,23 +266,24 @@ class ChannelProvider extends ChangeNotifier {
 
     // create a client object to handle this channel
     final client = mode == Mode.internet
-        ? RTCConnector(_channelRtcConnectors.length, channel, Mode.internet, iceServersApiUrl: appConfig.settings.getIceServer)
-        : RTCConnector(_channelRtcConnectors.length, channel, Mode.lan, host: '$host:$port');
+        ? RTCConnector(channel, Mode.internet, iceServersApiUrl: appConfig.settings.getIceServer)
+        : RTCConnector(channel, Mode.lan, host: '$host:$port');
 
     client.onConnect = ((){
-      updateSplitScreen(); // TODO: Check
+      updateSplitScreen();
       updateModePanel(false);
       if (MirrorStateProvider.isMirroring) {
         StreamFunction.streamFunctionState.value = stateCast;
       } else {
         StreamFunction.streamFunctionState.value = stateEmpty;
       }
+      updatePlayOrder(client.clientId!);
     });
 
     client.onAddRemoteStream = ((stream) {
       // update state and quality
       updateSplitScreen();
-      handleQualityUpdate(client);
+      handleQualityUpdate(controller: client);
 
       // hideTitleBar
       Home.showTitleBottomBar.value = false;
@@ -340,8 +325,6 @@ class ChannelProvider extends ChangeNotifier {
     });
 
     client.onChannelDisconnect = (() async {
-      // update SplitScreen's keySplitScreenCount
-      // updateSplitScreen();
       // update UI
       if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
         bool presenting = false;
@@ -380,6 +363,8 @@ class ChannelProvider extends ChangeNotifier {
 
       await client.close(ChannelCloseCode.close);
       _channelRtcConnectors.remove(client);
+      ChannelProvider.updateSplitScreen();
+      ChannelProvider.handleQualityUpdate();
       notifyListeners();
     });
 
@@ -396,10 +381,6 @@ class ChannelProvider extends ChangeNotifier {
   bool _checkOTP(String otp) {
     return otpList.contains(otp);
   }
-
-  // bool _checkPinCode(String pinCode) {
-  //   return _pinCode == pinCode;
-  // }
 
   Future<String> getDisplayCode(String instanceID) async {
     try {
@@ -422,20 +403,23 @@ class ChannelProvider extends ChangeNotifier {
         return '';
       }
     } catch (e) {
-      log('${e.toString()}');
+      log(e.toString());
       // http.get maybe no network connection.
       return '';
     }
   }
 
-  // String getPinCode() {
-  //   if (host == null) return '';
-  //   return _pinCode = encodePinCode(PinCode(host!, passcode));
-  // }
-
   void updateModePanel(bool show) {
     showMode = show;
     notifyListeners();
+  }
+
+  static void updatePlayOrder(String id) {
+    _rtcPlayOrder.add(id);
+  }
+
+  static void removerPlayOrder(String id) {
+    _rtcPlayOrder.remove(id);
   }
 
   static void updateSplitScreen() {
@@ -455,7 +439,7 @@ class ChannelProvider extends ChangeNotifier {
         Map.from(SplitScreen.mapSplitScreen.value);
   }
 
-  static void handleQualityUpdate(RTCConnector controller) {
+  static void handleQualityUpdate({RTCConnector? controller}) {
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
         for (RTCConnector connector in channelRtcConnectors) {
@@ -471,7 +455,9 @@ class ChannelProvider extends ChangeNotifier {
         }
       }
     } else {
-      controller.sendChangeQuality(true, true);
+      if (controller != null) {
+        controller.sendChangeQuality(true, true);
+      }
     }
   }
 

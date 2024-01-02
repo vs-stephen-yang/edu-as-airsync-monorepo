@@ -255,6 +255,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       } else {
         // no any item selected
         if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
+          selection = ChannelProvider.rtcPlayOrder.getOrderByIndex(selection);
           if (selection ==
               SplitScreen.mapSplitScreen.value[keySplitScreenLastId]) {
             return isWidth ? _fullWidth : _fullHeight;
