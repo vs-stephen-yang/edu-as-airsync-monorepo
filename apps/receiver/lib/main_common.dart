@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:display_flutter/app_analytics.dart';
@@ -8,8 +7,6 @@ import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/bean/display_message.dart';
-import 'package:display_flutter/model/control_socket.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
@@ -65,7 +62,6 @@ class MyApp extends StatefulWidget {
   const MyApp({super.key});
   static ValueNotifier<bool> updatedLocale = ValueNotifier(false);
   static bool isInBackgroundMode = false;
-  static Timer? _timerControlSocket;
 
   static void setNewLocale(BuildContext context, int index) async {
     String newLanguage = AppPreferences.localeMap.keys.elementAt(index);
@@ -75,38 +71,6 @@ class MyApp extends StatefulWidget {
     state?.changeLanguage(AppPreferences().locale);
 
     updatedLocale.value = !updatedLocale.value;
-  }
-
-  static void disconnectControlSocket() {
-    isInBackgroundMode = true;
-    if (!ControlSocket().hasPresenterOccupied()) {
-      // due to disconnectedP2pClient may call many times.
-      _timerControlSocket?.cancel();
-      _timerControlSocket = Timer.periodic(const Duration(seconds: 1), (timer) {
-        // print('_TAG_, _timerControlSocket->tick: ${timer.tick}');
-        if (timer.tick >= 30) {
-          timer.cancel();
-          _timerControlSocket?.cancel();
-          _timerControlSocket = null;
-          ControlSocket().disconnect();
-        }
-      });
-    }
-  }
-
-  static void connectControlSocket(BuildContext context) {
-    isInBackgroundMode = false;
-    if (_timerControlSocket != null) {
-      // print('_TAG_, _timerControlSocket->cancel');
-      _timerControlSocket?.cancel();
-      _timerControlSocket = null;
-    }
-    if (ControlSocket().isControlSocketNull()) {
-      AppConfig? appConfig = AppConfig.of(context);
-      if (appConfig != null) {
-        ControlSocket().connect(appConfig.settings.apiGateway);
-      }
-    }
   }
 
   @override
@@ -136,36 +100,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    log('AppLifecycleState: $state');
-    if (state == AppLifecycleState.inactive) {
-      // MyApp.disconnectControlSocket();
-      // ControlSocket().updateAllAudioEnableState(false);
-      // MainInfo.cancelGetOTPTimer();
-    } else if (state == AppLifecycleState.resumed) {
-      // MyApp.connectControlSocket(context);
-      // ControlSocket().updateAllAudioEnableState(true);
-      // MainInfo.addGetOTPEvent();
-    }
-  }
-
-  @override
   Future<bool> didPopRoute() async {
     if (!Platform.isAndroid) {
       NavigatorState? navigatorState =
           NavigationService.navigationKey.currentState;
       if (navigatorState != null && !navigatorState.canPop()) {
-        ControlSocket().disconnect();
         AppAnalytics().trackEventAppTerminated();
-
-        Moderator? moderator = ControlSocket().moderator;
-        if (moderator != null) {
-          AppConfig? appConfig = AppConfig.of(context);
-          if (appConfig != null) {
-            ControlSocket()
-                .unbindModerator(appConfig.settings.apiGateway, moderator);
-          }
-        }
         // wait one second for handle above process.
         await Future.delayed(const Duration(seconds: 1));
       }

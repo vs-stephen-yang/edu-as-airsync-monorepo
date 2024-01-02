@@ -395,9 +395,6 @@ class RTCConnector {
       return;
     }
     presentationState = PresentationState.streaming;
-    // showConnectionInfo(false);
-    // ControlSocket().handleAddStreamState(this);
-    // navService.popUntil('/home');
     controlAudio(true);
     onAddRemoteStream?.call(_remoteRenderer?.srcObject);
     AppAnalytics().trackEventPresentStarted(sessionId!, clientId!);
