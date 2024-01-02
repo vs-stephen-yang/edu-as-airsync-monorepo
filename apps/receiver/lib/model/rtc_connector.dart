@@ -20,7 +20,6 @@ import 'connect_timer.dart';
 
 class RTCConnector {
   String mUid = const Uuid().v4();
-  final int index;
   final Channel _channel;
   final Mode _mode;
 
@@ -59,7 +58,7 @@ class RTCConnector {
   Function()? onConflictWithMirror;
   Future<void> Function()? onChannelDisconnect;
 
-  RTCConnector(this.index, this._channel, this._mode, {String? iceServersApiUrl, String? host}) {
+  RTCConnector(this._channel, this._mode, {String? iceServersApiUrl, String? host}) {
     _printPeerConnectionLog('init', null);
 
     _channel.onChannelMessage = (message) => _onChannelMessages(message);
@@ -219,7 +218,8 @@ class RTCConnector {
     if (ChannelProvider.isModeratorMode) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
       await disconnectPeerConnection(sendAnalytics: false);
-      // presentationState = PresentationState.occupied;
+      ChannelProvider.updateSplitScreen();
+      ChannelProvider.handleQualityUpdate();
       sessionId = null;
       onShowMode?.call();
       return;
@@ -305,8 +305,10 @@ class RTCConnector {
     }
 
     // clear renderer
-    if (_remoteRenderer!.renderVideo) {
-      _remoteRenderer?.srcObject = null;
+    if (_remoteRenderer!= null) {
+      if(_remoteRenderer?.textureId != null && _remoteRenderer!.renderVideo) {
+        _remoteRenderer?.srcObject = null;
+      }
       await _remoteRenderer?.dispose();
       _remoteRenderer = RTCVideoRenderer();
     }
@@ -318,8 +320,7 @@ class RTCConnector {
 
     // change state
     presentationState = PresentationState.stopStreaming;
-    ChannelProvider.updateSplitScreen();
-    ChannelProvider.handleQualityUpdate(this);
+    ChannelProvider.removerPlayOrder(clientId!);
     onRefresh?.call();
   }
 

@@ -49,7 +49,7 @@ class _ParticipantItemState extends State<ParticipantItem>
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
     rtcConnector = ChannelProvider.channelRtcConnectors[widget.index];
-    String presenterId = rtcConnector.clientId!;
+    String presenterId = rtcConnector.clientId ?? '';
     String presenterName = rtcConnector.senderName ?? '';
 
     if (presenterName.length > 10) {

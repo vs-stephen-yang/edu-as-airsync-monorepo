@@ -46,6 +46,7 @@ class WebRTCViewState extends State<WebRTCView> {
   @override
   void deactivate() {
     pauseScreenImageKey.currentState?.clearImage();
+    _rtcConnector = null;
     super.deactivate();
   }
 
@@ -131,8 +132,12 @@ class WebRTCViewState extends State<WebRTCView> {
   @override
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
-    if (ChannelProvider.channelRtcConnectors.isNotEmpty && ChannelProvider.channelRtcConnectors.length > widget.index) {
-      _rtcConnector = ChannelProvider.channelRtcConnectors[widget.index];
+    if (ChannelProvider.channelRtcConnectors.isNotEmpty) {
+      int playIndex = ChannelProvider.rtcPlayOrder.getOrderByIndex(widget.index);
+
+      if (ChannelProvider.channelRtcConnectors.length >= playIndex) {
+        _rtcConnector = ChannelProvider.channelRtcConnectors[playIndex];
+      }
       if (_rtcConnector?.presentationState == PresentationState.pauseStreaming) {
         pauseVideo();
       } else if (_rtcConnector?.presentationState == PresentationState.resumeStreaming) {
@@ -159,12 +164,12 @@ class WebRTCViewState extends State<WebRTCView> {
                 _textureSizeChanged = true;
                 return false;
               },
-              child: _rtcConnector != null? Listener(
+              child: Listener(
                 onPointerDown: _onTouchStart,
                 onPointerMove: _onTouchMove,
                 onPointerUp: _onTouchEnd,
-                child: RTCVideoView(_rtcConnector!.remoteRenderer!, key: _widgetKey),
-              ): const SizedBox(),
+                child: _rtcConnector != null? RTCVideoView(_rtcConnector!.remoteRenderer!, key: _widgetKey) : const SizedBox(),
+              ),
             ),
           ),
         ),
