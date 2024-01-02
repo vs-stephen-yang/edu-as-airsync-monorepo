@@ -1,0 +1,86 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+variables:
+  - name: Flutter.Version
+    value: "3.16.4"
+  - name: Flutter.Bin
+    value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
+  - name: GRADLE_USER_HOME
+    value: $(Pipeline.Workspace)/.gradle
+  - name: PUB_CACHE
+    value: $(Pipeline.Workspace)/.pub-cache
+
+jobs:
+  - job: Build
+    strategy:
+      matrix:
+        mac:
+          imageName: 'macOS-latest'
+          platform: 'mac'
+          sdkPlatform: 'macos'
+          buildCommand: 'macos'
+          extraBuildOptions: ''
+        android:
+          imageName: 'macOS-latest'
+          platform: 'android'
+          sdkPlatform: 'macos'
+          buildCommand: 'apk'
+          extraBuildOptions: ''
+        windows:
+          imageName: 'windows-2022'
+          platform: 'windows'
+          sdkPlatform: 'windows'
+          buildCommand: 'windows'
+          extraBuildOptions: ''
+    pool:
+      vmImage: $(imageName)
+
+    steps:
+      - task: JavaToolInstaller@0
+        inputs:
+          versionSpec: '11'
+          jdkArchitectureOption: 'x64'
+          jdkSourceOption: 'PreInstalled'
+
+      - task: Cache@2
+        displayName: Configure Gradle caching
+        condition: eq(variables.platform, 'android')
+        inputs:
+          key: 'gradle | "$(Agent.OS)" | android/build.gradle, android/app/build.gradle'
+          restoreKeys: |
+            gradle | "$(Agent.OS)"
+            gradle
+          path: $(GRADLE_USER_HOME)
+
+      - task: Cache@2
+        displayName: Configure flutter caching
+        inputs:
+          key: 'pubspec | "$(Agent.OS)" | pubspec.yaml, pubspec.lock'
+          restoreKeys: |
+            pubspec | "$(Agent.OS)"
+            pubspec
+          path: $(PUB_CACHE)
+
+      # install flutter SDK
+      - script: curl https://storage.googleapis.com/flutter_infra_release/releases/stable/$(sdkPlatform)/flutter_$(sdkPlatform)_$(Flutter.Version)-stable.zip --output $(Pipeline.Workspace)/flutter.zip
+        displayName: Download the flutter SDK
+
+      - task: ExtractFiles@1
+        displayName: Extract the flutter SDK
+        inputs:
+          archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
+          destinationFolder: "$(Pipeline.Workspace)/flutter"
+
+      - script: $(Flutter.Bin) analyze --no-fatal-infos
+        displayName: Run lint checks
+        workingDirectory: "$(Build.SourcesDirectory)"
+
+      # build
+      - script: $(Flutter.Bin) build $(buildCommand) $(extraBuildOptions)
+        displayName: Build
+        workingDirectory: "$(Build.SourcesDirectory)/example"
+
