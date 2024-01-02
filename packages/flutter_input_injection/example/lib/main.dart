@@ -32,7 +32,8 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _flutterInputInjectionPlugin.getPlatformVersion() ?? 'Unknown platform version';
+          await _flutterInputInjectionPlugin.getPlatformVersion() ??
+              'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -54,22 +55,28 @@ class _MyAppState extends State<MyApp> {
 
     int id = 9;
     for (int j = 0; j < 3; ++j) {
-      await _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_START, id, x, y);
+      await _flutterInputInjectionPlugin.sendTouch(
+          FlutterInputInjection.TOUCH_POINT_START, id, x, y);
       for (int i = 0; i < 50; ++i) {
-        await _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_MOVE, id, x, y);
+        await _flutterInputInjectionPlugin.sendTouch(
+            FlutterInputInjection.TOUCH_POINT_MOVE, id, x, y);
         y += 10;
         await Future.delayed(Duration(milliseconds: 10));
       }
-      await _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_END, id, x, y);
+      await _flutterInputInjectionPlugin.sendTouch(
+          FlutterInputInjection.TOUCH_POINT_END, id, x, y);
 
       x += 50;
-      await _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_START, id, x, y);
+      await _flutterInputInjectionPlugin.sendTouch(
+          FlutterInputInjection.TOUCH_POINT_START, id, x, y);
       for (int i = 0; i < 50; ++i) {
-        await _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_MOVE, id, x, y);
+        await _flutterInputInjectionPlugin.sendTouch(
+            FlutterInputInjection.TOUCH_POINT_MOVE, id, x, y);
         y -= 10;
         await Future.delayed(Duration(milliseconds: 10));
       }
-      await _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_END, id, x, y);
+      await _flutterInputInjectionPlugin.sendTouch(
+          FlutterInputInjection.TOUCH_POINT_END, id, x, y);
 
       x += 50;
       id += 1;
@@ -80,18 +87,17 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Input injection plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: testTouchInject,
-          tooltip: 'Test',
-          child: const Icon(Icons.play_arrow),
-        )
-      ),
+          appBar: AppBar(
+            title: const Text('Input injection plugin example app'),
+          ),
+          body: Center(
+            child: Text('Running on: $_platformVersion\n'),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: testTouchInject,
+            tooltip: 'Test',
+            child: const Icon(Icons.play_arrow),
+          )),
     );
   }
 }
