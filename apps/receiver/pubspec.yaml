@@ -77,7 +77,7 @@ dependencies:
   flutter_mirror:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror
-      ref: release-0.23.0
+      ref: release-0.24.0
   move_to_background: ^1.0.2
   sprintf: ^7.0.0
   connectivity_plus: ^5.0.1
