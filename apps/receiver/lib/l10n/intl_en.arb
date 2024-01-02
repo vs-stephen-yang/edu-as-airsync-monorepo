@@ -42,10 +42,10 @@
   "main_cast_settings_google_cast": "Chromecast",
   "main_cast_settings_miracast": "Miracast",
   "main_airplay_pin_code": "AirPlay Code",
-  "main_mirror_from_client":"%s would like to join in to the mirror.",
+  "main_mirror_from_client": "%s would like to share their screen.",
   "main_mirror_prompt_cancel": "Cancel",
   "main_mirror_prompt_accept": "Accept",
   "main_settings_title": "Settings",
   "main_settings_language": "Language",
-  "main_settings_whats_new": "What's new"
+  "main_settings_whats_new": "What's New?"
 }

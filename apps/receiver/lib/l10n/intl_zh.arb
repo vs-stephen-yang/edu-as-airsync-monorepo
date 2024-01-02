@@ -35,5 +35,17 @@
   "moderator_remove": "移除",
   "moderator_activate_split_screen": "確定啟用分割畫面功能嗎?最多可四人同時投影。",
   "moderator_deactivate_split_screen": "確定結束分割畫面功能嗎?",
-  "moderator_confirm": "確定"
+  "moderator_confirm": "確定",
+  "main_cast_settings_title": "螢幕鏡射",
+  "main_cast_settings_device_name": "設備名稱",
+  "main_cast_settings_airplay": "AirPlay",
+  "main_cast_settings_google_cast": "Chromecast",
+  "main_cast_settings_miracast": "Miracast",
+  "main_airplay_pin_code": "AirPlay密碼",
+  "main_mirror_from_client": "%s 想要開始螢幕鏡射",
+  "main_mirror_prompt_cancel": "取消",
+  "main_mirror_prompt_accept": "允許",
+  "main_settings_title": "設定",
+  "main_settings_language": "語言",
+  "main_settings_whats_new": "最新消息"
 }

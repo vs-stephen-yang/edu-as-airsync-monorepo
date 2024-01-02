@@ -54,7 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_limit_time_message":
             MessageLookupByLibrary.simpleMessage("5 minutes left"),
         "main_mirror_from_client": MessageLookupByLibrary.simpleMessage(
-            "%s would like to join in to the mirror."),
+            "%s would like to share their screen."),
         "main_mirror_prompt_accept":
             MessageLookupByLibrary.simpleMessage("Accept"),
         "main_mirror_prompt_cancel":
@@ -65,7 +65,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Language"),
         "main_settings_title": MessageLookupByLibrary.simpleMessage("Settings"),
         "main_settings_whats_new":
-            MessageLookupByLibrary.simpleMessage("What\'s new"),
+            MessageLookupByLibrary.simpleMessage("What\'s New?"),
         "main_split_screen_question": MessageLookupByLibrary.simpleMessage(
             "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once."),
         "main_split_screen_title":
