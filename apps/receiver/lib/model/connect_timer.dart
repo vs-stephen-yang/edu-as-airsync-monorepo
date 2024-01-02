@@ -2,12 +2,9 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:display_flutter/app_analytics.dart';
-import 'package:display_flutter/model/webrtc_view_socket.dart';
 import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:flutter/material.dart';
 
-typedef ConnectionTimerCallback = void Function(
-    WebRTCFlutterViewSocket controller, String nextId);
 typedef TimeOutCallback = void Function();
 
 class ConnectionTimer {
@@ -24,27 +21,6 @@ class ConnectionTimer {
   }
 
   ConnectionTimer.internal();
-
-  void startConnectionTimeoutTimer(WebRTCFlutterViewSocket controller,
-      String nextId, ConnectionTimerCallback onFinish) {
-    if (mConnectionTimeoutTimer != null) stopConnectionTimeoutTimer();
-
-    var count = 30;
-    mConnectionTimeoutTimer =
-        Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (timer.tick < 30) {
-        // onTick
-        count = 30 - timer.tick;
-        mConnectionTimeTimeout.add(count);
-      } else if (timer.tick == 30) {
-        // onFinish
-        timer.cancel();
-        mConnectionTimeTimeout.add(0);
-        log('ConnectionTimeout onFinish');
-        onFinish(controller, nextId);
-      }
-    });
-  }
 
   void startConnectionTimer(TimeOutCallback onFinish) {
     if (mConnectionTimeoutTimer != null) stopConnectionTimeoutTimer();
