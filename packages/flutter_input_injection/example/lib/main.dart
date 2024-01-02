@@ -49,7 +49,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> testTouchInject() async {
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 5));
 
     int x = 200, y = 200;
 
@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
         await _flutterInputInjectionPlugin.sendTouch(
             FlutterInputInjection.TOUCH_POINT_MOVE, id, x, y);
         y += 10;
-        await Future.delayed(Duration(milliseconds: 10));
+        await Future.delayed(const Duration(milliseconds: 10));
       }
       await _flutterInputInjectionPlugin.sendTouch(
           FlutterInputInjection.TOUCH_POINT_END, id, x, y);
@@ -73,7 +73,7 @@ class _MyAppState extends State<MyApp> {
         await _flutterInputInjectionPlugin.sendTouch(
             FlutterInputInjection.TOUCH_POINT_MOVE, id, x, y);
         y -= 10;
-        await Future.delayed(Duration(milliseconds: 10));
+        await Future.delayed(const Duration(milliseconds: 10));
       }
       await _flutterInputInjectionPlugin.sendTouch(
           FlutterInputInjection.TOUCH_POINT_END, id, x, y);
