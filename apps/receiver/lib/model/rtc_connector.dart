@@ -58,57 +58,25 @@ class RTCConnector {
   Function()? onConflictWithMirror;
   Future<void> Function()? onChannelDisconnect;
 
-  RTCConnector(this._channel, this._mode, {String? iceServersApiUrl, String? host}) {
+
+  RTCConnector(this._channel, this._mode);
+
+  void init(JoinDisplayMessage message, {String? iceServersApiUrl, String? host}) {
     _printPeerConnectionLog('init', null);
 
-    _channel.onChannelMessage = (message) => _onChannelMessages(message);
     _channel.onStateChange = (state) => _onChannelState(state);
 
     if (!_configuration.containsKey('iceServers')) {
       if (_mode == Mode.internet) {
         _getIceServers(iceServersApiUrl).then((value) {
           _configuration.putIfAbsent('iceServers', () => value);
-          sendDisplayStatus();
         });
       } else {
         _configuration.putIfAbsent('iceServers', () => [{'url': 'stun:$host'}]);
-        sendDisplayStatus();
       }
     }
-  }
 
-  void _onChannelMessages(ChannelMessage message) {
-
-    switch (message.messageType) {
-      case ChannelMessageType.joinDisplay:
-        onJoinDisplay(message as JoinDisplayMessage);
-        break;
-      case ChannelMessageType.startPresent:
-        onStartPresent(message as StartPresentMessage);
-        break;
-      case ChannelMessageType.presentAccepted:
-        onPresentAccepted();
-        break;
-      case ChannelMessageType.presentRejected:
-        onPresentRejected(message as PresentRejectedMessage);
-        break;
-      case ChannelMessageType.changePresentQuality:
-        onChangeQuality(message as ChangePresentQuality);
-      case ChannelMessageType.pausePresent:
-        onPausePresent();
-        break;
-      case ChannelMessageType.resumePresent:
-        onResumePresent();
-        break;
-      case ChannelMessageType.stopPresent:
-        onStopPresent(message as StopPresentMessage);
-      case ChannelMessageType.presentSignal:
-        onPresentSignal(message as PresentSignalMessage);
-      case ChannelMessageType.channelClosed:
-        onChannelClose(message as ChannelClosedMessage);
-      default:
-        break;
-    }
+    onJoinDisplay(message);
   }
 
   Future<void> _onChannelState(ChannelState state) async {
@@ -262,13 +230,6 @@ class RTCConnector {
 
   Future<void> onChannelClose(ChannelClosedMessage msg) async {
 
-  }
-
-  void sendDisplayStatus() {
-    final displayStatusMessage = DisplayStatusMessage();
-    displayStatusMessage.platform = _getPlatform();
-    displayStatusMessage.status = DisplayStatus.fromJson({'moderator': ChannelProvider.isModeratorMode});
-    _channel.send(displayStatusMessage);
   }
 
   void sendChangeQuality(bool isFullHeight, bool isFullFrameRate) async {
@@ -461,22 +422,6 @@ class RTCConnector {
     s.sdp =
         sdp!.replaceAll('profile-level-id=640c1f', 'profile-level-id=42e032');
     return s;
-  }
-
-  String _getPlatform() {
-    String platform;
-    if (kIsWeb) {
-      platform = 'Web';
-    } else {
-      if (Platform.isIOS) {
-        platform = 'iOS';
-      } else if (Platform.isAndroid) {
-        platform = 'Android';
-      } else {
-        platform = '';
-      }
-    }
-    return platform;
   }
 
   void _resetSetting() {
