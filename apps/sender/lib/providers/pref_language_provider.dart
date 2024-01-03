@@ -19,7 +19,9 @@ class PrefLanguageProvider extends ChangeNotifier {
   Locale? get locale => localeMap[language];
 
   Map<String, Locale> localeMap = {
+    'Deutsch': const Locale('de', ''),
     'English': const Locale('en', ''),
+    'Pусский': const Locale('ru', ''),
     '繁體中文': const Locale.fromSubtags(
         languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),
   };

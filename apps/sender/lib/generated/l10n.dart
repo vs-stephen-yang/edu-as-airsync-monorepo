@@ -50,12 +50,12 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `Display Code`
+  /// `Display code`
   String get main_display_code {
     return Intl.message(
-      'Display Code',
+      'Display code',
       name: 'main_display_code',
-      desc: 'Display Code',
+      desc: '',
       args: [],
     );
   }
@@ -65,7 +65,7 @@ class S {
     return Intl.message(
       '9 or 10-digit display code',
       name: 'main_display_code_description',
-      desc: 'DisplayPresent Code has 9-10 digits',
+      desc: '',
       args: [],
     );
   }
@@ -75,7 +75,7 @@ class S {
     return Intl.message(
       'Password',
       name: 'main_password',
-      desc: 'Password',
+      desc: '',
       args: [],
     );
   }
@@ -85,7 +85,7 @@ class S {
     return Intl.message(
       '4-digit one-time password',
       name: 'main_password_description',
-      desc: 'Password has 4 digits',
+      desc: '',
       args: [],
     );
   }
@@ -95,7 +95,7 @@ class S {
     return Intl.message(
       'PRESENT',
       name: 'main_present',
-      desc: 'PRESENT',
+      desc: '',
       args: [],
     );
   }
@@ -105,7 +105,7 @@ class S {
     return Intl.message(
       'Touchback',
       name: 'main_touch_back',
-      desc: 'Touchback',
+      desc: '',
       args: [],
     );
   }
@@ -115,7 +115,7 @@ class S {
     return Intl.message(
       'Language',
       name: 'main_language',
-      desc: 'Language',
+      desc: '',
       args: [],
     );
   }
@@ -125,7 +125,7 @@ class S {
     return Intl.message(
       'Settings',
       name: 'main_setting',
-      desc: 'Settings',
+      desc: '',
       args: [],
     );
   }
@@ -135,7 +135,7 @@ class S {
     return Intl.message(
       'Knowledge Base',
       name: 'settings_knowledge_base',
-      desc: 'Knowledge base',
+      desc: '',
       args: [],
     );
   }
@@ -155,7 +155,7 @@ class S {
     return Intl.message(
       'Choose a view to share with the receiving screen.',
       name: 'present_select_screen_description',
-      desc: 'Choose what to share with the remote screen',
+      desc: '',
       args: [],
     );
   }
@@ -165,7 +165,7 @@ class S {
     return Intl.message(
       'Entire screen',
       name: 'present_select_screen_entire',
-      desc: 'Entire Screen',
+      desc: '',
       args: [],
     );
   }
@@ -175,7 +175,7 @@ class S {
     return Intl.message(
       'Window',
       name: 'present_select_screen_window',
-      desc: 'Window',
+      desc: '',
       args: [],
     );
   }
@@ -185,7 +185,7 @@ class S {
     return Intl.message(
       'Share',
       name: 'present_select_screen_share',
-      desc: 'Share',
+      desc: '',
       args: [],
     );
   }
@@ -195,7 +195,7 @@ class S {
     return Intl.message(
       'Cancel',
       name: 'present_select_screen_cancel',
-      desc: 'Cancel',
+      desc: '',
       args: [],
     );
   }
@@ -205,7 +205,7 @@ class S {
     return Intl.message(
       'Time elapsed',
       name: 'present_time',
-      desc: 'Presentation time',
+      desc: '',
       args: [],
     );
   }
@@ -215,7 +215,7 @@ class S {
     return Intl.message(
       'hr',
       name: 'present_time_unit_hour',
-      desc: 'Hour',
+      desc: '',
       args: [],
     );
   }
@@ -225,7 +225,7 @@ class S {
     return Intl.message(
       'min',
       name: 'present_time_unit_min',
-      desc: 'Min',
+      desc: '',
       args: [],
     );
   }
@@ -235,7 +235,7 @@ class S {
     return Intl.message(
       'sec',
       name: 'present_time_unit_sec',
-      desc: 'Sec',
+      desc: '',
       args: [],
     );
   }
@@ -245,7 +245,7 @@ class S {
     return Intl.message(
       'Resume',
       name: 'present_state_resume',
-      desc: 'Resume',
+      desc: '',
       args: [],
     );
   }
@@ -255,7 +255,7 @@ class S {
     return Intl.message(
       'Pause',
       name: 'present_state_pause',
-      desc: 'Pause',
+      desc: '',
       args: [],
     );
   }
@@ -265,27 +265,7 @@ class S {
     return Intl.message(
       'Stop presenting',
       name: 'present_state_stop',
-      desc: 'Stop Presenting',
-      args: [],
-    );
-  }
-
-  /// `Full screen`
-  String get present_state_full_screen {
-    return Intl.message(
-      'Full screen',
-      name: 'present_state_full_screen',
-      desc: 'Full screen',
-      args: [],
-    );
-  }
-
-  /// `Exit full screen`
-  String get present_state_normal_screen {
-    return Intl.message(
-      'Exit full screen',
-      name: 'present_state_normal_screen',
-      desc: 'Exit Full screen',
+      desc: '',
       args: [],
     );
   }
@@ -295,7 +275,7 @@ class S {
     return Intl.message(
       'Moderator',
       name: 'moderator',
-      desc: 'Moderator',
+      desc: '',
       args: [],
     );
   }
@@ -305,7 +285,7 @@ class S {
     return Intl.message(
       'Name',
       name: 'moderator_name',
-      desc: 'Name',
+      desc: '',
       args: [],
     );
   }
@@ -315,7 +295,7 @@ class S {
     return Intl.message(
       'Please wait while the moderator selects presenters...',
       name: 'moderator_wait',
-      desc: 'Please wait for your turn\nModerator will select presenters',
+      desc: '',
       args: [],
     );
   }
@@ -325,7 +305,7 @@ class S {
     return Intl.message(
       'EXIT',
       name: 'moderator_exit',
-      desc: 'EXIT',
+      desc: '',
       args: [],
     );
   }
@@ -335,26 +315,36 @@ class S {
     return Intl.message(
       'Field required',
       name: 'moderator_fill_out',
-      desc: 'Please fill out this field.',
+      desc: '',
       args: [],
     );
   }
 
-  /// `Invalid one time password`
+  /// `Password invalid.`
   String get main_password_invalid {
     return Intl.message(
-      'Invalid one time password',
+      'Password invalid.',
       name: 'main_password_invalid',
       desc: '',
       args: [],
     );
   }
 
-  /// `Reach maximum presenters`
+  /// `Maximum participants (6) reached.`
   String get main_display_code_exceed {
     return Intl.message(
-      'Reach maximum presenters',
+      'Maximum participants (6) reached.',
       name: 'main_display_code_exceed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Maximum presenters (4) reached.`
+  String get main_display_code_exceed_split_screen {
+    return Intl.message(
+      'Maximum presenters (4) reached.',
+      name: 'main_display_code_exceed_split_screen',
       desc: '',
       args: [],
     );
@@ -369,6 +359,16 @@ class S {
       args: [],
     );
   }
+
+  /// `English`
+  String get main_language_name {
+    return Intl.message(
+      'English',
+      name: 'main_language_name',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -377,6 +377,8 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'de'),
+      Locale.fromSubtags(languageCode: 'ru'),
       Locale.fromSubtags(languageCode: 'zh'),
     ];
   }

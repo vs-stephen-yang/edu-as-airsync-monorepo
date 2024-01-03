@@ -26,17 +26,21 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "main_display_code":
-            MessageLookupByLibrary.simpleMessage("Display Code"),
+            MessageLookupByLibrary.simpleMessage("Display code"),
         "main_display_code_description":
             MessageLookupByLibrary.simpleMessage("9 or 10-digit display code"),
-        "main_display_code_exceed":
-            MessageLookupByLibrary.simpleMessage("Reach maximum presenters"),
+        "main_display_code_exceed": MessageLookupByLibrary.simpleMessage(
+            "Maximum participants (6) reached."),
+        "main_display_code_exceed_split_screen":
+            MessageLookupByLibrary.simpleMessage(
+                "Maximum presenters (4) reached."),
         "main_language": MessageLookupByLibrary.simpleMessage("Language"),
+        "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
         "main_password": MessageLookupByLibrary.simpleMessage("Password"),
         "main_password_description":
             MessageLookupByLibrary.simpleMessage("4-digit one-time password"),
         "main_password_invalid":
-            MessageLookupByLibrary.simpleMessage("Invalid one time password"),
+            MessageLookupByLibrary.simpleMessage("Password invalid."),
         "main_present": MessageLookupByLibrary.simpleMessage("PRESENT"),
         "main_setting": MessageLookupByLibrary.simpleMessage("Settings"),
         "main_touch_back": MessageLookupByLibrary.simpleMessage("Touchback"),
@@ -60,10 +64,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Share screen audio"),
         "present_select_screen_window":
             MessageLookupByLibrary.simpleMessage("Window"),
-        "present_state_full_screen":
-            MessageLookupByLibrary.simpleMessage("Full screen"),
-        "present_state_normal_screen":
-            MessageLookupByLibrary.simpleMessage("Exit full screen"),
         "present_state_pause": MessageLookupByLibrary.simpleMessage("Pause"),
         "present_state_resume": MessageLookupByLibrary.simpleMessage("Resume"),
         "present_state_stop":
