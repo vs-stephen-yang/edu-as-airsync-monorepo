@@ -129,11 +129,26 @@ class ChannelConnectedMessage extends ChannelMessage {
   }
 }
 
+enum JoinIntentType {
+  present,
+  remoteScreen,
+}
+
+JoinIntentType stringToJoinIntentType(String str) {
+  for (JoinIntentType t in JoinIntentType.values) {
+    if (str == t.name) {
+      return t;
+    }
+  }
+  throw ArgumentError('Invalid JoinIntentType string: $str');
+}
+
 class JoinDisplayMessage extends ChannelMessage {
   String? clientId;
   String? name;
   String? version;
   String? platform;
+  JoinIntentType? intent;
 
   JoinDisplayMessage(this.clientId) : super(ChannelMessageType.joinDisplay);
 
@@ -145,6 +160,10 @@ class JoinDisplayMessage extends ChannelMessage {
     name = data['name'] as String?;
     version = data['version'] as String?;
     platform = data['platform'] as String?;
+
+    if (data['intent'] != null) {
+      intent = stringToJoinIntentType(data['intent'] as String);
+    }
   }
 
   @override
@@ -154,6 +173,7 @@ class JoinDisplayMessage extends ChannelMessage {
       'name': name,
       'version': version,
       'platform': platform,
+      'intent': intent?.name,
     });
   }
 }
