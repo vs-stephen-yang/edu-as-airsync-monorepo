@@ -1,153 +1,34 @@
 {
-    "main_display_code": "Display Code",
-    "@main_display_code": {
-        "description": "Display Code",
-        "type": "text"
-    },
+    "main_display_code": "Display code",
     "main_display_code_description": "9 or 10-digit display code",
-    "@main_display_code_description": {
-        "description": "DisplayPresent Code has 9-10 digits",
-        "type": "text"
-    },
     "main_password": "Password",
-    "@main_password": {
-        "description": "Password",
-        "type": "text"
-    },
     "main_password_description": "4-digit one-time password",
-    "@main_password_description": {
-        "description": "Password has 4 digits",
-        "type": "text"
-    },
     "main_present": "PRESENT",
-    "@main_present": {
-        "description": "PRESENT",
-        "type": "text"
-    },
     "main_touch_back": "Touchback",
-    "@main_touch_back": {
-        "description": "Touchback",
-        "type": "text"
-    },
     "main_language": "Language",
-    "@main_language": {
-        "description": "Language",
-        "type": "text"
-    },
     "main_setting": "Settings",
-    "@main_setting": {
-        "description": "Settings",
-        "type": "text"
-    },
     "settings_knowledge_base": "Knowledge Base",
-    "@settings_knowledge_base": {
-        "description": "Knowledge base",
-        "type": "text"
-    },
     "present_wait": "Please select a screen to share within {value} seconds...",
-    "@present_wait": {
-        "placeholders": {
-            "value": {}
-        }
-    },
     "present_select_screen_description": "Choose a view to share with the receiving screen.",
-    "@present_select_screen_description": {
-        "description": "Choose what to share with the remote screen",
-        "type": "text"
-    },
     "present_select_screen_entire": "Entire screen",
-    "@present_select_screen_entire": {
-        "description": "Entire Screen",
-        "type": "text"
-    },
     "present_select_screen_window": "Window",
-    "@present_select_screen_window": {
-        "description": "Window",
-        "type": "text"
-    },
     "present_select_screen_share": "Share",
-    "@present_select_screen_share": {
-        "description": "Share",
-        "type": "text"
-    },
     "present_select_screen_cancel": "Cancel",
-    "@present_select_screen_cancel": {
-        "description": "Cancel",
-        "type": "text"
-    },
     "present_time": "Time elapsed",
-    "@present_time": {
-        "description": "Presentation time",
-        "type": "text"
-    },
     "present_time_unit_hour": "hr",
-    "@present_time_unit_hour": {
-        "description": "Hour",
-        "type": "text"
-    },
     "present_time_unit_min": "min",
-    "@present_time_unit_min": {
-        "description": "Min",
-        "type": "text"
-    },
     "present_time_unit_sec": "sec",
-    "@present_time_unit_sec": {
-        "description": "Sec",
-        "type": "text"
-    },
     "present_state_resume": "Resume",
-    "@present_state_resume": {
-        "description": "Resume",
-        "type": "text"
-    },
     "present_state_pause": "Pause",
-    "@present_state_pause": {
-        "description": "Pause",
-        "type": "text"
-    },
     "present_state_stop": "Stop presenting",
-    "@present_state_stop": {
-        "description": "Stop Presenting",
-        "type": "text"
-    },
-    "present_state_full_screen": "Full screen",
-    "@present_state_full_screen": {
-        "description": "Full screen",
-        "type": "text"
-    },
-    "present_state_normal_screen": "Exit full screen",
-    "@present_state_normal_screen": {
-        "description": "Exit Full screen",
-        "type": "text"
-    },
     "moderator": "Moderator",
-    "@moderator": {
-        "description": "Moderator",
-        "type": "text"
-    },
     "moderator_name": "Name",
-    "@moderator_name": {
-        "description": "Name",
-        "type": "text"
-    },
     "moderator_wait": "Please wait while the moderator selects presenters...",
-    "@moderator_wait": {
-        "description": "Please wait for your turn\nModerator will select presenters",
-        "type": "text"
-    },
     "moderator_exit": "EXIT",
-    "@moderator_exit": {
-        "description": "EXIT",
-        "type": "text"
-    },
     "moderator_fill_out": "Field required",
-    "@moderator_fill_out": {
-        "description": "Please fill out this field.",
-        "type": "text"
-    },
-
-    "main_password_invalid": "Invalid one time password",
-    "main_display_code_exceed": "Reach maximum presenters",
-
-    "present_select_screen_share_audio": "Share screen audio"
+    "main_password_invalid": "Password invalid.",
+    "main_display_code_exceed": "Maximum participants (6) reached.",
+    "main_display_code_exceed_split_screen": "Maximum presenters (4) reached.",
+    "present_select_screen_share_audio": "Share screen audio",
+    "main_language_name": "English"
 }
