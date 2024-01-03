@@ -1,4 +1,3 @@
-
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
@@ -12,7 +11,6 @@ class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     return SizedBox(
       width: AppConstants.viewStateMenuWidth,
       height: AppConstants.viewStateMenuHeight,
@@ -21,35 +19,47 @@ class Settings extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    InkWell(
                       onTap: () {
                         channelProvider.presentMainPage();
-                        // presentStateProvider.setViewState(ViewState.idle);
                       },
-                      child: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white,)),
-                  const Icon(Icons.settings, color: Colors.white,),
-                ],
-              )),
-              const Padding(
-                padding: EdgeInsets.only(left: 6),
+                      child: const Icon(
+                        Icons.arrow_back_ios_new_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const Icon(
+                      Icons.settings,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 6),
                 child: Text(
-                  'Settings',
-                  style: TextStyle(
+                  S.of(context).main_setting,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                     fontSize: 16,
                   ),
                 ),
               ),
-              const Spacer(flex: 1,),
+              const Spacer(
+                flex: 1,
+              ),
             ],
           ),
           const Padding(
             padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-            child: Divider(color: Colors.white12,),
+            child: Divider(
+              color: Colors.white12,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
@@ -84,11 +94,12 @@ class Settings extends StatelessWidget {
           ),
           const Padding(
             padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
-            child: Divider(color: Colors.white12,),
+            child: Divider(
+              color: Colors.white12,
+            ),
           ),
         ],
       ),
     );
   }
 }
-
