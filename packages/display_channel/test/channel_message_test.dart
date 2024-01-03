@@ -104,6 +104,7 @@ void main() {
       msg.name = 'Tom';
       msg.platform = 'Windows';
       msg.version = '1.5.1';
+      msg.intent = JoinIntentType.present;
 
       // action
       final json = msg.toJson();
@@ -114,6 +115,20 @@ void main() {
       expect(actual.platform, 'Windows');
       expect(actual.clientId, '12345');
       expect(actual.version, '1.5.1');
+      expect(actual.intent, JoinIntentType.present);
+    });
+
+    test('join-display intent remoteScreen', () {
+      // Arrange
+      final msg = JoinDisplayMessage('12345');
+      msg.intent = JoinIntentType.remoteScreen;
+
+      // action
+      final json = msg.toJson();
+      final actual = ChannelMessage.parse(json) as JoinDisplayMessage;
+
+      // assert
+      expect(actual.intent, JoinIntentType.remoteScreen);
     });
 
     test('start-present', () {
