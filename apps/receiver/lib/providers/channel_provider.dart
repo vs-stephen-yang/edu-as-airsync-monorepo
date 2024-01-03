@@ -14,6 +14,7 @@ import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -24,15 +25,12 @@ import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
 
 import 'mirror_state_provider.dart';
 
-
 ///
 /// ChannelProvider
 /// - get Tunnel url and display code
 /// - connect tunnel server(_tunnelServer) and direct server(_directServer) via display_channel plugin
 /// - communicate custom protocols with server and build webRTC connection(_channelRtcConnectors)
-/// - refresh MainInternetMode, MainLanMode, WebRTCView
-/// -
-/// - moderator
+/// - refresh Main, WebRTCView
 
 enum Mode {
   internet,
@@ -52,13 +50,6 @@ class ChannelProvider extends ChangeNotifier {
   AppConfig appConfig;
   late String apiGateway, version;
 
-  Mode _currentMode = Mode.internet;
-  Mode get currentMode => _currentMode;
-  set currentMode(Mode value) {
-    _currentMode = value;
-    notifyListeners();
-  }
-
   bool _connectNet = false;
   bool get connectNet => _connectNet;
   set connectNet(bool value) {
@@ -76,12 +67,6 @@ class ChannelProvider extends ChangeNotifier {
   String get displayCode => _displayCode;
   set displayCode(String value) {
     _displayCode = value;
-    notifyListeners();
-  }
-  String _otp = '';
-  String get otp => _otp;
-  set otp(String value) {
-    _otp = value;
     notifyListeners();
   }
   final List<String> _otpList =[];
@@ -229,22 +214,66 @@ class ChannelProvider extends ChangeNotifier {
     isServerStart = true;
 
     await _startSfuServer();
-
-    //TODO: start the remote screen when someone requests it
-    await _startRemoteScreenPublisher("remote-screen", 7000);
   }
 
   void _onNewChannel(Channel channel, Mode mode) {
-    channel.onChannelMessage = (ChannelMessage message) {
 
+    RTCConnector rtcConnector = RTCConnector(channel, mode);
+    print('zz _onNewChannel ${rtcConnector.mUid}');
+
+    channel.onChannelMessage = (ChannelMessage message) async {
+      print('zz onChannelMessage ${rtcConnector.mUid}');
       switch (message.messageType) {
+        /// basic
+        case ChannelMessageType.joinDisplay:
+          if (_channelRtcConnectors.length >= 6) {
+            var message = PresentRejectedMessage();
+            message.reason = Reason(401, text:'block');
+            channel.send(message);
+            return;
+          }
+          //TODO: depend on the intent from message to judge which object
+          rtcConnector = onJoinDisplay(rtcConnector, mode, message as JoinDisplayMessage);
+          break;
+        case ChannelMessageType.startPresent:
+          rtcConnector.onStartPresent(message as StartPresentMessage);
+          break;
+        case ChannelMessageType.presentAccepted:
+          rtcConnector.onPresentAccepted();
+          break;
+        case ChannelMessageType.presentRejected:
+          rtcConnector.onPresentRejected(message as PresentRejectedMessage);
+          break;
+        case ChannelMessageType.changePresentQuality:
+          rtcConnector.onChangeQuality(message as ChangePresentQuality);
+        case ChannelMessageType.pausePresent:
+          rtcConnector.onPausePresent();
+          break;
+        case ChannelMessageType.resumePresent:
+          rtcConnector.onResumePresent();
+          break;
+        case ChannelMessageType.stopPresent:
+          rtcConnector.onStopPresent(message as StopPresentMessage);
+          break;
+        case ChannelMessageType.presentSignal:
+          rtcConnector.onPresentSignal(message as PresentSignalMessage);
+          break;
+        case ChannelMessageType.channelClosed:
+          rtcConnector.onChannelClose(message as ChannelClosedMessage);
+          break;
+
+        /// remote
         case ChannelMessageType.startRemoteScreen:
+          //TODO: start the remote screen when someone requests it
+          await _startRemoteScreenPublisher("remote-screen", 7000);
+
           final remoteScreenInfoMessage = RemoteScreenInfoMessage(
             "1111",
             IonSfuRoom(
               "ws://$host:7000/ws",
               "remote-screen",
-            ),);
+            ),
+          );
           channel.send(remoteScreenInfoMessage);
           break;
         default:
@@ -252,24 +281,31 @@ class ChannelProvider extends ChangeNotifier {
       }
     };
 
+    sendDisplayStatus(channel);
+  }
+
+  bool stopServer() {
+    _tunnelServer.stop();
+    _directServer.stop();
+    return isServerStart = false;
+  }
+
+  bool _checkOTP(String otp) {
+    return otpList.contains(otp);
+  }
+
+  void sendDisplayStatus(Channel channel) {
     final displayStatusMessage = DisplayStatusMessage();
+    displayStatusMessage.platform = _getPlatform();
     displayStatusMessage.status = DisplayStatus.fromJson({'moderator': ChannelProvider.isModeratorMode});
     channel.send(displayStatusMessage);
+  }
 
-    /*
-    if (_channelRtcConnectors.length >= 6) {
-      var message = PresentRejectedMessage();
-      message.reason = Reason(401, text:'block');
-      channel.send(message);
-      return;
-    }
+  RTCConnector onJoinDisplay(RTCConnector rtcConnector, Mode mode, JoinDisplayMessage message) {
 
     // create a client object to handle this channel
-    final client = mode == Mode.internet
-        ? RTCConnector(channel, Mode.internet, iceServersApiUrl: appConfig.settings.getIceServer)
-        : RTCConnector(channel, Mode.lan, host: '$host:$port');
-
-    client.onConnect = ((){
+    rtcConnector.init(message, iceServersApiUrl: appConfig.settings.getIceServer);
+    rtcConnector.onConnect = ((){
       updateSplitScreen();
       updateModePanel(false);
       if (MirrorStateProvider.isMirroring) {
@@ -277,13 +313,13 @@ class ChannelProvider extends ChangeNotifier {
       } else {
         StreamFunction.streamFunctionState.value = stateEmpty;
       }
-      updatePlayOrder(client.clientId!);
+      updatePlayOrder(rtcConnector.clientId!);
     });
 
-    client.onAddRemoteStream = ((stream) {
+    rtcConnector.onAddRemoteStream = ((stream) {
       // update state and quality
       updateSplitScreen();
-      handleQualityUpdate(controller: client);
+      handleQualityUpdate(controller: rtcConnector);
 
       // hideTitleBar
       Home.showTitleBottomBar.value = false;
@@ -300,11 +336,11 @@ class ChannelProvider extends ChangeNotifier {
       notifyListeners();
     });
 
-    client.onRefresh = (() {
+    rtcConnector.onRefresh = (() {
       notifyListeners();
     });
 
-    client.onShowMode = (({showMode}) {
+    rtcConnector.onShowMode = (({showMode}) {
       if (showMode != null) {
         updateModePanel(showMode);
       } else {
@@ -312,7 +348,7 @@ class ChannelProvider extends ChangeNotifier {
       }
     });
 
-    client.onConflictWithMirror = (() {
+    rtcConnector.onConflictWithMirror = (() {
       if (isModeratorMode) {
         // moderator
       } else if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
@@ -324,7 +360,7 @@ class ChannelProvider extends ChangeNotifier {
       }
     });
 
-    client.onChannelDisconnect = (() async {
+    rtcConnector.onChannelDisconnect = (() async {
       // update UI
       if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
         bool presenting = false;
@@ -361,25 +397,16 @@ class ChannelProvider extends ChangeNotifier {
         disconnectServer();
       }
 
-      await client.close(ChannelCloseCode.close);
-      _channelRtcConnectors.remove(client);
+      await rtcConnector.close(ChannelCloseCode.close);
+      _channelRtcConnectors.remove(rtcConnector);
       ChannelProvider.updateSplitScreen();
       ChannelProvider.handleQualityUpdate();
       notifyListeners();
     });
 
-    _channelRtcConnectors.add(client);
-    */
-  }
+    _channelRtcConnectors.add(rtcConnector);
 
-  bool stopServer() {
-    _tunnelServer.stop();
-    _directServer.stop();
-    return isServerStart = false;
-  }
-
-  bool _checkOTP(String otp) {
-    return otpList.contains(otp);
+    return rtcConnector;
   }
 
   Future<String> getDisplayCode(String instanceID) async {
@@ -706,5 +733,21 @@ class ChannelProvider extends ChangeNotifier {
       if (secondPart != null && secondPart >= 16 && secondPart <= 31) return true;
     }
     return false;
+  }
+
+  String _getPlatform() {
+    String platform;
+    if (kIsWeb) {
+      platform = 'Web';
+    } else {
+      if (Platform.isIOS) {
+        platform = 'iOS';
+      } else if (Platform.isAndroid) {
+        platform = 'Android';
+      } else {
+        platform = '';
+      }
+    }
+    return platform;
   }
 }
