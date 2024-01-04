@@ -32,28 +32,30 @@ class ChannelProvider extends ChangeNotifier {
   int port = 5100;
   WebRTCConnector? webRTCConnector;
   List<RtcIceServer>? _iceServerList;
+
   bool _moderatorStatus = false;
-
   bool get moderatorStatus => _moderatorStatus;
-  bool _exceedMaximumPresenters = false;
 
+  bool _exceedMaximumPresenters = false;
   bool get exceedMaximumPresenters => _exceedMaximumPresenters;
 
   ViewState _currentState = ViewState.idle;
-
   ViewState get state => _currentState;
-
   set currentState(ViewState value) {
     _currentState = value;
   }
 
   Mode _currentMode = Mode.internet;
-
   Mode get currentMode => _currentMode;
-
   set currentMode(Mode value) {
     _currentMode = value;
     notifyListeners();
+  }
+
+  JoinIntentType _currentRole = JoinIntentType.present;
+  JoinIntentType get currentRole => _currentRole;
+  set currentRole(JoinIntentType value) {
+    _currentRole = value;
   }
 
   late String _urlIce, _apiGateway, _tunnelApiUrl = '';
@@ -68,11 +70,9 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   bool _systemAudio = false;
-
   bool get systemAudio => _systemAudio;
 
   ion.Client? _client;
-
   RTCVideoRenderer get remoteScreenRenderer =>  _remoteScreenRenderer;
   final _remoteScreenRenderer = RTCVideoRenderer();
 
@@ -332,13 +332,13 @@ class ChannelProvider extends ChangeNotifier {
       notifyListeners();
     };
 
-
     presentRemoteScreenPage();
   }
 
   //region sendMessage
   void _joinDisplay({String? name}) {
     JoinDisplayMessage msg = JoinDisplayMessage(_clientId);
+    msg.intent = _currentRole;
     if (name != null) {
       msg.name = name;
     }
