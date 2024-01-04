@@ -22,6 +22,7 @@ enum ViewState {
   selectScreen,
   presentStart,
 
+  selectRole,
   remoteScreen,
   //moderator
   moderatorName,
