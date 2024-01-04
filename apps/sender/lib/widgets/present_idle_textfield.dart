@@ -41,7 +41,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         _codeController.selection = TextSelection(
             baseOffset: 0, extentOffset: _codeController.text.length);
       } else {
-        Future.delayed(const Duration(milliseconds: 100), (){
+        Future.delayed(const Duration(milliseconds: 200), (){
           if (_isOverlayVisible) {
             _isOverlayVisible = false;
             _overlayEntry.remove();
