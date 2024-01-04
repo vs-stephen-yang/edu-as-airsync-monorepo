@@ -72,10 +72,8 @@ dependencies:
   hive_flutter: ^1.1.0
   collection: ^1.17.2
   display_channel:
-#    path: /Users/chenzo/StudioProjects/display-channel
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
-      ref: remote-screen
   flutter_background: ^1.2.0
 
 dependency_overrides:
