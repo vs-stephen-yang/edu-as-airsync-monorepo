@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io' show HttpStatus, Platform;
 
 import 'package:collection/collection.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:display_cast_flutter/features/protoc/event.pb.dart';
 import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_cast_flutter/model/message.dart';
@@ -18,9 +17,12 @@ import 'package:window_size/window_size.dart';
 
 class WebRTCConnector {
   WebRTCConnector(this._urlIce,
-      {this.touchBack = false, bool systemAudio = false, required this.sendSignalMessage}) {
+      {this.touchBack = false,
+      bool systemAudio = false,
+      required this.sendSignalMessage}) {
     _systemAudio = systemAudio;
   }
+
   final String _urlIce;
   void Function(PresentSignalMessage message) sendSignalMessage;
 
@@ -33,6 +35,7 @@ class WebRTCConnector {
   RTCDataChannel? _dc;
   MediaStream? _localStream;
   List<RTCIceCandidate> remoteCandidates = [];
+
   // io.Socket? _socket;
   double _screenWidth = 1920.0;
   double _screenHeight = 1080.0;
@@ -50,13 +53,11 @@ class WebRTCConnector {
   int get trackHeight => _trackHeight;
   final _flutterInputInjectionPlugin = FlutterInputInjection();
 
-  //region public methods
-
-  Future<void> makeCall(String peerId, dynamic source, List<RtcIceServer>? iceServerList) async {
+  Future<void> makeCall(
+      String peerId, dynamic source, List<RtcIceServer>? iceServerList) async {
     dynamic deviceId;
 
     if (kIsWeb) {
-
     } else if (Platform.isAndroid) {
       isMainSource = true;
     } else if (Platform.isIOS) {
@@ -66,9 +67,11 @@ class WebRTCConnector {
       deviceId = {'exact': source.id};
       _isSourceTypeScreen = (source.type == SourceType.Screen);
       if (Platform.isMacOS) {
-        isMainSource = _isSourceTypeScreen? source.id == _macMainScreenOrder : false;
+        isMainSource =
+            _isSourceTypeScreen ? source.id == _macMainScreenOrder : false;
       } else if (Platform.isWindows) {
-        isMainSource = _isSourceTypeScreen? source.id == _windowsMainScreenOrder : false;
+        isMainSource =
+            _isSourceTypeScreen ? source.id == _windowsMainScreenOrder : false;
       }
     }
 
@@ -77,11 +80,11 @@ class WebRTCConnector {
   }
 
   Future<void> hangUp() async {
-    await disposeStream();
+    await _disposeStream();
     await _peerConnectionDisconnect();
   }
 
-  Future<void> disposeStream() async {
+  Future<void> _disposeStream() async {
     try {
       if (_localStream != null) {
         if (kIsWeb) {
@@ -156,13 +159,13 @@ class WebRTCConnector {
       'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
           ? true
           : {
-        'deviceId': _deviceId,
-        'mandatory': {
-          'frameRate': msg.frameRate,
-        },
-        'width': _trackWidth.toString(),
-        'height': _trackHeight.toString(),
-      }
+              'deviceId': _deviceId,
+              'mandatory': {
+                'frameRate': msg.frameRate,
+              },
+              'width': _trackWidth.toString(),
+              'height': _trackHeight.toString(),
+            }
     };
 
     _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
@@ -172,8 +175,6 @@ class WebRTCConnector {
       });
     }
   }
-
-  //endregion
 
   bool _isTouchBackAllowed() {
     return !kIsWeb &&
@@ -233,7 +234,7 @@ class WebRTCConnector {
     }
   }
 
-  Future<void> updateScreenSize() async {
+  Future<void> _updateScreenSize() async {
     if (!kIsWeb && Platform.isWindows) {
       // PlatformDispatcher did not support get windows width and height yet.
       // Using window_size for workaround.
@@ -301,7 +302,7 @@ class WebRTCConnector {
   Future<void> handleSignal(PresentSignalMessage msg) async {
     final type = msg.signalType.toString(); //msg['type'];
 
-    switch(msg.signalType) {
+    switch (msg.signalType) {
       case SignalMessageType.offer:
         // handle offer from the peer
         final offer = RTCSessionDescription(msg.sdp, type);
@@ -317,8 +318,8 @@ class WebRTCConnector {
         _pc!.setRemoteDescription(answer);
         break;
       case SignalMessageType.candidate:
-        final candidate = RTCIceCandidate(
-            msg.candidate, msg.sdpMid, msg.sdpMLineIndex);
+        final candidate =
+            RTCIceCandidate(msg.candidate, msg.sdpMid, msg.sdpMLineIndex);
         if (_pc != null) {
           // add candidates from the peer
           await _pc?.addCandidate(candidate);
@@ -360,7 +361,7 @@ class WebRTCConnector {
           int id = eventMessage.touchEvent.touchPoints[0].id;
           double remoteX = eventMessage.touchEvent.touchPoints[0].x;
           double remoteY = eventMessage.touchEvent.touchPoints[0].y;
-          await updateScreenSize();
+          await _updateScreenSize();
           int injectX = (remoteX * _screenWidth).toInt();
           if (injectX < 0) {
             injectX = 0;
@@ -403,7 +404,7 @@ class WebRTCConnector {
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
       var senders = await _pc!.getSenders();
       var sender =
-      senders.firstWhereOrNull((sender) => sender.track?.kind == 'video');
+          senders.firstWhereOrNull((sender) => sender.track?.kind == 'video');
       var params = sender!.parameters;
       params.degradationPreference = RTCDegradationPreference.DISABLED;
       await sender.setParameters(params);
@@ -426,30 +427,5 @@ class WebRTCConnector {
     message.sdpMid = candidate.sdpMid;
     message.sdpMLineIndex = candidate.sdpMLineIndex;
     sendSignalMessage(message);
-  }
-
-  Future<dynamic> getUserAgent() async {
-    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    String? version, type;
-    if (WebRTC.platformIsMacOS) {
-      final macOsInfo = await deviceInfo.macOsInfo;
-      version =
-      '${macOsInfo.majorVersion}.${macOsInfo.minorVersion}.${macOsInfo.patchVersion}';
-      type = 'Mac OS';
-    } else if (WebRTC.platformIsWindows) {
-      final windowsInfo = await deviceInfo.windowsInfo;
-      version = '${windowsInfo.productName} (Build ${windowsInfo.buildNumber})';
-      type = 'Windows';
-    } else {
-      // other platform
-    }
-    return {
-      'sdk': {'version': version, 'type': type},
-      'capabilities': {
-        'continualIceGathering': true,
-        'unifiedPlan': true,
-        'streamRemovable': true
-      }
-    };
   }
 }
