@@ -7,6 +7,7 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/main_common.dart';
 import 'package:display_flutter/model/connect_timer.dart';
+import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/model/rtc_play_order.dart';
 import 'package:display_flutter/screens/home.dart';
@@ -89,6 +90,8 @@ class ChannelProvider extends ChangeNotifier {
   static final RTCPlayOrder _rtcPlayOrder = RTCPlayOrder();
   static RTCPlayOrder get rtcPlayOrder => _rtcPlayOrder;
   static bool isModeratorMode = false;
+  static final List<RemoteScreenConnector> _remoteScreenConnectors = <RemoteScreenConnector>[];
+  static List<RemoteScreenConnector> get remoteScreenConnectors => _remoteScreenConnectors;
 
   ion.Client? _ionSfuClient;
   final _ionSfuServer = FlutterIonSfu();
@@ -176,28 +179,30 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future _startRemoteScreenPublisher(String roomId, int port)async{
-    _ionSfuClient?.close();
-    _ionSfuClient = null;
+    if (_ionSfuClient == null) {
+      // _ionSfuClient?.close();
+      // _ionSfuClient = null;
 
-    final ionSignal = ion.JsonRPCSignal("ws://127.0.0.1:$port/ws");
+      final ionSignal = ion.JsonRPCSignal("ws://127.0.0.1:$port/ws");
 
-    final uuid = const Uuid().v4();
-    _ionSfuClient = await ion.Client.create(sid: roomId, uid: uuid, signal: ionSignal,);
+      final uuid = const Uuid().v4();
+      _ionSfuClient = await ion.Client.create(sid: roomId, uid: uuid, signal: ionSignal,);
 
-    var constraints = ion.Constraints.defaults;
-    constraints.codec = "h264";
-    constraints.simulcast = false;
-    constraints.audio = false;
-    constraints.resolution = "hd";
+      var constraints = ion.Constraints.defaults;
+      constraints.codec = "h264";
+      constraints.simulcast = false;
+      constraints.audio = false;
+      constraints.resolution = "hd";
 
-    var localStream = await ion.LocalStream.getDisplayMedia(
-        constraints: constraints
-    );
-    await _ionSfuClient?.publish(localStream);
+      var localStream = await ion.LocalStream.getDisplayMedia(
+          constraints: constraints
+      );
+      await _ionSfuClient?.publish(localStream);
+    }
   }
 
   Future _startSfuServer() async{
-    final configuration = FlutterIonSfuConfiguration ();
+    final configuration = FlutterIonSfuConfiguration();
     await _ionSfuServer.initialize();
     await _ionSfuServer.start(configuration);
   }
@@ -220,20 +225,28 @@ class ChannelProvider extends ChangeNotifier {
 
     RTCConnector rtcConnector = RTCConnector(channel, mode);
     print('zz _onNewChannel ${rtcConnector.mUid}');
+    RemoteScreenConnector? remoteScreenConnector;
 
     channel.onChannelMessage = (ChannelMessage message) async {
       print('zz onChannelMessage ${rtcConnector.mUid}');
       switch (message.messageType) {
         /// basic
         case ChannelMessageType.joinDisplay:
-          if (_channelRtcConnectors.length >= 6) {
-            var message = PresentRejectedMessage();
-            message.reason = Reason(401, text:'block');
-            channel.send(message);
-            return;
+          JoinDisplayMessage msg = message as JoinDisplayMessage;
+          if (msg.intent == JoinIntentType.present) {
+            if (_channelRtcConnectors.length >= 6) {
+              var message = PresentRejectedMessage();
+              message.reason = Reason(401, text:'block');
+              channel.send(message);
+              return;
+            }
+            rtcConnector = onJoinDisplay(rtcConnector, mode, message as JoinDisplayMessage);
+          } else {
+            remoteScreenConnector = RemoteScreenConnector(channel, host, port);
+            // TODO: be triggered by the switch
+            _startRemoteScreenPublisher(remoteScreenConnector!.roomId, port);
+            _remoteScreenConnectors.add(remoteScreenConnector!);
           }
-          //TODO: depend on the intent from message to judge which object
-          rtcConnector = onJoinDisplay(rtcConnector, mode, message as JoinDisplayMessage);
           break;
         case ChannelMessageType.startPresent:
           rtcConnector.onStartPresent(message as StartPresentMessage);
@@ -264,17 +277,7 @@ class ChannelProvider extends ChangeNotifier {
 
         /// remote
         case ChannelMessageType.startRemoteScreen:
-          //TODO: start the remote screen when someone requests it
-          await _startRemoteScreenPublisher("remote-screen", 7000);
-
-          final remoteScreenInfoMessage = RemoteScreenInfoMessage(
-            "1111",
-            IonSfuRoom(
-              "ws://$host:7000/ws",
-              "remote-screen",
-            ),
-          );
-          channel.send(remoteScreenInfoMessage);
+          await remoteScreenConnector?.onStartRemoteScreen(message as StartRemoteScreenMessage);
           break;
         default:
           break;
