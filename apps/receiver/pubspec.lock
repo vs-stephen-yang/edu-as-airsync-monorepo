@@ -199,8 +199,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: remote-screen
-      resolved-ref: e8970ece7785f42c9ffd18863fd7c51cadaca572
+      ref: HEAD
+      resolved-ref: a8cb3c0e77d2eb847df7a7b834d7c6ab18f83b01
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel"
     source: git
     version: "0.0.1"
