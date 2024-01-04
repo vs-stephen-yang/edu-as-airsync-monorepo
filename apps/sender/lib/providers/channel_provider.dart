@@ -102,6 +102,10 @@ class ChannelProvider extends ChangeNotifier {
     setViewState(ViewState.idle);
   }
 
+  Future<void> presentSelectRolePage() async {
+    setViewState(ViewState.selectRole);
+  }
+
   Future<void> presentSelectScreenPage() async {
     setViewState(ViewState.selectScreen);
   }
@@ -287,9 +291,14 @@ class ChannelProvider extends ChangeNotifier {
     _channel?.send(message);
   }
 
-  void setModeratorName(String name) {
+  void setSenderName(String name) {
     _joinDisplay(name: name);
-    presentModeratorWaitPage();
+    if (_currentRole == JoinIntentType.present) {
+      presentModeratorWaitPage();
+    } else {
+      _requestRemoteScreen();
+      presentRemoteScreenPage();
+    }
   }
 
   void resetMessage() {
@@ -301,18 +310,11 @@ class ChannelProvider extends ChangeNotifier {
     _iceServerList = message.configuration?.iceServers;
     _moderatorStatus = message.status!.moderator!;
 
-    _requestRemoteScreen();
-
-    // if (_moderatorStatus) {
-    //   presentModeratorNamePage();
-    // } else {
-    //   _joinDisplay();
-    //   _startPresent();
-    // }
+    presentSelectRolePage();
   }
 
   Future _requestRemoteScreen() async {
-    final msg = StartRemoteScreenMessage(_clientId);
+    final msg = StartRemoteScreenMessage(_sessionId);
     _channel?.send(msg);
   }
 
