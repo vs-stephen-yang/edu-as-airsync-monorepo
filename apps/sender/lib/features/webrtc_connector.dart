@@ -104,46 +104,6 @@ class WebRTCConnector {
     });
   }
 
-  // Future<void> streamPause() async {
-  //   var constraints = <String, dynamic>{
-  //     'audio': false,
-  //     'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
-  //        ? false
-  //        : {
-  //       'deviceId': _deviceId,
-  //       'mandatory': {'frameRate': 0.0},
-  //     }
-  //   };
-  //   _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
-  //   for (MediaStreamTrack track in _localStream!.getTracks()) {
-  //     await _pc?.getSenders().then((value) async {
-  //       for (var element in value) {
-  //         await element.replaceTrack(track);
-  //       }
-  //     });
-  //   }
-  // }
-
-  // Future<void> streamResume() async {
-  //   var constraints = <String, dynamic>{
-  //     'audio': _isAudioCaptureAllowed(),
-  //     'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
-  //        ? true
-  //        : {
-  //       'deviceId': _deviceId,
-  //       'mandatory': {'frameRate': 30.0},
-  //     }
-  //   };
-  //   _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
-  //   for (MediaStreamTrack track in _localStream!.getTracks()) {
-  //     await _pc?.getSenders().then((value) async {
-  //       for (var element in value) {
-  //         await element.replaceTrack(track);
-  //       }
-  //     });
-  //   }
-  // }
-
   Future<void> changeStreamFrameRate(Map<String, dynamic> json) async {
     final msg = PresentChangeQualityMessage.fromJson(json);
     if (msg.height < _maxTrackHeight) {
