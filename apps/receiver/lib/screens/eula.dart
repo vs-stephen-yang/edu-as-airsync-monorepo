@@ -80,8 +80,8 @@ class _EulaState extends State<Eula> {
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.white,
                 ),
-                hasFocusWidth: 130,
-                notFocusWidth: 120,
+                hasFocusWidth: 140,
+                notFocusWidth: 130,
                 hasFocusHeight: 55,
                 notFocusHeight: 48,
                 onClick: () {
@@ -106,8 +106,8 @@ class _EulaState extends State<Eula> {
                   foregroundColor: Colors.blue,
                   backgroundColor: Colors.blue,
                 ),
-                hasFocusWidth: 130,
-                notFocusWidth: 120,
+                hasFocusWidth: 140,
+                notFocusWidth: 130,
                 hasFocusHeight: 55,
                 notFocusHeight: 48,
                 onClick: () {
