@@ -13,7 +13,6 @@ VideoDecoderWrapper::VideoDecoderWrapper() {
     if (AMediaCodec_createDecoderByType_ == nullptr || AMediaCodec_delete_ == nullptr){
         AMediaCodec_createDecoderByType_ = ::AMediaCodec_createDecoderByType;
         AMediaCodec_delete_ = ::AMediaCodec_delete;
-    } else {
         ALOGV("failed to get target address in %s", LIB_MEDIACODECTRACKER_NAME);
     }
 }
