@@ -5,6 +5,8 @@
 
 #include <media/NdkMediaCodec.h>
 
+#include "video_decoder_wrapper.h"
+
 struct AMediaFormat_Deleter {
   void operator()(AMediaFormat* fmt) {
     AMediaFormat_delete(fmt);
@@ -15,7 +17,7 @@ using AMediaFormatPtr = std::unique_ptr<AMediaFormat, AMediaFormat_Deleter>;
 
 struct AMediaCodec_Deleter {
   void operator()(AMediaCodec* codec) {
-    AMediaCodec_delete(codec);
+    VideoDecoderWrapper::GetInstance().AMediaCodec_delete(codec);
   }
 };
 
