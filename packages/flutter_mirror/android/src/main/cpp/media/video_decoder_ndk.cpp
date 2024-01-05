@@ -1,4 +1,5 @@
 #include "video_decoder_ndk.h"
+#include "video_decoder_wrapper.h"
 #include <assert.h>
 #include "util/log.h"
 
@@ -207,7 +208,7 @@ VideoDecoderPtr CreateVideoDecoder(
     std::string name = GetSoftwareDecoderNameForCodecType(codec_type);
     codec = AMediaCodec_createCodecByName(name.c_str());
   } else {
-    codec = AMediaCodec_createDecoderByType(mime_type.c_str());
+    codec = VideoDecoderWrapper::GetInstance().AMediaCodec_createDecoderByType(mime_type.c_str());
   }
 
   if (!codec) {
