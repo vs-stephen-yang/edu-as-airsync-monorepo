@@ -40,7 +40,7 @@ class TitleBar extends StatelessWidget {
                     StreamFunction.streamFunctionState.value;
                 StreamFunction.showDebugFunction =
                 !StreamFunction.showDebugFunction;
-                StreamFunction.streamFunctionState.value = stateEmpty;
+                StreamFunction.streamFunctionState.value = stateMenuOff;
                 StreamFunction.streamFunctionState.value = currentState;
               }
                   : null,

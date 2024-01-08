@@ -20,7 +20,7 @@ class SplitScreen extends StatefulWidget {
   const SplitScreen({super.key, this.onUpdateParentUI});
 
   static ValueNotifier<Map<String, dynamic>> mapSplitScreen =
-      ValueNotifier({keySplitScreenEnable: false, keySplitScreenCount: 0});
+      ValueNotifier({keySplitScreenEnable: true, keySplitScreenCount: 0});
   final VoidCallback? onUpdateParentUI;
 
   @override

@@ -137,7 +137,7 @@ class MirrorStateProvider extends ChangeNotifier
         StreamFunction.streamFunctionState.value = stateStandby;
       }
     } else if (context.read<ChannelProvider>().isPresenting()){
-      StreamFunction.streamFunctionState.value = stateEmpty;
+      StreamFunction.streamFunctionState.value = stateMenuOff;
     } else {
       StreamFunction.streamFunctionState.value = stateStandby;
     }
