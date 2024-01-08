@@ -22,6 +22,8 @@ class PresentIdleTextField extends StatefulWidget {
 }
 
 class PresentIdleTextFieldState extends State<PresentIdleTextField> {
+  static const int limitDisplayCodeLength = 5;
+  static const int limitOtpLength = 4;
   final TextEditingController _codeController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
   final FocusNode _codeFocusNode = FocusNode();
@@ -41,7 +43,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         _codeController.selection = TextSelection(
             baseOffset: 0, extentOffset: _codeController.text.length);
       } else {
-        Future.delayed(const Duration(milliseconds: 200), (){
+        Future.delayed(const Duration(milliseconds: 200), () {
           if (_isOverlayVisible) {
             _isOverlayVisible = false;
             _overlayEntry.remove();
@@ -149,7 +151,8 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               ],
               onChanged: (text) {
                 bool presentBtnEnable = false;
-                if (text.length >= 11 && _otpController.text.length == 4) {
+                if (text.length >= limitDisplayCodeLength &&
+                    _otpController.text.length == limitOtpLength) {
                   presentBtnEnable = true;
                 }
                 widget.onFieldChanged(FieldResult(
@@ -191,7 +194,8 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
             ],
             onChanged: (text) {
               bool presentBtnEnable = false;
-              if (_codeController.text.length >= 11 && text.length == 4) {
+              if (_codeController.text.length >= limitDisplayCodeLength &&
+                  text.length == limitOtpLength) {
                 presentBtnEnable = true;
               }
               widget.onFieldChanged(FieldResult(
