@@ -166,4 +166,8 @@ class WebSocketClientConnection extends ClientConnection {
 
   @override
   Future<void> shutdown() async {}
+
+  @override
+  set onStateChanged(void Function(ConnectionState p1) cb) {
+  }
 }
