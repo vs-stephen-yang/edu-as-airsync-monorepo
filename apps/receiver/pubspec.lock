@@ -289,8 +289,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.24.0"
-      resolved-ref: "2fa6fe8426691248af0f0bcc968449362f718a99"
+      ref: "release-0.25.0"
+      resolved-ref: "62dbb82625483f1391ecd566b649554d9c999858"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror"
     source: git
     version: "0.0.1"
@@ -324,8 +324,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.9.36-8"
-      resolved-ref: c9efd1bc735172efb7c83943151833cfb1d05e74
+      ref: "release-0.9.36-10"
+      resolved-ref: "349a3377b13aaa4c6d5c70f38c7a9b466b34013d"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc"
     source: git
     version: "0.9.36"
