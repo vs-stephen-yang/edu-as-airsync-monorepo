@@ -19,10 +19,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 Future<void> commonEntry(ConfigSettings settings) async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    // TODO Setup maxHardwareDecodeSession based on device.
+    await WebRTC.initialize(options: {"maxHardwareDecodeSession": 1});
 
     await AppPreferences.ensureInitialized();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
