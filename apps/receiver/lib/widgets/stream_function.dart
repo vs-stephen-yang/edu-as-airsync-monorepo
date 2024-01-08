@@ -17,8 +17,6 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:move_to_background/move_to_background.dart';
 import 'package:provider/provider.dart';
 
-// Empty, Basic streaming
-const String stateEmpty = 'empty';
 // SplitScreen, Moderator, Language, WhatsNew,
 const String stateStandby = 'standby';
 // Display Cloud,
@@ -47,38 +45,38 @@ class _StreamFunctionStates extends State<StreamFunction> {
     return ValueListenableBuilder(
       valueListenable: StreamFunction.streamFunctionState,
       builder: (BuildContext context, String value, Widget? child) {
-        // region SplitScreen icon
-        Color? colorSplitScreenForeground, colorSplitScreenBackground;
+        // region Exit and Mirror buttons
+        Color? colorButtonForeground, colorButtonBackground;
         if (ChannelProvider.isModeratorMode) {
           if (value == stateMenuOn) {
-            colorSplitScreenForeground =
+            colorButtonForeground =
                 AppColors.iconDisablePresentingForeground;
-            colorSplitScreenBackground =
+            colorButtonBackground =
                 AppColors.iconDisablePresentingBackground;
           } else {
-            colorSplitScreenForeground = AppColors.iconDisableStandbyForeground;
-            colorSplitScreenBackground = AppColors.iconDisableStandbyBackground;
+            colorButtonForeground = AppColors.iconDisableStandbyForeground;
+            colorButtonBackground = AppColors.iconDisableStandbyBackground;
           }
         } else {
           if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
             if (value == stateMenuOn) {
-              colorSplitScreenForeground =
+              colorButtonForeground =
                   AppColors.iconFeatureOnPresentingForeground;
-              colorSplitScreenBackground =
+              colorButtonBackground =
                   AppColors.iconFeatureOnPresentingBackground;
             } else {
-              colorSplitScreenForeground =
+              colorButtonForeground =
                   AppColors.iconFeatureOnStandbyForeground;
-              colorSplitScreenBackground =
+              colorButtonBackground =
                   AppColors.iconFeatureOnStandbyBackground;
             }
           } else {
             if (value == stateMenuOn) {
-              colorSplitScreenForeground = AppColors.iconPresentingForeground;
-              colorSplitScreenBackground = AppColors.iconPresentingBackground;
+              colorButtonForeground = AppColors.iconPresentingForeground;
+              colorButtonBackground = AppColors.iconPresentingBackground;
             } else {
-              colorSplitScreenForeground = AppColors.iconStandbyForeground;
-              colorSplitScreenBackground = AppColors.iconStandbyBackground;
+              colorButtonForeground = AppColors.iconStandbyForeground;
+              colorButtonBackground = AppColors.iconStandbyBackground;
             }
           }
         }
@@ -86,29 +84,16 @@ class _StreamFunctionStates extends State<StreamFunction> {
 
         // region Moderator icon
         Color? colorModeratorForeground, colorModeratorBackground;
-        if (!ChannelProvider.isModeratorMode &&
-            SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-          if (value == stateMenuOn) {
-            colorModeratorForeground =
-                AppColors.iconDisablePresentingForeground;
-            colorModeratorBackground =
-                AppColors.iconDisablePresentingBackground;
-          } else {
-            colorModeratorForeground = AppColors.iconDisableStandbyForeground;
-            colorModeratorBackground = AppColors.iconDisableStandbyBackground;
-          }
+        if (ChannelProvider.isModeratorMode) {
+          colorModeratorForeground = AppColors.iconFeatureOnStandbyForeground;
+          colorModeratorBackground = AppColors.iconFeatureOnStandbyBackground;
         } else {
-          if (ChannelProvider.isModeratorMode) {
-            colorModeratorForeground = AppColors.iconFeatureOnStandbyForeground;
-            colorModeratorBackground = AppColors.iconFeatureOnStandbyBackground;
+          if (value == stateMenuOn) {
+            colorModeratorForeground = AppColors.iconPresentingForeground;
+            colorModeratorBackground = AppColors.iconPresentingBackground;
           } else {
-            if (value == stateMenuOn) {
-              colorModeratorForeground = AppColors.iconPresentingForeground;
-              colorModeratorBackground = AppColors.iconPresentingBackground;
-            } else {
-              colorModeratorForeground = AppColors.iconStandbyForeground;
-              colorModeratorBackground = AppColors.iconStandbyBackground;
-            }
+            colorModeratorForeground = AppColors.iconStandbyForeground;
+            colorModeratorBackground = AppColors.iconStandbyBackground;
           }
         }
         // endregion
@@ -119,7 +104,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
         Image? iconMainImageNotFocus;
         if (value == stateStandby) {
           iconMain = Icons.settings;
-        } else if (value == stateMenuOff || value == stateEmpty) {
+        } else if (value == stateMenuOff) {
           iconMainImageHasFocus =
               const Image(image: Svg('assets/images/ic_streaming_menu_on.svg'));
           iconMainImageNotFocus = const Image(
@@ -144,6 +129,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  //Debug button
                   Visibility(
                     visible: StreamFunction.showDebugFunction,
                     child: FocusIconButton(
@@ -159,14 +145,16 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       },
                     ),
                   ),
+
+                  //Exit button for VBS
                   if (AppInstanceCreate().isInstalledInVBS200 &&
                       value == stateStandby)
                     Column(
                       children: [
                         FocusIconButton(
                             icons: Icons.exit_to_app,
-                            iconForegroundColor: colorSplitScreenForeground,
-                            iconBackgroundColor: colorSplitScreenBackground,
+                            iconForegroundColor: colorButtonForeground,
+                            iconBackgroundColor: colorButtonBackground,
                             iconFocusBackgroundColor:
                                 AppColors.iconFeatureOnStandbyBackground,
                             hasFocusSize: AppUIConstant.iconHasFocusSize,
@@ -181,13 +169,15 @@ class _StreamFunctionStates extends State<StreamFunction> {
                         ),
                       ],
                     ),
+
+                  //Mirror button
                   if ((value == stateStandby &&
                           !AppInstanceCreate().isDisableAdvance ||
                       value == stateCast))
                     FocusIconButton(
                         icons: Icons.cast,
-                        iconForegroundColor: colorSplitScreenForeground,
-                        iconBackgroundColor: colorSplitScreenBackground,
+                        iconForegroundColor: colorButtonForeground,
+                        iconBackgroundColor: colorButtonBackground,
                         iconFocusBackgroundColor:
                             AppColors.iconFeatureOnStandbyBackground,
                         hasFocusSize: AppUIConstant.iconHasFocusSize,
@@ -197,29 +187,11 @@ class _StreamFunctionStates extends State<StreamFunction> {
                             _showCastSettings();
                           }
                         }),
+
+                  //Moderator button
                   Visibility(
-                    visible: (value == stateStandby || value == stateMenuOn) &&
-                        !AppInstanceCreate().isDisableAdvance,
-                    child: FocusIconButton(
-                      icons: CustomIcons.split_screen,
-                      iconForegroundColor: colorSplitScreenForeground,
-                      iconBackgroundColor: colorSplitScreenBackground,
-                      iconFocusBackgroundColor:
-                          AppColors.iconFeatureOnStandbyBackground,
-                      hasFocusSize: AppUIConstant.iconHasFocusSize,
-                      notFocusSize: AppUIConstant.iconNotFocusSize,
-                      isAddGreenDot: (SplitScreen
-                              .mapSplitScreen.value[keySplitScreenEnable] &&
-                          !ChannelProvider.isModeratorMode),
-                      onClick: !ChannelProvider.isModeratorMode
-                          ? () {
-                              _showSplitScreen(value == stateMenuOn);
-                            }
-                          : null,
-                    ),
-                  ),
-                  Visibility(
-                    visible: (value == stateStandby || value == stateMenuOn) &&
+                    visible: (value == stateStandby || value == stateMenuOn &&
+                        ChannelProvider.isModeratorMode) &&
                         !AppInstanceCreate().isDisableAdvance,
                     child: FocusIconButton(
                       icons: Icons.groups,
@@ -230,15 +202,13 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
                       isAddGreenDot: ChannelProvider.isModeratorMode,
-                      onClick: (!ChannelProvider.isModeratorMode &&
-                              SplitScreen
-                                  .mapSplitScreen.value[keySplitScreenEnable])
-                          ? null
-                          : () {
-                              _showModerator(value == stateMenuOn);
-                            },
+                      onClick: () {
+                        _showModerator(value == stateMenuOn);
+                      },
                     ),
                   ),
+
+                  //ShowDisplayCode button
                   Visibility(
                     // only for show display code while streaming menu on
                     visible: value == stateMenuOn,
@@ -263,8 +233,10 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       },
                     ),
                   ),
+
+                  //Settings and In-connection button
                   Visibility(
-                    visible: value != stateEmpty && value != stateCast,
+                    visible: value != stateCast,
                     child: FocusIconButton(
                       icons: iconMain,
                       childNotFocus: iconMainImageNotFocus,
@@ -320,16 +292,6 @@ class _StreamFunctionStates extends State<StreamFunction> {
 
   _showCastSettings() {
     _showMenuDialog(const CastSettings());
-  }
-
-  _showSplitScreen(bool leavePresentFunction) {
-    AppAnalytics().trackEventAppSplitScreenClick();
-    _showMenuDialog(SplitScreen(onUpdateParentUI: () {
-      setState(() {});
-    }));
-    if (leavePresentFunction) {
-      StreamFunction.streamFunctionState.value = stateMenuOff;
-    }
   }
 
   _showModerator(bool leavePresentFunction) {

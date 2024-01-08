@@ -214,7 +214,7 @@ class ChannelProvider extends ChangeNotifier {
       if (MirrorStateProvider.isMirroring) {
         StreamFunction.streamFunctionState.value = stateCast;
       } else {
-        StreamFunction.streamFunctionState.value = stateEmpty;
+        StreamFunction.streamFunctionState.value = stateMenuOff;
       }
       updatePlayOrder(client.clientId!);
     });

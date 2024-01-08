@@ -77,26 +77,6 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
                     fit: BoxFit.fitHeight,
                     child: FocusIconButton(
                       childNotFocus: Image(
-                        image: Svg(ChannelProvider.isModeratorMode == false
-                            ? 'assets/images/ic_moderator_split_screen_off.svg'
-                            : SplitScreen
-                            .mapSplitScreen.value[keySplitScreenEnable]
-                            ? 'assets/images/ic_moderator_split_screen_activate.svg'
-                            : 'assets/images/ic_moderator_split_screen_on.svg'),
-                      ),
-                      splashRadius: 20,
-                      focusColor: Colors.grey,
-                      onClick: ChannelProvider.isModeratorMode == true
-                          ? () {
-                        _callSplitScreenDialog();
-                      }
-                          : null,
-                    ),
-                  ),
-                  FittedBox(
-                    fit: BoxFit.fitHeight,
-                    child: FocusIconButton(
-                      childNotFocus: Image(
                         image: Svg(ChannelProvider.isModeratorMode == true
                             ? 'assets/images/ic_activate_on.svg'
                             : 'assets/images/ic_activate_off.svg'),
@@ -132,25 +112,6 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
     );
   }
 
-  void _callSplitScreenDialog() {
-    showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return CustomAlertDialog(
-          title: '',
-          description: SplitScreen.mapSplitScreen.value[keySplitScreenEnable]
-              ? S.of(context).moderator_deactivate_split_screen
-              : S.of(context).moderator_activate_split_screen,
-          positiveButton: S.of(context).moderator_confirm,
-          onPositive: () {
-            _switchSplitScreenOnOff();
-          },
-          onNegative: () {},
-        );
-      },
-    );
-  }
-
   void _callLogOutDialog() {
     showDialog<String>(
       context: context,
@@ -180,27 +141,6 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
     SplitScreen.mapSplitScreen.value[keySplitScreenCount] = 0;
     SplitScreen.mapSplitScreen.value =
         Map.from(SplitScreen.mapSplitScreen.value);
-  }
-
-  _switchSplitScreenOnOff() async {
-    if (!SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      AppAnalytics().trackEventModeratorSplitScreenOn();
-    } else {
-      AppAnalytics().trackEventModeratorSplitScreenOff();
-      // check whether the presenters are playing
-      context.read<ChannelProvider>().removeOtherPresenters(keepInList: ChannelProvider.isModeratorMode);
-    }
-    // Need remove all presenters first, due to enable/disable will dispose
-    // view and will disconnectedP2pClient before send stopVideo
-    // cause web presenter did not update status
-    SplitScreen.mapSplitScreen.value[keySplitScreenEnable] =
-    !SplitScreen.mapSplitScreen.value[keySplitScreenEnable];
-    // Using below method to trigger value changed.
-    // https://github.com/flutter/flutter/issues/29958
-    SplitScreen.mapSplitScreen.value =
-        Map.from(SplitScreen.mapSplitScreen.value);
-    widget.onUpdateParentUI?.call();
-    setState(() {});
   }
 
   @override
