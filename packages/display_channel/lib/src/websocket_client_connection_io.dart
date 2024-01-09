@@ -58,11 +58,12 @@ class WebSocketClientConnection implements ClientConnection {
   }
 
   void _connect() async {
+    logger?.call(_url, "connect");
     if (_closed) {
       return;
     }
 
-    logger?.call(_url, "connect");
+    logger?.call(_url, "connecting");
     onConnecting?.call();
 
     try {
@@ -103,6 +104,7 @@ class WebSocketClientConnection implements ClientConnection {
     _socket!.pingInterval = pingInterval;
 
     // connected
+    logger?.call(_url, "connected");
     onConnected?.call();
 
     _socket!.listen((dynamic data) {
@@ -137,6 +139,7 @@ class WebSocketClientConnection implements ClientConnection {
   }
 
   void _handleDisconnected() async {
+    logger?.call(_url, "disconnected");
     onDisconnected?.call();
 
     await _reconnect();
