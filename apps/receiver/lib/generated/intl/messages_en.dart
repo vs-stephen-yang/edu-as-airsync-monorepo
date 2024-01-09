@@ -61,6 +61,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cancel"),
         "main_register_display_code_failure": MessageLookupByLibrary.simpleMessage(
             "Failure to get Display Code and One Time Password. This may be due to a network or server issue. Please try again later when connection is restored."),
+        "main_setting_share_to_sender":
+            MessageLookupByLibrary.simpleMessage("Share to sender"),
         "main_settings_language":
             MessageLookupByLibrary.simpleMessage("Language"),
         "main_settings_title": MessageLookupByLibrary.simpleMessage("Settings"),

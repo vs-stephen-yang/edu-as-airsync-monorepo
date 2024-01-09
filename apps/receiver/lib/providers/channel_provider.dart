@@ -92,6 +92,7 @@ class ChannelProvider extends ChangeNotifier {
   static bool isModeratorMode = false;
   static final List<RemoteScreenConnector> _remoteScreenConnectors = <RemoteScreenConnector>[];
   static List<RemoteScreenConnector> get remoteScreenConnectors => _remoteScreenConnectors;
+  static bool isSenderMode = false;
 
   ion.Client? _ionSfuClient;
   final _ionSfuServer = FlutterIonSfu();
@@ -242,7 +243,7 @@ class ChannelProvider extends ChangeNotifier {
             }
             rtcConnector = onJoinDisplay(rtcConnector, mode, message as JoinDisplayMessage);
           } else {
-            remoteScreenConnector = RemoteScreenConnector(channel, host, port);
+            remoteScreenConnector = RemoteScreenConnector(channel, 'remote-screen', host, 7000, message as JoinDisplayMessage);
             // TODO: be triggered by the switch
             _startRemoteScreenPublisher(remoteScreenConnector!.roomId, port);
             _remoteScreenConnectors.add(remoteScreenConnector!);
@@ -685,6 +686,22 @@ class ChannelProvider extends ChangeNotifier {
 
   updateAudioEnableStateByIndex(int index, bool enable) {
     _channelRtcConnectors[index].controlAudio(enable);
+  }
+
+  removeSender({RemoteScreenConnector? remoteScreenConnector}) {
+    if (remoteScreenConnector != null) {
+      int index = remoteScreenConnectors.indexOf(remoteScreenConnector);
+      if (index != -1) {
+        remoteScreenConnector.sendRemoteScreenState(RemoteScreenStatus.kicked);
+        remoteScreenConnectors.removeAt(index);
+      }
+    } else {
+      for (var element in remoteScreenConnectors) {
+        element.sendRemoteScreenState(RemoteScreenStatus.kicked);
+      }
+      remoteScreenConnectors.clear();
+    }
+    notifyListeners();
   }
 
   Future<bool> _checkConnectivity() async {
