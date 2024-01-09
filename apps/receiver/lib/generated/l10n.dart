@@ -539,6 +539,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Share to sender`
+  String get main_setting_share_to_sender {
+    return Intl.message(
+      'Share to sender',
+      name: 'main_setting_share_to_sender',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
