@@ -149,6 +149,9 @@ class WebRTCConnector {
 
   Future<void> changeStreamFrameRate(Map<String, dynamic> json) async {
     final msg = PresentChangeQualityMessage.fromJson(json);
+
+    if (msg.height == _trackHeight) return;
+
     if (msg.height < _maxTrackHeight) {
       // make sure the width/height is not greater than the max width
       _trackWidth = _maxTrackWidth ~/ (_maxTrackHeight / msg.height);
