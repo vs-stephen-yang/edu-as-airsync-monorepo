@@ -237,6 +237,22 @@ class WebRTCConnector {
       await _pc!.addTrack(track, _localStream!);
     }
 
+    // select and order codecs
+    final List<String> desiredOrder = ['video/H264', 'video/VP8', 'video/VP9'];
+    RTCRtpCapabilities capabilities = await getRtpSenderCapabilities("video");
+
+    final modifiedCapabilities = capabilities.codecs!
+        .where((codec) => desiredOrder.contains(codec.mimeType))
+        .toList()
+      ..sort((a, b) => desiredOrder.indexOf(a.mimeType).compareTo(desiredOrder.indexOf(b.mimeType)));
+
+    List<RTCRtpTransceiver> transceivers = await _pc!.transceivers;
+    for (var transceiver in transceivers) {
+      if (transceiver.sender.track!.kind == 'video') {
+        await transceiver.setCodecPreferences(modifiedCapabilities);
+      }
+    }
+
     final offerConstraints = <String, dynamic>{
       'mandatory': {
         'OfferToReceiveAudio': false,
@@ -246,8 +262,6 @@ class WebRTCConnector {
     };
 
     final offer = await _pc!.createOffer(offerConstraints);
-
-    offer.sdp = SdpUtil.removeCodec(offer.sdp!, "AV1");
     RTCSessionDescription fixedOffer = SdpUtil.fixSdp(offer);
 
     try {
