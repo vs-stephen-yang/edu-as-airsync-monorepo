@@ -26,6 +26,11 @@ class MsgHandler implements TunnelMessageHandler {
   void onDisconnectClient(TunnelDisconnectClient msg) {
     _svc.onDisconnectClient(_connectionId, msg);
   }
+
+  @override
+  void onHeartbeat(TunnelHeartbeatMessage msg) {
+    print("Received hearbeat");
+  }
 }
 
 class FakeTunnelService {
