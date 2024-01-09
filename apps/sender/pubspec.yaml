@@ -43,7 +43,7 @@ dependencies:
   flutter_webrtc:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc
-      ref: release-0.9.36-8
+      ref: release-0.9.36-11
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding.git
