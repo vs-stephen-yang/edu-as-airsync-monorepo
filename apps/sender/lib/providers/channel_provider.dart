@@ -3,17 +3,19 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:display_cast_flutter/features/webrtc_connector.dart';
+import 'package:display_cast_flutter/model/remote_screen_client.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:uuid/uuid.dart';
-import 'package:ion_sdk_flutter/flutter_ion.dart' as ion;
-import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:flutter/material.dart';
 
 enum Mode {
   internet,
@@ -72,9 +74,8 @@ class ChannelProvider extends ChangeNotifier {
   bool _systemAudio = false;
   bool get systemAudio => _systemAudio;
 
-  ion.Client? _client;
-  RTCVideoRenderer get remoteScreenRenderer =>  _remoteScreenRenderer;
-  final _remoteScreenRenderer = RTCVideoRenderer();
+  RemoteScreenClient? _remoteScreenClient;
+  RemoteScreenClient? get client => _remoteScreenClient;
 
   //region setView
   setViewState(ViewState newViewState) {
@@ -176,7 +177,7 @@ class ChannelProvider extends ChangeNotifier {
           break;
       }
     };
-    _channel?.onChannelMessage = (message) {
+    _channel?.onChannelMessage = (message) async {
       switch (message.messageType) {
         case ChannelMessageType.channelConnected:
           // heartbeatInterval
@@ -215,9 +216,15 @@ class ChannelProvider extends ChangeNotifier {
           _sessionId = (message as AllowPresentMessage).sessionId!;
           _startPresent();
           break;
-
+        case ChannelMessageType.remoteScreenStatus:
+          _handleRemoteScreenState(message as RemoteScreenStatusMessage);
+          break;
         case ChannelMessageType.remoteScreenInfo:
-          _handleRemoteScreenInfo(message as RemoteScreenInfoMessage);
+          RemoteScreenInfoMessage infoMessage = message as RemoteScreenInfoMessage;
+          await _remoteScreenClient?.handleRemoteScreenInfo(
+              infoMessage.ionSfuRoom!.url!, infoMessage.ionSfuRoom!.roomId!, () {
+            presentRemoteScreenPage();
+          });
           break;
         default:
           break;
@@ -314,27 +321,24 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future _requestRemoteScreen() async {
-    final msg = StartRemoteScreenMessage(_sessionId);
-    _channel?.send(msg);
+    _remoteScreenClient = RemoteScreenClient(_channel);
+    _remoteScreenClient?.sendStartRemoteScreenMessage();
   }
 
-  Future _handleRemoteScreenInfo(RemoteScreenInfoMessage message) async {
-
-    final signal = ion.JsonRPCSignal(message.ionSfuRoom!.url!);
-
-    _client = await ion.Client.create(
-      sid: message.ionSfuRoom!.roomId!,
-      uid: const Uuid().v4(),
-      signal: signal,);
-
-    _client!.ontrack = (track, ion.RemoteStream remoteStream) async {
-      await _remoteScreenRenderer.initialize();
-
-      _remoteScreenRenderer.srcObject = remoteStream.stream;
-      notifyListeners();
-    };
-
-    presentRemoteScreenPage();
+  Future _handleRemoteScreenState(RemoteScreenStatusMessage message) async {
+    switch(message.status) {
+      case RemoteScreenStatus.accepted:
+        break;
+      case RemoteScreenStatus.rejected:
+        // over 10
+        break;
+      case RemoteScreenStatus.kicked:
+        _remoteScreenClient?.removeRemoteScreenClient();
+        presentMainPage();
+        break;
+      case null:
+        break;
+    }
   }
 
   //region sendMessage
