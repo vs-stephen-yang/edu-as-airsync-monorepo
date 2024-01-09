@@ -19,7 +19,7 @@ class TunnelConnectionServer implements TunnelMessageHandler {
   ClientConnection? _tunnelConnection;
 
   late TunnelMessageParser _messageParser;
-  final _connections = <String, TunnelConnection>{};
+  final _connections = <String, TunnelClientConnection>{};
 
   // Constructor
   TunnelConnectionServer(
@@ -75,7 +75,7 @@ class TunnelConnectionServer implements TunnelMessageHandler {
       return;
     }
 
-    final connection = TunnelConnection(this, msg.connectionId);
+    final connection = TunnelClientConnection(this, msg.connectionId);
 
     _connections[msg.connectionId] = connection;
     _onNewClientConnection(msg.clientId, connection);
@@ -119,7 +119,7 @@ class TunnelConnectionServer implements TunnelMessageHandler {
   }
 }
 
-class TunnelConnection implements Connection {
+class TunnelClientConnection implements Connection {
   @override
   void Function(Connection connection)? onClosed;
 
@@ -129,7 +129,7 @@ class TunnelConnection implements Connection {
   final String _connectionId;
   final TunnelConnectionServer _site;
 
-  TunnelConnection(this._site, this._connectionId);
+  TunnelClientConnection(this._site, this._connectionId);
 
   @override
   void send(Map<String, dynamic> message) {
