@@ -1,3 +1,4 @@
+import 'package:args/args.dart';
 import 'package:display_channel/display_channel.dart';
 
 class Client {
@@ -69,7 +70,12 @@ class MockServer {
 
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
-      (String url) => WebSocketClientConnection(url),
+      (String url) => WebSocketClientConnection(
+        url,
+        logger: (String url, String message) {
+          print('$url $message');
+        },
+      ),
       (Channel channel) => _onNewChannel(channel),
       (String token) => true,
     );
@@ -107,8 +113,16 @@ class MockServer {
   }
 }
 
-main() async {
-  const tunnelServiceUrl = 'wss://ap-northeast-1.gateway.dev.airsync.net';
+main(List<String> arguments) async {
+  final parser = ArgParser()
+    ..addOption(
+      'url',
+      defaultsTo: 'wss://ap-northeast-1.gateway.dev.airsync.net',
+    );
+
+  ArgResults argResults = parser.parse(arguments);
+
+  final tunnelServiceUrl = argResults['url'];
   const localDirectPort = 5100;
   const instanceId = '0002';
 
