@@ -4,8 +4,9 @@ import 'package:display_channel/src/server/connection_request.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_message.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_message_handler.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_message_parser.dart';
+import 'dart:async';
 
-class TunnelConnectionServer implements TunnelMessageHandler {
+class TunnelConnectionServer extends TunnelMessageHandler {
   void Function()? onTunnelConnected;
   void Function()? onTunnelConnecting;
 
@@ -21,14 +22,21 @@ class TunnelConnectionServer implements TunnelMessageHandler {
   late TunnelMessageParser _messageParser;
   final _connections = <String, TunnelClientConnection>{};
 
+  // Tunnel Heartbeat
+  // Avoid disconnection caused by AWS WebSocket Idle Connection Timeout.
+  Timer? _heartbeatTimer;
+  final Duration heartbeatInterval;
+
   // Constructor
   TunnelConnectionServer(
     this._instanceId,
     String tunnelServiceUrl,
     this._createTunnelConnection,
     this._onNewClientConnection,
-    this._authenticationHandler,
-  ) {
+    this._authenticationHandler, {
+    // AWS WebSocket Idle Connection Timeout 10 minutes
+    this.heartbeatInterval = const Duration(minutes: 9),
+  }) {
     _messageParser = TunnelMessageParser(this);
 
     _initTunnelConnection(tunnelServiceUrl);
@@ -40,6 +48,7 @@ class TunnelConnectionServer implements TunnelMessageHandler {
   }
 
   Future<void> stop() async {
+    _heartbeatTimer?.cancel();
     await _tunnelConnection?.close();
   }
 
@@ -55,9 +64,10 @@ class TunnelConnectionServer implements TunnelMessageHandler {
       uriWithParameters.toString(),
     );
 
-    _tunnelConnection!.onConnected = () => onTunnelConnected?.call();
-
+    _tunnelConnection!.onConnected = _onTunnelConnected;
     _tunnelConnection!.onConnecting = () => onTunnelConnecting?.call();
+
+    _tunnelConnection!.onDisconnected = _onTunnelDisconnected;
 
     _tunnelConnection!.onMessage = (Map<String, dynamic> message) {
       // parse the tunnel messages
@@ -116,6 +126,35 @@ class TunnelConnectionServer implements TunnelMessageHandler {
     final msg = TunnelClientMsg(connectionId, json);
 
     _tunnelConnection?.send(msg.toJson());
+  }
+
+  _onTunnelConnected() {
+    // start sending heartbeat
+    _enableTunnelHeartbeat(true);
+
+    onTunnelConnected?.call();
+  }
+
+  _onTunnelDisconnected() {
+    // stop sending heartbeat
+    _enableTunnelHeartbeat(false);
+  }
+
+  _enableTunnelHeartbeat(bool enable) {
+    if (enable) {
+      // Avoid disconnection caused by AWS WebSocket Idle Connection Timeout.
+      // https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html
+
+      _heartbeatTimer?.cancel();
+      _heartbeatTimer = Timer.periodic(heartbeatInterval, (Timer timer) {
+        // send hearbeat message
+        _tunnelConnection?.send(
+          TunnelHeartbeatMessage().toJson(),
+        );
+      });
+    } else {
+      _heartbeatTimer?.cancel();
+    }
   }
 }
 
