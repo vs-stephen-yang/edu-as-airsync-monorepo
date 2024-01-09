@@ -16,6 +16,7 @@ import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/remote_screen_widget.dart';
 import 'package:display_cast_flutter/widgets/settings.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
+import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
@@ -41,41 +42,39 @@ class _HomeState extends State<Home> {
           body: ConstrainedBox(
             constraints: const BoxConstraints.expand(),
             child: Container(
-              decoration: const BoxDecoration(
-                  gradient: RadialGradient(
-                      center: Alignment(0, -0.7),
-                      radius: 1,
-                      colors: [
-                    AppColors.homeBackground,
-                    Colors.black,
-                  ])),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  const Positioned(
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    child: TitleBar(),
-                  ),
-                  const Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: BottomBar(),
-                  ),
-                  Consumer2<PresentStateProvider, ChannelProvider>(
-                    builder: (context, present, channel, child) {
-                      debugModePrint('PresentState: ${channel.state}');
-                      if (!kIsWeb) {
-                        FlutterWindowClose.setWindowShouldCloseHandler(
-                            () async {
-                          await present.presentStop();
-                          await present.presentEnd(goIdleState: false);
-                          return true;
-                        });
-                      }
-
+            decoration: const BoxDecoration(
+                gradient: RadialGradient(
+                    center: Alignment(0, -0.7),
+                    radius: 1,
+                    colors: [
+                  AppColors.homeBackground,
+                  Colors.black,
+                ])),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                const Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  child: TitleBar(),
+                ),
+                const Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: BottomBar(),
+                ),
+                Consumer2<PresentStateProvider, ChannelProvider>(
+                  builder: (context, present, channel, child) {
+                    debugModePrint('PresentState: ${channel.state}');
+                    if (!kIsWeb) {
+                      FlutterWindowClose.setWindowShouldCloseHandler(() async {
+                        await channel.presentStop();
+                        await channel.presentEnd(goIdleState: false);
+                        return true;
+                      });
+                    }
                     switch (channel.state) {
                       case ViewState.idle:
                         return PresentIdle();
@@ -104,6 +103,17 @@ class _HomeState extends State<Home> {
                     }
                   },
                 ),
+                ValueListenableBuilder(
+                    valueListenable: PresentStateProvider.displayToastValue,
+                    builder: (BuildContext context, bool value, Widget? child) {
+                      return Visibility(
+                        visible: PresentStateProvider.displayToastValue.value,
+                        child: Toast(
+                          PresentStateProvider.toastMessage,
+                          // style: textStyle30,
+                        ),
+                      );
+                    }),
               ],
             ),
           ),
