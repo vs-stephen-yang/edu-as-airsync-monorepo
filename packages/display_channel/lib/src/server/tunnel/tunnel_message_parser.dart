@@ -27,6 +27,9 @@ class TunnelMessageParser {
       case 'msg':
         _handler.onClientMsg(TunnelClientMsg.fromJson(msg));
         break;
+      case 'heartbeat':
+        _handler.onHeartbeat(TunnelHeartbeatMessage.fromJson(msg));
+        break;
     }
     return true;
   }

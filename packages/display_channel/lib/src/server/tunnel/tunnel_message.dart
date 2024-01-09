@@ -113,3 +113,10 @@ class TunnelClientMsg extends TunnelClientEvent {
     return json;
   }
 }
+
+class TunnelHeartbeatMessage extends TunnelMessage {
+  TunnelHeartbeatMessage() : super('heartbeat');
+
+  TunnelHeartbeatMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(json);
+}

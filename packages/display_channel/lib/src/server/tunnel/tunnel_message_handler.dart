@@ -8,4 +8,6 @@ class TunnelMessageHandler {
   void onDisconnectClient(TunnelDisconnectClient msg) {}
 
   void onClientMsg(TunnelClientMsg msg) {}
+
+  void onHeartbeat(TunnelHeartbeatMessage msg) {}
 }
