@@ -36,8 +36,8 @@ class PresentSelectRole extends StatelessWidget {
                     ],
                   ),
                   onTap: (){
-                    Provider.of<ChannelProvider>(context, listen: false).currentRole = JoinIntentType.remoteScreen;
-                    Provider.of<ChannelProvider>(context, listen: false).presentModeratorNamePage();
+                    channelProvider.currentRole = JoinIntentType.remoteScreen;
+                    channelProvider.presentModeratorNamePage();
                   },
                 ),
                 const Padding(padding: EdgeInsets.all(10)),
@@ -63,11 +63,11 @@ class PresentSelectRole extends StatelessWidget {
                     ],
                   ),
                   onTap: () {
-                    Provider.of<ChannelProvider>(context, listen: false).currentRole = JoinIntentType.present;
-                    if (Provider.of<ChannelProvider>(context).moderatorStatus) {
-                      Provider.of<ChannelProvider>(context).presentModeratorNamePage();
+                    channelProvider.currentRole = JoinIntentType.present;
+                    if (channelProvider.moderatorStatus) {
+                      channelProvider.presentModeratorNamePage();
                     } else {
-                      Provider.of<ChannelProvider>(context).presentSelectScreenPage();
+                      channelProvider.presentSelectScreenPage();
                     }
                   },
                 ),
