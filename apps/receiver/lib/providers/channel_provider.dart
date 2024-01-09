@@ -228,8 +228,8 @@ class ChannelProvider extends ChangeNotifier {
               removeSender(remoteScreenConnector: remoteScreenConnector);
             });
             _remoteScreenConnectors.add(remoteScreenConnector!);
-            notifyListeners();
           }
+          notifyListeners();
           break;
         case ChannelMessageType.startPresent:
           rtcConnector.onStartPresent(message as StartPresentMessage);
@@ -263,6 +263,9 @@ class ChannelProvider extends ChangeNotifier {
           if (isSenderMode) {
             await remoteScreenConnector?.onStartRemoteScreen(message as StartRemoteScreenMessage);
             notifyListeners();
+          } else {
+            await remoteScreenConnector?.sendRemoteScreenState(RemoteScreenStatus.rejected);
+            removeSender(remoteScreenConnector: remoteScreenConnector);
           }
           break;
         default:
