@@ -24,7 +24,7 @@ class MultiConnectionChannel implements Channel {
   ChannelState _state = ChannelState.connected;
   ChannelCloseReason? _closeReason;
 
-  late MessageContinuity _continuity;
+  late MessageContinuity _messageContinuity;
 
   String get channelId {
     return _channelId;
@@ -34,7 +34,7 @@ class MultiConnectionChannel implements Channel {
     this._channelId,
     this._reconnectionToken,
   ) {
-    _continuity = MessageContinuity(((message) {
+    _messageContinuity = MessageContinuity(((message) {
       onChannelMessage?.call(message);
     }));
   }
@@ -71,7 +71,7 @@ class MultiConnectionChannel implements Channel {
   Future _handleChannelMessage(ChannelMessage message) async {
     _handleControlMessage(message);
 
-    _continuity.processIncomingMessage(message);
+    _messageContinuity.processIncomingMessage(message);
   }
 
   Future _handleControlMessage(ChannelMessage message) async {
@@ -107,7 +107,7 @@ class MultiConnectionChannel implements Channel {
 
   @override
   void send(ChannelMessage message) {
-    final preparedMessage = _continuity.prepareOutgoingMessage(message);
+    final preparedMessage = _messageContinuity.prepareOutgoingMessage(message);
 
     final json = preparedMessage.toJson();
 
