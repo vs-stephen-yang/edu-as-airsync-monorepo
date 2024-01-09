@@ -8,6 +8,7 @@ import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/main_common.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
+import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/model/rtc_play_order.dart';
 import 'package:display_flutter/screens/home.dart';
@@ -19,10 +20,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:no_context_navigation/no_context_navigation.dart';
-import 'package:ion_sdk_flutter/flutter_ion.dart' as ion;
-import 'package:uuid/uuid.dart';
-import 'package:flutter_ion_sfu/flutter_ion_sfu.dart';
-import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
 
 import 'mirror_state_provider.dart';
 
@@ -90,12 +87,11 @@ class ChannelProvider extends ChangeNotifier {
   static final RTCPlayOrder _rtcPlayOrder = RTCPlayOrder();
   static RTCPlayOrder get rtcPlayOrder => _rtcPlayOrder;
   static bool isModeratorMode = false;
+
+  final RemoteScreenServer _remoteScreenServe = RemoteScreenServer();
   static final List<RemoteScreenConnector> _remoteScreenConnectors = <RemoteScreenConnector>[];
   static List<RemoteScreenConnector> get remoteScreenConnectors => _remoteScreenConnectors;
   static bool isSenderMode = false;
-
-  ion.Client? _ionSfuClient;
-  final _ionSfuServer = FlutterIonSfu();
 
   ChannelProvider(this.appConfig) {
     apiGateway = appConfig.settings.apiGateway;
@@ -179,33 +175,9 @@ class ChannelProvider extends ChangeNotifier {
     };
   }
 
-  Future _startRemoteScreenPublisher(String roomId, int port)async{
-    if (_ionSfuClient == null) {
-      // _ionSfuClient?.close();
-      // _ionSfuClient = null;
-
-      final ionSignal = ion.JsonRPCSignal("ws://127.0.0.1:$port/ws");
-
-      final uuid = const Uuid().v4();
-      _ionSfuClient = await ion.Client.create(sid: roomId, uid: uuid, signal: ionSignal,);
-
-      var constraints = ion.Constraints.defaults;
-      constraints.codec = "h264";
-      constraints.simulcast = false;
-      constraints.audio = false;
-      constraints.resolution = "hd";
-
-      var localStream = await ion.LocalStream.getDisplayMedia(
-          constraints: constraints
-      );
-      await _ionSfuClient?.publish(localStream);
-    }
-  }
-
-  Future _startSfuServer() async{
-    final configuration = FlutterIonSfuConfiguration();
-    await _ionSfuServer.initialize();
-    await _ionSfuServer.start(configuration);
+  Future startRemoteScreen() async {
+    await _remoteScreenServe.startSfuServer();
+    await _remoteScreenServe.startRemoteScreenPublisher();
   }
 
   Future<void> startServer(String instanceId) async {
@@ -218,8 +190,6 @@ class ChannelProvider extends ChangeNotifier {
     // start the direct server
     await _directServer.start(port);
     isServerStart = true;
-
-    await _startSfuServer();
   }
 
   void _onNewChannel(Channel channel, Mode mode) {
@@ -229,7 +199,6 @@ class ChannelProvider extends ChangeNotifier {
     RemoteScreenConnector? remoteScreenConnector;
 
     channel.onChannelMessage = (ChannelMessage message) async {
-      print('zz onChannelMessage ${rtcConnector.mUid}');
       switch (message.messageType) {
         /// basic
         case ChannelMessageType.joinDisplay:
@@ -243,10 +212,23 @@ class ChannelProvider extends ChangeNotifier {
             }
             rtcConnector = onJoinDisplay(rtcConnector, mode, message as JoinDisplayMessage);
           } else {
-            remoteScreenConnector = RemoteScreenConnector(channel, 'remote-screen', host, 7000, message as JoinDisplayMessage);
-            // TODO: be triggered by the switch
-            _startRemoteScreenPublisher(remoteScreenConnector!.roomId, port);
+            if (_remoteScreenConnectors.length >= 10) {
+              var message = PresentRejectedMessage();
+              message.reason = Reason(401, text:'block');
+              channel.send(message);
+              return;
+            }
+            remoteScreenConnector = RemoteScreenConnector(
+                channel,
+                _remoteScreenServe.roomId,
+                host,
+                _remoteScreenServe.roomPort,
+                message as JoinDisplayMessage);
+            remoteScreenConnector?.onChannelDisconnect = (() async {
+              removeSender(remoteScreenConnector: remoteScreenConnector);
+            });
             _remoteScreenConnectors.add(remoteScreenConnector!);
+            notifyListeners();
           }
           break;
         case ChannelMessageType.startPresent:
@@ -278,7 +260,10 @@ class ChannelProvider extends ChangeNotifier {
 
         /// remote
         case ChannelMessageType.startRemoteScreen:
-          await remoteScreenConnector?.onStartRemoteScreen(message as StartRemoteScreenMessage);
+          if (isSenderMode) {
+            await remoteScreenConnector?.onStartRemoteScreen(message as StartRemoteScreenMessage);
+            notifyListeners();
+          }
           break;
         default:
           break;
