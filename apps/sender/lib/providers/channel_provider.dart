@@ -308,6 +308,11 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
+  Future beginBasicMode() async {
+      _joinDisplay();
+      _startPresent();
+  }
+
   void resetMessage() {
     _exceedMaximumPresenters = false;
   }

@@ -62,11 +62,12 @@ class PresentSelectRole extends StatelessWidget {
                       )
                     ],
                   ),
-                  onTap: () {
+                  onTap: () async {
                     channelProvider.currentRole = JoinIntentType.present;
                     if (channelProvider.moderatorStatus) {
                       channelProvider.presentModeratorNamePage();
                     } else {
+                      await channelProvider.beginBasicMode();
                       channelProvider.presentSelectScreenPage();
                     }
                   },
