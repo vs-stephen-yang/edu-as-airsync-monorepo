@@ -7,10 +7,9 @@ import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/cast_settings.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
-import 'package:display_flutter/screens/settings.dart';
 import 'package:display_flutter/screens/moderator_menu_view.dart';
+import 'package:display_flutter/screens/settings.dart';
 import 'package:display_flutter/screens/split_screen.dart';
-import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -84,17 +83,15 @@ class _StreamFunctionStates extends State<StreamFunction> {
 
         // region Moderator icon
         Color? colorModeratorForeground, colorModeratorBackground;
-        if (ChannelProvider.isModeratorMode) {
-          colorModeratorForeground = AppColors.iconFeatureOnStandbyForeground;
-          colorModeratorBackground = AppColors.iconFeatureOnStandbyBackground;
-        } else {
+        if (ChannelProvider.isModeratorMode &&
+            ChannelProvider.channelRtcConnectors.isNotEmpty) {
           if (value == stateMenuOn) {
             colorModeratorForeground = AppColors.iconPresentingForeground;
             colorModeratorBackground = AppColors.iconPresentingBackground;
-          } else {
-            colorModeratorForeground = AppColors.iconStandbyForeground;
-            colorModeratorBackground = AppColors.iconStandbyBackground;
           }
+        } else {
+          colorModeratorForeground = AppColors.iconFeatureOnStandbyForeground;
+          colorModeratorBackground = AppColors.iconFeatureOnStandbyBackground;
         }
         // endregion
 
