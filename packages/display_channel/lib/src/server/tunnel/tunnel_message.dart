@@ -1,15 +1,32 @@
 class TunnelMessage {
   final String action;
-  final String connectionId;
 
   TunnelMessage(
     this.action,
-    this.connectionId,
   );
   TunnelMessage.fromJson(Map<String, dynamic> json)
-      : action = json['action'] as String,
-        connectionId = json['connectionId'] as String;
+      : action = json['action'] as String;
 
+  Map<String, dynamic> toJson() {
+    return {
+      'action': action,
+    };
+  }
+}
+
+class TunnelClientEvent extends TunnelMessage {
+  final String connectionId;
+
+  TunnelClientEvent(
+    String action,
+    this.connectionId,
+  ) : super(action);
+
+  TunnelClientEvent.fromJson(Map<String, dynamic> json)
+      : connectionId = json['connectionId'] as String,
+        super.fromJson(json);
+
+  @override
   Map<String, dynamic> toJson() {
     return {
       'action': action,
@@ -18,7 +35,7 @@ class TunnelMessage {
   }
 }
 
-class TunnelClientConnected extends TunnelMessage {
+class TunnelClientConnected extends TunnelClientEvent {
   final String clientId;
   final String token;
 
@@ -46,7 +63,7 @@ class TunnelClientConnected extends TunnelMessage {
   }
 }
 
-class TunnelClientDisconnected extends TunnelMessage {
+class TunnelClientDisconnected extends TunnelClientEvent {
   TunnelClientDisconnected(
     String connectionId,
   ) : super('disconnected', connectionId);
@@ -65,7 +82,7 @@ class DisconnectReason {
   );
 }
 
-class TunnelDisconnectClient extends TunnelMessage {
+class TunnelDisconnectClient extends TunnelClientEvent {
   DisconnectReason? reason;
 
   TunnelDisconnectClient(
@@ -74,7 +91,7 @@ class TunnelDisconnectClient extends TunnelMessage {
   ) : super('disconnect', connectionId);
 }
 
-class TunnelClientMsg extends TunnelMessage {
+class TunnelClientMsg extends TunnelClientEvent {
   Map<String, dynamic> data;
 
   TunnelClientMsg(
