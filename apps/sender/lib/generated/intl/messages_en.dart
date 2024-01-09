@@ -73,6 +73,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "present_time_unit_min": MessageLookupByLibrary.simpleMessage("min"),
         "present_time_unit_sec": MessageLookupByLibrary.simpleMessage("sec"),
         "present_wait": m0,
+        "remote_screen_wait": MessageLookupByLibrary.simpleMessage(
+            "Waiting for presenter to share screen..."),
         "settings_knowledge_base":
             MessageLookupByLibrary.simpleMessage("Knowledge Base")
       };
