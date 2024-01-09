@@ -196,7 +196,14 @@ class ChannelProvider extends ChangeNotifier {
           }
           break;
         case ChannelMessageType.presentRejected:
-          presentEnd();
+          Reason? reason = (message as PresentRejectedMessage).reason;
+          if (currentRole == JoinIntentType.present) {
+            presentEnd();
+          } else {
+            if (reason?.code == 401) {
+              PresentStateProvider.setToast(true, 'Reach maximum receivers');
+            }
+          }
           break;
         case ChannelMessageType.presentSignal:
           webRTCConnector?.handleSignal(message as PresentSignalMessage);
@@ -304,7 +311,6 @@ class ChannelProvider extends ChangeNotifier {
       presentModeratorWaitPage();
     } else {
       _requestRemoteScreen();
-      presentRemoteScreenPage();
     }
   }
 
@@ -335,7 +341,8 @@ class ChannelProvider extends ChangeNotifier {
       case RemoteScreenStatus.accepted:
         break;
       case RemoteScreenStatus.rejected:
-        // over 10
+        PresentStateProvider.setToast(true, 'AirSync should enable "share screen to sender".');
+        presentMainPage();
         break;
       case RemoteScreenStatus.kicked:
         _remoteScreenClient?.removeRemoteScreenClient();
