@@ -31,7 +31,7 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
         if (_nameController.text.isEmpty) {
           _showOverlayMessage(context, nameKey);
         } else if (channelProvider.displayCode != null) {
-          channelProvider.setModeratorName(_nameController.text);
+          channelProvider.setSenderName(_nameController.text);
         }
       }
     }

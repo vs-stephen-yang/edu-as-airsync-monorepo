@@ -369,6 +369,17 @@ class S {
       args: [],
     );
   }
+
+  /// `Waiting for presenter to share screen...`
+  String get remote_screen_wait {
+    return Intl.message(
+      'Waiting for presenter to share screen...',
+      name: 'remote_screen_wait',
+      desc: '',
+      args: [],
+    );
+  }
+
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -22,6 +22,8 @@ enum ViewState {
   selectScreen,
   presentStart,
 
+  selectRole,
+  remoteScreen,
   //moderator
   moderatorName,
   moderatorWait,
@@ -57,8 +59,17 @@ class PresentStateProvider extends ChangeNotifier {
   bool _exceedMaximumPresenters = false;
   bool _systemAudio = false;
   bool get systemAudio => _systemAudio;
-
   bool get exceedMaximumPresenters => _exceedMaximumPresenters;
+
+  static final ValueNotifier<bool> displayToastValue = ValueNotifier(false);
+  static String toastMessage = '';
+  static setToast(bool _, String message) {
+    displayToastValue.value = _;
+    toastMessage = message;
+    Timer(const Duration(seconds: 3), () {
+      displayToastValue.value = false;
+    });
+  }
 
   setViewState(ViewState newViewState) {
     _currentState = newViewState;

@@ -3,15 +3,19 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:display_cast_flutter/features/webrtc_connector.dart';
+import 'package:display_cast_flutter/model/remote_screen_client.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter/material.dart';
 
 enum Mode {
   internet,
@@ -30,28 +34,30 @@ class ChannelProvider extends ChangeNotifier {
   int port = 5100;
   WebRTCConnector? webRTCConnector;
   List<RtcIceServer>? _iceServerList;
+
   bool _moderatorStatus = false;
-
   bool get moderatorStatus => _moderatorStatus;
-  bool _exceedMaximumPresenters = false;
 
+  bool _exceedMaximumPresenters = false;
   bool get exceedMaximumPresenters => _exceedMaximumPresenters;
 
   ViewState _currentState = ViewState.idle;
-
   ViewState get state => _currentState;
-
   set currentState(ViewState value) {
     _currentState = value;
   }
 
   Mode _currentMode = Mode.internet;
-
   Mode get currentMode => _currentMode;
-
   set currentMode(Mode value) {
     _currentMode = value;
     notifyListeners();
+  }
+
+  JoinIntentType _currentRole = JoinIntentType.present;
+  JoinIntentType get currentRole => _currentRole;
+  set currentRole(JoinIntentType value) {
+    _currentRole = value;
   }
 
   late String _urlIce, _apiGateway, _tunnelApiUrl = '';
@@ -66,8 +72,10 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   bool _systemAudio = false;
-
   bool get systemAudio => _systemAudio;
+
+  RemoteScreenClient? _remoteScreenClient;
+  RemoteScreenClient? get remoteScreenClient => _remoteScreenClient;
 
   //region setView
   setViewState(ViewState newViewState) {
@@ -95,12 +103,20 @@ class ChannelProvider extends ChangeNotifier {
     setViewState(ViewState.idle);
   }
 
+  Future<void> presentSelectRolePage() async {
+    setViewState(ViewState.selectRole);
+  }
+
   Future<void> presentSelectScreenPage() async {
     setViewState(ViewState.selectScreen);
   }
 
   Future<void> presentBasicStartPage() async {
     setViewState(ViewState.presentStart);
+  }
+
+  Future<void> presentRemoteScreenPage() async {
+    setViewState(ViewState.remoteScreen);
   }
 
   Future<void> presentModeratorNamePage() async {
@@ -161,7 +177,7 @@ class ChannelProvider extends ChangeNotifier {
           break;
       }
     };
-    _channel?.onChannelMessage = (message) {
+    _channel?.onChannelMessage = (message) async {
       switch (message.messageType) {
         case ChannelMessageType.channelConnected:
           // heartbeatInterval
@@ -180,7 +196,14 @@ class ChannelProvider extends ChangeNotifier {
           }
           break;
         case ChannelMessageType.presentRejected:
-          presentEnd();
+          Reason? reason = (message as PresentRejectedMessage).reason;
+          if (currentRole == JoinIntentType.present) {
+            presentEnd();
+          } else {
+            if (reason?.code == 401) {
+              PresentStateProvider.setToast(true, 'Reach maximum receivers');
+            }
+          }
           break;
         case ChannelMessageType.presentSignal:
           webRTCConnector?.handleSignal(message as PresentSignalMessage);
@@ -199,6 +222,16 @@ class ChannelProvider extends ChangeNotifier {
           // moderator mode
           _sessionId = (message as AllowPresentMessage).sessionId!;
           _startPresent();
+          break;
+        case ChannelMessageType.remoteScreenStatus:
+          _handleRemoteScreenState(message as RemoteScreenStatusMessage);
+          break;
+        case ChannelMessageType.remoteScreenInfo:
+          RemoteScreenInfoMessage infoMessage = message as RemoteScreenInfoMessage;
+          await _remoteScreenClient?.handleRemoteScreenInfo(
+              infoMessage.ionSfuRoom!.url!, infoMessage.ionSfuRoom!.roomId!, () {
+            presentRemoteScreenPage();
+          });
           break;
         default:
           break;
@@ -239,8 +272,7 @@ class ChannelProvider extends ChangeNotifier {
       if (webRTCConnector != null) await webRTCConnector?.hangUp();
       webRTCConnector = null;
 
-      await _channel?.close(ChannelCloseReason(ChannelCloseCode.close));
-      _channel = null;
+      await closeChannel();
     } catch (e) {
       debugModePrint(e, type: runtimeType);
     }
@@ -272,30 +304,68 @@ class ChannelProvider extends ChangeNotifier {
     _channel?.send(message);
   }
 
-  void setModeratorName(String name) {
+  void setSenderName(String name) {
     _joinDisplay(name: name);
-    presentModeratorWaitPage();
+    if (_currentRole == JoinIntentType.present) {
+      presentModeratorWaitPage();
+    } else {
+      _requestRemoteScreen();
+    }
+  }
+
+  Future beginBasicMode() async {
+      _joinDisplay();
+      _startPresent();
   }
 
   void resetMessage() {
     _exceedMaximumPresenters = false;
   }
 
+  Future closeChannel() async {
+    await _channel?.close(ChannelCloseReason(ChannelCloseCode.close));
+    _channel = null;
+  }
+
+  void removeRemoteScreenClient() async {
+    await remoteScreenClient?.remove();
+    await closeChannel();
+    presentMainPage();
+  }
+
   /// get IceServer list and send join-display, start-present
-  void _onDisplayStatus(DisplayStatusMessage message) {
+  void _onDisplayStatus(DisplayStatusMessage message) async {
     _iceServerList = message.configuration?.iceServers;
     _moderatorStatus = message.status!.moderator!;
-    if (_moderatorStatus) {
-      presentModeratorNamePage();
-    } else {
-      _joinDisplay();
-      _startPresent();
+
+    presentSelectRolePage();
+  }
+
+  Future _requestRemoteScreen() async {
+    _remoteScreenClient = RemoteScreenClient(_channel);
+    _remoteScreenClient?.sendStartRemoteScreenMessage();
+  }
+
+  Future _handleRemoteScreenState(RemoteScreenStatusMessage message) async {
+    switch(message.status) {
+      case RemoteScreenStatus.accepted:
+        break;
+      case RemoteScreenStatus.rejected:
+        PresentStateProvider.setToast(true, 'AirSync should enable "share screen to sender".');
+        presentMainPage();
+        break;
+      case RemoteScreenStatus.kicked:
+        removeRemoteScreenClient();
+        break;
+      case null:
+        break;
     }
   }
 
   //region sendMessage
   void _joinDisplay({String? name}) {
     JoinDisplayMessage msg = JoinDisplayMessage(_clientId);
+    msg.intent = _currentRole;
     if (name != null) {
       msg.name = name;
     }
