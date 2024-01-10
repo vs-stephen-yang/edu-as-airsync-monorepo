@@ -105,7 +105,7 @@ abstract class ChannelMessage {
 
   Map<String, dynamic> _toJson(Map<String, dynamic> json) => {
         'action': channelMessageActionNames[messageType.index],
-        'seq': seq,
+        if (seq != null) 'seq': seq,
         'data': json,
       };
 }
