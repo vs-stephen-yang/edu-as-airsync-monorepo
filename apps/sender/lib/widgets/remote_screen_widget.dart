@@ -1,6 +1,7 @@
 
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/widgets/remote_screen_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
@@ -10,10 +11,22 @@ class RemoteScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ChannelProvider>(builder: (context, channelProvider, _) {
-      return channelProvider.client != null && channelProvider.client?.remoteScreenRenderer.textureId != null
-          ? RTCVideoView(channelProvider.client!.remoteScreenRenderer)
-          : SizedBox(child: Text(S.of(context).remote_screen_wait, style: const TextStyle(color: Colors.white, fontSize: 14)));
-    });
+    return Stack(
+      children: [
+        Center(
+          child: Consumer<ChannelProvider>(builder: (context, channelProvider, _) {
+            return channelProvider.remoteScreenClient != null && channelProvider.remoteScreenClient?.remoteScreenRenderer.textureId != null
+                ? RTCVideoView(channelProvider.remoteScreenClient!.remoteScreenRenderer)
+                : SizedBox(child: Text(S.of(context).remote_screen_wait, style: const TextStyle(color: Colors.white, fontSize: 14)));
+          }),
+        ),
+        const Positioned(
+          top: 0,
+          left: 0,
+          bottom: 0,
+          child: StreamFunctionTool(),
+        ),
+      ],
+    );
   }
 }
