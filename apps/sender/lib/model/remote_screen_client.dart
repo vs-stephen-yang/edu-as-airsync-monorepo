@@ -39,7 +39,7 @@ class RemoteScreenClient {
     _channel?.send(stateMessage);
   }
 
-  Future removeRemoteScreenClient() async {
+  Future remove() async {
     if (_remoteScreenRenderer.textureId != null) {
       _remoteScreenRenderer.srcObject = null;
     }
