@@ -272,6 +272,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.1.3"
+  flutter_ion_sfu:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "release-0.0.1"
+      resolved-ref: "3484f49c1dec02ae54be137ab52caea7ac414c37"
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-ion-sfu"
+    source: git
+    version: "0.0.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -369,6 +378,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.18.1"
+  ion_sdk_flutter:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "release-0.0.1"
+      resolved-ref: "9284d558ebd8ca90c74ab14dadef1df01749ce6a"
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter"
+    source: git
+    version: "1.0.0"
   js:
     dependency: transitive
     description:
