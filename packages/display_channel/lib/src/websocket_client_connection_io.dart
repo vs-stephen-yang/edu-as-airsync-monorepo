@@ -108,6 +108,8 @@ class WebSocketClientConnection implements ClientConnection {
     onConnected?.call();
 
     _socket!.listen((dynamic data) {
+      logger?.call(_url, 'Received $data');
+
       // receive data
       final message = jsonDecode(data);
       onMessage?.call(message);
@@ -128,6 +130,8 @@ class WebSocketClientConnection implements ClientConnection {
   void send(Map<String, dynamic> message) {
     final data = jsonEncode(message);
     _socket?.add(data);
+
+    logger?.call(_url, 'Sent $data');
   }
 
   void _handleConnectFailed(ConnectErrorType error, String message) async {
