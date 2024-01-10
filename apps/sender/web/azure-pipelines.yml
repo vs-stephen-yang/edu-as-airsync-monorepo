@@ -66,6 +66,10 @@ jobs:
           archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
           destinationFolder: "$(Pipeline.Workspace)/flutter"
 
+      - script: $(Flutter.Bin) config --enable-web
+        displayName: Enable Flutter for web
+        workingDirectory: "$(Build.SourcesDirectory)"
+
       - script: $(Flutter.Bin) analyze --no-fatal-infos
         enabled: false
         displayName: Run lint checks
