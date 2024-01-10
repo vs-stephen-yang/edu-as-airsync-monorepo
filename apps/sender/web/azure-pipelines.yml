@@ -49,6 +49,7 @@ jobs:
 
       - task: Cache@2
         displayName: Configure flutter caching
+        enabled: false
         inputs:
           key: 'pubspec | "$(Agent.OS)" | pubspec.yaml, pubspec.lock'
           restoreKeys: |
