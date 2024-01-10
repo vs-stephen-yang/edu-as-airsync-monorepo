@@ -74,6 +74,7 @@ dependencies:
   display_channel:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
+      ref: release-0.0.10
   flutter_background: ^1.2.0
 
 dependency_overrides:
