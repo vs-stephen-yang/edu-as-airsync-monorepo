@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:display_channel/src/messages/message_continuity.dart';
 import 'package:display_channel/src/channel.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
@@ -26,17 +28,38 @@ class MultiConnectionChannel implements Channel {
 
   late MessageContinuity _messageContinuity;
 
+  Timer? _heartbeatTimer;
+  final Duration heartbeatInterval;
+
   String get channelId {
     return _channelId;
   }
 
   MultiConnectionChannel(
     this._channelId,
-    this._reconnectionToken,
-  ) {
+    this._reconnectionToken, {
+    // TODO: consider an appropriate interval
+    this.heartbeatInterval = const Duration(seconds: 10),
+  }) {
     _messageContinuity = MessageContinuity(((message) {
       onChannelMessage?.call(message);
     }));
+  }
+
+  _startHearbeat() {
+    _heartbeatTimer?.cancel();
+
+    _heartbeatTimer = Timer.periodic(heartbeatInterval, (Timer timer) {
+      // send hearbeat message
+      // TODO: fill ack
+      final message = HeartbeatMessage(0);
+      send(message);
+    });
+  }
+
+  _stopHearbeat() {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
   }
 
   bool verifyReconnectionToken(String token) {
@@ -44,6 +67,10 @@ class MultiConnectionChannel implements Channel {
   }
 
   void addConnection(Connection newConnection) {
+    if (_connections.isEmpty) {
+      _startHearbeat();
+    }
+
     _connections.add(newConnection);
 
     newConnection.onClosed = (connection) => _onConnectionClosed(connection);
@@ -94,13 +121,17 @@ class MultiConnectionChannel implements Channel {
 
     // all underlying connections are closed
     if (_connections.isEmpty) {
+      _stopHearbeat();
+
+      // IMPROVE
       _changeState(ChannelState.disconnected);
     }
   }
 
   void _notifyConnected(Connection connection) {
+    // FIXME: only send 'connected' to the connection
     send(ChannelConnectedMessage(
-      25000,
+      heartbeatInterval.inMilliseconds,
       _reconnectionToken,
     ));
   }
@@ -119,6 +150,8 @@ class MultiConnectionChannel implements Channel {
 
   @override
   Future<void> close(ChannelCloseReason? reason) async {
+    _stopHearbeat();
+
     if (_isClosed()) {
       return;
     }
