@@ -9,5 +9,5 @@ class AppColors {
 
   static const Color presentIdleOnBackground = Color.fromRGBO(242, 242, 242, 1);
 
-  static const Color presentIdleOnTitle = Color.fromRGBO(51, 51, 51, 1);
+  static const Color iconFeatureOnStandbyBackground = Color.fromRGBO(0x89, 0x89, 0x89, 1);
 }
