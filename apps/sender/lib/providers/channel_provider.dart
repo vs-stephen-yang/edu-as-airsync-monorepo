@@ -75,7 +75,7 @@ class ChannelProvider extends ChangeNotifier {
   bool get systemAudio => _systemAudio;
 
   RemoteScreenClient? _remoteScreenClient;
-  RemoteScreenClient? get client => _remoteScreenClient;
+  RemoteScreenClient? get remoteScreenClient => _remoteScreenClient;
 
   //region setView
   setViewState(ViewState newViewState) {
@@ -272,8 +272,7 @@ class ChannelProvider extends ChangeNotifier {
       if (webRTCConnector != null) await webRTCConnector?.hangUp();
       webRTCConnector = null;
 
-      await _channel?.close(ChannelCloseReason(ChannelCloseCode.close));
-      _channel = null;
+      await closeChannel();
     } catch (e) {
       debugModePrint(e, type: runtimeType);
     }
@@ -323,6 +322,17 @@ class ChannelProvider extends ChangeNotifier {
     _exceedMaximumPresenters = false;
   }
 
+  Future closeChannel() async {
+    await _channel?.close(ChannelCloseReason(ChannelCloseCode.close));
+    _channel = null;
+  }
+
+  void removeRemoteScreenClient() async {
+    await remoteScreenClient?.remove();
+    await closeChannel();
+    presentMainPage();
+  }
+
   /// get IceServer list and send join-display, start-present
   void _onDisplayStatus(DisplayStatusMessage message) async {
     _iceServerList = message.configuration?.iceServers;
@@ -345,8 +355,7 @@ class ChannelProvider extends ChangeNotifier {
         presentMainPage();
         break;
       case RemoteScreenStatus.kicked:
-        _remoteScreenClient?.removeRemoteScreenClient();
-        presentMainPage();
+        removeRemoteScreenClient();
         break;
       case null:
         break;
