@@ -47,5 +47,6 @@
   "main_mirror_prompt_accept": "Accept",
   "main_settings_title": "Settings",
   "main_settings_language": "Language",
-  "main_settings_whats_new": "What's New?"
+  "main_settings_whats_new": "What's New?",
+  "main_setting_share_to_sender": "Share to sender"
 }
