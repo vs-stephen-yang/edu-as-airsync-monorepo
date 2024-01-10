@@ -121,7 +121,7 @@ class ChannelConnectedMessage extends ChannelMessage {
   bool get isControlMessage => true;
 
   ChannelConnectedMessage(
-    this.heartbeatInterval,
+    this.heartbeatInterval, // in milliseconds
     this.reconnectionToken,
   ) : super(ChannelMessageType.channelConnected);
 
