@@ -629,7 +629,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   removePresenterBy(int index) async {
-    RTCConnector? selectedController = _channelRtcConnectors[index];
+    int listIndex = ChannelProvider.rtcPlayOrder.getOrderByIndex(index);
+    RTCConnector? selectedController = _channelRtcConnectors[listIndex];
     if (selectedController.sessionId != null) {
       try {
         await selectedController.disconnectPeerConnection(sendAnalytics: true);
