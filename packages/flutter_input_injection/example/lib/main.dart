@@ -157,6 +157,7 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Text('Running on: $_platformVersion\n'),
               ElevatedButton(
                 onPressed: () {
                   testSingleTouch();
