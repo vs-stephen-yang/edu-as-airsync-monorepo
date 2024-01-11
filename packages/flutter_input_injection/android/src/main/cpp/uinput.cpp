@@ -1,10 +1,10 @@
 #include <android/log.h>
-#include <assert.h>
-#include <errno.h>
 #include <fcntl.h>
 #include <jni.h>
 #include <linux/uinput.h>
 #include <unistd.h>
+#include <cassert>
+#include <cerrno>
 #include <string>
 
 #define TAG "libuinput"
@@ -13,7 +13,7 @@
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN, TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
 
-#define INVALID_FD -1
+#define INVALID_FD (-1)
 //
 static int g_input_fd = -1;
 
@@ -22,7 +22,7 @@ static void emitEvent(int fd, int type, int code, int val) {
     return;
   }
 
-  struct input_event ie;
+  struct input_event ie = {};
   memset(&ie, 0, sizeof(ie));
 
   ie.type = type;
@@ -91,7 +91,7 @@ static bool setupDevice(
   LOGI("uinput version: %d", version);
 
   if (version >= 5) {
-    struct uinput_setup usetup;
+    struct uinput_setup usetup = {};
     memset(&usetup, 0, sizeof(usetup));
 
     usetup.id.bustype = BUS_USB;
@@ -102,7 +102,7 @@ static bool setupDevice(
     ioctl(fd, UI_DEV_SETUP, &usetup);
 
     // Set absolute axis information
-    struct uinput_abs_setup abs_setup;
+    struct uinput_abs_setup abs_setup = {};
     memset(&abs_setup, 0, sizeof(abs_setup));
 
     // Set up ABS_MT_TRACKING_ID
@@ -129,7 +129,7 @@ static bool setupDevice(
     abs_setup.absinfo.maximum = height;  // Maximum Y-coordinate of your screen
     ioctl(fd, UI_ABS_SETUP, &abs_setup);
   } else {
-    struct uinput_user_dev device;
+    struct uinput_user_dev device = {};
     memset(&device, 0, sizeof(device));
 
     device.id.bustype = BUS_USB;
@@ -156,21 +156,10 @@ static bool setupDevice(
   return true;
 }
 
-extern "C" JNIEXPORT void JNICALL
-Java_remoting_jni_UInput_injectKey(
-    JNIEnv* env,
-    jobject /* this */,
-    int code,
-    int pressed) {
-  // https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h
-  emitEvent(g_input_fd, EV_KEY, code, pressed);
-  emitEvent(g_input_fd, EV_SYN, SYN_REPORT, 0);
-}
-
 extern "C" JNIEXPORT jboolean JNICALL
 Java_com_viewsonic_flutter_1input_1injection_UInput_init(
-    JNIEnv* env,
-    jobject /* this */,
+    JNIEnv* /* env */,
+    jclass /* this */,
     jint maxTrackingId,
     jint maxSlot,
     jint width,
@@ -212,15 +201,15 @@ Java_com_viewsonic_flutter_1input_1injection_UInput_init(
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1input_1injection_UInput_close(
-    JNIEnv* env,
-    jobject /* this */) {
+    JNIEnv* /* env */,
+    jclass /* this */) {
   closeDevice();
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1input_1injection_UInput_injectTouchStart(
-    JNIEnv* env,
-    jobject /* this */,
+    JNIEnv* /* env */,
+    jclass /* this */,
     int slot,
     int trackingId,
     int x,
@@ -235,8 +224,8 @@ Java_com_viewsonic_flutter_1input_1injection_UInput_injectTouchStart(
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1input_1injection_UInput_injectTouchEnd(
-    JNIEnv* env,
-    jobject /* this */,
+    JNIEnv* /* env */,
+    jclass /* this */,
     int slot) {
   emitEvent(g_input_fd, EV_ABS, ABS_MT_SLOT, slot);
   emitEvent(g_input_fd, EV_ABS, ABS_MT_TRACKING_ID, -1);
@@ -246,8 +235,8 @@ Java_com_viewsonic_flutter_1input_1injection_UInput_injectTouchEnd(
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_viewsonic_flutter_1input_1injection_UInput_injectTouchMove(
-    JNIEnv* env,
-    jobject /* this */,
+    JNIEnv* /* env */,
+    jclass /* this */,
     int slot,
     int x,
     int y) {
