@@ -62,13 +62,13 @@ public class FlutterInputInjectionPlugin implements FlutterPlugin, MethodCallHan
 
       switch (action) {
         case 0:
-          inputInjector.InjectSingleTouch(x, y, TouchEventType.Start);
+          inputInjector.InjectTouchStart(id, x, y);
           break;
         case 1:
-          inputInjector.InjectSingleTouch(x, y, TouchEventType.Move);
+          inputInjector.InjectTouchMove(id, x, y);
           break;
         case 2:
-          inputInjector.InjectSingleTouch(x, y, TouchEventType.End);
+          inputInjector.InjectTouchEnd(id);
           break;
         default:
           break;
