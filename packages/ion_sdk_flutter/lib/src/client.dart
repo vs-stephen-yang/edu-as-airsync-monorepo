@@ -239,10 +239,12 @@ class Client {
       capSel.setCapabilities(acaps);
     }
 
+    // The `setPreferredCodec` method in ion-sdk-flutter is not yet complete
+    // (see setPreferredCodec in stream.dart). For now, the default codec is hard-coded to h264.
     var vcaps = capSel.getCapabilities('video');
     if (vcaps != null) {
       vcaps.codecs = vcaps.codecs
-          .where((e) => (e['codec'] as String).toLowerCase() == 'vp8')
+          .where((e) => (e['codec'] as String).toLowerCase() == 'h264')
           .toList();
       vcaps.setCodecPreferences('video', vcaps.codecs);
       capSel.setCapabilities(vcaps);
