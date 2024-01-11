@@ -53,7 +53,7 @@ static void writeABS_SETUP(int fd, int code, int minValue, int maxValue) {
 
   abs_setup.code = code;
   abs_setup.absinfo.minimum = minValue;
-  abs_setup.absinfo.maximum = maxValue;  // Number of slots
+  abs_setup.absinfo.maximum = maxValue;
 
   ioctl(fd, UI_ABS_SETUP, &abs_setup);
 }
