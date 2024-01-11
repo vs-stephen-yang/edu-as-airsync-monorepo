@@ -52,6 +52,7 @@ class WebRTCConnector {
 
   int get trackHeight => _trackHeight;
   final _flutterInputInjectionPlugin = FlutterInputInjection();
+  Future<void> Function()? onWebStreamInterrupted;
 
   Future<void> makeCall(
       String peerId, dynamic source, List<RtcIceServer>? iceServerList) async {
@@ -236,6 +237,12 @@ class WebRTCConnector {
     };
 
     _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+    _localStream?.getTracks().forEach((element) {
+      element.onEnded = () async {
+        await hangUp();
+        await onWebStreamInterrupted?.call();
+      };
+    });
     for (MediaStreamTrack track in _localStream!.getTracks()) {
       debugModePrint('track: ${track.kind}', type: runtimeType);
       await _pc!.addTrack(track, _localStream!);
