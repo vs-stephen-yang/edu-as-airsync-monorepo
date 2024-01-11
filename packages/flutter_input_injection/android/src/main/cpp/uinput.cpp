@@ -47,6 +47,17 @@ static void closeDevice() {
   LOGI("Closed the virtual input device");
 }
 
+static void writeABS_SETUP(int fd, int code, int minValue, int maxValue) {
+  struct uinput_abs_setup abs_setup = {};
+  memset(&abs_setup, 0, sizeof(abs_setup));
+
+  abs_setup.code = code;
+  abs_setup.absinfo.minimum = minValue;
+  abs_setup.absinfo.maximum = maxValue;  // Number of slots
+
+  ioctl(fd, UI_ABS_SETUP, &abs_setup);
+}
+
 static bool setupDevice(
     int fd,
     int maxTrackingId,
@@ -101,33 +112,16 @@ static bool setupDevice(
 
     ioctl(fd, UI_DEV_SETUP, &usetup);
 
-    // Set absolute axis information
-    struct uinput_abs_setup abs_setup = {};
-    memset(&abs_setup, 0, sizeof(abs_setup));
-
     // Set up ABS_MT_TRACKING_ID
-    abs_setup.code = ABS_MT_TRACKING_ID;
-    abs_setup.absinfo.minimum = 0;
-    abs_setup.absinfo.maximum = maxTrackingId;  // Number of slots
-    ioctl(fd, UI_ABS_SETUP, &abs_setup);
+    writeABS_SETUP(fd, ABS_MT_TRACKING_ID, 0, maxTrackingId);
 
     // Set up ABS_MT_SLOT
-    abs_setup.code = ABS_MT_SLOT;
-    abs_setup.absinfo.minimum = 0;
-    abs_setup.absinfo.maximum = maxSlot;  // Number of slots
-    ioctl(fd, UI_ABS_SETUP, &abs_setup);
+    writeABS_SETUP(fd, ABS_MT_SLOT, 0, maxSlot);
 
     // Set up ABS_MT_POSITION_X
-    abs_setup.code = ABS_MT_POSITION_X;
-    abs_setup.absinfo.minimum = 0;
-    abs_setup.absinfo.maximum = width;  // Maximum X-coordinate of your screen
-    ioctl(fd, UI_ABS_SETUP, &abs_setup);
-
+    writeABS_SETUP(fd, ABS_MT_POSITION_X, 0, width);
     // Set up ABS_MT_POSITION_Y
-    abs_setup.code = ABS_MT_POSITION_Y;
-    abs_setup.absinfo.minimum = 0;
-    abs_setup.absinfo.maximum = height;  // Maximum Y-coordinate of your screen
-    ioctl(fd, UI_ABS_SETUP, &abs_setup);
+    writeABS_SETUP(fd, ABS_MT_POSITION_Y, 0, height);
   } else {
     struct uinput_user_dev device = {};
     memset(&device, 0, sizeof(device));
