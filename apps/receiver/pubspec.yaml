@@ -64,6 +64,7 @@ dependencies:
   sprintf: ^7.0.0
   connectivity_plus: ^5.0.1
   network_info_plus: ^2.1.0
+  flutter_background: ^1.2.0
 
   # ViewSonic plug-in
   app_ota_flutter:
