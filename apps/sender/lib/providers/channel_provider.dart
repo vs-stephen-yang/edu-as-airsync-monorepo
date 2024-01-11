@@ -149,83 +149,97 @@ class ChannelProvider extends ChangeNotifier {
     displayCode = decodeDisplayCode(encodedDisplayCode.replaceAll('-', ''));
     this.otp = otp;
 
-    await connectLanChannel((state, {lanChannel}) async {
-      if (state == ChannelState.connected) {
-        _channel = lanChannel;
-      } else if (state == ChannelState.closed) {
-        await connectInternetChannel((state, {internetChannel}) {
-          if (state == ChannelState.connected) {
-            _channel = internetChannel;
-          } else if (state == ChannelState.closed) {
-            PresentStateProvider.setToast(true, 'Unstable network connection.');
-          }
-        });
-      }
-      _channel?.onStateChange = (ChannelState state) {
-        onChannelStateChange(state);
-      };
-      _channel?.onChannelMessage = (message) async {
-        switch (message.messageType) {
-          case ChannelMessageType.channelConnected:
-          // heartbeatInterval
-          // reconnectionToken?
-            break;
-          case ChannelMessageType.displayStatus:
-            DataDisplayCode.getInstance().save(encodedDisplayCode);
-            _onDisplayStatus(message as DisplayStatusMessage);
-            break;
-          case ChannelMessageType.presentAccepted:
-          // select screen
-            if (moderatorStatus) {
-              presentSelectScreenPage();
-            } else {
-              presentSelectScreenPage();
-            }
-            break;
-          case ChannelMessageType.presentRejected:
-            Reason? reason = (message as PresentRejectedMessage).reason;
-            if (currentRole == JoinIntentType.present) {
-              presentEnd();
-            } else {
-              if (reason?.code == 401) {
-                PresentStateProvider.setToast(true, 'Reach maximum receivers');
-              }
-            }
-            break;
-          case ChannelMessageType.presentSignal:
-            webRTCConnector?.handleSignal(message as PresentSignalMessage);
-            break;
-          case ChannelMessageType.changePresentQuality:
-            webRTCConnector?.changeStreamFrameRate(message.toJson());
-            break;
-          case ChannelMessageType.stopPresent:
-          // split-screen / moderator mode
-            if (moderatorStatus) {
-              presentStop();
-              presentModeratorWaitPage();
-            }
-            break;
-          case ChannelMessageType.allowPresent:
-          // moderator mode
-            _sessionId = (message as AllowPresentMessage).sessionId!;
-            _startPresent();
-            break;
-          case ChannelMessageType.remoteScreenStatus:
-            _handleRemoteScreenState(message as RemoteScreenStatusMessage);
-            break;
-          case ChannelMessageType.remoteScreenInfo:
-            RemoteScreenInfoMessage infoMessage = message as RemoteScreenInfoMessage;
-            await _remoteScreenClient?.handleRemoteScreenInfo(
-                infoMessage.ionSfuRoom!.url!, infoMessage.ionSfuRoom!.roomId!, () {
-              presentRemoteScreenPage();
-            });
-            break;
-          default:
-            break;
+    if (kIsWeb) {
+      await connectInternetChannel((state, {internetChannel}) {
+        if (state == ChannelState.connected) {
+          _channel = internetChannel;
+        } else if (state == ChannelState.closed) {
+          PresentStateProvider.setToast(true, 'Unstable network connection.');
         }
-      };
-    });
+        setUpChannel(encodedDisplayCode);
+      });
+    } else {
+      await connectLanChannel((state, {lanChannel}) async {
+        if (state == ChannelState.connected) {
+          _channel = lanChannel;
+        } else if (state == ChannelState.closed) {
+          await connectInternetChannel((state, {internetChannel}) {
+            if (state == ChannelState.connected) {
+              _channel = internetChannel;
+            } else if (state == ChannelState.closed) {
+              PresentStateProvider.setToast(true, 'Unstable network connection.');
+            }
+          });
+        }
+        setUpChannel(encodedDisplayCode);
+      });
+    }
+  }
 
+  void setUpChannel(String encodedDisplayCode) {
+    _channel?.onStateChange = (ChannelState state) {
+      onChannelStateChange(state);
+    };
+    _channel?.onChannelMessage = (message) async {
+      switch (message.messageType) {
+        case ChannelMessageType.channelConnected:
+        // heartbeatInterval
+        // reconnectionToken?
+          break;
+        case ChannelMessageType.displayStatus:
+          DataDisplayCode.getInstance().save(encodedDisplayCode);
+          _onDisplayStatus(message as DisplayStatusMessage);
+          break;
+        case ChannelMessageType.presentAccepted:
+        // select screen
+          if (moderatorStatus) {
+            presentSelectScreenPage();
+          } else {
+            presentSelectScreenPage();
+          }
+          break;
+        case ChannelMessageType.presentRejected:
+          Reason? reason = (message as PresentRejectedMessage).reason;
+          if (currentRole == JoinIntentType.present) {
+            presentEnd();
+          } else {
+            if (reason?.code == 401) {
+              PresentStateProvider.setToast(true, 'Reach maximum receivers');
+            }
+          }
+          break;
+        case ChannelMessageType.presentSignal:
+          webRTCConnector?.handleSignal(message as PresentSignalMessage);
+          break;
+        case ChannelMessageType.changePresentQuality:
+          webRTCConnector?.changeStreamFrameRate(message.toJson());
+          break;
+        case ChannelMessageType.stopPresent:
+        // split-screen / moderator mode
+          if (moderatorStatus) {
+            presentStop();
+            presentModeratorWaitPage();
+          }
+          break;
+        case ChannelMessageType.allowPresent:
+        // moderator mode
+          _sessionId = (message as AllowPresentMessage).sessionId!;
+          _startPresent();
+          break;
+        case ChannelMessageType.remoteScreenStatus:
+          _handleRemoteScreenState(message as RemoteScreenStatusMessage);
+          break;
+        case ChannelMessageType.remoteScreenInfo:
+          RemoteScreenInfoMessage infoMessage = message as RemoteScreenInfoMessage;
+          await _remoteScreenClient?.handleRemoteScreenInfo(
+              infoMessage.ionSfuRoom!.url!, infoMessage.ionSfuRoom!.roomId!, () {
+            presentRemoteScreenPage();
+          });
+          break;
+        default:
+          break;
+      }
+    };
   }
 
   void onChannelStateChange(ChannelState state) {
