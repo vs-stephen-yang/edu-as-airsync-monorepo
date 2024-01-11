@@ -48,11 +48,11 @@ dependencies:
   device_info_plus: ^9.1.1
   device_info_vs:
     git:
-      ref: 1.0.6
+      ref: 1.0.7
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS
       homepage : https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS?path=/README.md
   encrypt: ^5.0.3
-  uuid: ^4.0.0
+  uuid: ^4.3.3
   http: ^1.1.0
   path_provider: ^2.1.2
   http_parser: ^4.0.2
