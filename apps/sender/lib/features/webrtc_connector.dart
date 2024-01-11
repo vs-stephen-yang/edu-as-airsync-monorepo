@@ -14,6 +14,7 @@ import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
 import 'package:window_size/window_size.dart';
+import 'package:ion_sdk_flutter/src/utils.dart' as sdpFormatUtils;
 
 class WebRTCConnector {
   WebRTCConnector(this._urlIce,
@@ -45,6 +46,7 @@ class WebRTCConnector {
   int _trackHeight = _maxTrackHeight;
   bool touchBack = false;
   bool isMainSource = false;
+  final List<String> _codecPreferences = ['h264', 'vp8', 'vp9'];
   final String _macMainScreenOrder = '1';
   final String _windowsMainScreenOrder = '0';
   bool _isSourceTypeScreen = false;
@@ -220,6 +222,59 @@ class WebRTCConnector {
     }
   }
 
+  Future<bool> _setCodecPreferences() async {
+    try {
+      final List<String> desiredOrder = _codecPreferences.map((codec) {
+        return 'video/' + codec.toUpperCase();
+      }).toList();
+
+      RTCRtpCapabilities capabilities = await getRtpSenderCapabilities("video");
+      final modifiedCapabilities = capabilities.codecs!
+          .where((codec) => desiredOrder.contains(codec.mimeType))
+          .toList()
+        ..sort((a, b) =>
+            desiredOrder.indexOf(a.mimeType).compareTo(
+                desiredOrder.indexOf(b.mimeType)));
+
+      List<RTCRtpTransceiver> transceivers = await _pc!.transceivers;
+      for (var transceiver in transceivers) {
+        if (transceiver.sender.track!.kind == 'video') {
+          await transceiver.setCodecPreferences(modifiedCapabilities);
+        }
+      }
+      debugModePrint('succeeded to set codec preferences');
+    } catch (e) {
+      debugModePrint('failed to set codec preferences');
+      return false;
+    }
+    return true;
+  }
+
+  void _modifySDPForCodecPreferences(RTCSessionDescription description) {
+
+    var capSel = sdpFormatUtils.CodecCapabilitySelector(description.sdp!);
+    var acaps = capSel.getCapabilities('audio');
+    if (acaps != null) {
+      acaps.codecs = acaps.codecs
+          .where((e) => (e['codec'] as String).toLowerCase() == 'opus')
+          .toList();
+      acaps.setCodecPreferences('audio', acaps.codecs);
+      capSel.setCapabilities(acaps);
+    }
+
+    var vcaps = capSel.getCapabilities('video');
+    if (vcaps != null) {
+      vcaps.codecs = vcaps.codecs
+          .where((e) => (e['codec'] as String).toLowerCase() == _codecPreferences[0])
+          .toList();
+      vcaps.setCodecPreferences('video', vcaps.codecs);
+      capSel.setCapabilities(vcaps);
+    }
+    description.sdp = capSel.sdp();
+
+    debugModePrint('modifySDPForCodecPreferences vcodec:' + _codecPreferences[0]);
+  }
+
   Future<void> _publish() async {
     _dc = await _pc!.createDataChannel('pc-dc', RTCDataChannelInit()..id = 1);
     _setDataChannelListeners(_dc!);
@@ -248,21 +303,7 @@ class WebRTCConnector {
       await _pc!.addTrack(track, _localStream!);
     }
 
-    // select and order codecs
-    final List<String> desiredOrder = ['video/H264', 'video/VP8', 'video/VP9'];
-    RTCRtpCapabilities capabilities = await getRtpSenderCapabilities("video");
-
-    final modifiedCapabilities = capabilities.codecs!
-        .where((codec) => desiredOrder.contains(codec.mimeType))
-        .toList()
-      ..sort((a, b) => desiredOrder.indexOf(a.mimeType).compareTo(desiredOrder.indexOf(b.mimeType)));
-
-    List<RTCRtpTransceiver> transceivers = await _pc!.transceivers;
-    for (var transceiver in transceivers) {
-      if (transceiver.sender.track!.kind == 'video') {
-        await transceiver.setCodecPreferences(modifiedCapabilities);
-      }
-    }
+    final bool setCodecPreferencesResult = await _setCodecPreferences();
 
     final offerConstraints = <String, dynamic>{
       'mandatory': {
@@ -274,6 +315,14 @@ class WebRTCConnector {
 
     final offer = await _pc!.createOffer(offerConstraints);
     RTCSessionDescription fixedOffer = SdpUtil.fixSdp(offer);
+
+    if (!setCodecPreferencesResult) {
+      // Due to incomplete implementation of `setCodecPreferences`
+      // in flutter-webrtc, there are issues on certain devices. As a workaround,
+      // we have opted to modify the SDP. However, this workaround currently only
+      // supports selecting a single codec."
+      _modifySDPForCodecPreferences(fixedOffer);
+    }
 
     try {
       await _pc!.setLocalDescription(fixedOffer);
