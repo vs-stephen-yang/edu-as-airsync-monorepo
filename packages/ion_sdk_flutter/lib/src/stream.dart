@@ -24,10 +24,14 @@ class MediaTrackConstraints {
   int height;
   int width;
 
+  // Change to use the constraint data structure in flutter-webrtc itself,
+  // this modification breaks the original compatibility of ion-sdk-flutter.
   Map<String, dynamic> toMap() => {
-        'width': {'ideal': width},
-        'height': {'ideal': height},
-        'frameRate': frameRate.toMap()
+        'width': width,
+        'height': height,
+        'mandatory': {
+          'frameRate': frameRate.ideal
+        }
       };
 }
 
@@ -124,9 +128,12 @@ class LocalStream {
 
   static Future<LocalStream> getDisplayMedia({Constraints? constraints}) async {
     var stream = await navigator.mediaDevices.getDisplayMedia({
-      'video': true,
+      'audio': LocalStream.computeAudioConstraints(
+          constraints ?? Constraints.defaults),
+      'video': LocalStream.computeVideoConstraints(
+          constraints ?? Constraints.defaults)
     });
-    return LocalStream(stream, Constraints.defaults);
+    return LocalStream(stream, constraints ?? Constraints.defaults);
   }
 
   static dynamic computeAudioConstraints(Constraints constraints) {
@@ -142,19 +149,7 @@ class LocalStream {
     if (constraints.video! && constraints.resolution == null) {
       return true;
     } else if (constraints.video! && constraints.resolution != null) {
-      var resolution = videoConstraints[constraints.resolution]!.constraints;
-      var mobileConstraints = WebRTC.platformIsWeb
-          ? {}
-          : {
-              'mandatory': {
-                'minWidth': '1280',
-                'minHeight': '720',
-                'minFrameRate': '30',
-              },
-              'facingMode': 'user',
-              'optional': []
-            };
-      return {...resolution.toMap(), ...mobileConstraints};
+      return videoConstraints[constraints.resolution]!.constraints.toMap();
     }
     return false;
   }
