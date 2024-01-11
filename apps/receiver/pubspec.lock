@@ -182,11 +182,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "1.0.6"
-      resolved-ref: cea4ca5253e4befa38767bd7a363bcbd8f755ea3
+      ref: "1.0.7"
+      resolved-ref: "7e33fc535582c48998a3f880fc72d8b981b0123f"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS"
     source: git
-    version: "1.0.6"
+    version: "1.0.7"
   dio:
     dependency: transitive
     description:
@@ -957,10 +957,10 @@ packages:
     dependency: "direct main"
     description:
       name: uuid
-      sha256: "22c94e5ad1e75f9934b766b53c742572ee2677c56bc871d850a57dad0f82127f"
+      sha256: cd210a09f7c18cbe5a02511718e0334de6559871052c90a90c0cca46a4aa81c8
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.2"
+    version: "4.3.3"
   vector_graphics:
     dependency: transitive
     description:
