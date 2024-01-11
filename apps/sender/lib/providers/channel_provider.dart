@@ -257,6 +257,9 @@ class ChannelProvider extends ChangeNotifier {
         _channel?.send(json);
       },
     );
+    webRTCConnector?.onWebStreamInterrupted = (() async {
+      presentEnd();
+    });
     await webRTCConnector?.makeCall(
         _clientId, selectedSource, _iceServerList); // TODO: _clientId
 
