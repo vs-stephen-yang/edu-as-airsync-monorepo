@@ -60,10 +60,10 @@ class S {
     );
   }
 
-  /// `9 or 10-digit display code`
+  /// `3 or 11-digit display code`
   String get main_display_code_description {
     return Intl.message(
-      '9 or 10-digit display code',
+      '3 or 11-digit display code',
       name: 'main_display_code_description',
       desc: '',
       args: [],
@@ -379,7 +379,6 @@ class S {
       args: [],
     );
   }
-
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
