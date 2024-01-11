@@ -8,6 +8,22 @@ void main() {
   runApp(const MyApp());
 }
 
+class TouchEvent {
+  final int id;
+  final int action;
+  final int x;
+  final int y;
+  final int delayMs;
+
+  TouchEvent(
+    this.id,
+    this.action,
+    this.x,
+    this.y,
+    this.delayMs,
+  );
+}
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -48,38 +64,85 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Future<void> testTouchInject() async {
-    await Future.delayed(const Duration(seconds: 5));
+  List<TouchEvent> generateTouchEvents() {
+    final List<TouchEvent> touchEvents = [];
 
     int x = 200, y = 200;
-
     int id = 9;
     for (int j = 0; j < 3; ++j) {
-      await _flutterInputInjectionPlugin.sendTouch(
-          FlutterInputInjection.TOUCH_POINT_START, id, x, y);
+      touchEvents.add(
+        TouchEvent(id, FlutterInputInjection.TOUCH_POINT_START, x, y, 0),
+      );
       for (int i = 0; i < 50; ++i) {
-        await _flutterInputInjectionPlugin.sendTouch(
-            FlutterInputInjection.TOUCH_POINT_MOVE, id, x, y);
+        touchEvents.add(
+          TouchEvent(id, FlutterInputInjection.TOUCH_POINT_MOVE, x, y, 10),
+        );
         y += 10;
-        await Future.delayed(const Duration(milliseconds: 10));
       }
-      await _flutterInputInjectionPlugin.sendTouch(
-          FlutterInputInjection.TOUCH_POINT_END, id, x, y);
+      touchEvents.add(
+        TouchEvent(id, FlutterInputInjection.TOUCH_POINT_END, x, y, 0),
+      );
 
       x += 50;
-      await _flutterInputInjectionPlugin.sendTouch(
-          FlutterInputInjection.TOUCH_POINT_START, id, x, y);
+      touchEvents.add(
+        TouchEvent(id, FlutterInputInjection.TOUCH_POINT_START, x, y, 0),
+      );
       for (int i = 0; i < 50; ++i) {
-        await _flutterInputInjectionPlugin.sendTouch(
-            FlutterInputInjection.TOUCH_POINT_MOVE, id, x, y);
+        touchEvents.add(
+          TouchEvent(id, FlutterInputInjection.TOUCH_POINT_MOVE, x, y, 10),
+        );
         y -= 10;
-        await Future.delayed(const Duration(milliseconds: 10));
       }
-      await _flutterInputInjectionPlugin.sendTouch(
-          FlutterInputInjection.TOUCH_POINT_END, id, x, y);
+      touchEvents.add(
+        TouchEvent(id, FlutterInputInjection.TOUCH_POINT_END, x, y, 0),
+      );
 
       x += 50;
       id += 1;
+    }
+    return touchEvents;
+  }
+
+  Future<void> testSingleTouch() async {
+    final touchEvents = generateTouchEvents();
+
+    await Future.delayed(const Duration(seconds: 10));
+
+    for (var touchEvent in touchEvents) {
+      await _flutterInputInjectionPlugin.sendTouch(
+          touchEvent.action, touchEvent.id, touchEvent.x, touchEvent.y);
+
+      await Future.delayed(
+        Duration(milliseconds: touchEvent.delayMs),
+      );
+    }
+  }
+
+  Future<void> testMultiTouch() async {
+    final touchEvents = generateTouchEvents();
+
+    await Future.delayed(const Duration(seconds: 10));
+
+    for (var touchEvent in touchEvents) {
+      // first touch
+      await _flutterInputInjectionPlugin.sendTouch(
+        touchEvent.action,
+        touchEvent.id,
+        touchEvent.x,
+        touchEvent.y,
+      );
+
+      // second touch
+      await _flutterInputInjectionPlugin.sendTouch(
+        touchEvent.action,
+        touchEvent.id + 100,
+        touchEvent.x + 500,
+        touchEvent.y,
+      );
+
+      await Future.delayed(
+        Duration(milliseconds: touchEvent.delayMs),
+      );
     }
   }
 
@@ -87,17 +150,30 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Input injection plugin example app'),
+        appBar: AppBar(
+          title: const Text('Input injection plugin example app'),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  testSingleTouch();
+                },
+                child: const Text('Test Single Touch'),
+              ),
+              const SizedBox(height: 20), // Adding some space between buttons
+              ElevatedButton(
+                onPressed: () {
+                  testMultiTouch();
+                },
+                child: const Text('Test MultiTouch'),
+              ),
+            ],
           ),
-          body: Center(
-            child: Text('Running on: $_platformVersion\n'),
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: testTouchInject,
-            tooltip: 'Test',
-            child: const Icon(Icons.play_arrow),
-          )),
+        ),
+      ),
     );
   }
 }
