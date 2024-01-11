@@ -13,11 +13,6 @@
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN, TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, TAG, __VA_ARGS__)
 
-// Touch event type
-#define TOUCH_EVENT_TYPE_START 0
-#define TOUCH_EVENT_TYPE_MOVE 1
-#define TOUCH_EVENT_TYPE_END 2
-
 #define INVALID_FD -1
 //
 static int g_input_fd = -1;
@@ -52,21 +47,20 @@ static void closeDevice() {
   LOGI("Closed the virtual input device");
 }
 
-static bool setupDevice(int fd, int width, int height) {
+static bool setupDevice(
+    int fd,
+    int maxTrackingId,
+    int maxSlot,
+    int width,
+    int height) {
   assert(fd != INVALID_FD);
   assert(width > 0);
   assert(height > 0);
+  assert(maxTrackingId > 0);
+  assert(maxSlot > 0);
 
   // enable key events
   ioctl(fd, UI_SET_EVBIT, EV_KEY);
-
-  ioctl(fd, UI_SET_KEYBIT, BTN_MOUSE);
-
-  // REL
-  ioctl(fd, UI_SET_EVBIT, EV_REL);
-  ioctl(fd, UI_SET_RELBIT, REL_X);
-  ioctl(fd, UI_SET_RELBIT, REL_Y);
-  ioctl(fd, UI_SET_RELBIT, REL_WHEEL);  // mouse wheel
 
   // ABS
   // https://source.android.com/devices/input/touch-devices#touch-device-classification
@@ -75,7 +69,11 @@ static bool setupDevice(int fd, int width, int height) {
   ioctl(fd, UI_SET_ABSBIT, ABS_X);
   ioctl(fd, UI_SET_ABSBIT, ABS_Y);
 
-  ioctl(fd, UI_SET_KEYBIT, BTN_TOUCH);
+  // multi-touch device: ABS_MT_POSITION_X, ABS_MT_POSITION_Y
+  ioctl(fd, UI_SET_ABSBIT, ABS_MT_SLOT);
+  ioctl(fd, UI_SET_ABSBIT, ABS_MT_POSITION_X);
+  ioctl(fd, UI_SET_ABSBIT, ABS_MT_POSITION_Y);
+  ioctl(fd, UI_SET_ABSBIT, ABS_MT_TRACKING_ID);
 
   // https://source.android.com/devices/input/touch-devices#touch-device-classification
   // Fpr INPUT_PROP_DIRECT, device type will be set to touch screen
@@ -107,16 +105,28 @@ static bool setupDevice(int fd, int width, int height) {
     struct uinput_abs_setup abs_setup;
     memset(&abs_setup, 0, sizeof(abs_setup));
 
-    abs_setup.code = ABS_X;
-    abs_setup.absinfo.value = 0;
+    // Set up ABS_MT_TRACKING_ID
+    abs_setup.code = ABS_MT_TRACKING_ID;
     abs_setup.absinfo.minimum = 0;
-    abs_setup.absinfo.maximum = width;
+    abs_setup.absinfo.maximum = maxTrackingId;  // Number of slots
     ioctl(fd, UI_ABS_SETUP, &abs_setup);
 
-    abs_setup.code = ABS_Y;
-    abs_setup.absinfo.value = 0;
+    // Set up ABS_MT_SLOT
+    abs_setup.code = ABS_MT_SLOT;
     abs_setup.absinfo.minimum = 0;
-    abs_setup.absinfo.maximum = height;
+    abs_setup.absinfo.maximum = maxSlot;  // Number of slots
+    ioctl(fd, UI_ABS_SETUP, &abs_setup);
+
+    // Set up ABS_MT_POSITION_X
+    abs_setup.code = ABS_MT_POSITION_X;
+    abs_setup.absinfo.minimum = 0;
+    abs_setup.absinfo.maximum = width;  // Maximum X-coordinate of your screen
+    ioctl(fd, UI_ABS_SETUP, &abs_setup);
+
+    // Set up ABS_MT_POSITION_Y
+    abs_setup.code = ABS_MT_POSITION_Y;
+    abs_setup.absinfo.minimum = 0;
+    abs_setup.absinfo.maximum = height;  // Maximum Y-coordinate of your screen
     ioctl(fd, UI_ABS_SETUP, &abs_setup);
   } else {
     struct uinput_user_dev device;
@@ -127,41 +137,23 @@ static bool setupDevice(int fd, int width, int height) {
     device.id.product = 0x5678;
     strcpy(device.name, "input-injection");
 
-    // Set absolute axis information
-    device.absmin[ABS_X] = 0;
-    device.absmax[ABS_X] = width;
+    device.absmin[ABS_MT_TRACKING_ID] = 0;
+    device.absmax[ABS_MT_TRACKING_ID] = maxTrackingId;
 
-    device.absmin[ABS_Y] = 0;
-    device.absmax[ABS_Y] = height;
+    device.absmin[ABS_MT_SLOT] = 0;
+    device.absmax[ABS_MT_SLOT] = maxSlot;
+
+    device.absmin[ABS_MT_POSITION_X] = 0;
+    device.absmax[ABS_MT_POSITION_X] = width;
+
+    device.absmin[ABS_MT_POSITION_Y] = 0;
+    device.absmax[ABS_MT_POSITION_Y] = height;
 
     write(fd, &device, sizeof(device));
   }
 
   ioctl(fd, UI_DEV_CREATE);
   return true;
-}
-
-extern "C" JNIEXPORT void JNICALL
-Java_com_viewsonic_flutter_1input_1injection_UInput_injectSingleTouch(
-    JNIEnv* env,
-    jobject /* this */,
-    int x,
-    int y,
-    int eventType) {
-  // https://source.android.com/devices/input/touch-devices#touch-device-classification
-  // single-touch device
-
-  if (eventType == TOUCH_EVENT_TYPE_MOVE) {
-    emitEvent(g_input_fd, EV_ABS, ABS_X, x);
-    emitEvent(g_input_fd, EV_ABS, ABS_Y, y);
-  } else if (eventType == TOUCH_EVENT_TYPE_START) {
-    emitEvent(g_input_fd, EV_KEY, BTN_TOUCH, 1);
-    emitEvent(g_input_fd, EV_ABS, ABS_X, x);
-    emitEvent(g_input_fd, EV_ABS, ABS_Y, y);
-  } else {
-    emitEvent(g_input_fd, EV_KEY, BTN_TOUCH, 0);
-  }
-  emitEvent(g_input_fd, EV_SYN, SYN_REPORT, 0);
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -179,6 +171,8 @@ extern "C" JNIEXPORT jboolean JNICALL
 Java_com_viewsonic_flutter_1input_1injection_UInput_init(
     JNIEnv* env,
     jobject /* this */,
+    jint maxTrackingId,
+    jint maxSlot,
     jint width,
     jint height) {
   assert(width > 0);
@@ -199,7 +193,12 @@ Java_com_viewsonic_flutter_1input_1injection_UInput_init(
 
   g_input_fd = fd;
 
-  if (!setupDevice(fd, width, height)) {
+  if (!setupDevice(
+          fd,
+          maxTrackingId,
+          maxSlot,
+          width,
+          height)) {
     LOGE("Failed to setup virtual input device. Close the device");
     closeDevice();
 
@@ -216,4 +215,45 @@ Java_com_viewsonic_flutter_1input_1injection_UInput_close(
     JNIEnv* env,
     jobject /* this */) {
   closeDevice();
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1input_1injection_UInput_injectTouchStart(
+    JNIEnv* env,
+    jobject /* this */,
+    int slot,
+    int trackingId,
+    int x,
+    int y) {
+  emitEvent(g_input_fd, EV_ABS, ABS_MT_SLOT, slot);
+  emitEvent(g_input_fd, EV_ABS, ABS_MT_TRACKING_ID, trackingId);
+  emitEvent(g_input_fd, EV_ABS, ABS_MT_POSITION_X, x);
+  emitEvent(g_input_fd, EV_ABS, ABS_MT_POSITION_Y, y);
+
+  emitEvent(g_input_fd, EV_SYN, SYN_REPORT, 0);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1input_1injection_UInput_injectTouchEnd(
+    JNIEnv* env,
+    jobject /* this */,
+    int slot) {
+  emitEvent(g_input_fd, EV_ABS, ABS_MT_SLOT, slot);
+  emitEvent(g_input_fd, EV_ABS, ABS_MT_TRACKING_ID, -1);
+
+  emitEvent(g_input_fd, EV_SYN, SYN_REPORT, 0);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1input_1injection_UInput_injectTouchMove(
+    JNIEnv* env,
+    jobject /* this */,
+    int slot,
+    int x,
+    int y) {
+  emitEvent(g_input_fd, EV_ABS, ABS_MT_SLOT, slot);
+  emitEvent(g_input_fd, EV_ABS, ABS_MT_POSITION_X, x);
+  emitEvent(g_input_fd, EV_ABS, ABS_MT_POSITION_Y, y);
+
+  emitEvent(g_input_fd, EV_SYN, SYN_REPORT, 0);
 }

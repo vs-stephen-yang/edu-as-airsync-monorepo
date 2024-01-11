@@ -1,4 +1,5 @@
 package com.viewsonic.flutter_input_injection;
+
 import androidx.annotation.Keep;
 
 @Keep
@@ -7,9 +8,17 @@ public class UInput {
     System.loadLibrary("libuinput");
   }
 
-  public static native boolean init(int width, int height);
+  public static native boolean init(
+      int maxTrackingId,
+      int maxSlot,
+      int width,
+      int height);
 
   public static native void close();
 
-  public static native void injectSingleTouch(int x, int y, int eventType);
+  public static native void injectTouchStart(int slot, int trackingId, int x, int y);
+
+  public static native void injectTouchMove(int slot, int x, int y);
+
+  public static native void injectTouchEnd(int slot);
 }
