@@ -15,6 +15,11 @@ import 'package:display_flutter/protoc/internal.pb.dart';
 
 const DEFAULT_SCREEN_WIDTH = 1920.0;
 const DEFAULT_SCREEN_HEIGHT = 1080.0;
+const MAX_EVENT_ID = 255;
+class EventSlot {
+  int channelID = -1;
+  int eventID = -1;
+}
 
 class RemoteScreenServer {
 
@@ -26,6 +31,7 @@ class RemoteScreenServer {
   List<RTCDataChannel> _dataChannels = [];
   double _screenWidth = DEFAULT_SCREEN_WIDTH;
   double _screenHeight = DEFAULT_SCREEN_HEIGHT;
+  List<EventSlot> _eventSlots = List.generate(MAX_EVENT_ID, (index) => EventSlot());
   final _flutterInputInjectionPlugin = FlutterInputInjection();
 
   RemoteScreenServer();
@@ -48,6 +54,7 @@ class RemoteScreenServer {
 
       _ionSfuClient!.ondatachannel = (RTCDataChannel dc) {
         if( dc.label != API_CHANNEL) {
+          int dcIndex = _dataChannels.length;
           _dataChannels.add(dc);
           dc!.onMessage = (data) async {
             if ( data.isBinary ) {
@@ -77,8 +84,12 @@ class RemoteScreenServer {
                   injectY = _screenHeight.toInt() - 1;
                 }
                 int id = eventMessage.touchEvent.touchPoints[0].id;
-                _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
-              }
+                id = reassignEventID(dcIndex, id, action);
+                if(id == -1) {
+                  return;
+                } else {
+                  _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
+                }              }
             } else {
               log('dcCreate: Received message: ${data.text}');
             }
@@ -157,5 +168,41 @@ class RemoteScreenServer {
       _screenWidth = PlatformDispatcher.instance.displays.first.size.width;
       _screenHeight = PlatformDispatcher.instance.displays.first.size.height;
     }
+  }
+
+  int reassignEventID(int channelID, int eventID, int action) {
+    int foundSlotIdx = -1;
+    int emptySlotIdx = -1;
+    for (int i = 0; i < MAX_EVENT_ID; i++) {
+      if (emptySlotIdx == -1 && _eventSlots[i].channelID == -1) {
+        emptySlotIdx = i;
+      }
+
+      if (_eventSlots[i].channelID == channelID && _eventSlots[i].eventID == eventID) {
+        foundSlotIdx = i;
+        break;
+      }
+    }
+
+    if (foundSlotIdx == -1) {
+      if (action == FlutterInputInjection.TOUCH_POINT_END || emptySlotIdx == -1) {
+        /* can't found matched slot for end event or no empty slot */
+        return -1;
+      }
+      foundSlotIdx = emptySlotIdx;
+      // print('put touch slot:' + foundSlotIdx.toString() + 'channel:' + channelID.toString() + ' id:' + eventID.toString());
+    }
+
+    /* update slot info */
+    if(action == FlutterInputInjection.TOUCH_POINT_END) {
+      _eventSlots[foundSlotIdx].channelID = -1;
+      _eventSlots[foundSlotIdx].eventID = -1;
+      // print('remove touch slot:' + foundSlotIdx.toString() + 'channel:' + channelID.toString() + ' id:' + eventID.toString());
+    } else {
+      _eventSlots[foundSlotIdx].channelID = channelID;
+      _eventSlots[foundSlotIdx].eventID = eventID;
+    }
+
+    return foundSlotIdx;
   }
 }
