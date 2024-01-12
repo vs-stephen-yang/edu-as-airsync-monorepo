@@ -24,6 +24,13 @@ class RemoteScreenClient {
   Size _textureSize = const Size(0, 0);
   Offset _textureOffset = const Offset(0, 0);
 
+  onDataChannelState(RTCDataChannelState state) {
+    //print('onDataChannelState: $state');
+    if( state == RTCDataChannelState.RTCDataChannelClosed ) {
+      _dataChannel = null;
+    }
+  }
+
   Future handleRemoteScreenInfo(String url, String roomId, Function onTrack) async {
 
     JsonRPCSignal signal = JsonRPCSignal(url);
@@ -34,6 +41,7 @@ class RemoteScreenClient {
       signal: signal,);
 
     _dataChannel = await _client!.createDataChannel(_sessionId);
+    _dataChannel!.onDataChannelState = onDataChannelState;
 
     _client!.ontrack = (track, RemoteStream remoteStream) async {
       await _remoteScreenRenderer.initialize();
@@ -44,6 +52,7 @@ class RemoteScreenClient {
     _client!.ondatachannel = (RTCDataChannel dc) {
       if (dc.label == _sessionId) {
         _dataChannel = dc;
+        _dataChannel!.onDataChannelState = onDataChannelState;
       }
     };
   }
