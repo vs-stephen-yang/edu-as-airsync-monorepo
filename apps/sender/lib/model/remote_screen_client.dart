@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:display_channel/display_channel.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 // import 'package:ion_sdk_flutter/flutter_ion.dart' as ion;
 import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:uuid/uuid.dart';
+import 'package:display_cast_flutter/features/protoc/event.pb.dart';
+import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 
 class RemoteScreenClient {
   RemoteScreenClient(this._channel);
@@ -13,6 +18,11 @@ class RemoteScreenClient {
   RTCVideoRenderer get remoteScreenRenderer =>  _remoteScreenRenderer;
   RTCVideoRenderer _remoteScreenRenderer = RTCVideoRenderer();
   RTCDataChannel? _dataChannel;
+  GlobalKey get rtcWidgetKey => _rtcWidgetKey;
+  final GlobalKey _rtcWidgetKey = GlobalKey();
+  bool _textureSizeChanged = false;
+  Size _textureSize = const Size(0, 0);
+  Offset _textureOffset = const Offset(0, 0);
 
   Future handleRemoteScreenInfo(String url, String roomId, Function onTrack) async {
 
@@ -56,5 +66,85 @@ class RemoteScreenClient {
     _remoteScreenRenderer = RTCVideoRenderer();
     _client?.close();
     _client = null;
+  }
+
+  onVideoSizeChanged() {
+    _textureSizeChanged = true;
+  }
+
+  void getTextureInfo() {
+    Element? textureElement;
+    void textureVisitor(Element element) {
+      if (textureElement != null) return;
+
+      if (element.widget is Texture) {
+        textureElement = element;
+      } else {
+        element.visitChildElements(textureVisitor);
+      }
+    }
+
+    _rtcWidgetKey.currentContext?.visitChildElements(textureVisitor);
+    if (textureElement == null) {
+      print('texture widget not found');
+      return;
+    } else {
+      final RenderBox renderBox =
+      textureElement!.findRenderObject() as RenderBox;
+      _textureSize = renderBox.size;
+      _textureOffset = renderBox.localToGlobal(Offset.zero);
+      print(
+          'texture widget size: (${_textureSize.width.toStringAsFixed(2)}, ${_textureSize.height.toStringAsFixed(2)}), offset: (${_textureOffset.dx.toStringAsFixed(2)}, ${_textureOffset.dy.toStringAsFixed(2)})');
+      _textureSizeChanged = false;
+    }
+  }
+
+  void onTouchStart(PointerEvent event) {
+    onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_START, event);
+  }
+
+  void onTouchMove(PointerEvent event) {
+    onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_MOVE, event);
+  }
+
+  void onTouchEnd(PointerEvent event) {
+    onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_END, event);
+  }
+
+  void onTouchEvent(TouchEvent_TouchEventType eventType, PointerEvent event) {
+    if (_textureSizeChanged) {
+      getTextureInfo();
+    }
+
+    final curTouchEventPoint = TouchEventPoint();
+    curTouchEventPoint.x =
+        (event.position.dx - _textureOffset.dx) / _textureSize.width;
+    /* make curTouchEventPoint.x between 0.0 ~ 1.0 */
+    if (curTouchEventPoint.x < 0.0) {
+      curTouchEventPoint.x = 0.0;
+    } else if (curTouchEventPoint.x > 1.0) {
+      curTouchEventPoint.x = 1.0;
+    }
+    curTouchEventPoint.y =
+        (event.position.dy - _textureOffset.dy) / _textureSize.height;
+    /* make curTouchEventPoint.y between 0.0 ~ 1.0 */
+    if (curTouchEventPoint.y < 0.0) {
+      curTouchEventPoint.y = 0.0;
+    } else if (curTouchEventPoint.y > 1.0) {
+      curTouchEventPoint.y = 1.0;
+    }
+
+    curTouchEventPoint.id = event.pointer;
+
+    final curTouchEvent = TouchEvent();
+    curTouchEvent.eventType = eventType;
+    curTouchEvent.touchPoints.add(curTouchEventPoint);
+
+    final curEventMessage = EventMessage();
+    curEventMessage.touchEvent = curTouchEvent;
+
+    if (_dataChannel != null) {
+      _dataChannel!.send( RTCDataChannelMessage.fromBinary(curEventMessage.writeToBuffer()));
+    }
   }
 }
