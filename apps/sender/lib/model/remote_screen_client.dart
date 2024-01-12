@@ -12,6 +12,7 @@ class RemoteScreenClient {
   Client? _client;
   RTCVideoRenderer get remoteScreenRenderer =>  _remoteScreenRenderer;
   RTCVideoRenderer _remoteScreenRenderer = RTCVideoRenderer();
+  RTCDataChannel? _dataChannel;
 
   Future handleRemoteScreenInfo(String url, String roomId, Function onTrack) async {
 
@@ -22,10 +23,18 @@ class RemoteScreenClient {
       uid: const Uuid().v4(),
       signal: signal,);
 
+    _dataChannel = await _client!.createDataChannel(_sessionId);
+
     _client!.ontrack = (track, RemoteStream remoteStream) async {
       await _remoteScreenRenderer.initialize();
       _remoteScreenRenderer.srcObject = remoteStream.stream;
       onTrack();
+    };
+
+    _client!.ondatachannel = (RTCDataChannel dc) {
+      if (dc.label == _sessionId) {
+        _dataChannel = dc;
+      }
     };
   }
 
