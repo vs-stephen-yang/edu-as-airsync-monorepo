@@ -72,7 +72,7 @@ class RemoteScreenClient {
     _textureSizeChanged = true;
   }
 
-  void getTextureInfo() {
+  void updateTextureInfo() {
     Element? textureElement;
     void textureVisitor(Element element) {
       if (textureElement != null) return;
@@ -113,26 +113,18 @@ class RemoteScreenClient {
 
   void onTouchEvent(TouchEvent_TouchEventType eventType, PointerEvent event) {
     if (_textureSizeChanged) {
-      getTextureInfo();
+      updateTextureInfo();
     }
 
     final curTouchEventPoint = TouchEventPoint();
     curTouchEventPoint.x =
         (event.position.dx - _textureOffset.dx) / _textureSize.width;
     /* make curTouchEventPoint.x between 0.0 ~ 1.0 */
-    if (curTouchEventPoint.x < 0.0) {
-      curTouchEventPoint.x = 0.0;
-    } else if (curTouchEventPoint.x > 1.0) {
-      curTouchEventPoint.x = 1.0;
-    }
+    curTouchEventPoint.x = curTouchEventPoint.x.clamp(0.0, 1.0);
     curTouchEventPoint.y =
         (event.position.dy - _textureOffset.dy) / _textureSize.height;
     /* make curTouchEventPoint.y between 0.0 ~ 1.0 */
-    if (curTouchEventPoint.y < 0.0) {
-      curTouchEventPoint.y = 0.0;
-    } else if (curTouchEventPoint.y > 1.0) {
-      curTouchEventPoint.y = 1.0;
-    }
+    curTouchEventPoint.y = curTouchEventPoint.y.clamp(0.0, 1.0);
 
     curTouchEventPoint.id = event.pointer;
 
@@ -143,8 +135,6 @@ class RemoteScreenClient {
     final curEventMessage = EventMessage();
     curEventMessage.touchEvent = curTouchEvent;
 
-    if (_dataChannel != null) {
-      _dataChannel!.send( RTCDataChannelMessage.fromBinary(curEventMessage.writeToBuffer()));
-    }
+    _dataChannel?.send( RTCDataChannelMessage.fromBinary(curEventMessage.writeToBuffer()));
   }
 }
