@@ -1,12 +1,20 @@
 import 'dart:io';
 import 'dart:developer';
 
+import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_background/flutter_background.dart';
+import 'package:window_size/window_size.dart';
+import 'package:display_flutter/protoc/event.pb.dart';
+import 'package:display_flutter/protoc/internal.pb.dart';
+
+const DEFAULT_SCREEN_WIDTH = 1920.0;
+const DEFAULT_SCREEN_HEIGHT = 1080.0;
 
 class RemoteScreenServer {
 
@@ -15,7 +23,10 @@ class RemoteScreenServer {
   bool _iosSfuServerStart = false;
   String roomId = 'remote-screen';
   int roomPort = 7000;
-
+  List<RTCDataChannel> _dataChannels = [];
+  double _screenWidth = DEFAULT_SCREEN_WIDTH;
+  double _screenHeight = DEFAULT_SCREEN_HEIGHT;
+  final _flutterInputInjectionPlugin = FlutterInputInjection();
 
   RemoteScreenServer();
 
@@ -34,6 +45,48 @@ class RemoteScreenServer {
 
       final uuid = const Uuid().v4();
       _ionSfuClient = await Client.create(sid: roomId, uid: uuid, signal: ionSignal,);
+
+      _ionSfuClient!.ondatachannel = (RTCDataChannel dc) {
+        if( dc.label != API_CHANNEL) {
+          _dataChannels.add(dc);
+          dc!.onMessage = (data) async {
+            if ( data.isBinary ) {
+              EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
+              if(eventMessage.hasTouchEvent()) {
+                int action = FlutterInputInjection.TOUCH_POINT_START;
+                if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_START) {
+                  action = FlutterInputInjection.TOUCH_POINT_START;
+                } else if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
+                  action = FlutterInputInjection.TOUCH_POINT_MOVE;
+                } else if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_END) {
+                  action = FlutterInputInjection.TOUCH_POINT_END;
+                }
+                double remoteX = eventMessage.touchEvent.touchPoints[0].x;
+                double remoteY = eventMessage.touchEvent.touchPoints[0].y;
+
+                int injectX = (remoteX * _screenWidth).toInt();
+                if (injectX < 0) {
+                  injectX = 0;
+                } else if (injectX > _screenWidth.toInt() - 1) {
+                  injectX = _screenWidth.toInt() - 1;
+                }
+                int injectY = (remoteY * _screenHeight).toInt();
+                if (injectY < 0) {
+                  injectY = 0;
+                } else if (injectY > _screenHeight.toInt() - 1) {
+                  injectY = _screenHeight.toInt() - 1;
+                }
+                int id = eventMessage.touchEvent.touchPoints[0].id;
+                _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
+              }
+            } else {
+              log('dcCreate: Received message: ${data.text}');
+            }
+          };
+        }
+      };
+
+      await updateScreenSize();
 
       var constraints = Constraints.defaults;
       // Note: ion-sdk-flutter currently hard-code H264, so the settings here
@@ -88,4 +141,21 @@ class RemoteScreenServer {
     _ionSfuClient = null;
   }
 
+  Future<void> updateScreenSize() async{
+    if (Platform.isWindows) {
+      // PlatformDispatcher did not support get windows width and height yet.
+      // Using window_size for workaround.
+      // https://github.com/flutter/flutter/issues/125938
+      // https://github.com/flutter/flutter/issues/125939
+      // todo: tracking issue status to remove this workaround.
+      Screen? screen = await getCurrentScreen();
+      if (screen != null) {
+        _screenWidth = screen.frame.width;
+        _screenHeight = screen.frame.height;
+      }
+    } else {
+      _screenWidth = PlatformDispatcher.instance.displays.first.size.width;
+      _screenHeight = PlatformDispatcher.instance.displays.first.size.height;
+    }
+  }
 }
