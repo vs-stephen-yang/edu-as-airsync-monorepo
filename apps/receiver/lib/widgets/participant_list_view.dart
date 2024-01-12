@@ -32,7 +32,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
           : ListView.separated(
               itemCount: ChannelProvider.channelRtcConnectors.length,
               itemBuilder: (BuildContext context, int index) {
-                if (index > 5) return const SizedBox();
+                if (index > 5 || !ChannelProvider.isModeratorMode) return const SizedBox();
 
                 return ParticipantItem(index: index);
               },
