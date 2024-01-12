@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.0.0+300001
+version: 3.0.1+300003
 
 environment:
   sdk: '>=3.1.2 <4.0.0'
@@ -36,23 +36,13 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
-  app_ota_flutter:
-    git:
-      ref: 1.0.1
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/App_OTA_Flutter
-      homepage : https://viewsonic-ssi.visualstudio.com/Display%20App/_git/App_OTA_Flutter?path=/README.md
   in_app_update: ^4.2.2
   no_context_navigation: ^2.1.2
   shared_preferences: ^2.2.2
   package_info_plus: ^4.2.0
   device_info_plus: ^9.1.1
-  device_info_vs:
-    git:
-      ref: 1.0.6
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS
-      homepage : https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS?path=/README.md
   encrypt: ^5.0.3
-  uuid: ^4.0.0
+  uuid: ^4.3.3
   http: ^1.1.0
   path_provider: ^2.1.2
   http_parser: ^4.0.2
@@ -68,32 +58,43 @@ dependencies:
   auto_size_text: ^3.0.0
   provider: ^6.1.1
   crypto: ^3.0.3
-  flutter_ion_sfu:
-    git:
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-ion-sfu
-      ref: release-0.0.1
-  ion_sdk_flutter:
-    git:
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter
-      ref: release-0.0.3
-  flutter_webrtc:
-    git:
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc
-      ref: release-0.9.36-10
   logging: ^1.2.0
   protobuf: ^2.1.0
-  flutter_mirror:
-    git:
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror
-      ref: release-0.25.0
   move_to_background: ^1.0.2
   sprintf: ^7.0.0
   connectivity_plus: ^5.0.1
+  network_info_plus: ^2.1.0
+
+  # ViewSonic plug-in
+  app_ota_flutter:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/App_OTA_Flutter
+      ref: 1.0.1
+  device_info_vs:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS
+      ref: 1.0.7
+  flutter_webrtc:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc
+      ref: release-0.9.36-11
   display_channel:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
       ref: release-0.0.10
-  network_info_plus: ^2.1.0
+  ion_sdk_flutter:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter
+      ref: release-0.0.4
+  flutter_ion_sfu:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-ion-sfu
+      ref: release-0.0.1
+  flutter_mirror:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror
+      ref: release-0.25.0
+  # ViewSonic plug-in
 
 dev_dependencies:
   flutter_test:
