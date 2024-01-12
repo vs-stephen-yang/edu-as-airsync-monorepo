@@ -87,6 +87,12 @@ class RemoteScreenServer {
               log('dcCreate: Received message: ${data.text}');
             }
           };
+
+          dc.onDataChannelState = (RTCDataChannelState state) {
+            if( state == RTCDataChannelState.RTCDataChannelClosed ) {
+              _dataChannels.removeWhere((item) => item.label == dc.label);
+            }
+          };
         }
       };
 
