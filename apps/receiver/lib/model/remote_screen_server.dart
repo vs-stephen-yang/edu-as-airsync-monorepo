@@ -32,10 +32,12 @@ class RemoteScreenServer {
       _ionSfuClient = await Client.create(sid: roomId, uid: uuid, signal: ionSignal,);
 
       var constraints = Constraints.defaults;
+      // Note: ion-sdk-flutter currently hard-code H264, so the settings here
+      // are ineffective.
       constraints.codec = "h264";
       constraints.simulcast = false;
       constraints.audio = false;
-      constraints.resolution = "hd";
+      constraints.resolution = "fhd";
 
       var localStream = await LocalStream.getDisplayMedia(
           constraints: constraints
