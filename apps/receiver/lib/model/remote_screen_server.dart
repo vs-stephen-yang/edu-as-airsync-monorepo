@@ -56,7 +56,7 @@ class RemoteScreenServer {
         if( dc.label != API_CHANNEL) {
           int dcIndex = _dataChannels.length;
           _dataChannels.add(dc);
-          dc!.onMessage = (data) async {
+          dc.onMessage = (data) async {
             if ( data.isBinary ) {
               EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
               if(eventMessage.hasTouchEvent()) {
@@ -72,24 +72,17 @@ class RemoteScreenServer {
                 double remoteY = eventMessage.touchEvent.touchPoints[0].y;
 
                 int injectX = (remoteX * _screenWidth).toInt();
-                if (injectX < 0) {
-                  injectX = 0;
-                } else if (injectX > _screenWidth.toInt() - 1) {
-                  injectX = _screenWidth.toInt() - 1;
-                }
+                injectX = injectX.clamp(0, _screenWidth.toInt() - 1);
                 int injectY = (remoteY * _screenHeight).toInt();
-                if (injectY < 0) {
-                  injectY = 0;
-                } else if (injectY > _screenHeight.toInt() - 1) {
-                  injectY = _screenHeight.toInt() - 1;
-                }
+                injectY = injectY.clamp(0, _screenHeight.toInt() - 1);
                 int id = eventMessage.touchEvent.touchPoints[0].id;
                 id = reassignEventID(dcIndex, id, action);
                 if(id == -1) {
                   return;
                 } else {
                   _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
-                }              }
+                }
+              }
             } else {
               log('dcCreate: Received message: ${data.text}');
             }
