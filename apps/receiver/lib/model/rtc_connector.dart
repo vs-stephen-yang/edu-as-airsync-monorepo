@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
@@ -186,8 +187,8 @@ class RTCConnector {
     if (ChannelProvider.isModeratorMode) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
       await disconnectPeerConnection(sendAnalytics: false);
-      ChannelProvider.updateSplitScreen();
-      ChannelProvider.handleQualityUpdate();
+      RtcConnectorList.getInstance().updateSplitScreen();
+      RtcConnectorList.getInstance().handleQualityUpdate();
       sessionId = null;
       onShowMode?.call();
       return;

@@ -10,6 +10,7 @@ import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
+import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/model/rtc_play_order.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -17,7 +18,6 @@ import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:no_context_navigation/no_context_navigation.dart';
 
@@ -82,8 +82,6 @@ class ChannelProvider extends ChangeNotifier {
   late DisplayDirectServer _directServer;
   late DisplayTunnelServer _tunnelServer;
   String _tunnelApiUrl ='';
-  static final List<RTCConnector> _channelRtcConnectors = <RTCConnector>[];
-  static List<RTCConnector> get channelRtcConnectors => _channelRtcConnectors;
   static final RTCPlayOrder _rtcPlayOrder = RTCPlayOrder();
   static RTCPlayOrder get rtcPlayOrder => _rtcPlayOrder;
   static bool isModeratorMode = false;
@@ -145,7 +143,7 @@ class ChannelProvider extends ChangeNotifier {
 
   void disconnectServer() {
     MyApp.isInBackgroundMode = true;
-    if (!hasPresenterOccupied()) {
+    if (!RtcConnectorList.getInstance().hasPresenterOccupied()) {
       ConnectionTimer.getInstance().startServerTimer(() {
         // onFinish
         stopServer();
@@ -204,7 +202,7 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.joinDisplay:
           JoinDisplayMessage msg = message as JoinDisplayMessage;
           if (msg.intent == JoinIntentType.present) {
-            if (_channelRtcConnectors.length >= 6) {
+            if (RtcConnectorList.rtcConnectorList.length >= 6) {
               var message = PresentRejectedMessage();
               message.reason = Reason(401, text:'block');
               channel.send(message);
@@ -298,7 +296,7 @@ class ChannelProvider extends ChangeNotifier {
     // create a client object to handle this channel
     rtcConnector.init(message, iceServersApiUrl: appConfig.settings.getIceServer);
     rtcConnector.onConnect = ((){
-      updateSplitScreen();
+      RtcConnectorList.getInstance().updateSplitScreen();
       updateModePanel(false);
       if (MirrorStateProvider.isMirroring) {
         StreamFunction.streamFunctionState.value = stateCast;
@@ -310,8 +308,8 @@ class ChannelProvider extends ChangeNotifier {
 
     rtcConnector.onAddRemoteStream = ((stream) {
       // update state and quality
-      updateSplitScreen();
-      handleQualityUpdate(controller: rtcConnector);
+      RtcConnectorList.getInstance().updateSplitScreen();
+      RtcConnectorList.getInstance().handleQualityUpdate(controller: rtcConnector);
 
       // hideTitleBar
       Home.showTitleBottomBar.value = false;
@@ -336,7 +334,7 @@ class ChannelProvider extends ChangeNotifier {
       if (showMode != null) {
         updateModePanel(showMode);
       } else {
-        updateModePanel(!isPresenting());
+        updateModePanel(!RtcConnectorList.getInstance().isPresenting());
       }
     });
 
@@ -356,7 +354,7 @@ class ChannelProvider extends ChangeNotifier {
       // update UI
       if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
         bool presenting = false;
-        for (RTCConnector controller in _channelRtcConnectors) {
+        for (RTCConnector controller in RtcConnectorList.rtcConnectorList) {
           if (controller.presentationState != PresentationState.stopStreaming) {
             presenting |= true;
           }
@@ -390,13 +388,13 @@ class ChannelProvider extends ChangeNotifier {
       }
 
       await rtcConnector.close(ChannelCloseCode.close);
-      _channelRtcConnectors.remove(rtcConnector);
-      ChannelProvider.updateSplitScreen();
-      ChannelProvider.handleQualityUpdate();
+      RtcConnectorList.rtcConnectorList.remove(rtcConnector);
+      RtcConnectorList.getInstance().updateSplitScreen();
+      RtcConnectorList.getInstance().handleQualityUpdate();
       notifyListeners();
     });
 
-    _channelRtcConnectors.add(rtcConnector);
+    RtcConnectorList.rtcConnectorList.add(rtcConnector);
 
     return rtcConnector;
   }
@@ -441,225 +439,24 @@ class ChannelProvider extends ChangeNotifier {
     _rtcPlayOrder.remove(id);
   }
 
-  static void updateSplitScreen() {
-    int connecting = 0, lastID = 0;
-    for (int i = 0; i < channelRtcConnectors.length; i++) {
-      if (channelRtcConnectors[i].presentationState !=
-          PresentationState.stopStreaming) {
-        connecting++;
-        lastID = i;
-      }
-    }
-    SplitScreen.mapSplitScreen.value[keySplitScreenCount] = connecting;
-    SplitScreen.mapSplitScreen.value[keySplitScreenLastId] = lastID;
-    // Using below method to trigger value changed.
-    // https://github.com/flutter/flutter/issues/29958
-    SplitScreen.mapSplitScreen.value =
-        Map.from(SplitScreen.mapSplitScreen.value);
-  }
-
-  static void handleQualityUpdate({RTCConnector? controller}) {
-    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
-        for (RTCConnector connector in channelRtcConnectors) {
-          if (connector.presentationState == PresentationState.streaming) {
-            connector.sendChangeQuality(true, true);
-          }
-        }
-      } else {
-        for (RTCConnector connector in _channelRtcConnectors) {
-          if (connector.clientId != null) {
-            connector.sendChangeQuality(false, true);
-          }
-        }
-      }
-    } else {
-      if (controller != null) {
-        controller.sendChangeQuality(true, true);
-      }
-    }
-  }
-
-  bool occupyAvailableRTCConnector(int index) {
-    for (int i = 0; i < _channelRtcConnectors.length; i++) {
-      if (_channelRtcConnectors[i].presentationState.index <
-          PresentationState.occupied.index) {
-        _channelRtcConnectors[index].presentationState = PresentationState.occupied;
-        return true;
-      }
-    }
-    return false;
-  }
-
-  bool isPresenting({index}) {
-    bool presenting = false;
-    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      if (index != null && _channelRtcConnectors.length > index) {
-        if (_channelRtcConnectors[index].presentationState ==
-            PresentationState.streaming) {
-          presenting = true;
-        }
-      } else {
-        for (RTCConnector controller in _channelRtcConnectors) {
-          if (controller.presentationState == PresentationState.streaming) {
-            presenting |= true;
-          }
-        }
-      }
-    } else {
-      if (_channelRtcConnectors.isNotEmpty &&
-          _channelRtcConnectors[0].presentationState ==
-              PresentationState.streaming) {
-        presenting = true;
-      }
-    }
-    return presenting;
-  }
-
-  bool hasPresenterOccupied({index}) {
-    bool presenting = false;
-    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      if (index != null && _channelRtcConnectors.length > index) {
-        if (_channelRtcConnectors[index].presentationState !=
-            PresentationState.stopStreaming) {
-          presenting = true;
-        }
-      } else {
-        for (RTCConnector controller in _channelRtcConnectors) {
-          if (controller.presentationState != PresentationState.stopStreaming) {
-            presenting |= true;
-          }
-        }
-      }
-    } else {
-      if (_channelRtcConnectors.isNotEmpty &&
-          _channelRtcConnectors[0].presentationState !=
-              PresentationState.stopStreaming) {
-        presenting = true;
-      }
-    }
-    return presenting;
-  }
-
-  int getPresentingQuantity() {
-    int quantity = 0;
-    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      for (RTCConnector controller in _channelRtcConnectors) {
-        if (controller.presentationState == PresentationState.streaming) {
-          quantity++;
-        }
-      }
-    }
-    return quantity;
-  }
-
-  bool isPresenterWaitForStream(String clientId) {
-    for (RTCConnector controller in _channelRtcConnectors) {
-      if (controller.clientId == clientId &&
-          controller.presentationState == PresentationState.waitForStream) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  bool isPresenterStreaming(String clientId) {
-    for (RTCConnector controller in _channelRtcConnectors) {
-      if (controller.clientId == clientId &&
-          controller.presentationState.index >= PresentationState.streaming.index) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  bool isPresenterNotStopStreaming(String clientId) {
-    for (RTCConnector controller in _channelRtcConnectors) {
-      if (controller.clientId == clientId &&
-          controller.presentationState.index >=
-              PresentationState.waitForStream.index) {
-        // waitForStream and streaming
-        return true;
-      }
-    }
-    return false;
-  }
-
-  removeAllPresenters() async {
-    RTCConnector? selectedController;
-    List<RTCConnector> temp = List.from(_channelRtcConnectors);
-    for (int i = temp.length - 1; i >= 0; i--) {
-      selectedController = temp[i];
-      if (selectedController.clientId != null) {
-        try {
-          await selectedController.disconnectPeerConnection(sendAnalytics: true);
-          await selectedController.disconnectChannel();
-          // need some delay to prevent exception:
-          // 'package:flutter/src/rendering/object.dart': Failed assertion: line 2250 pos 12: '!_debugDisposed': is not true.
-          await Future.delayed(const Duration(milliseconds: 300));
-        } on PlatformException catch (e) {
-          log(e.toString());
-        }
-      }
-    }
-  }
-
-  /// a session ID is generated due to the act of presenting.
-  removeOtherPresenters({bool keepInList = false}) async {
-    RTCConnector? selectedController;
-    List<RTCConnector> temp = List.from(_channelRtcConnectors);
-    for (int i = temp.length - 1; i >= 0; i--) {
-      selectedController = temp[i];
-      if (selectedController.sessionId != null) {
-        try {
-          await selectedController.disconnectPeerConnection(sendAnalytics: true);
-          if (!keepInList) {
-            await selectedController.disconnectChannel();
-          } else {
-            selectedController.sendStopPresent();
-          }
-          // need some delay to prevent exception:
-          // 'package:flutter/src/rendering/object.dart': Failed assertion: line 2250 pos 12: '!_debugDisposed': is not true.
-          await Future.delayed(const Duration(milliseconds: 300));
-        } on PlatformException catch (e) {
-          log(e.toString());
-        }
-      }
-    }
-  }
-
-  removePresenterBy(int index) async {
-    int listIndex = ChannelProvider.rtcPlayOrder.getOrderByIndex(index);
-    RTCConnector? selectedController = _channelRtcConnectors[listIndex];
-    if (selectedController.sessionId != null) {
-      try {
-        await selectedController.disconnectPeerConnection(sendAnalytics: true);
-        await selectedController.disconnectChannel();
-        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-      } on PlatformException catch (e) {
-        log(e.toString());
-      }
-    }
-  }
-
   Future<void> basicStreamOff() async {
     ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
     ConnectionTimer.getInstance().stopRemainingTimeTimer();
-    await removeAllPresenters();
+    await RtcConnectorList.getInstance().removeAllPresenters();
   }
 
   Future<void> splitScreenOff() async {
     ConnectionTimer.getInstance().stopRemainingTimeTimer();
-    await removeAllPresenters();
+    await RtcConnectorList.getInstance().removeAllPresenters();
   }
 
   updateAllQuality(int selection, bool hasSelected) {
     if (selection == -1) {
-      _channelRtcConnectors[0].sendChangeQuality(true, true);
+      RtcConnectorList.rtcConnectorList[0].sendChangeQuality(true, true);
     } else {
-      for (int i = 0; i < _channelRtcConnectors.length; i++) {
-        if (_channelRtcConnectors[i].clientId != null) {
-          _channelRtcConnectors[i].sendChangeQuality(
+      for (int i = 0; i < RtcConnectorList.rtcConnectorList.length; i++) {
+        if (RtcConnectorList.rtcConnectorList[i].clientId != null) {
+          RtcConnectorList.rtcConnectorList[i].sendChangeQuality(
               (i == selection && hasSelected),
               (i == selection || !hasSelected));
         }
@@ -668,13 +465,13 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   updateAllAudioEnableState(bool enable) {
-    for (RTCConnector controller in _channelRtcConnectors) {
+    for (RTCConnector controller in RtcConnectorList.rtcConnectorList) {
       controller.controlAudio(enable);
     }
   }
 
   updateAudioEnableStateByIndex(int index, bool enable) {
-    _channelRtcConnectors[index].controlAudio(enable);
+    RtcConnectorList.rtcConnectorList[index].controlAudio(enable);
   }
 
   removeSender({RemoteScreenConnector? remoteScreenConnector}) {

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
@@ -13,7 +14,6 @@ import 'package:flutter_mirror/flutter_mirror_listener.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
 import 'package:uuid/uuid.dart';
-import 'package:provider/provider.dart';
 
 enum MirrorState {
   idle,
@@ -88,6 +88,7 @@ class MirrorStateProvider extends ChangeNotifier
   // region FlutterMirrorListener
   @override
   void onMirrorAuth(String pin, int timeoutSec) {
+    print('zz onMirrorAuth');
     _pinCode = pin;
 
     _pinTimer?.cancel();
@@ -101,6 +102,7 @@ class MirrorStateProvider extends ChangeNotifier
   @override
   void onMirrorStart(String mirrorId, int textureId, String deviceName,
       MirrorType mirrorType) {
+    print('zz onMirrorStart');
     _pinTimer?.cancel();
     _pinCode = '';
 
@@ -112,6 +114,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   @override
   void onMirrorStop(String mirrorId) {
+    print('zz onMirrorStop $mirrorId');
     bool needNotify = false;
     _requestingMirror.removeWhere((element) {
       if (element.mirrorId == mirrorId) {
@@ -131,12 +134,12 @@ class MirrorStateProvider extends ChangeNotifier
     _acceptedTextureId = null;
     _mirrorState = MirrorState.idle;
     if (ChannelProvider.isModeratorMode || SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      if (context.read<ChannelProvider>().isPresenting()) {
+      if (RtcConnectorList.getInstance().isPresenting()) {
         StreamFunction.streamFunctionState.value = stateMenuOff;
       } else {
         StreamFunction.streamFunctionState.value = stateStandby;
       }
-    } else if (context.read<ChannelProvider>().isPresenting()){
+    } else if (RtcConnectorList.getInstance().isPresenting()){
       StreamFunction.streamFunctionState.value = stateMenuOff;
     } else {
       StreamFunction.streamFunctionState.value = stateStandby;
@@ -146,6 +149,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   @override
   void onMirrorVideoResize(String mirrorId, int width, int height) {
+    print('zz onMirrorVideoResize');
     if (_acceptedMirrorId == null || _acceptedMirrorId != mirrorId) {
       for (int i = 0; i < _requestingMirror.length; i++) {
         if (_requestingMirror[i].mirrorId == mirrorId) {
@@ -205,6 +209,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   stopAcceptedMirror() {
+    print('zz stopAcceptedMirror');
     if (_acceptedMirrorId != null) {
       _plugin?.stopMirror(_acceptedMirrorId!);
     }
@@ -249,6 +254,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> startAirPlay() async {
+    print('zz startAirPlay');
     await _plugin?.startAirplay(AirplayConfig(
       name: _deviceName,
       security: AirplaySecurity.onscreenCode,
@@ -258,6 +264,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopAirPlay() async {
+    print('zz stopAirPlay');
     stopAcceptedMirror();
     await _plugin?.stopAirplay();
     _airplayEnabled = false;
@@ -294,6 +301,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> pauseMirror() async {
+    print('zz pauseMirror');
     mirrorTypeState[MirrorType.airplay] = _airplayEnabled;
     mirrorTypeState[MirrorType.googlecast] = _googleCastEnabled;
     mirrorTypeState[MirrorType.miracast] = _miracastEnabled;
@@ -303,6 +311,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> resumeMirror() async {
+    print('zz resumeMirror');
     if (mirrorTypeState[MirrorType.airplay]!) {
       startAirPlay();
     }

@@ -2,13 +2,12 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/main_common.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
-import 'package:provider/provider.dart';
 
 class LanguageSelection extends StatefulWidget {
   const LanguageSelection({super.key});
@@ -21,7 +20,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
   @override
   Widget build(BuildContext context) {
     return MenuDialog(
-      backgroundColor: Provider.of<ChannelProvider>(context).isPresenting()
+      backgroundColor: RtcConnectorList.getInstance().isPresenting()
           ? AppColors.primary_grey_tran
           : AppColors.primary_grey,
       child: Column(

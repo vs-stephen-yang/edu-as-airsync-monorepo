@@ -6,6 +6,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
+import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
@@ -132,11 +133,11 @@ class WebRTCViewState extends State<WebRTCView> {
   @override
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
-    if (ChannelProvider.channelRtcConnectors.isNotEmpty) {
+    if (RtcConnectorList.rtcConnectorList.isNotEmpty) {
       int playIndex = ChannelProvider.rtcPlayOrder.getOrderByIndex(widget.index);
 
-      if (ChannelProvider.channelRtcConnectors.length >= playIndex) {
-        _rtcConnector = ChannelProvider.channelRtcConnectors[playIndex];
+      if (RtcConnectorList.rtcConnectorList.length >= playIndex) {
+        _rtcConnector = RtcConnectorList.rtcConnectorList[playIndex];
       }
       if (_rtcConnector?.presentationState == PresentationState.pauseStreaming) {
         pauseVideo();

@@ -1,6 +1,7 @@
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -26,10 +27,9 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
 
   @override
   Widget build(BuildContext context) {
-    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
     MirrorStateProvider mirrorStateProvider = Provider.of<MirrorStateProvider>(context);
     return MenuDialog(
-      backgroundColor: channelProvider.isPresenting()
+      backgroundColor: RtcConnectorList.getInstance().isPresenting()
           ? AppColors.primary_grey_tran
           : AppColors.primary_grey,
       child: Column(
@@ -135,7 +135,7 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
   }
 
   _switchModeratorOff() {
-    context.read<ChannelProvider>().removeAllPresenters();
+    RtcConnectorList.getInstance().removeAllPresenters();
     // Provider.of<ChannelProvider>(context).removeAllPresenters();
     SplitScreen.mapSplitScreen.value[keySplitScreenEnable] = false;
     SplitScreen.mapSplitScreen.value[keySplitScreenCount] = 0;
