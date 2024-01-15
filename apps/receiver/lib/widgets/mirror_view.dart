@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -313,7 +314,7 @@ class MirrorView extends StatelessWidget {
                                       // split screen
                                       // await PresentHelper.getInstance().splitScreenOff();
                                       await context.read<ChannelProvider>().splitScreenOff();
-                                    } else if (context.read<ChannelProvider>().isPresenting()) {
+                                    } else if (RtcConnectorList.getInstance().isPresenting()) {
                                       // basic
                                       // await PresentHelper.getInstance().basicStreamOff();
                                       await context.read<ChannelProvider>().basicStreamOff();

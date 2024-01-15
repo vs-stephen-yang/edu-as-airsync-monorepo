@@ -1,11 +1,10 @@
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class SplitScreenFunction extends StatelessWidget {
   const SplitScreenFunction({super.key, required this.index, this.updateSize});
@@ -51,7 +50,7 @@ class SplitScreenFunction extends StatelessWidget {
           bottom: bottom,
           child: Visibility(
             // More than 1 presenting will show this function button.
-            visible: Provider.of<ChannelProvider>(context).getPresentingQuantity() > 1,
+            visible: RtcConnectorList.getInstance().getPresentingQuantity() > 1,
             child: ValueListenableBuilder(
               valueListenable: SplitScreenFunction.isMenuOnList,
               builder: (BuildContext context, List<bool> value, Widget? child) {
@@ -84,7 +83,7 @@ class SplitScreenFunction extends StatelessWidget {
                                 0,
                                 SplitScreenFunction.isMenuOnList.value.length,
                                 false);
-                            context.read<ChannelProvider>().removePresenterBy(index);
+                            RtcConnectorList.getInstance().removePresenterBy(index);
                           },
                         ),
                       ),

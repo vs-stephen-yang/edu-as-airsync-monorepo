@@ -1,5 +1,6 @@
 
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/participant_item.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
       decoration: const BoxDecoration(
         color: Colors.transparent,
       ),
-      child: ChannelProvider.channelRtcConnectors.isEmpty
+      child: RtcConnectorList.rtcConnectorList.isEmpty
           ? Container(
               alignment: Alignment.center,
               child: Text(
@@ -30,7 +31,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
               ),
             )
           : ListView.separated(
-              itemCount: ChannelProvider.channelRtcConnectors.length,
+              itemCount: RtcConnectorList.rtcConnectorList.length,
               itemBuilder: (BuildContext context, int index) {
                 if (index > 5 || !ChannelProvider.isModeratorMode) return const SizedBox();
 

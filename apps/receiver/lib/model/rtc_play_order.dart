@@ -1,4 +1,4 @@
-import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/model/rtc_connector_list.dart';
 
 class RTCPlayOrder {
   final List<String?> _playOrder = List.filled(4, null);
@@ -24,8 +24,8 @@ class RTCPlayOrder {
   }
 
   int getOrderByIndex(int index) {
-    for (int i = 0; i < ChannelProvider.channelRtcConnectors.length; i++) {
-      if (ChannelProvider.channelRtcConnectors[i].clientId == _playOrder[index]) {
+    for (int i = 0; i < RtcConnectorList.rtcConnectorList.length; i++) {
+      if (RtcConnectorList.rtcConnectorList[i].clientId == _playOrder[index]) {
         return i;
       }
     }
@@ -35,8 +35,8 @@ class RTCPlayOrder {
   int getOrder(String clientId) {
     int index = _playOrder.indexOf(clientId);
     if (index != -1) {
-      for (int j = 0; j < ChannelProvider.channelRtcConnectors.length; j++) {
-        if (ChannelProvider.channelRtcConnectors[j].clientId == clientId) {
+      for (int j = 0; j < RtcConnectorList.rtcConnectorList.length; j++) {
+        if (RtcConnectorList.rtcConnectorList[j].clientId == clientId) {
           return j;
         }
       }

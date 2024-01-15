@@ -4,6 +4,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_ui_constant.dart';
+import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/cast_settings.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
@@ -84,7 +85,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
         // region Moderator icon
         Color? colorModeratorForeground, colorModeratorBackground;
         if (ChannelProvider.isModeratorMode &&
-            ChannelProvider.channelRtcConnectors.isNotEmpty) {
+            RtcConnectorList.rtcConnectorList.isNotEmpty) {
           if (value == stateMenuOn) {
             colorModeratorForeground = AppColors.iconPresentingForeground;
             colorModeratorBackground = AppColors.iconPresentingBackground;
