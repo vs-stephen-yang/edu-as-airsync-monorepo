@@ -17,8 +17,8 @@ const DEFAULT_SCREEN_WIDTH = 1920.0;
 const DEFAULT_SCREEN_HEIGHT = 1080.0;
 const MAX_EVENT_ID = 255;
 class EventSlot {
-  int channelID = -1;
-  int eventID = -1;
+  int channelId = -1;
+  int eventId = -1;
 }
 
 class RemoteScreenServer {
@@ -53,8 +53,8 @@ class RemoteScreenServer {
       _ionSfuClient = await Client.create(sid: roomId, uid: uuid, signal: ionSignal,);
 
       _ionSfuClient!.ondatachannel = (RTCDataChannel dc) {
-        if( dc.label != API_CHANNEL) {
-          int dcIndex = _dataChannels.length;
+        if(dc.label != API_CHANNEL) {
+          int dcIndex = dc.id ?? _dataChannels.length;
           _dataChannels.add(dc);
           dc.onMessage = (data) async {
             if ( data.isBinary ) {
@@ -76,7 +76,7 @@ class RemoteScreenServer {
                 int injectY = (remoteY * _screenHeight).toInt();
                 injectY = injectY.clamp(0, _screenHeight.toInt() - 1);
                 int id = eventMessage.touchEvent.touchPoints[0].id;
-                id = reassignEventID(dcIndex, id, action);
+                id = reassignEventId(dcIndex, id, action);
                 if(id == -1) {
                   return;
                 } else {
@@ -169,39 +169,66 @@ class RemoteScreenServer {
     }
   }
 
-  int reassignEventID(int channelID, int eventID, int action) {
-    int foundSlotIdx = -1;
-    int emptySlotIdx = -1;
+  int findSlotById(int channelId, int eventId) {
+    int slot = -1;
     for (int i = 0; i < MAX_EVENT_ID; i++) {
-      if (emptySlotIdx == -1 && _eventSlots[i].channelID == -1) {
-        emptySlotIdx = i;
-      }
-
-      if (_eventSlots[i].channelID == channelID && _eventSlots[i].eventID == eventID) {
-        foundSlotIdx = i;
+      if (_eventSlots[i].channelId == channelId && _eventSlots[i].eventId == eventId) {
+        slot = i;
         break;
       }
     }
+    return slot;
+  }
 
-    if (foundSlotIdx == -1) {
-      if (action == FlutterInputInjection.TOUCH_POINT_END || emptySlotIdx == -1) {
-        /* can't found matched slot for end event or no empty slot */
-        return -1;
+  int acquireSlot(int channelId, int eventId) {
+    // find a free slot
+    int slot = findFreeSlot();
+    if (slot < 0) {
+      return -1;
+    }
+
+    _eventSlots[slot].channelId = channelId;
+    _eventSlots[slot].eventId = eventId;
+    return slot;
+  }
+
+  void releaseSlot(int slot) {
+    assert(slot >= 0);
+    assert(slot < MAX_EVENT_ID);
+
+    _eventSlots[slot].channelId = -1;
+    _eventSlots[slot].eventId = -1;
+  }
+
+  int releaseSlotById(int channelId, int eventId) {
+    int slot = findSlotById(channelId, eventId);
+    if (slot == -1) {
+      return -1;
+    }
+
+    releaseSlot(slot);
+    return slot;
+  }
+
+  int findFreeSlot() {
+    for (int i = 0; i < MAX_EVENT_ID; i++) {
+      if (_eventSlots[i].channelId == -1) {
+        return i;
       }
-      foundSlotIdx = emptySlotIdx;
-      // print('put touch slot:' + foundSlotIdx.toString() + 'channel:' + channelID.toString() + ' id:' + eventID.toString());
     }
+    return -1;
+  }
 
-    /* update slot info */
-    if(action == FlutterInputInjection.TOUCH_POINT_END) {
-      _eventSlots[foundSlotIdx].channelID = -1;
-      _eventSlots[foundSlotIdx].eventID = -1;
-      // print('remove touch slot:' + foundSlotIdx.toString() + 'channel:' + channelID.toString() + ' id:' + eventID.toString());
-    } else {
-      _eventSlots[foundSlotIdx].channelID = channelID;
-      _eventSlots[foundSlotIdx].eventID = eventID;
+  int reassignEventId(int channelId, int eventId, int action) {
+    switch(action) {
+      case FlutterInputInjection.TOUCH_POINT_START:
+        return acquireSlot(channelId, eventId);
+      case FlutterInputInjection.TOUCH_POINT_MOVE:
+        return findSlotById(channelId, eventId);
+      case FlutterInputInjection.TOUCH_POINT_END:
+        return releaseSlotById(channelId, eventId);
+      default:
+        return -1;
     }
-
-    return foundSlotIdx;
   }
 }
