@@ -4,8 +4,10 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
 class PresentPresentStart extends StatelessWidget {
@@ -177,13 +179,14 @@ class PresentPresentStart extends StatelessWidget {
                               fontSize: 14,
                             ),
                           ),
-                          TouchBackButton(
-                            key: touchBtnKey,
-                            initialValue: channelProvider.getTouchBack(),
-                            onPressed: (state) {
-                              channelProvider.setTouchBack(state);
-                            },
-                          ),
+                          if (WebRTC.platformIsMacOS || WebRTC.platformIsWindows)
+                            TouchBackButton(
+                              key: touchBtnKey,
+                              initialValue: channelProvider.getTouchBack(),
+                              onPressed: (state) {
+                                channelProvider.setTouchBack(state);
+                              },
+                            ),
                         ],
                       ),
                     ),
