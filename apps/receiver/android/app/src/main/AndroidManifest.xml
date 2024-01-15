@@ -70,6 +70,11 @@
         </activity>
 
         <service android:name=".vbsota.UpgradeVersionService" />
+        <service
+            android:name="de.julianassmann.flutter_background.IsolateHolderService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
