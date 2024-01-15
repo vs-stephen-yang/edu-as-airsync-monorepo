@@ -1,6 +1,6 @@
 {
     "main_display_code": "Display code",
-    "main_display_code_description": "3 or 11-digit display code",
+    "main_display_code_description": "1 or 11-digit display code",
     "main_password": "Password",
     "main_password_description": "4-digit one-time password",
     "main_present": "PRESENT",

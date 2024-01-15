@@ -60,10 +60,10 @@ class S {
     );
   }
 
-  /// `3 or 11-digit display code`
+  /// `1 or 11-digit display code`
   String get main_display_code_description {
     return Intl.message(
-      '3 or 11-digit display code',
+      '1 or 11-digit display code',
       name: 'main_display_code_description',
       desc: '',
       args: [],
