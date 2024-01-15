@@ -90,7 +90,8 @@ class RemoteScreenServer {
 
           dc.onDataChannelState = (RTCDataChannelState state) {
             if( state == RTCDataChannelState.RTCDataChannelClosed ) {
-              _dataChannels.removeWhere((item) => item.label == dc.label);
+              releaseEventSlotsByDataChannel(dc);
+              _dataChannels.removeWhere((item) => item.id == dc.id);
             }
           };
         }
@@ -229,6 +230,15 @@ class RemoteScreenServer {
         return releaseSlotById(channelId, eventId);
       default:
         return -1;
+    }
+  }
+
+  void releaseEventSlotsByDataChannel(RTCDataChannel dc) {
+    for (int i = 0; i < MAX_EVENT_ID; i++) {
+      if (_eventSlots[i].channelId == dc.id) {
+        _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_END, i, 0, 0);
+        releaseSlot(i);
+      }
     }
   }
 }
