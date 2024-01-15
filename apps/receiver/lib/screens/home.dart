@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -122,8 +123,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                   Visibility(
                                     visible: SplitScreen.mapSplitScreen
                                             .value[keySplitScreenEnable] &&
-                                        context.read<ChannelProvider>()
-                                            .isPresenting(index: index),
+                                        RtcConnectorList.getInstance().isPresenting(index: index),
                                     child: SplitScreenFunction(
                                       index: index,
                                       updateSize: () {

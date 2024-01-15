@@ -2,6 +2,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
+import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
@@ -57,7 +58,7 @@ class _SplitScreenState extends State<SplitScreen>
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
     return MenuDialog(
-      backgroundColor: channelProvider.isPresenting()
+      backgroundColor: RtcConnectorList.getInstance().isPresenting()
           ? AppColors.primary_grey_tran
           : AppColors.primary_grey,
       child: Column(
@@ -170,7 +171,7 @@ class _SplitScreenState extends State<SplitScreen>
       ConnectionTimer.getInstance().startRemainingTimeTimer(() async {
         AppAnalytics().setEventProperties(meetingId: '');
 
-        await channelProvider.removeAllPresenters();
+        await RtcConnectorList.getInstance().removeAllPresenters();
         // Need remove all presenters first, due to enable/disable will dispose
         // view and will disconnectedP2pClient before send stopVideo
         // cause web presenter did not update status
@@ -186,7 +187,7 @@ class _SplitScreenState extends State<SplitScreen>
       AppAnalytics().trackEventSplitScreenOff();
       ConnectionTimer.getInstance().stopRemainingTimeTimer();
       AppAnalytics().setEventProperties(meetingId: '');
-      await channelProvider.removeAllPresenters();
+      await RtcConnectorList.getInstance().removeAllPresenters();
     }
 
     // Need remove all presenters first, due to enable/disable will dispose

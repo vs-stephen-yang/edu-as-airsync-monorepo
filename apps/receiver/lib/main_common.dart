@@ -127,8 +127,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: MirrorStateProvider(context)),
         ChangeNotifierProvider.value(value: ChannelProvider(AppConfig.of(context)!)),
+        ChangeNotifierProvider.value(value: MirrorStateProvider(context)),
       ],
       child: MaterialApp(
         localizationsDelegates: const [
