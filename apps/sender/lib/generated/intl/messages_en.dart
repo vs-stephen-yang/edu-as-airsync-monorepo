@@ -28,7 +28,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_display_code":
             MessageLookupByLibrary.simpleMessage("Display code"),
         "main_display_code_description":
-            MessageLookupByLibrary.simpleMessage("3 or 11-digit display code"),
+            MessageLookupByLibrary.simpleMessage("1 or 11-digit display code"),
         "main_display_code_exceed": MessageLookupByLibrary.simpleMessage(
             "Maximum participants (6) reached."),
         "main_display_code_exceed_split_screen":

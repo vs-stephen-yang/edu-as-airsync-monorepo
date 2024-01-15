@@ -22,7 +22,7 @@ class PresentIdleTextField extends StatefulWidget {
 }
 
 class PresentIdleTextFieldState extends State<PresentIdleTextField> {
-  static const int limitDisplayCodeLength = 3;
+  static const int limitDisplayCodeLength = 1;
   static const int limitOtpLength = 4;
   final TextEditingController _codeController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
