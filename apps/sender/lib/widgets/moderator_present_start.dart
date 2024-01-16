@@ -6,7 +6,6 @@ import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
 class ModeratorPresentStart extends StatelessWidget {
@@ -174,14 +173,13 @@ class ModeratorPresentStart extends StatelessWidget {
                             fontSize: 14,
                           ),
                         ),
-                        if (WebRTC.platformIsMacOS || WebRTC.platformIsWindows)
-                          TouchBackButton(
-                            key: touchBtnKey,
-                            initialValue: channelProvider.getTouchBack(),
-                            onPressed: (state) {
-                              channelProvider.setTouchBack(state);
-                            },
-                          ),
+                        TouchBackButton(
+                          key: touchBtnKey,
+                          initialValue: channelProvider.getTouchBack(),
+                          onPressed: (state) {
+                            channelProvider.setTouchBack(state);
+                          },
+                        ),
                       ],
                     ),
                   ),
