@@ -202,11 +202,20 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.joinDisplay:
           JoinDisplayMessage msg = message as JoinDisplayMessage;
           if (msg.intent == JoinIntentType.present) {
-            if (RtcConnectorList.rtcConnectorList.length >= 6) {
-              var message = PresentRejectedMessage();
-              message.reason = Reason(401, text:'block');
-              channel.send(message);
-              return;
+            if (ChannelProvider.isModeratorMode) {
+              if (RtcConnectorList.rtcConnectorList.length >= 6) {
+                var message = PresentRejectedMessage();
+                message.reason = Reason(401, text:'block');
+                channel.send(message);
+                return;
+              }
+            } else {
+              if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] == 4) {
+                var message = PresentRejectedMessage();
+                message.reason = Reason(402, text:'block');
+                channel.send(message);
+                return;
+              }
             }
             rtcConnector = onJoinDisplay(rtcConnector, mode, message as JoinDisplayMessage);
           } else {
