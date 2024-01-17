@@ -88,6 +88,12 @@ func serverMain() {
 	log.SetGlobalOptions(log.GlobalConfig{V: verbosityLevel})
 	logger.Info("--- Starting SFU Node ---")
 
+	defer func() {
+		if r := recover(); r != nil {
+			logger.Error(fmt.Errorf("recover from panic: %v", r), "error")
+		}
+	}()
+
 	sfu.Logger = logger
 	s := sfu.NewSFU(conf)
 	dc := s.NewDatachannel(sfu.APIChannelLabel)
@@ -109,7 +115,7 @@ func serverMain() {
 	http.Handle("/ws", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		c, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			panic(err)
+			logger.Error(err, "error")
 		}
 		defer c.Close()
 
@@ -137,7 +143,7 @@ func serverMain() {
 	srv = &http.Server{Addr: addr}
 	err = srv.ListenAndServe()
 	if err != http.ErrServerClosed {
-		panic(err)
+		logger.Error(err, "error")
 	}
 	<-idleConnsClosed
 	stoppedChann <- true
