@@ -4,6 +4,7 @@ import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/participant_item.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ParticipantListView extends StatefulWidget {
   const ParticipantListView({super.key});
@@ -22,15 +23,18 @@ class _ParticipantListViewState extends State<ParticipantListView> {
       decoration: const BoxDecoration(
         color: Colors.transparent,
       ),
-      child: RtcConnectorList.rtcConnectorList.isEmpty
-          ? Container(
+      child: Consumer<ChannelProvider>(
+        builder: (context, provider, child) {
+          if (RtcConnectorList.rtcConnectorList.isEmpty) {
+            return Container(
               alignment: Alignment.center,
               child: Text(
                 S.of(context).moderator_presentersLimit,
                 style: const TextStyle(color: Colors.white),
               ),
-            )
-          : ListView.separated(
+            );
+          } else {
+            return ListView.separated(
               itemCount: RtcConnectorList.rtcConnectorList.length,
               itemBuilder: (BuildContext context, int index) {
                 if (index > 5 || !ChannelProvider.isModeratorMode) return const SizedBox();
@@ -40,7 +44,10 @@ class _ParticipantListViewState extends State<ParticipantListView> {
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider(height: 0, color: Colors.transparent);
               },
-            ),
+            );
+          }
+        },
+      ),
     );
   }
 }
