@@ -11,6 +11,7 @@ import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -96,8 +97,8 @@ class ChannelProvider extends ChangeNotifier {
     return webRTCConnector!.touchBack;
   }
 
-  bool isMainScreen() {
-    return webRTCConnector!.isMainSource;
+  bool showTouchBack() {
+    return (WebRTC.platformIsWindows || WebRTC.platformIsMacOS) && (webRTCConnector!.isMainSource);
   }
 
   Future<void> presentMainPage() async {

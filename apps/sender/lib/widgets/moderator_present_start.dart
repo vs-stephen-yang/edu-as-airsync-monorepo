@@ -5,7 +5,6 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
 class ModeratorPresentStart extends StatelessWidget {
@@ -151,38 +150,13 @@ class ModeratorPresentStart extends StatelessWidget {
                   ),
                 ),
               ),
-              if (channelProvider.isMainScreen())
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 38.0, top: 8.0),
-                    child: Row(
-                      children: [
-                        const SizedBox(
-                          width: 26,
-                          child: Image(
-                            height: 20,
-                            image: Svg('assets/images/touch_app_black.svg'),
-                          ),
-                        ),
-                        const Padding(padding: EdgeInsets.only(left: 8)),
-                        Text(
-                          S.of(context).main_touch_back,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                          ),
-                        ),
-                        TouchBackButton(
-                          key: touchBtnKey,
-                          initialValue: channelProvider.getTouchBack(),
-                          onPressed: (state) {
-                            channelProvider.setTouchBack(state);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+              if (channelProvider.showTouchBack())
+                TouchBackButton(
+                  key: touchBtnKey,
+                  initialValue: channelProvider.getTouchBack(),
+                  onPressed: (state) {
+                    channelProvider.setTouchBack(state);
+                  },
                 ),
             ],
           ),
