@@ -89,6 +89,9 @@ class _StreamFunctionStates extends State<StreamFunction> {
           if (value == stateMenuOn) {
             colorModeratorForeground = AppColors.iconPresentingForeground;
             colorModeratorBackground = AppColors.iconPresentingBackground;
+          } else {
+            colorModeratorForeground = AppColors.iconStandbyForeground;
+            colorModeratorBackground = AppColors.iconStandbyBackground;
           }
         } else {
           colorModeratorForeground = AppColors.iconFeatureOnStandbyForeground;
