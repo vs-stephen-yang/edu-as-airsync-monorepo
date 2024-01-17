@@ -8,16 +8,20 @@
 
 #include <connectivity_plus/connectivity_plus_windows_plugin.h>
 #include <device_info_vs/device_info_vs_plugin.h>
+#include <flutter_input_injection/flutter_input_injection_plugin_c_api.h>
 #include <flutter_mirror/flutter_mirror_plugin_c_api.h>
 #include <flutter_webrtc/flutter_web_r_t_c_plugin.h>
 #include <network_info_plus_windows/network_info_plus_windows_plugin.h>
 #include <permission_handler_windows/permission_handler_windows_plugin.h>
+#include <window_size/window_size_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
   ConnectivityPlusWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("ConnectivityPlusWindowsPlugin"));
   DeviceInfoVsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("DeviceInfoVsPlugin"));
+  FlutterInputInjectionPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("FlutterInputInjectionPluginCApi"));
   FlutterMirrorPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterMirrorPluginCApi"));
   FlutterWebRTCPluginRegisterWithRegistrar(
@@ -26,4 +30,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("NetworkInfoPlusWindowsPlugin"));
   PermissionHandlerWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("PermissionHandlerWindowsPlugin"));
+  WindowSizePluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("WindowSizePlugin"));
 }

@@ -5,10 +5,12 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
   device_info_vs
+  flutter_input_injection
   flutter_mirror
   flutter_webrtc
   network_info_plus_windows
   permission_handler_windows
+  window_size
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
