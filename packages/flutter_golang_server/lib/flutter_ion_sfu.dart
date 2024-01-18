@@ -1,7 +1,12 @@
 import 'flutter_ion_sfu_configuration.dart';
 import 'flutter_ion_sfu_platform_interface.dart';
+import 'flutter_ion_sfu_listener.dart';
 
 class FlutterIonSfu {
+  void registerListener(FlutterIonSfuListener listener) {
+    return FlutterIonSfuPlatform.instance.registerListener(listener);
+  }
+
   Future<void> initialize() {
     return FlutterIonSfuPlatform.instance.initialize();
   }

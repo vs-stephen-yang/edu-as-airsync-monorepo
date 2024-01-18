@@ -2,6 +2,7 @@ import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_ion_sfu_method_channel.dart';
+import 'flutter_ion_sfu_listener.dart';
 
 abstract class FlutterIonSfuPlatform extends PlatformInterface {
   /// Constructs a FlutterIonSfuPlatform.
@@ -22,6 +23,10 @@ abstract class FlutterIonSfuPlatform extends PlatformInterface {
   static set instance(FlutterIonSfuPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
+  }
+
+  void registerListener(FlutterIonSfuListener listener) {
+    throw UnimplementedError('registerListener() has not been implemented.');
   }
 
   Future<void> initialize() {
