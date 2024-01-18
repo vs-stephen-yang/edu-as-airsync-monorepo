@@ -55,13 +55,21 @@ main(List<String> arguments) async {
       'mode',
       defaultsTo: 'direct',
       allowed: ['direct', 'tunnel'],
+    )
+    ..addOption(
+      'otp',
+      defaultsTo: '1111',
+    )
+    ..addOption(
+      'code',
+      defaultsTo: '100018',
     );
 
   ArgResults argResults = parser.parse(arguments);
 
   final clientId = const Uuid().v4();
-  const token = 'token1';
-  const displayCode = '1683441648';
+  final token = argResults['otp'];
+  final displayCode = argResults['code'];
   const tunnelServiceUrl = 'wss://ap-northeast-1.gateway.dev.airsync.net';
 
   bool direct = argResults['mode'] == 'direct';
