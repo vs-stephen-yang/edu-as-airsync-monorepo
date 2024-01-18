@@ -61,11 +61,13 @@ class MockServer {
 
   final _clients = <Client>[];
 
+  bool _validateToken(String token) => token == '1111';
+
   MockServer() {
     // create a direct server
     _directServer = DisplayDirectServer(
       (Channel channel) => _onNewChannel(channel),
-      (String token) => true,
+      _validateToken,
     );
 
     // create a tunnel server
@@ -77,7 +79,7 @@ class MockServer {
         },
       ),
       (Channel channel) => _onNewChannel(channel),
-      (String token) => true,
+      _validateToken,
     );
 
     _tunnelServer.onTunnelConnected = () {
@@ -124,7 +126,7 @@ main(List<String> arguments) async {
 
   final tunnelServiceUrl = argResults['url'];
   const localDirectPort = 5100;
-  const instanceId = '0002';
+  const instanceId = '0001';
 
   final server = MockServer();
 
