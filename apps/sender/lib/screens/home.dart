@@ -16,7 +16,6 @@ import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/remote_screen_widget.dart';
 import 'package:display_cast_flutter/widgets/settings.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
-import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
@@ -33,11 +32,8 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return AppRetain(
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: PresentStateProvider(context)),
-          ChangeNotifierProvider.value(value: ChannelProvider(context)),
-        ],
+      child: ChangeNotifierProvider.value(
+        value: ChannelProvider(context),
         child: Scaffold(
           body: ConstrainedBox(
             constraints: const BoxConstraints.expand(),
@@ -65,8 +61,8 @@ class _HomeState extends State<Home> {
                   bottom: 0,
                   child: BottomBar(),
                 ),
-                Consumer2<PresentStateProvider, ChannelProvider>(
-                  builder: (context, present, channel, child) {
+                Consumer<ChannelProvider>(
+                  builder: (context, channel, child) {
                     debugModePrint('PresentState: ${channel.state}');
                     if (!kIsWeb) {
                       FlutterWindowClose.setWindowShouldCloseHandler(() async {
@@ -103,17 +99,6 @@ class _HomeState extends State<Home> {
                     }
                   },
                 ),
-                ValueListenableBuilder(
-                    valueListenable: PresentStateProvider.displayToastValue,
-                    builder: (BuildContext context, bool value, Widget? child) {
-                      return Visibility(
-                        visible: PresentStateProvider.displayToastValue.value,
-                        child: Toast(
-                          PresentStateProvider.toastMessage,
-                          // style: textStyle30,
-                        ),
-                      );
-                    }),
               ],
             ),
           ),

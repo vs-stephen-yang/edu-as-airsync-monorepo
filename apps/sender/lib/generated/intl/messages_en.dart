@@ -76,6 +76,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "remote_screen_wait": MessageLookupByLibrary.simpleMessage(
             "Waiting for presenter to share screen..."),
         "settings_knowledge_base":
-            MessageLookupByLibrary.simpleMessage("Knowledge Base")
+            MessageLookupByLibrary.simpleMessage("Knowledge Base"),
+        "toast_maximum_moderated": MessageLookupByLibrary.simpleMessage(
+            "Has reached maximum moderated session number."),
+        "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
+            "Has reached maximum split screen session number.")
       };
 }

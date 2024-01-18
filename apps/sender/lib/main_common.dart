@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<PrefLanguageProvider>(
         builder: (context, languageModel, child) {
+          final botToastBuilder = BotToastInit();
           return MaterialApp(
             title: 'AirSync Sender',
             debugShowCheckedModeBanner: false,
@@ -72,7 +74,9 @@ class MyApp extends StatelessWidget {
             navigatorKey: NavigationService.navigationKey,
             routes: {
               // for 'navService.popUntil('/home')'
-              '/home': (context) => const Home(),
+              '/home': (context) {
+                return botToastBuilder(context, const Home());
+              },
             },
           );
         },
