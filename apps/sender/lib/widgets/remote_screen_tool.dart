@@ -1,7 +1,7 @@
 
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
-import 'package:display_cast_flutter/utilities/app_ui_constant.dart';
+import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -23,7 +23,7 @@ class _StreamFunctionToolStates extends State<StreamFunctionTool> {
     return Stack(
       children: <Widget>[
         Container(
-          width: AppUIConstant.featureContainerWidth,
+          width: AppConstants.featureContainerWidth,
           alignment: Alignment.center,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -34,8 +34,8 @@ class _StreamFunctionToolStates extends State<StreamFunctionTool> {
                   iconBackgroundColor: AppColors.iconFeatureOnStandbyBackground,
                   iconFocusBackgroundColor:
                   AppColors.iconFeatureOnStandbyBackground,
-                  hasFocusSize: AppUIConstant.iconHasFocusSize,
-                  notFocusSize: AppUIConstant.iconNotFocusSize,
+                  hasFocusSize: AppConstants.iconHasFocusSize,
+                  notFocusSize: AppConstants.iconNotFocusSize,
                   rotateY: math.pi,
                   onClick: () {
                     channelProvider.removeRemoteScreenClient();
