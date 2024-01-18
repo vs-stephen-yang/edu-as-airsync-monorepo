@@ -182,22 +182,23 @@ class WebRTCViewState extends State<WebRTCView> {
             visible: _rtcConnector?.presentationState == PresentationState.streaming &&
                 presenterName.isNotEmpty &&
                 SplitScreen.mapSplitScreen.value[keySplitScreenEnable],
-            child: Container(
-              width: 120,
-              height: 30,
-              padding: const EdgeInsets.all(5),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: AppColors.primaryBlackA50,
-              ),
-              child: AutoSizeText(
-                presenterName,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints.tightFor(height: 30,width: 160),
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.primaryBlackA50,
                 ),
-                maxLines: 1,
+                child: AutoSizeText(
+                  presenterName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                  maxLines: 1,
+                ),
               ),
             ),
           ),
