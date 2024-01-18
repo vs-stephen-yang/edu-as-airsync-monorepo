@@ -1,4 +1,6 @@
+import 'package:display_channel/src/channel.dart';
 import 'package:display_channel/src/client_connection.dart';
+import 'package:display_channel/src/messages/channel_message.dart';
 import 'package:display_channel/src/server/connection.dart';
 import 'package:display_channel/src/server/connection_request.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_message.dart';
@@ -79,9 +81,23 @@ class TunnelConnectionServer extends TunnelMessageHandler {
   void onClientConnected(TunnelClientConnected msg) {
     // a new client connection is being established
 
-    final connectionRequest = ConnectionRequest(msg.clientId, msg.token);
-    if (!_authenticationHandler(connectionRequest)) {
-      // TODO: reject the connection
+    // authenticate the connectin request
+    if (!_authenticationHandler(ConnectionRequest(
+      msg.clientId,
+      msg.token,
+    ))) {
+      // reject the connection
+      sendMsgToClient(
+        msg.connectionId,
+        ChannelClosedMessage(
+          Reason(
+            ChannelCloseCode.authenticationError.index,
+            text: 'Wrong OTP',
+          ),
+        ).toJson(),
+      );
+
+      // TODO: disconnect the connection
       return;
     }
 
