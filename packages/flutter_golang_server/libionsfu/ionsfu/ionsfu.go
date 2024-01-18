@@ -20,7 +20,16 @@ type logC struct {
 	Config log.GlobalConfig `mapstructure:"log"`
 }
 
+type IonSfuListener interface {
+	OnError(err string, msg string)
+}
+
+type IonSfuServer struct {
+	ionSfuListener_ IonSfuListener
+}
+
 var (
+	ionSfuServer   = new(IonSfuServer)
 	conf           = sfu.Config{}
 	cert           string
 	key            string
@@ -72,6 +81,10 @@ func Initialize() {
 	if verbosityLevel < 0 {
 		verbosityLevel = logConfig.Config.V
 	}
+}
+
+func RegisterListener(listener IonSfuListener) {
+	ionSfuServer.ionSfuListener_ = listener
 }
 
 func StartServer() {
@@ -144,6 +157,9 @@ func serverMain() {
 	err = srv.ListenAndServe()
 	if err != http.ErrServerClosed {
 		logger.Error(err, "error")
+		if ionSfuServer.ionSfuListener_ != nil {
+			ionSfuServer.ionSfuListener_.OnError("http-server", err.Error())
+		}
 	}
 	<-idleConnsClosed
 	stoppedChann <- true

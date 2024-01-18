@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
+import 'package:flutter_ion_sfu/flutter_ion_sfu_listener.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> implements FlutterIonSfuListener {
   String _message = '';
 
   final _flutterIonSfuPlugin = FlutterIonSfu();
@@ -33,6 +34,7 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     late String message;
     try {
+      _flutterIonSfuPlugin.registerListener(this);
       await _flutterIonSfuPlugin.initialize();
       final configuration = FlutterIonSfuConfiguration();
       await _flutterIonSfuPlugin.start(configuration);
@@ -63,5 +65,13 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  @override
+  void onError(String error, String msg) {
+    String message = "Ion SFU Server failed to start $error $msg";
+    setState(() {
+      _message = message;
+    });
   }
 }
