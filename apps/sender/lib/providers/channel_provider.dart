@@ -11,16 +11,26 @@ import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter/material.dart';
+
+import '../generated/l10n.dart';
+import '../widgets/toast.dart';
 
 enum Mode {
   internet,
   lan,
+}
+
+enum RejectReasonType {
+  maxModeratorSessions(401),
+  maxSplitScreenSessions(402);
+
+  const RejectReasonType(this.code);
+  final int code;
 }
 
 class ChannelProvider extends ChangeNotifier {
@@ -155,7 +165,7 @@ class ChannelProvider extends ChangeNotifier {
         if (state == ChannelState.connected) {
           _channel = internetChannel;
         } else if (state == ChannelState.closed) {
-          PresentStateProvider.setToast(true, 'Unstable network connection.');
+          Toast.makeToast('Unstable network connection.');
         }
         setUpChannel(encodedDisplayCode);
       });
@@ -168,7 +178,7 @@ class ChannelProvider extends ChangeNotifier {
             if (state == ChannelState.connected) {
               _channel = internetChannel;
             } else if (state == ChannelState.closed) {
-              PresentStateProvider.setToast(true, 'Unstable network connection.');
+              Toast.makeToast('Unstable network connection.');
             }
           });
         }
@@ -202,10 +212,15 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.presentRejected:
           Reason? reason = (message as PresentRejectedMessage).reason;
           if (currentRole == JoinIntentType.present) {
+            if (reason?.code == RejectReasonType.maxModeratorSessions.code) {
+              Toast.makeToast(S.current.toast_maximum_moderated);
+            } else if (reason?.code == RejectReasonType.maxSplitScreenSessions.code) {
+              Toast.makeToast(S.current.toast_maximum_split_screen);
+            }
             presentEnd();
           } else {
-            if (reason?.code == 401) {
-              PresentStateProvider.setToast(true, 'Reach maximum receivers');
+            if (reason?.code == RejectReasonType.maxModeratorSessions.code) {
+              Toast.makeToast('Reach maximum receivers');
             }
           }
           break;
@@ -402,7 +417,7 @@ class ChannelProvider extends ChangeNotifier {
       case RemoteScreenStatus.accepted:
         break;
       case RemoteScreenStatus.rejected:
-        PresentStateProvider.setToast(true, 'AirSync should enable "share screen to sender".');
+        Toast.makeToast( 'AirSync should enable "share screen to sender".');
         presentMainPage();
         break;
       case RemoteScreenStatus.kicked:

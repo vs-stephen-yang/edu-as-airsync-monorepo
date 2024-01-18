@@ -379,6 +379,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Has reached maximum moderated session number.`
+  String get toast_maximum_moderated {
+    return Intl.message(
+      'Has reached maximum moderated session number.',
+      name: 'toast_maximum_moderated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Has reached maximum split screen session number.`
+  String get toast_maximum_split_screen {
+    return Intl.message(
+      'Has reached maximum split screen session number.',
+      name: 'toast_maximum_split_screen',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -60,6 +60,7 @@ dependencies:
   hive_flutter: ^1.1.0
   collection: ^1.17.2
   flutter_background: ^1.2.0
+  bot_toast: ^4.1.3
 
   # ViewSonic plug-in
   flutter_webrtc:

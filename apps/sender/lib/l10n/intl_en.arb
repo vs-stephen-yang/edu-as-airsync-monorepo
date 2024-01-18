@@ -31,5 +31,7 @@
     "main_display_code_exceed_split_screen": "Maximum presenters (4) reached.",
     "present_select_screen_share_audio": "Share screen audio",
     "main_language_name": "English",
-    "remote_screen_wait": "Waiting for presenter to share screen..."
+    "remote_screen_wait": "Waiting for presenter to share screen...",
+    "toast_maximum_moderated": "Has reached maximum moderated session number.",
+    "toast_maximum_split_screen": "Has reached maximum split screen session number."
 }
