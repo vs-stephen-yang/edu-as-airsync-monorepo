@@ -37,12 +37,21 @@ class DirectConnectionServer {
       return;
     }
 
+    final connection = DirectConnection(ws);
+
+    // authenticate the connectin request
     if (!_authenticationHandler(connectionRequest)) {
-      // TODO: reject the connection
+      // reject the connection
+      connection.send(ChannelClosedMessage(
+        Reason(
+          ChannelCloseCode.authenticationError.index,
+          text: 'Wrong OTP',
+        ),
+      ).toJson());
+
+      // TODO: disconnect the connection
       return;
     }
-
-    final connection = DirectConnection(ws);
 
     _onNewConnection(connectionRequest.clientId, connection);
   }
