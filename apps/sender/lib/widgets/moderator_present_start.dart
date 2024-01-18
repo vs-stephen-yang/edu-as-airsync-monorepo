@@ -113,6 +113,7 @@ class ModeratorPresentStart extends StatelessWidget {
                           }
                         },
                         child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
                               value
@@ -141,6 +142,7 @@ class ModeratorPresentStart extends StatelessWidget {
                       channelProvider.presentModeratorWaitPage();
                     },
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(Icons.cancel_presentation, color: Colors.white,),
                         const Padding(padding: EdgeInsets.only(left: 8)),
