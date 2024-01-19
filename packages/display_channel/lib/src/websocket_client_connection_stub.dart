@@ -17,12 +17,14 @@ class WebSocketClientConnection implements ClientConnection {
   void Function(Map<String, dynamic> data)? onMessage;
 
   final String _url;
+  int maxRetryAttempts;
 
   void Function(String url, String message)? logger;
 
   WebSocketClientConnection(
     this._url, {
     this.logger,
+    this.maxRetryAttempts = 1,
   });
 
   @override

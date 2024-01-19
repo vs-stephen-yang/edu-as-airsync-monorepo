@@ -79,13 +79,13 @@ void main() {
     // create a channel server
     directServer = DisplayDirectServer(
       (Channel channel) => handleNewChannel(channel),
-      (String token) => true,
+      (String token) => token == 'token1',
     );
 
     tunnelServer = DisplayTunnelServer(
       (String url) => WebSocketClientConnection(url),
       (Channel channel) => handleNewChannel(channel),
-      (String token) => true,
+      (String token) => token == 'token1',
     );
 
     tunnelServer.onTunnelConnected = () {
@@ -115,42 +115,43 @@ void main() {
     };
   }
 
-  void openDirectChannel() {
+  void openDirectChannel({int? port, String token = 'token1'}) {
     const clientId = 'abc';
-    final serverUrl = 'ws://127.0.0.1:${directServer.port}';
-    const token = 'token1';
+    final serverUrl = 'ws://127.0.0.1:${port ?? directServer.port}';
 
     client = DisplayChannelClient(
       clientId,
       Uri.parse(serverUrl),
-      (url) => WebSocketClientConnection(url),
+      (url) => WebSocketClientConnection(url, maxRetryAttempts: 1),
     );
+
+    setupClient();
 
     client.openDirectChannel(
       token,
     );
-
-    setupClient();
   }
 
-  void openTunnelChannel() {
+  void openTunnelChannel({
+    int? port,
+    String token = 'token1',
+    String displayCode = '1111111',
+  }) {
     const clientId = 'abc';
-    final serverUrl = 'ws://127.0.0.1:${httpServer.port}';
-    const token = 'token1';
-    const displayCode = '1111111';
+    final serverUrl = 'ws://127.0.0.1:${port ?? httpServer.port}';
 
     client = DisplayChannelClient(
       clientId,
       Uri.parse(serverUrl),
-      (url) => WebSocketClientConnection(url),
+      (url) => WebSocketClientConnection(url, maxRetryAttempts: 1),
     );
+
+    setupClient();
 
     client.openTunnelChannel(
       displayCode,
       token,
     );
-
-    setupClient();
   }
 
   void sendFakeMessages(Channel channel) {
@@ -251,5 +252,44 @@ void main() {
     // assert
     await clientClosed.future;
     expect(client.closeReason!.code, ChannelCloseCode.remoteClose);
+  });
+
+  test('The channel should be closed with authenticationError if otp is wrong',
+      () async {
+    // arrange
+    openDirectChannel(token: 'wrong');
+    await clientConnected.future;
+
+    // action
+
+    // assert
+    await clientClosed.future;
+    expect(client.closeReason!.code, ChannelCloseCode.authenticationError);
+  });
+
+  test(
+      'The channel should be closed with transportClose if the direct server does not exist',
+      () async {
+    // arrange
+    openDirectChannel(port: 1);
+
+    // action
+
+    // assert
+    await clientClosed.future;
+    expect(client.closeReason!.code, ChannelCloseCode.transportClose);
+  });
+
+  test(
+      'The channel should be closed with channelNotFound if the display code does not exist',
+      () async {
+    // arrange
+    openTunnelChannel(displayCode: '000');
+
+    // action
+
+    // assert
+    await clientClosed.future;
+    expect(client.closeReason!.code, ChannelCloseCode.channelNotFound);
   });
 }
