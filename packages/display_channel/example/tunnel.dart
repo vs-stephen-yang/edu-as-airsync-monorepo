@@ -1,15 +1,22 @@
-import 'package:display_channel/src/util/http_websocket_server.dart';
 import 'package:display_channel/src/util/fake_tunnel_service.dart';
 import 'dart:io';
 
 void main() async {
-  final tunnelService = FakeTunnelService();
+  const displayCode = '100018';
 
-  final httpServer = HttpWebSocketServer((WebSocket ws, HttpRequest req) {
-    tunnelService.onWsConnection(ws, req);
+  final tunnelService = FakeTunnelService(displayCode);
+
+  const httpPort = 5000;
+  final httpServer = await HttpServer.bind(
+    InternetAddress.anyIPv4,
+    httpPort,
+  );
+
+  httpServer.listen((request) async {
+    if (WebSocketTransformer.isUpgradeRequest(request)) {
+      tunnelService.onHttpRequest(request);
+    }
   });
 
-  await httpServer.start(5000);
-
-  print('Listened on port ${httpServer.port}');
+  print('Listened on port $httpPort');
 }

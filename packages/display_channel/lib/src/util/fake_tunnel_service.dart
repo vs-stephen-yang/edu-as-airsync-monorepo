@@ -36,11 +36,16 @@ class MsgHandler implements TunnelMessageHandler {
 class FakeTunnelService {
   var _lastConnectionId = 0;
 
+  // TODO:
+  final String displayCode;
+
   final _serverConnections = <int, WebSocket>{};
   final _clientConnections = <int, WebSocket>{};
 
-  void onWsConnection(WebSocket ws, HttpRequest req) {
-    final parameters = req.requestedUri.queryParameters;
+  FakeTunnelService(this.displayCode);
+
+  Future onHttpRequest(HttpRequest httpRequest) async {
+    final parameters = httpRequest.requestedUri.queryParameters;
 
     final role = parameters['role'];
 
@@ -48,21 +53,23 @@ class FakeTunnelService {
     final connectionId = _lastConnectionId;
 
     if (role == 'server') {
-      _onServerConnected(connectionId, ws, parameters);
+      await _onServerConnected(connectionId, httpRequest, parameters);
     } else if (role == 'client') {
-      _onClientConnected(connectionId, ws, parameters);
+      await _onClientConnected(connectionId, httpRequest, parameters);
     }
   }
 
 // handle the connection from the server
-  void _onServerConnected(
+  Future _onServerConnected(
     int connectionId,
-    WebSocket ws,
+    HttpRequest httpRequest,
     Map<String, String> parameters,
-  ) {
-    _serverConnections[connectionId] = ws;
+  ) async {
+    final websocket = await WebSocketTransformer.upgrade(httpRequest);
 
-    ws.listen((dynamic data) {
+    _serverConnections[connectionId] = websocket;
+
+    websocket.listen((dynamic data) {
       // receive data from the server
       final message = jsonDecode(data);
       _onDataFromServer(connectionId, message);
@@ -76,19 +83,20 @@ class FakeTunnelService {
   }
 
   // handle the connection from the client
-  void _onClientConnected(
+  Future _onClientConnected(
     int connectionId,
-    WebSocket ws,
+    HttpRequest httpRequest,
     Map<String, String> parameters,
-  ) {
-    if (_serverConnections.isEmpty) {
-      ws.close();
+  ) async {
+    if (parameters['displayCode'] != displayCode) {
+      httpRequest.response.close();
       return;
     }
+    final websocket = await WebSocketTransformer.upgrade(httpRequest);
 
-    _clientConnections[connectionId] = ws;
+    _clientConnections[connectionId] = websocket;
 
-    ws.listen((dynamic data) {
+    websocket.listen((dynamic data) {
       // receive data from the client
       final message = jsonDecode(data);
       _onDataFromClient(connectionId, message);

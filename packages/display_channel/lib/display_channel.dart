@@ -21,9 +21,6 @@ export 'package:display_channel/src/server/connection.dart' show Connection;
 export 'package:display_channel/src/server/connection_request.dart'
     show ConnectionRequest;
 
-// util
-export 'src/util/http_websocket_server.dart' show HttpWebSocketServer;
-
 export 'package:display_channel/src/websocket_client_connection_stub.dart'
     if (dart.library.io) 'package:display_channel/src/websocket_client_connection_io.dart' // dart:io implementation
     if (dart.library.html) 'package:display_channel/src/websocket_client_connection_html.dart'; // dart:html implementation

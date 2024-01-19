@@ -28,16 +28,18 @@ class DirectConnectionServer {
     );
   }
 
-  void onWsConnection(WebSocket ws, HttpRequest httpRequest) {
+  Future onHttpRequest(HttpRequest httpRequest) async {
     final connectionRequest = _parseConnectionRequest(httpRequest);
 
     if (connectionRequest == null) {
       // invalid http request
-      ws.close();
+      httpRequest.response.close();
       return;
     }
 
-    final connection = DirectConnection(ws);
+    final websocket = await WebSocketTransformer.upgrade(httpRequest);
+
+    final connection = DirectConnection(websocket);
 
     // authenticate the connectin request
     if (!_authenticationHandler(connectionRequest)) {
