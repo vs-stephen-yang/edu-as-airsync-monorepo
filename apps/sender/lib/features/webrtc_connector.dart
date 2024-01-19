@@ -115,8 +115,11 @@ class WebRTCConnector {
 
     if (msg.height == _trackHeight) return;
 
-    if (msg.height < _maxTrackHeight) {
+    if (msg.height > _maxTrackHeight) {
       // make sure the width/height is not greater than the max width
+      _trackWidth = _maxTrackWidth;
+      _trackHeight = _maxTrackHeight;
+    } else {
       _trackWidth = _maxTrackWidth ~/ (_maxTrackHeight / msg.height);
       _trackHeight = msg.height;
     }
@@ -134,8 +137,8 @@ class WebRTCConnector {
             }
     };
 
-    if (kIsWeb) {
-      _localStream?.getVideoTracks().first.applyConstraints(constraints);
+    if (kIsWeb || Platform.isAndroid) {
+      await _localStream?.getVideoTracks().first.applyConstraints(constraints);
     } else {
       _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
     }
