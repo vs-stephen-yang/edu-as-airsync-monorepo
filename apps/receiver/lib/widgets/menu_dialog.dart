@@ -1,4 +1,7 @@
+import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
+import 'package:no_context_navigation/no_context_navigation.dart';
 
 class MenuDialog extends StatelessWidget {
   const MenuDialog(
@@ -7,13 +10,21 @@ class MenuDialog extends StatelessWidget {
       this.alignment = Alignment.bottomLeft,
       this.edgeInsets = const EdgeInsets.fromLTRB(20, 0, 0, 140),
       this.menuSize,
-      this.child});
+      this.child,
+      this.topTitleText,
+      this.topTitleAction,
+      this.content,
+      this.bottomAction});
 
   final Color? backgroundColor;
   final AlignmentGeometry? alignment;
   final EdgeInsets? edgeInsets;
   final Size? menuSize;
   final Widget? child;
+  final String? topTitleText; // Title text in menu top area.
+  final Widget? topTitleAction; // Action items behind title text.
+  final Widget? content; // Main content items
+  final Widget? bottomAction; // Action items in menu bottom area.
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +40,71 @@ class MenuDialog extends StatelessWidget {
         height: menuSize != null
             ? menuSize!.height
             : MediaQuery.of(context).size.height * 0.6,
-        child: child,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            if (bottomAction == null)
+              Expanded(
+                flex: 1,
+                child: Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Row(
+                    children: <Widget>[
+                      FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: FocusIconButton(
+                          childNotFocus: const Icon(
+                            Icons.arrow_back_ios_new,
+                            color: AppColors.primary_white,
+                          ),
+                          splashRadius: 20,
+                          focusColor: Colors.grey,
+                          onClick: () {
+                            navService.popUntil('/home');
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 5),
+                            child: Text(
+                              topTitleText ?? '',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary_white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      topTitleAction ?? const SizedBox(),
+                    ],
+                  ),
+                ),
+              ),
+            Expanded(
+              flex: 7,
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: content ?? const SizedBox(),
+              ),
+            ),
+            if (bottomAction != null)
+              Expanded(
+                flex: 1,
+                child: Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: bottomAction,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

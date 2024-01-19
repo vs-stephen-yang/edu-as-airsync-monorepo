@@ -5,11 +5,8 @@ import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/custom_icons_icons.dart';
-import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -61,102 +58,33 @@ class _SplitScreenState extends State<SplitScreen>
       backgroundColor: RtcConnectorList.getInstance().isPresenting()
           ? AppColors.primary_grey_tran
           : AppColors.primary_grey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      topTitleText: S.of(context).main_split_screen_title,
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Row(
-                children: <Widget>[
-                  FittedBox(
-                    fit: BoxFit.fitHeight,
-                    child: FocusIconButton(
-                      childNotFocus: const Icon(
-                        Icons.arrow_back_ios_new,
-                        color: AppColors.primary_white,
-                      ),
-                      splashRadius: 20,
-                      focusColor: Colors.grey,
-                      onClick: () {
-                        AppAnalytics().trackEventSplitScreenPanelClose();
-                        navService.popUntil('/home');
-                      },
-                    ),
+          Visibility(
+            visible: SplitScreen.mapSplitScreen.value[keySplitScreenEnable],
+            child: Wrap(
+              direction: Axis.vertical,
+              children: [
+                RotationTransition(
+                  turns: _animation,
+                  child: const Icon(
+                    CustomIcons.loading,
+                    color: Colors.white,
                   ),
-                  Expanded(
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 5),
-                        child: Text(
-                          S.of(context).main_split_screen_title,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary_white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  FittedBox(
-                    fit: BoxFit.fitHeight,
-                    child: FocusIconButton(
-                      childNotFocus: Image(
-                        image: Svg((SplitScreen
-                                .mapSplitScreen.value[keySplitScreenEnable])
-                            ? 'assets/images/ic_activate_on.svg'
-                            : 'assets/images/ic_activate_off.svg'),
-                      ),
-                      splashRadius: 20,
-                      focusColor: Colors.grey,
-                      onClick: () {
-                        _switchSplitScreenOnOff();
-                      },
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 32),
+              ],
             ),
           ),
-          Expanded(
-            flex: 7,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Visibility(
-                    visible:
-                        SplitScreen.mapSplitScreen.value[keySplitScreenEnable],
-                    child: Wrap(
-                      direction: Axis.vertical,
-                      children: [
-                        RotationTransition(
-                          turns: _animation,
-                          child: const Icon(
-                            CustomIcons.loading,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    SplitScreen.mapSplitScreen.value[keySplitScreenEnable]
-                        ? S.of(context).main_split_screen_waiting
-                        : S.of(context).main_split_screen_question,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                    ),
-                  ),
-                ],
-              ),
+          Text(
+            SplitScreen.mapSplitScreen.value[keySplitScreenEnable]
+                ? S.of(context).main_split_screen_waiting
+                : S.of(context).main_split_screen_question,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
             ),
           ),
         ],
