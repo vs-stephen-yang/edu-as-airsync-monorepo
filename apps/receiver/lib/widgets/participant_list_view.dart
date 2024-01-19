@@ -25,7 +25,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
       ),
       child: Consumer<ChannelProvider>(
         builder: (context, provider, child) {
-          if (RtcConnectorList.rtcConnectorList.isEmpty) {
+          if (!ChannelProvider.isModeratorMode || RtcConnectorList.rtcConnectorList.isEmpty) {
             return Container(
               alignment: Alignment.center,
               child: Text(
@@ -37,7 +37,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
             return ListView.separated(
               itemCount: RtcConnectorList.rtcConnectorList.length,
               itemBuilder: (BuildContext context, int index) {
-                if (index > 5 || !ChannelProvider.isModeratorMode) return const SizedBox();
+                if (index > 5) return const SizedBox();
 
                 return ParticipantItem(index: index);
               },
