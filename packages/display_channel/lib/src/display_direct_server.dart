@@ -4,11 +4,10 @@ import 'package:display_channel/src/channel_server.dart';
 import 'package:display_channel/src/server/connection.dart';
 import 'package:display_channel/src/server/connection_request.dart';
 import 'package:display_channel/src/server/direct/direct_connection_server.dart';
-import 'package:display_channel/src/util/http_websocket_server.dart';
 
 class DisplayDirectServer extends ChannelServer {
   DirectConnectionServer? _directServer;
-  HttpWebSocketServer? _httpServer;
+  HttpServer? _httpServer;
 
   int? get port {
     return _httpServer?.port;
@@ -31,11 +30,16 @@ class DisplayDirectServer extends ChannelServer {
             verifyConnectionRequest(connectionRequest));
 
     // HTTP server
-    _httpServer = HttpWebSocketServer((WebSocket ws, HttpRequest req) {
-      _directServer!.onWsConnection(ws, req);
-    });
+    _httpServer = await HttpServer.bind(
+      InternetAddress.anyIPv4,
+      port,
+    );
 
-    await _httpServer!.start(port);
+    _httpServer!.listen((request) async {
+      if (WebSocketTransformer.isUpgradeRequest(request)) {
+        _directServer!.onHttpRequest(request);
+      }
+    });
   }
 
   @override

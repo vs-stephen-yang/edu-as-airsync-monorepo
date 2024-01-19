@@ -19,7 +19,7 @@ class ExpectValueCompleter<T> {
 
 void main() {
   late FakeTunnelService tunnelService;
-  late HttpWebSocketServer httpServer;
+  late HttpServer httpServer;
 
   late DisplayDirectServer directServer;
   late DisplayTunnelServer tunnelServer;
@@ -59,12 +59,19 @@ void main() {
 
   Future<void> setupServer() async {
     // create a fake tunnel service
-    tunnelService = FakeTunnelService();
+    tunnelService = FakeTunnelService('1111111');
 
-    httpServer = HttpWebSocketServer((WebSocket ws, HttpRequest req) {
-      tunnelService.onWsConnection(ws, req);
+    const httpPort = 0;
+    httpServer = await HttpServer.bind(
+      InternetAddress.anyIPv4,
+      httpPort,
+    );
+
+    httpServer.listen((request) async {
+      if (WebSocketTransformer.isUpgradeRequest(request)) {
+        tunnelService.onHttpRequest(request);
+      }
     });
-    await httpServer.start(0);
 
     // server
     final tunnelServiceUrl = 'ws://127.0.0.1:${httpServer.port}';
