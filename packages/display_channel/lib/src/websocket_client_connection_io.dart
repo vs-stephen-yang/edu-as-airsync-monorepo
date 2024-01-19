@@ -66,8 +66,9 @@ class WebSocketClientConnection implements ClientConnection {
     logger?.call(_url, "connecting");
     onConnecting?.call();
 
+    WebSocket? socket;
     try {
-      _socket = await retry(
+      socket = await retry(
         maxDelay: maxRetryDelay,
         maxAttempts: maxRetryAttempts,
         () {
@@ -98,7 +99,12 @@ class WebSocketClientConnection implements ClientConnection {
       _handleConnectFailed(ConnectErrorType.socket, e.toString());
       return;
     }
+    if (_closed) {
+      socket!.close();
+      return;
+    }
 
+    _socket = socket;
     _socket!.pingInterval = pingInterval;
 
     // connected

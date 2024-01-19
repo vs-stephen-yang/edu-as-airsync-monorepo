@@ -68,6 +68,10 @@ class DisplayChannelClient implements Channel {
     return _state == ChannelState.closed;
   }
 
+  bool _isConnected() {
+    return _state == ChannelState.connected;
+  }
+
   void _changeState(ChannelState newState) {
     if (_isClosed()) {
       return;
@@ -152,20 +156,30 @@ class DisplayChannelClient implements Channel {
       return;
     }
 
+    final connected = _isConnected();
+
     _closeReason = reason ?? ChannelCloseReason(ChannelCloseCode.close);
     _state = ChannelState.closed;
-    //_changeState(ChannelState.closed);
 
-    // send channel-closed message
-    _connection?.send(
-      ChannelClosedMessage(
-        convertChannelCloseReasonToReason(_closeReason!),
-      ).toJson(),
-    );
+    if (connected) {
+      // send channel-closed message
+      _connection?.send(
+        ChannelClosedMessage(
+          convertChannelCloseReasonToReason(_closeReason!),
+        ).toJson(),
+      );
+      return;
+    }
+
+    await _closeConnection();
   }
 
   Future _onConnectFailed(ConnectError error) async {
     await _closeConnection();
+
+    if (_isClosed()) {
+      return;
+    }
 
     _closeReason = ChannelCloseReason(
       connectErrorToChannelCloseCode(error.error),
@@ -178,8 +192,11 @@ class DisplayChannelClient implements Channel {
     _changeState(ChannelState.disconnected);
 
     if (_isClosed()) {
-      await _closeConnection();
+      return;
     }
+
+    _closeReason = ChannelCloseReason(ChannelCloseCode.transportClose);
+    _changeState(ChannelState.closed);
   }
 
   Future _onChannelClosedMessage(ChannelClosedMessage message) async {
