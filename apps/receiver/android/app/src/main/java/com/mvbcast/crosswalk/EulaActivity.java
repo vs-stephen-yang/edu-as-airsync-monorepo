@@ -114,10 +114,10 @@ public class EulaActivity extends FlutterActivity {
 
         // noinspection ConstantConditions
         if (BuildConfig.BUILD_TYPE.equals("debug")) {
-            am.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1),
-                    TimeUnit.MINUTES.toMillis(1),
-                    pendingIntent);
+//            am.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+//                    System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1),
+//                    TimeUnit.MINUTES.toMillis(1),
+//                    pendingIntent);
         } else {
             // Set the alarm to start at approximately 2:00 a.m.
             Calendar calendar = Calendar.getInstance();
