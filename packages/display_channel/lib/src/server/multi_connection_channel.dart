@@ -124,7 +124,7 @@ class MultiConnectionChannel implements Channel {
       _stopHearbeat();
 
       // IMPROVE
-      _changeState(ChannelState.disconnected);
+      _changeState(ChannelState.closed);
     }
   }
 

@@ -4,7 +4,6 @@ enum ChannelState {
   initialized,
   connecting,
   connected,
-  disconnected,
   closed,
 }
 

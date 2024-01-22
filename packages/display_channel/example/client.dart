@@ -101,9 +101,6 @@ main(List<String> arguments) async {
       case ChannelState.connected:
         print('The client has connected to the display');
         break;
-      case ChannelState.disconnected:
-        print('The client has disconnected to the display');
-        break;
       case ChannelState.closed:
         print('The client has closed. Reason: ${channel.closeReason?.code}');
         print('${channel.closeReason?.text}');
