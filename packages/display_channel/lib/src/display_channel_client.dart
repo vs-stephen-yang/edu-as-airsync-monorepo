@@ -189,8 +189,6 @@ class DisplayChannelClient implements Channel {
   }
 
   Future _onDisconnected() async {
-    _changeState(ChannelState.disconnected);
-
     if (_isClosed()) {
       return;
     }
