@@ -144,7 +144,26 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
-          scaffoldBackgroundColor: Colors.black, // Set app background color
+          // Set App background color
+          scaffoldBackgroundColor: Colors.black,
+          // Set Text default body color
+          textTheme: Theme.of(context).textTheme.apply(bodyColor: Colors.white),
+          // Set ElevatedButton default foreground color
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(foregroundColor: Colors.white),
+          ),
+          // Set TextButton default foreground color
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(foregroundColor: Colors.white),
+          ),
+          // Set IconButton default foreground color
+          iconButtonTheme: IconButtonThemeData(
+            style: IconButton.styleFrom(foregroundColor: Colors.white),
+          ),
+          // Set Icon default color
+          iconTheme: const IconThemeData(
+            color: Colors.white,
+          ),
         ),
         initialRoute: AppPreferences().showEULA &&
                 !AppInstanceCreate().isInstalledInVBS100 &&

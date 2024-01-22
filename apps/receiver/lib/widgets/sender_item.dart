@@ -61,7 +61,7 @@ class _SenderItemState extends State<SenderItem>
                 children: <Widget>[
                   Text(
                     presenterName,
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ],
               ),

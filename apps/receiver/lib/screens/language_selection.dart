@@ -43,10 +43,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                 MyApp.setNewLocale(context, index);
               });
             },
-            child: Text(
-              AppPreferences.localeMap.keys.elementAt(index),
-              style: const TextStyle(color: Colors.white),
-            ),
+            child: Text(AppPreferences.localeMap.keys.elementAt(index)),
           );
         },
         separatorBuilder: (BuildContext context, int index) {

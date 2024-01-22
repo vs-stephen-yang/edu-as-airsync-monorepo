@@ -82,17 +82,14 @@ class _ParticipantItemState extends State<ParticipantItem>
                 children: <Widget>[
                   Text(
                     presenterName,
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
                   Visibility(
                     visible:
                     RtcConnectorList.getInstance().isPresenterWaitForStream(presenterId),
                     child: RotationTransition(
                       turns: _animation,
-                      child: const Icon(
-                        CustomIcons.loading,
-                        color: Colors.white,
-                      ),
+                      child: const Icon(CustomIcons.loading),
                     ),
                   ),
                 ],

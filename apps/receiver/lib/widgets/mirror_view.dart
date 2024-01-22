@@ -169,16 +169,10 @@ class MirrorView extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
-                              Icons.airplay,
-                              color: Colors.white,
-                            ),
+                            const Icon(Icons.airplay),
                             Text(
                               S.of(context).main_airplay_pin_code,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 28,
-                              ),
+                              style: const TextStyle(fontSize: 28),
                             ),
                           ],
                         ),
@@ -187,10 +181,7 @@ class MirrorView extends StatelessWidget {
                           builder: (context, mirror, child) {
                             return Text(
                               mirror.pinCode,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 28,
-                              ),
+                              style: const TextStyle(fontSize: 28),
                             );
                           },
                         ),
@@ -264,10 +255,7 @@ class MirrorView extends StatelessWidget {
                             Text(
                               sprintf(S.current.main_mirror_from_client,
                                   [mirror.requestingMirror[index].mirrorId]),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                              ),
+                              style: const TextStyle(fontSize: 24),
                             ),
                             const Spacer(),
                             Wrap(

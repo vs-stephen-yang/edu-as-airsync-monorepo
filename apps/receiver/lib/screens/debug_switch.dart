@@ -26,11 +26,10 @@ class _DebugSwitchState extends State<DebugSwitch> {
       content: Column(
         children: [
           FocusTextButton(
-            child: const Text('-- clear --',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary_blue,
-                )),
+            child: const Text(
+              '-- clear --',
+              style: TextStyle(color: Colors.blue),
+            ),
             onClick: () {
               DebugSwitch.log.clear();
               DebugSwitch.debugPanelLog.value = '';
@@ -42,13 +41,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
                 valueListenable: DebugSwitch.debugPanelLog,
                 builder: (BuildContext context, String value, Widget? child) {
                   DebugSwitch.log.write('$value \n');
-                  return Text(
-                    DebugSwitch.log.toString(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary_blue,
-                    ),
-                  );
+                  return Text(DebugSwitch.log.toString());
                 },
               ),
             ),

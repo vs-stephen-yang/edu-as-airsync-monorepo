@@ -28,10 +28,7 @@ class CastSettings extends StatelessWidget {
                 children: [
                   Text(
                     S.of(context).main_cast_settings_device_name,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
+                    style: const TextStyle(fontSize: 18),
                   ),
                   const Spacer(),
                   Text(
@@ -104,14 +101,11 @@ class CastSettingItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(iconData, color: Colors.white),
+        Icon(iconData),
         const SizedBox(width: 5),
         Text(
           name,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-          ),
+          style: const TextStyle(fontSize: 18),
         ),
         const Spacer(),
         FittedBox(
