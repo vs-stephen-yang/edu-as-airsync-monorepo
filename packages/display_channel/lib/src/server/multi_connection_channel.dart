@@ -172,6 +172,10 @@ class MultiConnectionChannel implements Channel {
       return;
     }
 
+    for (var connection in _connections) {
+      connection.close();
+    }
+
     _closeReason = message.reason != null
         ? convertRemoteReasonToChannelCloseReason(message.reason!)
         : ChannelCloseReason(ChannelCloseCode.remoteClose);
