@@ -483,6 +483,10 @@ class ChannelProvider extends ChangeNotifier {
     RtcConnectorList.rtcConnectorList[index].controlAudio(enable);
   }
 
+  bool getAudioDisableStateByIndex(int index) {
+    return RtcConnectorList.rtcConnectorList[index].getAudioState();
+  }
+
   removeSender({RemoteScreenConnector? remoteScreenConnector}) {
     if (remoteScreenConnector != null) {
       int index = remoteScreenConnectors.indexOf(remoteScreenConnector);
