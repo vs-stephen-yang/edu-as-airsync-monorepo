@@ -57,27 +57,27 @@ func showHelp() {
 	fmt.Println("      -v {0-10} (verbosity level, default 0)")
 }
 
-func load() {
-	conf.SFU.Ballast = 0
-	conf.SFU.WithStats = false
-	conf.Router.MaxBandwidth = 1500
-	conf.Router.MaxPacketTrack = 500
-	conf.Router.AudioLevelThreshold = 40
-	conf.Router.AudioLevelInterval = 1000
-	conf.Router.AudioLevelFilter = 20
-	conf.Router.Simulcast.BestQualityFirst = true
-	conf.Router.Simulcast.EnableTemporalLayer = false
-	conf.WebRTC.ICEPortRange = []uint16{5000, 5200}
-	conf.WebRTC.SDPSemantics = "unified-plan"
-	conf.WebRTC.MDNS = true
-	conf.WebRTC.Timeouts.ICEDisconnectedTimeout = 5
-	conf.WebRTC.Timeouts.ICEFailedTimeout = 25
-	conf.WebRTC.Timeouts.ICEKeepaliveInterval = 2
-	conf.Turn.Auth.Credentials = "pion=ion,pion2=ion2"
+type ConfigInfo struct {
+	Ballast                int
+	WithStats              bool
+	MaxBandwidth           int
+	MaxPacketTrack         int
+	AudioLevelThreshold    int
+	AudioLevelInterval     int
+	AudioLevelFilter       int
+	BestQualityFirst       bool
+	EnableTemporalLayer    bool
+	ICEPortRangeStart      int
+	ICEPortRangeEnd        int
+	SDPSemantics           string
+	MDNS                   bool
+	ICEDisconnectedTimeout int
+	ICEFailedTimeout       int
+	ICEKeepaliveInterval   int
+	Credentials            string
 }
 
 func Initialize() {
-	load()
 	if verbosityLevel < 0 {
 		verbosityLevel = logConfig.Config.V
 	}
@@ -87,13 +87,34 @@ func RegisterListener(listener IonSfuListener) {
 	ionSfuServer.ionSfuListener_ = listener
 }
 
-func StartServer() {
+func StartServer(configInfo *ConfigInfo) {
+	updateConfig(configInfo)
 	go serverMain()
 }
 
 func StopServer() {
 	stoppingChann <- true
 	<-stoppedChann
+}
+
+func updateConfig(configInfo *ConfigInfo) {
+	conf.SFU.Ballast = int64(configInfo.Ballast)
+	conf.SFU.WithStats = configInfo.WithStats
+	conf.Router.MaxBandwidth = uint64(configInfo.MaxBandwidth)
+	conf.Router.MaxPacketTrack = configInfo.MaxPacketTrack
+	conf.Router.AudioLevelThreshold = uint8(configInfo.AudioLevelThreshold)
+	conf.Router.AudioLevelInterval = configInfo.AudioLevelInterval
+	conf.Router.AudioLevelFilter = configInfo.AudioLevelFilter
+	conf.Router.Simulcast.BestQualityFirst = configInfo.BestQualityFirst
+	conf.Router.Simulcast.EnableTemporalLayer = configInfo.EnableTemporalLayer
+	conf.WebRTC.ICEPortRange = []uint16{uint16(configInfo.ICEPortRangeStart), uint16(configInfo.ICEPortRangeEnd)}
+	conf.WebRTC.SDPSemantics = configInfo.SDPSemantics
+	conf.WebRTC.MDNS = configInfo.MDNS
+	conf.WebRTC.Timeouts.ICEDisconnectedTimeout = configInfo.ICEDisconnectedTimeout
+	conf.WebRTC.Timeouts.ICEFailedTimeout = configInfo.ICEFailedTimeout
+	conf.WebRTC.Timeouts.ICEKeepaliveInterval = configInfo.ICEKeepaliveInterval
+	conf.Turn.Auth.Credentials = configInfo.Credentials
+	logger.Info("Update config", "conf", fmt.Sprintf("%+v", conf))
 }
 
 func serverMain() {

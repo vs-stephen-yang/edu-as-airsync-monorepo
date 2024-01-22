@@ -13,7 +13,26 @@ func main() {
 
 	fmt.Println("server is started")
 
-	ionsfu.StartServer()
+	var configInfo ionsfu.ConfigInfo
+	configInfo.Ballast = 0
+	configInfo.WithStats = false
+	configInfo.MaxBandwidth = 1500
+	configInfo.MaxPacketTrack = 500
+	configInfo.AudioLevelThreshold = 40
+	configInfo.AudioLevelInterval = 1000
+	configInfo.AudioLevelFilter = 20
+	configInfo.BestQualityFirst = true
+	configInfo.EnableTemporalLayer = false
+	configInfo.ICEPortRangeStart = 5000
+	configInfo.ICEPortRangeEnd = 5200
+	configInfo.SDPSemantics = "unified-plan"
+	configInfo.MDNS = true
+	configInfo.ICEDisconnectedTimeout = 5
+	configInfo.ICEFailedTimeout = 25
+	configInfo.ICEKeepaliveInterval = 2
+	configInfo.Credentials = "pion=ion,pion2=ion2"
+
+	ionsfu.StartServer(&configInfo)
 
 	MessageBox(0, "Running", "Running", 0)
 

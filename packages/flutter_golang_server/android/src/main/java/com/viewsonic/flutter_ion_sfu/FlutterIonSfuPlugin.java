@@ -46,6 +46,10 @@ public class FlutterIonSfuPlugin implements FlutterPlugin, MethodCallHandler, Io
       result.success(reply);
     } else if (call.method.equals("start")) {
       Map<String, Object> configuration = call.argument("configuration");
+      if(configuration == null) {
+        result.error("InvalidArgument", "configuration is null", null);
+        return;
+      }
 
       ionSfuServer_.start(configuration);
 
