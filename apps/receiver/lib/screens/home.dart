@@ -126,6 +126,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                         RtcConnectorList.getInstance().isPresenting(index: index),
                                     child: SplitScreenFunction(
                                       index: index,
+                                      channelProvider: Provider.of<ChannelProvider>(context),
                                       updateSize: () {
                                         _updateSizeForSelected(index);
                                       },

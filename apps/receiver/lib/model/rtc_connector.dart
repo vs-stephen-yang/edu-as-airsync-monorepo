@@ -303,6 +303,11 @@ class RTCConnector {
     }
   }
 
+  bool getAudioState() {
+    return _remoteRenderer?.srcObject!.getAudioTracks().firstOrNull?.muted ??
+        false;
+  }
+
   //region PeerConnection interface
   void _onSignalingState(RTCSignalingState state) {
     _printPeerConnectionLog('_onSignalingState', state);

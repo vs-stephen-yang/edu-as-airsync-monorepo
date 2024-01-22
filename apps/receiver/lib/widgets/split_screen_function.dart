@@ -2,36 +2,45 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/model/rtc_connector_list.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 
-class SplitScreenFunction extends StatelessWidget {
-  const SplitScreenFunction({super.key, required this.index, this.updateSize});
+class SplitScreenFunction extends StatefulWidget {
+  const SplitScreenFunction({super.key, required this.index,
+    required this.channelProvider, this.updateSize});
+
   static ValueNotifier<List<bool>> isMenuOnList =
-      ValueNotifier(List.filled(4, false, growable: false));
+  ValueNotifier(List.filled(4, false, growable: false));
 
   final int index;
   final VoidCallback? updateSize;
+  final ChannelProvider channelProvider;
 
+  @override
+  State<StatefulWidget> createState() => SplitScreenFunctionState();
+}
+
+  class SplitScreenFunctionState extends State<SplitScreenFunction> {
   @override
   Widget build(BuildContext context) {
     double? left, top, bottom, right;
-    if (Home.isSelectedList.value[index]) {
+    if (Home.isSelectedList.value[widget.index]) {
       // full screen mode in right-bottom;
       right = 20;
       bottom = 20;
     } else {
       // 4 split screen in center corner
-      if (index == 1) {
+      if (widget.index == 1) {
         // right-top screen
         left = 20;
         bottom = 20;
-      } else if (index == 2) {
+      } else if (widget.index == 2) {
         // left-bottom screen
         right = 20;
         top = 20;
-      } else if (index == 3) {
+      } else if (widget.index == 3) {
         // right-bottom screen
         left = 20;
         top = 20;
@@ -51,7 +60,7 @@ class SplitScreenFunction extends StatelessWidget {
           child: Visibility(
             // More than 1 presenting will show this function button.
             visible: RtcConnectorList.getInstance().getPresentingQuantity() > 1
-                && index < RtcConnectorList.getInstance().getPresentingQuantity(),
+                && widget.index < RtcConnectorList.getInstance().getPresentingQuantity(),
             child: ValueListenableBuilder(
               valueListenable: SplitScreenFunction.isMenuOnList,
               builder: (BuildContext context, List<bool> value, Widget? child) {
@@ -59,7 +68,7 @@ class SplitScreenFunction extends StatelessWidget {
                   height: AppUIConstant.featureContainerHeight,
                   alignment: Alignment.center,
                   child: Wrap(
-                    textDirection: (index == 0 || index == 2)
+                    textDirection: (widget.index == 0 || widget.index == 2)
                         ? TextDirection.ltr
                         : TextDirection.rtl,
                     alignment: WrapAlignment.center,
@@ -67,14 +76,14 @@ class SplitScreenFunction extends StatelessWidget {
                     children: <Widget>[
                       Visibility(
                         visible:
-                            !Home.isSelectedList.value[index] && value[index],
+                        !Home.isSelectedList.value[widget.index] && value[widget.index],
                         child: FocusIconButton(
                           icons: Icons.close,
                           iconForegroundColor: Colors.white,
                           iconBackgroundColor:
-                              AppColors.iconPresentingBackground,
+                          AppColors.iconPresentingBackground,
                           iconFocusBackgroundColor:
-                              AppColors.iconFeatureOnStandbyBackground,
+                          AppColors.iconFeatureOnStandbyBackground,
                           hasFocusSize: AppUIConstant.iconHasFocusSize,
                           notFocusSize: AppUIConstant.iconNotFocusSize,
                           onClick: () {
@@ -84,20 +93,44 @@ class SplitScreenFunction extends StatelessWidget {
                                 0,
                                 SplitScreenFunction.isMenuOnList.value.length,
                                 false);
-                            RtcConnectorList.getInstance().removePresenterBy(index);
+                            RtcConnectorList.getInstance().removePresenterBy(widget.index);
                           },
                         ),
                       ),
                       Visibility(
                         visible:
-                            !Home.isSelectedList.value[index] && value[index],
+                        !Home.isSelectedList.value[widget.index] && value[widget.index],
+                        child:FocusIconButton(
+                          icons: widget.channelProvider.getAudioDisableStateByIndex(widget.index)
+                              ? Icons.volume_up_outlined
+                              : Icons.volume_off_outlined,
+                          iconForegroundColor: Colors.white,
+                          iconBackgroundColor: AppColors.iconPresentingBackground,
+                          iconFocusBackgroundColor:
+                          AppColors.iconFeatureOnStandbyBackground,
+                          hasFocusSize: AppUIConstant.iconHasFocusSize,
+                          notFocusSize: AppUIConstant.iconNotFocusSize,
+                          onClick: () {
+                            setState(() {
+                              var isMute = widget.channelProvider
+                                  .getAudioDisableStateByIndex(widget.index);
+                              print('audio enable = $isMute');
+                              widget.channelProvider
+                                  .updateAudioEnableStateByIndex(widget.index, isMute);
+                            });
+                          },
+                        ),
+                      ),
+                      Visibility(
+                        visible:
+                        !Home.isSelectedList.value[widget.index] && value[widget.index],
                         child: FocusIconButton(
                           icons: Icons.crop_free_sharp,
                           iconForegroundColor: Colors.white,
                           iconBackgroundColor:
-                              AppColors.iconPresentingBackground,
+                          AppColors.iconPresentingBackground,
                           iconFocusBackgroundColor:
-                              AppColors.iconFeatureOnStandbyBackground,
+                          AppColors.iconFeatureOnStandbyBackground,
                           hasFocusSize: AppUIConstant.iconHasFocusSize,
                           notFocusSize: AppUIConstant.iconNotFocusSize,
                           onClick: () {
@@ -107,37 +140,37 @@ class SplitScreenFunction extends StatelessWidget {
                                 0,
                                 SplitScreenFunction.isMenuOnList.value.length,
                                 false);
-                            updateSize?.call();
+                            widget.updateSize?.call();
                           },
                         ),
                       ),
                       // Using same button to show focus status at same button area.
                       FocusIconButton(
-                        icons: Home.isSelectedList.value[index]
-                            // Full screen mode
+                        icons: Home.isSelectedList.value[widget.index]
+                        // Full screen mode
                             ? Icons.close_fullscreen
-                            // Split screen mode
-                            : (value[index])
-                                // Menu On: display left/right
-                                ? (index == 0 || index == 2)
-                                    ? Icons.chevron_right
-                                    : Icons.chevron_left
-                                // Menu Off: display cloud icon
-                                : Icons.more_vert,
+                        // Split screen mode
+                            : (value[widget.index])
+                        // Menu On: display left/right
+                            ? (widget.index == 0 || widget.index == 2)
+                            ? Icons.chevron_right
+                            : Icons.chevron_left
+                        // Menu Off: display cloud icon
+                            : Icons.more_vert,
                         iconForegroundColor: Colors.white,
                         iconBackgroundColor: AppColors.iconPresentingBackground,
                         iconFocusBackgroundColor:
-                            AppColors.iconFeatureOnStandbyBackground,
+                        AppColors.iconFeatureOnStandbyBackground,
                         hasFocusSize: AppUIConstant.iconHasFocusSize,
                         notFocusSize: AppUIConstant.iconNotFocusSize,
                         onClick: () {
-                          if (Home.isSelectedList.value[index]) {
+                          if (Home.isSelectedList.value[widget.index]) {
                             // Full screen mode: update size
-                            updateSize?.call();
+                            widget.updateSize?.call();
                           } else {
                             // Split screen mode: switch menu on/off
-                            SplitScreenFunction.isMenuOnList.value[index] =
-                                !SplitScreenFunction.isMenuOnList.value[index];
+                            SplitScreenFunction.isMenuOnList.value[widget.index] =
+                            !SplitScreenFunction.isMenuOnList.value[widget.index];
                             // Using below method to trigger value changed.
                             // https://github.com/flutter/flutter/issues/29958
                             SplitScreenFunction.isMenuOnList.value = List.from(
