@@ -190,11 +190,11 @@ class DisplayChannelClient implements Channel {
 
   Future _onDisconnected() async {
     if (_isClosed()) {
+      await _closeConnection();
       return;
     }
 
-    _closeReason = ChannelCloseReason(ChannelCloseCode.transportClose);
-    _changeState(ChannelState.closed);
+    // Will try to connect again
   }
 
   Future _onChannelClosedMessage(ChannelClosedMessage message) async {
