@@ -57,7 +57,6 @@ class MenuDialog extends StatelessWidget {
                         child: FocusIconButton(
                           childNotFocus: const Icon(
                             Icons.arrow_back_ios_new,
-                            color: AppColors.primary_white,
                           ),
                           splashRadius: 20,
                           focusColor: Colors.grey,
@@ -74,10 +73,8 @@ class MenuDialog extends StatelessWidget {
                             margin: const EdgeInsets.symmetric(vertical: 5),
                             child: Text(
                               topTitleText ?? '',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primary_white,
-                              ),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),

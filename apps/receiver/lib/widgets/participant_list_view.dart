@@ -30,7 +30,6 @@ class _ParticipantListViewState extends State<ParticipantListView> {
               alignment: Alignment.center,
               child: Text(
                 S.of(context).moderator_presentersLimit,
-                style: const TextStyle(color: Colors.white),
               ),
             );
           } else {

@@ -39,10 +39,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
             children: <Widget>[
               Text(
                 widget.description,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
               Row(

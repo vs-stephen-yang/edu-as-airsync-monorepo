@@ -38,7 +38,6 @@ class LoadingIconState extends State<LoadingIcon>
       turns: _animation,
       child: const Icon(
         CustomIcons.loading,
-        color: Colors.white,
       ),
     );
   }

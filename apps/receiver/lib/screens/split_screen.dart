@@ -69,10 +69,7 @@ class _SplitScreenState extends State<SplitScreen>
               children: [
                 RotationTransition(
                   turns: _animation,
-                  child: const Icon(
-                    CustomIcons.loading,
-                    color: Colors.white,
-                  ),
+                  child: const Icon(CustomIcons.loading),
                 ),
                 const SizedBox(height: 32),
               ],
@@ -82,10 +79,7 @@ class _SplitScreenState extends State<SplitScreen>
             SplitScreen.mapSplitScreen.value[keySplitScreenEnable]
                 ? S.of(context).main_split_screen_waiting
                 : S.of(context).main_split_screen_question,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-            ),
+            style: const TextStyle(fontSize: 15),
           ),
         ],
       ),

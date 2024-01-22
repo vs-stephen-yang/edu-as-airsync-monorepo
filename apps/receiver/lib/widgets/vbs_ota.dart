@@ -102,10 +102,7 @@ class _VbsOTAState extends State<VbsOTA> {
               ),
               Text(
                 S.of(context).main_auto_startup,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.white,
-                ),
+                style: const TextStyle(fontSize: 12),
               ),
             ],
           ),
@@ -133,10 +130,7 @@ class _VbsOTAState extends State<VbsOTA> {
                       children: <Widget>[
                         Text(
                           S.of(context).vbs_ota_progress_msg,
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: Colors.white,
-                          ),
+                          style: const TextStyle(fontSize: 10),
                         ),
                         SizedBox(
                           height: 20,

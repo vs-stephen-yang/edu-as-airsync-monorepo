@@ -25,7 +25,6 @@ class TitleBar extends StatelessWidget {
                 'AirSync',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
                   fontSize: 28,
                 ),
               ),

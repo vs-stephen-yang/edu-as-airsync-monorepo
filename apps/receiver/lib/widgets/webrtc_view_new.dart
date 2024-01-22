@@ -193,10 +193,7 @@ class WebRTCViewState extends State<WebRTCView> {
                 ),
                 child: AutoSizeText(
                   presenterName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),
+                  style: const TextStyle(fontSize: 20),
                   maxLines: 1,
                 ),
               ),
@@ -222,7 +219,6 @@ class WebRTCViewState extends State<WebRTCView> {
                         Text(
                           S.of(context).main_wait_up_next,
                           style: const TextStyle(
-                            color: AppColors.primary_white,
                             fontWeight: FontWeight.w700,
                             fontSize: 25,
                           ),

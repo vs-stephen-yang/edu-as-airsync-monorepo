@@ -53,8 +53,7 @@ class _StatusBarState extends State<StatusBar> {
                           fit: BoxFit.fitHeight,
                           child: Transform.rotate(
                               angle: 90 * math.pi / 180,
-                              child: const Icon(Icons.horizontal_rule,
-                                  color: AppColors.primary_white)),
+                              child: const Icon(Icons.horizontal_rule)),
                         ),
                       ),
                       StreamBuilder(
@@ -112,8 +111,7 @@ class _StatusBarState extends State<StatusBar> {
                     S.of(context).main_limit_time_message,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                        color: Colors.white),
+                        fontSize: 30),
                   ),
                 ));
           },

@@ -38,7 +38,7 @@ class _SettingsState extends State<Settings> {
           SettingItems(
               const Icon(
                 Icons.language,
-                color: AppColors.primary_white,
+                color: Colors.white,
               ),
               S.of(context).main_settings_language),
           () => () {
@@ -49,7 +49,7 @@ class _SettingsState extends State<Settings> {
           SettingItems(
               const Icon(
                 Icons.campaign,
-                color: AppColors.primary_white,
+                color: Colors.white,
               ),
               S.of(context).main_settings_whats_new),
           () => () {
@@ -84,10 +84,7 @@ class _SettingsState extends State<Settings> {
                 ),
                 Text(
                   listSettings.keys.elementAt(index).itemName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
+                  style: const TextStyle(fontSize: 18),
                 ),
               ],
             ),

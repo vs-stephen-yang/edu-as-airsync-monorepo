@@ -61,7 +61,6 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
           Text(
             S.of(context).main_content_display_code,
             style: const TextStyle(
-              color: Colors.white,
               fontSize: 40,
               fontWeight: FontWeight.w700,
             ),
@@ -69,7 +68,6 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
           Text(
             _getDisplayCode(channelProvider.displayCode),
             style: const TextStyle(
-              color: Colors.white,
               fontSize: 35,
               fontWeight: FontWeight.w500,
             ),
@@ -77,7 +75,6 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
           Text(
             S.of(context).main_content_one_time_password,
             style: const TextStyle(
-              color: Colors.white,
               fontSize: 40,
               fontWeight: FontWeight.w700,
             ),
@@ -103,7 +100,6 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
                         return Text(
                           value ? otp.toString() : 'XXXX',
                           style: const TextStyle(
-                            color: Colors.white,
                             fontSize: 35,
                             fontWeight: FontWeight.w500,
                           ),
@@ -137,7 +133,6 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
                         value
                             ? Icons.remove_red_eye_sharp
                             : Icons.remove_red_eye_outlined,
-                        color: Colors.white,
                         size: 40,
                       ),
                       onTap: () {
