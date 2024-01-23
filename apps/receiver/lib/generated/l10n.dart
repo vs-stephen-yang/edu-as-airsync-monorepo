@@ -559,6 +559,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Name`
+  String get main_settings_device_name {
+    return Intl.message(
+      'Name',
+      name: 'main_settings_device_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rename device`
+  String get main_settings_device_name_title {
+    return Intl.message(
+      'Rename device',
+      name: 'main_settings_device_name_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device name`
+  String get main_settings_device_name_hint {
+    return Intl.message(
+      'Device name',
+      name: 'main_settings_device_name_hint',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
