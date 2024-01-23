@@ -34,6 +34,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_display_code_exceed_split_screen":
             MessageLookupByLibrary.simpleMessage(
                 "Maximum presenters (4) reached."),
+        "main_display_code_invalid":
+            MessageLookupByLibrary.simpleMessage("Display code invalid."),
         "main_language": MessageLookupByLibrary.simpleMessage("Language"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
         "main_password": MessageLookupByLibrary.simpleMessage("Password"),

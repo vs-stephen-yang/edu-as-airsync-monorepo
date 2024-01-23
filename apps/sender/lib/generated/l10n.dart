@@ -399,6 +399,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Display code invalid.`
+  String get main_display_code_invalid {
+    return Intl.message(
+      'Display code invalid.',
+      name: 'main_display_code_invalid',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

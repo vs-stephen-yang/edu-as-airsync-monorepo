@@ -33,5 +33,6 @@
     "main_language_name": "English",
     "remote_screen_wait": "Waiting for presenter to share screen...",
     "toast_maximum_moderated": "Has reached maximum moderated session number.",
-    "toast_maximum_split_screen": "Has reached maximum split screen session number."
+    "toast_maximum_split_screen": "Has reached maximum split screen session number.",
+    "main_display_code_invalid": "Display code invalid."
 }
