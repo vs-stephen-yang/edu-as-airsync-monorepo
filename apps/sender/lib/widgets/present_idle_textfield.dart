@@ -127,6 +127,12 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         codeKey.currentState
             ?.setErrorMsg(S.of(context).main_display_code_exceed);
       }
+      if (channelProvider.invalidDisplayCode) {
+        codeKey.currentState?.setErrorMsg(S.of(context).main_display_code_invalid);
+      }
+      if (channelProvider.invalidOtp) {
+        otpKey.currentState?.setErrorMsg(S.of(context).main_password_invalid);
+      }
     });
     return Column(
       children: [

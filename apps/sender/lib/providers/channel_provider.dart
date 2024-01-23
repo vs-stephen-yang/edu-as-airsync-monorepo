@@ -9,6 +9,7 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_channel/display_channel.dart';
+import 'package:display_channel/src/websocket_client_connection_io.dart' as socket;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -49,9 +50,6 @@ class ChannelProvider extends ChangeNotifier {
   bool _moderatorStatus = false;
   bool get moderatorStatus => _moderatorStatus;
 
-  bool _exceedMaximumPresenters = false;
-  bool get exceedMaximumPresenters => _exceedMaximumPresenters;
-
   ViewState _currentState = ViewState.idle;
   ViewState get state => _currentState;
   set currentState(ViewState value) {
@@ -71,14 +69,32 @@ class ChannelProvider extends ChangeNotifier {
     _currentRole = value;
   }
 
-  late String _urlIce, _apiGateway, _tunnelApiUrl = '';
+  bool _exceedMaximumPresenters = false;
+  bool get exceedMaximumPresenters => _exceedMaximumPresenters;
+
+  bool _invalidOtp = false;
+  bool get invalidOtp => _invalidOtp;
+  void setInvalidOtp(bool b) {
+    _invalidOtp = b;
+    _invalidDisplayCode = !b;
+    notifyListeners();
+  }
+
+  bool _invalidDisplayCode = false;
+  bool get invalidDisplayCode => _invalidDisplayCode;
+  void setInvalidDisplayCode(bool b) {
+    _invalidDisplayCode = b;
+    _invalidOtp = !b;
+    notifyListeners();
+  }
+
+  late String _urlIce, _apiGateway= '';
   DisplayCode? displayCode;
-  String? otp;
+  String? otp, _tunnelApiUrl;
   Timer? _presentTimer;
+
   bool _touchBack = false;
-
   bool get touchBack => _touchBack;
-
   set touchBack(bool touchBack) {
     _touchBack = touchBack;
   }
@@ -161,28 +177,29 @@ class ChannelProvider extends ChangeNotifier {
     this.otp = otp;
 
     if (kIsWeb) {
-      await connectInternetChannel((state, {internetChannel}) {
+      await connectInternetChannel((state, internetChannel) {
         if (state == ChannelState.connected) {
           _channel = internetChannel;
+          setUpChannel(encodedDisplayCode);
         } else if (state == ChannelState.closed) {
-          Toast.makeToast('Unstable network connection.');
+          _handleChannelCloseState(internetChannel?.closeReason);
         }
-        setUpChannel(encodedDisplayCode);
       });
     } else {
-      await connectLanChannel((state, {lanChannel}) async {
+      await connectLanChannel((state, lanChannel) async {
         if (state == ChannelState.connected) {
           _channel = lanChannel;
+          setUpChannel(encodedDisplayCode);
         } else if (state == ChannelState.closed) {
-          await connectInternetChannel((state, {internetChannel}) {
+          await connectInternetChannel((state, internetChannel) {
             if (state == ChannelState.connected) {
               _channel = internetChannel;
+              setUpChannel(encodedDisplayCode);
             } else if (state == ChannelState.closed) {
-              Toast.makeToast('Unstable network connection.');
+              _handleChannelCloseState(internetChannel?.closeReason);
             }
           });
         }
-        setUpChannel(encodedDisplayCode);
       });
     }
   }
@@ -198,6 +215,8 @@ class ChannelProvider extends ChangeNotifier {
         // reconnectionToken?
           break;
         case ChannelMessageType.displayStatus:
+          _invalidDisplayCode = false;
+          _invalidOtp = false;
           DataDisplayCode.getInstance().save(encodedDisplayCode);
           _onDisplayStatus(message as DisplayStatusMessage);
           break;
@@ -270,41 +289,51 @@ class ChannelProvider extends ChangeNotifier {
         presentEnd();
         break;
       case ChannelState.closed:
-        presentEnd();
+        _handleChannelCloseState(_channel?.closeReason);
         break;
     }
   }
 
-  Future connectLanChannel(Function(ChannelState state, {DisplayChannelClient? lanChannel}) onState) async {
+  Future connectLanChannel(Function(ChannelState state, DisplayChannelClient? lanChannel) onState) async {
     // Lan first
     String host = displayCode!.ipAddress;
     Uri? uri = Uri(scheme: 'ws', host: host, port: port);
-    DisplayChannelClient lanChannel = DisplayChannelClient(_clientId, uri,
-            (url) => WebSocketClientConnection(url));
+
+    DisplayChannelClient lanChannel = DisplayChannelClient(
+        _clientId,
+        uri,
+        (url) => socket.WebSocketClientConnection(url,
+            maxRetryDelay: const Duration(seconds: 3),
+            maxRetryAttempts: 3,
+            logger: (url, message) =>
+                print('lanChannel logger $url $message}')));
     lanChannel.openDirectChannel(otp!);
     lanChannel.onStateChange = (ChannelState state) async {
-      if (state == ChannelState.connected) {
-        await onState(ChannelState.connected, lanChannel: lanChannel);
-      } else if (state == ChannelState.closed) {
-        await onState(ChannelState.closed);
-      }
+      await onState(state, lanChannel);
     };
   }
 
-  Future connectInternetChannel(Function(ChannelState state, {DisplayChannelClient? internetChannel}) onState) async {
+  Future connectInternetChannel(Function(ChannelState state, DisplayChannelClient? internetChannel) onState) async {
     // Lan first
     String displayIndex = displayCode!.instanceIndex.toString();
-    await _getTunnelUrl(displayIndex).then((value) => _tunnelApiUrl = value);
-    Uri? uri = Uri.parse(_tunnelApiUrl);
-    DisplayChannelClient internetChannel = DisplayChannelClient(_clientId, uri,
-            (url) => WebSocketClientConnection(url));
+    _tunnelApiUrl = await _getTunnelUrl(displayIndex);
+    if (_tunnelApiUrl == null) {
+      setInvalidDisplayCode(true);
+      return;
+    }
+
+    Uri? uri = Uri.parse(_tunnelApiUrl!);
+    DisplayChannelClient internetChannel = DisplayChannelClient(
+        _clientId,
+        uri,
+        (url) => socket.WebSocketClientConnection(url,
+            maxRetryDelay: const Duration(seconds: 3),
+            maxRetryAttempts: 3,
+            logger: (url, message) =>
+                print('internetChannel logger  $url $message}')));
     internetChannel.openTunnelChannel(displayIndex, otp!);
     internetChannel.onStateChange = (ChannelState state) async {
-      if (state == ChannelState.connected) {
-        await onState(ChannelState.connected, internetChannel: internetChannel);
-      } else if (state == ChannelState.closed) {
-        await onState(ChannelState.closed);
-      }
+      await onState(state, internetChannel);
     };
   }
 
@@ -385,6 +414,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void resetMessage() {
+    _invalidDisplayCode = false;
+    _invalidOtp = false;
     _exceedMaximumPresenters = false;
   }
 
@@ -451,7 +482,29 @@ class ChannelProvider extends ChangeNotifier {
 
   //endregion
 
-  Future<String> _getTunnelUrl(String displayCode) async {
+  void _handleChannelCloseState(ChannelCloseReason? closeReason) {
+    ChannelCloseCode? reasonCode = closeReason?.code;
+    switch (reasonCode) {
+      case ChannelCloseCode.channelNotFound:
+        presentEnd(goIdleState: false);
+        setInvalidDisplayCode(true);
+        break;
+      case ChannelCloseCode.authenticationError:
+        presentEnd(goIdleState: false);
+        setInvalidOtp(true);
+        break;
+      case ChannelCloseCode.close:
+      case ChannelCloseCode.remoteClose:
+      case ChannelCloseCode.transportClose:
+      case ChannelCloseCode.heartbeatTimeout:
+      case ChannelCloseCode.remoteUnknown:
+      case null:
+        presentEnd();
+        break;
+    }
+  }
+
+  Future<String?> _getTunnelUrl(String displayCode) async {
     try {
       http.Response response =
           await http.get(Uri.parse('$_apiGateway?displayCode=$displayCode'));
@@ -464,6 +517,6 @@ class ChannelProvider extends ChangeNotifier {
     } catch (e) {
       // http.get maybe no network connection.
     }
-    return '';
+    return null;
   }
 }
