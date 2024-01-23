@@ -9,7 +9,7 @@ pool:
 
 variables:
   - name: Flutter.Version
-    value: "3.13.4"
+    value: "3.16.4"
   - name: Flutter.Url
     value: https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_$(Flutter.Version)-stable.zip
   - name: Flutter.Bin.Dir
@@ -18,6 +18,9 @@ variables:
     value: $(Pipeline.Workspace)/.cache/go-build/
 
 steps:
+  - checkout: self
+    submodules: true
+
   - task: GoTool@0
     inputs:
       version: "1.20.12"
