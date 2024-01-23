@@ -1,5 +1,6 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'custom_icons_icons.dart';
 
 class PresentIdleButton extends StatefulWidget {
   const PresentIdleButton({super.key, required this.onPressed});
@@ -10,8 +11,32 @@ class PresentIdleButton extends StatefulWidget {
   State<PresentIdleButton> createState() => PresentIdleButtonState();
 }
 
-class PresentIdleButtonState extends State<PresentIdleButton> {
+class PresentIdleButtonState extends State<PresentIdleButton> with TickerProviderStateMixin {
   bool isButtonEnabled = false;
+  bool isButtonLoading = false;
+  late final AnimationController _controller;
+  late final Animation<double> _animation;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: false);
+
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.linear,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   void setEnable(bool presentBtnEnable, {String? displayCode, String? password}) {
     setState(() {
@@ -19,11 +44,22 @@ class PresentIdleButtonState extends State<PresentIdleButton> {
       isButtonEnabled = presentBtnEnable;
     });
   }
+  
+  void setLoadingState(bool loading) {
+    setState(() {
+      isButtonLoading = loading;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: isButtonEnabled ? widget.onPressed : null,
+      onPressed: isButtonEnabled ? () {
+        if (!isButtonLoading) {
+          setLoadingState(true);
+          widget.onPressed?.call();
+        }
+      } : null,
       style: ElevatedButton.styleFrom(
         disabledBackgroundColor: const Color.fromARGB(255, 215, 229, 253),
         backgroundColor: const Color.fromARGB(255, 41, 121, 255), // isButtonEnabled?
@@ -32,7 +68,13 @@ class PresentIdleButtonState extends State<PresentIdleButton> {
           borderRadius: BorderRadius.circular(30.0),
         ),
       ),
-      child: Text(
+      child: isButtonLoading? RotationTransition(
+        turns: _animation,
+        child: const Icon(
+          CustomIcons.loading,
+          color: Colors.white,
+        ),
+      ): Text(
         S.of(context).main_present,
         style: const TextStyle(
           color: Colors.white, //isButtonEnabled? Colors.white : const Color.fromARGB(255, 153, 153, 153),
