@@ -6,7 +6,6 @@
   "eula_title": "myViewBoard Display 終端使用者授權合約",
   "eula_disagree": "不同意",
   "eula_agree": "同意",
-  "main_status_no_network": "網路品質不良\n請檢查網路連線",
   "main_status_remaining_time": "%02d min : %02d sec",
   "main_status_go_background": "Display App 背景執行中",
   "main_content_display_code": "投影辨識碼",

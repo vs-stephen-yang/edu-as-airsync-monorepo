@@ -68,8 +68,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("分割畫面已啟動"),
         "main_status_go_background":
             MessageLookupByLibrary.simpleMessage("Display App 背景執行中"),
-        "main_status_no_network":
-            MessageLookupByLibrary.simpleMessage("網路品質不良\n請檢查網路連線"),
         "main_status_remaining_time":
             MessageLookupByLibrary.simpleMessage("%02d min : %02d sec"),
         "main_thanks_content":
