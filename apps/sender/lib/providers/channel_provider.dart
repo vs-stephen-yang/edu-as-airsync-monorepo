@@ -504,10 +504,10 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
-  Future<String?> _getTunnelUrl(String displayCode) async {
+  Future<String?> _getTunnelUrl(String instanceIndex) async {
     try {
       http.Response response =
-          await http.get(Uri.parse('$_apiGateway?displayCode=$displayCode'));
+          await http.get(Uri.parse('$_apiGateway?instanceIndex=$instanceIndex'));
       if (response.statusCode >= HttpStatus.ok &&
           response.statusCode < HttpStatus.multiStatus) {
         Map<String, dynamic> json = jsonDecode(response.body);
