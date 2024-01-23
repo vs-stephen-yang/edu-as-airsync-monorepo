@@ -30,7 +30,7 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
   @override
   void initState() {
     super.initState();
-    _otp.value = math.Random().nextInt(9000)+1000;
+    _otp.value = math.Random().nextInt(9000) + 1000;
   }
 
   @override
@@ -53,118 +53,120 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
       ),
       child: channelProvider.connectNet
           ? Wrap(
-        direction: Axis.vertical,
-        alignment: WrapAlignment.center,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 16,
-        children: <Widget>[
-          Text(
-            S.of(context).main_content_display_code,
-            style: const TextStyle(
-              fontSize: 40,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          Text(
-            _getDisplayCode(channelProvider.displayCode),
-            style: const TextStyle(
-              fontSize: 35,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          Text(
-            S.of(context).main_content_one_time_password,
-            style: const TextStyle(
-              fontSize: 40,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          if (channelProvider.displayCode.isNotEmpty)
-            ValueListenableBuilder(
-              valueListenable: _isEyeOpen,
-              builder: (BuildContext context, bool value, Widget? child) {
-                if (_mGetOTPTimer == null) _generateOTP();
-                return Wrap(
-                  direction: Axis.horizontal,
-                  alignment: WrapAlignment.center,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 16,
-                  children: <Widget>[
-                    ValueListenableBuilder<int>(
-                      valueListenable: _otp,
-                      builder: (BuildContext context, int otp,
-                          Widget? child) {
-                        if (!channelProvider.otpList.contains(_otp.value.toString())) {
-                          channelProvider.setOtpList(_otp.value.toString());
-                        }
-                        return Text(
-                          value ? otp.toString() : 'XXXX',
-                          style: const TextStyle(
-                            fontSize: 35,
-                            fontWeight: FontWeight.w500,
+              direction: Axis.vertical,
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 16,
+              children: <Widget>[
+                Text(
+                  S.of(context).main_content_display_code,
+                  style: const TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Text(
+                  _getDisplayCode(channelProvider.displayCode),
+                  style: const TextStyle(
+                    fontSize: 35,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  S.of(context).main_content_one_time_password,
+                  style: const TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                if (channelProvider.displayCode.isNotEmpty)
+                  ValueListenableBuilder(
+                    valueListenable: _isEyeOpen,
+                    builder: (BuildContext context, bool value, Widget? child) {
+                      if (_mGetOTPTimer == null) _generateOTP();
+                      return Wrap(
+                        direction: Axis.horizontal,
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 16,
+                        children: <Widget>[
+                          ValueListenableBuilder<int>(
+                            valueListenable: _otp,
+                            builder:
+                                (BuildContext context, int otp, Widget? child) {
+                              if (!channelProvider.otpList
+                                  .contains(_otp.value.toString())) {
+                                channelProvider
+                                    .setOtpList(_otp.value.toString());
+                              }
+                              return Text(
+                                value ? otp.toString() : 'XXXX',
+                                style: const TextStyle(
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                    ValueListenableBuilder(
-                      valueListenable: _countDownProgress,
-                      builder: (BuildContext context, int value,
-                          Widget? child) {
-                        return Transform(
-                          alignment: Alignment.center,
-                          transform: Matrix4.rotationY(math.pi),
-                          child: SizedBox(
-                            width: 26,
-                            height: 26,
-                            child: CircularProgressIndicator(
-                              value: value / maxCountDown,
-                              strokeWidth: 4,
-                              backgroundColor: Colors.black,
-                              valueColor:
-                              const AlwaysStoppedAnimation<
-                                  Color>(Colors.white),
+                          ValueListenableBuilder(
+                            valueListenable: _countDownProgress,
+                            builder: (BuildContext context, int value,
+                                Widget? child) {
+                              return Transform(
+                                alignment: Alignment.center,
+                                transform: Matrix4.rotationY(math.pi),
+                                child: SizedBox(
+                                  width: 26,
+                                  height: 26,
+                                  child: CircularProgressIndicator(
+                                    value: value / maxCountDown,
+                                    strokeWidth: 4,
+                                    backgroundColor: Colors.black,
+                                    valueColor:
+                                        const AlwaysStoppedAnimation<Color>(
+                                            Colors.white),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          InkWell(
+                            child: Icon(
+                              value
+                                  ? Icons.remove_red_eye_sharp
+                                  : Icons.remove_red_eye_outlined,
+                              size: 40,
                             ),
+                            onTap: () {
+                              AppAnalytics().trackEventAppOTPMaskClick();
+                              _isEyeOpen.value = !_isEyeOpen.value;
+                            },
                           ),
-                        );
-                      },
-                    ),
-                    InkWell(
-                      child: Icon(
-                        value
-                            ? Icons.remove_red_eye_sharp
-                            : Icons.remove_red_eye_outlined,
-                        size: 40,
-                      ),
-                      onTap: () {
-                        AppAnalytics().trackEventAppOTPMaskClick();
-                        _isEyeOpen.value = !_isEyeOpen.value;
-                      },
-                    ),
-                  ],
-                );
-              },
+                        ],
+                      );
+                    },
+                  ),
+              ],
+            )
+          : Column(
+              children: [
+                const Spacer(),
+                const Icon(
+                  Icons.wifi_off,
+                  color: AppColors.iconDisableStandbyBackground,
+                  size: 120,
+                ),
+                Text(
+                  S.of(context).main_status_no_network,
+                  style: const TextStyle(
+                    color: AppColors.iconDisableStandbyBackground,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const Spacer(),
+              ],
             ),
-        ],
-      )
-          : const Column(
-        children: [
-          Spacer(),
-          Icon(
-            Icons.wifi_off,
-            color: AppColors.iconDisableStandbyBackground,
-            size: 120,
-          ),
-          Text(
-            'You’re currently offline',
-            style: TextStyle(
-              color: AppColors.iconDisableStandbyBackground,
-              fontSize: 28,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          Spacer(),
-        ],
-      ),
     );
   }
 
@@ -183,7 +185,7 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
     _mGetOTPTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
       _countDownProgress.value -= 1;
       if (_countDownProgress.value == 0) {
-        _otp.value = math.Random().nextInt(9000)+1000;
+        _otp.value = math.Random().nextInt(9000) + 1000;
         _countDownProgress.value = maxCountDown;
       }
     });
@@ -193,13 +195,5 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
     _mGetOTPTimer?.cancel();
     _mGetOTPTimer = null;
     _countDownProgress.value = maxCountDown;
-  }
-
-  _showSnackBarMessage(String message) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(content: Text(message)),
-      );
   }
 }

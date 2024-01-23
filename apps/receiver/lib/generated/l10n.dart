@@ -120,16 +120,6 @@ class S {
     );
   }
 
-  /// `Unstable network connection.\nPlease check your connectivity status.`
-  String get main_status_no_network {
-    return Intl.message(
-      'Unstable network connection.\nPlease check your connectivity status.',
-      name: 'main_status_no_network',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `%02d min : %02d sec`
   String get main_status_remaining_time {
     return Intl.message(
@@ -541,10 +531,30 @@ class S {
   }
 
   /// `Share to sender`
-  String get main_setting_share_to_sender {
+  String get main_settings_share_to_sender {
     return Intl.message(
       'Share to sender',
-      name: 'main_setting_share_to_sender',
+      name: 'main_settings_share_to_sender',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Up to 10 receivers can join.`
+  String get main_settings_share_to_sender_limit_desc {
+    return Intl.message(
+      'Up to 10 receivers can join.',
+      name: 'main_settings_share_to_sender_limit_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You’re currently offline`
+  String get main_status_no_network {
+    return Intl.message(
+      'You’re currently offline',
+      name: 'main_status_no_network',
       desc: '',
       args: [],
     );

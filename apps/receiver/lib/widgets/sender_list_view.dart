@@ -1,5 +1,6 @@
 
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/sender_item.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class _SenderListViewState extends State<SenderListView> {
           ? Container(
               alignment: Alignment.center,
               child: Text(
-                'Up to 10 receivers can join.',
+                S.of(context).main_settings_share_to_sender_limit_desc,
                 style: const TextStyle(color: AppColors.toggle_bg),
               ),
             )

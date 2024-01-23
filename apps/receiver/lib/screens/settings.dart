@@ -30,7 +30,7 @@ class _SettingsState extends State<Settings> {
               const Image(
                   image:
                       Svg('assets/images/ic_receiver.svg', size: Size(36, 36))),
-              S.of(context).main_setting_share_to_sender),
+              S.of(context).main_settings_share_to_sender),
           () => () {
                 _showMenuDialog(const SenderMenuView());
               });

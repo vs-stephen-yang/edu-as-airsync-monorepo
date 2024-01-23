@@ -6,7 +6,6 @@
   "eula_title": "myViewBoard Display EULA",
   "eula_disagree": "I Disagree",
   "eula_agree": "I Agree",
-  "main_status_no_network": "Unstable network connection.\nPlease check your connectivity status.",
   "main_status_remaining_time": "%02d min : %02d sec",
   "main_status_go_background": "Display app is running in the background.",
   "main_content_display_code": "Display Code",
@@ -48,5 +47,7 @@
   "main_settings_title": "Settings",
   "main_settings_language": "Language",
   "main_settings_whats_new": "What's New?",
-  "main_setting_share_to_sender": "Share to sender"
+  "main_settings_share_to_sender": "Share to sender",
+  "main_settings_share_to_sender_limit_desc": "Up to 10 receivers can join.",
+  "main_status_no_network": "You’re currently offline"
 }

@@ -29,7 +29,7 @@ class _SenderMenuViewState extends State<SenderMenuView> {
           backgroundColor: RtcConnectorList.getInstance().isPresenting()
               ? AppColors.primary_grey_tran
               : AppColors.primary_grey,
-          topTitleText: S.of(context).main_setting_share_to_sender,
+          topTitleText: S.of(context).main_settings_share_to_sender,
           topTitleAction: FocusIconButton(
             childNotFocus: Image(
               image: Svg(ChannelProvider.isSenderMode
