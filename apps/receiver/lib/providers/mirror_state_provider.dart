@@ -61,8 +61,7 @@ class MirrorStateProvider extends ChangeNotifier
   get audioEnable => _audioEnabled;
 
   FlutterMirror? _plugin;
-  String _deviceName =
-      'AirSync-${Random().nextInt(9999).toString().padLeft(4, '0')}';
+  String _deviceName = '';
   BuildContext context;
   final GlobalKey _mirrorViewKey = GlobalKey();
   static MirrorState _mirrorState = MirrorState.idle;
@@ -169,7 +168,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   // region Public method
   setDeviceName(String deviceName) {
-    _deviceName = 'AirSync-$deviceName';
+    _deviceName = deviceName;
   }
 
   clearPinCode() {

@@ -49,5 +49,8 @@
   "main_settings_whats_new": "What's New?",
   "main_settings_share_to_sender": "Share to sender",
   "main_settings_share_to_sender_limit_desc": "Up to 10 receivers can join.",
-  "main_status_no_network": "You’re currently offline"
+  "main_status_no_network": "You’re currently offline",
+  "main_settings_device_name": "Name",
+  "main_settings_device_name_title": "Rename device",
+  "main_settings_device_name_hint": "Device name"
 }

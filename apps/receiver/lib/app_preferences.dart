@@ -17,22 +17,28 @@ class AppPreferences {
   }
 
   bool _showEULA = true;
+  String _instanceName = 'AirSync';
   String _entityId = '';
   String _moderatorId = '';
   String _language = 'English';
 
   bool get showEULA => _showEULA;
+  String get instanceName => _instanceName;
   String get entityId => _entityId;
   String get moderatorId => _moderatorId;
   String get language => _language.isNotEmpty ? _language : _getDefaultSupportedLanguage();
   Locale? get locale => localeMap[language];
 
   set({bool? showEULA,
+    String? instanceName,
     String? entityId,
     String? moderatorId,
     String? language,}) {
     if (showEULA != null) {
       _showEULA = showEULA;
+    }
+    if (instanceName != null) {
+      _instanceName = instanceName;
     }
     if (entityId != null) {
       _entityId = entityId;
@@ -49,6 +55,7 @@ class AppPreferences {
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('app_showEULA', _showEULA);
+    prefs.setString('app_instanceName', _instanceName);
     prefs.setString('app_entityId', _entityId);
     prefs.setString('app_moderatorId', _moderatorId);
     prefs.setString('app_language', _language);
@@ -57,6 +64,7 @@ class AppPreferences {
   _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _showEULA = prefs.getBool('app_showEULA') ?? true;
+    _instanceName = prefs.getString('app_instanceName') ?? 'AirSync';
     _entityId = prefs.getString('app_entityId') ?? '';
     _moderatorId = prefs.getString('app_moderatorId') ?? '';
     _language = prefs.getString('app_language') ?? '';
