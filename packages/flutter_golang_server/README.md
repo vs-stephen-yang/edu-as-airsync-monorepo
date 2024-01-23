@@ -5,7 +5,10 @@ A flutter plugin for ion sfu.
 ## Development
 
 ```
-cd ion-sfu-library
+git submodule init
+git submodule update
+
+cd libionsfu
 
 # Run the ion sfu server on Android
 .\scripts\android\run.cmd
