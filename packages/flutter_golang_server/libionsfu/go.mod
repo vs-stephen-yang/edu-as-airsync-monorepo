@@ -52,4 +52,4 @@ require (
 	google.golang.org/protobuf v1.30.0 // indirect
 )
 
-replace github.com/pion/ion-sfu v1.11.0 => ../third_party/ion-sfu
+replace github.com/pion/ion-sfu => ../third_party/ion-sfu
