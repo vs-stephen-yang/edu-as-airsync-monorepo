@@ -424,7 +424,7 @@ class ChannelProvider extends ChangeNotifier {
         Map json = jsonDecode(response.body);
 
         _tunnelApiUrl = json['tunnelApiUrl'] ?? '';
-        return json['displayCode'];
+        return json['instanceIndex'];
       } else {
         return '';
       }
