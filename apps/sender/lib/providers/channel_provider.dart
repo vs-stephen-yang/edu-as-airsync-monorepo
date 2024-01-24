@@ -9,7 +9,6 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_channel/display_channel.dart';
-import 'package:display_channel/src/websocket_client_connection_io.dart' as socket;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -300,7 +299,7 @@ class ChannelProvider extends ChangeNotifier {
     DisplayChannelClient lanChannel = DisplayChannelClient(
         _clientId,
         uri,
-        (url) => socket.WebSocketClientConnection(url,
+        (url) => WebSocketClientConnection(url,
             maxRetryDelay: const Duration(seconds: 3),
             maxRetryAttempts: 3,
             logger: (url, message) =>
@@ -324,7 +323,7 @@ class ChannelProvider extends ChangeNotifier {
     DisplayChannelClient internetChannel = DisplayChannelClient(
         _clientId,
         uri,
-        (url) => socket.WebSocketClientConnection(url,
+        (url) => WebSocketClientConnection(url,
             maxRetryDelay: const Duration(seconds: 3),
             maxRetryAttempts: 3,
             logger: (url, message) =>
