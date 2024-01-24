@@ -7,7 +7,7 @@ void main() {
     final server = DisplayTunnelServer(
       (String url) => WebSocketClientConnection(url),
       (Channel channel) {},
-      (String token) => true,
+      (ConnectionRequest connectionRequest) => ConnectRequestStatus.success,
     );
 
     // action

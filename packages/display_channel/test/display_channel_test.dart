@@ -59,7 +59,9 @@ void main() {
 
   Future<void> setupServer() async {
     // create a fake tunnel service
-    tunnelService = FakeTunnelService('1111111');
+    tunnelService = FakeTunnelService(
+      instanceIndex: '1111111',
+    );
 
     const httpPort = 0;
     httpServer = await HttpServer.bind(
@@ -79,13 +81,19 @@ void main() {
     // create a channel server
     directServer = DisplayDirectServer(
       (Channel channel) => handleNewChannel(channel),
-      (String token) => token == 'token1',
+      (ConnectionRequest connectionRequest) =>
+          connectionRequest.token == 'token1'
+              ? ConnectRequestStatus.success
+              : ConnectRequestStatus.invalidOtp,
     );
 
     tunnelServer = DisplayTunnelServer(
       (String url) => WebSocketClientConnection(url),
       (Channel channel) => handleNewChannel(channel),
-      (String token) => token == 'token1',
+      (ConnectionRequest connectionRequest) =>
+          connectionRequest.token == 'token1'
+              ? ConnectRequestStatus.success
+              : ConnectRequestStatus.invalidOtp,
     );
 
     tunnelServer.onTunnelConnected = () {
@@ -129,6 +137,7 @@ void main() {
 
     client.openDirectChannel(
       token,
+      displayCode: 'ABA',
     );
   }
 
@@ -151,6 +160,7 @@ void main() {
     client.openTunnelChannel(
       displayCode,
       token,
+      displayCode: 'ABA',
     );
   }
 
