@@ -94,7 +94,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                               .length,
                           itemBuilder: (BuildContext context, int index) {
                             List list =
-                                DataDisplayCode.getInstance().displayCodeList!;
+                                DataDisplayCode.getInstance().displayCodeList!.reversed.toList();
                             return InkWell(
                               child: Container(
                                   height: 40,
