@@ -70,7 +70,7 @@ main(List<String> arguments) async {
     )
     ..addOption(
       'instanceIndex',
-      defaultsTo: '100018',
+      defaultsTo: '100043',
     );
 
   ArgResults argResults = parser.parse(arguments);
