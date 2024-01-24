@@ -82,7 +82,7 @@ dependencies:
   flutter_webrtc:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc
-      ref: release-0.9.36-12
+      ref: release-0.9.36-14
   display_channel:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
@@ -90,7 +90,7 @@ dependencies:
   ion_sdk_flutter:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter
-      ref: release-0.0.6
+      ref: release-0.0.8
   flutter_ion_sfu:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-ion-sfu

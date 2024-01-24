@@ -366,8 +366,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.9.36-12"
-      resolved-ref: "57807af57e37c74429e0f84f95e3b4da99cc0b5f"
+      ref: "release-0.9.36-14"
+      resolved-ref: "4a431dc86f222eba241999001749a44e3aa1ef69"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc"
     source: git
     version: "0.9.36"
@@ -439,8 +439,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.0.6"
-      resolved-ref: ffd9b10a85c70c1e413658e89678adbf24a3d7b0
+      ref: "release-0.0.8"
+      resolved-ref: "46fe4989cf50582dd86d40349d7e5961369e5cda"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter"
     source: git
     version: "1.0.0"
