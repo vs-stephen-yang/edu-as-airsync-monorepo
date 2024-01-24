@@ -38,16 +38,19 @@ class TunnelClientEvent extends TunnelMessage {
 class TunnelClientConnected extends TunnelClientEvent {
   final String clientId;
   final String token;
+  final String displayCode;
 
   TunnelClientConnected(
     String connectionId,
     this.clientId,
     this.token,
+    this.displayCode,
   ) : super('connected', connectionId);
 
   TunnelClientConnected.fromJson(Map<String, dynamic> json)
       : clientId = json['clientId'] as String,
         token = json['token'] as String,
+        displayCode = json['displayCode'] as String,
         super.fromJson(json);
 
   @override
@@ -57,6 +60,7 @@ class TunnelClientConnected extends TunnelClientEvent {
     json.addAll({
       'clientId': clientId,
       'token': token,
+      'displayCode': displayCode,
     });
 
     return json;

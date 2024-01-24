@@ -5,19 +5,26 @@ import 'package:display_channel/src/server/connection.dart';
 import 'package:display_channel/src/server/connection_request.dart';
 import 'package:display_channel/src/server/multi_connection_channel.dart';
 
+enum ConnectRequestStatus {
+  success,
+  invalidOtp,
+  invalidDisplayCode,
+}
+
 typedef OnNewChannel = void Function(Channel channel);
-typedef VerifyOtpToken = bool Function(String token);
+typedef VerifyConnectRequest = ConnectRequestStatus Function(
+    ConnectionRequest connectRequest);
 
 abstract class ChannelServer {
   final OnNewChannel _onNewChannel;
-  final VerifyOtpToken _verifyOtpToken;
+  final VerifyConnectRequest _verifyConnectRequest;
 
   final _channels = <String, MultiConnectionChannel>{};
   final _uuid = const Uuid();
 
   ChannelServer(
     this._onNewChannel,
-    this._verifyOtpToken,
+    this._verifyConnectRequest,
   );
 
   void stop();
@@ -51,16 +58,14 @@ abstract class ChannelServer {
   }
 
   // check if the connection is valid
-  bool verifyConnectionRequest(ConnectionRequest connectionRequest) {
-    if (_verifyOtpToken(connectionRequest.token)) {
-      return true;
-    }
-
+  ConnectRequestStatus verifyConnectionRequest(
+      ConnectionRequest connectionRequest) {
+    // check reconnection token
     if (_verifyReconnectionToken(connectionRequest)) {
-      return true;
+      return ConnectRequestStatus.success;
     }
 
-    return false;
+    return _verifyConnectRequest(connectionRequest);
   }
 
   bool _verifyReconnectionToken(ConnectionRequest connectionRequest) {

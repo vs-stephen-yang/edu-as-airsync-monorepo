@@ -14,10 +14,10 @@ class DisplayTunnelServer extends ChannelServer {
   DisplayTunnelServer(
     this._createTunnelConnection,
     OnNewChannel onNewChannel,
-    VerifyOtpToken verifyOtpToken,
+    VerifyConnectRequest verifyConnectRequest,
   ) : super(
           onNewChannel,
-          verifyOtpToken,
+          verifyConnectRequest,
         );
 
   void start(

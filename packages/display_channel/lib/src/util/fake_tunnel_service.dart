@@ -37,12 +37,12 @@ class FakeTunnelService {
   var _lastConnectionId = 0;
 
   // TODO:
-  final String displayCode;
+  final String _instanceIndex;
 
   final _serverConnections = <int, WebSocket>{};
   final _clientConnections = <int, WebSocket>{};
 
-  FakeTunnelService(this.displayCode);
+  FakeTunnelService({instanceIndex}) : _instanceIndex = instanceIndex;
 
   Future onHttpRequest(HttpRequest httpRequest) async {
     final parameters = httpRequest.requestedUri.queryParameters;
@@ -88,7 +88,7 @@ class FakeTunnelService {
     HttpRequest httpRequest,
     Map<String, String> parameters,
   ) async {
-    if (parameters['displayCode'] != displayCode) {
+    if (parameters['instanceIndex'] != _instanceIndex) {
       httpRequest.response.close();
       return;
     }
@@ -110,8 +110,14 @@ class FakeTunnelService {
 
     final clientId = parameters['clientId'];
     final token = parameters['token'];
+    final displayCode = parameters['displayCode'];
 
-    _notifyClientConnected(clientId!, connectionId.toString(), token!);
+    _notifyClientConnected(
+      clientId!,
+      connectionId.toString(),
+      displayCode!,
+      token!,
+    );
   }
 
   void _onClientClosed(int connectionId) {
@@ -129,8 +135,17 @@ class FakeTunnelService {
   }
 
   void _notifyClientConnected(
-      String clientId, String connectionId, String token) {
-    final msg = TunnelClientConnected(connectionId, clientId, token);
+    String clientId,
+    String connectionId,
+    String displayCode,
+    String token,
+  ) {
+    final msg = TunnelClientConnected(
+      connectionId,
+      clientId,
+      token,
+      displayCode,
+    );
 
     _sendToServer(msg);
   }

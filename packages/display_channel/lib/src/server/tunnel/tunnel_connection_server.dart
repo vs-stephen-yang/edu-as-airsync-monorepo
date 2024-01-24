@@ -1,4 +1,5 @@
 import 'package:display_channel/src/channel.dart';
+import 'package:display_channel/src/channel_server.dart';
 import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
 import 'package:display_channel/src/server/connection.dart';
@@ -17,7 +18,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
   final CreateWebsocketClientConnection _createTunnelConnection;
 
   final void Function(String clientId, Connection) _onNewClientConnection;
-  final bool Function(ConnectionRequest) _authenticationHandler;
+  final VerifyConnectRequest _verifyConnectRequest;
 
   ClientConnection? _tunnelConnection;
 
@@ -35,7 +36,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
     String tunnelServiceUrl,
     this._createTunnelConnection,
     this._onNewClientConnection,
-    this._authenticationHandler, {
+    this._verifyConnectRequest, {
     // AWS WebSocket Idle Connection Timeout 10 minutes
     this.heartbeatInterval = const Duration(minutes: 9),
   }) {
@@ -81,11 +82,13 @@ class TunnelConnectionServer extends TunnelMessageHandler {
   void onClientConnected(TunnelClientConnected msg) {
     // a new client connection is being established
 
-    // authenticate the connectin request
-    if (!_authenticationHandler(ConnectionRequest(
-      msg.clientId,
-      msg.token,
-    ))) {
+    // authenticate the connection request
+    if (_verifyConnectRequest(ConnectionRequest(
+          msg.clientId,
+          msg.token,
+          msg.displayCode,
+        )) !=
+        ConnectRequestStatus.success) {
       // reject the connection
       sendMsgToClient(
         msg.connectionId,
