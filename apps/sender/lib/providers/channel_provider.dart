@@ -177,7 +177,7 @@ class ChannelProvider extends ChangeNotifier {
     this.otp = otp;
 
     if (kIsWeb) {
-      await connectInternetChannel((state, internetChannel) {
+      await connectInternetChannel(encodedDisplayCode, (state, internetChannel) {
         if (state == ChannelState.connected) {
           _channel = internetChannel;
           setUpChannel(encodedDisplayCode);
@@ -186,12 +186,12 @@ class ChannelProvider extends ChangeNotifier {
         }
       });
     } else {
-      await connectLanChannel((state, lanChannel) async {
+      await connectLanChannel(encodedDisplayCode, (state, lanChannel) async {
         if (state == ChannelState.connected) {
           _channel = lanChannel;
           setUpChannel(encodedDisplayCode);
         } else if (state == ChannelState.closed) {
-          await connectInternetChannel((state, internetChannel) {
+          await connectInternetChannel(encodedDisplayCode, (state, internetChannel) {
             if (state == ChannelState.connected) {
               _channel = internetChannel;
               setUpChannel(encodedDisplayCode);
@@ -294,7 +294,7 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
-  Future connectLanChannel(Function(ChannelState state, DisplayChannelClient? lanChannel) onState) async {
+  Future connectLanChannel(String encodedDisplayCode, Function(ChannelState state, DisplayChannelClient? lanChannel) onState) async {
     // Lan first
     String host = displayCode!.ipAddress;
     Uri? uri = Uri(scheme: 'ws', host: host, port: port);
@@ -307,13 +307,13 @@ class ChannelProvider extends ChangeNotifier {
             maxRetryAttempts: 3,
             logger: (url, message) =>
                 print('lanChannel logger $url $message}')));
-    lanChannel.openDirectChannel(otp!);
+    lanChannel.openDirectChannel(otp!, displayCode: encodedDisplayCode);
     lanChannel.onStateChange = (ChannelState state) async {
       await onState(state, lanChannel);
     };
   }
 
-  Future connectInternetChannel(Function(ChannelState state, DisplayChannelClient? internetChannel) onState) async {
+  Future connectInternetChannel(String encodedDisplayCode, Function(ChannelState state, DisplayChannelClient? internetChannel) onState) async {
     // Lan first
     String displayIndex = displayCode!.instanceIndex.toString();
     _tunnelApiUrl = await _getTunnelUrl(displayIndex);
@@ -331,7 +331,7 @@ class ChannelProvider extends ChangeNotifier {
             maxRetryAttempts: 3,
             logger: (url, message) =>
                 print('internetChannel logger  $url $message}')));
-    internetChannel.openTunnelChannel(displayIndex, otp!);
+    internetChannel.openTunnelChannel(displayIndex, otp!, displayCode: encodedDisplayCode);
     internetChannel.onStateChange = (ChannelState state) async {
       await onState(state, internetChannel);
     };
@@ -492,6 +492,9 @@ class ChannelProvider extends ChangeNotifier {
       case ChannelCloseCode.authenticationError:
         presentEnd(goIdleState: false);
         setInvalidOtp(true);
+        break;
+      case ChannelCloseCode.invalidDisplayCode:
+        // TODO:
         break;
       case ChannelCloseCode.close:
       case ChannelCloseCode.remoteClose:
