@@ -130,7 +130,7 @@ public class AudioSwitchHelper {
         var channels = [UInt32](repeating: 0, count: channelsCount)
         var propertySize = UInt32(MemoryLayout<UInt32>.size * channelsCount)
         var leftLevel = leftChannelLevel
-        var rigthLevel = rightChannelLevel
+        var rightLevel = rightChannelLevel
         
         var propertyAddress = AudioObjectPropertyAddress(
             mSelector: AudioObjectPropertySelector(kAudioDevicePropertyPreferredChannelsForStereo),
@@ -149,7 +149,7 @@ public class AudioSwitchHelper {
         
         propertyAddress.mElement = channels[1]
         
-        AudioObjectSetPropertyData(deviceID, &propertyAddress, 0, nil, propertySize, &rigthLevel)
+        AudioObjectSetPropertyData(deviceID, &propertyAddress, 0, nil, propertySize, &rightLevel)
     }
     
     static func setInputDevice(newDeviceID: AudioDeviceID) -> Bool {
@@ -194,7 +194,7 @@ public class AudioSwitchHelper {
         var channels = [UInt32](repeating: 0, count: channelsCount)
         var propertySize = UInt32(MemoryLayout<UInt32>.size * channelsCount)
         var leftLevel = Float32(-1)
-        var rigthLevel = Float32(-1)
+        var rightLevel = Float32(-1)
         
         var propertyAddress = AudioObjectPropertyAddress(
             mSelector: AudioObjectPropertySelector(kAudioDevicePropertyPreferredChannelsForStereo),
@@ -213,9 +213,9 @@ public class AudioSwitchHelper {
         
         propertyAddress.mElement = channels[1]
         
-        AudioObjectGetPropertyData(deviceID, &propertyAddress, 0, nil, &propertySize, &rigthLevel)
+        AudioObjectGetPropertyData(deviceID, &propertyAddress, 0, nil, &propertySize, &rightLevel)
         
-        return [leftLevel, rigthLevel]
+        return [leftLevel, rightLevel]
     }
     
     static func getDefaultInputDevice() -> AudioDeviceID {
