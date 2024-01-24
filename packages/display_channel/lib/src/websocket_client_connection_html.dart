@@ -21,6 +21,14 @@ class WebSocketClientConnection implements ClientConnection {
 
   final String _url;
 
+  static const defaultConnectionTimeout = Duration(seconds: 1);
+  static const defaultMaxRetryDelay = Duration(seconds: 15);
+  static const defaultMaxRetryAttempts = 8;
+
+  Duration connectionTimeout;
+  Duration maxRetryDelay;
+  int maxRetryAttempts;
+
   var _connected = false;
   var _closed = false;
 
@@ -31,6 +39,9 @@ class WebSocketClientConnection implements ClientConnection {
   WebSocketClientConnection(
     this._url, {
     this.logger,
+    this.connectionTimeout = defaultConnectionTimeout,
+    this.maxRetryDelay = defaultMaxRetryDelay,
+    this.maxRetryAttempts = defaultMaxRetryAttempts,
   });
 
   @override
