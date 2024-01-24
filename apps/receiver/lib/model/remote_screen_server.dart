@@ -54,39 +54,8 @@ class RemoteScreenServer {
 
       _ionSfuClient!.ondatachannel = (RTCDataChannel dc) {
         if(dc.label != API_CHANNEL) {
-          int dcIndex = dc.id ?? _dataChannels.length;
+          log("ondatachannel: ${dc.label}");
           _dataChannels.add(dc);
-          dc.onMessage = (data) async {
-            if ( data.isBinary ) {
-              EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
-              if(eventMessage.hasTouchEvent()) {
-                int action = FlutterInputInjection.TOUCH_POINT_START;
-                if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_START) {
-                  action = FlutterInputInjection.TOUCH_POINT_START;
-                } else if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
-                  action = FlutterInputInjection.TOUCH_POINT_MOVE;
-                } else if (eventMessage.touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_END) {
-                  action = FlutterInputInjection.TOUCH_POINT_END;
-                }
-                double remoteX = eventMessage.touchEvent.touchPoints[0].x;
-                double remoteY = eventMessage.touchEvent.touchPoints[0].y;
-
-                int injectX = (remoteX * _screenWidth).toInt();
-                injectX = injectX.clamp(0, _screenWidth.toInt() - 1);
-                int injectY = (remoteY * _screenHeight).toInt();
-                injectY = injectY.clamp(0, _screenHeight.toInt() - 1);
-                int id = eventMessage.touchEvent.touchPoints[0].id;
-                id = reassignEventId(dcIndex, id, action);
-                if(id == -1) {
-                  return;
-                } else {
-                  _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
-                }
-              }
-            } else {
-              log('dcCreate: Received message: ${data.text}');
-            }
-          };
 
           dc.onDataChannelState = (RTCDataChannelState state) {
             if( state == RTCDataChannelState.RTCDataChannelClosed ) {
@@ -238,6 +207,60 @@ class RemoteScreenServer {
       if (_eventSlots[i].channelId == dc.id) {
         _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_END, i, 0, 0);
         releaseSlot(i);
+      }
+    }
+  }
+
+  void enableTouchBySessionId(String sessionID ,bool enable) {
+    log('enableTouch: $sessionID $enable');
+    for (int i = 0; i < _dataChannels.length; i++) {
+      if (_dataChannels[i].label == sessionID) {
+        if( enable ) {
+          int dcIndex = _dataChannels[i].id ?? i;
+          _dataChannels[i].onMessage = (data) async {
+            if (data.isBinary) {
+              EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
+              if (eventMessage.hasTouchEvent()) {
+                int action = FlutterInputInjection.TOUCH_POINT_START;
+                if (eventMessage.touchEvent.eventType ==
+                    TouchEvent_TouchEventType.TOUCH_POINT_START) {
+                  action = FlutterInputInjection.TOUCH_POINT_START;
+                } else if (eventMessage.touchEvent.eventType ==
+                    TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
+                  action = FlutterInputInjection.TOUCH_POINT_MOVE;
+                } else if (eventMessage.touchEvent.eventType ==
+                    TouchEvent_TouchEventType.TOUCH_POINT_END) {
+                  action = FlutterInputInjection.TOUCH_POINT_END;
+                }
+                double remoteX = eventMessage.touchEvent.touchPoints[0].x;
+                double remoteY = eventMessage.touchEvent.touchPoints[0].y;
+
+                int injectX = (remoteX * _screenWidth).toInt();
+                injectX = injectX.clamp(0, _screenWidth.toInt() - 1);
+                int injectY = (remoteY * _screenHeight).toInt();
+                injectY = injectY.clamp(0, _screenHeight.toInt() - 1);
+                int id = eventMessage.touchEvent.touchPoints[0].id;
+                id = reassignEventId(dcIndex, id, action);
+                if (id == -1) {
+                  return;
+                } else {
+                  _flutterInputInjectionPlugin.sendTouch(
+                      action, id, injectX, injectY);
+                }
+              }
+            } else {
+              log('dcCreate: Received message: ${data.text}');
+            }
+          };
+        } else {
+          _dataChannels[i].onMessage = (data) async {
+            if (!data.isBinary) {
+              log('dcCreate: Received message: ${data.text}');
+            }
+          };
+        }
+
+        break;
       }
     }
   }

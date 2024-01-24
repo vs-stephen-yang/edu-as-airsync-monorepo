@@ -9,7 +9,8 @@ class RemoteScreenConnector {
   int port;
   Channel channel;
   PresentationState presentationState = PresentationState.stopStreaming;
-  String? sessionId;
+  String? _sessionId;
+  String? get sessionId => _sessionId;
   String? clientId;
   String? senderName;
   String? senderVersion;
@@ -42,18 +43,18 @@ class RemoteScreenConnector {
   }
 
   sendRemoteScreenState(RemoteScreenStatus status) {
-    final acceptedMessage = RemoteScreenStatusMessage(sessionId, status);
+    final acceptedMessage = RemoteScreenStatusMessage(_sessionId, status);
     channel.send(acceptedMessage);
   }
 
   onStartRemoteScreen(StartRemoteScreenMessage message) {
-    sessionId = message.sessionId;
+    _sessionId = message.sessionId;
     // accept
     sendRemoteScreenState(RemoteScreenStatus.accepted);
     presentationState = PresentationState.waitForStream;
     // info
     final remoteScreenInfoMessage = RemoteScreenInfoMessage(
-      sessionId,
+      _sessionId,
       IonSfuRoom(
         "ws://$host:$port/ws",
         roomId,
@@ -61,5 +62,4 @@ class RemoteScreenConnector {
     channel.send(remoteScreenInfoMessage);
     presentationState = PresentationState.streaming;
   }
-
 }
