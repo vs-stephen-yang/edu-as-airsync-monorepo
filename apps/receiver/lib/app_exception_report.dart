@@ -70,6 +70,7 @@ class AppExceptionReport {
       log('Exception (ignore duplicate error): $error');
       return;
     }
+    log('AppExceptionReport:\n$error\n$stackTrace');
     //可能會連續呼叫 sendToServer()，要在 await 之前更新 _timeStamp & _error，否則會無法阻擋
     _timeStamp = current;
     _error = error;
