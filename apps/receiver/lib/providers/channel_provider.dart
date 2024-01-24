@@ -155,14 +155,14 @@ class ChannelProvider extends ChangeNotifier {
     // create a direct server
     _directServer = DisplayDirectServer(
           (Channel channel) => _onNewChannel(channel, Mode.lan),
-          (String token) => _checkOTP(token),
+          (ConnectionRequest connectionRequest) => _verifyConnectRequest(connectionRequest),
     );
 
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
           (String url) => WebSocketClientConnection(url),
           (Channel channel) => _onNewChannel(channel, Mode.internet),
-          (String token) => _checkOTP(token),
+          (ConnectionRequest connectionRequest) => _verifyConnectRequest(connectionRequest),
     );
 
     _tunnelServer.onTunnelConnected = () {
@@ -289,8 +289,11 @@ class ChannelProvider extends ChangeNotifier {
     return isServerStart = false;
   }
 
-  bool _checkOTP(String otp) {
-    return otpList.contains(otp);
+  ConnectRequestStatus _verifyConnectRequest(ConnectionRequest connectionRequest) {
+    // TODO: check if the display code is valid
+    return otpList.contains(connectionRequest.token) ?
+      ConnectRequestStatus.success :
+      ConnectRequestStatus.invalidOtp;
   }
 
   void sendDisplayStatus(Channel channel) {
