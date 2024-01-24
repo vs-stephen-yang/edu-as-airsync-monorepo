@@ -285,10 +285,8 @@ class ChannelProvider extends ChangeNotifier {
         break;
       case ChannelState.connected:
         break;
-      case ChannelState.disconnected:
-        presentEnd();
-        break;
       case ChannelState.closed:
+        presentEnd();
         _handleChannelCloseState(_channel?.closeReason);
         break;
     }
