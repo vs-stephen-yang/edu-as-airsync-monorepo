@@ -82,13 +82,19 @@ class FakeTunnelService {
     }, cancelOnError: true);
   }
 
+  bool _isServerOnline(String instanceIndex) {
+    return instanceIndex == _instanceIndex && _serverConnections.isNotEmpty;
+  }
+
   // handle the connection from the client
   Future _onClientConnected(
     int connectionId,
     HttpRequest httpRequest,
     Map<String, String> parameters,
   ) async {
-    if (parameters['instanceIndex'] != _instanceIndex) {
+    final instanceIndex = parameters['instanceIndex'] as String;
+
+    if (!_isServerOnline(instanceIndex)) {
       httpRequest.response.close();
       return;
     }
