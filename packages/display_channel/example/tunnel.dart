@@ -2,9 +2,11 @@ import 'package:display_channel/src/util/fake_tunnel_service.dart';
 import 'dart:io';
 
 void main() async {
-  const displayCode = '100018';
+  const instanceIndex = '100018';
 
-  final tunnelService = FakeTunnelService(displayCode);
+  final tunnelService = FakeTunnelService(
+    instanceIndex: instanceIndex,
+  );
 
   const httpPort = 5000;
   final httpServer = await HttpServer.bind(

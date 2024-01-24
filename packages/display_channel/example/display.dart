@@ -61,13 +61,22 @@ class MockServer {
 
   final _clients = <Client>[];
 
-  bool _validateToken(String token) => token == '1111';
+  ConnectRequestStatus _verifyConnectRequest(
+    ConnectionRequest connectionRequest,
+  ) {
+    print(
+        'Connect request ${connectionRequest.displayCode} ${connectionRequest.token}');
+
+    return (connectionRequest.token == '1111')
+        ? ConnectRequestStatus.success
+        : ConnectRequestStatus.invalidOtp;
+  }
 
   MockServer() {
     // create a direct server
     _directServer = DisplayDirectServer(
       (Channel channel) => _onNewChannel(channel),
-      _validateToken,
+      _verifyConnectRequest,
     );
 
     // create a tunnel server
@@ -79,7 +88,7 @@ class MockServer {
         },
       ),
       (Channel channel) => _onNewChannel(channel),
-      _validateToken,
+      _verifyConnectRequest,
     );
 
     _tunnelServer.onTunnelConnected = () {
@@ -118,13 +127,13 @@ class MockServer {
 main(List<String> arguments) async {
   final parser = ArgParser()
     ..addOption(
-      'url',
+      'tunnelUrl',
       defaultsTo: 'wss://ap-northeast-1.gateway.dev.airsync.net',
     );
 
   ArgResults argResults = parser.parse(arguments);
 
-  final tunnelServiceUrl = argResults['url'];
+  final tunnelServiceUrl = argResults['tunnelUrl'];
   const localDirectPort = 5100;
   const instanceId = '0001';
 

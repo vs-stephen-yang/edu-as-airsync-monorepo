@@ -57,11 +57,19 @@ main(List<String> arguments) async {
       allowed: ['direct', 'tunnel'],
     )
     ..addOption(
+      'tunnelUrl',
+      defaultsTo: 'wss://ap-northeast-1.gateway.dev.airsync.net',
+    )
+    ..addOption(
       'otp',
       defaultsTo: '1111',
     )
     ..addOption(
       'code',
+      defaultsTo: 'ABA',
+    )
+    ..addOption(
+      'instanceIndex',
       defaultsTo: '100018',
     );
 
@@ -69,8 +77,9 @@ main(List<String> arguments) async {
 
   final clientId = const Uuid().v4();
   final token = argResults['otp'];
+  final instanceIndex = argResults['instanceIndex'];
   final displayCode = argResults['code'];
-  const tunnelServiceUrl = 'wss://ap-northeast-1.gateway.dev.airsync.net';
+  final tunnelServiceUrl = argResults['tunnelUrl'];
 
   bool direct = argResults['mode'] == 'direct';
 
@@ -115,8 +124,15 @@ main(List<String> arguments) async {
   print('opening the channel to ${uri.toString()}');
 
   if (direct) {
-    channel.openDirectChannel(token);
+    channel.openDirectChannel(
+      token,
+      displayCode: displayCode,
+    );
   } else {
-    channel.openTunnelChannel(displayCode, token);
+    channel.openTunnelChannel(
+      instanceIndex,
+      token,
+      displayCode: displayCode,
+    );
   }
 }
