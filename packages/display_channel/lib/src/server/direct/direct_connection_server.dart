@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:display_channel/src/channel.dart';
 import 'package:display_channel/src/channel_server.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
 import 'package:display_channel/src/server/connection.dart';
 import 'package:display_channel/src/server/connection_request.dart';
 import 'package:display_channel/src/server/direct/direct_connection.dart';
+import 'package:display_channel/src/util/channel_message_util.dart';
 
 class DirectConnectionServer {
   final void Function(String clientId, Connection) _onNewConnection;
@@ -48,15 +48,12 @@ class DirectConnectionServer {
     final connection = DirectConnection(websocket);
 
     // authenticate the connectin request
-    if (_verifyConnectRequest(connectionRequest) !=
-        ConnectRequestStatus.success) {
+    final status = _verifyConnectRequest(connectionRequest);
+    if (status != ConnectRequestStatus.success) {
       // reject the connection
-      connection.send(ChannelClosedMessage(
-        Reason(
-          ChannelCloseCode.authenticationError.index,
-          text: 'Wrong OTP',
-        ),
-      ).toJson());
+      final reason = convertConnectRequestStatusToReason(status);
+
+      connection.send(ChannelClosedMessage(reason).toJson());
 
       // TODO: disconnect the connection
       return;

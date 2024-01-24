@@ -21,3 +21,20 @@ Reason convertChannelCloseReasonToReason(ChannelCloseReason reason) {
     text: reason.text,
   );
 }
+
+Reason? convertConnectRequestStatusToReason(ConnectRequestStatus status) {
+  switch (status) {
+    case ConnectRequestStatus.invalidOtp:
+      return Reason(
+        ChannelCloseCode.authenticationError.index,
+        text: 'Wrong OTP',
+      );
+    case ConnectRequestStatus.invalidDisplayCode:
+      return Reason(
+        ChannelCloseCode.invalidDisplayCode.index,
+        text: 'Wrong display code',
+      );
+    default:
+      return null;
+  }
+}
