@@ -87,6 +87,7 @@ class ChannelProvider extends ChangeNotifier {
   static bool isModeratorMode = false;
 
   final RemoteScreenServer _remoteScreenServe = RemoteScreenServer();
+  RemoteScreenServer get remoteScreenServe => _remoteScreenServe;
   static final List<RemoteScreenConnector> _remoteScreenConnectors = <RemoteScreenConnector>[];
   static List<RemoteScreenConnector> get remoteScreenConnectors => _remoteScreenConnectors;
   static bool isSenderMode = false;
