@@ -35,9 +35,6 @@ class RemoteScreenConnector {
         break;
       case ChannelState.connected:
         break;
-      case ChannelState.disconnected:
-        await onChannelDisconnect?.call();
-        break;
       case ChannelState.closed:
         await onChannelDisconnect?.call();
         break;

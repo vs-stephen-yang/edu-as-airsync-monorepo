@@ -88,11 +88,6 @@ class RTCConnector {
         break;
       case ChannelState.connected:
         break;
-      case ChannelState.disconnected:
-        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-        await disconnectPeerConnection();
-        await disconnectChannel();
-        break;
       case ChannelState.closed:
         ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
         await disconnectPeerConnection();
