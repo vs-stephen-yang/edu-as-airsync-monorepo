@@ -1,4 +1,3 @@
-import 'package:display_channel/src/channel.dart';
 import 'package:display_channel/src/channel_server.dart';
 import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
@@ -8,6 +7,7 @@ import 'package:display_channel/src/server/tunnel/tunnel_message.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_message_handler.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_message_parser.dart';
 import 'dart:async';
+import 'package:display_channel/src/util/channel_message_util.dart';
 
 class TunnelConnectionServer extends TunnelMessageHandler {
   void Function()? onTunnelConnected;
@@ -83,21 +83,20 @@ class TunnelConnectionServer extends TunnelMessageHandler {
     // a new client connection is being established
 
     // authenticate the connection request
-    if (_verifyConnectRequest(ConnectionRequest(
-          msg.clientId,
-          msg.token,
-          msg.displayCode,
-        )) !=
-        ConnectRequestStatus.success) {
+    final connectRequest = ConnectionRequest(
+      msg.clientId,
+      msg.token,
+      msg.displayCode,
+    );
+
+    final status = _verifyConnectRequest(connectRequest);
+    if (status != ConnectRequestStatus.success) {
       // reject the connection
+      final reason = convertConnectRequestStatusToReason(status);
+
       sendMsgToClient(
         msg.connectionId,
-        ChannelClosedMessage(
-          Reason(
-            ChannelCloseCode.authenticationError.index,
-            text: 'Wrong OTP',
-          ),
-        ).toJson(),
+        ChannelClosedMessage(reason).toJson(),
       );
 
       // TODO: disconnect the connection
