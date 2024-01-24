@@ -78,22 +78,27 @@ void main() {
     // server
     final tunnelServiceUrl = 'ws://127.0.0.1:${httpServer.port}';
 
+    ConnectRequestStatus verifyConnectRequest(
+        ConnectionRequest connectionRequest) {
+      if (connectionRequest.token != 'token1') {
+        return ConnectRequestStatus.invalidOtp;
+      }
+      if (connectionRequest.displayCode != 'ABA') {
+        return ConnectRequestStatus.invalidDisplayCode;
+      }
+      return ConnectRequestStatus.success;
+    }
+
     // create a channel server
     directServer = DisplayDirectServer(
       (Channel channel) => handleNewChannel(channel),
-      (ConnectionRequest connectionRequest) =>
-          connectionRequest.token == 'token1'
-              ? ConnectRequestStatus.success
-              : ConnectRequestStatus.invalidOtp,
+      verifyConnectRequest,
     );
 
     tunnelServer = DisplayTunnelServer(
       (String url) => WebSocketClientConnection(url),
       (Channel channel) => handleNewChannel(channel),
-      (ConnectionRequest connectionRequest) =>
-          connectionRequest.token == 'token1'
-              ? ConnectRequestStatus.success
-              : ConnectRequestStatus.invalidOtp,
+      verifyConnectRequest,
     );
 
     tunnelServer.onTunnelConnected = () {
@@ -123,7 +128,11 @@ void main() {
     };
   }
 
-  void openDirectChannel({int? port, String token = 'token1'}) {
+  void openDirectChannel({
+    int? port,
+    String token = 'token1',
+    String displayCode = 'ABA',
+  }) {
     const clientId = 'abc';
     final serverUrl = 'ws://127.0.0.1:${port ?? directServer.port}';
 
@@ -137,14 +146,15 @@ void main() {
 
     client.openDirectChannel(
       token,
-      displayCode: 'ABA',
+      displayCode: displayCode,
     );
   }
 
   void openTunnelChannel({
     int? port,
     String token = 'token1',
-    String displayCode = '1111111',
+    String instanceIndex = '1111111',
+    String displayCode = 'ABA',
   }) {
     const clientId = 'abc';
     final serverUrl = 'ws://127.0.0.1:${port ?? httpServer.port}';
@@ -158,9 +168,9 @@ void main() {
     setupClient();
 
     client.openTunnelChannel(
-      displayCode,
+      instanceIndex,
       token,
-      displayCode: 'ABA',
+      displayCode: displayCode,
     );
   }
 
@@ -291,15 +301,41 @@ void main() {
   });
 
   test(
-      'The channel should be closed with channelNotFound if the display code does not exist',
+      'The channel should be closed with channelNotFound if the instanceIndex does not exist',
       () async {
     // arrange
-    openTunnelChannel(displayCode: '000');
+    openTunnelChannel(instanceIndex: '000');
 
     // action
 
     // assert
     await clientClosed.future;
     expect(client.closeReason!.code, ChannelCloseCode.channelNotFound);
+  });
+
+  test(
+      'The tunnel channel should be closed with invalidDisplayCode if the display code does not match',
+      () async {
+    // arrange
+    openTunnelChannel(displayCode: 'XXXX');
+
+    // action
+
+    // assert
+    await clientClosed.future;
+    expect(client.closeReason!.code, ChannelCloseCode.invalidDisplayCode);
+  });
+
+  test(
+      'The direct channel should be closed with invalidDisplayCode if the display code does not match',
+      () async {
+    // arrange
+    openDirectChannel(displayCode: 'XXXX');
+
+    // action
+
+    // assert
+    await clientClosed.future;
+    expect(client.closeReason!.code, ChannelCloseCode.invalidDisplayCode);
   });
 }
