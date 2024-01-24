@@ -2,6 +2,8 @@ library display_channel;
 
 export 'package:display_channel/src/display_channel_client.dart'
     show DisplayChannelClient;
+export 'package:display_channel/src/channel_server.dart'
+    show ConnectRequestStatus;
 export 'package:display_channel/src/display_direct_server.dart'
     show DisplayDirectServer;
 export 'package:display_channel/src/display_tunnel_server.dart'

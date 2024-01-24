@@ -15,10 +15,10 @@ class DisplayDirectServer extends ChannelServer {
 
   DisplayDirectServer(
     OnNewChannel onNewChannel,
-    VerifyOtpToken verifyOtpToken,
+    VerifyConnectRequest verifyConnectRequest,
   ) : super(
           onNewChannel,
-          verifyOtpToken,
+          verifyConnectRequest,
         );
 
   Future<void> start(int port) async {

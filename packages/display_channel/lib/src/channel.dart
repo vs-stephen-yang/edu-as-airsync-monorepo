@@ -15,6 +15,7 @@ enum ChannelCloseCode {
   transportClose,
   heartbeatTimeout,
   remoteUnknown,
+  invalidDisplayCode,
 }
 
 class ChannelCloseReason {

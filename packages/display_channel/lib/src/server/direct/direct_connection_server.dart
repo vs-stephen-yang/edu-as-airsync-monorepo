@@ -1,15 +1,19 @@
 import 'dart:io';
 
-import 'package:display_channel/display_channel.dart';
+import 'package:display_channel/src/channel.dart';
+import 'package:display_channel/src/channel_server.dart';
+import 'package:display_channel/src/messages/channel_message.dart';
+import 'package:display_channel/src/server/connection.dart';
+import 'package:display_channel/src/server/connection_request.dart';
 import 'package:display_channel/src/server/direct/direct_connection.dart';
 
 class DirectConnectionServer {
   final void Function(String clientId, Connection) _onNewConnection;
-  final bool Function(ConnectionRequest) _authenticationHandler;
+  final VerifyConnectRequest _verifyConnectRequest;
 
   DirectConnectionServer(
     this._onNewConnection,
-    this._authenticationHandler,
+    this._verifyConnectRequest,
   );
 
   ConnectionRequest? _parseConnectionRequest(HttpRequest req) {
@@ -17,14 +21,16 @@ class DirectConnectionServer {
 
     final clientId = parameters['clientId'];
     final token = parameters['token'];
+    final displayCode = parameters['displayCode'];
 
-    if (clientId == null || token == null) {
+    if (clientId == null || token == null || displayCode == null) {
       return null;
     }
 
     return ConnectionRequest(
       clientId,
       token,
+      displayCode,
     );
   }
 
@@ -42,7 +48,8 @@ class DirectConnectionServer {
     final connection = DirectConnection(websocket);
 
     // authenticate the connectin request
-    if (!_authenticationHandler(connectionRequest)) {
+    if (_verifyConnectRequest(connectionRequest) !=
+        ConnectRequestStatus.success) {
       // reject the connection
       connection.send(ChannelClosedMessage(
         Reason(

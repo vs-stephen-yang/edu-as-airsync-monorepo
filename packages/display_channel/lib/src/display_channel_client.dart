@@ -41,24 +41,28 @@ class DisplayChannelClient implements Channel {
   }
 
   void openTunnelChannel(
-    String displayCode,
-    String token,
-  ) {
+    String instanceIndex,
+    String token, {
+    required String displayCode,
+  }) {
     final parameters = <String, String>{
       'role': 'client',
-      'displayCode': displayCode,
+      'instanceIndex': instanceIndex,
     };
 
     _openChannel(
+      displayCode,
       token,
       parameters,
     );
   }
 
   void openDirectChannel(
-    String token,
-  ) {
+    String token, {
+    required String displayCode,
+  }) {
     _openChannel(
+      displayCode,
       token,
       {},
     );
@@ -81,11 +85,14 @@ class DisplayChannelClient implements Channel {
   }
 
   void _openChannel(
+    String displayCode,
     String token,
     Map<String, String> parameters,
   ) {
+    // common query parameters
     final uri = _uri.replace(queryParameters: {
       'clientId': _clientId,
+      'displayCode': displayCode,
       'token': token,
       ...parameters,
       ..._uri.queryParameters,
