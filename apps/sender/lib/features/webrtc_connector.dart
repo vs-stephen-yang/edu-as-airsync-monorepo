@@ -156,11 +156,12 @@ class WebRTCConnector {
       };
 
       _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
-    }
-    for (MediaStreamTrack track in _localStream!.getTracks()) {
-      _pc?.getSenders().then((value) async {
-        await value.first.replaceTrack(track);
-      });
+
+      for (MediaStreamTrack track in _localStream!.getTracks()) {
+        _pc?.getSenders().then((value) async {
+          await value.first.replaceTrack(track);
+        });
+      }
     }
   }
 
