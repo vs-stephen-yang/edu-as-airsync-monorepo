@@ -26,7 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "main_display_code": MessageLookupByLibrary.simpleMessage("投影辨識碼"),
         "main_display_code_description":
-            MessageLookupByLibrary.simpleMessage("投影辨識碼"),
+            MessageLookupByLibrary.simpleMessage("請輸入投影辨識碼"),
         "main_display_code_exceed":
             MessageLookupByLibrary.simpleMessage("已達到參與人員上限"),
         "main_display_code_exceed_split_screen":
@@ -35,7 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_language_name": MessageLookupByLibrary.simpleMessage("繁體中文"),
         "main_password": MessageLookupByLibrary.simpleMessage("一次性密碼"),
         "main_password_description":
-            MessageLookupByLibrary.simpleMessage("一次性密碼"),
+            MessageLookupByLibrary.simpleMessage("請輸入一次性密碼"),
         "main_password_invalid": MessageLookupByLibrary.simpleMessage("密碼錯誤"),
         "main_present": MessageLookupByLibrary.simpleMessage("投影"),
         "main_setting": MessageLookupByLibrary.simpleMessage("設定"),
@@ -53,6 +53,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("分享整個螢幕"),
         "present_select_screen_share":
             MessageLookupByLibrary.simpleMessage("分享"),
+        "present_select_screen_share_audio":
+            MessageLookupByLibrary.simpleMessage("分享音訊"),
         "present_select_screen_window":
             MessageLookupByLibrary.simpleMessage("分享應用程式視窗"),
         "present_state_pause": MessageLookupByLibrary.simpleMessage("暫停分享"),

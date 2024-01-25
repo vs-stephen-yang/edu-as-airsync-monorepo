@@ -1,8 +1,8 @@
 {
     "main_display_code": "投影辨識碼",
-    "main_display_code_description": "投影辨識碼",
+    "main_display_code_description": "請輸入投影辨識碼",
     "main_password": "一次性密碼",
-    "main_password_description": "一次性密碼",
+    "main_password_description": "請輸入一次性密碼",
     "main_present": "投影",
     "main_touch_back": "觸控反饋",
     "main_language": "語言",
@@ -29,5 +29,6 @@
     "main_password_invalid": "密碼錯誤",
     "main_display_code_exceed": "已達到參與人員上限",
     "main_display_code_exceed_split_screen": "已達到分割螢幕數量上限",
+    "present_select_screen_share_audio": "分享音訊",
     "main_language_name": "繁體中文"
 }

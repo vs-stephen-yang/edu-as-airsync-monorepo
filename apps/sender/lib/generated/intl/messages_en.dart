@@ -28,7 +28,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_display_code":
             MessageLookupByLibrary.simpleMessage("Display code"),
         "main_display_code_description":
-            MessageLookupByLibrary.simpleMessage("1 or 11-digit display code"),
+            MessageLookupByLibrary.simpleMessage("Please input display code"),
         "main_display_code_exceed": MessageLookupByLibrary.simpleMessage(
             "Maximum participants (6) reached."),
         "main_display_code_exceed_split_screen":
@@ -72,8 +72,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Stop presenting"),
         "present_time": MessageLookupByLibrary.simpleMessage("Time elapsed"),
         "present_time_unit_hour": MessageLookupByLibrary.simpleMessage("hr"),
-        "present_time_unit_min": MessageLookupByLibrary.simpleMessage("min"),
-        "present_time_unit_sec": MessageLookupByLibrary.simpleMessage("sec"),
+        "present_time_unit_min": MessageLookupByLibrary.simpleMessage("mins"),
+        "present_time_unit_sec": MessageLookupByLibrary.simpleMessage("secs"),
         "present_wait": m0,
         "remote_screen_wait": MessageLookupByLibrary.simpleMessage(
             "Waiting for presenter to share screen..."),
