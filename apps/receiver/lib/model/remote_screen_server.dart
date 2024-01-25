@@ -211,55 +211,56 @@ class RemoteScreenServer {
     }
   }
 
-  void enableTouchBySessionId(String sessionID ,bool enable) {
-    log('enableTouch: $sessionID $enable');
+  void onTextMessage(RTCDataChannelMessage data) async {
+    log('Received message: ${data.text}');
+  }
+
+  void onTouchMessage(RTCDataChannelMessage data, int dcIndex) async {
+    EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
+    if (eventMessage.hasTouchEvent()) {
+      int id = eventMessage.touchEvent.touchPoints[0].id;
+      int action = FlutterInputInjection.TOUCH_POINT_START;
+      if (eventMessage.touchEvent.eventType ==
+          TouchEvent_TouchEventType.TOUCH_POINT_START) {
+        action = FlutterInputInjection.TOUCH_POINT_START;
+      } else if (eventMessage.touchEvent.eventType ==
+          TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
+        action = FlutterInputInjection.TOUCH_POINT_MOVE;
+      } else if (eventMessage.touchEvent.eventType ==
+          TouchEvent_TouchEventType.TOUCH_POINT_END) {
+        action = FlutterInputInjection.TOUCH_POINT_END;
+      }
+
+      id = reassignEventId(dcIndex, id, action);
+      if (id == -1) {
+        return;
+      }
+
+      double remoteX = eventMessage.touchEvent.touchPoints[0].x;
+      double remoteY = eventMessage.touchEvent.touchPoints[0].y;
+
+      int injectX = (remoteX * _screenWidth).toInt();
+      injectX = injectX.clamp(0, _screenWidth.toInt() - 1);
+      int injectY = (remoteY * _screenHeight).toInt();
+      injectY = injectY.clamp(0, _screenHeight.toInt() - 1);
+
+      _flutterInputInjectionPlugin.sendTouch(
+          action, id, injectX, injectY);
+    }
+  }
+
+  void enableTouchBySessionId(String sessionID ,bool touchEnabled) {
+    log('enableTouch: $sessionID $touchEnabled');
     for (int i = 0; i < _dataChannels.length; i++) {
       if (_dataChannels[i].label == sessionID) {
-        if( enable ) {
-          int dcIndex = _dataChannels[i].id ?? i;
-          _dataChannels[i].onMessage = (data) async {
-            if (data.isBinary) {
-              EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
-              if (eventMessage.hasTouchEvent()) {
-                int action = FlutterInputInjection.TOUCH_POINT_START;
-                if (eventMessage.touchEvent.eventType ==
-                    TouchEvent_TouchEventType.TOUCH_POINT_START) {
-                  action = FlutterInputInjection.TOUCH_POINT_START;
-                } else if (eventMessage.touchEvent.eventType ==
-                    TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
-                  action = FlutterInputInjection.TOUCH_POINT_MOVE;
-                } else if (eventMessage.touchEvent.eventType ==
-                    TouchEvent_TouchEventType.TOUCH_POINT_END) {
-                  action = FlutterInputInjection.TOUCH_POINT_END;
-                }
-                double remoteX = eventMessage.touchEvent.touchPoints[0].x;
-                double remoteY = eventMessage.touchEvent.touchPoints[0].y;
-
-                int injectX = (remoteX * _screenWidth).toInt();
-                injectX = injectX.clamp(0, _screenWidth.toInt() - 1);
-                int injectY = (remoteY * _screenHeight).toInt();
-                injectY = injectY.clamp(0, _screenHeight.toInt() - 1);
-                int id = eventMessage.touchEvent.touchPoints[0].id;
-                id = reassignEventId(dcIndex, id, action);
-                if (id == -1) {
-                  return;
-                } else {
-                  _flutterInputInjectionPlugin.sendTouch(
-                      action, id, injectX, injectY);
-                }
-              }
-            } else {
-              log('dcCreate: Received message: ${data.text}');
-            }
-          };
-        } else {
-          _dataChannels[i].onMessage = (data) async {
-            if (!data.isBinary) {
-              log('dcCreate: Received message: ${data.text}');
-            }
-          };
-        }
-
+        int dcIndex = _dataChannels[i].id ?? i;
+        _dataChannels[i].onMessage = (data) async {
+          if (data.isBinary && touchEnabled) {
+            onTouchMessage(data, dcIndex);
+          } else {
+            onTextMessage(data);
+          }
+        };
         break;
       }
     }
