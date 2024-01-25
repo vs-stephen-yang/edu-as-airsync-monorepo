@@ -39,7 +39,7 @@ class ChannelProvider extends ChangeNotifier {
     _apiGateway = AppConfig.of(context)!.settings.urlGateway;
   }
 
-  DisplayChannelClient? _channel;
+  DisplayChannelClient? _channel, _tempLanChannel, _tempInternetChannel;
   final _clientId = const Uuid().v4(); // TODO:GENERATE IT? GET FROM DISPLAY?
   var _sessionId = const Uuid().v4();
   int port = 5100;
@@ -185,19 +185,37 @@ class ChannelProvider extends ChangeNotifier {
         }
       });
     } else {
-      await connectLanChannel(encodedDisplayCode.replaceAll('-', ''), (state, lanChannel) async {
-        if (state == ChannelState.connected) {
-          _channel = lanChannel;
-          setUpChannel(encodedDisplayCode);
-        } else if (state == ChannelState.closed) {
-          await connectInternetChannel(encodedDisplayCode.replaceAll('-', ''), (state, internetChannel) {
-            if (state == ChannelState.connected) {
-              _channel = internetChannel;
-              setUpChannel(encodedDisplayCode);
-            } else if (state == ChannelState.closed) {
+      bool lanResultBack = false, netResultBack = false;
+      connectLanChannel(encodedDisplayCode.replaceAll('-', ''), (state, lanChannel) {
+        if (_channel == null) {
+          if (state == ChannelState.connected) {
+            _tempInternetChannel?.close(ChannelCloseReason(ChannelCloseCode.close));
+            _channel = lanChannel;
+            setUpChannel(encodedDisplayCode);
+          } else if (state == ChannelState.closed) {
+            if (lanResultBack) {
+              _handleChannelCloseState(lanChannel?.closeReason);
+            }
+          }
+          netResultBack = true;
+        } else {
+          lanChannel?.close(ChannelCloseReason(ChannelCloseCode.close));
+        }
+      });
+      connectInternetChannel(encodedDisplayCode.replaceAll('-', ''), (state, internetChannel) {
+        if (_channel == null) {
+          if (state == ChannelState.connected) {
+            _tempLanChannel?.close(ChannelCloseReason(ChannelCloseCode.close));
+            _channel = internetChannel;
+            setUpChannel(encodedDisplayCode);
+          } else if (state == ChannelState.closed) {
+            if (netResultBack) {
               _handleChannelCloseState(internetChannel?.closeReason);
             }
-          });
+          }
+          lanResultBack = true;
+        } else {
+          internetChannel?.close(ChannelCloseReason(ChannelCloseCode.close));
         }
       });
     }
@@ -290,12 +308,11 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
-  Future connectLanChannel(String encodedDisplayCode, Function(ChannelState state, DisplayChannelClient? lanChannel) onState) async {
-    // Lan first
+  Future connectLanChannel(String displayCodeRaw, Function(ChannelState state, DisplayChannelClient? lanChannel) onState) async {
     String host = displayCode!.ipAddress;
     Uri? uri = Uri(scheme: 'ws', host: host, port: port);
 
-    DisplayChannelClient lanChannel = DisplayChannelClient(
+    _tempLanChannel = DisplayChannelClient(
         _clientId,
         uri,
         (url) => WebSocketClientConnection(url,
@@ -303,13 +320,13 @@ class ChannelProvider extends ChangeNotifier {
             maxRetryAttempts: 3,
             logger: (url, message) =>
                 print('lanChannel logger $url $message}')));
-    lanChannel.openDirectChannel(otp!, displayCode: encodedDisplayCode);
-    lanChannel.onStateChange = (ChannelState state) async {
-      await onState(state, lanChannel);
+    _tempLanChannel?.openDirectChannel(otp!, displayCode: displayCodeRaw);
+    _tempLanChannel?.onStateChange = (ChannelState state) {
+      onState(state, _tempLanChannel);
     };
   }
 
-  Future connectInternetChannel(String encodedDisplayCode, Function(ChannelState state, DisplayChannelClient? internetChannel) onState) async {
+  Future connectInternetChannel(String displayCodeRaw, Function(ChannelState state, DisplayChannelClient? internetChannel) onState) async {
     String displayIndex = displayCode!.instanceIndex.toString();
     _tunnelApiUrl = await _getTunnelUrl(displayIndex);
     if (_tunnelApiUrl == null) {
@@ -318,7 +335,7 @@ class ChannelProvider extends ChangeNotifier {
     }
 
     Uri? uri = Uri.parse(_tunnelApiUrl!);
-    DisplayChannelClient internetChannel = DisplayChannelClient(
+    _tempInternetChannel = DisplayChannelClient(
         _clientId,
         uri,
         (url) => WebSocketClientConnection(url,
@@ -326,9 +343,9 @@ class ChannelProvider extends ChangeNotifier {
             maxRetryAttempts: 3,
             logger: (url, message) =>
                 print('internetChannel logger  $url $message}')));
-    internetChannel.openTunnelChannel(displayIndex, otp!, displayCode: encodedDisplayCode);
-    internetChannel.onStateChange = (ChannelState state) async {
-      await onState(state, internetChannel);
+    _tempInternetChannel?.openTunnelChannel(displayIndex, otp!, displayCode: displayCodeRaw);
+    _tempInternetChannel?.onStateChange = (ChannelState state) {
+      onState(state, _tempInternetChannel);
     };
   }
 
