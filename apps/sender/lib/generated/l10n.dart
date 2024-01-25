@@ -60,10 +60,10 @@ class S {
     );
   }
 
-  /// `1 or 11-digit display code`
+  /// `Please input display code`
   String get main_display_code_description {
     return Intl.message(
-      '1 or 11-digit display code',
+      'Please input display code',
       name: 'main_display_code_description',
       desc: '',
       args: [],
@@ -220,20 +220,20 @@ class S {
     );
   }
 
-  /// `min`
+  /// `mins`
   String get present_time_unit_min {
     return Intl.message(
-      'min',
+      'mins',
       name: 'present_time_unit_min',
       desc: '',
       args: [],
     );
   }
 
-  /// `sec`
+  /// `secs`
   String get present_time_unit_sec {
     return Intl.message(
-      'sec',
+      'secs',
       name: 'present_time_unit_sec',
       desc: '',
       args: [],
@@ -370,16 +370,6 @@ class S {
     );
   }
 
-  /// `Waiting for presenter to share screen...`
-  String get remote_screen_wait {
-    return Intl.message(
-      'Waiting for presenter to share screen...',
-      name: 'remote_screen_wait',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Has reached maximum moderated session number.`
   String get toast_maximum_moderated {
     return Intl.message(
@@ -395,6 +385,16 @@ class S {
     return Intl.message(
       'Has reached maximum split screen session number.',
       name: 'toast_maximum_split_screen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for presenter to share screen...`
+  String get remote_screen_wait {
+    return Intl.message(
+      'Waiting for presenter to share screen...',
+      name: 'remote_screen_wait',
       desc: '',
       args: [],
     );

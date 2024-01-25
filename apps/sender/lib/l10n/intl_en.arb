@@ -1,6 +1,6 @@
 {
     "main_display_code": "Display code",
-    "main_display_code_description": "1 or 11-digit display code",
+    "main_display_code_description": "Please input display code",
     "main_password": "Password",
     "main_password_description": "4-digit one-time password",
     "main_present": "PRESENT",
@@ -16,8 +16,8 @@
     "present_select_screen_cancel": "Cancel",
     "present_time": "Time elapsed",
     "present_time_unit_hour": "hr",
-    "present_time_unit_min": "min",
-    "present_time_unit_sec": "sec",
+    "present_time_unit_min": "mins",
+    "present_time_unit_sec": "secs",
     "present_state_resume": "Resume",
     "present_state_pause": "Pause",
     "present_state_stop": "Stop presenting",
@@ -31,8 +31,8 @@
     "main_display_code_exceed_split_screen": "Maximum presenters (4) reached.",
     "present_select_screen_share_audio": "Share screen audio",
     "main_language_name": "English",
-    "remote_screen_wait": "Waiting for presenter to share screen...",
     "toast_maximum_moderated": "Has reached maximum moderated session number.",
     "toast_maximum_split_screen": "Has reached maximum split screen session number.",
+    "remote_screen_wait": "Waiting for presenter to share screen...",
     "main_display_code_invalid": "Display code invalid."
 }
