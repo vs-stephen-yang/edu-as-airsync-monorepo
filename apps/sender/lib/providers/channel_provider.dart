@@ -176,7 +176,7 @@ class ChannelProvider extends ChangeNotifier {
     this.otp = otp;
 
     if (kIsWeb) {
-      await connectInternetChannel(encodedDisplayCode, (state, internetChannel) {
+      await connectInternetChannel(encodedDisplayCode.replaceAll('-', ''), (state, internetChannel) {
         if (state == ChannelState.connected) {
           _channel = internetChannel;
           setUpChannel(encodedDisplayCode);
@@ -185,12 +185,12 @@ class ChannelProvider extends ChangeNotifier {
         }
       });
     } else {
-      await connectLanChannel(encodedDisplayCode, (state, lanChannel) async {
+      await connectLanChannel(encodedDisplayCode.replaceAll('-', ''), (state, lanChannel) async {
         if (state == ChannelState.connected) {
           _channel = lanChannel;
           setUpChannel(encodedDisplayCode);
         } else if (state == ChannelState.closed) {
-          await connectInternetChannel(encodedDisplayCode, (state, internetChannel) {
+          await connectInternetChannel(encodedDisplayCode.replaceAll('-', ''), (state, internetChannel) {
             if (state == ChannelState.connected) {
               _channel = internetChannel;
               setUpChannel(encodedDisplayCode);
@@ -285,7 +285,6 @@ class ChannelProvider extends ChangeNotifier {
       case ChannelState.connected:
         break;
       case ChannelState.closed:
-        presentEnd();
         _handleChannelCloseState(_channel?.closeReason);
         break;
     }
@@ -311,7 +310,6 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future connectInternetChannel(String encodedDisplayCode, Function(ChannelState state, DisplayChannelClient? internetChannel) onState) async {
-    // Lan first
     String displayIndex = displayCode!.instanceIndex.toString();
     _tunnelApiUrl = await _getTunnelUrl(displayIndex);
     if (_tunnelApiUrl == null) {
@@ -483,15 +481,13 @@ class ChannelProvider extends ChangeNotifier {
     ChannelCloseCode? reasonCode = closeReason?.code;
     switch (reasonCode) {
       case ChannelCloseCode.channelNotFound:
+      case ChannelCloseCode.invalidDisplayCode:
         presentEnd(goIdleState: false);
         setInvalidDisplayCode(true);
         break;
       case ChannelCloseCode.authenticationError:
         presentEnd(goIdleState: false);
         setInvalidOtp(true);
-        break;
-      case ChannelCloseCode.invalidDisplayCode:
-        // TODO:
         break;
       case ChannelCloseCode.close:
       case ChannelCloseCode.remoteClose:
