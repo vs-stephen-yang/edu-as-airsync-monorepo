@@ -56,6 +56,12 @@ class WebRTCConnector {
   final _flutterInputInjectionPlugin = FlutterInputInjection();
   Future<void> Function()? onWebStreamInterrupted;
 
+  Timer? _statsTimer;
+  final _statsTimerInterval = const Duration(seconds: 1);
+  int? _outboundVideoWidth;
+  int? _outboundVideoHeight;
+  int _outboundVideoCount = 0;
+
   Future<void> makeCall(
       String peerId, dynamic source, List<RtcIceServer>? iceServerList) async {
     dynamic deviceId;
@@ -83,6 +89,8 @@ class WebRTCConnector {
   }
 
   Future<void> hangUp() async {
+    stopStatsTimer();
+
     await _disposeStream();
     await _peerConnectionDisconnect();
   }
@@ -337,6 +345,8 @@ class WebRTCConnector {
     } catch (e) {
       debugModePrint(e, type: runtimeType);
     }
+
+    startStatsTimer();
   }
 
   /// handle signal message from Display, ex. offer, answer, candidates
@@ -468,5 +478,60 @@ class WebRTCConnector {
     message.sdpMid = candidate.sdpMid;
     message.sdpMLineIndex = candidate.sdpMLineIndex;
     sendSignalMessage(message);
+  }
+
+  void stopStatsTimer() {
+    _statsTimer?.cancel();
+    _statsTimer = null;
+  }
+
+  void startStatsTimer() {
+    _statsTimer?.cancel();
+
+    _statsTimer = Timer.periodic(
+      _statsTimerInterval,
+      (timer) async {
+        final reports = await _pc?.getStats(null);
+        if (reports != null) {
+          onStatsReports(reports);
+        }
+      },
+    );
+  }
+
+  void onStatsReports(List<StatsReport> reports) {
+    final outboundRtps = reports
+        .where((StatsReport report) => report.type == 'outbound-rtp')
+        .toList();
+
+    final videoOutboundRtps = outboundRtps
+        .where((StatsReport report) => report.values['kind'] == 'video')
+        .toList();
+
+    onVideoStatsReports(videoOutboundRtps);
+  }
+
+  void onVideoStatsReports(List<StatsReport> reports) {
+    if (reports.length != _outboundVideoCount) {
+      _outboundVideoCount = reports.length;
+      print('The number of outbound videos has changed to ${reports.length}');
+    }
+
+    if (reports.isEmpty) {
+      _outboundVideoWidth = null;
+      _outboundVideoHeight = null;
+    }
+
+    final videoOutboundRtp = reports.first;
+
+    final width = videoOutboundRtp.values['frameWidth'];
+    final height = videoOutboundRtp.values['frameHeight'];
+
+    if (_outboundVideoWidth != width || _outboundVideoHeight != height) {
+      _outboundVideoWidth = width;
+      _outboundVideoHeight = height;
+
+      print('Outbound video size has changed to ${width}x$height');
+    }
   }
 }
