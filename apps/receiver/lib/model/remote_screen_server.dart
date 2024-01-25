@@ -16,13 +16,13 @@ import 'package:display_flutter/protoc/internal.pb.dart';
 const DEFAULT_SCREEN_WIDTH = 1920.0;
 const DEFAULT_SCREEN_HEIGHT = 1080.0;
 const MAX_EVENT_ID = 255;
+
 class EventSlot {
   int channelId = -1;
   int eventId = -1;
 }
 
 class RemoteScreenServer {
-
   Client? _ionSfuClient;
   final FlutterIonSfu _ionSfuServer = FlutterIonSfu();
   bool _iosSfuServerStart = false;
@@ -31,13 +31,14 @@ class RemoteScreenServer {
   List<RTCDataChannel> _dataChannels = [];
   double _screenWidth = DEFAULT_SCREEN_WIDTH;
   double _screenHeight = DEFAULT_SCREEN_HEIGHT;
-  List<EventSlot> _eventSlots = List.generate(MAX_EVENT_ID, (index) => EventSlot());
+  List<EventSlot> _eventSlots =
+      List.generate(MAX_EVENT_ID, (index) => EventSlot());
   final _flutterInputInjectionPlugin = FlutterInputInjection();
 
   RemoteScreenServer();
 
   Future startSfuServer() async {
-    if(_iosSfuServerStart) return;
+    if (_iosSfuServerStart) return;
     final configuration = FlutterIonSfuConfiguration();
     await _ionSfuServer.initialize();
     await _ionSfuServer.start(configuration);
@@ -46,19 +47,22 @@ class RemoteScreenServer {
 
   Future startRemoteScreenPublisher() async {
     if (_ionSfuClient == null) {
-
       final ionSignal = JsonRPCSignal("ws://127.0.0.1:$roomPort/ws");
 
       final uuid = const Uuid().v4();
-      _ionSfuClient = await Client.create(sid: roomId, uid: uuid, signal: ionSignal,);
+      _ionSfuClient = await Client.create(
+        sid: roomId,
+        uid: uuid,
+        signal: ionSignal,
+      );
 
       _ionSfuClient!.ondatachannel = (RTCDataChannel dc) {
-        if(dc.label != API_CHANNEL) {
+        if (dc.label != API_CHANNEL) {
           log("ondatachannel: ${dc.label}");
           _dataChannels.add(dc);
 
           dc.onDataChannelState = (RTCDataChannelState state) {
-            if( state == RTCDataChannelState.RTCDataChannelClosed ) {
+            if (state == RTCDataChannelState.RTCDataChannelClosed) {
               releaseEventSlotsByDataChannel(dc);
               _dataChannels.removeWhere((item) => item.id == dc.id);
             }
@@ -109,9 +113,8 @@ class RemoteScreenServer {
         await requestBackgroundPermission();
       }
 
-      var localStream = await LocalStream.getDisplayMedia(
-          constraints: constraints
-      );
+      var localStream =
+          await LocalStream.getDisplayMedia(constraints: constraints);
       await _ionSfuClient?.publish(localStream);
     }
   }
@@ -121,7 +124,7 @@ class RemoteScreenServer {
     _ionSfuClient = null;
   }
 
-  Future<void> updateScreenSize() async{
+  Future<void> updateScreenSize() async {
     if (Platform.isWindows) {
       // PlatformDispatcher did not support get windows width and height yet.
       // Using window_size for workaround.
@@ -142,7 +145,8 @@ class RemoteScreenServer {
   int findSlotById(int channelId, int eventId) {
     int slot = -1;
     for (int i = 0; i < MAX_EVENT_ID; i++) {
-      if (_eventSlots[i].channelId == channelId && _eventSlots[i].eventId == eventId) {
+      if (_eventSlots[i].channelId == channelId &&
+          _eventSlots[i].eventId == eventId) {
         slot = i;
         break;
       }
@@ -190,7 +194,7 @@ class RemoteScreenServer {
   }
 
   int reassignEventId(int channelId, int eventId, int action) {
-    switch(action) {
+    switch (action) {
       case FlutterInputInjection.TOUCH_POINT_START:
         return acquireSlot(channelId, eventId);
       case FlutterInputInjection.TOUCH_POINT_MOVE:
@@ -205,7 +209,8 @@ class RemoteScreenServer {
   void releaseEventSlotsByDataChannel(RTCDataChannel dc) {
     for (int i = 0; i < MAX_EVENT_ID; i++) {
       if (_eventSlots[i].channelId == dc.id) {
-        _flutterInputInjectionPlugin.sendTouch(FlutterInputInjection.TOUCH_POINT_END, i, 0, 0);
+        _flutterInputInjectionPlugin.sendTouch(
+            FlutterInputInjection.TOUCH_POINT_END, i, 0, 0);
         releaseSlot(i);
       }
     }
@@ -244,12 +249,11 @@ class RemoteScreenServer {
       int injectY = (remoteY * _screenHeight).toInt();
       injectY = injectY.clamp(0, _screenHeight.toInt() - 1);
 
-      _flutterInputInjectionPlugin.sendTouch(
-          action, id, injectX, injectY);
+      _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
     }
   }
 
-  void enableTouchBySessionId(String sessionID ,bool touchEnabled) {
+  void enableTouchBySessionId(String sessionID, bool touchEnabled) {
     log('enableTouch: $sessionID $touchEnabled');
     for (int i = 0; i < _dataChannels.length; i++) {
       if (_dataChannels[i].label == sessionID) {
