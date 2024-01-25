@@ -290,10 +290,13 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   ConnectRequestStatus _verifyConnectRequest(ConnectionRequest connectionRequest) {
-    // TODO: check if the display code is valid
-    return otpList.contains(connectionRequest.token) ?
-      ConnectRequestStatus.success :
-      ConnectRequestStatus.invalidOtp;
+    if (connectionRequest.displayCode != displayCode) {
+      return ConnectRequestStatus.invalidDisplayCode;
+    } else if (!otpList.contains(connectionRequest.token)) {
+      return ConnectRequestStatus.invalidOtp;
+    } else {
+      return ConnectRequestStatus.success;
+    }
   }
 
   void sendDisplayStatus(Channel channel) {
