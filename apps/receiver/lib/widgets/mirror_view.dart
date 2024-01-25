@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -277,12 +278,13 @@ class MirrorView extends StatelessWidget {
                                     //TODO: found that AirPlay icon on iMac keeps under working state even calling clearRequestMirrorId()
                                     mirror.clearRequestMirrorId(index);
                                   },
-                                  child: Text(
+                                  child: AutoSizeText(
                                     S.of(context).main_mirror_prompt_cancel,
                                     style: const TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       color: Colors.blue,
                                     ),
+                                    maxLines: 1,
                                   ),
                                 ),
                                 FocusElevatedButton(
@@ -309,12 +311,13 @@ class MirrorView extends StatelessWidget {
                                     }
                                     mirror.setAcceptMirrorId(index);
                                   },
-                                  child: Text(
+                                  child: AutoSizeText(
                                     S.of(context).main_mirror_prompt_accept,
                                     style: const TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       color: Colors.white,
                                     ),
+                                    maxLines: 1,
                                   ),
                                 ),
                               ],
