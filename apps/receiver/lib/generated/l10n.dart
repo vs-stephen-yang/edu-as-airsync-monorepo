@@ -60,20 +60,20 @@ class S {
     );
   }
 
-  /// `myViewBoard Display Update`
+  /// `AirSync Update`
   String get update_title {
     return Intl.message(
-      'myViewBoard Display Update',
+      'AirSync Update',
       name: 'update_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `A new version of Display is available`
+  /// `A new version of software is available`
   String get update_message {
     return Intl.message(
-      'A new version of Display is available',
+      'A new version of software is available',
       name: 'update_message',
       desc: '',
       args: [],
@@ -90,10 +90,10 @@ class S {
     );
   }
 
-  /// `myViewBoard Display EULA`
+  /// `AirSync EULA`
   String get eula_title {
     return Intl.message(
-      'myViewBoard Display EULA',
+      'AirSync EULA',
       name: 'eula_title',
       desc: '',
       args: [],
@@ -130,10 +130,10 @@ class S {
     );
   }
 
-  /// `Display app is running in the background.`
+  /// `AirSync app is running in the background.`
   String get main_status_go_background {
     return Intl.message(
-      'Display app is running in the background.',
+      'AirSync app is running in the background.',
       name: 'main_status_go_background',
       desc: '',
       args: [],
@@ -190,10 +190,10 @@ class S {
     );
   }
 
-  /// `Thank you for using myViewBoard Display.`
+  /// `Thank you for using AirSync.`
   String get main_thanks_content {
     return Intl.message(
-      'Thank you for using myViewBoard Display.',
+      'Thank you for using AirSync.',
       name: 'main_thanks_content',
       desc: '',
       args: [],
@@ -220,20 +220,20 @@ class S {
     );
   }
 
-  /// `What’s New on Display?`
+  /// `What’s New on AirSync?`
   String get main_whats_new_title {
     return Intl.message(
-      'What’s New on Display?',
+      'What’s New on AirSync?',
       name: 'main_whats_new_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Update End User License Agreement.`
+  /// `[New Feature]\n1. Screen mirror\n - Miracast.\n - AirPlay.\n - Chromecast.\n2. Support multiple AirSync sender application\n - Windows sender application.\n - macOS sender application.\n - Android sender application.\n - iOS sender application.\n - Web sender.\n3. Split screen\n - By defaut AirSync supports up to 4-split screens.\n4. Moderator mode\n - By default AirSync supports up to 6 participants waiting room.\n - Moderator can freely choose participants to present and control the presentation.\n5. Share to sender\n - When enabled, up to 10 sender application can receive AirSync screen.`
   String get main_whats_new_content {
     return Intl.message(
-      'Update End User License Agreement.',
+      '[New Feature]\n1. Screen mirror\n - Miracast.\n - AirPlay.\n - Chromecast.\n2. Support multiple AirSync sender application\n - Windows sender application.\n - macOS sender application.\n - Android sender application.\n - iOS sender application.\n - Web sender.\n3. Split screen\n - By defaut AirSync supports up to 4-split screens.\n4. Moderator mode\n - By default AirSync supports up to 6 participants waiting room.\n - Moderator can freely choose participants to present and control the presentation.\n5. Share to sender\n - When enabled, up to 10 sender application can receive AirSync screen.',
       name: 'main_whats_new_content',
       desc: '',
       args: [],
@@ -300,10 +300,10 @@ class S {
     );
   }
 
-  /// `Launch Display on startup`
+  /// `Launch AirSync on startup`
   String get main_auto_startup {
     return Intl.message(
-      'Launch Display on startup',
+      'Launch AirSync on startup',
       name: 'main_auto_startup',
       desc: '',
       args: [],
@@ -420,10 +420,10 @@ class S {
     );
   }
 
-  /// `Device Name:`
+  /// `Name`
   String get main_cast_settings_device_name {
     return Intl.message(
-      'Device Name:',
+      'Name',
       name: 'main_cast_settings_device_name',
       desc: '',
       args: [],
@@ -530,30 +530,30 @@ class S {
     );
   }
 
-  /// `Share to sender`
+  /// `Share screen to device`
   String get main_settings_share_to_sender {
     return Intl.message(
-      'Share to sender',
+      'Share screen to device',
       name: 'main_settings_share_to_sender',
       desc: '',
       args: [],
     );
   }
 
-  /// `Up to 10 receivers can join.`
+  /// `Share screen up to 10 senders.`
   String get main_settings_share_to_sender_limit_desc {
     return Intl.message(
-      'Up to 10 receivers can join.',
+      'Share screen up to 10 senders.',
       name: 'main_settings_share_to_sender_limit_desc',
       desc: '',
       args: [],
     );
   }
 
-  /// `You’re currently offline`
+  /// `Poor network connection detected.\nPlease check your connectivity.`
   String get main_status_no_network {
     return Intl.message(
-      'You’re currently offline',
+      'Poor network connection detected.\nPlease check your connectivity.',
       name: 'main_status_no_network',
       desc: '',
       args: [],
@@ -580,11 +580,31 @@ class S {
     );
   }
 
-  /// `Device name`
+  /// `Name`
   String get main_settings_device_name_hint {
     return Intl.message(
-      'Device name',
+      'Name',
       name: 'main_settings_device_name_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CANCEL`
+  String get main_settings_device_name_cancel {
+    return Intl.message(
+      'CANCEL',
+      name: 'main_settings_device_name_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SAVE`
+  String get main_settings_device_name_save {
+    return Intl.message(
+      'SAVE',
+      name: 'main_settings_device_name_save',
       desc: '',
       args: [],
     );

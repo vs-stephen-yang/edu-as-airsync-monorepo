@@ -24,12 +24,11 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "eula_agree": MessageLookupByLibrary.simpleMessage("同意"),
         "eula_disagree": MessageLookupByLibrary.simpleMessage("不同意"),
-        "eula_title": MessageLookupByLibrary.simpleMessage(
-            "myViewBoard Display 終端使用者授權合約"),
+        "eula_title": MessageLookupByLibrary.simpleMessage("AirSync 終端使用者授權合約"),
         "main_airplay_pin_code":
             MessageLookupByLibrary.simpleMessage("AirPlay密碼"),
         "main_auto_startup":
-            MessageLookupByLibrary.simpleMessage("開機後自動執行Display"),
+            MessageLookupByLibrary.simpleMessage("開機後自動執行 AirSync"),
         "main_cast_settings_airplay":
             MessageLookupByLibrary.simpleMessage("AirPlay"),
         "main_cast_settings_device_name":
@@ -58,7 +57,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_mirror_prompt_cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "main_register_display_code_failure":
             MessageLookupByLibrary.simpleMessage("取得投影辨識碼失敗，請稍後再試"),
+        "main_settings_device_name": MessageLookupByLibrary.simpleMessage("名稱"),
+        "main_settings_device_name_cancel":
+            MessageLookupByLibrary.simpleMessage("取消"),
+        "main_settings_device_name_hint":
+            MessageLookupByLibrary.simpleMessage("名稱"),
+        "main_settings_device_name_save":
+            MessageLookupByLibrary.simpleMessage("儲存"),
+        "main_settings_device_name_title":
+            MessageLookupByLibrary.simpleMessage("設定名稱"),
         "main_settings_language": MessageLookupByLibrary.simpleMessage("語言"),
+        "main_settings_share_to_sender":
+            MessageLookupByLibrary.simpleMessage("分享畫面到設備端"),
+        "main_settings_share_to_sender_limit_desc":
+            MessageLookupByLibrary.simpleMessage("最多可分享畫面到10個接收端"),
         "main_settings_title": MessageLookupByLibrary.simpleMessage("設定"),
         "main_settings_whats_new": MessageLookupByLibrary.simpleMessage("最新消息"),
         "main_split_screen_question":
@@ -67,15 +79,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_split_screen_waiting":
             MessageLookupByLibrary.simpleMessage("分割畫面已啟動"),
         "main_status_go_background":
-            MessageLookupByLibrary.simpleMessage("Display App 背景執行中"),
+            MessageLookupByLibrary.simpleMessage("AirSync 背景執行中"),
+        "main_status_no_network":
+            MessageLookupByLibrary.simpleMessage("網路品質不良\n請檢查網路連線"),
         "main_status_remaining_time":
             MessageLookupByLibrary.simpleMessage("%02d min : %02d sec"),
         "main_thanks_content":
-            MessageLookupByLibrary.simpleMessage("感謝您使用 myViewBoard Display"),
+            MessageLookupByLibrary.simpleMessage("感謝您使用 AirSync"),
         "main_wait_title": MessageLookupByLibrary.simpleMessage("等待投影中..."),
         "main_wait_up_next": MessageLookupByLibrary.simpleMessage("下一位投影者"),
-        "main_whats_new_content":
-            MessageLookupByLibrary.simpleMessage("更新終端使用者授權合約"),
+        "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
+            "[新功能]\n1. 支援螢幕鏡射\n - Miracast\n - AirPlay\n - Chromecast\n2. 提供多版本的螢幕分享傳送端應用軟體\n - Windows版本\n - macOS版本\n - Android版本\n - iOS版本\n - Web版本\n3. 分割螢幕\n - AirSync最多支援四分割螢幕，可同時允許四個螢幕投屏\n4. 主持人模式\n - AirSync最多同時允許六人連線\n - 主持人可自由選擇投影人員並控制投影過程\n5. 分享畫面至傳送端應用軟體\n - 最多可分享AirSync螢幕至十個傳送端應用軟體"),
         "main_whats_new_title": MessageLookupByLibrary.simpleMessage("最新消息"),
         "moderator_activate_split_screen":
             MessageLookupByLibrary.simpleMessage("確定啟用分割畫面功能嗎?最多可四人同時投影。"),
@@ -95,8 +109,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("抱歉，出現問題，請稍後再試。"),
         "update_install_now": MessageLookupByLibrary.simpleMessage("立即安裝"),
         "update_message": MessageLookupByLibrary.simpleMessage("已有新版本可供安裝"),
-        "update_title":
-            MessageLookupByLibrary.simpleMessage("myViewBoard Display 更新"),
+        "update_title": MessageLookupByLibrary.simpleMessage("AirSync 更新"),
         "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage("更新下載中")
       };
 }

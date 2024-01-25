@@ -102,7 +102,7 @@ class _InstanceNameEditorDialogState extends State<InstanceNameEditorDialog> {
                       navService.goBack();
                     },
                     child: AutoSizeText(
-                      S.of(context).moderator_cancel,
+                      S.of(context).main_settings_device_name_cancel,
                       style: const TextStyle(color: AppColors.primary_grey),
                     ),
                   ),
@@ -120,9 +120,9 @@ class _InstanceNameEditorDialogState extends State<InstanceNameEditorDialog> {
                             _clickSaveName(_nameController.text);
                           }
                         : null,
-                    child: const AutoSizeText(
-                      'Save',
-                      style: TextStyle(color: Colors.white),
+                    child: AutoSizeText(
+                      S.of(context).main_settings_device_name_save,
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ],

@@ -24,16 +24,15 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "eula_agree": MessageLookupByLibrary.simpleMessage("I Agree"),
         "eula_disagree": MessageLookupByLibrary.simpleMessage("I Disagree"),
-        "eula_title":
-            MessageLookupByLibrary.simpleMessage("myViewBoard Display EULA"),
+        "eula_title": MessageLookupByLibrary.simpleMessage("AirSync EULA"),
         "main_airplay_pin_code":
             MessageLookupByLibrary.simpleMessage("AirPlay Code"),
         "main_auto_startup":
-            MessageLookupByLibrary.simpleMessage("Launch Display on startup"),
+            MessageLookupByLibrary.simpleMessage("Launch AirSync on startup"),
         "main_cast_settings_airplay":
             MessageLookupByLibrary.simpleMessage("AirPlay"),
         "main_cast_settings_device_name":
-            MessageLookupByLibrary.simpleMessage("Device Name:"),
+            MessageLookupByLibrary.simpleMessage("Name"),
         "main_cast_settings_google_cast":
             MessageLookupByLibrary.simpleMessage("Chromecast"),
         "main_cast_settings_miracast":
@@ -63,17 +62,21 @@ class MessageLookup extends MessageLookupByLibrary {
             "Failure to get Display Code and One Time Password. This may be due to a network or server issue. Please try again later when connection is restored."),
         "main_settings_device_name":
             MessageLookupByLibrary.simpleMessage("Name"),
+        "main_settings_device_name_cancel":
+            MessageLookupByLibrary.simpleMessage("CANCEL"),
         "main_settings_device_name_hint":
-            MessageLookupByLibrary.simpleMessage("Device name"),
+            MessageLookupByLibrary.simpleMessage("Name"),
+        "main_settings_device_name_save":
+            MessageLookupByLibrary.simpleMessage("SAVE"),
         "main_settings_device_name_title":
             MessageLookupByLibrary.simpleMessage("Rename device"),
         "main_settings_language":
             MessageLookupByLibrary.simpleMessage("Language"),
         "main_settings_share_to_sender":
-            MessageLookupByLibrary.simpleMessage("Share to sender"),
+            MessageLookupByLibrary.simpleMessage("Share screen to device"),
         "main_settings_share_to_sender_limit_desc":
             MessageLookupByLibrary.simpleMessage(
-                "Up to 10 receivers can join."),
+                "Share screen up to 10 senders."),
         "main_settings_title": MessageLookupByLibrary.simpleMessage("Settings"),
         "main_settings_whats_new":
             MessageLookupByLibrary.simpleMessage("What\'s New?"),
@@ -84,20 +87,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_split_screen_waiting": MessageLookupByLibrary.simpleMessage(
             "Split screen enabled. Waiting for presenter to share screen..."),
         "main_status_go_background": MessageLookupByLibrary.simpleMessage(
-            "Display app is running in the background."),
-        "main_status_no_network":
-            MessageLookupByLibrary.simpleMessage("You’re currently offline"),
+            "AirSync app is running in the background."),
+        "main_status_no_network": MessageLookupByLibrary.simpleMessage(
+            "Poor network connection detected.\nPlease check your connectivity."),
         "main_status_remaining_time":
             MessageLookupByLibrary.simpleMessage("%02d min : %02d sec"),
         "main_thanks_content": MessageLookupByLibrary.simpleMessage(
-            "Thank you for using myViewBoard Display."),
+            "Thank you for using AirSync."),
         "main_wait_title": MessageLookupByLibrary.simpleMessage(
             "Waiting for presenter to share screen..."),
         "main_wait_up_next": MessageLookupByLibrary.simpleMessage("UP NEXT"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "Update End User License Agreement."),
+            "[New Feature]\n1. Screen mirror\n - Miracast.\n - AirPlay.\n - Chromecast.\n2. Support multiple AirSync sender application\n - Windows sender application.\n - macOS sender application.\n - Android sender application.\n - iOS sender application.\n - Web sender.\n3. Split screen\n - By defaut AirSync supports up to 4-split screens.\n4. Moderator mode\n - By default AirSync supports up to 6 participants waiting room.\n - Moderator can freely choose participants to present and control the presentation.\n5. Share to sender\n - When enabled, up to 10 sender application can receive AirSync screen."),
         "main_whats_new_title":
-            MessageLookupByLibrary.simpleMessage("What’s New on Display?"),
+            MessageLookupByLibrary.simpleMessage("What’s New on AirSync?"),
         "moderator_activate_split_screen": MessageLookupByLibrary.simpleMessage(
             "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once."),
         "moderator_cancel": MessageLookupByLibrary.simpleMessage("CANCEL"),
@@ -117,9 +120,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_install_now":
             MessageLookupByLibrary.simpleMessage("INSTALL NOW"),
         "update_message": MessageLookupByLibrary.simpleMessage(
-            "A new version of Display is available"),
-        "update_title":
-            MessageLookupByLibrary.simpleMessage("myViewBoard Display Update"),
+            "A new version of software is available"),
+        "update_title": MessageLookupByLibrary.simpleMessage("AirSync Update"),
         "vbs_ota_progress_msg":
             MessageLookupByLibrary.simpleMessage("Downloading system updates")
       };
