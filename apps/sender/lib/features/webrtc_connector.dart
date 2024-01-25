@@ -235,9 +235,9 @@ class WebRTCConnector {
       final modifiedCapabilities = capabilities.codecs!
           .where((codec) => desiredOrder.contains(codec.mimeType))
           .toList()
-        ..sort((a, b) =>
-            desiredOrder.indexOf(a.mimeType).compareTo(
-                desiredOrder.indexOf(b.mimeType)));
+        ..sort((a, b) => desiredOrder
+            .indexOf(a.mimeType)
+            .compareTo(desiredOrder.indexOf(b.mimeType)));
 
       List<RTCRtpTransceiver> transceivers = await _pc!.transceivers;
       for (var transceiver in transceivers) {
@@ -254,7 +254,6 @@ class WebRTCConnector {
   }
 
   void _modifySDPForCodecPreferences(RTCSessionDescription description) {
-
     var capSel = sdpFormatUtils.CodecCapabilitySelector(description.sdp!);
     var acaps = capSel.getCapabilities('audio');
     if (acaps != null) {
@@ -268,14 +267,16 @@ class WebRTCConnector {
     var vcaps = capSel.getCapabilities('video');
     if (vcaps != null) {
       vcaps.codecs = vcaps.codecs
-          .where((e) => (e['codec'] as String).toLowerCase() == _codecPreferences[0])
+          .where((e) =>
+              (e['codec'] as String).toLowerCase() == _codecPreferences[0])
           .toList();
       vcaps.setCodecPreferences('video', vcaps.codecs);
       capSel.setCapabilities(vcaps);
     }
     description.sdp = capSel.sdp();
 
-    debugModePrint('modifySDPForCodecPreferences vcodec:' + _codecPreferences[0]);
+    debugModePrint(
+        'modifySDPForCodecPreferences vcodec:' + _codecPreferences[0]);
   }
 
   Future<void> _publish() async {
