@@ -233,7 +233,7 @@ class ChannelProvider extends ChangeNotifier {
                 _remoteScreenServe.roomPort,
                 message as JoinDisplayMessage);
             remoteScreenConnector?.onChannelDisconnect = (() async {
-              removeSender(remoteScreenConnector: remoteScreenConnector);
+              removeSender(remoteScreenConnector: remoteScreenConnector, kick: false);
             });
             _remoteScreenConnectors.add(remoteScreenConnector!);
           }
@@ -494,11 +494,13 @@ class ChannelProvider extends ChangeNotifier {
     return RtcConnectorList.rtcConnectorList[index].getAudioState();
   }
 
-  removeSender({RemoteScreenConnector? remoteScreenConnector}) {
+  removeSender({RemoteScreenConnector? remoteScreenConnector, bool kick = true}) {
     if (remoteScreenConnector != null) {
       int index = remoteScreenConnectors.indexOf(remoteScreenConnector);
       if (index != -1) {
-        remoteScreenConnector.sendRemoteScreenState(RemoteScreenStatus.kicked);
+        if (kick) {
+          remoteScreenConnector.sendRemoteScreenState(RemoteScreenStatus.kicked);
+        }
         remoteScreenConnectors.removeAt(index);
       }
     } else {
