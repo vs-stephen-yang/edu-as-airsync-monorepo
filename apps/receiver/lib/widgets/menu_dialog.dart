@@ -61,7 +61,7 @@ class MenuDialog extends StatelessWidget {
                           splashRadius: 20,
                           focusColor: Colors.grey,
                           onClick: () {
-                            navService.popUntil('/home');
+                            navService.goBack();
                           },
                         ),
                       ),
