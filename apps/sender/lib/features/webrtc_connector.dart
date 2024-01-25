@@ -135,7 +135,8 @@ class WebRTCConnector {
     if (kIsWeb || Platform.isAndroid) {
       final constraints = <String, dynamic>{
         'frameRate': msg.frameRate,
-        'height': _trackHeight.toString(),
+        'width': _trackWidth,
+        'height': _trackHeight,
       };
 
       final videoTrack = _localStream?.getVideoTracks().first;
