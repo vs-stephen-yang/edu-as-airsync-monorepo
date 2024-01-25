@@ -6,6 +6,7 @@ import 'package:display_cast_flutter/features/webrtc_connector.dart';
 import 'package:display_cast_flutter/model/remote_screen_client.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/audio_switch.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_channel/display_channel.dart';
@@ -351,6 +352,20 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<void> presentStart(
       {required dynamic selectedSource, bool systemAudio = false}) async {
+    if (AudioSwitch.getInstance().isSupported()) {
+      // check 'AirSyncAudio' speaker and mic exists or not
+      bool checkAudioSwitch = await  AudioSwitch.getInstance().checkAirSyncAudio();
+      if (checkAudioSwitch) {
+        // remember current input/output device
+        await AudioSwitch.getInstance().rememberOriginalDevice();
+        // get 'AirSyncAudio' input/output device
+        await AudioSwitch.getInstance().setAirSyncAudio();
+      } else {
+        // for test only
+        Toast.makeToast('please install AirSyncAudio\'s driver');
+      }
+    }
+
     // PeerConnect
     webRTCConnector = WebRTCConnector(
       _urlIce,
@@ -382,6 +397,10 @@ class ChannelProvider extends ChangeNotifier {
       await closeChannel();
     } catch (e) {
       debugModePrint(e, type: runtimeType);
+    }
+
+    if (AudioSwitch.getInstance().isSupported()) {
+      await AudioSwitch.getInstance().restoreOriginalDevice();
     }
 
     if (goIdleState) {
