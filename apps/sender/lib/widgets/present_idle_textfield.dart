@@ -42,19 +42,18 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
       if (_codeFocusNode.hasFocus) {
         _codeController.selection = TextSelection(
             baseOffset: 0, extentOffset: _codeController.text.length);
-      } else {
-        Future.delayed(const Duration(milliseconds: 200), () {
-          if (_isOverlayVisible) {
-            _isOverlayVisible = false;
-            _overlayEntry.remove();
-          }
-        });
       }
     });
     _otpFocusNode.addListener(() {
       if (_otpFocusNode.hasFocus) {
         _otpController.selection = TextSelection(
             baseOffset: 0, extentOffset: _otpController.text.length);
+        // User use "TAB" key to move to OTP input text field,
+        // remove display code overlay
+        if (_isOverlayVisible) {
+          _isOverlayVisible = false;
+          _overlayEntry.remove();
+        }
       }
     });
   }
@@ -68,52 +67,63 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
     super.dispose();
   }
 
-  /// the height of every item is 40
+  /// the height of every item is 50
   /// the scroll bar should show up when over 5 items
   /// the max height of the overlay area is 200
-  OverlayEntry _createOverlayEntry() {
+  OverlayEntry _createOverlayEntry(List displayList) {
     return OverlayEntry(builder: (builder) {
       return Stack(
         children: <Widget>[
           // Check range outside listview
+          GestureDetector(
+            onTap: () {
+              _isOverlayVisible = false;
+              _overlayEntry.remove();
+            },
+            child: Container(
+              color: Colors.transparent, // 設置為透明色
+              width: double.infinity,
+              height: double.infinity,
+            ),
+          ),
           Positioned(
-              width: 250,
-              height: DataDisplayCode.getInstance().displayCodeList!.length > 5
-                  ? 200
-                  : DataDisplayCode.getInstance().displayCodeList!.length * 40,
-              child: CompositedTransformFollower(
-                offset: const Offset(0, 50),
-                link: _layerLink,
-                child: Material(
-                  child: DataDisplayCode.getInstance().displayCodeList == null
-                      ? const SizedBox()
-                      : Scrollbar(
-                          child: ListView.builder(
-                          itemCount: DataDisplayCode.getInstance()
-                              .displayCodeList!
-                              .length,
-                          itemBuilder: (BuildContext context, int index) {
-                            List list =
-                                DataDisplayCode.getInstance().displayCodeList!.reversed.toList();
-                            return InkWell(
-                              child: Container(
-                                  height: 40,
-                                  alignment: Alignment.centerLeft,
-                                  padding: const EdgeInsets.only(left: 15),
-                                  color: Colors.black12,
-                                  child: Text(list[index])),
-                              onTap: () {
-                                _codeController.text = list[index];
-                                if (_isOverlayVisible) {
-                                  _isOverlayVisible = false;
-                                  _overlayEntry.remove();
-                                }
-                              },
-                            );
+            width: 250,
+            height: displayList.length > 5 ? 200 : displayList.length * 50,
+            child: CompositedTransformFollower(
+              offset: const Offset(0, 50),
+              link: _layerLink,
+              child: Material(
+                child: ClipRRect(
+                  child: ListView.builder(
+                    itemCount: displayList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Dismissible(
+                        key: Key(displayList[index]),
+                        background: Container(color: Colors.red),
+                        onDismissed: (direction) {
+                          setState(() {
+                            DataDisplayCode.getInstance()
+                                .remove(displayList[index]);
+                            displayList.removeAt(index);
+                            _isOverlayVisible = false;
+                            _overlayEntry.remove();
+                          });
+                        },
+                        child: ListTile(
+                          title: Text(displayList[index]),
+                          onTap: () {
+                            _codeController.text = displayList[index];
+                            _isOverlayVisible = false;
+                            _overlayEntry.remove();
                           },
-                        )),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ))
+              ),
+            ),
+          )
         ],
       );
     });
@@ -128,7 +138,8 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
             ?.setErrorMsg(S.of(context).main_display_code_exceed);
       }
       if (channelProvider.invalidDisplayCode) {
-        codeKey.currentState?.setErrorMsg(S.of(context).main_display_code_invalid);
+        codeKey.currentState
+            ?.setErrorMsg(S.of(context).main_display_code_invalid);
       }
       if (channelProvider.invalidOtp) {
         otpKey.currentState?.setErrorMsg(S.of(context).main_password_invalid);
@@ -167,11 +178,11 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                     password: _otpController.text));
               },
               onTap: () async {
-                await DataDisplayCode.getInstance().load();
-                if (!_isOverlayVisible &&
-                    DataDisplayCode.getInstance().displayCodeList != null) {
+                List? displayList = await DataDisplayCode.getInstance().load();
+                if (!_isOverlayVisible && displayList != null) {
                   _isOverlayVisible = true;
-                  _overlayEntry = _createOverlayEntry();
+                  _overlayEntry =
+                      _createOverlayEntry(displayList.reversed.toList());
                   Overlay.of(context).insert(_overlayEntry);
                 }
               },
