@@ -30,38 +30,9 @@ class _SettingsState extends State<Settings> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      listSettings.clear();
-      listSettings.putIfAbsent(
-          SettingItems(
-            const Image(
-              image: Svg('assets/images/ic_receiver.svg'),
-              width: 32, // define size for placeholder
-              height: 32, // define size for placeholder
-            ),
-            S.of(context).main_settings_share_to_sender,
-          ),
-          () => () {
-                _showMenuDialog(const SenderMenuView());
-              });
-      listSettings.putIfAbsent(
-          SettingItems(
-            const Icon(Icons.language, size: 32.0),
-            S.of(context).main_settings_language,
-          ),
-          () => () {
-                AppAnalytics().trackEventAppLanguageClick();
-                _showMenuDialog(const LanguageSelection());
-              });
-      listSettings.putIfAbsent(
-          SettingItems(
-            const Icon(Icons.campaign, size: 32.0),
-            S.of(context).main_settings_whats_new,
-          ),
-          () => () {
-                AppAnalytics().trackEventAppWhatsNewsClick();
-                _showMenuDialog(const WhatsNew());
-              });
-      setState(() {});
+      setState(() {
+        _addSettingsToList();
+      });
     });
   }
 
@@ -136,6 +107,43 @@ class _SettingsState extends State<Settings> {
     );
   }
 
+  _addSettingsToList() {
+    listSettings.clear();
+    listSettings.putIfAbsent(
+      SettingItems(
+        const Image(
+          image: Svg('assets/images/ic_receiver.svg'),
+          width: 32, // define size for placeholder
+          height: 32, // define size for placeholder
+        ),
+        S.of(context).main_settings_share_to_sender,
+      ),
+      () => () {
+        _showMenuDialog(const SenderMenuView());
+      },
+    );
+    listSettings.putIfAbsent(
+      SettingItems(
+        const Icon(Icons.language, size: 32.0),
+        S.of(context).main_settings_language,
+      ),
+      () => () {
+        AppAnalytics().trackEventAppLanguageClick();
+        _showMenuDialog(const LanguageSelection());
+      },
+    );
+    listSettings.putIfAbsent(
+      SettingItems(
+        const Icon(Icons.campaign, size: 32.0),
+        S.of(context).main_settings_whats_new,
+      ),
+      () => () {
+        AppAnalytics().trackEventAppWhatsNewsClick();
+        _showMenuDialog(const WhatsNew());
+      },
+    );
+  }
+
   _callInstanceNameEditorDialog() async {
     await showDialog(
         context: context,
@@ -146,15 +154,22 @@ class _SettingsState extends State<Settings> {
     });
   }
 
-  _showMenuDialog(Widget widget) {
+  _showMenuDialog(Widget widget) async {
     FocusScope.of(context).unfocus();
-    showDialog(
+    await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
         return widget;
       },
-    );
+    ).then((_) {
+      setState(() {
+        // After change language, the settings list need re-create
+        // to using new language text.
+        _addSettingsToList();
+        FocusScope.of(context).requestFocus();
+      });
+    });
   }
 }
 
