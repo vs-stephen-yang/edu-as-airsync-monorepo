@@ -34,6 +34,7 @@ class _FocusSingleChildScrollViewState
         thumbColor: Colors.white,
         child: SingleChildScrollView(
           controller: _scrollController,
+          padding: const EdgeInsets.all(5),
           child: Text(
             widget.textContent,
             style: TextStyle(
