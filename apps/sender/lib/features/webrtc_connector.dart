@@ -131,23 +131,30 @@ class WebRTCConnector {
       _trackWidth = _maxTrackWidth ~/ (_maxTrackHeight / msg.height);
       _trackHeight = msg.height;
     }
-    final constraints = <String, dynamic>{
-      'audio': _isAudioCaptureAllowed(),
-      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
-          ? true
-          : {
-              'deviceId': _deviceId,
-              'mandatory': {
-                'frameRate': msg.frameRate,
-              },
-              'width': _trackWidth.toString(),
-              'height': _trackHeight.toString(),
-            }
-    };
 
     if (kIsWeb || Platform.isAndroid) {
-      await _localStream?.getVideoTracks().first.applyConstraints(constraints);
+      final constraints = <String, dynamic>{
+        'frameRate': msg.frameRate,
+        'height': _trackHeight.toString(),
+      };
+
+      final videoTrack = _localStream?.getVideoTracks().first;
+      await videoTrack?.applyConstraints(constraints);
     } else {
+      final constraints = <String, dynamic>{
+        'audio': _isAudioCaptureAllowed(),
+        'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
+            ? true
+            : {
+                'deviceId': _deviceId,
+                'mandatory': {
+                  'frameRate': msg.frameRate,
+                },
+                'width': _trackWidth.toString(),
+                'height': _trackHeight.toString(),
+              }
+      };
+
       _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
     }
     for (MediaStreamTrack track in _localStream!.getTracks()) {
