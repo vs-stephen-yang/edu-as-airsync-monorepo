@@ -45,4 +45,17 @@ class DataDisplayCode {
     _displayCodeBox = await _openBox();
     return _displayCodeList = _displayCodeBox?.values.toList();
   }
+
+  Future<void> remove(String displayCode) async {
+    _displayCodeBox = await _openBox();
+
+    var list = _displayCodeBox?.values.toList();
+    list?.remove(displayCode);
+
+    await _displayCodeBox?.clear();
+
+    list?.forEach((element) async {
+      await _displayCodeBox?.add(element);
+    });
+  }
 }
