@@ -140,7 +140,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         //add
         supportedLocales: S.delegate.supportedLocales,
         locale: _locale,
-        title: 'myViewBoard Display',
+        title: 'AirSync',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,

@@ -43,7 +43,7 @@
         android:name="${applicationName}"
         android:banner="@drawable/banner"
         android:icon="@mipmap/ic_launcher"
-        android:label="myViewBoard Display"
+        android:label="AirSync"
         android:resizeableActivity="true">
         <activity
             android:name=".EulaActivity"
