@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:developer';
 
+import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/model/remote_screen_utils.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu.dart';
@@ -72,12 +73,14 @@ class RemoteScreenServer {
       };
 
       await updateScreenSize();
+      String? deviceType = await DeviceInfoVs.deviceType;
 
       final captureResolution = getCaptureVideoResolution(
+        deviceType,
         _screenWidth,
         _screenHeight,
       );
-      log('Set capture resolution ${captureResolution.name} for a ${_screenWidth}x$_screenHeight screen');
+      log('Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
 
       var constraints = Constraints.defaults;
       // Note: ion-sdk-flutter currently hard-code H264, so the settings here
