@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(display_flutter LANGUAGES CXX)
 
-set(BINARY_NAME "myViewBoard Display")
+set(BINARY_NAME "AirSync")
 
 cmake_policy(SET CMP0063 NEW)
 

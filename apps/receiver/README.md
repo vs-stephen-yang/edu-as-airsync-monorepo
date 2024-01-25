@@ -1,6 +1,6 @@
 # display_flutter
 
-myViewBoard Display for Flutter [Android(java), iOS(swift), MacOS, Web, Windows)]
+AirSync for Flutter [Android(java), iOS(swift), MacOS, Web, Windows)]
 
 ## Getting Started
 
