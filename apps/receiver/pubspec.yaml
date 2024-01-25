@@ -43,7 +43,7 @@ dependencies:
   device_info_plus: ^9.1.1
   encrypt: ^5.0.3
   uuid: ^4.3.3
-  http: ^1.1.0
+  http: ^1.2.0
   path_provider: ^2.1.2
   http_parser: ^4.0.2
   intl: ^0.18.1
@@ -91,6 +91,10 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter
       ref: release-0.0.9
+  flutter_input_injection:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection
+      ref: release-0.3.0
   flutter_ion_sfu:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-ion-sfu
@@ -99,10 +103,6 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror
       ref: release-0.25.0
-  flutter_input_injection:
-    git:
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection
-      ref: release-0.3.0
   # ViewSonic plug-in
 
 dev_dependencies:
