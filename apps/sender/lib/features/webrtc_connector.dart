@@ -141,6 +141,8 @@ class WebRTCConnector {
 
       final videoTrack = _localStream?.getVideoTracks().first;
       await videoTrack?.applyConstraints(constraints);
+    } else if (WebRTC.platformIsIOS) {
+      // TODO:
     } else {
       final constraints = <String, dynamic>{
         'audio': _isAudioCaptureAllowed(),
