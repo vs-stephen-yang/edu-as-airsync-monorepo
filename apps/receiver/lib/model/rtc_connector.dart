@@ -16,6 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
+import 'package:display_flutter/utility/log.dart';
 
 import 'connect_timer.dart';
 
@@ -30,6 +31,8 @@ class RTCConnector {
   String? senderName;
   String? senderVersion;
   String? senderPlatform;
+
+  static final _log = getDefaultLogger();
 
   final Map<String, dynamic> _configuration = {
     'sdpSemantics': 'unified-plan',
@@ -81,6 +84,7 @@ class RTCConnector {
   }
 
   Future<void> _onChannelState(ChannelState state) async {
+    _log.info('[$clientId] Channel has changed state to $state');
     switch (state) {
       case ChannelState.initialized:
         break;
@@ -269,6 +273,7 @@ class RTCConnector {
       await _remoteRenderer?.dispose();
       _remoteRenderer = RTCVideoRenderer();
     }
+    _log.info('[$clientId] Close PeerConnection');
     if (_pc != null) {
       await _pc?.close();
       await _pc?.dispose();
@@ -286,6 +291,7 @@ class RTCConnector {
   }
 
   Future<void> close(ChannelCloseCode code, {String? reason}) async {
+    _log.info('[$clientId] Close channel $reason');
     _channel.close(ChannelCloseReason(code, text: reason));
     _resetSetting();
   }
@@ -432,8 +438,8 @@ class RTCConnector {
 
   void _printPeerConnectionLog(String? event, dynamic args) {
     if (kDebugMode) {
-      printInDebug('$runtimeType, mPeerConnect $event ${args.toString()}');
-      const DebugSwitch().write('mPeerConnect $event ${args.toString()}');
+      printInDebug('$runtimeType, PeerConnection $event ${args.toString()}');
+      const DebugSwitch().write('PeerConnection $event ${args.toString()}');
     }
   }
 }
