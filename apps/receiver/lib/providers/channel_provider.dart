@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -22,6 +21,7 @@ import 'package:http/http.dart' as http;
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 import 'mirror_state_provider.dart';
+import 'package:display_flutter/utility/log.dart';
 
 ///
 /// ChannelProvider
@@ -48,6 +48,8 @@ class ChannelProvider extends ChangeNotifier {
   AppConfig appConfig;
   late String apiGateway, version;
 
+  static final _log = getDefaultLogger();
+
   bool _connectNet = false;
   bool get connectNet => _connectNet;
   set connectNet(bool value) {
@@ -67,7 +69,7 @@ class ChannelProvider extends ChangeNotifier {
     _displayCode = value;
     notifyListeners();
   }
-  final List<String> _otpList =[];
+final List<String> _otpList =[];
   List<String> get otpList => _otpList;
   setOtpList(String addOTP) {
     _otpList.add(addOTP);
@@ -116,6 +118,8 @@ class ChannelProvider extends ChangeNotifier {
     });
 
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      _log.info('Network connectivity has changed to $result');
+
       if (result == ConnectivityResult.none) {
         connectNet = false;
         lanNetWork = false;
@@ -155,22 +159,24 @@ class ChannelProvider extends ChangeNotifier {
   void _setServerSide() {
     // create a direct server
     _directServer = DisplayDirectServer(
-          (Channel channel) => _onNewChannel(channel, Mode.lan),
-          (ConnectionRequest connectionRequest) => _verifyConnectRequest(connectionRequest),
+      (Channel channel) => _onNewChannel(channel, Mode.lan),
+      (ConnectionRequest connectionRequest) => _verifyConnectRequest(connectionRequest),
     );
 
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
-          (String url) => WebSocketClientConnection(url),
-          (Channel channel) => _onNewChannel(channel, Mode.internet),
-          (ConnectionRequest connectionRequest) => _verifyConnectRequest(connectionRequest),
+      (String url) => WebSocketClientConnection(url, logger: (url, message) {
+        _log.finest('Tunnel $message');
+      },),
+      (Channel channel) => _onNewChannel(channel, Mode.internet),
+      (ConnectionRequest connectionRequest) => _verifyConnectRequest(connectionRequest),
     );
 
     _tunnelServer.onTunnelConnected = () {
-      print('Tunnel connected');
+      _log.info('Tunnel connected');
     };
     _tunnelServer.onTunnelConnecting = () {
-      print('Tunnel is connecting');
+      _log.info('Tunnel is connecting');
     };
   }
 
@@ -184,20 +190,23 @@ class ChannelProvider extends ChangeNotifier {
     _setServerSide();
 
     // start the tunnel server
+    _log.info('Starting the tunnel channel server $_tunnelApiUrl');
     _tunnelServer.start(instanceId, _tunnelApiUrl);
 
     // start the direct server
+    _log.info('Starting the direct channel server');
     await _directServer.start(port);
     isServerStart = true;
   }
 
   void _onNewChannel(Channel channel, Mode mode) {
-
     RTCConnector rtcConnector = RTCConnector(channel, mode);
-    print('zz _onNewChannel ${rtcConnector.mUid}');
+    _log.info('Received a new channel');
     RemoteScreenConnector? remoteScreenConnector;
 
     channel.onChannelMessage = (ChannelMessage message) async {
+      _log.info('Received channel message ${message.messageType}');
+
       switch (message.messageType) {
         /// basic
         case ChannelMessageType.joinDisplay:
@@ -285,6 +294,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   bool stopServer() {
+    _log.info('Stopping the channel server');
+
     _tunnelServer.stop();
     _directServer.stop();
     return isServerStart = false;
@@ -417,6 +428,8 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<String> getDisplayCode(String instanceID) async {
     try {
+      _log.info('Registering the instance $apiGateway');
+
       http.Response response = await http.put(
         Uri.parse(apiGateway),
         body: json.encode({
@@ -425,6 +438,7 @@ class ChannelProvider extends ChangeNotifier {
           'platform': "android",
         }),
       );
+      _log.info('Status of Instance Register API: ${response.statusCode}');
 
       if (response.statusCode >= HttpStatus.ok &&
           response.statusCode < HttpStatus.multiStatus) {
@@ -436,7 +450,7 @@ class ChannelProvider extends ChangeNotifier {
         return '';
       }
     } catch (e) {
-      log(e.toString());
+      _log.warning('Instance Register API failed with $e');
       // http.get maybe no network connection.
       return '';
     }

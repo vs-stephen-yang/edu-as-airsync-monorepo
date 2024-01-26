@@ -12,6 +12,7 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +23,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 Future<void> commonEntry(ConfigSettings settings) async {
+  initLogger();
+
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
