@@ -8,9 +8,6 @@ class StageConfig implements ConfigSettings {
   String apiGateway = 'https://api-us-east-1.gateway.stage.airsync.net/instances';
 
   @override
-  String signalServer = 'https://signal.stage.myviewboard.cloud';
-
-  @override
   String getIceServer = 'https://getice.stage.myviewboard.cloud';
 
   @override

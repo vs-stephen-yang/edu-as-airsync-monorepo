@@ -8,9 +8,6 @@ class ProductionConfig implements ConfigSettings {
   String apiGateway = 'https://presentation-gateway.myviewboard.cloud';
 
   @override
-  String signalServer = 'https://signal.myviewboard.cloud';
-
-  @override
   String getIceServer = 'https://getice.myviewboard.cloud';
 
   @override
