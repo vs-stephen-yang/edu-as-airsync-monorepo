@@ -8,9 +8,6 @@ class DevConfig implements ConfigSettings {
   String apiGateway = 'https://api-us-east-1.gateway.dev.airsync.net/instances';
 
   @override
-  String signalServer = 'https://signal.dev.myviewboard.cloud';
-
-  @override
   String getIceServer = 'https://getice.stage.myviewboard.cloud';
 
   @override
