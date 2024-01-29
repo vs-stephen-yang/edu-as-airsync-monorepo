@@ -25,6 +25,7 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   final List<SettingItems> _listSettings = [];
+  bool _isInChildDialog = false;
 
   @override
   void initState() {
@@ -40,6 +41,9 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     String postName = context.read<ChannelProvider>().displayCode;
     postName = postName.substring(max(postName.length - 5, 0));
+    if (_isInChildDialog) {
+      return const SizedBox();
+    }
     return MenuDialog(
       backgroundColor: MirrorStateProvider.isMirroring
           ? AppColors.primary_grey_tran
@@ -152,6 +156,7 @@ class _SettingsState extends State<Settings> {
 
   _showMenuDialog(Widget widget) async {
     FocusScope.of(context).unfocus();
+    _isInChildDialog = true;
     await showDialog(
       context: context,
       barrierDismissible: false,
@@ -162,6 +167,7 @@ class _SettingsState extends State<Settings> {
       setState(() {
         // After change language, the settings list need re-create
         // to using new language text.
+        _isInChildDialog = false;
         _addSettingsToList();
         FocusScope.of(context).requestFocus();
       });
