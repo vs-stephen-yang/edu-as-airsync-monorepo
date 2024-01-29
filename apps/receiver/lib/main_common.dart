@@ -168,6 +168,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           iconTheme: const IconThemeData(
             color: Colors.white,
           ),
+          listTileTheme: const ListTileThemeData(
+            textColor: Colors.white,
+            iconColor: Colors.white,
+          ),
         ),
         initialRoute: AppPreferences().showEULA &&
                 !AppInstanceCreate().isInstalledInVBS100 &&

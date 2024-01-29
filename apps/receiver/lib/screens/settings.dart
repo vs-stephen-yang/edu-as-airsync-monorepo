@@ -24,7 +24,7 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  final Map<SettingItems, VoidCallback?> listSettings = {};
+  final List<SettingItems> listSettings = [];
 
   @override
   void initState() {
@@ -81,20 +81,16 @@ class _SettingsState extends State<Settings> {
             child: ListView.separated(
               itemCount: listSettings.length,
               itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: listSettings.values.elementAt(index),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(6),
-                        child: listSettings.keys.elementAt(index).icon,
-                      ),
-                      Text(
-                        listSettings.keys.elementAt(index).itemName,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    ],
+                return ListTile(
+                  onTap: listSettings[index].callback,
+                  leading: listSettings[index].icon,
+                  title: Text(
+                    listSettings[index].itemName,
+                    style: const TextStyle(fontSize: 18),
                   ),
+                  contentPadding: EdgeInsets.zero,
+                  visualDensity:
+                      const VisualDensity(horizontal: 0, vertical: -4),
                 );
               },
               separatorBuilder: (BuildContext context, int index) {
@@ -109,7 +105,7 @@ class _SettingsState extends State<Settings> {
 
   _addSettingsToList() {
     listSettings.clear();
-    listSettings.putIfAbsent(
+    listSettings.add(
       SettingItems(
         const Image(
           image: Svg('assets/images/ic_receiver.svg'),
@@ -117,30 +113,30 @@ class _SettingsState extends State<Settings> {
           height: 32, // define size for placeholder
         ),
         S.of(context).main_settings_share_to_sender,
+        () {
+          _showMenuDialog(const SenderMenuView());
+        },
       ),
-      () => () {
-        _showMenuDialog(const SenderMenuView());
-      },
     );
-    listSettings.putIfAbsent(
+    listSettings.add(
       SettingItems(
         const Icon(Icons.language, size: 32.0),
         S.of(context).main_settings_language,
+        () {
+          AppAnalytics().trackEventAppLanguageClick();
+          _showMenuDialog(const LanguageSelection());
+        },
       ),
-      () => () {
-        AppAnalytics().trackEventAppLanguageClick();
-        _showMenuDialog(const LanguageSelection());
-      },
     );
-    listSettings.putIfAbsent(
+    listSettings.add(
       SettingItems(
         const Icon(Icons.campaign, size: 32.0),
         S.of(context).main_settings_whats_new,
+        () {
+          AppAnalytics().trackEventAppWhatsNewsClick();
+          _showMenuDialog(const WhatsNew());
+        },
       ),
-      () => () {
-        AppAnalytics().trackEventAppWhatsNewsClick();
-        _showMenuDialog(const WhatsNew());
-      },
     );
   }
 
@@ -177,6 +173,7 @@ class SettingItems {
   // IconData iconData;
   Widget icon;
   String itemName;
+  VoidCallback? callback;
 
-  SettingItems(this.icon, this.itemName);
+  SettingItems(this.icon, this.itemName, this.callback);
 }
