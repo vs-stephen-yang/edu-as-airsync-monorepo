@@ -23,10 +23,11 @@ import 'package:provider/provider.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 Future<void> commonEntry(ConfigSettings settings) async {
-  initLogger();
 
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    initLogger();
 
     // TODO Setup maxHardwareDecodeSession based on device.
     await WebRTC.initialize(options: {"maxHardwareDecodeSession": 1});
