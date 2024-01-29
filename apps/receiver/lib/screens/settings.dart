@@ -24,7 +24,7 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  final List<SettingItems> listSettings = [];
+  final List<SettingItems> _listSettings = [];
 
   @override
   void initState() {
@@ -79,13 +79,13 @@ class _SettingsState extends State<Settings> {
           ),
           Expanded(
             child: ListView.separated(
-              itemCount: listSettings.length,
+              itemCount: _listSettings.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  onTap: listSettings[index].callback,
-                  leading: listSettings[index].icon,
+                  onTap: _listSettings[index].callback,
+                  leading: _listSettings[index].icon,
                   title: Text(
-                    listSettings[index].itemName,
+                    _listSettings[index].itemName,
                     style: const TextStyle(fontSize: 18),
                   ),
                   contentPadding: EdgeInsets.zero,
@@ -104,8 +104,8 @@ class _SettingsState extends State<Settings> {
   }
 
   _addSettingsToList() {
-    listSettings.clear();
-    listSettings.add(
+    _listSettings.clear();
+    _listSettings.add(
       SettingItems(
         const Image(
           image: Svg('assets/images/ic_receiver.svg'),
@@ -118,7 +118,7 @@ class _SettingsState extends State<Settings> {
         },
       ),
     );
-    listSettings.add(
+    _listSettings.add(
       SettingItems(
         const Icon(Icons.language, size: 32.0),
         S.of(context).main_settings_language,
@@ -128,7 +128,7 @@ class _SettingsState extends State<Settings> {
         },
       ),
     );
-    listSettings.add(
+    _listSettings.add(
       SettingItems(
         const Icon(Icons.campaign, size: 32.0),
         S.of(context).main_settings_whats_new,
