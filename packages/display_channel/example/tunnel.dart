@@ -1,5 +1,6 @@
 import 'package:display_channel/src/util/fake_tunnel_service.dart';
 import 'dart:io';
+import 'package:display_channel/src/util/log.dart';
 
 void main() async {
   const instanceIndex = '100018';
@@ -20,5 +21,5 @@ void main() async {
     }
   });
 
-  print('Listened on port $httpPort');
+  log().info('Listened on port $httpPort');
 }

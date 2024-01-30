@@ -1,5 +1,6 @@
 import 'package:display_channel/display_channel.dart';
 import 'package:uuid/uuid.dart';
+import 'package:display_channel/src/util/log.dart';
 
 class Client {
   final DisplayChannelClient _channel;
@@ -11,14 +12,15 @@ class Client {
     _channel.onStateChange = (ChannelState state) {
       switch (state) {
         case ChannelState.connecting:
-          print('The client is connecting to the display');
+          log().info('The client is connecting to the display');
           break;
         case ChannelState.connected:
-          print('The client has connected to the display');
+          log().info('The client has connected to the display');
           break;
         case ChannelState.closed:
-          print('The client has closed. Reason: ${_channel.closeReason?.code}');
-          print('${_channel.closeReason?.text}');
+          log().info(
+              'The client has closed. Reason: ${_channel.closeReason?.code}');
+          log().info('${_channel.closeReason?.text}');
           break;
         default:
           break;
@@ -26,7 +28,7 @@ class Client {
     };
 
     _channel.onChannelMessage = (message) {
-      print('Received ${message.messageType}');
+      log().info('Received ${message.messageType}');
 
       switch (message.messageType) {
         case ChannelMessageType.displayStatus:

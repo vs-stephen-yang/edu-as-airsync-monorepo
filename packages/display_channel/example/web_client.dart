@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:uuid/uuid.dart';
+import 'package:display_channel/src/util/log.dart';
+
 import 'client.dart';
 
 void main() {
@@ -21,7 +23,7 @@ void main() {
       url,
       maxRetryDelay: const Duration(seconds: 1),
       maxRetryAttempts: 4,
-      logger: (url, message) => print('$url $message'),
+      logger: (url, message) => log().info('$url $message'),
     ),
   );
 
