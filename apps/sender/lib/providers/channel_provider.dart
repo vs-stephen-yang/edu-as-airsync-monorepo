@@ -257,7 +257,7 @@ class ChannelProvider extends ChangeNotifier {
             presentEnd();
           } else {
             if (reason?.code == RejectReasonType.maxModeratorSessions.code) {
-              Toast.makeToast('Reach maximum receivers');
+              Toast.makeToast(S.current.toast_maximum_remote_screen);
             }
           }
           break;
@@ -362,7 +362,7 @@ class ChannelProvider extends ChangeNotifier {
         await AudioSwitch.getInstance().setAirSyncAudio();
       } else {
         // for test only
-        Toast.makeToast('please install AirSyncAudio\'s driver');
+        Toast.makeToast(S.current.toast_install_audio_driver);
       }
     }
 
@@ -479,7 +479,7 @@ class ChannelProvider extends ChangeNotifier {
       case RemoteScreenStatus.accepted:
         break;
       case RemoteScreenStatus.rejected:
-        Toast.makeToast( 'AirSync should enable "share screen to sender".');
+        Toast.makeToast(S.current.toast_enable_remote_screen);
         presentMainPage();
         break;
       case RemoteScreenStatus.kicked:

@@ -34,5 +34,8 @@
     "toast_maximum_moderated": "Has reached maximum moderated session number.",
     "toast_maximum_split_screen": "Has reached maximum split screen session number.",
     "remote_screen_wait": "Waiting for presenter to share screen...",
-    "main_display_code_invalid": "Display code invalid."
+    "main_display_code_invalid": "Display code invalid.",
+    "toast_enable_remote_screen": "AirSync should enable \"share screen to sender\".",
+    "toast_maximum_remote_screen": "Reach maximum receivers",
+    "toast_install_audio_driver": "Please install AirSyncAudio's driver"
 }
