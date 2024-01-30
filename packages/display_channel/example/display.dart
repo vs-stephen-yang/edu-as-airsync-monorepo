@@ -1,5 +1,6 @@
 import 'package:args/args.dart';
 import 'package:display_channel/display_channel.dart';
+import 'package:display_channel/src/util/log.dart';
 
 class Client {
   final Channel _channel;
@@ -12,7 +13,7 @@ class Client {
   }
 
   void _onMessages(ChannelMessage message) {
-    print('Received ${message.messageType}');
+    log().info('Received ${message.messageType}');
 
     switch (message.messageType) {
       case ChannelMessageType.joinDisplay:
@@ -64,7 +65,7 @@ class MockServer {
   ConnectRequestStatus _verifyConnectRequest(
     ConnectionRequest connectionRequest,
   ) {
-    print(
+    log().info(
         'Connect request ${connectionRequest.displayCode} ${connectionRequest.token}');
 
     return (connectionRequest.token == '1111')
@@ -84,7 +85,7 @@ class MockServer {
       (String url) => WebSocketClientConnection(
         url,
         logger: (String url, String message) {
-          print('$url $message');
+          log().info('$url $message');
         },
       ),
       (Channel channel) => _onNewChannel(channel),
@@ -92,10 +93,10 @@ class MockServer {
     );
 
     _tunnelServer.onTunnelConnected = () {
-      print('Tunnel connects');
+      log().info('Tunnel connects');
     };
     _tunnelServer.onTunnelConnecting = () {
-      print('Tunnel is connecting');
+      log().info('Tunnel is connecting');
     };
   }
 
@@ -106,16 +107,16 @@ class MockServer {
     int localPort,
   ) async {
     // start the tunnel server
-    print('Connecting to $tunnelServiceUrl for tunnel channels');
+    log().info('Connecting to $tunnelServiceUrl for tunnel channels');
     _tunnelServer.start(instanceId, tunnelServiceUrl);
 
     // start the direct server
     await _directServer.start(localPort);
-    print('Listened on port ${_directServer.port} for direct channels');
+    log().info('Listened on port ${_directServer.port} for direct channels');
   }
 
   void _onNewChannel(Channel channel) {
-    print('A new channel has been created on the server-side');
+    log().info('A new channel has been created on the server-side');
 
     // create a client object to handle this channel
     final client = Client(channel);

@@ -1,7 +1,7 @@
 import 'package:args/args.dart';
 import 'package:uuid/uuid.dart';
 import 'package:display_channel/display_channel.dart';
-
+import 'package:display_channel/src/util/log.dart';
 import 'client.dart';
 
 main(List<String> arguments) async {
@@ -55,13 +55,13 @@ main(List<String> arguments) async {
       url,
       maxRetryDelay: const Duration(seconds: 1),
       maxRetryAttempts: 4,
-      logger: (url, message) => print('$url $message'),
+      logger: (url, message) => log().info('$url $message'),
     ),
   );
 
   Client(clientId, channel);
 
-  print('opening the channel to ${uri.toString()}');
+  log().info('opening the channel to ${uri.toString()}');
 
   if (direct) {
     channel.openDirectChannel(
