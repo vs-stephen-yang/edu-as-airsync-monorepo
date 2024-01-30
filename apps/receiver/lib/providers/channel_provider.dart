@@ -11,17 +11,16 @@ import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/model/rtc_play_order.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:no_context_navigation/no_context_navigation.dart';
-
-import 'mirror_state_provider.dart';
-import 'package:display_flutter/utility/log.dart';
 
 ///
 /// ChannelProvider
@@ -30,9 +29,9 @@ import 'package:display_flutter/utility/log.dart';
 /// - communicate custom protocols with server and build webRTC connection(_channelRtcConnectors)
 /// - refresh Main, WebRTCView
 
-enum Mode {
-  internet,
-  lan
+enum ChannelMode {
+  tunnel,
+  direct,
 }
 
 enum PresentationState {
@@ -46,31 +45,41 @@ enum PresentationState {
 
 class ChannelProvider extends ChangeNotifier {
   AppConfig appConfig;
-  late String apiGateway, version;
 
   static final _log = getDefaultLogger();
 
   bool _connectNet = false;
+
   bool get connectNet => _connectNet;
+
   set connectNet(bool value) {
     _connectNet = value;
     notifyListeners();
   }
+
   bool _lanNetWork = false;
+
   bool get lanNetWork => _lanNetWork;
+
   set lanNetWork(bool value) {
     _lanNetWork = value;
     notifyListeners();
   }
+
   bool showMode = true;
   String _displayCode = '';
+
   String get displayCode => _displayCode;
+
   set displayCode(String value) {
     _displayCode = value;
     notifyListeners();
   }
-final List<String> _otpList =[];
+
+  final List<String> _otpList = [];
+
   List<String> get otpList => _otpList;
+
   setOtpList(String addOTP) {
     _otpList.add(addOTP);
     if (_otpList.length > 2) {
@@ -83,21 +92,23 @@ final List<String> _otpList =[];
   bool isServerStart = false;
   late DisplayDirectServer _directServer;
   late DisplayTunnelServer _tunnelServer;
-  String _tunnelApiUrl ='';
+  String _tunnelApiUrl = '';
   static final RTCPlayOrder _rtcPlayOrder = RTCPlayOrder();
+
   static RTCPlayOrder get rtcPlayOrder => _rtcPlayOrder;
   static bool isModeratorMode = false;
 
   final RemoteScreenServer _remoteScreenServe = RemoteScreenServer();
+
   RemoteScreenServer get remoteScreenServe => _remoteScreenServe;
-  static final List<RemoteScreenConnector> _remoteScreenConnectors = <RemoteScreenConnector>[];
-  static List<RemoteScreenConnector> get remoteScreenConnectors => _remoteScreenConnectors;
+  static final List<RemoteScreenConnector> _remoteScreenConnectors =
+      <RemoteScreenConnector>[];
+
+  static List<RemoteScreenConnector> get remoteScreenConnectors =>
+      _remoteScreenConnectors;
   static bool isSenderMode = false;
 
   ChannelProvider(this.appConfig) {
-    apiGateway = appConfig.settings.apiGateway;
-    version = appConfig.appVersion;
-
     _checkConnectivity().then((value) {
       if (value) {
         connectNet = true;
@@ -106,7 +117,8 @@ final List<String> _otpList =[];
           if (displayCode.isEmpty || _tunnelApiUrl.isEmpty) {
             getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
               if (value.isNotEmpty) {
-                displayCode = encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
+                displayCode =
+                    encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
               } else {
                 displayCode = encodeDisplayCode(DisplayCode(host!, 0))!;
               }
@@ -129,7 +141,8 @@ final List<String> _otpList =[];
         if (displayCode.isEmpty) {
           getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
             if (value.isNotEmpty) {
-              displayCode = encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
+              displayCode =
+                  encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
             } else {
               displayCode = encodeDisplayCode(DisplayCode(host!, 0))!;
             }
@@ -159,17 +172,22 @@ final List<String> _otpList =[];
   void _setServerSide() {
     // create a direct server
     _directServer = DisplayDirectServer(
-      (Channel channel) => _onNewChannel(channel, Mode.lan),
-      (ConnectionRequest connectionRequest) => _verifyConnectRequest(connectionRequest),
+      (Channel channel) => _onNewChannel(channel, ChannelMode.direct),
+      (ConnectionRequest connectionRequest) =>
+          _verifyConnectRequest(connectionRequest),
     );
 
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
-      (String url) => WebSocketClientConnection(url, logger: (url, message) {
-        _log.finest('Tunnel $message');
-      },),
-      (Channel channel) => _onNewChannel(channel, Mode.internet),
-      (ConnectionRequest connectionRequest) => _verifyConnectRequest(connectionRequest),
+      (String url) => WebSocketClientConnection(
+        url,
+        logger: (url, message) {
+          _log.finest('Tunnel $message');
+        },
+      ),
+      (Channel channel) => _onNewChannel(channel, ChannelMode.tunnel),
+      (ConnectionRequest connectionRequest) =>
+          _verifyConnectRequest(connectionRequest),
     );
 
     _tunnelServer.onTunnelConnected = () {
@@ -199,7 +217,7 @@ final List<String> _otpList =[];
     isServerStart = true;
   }
 
-  void _onNewChannel(Channel channel, Mode mode) {
+  void _onNewChannel(Channel channel, ChannelMode mode) {
     RTCConnector rtcConnector = RTCConnector(channel, mode);
     _log.info('Received a new channel');
     RemoteScreenConnector? remoteScreenConnector;
@@ -215,23 +233,23 @@ final List<String> _otpList =[];
             if (ChannelProvider.isModeratorMode) {
               if (RtcConnectorList.rtcConnectorList.length >= 6) {
                 var message = PresentRejectedMessage();
-                message.reason = Reason(401, text:'block');
+                message.reason = Reason(401, text: 'block');
                 channel.send(message);
                 return;
               }
             } else {
               if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] == 4) {
                 var message = PresentRejectedMessage();
-                message.reason = Reason(402, text:'block');
+                message.reason = Reason(402, text: 'block');
                 channel.send(message);
                 return;
               }
             }
-            rtcConnector = onJoinDisplay(rtcConnector, mode, message as JoinDisplayMessage);
+            rtcConnector = onJoinDisplay(rtcConnector, mode, msg);
           } else {
             if (_remoteScreenConnectors.length >= 10) {
               var message = PresentRejectedMessage();
-              message.reason = Reason(401, text:'block');
+              message.reason = Reason(401, text: 'block');
               channel.send(message);
               return;
             }
@@ -240,9 +258,10 @@ final List<String> _otpList =[];
                 _remoteScreenServe.roomId,
                 host,
                 _remoteScreenServe.roomPort,
-                message as JoinDisplayMessage);
+                msg);
             remoteScreenConnector?.onChannelDisconnect = (() async {
-              removeSender(remoteScreenConnector: remoteScreenConnector, kick: false);
+              removeSender(
+                  remoteScreenConnector: remoteScreenConnector, kick: false);
             });
             _remoteScreenConnectors.add(remoteScreenConnector!);
           }
@@ -278,10 +297,12 @@ final List<String> _otpList =[];
         /// remote
         case ChannelMessageType.startRemoteScreen:
           if (isSenderMode) {
-            await remoteScreenConnector?.onStartRemoteScreen(message as StartRemoteScreenMessage);
+            await remoteScreenConnector
+                ?.onStartRemoteScreen(message as StartRemoteScreenMessage);
             notifyListeners();
           } else {
-            await remoteScreenConnector?.sendRemoteScreenState(RemoteScreenStatus.rejected);
+            await remoteScreenConnector
+                ?.sendRemoteScreenState(RemoteScreenStatus.rejected);
             removeSender(remoteScreenConnector: remoteScreenConnector);
           }
           break;
@@ -301,7 +322,8 @@ final List<String> _otpList =[];
     return isServerStart = false;
   }
 
-  ConnectRequestStatus _verifyConnectRequest(ConnectionRequest connectionRequest) {
+  ConnectRequestStatus _verifyConnectRequest(
+      ConnectionRequest connectionRequest) {
     if (connectionRequest.displayCode != displayCode) {
       return ConnectRequestStatus.invalidDisplayCode;
     } else if (!otpList.contains(connectionRequest.token)) {
@@ -314,15 +336,17 @@ final List<String> _otpList =[];
   void sendDisplayStatus(Channel channel) {
     final displayStatusMessage = DisplayStatusMessage();
     displayStatusMessage.platform = _getPlatform();
-    displayStatusMessage.status = DisplayStatus.fromJson({'moderator': ChannelProvider.isModeratorMode});
+    displayStatusMessage.status =
+        DisplayStatus.fromJson({'moderator': ChannelProvider.isModeratorMode});
     channel.send(displayStatusMessage);
   }
 
-  RTCConnector onJoinDisplay(RTCConnector rtcConnector, Mode mode, JoinDisplayMessage message) {
-
+  RTCConnector onJoinDisplay(
+      RTCConnector rtcConnector, ChannelMode mode, JoinDisplayMessage message) {
     // create a client object to handle this channel
-    rtcConnector.init(message, iceServersApiUrl: appConfig.settings.getIceServer);
-    rtcConnector.onConnect = ((){
+    rtcConnector.init(message,
+        iceServersApiUrl: appConfig.settings.getIceServer);
+    rtcConnector.onConnect = (() {
       RtcConnectorList.getInstance().updateSplitScreen();
       updateModePanel(false);
       if (MirrorStateProvider.isMirroring) {
@@ -336,7 +360,8 @@ final List<String> _otpList =[];
     rtcConnector.onAddRemoteStream = ((stream) {
       // update state and quality
       RtcConnectorList.getInstance().updateSplitScreen();
-      RtcConnectorList.getInstance().handleQualityUpdate(controller: rtcConnector);
+      RtcConnectorList.getInstance()
+          .handleQualityUpdate(controller: rtcConnector);
 
       // hideTitleBar
       Home.showTitleBottomBar.value = false;
@@ -428,13 +453,13 @@ final List<String> _otpList =[];
 
   Future<String> getDisplayCode(String instanceID) async {
     try {
-      _log.info('Registering the instance $apiGateway');
+      _log.info('Registering the instance ${appConfig.settings.apiGateway}');
 
       http.Response response = await http.put(
-        Uri.parse(apiGateway),
+        Uri.parse(appConfig.settings.apiGateway),
         body: json.encode({
           'instanceId': instanceID,
-          'version': version,
+          'version': appConfig.appVersion,
           'platform': "android",
         }),
       );
@@ -508,12 +533,14 @@ final List<String> _otpList =[];
     return RtcConnectorList.rtcConnectorList[index].getAudioState();
   }
 
-  removeSender({RemoteScreenConnector? remoteScreenConnector, bool kick = true}) {
+  removeSender(
+      {RemoteScreenConnector? remoteScreenConnector, bool kick = true}) {
     if (remoteScreenConnector != null) {
       int index = remoteScreenConnectors.indexOf(remoteScreenConnector);
       if (index != -1) {
         if (kick) {
-          remoteScreenConnector.sendRemoteScreenState(RemoteScreenStatus.kicked);
+          remoteScreenConnector
+              .sendRemoteScreenState(RemoteScreenStatus.kicked);
         }
         remoteScreenConnectors.removeAt(index);
       }
@@ -537,24 +564,34 @@ final List<String> _otpList =[];
   Future<String?> _checkNetWorkInfo() async {
     List<NetworkInterface> interfaces = await NetworkInterface.list();
     for (NetworkInterface interface in interfaces) {
-      if (interface.name.toLowerCase().contains("eth")) { // 'eth' 通常是 Ethernet
-        String? ethernetIp = interface.addresses.isNotEmpty ? interface.addresses[0].address : null;
+      if (interface.name.toLowerCase().contains("eth")) {
+        // 'eth' 通常是 Ethernet
+        String? ethernetIp = interface.addresses.isNotEmpty
+            ? interface.addresses[0].address
+            : null;
         if (ethernetIp != null) {
           lanNetWork = isPrivateIp(ethernetIp);
           host = ethernetIp;
           return host;
         }
         break;
-      } else if (interface.name.toLowerCase().contains("wi") || interface.name.toLowerCase().contains("wlan")) { // 'wi' 或 'wlan' 通常是 WiFi
-        String? wifiIp = interface.addresses.isNotEmpty ? interface.addresses[0].address : null;
+      } else if (interface.name.toLowerCase().contains("wi") ||
+          interface.name.toLowerCase().contains("wlan")) {
+        // 'wi' 或 'wlan' 通常是 WiFi
+        String? wifiIp = interface.addresses.isNotEmpty
+            ? interface.addresses[0].address
+            : null;
         if (wifiIp != null) {
           lanNetWork = isPrivateIp(wifiIp);
           host = wifiIp;
           return host;
         }
         break;
-      } else if (interface.name.toLowerCase().contains("rmnet") || interface.name.toLowerCase().contains("wwan")) {
-        String? mobileIp = interface.addresses.isNotEmpty ? interface.addresses[0].address : null;
+      } else if (interface.name.toLowerCase().contains("rmnet") ||
+          interface.name.toLowerCase().contains("wwan")) {
+        String? mobileIp = interface.addresses.isNotEmpty
+            ? interface.addresses[0].address
+            : null;
         if (mobileIp != null) {
           lanNetWork = isPrivateIp(mobileIp);
           host = mobileIp;
@@ -572,7 +609,9 @@ final List<String> _otpList =[];
     if (ip.startsWith('172.')) {
       var parts = ip.split('.');
       var secondPart = int.tryParse(parts[1]);
-      if (secondPart != null && secondPart >= 16 && secondPart <= 31) return true;
+      if (secondPart != null && secondPart >= 16 && secondPart <= 31) {
+        return true;
+      }
     }
     return false;
   }

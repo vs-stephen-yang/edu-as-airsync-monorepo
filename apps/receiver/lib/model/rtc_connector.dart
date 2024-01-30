@@ -23,7 +23,7 @@ import 'connect_timer.dart';
 class RTCConnector {
   String mUid = const Uuid().v4();
   final Channel _channel;
-  final Mode _mode;
+  final ChannelMode _mode;
 
   PresentationState presentationState = PresentationState.stopStreaming;
   String? sessionId;
@@ -71,7 +71,7 @@ class RTCConnector {
     _channel.onStateChange = (state) => _onChannelState(state);
 
     if (!_configuration.containsKey('iceServers')) {
-      if (_mode == Mode.internet) {
+      if (_mode == ChannelMode.tunnel) {
         _getIceServers(iceServersApiUrl).then((value) {
           _configuration.putIfAbsent('iceServers', () => value);
         });
