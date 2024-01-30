@@ -6,6 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:display_cast_flutter/features/protoc/event.pb.dart';
 import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_cast_flutter/model/message.dart';
+import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_channel/display_channel.dart';
@@ -315,6 +316,10 @@ class WebRTCConnector {
     };
 
     _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+    if (kIsWeb) {
+      // GetDisplayMedia method will popup a system dialog to prompt the user to select screen, so close the connection timer here.
+      ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+    }
     _localStream?.getTracks().forEach((element) {
       element.onEnded = () async {
         await hangUp();

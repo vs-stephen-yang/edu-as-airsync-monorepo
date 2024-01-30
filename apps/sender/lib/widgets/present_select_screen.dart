@@ -56,6 +56,7 @@ class PresentSelectScreen extends StatelessWidget {
           }
         });
       } else {
+        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
         if (WebRTC.platformIsAndroid) {
           // Android specific
           Future<void> requestBackgroundPermission() async {
