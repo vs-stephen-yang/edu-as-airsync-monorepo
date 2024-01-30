@@ -28,9 +28,7 @@ class MsgHandler implements TunnelMessageHandler {
   }
 
   @override
-  void onHeartbeat(TunnelHeartbeatMessage msg) {
-    print("Received hearbeat");
-  }
+  void onHeartbeat(TunnelHeartbeatMessage msg) {}
 }
 
 class FakeTunnelService {
