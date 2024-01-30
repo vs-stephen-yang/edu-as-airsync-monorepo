@@ -79,8 +79,6 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
 
   _switchModeratorOff() {
     RtcConnectorList.getInstance().removeAllPresenters();
-    // Provider.of<ChannelProvider>(context).removeAllPresenters();
-    SplitScreen.mapSplitScreen.value[keySplitScreenEnable] = false;
     SplitScreen.mapSplitScreen.value[keySplitScreenCount] = 0;
     SplitScreen.mapSplitScreen.value =
         Map.from(SplitScreen.mapSplitScreen.value);
