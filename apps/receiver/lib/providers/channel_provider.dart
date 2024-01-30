@@ -90,8 +90,8 @@ class ChannelProvider extends ChangeNotifier {
   String? host;
   int port = 5100;
   bool isServerStart = false;
-  late DisplayDirectServer _directServer;
-  late DisplayTunnelServer _tunnelServer;
+  late DisplayDirectServer? _directServer;
+  late DisplayTunnelServer? _tunnelServer;
   String _tunnelApiUrl = '';
   static final RTCPlayOrder _rtcPlayOrder = RTCPlayOrder();
 
@@ -110,6 +110,7 @@ class ChannelProvider extends ChangeNotifier {
 
   ChannelProvider(this.appConfig) {
     _checkConnectivity().then((value) {
+      _log.info('checkConnectivity: $value');
       if (value) {
         connectNet = true;
         _checkNetWorkInfo().then((value) {
@@ -137,18 +138,19 @@ class ChannelProvider extends ChangeNotifier {
         lanNetWork = false;
       } else {
         connectNet = true;
-        _checkNetWorkInfo();
-        if (displayCode.isEmpty) {
-          getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
-            if (value.isNotEmpty) {
-              displayCode =
-                  encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
-            } else {
-              displayCode = encodeDisplayCode(DisplayCode(host!, 0))!;
-            }
-            startServer(AppInstanceCreate().displayInstanceID);
-          });
-        }
+        _checkNetWorkInfo().then((_) {
+          if (displayCode.isEmpty) {
+            getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
+              if (value.isNotEmpty) {
+                displayCode =
+                    encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
+              } else {
+                displayCode = encodeDisplayCode(DisplayCode(host!, 0))!;
+              }
+              startServer(AppInstanceCreate().displayInstanceID);
+            });
+          }
+        });
       }
     });
   }
@@ -190,10 +192,10 @@ class ChannelProvider extends ChangeNotifier {
           _verifyConnectRequest(connectionRequest),
     );
 
-    _tunnelServer.onTunnelConnected = () {
+    _tunnelServer?.onTunnelConnected = () {
       _log.info('Tunnel connected');
     };
-    _tunnelServer.onTunnelConnecting = () {
+    _tunnelServer?.onTunnelConnecting = () {
       _log.info('Tunnel is connecting');
     };
   }
@@ -209,11 +211,14 @@ class ChannelProvider extends ChangeNotifier {
 
     // start the tunnel server
     _log.info('Starting the tunnel channel server $_tunnelApiUrl');
-    _tunnelServer.start(instanceId, _tunnelApiUrl);
+    if (_tunnelApiUrl.isNotEmpty) {
+      // fix when _tunnelApiUrl is empty, will cause App UI not response.
+      _tunnelServer?.start(instanceId, _tunnelApiUrl);
+    }
 
     // start the direct server
     _log.info('Starting the direct channel server');
-    await _directServer.start(port);
+    await _directServer?.start(port);
     isServerStart = true;
   }
 
@@ -317,8 +322,10 @@ class ChannelProvider extends ChangeNotifier {
   bool stopServer() {
     _log.info('Stopping the channel server');
 
-    _tunnelServer.stop();
-    _directServer.stop();
+    _tunnelServer?.stop();
+    _tunnelServer = null;
+    _directServer?.stop();
+    _directServer = null;
     return isServerStart = false;
   }
 
