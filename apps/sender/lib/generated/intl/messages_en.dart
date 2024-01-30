@@ -79,8 +79,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "Waiting for presenter to share screen..."),
         "settings_knowledge_base":
             MessageLookupByLibrary.simpleMessage("Knowledge Base"),
+        "toast_enable_remote_screen": MessageLookupByLibrary.simpleMessage(
+            "AirSync should enable \"share screen to sender\"."),
+        "toast_install_audio_driver": MessageLookupByLibrary.simpleMessage(
+            "Please install AirSyncAudio\'s driver"),
         "toast_maximum_moderated": MessageLookupByLibrary.simpleMessage(
             "Has reached maximum moderated session number."),
+        "toast_maximum_remote_screen":
+            MessageLookupByLibrary.simpleMessage("Reach maximum receivers"),
         "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
             "Has reached maximum split screen session number.")
       };

@@ -409,6 +409,36 @@ class S {
       args: [],
     );
   }
+
+  /// `AirSync should enable "share screen to sender".`
+  String get toast_enable_remote_screen {
+    return Intl.message(
+      'AirSync should enable "share screen to sender".',
+      name: 'toast_enable_remote_screen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reach maximum receivers`
+  String get toast_maximum_remote_screen {
+    return Intl.message(
+      'Reach maximum receivers',
+      name: 'toast_maximum_remote_screen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please install AirSyncAudio's driver`
+  String get toast_install_audio_driver {
+    return Intl.message(
+      'Please install AirSyncAudio\'s driver',
+      name: 'toast_install_audio_driver',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
