@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/screens/home.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: PrefLanguageProvider()),
+        ChangeNotifierProvider.value(value: ChannelProvider(context)),
       ],
       child: Consumer<PrefLanguageProvider>(
         builder: (context, languageModel, child) {
@@ -74,9 +76,7 @@ class MyApp extends StatelessWidget {
             navigatorKey: NavigationService.navigationKey,
             routes: {
               // for 'navService.popUntil('/home')'
-              '/home': (context) {
-                return botToastBuilder(context, const Home());
-              },
+              '/home': (context) => botToastBuilder(context, const Home()),
             },
           );
         },
