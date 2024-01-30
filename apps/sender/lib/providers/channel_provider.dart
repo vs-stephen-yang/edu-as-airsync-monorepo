@@ -21,16 +21,12 @@ import 'package:uuid/uuid.dart';
 import '../generated/l10n.dart';
 import '../widgets/toast.dart';
 
-enum Mode {
-  internet,
-  lan,
-}
-
 enum RejectReasonType {
   maxModeratorSessions(401),
   maxSplitScreenSessions(402);
 
   const RejectReasonType(this.code);
+
   final int code;
 }
 
@@ -48,32 +44,33 @@ class ChannelProvider extends ChangeNotifier {
   List<RtcIceServer>? _iceServerList;
 
   bool _moderatorStatus = false;
+
   bool get moderatorStatus => _moderatorStatus;
 
   ViewState _currentState = ViewState.idle;
+
   ViewState get state => _currentState;
+
   set currentState(ViewState value) {
     _currentState = value;
   }
 
-  Mode _currentMode = Mode.internet;
-  Mode get currentMode => _currentMode;
-  set currentMode(Mode value) {
-    _currentMode = value;
-    notifyListeners();
-  }
-
   JoinIntentType _currentRole = JoinIntentType.present;
+
   JoinIntentType get currentRole => _currentRole;
+
   set currentRole(JoinIntentType value) {
     _currentRole = value;
   }
 
   bool _exceedMaximumPresenters = false;
+
   bool get exceedMaximumPresenters => _exceedMaximumPresenters;
 
   bool _invalidOtp = false;
+
   bool get invalidOtp => _invalidOtp;
+
   void setInvalidOtp(bool b) {
     _invalidOtp = b;
     _invalidDisplayCode = !b;
@@ -81,28 +78,30 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   bool _invalidDisplayCode = false;
+
   bool get invalidDisplayCode => _invalidDisplayCode;
+
   void setInvalidDisplayCode(bool b) {
     _invalidDisplayCode = b;
     _invalidOtp = !b;
     notifyListeners();
   }
 
-  late String _urlIce, _apiGateway= '';
+  late String _urlIce, _apiGateway = '';
   DisplayCode? displayCode;
   String? otp, _tunnelApiUrl;
   Timer? _presentTimer;
 
   bool _touchBack = false;
+
   bool get touchBack => _touchBack;
+
   set touchBack(bool touchBack) {
     _touchBack = touchBack;
   }
 
-  bool _systemAudio = false;
-  bool get systemAudio => _systemAudio;
-
   RemoteScreenClient? _remoteScreenClient;
+
   RemoteScreenClient? get remoteScreenClient => _remoteScreenClient;
 
   //region setView
@@ -124,7 +123,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   bool showTouchBack() {
-    return (WebRTC.platformIsWindows || WebRTC.platformIsMacOS) && (webRTCConnector!.isMainSource);
+    return (WebRTC.platformIsWindows || WebRTC.platformIsMacOS) &&
+        (webRTCConnector!.isMainSource);
   }
 
   Future<void> presentMainPage() async {
@@ -177,7 +177,8 @@ class ChannelProvider extends ChangeNotifier {
     this.otp = otp;
 
     if (kIsWeb) {
-      await connectInternetChannel(encodedDisplayCode.replaceAll('-', ''), (state, internetChannel) {
+      await connectInternetChannel(encodedDisplayCode.replaceAll('-', ''),
+          (state, internetChannel) {
         if (state == ChannelState.connected) {
           _channel = internetChannel;
           setUpChannel(encodedDisplayCode);
@@ -187,10 +188,12 @@ class ChannelProvider extends ChangeNotifier {
       });
     } else {
       bool lanResultBack = false, netResultBack = false;
-      connectLanChannel(encodedDisplayCode.replaceAll('-', ''), (state, lanChannel) {
+      connectLanChannel(encodedDisplayCode.replaceAll('-', ''),
+          (state, lanChannel) {
         if (_channel == null) {
           if (state == ChannelState.connected) {
-            _tempInternetChannel?.close(ChannelCloseReason(ChannelCloseCode.close));
+            _tempInternetChannel
+                ?.close(ChannelCloseReason(ChannelCloseCode.close));
             _channel = lanChannel;
             setUpChannel(encodedDisplayCode);
           } else if (state == ChannelState.closed) {
@@ -203,7 +206,8 @@ class ChannelProvider extends ChangeNotifier {
           lanChannel?.close(ChannelCloseReason(ChannelCloseCode.close));
         }
       });
-      connectInternetChannel(encodedDisplayCode.replaceAll('-', ''), (state, internetChannel) {
+      connectInternetChannel(encodedDisplayCode.replaceAll('-', ''),
+          (state, internetChannel) {
         if (_channel == null) {
           if (state == ChannelState.connected) {
             _tempLanChannel?.close(ChannelCloseReason(ChannelCloseCode.close));
@@ -229,8 +233,8 @@ class ChannelProvider extends ChangeNotifier {
     _channel?.onChannelMessage = (message) async {
       switch (message.messageType) {
         case ChannelMessageType.channelConnected:
-        // heartbeatInterval
-        // reconnectionToken?
+          // heartbeatInterval
+          // reconnectionToken?
           break;
         case ChannelMessageType.displayStatus:
           _invalidDisplayCode = false;
@@ -239,7 +243,7 @@ class ChannelProvider extends ChangeNotifier {
           _onDisplayStatus(message as DisplayStatusMessage);
           break;
         case ChannelMessageType.presentAccepted:
-        // select screen
+          // select screen
           if (moderatorStatus) {
             presentSelectScreenPage();
           } else {
@@ -251,7 +255,8 @@ class ChannelProvider extends ChangeNotifier {
           if (currentRole == JoinIntentType.present) {
             if (reason?.code == RejectReasonType.maxModeratorSessions.code) {
               Toast.makeToast(S.current.toast_maximum_moderated);
-            } else if (reason?.code == RejectReasonType.maxSplitScreenSessions.code) {
+            } else if (reason?.code ==
+                RejectReasonType.maxSplitScreenSessions.code) {
               Toast.makeToast(S.current.toast_maximum_split_screen);
             }
             presentEnd();
@@ -268,14 +273,14 @@ class ChannelProvider extends ChangeNotifier {
           webRTCConnector?.changeStreamFrameRate(message.toJson());
           break;
         case ChannelMessageType.stopPresent:
-        // split-screen / moderator mode
+          // split-screen / moderator mode
           if (moderatorStatus) {
             presentStop();
             presentModeratorWaitPage();
           }
           break;
         case ChannelMessageType.allowPresent:
-        // moderator mode
+          // moderator mode
           _sessionId = (message as AllowPresentMessage).sessionId!;
           _startPresent();
           break;
@@ -283,9 +288,11 @@ class ChannelProvider extends ChangeNotifier {
           _handleRemoteScreenState(message as RemoteScreenStatusMessage);
           break;
         case ChannelMessageType.remoteScreenInfo:
-          RemoteScreenInfoMessage infoMessage = message as RemoteScreenInfoMessage;
+          RemoteScreenInfoMessage infoMessage =
+              message as RemoteScreenInfoMessage;
           await _remoteScreenClient?.handleRemoteScreenInfo(
-              infoMessage.ionSfuRoom!.url!, infoMessage.ionSfuRoom!.roomId!, () {
+              infoMessage.ionSfuRoom!.url!, infoMessage.ionSfuRoom!.roomId!,
+              () {
             presentRemoteScreenPage();
           });
           break;
@@ -309,7 +316,10 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
-  Future connectLanChannel(String displayCodeRaw, Function(ChannelState state, DisplayChannelClient? lanChannel) onState) async {
+  Future connectLanChannel(
+      String displayCodeRaw,
+      Function(ChannelState state, DisplayChannelClient? lanChannel)
+          onState) async {
     String host = displayCode!.ipAddress;
     Uri? uri = Uri(scheme: 'ws', host: host, port: port);
 
@@ -327,7 +337,10 @@ class ChannelProvider extends ChangeNotifier {
     };
   }
 
-  Future connectInternetChannel(String displayCodeRaw, Function(ChannelState state, DisplayChannelClient? internetChannel) onState) async {
+  Future connectInternetChannel(
+      String displayCodeRaw,
+      Function(ChannelState state, DisplayChannelClient? internetChannel)
+          onState) async {
     String displayIndex = displayCode!.instanceIndex.toString();
     _tunnelApiUrl = await _getTunnelUrl(displayIndex);
     if (_tunnelApiUrl == null) {
@@ -344,7 +357,8 @@ class ChannelProvider extends ChangeNotifier {
             maxRetryAttempts: 3,
             logger: (url, message) =>
                 print('internetChannel logger  $url $message}')));
-    _tempInternetChannel?.openTunnelChannel(displayIndex, otp!, displayCode: displayCodeRaw);
+    _tempInternetChannel?.openTunnelChannel(displayIndex, otp!,
+        displayCode: displayCodeRaw);
     _tempInternetChannel?.onStateChange = (ChannelState state) {
       onState(state, _tempInternetChannel);
     };
@@ -354,7 +368,8 @@ class ChannelProvider extends ChangeNotifier {
       {required dynamic selectedSource, bool systemAudio = false}) async {
     if (AudioSwitch.getInstance().isSupported()) {
       // check 'AirSyncAudio' speaker and mic exists or not
-      bool checkAudioSwitch = await  AudioSwitch.getInstance().checkAirSyncAudio();
+      bool checkAudioSwitch =
+          await AudioSwitch.getInstance().checkAirSyncAudio();
       if (checkAudioSwitch) {
         // remember current input/output device
         await AudioSwitch.getInstance().rememberOriginalDevice();
@@ -440,8 +455,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future beginBasicMode() async {
-      _joinDisplay();
-      _startPresent();
+    _joinDisplay();
+    _startPresent();
   }
 
   void resetMessage() {
@@ -475,7 +490,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future _handleRemoteScreenState(RemoteScreenStatusMessage message) async {
-    switch(message.status) {
+    switch (message.status) {
       case RemoteScreenStatus.accepted:
         break;
       case RemoteScreenStatus.rejected:
@@ -538,8 +553,8 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<String?> _getTunnelUrl(String instanceIndex) async {
     try {
-      http.Response response =
-          await http.get(Uri.parse('$_apiGateway?instanceIndex=$instanceIndex'));
+      http.Response response = await http
+          .get(Uri.parse('$_apiGateway?instanceIndex=$instanceIndex'));
       if (response.statusCode >= HttpStatus.ok &&
           response.statusCode < HttpStatus.multiStatus) {
         Map<String, dynamic> json = jsonDecode(response.body);
