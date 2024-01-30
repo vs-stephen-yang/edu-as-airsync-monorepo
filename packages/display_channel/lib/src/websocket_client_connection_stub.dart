@@ -16,8 +16,6 @@ class WebSocketClientConnection implements ClientConnection {
   @override
   void Function(Map<String, dynamic> data)? onMessage;
 
-  final String _url;
-
   static const defaultConnectionTimeout = Duration(seconds: 1);
   static const defaultMaxRetryDelay = Duration(seconds: 15);
   static const defaultMaxRetryAttempts = 8;
@@ -29,7 +27,7 @@ class WebSocketClientConnection implements ClientConnection {
   void Function(String url, String message)? logger;
 
   WebSocketClientConnection(
-    this._url, {
+    String url, {
     this.logger,
     this.connectionTimeout = defaultConnectionTimeout,
     this.maxRetryDelay = defaultMaxRetryDelay,
