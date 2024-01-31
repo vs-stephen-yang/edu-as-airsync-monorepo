@@ -19,7 +19,6 @@ class _SenderItemState extends State<SenderItem>
     with SingleTickerProviderStateMixin {
   late ChannelProvider channelProvider;
   late RemoteScreenConnector remoteScreenConnector;
-  bool touchEnabled = false;
 
   @override
   void initState() {
@@ -72,11 +71,11 @@ class _SenderItemState extends State<SenderItem>
             fit: BoxFit.fitHeight,
             child: IconButton(
               icon: const Icon(Icons.touch_app),
-              color: touchEnabled? Colors.white:AppColors.toggle_bg,
+              color: remoteScreenConnector.isTouchEnabled? Colors.white:AppColors.toggle_bg,
               splashRadius: 20,
               onPressed: () {
-                touchEnabled = !touchEnabled;
-                channelProvider.remoteScreenServe.enableTouchBySessionId(remoteScreenConnector.sessionId!, touchEnabled);
+                remoteScreenConnector.isTouchEnabled = !remoteScreenConnector.isTouchEnabled;
+                channelProvider.remoteScreenServe.enableTouchBySessionId(remoteScreenConnector.sessionId!, remoteScreenConnector.isTouchEnabled);
                 setState(() {});
               },
             ),
