@@ -16,6 +16,7 @@ class RemoteScreenConnector {
   String? senderVersion;
   String? senderPlatform;
   bool isDeleted = false;
+  bool isTouchEnabled = false;
 
   Function()? onChannelDisconnect;
 
