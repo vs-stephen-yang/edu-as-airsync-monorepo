@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
@@ -93,12 +94,13 @@ class _EulaState extends State<Eula> {
                     // todo: support other platform.
                   }
                 },
-                child: Text(
+                child: AutoSizeText(
                   S.of(context).eula_disagree,
                   style: const TextStyle(
                     fontSize: 18,
                     color: Colors.blue,
                   ),
+                  maxLines: 1,
                 ),
               ),
               FocusElevatedButton(
@@ -114,12 +116,13 @@ class _EulaState extends State<Eula> {
                   AppPreferences().set(showEULA: false);
                   navService.pushNamedAndRemoveUntil('/home');
                 },
-                child: Text(
+                child: AutoSizeText(
                   S.of(context).eula_agree,
                   style: const TextStyle(
                     fontSize: 18,
                     color: Colors.white,
                   ),
+                  maxLines: 1,
                 ),
               ),
             ],
