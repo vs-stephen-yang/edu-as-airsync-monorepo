@@ -19,6 +19,7 @@ class PresentSelectRole extends StatelessWidget {
                   InkWell(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
                             padding: const EdgeInsets.all(36),
@@ -46,6 +47,7 @@ class PresentSelectRole extends StatelessWidget {
                 InkWell(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
                           padding: const EdgeInsets.all(36),
