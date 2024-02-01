@@ -23,7 +23,8 @@ class DisplayChannelClient implements Channel {
   final String _clientId;
   final Uri _uri;
 
-  String? _reconnectionToken;
+  var _queryParameters = <String, String>{};
+
   late MessageContinuity _continuity;
   ChannelState _state = ChannelState.initialized;
   ChannelCloseReason? _closeReason;
@@ -88,19 +89,31 @@ class DisplayChannelClient implements Channel {
     onStateChange?.call(_state);
   }
 
+  updateQueryParameters(String token) {
+    _queryParameters['token'] = token;
+  }
+
   void _openChannel(
     String displayCode,
     String token,
     Map<String, String> parameters,
   ) {
-    // common query parameters
-    final uri = _uri.replace(queryParameters: {
+    // build the query parameters
+    _queryParameters = {
       'clientId': _clientId,
       'displayCode': displayCode,
       'token': token,
       ...parameters,
       ..._uri.queryParameters,
-    });
+    };
+
+    _openNewConnection();
+  }
+
+  void _openNewConnection() {
+    final uri = _uri.replace(
+      queryParameters: _queryParameters,
+    );
 
     _connection = _createConnection(
       uri.toString(),
@@ -149,7 +162,9 @@ class DisplayChannelClient implements Channel {
   }
 
   void _onChannelConnected(ChannelConnectedMessage message) {
-    _reconnectionToken = message.reconnectionToken;
+    if (message.reconnectionToken != null) {
+      updateQueryParameters(message.reconnectionToken!);
+    }
   }
 
   @override
@@ -211,12 +226,14 @@ class DisplayChannelClient implements Channel {
   }
 
   Future _onDisconnected() async {
+    await _closeConnection();
+
     if (_isClosed()) {
-      await _closeConnection();
       return;
     }
 
-    // Will try to connect again
+    // open new connection
+    _openNewConnection();
   }
 
   Future _onChannelClosedMessage(ChannelClosedMessage message) async {
