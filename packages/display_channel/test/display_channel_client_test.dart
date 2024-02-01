@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/client_connection.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,9 +11,25 @@ class FakeClientConnection extends ClientConnection {
   bool isCloseCalled = false;
 
   final sentMessages = <ChannelMessage?>[];
-  String? url;
+  final urls = <String>[];
+
+  Completer? _createCompleter;
 
   FakeClientConnection();
+
+  void create(String url) {
+    urls.add(url);
+
+    _createCompleter?.complete();
+  }
+
+  Future waitCreate(int count) async {
+    while (urls.length < count) {
+      _createCompleter = Completer();
+
+      await _createCompleter!.future;
+    }
+  }
 
   @override
   void open() {
@@ -45,6 +63,12 @@ void main() {
     }
   }
 
+  void injectChannelConnected(String token, int ack) {
+    connection.onMessage?.call(
+      ChannelConnectedMessage(1000, token, ack).toJson(),
+    );
+  }
+
   setUp(() {
     incomingMessages1 = buildMessages([0, 3, 2, 1], true);
 
@@ -57,7 +81,7 @@ void main() {
       '1000',
       Uri.parse('ws://abc.com'),
       (url) {
-        connection.url = url;
+        connection.create(url);
         return connection;
       },
     );
@@ -66,7 +90,7 @@ void main() {
     client.onStateChange = (state) => stateChanges.add(state);
   });
 
-  test('connection should be opened with a correct URL', () {
+  test('The direct connection should be opened with a correct URL', () {
     // arrange
 
     // action
@@ -76,26 +100,41 @@ void main() {
     expect(connection.isOpenCalled, true);
 
     expect(
-      connection.url,
+      connection.urls[0],
       'ws://abc.com?clientId=1000&displayCode=DEF&token=1313',
+    );
+  });
+
+  test('The tunnel connection should be opened with a correct URL', () {
+    // arrange
+
+    // action
+    client.openTunnelChannel('100000', '1313', displayCode: 'DEF');
+
+    // assert
+    expect(connection.isOpenCalled, true);
+
+    expect(
+      connection.urls.first,
+      'ws://abc.com?clientId=1000&displayCode=DEF&token=1313&role=client&instanceIndex=100000',
     );
   });
 
   test('state should be connected after the connection is established', () {
     // arrange
-    client.openDirectChannel('1234', displayCode: 'ABC');
+    client.openDirectChannel('token', displayCode: 'ABC');
 
     // action
     connection.onConnected?.call();
 
     // assert
     expect(stateChanges.length, 1);
-    expect(stateChanges[0], ChannelState.connected);
+    expect(stateChanges.first, ChannelState.connected);
   });
 
   test('client-connected should be sent when the connection is connected', () {
     // arrange
-    client.openDirectChannel('1234', displayCode: 'ABC');
+    client.openDirectChannel('token', displayCode: 'ABC');
 
     // action
     connection.onConnected?.call();
@@ -109,19 +148,48 @@ void main() {
   test('client-connected should be sent after the connection is reconnected',
       () {
     // arrange
-    client.openDirectChannel('1234', displayCode: 'ABC');
+    client.openDirectChannel('token', displayCode: 'ABC');
     connection.onConnected?.call();
 
+    injectChannelConnected('token2', 0);
     injectIncomingMessages(incomingMessages1);
 
     // action
     // simulate reconnection
-    connection.onConnecting?.call();
+    connection.onDisconnected?.call();
     connection.onConnected?.call();
 
     // assert
     expect(connection.sentMessages.length, 2);
 
     expect((connection.sentMessages[1] as ClientConnectedMessage).ack, 4);
+  });
+
+  test('shoud connect using the reconnection token during reconnection',
+      () async {
+    // arrange
+    client.openDirectChannel('token', displayCode: 'ABC');
+    connection.onConnected?.call();
+
+    injectChannelConnected('token2', 0);
+
+    // action
+    // simulate reconnection
+    connection.onDisconnected?.call();
+
+    await connection.waitCreate(2);
+
+    // assert
+    expect(connection.urls.length, 2);
+
+    expect(
+      connection.urls[0],
+      'ws://abc.com?clientId=1000&displayCode=ABC&token=token',
+    );
+
+    expect(
+      connection.urls[1],
+      'ws://abc.com?clientId=1000&displayCode=ABC&token=token2',
+    );
   });
 }
