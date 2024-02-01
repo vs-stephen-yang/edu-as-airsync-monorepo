@@ -25,7 +25,7 @@ class RTCPlayOrder {
 
   int getOrderByIndex(int index) {
     for (int i = 0; i < RtcConnectorList.rtcConnectorList.length; i++) {
-      if (RtcConnectorList.rtcConnectorList[i].clientId == _playOrder[index]) {
+      if (RtcConnectorList.rtcConnectorList[i]?.clientId == _playOrder[index]) {
         return i;
       }
     }
@@ -36,7 +36,7 @@ class RTCPlayOrder {
     int index = _playOrder.indexOf(clientId);
     if (index != -1) {
       for (int j = 0; j < RtcConnectorList.rtcConnectorList.length; j++) {
-        if (RtcConnectorList.rtcConnectorList[j].clientId == clientId) {
+        if (RtcConnectorList.rtcConnectorList[j]?.clientId == clientId) {
           return j;
         }
       }

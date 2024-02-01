@@ -24,7 +24,7 @@ class _ParticipantItemState extends State<ParticipantItem>
   late final AnimationController _controller;
   late final Animation<double> _animation;
   late ChannelProvider channelProvider;
-  late RTCConnector rtcConnector;
+  late RTCConnector? rtcConnector;
 
   @override
   void initState() {
@@ -50,8 +50,8 @@ class _ParticipantItemState extends State<ParticipantItem>
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
     rtcConnector = RtcConnectorList.rtcConnectorList[widget.index];
-    String presenterId = rtcConnector.clientId ?? '';
-    String presenterName = rtcConnector.senderName ?? '';
+    String presenterId = rtcConnector?.clientId ?? '';
+    String presenterName = rtcConnector?.senderName ?? '';
 
     if (presenterName.length > 10) {
       presenterName = '${presenterName.substring(0, 10)}..';
@@ -139,18 +139,18 @@ class _ParticipantItemState extends State<ParticipantItem>
 
   _sendPresenterPlay() {
     AppAnalytics().trackEventModeratorPresenterPresent();
-    rtcConnector.sendAllowPresent();
+    rtcConnector?.sendAllowPresent();
   }
 
   _sendPresenterStop() {
     AppAnalytics().trackEventModeratorPresenterStop();
-    rtcConnector.sendStopPresent();
+    rtcConnector?.sendStopPresent();
     channelProvider.updateModePanel(!RtcConnectorList.getInstance().isPresenting());
   }
 
   _sendPresenterRemove() async {
     AppAnalytics().trackEventModeratorPresentersRemove();
-    await rtcConnector.disconnectPeerConnection();
-    await rtcConnector.disconnectChannel();
+    await rtcConnector?.disconnectPeerConnection();
+    await rtcConnector?.disconnectChannel();
   }
 }

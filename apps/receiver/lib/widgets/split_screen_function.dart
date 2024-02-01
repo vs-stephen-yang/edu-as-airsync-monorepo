@@ -58,7 +58,7 @@ class SplitScreenFunction extends StatefulWidget {
           right: right,
           bottom: bottom,
           child: Visibility(
-            visible: widget.index < RtcConnectorList.getInstance().getPresentingQuantity(),
+            visible: RtcConnectorList.getInstance().isPresenting(index: widget.index),
             child: ValueListenableBuilder(
               valueListenable: SplitScreenFunction.isMenuOnList,
               builder: (BuildContext context, List<bool> value, Widget? child) {
