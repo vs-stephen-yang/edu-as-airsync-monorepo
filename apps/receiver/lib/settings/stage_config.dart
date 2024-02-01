@@ -41,4 +41,7 @@ class StageConfig implements ConfigSettings {
   @override
   String icarExceptionFileUrl =
       'https://stageapi.myviewboard.com/api/v1/application/extension/exception/uid/file?folder=DisplayExceptionLog';
+
+  @override
+  String airSyncUrl = 'stage.airsync.net';
 }

@@ -36,4 +36,6 @@ abstract class ConfigSettings {
   late String icarUpdateUrl;
   late String icarExceptionUrl;
   late String icarExceptionFileUrl;
+
+  late String airSyncUrl;
 }

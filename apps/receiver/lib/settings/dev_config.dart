@@ -40,4 +40,7 @@ class DevConfig implements ConfigSettings {
   @override
   String icarExceptionFileUrl =
       'https://devapi.myviewboard.com/api/v1/application/extension/exception/uid/file?folder=DisplayExceptionLog';
+
+  @override
+  String airSyncUrl = 'dev.airsync.net';
 }

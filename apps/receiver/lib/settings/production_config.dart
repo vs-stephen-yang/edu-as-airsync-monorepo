@@ -40,4 +40,7 @@ class ProductionConfig implements ConfigSettings {
   @override
   String icarExceptionFileUrl =
       'https://api.myviewboard.com/api/v1/application/extension/exception/uid/file?folder=DisplayExceptionLog';
+
+  @override
+  String airSyncUrl = 'www.airsync.net';
 }
