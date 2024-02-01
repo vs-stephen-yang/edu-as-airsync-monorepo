@@ -31,7 +31,6 @@ class FakeClientConnection extends ClientConnection {
 }
 
 void main() {
-  late List<ChannelMessage> outgoingMessages1;
   late List<ChannelMessage> incomingMessages1;
 
   late List<ChannelMessage> receivedMessages;
@@ -44,12 +43,6 @@ void main() {
     for (var message in messages) {
       connection.onMessage?.call(message.toJson());
     }
-  }
-
-  void injectIncomingHearbeatMessage(int ack) {
-    connection.onMessage?.call(
-      HeartbeatMessage(ack).toJson(),
-    );
   }
 
   setUp(() {
@@ -90,9 +83,9 @@ void main() {
 
   test('state should be connected after the connection is established', () {
     // arrange
+    client.openDirectChannel('1234', displayCode: 'ABC');
 
     // action
-    client.openDirectChannel('1234', displayCode: 'ABC');
     connection.onConnected?.call();
 
     // assert
@@ -102,9 +95,9 @@ void main() {
 
   test('client-connected should be sent when the connection is connected', () {
     // arrange
+    client.openDirectChannel('1234', displayCode: 'ABC');
 
     // action
-    client.openDirectChannel('1234', displayCode: 'ABC');
     connection.onConnected?.call();
 
     // assert
@@ -113,17 +106,15 @@ void main() {
     expect((connection.sentMessages[0] as ClientConnectedMessage).ack, 0);
   });
 
-  test(
-      'client-connected should be sent with correct ack after the connection is reconnected',
+  test('client-connected should be sent after the connection is reconnected',
       () {
     // arrange
-
-    // action
     client.openDirectChannel('1234', displayCode: 'ABC');
     connection.onConnected?.call();
 
     injectIncomingMessages(incomingMessages1);
 
+    // action
     // simulate reconnection
     connection.onConnecting?.call();
     connection.onConnected?.call();
