@@ -153,6 +153,9 @@ class DisplayChannelClient implements Channel {
       case ChannelMessageType.channelConnected:
         _onChannelConnected(message as ChannelConnectedMessage);
         return;
+      case ChannelMessageType.heartbeat:
+        _onHeartbeat(message as HeartbeatMessage);
+        return;
       case ChannelMessageType.channelClosed:
         await _onChannelClosedMessage(message as ChannelClosedMessage);
         return;
@@ -253,5 +256,15 @@ class DisplayChannelClient implements Channel {
   Future _closeConnection() async {
     await _connection?.close();
     _connection = null;
+  }
+
+// when the client receives the heartbeat, it should response with a heartbeat
+  _onHeartbeat(HeartbeatMessage message) {
+    // response a heartbeat message to the server
+    _connection?.send(
+      HeartbeatMessage(
+        _continuity.nextIncomingSequenceNumber,
+      ).toJson(),
+    );
   }
 }
