@@ -69,6 +69,12 @@ void main() {
     );
   }
 
+  void injectHeartbeat(int ack) {
+    connection.onMessage?.call(
+      HeartbeatMessage(ack).toJson(),
+    );
+  }
+
   setUp(() {
     incomingMessages1 = buildMessages([0, 3, 2, 1], true);
 
@@ -174,7 +180,7 @@ void main() {
     injectChannelConnected('token2', 0);
 
     // action
-    // simulate reconnection
+    // simulate disconnection
     connection.onDisconnected?.call();
 
     await connection.waitCreate(2);
@@ -191,5 +197,21 @@ void main() {
       connection.urls[1],
       'ws://abc.com?clientId=1000&displayCode=ABC&token=token2',
     );
+  });
+
+  test('A heartbeat should be sent when a heartbeat is received', () async {
+    // arrange
+    client.openDirectChannel('token', displayCode: 'ABC');
+    connection.onConnected?.call();
+
+    injectChannelConnected('token2', 0);
+
+    // action
+    injectHeartbeat(0);
+
+    // assert
+    expect(connection.sentMessages.length, 2);
+
+    expect((connection.sentMessages[1] as HeartbeatMessage).ack, 0);
   });
 }
