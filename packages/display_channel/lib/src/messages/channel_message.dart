@@ -123,6 +123,7 @@ class ChannelConnectedMessage extends ChannelMessage {
   ChannelConnectedMessage(
     this.heartbeatInterval, // in milliseconds
     this.reconnectionToken,
+    this.ack,
   ) : super(ChannelMessageType.channelConnected);
 
   ChannelConnectedMessage.fromJson(Map<String, dynamic> json)
@@ -131,6 +132,7 @@ class ChannelConnectedMessage extends ChannelMessage {
 
     heartbeatInterval = data['heartbeatInterval'] as int?;
     reconnectionToken = data['reconnectionToken'] as String?;
+    ack = data['ack'] as int?;
   }
 
   @override
@@ -138,6 +140,7 @@ class ChannelConnectedMessage extends ChannelMessage {
     return super._toJson({
       'heartbeatInterval': heartbeatInterval,
       'reconnectionToken': reconnectionToken,
+      'ack': ack,
     });
   }
 }

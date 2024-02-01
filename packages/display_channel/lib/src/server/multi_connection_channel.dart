@@ -41,19 +41,25 @@ class MultiConnectionChannel implements Channel {
     // TODO: consider an appropriate interval
     this.heartbeatInterval = const Duration(seconds: 10),
   }) {
-    _messageContinuity = MessageContinuity(((message) {
-      onChannelMessage?.call(message);
-    }));
+    _messageContinuity = MessageContinuity(
+      MessageContinuityRole.server,
+      // Process messages received from the client
+      (message) => onChannelMessage?.call(message),
+      // Send messages requiring retransmission
+      (message) => _sendToAll(message),
+    );
   }
 
   _startHearbeat() {
     _heartbeatTimer?.cancel();
 
     _heartbeatTimer = Timer.periodic(heartbeatInterval, (Timer timer) {
-      // send hearbeat message
-      // TODO: fill ack
-      final message = HeartbeatMessage(0);
-      send(message);
+      // Periodically sends a heartbeat to the client.
+      _sendToAll(
+        HeartbeatMessage(
+          _messageContinuity.nextIncomingSequenceNumber,
+        ),
+      );
     });
   }
 
@@ -129,18 +135,26 @@ class MultiConnectionChannel implements Channel {
   }
 
   void _notifyConnected(Connection connection) {
-    // FIXME: only send 'connected' to the connection
-    send(ChannelConnectedMessage(
-      heartbeatInterval.inMilliseconds,
-      _reconnectionToken,
-    ));
+    // send channel-connected message to the client
+    connection.send(
+      ChannelConnectedMessage(
+        heartbeatInterval.inMilliseconds,
+        _reconnectionToken,
+        _messageContinuity.nextIncomingSequenceNumber,
+      ).toJson(),
+    );
   }
 
   @override
   void send(ChannelMessage message) {
     final preparedMessage = _messageContinuity.prepareOutgoingMessage(message);
 
-    final json = preparedMessage.toJson();
+    _sendToAll(preparedMessage);
+  }
+
+  // send message to all the connections
+  void _sendToAll(ChannelMessage message) {
+    final json = message.toJson();
 
     // send data to the client
     for (var connection in _connections) {

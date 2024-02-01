@@ -36,7 +36,11 @@ class DisplayChannelClient implements Channel {
     this._createConnection,
   ) {
     _continuity = MessageContinuity(
-      ((message) => onChannelMessage?.call(message)),
+      MessageContinuityRole.client,
+      // Process messages received from the peer
+      (message) => onChannelMessage?.call(message),
+      // Send message requiring retransmission
+      (message) => _connection?.send(message.toJson()),
     );
   }
 
@@ -102,7 +106,7 @@ class DisplayChannelClient implements Channel {
       uri.toString(),
     );
 
-    _connection!.onConnected = () => _changeState(ChannelState.connected);
+    _connection!.onConnected = _onConnected;
     _connection!.onConnecting = () => _changeState(ChannelState.connecting);
     _connection!.onConnectFailed = (error) => _onConnectFailed(error);
     _connection!.onDisconnected = () => _onDisconnected();
@@ -193,6 +197,17 @@ class DisplayChannelClient implements Channel {
       text: error.message,
     );
     _changeState(ChannelState.closed);
+  }
+
+  void _onConnected() {
+    // send client-connected to the server
+    _connection?.send(
+      ClientConnectedMessage(
+        _continuity.nextIncomingSequenceNumber,
+      ).toJson(),
+    );
+
+    _changeState(ChannelState.connected);
   }
 
   Future _onDisconnected() async {
