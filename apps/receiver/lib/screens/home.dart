@@ -19,7 +19,10 @@ import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:display_flutter/widgets/webrtc_view_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+
+import '../settings/app_config.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -168,7 +171,17 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   if (Provider.of<ChannelProvider>(context).showMode == false) {
                     return const SizedBox();
                   } else {
-                    return MainInfoInternet();
+                    return Column(
+                      children: [
+                        const Gap(30),
+                        Text(
+                          AppConfig.of(context)?.settings.airSyncUrl ?? '', style: const TextStyle(fontSize: 40),
+                        ),
+                        const Spacer(),
+                        MainInfoInternet(),
+                        const Spacer(),
+                      ],
+                    );
                   }
                 },
               ),
