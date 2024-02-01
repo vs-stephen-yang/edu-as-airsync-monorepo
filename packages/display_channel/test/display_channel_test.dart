@@ -5,17 +5,7 @@ import 'package:display_channel/display_channel.dart';
 import 'dart:io';
 import 'dart:async';
 
-class ExpectValueCompleter<T> {
-  final completer = Completer();
-  final T _expectValue;
-
-  ExpectValueCompleter(this._expectValue);
-  void updateValue(T value) {
-    if (_expectValue == value) {
-      completer.complete();
-    }
-  }
-}
+import 'utils.dart';
 
 void main() {
   late FakeTunnelService tunnelService;

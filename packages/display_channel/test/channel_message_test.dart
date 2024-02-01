@@ -50,7 +50,7 @@ void main() {
 
     test('channel-connected', () {
       // arrange
-      final msg = ChannelConnectedMessage(1000, "token1");
+      final msg = ChannelConnectedMessage(1000, "token1", 17);
 
       // action
       final json = msg.toJson();
@@ -59,6 +59,19 @@ void main() {
       // assert
       expect(actual.heartbeatInterval, 1000);
       expect(actual.reconnectionToken, "token1");
+      expect(actual.ack, 17);
+    });
+
+    test('client-connected', () {
+      // arrange
+      final msg = ClientConnectedMessage(27);
+
+      // action
+      final json = msg.toJson();
+      final actual = ChannelMessage.parse(json) as ClientConnectedMessage;
+
+      // assert
+      expect(actual.ack, 27);
     });
 
     test('display-status', () {
@@ -356,7 +369,7 @@ void main() {
   test('isControlMessage() should return true for control messages', () {
     // arrange
     final messages = [
-      ChannelConnectedMessage(1000, 'token1'),
+      ChannelConnectedMessage(1000, 'token1', 5),
       ChannelClosedMessage(Reason(0)),
       ClientConnectedMessage(5),
       HeartbeatMessage(4),
