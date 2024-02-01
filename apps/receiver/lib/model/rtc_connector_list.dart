@@ -17,13 +17,28 @@ class RtcConnectorList {
 
   RtcConnectorList._internal();
 
-  static final List<RTCConnector> _channelRtcConnectors = <RTCConnector>[];
-  static List<RTCConnector> get rtcConnectorList => _channelRtcConnectors;
+  static final List<RTCConnector?> rtcConnectorList = List.filled(6, null);
+
+  static void addRTCConnector(RTCConnector rtcConnector) {
+    int checkIndex = rtcConnectorList.indexOf(rtcConnector);
+    if (checkIndex != -1) return;
+    int index = rtcConnectorList.indexOf(null);
+    if (index != -1) {
+      rtcConnectorList[index] = rtcConnector;
+    }
+  }
+
+  static void removeRTCConnector(RTCConnector rtcConnector) {
+    int index = rtcConnectorList.indexOf(rtcConnector);
+    if (index != -1) {
+      rtcConnectorList[rtcConnectorList.indexOf(rtcConnector)] = null;
+    }
+  }
 
   void updateSplitScreen() {
     int connecting = 0, lastID = 0;
-    for (int i = 0; i < rtcConnectorList.length; i++) {
-      if (rtcConnectorList[i].presentationState !=
+    for (int i = 0; i < rtcConnectorList.nonNulls.length; i++) {
+      if (rtcConnectorList[i]?.presentationState !=
           PresentationState.stopStreaming) {
         connecting++;
         lastID = i;
@@ -40,15 +55,15 @@ class RtcConnectorList {
   void handleQualityUpdate({RTCConnector? controller}) {
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
-        for (RTCConnector connector in rtcConnectorList) {
-          if (connector.presentationState == PresentationState.streaming) {
-            connector.sendChangeQuality(true, true);
+        for (RTCConnector? connector in rtcConnectorList) {
+          if (connector?.presentationState == PresentationState.streaming) {
+            connector?.sendChangeQuality(true, true);
           }
         }
       } else {
-        for (RTCConnector connector in _channelRtcConnectors) {
-          if (connector.clientId != null) {
-            connector.sendChangeQuality(false, true);
+        for (RTCConnector? connector in rtcConnectorList) {
+          if (connector?.clientId != null) {
+            connector?.sendChangeQuality(false, true);
           }
         }
       }
@@ -60,10 +75,10 @@ class RtcConnectorList {
   }
 
   bool occupyAvailableRTCConnector(int index) {
-    for (int i = 0; i < _channelRtcConnectors.length; i++) {
-      if (_channelRtcConnectors[i].presentationState.index <
+    for (int i = 0; i < rtcConnectorList.length; i++) {
+      if ((rtcConnectorList[i]?.presentationState.index ?? 0) <
           PresentationState.occupied.index) {
-        _channelRtcConnectors[index].presentationState = PresentationState.occupied;
+        rtcConnectorList[index]?.presentationState = PresentationState.occupied;
         return true;
       }
     }
@@ -73,21 +88,20 @@ class RtcConnectorList {
   bool isPresenting({index}) {
     bool presenting = false;
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      if (index != null && _channelRtcConnectors.length > index) {
-        if (_channelRtcConnectors[index].presentationState ==
-            PresentationState.streaming) {
+      if (index != null) {
+        if (rtcConnectorList[index]?.presentationState == PresentationState.streaming) {
           presenting = true;
         }
       } else {
-        for (RTCConnector controller in _channelRtcConnectors) {
-          if (controller.presentationState == PresentationState.streaming) {
+        for (RTCConnector? controller in rtcConnectorList) {
+          if (controller?.presentationState == PresentationState.streaming) {
             presenting |= true;
           }
         }
       }
     } else {
-      if (_channelRtcConnectors.isNotEmpty &&
-          _channelRtcConnectors[0].presentationState ==
+      if (rtcConnectorList.isNotEmpty &&
+          rtcConnectorList[0]?.presentationState ==
               PresentationState.streaming) {
         presenting = true;
       }
@@ -98,21 +112,22 @@ class RtcConnectorList {
   bool hasPresenterOccupied({index}) {
     bool presenting = false;
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      if (index != null && _channelRtcConnectors.length > index) {
-        if (_channelRtcConnectors[index].presentationState !=
+      if (index != null) {
+        if (rtcConnectorList[index]?.presentationState !=
             PresentationState.stopStreaming) {
           presenting = true;
         }
       } else {
-        for (RTCConnector controller in _channelRtcConnectors) {
-          if (controller.presentationState != PresentationState.stopStreaming) {
+        for (RTCConnector? controller in rtcConnectorList) {
+          if (controller != null &&
+              controller.presentationState != PresentationState.stopStreaming) {
             presenting |= true;
           }
         }
       }
     } else {
-      if (_channelRtcConnectors.isNotEmpty &&
-          _channelRtcConnectors[0].presentationState !=
+      if (rtcConnectorList.isNotEmpty &&
+          rtcConnectorList[0]?.presentationState !=
               PresentationState.stopStreaming) {
         presenting = true;
       }
@@ -123,8 +138,8 @@ class RtcConnectorList {
   int getPresentingQuantity() {
     int quantity = 0;
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      for (RTCConnector controller in _channelRtcConnectors) {
-        if (controller.presentationState == PresentationState.streaming) {
+      for (RTCConnector? controller in rtcConnectorList) {
+        if (controller?.presentationState == PresentationState.streaming) {
           quantity++;
         }
       }
@@ -133,9 +148,9 @@ class RtcConnectorList {
   }
 
   bool isPresenterWaitForStream(String clientId) {
-    for (RTCConnector controller in _channelRtcConnectors) {
-      if (controller.clientId == clientId &&
-          controller.presentationState == PresentationState.waitForStream) {
+    for (RTCConnector? controller in rtcConnectorList) {
+      if (controller?.clientId == clientId &&
+          controller?.presentationState == PresentationState.waitForStream) {
         return true;
       }
     }
@@ -143,9 +158,9 @@ class RtcConnectorList {
   }
 
   bool isPresenterStreaming(String clientId) {
-    for (RTCConnector controller in _channelRtcConnectors) {
-      if (controller.clientId == clientId &&
-          controller.presentationState.index >= PresentationState.streaming.index) {
+    for (RTCConnector? controller in rtcConnectorList) {
+      if (controller?.clientId == clientId &&
+          (controller?.presentationState.index ?? 0) >= PresentationState.streaming.index) {
         return true;
       }
     }
@@ -153,9 +168,9 @@ class RtcConnectorList {
   }
 
   bool isPresenterNotStopStreaming(String clientId) {
-    for (RTCConnector controller in _channelRtcConnectors) {
-      if (controller.clientId == clientId &&
-          controller.presentationState.index >=
+    for (RTCConnector? controller in rtcConnectorList) {
+      if (controller?.clientId == clientId &&
+          (controller?.presentationState.index ?? 0) >=
               PresentationState.waitForStream.index) {
         // waitForStream and streaming
         return true;
@@ -166,7 +181,7 @@ class RtcConnectorList {
 
   removeAllPresenters() async {
     RTCConnector? selectedController;
-    List<RTCConnector> temp = List.from(_channelRtcConnectors);
+    List<RTCConnector> temp = List.from(rtcConnectorList);
     for (int i = temp.length - 1; i >= 0; i--) {
       selectedController = temp[i];
       if (selectedController.clientId != null) {
@@ -186,7 +201,7 @@ class RtcConnectorList {
   /// a session ID is generated due to the act of presenting.
   removeOtherPresenters({bool keepInList = false}) async {
     RTCConnector? selectedController;
-    List<RTCConnector> temp = List.from(_channelRtcConnectors);
+    List<RTCConnector> temp = List.from(rtcConnectorList);
     for (int i = temp.length - 1; i >= 0; i--) {
       selectedController = temp[i];
       if (selectedController.sessionId != null) {
@@ -208,12 +223,11 @@ class RtcConnectorList {
   }
 
   removePresenterBy(int index) async {
-    int listIndex = ChannelProvider.rtcPlayOrder.getOrderByIndex(index);
-    RTCConnector? selectedController = _channelRtcConnectors[listIndex];
-    if (selectedController.sessionId != null) {
+    RTCConnector? selectedController = rtcConnectorList[index];
+    if (selectedController?.sessionId != null) {
       try {
-        await selectedController.disconnectPeerConnection(sendAnalytics: true);
-        await selectedController.disconnectChannel();
+        await selectedController?.disconnectPeerConnection(sendAnalytics: true);
+        await selectedController?.disconnectChannel();
         ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       } on PlatformException catch (e) {
         log(e.toString());
