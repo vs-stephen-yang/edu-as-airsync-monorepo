@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:display_channel/src/channel_server.dart';
 import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/server/connection_request.dart';
@@ -9,13 +11,17 @@ class DisplayTunnelServer extends ChannelServer {
 
   TunnelConnectionServer? _tunnelServer;
 
+  Duration reconnectionTimeoutDuration;
+  Timer? _reconnectionTimer;
+
   final CreateWebsocketClientConnection _createTunnelConnection;
 
   DisplayTunnelServer(
     this._createTunnelConnection,
     OnNewChannel onNewChannel,
-    VerifyConnectRequest verifyConnectRequest,
-  ) : super(
+    VerifyConnectRequest verifyConnectRequest, {
+    this.reconnectionTimeoutDuration = const Duration(seconds: 2),
+  }) : super(
           onNewChannel,
           verifyConnectRequest,
         );
@@ -34,8 +40,22 @@ class DisplayTunnelServer extends ChannelServer {
           verifyConnectionRequest(connectionRequest),
     );
 
-    _tunnelServer!.onTunnelConnected = () => onTunnelConnected?.call();
-    _tunnelServer!.onTunnelConnecting = () => onTunnelConnecting?.call();
+    _tunnelServer!.onTunnelConnected = () {
+      _reconnectionTimer?.cancel();
+      _reconnectionTimer = null;
+
+      onTunnelConnected?.call();
+    };
+
+    _tunnelServer!.onTunnelConnecting = () {
+      onTunnelConnecting?.call();
+
+      _reconnectionTimer ??= Timer(reconnectionTimeoutDuration, () {
+        // the tunnel connection is not re-established within the timeout
+        // close all of the channels
+        super.closeAllChannels();
+      });
+    };
 
     _tunnelServer!.start();
   }
