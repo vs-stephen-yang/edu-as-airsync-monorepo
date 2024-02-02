@@ -48,6 +48,7 @@ abstract class ChannelServer {
         reconnectionToken,
       );
       isNewChannelCreated = true;
+      _channels[clientId] = channel;
     }
 
     channel.addConnection(connection);
