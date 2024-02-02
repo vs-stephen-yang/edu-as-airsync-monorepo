@@ -65,7 +65,7 @@ void main() {
 
   void injectChannelConnected(String token, int ack) {
     connection.onMessage?.call(
-      ChannelConnectedMessage(1000, token, ack).toJson(),
+      ChannelConnectedMessage(1000, 1000, token, ack).toJson(),
     );
   }
 

@@ -50,7 +50,7 @@ void main() {
 
     test('channel-connected', () {
       // arrange
-      final msg = ChannelConnectedMessage(1000, "token1", 17);
+      final msg = ChannelConnectedMessage(1000, 1000, "token1", 17);
 
       // action
       final json = msg.toJson();
@@ -369,7 +369,7 @@ void main() {
   test('isControlMessage() should return true for control messages', () {
     // arrange
     final messages = [
-      ChannelConnectedMessage(1000, 'token1', 5),
+      ChannelConnectedMessage(1000, 1000, 'token1', 5),
       ChannelClosedMessage(Reason(0)),
       ClientConnectedMessage(5),
       HeartbeatMessage(4),
