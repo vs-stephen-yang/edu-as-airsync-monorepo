@@ -110,8 +110,16 @@ abstract class ChannelMessage {
       };
 }
 
+// https://socket.io/docs/v4/server-options/#pinginterval
+// socket.io pingInterval
+// The server sends a ping packet every pingInterval ms, and if the client does not answer with a pong within pingTimeout ms,
+// the server considers that the connection is closed.
+// Similarly, if the client does not receive a ping packet from the server within pingInterval + pingTimeout ms,
+// then the client also considers that the connection is closed.
+
 class ChannelConnectedMessage extends ChannelMessage {
   int? heartbeatInterval; // in milliseconds
+  int? heartbeatTimeout; // in milliseconds
   String? reconnectionToken;
 
   // All messages before the ack, excluding the ack itself, have already been received.
@@ -122,6 +130,7 @@ class ChannelConnectedMessage extends ChannelMessage {
 
   ChannelConnectedMessage(
     this.heartbeatInterval, // in milliseconds
+    this.heartbeatTimeout, // in milliseconds
     this.reconnectionToken,
     this.ack,
   ) : super(ChannelMessageType.channelConnected);
@@ -131,6 +140,7 @@ class ChannelConnectedMessage extends ChannelMessage {
     final data = _fromJson(json);
 
     heartbeatInterval = data['heartbeatInterval'] as int?;
+    heartbeatTimeout = data['heartbeatTimeout'] as int?;
     reconnectionToken = data['reconnectionToken'] as String?;
     ack = data['ack'] as int?;
   }
@@ -139,6 +149,7 @@ class ChannelConnectedMessage extends ChannelMessage {
   Map<String, dynamic> toJson() {
     return super._toJson({
       'heartbeatInterval': heartbeatInterval,
+      'heartbeatTimeout': heartbeatTimeout,
       'reconnectionToken': reconnectionToken,
       'ack': ack,
     });

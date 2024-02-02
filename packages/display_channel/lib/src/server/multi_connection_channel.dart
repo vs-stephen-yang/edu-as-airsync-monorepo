@@ -30,6 +30,7 @@ class MultiConnectionChannel implements Channel {
 
   Timer? _heartbeatTimer;
   final Duration heartbeatInterval;
+  final Duration heartbeatTimeout;
 
   String get channelId {
     return _channelId;
@@ -40,6 +41,7 @@ class MultiConnectionChannel implements Channel {
     this._reconnectionToken, {
     // TODO: consider an appropriate interval
     this.heartbeatInterval = const Duration(seconds: 10),
+    this.heartbeatTimeout = const Duration(seconds: 10),
   }) {
     _messageContinuity = MessageContinuity(
       MessageContinuityRole.server,
@@ -139,6 +141,7 @@ class MultiConnectionChannel implements Channel {
     connection.send(
       ChannelConnectedMessage(
         heartbeatInterval.inMilliseconds,
+        heartbeatTimeout.inMilliseconds,
         _reconnectionToken,
         _messageContinuity.nextIncomingSequenceNumber,
       ).toJson(),

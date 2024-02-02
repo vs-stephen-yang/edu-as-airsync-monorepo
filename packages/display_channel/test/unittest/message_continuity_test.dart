@@ -107,7 +107,7 @@ void main() {
 
     // action
     mc.processIncomingMessage(
-      ChannelConnectedMessage(1000, '', 3),
+      ChannelConnectedMessage(1000, 1000, '', 3),
     );
 
     // assert
