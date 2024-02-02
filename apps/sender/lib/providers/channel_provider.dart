@@ -204,6 +204,7 @@ class ChannelProvider extends ChangeNotifier {
           netResultBack = true;
         } else {
           lanChannel?.close(ChannelCloseReason(ChannelCloseCode.close));
+          _tempLanChannel = lanChannel = null;
         }
       });
       connectInternetChannel(encodedDisplayCode.replaceAll('-', ''),
@@ -221,6 +222,7 @@ class ChannelProvider extends ChangeNotifier {
           lanResultBack = true;
         } else {
           internetChannel?.close(ChannelCloseReason(ChannelCloseCode.close));
+          _tempInternetChannel = internetChannel = null;
         }
       });
     }
@@ -344,6 +346,7 @@ class ChannelProvider extends ChangeNotifier {
       return;
     }
 
+    if (_channel != null) return;
     Uri? uri = Uri.parse(_tunnelApiUrl!);
     _tempInternetChannel = DisplayChannelClient(
         _clientId,
