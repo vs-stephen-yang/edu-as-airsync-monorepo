@@ -72,7 +72,6 @@ class PresentSelectRole extends StatelessWidget {
                       channelProvider.presentModeratorNamePage();
                     } else {
                       await channelProvider.beginBasicMode();
-                      channelProvider.presentSelectScreenPage();
                     }
                   },
                 ),

@@ -244,11 +244,7 @@ class ChannelProvider extends ChangeNotifier {
           break;
         case ChannelMessageType.presentAccepted:
           // select screen
-          if (moderatorStatus) {
-            presentSelectScreenPage();
-          } else {
-            presentSelectScreenPage();
-          }
+          presentSelectScreenPage();
           break;
         case ChannelMessageType.presentRejected:
           Reason? reason = (message as PresentRejectedMessage).reason;
