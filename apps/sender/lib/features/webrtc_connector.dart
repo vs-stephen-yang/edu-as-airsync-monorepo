@@ -9,6 +9,7 @@ import 'package:display_cast_flutter/model/message.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
+import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
@@ -475,20 +476,13 @@ class WebRTCConnector {
       var params = sender!.parameters;
       params.degradationPreference = RTCDegradationPreference.DISABLED;
       await sender.setParameters(params);
+    } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
+      Toast.makeToast('Unstable network connection.');
     }
   }
 
   void _onIceCandidate(RTCIceCandidate candidate) {
     debugModePrint('onCandidate: ${candidate.candidate}', type: runtimeType);
-
-    // send candidates to the peer
-    // Map<String, dynamic> json = {
-    //   'type': 'candidate',
-    //   'sdp': '',
-    //   'candidate': candidate.candidate,
-    //   'sdpMid': candidate.sdpMid,
-    //   'sdpMLineIndex': candidate.sdpMLineIndex,
-    // };
     var message = PresentSignalMessage(null, SignalMessageType.candidate);
     message.candidate = candidate.candidate;
     message.sdpMid = candidate.sdpMid;
