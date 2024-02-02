@@ -181,13 +181,13 @@ class RtcConnectorList {
 
   removeAllPresenters() async {
     RTCConnector? selectedController;
-    List<RTCConnector> temp = List.from(rtcConnectorList);
+    List<RTCConnector?> temp = List.from(rtcConnectorList);
     for (int i = temp.length - 1; i >= 0; i--) {
       selectedController = temp[i];
-      if (selectedController.clientId != null) {
+      if (selectedController?.clientId != null) {
         try {
-          await selectedController.disconnectPeerConnection(sendAnalytics: true);
-          await selectedController.disconnectChannel();
+          await selectedController?.disconnectPeerConnection(sendAnalytics: true);
+          await selectedController?.disconnectChannel();
           // need some delay to prevent exception:
           // 'package:flutter/src/rendering/object.dart': Failed assertion: line 2250 pos 12: '!_debugDisposed': is not true.
           await Future.delayed(const Duration(milliseconds: 300));
@@ -201,16 +201,16 @@ class RtcConnectorList {
   /// a session ID is generated due to the act of presenting.
   removeOtherPresenters({bool keepInList = false}) async {
     RTCConnector? selectedController;
-    List<RTCConnector> temp = List.from(rtcConnectorList);
+    List<RTCConnector?> temp = List.from(rtcConnectorList);
     for (int i = temp.length - 1; i >= 0; i--) {
       selectedController = temp[i];
-      if (selectedController.sessionId != null) {
+      if (selectedController?.sessionId != null) {
         try {
-          await selectedController.disconnectPeerConnection(sendAnalytics: true);
+          await selectedController?.disconnectPeerConnection(sendAnalytics: true);
           if (!keepInList) {
-            await selectedController.disconnectChannel();
+            await selectedController?.disconnectChannel();
           } else {
-            selectedController.sendStopPresent();
+            selectedController?.sendStopPresent();
           }
           // need some delay to prevent exception:
           // 'package:flutter/src/rendering/object.dart': Failed assertion: line 2250 pos 12: '!_debugDisposed': is not true.
