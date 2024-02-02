@@ -43,6 +43,6 @@ jobs:
         displayName: Run lint checks
         workingDirectory: "$(Build.SourcesDirectory)"
 
-      - script: $(Flutter.Bin) test
+      - script: $(Flutter.Bin) test test/unittest
         displayName: Run unit test
         workingDirectory: "$(Build.SourcesDirectory)"
