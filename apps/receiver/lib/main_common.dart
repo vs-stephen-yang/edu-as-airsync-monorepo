@@ -12,6 +12,7 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/utility/device_hardware_decoder_session.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 Future<void> commonEntry(ConfigSettings settings) async {
 
@@ -29,8 +29,7 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
     initLogger();
 
-    // TODO Setup maxHardwareDecodeSession based on device.
-    await WebRTC.initialize(options: {"maxHardwareDecodeSession": 1});
+    await DeviceHardwareDecoderSession.ensureInitialized();
 
     await AppPreferences.ensureInitialized();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
