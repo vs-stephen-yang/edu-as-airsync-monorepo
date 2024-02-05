@@ -9,6 +9,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/cast_settings.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/moderator_menu_view.dart';
+import 'package:display_flutter/screens/sender_menu_view.dart';
 import 'package:display_flutter/screens/settings.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
@@ -209,6 +210,23 @@ class _StreamFunctionStates extends State<StreamFunction> {
                     ),
                   ),
 
+                  Visibility(
+                      visible: value == stateMenuOn &&
+                          ChannelProvider.isSenderMode &&
+                          !AppInstanceCreate().isDisableAdvance,
+                      child: FocusIconButton(
+                        svgSource: const Svg('assets/images/ic_receiver.svg'),
+                        iconForegroundColor: AppColors.iconPresentingForeground,
+                        iconBackgroundColor: AppColors.iconPresentingForeground,
+                        iconFocusBackgroundColor:
+                        AppColors.iconFeatureOnStandbyBackground,
+                        hasFocusSize: AppUIConstant.iconHasFocusSize,
+                        notFocusSize: AppUIConstant.iconNotFocusSize,
+                        onClick: () {
+                          _showSender(value == stateMenuOn);
+                        },
+                      )),
+
                   //ShowDisplayCode button
                   Visibility(
                     // only for show display code while streaming menu on
@@ -300,6 +318,13 @@ class _StreamFunctionStates extends State<StreamFunction> {
     _showMenuDialog(ModeratorMenuView(onUpdateParentUI: () {
       setState(() {});
     }));
+    if (leavePresentFunction) {
+      StreamFunction.streamFunctionState.value = stateMenuOff;
+    }
+  }
+
+  _showSender(bool leavePresentFunction) {
+    _showMenuDialog(const SenderMenuView());
     if (leavePresentFunction) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
     }
