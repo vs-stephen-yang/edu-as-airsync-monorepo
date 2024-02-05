@@ -6,6 +6,7 @@ class FocusIconButton extends StatefulWidget {
   const FocusIconButton(
       {super.key,
       this.icons,
+      this.svgSource,
       this.childHasFocus,
       this.childNotFocus,
       this.onClick,
@@ -22,6 +23,7 @@ class FocusIconButton extends StatefulWidget {
       this.rotateY = 0.0});
 
   final IconData? icons;
+  final ImageProvider? svgSource;
   final Widget? childHasFocus;
   final Widget? childNotFocus;
 
@@ -85,7 +87,7 @@ class _FocusIconButtonState extends State<FocusIconButton> {
           matrix4.rotateY(widget.rotateY);
           return IconButton(
             focusNode: _focusNode,
-            icon: widget.icons != null
+            icon: (widget.icons != null || widget.svgSource != null)
                 ? Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
@@ -100,14 +102,17 @@ class _FocusIconButtonState extends State<FocusIconButton> {
                         Transform(
                           alignment: Alignment.center,
                           transform: matrix4,
-                          child: Icon(
-                            widget.icons!,
+                          child: widget.icons != null ? Icon(
+                            widget.icons,
                             color: hasFocus
                                 ? widget.iconFocusForegroundColor ??
                                     widget.iconForegroundColor
                                 : widget.iconForegroundColor,
                             size: iconSize,
-                          ),
+                          ) : Image(image: widget.svgSource!, color: hasFocus
+                              ? widget.iconFocusForegroundColor ??
+                              widget.iconForegroundColor
+                              : widget.iconForegroundColor, width: iconSize, height: iconSize,),
                         ),
                         Positioned(
                           top: 0,
