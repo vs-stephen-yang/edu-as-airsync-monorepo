@@ -4,11 +4,12 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ModeratorPresentStart extends StatelessWidget {
-  ModeratorPresentStart({super.key});
+  ModeratorPresentStart({super.key, this.countStartTime = 0});
 
   final ValueNotifier<int> _countSecondsValue = ValueNotifier(0);
   final ValueNotifier<int> _countMinutesValue = ValueNotifier(0);
@@ -16,13 +17,21 @@ class ModeratorPresentStart extends StatelessWidget {
   final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
 
   final ValueNotifier<bool> _presentingState = ValueNotifier(true);
+  final int countStartTime;
 
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    _countSecondsValue.value = 0;
-    _countMinutesValue.value = 0;
-    _countHoursValue.value = 0;
+    if (kIsWeb && countStartTime != 0) {
+      final start = (DateTime.now().millisecondsSinceEpoch - countStartTime) ~/ 1000;
+      _countSecondsValue.value = start % 60;
+      _countMinutesValue.value = start ~/ 60;
+      _countHoursValue.value = start ~/ 3600;
+    } else {
+      _countSecondsValue.value = 0;
+      _countMinutesValue.value = 0;
+      _countHoursValue.value = 0;
+    }
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_presentingState.value) {
         _countSecondsValue.value++;
