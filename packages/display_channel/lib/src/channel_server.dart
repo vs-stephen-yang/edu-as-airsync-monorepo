@@ -76,17 +76,4 @@ abstract class ChannelServer {
     }
     return channel.verifyReconnectionToken(connectionRequest.token);
   }
-
-  closeAllChannels() {
-    for (var entry in _channels.entries) {
-      entry.value.close(
-        ChannelCloseReason(
-          ChannelCloseCode.transportClose,
-          text: '',
-        ),
-      );
-    }
-
-    _channels.clear();
-  }
 }
