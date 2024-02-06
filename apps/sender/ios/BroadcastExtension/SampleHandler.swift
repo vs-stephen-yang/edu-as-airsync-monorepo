@@ -16,25 +16,48 @@ private enum Constants {
 
 class SampleHandler: RPBroadcastSampleHandler {
 
-    private var clientConnection: SocketConnection?
-    private var uploader: SampleUploader?
-
+    private var videoClientConnection: SocketConnection?
+    private var videoUploader: SampleUploader?
+    
+    private var audioClientConnection: SocketConnection?
+    private var audioUploader: SampleUploader?
+    
     private var frameCount: Int = 0
 
-    var socketFilePath: String {
+    func getSocketFilePath(isVideo: Bool) -> String {
       let sharedContainer = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Constants.appGroupIdentifier)
-        return sharedContainer?.appendingPathComponent("rtc_SSFD").path ?? ""
+      if (isVideo) {
+        return sharedContainer?.appendingPathComponent("rtc_SSFD_video").path ?? ""
+      }
+      else {
+        return sharedContainer?.appendingPathComponent("rtc_SSFD_audio").path ?? ""
+      }
     }
 
     override init() {
       super.init()
-        if let connection = SocketConnection(filePath: socketFilePath) {
-          clientConnection = connection
-          setupConnection()
-
-          uploader = SampleUploader(connection: connection)
-        }
-        os_log(.debug, log: broadcastLogger, "%{public}s", socketFilePath)
+      initVideoSampler();
+      initAudioSampler();
+    }
+  
+    func initVideoSampler() {
+      var filePath = getSocketFilePath(isVideo: true);
+      if let connection = SocketConnection(filePath: getSocketFilePath(isVideo: true)) {
+        videoClientConnection = connection
+        setupConnection(videoClientConnection)
+        videoUploader = SampleUploader(connection: connection, isVideo: true)
+      }
+      os_log(.debug, log: broadcastLogger, "initVideoSampler: %{public}s", filePath)
+    }
+  
+    func initAudioSampler() {
+      var filePath = getSocketFilePath(isVideo: false);
+      if let connection = SocketConnection(filePath: getSocketFilePath(isVideo: false)) {
+        audioClientConnection = connection
+        setupConnection(audioClientConnection)
+        audioUploader = SampleUploader(connection: connection, isVideo: false)
+      }
+      os_log(.debug, log: broadcastLogger, "initVideoSampler: %{public}s", filePath)
     }
 
     override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
@@ -42,7 +65,8 @@ class SampleHandler: RPBroadcastSampleHandler {
         frameCount = 0
 
         DarwinNotificationCenter.shared.postNotification(.broadcastStarted)
-        openConnection()
+        openConnection(videoClientConnection)
+        openConnection(audioClientConnection)
     }
     
     override func broadcastPaused() {
@@ -56,13 +80,16 @@ class SampleHandler: RPBroadcastSampleHandler {
     override func broadcastFinished() {
         // User has requested to finish the broadcast.
         DarwinNotificationCenter.shared.postNotification(.broadcastStopped)
-        clientConnection?.close()
+        videoClientConnection?.close()
+        audioClientConnection?.close()
     }
     
     override func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
         switch sampleBufferType {
-        case RPSampleBufferType.video:
-            uploader?.send(sample: sampleBuffer)
+        case .video:
+          videoUploader?.send(sample: sampleBuffer)
+        case .audioApp:
+          audioUploader?.send(sample: sampleBuffer)
         default:
             break
         }
@@ -71,8 +98,8 @@ class SampleHandler: RPBroadcastSampleHandler {
 
 private extension SampleHandler {
 
-    func setupConnection() {
-        clientConnection?.didClose = { [weak self] error in
+    func setupConnection(_ connection: SocketConnection?) {
+      connection?.didClose = { [weak self] error in
             os_log(.debug, log: broadcastLogger, "client connection did close \(String(describing: error))")
 
             if let error = error {
@@ -83,21 +110,19 @@ private extension SampleHandler {
                 let customError = NSError(domain: RPRecordingErrorDomain, code: JMScreenSharingStopped, userInfo: [NSLocalizedDescriptionKey: "Screen sharing stopped"])
                 self?.finishBroadcastWithError(customError)
             }
-        }
+      }
     }
 
-    func openConnection() {
+    func openConnection(_ connection: SocketConnection?) {
         let queue = DispatchQueue(label: "broadcast.connectTimer")
         let timer = DispatchSource.makeTimerSource(queue: queue)
         timer.schedule(deadline: .now(), repeating: .milliseconds(100), leeway: .milliseconds(500))
-        timer.setEventHandler { [weak self] in
-            guard self?.clientConnection?.open() == true else {
+        timer.setEventHandler { [] in
+            guard connection?.open() == true else {
                 return
             }
-
             timer.cancel()
         }
-
         timer.resume()
     }
 }
