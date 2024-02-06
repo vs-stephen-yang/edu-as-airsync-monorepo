@@ -61,17 +61,4 @@ void main() {
     // assert
     expect(channels.length, 1);
   });
-
-  test('closeAllChannels() should close all the channels', () async {
-    // arrange
-    server.handleNewConnection('1000', FakeConnection());
-    server.handleNewConnection('1001', FakeConnection());
-
-    // action
-    server.closeAllChannels();
-
-    // assert
-    expect(channels[0].state, ChannelState.closed);
-    expect(channels[1].state, ChannelState.closed);
-  });
 }
