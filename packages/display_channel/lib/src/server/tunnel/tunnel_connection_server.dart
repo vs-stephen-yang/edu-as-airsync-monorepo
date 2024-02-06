@@ -56,7 +56,11 @@ class TunnelConnectionServer extends TunnelMessageHandler {
       return;
     }
 
-    final connection = TunnelClientConnection(this, msg.connectionId);
+    final connection = TunnelClientConnection(
+      this,
+      msg.connectionId,
+      msg.clientId,
+    );
 
     _connections[msg.connectionId] = connection;
     _onNewClientConnection(msg.clientId, connection);
@@ -81,6 +85,22 @@ class TunnelConnectionServer extends TunnelMessageHandler {
   @override
   void onDisconnectClient(TunnelDisconnectClient msg) {
     //TODO:
+  }
+
+  void onTunnelConnected() {
+    // Restore previously established connections after reconnection
+    _connections.forEach((_, connection) {
+      _onNewClientConnection(
+        connection.clientId,
+        connection,
+      );
+    });
+  }
+
+  void onTunnelDisconnected() {
+    _connections.forEach((_, connection) {
+      connection.onClosed?.call(connection);
+    });
   }
 
   void disconnectClient(String connectionId) {
@@ -114,10 +134,20 @@ class TunnelClientConnection implements Connection {
   @override
   void Function(Connection connection, Map<String, dynamic> message)? onMessage;
 
+  String get clientId {
+    return _clientId;
+  }
+
   final String _connectionId;
+  final String _clientId;
+
   final TunnelConnectionServer _site;
 
-  TunnelClientConnection(this._site, this._connectionId);
+  TunnelClientConnection(
+    this._site,
+    this._connectionId,
+    this._clientId,
+  );
 
   @override
   void send(Map<String, dynamic> message) {

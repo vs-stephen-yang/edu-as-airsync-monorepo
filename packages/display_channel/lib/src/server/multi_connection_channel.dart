@@ -32,6 +32,10 @@ class MultiConnectionChannel implements Channel {
   final Duration heartbeatInterval;
   final Duration heartbeatTimeout;
 
+  Timer? _reconnectTimer;
+  // The amount of time during which a client can reconnect before closing the channel.
+  final Duration reconnectTimeout;
+
   String get channelId {
     return _channelId;
   }
@@ -42,6 +46,7 @@ class MultiConnectionChannel implements Channel {
     // TODO: consider an appropriate interval
     this.heartbeatInterval = const Duration(seconds: 10),
     this.heartbeatTimeout = const Duration(seconds: 10),
+    this.reconnectTimeout = const Duration(seconds: 2),
   }) {
     _messageContinuity = MessageContinuity(
       MessageContinuityRole.server,
@@ -52,6 +57,7 @@ class MultiConnectionChannel implements Channel {
     );
   }
 
+  // start heatbeat timer
   _startHearbeat() {
     _heartbeatTimer?.cancel();
 
@@ -65,16 +71,32 @@ class MultiConnectionChannel implements Channel {
     });
   }
 
+  // stop heartbeat timer
   _stopHearbeat() {
     _heartbeatTimer?.cancel();
     _heartbeatTimer = null;
+  }
+
+  _startReconnectTimer() {
+    _reconnectTimer = Timer(reconnectTimeout, () {
+      // the client does not reconnect within the timeout.
+      _onReconnectTimeout();
+    });
+  }
+
+  _stopReconnectTimer() {
+    _reconnectTimer?.cancel();
+    _reconnectTimer = null;
   }
 
   bool verifyReconnectionToken(String token) {
     return _reconnectionToken == token;
   }
 
+  // a new connection is added
   void addConnection(Connection newConnection) {
+    _stopReconnectTimer();
+
     if (_connections.isEmpty) {
       _startHearbeat();
     }
@@ -123,16 +145,15 @@ class MultiConnectionChannel implements Channel {
     return _state == ChannelState.closed;
   }
 
+  // a connection is closed
   void _onConnectionClosed(Connection c) {
-    // the connection is closed
     _connections.remove(c);
 
     // all underlying connections are closed
     if (_connections.isEmpty) {
       _stopHearbeat();
 
-      // IMPROVE
-      _changeState(ChannelState.closed);
+      _startReconnectTimer();
     }
   }
 
@@ -165,9 +186,11 @@ class MultiConnectionChannel implements Channel {
     }
   }
 
+  // the server initiates channel closure
   @override
   Future<void> close(ChannelCloseReason? reason) async {
     _stopHearbeat();
+    _stopReconnectTimer();
 
     if (_isClosed()) {
       return;
@@ -184,6 +207,7 @@ class MultiConnectionChannel implements Channel {
     }
   }
 
+  // the client initiates channel closure
   Future _onChannelClosedMessage(ChannelClosedMessage message) async {
     if (_isClosed()) {
       return;
@@ -197,6 +221,20 @@ class MultiConnectionChannel implements Channel {
         ? convertRemoteReasonToChannelCloseReason(message.reason!)
         : ChannelCloseReason(ChannelCloseCode.remoteClose);
 
+    _changeState(ChannelState.closed);
+  }
+
+  // the client does not reconnect within the timeout.
+  _onReconnectTimeout() {
+    assert(_connections.isEmpty);
+    assert(_heartbeatTimer == null);
+
+    _reconnectTimer = null;
+
+    _closeReason = ChannelCloseReason(
+      ChannelCloseCode.transportClose,
+      text: 'The client does not reconnect within timeout',
+    );
     _changeState(ChannelState.closed);
   }
 

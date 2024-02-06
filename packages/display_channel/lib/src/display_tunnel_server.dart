@@ -12,9 +12,6 @@ class DisplayTunnelServer extends ChannelServer {
   TunnelConnectionServer? _tunnelServer;
   ClientConnection? _tunnelConnection;
 
-  Duration reconnectionTimeoutDuration;
-  Timer? _reconnectionTimer;
-
   // Tunnel Heartbeat
   // Avoid disconnection caused by AWS WebSocket Idle Connection Timeout.
   Timer? _heartbeatTimer;
@@ -26,7 +23,6 @@ class DisplayTunnelServer extends ChannelServer {
     this._createTunnelConnection,
     OnNewChannel onNewChannel,
     VerifyConnectRequest verifyConnectRequest, {
-    this.reconnectionTimeoutDuration = const Duration(seconds: 2),
     // AWS WebSocket Idle Connection Timeout 10 minutes
     this.heartbeatInterval = const Duration(minutes: 9),
   }) : super(
@@ -49,19 +45,6 @@ class DisplayTunnelServer extends ChannelServer {
     }
   }
 
-  _enableReconnectionTimer(bool enable) {
-    if (enable) {
-      _reconnectionTimer ??= Timer(reconnectionTimeoutDuration, () {
-        // if the tunnel connection is not re-established within the timeout,
-        // close all of the channels
-        super.closeAllChannels();
-      });
-    } else {
-      _reconnectionTimer?.cancel();
-      _reconnectionTimer = null;
-    }
-  }
-
   void start(
     String instanceId,
     String tunnelServiceUrl,
@@ -78,13 +61,13 @@ class DisplayTunnelServer extends ChannelServer {
     );
 
     connection.onConnected = () {
-      _enableReconnectionTimer(false);
-
       onTunnelConnected?.call();
+
+      _tunnelServer?.onTunnelConnected();
     };
 
     connection.onDisconnected = () {
-      _enableReconnectionTimer(true);
+      _tunnelServer?.onTunnelDisconnected();
     };
 
     connection.onConnecting = () {
@@ -106,8 +89,6 @@ class DisplayTunnelServer extends ChannelServer {
 
   @override
   void stop() {
-    _enableReconnectionTimer(false);
-
     _enableHeartbeat(false);
 
     _tunnelConnection?.close();
