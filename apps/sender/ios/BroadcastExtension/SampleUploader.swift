@@ -19,6 +19,7 @@ class SampleUploader {
     private static var imageContext = CIContext(options: nil)
     
     @Atomic private var isReady = false
+    private var isVideo: Bool
     private var connection: SocketConnection
   
     private var dataToSend: Data?
@@ -26,10 +27,10 @@ class SampleUploader {
   
     private let serialQueue: DispatchQueue
     
-    init(connection: SocketConnection) {
+    init(connection: SocketConnection, isVideo: Bool) {
         self.connection = connection
         self.serialQueue = DispatchQueue(label: "org.jitsi.meet.broadcast.sampleUploader")
-      
+        self.isVideo = isVideo
         setupConnection()
     }
   
@@ -96,8 +97,16 @@ private extension SampleUploader {
       
         return true
     }
-    
+  
     func prepare(sample buffer: CMSampleBuffer) -> Data? {
+      if self.isVideo {
+        return prepareVideo(sample: buffer)
+      } else {
+        return prepareAudio(sample: buffer)
+      }
+    }
+    
+    func prepareVideo(sample buffer: CMSampleBuffer) -> Data? {
         guard let imageBuffer = CMSampleBufferGetImageBuffer(buffer) else {
             os_log(.debug, log: broadcastLogger, "image buffer not available")
             return nil
@@ -130,6 +139,67 @@ private extension SampleUploader {
         
         let serializedMessage = CFHTTPMessageCopySerializedMessage(httpResponse)?.takeRetainedValue() as Data?
       
+        return serializedMessage
+    }
+  
+    func prepareAudio(sample buffer: CMSampleBuffer) -> Data? {
+        guard let formatDescription = CMSampleBufferGetFormatDescription(buffer) else {
+            os_log(.debug, log: broadcastLogger, "failed to get audio format description")
+            return nil
+        }
+      
+        guard let streamBasicDescription = CMAudioFormatDescriptionGetStreamBasicDescription(formatDescription) else {
+            os_log(.debug, log: broadcastLogger, "failed to get stream basic description")
+            return nil
+        }
+      
+        var audioBufferList = AudioBufferList()
+        var blockBuffer: CMBlockBuffer?
+        
+        guard CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
+              buffer,
+              bufferListSizeNeededOut: nil,
+              bufferListOut: &audioBufferList,
+              bufferListSize: MemoryLayout<AudioBufferList>.size,
+              blockBufferAllocator: nil,
+              blockBufferMemoryAllocator: nil,
+              flags: 0,
+              blockBufferOut: &blockBuffer) == noErr else {
+          os_log(.debug, log: broadcastLogger, "CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer() failed")
+          return nil
+        }
+          
+        let buffers = UnsafeMutableAudioBufferListPointer(&audioBufferList)
+        var data = Data()
+        
+        for audioBuffer in buffers {
+            if let frame = audioBuffer.mData?.assumingMemoryBound(to: UInt8.self) {
+                data.append(frame, count: Int(audioBuffer.mDataByteSize))
+            }
+        }
+        
+        let httpResponse = CFHTTPMessageCreateResponse(nil, 200, nil, kCFHTTPVersion1_1).takeRetainedValue()
+        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-Length" as CFString, String(data.count) as CFString)
+        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-SampleRate" as CFString, String(streamBasicDescription.pointee.mSampleRate) as CFString)
+        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-Format" as CFString,
+            String(streamBasicDescription.pointee.mFormatID) as CFString)
+        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-FormatFlags" as CFString,
+            String(streamBasicDescription.pointee.mFormatFlags) as CFString)
+        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-ChannelsPerFrame" as CFString,
+            String(streamBasicDescription.pointee.mChannelsPerFrame) as CFString)
+        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-BitsPerChannel" as CFString,
+            String(streamBasicDescription.pointee.mBitsPerChannel) as CFString)
+        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-FramesPerPacket" as CFString,
+            String(streamBasicDescription.pointee.mFramesPerPacket) as CFString)
+        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-BytesPerFrame" as CFString,
+            String(streamBasicDescription.pointee.mBytesPerFrame) as CFString)
+        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-BytesPerPacket" as CFString,
+            String(streamBasicDescription.pointee.mBytesPerPacket) as CFString)
+        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-Reserved" as CFString,
+            String(streamBasicDescription.pointee.mReserved) as CFString)
+        CFHTTPMessageSetBody(httpResponse, data as CFData)
+        
+        let serializedMessage = CFHTTPMessageCopySerializedMessage(httpResponse)?.takeRetainedValue() as Data?
         return serializedMessage
     }
     
