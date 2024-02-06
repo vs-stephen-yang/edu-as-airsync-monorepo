@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreferences {
@@ -20,20 +17,22 @@ class AppPreferences {
   String _instanceName = 'AirSync';
   String _entityId = '';
   String _moderatorId = '';
-  String _language = 'English';
 
   bool get showEULA => _showEULA;
-  String get instanceName => _instanceName;
-  String get entityId => _entityId;
-  String get moderatorId => _moderatorId;
-  String get language => _language.isNotEmpty ? _language : _getDefaultSupportedLanguage();
-  Locale? get locale => localeMap[language];
 
-  set({bool? showEULA,
+  String get instanceName => _instanceName;
+
+  String get entityId => _entityId;
+
+  String get moderatorId => _moderatorId;
+
+  set({
+    bool? showEULA,
     String? instanceName,
     String? entityId,
     String? moderatorId,
-    String? language,}) {
+    String? language,
+  }) {
     if (showEULA != null) {
       _showEULA = showEULA;
     }
@@ -46,9 +45,6 @@ class AppPreferences {
     if (moderatorId != null) {
       _moderatorId = moderatorId;
     }
-    if (language != null) {
-      _language = language;
-    }
     _save();
   }
 
@@ -58,7 +54,6 @@ class AppPreferences {
     prefs.setString('app_instanceName', _instanceName);
     prefs.setString('app_entityId', _entityId);
     prefs.setString('app_moderatorId', _moderatorId);
-    prefs.setString('app_language', _language);
   }
 
   _load() async {
@@ -67,26 +62,5 @@ class AppPreferences {
     _instanceName = prefs.getString('app_instanceName') ?? 'AirSync';
     _entityId = prefs.getString('app_entityId') ?? '';
     _moderatorId = prefs.getString('app_moderatorId') ?? '';
-    _language = prefs.getString('app_language') ?? '';
-  }
-
-  static Map<String, Locale> localeMap = {
-    'English': const Locale('en', ''),
-    '繁體中文': const Locale.fromSubtags(
-        languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),
-  };
-
-  String _getDefaultSupportedLanguage() {
-    //System locale
-    String currentSystemLanguageCode = Platform.localeName.split('_')[0];
-
-    //default is English
-    String name = 'English';
-    localeMap.forEach((key, value) {
-      if (value.languageCode == currentSystemLanguageCode) {
-        name = key;
-      }
-    });
-    return name;
   }
 }

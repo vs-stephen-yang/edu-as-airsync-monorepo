@@ -9,6 +9,7 @@ import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -23,7 +24,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 Future<void> commonEntry(ConfigSettings settings) async {
-
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -67,32 +67,14 @@ Future<void> commonEntry(ConfigSettings settings) async {
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.
   const MyApp({super.key});
-  static ValueNotifier<bool> updatedLocale = ValueNotifier(false);
+
   static bool isInBackgroundMode = false;
-
-  static void setNewLocale(BuildContext context, int index) async {
-    String newLanguage = AppPreferences.localeMap.keys.elementAt(index);
-    AppPreferences().set(language: newLanguage);
-
-    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
-    state?.changeLanguage(AppPreferences().locale);
-
-    updatedLocale.value = !updatedLocale.value;
-  }
 
   @override
   State createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  Locale? _locale = AppPreferences().locale;
-
-  changeLanguage(Locale? locale) {
-    setState(() {
-      _locale = locale;
-    });
-  }
-
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -130,58 +112,65 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: ChannelProvider(AppConfig.of(context)!)),
+        ChangeNotifierProvider.value(value: PrefLanguageProvider()),
+        ChangeNotifierProvider.value(
+            value: ChannelProvider(AppConfig.of(context)!)),
         ChangeNotifierProvider.value(value: MirrorStateProvider(context)),
       ],
-      child: MaterialApp(
-        localizationsDelegates: const [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        //add
-        supportedLocales: S.delegate.supportedLocales,
-        locale: _locale,
-        title: 'AirSync',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          // Set App background color
-          scaffoldBackgroundColor: Colors.black,
-          // Set Text default body color
-          textTheme: Theme.of(context).textTheme.apply(bodyColor: Colors.white),
-          // Set ElevatedButton default foreground color
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(foregroundColor: Colors.white),
-          ),
-          // Set TextButton default foreground color
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(foregroundColor: Colors.white),
-          ),
-          // Set IconButton default foreground color
-          iconButtonTheme: IconButtonThemeData(
-            style: IconButton.styleFrom(foregroundColor: Colors.white),
-          ),
-          // Set Icon default color
-          iconTheme: const IconThemeData(
-            color: Colors.white,
-          ),
-          listTileTheme: const ListTileThemeData(
-            textColor: Colors.white,
-            iconColor: Colors.white,
-          ),
-        ),
-        initialRoute: AppPreferences().showEULA &&
-                !AppInstanceCreate().isInstalledInVBS100 &&
-                !AppInstanceCreate().isNoneTouchModel
-            ? '/eula'
-            : '/home',
-        navigatorKey: NavigationService.navigationKey,
-        routes: {
-          // for "navService.popUntil('/home')"
-          '/home': (context) => const AppOTADialog(child: Home()),
-          '/eula': (context) => const AppOTADialog(child: Eula()),
+      child: Consumer<PrefLanguageProvider>(
+        builder: (_, prefLanguageProvider, __) {
+          return MaterialApp(
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            //add
+            supportedLocales: S.delegate.supportedLocales,
+            locale: prefLanguageProvider.locale,
+            title: 'AirSync',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              // Set App background color
+              scaffoldBackgroundColor: Colors.black,
+              // Set Text default body color
+              textTheme:
+                  Theme.of(context).textTheme.apply(bodyColor: Colors.white),
+              // Set ElevatedButton default foreground color
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(foregroundColor: Colors.white),
+              ),
+              // Set TextButton default foreground color
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(foregroundColor: Colors.white),
+              ),
+              // Set IconButton default foreground color
+              iconButtonTheme: IconButtonThemeData(
+                style: IconButton.styleFrom(foregroundColor: Colors.white),
+              ),
+              // Set Icon default color
+              iconTheme: const IconThemeData(
+                color: Colors.white,
+              ),
+              listTileTheme: const ListTileThemeData(
+                textColor: Colors.white,
+                iconColor: Colors.white,
+              ),
+            ),
+            initialRoute: AppPreferences().showEULA &&
+                    !AppInstanceCreate().isInstalledInVBS100 &&
+                    !AppInstanceCreate().isNoneTouchModel
+                ? '/eula'
+                : '/home',
+            navigatorKey: NavigationService.navigationKey,
+            routes: {
+              // for "navService.popUntil('/home')"
+              '/home': (context) => const AppOTADialog(child: Home()),
+              '/eula': (context) => const AppOTADialog(child: Eula()),
+            },
+          );
         },
       ),
     );
