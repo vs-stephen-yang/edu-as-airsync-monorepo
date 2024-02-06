@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:display_flutter/app_colors.dart';
-import 'package:display_flutter/app_preferences.dart';
-import 'package:display_flutter/main_common.dart';
+import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class TextClock extends StatefulWidget {
   const TextClock({super.key});
@@ -32,12 +32,11 @@ class _TextClockState extends State<TextClock> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: MyApp.updatedLocale,
-      builder: (BuildContext context, bool value, Widget? child) {
+    return Consumer<PrefLanguageProvider>(
+      builder: (_, prefLanguageProvider, __) {
         var now = DateTime.now();
         final time =
-            DateFormat('hh:mm a', AppPreferences().locale?.languageCode)
+            DateFormat('hh:mm a', prefLanguageProvider.locale?.languageCode)
                 .format(now);
         return Text(
           time,

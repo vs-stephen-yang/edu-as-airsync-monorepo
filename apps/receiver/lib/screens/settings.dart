@@ -39,8 +39,6 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    String postName = context.read<ChannelProvider>().displayCode;
-    postName = postName.substring(max(postName.length - 5, 0));
     if (_isInChildDialog) {
       return const SizedBox();
     }
@@ -58,10 +56,14 @@ class _SettingsState extends State<Settings> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(S.of(context).main_settings_device_name),
-                  Text(
-                    '${AppPreferences().instanceName}-$postName',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
+                    String postName = channelProvider.displayCode;
+                    postName = postName.substring(max(postName.length - 5, 0));
+                    return Text(
+                      '${AppPreferences().instanceName}-$postName',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    );
+                  }),
                 ],
               ),
               const Spacer(),
