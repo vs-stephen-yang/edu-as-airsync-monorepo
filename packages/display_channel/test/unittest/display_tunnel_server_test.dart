@@ -5,12 +5,16 @@ import 'package:flutter_test/flutter_test.dart';
 
 class FakeClientConnection extends ClientConnection {
   FakeClientConnection();
+  bool isCloseCalled = false;
+
+  String? url;
 
   @override
   void open() {}
 
   @override
   Future<void> close() {
+    isCloseCalled = true;
     return Future<void>.value();
   }
 
@@ -22,6 +26,8 @@ void main() {
   late DisplayTunnelServer server;
   late FakeClientConnection connection;
   Channel? channel;
+  late bool onTunnelConnectedCalled;
+  late bool onTunnelConnectingCalled;
 
   injectTunnelConnectedMessage(String connectionId, String token) {
     final message = TunnelClientConnected(
@@ -38,16 +44,39 @@ void main() {
     connection = FakeClientConnection();
 
     server = DisplayTunnelServer(
-      (String url) => connection,
+      (String url) {
+        connection.url = url;
+        return connection;
+      },
       (Channel c) {
         channel = c;
-        channel!.onStateChange = (state) {};
       },
       (ConnectionRequest connectionRequest) => ConnectRequestStatus.success,
     );
+
+    onTunnelConnectedCalled = false;
+    onTunnelConnectingCalled = false;
+
+    server.onTunnelConnected = () {
+      onTunnelConnectedCalled = true;
+    };
+
+    server.onTunnelConnecting = () {
+      onTunnelConnectingCalled = true;
+    };
   });
 
-  test('stop should work', () async {
+  test('start should create a connection with correct URI', () async {
+    // arrange
+
+    // action
+    server.start('1000', 'wss://example.com/dev');
+
+    // assert
+    expect(connection.url, 'wss://example.com/dev?role=server&instanceId=1000');
+  });
+
+  test('stop should close the connection', () async {
     // arrange
     server.start('1000', 'wss://example.com/dev');
 
@@ -55,6 +84,7 @@ void main() {
     server.stop();
 
     // assert
+    expect(connection.isCloseCalled, true);
   });
 
   test('a new channel should be created when connected is received', () async {
@@ -67,5 +97,27 @@ void main() {
     // assert
     expect(channel, isNotNull);
     expect(channel!.state, ChannelState.connected);
+  });
+
+  test('should be notified when the connected is connected', () async {
+    // arrange
+    server.start('1000', 'wss://example.com/dev');
+
+    // action
+    connection.onConnected?.call();
+
+    // assert
+    expect(onTunnelConnectedCalled, true);
+  });
+
+  test('should be notified when the connected is connecting', () async {
+    // arrange
+    server.start('1000', 'wss://example.com/dev');
+
+    // action
+    connection.onConnecting?.call();
+
+    // assert
+    expect(onTunnelConnectingCalled, true);
   });
 }
