@@ -57,7 +57,7 @@ class SampleHandler: RPBroadcastSampleHandler {
         setupConnection(audioClientConnection)
         audioUploader = SampleUploader(connection: connection, isVideo: false)
       }
-      os_log(.debug, log: broadcastLogger, "initVideoSampler: %{public}s", filePath)
+      os_log(.debug, log: broadcastLogger, "initAudioSampler: %{public}s", filePath)
     }
 
     override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
