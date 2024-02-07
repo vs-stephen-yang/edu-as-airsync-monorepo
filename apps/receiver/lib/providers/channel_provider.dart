@@ -333,11 +333,15 @@ class ChannelProvider extends ChangeNotifier {
       ConnectionRequest connectionRequest) {
     if (connectionRequest.displayCode != displayCode) {
       return ConnectRequestStatus.invalidDisplayCode;
-    } else if (!otpList.contains(connectionRequest.token)) {
+    } else if (!_isValidOtp(connectionRequest.token)) {
       return ConnectRequestStatus.invalidOtp;
     } else {
       return ConnectRequestStatus.success;
     }
+  }
+
+  bool _isValidOtp(String token) {
+    return appConfig.settings.defaultOtp == token || otpList.contains(token);
   }
 
   void sendDisplayStatus(Channel channel) {

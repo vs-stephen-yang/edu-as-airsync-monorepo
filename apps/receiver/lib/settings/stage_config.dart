@@ -18,6 +18,9 @@ class StageConfig implements ConfigSettings {
       'https://stage.myviewboarddisplay.com/enroll?device_id=';
 
   @override
+  String? defaultOtp; // For development only. Keep null
+
+  @override
   String appSecretAndroid = '0ffc5b6e-d024-4685-b7ab-214b636d2b8b';
 
   @override // todo create iOS project secret
