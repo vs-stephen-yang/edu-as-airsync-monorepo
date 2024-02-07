@@ -17,6 +17,9 @@ class ProductionConfig implements ConfigSettings {
   String prefixQRCode = 'https://myviewboarddisplay.com/enroll?device_id=';
 
   @override
+  String? defaultOtp; // For development only. Keep null
+
+  @override
   String appSecretAndroid = '6027dbdc-c4ad-41fb-8dc2-9b9d2cbbce23';
 
   @override // todo create iOS project secret

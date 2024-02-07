@@ -31,6 +31,9 @@ abstract class ConfigSettings {
   late String appSecretAndroid;
   late String appSecretIOS;
 
+  // Backdoor OTP. For development only.
+  late String? defaultOtp;
+
   late String icarHostName;
   late String icarRegisterUrl;
   late String icarUpdateUrl;
