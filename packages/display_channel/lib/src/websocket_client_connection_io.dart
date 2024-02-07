@@ -82,9 +82,10 @@ class WebSocketClientConnection implements ClientConnection {
         },
         retryIf: (e) {
           logger?.call(_url, e.toString());
-          // IMPROVE
-          // Do not retry for WebSocketException since WebSocketExceptions is treated as wrong display code.
-          return !_closed && (e is SocketException || e is HttpException);
+          return !_closed &&
+              (e is SocketException ||
+                  e is HttpException ||
+                  e is WebSocketException);
         },
         onRetry: (p0) {},
       );
