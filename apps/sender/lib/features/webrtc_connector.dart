@@ -65,7 +65,7 @@ class WebRTCConnector {
   int _outboundVideoCount = 0;
 
   Future<void> makeCall(
-      String peerId, dynamic source, List<RtcIceServer>? iceServerList) async {
+      dynamic source, List<RtcIceServer>? iceServerList) async {
     dynamic deviceId;
 
     if (kIsWeb) {

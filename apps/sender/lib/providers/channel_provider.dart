@@ -382,7 +382,7 @@ class ChannelProvider extends ChangeNotifier {
       presentEnd();
     });
     await webRTCConnector?.makeCall(
-        _clientId!, selectedSource, _iceServerList); // TODO: _clientId
+        selectedSource, _iceServerList);
 
     if (moderatorStatus) {
       presentModeratorStartPage();
