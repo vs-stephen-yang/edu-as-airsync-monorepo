@@ -207,12 +207,22 @@ void main() {
   test('should be notified if the tunnel connection connects', () async {
     // arrange
     server.start();
-    tunnelConnection.onConnected?.call();
 
     // action
-    injectTunnelConnectedMessage();
+    tunnelConnection.onConnected?.call();
 
     // assert
-    expect(connections.length, 1);
+    expect(onTunnelConnectedCalled, isTrue);
+  });
+
+  test('should be notified if the tunnel connection disconnects', () async {
+    // arrange
+    server.start();
+    tunnelConnection.onConnecting?.call();
+
+    // action
+
+    // assert
+    expect(onTunnelConnectingCalled, isTrue);
   });
 }
