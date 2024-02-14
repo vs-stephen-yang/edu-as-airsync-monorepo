@@ -36,7 +36,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   DisplayChannelClient? _channel, _tempLanChannel, _tempInternetChannel;
-  final _clientId = const Uuid().v4(); // TODO:GENERATE IT? GET FROM DISPLAY?
+  String? _clientId;
   var _sessionId = const Uuid().v4();
   int port = 5100;
   WebRTCConnector? webRTCConnector;
@@ -172,6 +172,9 @@ class ChannelProvider extends ChangeNotifier {
     required String encodedDisplayCode,
     required String otp,
   }) async {
+    // Generate a new client Id
+    _clientId = const Uuid().v4();
+
     displayCode = decodeDisplayCode(encodedDisplayCode.replaceAll('-', ''));
     this.otp = otp;
 
@@ -321,7 +324,7 @@ class ChannelProvider extends ChangeNotifier {
     Uri? uri = Uri(scheme: 'ws', host: host, port: port);
 
     _tempLanChannel = DisplayChannelClient(
-        _clientId,
+        _clientId!,
         uri,
         (url) => WebSocketClientConnection(url,
             maxRetryDelay: const Duration(seconds: 3),
@@ -348,7 +351,7 @@ class ChannelProvider extends ChangeNotifier {
     if (_channel != null) return;
     Uri? uri = Uri.parse(_tunnelApiUrl!);
     _tempInternetChannel = DisplayChannelClient(
-        _clientId,
+        _clientId!,
         uri,
         (url) => WebSocketClientConnection(url,
             maxRetryDelay: const Duration(seconds: 3),
@@ -379,7 +382,7 @@ class ChannelProvider extends ChangeNotifier {
       presentEnd();
     });
     await webRTCConnector?.makeCall(
-        _clientId, selectedSource, _iceServerList); // TODO: _clientId
+        _clientId!, selectedSource, _iceServerList); // TODO: _clientId
 
     if (moderatorStatus) {
       presentModeratorStartPage();
