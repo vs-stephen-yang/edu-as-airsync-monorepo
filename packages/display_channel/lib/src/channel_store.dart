@@ -15,19 +15,17 @@ typedef OnNewChannel = void Function(Channel channel);
 typedef VerifyConnectRequest = ConnectRequestStatus Function(
     ConnectionRequest connectRequest);
 
-abstract class ChannelServer {
+class ChannelStore {
   final OnNewChannel _onNewChannel;
   final VerifyConnectRequest _verifyConnectRequest;
 
   final _channels = <String, MultiConnectionChannel>{};
   final _uuid = const Uuid();
 
-  ChannelServer(
+  ChannelStore(
     this._onNewChannel,
     this._verifyConnectRequest,
   );
-
-  void stop();
 
   // handle a new connection
   void handleNewConnection(
