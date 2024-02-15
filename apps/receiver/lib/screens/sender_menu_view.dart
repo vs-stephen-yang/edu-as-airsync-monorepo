@@ -26,7 +26,7 @@ class _SenderMenuViewState extends State<SenderMenuView> {
       valueListenable: editMode,
       builder: (BuildContext context, bool value, Widget? child) {
         return MenuDialog(
-          backgroundColor: RtcConnectorList.getInstance().isPresenting()
+          backgroundColor: RtcConnectorList().isPresenting()
               ? AppColors.primary_grey_tran
               : AppColors.primary_grey,
           topTitleText: S.of(context).main_settings_share_to_sender,

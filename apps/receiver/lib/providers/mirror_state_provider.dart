@@ -133,12 +133,12 @@ class MirrorStateProvider extends ChangeNotifier
     _acceptedTextureId = null;
     _mirrorState = MirrorState.idle;
     if (ChannelProvider.isModeratorMode || SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      if (RtcConnectorList.getInstance().isPresenting()) {
+      if (RtcConnectorList().isPresenting()) {
         StreamFunction.streamFunctionState.value = stateMenuOff;
       } else {
         StreamFunction.streamFunctionState.value = stateStandby;
       }
-    } else if (RtcConnectorList.getInstance().isPresenting()){
+    } else if (RtcConnectorList().isPresenting()) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
     } else {
       StreamFunction.streamFunctionState.value = stateStandby;

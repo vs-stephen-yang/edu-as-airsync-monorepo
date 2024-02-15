@@ -163,7 +163,7 @@ class ChannelProvider extends ChangeNotifier {
 
   void disconnectServer() {
     MyApp.isInBackgroundMode = true;
-    if (!RtcConnectorList.getInstance().hasPresenterOccupied()) {
+    if (!RtcConnectorList().hasPresenterOccupied()) {
       ConnectionTimer.getInstance().startServerTimer(() {
         // onFinish
         stopServer();
@@ -236,7 +236,7 @@ class ChannelProvider extends ChangeNotifier {
           JoinDisplayMessage msg = message as JoinDisplayMessage;
           if (msg.intent == JoinIntentType.present) {
             if (ChannelProvider.isModeratorMode) {
-              if (RtcConnectorList.rtcConnectorList.nonNulls.length >= 6) {
+              if (RtcConnectorList().rtcConnectorList.nonNulls.length >= 6) {
                 var message = PresentRejectedMessage();
                 message.reason = Reason(401, text: 'block');
                 channel.send(message);
@@ -358,7 +358,7 @@ class ChannelProvider extends ChangeNotifier {
     rtcConnector.init(message,
         iceServersApiUrl: appConfig.settings.getIceServer);
     rtcConnector.onConnect = (() {
-      RtcConnectorList.getInstance().updateSplitScreen();
+      RtcConnectorList().updateSplitScreen();
       updateModePanel(false);
       if (MirrorStateProvider.isMirroring) {
         StreamFunction.streamFunctionState.value = stateCast;
@@ -370,9 +370,8 @@ class ChannelProvider extends ChangeNotifier {
 
     rtcConnector.onAddRemoteStream = ((stream) {
       // update state and quality
-      RtcConnectorList.getInstance().updateSplitScreen();
-      RtcConnectorList.getInstance()
-          .handleQualityUpdate(controller: rtcConnector);
+      RtcConnectorList().updateSplitScreen();
+      RtcConnectorList().handleQualityUpdate(controller: rtcConnector);
 
       // hideTitleBar
       Home.showTitleBottomBar.value = false;
@@ -397,7 +396,7 @@ class ChannelProvider extends ChangeNotifier {
       if (showMode != null) {
         updateModePanel(showMode);
       } else {
-        updateModePanel(!RtcConnectorList.getInstance().isPresenting());
+        updateModePanel(!RtcConnectorList().isPresenting());
       }
     });
 
@@ -417,7 +416,7 @@ class ChannelProvider extends ChangeNotifier {
       // update UI
       if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
         bool presenting = false;
-        for (RTCConnector? controller in RtcConnectorList.rtcConnectorList) {
+        for (RTCConnector? controller in RtcConnectorList().rtcConnectorList) {
           if (controller != null &&
               controller.presentationState != PresentationState.stopStreaming) {
             presenting |= true;
@@ -452,13 +451,13 @@ class ChannelProvider extends ChangeNotifier {
       }
 
       await rtcConnector.close(ChannelCloseCode.close);
-      RtcConnectorList.removeRTCConnector(rtcConnector);
-      RtcConnectorList.getInstance().updateSplitScreen();
-      RtcConnectorList.getInstance().handleQualityUpdate();
+      RtcConnectorList().removeRTCConnector(rtcConnector);
+      RtcConnectorList().updateSplitScreen();
+      RtcConnectorList().handleQualityUpdate();
       notifyListeners();
     });
 
-    RtcConnectorList.addRTCConnector(rtcConnector);
+    RtcConnectorList().addRTCConnector(rtcConnector);
 
     return rtcConnector;
   }
@@ -509,21 +508,21 @@ class ChannelProvider extends ChangeNotifier {
   Future<void> basicStreamOff() async {
     ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
     ConnectionTimer.getInstance().stopRemainingTimeTimer();
-    await RtcConnectorList.getInstance().removeAllPresenters();
+    await RtcConnectorList().removeAllPresenters();
   }
 
   Future<void> splitScreenOff() async {
     ConnectionTimer.getInstance().stopRemainingTimeTimer();
-    await RtcConnectorList.getInstance().removeAllPresenters();
+    await RtcConnectorList().removeAllPresenters();
   }
 
   updateAllQuality(int selection, bool hasSelected) {
     if (selection == -1) {
-      RtcConnectorList.rtcConnectorList[0]?.sendChangeQuality(true, true);
+      RtcConnectorList().rtcConnectorList[0]?.sendChangeQuality(true, true);
     } else {
-      for (int i = 0; i < RtcConnectorList.rtcConnectorList.length; i++) {
-        if (RtcConnectorList.rtcConnectorList[i]?.clientId != null) {
-          RtcConnectorList.rtcConnectorList[i]?.sendChangeQuality(
+      for (int i = 0; i < RtcConnectorList().rtcConnectorList.length; i++) {
+        if (RtcConnectorList().rtcConnectorList[i]?.clientId != null) {
+          RtcConnectorList().rtcConnectorList[i]?.sendChangeQuality(
               (i == selection && hasSelected),
               (i == selection || !hasSelected));
         }
@@ -532,17 +531,17 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   updateAllAudioEnableState(bool enable) {
-    for (RTCConnector? controller in RtcConnectorList.rtcConnectorList) {
+    for (RTCConnector? controller in RtcConnectorList().rtcConnectorList) {
       controller?.controlAudio(enable);
     }
   }
 
   updateAudioEnableStateByIndex(int index, bool enable) {
-    RtcConnectorList.rtcConnectorList[index]?.controlAudio(enable);
+    RtcConnectorList().rtcConnectorList[index]?.controlAudio(enable);
   }
 
   bool getAudioDisableStateByIndex(int index) {
-    return RtcConnectorList.rtcConnectorList[index]?.getAudioState() ?? false;
+    return RtcConnectorList().rtcConnectorList[index]?.getAudioState() ?? false;
   }
 
   removeSender(

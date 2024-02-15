@@ -26,7 +26,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
       child: Consumer<ChannelProvider>(
         builder: (context, provider, child) {
           if (!ChannelProvider.isModeratorMode ||
-              RtcConnectorList.rtcConnectorList.nonNulls.isEmpty) {
+              RtcConnectorList().rtcConnectorList.nonNulls.isEmpty) {
             return Container(
               alignment: Alignment.center,
               child: Text(
@@ -35,9 +35,10 @@ class _ParticipantListViewState extends State<ParticipantListView> {
             );
           } else {
             return ListView.separated(
-              itemCount: RtcConnectorList.rtcConnectorList.length,
+              itemCount: RtcConnectorList().rtcConnectorList.length,
               itemBuilder: (BuildContext context, int index) {
-                if (index > 5 || RtcConnectorList.rtcConnectorList[index] == null) {
+                if (index > 5 ||
+                    RtcConnectorList().rtcConnectorList[index] == null) {
                   return const SizedBox.shrink();
                 }
                 return ParticipantItem(index: index);

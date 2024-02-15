@@ -103,7 +103,7 @@ class _StatusBarState extends State<StatusBar> {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(15)),
-                    color: RtcConnectorList.getInstance().isPresenting()
+                    color: RtcConnectorList().isPresenting()
                         ? AppColors.primary_grey_tran
                         : AppColors.primary_grey,
                   ),

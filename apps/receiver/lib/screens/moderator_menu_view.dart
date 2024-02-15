@@ -29,7 +29,7 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
     MirrorStateProvider mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context);
     return MenuDialog(
-      backgroundColor: RtcConnectorList.getInstance().isPresenting()
+      backgroundColor: RtcConnectorList().isPresenting()
           ? AppColors.primary_grey_tran
           : AppColors.primary_grey,
       topTitleText: S.of(context).moderator_presentersList,
@@ -78,7 +78,7 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
   }
 
   _switchModeratorOff() {
-    RtcConnectorList.getInstance().removeAllPresenters();
+    RtcConnectorList().removeAllPresenters();
     SplitScreen.mapSplitScreen.value[keySplitScreenCount] = 0;
     SplitScreen.mapSplitScreen.value =
         Map.from(SplitScreen.mapSplitScreen.value);

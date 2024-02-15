@@ -49,7 +49,7 @@ class _ParticipantItemState extends State<ParticipantItem>
   @override
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
-    rtcConnector = RtcConnectorList.rtcConnectorList[widget.index];
+    rtcConnector = RtcConnectorList().rtcConnectorList[widget.index];
     String presenterId = rtcConnector?.clientId ?? '';
     String presenterName = rtcConnector?.senderName ?? '';
 
@@ -65,7 +65,7 @@ class _ParticipantItemState extends State<ParticipantItem>
               style: ElevatedButton.styleFrom(
                 elevation: 0,
                 backgroundColor:
-                RtcConnectorList.getInstance().isPresenterStreaming(presenterId)
+                RtcConnectorList().isPresenterStreaming(presenterId)
                     ? AppColors.primary_blue
                     : AppColors.toggle_bg,
                 shape: RoundedRectangleBorder(
@@ -86,7 +86,7 @@ class _ParticipantItemState extends State<ParticipantItem>
                   ),
                   Visibility(
                     visible:
-                    RtcConnectorList.getInstance().isPresenterWaitForStream(presenterId),
+                    RtcConnectorList().isPresenterWaitForStream(presenterId),
                     child: RotationTransition(
                       turns: _animation,
                       child: const Icon(CustomIcons.loading),
@@ -120,18 +120,19 @@ class _ParticipantItemState extends State<ParticipantItem>
   }
 
   _presenterOnOff(String presenterId) async {
-    if (RtcConnectorList.getInstance().isPresenterNotStopStreaming(presenterId)) {
+    if (RtcConnectorList().isPresenterNotStopStreaming(presenterId)) {
       // waitForStream and streaming
       _sendPresenterStop();
     } else {
       // occupied and stopStreaming
       if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-        if (!RtcConnectorList.getInstance().occupyAvailableRTCConnector(widget.index)) {
+        if (!RtcConnectorList().occupyAvailableRTCConnector(widget.index)) {
           return;
         }
       } else {
         // Remove all other presenters before send Play for Quick switch.
-        await RtcConnectorList.getInstance().removeOtherPresenters(keepInList: ChannelProvider.isModeratorMode);
+        await RtcConnectorList()
+            .removeOtherPresenters(keepInList: ChannelProvider.isModeratorMode);
       }
       _sendPresenterPlay();
     }
@@ -145,7 +146,7 @@ class _ParticipantItemState extends State<ParticipantItem>
   _sendPresenterStop() {
     AppAnalytics().trackEventModeratorPresenterStop();
     rtcConnector?.sendStopPresent();
-    channelProvider.updateModePanel(!RtcConnectorList.getInstance().isPresenting());
+    channelProvider.updateModePanel(!RtcConnectorList().isPresenting());
   }
 
   _sendPresenterRemove() async {

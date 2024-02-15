@@ -55,7 +55,7 @@ class _SplitScreenState extends State<SplitScreen>
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
     return MenuDialog(
-      backgroundColor: RtcConnectorList.getInstance().isPresenting()
+      backgroundColor: RtcConnectorList().isPresenting()
           ? AppColors.primary_grey_tran
           : AppColors.primary_grey,
       topTitleText: S.of(context).main_split_screen_title,
@@ -93,7 +93,7 @@ class _SplitScreenState extends State<SplitScreen>
       ConnectionTimer.getInstance().startRemainingTimeTimer(() async {
         AppAnalytics().setEventProperties(meetingId: '');
 
-        await RtcConnectorList.getInstance().removeAllPresenters();
+        await RtcConnectorList().removeAllPresenters();
         // Need remove all presenters first, due to enable/disable will dispose
         // view and will disconnectedP2pClient before send stopVideo
         // cause web presenter did not update status
@@ -109,7 +109,7 @@ class _SplitScreenState extends State<SplitScreen>
       AppAnalytics().trackEventSplitScreenOff();
       ConnectionTimer.getInstance().stopRemainingTimeTimer();
       AppAnalytics().setEventProperties(meetingId: '');
-      await RtcConnectorList.getInstance().removeAllPresenters();
+      await RtcConnectorList().removeAllPresenters();
     }
 
     // Need remove all presenters first, due to enable/disable will dispose

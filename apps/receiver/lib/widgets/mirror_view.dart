@@ -304,7 +304,7 @@ class MirrorView extends StatelessWidget {
                                       // split screen
                                       // await PresentHelper.getInstance().splitScreenOff();
                                       await context.read<ChannelProvider>().splitScreenOff();
-                                    } else if (RtcConnectorList.getInstance().isPresenting()) {
+                                    } else if (RtcConnectorList().isPresenting()) {
                                       // basic
                                       // await PresentHelper.getInstance().basicStreamOff();
                                       await context.read<ChannelProvider>().basicStreamOff();
