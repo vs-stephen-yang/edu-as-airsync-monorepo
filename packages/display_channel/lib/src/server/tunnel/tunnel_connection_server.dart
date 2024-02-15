@@ -69,6 +69,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
       msg.clientId,
       msg.token,
       msg.displayCode,
+      null,
     );
 
     final status = _verifyConnectRequest(connectRequest);
