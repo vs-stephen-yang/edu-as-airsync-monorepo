@@ -26,6 +26,7 @@ class RtcConnectorList {
     if (index != -1) {
       rtcConnectorList[index] = rtcConnector;
     }
+    remainingTimeOnOff();
   }
 
   static void removeRTCConnector(RTCConnector rtcConnector) {
@@ -33,6 +34,7 @@ class RtcConnectorList {
     if (index != -1) {
       rtcConnectorList[rtcConnectorList.indexOf(rtcConnector)] = null;
     }
+    remainingTimeOnOff();
   }
 
   void updateSplitScreen() {
@@ -232,6 +234,28 @@ class RtcConnectorList {
       } on PlatformException catch (e) {
         log(e.toString());
       }
+    }
+  }
+
+  static remainingTimeOnOff() {
+    int connecting = 0;
+    for (var element in rtcConnectorList) {
+      if(element != null){
+        connecting+=1;
+      }
+    }
+    if (connecting <= 0) {
+      ConnectionTimer.getInstance().stopRemainingTimeTimer();
+    } else {
+      if (ConnectionTimer.getInstance().remainingTimeTimerIsActive()) {
+        return;
+      }
+      ConnectionTimer.getInstance().startRemainingTimeTimer(() async {
+        RtcConnectorList.getInstance().removeAllPresenters();
+        SplitScreen.mapSplitScreen.value[keySplitScreenCount] = 0;
+        SplitScreen.mapSplitScreen.value =
+            Map.from(SplitScreen.mapSplitScreen.value);
+      });
     }
   }
 }
