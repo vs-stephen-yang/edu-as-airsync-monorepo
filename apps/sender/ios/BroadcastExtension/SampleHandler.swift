@@ -39,10 +39,10 @@ class SampleHandler: RPBroadcastSampleHandler {
       initVideoSampler();
       initAudioSampler();
     }
-  
+    
     func initVideoSampler() {
-      var filePath = getSocketFilePath(isVideo: true);
-      if let connection = SocketConnection(filePath: getSocketFilePath(isVideo: true)) {
+      let filePath = getSocketFilePath(isVideo: true);
+      if let connection = SocketConnection(filePath: filePath) {
         videoClientConnection = connection
         setupConnection(videoClientConnection)
         videoUploader = SampleUploader(connection: connection, isVideo: true)
@@ -51,8 +51,8 @@ class SampleHandler: RPBroadcastSampleHandler {
     }
   
     func initAudioSampler() {
-      var filePath = getSocketFilePath(isVideo: false);
-      if let connection = SocketConnection(filePath: getSocketFilePath(isVideo: false)) {
+      let filePath = getSocketFilePath(isVideo: false);
+      if let connection = SocketConnection(filePath: filePath) {
         audioClientConnection = connection
         setupConnection(audioClientConnection)
         audioUploader = SampleUploader(connection: connection, isVideo: false)
