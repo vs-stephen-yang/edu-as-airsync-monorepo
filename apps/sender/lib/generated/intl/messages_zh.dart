@@ -31,6 +31,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("已達到參與人員上限"),
         "main_display_code_exceed_split_screen":
             MessageLookupByLibrary.simpleMessage("已達到分割螢幕數量上限"),
+        "main_display_code_invalid":
+            MessageLookupByLibrary.simpleMessage("無效的投影辨識碼"),
         "main_language": MessageLookupByLibrary.simpleMessage("語言"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("繁體中文"),
         "main_password": MessageLookupByLibrary.simpleMessage("一次性密碼"),
@@ -65,6 +67,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "present_time_unit_min": MessageLookupByLibrary.simpleMessage("分鐘"),
         "present_time_unit_sec": MessageLookupByLibrary.simpleMessage("秒"),
         "present_wait": m0,
-        "settings_knowledge_base": MessageLookupByLibrary.simpleMessage("知識庫")
+        "settings_knowledge_base": MessageLookupByLibrary.simpleMessage("知識庫"),
+        "toast_enable_remote_screen":
+            MessageLookupByLibrary.simpleMessage("請在AirSync開啟分享畫面到設備端功能"),
+        "toast_install_audio_driver":
+            MessageLookupByLibrary.simpleMessage("請安裝虛擬音效驅動程式"),
+        "toast_maximum_moderated":
+            MessageLookupByLibrary.simpleMessage("主持人模式已達到最大連線人數"),
+        "toast_maximum_remote_screen":
+            MessageLookupByLibrary.simpleMessage("已達到分享畫面上限"),
+        "toast_maximum_split_screen":
+            MessageLookupByLibrary.simpleMessage("已達到投影人員上限")
       };
 }
