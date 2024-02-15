@@ -52,7 +52,7 @@ dependencies:
   uuid: ^4.3.3
   url_launcher: ^6.2.4
   shared_preferences: ^2.2.2
-  device_info_plus: ^9.1.1
+  device_info_plus: ^9.1.2
   flutter_svg_provider: ^1.0.7
   desktop_window: ^0.4.0
   flutter_window_close: ^0.2.2
