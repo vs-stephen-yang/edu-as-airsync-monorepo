@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:display_channel/src/channel_server.dart';
+import 'package:display_channel/src/channel_store.dart';
 import 'package:display_channel/src/server/connection.dart';
 import 'package:display_channel/src/server/connection_request.dart';
 import 'package:display_channel/src/server/direct/direct_connection_server.dart';
 
-class DisplayDirectServer extends ChannelServer {
+class DisplayDirectServer {
+  final ChannelStore _store;
   DirectConnectionServer? _directServer;
   HttpServer? _httpServer;
 
@@ -16,7 +17,7 @@ class DisplayDirectServer extends ChannelServer {
   DisplayDirectServer(
     OnNewChannel onNewChannel,
     VerifyConnectRequest verifyConnectRequest,
-  ) : super(
+  ) : _store = ChannelStore(
           onNewChannel,
           verifyConnectRequest,
         );
@@ -25,9 +26,9 @@ class DisplayDirectServer extends ChannelServer {
     // direct server
     _directServer = DirectConnectionServer(
         (String clientId, Connection connection) =>
-            handleNewConnection(clientId, connection),
+            _store.handleNewConnection(clientId, connection),
         (ConnectionRequest connectionRequest) =>
-            verifyConnectionRequest(connectionRequest));
+            _store.verifyConnectionRequest(connectionRequest));
 
     // HTTP server
     _httpServer = await HttpServer.bind(
@@ -42,7 +43,6 @@ class DisplayDirectServer extends ChannelServer {
     });
   }
 
-  @override
   void stop() {
     _httpServer?.close();
   }

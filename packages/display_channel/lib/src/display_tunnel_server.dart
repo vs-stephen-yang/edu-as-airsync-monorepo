@@ -1,12 +1,13 @@
-import 'package:display_channel/src/channel_server.dart';
+import 'package:display_channel/src/channel_store.dart';
 import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/server/connection_request.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_connection_server.dart';
 
-class DisplayTunnelServer extends ChannelServer {
+class DisplayTunnelServer {
   void Function()? onTunnelConnected;
   void Function()? onTunnelConnecting;
 
+  final ChannelStore _store;
   TunnelConnectionServer? _tunnelServer;
   final Duration heartbeatInterval;
   final CreateWebsocketClientConnection _createTunnelConnection;
@@ -17,7 +18,7 @@ class DisplayTunnelServer extends ChannelServer {
     VerifyConnectRequest verifyConnectRequest, {
     // AWS WebSocket Idle Connection Timeout 10 minutes
     this.heartbeatInterval = const Duration(minutes: 9),
-  }) : super(
+  }) : _store = ChannelStore(
           onNewChannel,
           verifyConnectRequest,
         );
@@ -39,9 +40,9 @@ class DisplayTunnelServer extends ChannelServer {
     _tunnelServer = TunnelConnectionServer(
       connection,
       (String clientId, connection) =>
-          handleNewConnection(clientId, connection),
+          _store.handleNewConnection(clientId, connection),
       (ConnectionRequest connectionRequest) =>
-          verifyConnectionRequest(connectionRequest),
+          _store.verifyConnectionRequest(connectionRequest),
       heartbeatInterval: heartbeatInterval,
     );
 
@@ -51,7 +52,6 @@ class DisplayTunnelServer extends ChannelServer {
     _tunnelServer!.start();
   }
 
-  @override
   void stop() {
     _tunnelServer?.stop();
   }
