@@ -9,6 +9,7 @@ enum ConnectRequestStatus {
   success,
   invalidOtp,
   invalidDisplayCode,
+  rateLimitExceeded,
 }
 
 typedef OnNewChannel = void Function(Channel channel);

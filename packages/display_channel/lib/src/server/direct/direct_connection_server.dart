@@ -26,11 +26,13 @@ class DirectConnectionServer {
     if (clientId == null || token == null || displayCode == null) {
       return null;
     }
+    final clientIpAddress = req.connectionInfo?.remoteAddress.address;
 
     return ConnectionRequest(
       clientId,
       token,
       displayCode,
+      clientIpAddress,
     );
   }
 
