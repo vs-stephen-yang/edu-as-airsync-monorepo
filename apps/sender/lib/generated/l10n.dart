@@ -370,20 +370,20 @@ class S {
     );
   }
 
-  /// `Has reached maximum moderated session number.`
+  /// `Has reached maximum moderated session amount.`
   String get toast_maximum_moderated {
     return Intl.message(
-      'Has reached maximum moderated session number.',
+      'Has reached maximum moderated session amount.',
       name: 'toast_maximum_moderated',
       desc: '',
       args: [],
     );
   }
 
-  /// `Has reached maximum split screen session number.`
+  /// `Has reached maximum split screen amount.`
   String get toast_maximum_split_screen {
     return Intl.message(
-      'Has reached maximum split screen session number.',
+      'Has reached maximum split screen amount.',
       name: 'toast_maximum_split_screen',
       desc: '',
       args: [],
@@ -400,40 +400,40 @@ class S {
     );
   }
 
-  /// `Display code invalid.`
+  /// `Invalid Display code`
   String get main_display_code_invalid {
     return Intl.message(
-      'Display code invalid.',
+      'Invalid Display code',
       name: 'main_display_code_invalid',
       desc: '',
       args: [],
     );
   }
 
-  /// `AirSync should enable "share screen to sender".`
+  /// `Please enable share to sender in AirSync.`
   String get toast_enable_remote_screen {
     return Intl.message(
-      'AirSync should enable "share screen to sender".',
+      'Please enable share to sender in AirSync.',
       name: 'toast_enable_remote_screen',
       desc: '',
       args: [],
     );
   }
 
-  /// `Reach maximum receivers`
+  /// `Has reached maximum shared screen amount.`
   String get toast_maximum_remote_screen {
     return Intl.message(
-      'Reach maximum receivers',
+      'Has reached maximum shared screen amount.',
       name: 'toast_maximum_remote_screen',
       desc: '',
       args: [],
     );
   }
 
-  /// `Please install AirSyncAudio's driver`
+  /// `Please install virtual audio driver.`
   String get toast_install_audio_driver {
     return Intl.message(
-      'Please install AirSyncAudio\'s driver',
+      'Please install virtual audio driver.',
       name: 'toast_install_audio_driver',
       desc: '',
       args: [],

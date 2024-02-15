@@ -31,11 +31,11 @@
     "main_display_code_exceed_split_screen": "Maximum presenters (4) reached.",
     "present_select_screen_share_audio": "Share screen audio",
     "main_language_name": "English",
-    "toast_maximum_moderated": "Has reached maximum moderated session number.",
-    "toast_maximum_split_screen": "Has reached maximum split screen session number.",
+    "toast_maximum_moderated": "Has reached maximum moderated session amount.",
+    "toast_maximum_split_screen": "Has reached maximum split screen amount.",
     "remote_screen_wait": "Waiting for presenter to share screen...",
-    "main_display_code_invalid": "Display code invalid.",
-    "toast_enable_remote_screen": "AirSync should enable \"share screen to sender\".",
-    "toast_maximum_remote_screen": "Reach maximum receivers",
-    "toast_install_audio_driver": "Please install AirSyncAudio's driver"
+    "main_display_code_invalid": "Invalid Display code",
+    "toast_enable_remote_screen": "Please enable share to sender in AirSync.",
+    "toast_maximum_remote_screen": "Has reached maximum shared screen amount.",
+    "toast_install_audio_driver": "Please install virtual audio driver."
 }

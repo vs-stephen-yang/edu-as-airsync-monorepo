@@ -35,7 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Maximum presenters (4) reached."),
         "main_display_code_invalid":
-            MessageLookupByLibrary.simpleMessage("Display code invalid."),
+            MessageLookupByLibrary.simpleMessage("Invalid Display code"),
         "main_language": MessageLookupByLibrary.simpleMessage("Language"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
         "main_password": MessageLookupByLibrary.simpleMessage("Password"),
@@ -80,14 +80,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_knowledge_base":
             MessageLookupByLibrary.simpleMessage("Knowledge Base"),
         "toast_enable_remote_screen": MessageLookupByLibrary.simpleMessage(
-            "AirSync should enable \"share screen to sender\"."),
+            "Please enable share to sender in AirSync."),
         "toast_install_audio_driver": MessageLookupByLibrary.simpleMessage(
-            "Please install AirSyncAudio\'s driver"),
+            "Please install virtual audio driver."),
         "toast_maximum_moderated": MessageLookupByLibrary.simpleMessage(
-            "Has reached maximum moderated session number."),
-        "toast_maximum_remote_screen":
-            MessageLookupByLibrary.simpleMessage("Reach maximum receivers"),
+            "Has reached maximum moderated session amount."),
+        "toast_maximum_remote_screen": MessageLookupByLibrary.simpleMessage(
+            "Has reached maximum shared screen amount."),
         "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
-            "Has reached maximum split screen session number.")
+            "Has reached maximum split screen amount.")
       };
 }
