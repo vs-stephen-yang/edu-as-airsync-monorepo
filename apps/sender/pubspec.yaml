@@ -61,6 +61,7 @@ dependencies:
   collection: ^1.17.2
   flutter_background: ^1.2.0
   bot_toast: ^4.1.3
+  azure_application_insights: ^4.0.1
 
   # ViewSonic plug-in
   flutter_webrtc:

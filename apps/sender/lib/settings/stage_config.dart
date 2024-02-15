@@ -12,4 +12,7 @@ class StageConfig implements ConfigSettings {
 
   @override
   String urlGetIce = 'https://getice.stage.myviewboard.cloud';
+
+  @override
+  String appInsightsInstrumentationKey = '6e176c9a-ecc8-443c-a1ad-7cc3954efe80';
 }

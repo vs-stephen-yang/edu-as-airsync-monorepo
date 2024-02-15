@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  azure_application_insights:
+    dependency: "direct main"
+    description:
+      name: azure_application_insights
+      sha256: "76b75729af29aad0ef22d8b88360fdad2a2d596ab93915533fdda7ef10bd26e6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1"
   base58check:
     dependency: transitive
     description:

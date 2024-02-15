@@ -7,6 +7,7 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/screens/home.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,10 @@ import 'package:provider/provider.dart';
 
 void commonEntry(ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  AppAnalytics.initializeApp(settings.appInsightsInstrumentationKey);
+  AppAnalytics.instance.trackEvent('app_launch');
+
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
   if (!kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
