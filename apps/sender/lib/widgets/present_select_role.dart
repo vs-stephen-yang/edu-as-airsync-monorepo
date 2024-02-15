@@ -1,5 +1,6 @@
 
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,8 @@ class PresentSelectRole extends StatelessWidget {
                       ],
                     ),
                     onTap: () {
+                      AppAnalytics.instance.trackEvent('remote_screen_selected');
+
                       channelProvider.currentRole = JoinIntentType.remoteScreen;
                       channelProvider.presentModeratorNamePage();
                     },
@@ -67,6 +70,8 @@ class PresentSelectRole extends StatelessWidget {
                     ],
                   ),
                   onTap: () async {
+                    AppAnalytics.instance.trackEvent('present_selected');
+
                     channelProvider.currentRole = JoinIntentType.present;
                     if (channelProvider.moderatorStatus) {
                       channelProvider.presentModeratorNamePage();
