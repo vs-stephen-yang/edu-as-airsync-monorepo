@@ -103,4 +103,8 @@ class ConnectionTimer {
       _stopServerTimer = null;
     }
   }
+
+  bool remainingTimeTimerIsActive() {
+    return mRemainingTimeTimer?.isActive ?? false;
+  }
 }
