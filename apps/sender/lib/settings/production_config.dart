@@ -12,4 +12,7 @@ class ProductionConfig implements ConfigSettings {
 
   @override
   String urlGetIce = 'https://getice.myviewboard.cloud';
+
+  @override
+  String appInsightsInstrumentationKey = 'c38c02f2-1bb1-4da1-8011-1e592a1e8c11';
 }
