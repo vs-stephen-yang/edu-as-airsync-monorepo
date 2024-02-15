@@ -44,7 +44,7 @@ jobs:
           platform: 'android'
           sdkPlatform: 'macos'
           buildCommand: 'apk'
-          extraBuildOptions: '--flavor ifp'
+          extraBuildOptions: ''
         #ios:
         #  imageName: 'macOS-latest'
         #  sdkPlatform: 'macos'
