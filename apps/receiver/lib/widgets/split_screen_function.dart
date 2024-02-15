@@ -58,7 +58,7 @@ class SplitScreenFunction extends StatefulWidget {
           right: right,
           bottom: bottom,
           child: Visibility(
-            visible: RtcConnectorList.getInstance().isPresenting(index: widget.index),
+            visible: RtcConnectorList().isPresenting(index: widget.index),
             child: ValueListenableBuilder(
               valueListenable: SplitScreenFunction.isMenuOnList,
               builder: (BuildContext context, List<bool> value, Widget? child) {
@@ -91,7 +91,7 @@ class SplitScreenFunction extends StatefulWidget {
                                 0,
                                 SplitScreenFunction.isMenuOnList.value.length,
                                 false);
-                            RtcConnectorList.getInstance().removePresenterBy(widget.index);
+                            RtcConnectorList().removePresenterBy(widget.index);
                           },
                         ),
                       ),
@@ -123,7 +123,7 @@ class SplitScreenFunction extends StatefulWidget {
                       Visibility(
                         visible:
                         !Home.isSelectedList.value[widget.index] && value[widget.index] &&
-                            RtcConnectorList.getInstance().getPresentingQuantity() > 1,
+                            RtcConnectorList().getPresentingQuantity() > 1,
                         child: FocusIconButton(
                           icons: Icons.crop_free_sharp,
                           iconForegroundColor: Colors.white,

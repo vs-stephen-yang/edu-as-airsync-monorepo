@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 
 import 'package:display_flutter/model/rtc_connector.dart';
@@ -9,32 +8,32 @@ import 'package:flutter/services.dart';
 import 'connect_timer.dart';
 
 class RtcConnectorList {
-  static RtcConnectorList _instance = RtcConnectorList._internal();
+  static final RtcConnectorList _instance = RtcConnectorList._internal();
 
-  static RtcConnectorList getInstance() {
-    return _instance;
-  }
-
+  //private "Named constructors"
   RtcConnectorList._internal();
 
-  static final List<RTCConnector?> rtcConnectorList = List.filled(6, null);
+  // passes the instantiation to the _instance object
+  factory RtcConnectorList() => _instance;
 
-  static void addRTCConnector(RTCConnector rtcConnector) {
+  final List<RTCConnector?> rtcConnectorList = List.filled(6, null);
+
+  void addRTCConnector(RTCConnector rtcConnector) {
     int checkIndex = rtcConnectorList.indexOf(rtcConnector);
     if (checkIndex != -1) return;
     int index = rtcConnectorList.indexOf(null);
     if (index != -1) {
       rtcConnectorList[index] = rtcConnector;
     }
-    remainingTimeOnOff();
+    _remainingTimeOnOff();
   }
 
-  static void removeRTCConnector(RTCConnector rtcConnector) {
+  void removeRTCConnector(RTCConnector rtcConnector) {
     int index = rtcConnectorList.indexOf(rtcConnector);
     if (index != -1) {
       rtcConnectorList[rtcConnectorList.indexOf(rtcConnector)] = null;
     }
-    remainingTimeOnOff();
+    _remainingTimeOnOff();
   }
 
   void updateSplitScreen() {
@@ -91,7 +90,8 @@ class RtcConnectorList {
     bool presenting = false;
     if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       if (index != null) {
-        if (rtcConnectorList[index]?.presentationState == PresentationState.streaming) {
+        if (rtcConnectorList[index]?.presentationState ==
+            PresentationState.streaming) {
           presenting = true;
         }
       } else {
@@ -162,7 +162,8 @@ class RtcConnectorList {
   bool isPresenterStreaming(String clientId) {
     for (RTCConnector? controller in rtcConnectorList) {
       if (controller?.clientId == clientId &&
-          (controller?.presentationState.index ?? 0) >= PresentationState.streaming.index) {
+          (controller?.presentationState.index ?? 0) >=
+              PresentationState.streaming.index) {
         return true;
       }
     }
@@ -188,7 +189,8 @@ class RtcConnectorList {
       selectedController = temp[i];
       if (selectedController?.clientId != null) {
         try {
-          await selectedController?.disconnectPeerConnection(sendAnalytics: true);
+          await selectedController?.disconnectPeerConnection(
+              sendAnalytics: true);
           await selectedController?.disconnectChannel();
           // need some delay to prevent exception:
           // 'package:flutter/src/rendering/object.dart': Failed assertion: line 2250 pos 12: '!_debugDisposed': is not true.
@@ -208,7 +210,8 @@ class RtcConnectorList {
       selectedController = temp[i];
       if (selectedController?.sessionId != null) {
         try {
-          await selectedController?.disconnectPeerConnection(sendAnalytics: true);
+          await selectedController?.disconnectPeerConnection(
+              sendAnalytics: true);
           if (!keepInList) {
             await selectedController?.disconnectChannel();
           } else {
@@ -237,11 +240,11 @@ class RtcConnectorList {
     }
   }
 
-  static remainingTimeOnOff() {
+  _remainingTimeOnOff() {
     int connecting = 0;
     for (var element in rtcConnectorList) {
-      if(element != null){
-        connecting+=1;
+      if (element != null) {
+        connecting += 1;
       }
     }
     if (connecting <= 0) {
@@ -251,7 +254,7 @@ class RtcConnectorList {
         return;
       }
       ConnectionTimer.getInstance().startRemainingTimeTimer(() async {
-        RtcConnectorList.getInstance().removeAllPresenters();
+        removeAllPresenters();
         SplitScreen.mapSplitScreen.value[keySplitScreenCount] = 0;
         SplitScreen.mapSplitScreen.value =
             Map.from(SplitScreen.mapSplitScreen.value);

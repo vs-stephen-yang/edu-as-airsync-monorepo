@@ -186,8 +186,8 @@ class RTCConnector {
     if (ChannelProvider.isModeratorMode) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
       await disconnectPeerConnection(sendAnalytics: false);
-      RtcConnectorList.getInstance().updateSplitScreen();
-      RtcConnectorList.getInstance().handleQualityUpdate();
+      RtcConnectorList().updateSplitScreen();
+      RtcConnectorList().handleQualityUpdate();
       sessionId = null;
       onShowMode?.call();
       return;

@@ -86,7 +86,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
         // region Moderator icon
         Color? colorModeratorForeground, colorModeratorBackground;
         if (ChannelProvider.isModeratorMode &&
-            RtcConnectorList.rtcConnectorList.nonNulls.isNotEmpty) {
+            RtcConnectorList().rtcConnectorList.nonNulls.isNotEmpty) {
           if (value == stateMenuOn) {
             colorModeratorForeground = AppColors.iconPresentingForeground;
             colorModeratorBackground = AppColors.iconPresentingBackground;

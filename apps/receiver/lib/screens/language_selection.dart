@@ -18,7 +18,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
   @override
   Widget build(BuildContext context) {
     return MenuDialog(
-      backgroundColor: RtcConnectorList.getInstance().isPresenting()
+      backgroundColor: RtcConnectorList().isPresenting()
           ? AppColors.primary_grey_tran
           : AppColors.primary_grey,
       topTitleText: S.of(context).main_language_title,
