@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:flutter/foundation.dart';
@@ -112,8 +113,10 @@ class PresentPresentStart extends StatelessWidget {
                       onTap: () {
                         _presentingState.value = !_presentingState.value;
                         if (_presentingState.value) {
+                          AppAnalytics.instance.trackEvent('resume_clicked');
                           channelProvider.presentResume();
                         } else {
+                          AppAnalytics.instance.trackEvent('pause_clicked');
                           channelProvider.presentPause();
                         }
                       },
@@ -146,6 +149,7 @@ class PresentPresentStart extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 38.0, top: 20.0),
                 child: InkWell(
                   onTap: () {
+                    AppAnalytics.instance.trackEvent('stop_present_clicked');
                     channelProvider.presentStop();
                     channelProvider.presentEnd();
                   },
@@ -170,6 +174,7 @@ class PresentPresentStart extends StatelessWidget {
                 key: touchBtnKey,
                 initialValue: channelProvider.getTouchBack(),
                 onPressed: (state) {
+                  AppAnalytics.instance.trackEvent('touchback_toggled');
                   channelProvider.setTouchBack(state);
                 },
               ),
