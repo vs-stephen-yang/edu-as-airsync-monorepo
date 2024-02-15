@@ -1,4 +1,3 @@
-import 'package:clock/clock.dart';
 import 'package:display_channel/src/rate_limit/rate_limiter.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,12 +19,14 @@ void main() {
       5, // capacity 5
       2, // Allow 2 tokens per second
       maxBucketAge: const Duration(minutes: 2),
+      cleanupInterval: const Duration(minutes: 2),
     );
   });
 
   test('should limit the rate', () {
     fakeAsync((async) {
       // arrange
+      limiter.start();
 
       // action
       // Attempt 5 requests within 1 second
@@ -44,13 +45,13 @@ void main() {
   test('the stale buckets should be cleaned up', () {
     fakeAsync((async) {
       // arrange
+      limiter.start();
 
       limiter.allowRequest('id1');
       limiter.allowRequest('id2');
 
       // action
-      async.elapse(const Duration(minutes: 2));
-      limiter.cleanup(clock.now());
+      async.elapse(const Duration(minutes: 3));
 
       // assert
       expect(limiter.bucketCount, 0);
@@ -60,12 +61,13 @@ void main() {
   test('the active buckets should not be cleaned up', () {
     fakeAsync((async) {
       // arrange
+      limiter.start();
+
       limiter.allowRequest('id1');
       limiter.allowRequest('id2');
 
       // action
       async.elapse(const Duration(seconds: 119));
-      limiter.cleanup(clock.now());
 
       // assert
       expect(limiter.bucketCount, 2);
