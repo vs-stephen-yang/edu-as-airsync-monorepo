@@ -1,5 +1,5 @@
 import 'package:display_channel/src/channel.dart';
-import 'package:display_channel/src/channel_server.dart';
+import 'package:display_channel/src/channel_store.dart';
 import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
 import 'package:display_channel/src/server/connection.dart';
