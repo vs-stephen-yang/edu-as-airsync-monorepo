@@ -4,7 +4,9 @@ PODS:
   - Flutter (1.0.0)
   - flutter_webrtc (0.9.36):
     - Flutter
-    - WebRTC-SDK (= 114.5735.02)
+    - flutter_webrtc/WebRTC-SDK (= 0.9.36)
+  - flutter_webrtc/WebRTC-SDK (0.9.36):
+    - Flutter
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -15,7 +17,6 @@ PODS:
     - FlutterMacOS
   - url_launcher_ios (0.0.1):
     - Flutter
-  - WebRTC-SDK (114.5735.02)
 
 DEPENDENCIES:
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -25,10 +26,6 @@ DEPENDENCIES:
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
-
-SPEC REPOS:
-  trunk:
-    - WebRTC-SDK
 
 EXTERNAL SOURCES:
   device_info_plus:
@@ -49,12 +46,11 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  flutter_webrtc: 1944895d4e908c4bc722929dc4b9f8620d8e1b2f
+  flutter_webrtc: 267318f5155654b66484941567f0249d89565303
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   url_launcher_ios: bbd758c6e7f9fd7b5b1d4cde34d2b95fcce5e812
-  WebRTC-SDK: dd913fd31cfbf1d43b9a22d83f4c6354c960c623
 
 PODFILE CHECKSUM: dc72cf25379e21a0be0289c6a3e8d587d32f6ff4
 
