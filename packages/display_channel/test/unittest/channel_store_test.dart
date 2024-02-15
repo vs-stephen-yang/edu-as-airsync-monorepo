@@ -1,17 +1,7 @@
 import 'package:display_channel/src/channel.dart';
-import 'package:display_channel/src/channel_server.dart';
+import 'package:display_channel/src/channel_store.dart';
 import 'package:display_channel/src/server/connection.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-class FakeChannelServer extends ChannelServer {
-  FakeChannelServer(
-    super.onNewChannel,
-    super.verifyConnectRequest,
-  );
-
-  @override
-  void stop() {}
-}
 
 class FakeConnection extends Connection {
   @override
@@ -22,14 +12,14 @@ class FakeConnection extends Connection {
 }
 
 void main() {
-  late FakeChannelServer server;
+  late ChannelStore server;
   late List<Channel> channels;
   ConnectRequestStatus fakeConnectRequestStatus = ConnectRequestStatus.success;
 
   setUp(() {
     channels = <Channel>[];
 
-    server = FakeChannelServer(
+    server = ChannelStore(
       (channel) {
         channels.add(channel);
       },
