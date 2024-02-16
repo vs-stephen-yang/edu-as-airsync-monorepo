@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -87,7 +86,7 @@ class MirrorStateProvider extends ChangeNotifier
   // region FlutterMirrorListener
   @override
   void onMirrorAuth(String pin, int timeoutSec) {
-    print('zz onMirrorAuth');
+    printInDebug('onMirrorAuth', type: runtimeType);
     _pinCode = pin;
 
     _pinTimer?.cancel();
@@ -101,7 +100,7 @@ class MirrorStateProvider extends ChangeNotifier
   @override
   void onMirrorStart(String mirrorId, int textureId, String deviceName,
       MirrorType mirrorType) {
-    print('zz onMirrorStart');
+    printInDebug('onMirrorStart', type: runtimeType);
     _pinTimer?.cancel();
     _pinCode = '';
 
@@ -113,7 +112,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   @override
   void onMirrorStop(String mirrorId) {
-    print('zz onMirrorStop $mirrorId');
+    printInDebug('onMirrorStop $mirrorId', type: runtimeType);
     bool needNotify = false;
     _requestingMirror.removeWhere((element) {
       if (element.mirrorId == mirrorId) {
@@ -148,7 +147,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   @override
   void onMirrorVideoResize(String mirrorId, int width, int height) {
-    print('zz onMirrorVideoResize');
+    printInDebug('onMirrorVideoResize', type: runtimeType);
     if (_acceptedMirrorId == null || _acceptedMirrorId != mirrorId) {
       for (int i = 0; i < _requestingMirror.length; i++) {
         if (_requestingMirror[i].mirrorId == mirrorId) {
@@ -208,7 +207,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   stopAcceptedMirror() {
-    print('zz stopAcceptedMirror');
+    printInDebug('stopAcceptedMirror', type: runtimeType);
     if (_acceptedMirrorId != null) {
       _plugin?.stopMirror(_acceptedMirrorId!);
     }
@@ -253,7 +252,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> startAirPlay() async {
-    print('zz startAirPlay');
+    printInDebug('startAirPlay', type: runtimeType);
     await _plugin?.startAirplay(AirplayConfig(
       name: _deviceName,
       security: AirplaySecurity.onscreenCode,
@@ -263,7 +262,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopAirPlay() async {
-    print('zz stopAirPlay');
+    printInDebug('stopAirPlay', type: runtimeType);
     stopAcceptedMirror();
     await _plugin?.stopAirplay();
     _airplayEnabled = false;
@@ -300,7 +299,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> pauseMirror() async {
-    print('zz pauseMirror');
+    printInDebug('pauseMirror', type: runtimeType);
     mirrorTypeState[MirrorType.airplay] = _airplayEnabled;
     mirrorTypeState[MirrorType.googlecast] = _googleCastEnabled;
     mirrorTypeState[MirrorType.miracast] = _miracastEnabled;
@@ -310,7 +309,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> resumeMirror() async {
-    print('zz resumeMirror');
+    printInDebug('resumeMirror', type: runtimeType);
     if (mirrorTypeState[MirrorType.airplay]!) {
       startAirPlay();
     }
@@ -319,6 +318,26 @@ class MirrorStateProvider extends ChangeNotifier
     }
     if (mirrorTypeState[MirrorType.miracast]!) {
       startMiracast();
+    }
+  }
+
+  Future<void> restartMirror() async {
+    printInDebug('restartMirror', type: runtimeType);
+    if (_mirrorState == MirrorState.idle) {
+      if (_airplayEnabled) {
+        await stopAirPlay();
+        await startAirPlay();
+      }
+
+      if (_googleCastEnabled) {
+        await stopGoogleCast();
+        await startGoogleCast();
+      }
+
+      if (_miracastEnabled) {
+        await stopMiracast();
+        await startMiracast();
+      }
     }
   }
 
@@ -333,7 +352,7 @@ class MirrorStateProvider extends ChangeNotifier
       _plugin?.registerListener(this);
       await _plugin?.initialize();
     } on PlatformException {
-      printInDebug('Mirror initialize failure.');
+      printInDebug('Mirror initialize failure.', type: runtimeType);
     }
   }
 
