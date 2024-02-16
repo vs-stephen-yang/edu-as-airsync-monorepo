@@ -70,6 +70,7 @@ class MirrorStateProvider extends ChangeNotifier
   final List<MirrorRequest> _requestingMirror = [];
   String? _acceptedMirrorId;
   int? _acceptedTextureId;
+  MirrorType? _acceptedMirrorType;
   String _pinCode = '';
   Timer? _pinTimer;
   double _aspectRatio = 3 / 2;
@@ -130,6 +131,7 @@ class MirrorStateProvider extends ChangeNotifier
     }
     _acceptedMirrorId = null;
     _acceptedTextureId = null;
+    _acceptedMirrorType = null;
     _mirrorState = MirrorState.idle;
     if (ChannelProvider.isModeratorMode || SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
       if (RtcConnectorList().isPresenting()) {
@@ -191,6 +193,7 @@ class MirrorStateProvider extends ChangeNotifier
 
       _acceptedMirrorId = _requestingMirror[index].mirrorId;
       _acceptedTextureId = _requestingMirror[index].textureId;
+      _acceptedMirrorType = _requestingMirror[index].mirrorType;
 
       if (_acceptedMirrorId != null) {
         _plugin?.enableAudio(_acceptedMirrorId!, _audioEnabled);
@@ -263,7 +266,9 @@ class MirrorStateProvider extends ChangeNotifier
 
   Future<void> stopAirPlay() async {
     printInDebug('stopAirPlay', type: runtimeType);
-    stopAcceptedMirror();
+    if (_acceptedMirrorType == MirrorType.airplay) {
+      stopAcceptedMirror();
+    }
     await _plugin?.stopAirplay();
     _airplayEnabled = false;
     notifyListeners();
@@ -279,7 +284,9 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopGoogleCast() async {
-    stopAcceptedMirror();
+    if (_acceptedMirrorType == MirrorType.googlecast) {
+      stopAcceptedMirror();
+    }
     await _plugin?.stopGooglecast();
     _googleCastEnabled = false;
     notifyListeners();
@@ -292,7 +299,9 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopMiracast() async {
-    stopAcceptedMirror();
+    if (_acceptedMirrorType == MirrorType.miracast) {
+      stopAcceptedMirror();
+    }
     await _plugin?.stopMiracast();
     _miracastEnabled = false;
     notifyListeners();
