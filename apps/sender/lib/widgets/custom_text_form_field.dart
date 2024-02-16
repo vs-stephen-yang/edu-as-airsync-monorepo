@@ -38,12 +38,6 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
       const TextStyle(color: Color.fromRGBO(153, 153, 153, 1));
 
   @override
-  void initState() {
-    super.initState();
-    _errorText = widget.errorText;
-  }
-
-  @override
   Widget build(BuildContext context) {
     TextStyle textStyle = TextStyle(color: widget.labelTextColor);
     OutlineInputBorder outlineInputBorderBlue = const OutlineInputBorder(
@@ -63,7 +57,7 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
         labelText: widget.labelText,
         labelStyle: textStyle,
         floatingLabelStyle: textStyle,
-        errorText: _errorText,
+        errorText: _errorText ?? widget.errorText,
         errorStyle: errorTextStyle,
         border: outlineInputBorderBlue,
         enabledBorder: outlineInputBorderGrey,
