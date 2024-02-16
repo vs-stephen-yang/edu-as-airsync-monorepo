@@ -17,6 +17,7 @@ import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/remote_screen_widget.dart';
 import 'package:display_cast_flutter/widgets/settings.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
+import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
@@ -76,7 +77,19 @@ class _HomeState extends State<Home> {
                       case ViewState.idle:
                         return PresentIdle();
                       case ViewState.selectRole:
-                        return const PresentSelectRole();
+                        if (kIsWeb) {
+                          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                            channel.currentRole = JoinIntentType.present;
+                            if (channel.moderatorStatus) {
+                              channel.presentModeratorNamePage();
+                            } else {
+                              channel.beginBasicMode();
+                            }
+                          });
+                          return const SizedBox();
+                        } else {
+                          return const PresentSelectRole();
+                        }
                       case ViewState.moderatorName:
                         return const ModeratorIdle();
                       case ViewState.moderatorWait:
