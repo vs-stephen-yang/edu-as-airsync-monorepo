@@ -1,4 +1,3 @@
-
 import 'dart:html';
 
 import 'package:display_cast_flutter/providers/channel_provider.dart';
@@ -9,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PresentSelectScreen extends StatefulWidget{
+class PresentSelectScreen extends StatefulWidget {
   const PresentSelectScreen({super.key});
   @override
   State<StatefulWidget> createState() {
@@ -18,7 +17,6 @@ class PresentSelectScreen extends StatefulWidget{
 }
 
 class _PresentSelectScreen extends State<PresentSelectScreen> {
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -36,7 +34,7 @@ class _PresentSelectScreen extends State<PresentSelectScreen> {
           selectedSource: value.selectedSource, systemAudio: value.systemAudio);
     });
 
-    if (kIsWeb){
+    if (kIsWeb) {
       document.addEventListener("visibilitychange", onVisibilityChange);
     }
 
@@ -53,7 +51,9 @@ class _PresentSelectScreen extends State<PresentSelectScreen> {
 
   void onVisibilityChange(e) {
     if (document.visibilityState == 'hidden') {
-      WebOnHiddenHelper.getInstance().setOnHiddenTimestamp(DateTime.now().millisecondsSinceEpoch);
+      WebOnHiddenHelper.getInstance().setOnHiddenTimestamp(
+        DateTime.now().millisecondsSinceEpoch,
+      );
     }
   }
 
