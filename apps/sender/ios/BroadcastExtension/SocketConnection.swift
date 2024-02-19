@@ -126,15 +126,7 @@ private extension SocketConnection {
         }
         
         address = addr
-      
-        setupSocketNoDelay()
         return true
-    }
-
-    func setupSocketNoDelay() -> Void {
-      var one: Int = 1
-      let size = UInt32(MemoryLayout.size(ofValue: one))
-      setsockopt(socketHandle, IPPROTO_TCP, TCP_NODELAY, &one, size)
     }
     
     func connectSocket() -> Bool {
