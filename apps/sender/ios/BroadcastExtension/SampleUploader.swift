@@ -1,17 +1,29 @@
-//
-//  SampleUploader.swift
-//  Broadcast Extension
-//
-//  Created by Alex-Dan Bumbu on 22/03/2021.
-//  Copyright © 2021 8x8, Inc. All rights reserved.
-//
-
 import Foundation
 import ReplayKit
 import OSLog
 
 private enum Constants {
     static let bufferMaxLength = 10240
+}
+
+private struct VideoFrameHeader {
+  var width: UInt32
+  var height: UInt32
+  var orientation: UInt32
+  var palyoadLength: UInt32
+}
+
+private struct AudioFrameHeader {
+  var sampleRate: UInt32
+  var format: UInt32
+  var formatFlags: UInt32
+  var channelsPerFrame: UInt32
+  var bitsPerChannel: UInt32
+  var framesPerPacket: UInt32
+  var bytesPerFrame: UInt32
+  var bytesPerPacket: UInt32
+  var reserved: UInt32
+  var palyoadLength: UInt32
 }
 
 class SampleUploader {
@@ -128,18 +140,21 @@ private extension SampleUploader {
             os_log(.debug, log: broadcastLogger, "corrupted image buffer")
             return nil
         }
-              
-        let httpResponse = CFHTTPMessageCreateResponse(nil, 200, nil, kCFHTTPVersion1_1).takeRetainedValue()
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-Length" as CFString, String(messageData.count) as CFString)
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Buffer-Width" as CFString, String(width) as CFString)
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Buffer-Height" as CFString, String(height) as CFString)
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Buffer-Orientation" as CFString, String(orientation) as CFString)
         
-        CFHTTPMessageSetBody(httpResponse, messageData as CFData)
-        
-        let serializedMessage = CFHTTPMessageCopySerializedMessage(httpResponse)?.takeRetainedValue() as Data?
+        var videoFrameHeader = VideoFrameHeader(
+          width: UInt32(width), 
+          height: UInt32(height), 
+          orientation: UInt32(orientation),
+          palyoadLength: UInt32(messageData.count))
       
-        return serializedMessage
+        var headerData = Data()
+        withUnsafeBytes(of: &videoFrameHeader) { pointer in
+            headerData.append(contentsOf: pointer)
+        }
+        
+        headerData.append(messageData);
+        
+        return headerData
     }
   
     func prepareAudio(sample buffer: CMSampleBuffer) -> Data? {
@@ -177,30 +192,27 @@ private extension SampleUploader {
                 data.append(frame, count: Int(audioBuffer.mDataByteSize))
             }
         }
+      
+        var audioFrameHeader = AudioFrameHeader(
+              sampleRate: UInt32(streamBasicDescription.pointee.mSampleRate),
+              format: streamBasicDescription.pointee.mFormatID,
+              formatFlags: streamBasicDescription.pointee.mFormatFlags,
+              channelsPerFrame: streamBasicDescription.pointee.mChannelsPerFrame,
+              bitsPerChannel: streamBasicDescription.pointee.mBitsPerChannel,
+              framesPerPacket: streamBasicDescription.pointee.mFramesPerPacket,
+              bytesPerFrame: streamBasicDescription.pointee.mBytesPerFrame,
+              bytesPerPacket: streamBasicDescription.pointee.mBytesPerPacket,
+              reserved: streamBasicDescription.pointee.mReserved,
+              palyoadLength: UInt32(data.count))
         
-        let httpResponse = CFHTTPMessageCreateResponse(nil, 200, nil, kCFHTTPVersion1_1).takeRetainedValue()
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-Length" as CFString, String(data.count) as CFString)
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-SampleRate" as CFString, String(streamBasicDescription.pointee.mSampleRate) as CFString)
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-Format" as CFString,
-            String(streamBasicDescription.pointee.mFormatID) as CFString)
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-FormatFlags" as CFString,
-            String(streamBasicDescription.pointee.mFormatFlags) as CFString)
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-ChannelsPerFrame" as CFString,
-            String(streamBasicDescription.pointee.mChannelsPerFrame) as CFString)
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-BitsPerChannel" as CFString,
-            String(streamBasicDescription.pointee.mBitsPerChannel) as CFString)
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-FramesPerPacket" as CFString,
-            String(streamBasicDescription.pointee.mFramesPerPacket) as CFString)
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-BytesPerFrame" as CFString,
-            String(streamBasicDescription.pointee.mBytesPerFrame) as CFString)
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-BytesPerPacket" as CFString,
-            String(streamBasicDescription.pointee.mBytesPerPacket) as CFString)
-        CFHTTPMessageSetHeaderFieldValue(httpResponse, "Content-Reserved" as CFString,
-            String(streamBasicDescription.pointee.mReserved) as CFString)
-        CFHTTPMessageSetBody(httpResponse, data as CFData)
+        var headerData = Data()
+        withUnsafeBytes(of: &audioFrameHeader) { pointer in
+            headerData.append(contentsOf: pointer)
+        }
         
-        let serializedMessage = CFHTTPMessageCopySerializedMessage(httpResponse)?.takeRetainedValue() as Data?
-        return serializedMessage
+        headerData.append(data);
+        
+        return headerData
     }
     
     func jpegData(from buffer: CVPixelBuffer, scale scaleTransform: CGAffineTransform) -> Data? {
