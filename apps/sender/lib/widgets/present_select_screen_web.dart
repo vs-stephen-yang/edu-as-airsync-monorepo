@@ -1,5 +1,4 @@
-import 'dart:html';
-
+import "package:universal_html/html.dart";
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/widgets/present_select_screen.dart';
