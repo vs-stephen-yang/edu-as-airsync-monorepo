@@ -302,7 +302,7 @@ class WebRTCConnector {
     _dc = await _pc!.createDataChannel('pc-dc', RTCDataChannelInit()..id = 1);
     _setDataChannelListeners(_dc!);
 
-    _trackFrameRate = _trackFrameRate;
+    _trackFrameRate = _defaultFrameRate;
     _trackWidth = _maxTrackWidth;
     _trackHeight = _maxTrackHeight;
 
