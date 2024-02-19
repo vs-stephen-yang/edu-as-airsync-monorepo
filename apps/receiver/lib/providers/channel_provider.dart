@@ -532,12 +532,15 @@ class ChannelProvider extends ChangeNotifier {
 
   updateAllAudioEnableState(bool enable) {
     for (RTCConnector? controller in RtcConnectorList().rtcConnectorList) {
-      controller?.controlAudio(enable);
+      controller?.controlAudio(controller.isAudioEnabled & enable,
+          setIsAudioEnabled: false);
     }
   }
 
   updateAudioEnableStateByIndex(int index, bool enable) {
-    RtcConnectorList().rtcConnectorList[index]?.controlAudio(enable);
+    RtcConnectorList()
+        .rtcConnectorList[index]
+        ?.controlAudio(enable, setIsAudioEnabled: true);
   }
 
   bool getAudioDisableStateByIndex(int index) {

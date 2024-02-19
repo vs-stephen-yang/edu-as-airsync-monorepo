@@ -31,6 +31,7 @@ class RTCConnector {
   String? senderName;
   String? senderVersion;
   String? senderPlatform;
+  bool isAudioEnabled = false;
 
   static final _log = getDefaultLogger();
 
@@ -296,10 +297,13 @@ class RTCConnector {
     _resetSetting();
   }
 
-  void controlAudio(bool isEnable) {
+  void controlAudio(bool isEnable, {required bool setIsAudioEnabled}) {
     if (_remoteRenderer?.srcObject != null) {
       if (_remoteRenderer!.srcObject!.getAudioTracks().isNotEmpty) {
         _remoteRenderer?.srcObject!.getAudioTracks().first.enabled = isEnable;
+        if (setIsAudioEnabled) {
+          isAudioEnabled = isEnable;
+        }
       }
     }
   }
@@ -363,7 +367,7 @@ class RTCConnector {
       return;
     }
     presentationState = PresentationState.streaming;
-    controlAudio(true);
+    controlAudio(true, setIsAudioEnabled: true);
     onAddRemoteStream?.call(_remoteRenderer?.srcObject);
     AppAnalytics().trackEventPresentStarted(sessionId!, clientId!);
   }
