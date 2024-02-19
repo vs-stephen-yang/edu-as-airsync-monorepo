@@ -16,6 +16,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 void commonEntry(ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,7 @@ void commonEntry(ConfigSettings settings) async {
     instrumentationKey: settings.appInsightsInstrumentationKey,
     applicationVersion: packageInfo.version,
     locale: (!kIsWeb) ? Platform.localeName : null,
+    sessionId: const Uuid().v4(),
   );
   AppAnalytics.instance.trackEvent('app_launch');
 
