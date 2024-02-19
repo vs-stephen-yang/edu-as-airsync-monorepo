@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -10,13 +9,13 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/split_screen.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
-import 'package:display_flutter/utility/log.dart';
+import 'package:uuid/uuid.dart';
 
 import 'connect_timer.dart';
 
@@ -50,10 +49,13 @@ class RTCConnector {
   ];
 
   RTCPeerConnection? _pc;
+
   RTCPeerConnection? get pc => _pc;
   RTCDataChannel? _dc;
   RTCVideoRenderer? _remoteRenderer = RTCVideoRenderer();
-  RTCVideoRenderer? get remoteRenderer => _remoteRenderer; // implement in webrtc_view
+
+  // implement in webrtc_view
+  RTCVideoRenderer? get remoteRenderer => _remoteRenderer;
 
   Function()? onConnect;
   Function(MediaStream? stream)? onAddRemoteStream;
@@ -63,10 +65,10 @@ class RTCConnector {
   Function()? onConflictWithMirror;
   Future<void> Function()? onChannelDisconnect;
 
-
   RTCConnector(this._channel, this._mode);
 
-  void init(JoinDisplayMessage message, {String? iceServersApiUrl, String? host}) {
+  void init(JoinDisplayMessage message,
+      {String? iceServersApiUrl, String? host}) {
     _printPeerConnectionLog('init', null);
 
     _channel.onStateChange = (state) => _onChannelState(state);
@@ -77,7 +79,11 @@ class RTCConnector {
           _configuration.putIfAbsent('iceServers', () => value);
         });
       } else {
-        _configuration.putIfAbsent('iceServers', () => [{'url': 'stun:$host'}]);
+        _configuration.putIfAbsent(
+            'iceServers',
+            () => [
+                  {'url': 'stun:$host'}
+                ]);
       }
     }
 
@@ -181,8 +187,7 @@ class RTCConnector {
   }
 
   Future<void> onStopPresent(StopPresentMessage msg) async {
-    AppAnalytics().trackEventPresentStopReceived(
-        clientId!, sessionId!);
+    AppAnalytics().trackEventPresentStopReceived(clientId!, sessionId!);
 
     if (ChannelProvider.isModeratorMode) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
@@ -214,14 +219,16 @@ class RTCConnector {
         RTCSessionDescription fixedAnswer = _fixSdp(answer);
         await pc!.setLocalDescription(fixedAnswer);
         // send answer to the peer
-        final message = PresentSignalMessage(msg.sessionId, SignalMessageType.answer);
+        final message =
+            PresentSignalMessage(msg.sessionId, SignalMessageType.answer);
         message.sdp = fixedAnswer.sdp;
         message.sdpMLineIndex = 0;
         _channel.send(message);
         break;
       case SignalMessageType.candidate:
         // add candidates from the peer
-        final candidate = RTCIceCandidate(msg.candidate, msg.sdpMid, msg.sdpMLineIndex);
+        final candidate =
+            RTCIceCandidate(msg.candidate, msg.sdpMid, msg.sdpMLineIndex);
         await pc!.addCandidate(candidate);
         break;
       default:
@@ -229,13 +236,12 @@ class RTCConnector {
     }
   }
 
-  Future<void> onChannelClose(ChannelClosedMessage msg) async {
-
-  }
+  Future<void> onChannelClose(ChannelClosedMessage msg) async {}
 
   void sendChangeQuality(bool isFullHeight, bool isFullFrameRate) async {
     var message = ChangePresentQuality(sessionId);
-    message.constraints = PresentQualityConstraints(frameRate: isFullFrameRate ? 30 : 0, height: isFullHeight ? 1080 : 540);
+    message.constraints = PresentQualityConstraints(
+        frameRate: isFullFrameRate ? 30 : 0, height: isFullHeight ? 1080 : 540);
     // message.constraints?.frameRate = isFullFrameRate ? 30 : 0;
     // message.constraints?.height = isFullHeight ? 1080 : 540;
     _channel.send(message);
@@ -250,7 +256,7 @@ class RTCConnector {
   void sendRejectPresent(int errorCode, String reason) {
     var message = PresentRejectedMessage();
     message.sessionId = sessionId;
-    message.reason = Reason(errorCode, text:reason);
+    message.reason = Reason(errorCode, text: reason);
     _channel.send(message);
   }
 
@@ -267,8 +273,8 @@ class RTCConnector {
     }
 
     // clear renderer
-    if (_remoteRenderer!= null) {
-      if(_remoteRenderer?.textureId != null && _remoteRenderer!.renderVideo) {
+    if (_remoteRenderer != null) {
+      if (_remoteRenderer?.textureId != null && _remoteRenderer!.renderVideo) {
         _remoteRenderer?.srcObject = null;
       }
       await _remoteRenderer?.dispose();
@@ -346,7 +352,7 @@ class RTCConnector {
 
     await Future.delayed(const Duration(milliseconds: 1000), () {
       var message =
-      PresentSignalMessage(sessionId, SignalMessageType.candidate);
+          PresentSignalMessage(sessionId, SignalMessageType.candidate);
       message.candidate = candidate.candidate;
       message.sdpMid = candidate.sdpMid;
       message.sdpMLineIndex = candidate.sdpMLineIndex;
