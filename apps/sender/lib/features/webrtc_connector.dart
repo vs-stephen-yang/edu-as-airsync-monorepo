@@ -50,6 +50,7 @@ class WebRTCConnector {
   double _trackFrameRate = _defaultFrameRate;
 
   // disable webrtc audio processing
+  // Note: the audio constraints in webrtc-flutter only works on web platform
   static const _audioConstraints = {
     'autoGainControl': false,
     'echoCancellation': false,
