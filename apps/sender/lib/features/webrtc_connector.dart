@@ -46,6 +46,9 @@ class WebRTCConnector {
   static const int _maxTrackHeight = 1080;
   int _trackWidth = _maxTrackWidth;
   int _trackHeight = _maxTrackHeight;
+  static const double _defaultFrameRate = 30.0;
+  double _trackFrameRate = _defaultFrameRate;
+
   bool touchBack = false;
   bool isMainSource = false;
   final List<String> _codecPreferences = ['h264', 'vp8', 'vp9'];
@@ -133,10 +136,11 @@ class WebRTCConnector {
       _trackWidth = _maxTrackWidth ~/ (_maxTrackHeight / msg.height);
       _trackHeight = msg.height;
     }
+    _trackFrameRate = msg.frameRate.toDouble();
 
     if (kIsWeb || Platform.isAndroid) {
       final constraints = <String, dynamic>{
-        'frameRate': msg.frameRate,
+        'frameRate': _trackFrameRate,
         'width': _trackWidth,
         'height': _trackHeight,
       };
@@ -146,21 +150,7 @@ class WebRTCConnector {
     } else if (WebRTC.platformIsIOS) {
       // TODO:
     } else {
-      final constraints = <String, dynamic>{
-        'audio': _isAudioCaptureAllowed(),
-        'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
-            ? true
-            : {
-                'deviceId': _deviceId,
-                'mandatory': {
-                  'frameRate': msg.frameRate,
-                },
-                'width': _trackWidth.toString(),
-                'height': _trackHeight.toString(),
-              }
-      };
-
-      _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+      _localStream = await getDisplayMedia();
 
       for (MediaStreamTrack track in _localStream!.getTracks()) {
         _pc?.getSenders().then((value) async {
@@ -304,19 +294,11 @@ class WebRTCConnector {
     _dc = await _pc!.createDataChannel('pc-dc', RTCDataChannelInit()..id = 1);
     _setDataChannelListeners(_dc!);
 
-    final constraints = <String, dynamic>{
-      'audio': _isAudioCaptureAllowed(),
-      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
-          ? true
-          : {
-              'deviceId': _deviceId,
-              'mandatory': {'frameRate': 30.0},
-              'width': _trackWidth = _maxTrackWidth,
-              'height': _trackHeight = _maxTrackHeight,
-            }
-    };
+    _trackFrameRate = _trackFrameRate;
+    _trackWidth = _maxTrackWidth;
+    _trackHeight = _maxTrackHeight;
 
-    _localStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+    _localStream = await getDisplayMedia();
     if (kIsWeb) {
       // GetDisplayMedia method will popup a system dialog to prompt the user to select screen, so close the connection timer here.
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
@@ -364,6 +346,24 @@ class WebRTCConnector {
     }
 
     startStatsTimer();
+  }
+
+  Future<MediaStream> getDisplayMedia() async {
+    final constraints = <String, dynamic>{
+      'audio': _isAudioCaptureAllowed(),
+      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
+          ? true
+          : {
+              'deviceId': _deviceId,
+              'mandatory': {
+                'frameRate': _trackFrameRate,
+              },
+              'width': _trackWidth,
+              'height': _trackHeight,
+            }
+    };
+
+    return await navigator.mediaDevices.getDisplayMedia(constraints);
   }
 
   /// handle signal message from Display, ex. offer, answer, candidates
