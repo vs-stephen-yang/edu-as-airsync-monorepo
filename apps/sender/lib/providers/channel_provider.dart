@@ -365,9 +365,10 @@ class ChannelProvider extends ChangeNotifier {
     };
   }
 
-  Future<void> presentStart(
-      {required dynamic selectedSource, bool systemAudio = false}) async {
-
+  Future<void> presentStart({
+    required dynamic selectedSource,
+    bool systemAudio = false,
+  }) async {
     // PeerConnect
     webRTCConnector = WebRTCConnector(
       _urlIce,
@@ -382,7 +383,9 @@ class ChannelProvider extends ChangeNotifier {
       presentEnd();
     });
     await webRTCConnector?.makeCall(
-        selectedSource, _iceServerList);
+      selectedSource,
+      _iceServerList,
+    );
 
     if (moderatorStatus) {
       presentModeratorStartPage();
