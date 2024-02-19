@@ -10,7 +10,7 @@ import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 class RemoteScreenClient {
   RemoteScreenClient(this._channel);
 
-  DisplayChannelClient? _channel;
+  final DisplayChannelClient? _channel;
   final String _sessionId = const Uuid().v4();
   Client? _client;
   RTCVideoRenderer get remoteScreenRenderer => _remoteScreenRenderer;
