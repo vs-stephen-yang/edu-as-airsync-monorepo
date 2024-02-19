@@ -49,6 +49,14 @@ class WebRTCConnector {
   static const double _defaultFrameRate = 30.0;
   double _trackFrameRate = _defaultFrameRate;
 
+  // disable webrtc audio processing
+  static const _audioConstraints = {
+    'autoGainControl': false,
+    'echoCancellation': false,
+    'gooAutoGainControl': false,
+    'noiseSuppression': false
+  };
+
   bool touchBack = false;
   bool isMainSource = false;
   final List<String> _codecPreferences = ['h264', 'vp8', 'vp9'];
@@ -350,7 +358,7 @@ class WebRTCConnector {
 
   Future<MediaStream> getDisplayMedia() async {
     final constraints = <String, dynamic>{
-      'audio': _isAudioCaptureAllowed(),
+      'audio': _isAudioCaptureAllowed() ? _audioConstraints : false,
       'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
           ? true
           : {
