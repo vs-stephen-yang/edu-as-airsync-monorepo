@@ -247,7 +247,7 @@ class WebRTCConnector {
   Future<bool> _setCodecPreferences() async {
     try {
       final List<String> desiredOrder = _codecPreferences.map((codec) {
-        return 'video/' + codec.toUpperCase();
+        return 'video/${codec.toUpperCase()}';
       }).toList();
 
       RTCRtpCapabilities capabilities = await getRtpSenderCapabilities("video");
@@ -295,7 +295,7 @@ class WebRTCConnector {
     description.sdp = capSel.sdp();
 
     debugModePrint(
-        'modifySDPForCodecPreferences vcodec:' + _codecPreferences[0]);
+        'modifySDPForCodecPreferences vcodec:${_codecPreferences[0]}');
   }
 
   Future<void> _publish() async {
