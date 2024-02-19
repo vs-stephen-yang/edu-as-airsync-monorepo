@@ -12,6 +12,7 @@ class AppAnalytics {
     required String instrumentationKey,
     String? applicationVersion,
     String? locale,
+    String? sessionId,
   }) {
     final processor = BufferedProcessor(
       next: TransmissionProcessor(
@@ -24,6 +25,7 @@ class AppAnalytics {
     final context = TelemetryContext();
     context
       ..applicationVersion = applicationVersion
+      ..session.sessionId = sessionId
       ..device.locale = locale;
 
     instance._client = TelemetryClient(
