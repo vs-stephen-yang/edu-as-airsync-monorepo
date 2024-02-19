@@ -33,7 +33,7 @@ class SocketConnection: NSObject {
             return nil
         }
     }
-
+    
     func open() -> Bool {
         os_log(.debug, log: broadcastLogger, "open socket connection")
 
@@ -128,7 +128,7 @@ private extension SocketConnection {
         address = addr
         return true
     }
-
+    
     func connectSocket() -> Bool {
         guard var addr = address else {
             return false
