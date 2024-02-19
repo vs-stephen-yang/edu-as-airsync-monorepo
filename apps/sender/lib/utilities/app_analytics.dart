@@ -8,7 +8,10 @@ class AppAnalytics {
   // Private constructor
   AppAnalytics._();
 
-  static initializeApp(String instrumentationKey) {
+  static initializeApp({
+    required String instrumentationKey,
+    String? applicationVersion,
+  }) {
     final processor = BufferedProcessor(
       next: TransmissionProcessor(
         instrumentationKey: instrumentationKey,
@@ -17,8 +20,12 @@ class AppAnalytics {
       ),
     );
 
+    final context = TelemetryContext();
+    context.applicationVersion = applicationVersion;
+
     instance._client = TelemetryClient(
       processor: processor,
+      context: context,
     );
   }
 

@@ -19,11 +19,13 @@ import 'package:provider/provider.dart';
 
 void commonEntry(ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  AppAnalytics.initializeApp(settings.appInsightsInstrumentationKey);
-  AppAnalytics.instance.trackEvent('app_launch');
-
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+  AppAnalytics.initializeApp(
+    instrumentationKey: settings.appInsightsInstrumentationKey,
+    applicationVersion: packageInfo.version,
+  );
+  AppAnalytics.instance.trackEvent('app_launch');
 
   if (!kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
     // DesktopWindow only support above platform.
