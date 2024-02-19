@@ -25,6 +25,7 @@ import '../settings/app_config.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
+
   static ValueNotifier<bool> showTitleBottomBar = ValueNotifier(true);
   static ValueNotifier<bool> showCloudOff = ValueNotifier(false);
   static ValueNotifier<List<bool>> isSelectedList =
@@ -38,7 +39,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   double _fullWidth = 0, _fullHeight = 0, _halfWidth = 0, _halfHeight = 0;
   static const _androidAppRetain =
       MethodChannel('com.mvbcast.crosswalk/android_app_retain');
-
 
   @override
   void initState() {
@@ -62,14 +62,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     if (state == AppLifecycleState.inactive) {
       channelProvider.updateAllAudioEnableState(false);
       mirrorStateProvider.updateAudioEnable(false);
-      // Home.disconnectServer(context);
       Provider.of<ChannelProvider>(context, listen: false).disconnectServer();
     } else if (state == AppLifecycleState.resumed) {
       channelProvider.updateAllAudioEnableState(true);
       mirrorStateProvider.updateAudioEnable(true);
-      Provider.of<ChannelProvider>(context, listen: false).getDisplayCode(AppInstanceCreate().displayInstanceID);
-      Provider.of<ChannelProvider>(context, listen: false).connectServer(context);
-      // widget.connectServer(context);
+      Provider.of<ChannelProvider>(context, listen: false)
+          .getDisplayCode(AppInstanceCreate().displayInstanceID);
+      Provider.of<ChannelProvider>(context, listen: false)
+          .connectServer(context);
     }
   }
 
@@ -91,8 +91,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 valueListenable: SplitScreen.mapSplitScreen,
                 builder: (context, Map<String, dynamic> value, child) {
                   return Stack(
-                    children: List.generate(
-                        value[keySplitScreenEnable] ? 4 : 1, (index) {
+                    children: List.generate(value[keySplitScreenEnable] ? 4 : 1,
+                        (index) {
                       double? left, top, right, bottom;
                       if (index == 1) {
                         right = 0;
@@ -128,10 +128,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                   ),
                                   Visibility(
                                     visible: SplitScreen.mapSplitScreen
-                                            .value[keySplitScreenEnable],
+                                        .value[keySplitScreenEnable],
                                     child: SplitScreenFunction(
                                       index: index,
-                                      channelProvider: Provider.of<ChannelProvider>(context),
+                                      channelProvider:
+                                          Provider.of<ChannelProvider>(context),
                                       updateSize: () {
                                         _updateSizeForSelected(index);
                                       },
@@ -177,10 +178,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       children: [
                         const Gap(30),
                         Text(
-                          AppConfig.of(context)?.settings.airSyncUrl ?? '', style: const TextStyle(fontSize: 40),
+                          AppConfig.of(context)?.settings.airSyncUrl ?? '',
+                          style: const TextStyle(fontSize: 40),
                         ),
                         const Spacer(),
-                        MainInfoInternet(),
+                        const MainInfoInternet(),
                         const Spacer(),
                       ],
                     );
