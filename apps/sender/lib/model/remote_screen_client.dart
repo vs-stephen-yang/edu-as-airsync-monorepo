@@ -13,7 +13,7 @@ class RemoteScreenClient {
   DisplayChannelClient? _channel;
   final String _sessionId = const Uuid().v4();
   Client? _client;
-  RTCVideoRenderer get remoteScreenRenderer =>  _remoteScreenRenderer;
+  RTCVideoRenderer get remoteScreenRenderer => _remoteScreenRenderer;
   RTCVideoRenderer _remoteScreenRenderer = RTCVideoRenderer();
   RTCDataChannel? _dataChannel;
   GlobalKey get rtcWidgetKey => _rtcWidgetKey;
@@ -24,19 +24,23 @@ class RemoteScreenClient {
 
   onDataChannelState(RTCDataChannelState state) {
     //print('onDataChannelState: $state');
-    if( state == RTCDataChannelState.RTCDataChannelClosed ) {
+    if (state == RTCDataChannelState.RTCDataChannelClosed) {
       _dataChannel = null;
     }
   }
 
-  Future handleRemoteScreenInfo(String url, String roomId, Function onTrack) async {
-
+  Future handleRemoteScreenInfo(
+    String url,
+    String roomId,
+    Function onTrack,
+  ) async {
     JsonRPCSignal signal = JsonRPCSignal(url);
 
     _client = await Client.create(
       sid: roomId,
       uid: const Uuid().v4(),
-      signal: signal,);
+      signal: signal,
+    );
 
     _dataChannel = await _client!.createDataChannel(_sessionId);
     _dataChannel!.onDataChannelState = onDataChannelState;
@@ -97,7 +101,7 @@ class RemoteScreenClient {
       return;
     } else {
       final RenderBox renderBox =
-      textureElement!.findRenderObject() as RenderBox;
+          textureElement!.findRenderObject() as RenderBox;
       _textureSize = renderBox.size;
       _textureOffset = renderBox.localToGlobal(Offset.zero);
       print(
@@ -142,6 +146,8 @@ class RemoteScreenClient {
     final curEventMessage = EventMessage();
     curEventMessage.touchEvent = curTouchEvent;
 
-    _dataChannel?.send( RTCDataChannelMessage.fromBinary(curEventMessage.writeToBuffer()));
+    _dataChannel?.send(
+      RTCDataChannelMessage.fromBinary(curEventMessage.writeToBuffer()),
+    );
   }
 }
