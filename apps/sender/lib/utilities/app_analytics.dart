@@ -11,6 +11,7 @@ class AppAnalytics {
   static initializeApp({
     required String instrumentationKey,
     String? applicationVersion,
+    String? locale,
   }) {
     final processor = BufferedProcessor(
       next: TransmissionProcessor(
@@ -21,7 +22,9 @@ class AppAnalytics {
     );
 
     final context = TelemetryContext();
-    context.applicationVersion = applicationVersion;
+    context
+      ..applicationVersion = applicationVersion
+      ..device.locale = locale;
 
     instance._client = TelemetryClient(
       processor: processor,

@@ -24,6 +24,7 @@ void commonEntry(ConfigSettings settings) async {
   AppAnalytics.initializeApp(
     instrumentationKey: settings.appInsightsInstrumentationKey,
     applicationVersion: packageInfo.version,
+    locale: (!kIsWeb) ? Platform.localeName : null,
   );
   AppAnalytics.instance.trackEvent('app_launch');
 
