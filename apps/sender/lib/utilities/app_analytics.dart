@@ -1,4 +1,5 @@
 import 'package:azure_application_insights/azure_application_insights.dart';
+import 'package:display_cast_flutter/utilities/client_device_info.dart';
 import 'package:http/http.dart';
 
 // https://medium.com/bina-nusantara-it-division/how-to-integrate-flutter-app-with-azure-application-insights-447fcc3bdacf
@@ -11,8 +12,9 @@ class AppAnalytics {
   static initializeApp({
     required String instrumentationKey,
     String? applicationVersion,
-    String? locale,
     String? sessionId,
+    String? userId,
+    ClientDeviceInfo? deviceInfo,
   }) {
     final processor = BufferedProcessor(
       next: TransmissionProcessor(
@@ -26,7 +28,15 @@ class AppAnalytics {
     context
       ..applicationVersion = applicationVersion
       ..session.sessionId = sessionId
-      ..device.locale = locale;
+      ..user.id = userId;
+
+    if (deviceInfo != null) {
+      context.device
+        ..locale = deviceInfo.locale
+        ..type = deviceInfo.clientType
+        ..osVersion = deviceInfo.clientOs
+        ..model = deviceInfo.clientModel;
+    }
 
     instance._client = TelemetryClient(
       processor: processor,
