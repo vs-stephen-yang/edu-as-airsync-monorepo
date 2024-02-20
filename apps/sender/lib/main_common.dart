@@ -8,6 +8,7 @@ import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/screens/home.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/app_instance_create.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:flutter/foundation.dart';
@@ -22,10 +23,12 @@ import 'package:uuid/uuid.dart';
 void commonEntry(ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  await AppInstanceCreate.ensureInitialized();
 
   AppAnalytics.initializeApp(
     instrumentationKey: settings.appInsightsInstrumentationKey,
     applicationVersion: packageInfo.version,
+    userId: AppInstanceCreate().instanceId,
     sessionId: const Uuid().v4(),
     deviceInfo: await ClientDeviceInfo.fetch(),
   );
