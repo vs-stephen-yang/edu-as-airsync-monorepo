@@ -8,6 +8,7 @@ import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/screens/home.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/client_device_info.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,8 +26,8 @@ void commonEntry(ConfigSettings settings) async {
   AppAnalytics.initializeApp(
     instrumentationKey: settings.appInsightsInstrumentationKey,
     applicationVersion: packageInfo.version,
-    locale: (!kIsWeb) ? Platform.localeName : null,
     sessionId: const Uuid().v4(),
+    deviceInfo: await ClientDeviceInfo.fetch(),
   );
   AppAnalytics.instance.trackEvent('app_launch');
 
