@@ -26,7 +26,7 @@ class SplitScreenFunction extends StatefulWidget {
   @override
   Widget build(BuildContext context) {
     double? left, top, bottom, right;
-    if (Home.isSelectedList.value[widget.index]) {
+    if (Home.enlargedScreenPositionIndex.value == widget.index) {
       // full screen mode in right-bottom;
       right = 20;
       bottom = 20;
@@ -74,7 +74,7 @@ class SplitScreenFunction extends StatefulWidget {
                     children: <Widget>[
                       Visibility(
                         visible:
-                        !Home.isSelectedList.value[widget.index] && value[widget.index],
+                        Home.enlargedScreenPositionIndex.value != widget.index && value[widget.index],
                         child: FocusIconButton(
                           icons: Icons.close,
                           iconForegroundColor: Colors.white,
@@ -97,9 +97,9 @@ class SplitScreenFunction extends StatefulWidget {
                       ),
                       Visibility(
                         visible:
-                        !Home.isSelectedList.value[widget.index] && value[widget.index],
+                        Home.enlargedScreenPositionIndex.value != widget.index && value[widget.index],
                         child:FocusIconButton(
-                          icons: !Home.isSelectedList.value[widget.index] && value[widget.index] &&
+                          icons: Home.enlargedScreenPositionIndex.value != widget.index && value[widget.index] &&
                               widget.channelProvider.getAudioDisableStateByIndex(widget.index)
                               ? Icons.volume_up_outlined
                               : Icons.volume_off_outlined,
@@ -122,7 +122,7 @@ class SplitScreenFunction extends StatefulWidget {
                       ),
                       Visibility(
                         visible:
-                        !Home.isSelectedList.value[widget.index] && value[widget.index] &&
+                        Home.enlargedScreenPositionIndex.value != widget.index && value[widget.index] &&
                             RtcConnectorList().getPresentingQuantity() > 1,
                         child: FocusIconButton(
                           icons: Icons.crop_free_sharp,
@@ -146,7 +146,7 @@ class SplitScreenFunction extends StatefulWidget {
                       ),
                       // Using same button to show focus status at same button area.
                       FocusIconButton(
-                        icons: Home.isSelectedList.value[widget.index]
+                        icons: Home.enlargedScreenPositionIndex.value == widget.index
                         // Full screen mode
                             ? Icons.close_fullscreen
                         // Split screen mode
@@ -164,7 +164,7 @@ class SplitScreenFunction extends StatefulWidget {
                         hasFocusSize: AppUIConstant.iconHasFocusSize,
                         notFocusSize: AppUIConstant.iconNotFocusSize,
                         onClick: () {
-                          if (Home.isSelectedList.value[widget.index]) {
+                          if (Home.enlargedScreenPositionIndex.value == widget.index) {
                             // Full screen mode: update size
                             widget.updateSize?.call();
                           } else {
