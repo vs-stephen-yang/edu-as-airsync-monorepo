@@ -16,6 +16,7 @@ enum ChannelCloseCode {
   heartbeatTimeout,
   remoteUnknown,
   invalidDisplayCode,
+  rateLimitExceeded,
 }
 
 class ChannelCloseReason {
