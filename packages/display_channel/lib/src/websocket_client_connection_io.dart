@@ -35,6 +35,7 @@ class WebSocketClientConnection implements ClientConnection {
   int maxRetryAttempts;
 
   WebSocket? _socket;
+  HttpClient? _httpClient;
 
   WebSocketClientConnection(
     this._url, {
@@ -72,12 +73,12 @@ class WebSocketClientConnection implements ClientConnection {
         maxDelay: maxRetryDelay,
         maxAttempts: maxRetryAttempts,
         () {
-          final httpClient = HttpClient();
-          httpClient.connectionTimeout = connectionTimeout;
+          _httpClient = HttpClient();
+          _httpClient!.connectionTimeout = connectionTimeout;
 
           return WebSocket.connect(
             _url,
-            customClient: httpClient,
+            customClient: _httpClient,
           );
         },
         retryIf: (e) {
@@ -155,6 +156,9 @@ class WebSocketClientConnection implements ClientConnection {
   }
 
   Future _closeSocket() async {
+    _httpClient?.close(force: true);
+    _httpClient = null;
+
     await _socket?.close();
     _socket = null;
   }
