@@ -38,8 +38,8 @@ class RtcConnectorList {
 
   void updateSplitScreen() {
     int connecting = 0, lastID = 0;
-    for (int i = 0; i < rtcConnectorList.nonNulls.length; i++) {
-      if (rtcConnectorList[i]?.presentationState !=
+    for (int i = 0; i < rtcConnectorList.length; i++) {
+      if (rtcConnectorList[i] != null && rtcConnectorList[i]?.presentationState !=
           PresentationState.stopStreaming) {
         connecting++;
         lastID = i;

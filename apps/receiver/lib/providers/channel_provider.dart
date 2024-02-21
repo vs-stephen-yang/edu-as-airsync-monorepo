@@ -431,11 +431,7 @@ class ChannelProvider extends ChangeNotifier {
           }
           showMode = true;
         } else {
-          Home.isSelectedList.value
-              .fillRange(0, Home.isSelectedList.value.length, false);
-          // Using below method to trigger value changed.
-          // https://github.com/flutter/flutter/issues/29958
-          Home.isSelectedList.value = List.from(Home.isSelectedList.value);
+          Home.enlargedScreenPositionIndex.value = null;
         }
       } else {
         Home.showTitleBottomBar.value = true;

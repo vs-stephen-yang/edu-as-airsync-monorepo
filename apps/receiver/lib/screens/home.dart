@@ -28,8 +28,7 @@ class Home extends StatefulWidget {
 
   static ValueNotifier<bool> showTitleBottomBar = ValueNotifier(true);
   static ValueNotifier<bool> showCloudOff = ValueNotifier(false);
-  static ValueNotifier<List<bool>> isSelectedList =
-      ValueNotifier(List.filled(4, false, growable: false));
+  static ValueNotifier<int?> enlargedScreenPositionIndex = ValueNotifier(null);
 
   @override
   State createState() => _HomeState();
@@ -91,8 +90,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 valueListenable: SplitScreen.mapSplitScreen,
                 builder: (context, Map<String, dynamic> value, child) {
                   return Stack(
-                    children: List.generate(value[keySplitScreenEnable] ? 4 : 1,
-                        (index) {
+                    children: List.generate(4, (index) {
                       double? left, top, right, bottom;
                       if (index == 1) {
                         right = 0;
@@ -109,7 +107,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                         top = 0;
                       }
                       return ValueListenableBuilder(
-                        valueListenable: Home.isSelectedList,
+                        valueListenable: Home.enlargedScreenPositionIndex,
                         builder: (context, value, child) {
                           return Positioned(
                             left: left,
@@ -236,56 +234,33 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   _updateSizeForSelected(int selection) {
-    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      for (int i = 0; i < Home.isSelectedList.value.length; i++) {
-        if (i == selection) {
-          Home.isSelectedList.value[i] = !Home.isSelectedList.value[i];
-        } else {
-          Home.isSelectedList.value[i] = false;
-        }
-      }
-      // Using below method to trigger value changed.
-      // https://github.com/flutter/flutter/issues/29958
-      Home.isSelectedList.value = List.from(Home.isSelectedList.value);
-
-      context.read<ChannelProvider>().updateAllQuality(
-          selection, Home.isSelectedList.value.contains(true));
+    if (selection == Home.enlargedScreenPositionIndex.value) {
+      Home.enlargedScreenPositionIndex.value = null;
     } else {
-      Home.isSelectedList.value
-          .fillRange(0, Home.isSelectedList.value.length, false);
-      // Using below method to trigger value changed.
-      // https://github.com/flutter/flutter/issues/29958
-      Home.isSelectedList.value = List.from(Home.isSelectedList.value);
-
-      context.read<ChannelProvider>().updateAllQuality(0, true);
+      Home.enlargedScreenPositionIndex.value = selection;
     }
+      context.read<ChannelProvider>().updateAllQuality(
+          selection, Home.enlargedScreenPositionIndex.value == selection);
   }
 
   double _getWidthHeight(int selection, bool isWidth) {
-    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      // split screen enabled
-      if (Home.isSelectedList.value[selection]) {
-        // selected item
-        return isWidth ? _fullWidth : _fullHeight;
-      } else if (Home.isSelectedList.value.contains(true)) {
-        // has any item selected
-        return 1; // MUST use 1 to create view, 0 won't.
-      } else {
-        // no any item selected
-        if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
-          selection = ChannelProvider.rtcPlayOrder.getOrderByIndex(selection);
-          if (selection ==
-              SplitScreen.mapSplitScreen.value[keySplitScreenLastId]) {
-            return isWidth ? _fullWidth : _fullHeight;
-          } else {
-            return 1; // MUST use 1 to create view, 0 won't.
-          }
-        }
-        return isWidth ? _halfWidth : _halfHeight;
-      }
-    } else {
-      // split screen disabled
+    if (Home.enlargedScreenPositionIndex.value == selection) {
+      // enlarged screen
       return isWidth ? _fullWidth : _fullHeight;
+    } else if (Home.enlargedScreenPositionIndex.value != null) {
+      // one of the screens is enlarged
+      return 0; // MUST use 1 to create view, 0 won't.
+    } else {
+      // no enlarged screen
+      if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
+        if (selection ==
+            SplitScreen.mapSplitScreen.value[keySplitScreenLastId]) {
+          return isWidth ? _fullWidth : _fullHeight;
+        } else {
+          return 0; // MUST use 1 to create view, 0 won't.
+        }
+      }
+      return isWidth ? _halfWidth : _halfHeight;
     }
   }
 }

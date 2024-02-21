@@ -134,11 +134,7 @@ class WebRTCViewState extends State<WebRTCView> {
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
     if (RtcConnectorList().rtcConnectorList.isNotEmpty) {
-      int playIndex = ChannelProvider.rtcPlayOrder.getOrderByIndex(widget.index);
-
-      if (RtcConnectorList().rtcConnectorList.nonNulls.length >= playIndex) {
-        _rtcConnector = RtcConnectorList().rtcConnectorList[playIndex];
-      }
+      _rtcConnector = RtcConnectorList().rtcConnectorList[widget.index];
       if (_rtcConnector?.presentationState == PresentationState.pauseStreaming) {
         pauseVideo();
       } else if (_rtcConnector?.presentationState == PresentationState.resumeStreaming) {
