@@ -34,6 +34,11 @@ Reason? convertConnectRequestStatusToReason(ConnectRequestStatus status) {
         ChannelCloseCode.invalidDisplayCode.index,
         text: 'Wrong display code',
       );
+    case ConnectRequestStatus.rateLimitExceeded:
+      return Reason(
+        ChannelCloseCode.rateLimitExceeded.index,
+        text: 'Too Many Requests',
+      );
     default:
       return null;
   }
