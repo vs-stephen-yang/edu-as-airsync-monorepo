@@ -4,10 +4,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
-import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
@@ -300,14 +298,9 @@ class MirrorView extends StatelessWidget {
                                     // Don't change the order of the conditions
                                     if (ChannelProvider.isModeratorMode) {
                                       // moderator
-                                    } else if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+                                    } else {
                                       // split screen
-                                      // await PresentHelper.getInstance().splitScreenOff();
                                       await context.read<ChannelProvider>().splitScreenOff();
-                                    } else if (RtcConnectorList().isPresenting()) {
-                                      // basic
-                                      // await PresentHelper.getInstance().basicStreamOff();
-                                      await context.read<ChannelProvider>().basicStreamOff();
                                     }
                                     mirror.setAcceptMirrorId(index);
                                   },
