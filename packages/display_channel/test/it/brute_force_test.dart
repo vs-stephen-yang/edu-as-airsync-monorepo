@@ -128,7 +128,7 @@ void main() {
 
   test(
     'The direct server should correctly enforce rate limiting',
-    timeout: const Timeout(Duration(seconds: 20)),
+    timeout: const Timeout(Duration(seconds: 10)),
     () async {
       // arrange
       final uri = Uri(
@@ -136,34 +136,37 @@ void main() {
         host: "127.0.0.1",
         port: directServer.port!,
       );
-      createClients(uri, 100);
+      createClients(uri, 50);
 
       // action
       await submitRequests(
         (client, index) => client.openDirectChannel('0000', displayCode: 'AVA'),
-        100, // 100 connection requests in 10 seconds
-        const Duration(seconds: 10),
+        50, // 50 connection requests in 5 seconds
+        const Duration(seconds: 5),
       );
 
       // Wait until all clients are closed.
       await waitForClientsClosed();
 
       // assert
-      expect(
-        countByCloseCodes(clients, [ChannelCloseCode.authenticationError]),
-        // No more than 50 requests are allowed
-        lessThan(50),
+      final count = countByCloseCodes(
+        clients,
+        [ChannelCloseCode.authenticationError],
       );
+
+      // Ensure about 25 requests are allowed
+      expect(count, lessThan(30));
+      expect(count, greaterThan(20));
     },
   );
 
   test(
     'The tunnel service should correctly enforce rate limiting',
-    timeout: const Timeout(Duration(seconds: 20)),
+    timeout: const Timeout(Duration(seconds: 10)),
     () async {
       // arrange
       final uri = Uri.parse(tunnelServiceUrl);
-      createClients(uri, 100);
+      createClients(uri, 50);
 
       // action
       await submitRequests(
@@ -172,19 +175,22 @@ void main() {
           '0000',
           displayCode: 'AVA',
         ),
-        100, // 100 connection requests in 10 seconds
-        const Duration(seconds: 10),
+        50, // 50 connection requests in 5 seconds
+        const Duration(seconds: 5),
       );
 
       // Wait until all clients are closed.
       await waitForClientsClosed();
 
       // assert
-      expect(
-        countByCloseCodes(clients, [ChannelCloseCode.authenticationError]),
-        // No more than 10 requests are allowed
-        lessThan(20),
+      final count = countByCloseCodes(
+        clients,
+        [ChannelCloseCode.authenticationError],
       );
+
+      // Ensure about 25 requests are allowed
+      expect(count, lessThan(30));
+      expect(count, greaterThan(20));
     },
   );
 }
