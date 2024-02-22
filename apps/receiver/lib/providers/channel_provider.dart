@@ -20,7 +20,6 @@ import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:no_context_navigation/no_context_navigation.dart';
 
 ///
 /// ChannelProvider
@@ -376,15 +375,7 @@ class ChannelProvider extends ChangeNotifier {
       // hideTitleBar
       Home.showTitleBottomBar.value = false;
 
-      if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-        StreamFunction.streamFunctionState.value = stateMenuOff;
-      } else {
-        if (isModeratorMode && navService.canPop()) {
-          StreamFunction.streamFunctionState.value = stateMenuOff;
-        } else {
-          navService.popUntil('/home');
-        }
-      }
+      StreamFunction.streamFunctionState.value = stateMenuOff;
       notifyListeners();
     });
 
@@ -403,37 +394,22 @@ class ChannelProvider extends ChangeNotifier {
     rtcConnector.onConflictWithMirror = (() {
       if (isModeratorMode) {
         // moderator
-      } else if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
+      } else {
         // split screen
         splitScreenOff();
-      } else {
-        // basic
-        basicStreamOff();
       }
     });
 
     rtcConnector.onChannelDisconnect = (() async {
       // update UI
-      if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-        bool presenting = false;
-        for (RTCConnector? controller in RtcConnectorList().rtcConnectorList) {
-          if (controller != null &&
-              controller.presentationState != PresentationState.stopStreaming) {
-            presenting |= true;
-          }
+      bool presenting = false;
+      for (RTCConnector? controller in RtcConnectorList().rtcConnectorList) {
+        if (controller != null &&
+            controller.presentationState != PresentationState.stopStreaming) {
+          presenting |= true;
         }
-        if (!presenting) {
-          Home.showTitleBottomBar.value = true;
-          if (MirrorStateProvider.isMirroring) {
-            StreamFunction.streamFunctionState.value = stateCast;
-          } else {
-            StreamFunction.streamFunctionState.value = stateStandby;
-          }
-          showMode = true;
-        } else {
-          Home.enlargedScreenPositionIndex.value = null;
-        }
-      } else {
+      }
+      if (!presenting) {
         Home.showTitleBottomBar.value = true;
         if (MirrorStateProvider.isMirroring) {
           StreamFunction.streamFunctionState.value = stateCast;
@@ -441,6 +417,8 @@ class ChannelProvider extends ChangeNotifier {
           StreamFunction.streamFunctionState.value = stateStandby;
         }
         showMode = true;
+      } else {
+        Home.enlargedScreenPositionIndex.value = null;
       }
       if (MyApp.isInBackgroundMode) {
         disconnectServer();

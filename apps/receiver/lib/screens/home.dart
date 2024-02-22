@@ -124,17 +124,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                       return WebRTCView(index: index);
                                     },
                                   ),
-                                  Visibility(
-                                    visible: SplitScreen.mapSplitScreen
-                                        .value[keySplitScreenEnable],
-                                    child: SplitScreenFunction(
-                                      index: index,
-                                      channelProvider:
-                                          Provider.of<ChannelProvider>(context),
-                                      updateSize: () {
-                                        _updateSizeForSelected(index);
-                                      },
-                                    ),
+                                  SplitScreenFunction(
+                                    index: index,
+                                    channelProvider:
+                                    Provider.of<ChannelProvider>(context),
+                                    updateSize: () {
+                                      _updateSizeForSelected(index);
+                                    },
                                   ),
                                 ],
                               ),

@@ -11,7 +11,6 @@ import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/moderator_menu_view.dart';
 import 'package:display_flutter/screens/sender_menu_view.dart';
 import 'package:display_flutter/screens/settings.dart';
-import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -59,26 +58,16 @@ class _StreamFunctionStates extends State<StreamFunction> {
             colorButtonBackground = AppColors.iconDisableStandbyBackground;
           }
         } else {
-          if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-            if (value == stateMenuOn) {
-              colorButtonForeground =
-                  AppColors.iconFeatureOnPresentingForeground;
-              colorButtonBackground =
-                  AppColors.iconFeatureOnPresentingBackground;
-            } else {
-              colorButtonForeground =
-                  AppColors.iconFeatureOnStandbyForeground;
-              colorButtonBackground =
-                  AppColors.iconFeatureOnStandbyBackground;
-            }
+          if (value == stateMenuOn) {
+            colorButtonForeground =
+                AppColors.iconFeatureOnPresentingForeground;
+            colorButtonBackground =
+                AppColors.iconFeatureOnPresentingBackground;
           } else {
-            if (value == stateMenuOn) {
-              colorButtonForeground = AppColors.iconPresentingForeground;
-              colorButtonBackground = AppColors.iconPresentingBackground;
-            } else {
-              colorButtonForeground = AppColors.iconStandbyForeground;
-              colorButtonBackground = AppColors.iconStandbyBackground;
-            }
+            colorButtonForeground =
+                AppColors.iconFeatureOnStandbyForeground;
+            colorButtonBackground =
+                AppColors.iconFeatureOnStandbyBackground;
           }
         }
         // endregion

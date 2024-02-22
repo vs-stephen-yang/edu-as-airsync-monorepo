@@ -26,7 +26,8 @@ class SplitScreenFunction extends StatefulWidget {
   @override
   Widget build(BuildContext context) {
     double? left, top, bottom, right;
-    if (Home.enlargedScreenPositionIndex.value == widget.index) {
+    if (Home.enlargedScreenPositionIndex.value == widget.index ||
+        RtcConnectorList().getPresentingQuantity() == 1) {
       // full screen mode in right-bottom;
       right = 20;
       bottom = 20;
@@ -97,9 +98,11 @@ class SplitScreenFunction extends StatefulWidget {
                       ),
                       Visibility(
                         visible:
-                        Home.enlargedScreenPositionIndex.value != widget.index && value[widget.index],
+                        Home.enlargedScreenPositionIndex.value != widget.index &&
+                            value[widget.index],
                         child:FocusIconButton(
-                          icons: Home.enlargedScreenPositionIndex.value != widget.index && value[widget.index] &&
+                          icons: Home.enlargedScreenPositionIndex.value !=
+                              widget.index && value[widget.index] &&
                               widget.channelProvider.getAudioDisableStateByIndex(widget.index)
                               ? Icons.volume_up_outlined
                               : Icons.volume_off_outlined,

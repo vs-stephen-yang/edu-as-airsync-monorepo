@@ -3,7 +3,6 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
@@ -125,14 +124,8 @@ class _ParticipantItemState extends State<ParticipantItem>
       _sendPresenterStop();
     } else {
       // occupied and stopStreaming
-      if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-        if (!RtcConnectorList().occupyAvailableRTCConnector(widget.index)) {
-          return;
-        }
-      } else {
-        // Remove all other presenters before send Play for Quick switch.
-        await RtcConnectorList()
-            .removeOtherPresenters(keepInList: ChannelProvider.isModeratorMode);
+      if (!RtcConnectorList().occupyAvailableRTCConnector(widget.index)) {
+        return;
       }
       _sendPresenterPlay();
     }

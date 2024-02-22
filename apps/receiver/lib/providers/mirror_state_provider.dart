@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:display_flutter/model/rtc_connector_list.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
@@ -133,13 +131,8 @@ class MirrorStateProvider extends ChangeNotifier
     _acceptedTextureId = null;
     _acceptedMirrorType = null;
     _mirrorState = MirrorState.idle;
-    if (ChannelProvider.isModeratorMode || SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      if (RtcConnectorList().isPresenting()) {
-        StreamFunction.streamFunctionState.value = stateMenuOff;
-      } else {
-        StreamFunction.streamFunctionState.value = stateStandby;
-      }
-    } else if (RtcConnectorList().isPresenting()) {
+
+    if (RtcConnectorList().isPresenting()) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
     } else {
       StreamFunction.streamFunctionState.value = stateStandby;

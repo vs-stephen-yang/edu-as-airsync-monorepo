@@ -176,8 +176,7 @@ class WebRTCViewState extends State<WebRTCView> {
           alignment: Alignment.topCenter,
           child: Visibility(
             visible: _rtcConnector?.presentationState == PresentationState.streaming &&
-                presenterName.isNotEmpty &&
-                SplitScreen.mapSplitScreen.value[keySplitScreenEnable],
+                presenterName.isNotEmpty,
             child: ConstrainedBox(
               constraints: const BoxConstraints.tightFor(height: 30,width: 160),
               child: Container(
@@ -198,8 +197,7 @@ class WebRTCViewState extends State<WebRTCView> {
         ),
         if (_rtcConnector != null && _rtcConnector?.presentationState == PresentationState.waitForStream)
           Transform.scale(
-            scale: SplitScreen.mapSplitScreen.value[keySplitScreenEnable] &&
-                SplitScreen.mapSplitScreen.value[keySplitScreenCount] > 1
+            scale: SplitScreen.mapSplitScreen.value[keySplitScreenCount] > 1
                 ? 0.5
                 : 1.0,
             child: SizedBox(
