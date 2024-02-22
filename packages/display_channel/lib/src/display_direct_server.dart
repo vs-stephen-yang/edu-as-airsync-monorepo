@@ -19,8 +19,8 @@ class DisplayDirectServer {
   DisplayDirectServer(
     OnNewChannel onNewChannel,
     VerifyConnectRequest verifyConnectRequest, {
-    int maxBurstyRequests = 10,
-    double requestsPerSecond = 10,
+    int maxBurstyRequests = 5,
+    double requestsPerSecond = 5,
   })  : _store = ChannelStore(
           onNewChannel,
           verifyConnectRequest,
