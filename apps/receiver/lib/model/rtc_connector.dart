@@ -289,7 +289,6 @@ class RTCConnector {
 
     // change state
     presentationState = PresentationState.stopStreaming;
-    ChannelProvider.removerPlayOrder(clientId!);
     onRefresh?.call();
   }
 
