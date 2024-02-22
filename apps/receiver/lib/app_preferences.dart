@@ -31,7 +31,6 @@ class AppPreferences {
     String? instanceName,
     String? entityId,
     String? moderatorId,
-    String? language,
   }) {
     if (showEULA != null) {
       _showEULA = showEULA;
