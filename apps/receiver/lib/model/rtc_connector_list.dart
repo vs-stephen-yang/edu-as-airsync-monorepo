@@ -54,23 +54,17 @@ class RtcConnectorList {
   }
 
   void handleQualityUpdate({RTCConnector? controller}) {
-    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
-        for (RTCConnector? connector in rtcConnectorList) {
-          if (connector?.presentationState == PresentationState.streaming) {
-            connector?.sendChangeQuality(true, true);
-          }
-        }
-      } else {
-        for (RTCConnector? connector in rtcConnectorList) {
-          if (connector?.clientId != null) {
-            connector?.sendChangeQuality(false, true);
-          }
+    if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
+      for (RTCConnector? connector in rtcConnectorList) {
+        if (connector?.presentationState == PresentationState.streaming) {
+          connector?.sendChangeQuality(true, true);
         }
       }
     } else {
-      if (controller != null) {
-        controller.sendChangeQuality(true, true);
+      for (RTCConnector? connector in rtcConnectorList) {
+        if (connector?.clientId != null) {
+          connector?.sendChangeQuality(false, true);
+        }
       }
     }
   }
@@ -88,24 +82,16 @@ class RtcConnectorList {
 
   bool isPresenting({index}) {
     bool presenting = false;
-    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      if (index != null) {
-        if (rtcConnectorList[index]?.presentationState ==
-            PresentationState.streaming) {
-          presenting = true;
-        }
-      } else {
-        for (RTCConnector? controller in rtcConnectorList) {
-          if (controller?.presentationState == PresentationState.streaming) {
-            presenting |= true;
-          }
-        }
+    if (index != null) {
+      if (rtcConnectorList[index]?.presentationState ==
+          PresentationState.streaming) {
+        presenting = true;
       }
     } else {
-      if (rtcConnectorList.isNotEmpty &&
-          rtcConnectorList[0]?.presentationState ==
-              PresentationState.streaming) {
-        presenting = true;
+      for (RTCConnector? controller in rtcConnectorList) {
+        if (controller?.presentationState == PresentationState.streaming) {
+          presenting |= true;
+        }
       }
     }
     return presenting;
@@ -113,25 +99,17 @@ class RtcConnectorList {
 
   bool hasPresenterOccupied({index}) {
     bool presenting = false;
-    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      if (index != null) {
-        if (rtcConnectorList[index]?.presentationState !=
-            PresentationState.stopStreaming) {
-          presenting = true;
-        }
-      } else {
-        for (RTCConnector? controller in rtcConnectorList) {
-          if (controller != null &&
-              controller.presentationState != PresentationState.stopStreaming) {
-            presenting |= true;
-          }
-        }
+    if (index != null) {
+      if (rtcConnectorList[index]?.presentationState !=
+          PresentationState.stopStreaming) {
+        presenting = true;
       }
     } else {
-      if (rtcConnectorList.isNotEmpty &&
-          rtcConnectorList[0]?.presentationState !=
-              PresentationState.stopStreaming) {
-        presenting = true;
+      for (RTCConnector? controller in rtcConnectorList) {
+        if (controller != null &&
+            controller.presentationState != PresentationState.stopStreaming) {
+          presenting |= true;
+        }
       }
     }
     return presenting;
@@ -139,11 +117,9 @@ class RtcConnectorList {
 
   int getPresentingQuantity() {
     int quantity = 0;
-    if (SplitScreen.mapSplitScreen.value[keySplitScreenEnable]) {
-      for (RTCConnector? controller in rtcConnectorList) {
-        if (controller?.presentationState == PresentationState.streaming) {
-          quantity++;
-        }
+    for (RTCConnector? controller in rtcConnectorList.nonNulls) {
+      if (controller?.presentationState == PresentationState.streaming) {
+        quantity++;
       }
     }
     return quantity;
