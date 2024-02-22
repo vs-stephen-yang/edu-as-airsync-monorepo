@@ -10,7 +10,6 @@ import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/model/rtc_connector_list.dart';
-import 'package:display_flutter/model/rtc_play_order.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -92,9 +91,7 @@ class ChannelProvider extends ChangeNotifier {
   late DisplayDirectServer? _directServer;
   late DisplayTunnelServer? _tunnelServer;
   String _tunnelApiUrl = '';
-  static final RTCPlayOrder _rtcPlayOrder = RTCPlayOrder();
 
-  static RTCPlayOrder get rtcPlayOrder => _rtcPlayOrder;
   static bool isModeratorMode = false;
 
   final RemoteScreenServer _remoteScreenServe = RemoteScreenServer();
@@ -364,7 +361,6 @@ class ChannelProvider extends ChangeNotifier {
       } else {
         StreamFunction.streamFunctionState.value = stateMenuOff;
       }
-      updatePlayOrder(rtcConnector.clientId!);
     });
 
     rtcConnector.onAddRemoteStream = ((stream) {
@@ -469,14 +465,6 @@ class ChannelProvider extends ChangeNotifier {
   void updateModePanel(bool show) {
     showMode = show;
     notifyListeners();
-  }
-
-  static void updatePlayOrder(String id) {
-    _rtcPlayOrder.add(id);
-  }
-
-  static void removerPlayOrder(String id) {
-    _rtcPlayOrder.remove(id);
   }
 
   Future<void> basicStreamOff() async {
