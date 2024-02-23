@@ -6,6 +6,7 @@ import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/cast_settings.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/moderator_menu_view.dart';
@@ -165,29 +166,42 @@ class _StreamFunctionStates extends State<StreamFunction> {
                           AppColors.iconFeatureOnStandbyBackground,
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
-                      onClick: () {
-                        if (!ChannelProvider.isModeratorMode) {
-                          _showCastSettings();
-                        }
-                      },
+                      onClick: (!ChannelProvider.isModeratorMode)
+                          ? () {
+                              _showCastSettings();
+                            }
+                          : null,
                     ),
 
                   //Moderator button
                   if (value == stateStandby ||
                       (value == stateMenuOn && ChannelProvider.isModeratorMode))
-                    FocusIconButton(
-                      icons: Icons.groups,
-                      iconForegroundColor: colorModeratorForeground,
-                      iconBackgroundColor: colorModeratorBackground,
-                      iconFocusBackgroundColor:
-                          AppColors.iconFeatureOnStandbyBackground,
-                      hasFocusSize: AppUIConstant.iconHasFocusSize,
-                      notFocusSize: AppUIConstant.iconNotFocusSize,
-                      isAddGreenDot: ChannelProvider.isModeratorMode,
-                      onClick: () {
-                        _showModerator(value == stateMenuOn);
-                      },
-                    ),
+                    Consumer<MirrorStateProvider>(builder: (_, mirror, __) {
+                      bool mirrorEnable = mirror.airplayEnabled |
+                          mirror.googleCastEnabled |
+                          mirror.miracastEnabled;
+                      if (mirrorEnable) {
+                        colorModeratorForeground =
+                            AppColors.iconDisableStandbyForeground;
+                        colorModeratorBackground =
+                            AppColors.iconDisableStandbyBackground;
+                      }
+                      return FocusIconButton(
+                        icons: Icons.groups,
+                        iconForegroundColor: colorModeratorForeground,
+                        iconBackgroundColor: colorModeratorBackground,
+                        iconFocusBackgroundColor:
+                            AppColors.iconFeatureOnStandbyBackground,
+                        hasFocusSize: AppUIConstant.iconHasFocusSize,
+                        notFocusSize: AppUIConstant.iconNotFocusSize,
+                        isAddGreenDot: ChannelProvider.isModeratorMode,
+                        onClick: !mirrorEnable
+                            ? () {
+                                _showModerator(value == stateMenuOn);
+                              }
+                            : null,
+                      );
+                    }),
 
                   if (value == stateMenuOn && ChannelProvider.isSenderMode)
                     FocusIconButton(
@@ -268,15 +282,17 @@ class _StreamFunctionStates extends State<StreamFunction> {
     );
   }
 
-  _showMenuDialog(Widget widget) {
+  _showMenuDialog(Widget widget) async {
     FocusScope.of(context).unfocus();
-    showDialog(
+    await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
         return widget;
       },
-    );
+    ).then((_) {
+      setState(() {});
+    });
   }
 
   _showCastSettings() {
@@ -285,9 +301,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
 
   _showModerator(bool leavePresentFunction) {
     AppAnalytics().trackEventAppModeratorClick();
-    _showMenuDialog(ModeratorMenuView(onUpdateParentUI: () {
-      setState(() {});
-    }));
+    _showMenuDialog(const ModeratorMenuView());
     if (leavePresentFunction) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
     }
