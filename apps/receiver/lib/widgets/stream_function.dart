@@ -45,29 +45,23 @@ class _StreamFunctionStates extends State<StreamFunction> {
     return ValueListenableBuilder(
       valueListenable: StreamFunction.streamFunctionState,
       builder: (BuildContext context, String value, Widget? child) {
-        // region Exit and Mirror buttons
+        // region Mirror buttons
         Color? colorButtonForeground, colorButtonBackground;
         if (ChannelProvider.isModeratorMode) {
           if (value == stateMenuOn) {
-            colorButtonForeground =
-                AppColors.iconDisablePresentingForeground;
-            colorButtonBackground =
-                AppColors.iconDisablePresentingBackground;
+            colorButtonForeground = AppColors.iconDisablePresentingForeground;
+            colorButtonBackground = AppColors.iconDisablePresentingBackground;
           } else {
             colorButtonForeground = AppColors.iconDisableStandbyForeground;
             colorButtonBackground = AppColors.iconDisableStandbyBackground;
           }
         } else {
           if (value == stateMenuOn) {
-            colorButtonForeground =
-                AppColors.iconFeatureOnPresentingForeground;
-            colorButtonBackground =
-                AppColors.iconFeatureOnPresentingBackground;
+            colorButtonForeground = AppColors.iconFeatureOnPresentingForeground;
+            colorButtonBackground = AppColors.iconFeatureOnPresentingBackground;
           } else {
-            colorButtonForeground =
-                AppColors.iconFeatureOnStandbyForeground;
-            colorButtonBackground =
-                AppColors.iconFeatureOnStandbyBackground;
+            colorButtonForeground = AppColors.iconFeatureOnStandbyForeground;
+            colorButtonBackground = AppColors.iconFeatureOnStandbyBackground;
           }
         }
         // endregion
@@ -121,9 +115,8 @@ class _StreamFunctionStates extends State<StreamFunction> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   //Debug button
-                  Visibility(
-                    visible: StreamFunction.showDebugFunction,
-                    child: FocusIconButton(
+                  if (StreamFunction.showDebugFunction)
+                    FocusIconButton(
                       icons: Icons.build_outlined,
                       iconForegroundColor: AppColors.iconStandbyForeground,
                       iconBackgroundColor: AppColors.iconStandbyBackground,
@@ -135,7 +128,6 @@ class _StreamFunctionStates extends State<StreamFunction> {
                         _showMenuDialog(const DebugSwitch());
                       },
                     ),
-                  ),
 
                   //Exit button for VBS
                   if (AppInstanceCreate().isInstalledInVBS200 &&
@@ -144,8 +136,10 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       children: [
                         FocusIconButton(
                             icons: Icons.exit_to_app,
-                            iconForegroundColor: colorButtonForeground,
-                            iconBackgroundColor: colorButtonBackground,
+                            iconForegroundColor:
+                                AppColors.iconStandbyForeground,
+                            iconBackgroundColor:
+                                AppColors.iconStandbyBackground,
                             iconFocusBackgroundColor:
                                 AppColors.iconFeatureOnStandbyBackground,
                             hasFocusSize: AppUIConstant.iconHasFocusSize,
@@ -164,25 +158,24 @@ class _StreamFunctionStates extends State<StreamFunction> {
                   //Mirror button
                   if (value == stateStandby || value == stateCast)
                     FocusIconButton(
-                        icons: Icons.cast,
-                        iconForegroundColor: colorButtonForeground,
-                        iconBackgroundColor: colorButtonBackground,
-                        iconFocusBackgroundColor:
-                            AppColors.iconFeatureOnStandbyBackground,
-                        hasFocusSize: AppUIConstant.iconHasFocusSize,
-                        notFocusSize: AppUIConstant.iconNotFocusSize,
-                        onClick: () {
-                          if (!ChannelProvider.isModeratorMode) {
-                            _showCastSettings();
-                          }
-                        }),
+                      icons: Icons.cast,
+                      iconForegroundColor: colorButtonForeground,
+                      iconBackgroundColor: colorButtonBackground,
+                      iconFocusBackgroundColor:
+                          AppColors.iconFeatureOnStandbyBackground,
+                      hasFocusSize: AppUIConstant.iconHasFocusSize,
+                      notFocusSize: AppUIConstant.iconNotFocusSize,
+                      onClick: () {
+                        if (!ChannelProvider.isModeratorMode) {
+                          _showCastSettings();
+                        }
+                      },
+                    ),
 
                   //Moderator button
-                  Visibility(
-                    visible: value == stateStandby ||
-                        (value == stateMenuOn &&
-                            ChannelProvider.isModeratorMode),
-                    child: FocusIconButton(
+                  if (value == stateStandby ||
+                      (value == stateMenuOn && ChannelProvider.isModeratorMode))
+                    FocusIconButton(
                       icons: Icons.groups,
                       iconForegroundColor: colorModeratorForeground,
                       iconBackgroundColor: colorModeratorBackground,
@@ -195,29 +188,25 @@ class _StreamFunctionStates extends State<StreamFunction> {
                         _showModerator(value == stateMenuOn);
                       },
                     ),
-                  ),
 
-                  Visibility(
-                      visible:
-                          value == stateMenuOn && ChannelProvider.isSenderMode,
-                      child: FocusIconButton(
-                        svgSource: const Svg('assets/images/ic_receiver.svg'),
-                        iconForegroundColor: AppColors.iconPresentingForeground,
-                        iconBackgroundColor: AppColors.iconPresentingForeground,
-                        iconFocusBackgroundColor:
-                        AppColors.iconFeatureOnStandbyBackground,
-                        hasFocusSize: AppUIConstant.iconHasFocusSize,
-                        notFocusSize: AppUIConstant.iconNotFocusSize,
-                        onClick: () {
-                          _showSender(value == stateMenuOn);
-                        },
-                      )),
+                  if (value == stateMenuOn && ChannelProvider.isSenderMode)
+                    FocusIconButton(
+                      svgSource: const Svg('assets/images/ic_receiver.svg'),
+                      iconForegroundColor: AppColors.iconPresentingForeground,
+                      iconBackgroundColor: AppColors.iconPresentingForeground,
+                      iconFocusBackgroundColor:
+                          AppColors.iconFeatureOnStandbyBackground,
+                      hasFocusSize: AppUIConstant.iconHasFocusSize,
+                      notFocusSize: AppUIConstant.iconNotFocusSize,
+                      onClick: () {
+                        _showSender(value == stateMenuOn);
+                      },
+                    ),
 
                   //ShowDisplayCode button
-                  Visibility(
+                  if (value == stateMenuOn)
                     // only for show display code while streaming menu on
-                    visible: value == stateMenuOn,
-                    child: FocusIconButton(
+                    FocusIconButton(
                       icons: Icons.password,
                       iconForegroundColor: value == stateStandby
                           ? AppColors.iconStandbyForeground
@@ -230,19 +219,15 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
                       onClick: () {
-                        // _showMenuDialog(const MainInfo());
                         StreamFunction.streamFunctionState.value =
                             stateBackArrow;
                         context.read<ChannelProvider>().updateModePanel(true);
-                        // ChannelProvider.showMode = true;
                       },
                     ),
-                  ),
 
                   //Settings and In-connection button
-                  Visibility(
-                    visible: value != stateCast,
-                    child: FocusIconButton(
+                  if (value != stateCast)
+                    FocusIconButton(
                       icons: iconMain,
                       childNotFocus: iconMainImageNotFocus,
                       childHasFocus: iconMainImageHasFocus,
@@ -266,15 +251,14 @@ class _StreamFunctionStates extends State<StreamFunction> {
                           StreamFunction.streamFunctionState.value =
                               stateMenuOff;
                         } else if (value == stateBackArrow) {
-                          // ChannelProvider.showMode = true;
                           StreamFunction.streamFunctionState.value =
                               stateMenuOff;
-                          context.read<ChannelProvider>().updateModePanel(false);
-                          // Provider.of<ChannelProvider>(context).showMode = false;
+                          context
+                              .read<ChannelProvider>()
+                              .updateModePanel(false);
                         }
                       },
                     ),
-                  ),
                 ],
               ),
             ),
