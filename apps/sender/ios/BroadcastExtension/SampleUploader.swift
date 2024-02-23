@@ -4,6 +4,7 @@ import OSLog
 
 private enum Constants {
     static let bufferMaxLength = 10240
+    static let appGroupIdentifier = "group.com.viewsonic.display.cast"
 }
 
 private struct VideoFrameHeader {
@@ -38,6 +39,9 @@ class SampleUploader {
     private var byteIndex = 0
   
     private let serialQueue: DispatchQueue
+
+    private var videoConstraintWidth = 0
+    private var videoConstraintHeight = 0
     
     init(connection: SocketConnection, isVideo: Bool) {
         self.connection = connection
@@ -117,8 +121,42 @@ private extension SampleUploader {
         return prepareAudio(sample: buffer)
       }
     }
-    
+
+    func updateConstraint() {
+        let defaults = UserDefaults(suiteName: Constants.appGroupIdentifier)
+        videoConstraintWidth = defaults?.integer(forKey: "constraintWidth") ?? 0
+        videoConstraintHeight = defaults?.integer(forKey: "constraintHeight") ?? 0
+    }
+
+    func calcScaleFactor(width : Int, height : Int, orientation: UInt, constraintWidth: Int, constraintHeight: Int) -> Double {
+        var sourceWidth = width
+        var sourceHeight = height
+        // if orientation is left or right, width and height should be swapped
+        if orientation == CGImagePropertyOrientation.left.rawValue || orientation == CGImagePropertyOrientation.right.rawValue {
+            sourceWidth = height
+            sourceHeight = width
+        }
+
+        let widthScaleFactor: Double
+        let heightScaleFactor: Double
+
+        if constraintWidth > 0 {
+            widthScaleFactor = Double(sourceWidth) / Double(constraintWidth)
+        } else {
+            widthScaleFactor = 1.0
+        }
+
+        if constraintHeight > 0 {
+            heightScaleFactor = Double(sourceHeight) / Double(constraintHeight)
+        } else {
+            heightScaleFactor = 1.0
+        }
+        return max(widthScaleFactor, heightScaleFactor)
+    }
+
     func prepareVideo(sample buffer: CMSampleBuffer) -> Data? {
+        updateConstraint()
+
         guard let imageBuffer = CMSampleBufferGetImageBuffer(buffer) else {
             os_log(.debug, log: broadcastLogger, "image buffer not available")
             return nil
@@ -126,10 +164,10 @@ private extension SampleUploader {
         
         CVPixelBufferLockBaseAddress(imageBuffer, .readOnly)
         
-        let scaleFactor = 1.0
-        let width = CVPixelBufferGetWidth(imageBuffer)/Int(scaleFactor)
-        let height = CVPixelBufferGetHeight(imageBuffer)/Int(scaleFactor)
         let orientation = CMGetAttachment(buffer, key: RPVideoSampleOrientationKey as CFString, attachmentModeOut: nil)?.uintValue ?? 0
+        let scaleFactor = calcScaleFactor(width: CVPixelBufferGetWidth(imageBuffer), height: CVPixelBufferGetHeight(imageBuffer), orientation: orientation, constraintWidth: videoConstraintWidth, constraintHeight: videoConstraintHeight)
+        let width = Double(CVPixelBufferGetWidth(imageBuffer))/(scaleFactor)
+        let height = Double(CVPixelBufferGetHeight(imageBuffer))/(scaleFactor)
                                     
         let scaleTransform = CGAffineTransform(scaleX: CGFloat(1.0/scaleFactor), y: CGFloat(1.0/scaleFactor))
         let bufferData = self.jpegData(from: imageBuffer, scale: scaleTransform)
