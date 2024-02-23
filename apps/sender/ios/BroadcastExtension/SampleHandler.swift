@@ -53,6 +53,7 @@ class SampleHandler: RPBroadcastSampleHandler {
         videoUploader = SampleUploader(connection: connection, isVideo: true)
         videoUploader?.updateConstraint()
       }
+      os_log(.debug, log: broadcastLogger, "initVideoSampler: %{public}s", filePath)
 
       // Void pointer to `self`:
       let observer = UnsafeRawPointer(Unmanaged.passUnretained(self).toOpaque())
