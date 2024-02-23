@@ -162,9 +162,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                     ),
 
                   //Mirror button
-                  if ((value == stateStandby &&
-                          !AppInstanceCreate().isDisableAdvance ||
-                      value == stateCast))
+                  if (value == stateStandby || value == stateCast)
                     FocusIconButton(
                         icons: Icons.cast,
                         iconForegroundColor: colorButtonForeground,
@@ -181,9 +179,9 @@ class _StreamFunctionStates extends State<StreamFunction> {
 
                   //Moderator button
                   Visibility(
-                    visible: (value == stateStandby || value == stateMenuOn &&
-                        ChannelProvider.isModeratorMode) &&
-                        !AppInstanceCreate().isDisableAdvance,
+                    visible: value == stateStandby ||
+                        (value == stateMenuOn &&
+                            ChannelProvider.isModeratorMode),
                     child: FocusIconButton(
                       icons: Icons.groups,
                       iconForegroundColor: colorModeratorForeground,
@@ -200,9 +198,8 @@ class _StreamFunctionStates extends State<StreamFunction> {
                   ),
 
                   Visibility(
-                      visible: value == stateMenuOn &&
-                          ChannelProvider.isSenderMode &&
-                          !AppInstanceCreate().isDisableAdvance,
+                      visible:
+                          value == stateMenuOn && ChannelProvider.isSenderMode,
                       child: FocusIconButton(
                         svgSource: const Svg('assets/images/ic_receiver.svg'),
                         iconForegroundColor: AppColors.iconPresentingForeground,
