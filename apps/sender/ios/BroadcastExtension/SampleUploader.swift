@@ -66,6 +66,13 @@ class SampleUploader {
         
         return true
     }
+    
+    func updateConstraint() {
+        let defaults = UserDefaults(suiteName: Constants.appGroupIdentifier)
+        videoConstraintWidth = defaults?.integer(forKey: "constraintWidth") ?? 0
+        videoConstraintHeight = defaults?.integer(forKey: "constraintHeight") ?? 0
+        NSLog("updateConstraint width: \(videoConstraintWidth) height: \(videoConstraintHeight)")
+    }
 }
 
 private extension SampleUploader {
@@ -122,12 +129,6 @@ private extension SampleUploader {
       }
     }
 
-    func updateConstraint() {
-        let defaults = UserDefaults(suiteName: Constants.appGroupIdentifier)
-        videoConstraintWidth = defaults?.integer(forKey: "constraintWidth") ?? 0
-        videoConstraintHeight = defaults?.integer(forKey: "constraintHeight") ?? 0
-    }
-
     func calcScaleFactor(width : Int, height : Int, orientation: UInt, constraintWidth: Int, constraintHeight: Int) -> Double {
         var sourceWidth = width
         var sourceHeight = height
@@ -155,8 +156,6 @@ private extension SampleUploader {
     }
 
     func prepareVideo(sample buffer: CMSampleBuffer) -> Data? {
-        updateConstraint()
-
         guard let imageBuffer = CMSampleBufferGetImageBuffer(buffer) else {
             os_log(.debug, log: broadcastLogger, "image buffer not available")
             return nil
