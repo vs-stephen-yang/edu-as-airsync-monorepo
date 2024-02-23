@@ -14,10 +14,9 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
 class ModeratorMenuView extends StatefulWidget {
-  const ModeratorMenuView({super.key, this.onUpdateParentUI});
+  const ModeratorMenuView({super.key});
 
   static ValueNotifier<bool> showModeratorMessage = ValueNotifier(false);
-  final VoidCallback? onUpdateParentUI;
 
   @override
   State createState() => _ModeratorMenuViewState();
@@ -67,7 +66,6 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
           onPositive: () {
             AppAnalytics().trackEventModeratorOff();
             _switchModeratorOff();
-            widget.onUpdateParentUI?.call();
             setState(() {});
             mirrorStateProvider.resumeMirror();
           },
