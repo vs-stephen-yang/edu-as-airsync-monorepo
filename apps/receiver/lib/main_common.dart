@@ -115,7 +115,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         ChangeNotifierProvider.value(value: PrefLanguageProvider()),
         ChangeNotifierProvider.value(
             value: ChannelProvider(AppConfig.of(context)!)),
-        ChangeNotifierProvider.value(value: MirrorStateProvider(context)),
+        ChangeNotifierProvider.value(value: MirrorStateProvider()),
       ],
       child: Consumer<PrefLanguageProvider>(
         builder: (_, prefLanguageProvider, __) {

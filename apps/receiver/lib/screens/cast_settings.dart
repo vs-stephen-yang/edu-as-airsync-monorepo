@@ -18,12 +18,12 @@ class CastSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<MirrorStateProvider>(
       builder: (context, mirror, child) {
-        String postName = context.read<ChannelProvider>().displayCode;
+        ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+        String postName = channelProvider.displayCode;
         postName = postName.substring(max(postName.length - 5, 0));
-        mirror.setDeviceName(
-            '${AppPreferences().instanceName}-$postName');
+        mirror.setDeviceName('${AppPreferences().instanceName}-$postName');
         return MenuDialog(
-          backgroundColor: MirrorStateProvider.isMirroring
+          backgroundColor: mirror.isMirroring
               ? AppColors.primary_grey_tran
               : AppColors.primary_grey,
           topTitleText: S.of(context).main_cast_settings_title,
@@ -51,10 +51,12 @@ class CastSettings extends StatelessWidget {
                 name: S.of(context).main_cast_settings_airplay,
                 enabled: mirror.airplayEnabled,
                 callback: () {
-                  if (!mirror.airplayEnabled) {
-                    mirror.startAirPlay();
-                  } else {
+                  if (mirror.airplayEnabled) {
                     mirror.stopAirPlay();
+                    channelProvider.blockRtcConnection = false;
+                  } else {
+                    mirror.startAirPlay();
+                    channelProvider.blockRtcConnection = true;
                   }
                 },
               ),
@@ -65,8 +67,10 @@ class CastSettings extends StatelessWidget {
                 callback: () {
                   if (mirror.googleCastEnabled) {
                     mirror.stopGoogleCast();
+                    channelProvider.blockRtcConnection = false;
                   } else {
                     mirror.startGoogleCast();
+                    channelProvider.blockRtcConnection = true;
                   }
                 },
               ),
@@ -77,8 +81,10 @@ class CastSettings extends StatelessWidget {
                 callback: () {
                   if (mirror.miracastEnabled) {
                     mirror.stopMiracast();
+                    channelProvider.blockRtcConnection = false;
                   } else {
                     mirror.startMiracast();
+                    channelProvider.blockRtcConnection = true;
                   }
                 },
               ),
