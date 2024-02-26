@@ -25,7 +25,7 @@ class ModeratorPresentStart extends StatelessWidget {
     if (kIsWeb && countStartTime != 0) {
       final start = (DateTime.now().millisecondsSinceEpoch - countStartTime) ~/ 1000;
       _countSecondsValue.value = start % 60;
-      _countMinutesValue.value = start ~/ 60;
+      _countMinutesValue.value = (start % 3600) ~/ 60;
       _countHoursValue.value = start ~/ 3600;
     } else {
       _countSecondsValue.value = 0;
