@@ -163,9 +163,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   );
                 },
               ),
-              Consumer<ChannelProvider>(
-                builder: (context, provider, child) {
-                  if (Provider.of<ChannelProvider>(context).showMode == false) {
+              Consumer2<ChannelProvider, MirrorStateProvider>(
+                builder: (context, provider, mirror, child) {
+                  if (Provider.of<ChannelProvider>(context).showMode == false ||
+                      mirror.isMirroring) {
                     return const SizedBox();
                   } else {
                     return Column(
