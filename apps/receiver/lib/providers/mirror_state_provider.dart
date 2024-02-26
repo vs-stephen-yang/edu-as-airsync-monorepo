@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:display_flutter/model/rtc_connector_list.dart';
+import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
@@ -130,6 +131,7 @@ class MirrorStateProvider extends ChangeNotifier
     _acceptedTextureId = null;
     _acceptedMirrorType = null;
     _mirrorState = MirrorState.idle;
+    Home.showTitleBottomBar.value = true;
 
     if (RtcConnectorList().isPresenting()) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
@@ -197,6 +199,8 @@ class MirrorStateProvider extends ChangeNotifier
       _requestingMirror.removeAt(index);
       _mirrorState = MirrorState.mirroring;
       StreamFunction.streamFunctionState.value = stateCast;
+      // hideTitleBar
+      Home.showTitleBottomBar.value = false;
       notifyListeners();
     }
   }
