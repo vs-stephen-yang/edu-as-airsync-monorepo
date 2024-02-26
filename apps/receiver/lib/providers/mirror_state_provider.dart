@@ -30,7 +30,7 @@ class MirrorRequest {
 
 class MirrorStateProvider extends ChangeNotifier
     implements FlutterMirrorListener {
-  MirrorStateProvider(this.context) {
+  MirrorStateProvider() {
     _plugin = FlutterMirror();
     _initPlatformState();
   }
@@ -39,7 +39,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   get mirrorViewKey => _mirrorViewKey;
 
-  static get isMirroring => _mirrorState == MirrorState.mirroring;
+  get isMirroring => _mirrorState == MirrorState.mirroring;
 
   get airplayEnabled => _airplayEnabled;
 
@@ -59,9 +59,8 @@ class MirrorStateProvider extends ChangeNotifier
 
   FlutterMirror? _plugin;
   String _deviceName = '';
-  BuildContext context;
   final GlobalKey _mirrorViewKey = GlobalKey();
-  static MirrorState _mirrorState = MirrorState.idle;
+  MirrorState _mirrorState = MirrorState.idle;
   bool _airplayEnabled = false;
   bool _googleCastEnabled = false;
   bool _miracastEnabled = false;

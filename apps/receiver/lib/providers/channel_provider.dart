@@ -10,7 +10,6 @@ import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/model/rtc_connector_list.dart';
-import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -93,6 +92,8 @@ class ChannelProvider extends ChangeNotifier {
   String _tunnelApiUrl = '';
 
   static bool isModeratorMode = false;
+
+  bool blockRtcConnection = false;
 
   final RemoteScreenServer _remoteScreenServe = RemoteScreenServer();
 
@@ -226,6 +227,14 @@ class ChannelProvider extends ChangeNotifier {
     channel.onChannelMessage = (ChannelMessage message) async {
       _log.info('Received channel message ${message.messageType}');
 
+      if (blockRtcConnection) {
+        var message = PresentRejectedMessage();
+        message.reason = Reason(403, text: 'block');
+        channel.send(message);
+        rtcConnector.onPresentRejected(message);
+        return;
+      }
+
       switch (message.messageType) {
         /// basic
         case ChannelMessageType.joinDisplay:
@@ -356,11 +365,7 @@ class ChannelProvider extends ChangeNotifier {
     rtcConnector.onConnect = (() {
       RtcConnectorList().updateSplitScreen();
       updateModePanel(false);
-      if (MirrorStateProvider.isMirroring) {
-        StreamFunction.streamFunctionState.value = stateCast;
-      } else {
-        StreamFunction.streamFunctionState.value = stateMenuOff;
-      }
+      StreamFunction.streamFunctionState.value = stateMenuOff;
     });
 
     rtcConnector.onAddRemoteStream = ((stream) {
@@ -387,15 +392,6 @@ class ChannelProvider extends ChangeNotifier {
       }
     });
 
-    rtcConnector.onConflictWithMirror = (() {
-      if (isModeratorMode) {
-        // moderator
-      } else {
-        // split screen
-        splitScreenOff();
-      }
-    });
-
     rtcConnector.onChannelDisconnect = (() async {
       // update UI
       bool presenting = false;
@@ -407,11 +403,7 @@ class ChannelProvider extends ChangeNotifier {
       }
       if (!presenting) {
         Home.showTitleBottomBar.value = true;
-        if (MirrorStateProvider.isMirroring) {
-          StreamFunction.streamFunctionState.value = stateCast;
-        } else {
-          StreamFunction.streamFunctionState.value = stateStandby;
-        }
+        StreamFunction.streamFunctionState.value = stateStandby;
         showMode = true;
       } else {
         Home.enlargedScreenPositionIndex.value = null;

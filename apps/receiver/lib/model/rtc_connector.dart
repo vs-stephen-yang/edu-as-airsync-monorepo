@@ -62,7 +62,6 @@ class RTCConnector {
   Function(MediaStream stream)? onRemoveRemoteStream;
   Function()? onRefresh;
   Function({bool? showMode})? onShowMode;
-  Function()? onConflictWithMirror;
   Future<void> Function()? onChannelDisconnect;
 
   RTCConnector(this._channel, this._mode);
@@ -366,11 +365,6 @@ class RTCConnector {
   void _onAddStream(MediaStream stream) {
     _printPeerConnectionLog('_onAddStream', stream.getTracks().first.id);
     ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-    if (MirrorStateProvider.isMirroring) {
-      // check the mirror state and disconnect the webrtc connection
-      onConflictWithMirror?.call();
-      return;
-    }
     presentationState = PresentationState.streaming;
     controlAudio(true, setIsAudioEnabled: true);
     onAddRemoteStream?.call(_remoteRenderer?.srcObject);

@@ -43,7 +43,7 @@ class _SettingsState extends State<Settings> {
       return const SizedBox();
     }
     return MenuDialog(
-      backgroundColor: MirrorStateProvider.isMirroring
+      backgroundColor: Provider.of<MirrorStateProvider>(context).isMirroring
           ? AppColors.primary_grey_tran
           : AppColors.primary_grey,
       topTitleText: S.of(context).main_settings_title,

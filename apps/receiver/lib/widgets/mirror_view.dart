@@ -67,7 +67,7 @@ class MirrorView extends StatelessWidget {
           constraints: const BoxConstraints.expand(),
           child: Stack(
             children: [
-              if (MirrorStateProvider.isMirroring)
+              if (mirror.isMirroring)
                 Container(
                   color: Colors.black,
                   child: Center(
@@ -91,7 +91,7 @@ class MirrorView extends StatelessWidget {
                     ),
                   ),
                 ),
-              if (MirrorStateProvider.isMirroring)
+              if (mirror.isMirroring)
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Wrap(
@@ -236,7 +236,7 @@ class MirrorView extends StatelessWidget {
                   width: width,
                   height: minHeight,
                   child: ListView.separated(
-                    reverse: MirrorStateProvider.isMirroring,
+                    reverse: mirror.isMirroring,
                     itemCount: mirror.requestingMirror.length,
                     itemBuilder: (BuildContext buildContext, int index) {
                       return Container(
