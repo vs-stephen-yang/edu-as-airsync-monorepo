@@ -41,10 +41,10 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
         splashRadius: 20,
         focusColor: Colors.grey,
         onClick: () {
-          ChannelProvider.isModeratorMode = !ChannelProvider.isModeratorMode;
-          if (!ChannelProvider.isModeratorMode) {
+          if (ChannelProvider.isModeratorMode) {
             _callLogOutDialog();
           } else {
+            ChannelProvider.isModeratorMode = true;
             mirrorStateProvider.pauseMirror();
           }
         },
@@ -64,6 +64,7 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
           description: S.of(context).moderator_exit_dialog,
           positiveButton: S.of(context).moderator_exit,
           onPositive: () {
+            ChannelProvider.isModeratorMode = false;
             AppAnalytics().trackEventModeratorOff();
             _switchModeratorOff();
             setState(() {});
