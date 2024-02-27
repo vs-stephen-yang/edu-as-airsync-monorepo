@@ -147,7 +147,7 @@ class WebRTCConnector {
     }
     _trackFrameRate = msg.frameRate.toDouble();
 
-    if (kIsWeb || Platform.isAndroid) {
+    if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
       final constraints = <String, dynamic>{
         'frameRate': _trackFrameRate,
         'width': _trackWidth,
@@ -156,8 +156,6 @@ class WebRTCConnector {
 
       final videoTrack = _localStream?.getVideoTracks().first;
       await videoTrack?.applyConstraints(constraints);
-    } else if (WebRTC.platformIsIOS) {
-      // TODO:
     } else {
       _localStream = await getDisplayMedia();
 

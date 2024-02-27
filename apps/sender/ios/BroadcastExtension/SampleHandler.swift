@@ -39,15 +39,47 @@ class SampleHandler: RPBroadcastSampleHandler {
       initVideoSampler();
       initAudioSampler();
     }
+
+    func updateVideoConstraint() {
+      let defaults = UserDefaults(suiteName: Constants.appGroupIdentifier)
+      let width = defaults?.integer(forKey: "constraintWidth") ?? 0
+      let height = defaults?.integer(forKey: "constraintHeight") ?? 0
+      videoUploader?.updateConstraint(width: width, height: height)
+    }
     
+    func onConstraintUpadtedCB() {
+      NSLog("onConstraintUpadtedCB")
+      updateVideoConstraint()
+    }
+
     func initVideoSampler() {
       let filePath = getSocketFilePath(isVideo: true);
       if let connection = SocketConnection(filePath: filePath) {
         videoClientConnection = connection
         setupConnection(videoClientConnection)
         videoUploader = SampleUploader(connection: connection, isVideo: true)
+        updateVideoConstraint()
       }
       os_log(.debug, log: broadcastLogger, "initVideoSampler: %{public}s", filePath)
+
+      // Void pointer to `self`:
+      let observer = UnsafeRawPointer(Unmanaged.passUnretained(self).toOpaque())
+      let notificationName = "constraintUpdated" as CFString
+      let notificationCenter = CFNotificationCenterGetDarwinNotifyCenter()
+      CFNotificationCenterAddObserver(
+        notificationCenter,
+        observer,
+        { (_, observer, name, _, _) -> Void in
+          if let observer = observer, let name = name {
+            // Extract pointer to `self` from void pointer:
+            let mySelf = Unmanaged<SampleHandler>.fromOpaque(observer).takeUnretainedValue()
+            // Call instance method:
+            mySelf.onConstraintUpadtedCB()
+          }
+        },
+        notificationName,
+        nil,
+        .deliverImmediately)
     }
   
     func initAudioSampler() {
