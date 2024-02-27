@@ -52,6 +52,8 @@ class DisplayDirectServer {
     _httpServer = await HttpServer.bind(
       InternetAddress.anyIPv4,
       port,
+      // https://blog.csdn.net/Lumend/article/details/115865931
+      shared: true,
     );
 
     _httpServer!.listen((request) async {
