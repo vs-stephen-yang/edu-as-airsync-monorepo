@@ -40,9 +40,16 @@ class SampleHandler: RPBroadcastSampleHandler {
       initAudioSampler();
     }
 
+    func updateVideoConstraint() {
+      let defaults = UserDefaults(suiteName: Constants.appGroupIdentifier)
+      let width = defaults?.integer(forKey: "constraintWidth") ?? 0
+      let height = defaults?.integer(forKey: "constraintHeight") ?? 0
+      videoUploader?.updateConstraint(width: width, height: height)
+    }
+    
     func onConstraintUpadtedCB() {
       NSLog("onConstraintUpadtedCB")
-      videoUploader?.updateConstraint()
+      updateVideoConstraint()
     }
 
     func initVideoSampler() {
@@ -51,7 +58,7 @@ class SampleHandler: RPBroadcastSampleHandler {
         videoClientConnection = connection
         setupConnection(videoClientConnection)
         videoUploader = SampleUploader(connection: connection, isVideo: true)
-        videoUploader?.updateConstraint()
+        updateVideoConstraint()
       }
       os_log(.debug, log: broadcastLogger, "initVideoSampler: %{public}s", filePath)
 

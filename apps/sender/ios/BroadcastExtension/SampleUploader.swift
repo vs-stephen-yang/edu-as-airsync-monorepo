@@ -4,7 +4,6 @@ import OSLog
 
 private enum Constants {
     static let bufferMaxLength = 10240
-    static let appGroupIdentifier = "group.com.viewsonic.display.cast"
 }
 
 private struct VideoFrameHeader {
@@ -67,10 +66,9 @@ class SampleUploader {
         return true
     }
     
-    func updateConstraint() {
-        let defaults = UserDefaults(suiteName: Constants.appGroupIdentifier)
-        videoConstraintWidth = defaults?.integer(forKey: "constraintWidth") ?? 0
-        videoConstraintHeight = defaults?.integer(forKey: "constraintHeight") ?? 0
+    func updateConstraint(width: Int, height: Int) {
+        videoConstraintWidth = width
+        videoConstraintHeight = height
         NSLog("updateConstraint width: \(videoConstraintWidth) height: \(videoConstraintHeight)")
     }
 }
