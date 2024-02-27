@@ -101,6 +101,10 @@ jobs:
           archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
           destinationFolder: "$(Pipeline.Workspace)/flutter"
 
+      - script: $(Flutter.Bin) pub get
+        displayName: Download packages
+        workingDirectory: "$(Build.SourcesDirectory)"
+
       - script: $(Flutter.Bin) analyze --no-fatal-infos
         displayName: Run lint checks
         workingDirectory: "$(Build.SourcesDirectory)"
