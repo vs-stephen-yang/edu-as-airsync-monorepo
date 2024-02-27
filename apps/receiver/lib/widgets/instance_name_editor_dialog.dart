@@ -72,32 +72,29 @@ class _InstanceNameEditorDialogState extends State<InstanceNameEditorDialog> {
               const SizedBox(
                 height: 30,
               ),
-              SizedBox(
-                height: 40,
-                child: CustomTextFormField(
-                  controller: _nameController,
-                  focusNode: _nameFocusNode,
-                  labelText: S.of(context).main_settings_device_name_hint,
-                  labelBackgroundColor: Colors.transparent,
-                  labelTextColor: Colors.white,
-                  inputFormatter: [
-                    FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
-                    LengthLimitingTextInputFormatter(10),
-                  ],
-                  onChanged: (text) {
-                    if (text.isNotEmpty) {
-                      _saveBtnEnable = true;
-                    } else {
-                      _saveBtnEnable = false;
-                    }
-                    setState(() {});
-                  },
-                  onFieldSubmitted: (String value) async {
-                    if (_saveBtnEnable) {
-                      await _clickSaveName(value);
-                    }
-                  },
-                ),
+              CustomTextFormField(
+                controller: _nameController,
+                focusNode: _nameFocusNode,
+                labelText: S.of(context).main_settings_device_name_hint,
+                labelBackgroundColor: Colors.transparent,
+                labelTextColor: Colors.white,
+                inputFormatter: [
+                  FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
+                  LengthLimitingTextInputFormatter(10),
+                ],
+                onChanged: (text) {
+                  if (text.isNotEmpty) {
+                    _saveBtnEnable = true;
+                  } else {
+                    _saveBtnEnable = false;
+                  }
+                  setState(() {});
+                },
+                onFieldSubmitted: (String value) async {
+                  if (_saveBtnEnable) {
+                    await _clickSaveName(value);
+                  }
+                },
               ),
               const SizedBox(
                 height: 20,
