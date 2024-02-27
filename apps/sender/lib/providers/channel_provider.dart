@@ -517,6 +517,8 @@ class ChannelProvider extends ChangeNotifier {
   void _handleChannelCloseState(ChannelCloseReason? closeReason) {
     ChannelCloseCode? reasonCode = closeReason?.code;
     switch (reasonCode) {
+      // TODO: Show different message for rateLimitExceeded
+      case ChannelCloseCode.rateLimitExceeded:
       case ChannelCloseCode.channelNotFound:
       case ChannelCloseCode.invalidDisplayCode:
         presentEnd(goIdleState: false);
