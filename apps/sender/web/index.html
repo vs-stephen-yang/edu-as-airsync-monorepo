@@ -39,11 +39,6 @@
   <title>AirSync Sender</title>
   <link rel="manifest" href="manifest.json">
 
-  <script nonce="flutter-init">
-    window.flutterConfiguration = {
-      canvasKitBaseUrl: "/canvaskit/"
-    };
-  </script>
 
   <script nonce="flutter-init">
     // The value below is injected by flutter build, do not touch.
@@ -61,7 +56,9 @@
           serviceWorkerVersion: serviceWorkerVersion,
         },
         onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
+          engineInitializer.initializeEngine({
+            canvasKitBaseUrl: '/canvaskit/',
+          }).then(function(appRunner) {
             appRunner.runApp();
           });
         }
