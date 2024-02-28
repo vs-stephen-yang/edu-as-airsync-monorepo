@@ -120,7 +120,7 @@ class AppInstanceCreate {
       } else if (Platform.isIOS) {
         IosDeviceInfo info = await deviceInfo.iosInfo;
         deviceId = info.identifierForVendor!;
-        _modelName = info.model ?? '';
+        _modelName = info.model;
       } else {
         deviceId = (const Uuid()).v4(); // todo: support other platform id.
         _modelName = '';

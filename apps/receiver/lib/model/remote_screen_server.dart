@@ -15,9 +15,9 @@ import 'package:window_size/window_size.dart';
 import 'package:display_flutter/protoc/event.pb.dart';
 import 'package:display_flutter/protoc/internal.pb.dart';
 
-const DEFAULT_SCREEN_WIDTH = 1920.0;
-const DEFAULT_SCREEN_HEIGHT = 1080.0;
-const MAX_EVENT_ID = 255;
+const defaultScreenWidth = 1920.0;
+const defaultScreenHeight = 1080.0;
+const maxEventId = 255;
 
 class EventSlot {
   int channelId = -1;
@@ -30,11 +30,11 @@ class RemoteScreenServer {
   bool _iosSfuServerStart = false;
   String roomId = 'remote-screen';
   int roomPort = 7000;
-  List<RTCDataChannel> _dataChannels = [];
-  double _screenWidth = DEFAULT_SCREEN_WIDTH;
-  double _screenHeight = DEFAULT_SCREEN_HEIGHT;
-  List<EventSlot> _eventSlots =
-      List.generate(MAX_EVENT_ID, (index) => EventSlot());
+  final List<RTCDataChannel> _dataChannels = [];
+  double _screenWidth = defaultScreenWidth;
+  double _screenHeight = defaultScreenHeight;
+  final List<EventSlot> _eventSlots =
+      List.generate(maxEventId, (index) => EventSlot());
   final _flutterInputInjectionPlugin = FlutterInputInjection();
 
   RemoteScreenServer();
@@ -154,7 +154,7 @@ class RemoteScreenServer {
 
   int findSlotById(int channelId, int eventId) {
     int slot = -1;
-    for (int i = 0; i < MAX_EVENT_ID; i++) {
+    for (int i = 0; i < maxEventId; i++) {
       if (_eventSlots[i].channelId == channelId &&
           _eventSlots[i].eventId == eventId) {
         slot = i;
@@ -178,7 +178,7 @@ class RemoteScreenServer {
 
   void releaseSlot(int slot) {
     assert(slot >= 0);
-    assert(slot < MAX_EVENT_ID);
+    assert(slot < maxEventId);
 
     _eventSlots[slot].channelId = -1;
     _eventSlots[slot].eventId = -1;
@@ -195,7 +195,7 @@ class RemoteScreenServer {
   }
 
   int findFreeSlot() {
-    for (int i = 0; i < MAX_EVENT_ID; i++) {
+    for (int i = 0; i < maxEventId; i++) {
       if (_eventSlots[i].channelId == -1) {
         return i;
       }
@@ -217,7 +217,7 @@ class RemoteScreenServer {
   }
 
   void releaseEventSlotsByDataChannel(RTCDataChannel dc) {
-    for (int i = 0; i < MAX_EVENT_ID; i++) {
+    for (int i = 0; i < maxEventId; i++) {
       if (_eventSlots[i].channelId == dc.id) {
         _flutterInputInjectionPlugin.sendTouch(
             FlutterInputInjection.TOUCH_POINT_END, i, 0, 0);
