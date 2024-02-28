@@ -1,4 +1,3 @@
-import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
