@@ -20,6 +20,8 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="AirSync Sender for Flutter [Android(java), iOS(swift), MacOS, Web, Windows)]">
 
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'nonce-flutter-init' 'wasm-unsafe-eval'; style-src 'unsafe-inline';">
+
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -32,15 +34,15 @@
   <title>AirSync Sender</title>
   <link rel="manifest" href="manifest.json">
 
-  <script>
+  <script nonce="flutter-init">
     // The value below is injected by flutter build, do not touch.
     var serviceWorkerVersion = null;
   </script>
   <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
+  <script nonce="flutter-init" src="flutter.js" defer></script>
 </head>
 <body>
-  <script>
+  <script nonce="flutter-init">
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
       _flutter.loader.loadEntrypoint({
