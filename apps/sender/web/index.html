@@ -46,8 +46,34 @@
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script nonce="flutter-init" src="flutter.js" defer></script>
+
+  <style>
+    .center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .loading-spinner {
+      animation: fade 4s;
+    }
+
+    @keyframes fade {
+      0% {
+        opacity: 0.2;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="center loading-spinner">
+    <img src="icons/Icon-192.png">
+  </div>
+
   <script nonce="flutter-init">
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
