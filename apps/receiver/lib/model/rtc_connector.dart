@@ -6,7 +6,6 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -33,7 +32,7 @@ class RTCConnector {
   bool isAudioEnabled = false;
 
   static final _log = getDefaultLogger();
-
+  String? iceServersApiUrl, host;
   final Map<String, dynamic> _configuration = {
     'sdpSemantics': 'unified-plan',
   };
@@ -66,25 +65,12 @@ class RTCConnector {
 
   RTCConnector(this._channel, this._mode);
 
-  void init(JoinDisplayMessage message,
-      {String? iceServersApiUrl, String? host}) {
+  Future<void> init(JoinDisplayMessage message,
+      {String? iceServersApiUrl, String? host}) async {
     _printPeerConnectionLog('init', null);
-
+    this.iceServersApiUrl = iceServersApiUrl;
+    this.host = host;
     _channel.onStateChange = (state) => _onChannelState(state);
-
-    if (!_configuration.containsKey('iceServers')) {
-      if (_mode == ChannelMode.tunnel) {
-        _getIceServers(iceServersApiUrl).then((value) {
-          _configuration.putIfAbsent('iceServers', () => value);
-        });
-      } else {
-        _configuration.putIfAbsent(
-            'iceServers',
-            () => [
-                  {'url': 'stun:$host'}
-                ]);
-      }
-    }
 
     onJoinDisplay(message);
   }
@@ -110,6 +96,21 @@ class RTCConnector {
     if (_pc != null) return;
 
     String? deviceType = await DeviceInfoVs.deviceType;
+
+    if (!_configuration.containsKey('iceServers')) {
+      if (_mode == ChannelMode.tunnel) {
+        await _getIceServers(iceServersApiUrl).then((value) {
+          _configuration.putIfAbsent('iceServers', () => value);
+          print('zz then:$_configuration');
+        });
+      } else {
+        _configuration.putIfAbsent(
+            'iceServers',
+                () => [
+              {'url': 'stun:$host'}
+            ]);
+      }
+    }
     if (_prerendererSmoothingExcludedDevices.contains(deviceType)) {
       _configuration['enablePrerendererSmoothing'] = false;
     }
