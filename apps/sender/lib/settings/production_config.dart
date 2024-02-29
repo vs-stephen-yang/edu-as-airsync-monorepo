@@ -8,7 +8,7 @@ class ProductionConfig implements ConfigSettings {
   String versionPostfix = '';
 
   @override
-  String urlGateway = 'https://presentation-gateway.myviewboard.cloud';
+  String urlGateway = 'https://api.gateway.airsync.net/instances';
 
   @override
   String urlGetIce = 'https://getice.myviewboard.cloud';
