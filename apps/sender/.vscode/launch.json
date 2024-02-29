@@ -4,25 +4,68 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        // Dev
         {
-            "name": "Display_Cast_Flutter",
+            "name": "Dev",
             "request": "launch",
             "type": "dart",
             "program": "lib/main_dev.dart"
         },
         {
-            "name": "Display_Cast_Flutter (profile mode)",
+            "name": "Dev (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
             "program": "lib/main_dev.dart"
         },
         {
-            "name": "Display_Cast_Flutter (release mode)",
+            "name": "Dev (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
             "program": "lib/main_dev.dart"
+        },
+        // Stage
+        {
+            "name": "Stage",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_stage.dart"
+        },
+        {
+            "name": "Stage (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "program": "lib/main_stage.dart"
+        },
+        {
+            "name": "Stage (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "lib/main_stage.dart"
+        },
+        // Production
+        {
+            "name": "Production",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_production.dart"
+        },
+        {
+            "name": "Production (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "program": "lib/main_production.dart"
+        },
+        {
+            "name": "Production (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "lib/main_production.dart"
         }
     ]
 }
