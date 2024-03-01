@@ -27,8 +27,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "main_display_code":
             MessageLookupByLibrary.simpleMessage("Код дисплея"),
-        "main_display_code_description":
-            MessageLookupByLibrary.simpleMessage("9-10 значный код дисплея"),
+        "main_display_code_description": MessageLookupByLibrary.simpleMessage(
+            "Пожалуйста, введите отображаемый код"),
         "main_display_code_exceed": MessageLookupByLibrary.simpleMessage(
             "Достугнуто максимальное число участников (6)"),
         "main_display_code_exceed_split_screen":

@@ -28,7 +28,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_display_code":
             MessageLookupByLibrary.simpleMessage("Display Code"),
         "main_display_code_description": MessageLookupByLibrary.simpleMessage(
-            "9- oder 10-stelliger Display Code"),
+            "Bitte geben Sie den Anzeigecode ein"),
         "main_display_code_exceed": MessageLookupByLibrary.simpleMessage(
             "Maximale Teilnehmerzahl (6) erreicht."),
         "main_display_code_exceed_split_screen":
