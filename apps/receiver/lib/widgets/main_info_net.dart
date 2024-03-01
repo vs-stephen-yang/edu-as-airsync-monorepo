@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:display_flutter/app_analytics.dart';
@@ -10,36 +9,8 @@ import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MainInfoInternet extends StatefulWidget {
+class MainInfoInternet extends StatelessWidget {
   const MainInfoInternet({super.key});
-
-  @override
-  State createState() => _MainInfoInternetState();
-}
-
-class _MainInfoInternetState extends State<MainInfoInternet> {
-  static const int maxCountDown = 300;
-  static final ValueNotifier<bool> _isEyeOpen = ValueNotifier(true);
-  static final ValueNotifier<int> _countDownProgress = ValueNotifier(300);
-  static final ValueNotifier<int> _otp = ValueNotifier(0000);
-  static Timer? _mGetOTPTimer;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _otp.value = math.Random().nextInt(9000) + 1000;
-  }
-
-  @override
-  void dispose() {
-    _cancelOTP();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +39,7 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
                       ),
                     ),
                     Text(
-                      _getDisplayCode(channelProvider.displayCode),
+                      channelProvider.displayCodeWithDash,
                       style: const TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.w500,
@@ -83,9 +54,8 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
                     ),
                     if (channelProvider.displayCode.isNotEmpty)
                       ValueListenableBuilder<bool>(
-                        valueListenable: _isEyeOpen,
-                        builder: (context, eyeOpen, child) {
-                          if (_mGetOTPTimer == null) _generateOTP();
+                        valueListenable: channelProvider.isEyeOpen,
+                        builder: (_, eyeOpen, __) {
                           return Wrap(
                             direction: Axis.horizontal,
                             alignment: WrapAlignment.center,
@@ -93,13 +63,8 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
                             spacing: 16,
                             children: <Widget>[
                               ValueListenableBuilder<int>(
-                                valueListenable: _otp,
-                                builder: (context, otp, child) {
-                                  if (!channelProvider.otpList
-                                      .contains(_otp.value.toString())) {
-                                    channelProvider
-                                        .setOtpList(_otp.value.toString());
-                                  }
+                                valueListenable: channelProvider.otp,
+                                builder: (_, otp, __) {
                                   return Text(
                                     eyeOpen ? otp.toString() : 'XXXX',
                                     style: const TextStyle(
@@ -110,8 +75,9 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
                                 },
                               ),
                               ValueListenableBuilder<int>(
-                                valueListenable: _countDownProgress,
-                                builder: (context, progress, child) {
+                                valueListenable:
+                                    channelProvider.countDownProgress,
+                                builder: (_, progress, __) {
                                   return Transform(
                                     alignment: Alignment.center,
                                     transform: Matrix4.rotationY(math.pi),
@@ -119,7 +85,8 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
                                       width: 26,
                                       height: 26,
                                       child: CircularProgressIndicator(
-                                        value: progress / maxCountDown,
+                                        value: progress /
+                                            channelProvider.maxCountDown,
                                         strokeWidth: 4,
                                         backgroundColor: Colors.black,
                                         valueColor:
@@ -140,7 +107,8 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
                                 notFocusSize: AppUIConstant.iconNotFocusSize,
                                 onClick: () {
                                   AppAnalytics().trackEventAppOTPMaskClick();
-                                  _isEyeOpen.value = !_isEyeOpen.value;
+                                  channelProvider.isEyeOpen.value =
+                                      !channelProvider.isEyeOpen.value;
                                 },
                               ),
                             ],
@@ -173,32 +141,5 @@ class _MainInfoInternetState extends State<MainInfoInternet> {
         },
       ),
     );
-  }
-
-  _getDisplayCode(String displayCode) {
-    String result = '';
-    for (int i = 0; i < displayCode.length; i++) {
-      if (i % 3 == 0 && result.isNotEmpty) {
-        result += '-';
-      }
-      result += displayCode.substring(i, i + 1);
-    }
-    return result;
-  }
-
-  _generateOTP() {
-    _mGetOTPTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
-      _countDownProgress.value -= 1;
-      if (_countDownProgress.value == 0) {
-        _otp.value = math.Random().nextInt(9000) + 1000;
-        _countDownProgress.value = maxCountDown;
-      }
-    });
-  }
-
-  _cancelOTP() {
-    _mGetOTPTimer?.cancel();
-    _mGetOTPTimer = null;
-    _countDownProgress.value = maxCountDown;
   }
 }
