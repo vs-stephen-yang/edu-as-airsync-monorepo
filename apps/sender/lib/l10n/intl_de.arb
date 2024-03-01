@@ -1,6 +1,6 @@
 {
     "main_display_code": "Display Code",
-    "main_display_code_description": "9- oder 10-stelliger Display Code",
+    "main_display_code_description": "Bitte geben Sie den Anzeigecode ein",
     "main_password": "Passwort",
     "main_password_description": "4-stelliges Einmalpasswort",
     "main_present": "PRÄSENT",
