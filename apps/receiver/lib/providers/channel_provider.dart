@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_channel/display_channel.dart';
@@ -68,21 +70,20 @@ class ChannelProvider extends ChangeNotifier {
 
   String get displayCode => _displayCode;
 
+  String get displayCodeWithDash => _getDisplayCodeWithDash(_displayCode);
+
   set displayCode(String value) {
     _displayCode = value;
     notifyListeners();
   }
 
+  final int maxCountDown = 300;
+  final ValueNotifier<bool> isEyeOpen = ValueNotifier(true);
+  final ValueNotifier<int> countDownProgress = ValueNotifier(300);
+  final ValueNotifier<int> otp = ValueNotifier(0000);
   final List<String> _otpList = [];
 
   List<String> get otpList => _otpList;
-
-  setOtpList(String addOTP) {
-    _otpList.add(addOTP);
-    if (_otpList.length > 2) {
-      _otpList.remove(_otpList.first);
-    }
-  }
 
   String? host;
   int port = 5100;
@@ -150,6 +151,9 @@ class ChannelProvider extends ChangeNotifier {
         });
       }
     });
+
+    _generateOTP();
+    _startNewOTPTimer();
   }
 
   void connectServer(BuildContext context) {
@@ -598,5 +602,38 @@ class ChannelProvider extends ChangeNotifier {
       }
     }
     return platform;
+  }
+
+  _getDisplayCodeWithDash(String displayCode) {
+    String result = '';
+    for (int i = 0; i < displayCode.length; i++) {
+      if (i % 3 == 0 && result.isNotEmpty) {
+        result += '-';
+      }
+      result += displayCode.substring(i, i + 1);
+    }
+    return result;
+  }
+
+  _startNewOTPTimer() {
+    Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      countDownProgress.value -= 1;
+      if (countDownProgress.value == 0) {
+        _generateOTP();
+        timer.cancel();
+        _startNewOTPTimer();
+      }
+    });
+  }
+
+  _generateOTP() {
+    otp.value = Random().nextInt(9000) + 1000;
+    if (!otpList.contains(otp.value.toString())) {
+      _otpList.add(otp.value.toString());
+      if (_otpList.length > 2) {
+        _otpList.remove(_otpList.first);
+      }
+    }
+    countDownProgress.value = maxCountDown;
   }
 }
