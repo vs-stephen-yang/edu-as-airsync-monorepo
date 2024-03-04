@@ -92,6 +92,11 @@ class Client {
         client.initialized = true;
       }
     };
+
+    client.signal.onclose = (int code, String reason) {
+      log.error('signal closed: code => $code, reason => $reason');
+      client.onSignalClose?.call();
+    };
     unawaited(client.signal.connect());
     return client;
   }
@@ -102,6 +107,7 @@ class Client {
   Function(MediaStreamTrack track, RemoteStream stream)? onRemoveTrack;
   Function(RTCDataChannel channel)? ondatachannel;
   Function(Map<String, dynamic> speakers)? onspeaker;
+  Function()? onSignalClose;
 
   static final defaultConfig = {
     'iceServers': [
