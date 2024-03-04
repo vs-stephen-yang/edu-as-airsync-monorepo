@@ -59,6 +59,7 @@ class SimpleWebSocket {
       var uri = parsed_uri.replace(
           scheme: parsed_uri.scheme == 'wss' ? 'https' : 'http');
 
+      client.connectionTimeout = Duration(seconds: 2);
       var request = await client.getUrl(uri); // form the correct url here
       request.headers.add('Connection', 'Upgrade');
       request.headers.add('Upgrade', 'websocket');
@@ -77,7 +78,7 @@ class SimpleWebSocket {
 
       return webSocket;
     } catch (e) {
-      log.error(e);
+      log.error('connectForSelfSignedCert: error => $e');
       rethrow;
     }
   }
