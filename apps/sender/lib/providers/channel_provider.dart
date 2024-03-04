@@ -294,6 +294,10 @@ class ChannelProvider extends ChangeNotifier {
               infoMessage.ionSfuRoom!.url!, infoMessage.ionSfuRoom!.roomId!,
               () {
             presentRemoteScreenPage();
+          },
+              // onClose callback
+              (int code, String reason) {
+            removeRemoteScreenClient();
           });
           break;
         default:

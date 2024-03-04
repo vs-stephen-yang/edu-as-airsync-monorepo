@@ -33,6 +33,7 @@ class RemoteScreenClient {
     String url,
     String roomId,
     Function onTrack,
+    Function onClose
   ) async {
     JsonRPCSignal signal = JsonRPCSignal(url);
 
@@ -57,6 +58,10 @@ class RemoteScreenClient {
         _dataChannel!.onDataChannelState = onDataChannelState;
       }
     };
+
+    _client!.onSignalClose = (int code, String reason) {
+      onClose(code, reason);
+    };  
   }
 
   Future sendStartRemoteScreenMessage() async {
