@@ -160,7 +160,7 @@ Java_com_viewsonic_flutter_1input_1injection_UInput_init(
     jint height) {
   assert(width > 0);
   assert(height > 0);
-  assert(g_input_fd == INVALID_FD);
+  //assert(g_input_fd == INVALID_FD);
 
   LOGI("Creating a virtual input device");
   if (g_input_fd != INVALID_FD) {
