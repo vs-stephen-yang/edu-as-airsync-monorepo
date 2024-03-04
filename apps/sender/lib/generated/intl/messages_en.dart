@@ -39,8 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_language": MessageLookupByLibrary.simpleMessage("Language"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
         "main_password": MessageLookupByLibrary.simpleMessage("Password"),
-        "main_password_description":
-            MessageLookupByLibrary.simpleMessage("4-digit one-time password"),
+        "main_password_description": MessageLookupByLibrary.simpleMessage(
+            "Please enter one-time password"),
         "main_password_invalid":
             MessageLookupByLibrary.simpleMessage("Password invalid."),
         "main_present": MessageLookupByLibrary.simpleMessage("PRESENT"),

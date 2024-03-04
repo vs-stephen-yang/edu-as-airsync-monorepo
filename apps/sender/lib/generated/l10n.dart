@@ -80,10 +80,10 @@ class S {
     );
   }
 
-  /// `4-digit one-time password`
+  /// `Please enter one-time password`
   String get main_password_description {
     return Intl.message(
-      '4-digit one-time password',
+      'Please enter one-time password',
       name: 'main_password_description',
       desc: '',
       args: [],

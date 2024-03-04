@@ -36,8 +36,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Maximale Anzahl von Präsentatoren (4) erreicht."),
         "main_language": MessageLookupByLibrary.simpleMessage("Sprache"),
         "main_password": MessageLookupByLibrary.simpleMessage("Passwort"),
-        "main_password_description":
-            MessageLookupByLibrary.simpleMessage("4-stelliges Einmalpasswort"),
+        "main_password_description": MessageLookupByLibrary.simpleMessage(
+            "Bitte geben Sie ein Einmalpasswort ein"),
         "main_password_invalid":
             MessageLookupByLibrary.simpleMessage("Ungültiges Passwort."),
         "main_present": MessageLookupByLibrary.simpleMessage("PRÄSENT"),
