@@ -36,8 +36,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Достугнуто максимальное число презентующих (4)"),
         "main_language": MessageLookupByLibrary.simpleMessage("Язык"),
         "main_password": MessageLookupByLibrary.simpleMessage("Пароль"),
-        "main_password_description":
-            MessageLookupByLibrary.simpleMessage("4 значный разовый пароль"),
+        "main_password_description": MessageLookupByLibrary.simpleMessage(
+            "Пожалуйста, введите одноразовый пароль"),
         "main_password_invalid":
             MessageLookupByLibrary.simpleMessage("Недействительный пароль"),
         "main_present": MessageLookupByLibrary.simpleMessage("Презентовать"),

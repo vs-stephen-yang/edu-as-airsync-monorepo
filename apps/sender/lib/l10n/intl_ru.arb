@@ -2,7 +2,7 @@
     "main_display_code": "Код дисплея",
     "main_display_code_description": "Пожалуйста, введите отображаемый код",
     "main_password": "Пароль",
-    "main_password_description": "4 значный разовый пароль",
+    "main_password_description": "Пожалуйста, введите одноразовый пароль",
     "main_present": "Презентовать",
     "main_touch_back": "Тачбэк",
     "main_language": "Язык",

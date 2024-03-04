@@ -2,7 +2,7 @@
     "main_display_code": "Display code",
     "main_display_code_description": "Please input display code",
     "main_password": "Password",
-    "main_password_description": "4-digit one-time password",
+    "main_password_description": "Please enter one-time password",
     "main_present": "PRESENT",
     "main_touch_back": "Touchback",
     "main_language": "Language",
