@@ -1,6 +1,6 @@
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/rtc_connector_list.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
@@ -26,7 +26,7 @@ class _SenderMenuViewState extends State<SenderMenuView> {
       valueListenable: editMode,
       builder: (BuildContext context, bool value, Widget? child) {
         return MenuDialog(
-          backgroundColor: RtcConnectorList().isPresenting()
+          backgroundColor: HybridConnectionList().isPresenting()
               ? AppColors.primary_grey_tran
               : AppColors.primary_grey,
           topTitleText: S.of(context).main_settings_share_to_sender,

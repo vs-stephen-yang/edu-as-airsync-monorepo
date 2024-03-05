@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -13,7 +12,9 @@ import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
 
 class MirrorView extends StatelessWidget {
-  const MirrorView({super.key});
+  const MirrorView({super.key, required this.index});
+
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -43,15 +44,15 @@ class MirrorView extends StatelessWidget {
         // endregion
 
         // region Show Prompt mechanism
-        if (mirror.requestingMirror.isNotEmpty &&
+        if (mirror.mirrorRequestList.isNotEmpty &&
             savedPromptBuildContext.isEmpty) {
           Future.delayed(Duration.zero, () {
-            if (mirror.requestingMirror.isNotEmpty) {
+            if (mirror.mirrorRequestList.isNotEmpty) {
               _showPromptDialog(context, savedPromptBuildContext);
             }
           });
         } else if (savedPromptBuildContext.isNotEmpty &&
-            mirror.requestingMirror.isEmpty) {
+            mirror.mirrorRequestList.isEmpty) {
           Future.delayed(Duration.zero, () {
             for (var i = 0; i < savedPromptBuildContext.length; i++) {
               if (Navigator.canPop(savedPromptBuildContext[i])) {
@@ -91,42 +92,42 @@ class MirrorView extends StatelessWidget {
                     ),
                   ),
                 ),
-              if (mirror.isMirroring)
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Wrap(
-                    alignment: WrapAlignment.center,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      FocusIconButton(
-                        icons: mirror.audioEnable
-                            ? Icons.volume_off_outlined
-                            : Icons.volume_up_outlined,
-                        iconForegroundColor: Colors.white,
-                        iconBackgroundColor: AppColors.iconPresentingBackground,
-                        iconFocusBackgroundColor:
-                            AppColors.iconFeatureOnStandbyBackground,
-                        hasFocusSize: AppUIConstant.iconHasFocusSize,
-                        notFocusSize: AppUIConstant.iconNotFocusSize,
-                        onClick: () {
-                          mirror.setAudioEnable(!mirror.audioEnable);
-                        },
-                      ),
-                      FocusIconButton(
-                        icons: Icons.close,
-                        iconForegroundColor: Colors.white,
-                        iconBackgroundColor: AppColors.iconPresentingBackground,
-                        iconFocusBackgroundColor:
-                            AppColors.iconFeatureOnStandbyBackground,
-                        hasFocusSize: AppUIConstant.iconHasFocusSize,
-                        notFocusSize: AppUIConstant.iconNotFocusSize,
-                        onClick: () {
-                          mirror.stopAcceptedMirror();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
+              // if (mirror.isMirroring)
+              //   Align(
+              //     alignment: Alignment.bottomRight,
+              //     child: Wrap(
+              //       alignment: WrapAlignment.center,
+              //       crossAxisAlignment: WrapCrossAlignment.center,
+              //       children: [
+              //         FocusIconButton(
+              //           icons: mirror.audioEnable
+              //               ? Icons.volume_off_outlined
+              //               : Icons.volume_up_outlined,
+              //           iconForegroundColor: Colors.white,
+              //           iconBackgroundColor: AppColors.iconPresentingBackground,
+              //           iconFocusBackgroundColor:
+              //               AppColors.iconFeatureOnStandbyBackground,
+              //           hasFocusSize: AppUIConstant.iconHasFocusSize,
+              //           notFocusSize: AppUIConstant.iconNotFocusSize,
+              //           onClick: () {
+              //             mirror.setAudioEnable(!mirror.audioEnable);
+              //           },
+              //         ),
+              //         FocusIconButton(
+              //           icons: Icons.close,
+              //           iconForegroundColor: Colors.white,
+              //           iconBackgroundColor: AppColors.iconPresentingBackground,
+              //           iconFocusBackgroundColor:
+              //               AppColors.iconFeatureOnStandbyBackground,
+              //           hasFocusSize: AppUIConstant.iconHasFocusSize,
+              //           notFocusSize: AppUIConstant.iconNotFocusSize,
+              //           onClick: () {
+              //             mirror.stopAcceptedMirror();
+              //           },
+              //         ),
+              //       ],
+              //     ),
+              //   ),
             ],
           ),
         );
@@ -230,14 +231,14 @@ class MirrorView extends StatelessWidget {
                 var width = MediaQuery.of(context).size.width / 3;
                 var height = MediaQuery.of(context).size.height / 4;
                 double minHeight = min(
-                    (mirror.requestingMirror.length * height).toDouble(),
+                    (mirror.mirrorRequestList.length * height).toDouble(),
                     500.0);
                 return SizedBox(
                   width: width,
                   height: minHeight,
                   child: ListView.separated(
                     reverse: mirror.isMirroring,
-                    itemCount: mirror.requestingMirror.length,
+                    itemCount: mirror.mirrorRequestList.length,
                     itemBuilder: (BuildContext buildContext, int index) {
                       return Container(
                         width: width,
@@ -253,7 +254,7 @@ class MirrorView extends StatelessWidget {
                           children: [
                             Text(
                               sprintf(S.current.main_mirror_from_client,
-                                  [mirror.requestingMirror[index].mirrorId]),
+                                  [mirror.mirrorRequestList[index].mirrorId]),
                               style: const TextStyle(fontSize: 24),
                             ),
                             const Spacer(),
@@ -300,7 +301,8 @@ class MirrorView extends StatelessWidget {
                                       // moderator
                                     } else {
                                       // split screen
-                                      await context.read<ChannelProvider>().splitScreenOff();
+                                      print('prompt dialog split screen');
+                                      // await context.read<ChannelProvider>().splitScreenOff();
                                     }
                                     mirror.setAcceptMirrorId(index);
                                   },

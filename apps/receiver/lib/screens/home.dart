@@ -128,6 +128,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                     index: index,
                                     channelProvider:
                                     Provider.of<ChannelProvider>(context),
+                                    mirrorStateProvider:
+                                    Provider.of<MirrorStateProvider>(context),
                                     updateSize: () {
                                       _updateSizeForSelected(index);
                                     },
@@ -240,8 +242,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           selection, Home.enlargedScreenPositionIndex.value == selection);
   }
 
-  double _getWidthHeight(int selection, bool isWidth) {
-    if (Home.enlargedScreenPositionIndex.value == selection) {
+  double _getWidthHeight(int index, bool isWidth) {
+    if (Home.enlargedScreenPositionIndex.value == index) {
       // enlarged screen
       return isWidth ? _fullWidth : _fullHeight;
     } else if (Home.enlargedScreenPositionIndex.value != null) {
@@ -249,13 +251,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       return 0; // MUST use 1 to create view, 0 won't.
     } else {
       // no enlarged screen
-      if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
-        if (selection ==
-            SplitScreen.mapSplitScreen.value[keySplitScreenLastId]) {
+      if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] == 1) {
+        // if (index ==
+        //     SplitScreen.mapSplitScreen.value[keySplitScreenLastId]) {
           return isWidth ? _fullWidth : _fullHeight;
-        } else {
-          return 0; // MUST use 1 to create view, 0 won't.
-        }
+        // } else {
+        //   return 0; // MUST use 1 to create view, 0 won't.
+        // }
       }
       return isWidth ? _halfWidth : _halfHeight;
     }

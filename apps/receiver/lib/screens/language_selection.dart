@@ -1,6 +1,6 @@
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/rtc_connector_list.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
@@ -18,7 +18,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
   @override
   Widget build(BuildContext context) {
     return MenuDialog(
-      backgroundColor: RtcConnectorList().isPresenting()
+      backgroundColor: HybridConnectionList().isPresenting()
           ? AppColors.primary_grey_tran
           : AppColors.primary_grey,
       topTitleText: S.of(context).main_language_title,

@@ -1,6 +1,6 @@
 
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/model/rtc_connector_list.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/participant_item.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,8 @@ class _ParticipantListViewState extends State<ParticipantListView> {
       child: Consumer<ChannelProvider>(
         builder: (context, provider, child) {
           if (!ChannelProvider.isModeratorMode ||
-              RtcConnectorList().rtcConnectorList.nonNulls.isEmpty) {
+              HybridConnectionList().getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector).isEmpty
+          ) {
             return Container(
               alignment: Alignment.center,
               child: Text(
@@ -35,10 +36,12 @@ class _ParticipantListViewState extends State<ParticipantListView> {
             );
           } else {
             return ListView.separated(
-              itemCount: RtcConnectorList().rtcConnectorList.length,
+              itemCount: HybridConnectionList()
+                  .getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector)
+                  .length,
               itemBuilder: (BuildContext context, int index) {
-                if (index > 5 ||
-                    RtcConnectorList().rtcConnectorList[index] == null) {
+                if (index > 2 ||
+                    HybridConnectionList().hybridConnectionList[index] == null) {
                   return const SizedBox.shrink();
                 }
                 return ParticipantItem(index: index);

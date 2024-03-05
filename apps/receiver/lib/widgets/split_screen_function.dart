@@ -1,15 +1,16 @@
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
-import 'package:display_flutter/model/rtc_connector_list.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 
 class SplitScreenFunction extends StatefulWidget {
   const SplitScreenFunction({super.key, required this.index,
-    required this.channelProvider, this.updateSize});
+    required this.channelProvider, required this.mirrorStateProvider, this.updateSize});
 
   static ValueNotifier<List<bool>> isMenuOnList =
   ValueNotifier(List.filled(4, false, growable: false));
@@ -17,6 +18,7 @@ class SplitScreenFunction extends StatefulWidget {
   final int index;
   final VoidCallback? updateSize;
   final ChannelProvider channelProvider;
+  final MirrorStateProvider mirrorStateProvider;
 
   @override
   State<StatefulWidget> createState() => SplitScreenFunctionState();
@@ -27,7 +29,7 @@ class SplitScreenFunction extends StatefulWidget {
   Widget build(BuildContext context) {
     double? left, top, bottom, right;
     if (Home.enlargedScreenPositionIndex.value == widget.index ||
-        RtcConnectorList().getPresentingQuantity() == 1) {
+        HybridConnectionList().getPresentingCount() == 1) {
       // full screen mode in right-bottom;
       right = 20;
       bottom = 20;
@@ -59,7 +61,7 @@ class SplitScreenFunction extends StatefulWidget {
           right: right,
           bottom: bottom,
           child: Visibility(
-            visible: RtcConnectorList().isPresenting(index: widget.index),
+            visible: HybridConnectionList().isPresenting(index: widget.index),
             child: ValueListenableBuilder(
               valueListenable: SplitScreenFunction.isMenuOnList,
               builder: (BuildContext context, List<bool> value, Widget? child) {
@@ -92,7 +94,9 @@ class SplitScreenFunction extends StatefulWidget {
                                 0,
                                 SplitScreenFunction.isMenuOnList.value.length,
                                 false);
-                            RtcConnectorList().removePresenterBy(widget.index);
+                            HybridConnectionList().removePresenterBy(
+                                widget.index,
+                                widget.mirrorStateProvider.flutterMirrorPlugin);
                           },
                         ),
                       ),
@@ -103,7 +107,10 @@ class SplitScreenFunction extends StatefulWidget {
                         child:FocusIconButton(
                           icons: Home.enlargedScreenPositionIndex.value !=
                               widget.index && value[widget.index] &&
-                              widget.channelProvider.getAudioDisableStateByIndex(widget.index)
+                              HybridConnectionList()
+                                  .getAudioDisableStateByIndex(widget.index,
+                                  mirrorAudioEnabled: widget.mirrorStateProvider
+                                      .audioEnable)
                               ? Icons.volume_up_outlined
                               : Icons.volume_off_outlined,
                           iconForegroundColor: Colors.white,
@@ -114,19 +121,23 @@ class SplitScreenFunction extends StatefulWidget {
                           notFocusSize: AppUIConstant.iconNotFocusSize,
                           onClick: () {
                             setState(() {
-                              var isMute = widget.channelProvider
-                                  .getAudioDisableStateByIndex(widget.index);
-                              print('audio enable = $isMute');
-                              widget.channelProvider
-                                  .updateAudioEnableStateByIndex(widget.index, isMute);
+                              var isMute = HybridConnectionList()
+                                  .getAudioDisableStateByIndex(widget.index,
+                                  mirrorAudioEnabled: widget.mirrorStateProvider
+                                      .audioEnable);
+                              HybridConnectionList()
+                                  .updateAudioEnableStateByIndex(
+                                      widget.index, isMute,
+                                      mirrorPlugin: widget.mirrorStateProvider
+                                          .flutterMirrorPlugin);
                             });
                           },
                         ),
                       ),
                       Visibility(
-                        visible:
-                        Home.enlargedScreenPositionIndex.value != widget.index && value[widget.index] &&
-                            RtcConnectorList().getPresentingQuantity() > 1,
+                        visible: Home.enlargedScreenPositionIndex.value !=
+                                widget.index && value[widget.index] &&
+                            HybridConnectionList().getPresentingCount() > 1,
                         child: FocusIconButton(
                           icons: Icons.crop_free_sharp,
                           iconForegroundColor: Colors.white,
