@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
-import 'package:display_flutter/model/rtc_connector_list.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -103,7 +103,7 @@ class _StatusBarState extends State<StatusBar> {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(15)),
-                    color: RtcConnectorList().isPresenting()
+                    color: HybridConnectionList().isPresenting()
                         ? AppColors.primary_grey_tran
                         : AppColors.primary_grey,
                   ),

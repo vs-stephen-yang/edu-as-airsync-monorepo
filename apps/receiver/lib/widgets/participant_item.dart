@@ -1,7 +1,7 @@
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
-import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/custom_icons_icons.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
@@ -48,7 +48,8 @@ class _ParticipantItemState extends State<ParticipantItem>
   @override
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
-    rtcConnector = RtcConnectorList().rtcConnectorList[widget.index];
+    rtcConnector = HybridConnectionList()
+        .getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector)[widget.index];
     String presenterId = rtcConnector?.clientId ?? '';
     String presenterName = rtcConnector?.senderName ?? '';
 
@@ -64,7 +65,7 @@ class _ParticipantItemState extends State<ParticipantItem>
               style: ElevatedButton.styleFrom(
                 elevation: 0,
                 backgroundColor:
-                RtcConnectorList().isPresenterStreaming(presenterId)
+                HybridConnectionList().isPresenterStreaming(presenterId)
                     ? AppColors.primary_blue
                     : AppColors.toggle_bg,
                 shape: RoundedRectangleBorder(
@@ -85,7 +86,7 @@ class _ParticipantItemState extends State<ParticipantItem>
                   ),
                   Visibility(
                     visible:
-                    RtcConnectorList().isPresenterWaitForStream(presenterId),
+                    HybridConnectionList().isPresenterWaitForStream(presenterId),
                     child: RotationTransition(
                       turns: _animation,
                       child: const Icon(CustomIcons.loading),
@@ -119,12 +120,12 @@ class _ParticipantItemState extends State<ParticipantItem>
   }
 
   _presenterOnOff(String presenterId) async {
-    if (RtcConnectorList().isPresenterNotStopStreaming(presenterId)) {
+    if (HybridConnectionList().isPresenterNotStopStreaming(presenterId)) {
       // waitForStream and streaming
       _sendPresenterStop();
     } else {
       // occupied and stopStreaming
-      if (!RtcConnectorList().occupyAvailableRTCConnector(widget.index)) {
+      if (!HybridConnectionList().occupyAvailableRTCConnector(widget.index)) {
         return;
       }
       _sendPresenterPlay();
@@ -139,7 +140,7 @@ class _ParticipantItemState extends State<ParticipantItem>
   _sendPresenterStop() {
     AppAnalytics().trackEventModeratorPresenterStop();
     rtcConnector?.sendStopPresent();
-    channelProvider.updateModePanel(!RtcConnectorList().isPresenting());
+    channelProvider.updateModePanel(!HybridConnectionList().isPresenting());
   }
 
   _sendPresenterRemove() async {

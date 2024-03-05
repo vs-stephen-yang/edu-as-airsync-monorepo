@@ -5,8 +5,8 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
-import 'package:display_flutter/model/rtc_connector_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
@@ -133,8 +133,9 @@ class WebRTCViewState extends State<WebRTCView> {
   @override
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
-    if (RtcConnectorList().rtcConnectorList.isNotEmpty) {
-      _rtcConnector = RtcConnectorList().rtcConnectorList[widget.index];
+    var rtcConnectorMap = HybridConnectionList().getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector);
+    if (rtcConnectorMap[widget.index] != null) {
+      _rtcConnector = rtcConnectorMap[widget.index];
       if (_rtcConnector?.presentationState == PresentationState.pauseStreaming) {
         pauseVideo();
       } else if (_rtcConnector?.presentationState == PresentationState.resumeStreaming) {
@@ -273,12 +274,12 @@ class WebRTCViewState extends State<WebRTCView> {
     final byteData = await image?.toByteData(format: ImageByteFormat.png);
     final imageBytes = byteData?.buffer.asUint8List();
     pauseScreenImageKey.currentState?.refresh(imageBytes);
-    channelProvider.updateAudioEnableStateByIndex(widget.index, false);
+    HybridConnectionList().updateAudioEnableStateByIndex(widget.index, false);
   }
 
   void resumeVideo() {
     pauseScreenImageKey.currentState?.remove();
-    channelProvider.updateAudioEnableStateByIndex(widget.index, true);
+    HybridConnectionList().updateAudioEnableStateByIndex(widget.index, true);
   }
 }
 

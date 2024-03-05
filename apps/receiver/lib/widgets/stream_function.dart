@@ -4,7 +4,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_ui_constant.dart';
-import 'package:display_flutter/model/rtc_connector_list.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/cast_settings.dart';
@@ -70,7 +70,9 @@ class _StreamFunctionStates extends State<StreamFunction> {
         // region Moderator icon
         Color? colorModeratorForeground, colorModeratorBackground;
         if (ChannelProvider.isModeratorMode &&
-            RtcConnectorList().rtcConnectorList.nonNulls.isNotEmpty) {
+            HybridConnectionList()
+                .getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector)
+                .isNotEmpty) {
           if (value == stateMenuOn) {
             colorModeratorForeground = AppColors.iconPresentingForeground;
             colorModeratorBackground = AppColors.iconPresentingBackground;
@@ -157,7 +159,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                     ),
 
                   //Mirror button
-                  if (value == stateStandby || value == stateCast)
+                  if (value == stateStandby || value == stateMenuOn)
                     FocusIconButton(
                       icons: Icons.cast,
                       iconForegroundColor: colorButtonForeground,
@@ -240,7 +242,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                     ),
 
                   //Settings and In-connection button
-                  if (value != stateCast)
+                  // if (value != stateCast)
                     FocusIconButton(
                       icons: iconMain,
                       childNotFocus: iconMainImageNotFocus,
