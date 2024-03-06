@@ -38,6 +38,7 @@ class WebRTCViewState extends State<WebRTCView> {
   GlobalKey repaintBoundaryKey = GlobalKey();
   GlobalKey<PauseScreenImageState> pauseScreenImageKey = GlobalKey();
   late ChannelProvider channelProvider;
+  Widget? pauseScreenImage;
 
   @override
   void initState() {
@@ -136,7 +137,7 @@ class WebRTCViewState extends State<WebRTCView> {
     var rtcConnectorMap = HybridConnectionList().getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector);
     if (rtcConnectorMap[widget.index] != null) {
       _rtcConnector = rtcConnectorMap[widget.index];
-      if (_rtcConnector?.presentationState == PresentationState.pauseStreaming) {
+      if (_rtcConnector?.presentationState == PresentationState.pauseStreaming && pauseScreenImage == null) {
         pauseVideo();
       } else if (_rtcConnector?.presentationState == PresentationState.resumeStreaming) {
         resumeVideo();
@@ -172,7 +173,7 @@ class WebRTCViewState extends State<WebRTCView> {
           ),
         ),
         if (_rtcConnector != null && _rtcConnector?.presentationState == PresentationState.pauseStreaming)
-          PauseScreenImage(key: pauseScreenImageKey,),
+          pauseScreenImage = pauseScreenImage ?? PauseScreenImage(key: pauseScreenImageKey),
         Align(
           alignment: Alignment.topCenter,
           child: Visibility(
@@ -279,6 +280,7 @@ class WebRTCViewState extends State<WebRTCView> {
 
   void resumeVideo() {
     pauseScreenImageKey.currentState?.remove();
+    pauseScreenImage = null;
     HybridConnectionList().updateAudioEnableStateByIndex(widget.index, true);
   }
 }
