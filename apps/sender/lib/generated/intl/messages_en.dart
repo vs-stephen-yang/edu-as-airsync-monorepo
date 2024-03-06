@@ -77,6 +77,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "present_wait": m0,
         "remote_screen_wait": MessageLookupByLibrary.simpleMessage(
             "Waiting for presenter to share screen..."),
+        "settings_audio_configuration":
+            MessageLookupByLibrary.simpleMessage("Audio Configuration"),
         "settings_knowledge_base":
             MessageLookupByLibrary.simpleMessage("Knowledge Base"),
         "toast_enable_remote_screen": MessageLookupByLibrary.simpleMessage(
