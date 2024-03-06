@@ -171,6 +171,7 @@ class MirrorStateProvider extends ChangeNotifier
   setDeviceName(String instanceName, String displayCode) {
     _deviceName =
         '$instanceName-${displayCode.substring(max(displayCode.length - 5, 0))}';
+    notifyListeners();
   }
 
   clearPinCode() {

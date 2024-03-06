@@ -17,6 +17,7 @@ class AppPreferences {
   String _instanceName = 'AirSync';
   String _entityId = '';
   String _moderatorId = '';
+  bool _showOverlayTab = false;
 
   bool get showEULA => _showEULA;
 
@@ -26,11 +27,14 @@ class AppPreferences {
 
   String get moderatorId => _moderatorId;
 
+  bool get showOverlayTab => _showOverlayTab;
+
   set({
     bool? showEULA,
     String? instanceName,
     String? entityId,
     String? moderatorId,
+    bool? showOverlayTab,
   }) {
     if (showEULA != null) {
       _showEULA = showEULA;
@@ -44,6 +48,9 @@ class AppPreferences {
     if (moderatorId != null) {
       _moderatorId = moderatorId;
     }
+    if (showOverlayTab != null) {
+      _showOverlayTab = showOverlayTab;
+    }
     _save();
   }
 
@@ -53,6 +60,7 @@ class AppPreferences {
     prefs.setString('app_instanceName', _instanceName);
     prefs.setString('app_entityId', _entityId);
     prefs.setString('app_moderatorId', _moderatorId);
+    prefs.setBool('app_showOverlayTab', _showOverlayTab);
   }
 
   _load() async {
@@ -61,5 +69,6 @@ class AppPreferences {
     _instanceName = prefs.getString('app_instanceName') ?? 'AirSync';
     _entityId = prefs.getString('app_entityId') ?? '';
     _moderatorId = prefs.getString('app_moderatorId') ?? '';
+    _showOverlayTab = prefs.getBool('app_showOverlayTab') ?? false;
   }
 }

@@ -54,5 +54,6 @@
   "main_settings_device_name_title": "Rename device",
   "main_settings_device_name_hint": "Name",
   "main_settings_device_name_cancel": "CANCEL",
-  "main_settings_device_name_save": "SAVE"
+  "main_settings_device_name_save": "SAVE",
+  "main_settings_pin_visible": "PIN visible"
 }
