@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
+import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -119,9 +121,26 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               height: _getWidthHeight(index, false),
                               child: Stack(
                                 children: <Widget>[
-                                  Consumer<ChannelProvider>(
+                                  if (HybridConnectionList()
+                                              .hybridConnectionList[index] !=
+                                          null &&
+                                      HybridConnectionList()
+                                              .hybridConnectionList[index]
+                                          is RTCConnector)
+                                    Consumer<ChannelProvider>(
+                                      builder: (context, provider, child) {
+                                        return WebRTCView(index: index);
+                                      },
+                                    ),
+                                  if (HybridConnectionList()
+                                      .hybridConnectionList[index] !=
+                                      null &&
+                                      HybridConnectionList()
+                                          .hybridConnectionList[index]
+                                      is MirrorRequest)
+                                  Consumer<MirrorStateProvider>(
                                     builder: (context, provider, child) {
-                                      return WebRTCView(index: index);
+                                      return MirrorView(index: index);
                                     },
                                   ),
                                   SplitScreenFunction(
@@ -186,7 +205,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   }
                 },
               ),
-              const MirrorView(),
+              // const MirrorView(),
               const Positioned(
                 child: StatusBar(),
               ),
