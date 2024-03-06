@@ -439,6 +439,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Audio Configuration`
+  String get settings_audio_configuration {
+    return Intl.message(
+      'Audio Configuration',
+      name: 'settings_audio_configuration',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

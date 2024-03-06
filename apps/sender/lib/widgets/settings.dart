@@ -78,7 +78,23 @@ class Settings extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
+            child: InkWell(
+              onTap: () async {
+                var url = Uri.parse('https://myviewboard.com/kb/');
+                await launchUrl(url);
+              },
+              child: Text(
+                S.of(context).settings_audio_configuration,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
             child: InkWell(
               onTap: () {
                 channelProvider.presentLanguagePage();

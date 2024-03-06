@@ -37,5 +37,6 @@
     "main_display_code_invalid": "Invalid Display code",
     "toast_enable_remote_screen": "Please enable share to sender in AirSync.",
     "toast_maximum_remote_screen": "Has reached maximum shared screen amount.",
-    "toast_install_audio_driver": "Please install virtual audio driver."
+    "toast_install_audio_driver": "Please install virtual audio driver.",
+    "settings_audio_configuration": "Audio Configuration"
 }
