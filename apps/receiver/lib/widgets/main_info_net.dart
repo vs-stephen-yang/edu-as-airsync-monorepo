@@ -2,9 +2,11 @@ import 'dart:math' as math;
 
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +26,11 @@ class MainInfoInternet extends StatelessWidget {
       ),
       child: Consumer<ChannelProvider>(
         builder: (context, channelProvider, child) {
+          MirrorStateProvider mirrorProvider =
+              Provider.of<MirrorStateProvider>(context, listen: false);
+          mirrorProvider.setDeviceName(
+              AppPreferences().instanceName, channelProvider.displayCode);
+          mirrorProvider.restartMirror();
           return (channelProvider.connectNet)
               ? Wrap(
                   direction: Axis.vertical,

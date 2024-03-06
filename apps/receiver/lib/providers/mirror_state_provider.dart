@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/screens/home.dart';
@@ -167,8 +168,9 @@ class MirrorStateProvider extends ChangeNotifier
   // endregion
 
   // region Public method
-  setDeviceName(String deviceName) {
-    _deviceName = deviceName;
+  setDeviceName(String instanceName, String displayCode) {
+    _deviceName =
+        '$instanceName-${displayCode.substring(max(displayCode.length - 5, 0))}';
   }
 
   clearPinCode() {

@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:display_flutter/app_colors.dart';
-import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
@@ -19,9 +16,6 @@ class CastSettings extends StatelessWidget {
     return Consumer<MirrorStateProvider>(
       builder: (context, mirror, child) {
         ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-        String postName = channelProvider.displayCode;
-        postName = postName.substring(max(postName.length - 5, 0));
-        mirror.setDeviceName('${AppPreferences().instanceName}-$postName');
         return MenuDialog(
           backgroundColor: mirror.isMirroring
               ? AppColors.primary_grey_tran
