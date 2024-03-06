@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_preferences.dart';
@@ -30,12 +28,11 @@ class _InstanceNameEditorDialogState extends State<InstanceNameEditorDialog> {
 
     ChannelProvider channel =
         Provider.of<ChannelProvider>(context, listen: false);
-    String postName =
-        channel.displayCode.substring(max(channel.displayCode.length - 5, 0));
 
     MirrorStateProvider mirror =
         Provider.of<MirrorStateProvider>(context, listen: false);
-    mirror.setDeviceName('$newInstanceName-$postName');
+
+    mirror.setDeviceName(newInstanceName, channel.displayCode);
     await mirror.restartMirror();
 
     navService.goBack();

@@ -1,10 +1,6 @@
-import 'dart:math';
-
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
-import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/language_selection.dart';
 import 'package:display_flutter/screens/sender_menu_view.dart';
@@ -56,14 +52,10 @@ class _SettingsState extends State<Settings> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(S.of(context).main_settings_device_name),
-                  Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
-                    String postName = channelProvider.displayCode;
-                    postName = postName.substring(max(postName.length - 5, 0));
-                    return Text(
-                      '${AppPreferences().instanceName}-$postName',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    );
-                  }),
+                  Text(
+                    Provider.of<MirrorStateProvider>(context).deviceName,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
               const Spacer(),
