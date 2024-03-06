@@ -72,6 +72,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Rename device"),
         "main_settings_language":
             MessageLookupByLibrary.simpleMessage("Language"),
+        "main_settings_pin_visible":
+            MessageLookupByLibrary.simpleMessage("PIN visible"),
         "main_settings_share_to_sender":
             MessageLookupByLibrary.simpleMessage("Share screen to device"),
         "main_settings_share_to_sender_limit_desc":

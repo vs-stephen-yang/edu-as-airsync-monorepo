@@ -26,11 +26,13 @@ class MainInfoInternet extends StatelessWidget {
       ),
       child: Consumer<ChannelProvider>(
         builder: (context, channelProvider, child) {
-          MirrorStateProvider mirrorProvider =
-              Provider.of<MirrorStateProvider>(context, listen: false);
-          mirrorProvider.setDeviceName(
-              AppPreferences().instanceName, channelProvider.displayCode);
-          mirrorProvider.restartMirror();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            MirrorStateProvider mirrorProvider =
+                Provider.of<MirrorStateProvider>(context, listen: false);
+            mirrorProvider.setDeviceName(
+                AppPreferences().instanceName, channelProvider.displayCode);
+            mirrorProvider.restartMirror();
+          });
           return (channelProvider.connectNet)
               ? Wrap(
                   direction: Axis.vertical,

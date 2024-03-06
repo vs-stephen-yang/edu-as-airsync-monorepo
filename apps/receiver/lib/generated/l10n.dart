@@ -609,6 +609,16 @@ class S {
       args: [],
     );
   }
+
+  /// `PIN visible`
+  String get main_settings_pin_visible {
+    return Intl.message(
+      'PIN visible',
+      name: 'main_settings_pin_visible',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
