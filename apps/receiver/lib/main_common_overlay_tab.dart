@@ -27,7 +27,6 @@ class OverlayTabApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    printInDebug('_LOREN_, OverlayTabApp build');
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: PrefLanguageProvider()),
