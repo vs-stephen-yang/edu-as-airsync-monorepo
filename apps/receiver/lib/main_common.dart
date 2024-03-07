@@ -8,15 +8,14 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/providers/overlay_tab_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/providers/overlay_tab_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/device_hardware_decoder_session.dart';
 import 'package:display_flutter/utility/log.dart';
-import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -106,7 +105,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    printInDebug('_LOREN_, _MyAppState build');
     // hide the Android Status Bar
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
