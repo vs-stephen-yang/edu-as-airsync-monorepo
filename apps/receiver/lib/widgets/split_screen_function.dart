@@ -130,6 +130,7 @@ class SplitScreenFunction extends StatefulWidget {
                                       widget.index, isMute,
                                       mirrorPlugin: widget.mirrorStateProvider
                                           .flutterMirrorPlugin);
+                              widget.mirrorStateProvider.setAudioEnable();
                             });
                           },
                         ),

@@ -475,10 +475,9 @@ class ChannelProvider extends ChangeNotifier {
   // }
 
   updateAllQuality(int selection, bool hasSelected) {
-    var rtcConnectorMap = HybridConnectionList()
-        .getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector);
+    var rtcConnectorMap = HybridConnectionList().getRtcConnectorMap();
     if (selection == -1) {
-      rtcConnectorMap.values.first?.sendChangeQuality(true, true);
+      rtcConnectorMap.values.first.sendChangeQuality(true, true);
     } else {
       for (RTCConnector rtcConnector in rtcConnectorMap.values) {
         if (rtcConnector.clientId != null) {
@@ -491,8 +490,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   updateAllAudioEnableState(bool enable) {
-    for (RTCConnector rtcConnector in HybridConnectionList()
-        .getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector)
+    for (RTCConnector rtcConnector in HybridConnectionList().getRtcConnectorMap()
         .values) {
       rtcConnector.controlAudio(rtcConnector.isAudioEnabled & enable,
           setIsAudioEnabled: false);

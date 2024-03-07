@@ -9,11 +9,6 @@ import 'package:flutter_mirror/flutter_mirror.dart';
 
 import 'connect_timer.dart';
 
-enum ConnectionType {
-  rtcConnector,
-  mirror
-}
-
 class HybridConnectionList {
   static final HybridConnectionList _instance = HybridConnectionList._internal();
 
@@ -45,14 +40,12 @@ class HybridConnectionList {
 
   void updateSplitScreen() {
     int inConnectionNumber = 0, lastID = 0;
-    for (RTCConnector connector
-        in getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector).values) {
+    for (RTCConnector connector in getRtcConnectorMap().values) {
       if (connector.presentationState != PresentationState.stopStreaming) {
         inConnectionNumber++;
       }
     }
-    for (MirrorRequest request
-        in getRtcConnectorAndMirrorMap(ConnectionType.mirror).values) {
+    for (MirrorRequest request in getMirrorMap().values) {
       if (request.mirrorState == MirrorState.mirroring) {
         inConnectionNumber++;
       }
@@ -83,14 +76,12 @@ class HybridConnectionList {
         presenting = true;
       }
     } else {
-      for (RTCConnector connector
-          in getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector).values) {
+      for (RTCConnector connector in getRtcConnectorMap().values) {
         if (connector.presentationState != PresentationState.stopStreaming) {
           presenting = true;
         }
       }
-      for (MirrorRequest request
-          in getRtcConnectorAndMirrorMap(ConnectionType.mirror).values) {
+      for (MirrorRequest request in getMirrorMap().values) {
         if (request.mirrorState == MirrorState.mirroring) {
           presenting = true;
         }
@@ -195,8 +186,7 @@ class HybridConnectionList {
 
   removeAllPresenters() async {
     RTCConnector? rtcConnector;
-    List<RTCConnector?> temp = List.from(
-        getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector).values);
+    List<RTCConnector?> temp = List.from(getRtcConnectorMap().values);
     for (int i = temp.length - 1; i >= 0; i--) {
       rtcConnector = temp[i];
       if (rtcConnector?.clientId != null) {
@@ -242,7 +232,7 @@ class HybridConnectionList {
     var connection = HybridConnectionList().hybridConnectionList[index];
     if (connection != null && connection is RTCConnector) {
       connection.controlAudio(enable, setIsAudioEnabled: true);
-    } else if (connection is MirrorRequest) {
+    } else if (connection != null && connection is MirrorRequest) {
       mirrorPlugin?.enableAudio(connection.mirrorId ?? '0', enable);
     }
   }
@@ -275,25 +265,33 @@ class HybridConnectionList {
     }
   }
 
-  Map<int, dynamic> getRtcConnectorAndMirrorMap(ConnectionType type) {
+  Map<int, RTCConnector> getRtcConnectorMap() {
     final Map<int, RTCConnector> rtcConnectorMap = {};
-    final Map<int, MirrorRequest> mirrorMap = {};
-    for (int i = 0; i < hybridConnectionList.length; i++ ) {
-      if (hybridConnectionList[i] is RTCConnector) {
+    for (int i = 0; i < hybridConnectionList.length; i++) {
+      if (hybridConnectionList[i] != null &&
+          hybridConnectionList[i] is RTCConnector) {
         rtcConnectorMap[i] = hybridConnectionList[i];
-      } else if (hybridConnectionList[i] is MirrorRequest) {
+      }
+    }
+    return rtcConnectorMap;
+  }
+
+  Map<int, MirrorRequest> getMirrorMap() {
+    final Map<int, MirrorRequest> mirrorMap = {};
+    for (int i = 0; i < hybridConnectionList.length; i++) {
+      if (hybridConnectionList[i] != null &&
+          hybridConnectionList[i] is MirrorRequest) {
         mirrorMap[i] = hybridConnectionList[i];
       }
     }
-    return type == ConnectionType.rtcConnector ? rtcConnectorMap : mirrorMap;
+    return mirrorMap;
   }
 
   //Mirror functions region
 
   bool isMirroring() {
-    var mirrorMap = getRtcConnectorAndMirrorMap(ConnectionType.mirror);
     bool isMirroring = false;
-    for (MirrorRequest request in mirrorMap.values) {
+    for (MirrorRequest request in getMirrorMap().values) {
       if (request.mirrorState == MirrorState.mirroring) {
         isMirroring = true;
       }
@@ -302,9 +300,8 @@ class HybridConnectionList {
   }
 
   int mirroringCount() {
-    var mirrorMap = getRtcConnectorAndMirrorMap(ConnectionType.mirror);
     int count = 0;
-    for (MirrorRequest request in mirrorMap.values) {
+    for (MirrorRequest request in getMirrorMap().values) {
       if (request.mirrorState == MirrorState.mirroring) {
         count++;
       }
