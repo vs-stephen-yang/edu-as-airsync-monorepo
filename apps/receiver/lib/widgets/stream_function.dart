@@ -70,9 +70,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
         // region Moderator icon
         Color? colorModeratorForeground, colorModeratorBackground;
         if (ChannelProvider.isModeratorMode &&
-            HybridConnectionList()
-                .getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector)
-                .isNotEmpty) {
+            HybridConnectionList().getRtcConnectorMap().isNotEmpty) {
           if (value == stateMenuOn) {
             colorModeratorForeground = AppColors.iconPresentingForeground;
             colorModeratorBackground = AppColors.iconPresentingBackground;
@@ -238,6 +236,8 @@ class _StreamFunctionStates extends State<StreamFunction> {
                         StreamFunction.streamFunctionState.value =
                             stateBackArrow;
                         context.read<ChannelProvider>().updateModePanel(true);
+                        context.read<MirrorStateProvider>().menuOff = false;
+
                       },
                     ),
 
@@ -269,9 +269,8 @@ class _StreamFunctionStates extends State<StreamFunction> {
                         } else if (value == stateBackArrow) {
                           StreamFunction.streamFunctionState.value =
                               stateMenuOff;
-                          context
-                              .read<ChannelProvider>()
-                              .updateModePanel(false);
+                          context.read<ChannelProvider>().updateModePanel(false);
+                          context.read<MirrorStateProvider>().menuOff = false;
                         }
                       },
                     ),

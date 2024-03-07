@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
@@ -11,22 +11,30 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
 
-class MirrorView extends StatelessWidget {
+class MirrorView extends StatefulWidget {
   const MirrorView({super.key, required this.index});
 
   final int index;
 
   @override
+  State<StatefulWidget> createState() => MirrorViewState();
+}
+
+  class MirrorViewState extends State<MirrorView> {
+  MirrorRequest? mirrorRequest;
+  List<BuildContext> savedPinCodeBuildContext = [];
+  List<BuildContext> savedPromptBuildContext = [];
+
+  @override
   Widget build(BuildContext context) {
-    List<BuildContext> savedPinCodeBuildContext = [];
-    List<BuildContext> savedPromptBuildContext = [];
     return Consumer<MirrorStateProvider>(
       builder: (context, mirror, child) {
         // region Show PinCode mechanism
+        mirrorRequest = HybridConnectionList().hybridConnectionList[widget.index];
         if (mirror.pinCode != '' && savedPinCodeBuildContext.isEmpty) {
           // Show dialog if pin code is not empty.
           Future.delayed(Duration.zero, () {
-            _showPinCodeDialog(context, savedPinCodeBuildContext);
+            _showPinCodeDialog(context);
           });
         } else if (savedPinCodeBuildContext.isNotEmpty &&
             mirror.pinCode == '') {
@@ -44,15 +52,14 @@ class MirrorView extends StatelessWidget {
         // endregion
 
         // region Show Prompt mechanism
-        if (mirror.mirrorRequestList.isNotEmpty &&
+        else if (mirrorRequest?.mirrorState == MirrorState.idle &&
             savedPromptBuildContext.isEmpty) {
           Future.delayed(Duration.zero, () {
-            if (mirror.mirrorRequestList.isNotEmpty) {
-              _showPromptDialog(context, savedPromptBuildContext);
-            }
+            _showPromptDialog(context);
           });
-        } else if (savedPromptBuildContext.isNotEmpty &&
-            mirror.mirrorRequestList.isEmpty) {
+        }
+        else if (savedPromptBuildContext.isNotEmpty &&
+            mirrorRequest?.mirrorState == MirrorState.mirroring) {
           Future.delayed(Duration.zero, () {
             for (var i = 0; i < savedPromptBuildContext.length; i++) {
               if (Navigator.canPop(savedPromptBuildContext[i])) {
@@ -68,7 +75,7 @@ class MirrorView extends StatelessWidget {
           constraints: const BoxConstraints.expand(),
           child: Stack(
             children: [
-              if (mirror.isMirroring)
+              if (mirrorRequest?.mirrorState == MirrorState.mirroring)
                 Container(
                   color: Colors.black,
                   child: Center(
@@ -79,55 +86,25 @@ class MirrorView extends StatelessWidget {
                       },
                       child: SizeChangedLayoutNotifier(
                         child: Listener(
-                          onPointerDown: mirror.onTouchEvent,
-                          onPointerMove: mirror.onTouchEvent,
-                          onPointerUp: mirror.onTouchEvent,
+                          onPointerDown: (PointerDownEvent event) {
+                            mirror.onTouchEvent(event, mirrorRequest?.mirrorId);
+                          },
+                          onPointerMove: (PointerMoveEvent event) {
+                            mirror.onTouchEvent(event, mirrorRequest?.mirrorId);
+                          },
+                          onPointerUp: (PointerUpEvent event) {
+                            mirror.onTouchEvent(event, mirrorRequest?.mirrorId);
+                          },
                           child: AspectRatio(
                             key: mirror.mirrorViewKey,
-                            aspectRatio: mirror.aspectRatio,
-                            child: Texture(textureId: mirror.textureId!),
+                            aspectRatio: mirrorRequest?.aspectRatio ?? 2 / 3,
+                            child: Texture(textureId: mirrorRequest?.textureId ?? 0),
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              // if (mirror.isMirroring)
-              //   Align(
-              //     alignment: Alignment.bottomRight,
-              //     child: Wrap(
-              //       alignment: WrapAlignment.center,
-              //       crossAxisAlignment: WrapCrossAlignment.center,
-              //       children: [
-              //         FocusIconButton(
-              //           icons: mirror.audioEnable
-              //               ? Icons.volume_off_outlined
-              //               : Icons.volume_up_outlined,
-              //           iconForegroundColor: Colors.white,
-              //           iconBackgroundColor: AppColors.iconPresentingBackground,
-              //           iconFocusBackgroundColor:
-              //               AppColors.iconFeatureOnStandbyBackground,
-              //           hasFocusSize: AppUIConstant.iconHasFocusSize,
-              //           notFocusSize: AppUIConstant.iconNotFocusSize,
-              //           onClick: () {
-              //             mirror.setAudioEnable(!mirror.audioEnable);
-              //           },
-              //         ),
-              //         FocusIconButton(
-              //           icons: Icons.close,
-              //           iconForegroundColor: Colors.white,
-              //           iconBackgroundColor: AppColors.iconPresentingBackground,
-              //           iconFocusBackgroundColor:
-              //               AppColors.iconFeatureOnStandbyBackground,
-              //           hasFocusSize: AppUIConstant.iconHasFocusSize,
-              //           notFocusSize: AppUIConstant.iconNotFocusSize,
-              //           onClick: () {
-              //             mirror.stopAcceptedMirror();
-              //           },
-              //         ),
-              //       ],
-              //     ),
-              //   ),
             ],
           ),
         );
@@ -136,7 +113,7 @@ class MirrorView extends StatelessWidget {
   }
 
   _showPinCodeDialog(
-      BuildContext context, List<BuildContext> savedPinCodeBuildContext) {
+      BuildContext context) {
     FocusScope.of(context).unfocus();
     MirrorStateProvider mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context, listen: false);
@@ -198,6 +175,7 @@ class MirrorView extends StatelessWidget {
                       notFocusSize: AppUIConstant.iconNotFocusSize,
                       onClick: () {
                         mirrorStateProvider.clearPinCode();
+                        Navigator.pop(context);
                       },
                     ),
                   ),
@@ -211,14 +189,14 @@ class MirrorView extends StatelessWidget {
   }
 
   _showPromptDialog(
-      BuildContext context, List<BuildContext> savedPromptBuildContext) {
+      BuildContext context) {
     FocusScope.of(context).unfocus();
     showDialog(
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
-      builder: (BuildContext buildContext) {
-        savedPromptBuildContext.add(buildContext);
+      builder: (BuildContext context) {
+        savedPromptBuildContext.add(context);
         return WillPopScope(
           // Using onWillPop to block back key return,
           // it will break "Show Prompt mechanism"
@@ -231,14 +209,14 @@ class MirrorView extends StatelessWidget {
                 var width = MediaQuery.of(context).size.width / 3;
                 var height = MediaQuery.of(context).size.height / 4;
                 double minHeight = min(
-                    (mirror.mirrorRequestList.length * height).toDouble(),
+                    (HybridConnectionList().getMirrorMap().length * height).toDouble(),
                     500.0);
                 return SizedBox(
                   width: width,
                   height: minHeight,
                   child: ListView.separated(
                     reverse: mirror.isMirroring,
-                    itemCount: mirror.mirrorRequestList.length,
+                    itemCount: HybridConnectionList().getMirrorMap().length,
                     itemBuilder: (BuildContext buildContext, int index) {
                       return Container(
                         width: width,
@@ -254,7 +232,7 @@ class MirrorView extends StatelessWidget {
                           children: [
                             Text(
                               sprintf(S.current.main_mirror_from_client,
-                                  [mirror.mirrorRequestList[index].mirrorId]),
+                                  [HybridConnectionList().getMirrorMap().values.toList()[index].mirrorId]),
                               style: const TextStyle(fontSize: 24),
                             ),
                             const Spacer(),
@@ -276,6 +254,7 @@ class MirrorView extends StatelessWidget {
                                   onClick: () {
                                     //TODO: found that AirPlay icon on iMac keeps under working state even calling clearRequestMirrorId()
                                     mirror.clearRequestMirrorId(index);
+                                    Navigator.pop(context);
                                   },
                                   child: AutoSizeText(
                                     S.of(context).main_mirror_prompt_cancel,
@@ -296,15 +275,9 @@ class MirrorView extends StatelessWidget {
                                   hasFocusHeight: 30,
                                   notFocusHeight: 25,
                                   onClick: () async {
-                                    // Don't change the order of the conditions
-                                    if (ChannelProvider.isModeratorMode) {
-                                      // moderator
-                                    } else {
-                                      // split screen
-                                      print('prompt dialog split screen');
-                                      // await context.read<ChannelProvider>().splitScreenOff();
-                                    }
+                                    print('prompt dialog split screen');
                                     mirror.setAcceptMirrorId(index);
+                                    Navigator.pop(context);
                                   },
                                   child: AutoSizeText(
                                     S.of(context).main_mirror_prompt_accept,

@@ -33,6 +33,7 @@ class Home extends StatefulWidget {
   static ValueNotifier<bool> showTitleBottomBar = ValueNotifier(true);
   static ValueNotifier<bool> showCloudOff = ValueNotifier(false);
   static ValueNotifier<int?> enlargedScreenPositionIndex = ValueNotifier(null);
+  static bool isAirplayAuth = false;
 
   @override
   State createState() => _HomeState();
@@ -128,27 +129,25 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               child: Stack(
                                 children: <Widget>[
                                   if (HybridConnectionList()
-                                              .hybridConnectionList[index] !=
-                                          null &&
+                                      .hybridConnectionList[index] != null &&
                                       HybridConnectionList()
-                                              .hybridConnectionList[index]
-                                          is RTCConnector)
+                                          .hybridConnectionList[index]
+                                      is RTCConnector)
                                     Consumer<ChannelProvider>(
                                       builder: (context, provider, child) {
                                         return WebRTCView(index: index);
                                       },
                                     ),
                                   if (HybridConnectionList()
-                                      .hybridConnectionList[index] !=
-                                      null &&
+                                      .hybridConnectionList[index] != null &&
                                       HybridConnectionList()
                                           .hybridConnectionList[index]
-                                      is MirrorRequest)
-                                  Consumer<MirrorStateProvider>(
-                                    builder: (context, provider, child) {
-                                      return MirrorView(index: index);
-                                    },
-                                  ),
+                                      is MirrorRequest || Home.isAirplayAuth)
+                                    Consumer<MirrorStateProvider>(
+                                      builder: (context, provider, child) {
+                                        return MirrorView(index: index);
+                                      },
+                                    ),
                                   SplitScreenFunction(
                                     index: index,
                                     channelProvider:
@@ -193,7 +192,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               Consumer2<ChannelProvider, MirrorStateProvider>(
                 builder: (context, provider, mirror, child) {
                   if (Provider.of<ChannelProvider>(context).showMode == false ||
-                      mirror.isMirroring) {
+                      mirror.menuOff) {
                     return const SizedBox();
                   } else {
                     return Column(

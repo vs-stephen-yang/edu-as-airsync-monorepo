@@ -50,36 +50,34 @@ class MirrorStateProvider extends ChangeNotifier
 
   get miracastEnabled => _miracastEnabled;
 
-  get mirrorRequestList => _mirrorRequestList;
+  // get mirrorRequestList => _mirrorRequestList;
 
-  get textureId => _acceptedTextureId;
+  // get textureId => _acceptedTextureId;
 
   get pinCode => _pinCode;
 
-  get aspectRatio => _aspectRatio;
+  // get aspectRatio => _aspectRatio;
 
   get audioEnable => _audioEnabled;
+  setAudioEnable() {
+    _audioEnabled = !_audioEnabled;
+  }
 
   get flutterMirrorPlugin => _flutterMirrorPlugin;
 
   FlutterMirror? _flutterMirrorPlugin;
   String _deviceName = '';
   final GlobalKey _mirrorViewKey = GlobalKey();
-  MirrorState _mirrorState = MirrorState.idle;
   bool _airplayEnabled = false;
   bool _googleCastEnabled = false;
   bool _miracastEnabled = false;
-  final List<MirrorRequest> _mirrorRequestList = [];
-  String? _acceptedMirrorId;
-  int? _acceptedTextureId;
-  MirrorType? _acceptedMirrorType;
   String _pinCode = '';
   Timer? _pinTimer;
-  double _aspectRatio = 3 / 2;
   bool _sizeChanged = false;
   Size _videoWidgetSize = const Size(0, 0);
   Offset _videoWidgetOffset = const Offset(0, 0);
   bool _audioEnabled = true;
+  bool menuOff = false;
   Map<MirrorType, bool> mirrorTypeState = {
     MirrorType.airplay: false,
     MirrorType.googlecast: false,
@@ -97,6 +95,7 @@ class MirrorStateProvider extends ChangeNotifier
       _pinCode = '';
       notifyListeners();
     });
+    Home.isAirplayAuth = true;
     notifyListeners();
   }
 
@@ -107,11 +106,9 @@ class MirrorStateProvider extends ChangeNotifier
     _pinTimer?.cancel();
     _pinCode = '';
 
-    print('onMirrorStart mirrorId = $mirrorId');
-    print('________mirror list size = ${HybridConnectionList().getRtcConnectorAndMirrorMap(ConnectionType.mirror).length}');
-    HybridConnectionList().hybridConnectionList
-        .addAll({MirrorRequest(mirrorId, textureId, deviceName, mirrorType)});
-
+    HybridConnectionList().addConnection(
+        MirrorRequest(mirrorId, textureId, deviceName, mirrorType));
+    if (mirrorType == MirrorType.airplay) Home.isAirplayAuth = false;
     notifyListeners();
   }
 
@@ -119,50 +116,60 @@ class MirrorStateProvider extends ChangeNotifier
   void onMirrorStop(String mirrorId) {
     printInDebug('onMirrorStop $mirrorId', type: runtimeType);
     bool needNotify = false;
-    HybridConnectionList().hybridConnectionList.removeWhere((element) {
-      if (element.mirrorId == mirrorId) {
+    for (MirrorRequest mirrorRequest in HybridConnectionList().getMirrorMap().values) {
+      if (mirrorRequest.mirrorId == mirrorId) {
+        HybridConnectionList().removeConnection(mirrorRequest);
         needNotify = true;
-        return true;
-      } else {
-        return false;
       }
-    });
-    if (needNotify) notifyListeners();
-
-    if (_acceptedMirrorId != mirrorId) {
-      // ignore the onMirrorStop that is not for the current mirror session
-      return;
     }
-    _acceptedMirrorId = null;
-    _acceptedTextureId = null;
-    _acceptedMirrorType = null;
-    // _mirrorState = MirrorState.idle;
-    Home.showTitleBottomBar.value = true;
+    // print('_______onMirrorStop mirror map length = ${HybridConnectionList().getMirrorMap().length}');
+    // if (needNotify) {
+    //   notifyListeners();
 
-    // if (RtcConnectorList().isPresenting()) {
-    //   StreamFunction.streamFunctionState.value = stateMenuOff;
-    // } else {
-    //   StreamFunction.streamFunctionState.value = stateStandby;
-    // }
+      // if (_acceptedMirrorId != mirrorId) {
+      //   // ignore the onMirrorStop that is not for the current mirror session
+      //   return;
+      // }
+      // _acceptedMirrorId = null;
+      // _acceptedTextureId = null;
+      // _acceptedMirrorType = null;
+      // _mirrorState = MirrorState.idle;
+    Home.showTitleBottomBar.value = true;
+    HybridConnectionList().updateSplitScreen();
+    menuOff = false;
     notifyListeners();
   }
 
   @override
   void onMirrorVideoResize(String mirrorId, int width, int height) {
     printInDebug('onMirrorVideoResize', type: runtimeType);
-    if (_acceptedMirrorId == null || _acceptedMirrorId != mirrorId) {
-      for (int i = 0; i < _mirrorRequestList.length; i++) {
-        if (_mirrorRequestList[i].mirrorId == mirrorId) {
-          _mirrorRequestList[i].aspectRatio = width / height;
+    // if (_acceptedMirrorId == null || _acceptedMirrorId != mirrorId) {
+    // for (MirrorRequest request in _mirrorRequestList) {
+    //   if (request.mirrorId == mirrorId) {
+    //     request.aspectRatio = width/height;
+    //   }
+    // }
+
+    if (HybridConnectionList().getMirrorMap().isNotEmpty) {
+      for (var entry in HybridConnectionList().getMirrorMap().entries) {
+        if (entry.value.mirrorId == mirrorId) {
+          MirrorRequest request = entry.value;
+          request.aspectRatio = width / height;
+          HybridConnectionList().getMirrorMap().update(entry.key, (value) => request);
+
+          _sizeChanged = true;
+          notifyListeners();
           break;
         }
       }
-      // ignore the onMirrorStop that is not for the current mirror session
-      return;
     }
-    _aspectRatio = width / height;
-    _sizeChanged = true;
-    notifyListeners();
+
+      // ignore the onMirrorStop that is not for the current mirror session
+    //   return;
+    // }
+    // _aspectRatio = width / height;
+    // _sizeChanged = true;
+    // notifyListeners();
   }
 
   // endregion
@@ -181,63 +188,65 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   clearRequestMirrorId(int index) {
-    if (_mirrorRequestList.length > index) {
-      _mirrorRequestList.removeAt(index);
+    if (HybridConnectionList().getMirrorMap().length > index) {
+      var mirrorMap = HybridConnectionList().getMirrorMap();
+      MirrorRequest request = mirrorMap.values.toList()[index];
+      for (var entry in mirrorMap.entries) {
+        if (entry.value == request) {
+          HybridConnectionList().removeConnection(request);
+        }
+      }
     }
     notifyListeners();
   }
 
   setAcceptMirrorId(int index) {
     print('setAcceptMirrorId');
-    if (_mirrorRequestList.isNotEmpty) {
-      // if (_acceptedMirrorId != null) {
-      //   _flutterMirrorPlugin?.stopMirror(_acceptedMirrorId!);
-      // }
-
-      _acceptedMirrorId = _mirrorRequestList[index].mirrorId;
-      _acceptedTextureId = _mirrorRequestList[index].textureId;
-      _acceptedMirrorType = _mirrorRequestList[index].mirrorType;
-
-      if (_acceptedMirrorId != null) {
-        _flutterMirrorPlugin?.enableAudio(_acceptedMirrorId!, _audioEnabled);
+    if (HybridConnectionList().getMirrorMap().isNotEmpty) {
+      var mirrorMap = HybridConnectionList().getMirrorMap();
+      MirrorRequest request = mirrorMap.values.toList()[index];
+      for (var entry in mirrorMap.entries) {
+        if (entry.value == request) {
+          request.mirrorState = MirrorState.mirroring;
+          mirrorMap.update(entry.key, (value) => request);
+        }
+      }
+      if (request.mirrorId != null) {
+        _flutterMirrorPlugin?.enableAudio(request.mirrorId!, _audioEnabled);
       }
 
-      _aspectRatio = _mirrorRequestList[index].aspectRatio;
+      // _aspectRatio = _mirrorRequestList[index].aspectRatio;
       _sizeChanged = true;
 
-      // _mirrorRequestList.removeAt(index);
-      _mirrorState = MirrorState.mirroring;
+      HybridConnectionList().updateSplitScreen();
       StreamFunction.streamFunctionState.value = stateMenuOff;
+      menuOff = true;
       // hideTitleBar
       Home.showTitleBottomBar.value = false;
       notifyListeners();
     }
   }
 
-  stopAcceptedMirror() {
+  stopAcceptedMirror(String? mirrorId) {
     printInDebug('stopAcceptedMirror', type: runtimeType);
-    if (_acceptedMirrorId != null) {
-      _flutterMirrorPlugin?.stopMirror(_acceptedMirrorId!);
-    }
-    notifyListeners();
-  }
-
-  setAudioEnable(bool enable) {
-    _audioEnabled = enable;
-    if (_acceptedMirrorId != null) {
-      _flutterMirrorPlugin?.enableAudio(_acceptedMirrorId!, enable);
+    if (mirrorId != null) {
+      _flutterMirrorPlugin?.stopMirror(mirrorId);
     }
     notifyListeners();
   }
 
   updateAudioEnable(bool enable) {
-    if (_acceptedMirrorId != null) {
-      _flutterMirrorPlugin?.enableAudio(_acceptedMirrorId!, enable & _audioEnabled);
+    var mirrorMap = HybridConnectionList().getMirrorMap();
+    for (MirrorRequest request in mirrorMap.values) {
+      if (request.mirrorId != null) {
+        _flutterMirrorPlugin?.enableAudio(
+            request.mirrorId!, enable & _audioEnabled);
+      }
     }
   }
 
-  onTouchEvent(PointerEvent event) {
-    if (_acceptedMirrorId == null) {
+  onTouchEvent(PointerEvent event, String? mirrorId) {
+    if (mirrorId == null) {
       return;
     }
 
@@ -246,7 +255,7 @@ class MirrorStateProvider extends ChangeNotifier
     }
 
     _flutterMirrorPlugin?.onMirrorTouch(
-        _acceptedMirrorId!,
+        mirrorId,
         event.pointer,
         event.down,
         ((event.position.dx.toInt() - _videoWidgetOffset.dx.toInt()) /
@@ -271,8 +280,11 @@ class MirrorStateProvider extends ChangeNotifier
 
   Future<void> stopAirPlay() async {
     printInDebug('stopAirPlay', type: runtimeType);
-    if (_acceptedMirrorType == MirrorType.airplay) {
-      stopAcceptedMirror();
+    for (MirrorRequest request in HybridConnectionList().getMirrorMap().values) {
+      if (request.mirrorId != null &&
+          request.mirrorType == MirrorType.airplay) {
+        stopAcceptedMirror(request.mirrorId);
+      }
     }
     await _flutterMirrorPlugin?.stopAirplay();
     _airplayEnabled = false;
@@ -289,8 +301,11 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopGoogleCast() async {
-    if (_acceptedMirrorType == MirrorType.googlecast) {
-      stopAcceptedMirror();
+    for (MirrorRequest request in HybridConnectionList().getMirrorMap().values) {
+      if (request.mirrorId != null &&
+          request.mirrorType == MirrorType.googlecast) {
+        stopAcceptedMirror(request.mirrorId);
+      }
     }
     await _flutterMirrorPlugin?.stopGooglecast();
     _googleCastEnabled = false;
@@ -304,8 +319,11 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopMiracast() async {
-    if (_acceptedMirrorType == MirrorType.miracast) {
-      stopAcceptedMirror();
+    for (MirrorRequest request in HybridConnectionList().getMirrorMap().values) {
+      if (request.mirrorId != null &&
+          request.mirrorType == MirrorType.miracast) {
+        stopAcceptedMirror(request.mirrorId);
+      }
     }
     await _flutterMirrorPlugin?.stopMiracast();
     _miracastEnabled = false;
@@ -313,31 +331,31 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> pauseMirror() async {
-    printInDebug('pauseMirror', type: runtimeType);
-    mirrorTypeState[MirrorType.airplay] = _airplayEnabled;
-    mirrorTypeState[MirrorType.googlecast] = _googleCastEnabled;
-    mirrorTypeState[MirrorType.miracast] = _miracastEnabled;
-    stopAirPlay();
-    stopGoogleCast();
-    stopMiracast();
+    // printInDebug('pauseMirror', type: runtimeType);
+    // mirrorTypeState[MirrorType.airplay] = _airplayEnabled;
+    // mirrorTypeState[MirrorType.googlecast] = _googleCastEnabled;
+    // mirrorTypeState[MirrorType.miracast] = _miracastEnabled;
+    // stopAirPlay();
+    // stopGoogleCast();
+    // stopMiracast();
   }
 
   Future<void> resumeMirror() async {
-    printInDebug('resumeMirror', type: runtimeType);
-    if (mirrorTypeState[MirrorType.airplay]!) {
-      startAirPlay();
-    }
-    if (mirrorTypeState[MirrorType.googlecast]!) {
-      startGoogleCast();
-    }
-    if (mirrorTypeState[MirrorType.miracast]!) {
-      startMiracast();
-    }
+    // printInDebug('resumeMirror', type: runtimeType);
+    // if (mirrorTypeState[MirrorType.airplay]!) {
+    //   startAirPlay();
+    // }
+    // if (mirrorTypeState[MirrorType.googlecast]!) {
+    //   startGoogleCast();
+    // }
+    // if (mirrorTypeState[MirrorType.miracast]!) {
+    //   startMiracast();
+    // }
   }
 
   Future<void> restartMirror() async {
     printInDebug('restartMirror', type: runtimeType);
-    if (_mirrorState == MirrorState.idle) {
+    if (HybridConnectionList().isMirroring()) {
       if (_airplayEnabled) {
         await stopAirPlay();
         await startAirPlay();
@@ -348,13 +366,12 @@ class MirrorStateProvider extends ChangeNotifier
         await startGoogleCast();
       }
 
-      if (_miracastEnabled) {
-        await stopMiracast();
-        await startMiracast();
+        if (_miracastEnabled) {
+          await stopMiracast();
+          await startMiracast();
+          }
+        }
       }
-    }
-  }
-
   // endregion
 
   // region Private method

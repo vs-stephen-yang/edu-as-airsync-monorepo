@@ -134,15 +134,12 @@ class WebRTCViewState extends State<WebRTCView> {
   @override
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
-    var rtcConnectorMap = HybridConnectionList().getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector);
-    if (rtcConnectorMap[widget.index] != null) {
-      _rtcConnector = rtcConnectorMap[widget.index];
-      if (_rtcConnector?.presentationState == PresentationState.pauseStreaming && pauseScreenImage == null) {
-        pauseVideo();
-      } else if (_rtcConnector?.presentationState == PresentationState.resumeStreaming) {
-        resumeVideo();
-        _rtcConnector?.presentationState = PresentationState.streaming;
-      }
+    _rtcConnector = HybridConnectionList().hybridConnectionList[widget.index];
+    if (_rtcConnector?.presentationState == PresentationState.pauseStreaming && pauseScreenImage == null) {
+      pauseVideo();
+    } else if (_rtcConnector?.presentationState == PresentationState.resumeStreaming) {
+      resumeVideo();
+      _rtcConnector?.presentationState = PresentationState.streaming;
     }
 
     String presenterName = _rtcConnector?.senderName ?? '';

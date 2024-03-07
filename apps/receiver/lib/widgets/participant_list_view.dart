@@ -26,7 +26,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
       child: Consumer<ChannelProvider>(
         builder: (context, provider, child) {
           if (!ChannelProvider.isModeratorMode ||
-              HybridConnectionList().getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector).isEmpty
+              HybridConnectionList().getRtcConnectorMap().isEmpty
           ) {
             return Container(
               alignment: Alignment.center,
@@ -36,11 +36,9 @@ class _ParticipantListViewState extends State<ParticipantListView> {
             );
           } else {
             return ListView.separated(
-              itemCount: HybridConnectionList()
-                  .getRtcConnectorAndMirrorMap(ConnectionType.rtcConnector)
-                  .length,
+              itemCount: HybridConnectionList().getRtcConnectorMap().length,
               itemBuilder: (BuildContext context, int index) {
-                if (index > 2 ||
+                if (index > 5 ||
                     HybridConnectionList().hybridConnectionList[index] == null) {
                   return const SizedBox.shrink();
                 }
