@@ -42,7 +42,7 @@ class OverlayTabProvider extends ChangeNotifier {
       android_window.open(
         size: Size(infoWidth, infoHeight),
         position: Offset(infoWidth * 2, 0),
-        // draggableY: false,
+        draggableY: false,
       );
       android_window.setHandler((String name, Object? data) async {
         switch (name) {
