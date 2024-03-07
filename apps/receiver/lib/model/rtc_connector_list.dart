@@ -1,11 +1,3 @@
-import 'dart:developer';
-
-import 'package:display_flutter/model/rtc_connector.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/screens/split_screen.dart';
-import 'package:flutter/services.dart';
-
-import 'connect_timer.dart';
 
 class RtcConnectorList {
   static final RtcConnectorList _instance = RtcConnectorList._internal();
