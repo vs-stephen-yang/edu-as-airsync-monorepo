@@ -25,8 +25,6 @@ abstract class ConfigSettings {
 
   late String apiGateway;
   late String getIceServer;
-  late String mainDisplayUrl;
-  late String prefixQRCode;
 
   late String appSecretAndroid;
   late String appSecretIOS;

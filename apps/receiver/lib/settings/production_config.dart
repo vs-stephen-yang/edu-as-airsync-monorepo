@@ -11,12 +11,6 @@ class ProductionConfig implements ConfigSettings {
   String getIceServer = 'https://getice.myviewboard.cloud';
 
   @override
-  String mainDisplayUrl = 'https://myviewboard.com/display';
-
-  @override
-  String prefixQRCode = 'https://myviewboarddisplay.com/enroll?device_id=';
-
-  @override
   String? defaultOtp; // For development only. Keep null
 
   @override
