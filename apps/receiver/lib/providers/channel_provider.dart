@@ -205,6 +205,10 @@ class ChannelProvider extends ChangeNotifier {
     await _remoteScreenServe.startRemoteScreenPublisher();
   }
 
+  void stopRemoteScreenPublisher() {
+    _remoteScreenServe.stopRemoteScreenPublisher();
+  }
+
   Future<void> startServer(String instanceId) async {
     if (isServerStart) return;
     _setServerSide();
@@ -496,6 +500,7 @@ class ChannelProvider extends ChangeNotifier {
         element.sendRemoteScreenState(RemoteScreenStatus.kicked);
       }
       remoteScreenConnectors.clear();
+      stopRemoteScreenPublisher();
     }
     notifyListeners();
   }

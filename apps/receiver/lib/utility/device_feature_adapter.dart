@@ -4,15 +4,15 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-class DeviceHardwareDecoderSession {
+class DeviceFeatureAdapter {
 
-  static final DeviceHardwareDecoderSession _instance = DeviceHardwareDecoderSession._internal();
+  static final DeviceFeatureAdapter _instance = DeviceFeatureAdapter._internal();
 
   //private "Named constructors"
-  DeviceHardwareDecoderSession._internal();
+  DeviceFeatureAdapter._internal();
 
   // passes the instantiation to the _instance object
-  factory DeviceHardwareDecoderSession() => _instance;
+  factory DeviceFeatureAdapter() => _instance;
 
   static List<String> deviceList = <String>['52-1C'];
 
@@ -22,7 +22,12 @@ class DeviceHardwareDecoderSession {
     String model = await _instance._loadModel() ?? '';
     for (var element in deviceList) {
       if (model.contains(element)) {
-        await WebRTC.initialize(options: {"maxHardwareDecodeSession": maxHardwareDecodeSession});
+        await WebRTC.initialize(
+            options: {
+              "maxHardwareDecodeSession": maxHardwareDecodeSession,
+              "selectCustomAudioFeed": "CVTE"
+            }
+        );
       }
     }
   }
