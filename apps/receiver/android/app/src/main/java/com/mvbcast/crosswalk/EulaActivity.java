@@ -89,7 +89,7 @@ public class EulaActivity extends FlutterActivity {
     protected void onDestroy() {
         SystemImageOTAHelper.getInstance().unregisterBroadcastReceiver(EulaActivity.this);
         super.onDestroy();
-        System.exit(0);
+//        System.exit(0);
     }
 
     public void setSystemOTAEnableUI(boolean enableUI) {
