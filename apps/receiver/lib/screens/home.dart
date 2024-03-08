@@ -7,8 +7,8 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/providers/overlay_tab_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/providers/overlay_tab_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
@@ -22,10 +22,7 @@ import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:display_flutter/widgets/webrtc_view_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-
-import '../settings/app_config.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -199,23 +196,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 },
               ),
               Consumer2<ChannelProvider, MirrorStateProvider>(
-                builder: (context, provider, mirror, child) {
-                  if (Provider.of<ChannelProvider>(context).showMode == false ||
-                      mirror.menuOff) {
+                builder: (context, channel, mirror, child) {
+                  if (channel.showMode == false || mirror.menuOff) {
                     return const SizedBox();
                   } else {
-                    return Column(
-                      children: [
-                        const Gap(30),
-                        Text(
-                          AppConfig.of(context)?.settings.airSyncUrl ?? '',
-                          style: const TextStyle(fontSize: 40),
-                        ),
-                        const Spacer(),
-                        const MainInfoInternet(),
-                        const Spacer(),
-                      ],
-                    );
+                    return const MainInfoInternet();
                   }
                 },
               ),
