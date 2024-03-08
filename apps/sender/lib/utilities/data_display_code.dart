@@ -25,20 +25,10 @@ class DataDisplayCode {
 
   Future<void> save(String displayCode) async {
     _displayCodeBox = await _openBox();
-    if (_displayCodeBox?.length == 0) {
-      _displayCodeBox?.add(displayCode);
-    } else {
-      bool saveToBox = true;
-      _displayCodeBox?.values.forEach((element) {
-        if (element == displayCode) {
-          saveToBox = false;
-          return;
-        }
-      });
-      if (saveToBox) {
-        _displayCodeBox?.add(displayCode);
-      }
-    }
+    // Remove exist display code and add to last one.
+    // "Display Code drop-down menu" will reversed list to show last one on top.
+    await remove(displayCode);
+    _displayCodeBox?.add(displayCode);
   }
 
   Future<List?> load() async {
