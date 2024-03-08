@@ -70,8 +70,8 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
   /// the height of every item is 50
   /// the scroll bar should show up when over 5 items
   /// the max height of the overlay area is 200
-  OverlayEntry _createOverlayEntry(List displayList) {
-    return OverlayEntry(builder: (builder) {
+  _createOverlayEntry(List displayList) {
+    _overlayEntry = OverlayEntry(builder: (builder) {
       return Stack(
         children: <Widget>[
           // Check range outside listview
@@ -127,6 +127,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         ],
       );
     });
+    Overlay.of(context).insert(_overlayEntry);
   }
 
   @override
@@ -181,9 +182,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                 List? displayList = await DataDisplayCode.getInstance().load();
                 if (!_isOverlayVisible && displayList != null) {
                   _isOverlayVisible = true;
-                  _overlayEntry =
-                      _createOverlayEntry(displayList.reversed.toList());
-                  Overlay.of(context).insert(_overlayEntry);
+                  _createOverlayEntry(displayList.reversed.toList());
                 }
               },
               onFieldSubmitted: (text) {
