@@ -24,6 +24,7 @@ class PresentIdleTextField extends StatefulWidget {
 class PresentIdleTextFieldState extends State<PresentIdleTextField> {
   static const int limitDisplayCodeLength = 1;
   static const int limitOtpLength = 4;
+  static const double widthTextField = 300;
   final TextEditingController _codeController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
   final FocusNode _codeFocusNode = FocusNode();
@@ -87,7 +88,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
             ),
           ),
           Positioned(
-            width: 250,
+            width: widthTextField,
             height: displayList.length > 5 ? 200 : displayList.length * 50,
             child: CompositedTransformFollower(
               offset: const Offset(0, 60),
@@ -146,11 +147,12 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         otpKey.currentState?.setErrorMsg(S.of(context).main_password_invalid);
       }
     });
-    return Column(
-      children: [
-        SizedBox(
-          width: 250,
-          child: CompositedTransformTarget(
+    return SizedBox(
+      width: widthTextField,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          CompositedTransformTarget(
             link: _layerLink,
             child: CustomTextFormField(
               key: codeKey,
@@ -189,11 +191,8 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               },
             ),
           ),
-        ),
-        const Padding(padding: EdgeInsets.all(10)),
-        SizedBox(
-          width: 250,
-          child: CustomTextFormField(
+          const SizedBox(height: 20),
+          CustomTextFormField(
             key: otpKey,
             controller: _otpController,
             focusNode: _otpFocusNode,
@@ -221,9 +220,9 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               widget.onPasswordEnterEvent(text);
             },
           ),
-        ),
-        const Padding(padding: EdgeInsets.all(10)),
-      ],
+          const SizedBox(height: 20),
+        ],
+      ),
     );
   }
 
