@@ -89,13 +89,11 @@ class MirrorStateProvider extends ChangeNotifier
   void onMirrorAuth(String pin, int timeoutSec) {
     printInDebug('onMirrorAuth', type: runtimeType);
     _pinCode = pin;
-
     _pinTimer?.cancel();
     _pinTimer = Timer(Duration(seconds: timeoutSec), () {
       _pinCode = '';
       notifyListeners();
     });
-    Home.isAirplayAuth = true;
     notifyListeners();
   }
 
@@ -108,7 +106,7 @@ class MirrorStateProvider extends ChangeNotifier
 
     HybridConnectionList().addConnection(
         MirrorRequest(mirrorId, textureId, deviceName, mirrorType));
-    if (mirrorType == MirrorType.airplay) Home.isAirplayAuth = false;
+
     notifyListeners();
   }
 
@@ -204,7 +202,9 @@ class MirrorStateProvider extends ChangeNotifier
     print('setAcceptMirrorId');
     if (HybridConnectionList().getMirrorMap().isNotEmpty) {
       var mirrorMap = HybridConnectionList().getMirrorMap();
-      MirrorRequest request = mirrorMap.values.toList()[index];
+      var idleList = HybridConnectionList().getMirrorMap().values
+          .where((request) => request.mirrorState == MirrorState.idle).toList();
+      MirrorRequest request = idleList[index];
       for (var entry in mirrorMap.entries) {
         if (entry.value == request) {
           request.mirrorState = MirrorState.mirroring;

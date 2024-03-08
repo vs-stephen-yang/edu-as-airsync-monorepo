@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -23,6 +25,11 @@ import 'package:display_flutter/widgets/webrtc_view_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:sprintf/sprintf.dart';
+
+import '../app_ui_constant.dart';
+import '../widgets/focus_elevated_button.dart';
+import '../widgets/focus_icon_button.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -30,7 +37,6 @@ class Home extends StatefulWidget {
   static ValueNotifier<bool> showTitleBottomBar = ValueNotifier(true);
   static ValueNotifier<bool> showCloudOff = ValueNotifier(false);
   static ValueNotifier<int?> enlargedScreenPositionIndex = ValueNotifier(null);
-  static bool isAirplayAuth = false;
 
   @override
   State createState() => _HomeState();
@@ -148,7 +154,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                       .hybridConnectionList[index] != null &&
                                       HybridConnectionList()
                                           .hybridConnectionList[index]
-                                      is MirrorRequest || Home.isAirplayAuth)
+                                      is MirrorRequest)
                                     Consumer<MirrorStateProvider>(
                                       builder: (context, provider, child) {
                                         return MirrorView(index: index);
@@ -216,6 +222,32 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   child: StreamFunction(),
                 ),
               ),
+
+              Consumer<MirrorStateProvider>(
+                  builder: (context, mirror, child) {
+                    if (mirror.pinCode != '') {
+                      Future.delayed(Duration.zero, () {
+                        _showPinCodeDialog(context, mirror);
+                      });
+                    } else {
+                      var mirrorMap = HybridConnectionList().getMirrorMap();
+                      for (MirrorRequest request in mirrorMap.values) {
+                        if (request.mirrorState == MirrorState.idle) {
+                          Future.delayed(Duration.zero, () {
+                            _showPromptDialog(context, mirror);
+                          });
+                        } else {
+                          Future.delayed(Duration.zero, () {
+                            if (Navigator.canPop(context)) {
+                              Navigator.pop(context);
+                            }
+                          });
+                        }
+                      }
+                    }
+                    return const SizedBox.shrink();
+                  }
+              )
             ],
           ),
         ),
@@ -261,4 +293,198 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       return isWidth ? _halfWidth : _halfHeight;
     }
   }
+
+  _showPinCodeDialog(BuildContext context, mirror) {
+    FocusScope.of(context).unfocus();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext buildContext) {
+        return WillPopScope(
+          // Using onWillPop to block back key return,
+          // it will break "Show PinCode mechanism"
+          onWillPop: () async => false,
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            alignment: Alignment.bottomRight,
+            child: Container(
+              width: MediaQuery.of(context).size.width / 3,
+              height: MediaQuery.of(context).size.height / 4,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Stack(
+                children: [
+                  Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.airplay),
+                            Text(
+                              S.of(context).main_airplay_pin_code,
+                              style: const TextStyle(fontSize: 28),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Consumer<MirrorStateProvider>(
+                          builder: (context, mirror, child) {
+                            return Text(
+                              mirror.pinCode,
+                              style: const TextStyle(fontSize: 28),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: FocusIconButton(
+                      icons: Icons.cancel_outlined,
+                      iconForegroundColor: Colors.white,
+                      hasFocusSize: AppUIConstant.iconHasFocusSize,
+                      notFocusSize: AppUIConstant.iconNotFocusSize,
+                      onClick: () {
+                        mirror.clearPinCode();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  _showPromptDialog(BuildContext context, MirrorStateProvider mirror) {
+    FocusScope.of(context).unfocus();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (context) {
+        // savedPromptBuildContext.add(context);
+        var width = MediaQuery.of(context).size.width / 3;
+        var height = MediaQuery.of(context).size.height / 4;
+        double minHeight = min(
+            (HybridConnectionList().getMirrorMap().length * height).toDouble(),
+            500.0);
+        return WillPopScope(
+          // Using onWillPop to block back key return,
+          // it will break "Show Prompt mechanism"
+          onWillPop: () async => false,
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            alignment: Alignment.bottomRight,
+            child: SizedBox(
+              width: width,
+              height: minHeight,
+              child: ListView.separated(
+                reverse: mirror.isMirroring,
+                itemCount: HybridConnectionList().getMirrorMap().values
+                    .where((request) => request.mirrorState == MirrorState.idle)
+                    .length,
+                itemBuilder: (BuildContext buildContext, int index) {
+                  return Container(
+                    width: width,
+                    height: height,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          sprintf(S.current.main_mirror_from_client,
+                              [HybridConnectionList()
+                                  .getMirrorMap()
+                                  .values
+                                  .where((request) => request.mirrorState == MirrorState.idle).firstOrNull?.mirrorId
+                              ]),
+                          style: const TextStyle(fontSize: 24),
+                        ),
+                        const Spacer(),
+                        Wrap(
+                          direction: Axis.horizontal,
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 10,
+                          children: <Widget>[
+                            FocusElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.white,
+                              ),
+                              hasFocusWidth: 110,
+                              notFocusWidth: 100,
+                              hasFocusHeight: 30,
+                              notFocusHeight: 25,
+                              onClick: () {
+                                //TODO: found that AirPlay icon on iMac keeps under working state even calling clearRequestMirrorId()
+                                mirror.clearRequestMirrorId(index);
+                                Navigator.pop(context);
+                              },
+                              child: AutoSizeText(
+                                S.of(context).main_mirror_prompt_cancel,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.blue,
+                                ),
+                                maxLines: 1,
+                              ),
+                            ),
+                            FocusElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.blue,
+                                backgroundColor: Colors.blue,
+                              ),
+                              hasFocusWidth: 110,
+                              notFocusWidth: 100,
+                              hasFocusHeight: 30,
+                              notFocusHeight: 25,
+                              onClick: () async {
+                                mirror.setAcceptMirrorId(index);
+                                Navigator.pop(context);
+                              },
+                              child: AutoSizeText(
+                                S.of(context).main_mirror_prompt_accept,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                                maxLines: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                separatorBuilder: (BuildContext buildContext, int index) {
+                  return const SizedBox(
+                    height: 5,
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 }
