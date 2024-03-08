@@ -62,7 +62,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print('AppLifecycleState: $state');
+    printInDebug('AppLifecycleState: $state');
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
     MirrorStateProvider mirrorStateProvider =
@@ -70,14 +70,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     if (state == AppLifecycleState.inactive) {
       channelProvider.updateAllAudioEnableState(false);
       mirrorStateProvider.updateAudioEnable(false);
-      // Provider.of<ChannelProvider>(context, listen: false).disconnectServer();
     } else if (state == AppLifecycleState.resumed) {
       channelProvider.updateAllAudioEnableState(true);
       mirrorStateProvider.updateAudioEnable(true);
-      Provider.of<ChannelProvider>(context, listen: false)
-          .getDisplayCode(AppInstanceCreate().displayInstanceID);
-      // Provider.of<ChannelProvider>(context, listen: false)
-      //     .connectServer(context);
     }
   }
 
