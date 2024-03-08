@@ -90,7 +90,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
             width: 250,
             height: displayList.length > 5 ? 200 : displayList.length * 50,
             child: CompositedTransformFollower(
-              offset: const Offset(0, 50),
+              offset: const Offset(0, 60),
               link: _layerLink,
               child: Material(
                 child: ClipRRect(
@@ -150,7 +150,6 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
       children: [
         SizedBox(
           width: 250,
-          height: 66,
           child: CompositedTransformTarget(
             link: _layerLink,
             child: CustomTextFormField(
@@ -194,7 +193,6 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         const Padding(padding: EdgeInsets.all(10)),
         SizedBox(
           width: 250,
-          height: 66,
           child: CustomTextFormField(
             key: otpKey,
             controller: _otpController,

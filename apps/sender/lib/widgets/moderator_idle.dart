@@ -88,30 +88,27 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
                   ],
                 ),
                 const Padding(padding: EdgeInsets.all(16)),
-                SizedBox(
-                  height: 40,
-                  child: CustomTextFormField(
-                    key: nameKey,
-                    controller: _nameController,
-                    focusNode: _nameFocusNode,
-                    labelText: S.of(context).moderator_name,
-                    labelBackgroundColor: Colors.transparent,
-                    labelTextColor: Colors.white,
-                    inputFormatter: const [],
-                    onChanged: (text) {
-                      if (text.isNotEmpty) {
-                        presentBtnEnable = true;
-                      } else {
-                        presentBtnEnable = false;
-                      }
-                      setState(() {});
-                    },
-                    onFieldSubmitted: (String value) async {
-                      if (presentBtnEnable) {
-                        await clickPresent();
-                      }
-                    },
-                  ),
+                CustomTextFormField(
+                  key: nameKey,
+                  controller: _nameController,
+                  focusNode: _nameFocusNode,
+                  labelText: S.of(context).moderator_name,
+                  labelBackgroundColor: Colors.transparent,
+                  labelTextColor: Colors.white,
+                  inputFormatter: const [],
+                  onChanged: (text) {
+                    if (text.isNotEmpty) {
+                      presentBtnEnable = true;
+                    } else {
+                      presentBtnEnable = false;
+                    }
+                    setState(() {});
+                  },
+                  onFieldSubmitted: (String value) async {
+                    if (presentBtnEnable) {
+                      await clickPresent();
+                    }
+                  },
                 ),
                 const Padding(padding: EdgeInsets.all(16)),
                 ElevatedButton(
