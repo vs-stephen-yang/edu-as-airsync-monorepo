@@ -3,6 +3,12 @@ module libionsfu
 go 1.20
 
 require (
+	github.com/gorilla/websocket v1.5.0
+	github.com/pion/ion-sfu v1.11.0
+	github.com/sourcegraph/jsonrpc2 v0.2.0
+)
+
+require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bep/debounce v1.2.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
@@ -12,14 +18,12 @@ require (
 	github.com/go-logr/zerologr v1.2.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/uuid v1.3.0 // indirect
-	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/lucsky/cuid v1.2.1 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/pion/datachannel v1.5.2 // indirect
 	github.com/pion/dtls/v2 v2.1.3 // indirect
 	github.com/pion/ice/v2 v2.2.2 // indirect
 	github.com/pion/interceptor v0.1.10 // indirect
-	github.com/pion/ion-sfu v1.11.0 // indirect
 	github.com/pion/logging v0.2.2 // indirect
 	github.com/pion/mdns v0.0.5 // indirect
 	github.com/pion/randutil v0.1.0 // indirect
@@ -38,7 +42,7 @@ require (
 	github.com/prometheus/common v0.42.0 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/rs/zerolog v1.26.0 // indirect
-	github.com/sourcegraph/jsonrpc2 v0.2.0 // indirect
+	github.com/wlynxg/anet v0.0.1 // indirect
 	golang.org/x/crypto v0.19.0 // indirect
 	golang.org/x/mobile v0.0.0-20240213143359-d1f7d3436075 // indirect
 	golang.org/x/mod v0.15.0 // indirect
