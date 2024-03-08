@@ -62,7 +62,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    printInDebug('AppLifecycleState: $state');
+    printInDebug('AppLifecycleState: $state', type: runtimeType);
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
     MirrorStateProvider mirrorStateProvider =
@@ -83,7 +83,21 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     _fullHeight = size.height;
     _halfWidth = size.width / 2;
     _halfHeight = size.height / 2;
-    return WillPopScope(
+    return PopScope(
+      canPop: Platform.isAndroid ? false : true,
+      onPopInvoked: (didPop) async {
+        printInDebug('PopScope didPop: $didPop', type: runtimeType);
+        if (didPop) {
+          return;
+        }
+        try {
+          _showSnackBarMessage(S.of(context).main_status_go_background);
+          await Future.delayed(const Duration(seconds: 1));
+          _androidAppRetain.invokeMethod('sendToBackground');
+        } catch (e) {
+          printInDebug(e, type: runtimeType);
+        }
+      },
       child: Scaffold(
         body: ConstrainedBox(
           constraints: const BoxConstraints.expand(),
@@ -221,25 +235,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           ),
         ),
       ),
-      onWillPop: () async {
-        if (Platform.isAndroid) {
-          if (Navigator.of(context).canPop()) {
-            return Future.value(true);
-          } else {
-            try {
-              _showSnackBarMessage(S.of(context).main_status_go_background);
-              await Future.delayed(const Duration(seconds: 1));
-              _androidAppRetain.invokeMethod('sendToBackground');
-              return Future.value(false);
-            } catch (e) {
-              printInDebug(e, type: runtimeType);
-              return Future.value(true);
-            }
-          }
-        } else {
-          return Future.value(true);
-        }
-      },
     );
   }
 
