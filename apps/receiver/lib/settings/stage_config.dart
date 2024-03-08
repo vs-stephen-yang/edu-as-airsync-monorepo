@@ -11,13 +11,6 @@ class StageConfig implements ConfigSettings {
   String getIceServer = 'https://getice.stage.myviewboard.cloud';
 
   @override
-  String mainDisplayUrl = 'https://stage.myviewboarddisplay.com/display';
-
-  @override
-  String prefixQRCode =
-      'https://stage.myviewboarddisplay.com/enroll?device_id=';
-
-  @override
   String? defaultOtp; // For development only. Keep null
 
   @override

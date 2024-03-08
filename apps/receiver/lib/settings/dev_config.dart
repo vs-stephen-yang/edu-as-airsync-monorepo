@@ -11,12 +11,6 @@ class DevConfig implements ConfigSettings {
   String getIceServer = 'https://getice.stage.myviewboard.cloud';
 
   @override
-  String mainDisplayUrl = 'https://dev.myviewboarddisplay.com/display';
-
-  @override
-  String prefixQRCode = 'https://dev.myviewboarddisplay.com/enroll?device_id=';
-
-  @override
   String? defaultOtp = '0000';
 
   @override
