@@ -63,7 +63,7 @@ class PresentIdleButtonState extends State<PresentIdleButton> with TickerProvide
       style: ElevatedButton.styleFrom(
         disabledBackgroundColor: const Color.fromARGB(255, 215, 229, 253),
         backgroundColor: const Color.fromARGB(255, 41, 121, 255), // isButtonEnabled?
-        fixedSize: const Size(250, 30),
+        fixedSize: const Size(300, 30),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
