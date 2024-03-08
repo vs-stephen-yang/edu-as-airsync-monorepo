@@ -129,7 +129,7 @@ class RemoteScreenServer {
     }
   }
 
-  Future closeSfuServer() async {
+  void stopRemoteScreenPublisher() {
     _ionSfuClient?.close();
     _ionSfuClient = null;
   }

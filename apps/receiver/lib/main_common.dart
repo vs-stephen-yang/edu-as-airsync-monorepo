@@ -14,7 +14,7 @@ import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
-import 'package:display_flutter/utility/device_hardware_decoder_session.dart';
+import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +30,7 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
     initLogger();
 
-    await DeviceHardwareDecoderSession.ensureInitialized();
+    await DeviceFeatureAdapter.ensureInitialized();
 
     await AppPreferences.ensureInitialized();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
