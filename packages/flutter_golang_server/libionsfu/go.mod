@@ -39,13 +39,13 @@ require (
 	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/rs/zerolog v1.26.0 // indirect
 	github.com/sourcegraph/jsonrpc2 v0.2.0 // indirect
-	golang.org/x/crypto v0.18.0 // indirect
-	golang.org/x/mobile v0.0.0-20240112133503-c713f31d574b // indirect
-	golang.org/x/mod v0.14.0 // indirect
-	golang.org/x/net v0.20.0 // indirect
+	golang.org/x/crypto v0.19.0 // indirect
+	golang.org/x/mobile v0.0.0-20240213143359-d1f7d3436075 // indirect
+	golang.org/x/mod v0.15.0 // indirect
+	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
-	golang.org/x/tools v0.17.0 // indirect
+	golang.org/x/sys v0.17.0 // indirect
+	golang.org/x/tools v0.18.0 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/genproto v0.0.0-20210828152312-66f60bf46e71 // indirect
 	google.golang.org/grpc v1.41.0 // indirect
