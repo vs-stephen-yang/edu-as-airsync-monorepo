@@ -7,6 +7,7 @@ import 'package:display_flutter/screens/split_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
 
+import '../widgets/stream_function.dart';
 import 'connect_timer.dart';
 
 class HybridConnectionList {
@@ -52,19 +53,20 @@ class HybridConnectionList {
     }
     lastID = hybridConnectionList.indexOf(hybridConnectionList.nonNulls.lastOrNull);
 
-    print('_______updateSplitScreen keySplitScreenLastId = $lastID');
-    print('_______updateSplitScreen keySplitScreenCount = $inConnectionNumber');
     SplitScreen.mapSplitScreen.value[keySplitScreenCount] = inConnectionNumber;
     SplitScreen.mapSplitScreen.value[keySplitScreenLastId] = lastID;
     // Using below method to trigger value changed.
     // https://github.com/flutter/flutter/issues/29958
     SplitScreen.mapSplitScreen.value =
         Map.from(SplitScreen.mapSplitScreen.value);
+
+    if (inConnectionNumber == 0) {
+      StreamFunction.streamFunctionState.value = stateStandby;
+    }
   }
 
   // Any type of connection is presenting
   bool isPresenting({index}) {
-    print('enter isPresenting index = $index');
     bool presenting = false;
     if (index != null) {
       var connection = hybridConnectionList[index];
@@ -98,7 +100,6 @@ class HybridConnectionList {
         count++;
       }
     }
-    print('getPresentingCount = $count');
     return count;
   }
 
@@ -219,7 +220,6 @@ class HybridConnectionList {
       }
       ConnectionTimer.getInstance().startRemainingTimeTimer(() async {
         removeAllPresenters();
-        print('_____________remainingTimeOnOff mirroringNumber = $mirroringCount');
         SplitScreen.mapSplitScreen.value[keySplitScreenCount] = mirroringCount();
         SplitScreen.mapSplitScreen.value =
             Map.from(SplitScreen.mapSplitScreen.value);

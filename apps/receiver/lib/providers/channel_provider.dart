@@ -407,7 +407,6 @@ class ChannelProvider extends ChangeNotifier {
       }
       if (!presenting) {
         Home.showTitleBottomBar.value = true;
-        StreamFunction.streamFunctionState.value = stateStandby;
         showMode = true;
       } else {
         Home.enlargedScreenPositionIndex.value = null;
