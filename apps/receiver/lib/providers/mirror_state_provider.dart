@@ -77,7 +77,7 @@ class MirrorStateProvider extends ChangeNotifier
   Size _videoWidgetSize = const Size(0, 0);
   Offset _videoWidgetOffset = const Offset(0, 0);
   bool _audioEnabled = true;
-  bool menuOff = false;
+  // bool menuOff = false;
   Map<MirrorType, bool> mirrorTypeState = {
     MirrorType.airplay: false,
     MirrorType.googlecast: false,
@@ -134,7 +134,7 @@ class MirrorStateProvider extends ChangeNotifier
       // _mirrorState = MirrorState.idle;
     Home.showTitleBottomBar.value = true;
     HybridConnectionList().updateSplitScreen();
-    menuOff = false;
+    // menuOff = false;
     notifyListeners();
   }
 
@@ -220,7 +220,7 @@ class MirrorStateProvider extends ChangeNotifier
 
       HybridConnectionList().updateSplitScreen();
       StreamFunction.streamFunctionState.value = stateMenuOff;
-      menuOff = true;
+      // menuOff = true;
       // hideTitleBar
       Home.showTitleBottomBar.value = false;
       notifyListeners();

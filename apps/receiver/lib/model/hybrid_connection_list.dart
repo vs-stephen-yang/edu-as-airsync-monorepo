@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
@@ -63,6 +64,7 @@ class HybridConnectionList {
     if (inConnectionNumber == 0) {
       StreamFunction.streamFunctionState.value = stateStandby;
     }
+    Home.isShowDisplayCode.value = inConnectionNumber == 0 ? true : false;
   }
 
   // Any type of connection is presenting

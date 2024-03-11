@@ -65,7 +65,6 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool showMode = true;
   String _displayCode = '';
 
   String get displayCode => _displayCode;
@@ -368,7 +367,6 @@ class ChannelProvider extends ChangeNotifier {
         iceServersApiUrl: appConfig.settings.getIceServer);
     rtcConnector.onConnect = (() {
       HybridConnectionList().updateSplitScreen();
-      updateModePanel(false);
       StreamFunction.streamFunctionState.value = stateMenuOff;
     });
 
@@ -388,14 +386,6 @@ class ChannelProvider extends ChangeNotifier {
       notifyListeners();
     });
 
-    rtcConnector.onShowMode = (({showMode}) {
-      if (showMode != null) {
-        updateModePanel(showMode);
-      } else {
-        updateModePanel(!HybridConnectionList().isPresenting());
-      }
-    });
-
     rtcConnector.onChannelDisconnect = (() async {
       // update UI
       bool presenting = false;
@@ -407,7 +397,6 @@ class ChannelProvider extends ChangeNotifier {
       }
       if (!presenting) {
         Home.showTitleBottomBar.value = true;
-        showMode = true;
       } else {
         Home.enlargedScreenPositionIndex.value = null;
       }
@@ -455,11 +444,6 @@ class ChannelProvider extends ChangeNotifier {
       // http.get maybe no network connection.
       return '';
     }
-  }
-
-  void updateModePanel(bool show) {
-    showMode = show;
-    notifyListeners();
   }
 
   // Future<void> basicStreamOff() async {

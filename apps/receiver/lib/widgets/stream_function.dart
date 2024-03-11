@@ -9,6 +9,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/cast_settings.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
+import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/moderator_menu_view.dart';
 import 'package:display_flutter/screens/sender_menu_view.dart';
 import 'package:display_flutter/screens/settings.dart';
@@ -235,9 +236,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       onClick: () {
                         StreamFunction.streamFunctionState.value =
                             stateBackArrow;
-                        context.read<ChannelProvider>().updateModePanel(true);
-                        context.read<MirrorStateProvider>().menuOff = false;
-
+                        Home.isShowDisplayCode.value = true;
                       },
                     ),
 
@@ -269,8 +268,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                         } else if (value == stateBackArrow) {
                           StreamFunction.streamFunctionState.value =
                               stateMenuOff;
-                          context.read<ChannelProvider>().updateModePanel(false);
-                          context.read<MirrorStateProvider>().menuOff = false;
+                          Home.isShowDisplayCode.value = false;
                         }
                       },
                     ),
