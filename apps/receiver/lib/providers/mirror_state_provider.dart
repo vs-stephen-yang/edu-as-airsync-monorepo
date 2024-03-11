@@ -355,7 +355,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   Future<void> restartMirror() async {
     printInDebug('restartMirror', type: runtimeType);
-    if (HybridConnectionList().isMirroring()) {
+    if (!HybridConnectionList().isMirroring()) {
       if (_airplayEnabled) {
         await stopAirPlay();
         await startAirPlay();
