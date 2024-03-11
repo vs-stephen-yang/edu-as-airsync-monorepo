@@ -139,7 +139,6 @@ class _ParticipantItemState extends State<ParticipantItem>
   _sendPresenterStop() {
     AppAnalytics().trackEventModeratorPresenterStop();
     rtcConnector?.sendStopPresent();
-    channelProvider.updateModePanel(!HybridConnectionList().isPresenting());
   }
 
   _sendPresenterRemove() async {

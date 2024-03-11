@@ -37,6 +37,7 @@ class Home extends StatefulWidget {
   static ValueNotifier<bool> showTitleBottomBar = ValueNotifier(true);
   static ValueNotifier<bool> showCloudOff = ValueNotifier(false);
   static ValueNotifier<int?> enlargedScreenPositionIndex = ValueNotifier(null);
+  static ValueNotifier<bool> isShowDisplayCode = ValueNotifier(true);
 
   @override
   State createState() => _HomeState();
@@ -201,12 +202,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   );
                 },
               ),
-              Consumer2<ChannelProvider, MirrorStateProvider>(
-                builder: (context, channel, mirror, child) {
-                  if (channel.showMode == false || mirror.menuOff) {
-                    return const SizedBox();
-                  } else {
+              ValueListenableBuilder(
+                valueListenable: Home.isShowDisplayCode,
+                builder: (BuildContext context, bool value, child) {
+                  if (value) {
                     return const MainInfoInternet();
+                  } else {
+                    return const SizedBox();
                   }
                 },
               ),
