@@ -232,7 +232,7 @@ class MultiConnectionChannel implements Channel {
     _reconnectTimer = null;
 
     _closeReason = ChannelCloseReason(
-      ChannelCloseCode.transportClose,
+      ChannelCloseCode.networkError,
       text: 'The client does not reconnect within timeout',
     );
     _changeState(ChannelState.closed);
