@@ -7,11 +7,6 @@ import 'client.dart';
 main(List<String> arguments) async {
   final parser = ArgParser()
     ..addOption(
-      'mode',
-      defaultsTo: 'direct',
-      allowed: ['direct', 'tunnel'],
-    )
-    ..addOption(
       'tunnelUrl',
       defaultsTo: 'wss://ap-northeast-1.gateway.dev.airsync.net',
     )
@@ -21,58 +16,44 @@ main(List<String> arguments) async {
     )
     ..addOption(
       'code',
-      defaultsTo: 'ABA',
-    )
-    ..addOption(
-      'instanceIndex',
-      defaultsTo: '100043',
+      mandatory: true,
     );
 
   ArgResults argResults = parser.parse(arguments);
 
   final clientId = const Uuid().v4();
-  final token = argResults['otp'];
-  final instanceIndex = argResults['instanceIndex'];
-  final displayCode = argResults['code'];
+  final otp = argResults['otp'];
+  final encodedDisplayCode = argResults['code'];
   final tunnelServiceUrl = argResults['tunnelUrl'];
 
-  bool direct = argResults['mode'] == 'direct';
+  createConnection(url) => WebSocketClientConnection(
+        url,
+        maxRetryDelay: const Duration(seconds: 1),
+        maxRetryAttempts: 4,
+        logger: (url, message) => log().info('$url $message'),
+      );
 
-  // Server URL
-  final uri = direct
-      ? Uri(
-          scheme: 'ws',
-          host: "127.0.0.1",
-          port: 5100,
-        )
-      : Uri.parse(tunnelServiceUrl);
+  Future<String> fetchTunnelUrl(instanceIndex) async => tunnelServiceUrl;
 
-  // Create a client channel
-  final channel = DisplayChannelClient(
-    clientId,
-    uri,
-    (url) => WebSocketClientConnection(
-      url,
-      maxRetryDelay: const Duration(seconds: 1),
-      maxRetryAttempts: 4,
-      logger: (url, message) => log().info('$url $message'),
-    ),
+  final displayCode = decodeDisplayCode(encodedDisplayCode);
+
+  final client = DisplayChannelConnector(
+    clientId: clientId,
+    otp: otp,
+    displayCode: displayCode,
+    encodedDisplayCode: encodedDisplayCode,
+    createConnectionTunnel: createConnection,
+    createConnectionDirect: createConnection,
+    fetchTunnelUrl: fetchTunnelUrl,
+    onOpened: (channel) {
+      Client(clientId, channel);
+    },
+    onOpenError: (error) {
+      log().info('Failed to open the channel $error');
+    },
   );
 
-  Client(clientId, channel);
+  log().info('opening the channel');
 
-  log().info('opening the channel to ${uri.toString()}');
-
-  if (direct) {
-    channel.openDirectChannel(
-      token,
-      displayCode: displayCode,
-    );
-  } else {
-    channel.openTunnelChannel(
-      instanceIndex,
-      token,
-      displayCode: displayCode,
-    );
-  }
+  client.open(directPort: 5100);
 }

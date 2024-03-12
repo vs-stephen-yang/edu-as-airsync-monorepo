@@ -128,6 +128,10 @@ class MockServer {
 main(List<String> arguments) async {
   final parser = ArgParser()
     ..addOption(
+      'host',
+      mandatory: true,
+    )
+    ..addOption(
       'tunnelUrl',
       defaultsTo: 'wss://ap-northeast-1.gateway.dev.airsync.net',
     );
@@ -135,8 +139,10 @@ main(List<String> arguments) async {
   ArgResults argResults = parser.parse(arguments);
 
   final tunnelServiceUrl = argResults['tunnelUrl'];
+  final host = argResults['host'];
   const localDirectPort = 5100;
   const instanceId = '0001';
+  const instanceIndex = 100043;
 
   final server = MockServer();
 
@@ -145,4 +151,13 @@ main(List<String> arguments) async {
     tunnelServiceUrl,
     localDirectPort,
   );
+
+  final encodedDisplayCode = encodeDisplayCode(
+    DisplayCode(host, instanceIndex),
+  );
+  final encodedDisplayCode1 = encodeDisplayCode(
+    DisplayCode(host, 0),
+  );
+
+  log().info('Display Code: $encodedDisplayCode $encodedDisplayCode1');
 }

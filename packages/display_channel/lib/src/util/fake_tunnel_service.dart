@@ -40,7 +40,9 @@ class FakeTunnelService {
   final _serverConnections = <int, WebSocket>{};
   final _clientConnections = <int, WebSocket>{};
 
-  FakeTunnelService({instanceIndex}) : _instanceIndex = instanceIndex;
+  FakeTunnelService({
+    required String instanceIndex,
+  }) : _instanceIndex = instanceIndex;
 
   Future onHttpRequest(HttpRequest httpRequest) async {
     final parameters = httpRequest.requestedUri.queryParameters;
