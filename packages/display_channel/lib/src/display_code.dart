@@ -16,6 +16,11 @@ class DisplayCode {
     this.ipAddress,
     this.instanceIndex,
   );
+
+  bool hasIpAddress() => ipAddress.isNotEmpty;
+  bool hasInstanceIndex() => instanceIndex != 0;
+
+  bool isDual() => hasIpAddress() && hasInstanceIndex();
 }
 
 const displayCodeRadix = 36; // 26 letters + 10 numbers
