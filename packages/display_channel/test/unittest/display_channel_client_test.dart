@@ -126,12 +126,27 @@ void main() {
     );
   });
 
-  test('state should be connected after the connection is established', () {
+  test(
+      'state should not switch to connected after the connection is established',
+      () {
     // arrange
     client.openDirectChannel('token', displayCode: 'ABC');
 
     // action
     connection.onConnected?.call();
+
+    // assert
+    expect(stateChanges.length, 0);
+  });
+
+  test('state should switch to connected after receiving channel-connected',
+      () {
+    // arrange
+    client.openDirectChannel('token', displayCode: 'ABC');
+
+    // action
+    connection.onConnected?.call();
+    injectChannelConnected('token2', 0);
 
     // assert
     expect(stateChanges.length, 1);
