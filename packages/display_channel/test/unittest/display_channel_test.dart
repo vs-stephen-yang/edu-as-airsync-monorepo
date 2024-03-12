@@ -287,7 +287,7 @@ void main() {
 
     // assert
     await clientClosed.future;
-    expect(client.closeReason!.code, ChannelCloseCode.transportClose);
+    expect(client.closeReason!.code, ChannelCloseCode.networkError);
   });
 
   test(
@@ -300,7 +300,7 @@ void main() {
 
     // assert
     await clientClosed.future;
-    expect(client.closeReason!.code, ChannelCloseCode.channelNotFound);
+    expect(client.closeReason!.code, ChannelCloseCode.instanceNotFound);
   });
 
   test(
