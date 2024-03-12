@@ -1,4 +1,4 @@
-
+import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_channel/display_channel.dart';
@@ -14,7 +14,7 @@ class PresentSelectRole extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ChannelProvider>(
         builder: (context, channelProvider, _) => Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (!kIsWeb)
                   InkWell(
@@ -33,14 +33,18 @@ class PresentSelectRole extends StatelessWidget {
                               image: Svg('assets/images/ic_receiver.svg'),
                             )),
                         const Padding(padding: EdgeInsets.all(5)),
-                        const Text(
-                          'Receive',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        Text(
+                          S.of(context).present_role_receive,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
                         )
                       ],
                     ),
                     onTap: () {
-                      AppAnalytics.instance.trackEvent('remote_screen_selected');
+                      AppAnalytics.instance
+                          .trackEvent('remote_screen_selected');
 
                       channelProvider.currentRole = JoinIntentType.remoteScreen;
                       channelProvider.presentModeratorNamePage();
@@ -63,9 +67,12 @@ class PresentSelectRole extends StatelessWidget {
                             image: Svg('assets/images/ic_cast_screen.svg'),
                           )),
                       const Padding(padding: EdgeInsets.all(5)),
-                      const Text(
-                        'Cast the screen',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      Text(
+                        S.of(context).present_role_cast_screen,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
                       )
                     ],
                   ),

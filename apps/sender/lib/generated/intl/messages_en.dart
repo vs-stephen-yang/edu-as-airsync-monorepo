@@ -53,6 +53,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "moderator_name": MessageLookupByLibrary.simpleMessage("Name"),
         "moderator_wait": MessageLookupByLibrary.simpleMessage(
             "Please wait while the moderator selects presenters..."),
+        "present_role_cast_screen":
+            MessageLookupByLibrary.simpleMessage("Cast the screen"),
+        "present_role_receive": MessageLookupByLibrary.simpleMessage("Receive"),
         "present_select_screen_cancel":
             MessageLookupByLibrary.simpleMessage("Cancel"),
         "present_select_screen_description":
