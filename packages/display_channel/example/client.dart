@@ -3,7 +3,7 @@ import 'package:uuid/uuid.dart';
 import 'package:display_channel/src/util/log.dart';
 
 class Client {
-  final DisplayChannelClient _channel;
+  final Channel _channel;
 
   final String _clientId;
   final _sessionId = const Uuid().v4();

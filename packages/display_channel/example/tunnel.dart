@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:display_channel/src/util/log.dart';
 
 void main() async {
-  const instanceIndex = '100018';
+  const instanceIndex = 100018;
 
   final tunnelService = FakeTunnelService(
-    instanceIndex: instanceIndex,
+    instanceIndex: instanceIndex.toString(),
   );
 
   const httpPort = 5000;
