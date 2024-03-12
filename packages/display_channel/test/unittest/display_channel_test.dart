@@ -268,7 +268,6 @@ void main() {
       () async {
     // arrange
     openDirectChannel(token: 'wrong');
-    await clientConnected.future;
 
     // action
 
