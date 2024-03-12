@@ -523,7 +523,7 @@ class ChannelProvider extends ChangeNotifier {
     switch (reasonCode) {
       // TODO: Show different message for rateLimitExceeded
       case ChannelCloseCode.rateLimitExceeded:
-      case ChannelCloseCode.channelNotFound:
+      case ChannelCloseCode.instanceNotFound:
       case ChannelCloseCode.invalidDisplayCode:
         presentEnd(goIdleState: false);
         setInvalidDisplayCode(true);
@@ -534,7 +534,7 @@ class ChannelProvider extends ChangeNotifier {
         break;
       case ChannelCloseCode.close:
       case ChannelCloseCode.remoteClose:
-      case ChannelCloseCode.transportClose:
+      case ChannelCloseCode.networkError:
       case ChannelCloseCode.heartbeatTimeout:
       case ChannelCloseCode.remoteUnknown:
       case null:
