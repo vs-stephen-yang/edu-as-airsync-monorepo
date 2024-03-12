@@ -10,9 +10,9 @@ enum ChannelState {
 enum ChannelCloseCode {
   close,
   remoteClose,
-  channelNotFound,
+  instanceNotFound,
   authenticationError,
-  transportClose,
+  networkError,
   heartbeatTimeout,
   remoteUnknown,
   invalidDisplayCode,
