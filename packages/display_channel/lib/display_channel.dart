@@ -16,7 +16,7 @@ export 'package:display_channel/src/messages/channel_message_handler.dart';
 export 'package:display_channel/src/channel.dart';
 
 // client-side
-export 'src/channel.dart' show Channel;
+export 'package:display_channel/src/display_channel_connector.dart';
 
 // server-side
 export 'package:display_channel/src/server/connection.dart' show Connection;
