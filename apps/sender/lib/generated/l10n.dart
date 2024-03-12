@@ -449,6 +449,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Receive`
+  String get present_role_receive {
+    return Intl.message(
+      'Receive',
+      name: 'present_role_receive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cast the screen`
+  String get present_role_cast_screen {
+    return Intl.message(
+      'Cast the screen',
+      name: 'present_role_cast_screen',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
