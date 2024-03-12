@@ -168,6 +168,9 @@ class DisplayChannelClient implements Channel {
     if (message.reconnectionToken != null) {
       updateQueryParameters(message.reconnectionToken!);
     }
+
+    // state changes to "connected" after receiving channel-connected
+    _changeState(ChannelState.connected);
   }
 
   @override
@@ -224,8 +227,6 @@ class DisplayChannelClient implements Channel {
         _continuity.nextIncomingSequenceNumber,
       ).toJson(),
     );
-
-    _changeState(ChannelState.connected);
   }
 
   Future _onDisconnected() async {
