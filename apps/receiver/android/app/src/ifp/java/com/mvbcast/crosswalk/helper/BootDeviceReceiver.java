@@ -14,13 +14,15 @@ public class BootDeviceReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        boolean autoStartUp = context.getSharedPreferences("display", Context.MODE_PRIVATE)
-                .getBoolean("autoStartup", true);
-        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) && autoStartUp) {
+        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             if (Build.MODEL.equals("VBS100") || Build.MODEL.contains("VBS200")) {
-                Intent activityIntent = new Intent(context, EulaActivity.class);
-                activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(activityIntent);
+                boolean autoStartUp = context.getSharedPreferences("display", Context.MODE_PRIVATE)
+                        .getBoolean("autoStartup", true);
+                if (autoStartUp) {
+                    Intent activityIntent = new Intent(context, EulaActivity.class);
+                    activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(activityIntent);
+                }
             }
 
             EulaActivity.setAlarmOTA(context);
