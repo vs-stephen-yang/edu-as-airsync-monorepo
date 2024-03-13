@@ -111,7 +111,8 @@ class _SettingsState extends State<Settings> {
                       onClick: () {
                         AppPreferences().set(
                             showOverlayTab: !AppPreferences().showOverlayTab);
-                        floatingInfoProvider.openAndroidWindow(context);
+                        floatingInfoProvider
+                            .openAndroidWindow(AppPreferences().showOverlayTab);
                         setState(() {});
                       },
                     );

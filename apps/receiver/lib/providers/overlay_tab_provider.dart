@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:android_window/main.dart' as android_window;
-import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
@@ -33,28 +32,41 @@ class OverlayTabProvider extends ChangeNotifier {
   var infoWidth = PlatformDispatcher.instance.displays.first.size.width / 3;
   var infoHeight = PlatformDispatcher.instance.displays.first.size.height / 15;
 
+  BuildContext? _context;
+
+  OverlayTabProvider();
+
+  initContext(BuildContext context) {
+    _context = context;
+  }
+
   Future<bool> isFloatingInformationRunning() async {
     return android_window.isRunning();
   }
 
-  void openAndroidWindow(BuildContext context) {
-    if (AppPreferences().showOverlayTab) {
+  void openAndroidWindow(bool isOpen) {
+    assert(_context != null,
+        'Should call initContext() once before using openAndroidWindow().');
+
+    if (isOpen) {
       android_window.open(
         size: Size(infoWidth, infoHeight),
         position: Offset(infoWidth * 2, 0),
         draggableY: false,
       );
       android_window.setHandler((String name, Object? data) async {
+        if (_context == null) OverlayTabHandler.resultEmptyString;
+
         switch (name) {
           case OverlayTabHandler.nameOverlayTabReady:
             ChannelProvider channelProvider =
-                Provider.of<ChannelProvider>(context, listen: false);
+                Provider.of<ChannelProvider>(_context!, listen: false);
 
             MirrorStateProvider mirrorProvider =
-                Provider.of<MirrorStateProvider>(context, listen: false);
+                Provider.of<MirrorStateProvider>(_context!, listen: false);
 
             PrefLanguageProvider languageProvider =
-                Provider.of<PrefLanguageProvider>(context, listen: false);
+                Provider.of<PrefLanguageProvider>(_context!, listen: false);
 
             await postMessageToAndroidWindow(OverlayTabHandler.nameInitValue, {
               OverlayTabHandler.keyDeviceName: mirrorProvider.deviceName,

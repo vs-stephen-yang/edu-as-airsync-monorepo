@@ -54,9 +54,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
+    Provider.of<OverlayTabProvider>(context, listen: false)
+        .initContext(context);
     if (AppPreferences().showOverlayTab) {
       Provider.of<OverlayTabProvider>(context, listen: false)
-          .openAndroidWindow(context);
+          .openAndroidWindow(AppPreferences().showOverlayTab);
     }
   }
 
