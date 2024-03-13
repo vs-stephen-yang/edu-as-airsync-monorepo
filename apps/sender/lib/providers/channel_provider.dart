@@ -35,7 +35,9 @@ class ChannelProvider extends ChangeNotifier {
     _apiGateway = AppConfig.of(context)!.settings.urlGateway;
   }
 
-  DisplayChannelClient? _channel, _tempLanChannel, _tempInternetChannel;
+  Channel? _channel;
+  DisplayChannelConnector? _channelConnector;
+
   String? _clientId;
   var _sessionId = const Uuid().v4();
   int port = 5100;
@@ -88,7 +90,7 @@ class ChannelProvider extends ChangeNotifier {
 
   late String _urlIce, _apiGateway = '';
   DisplayCode? displayCode;
-  String? otp, _tunnelApiUrl;
+  String? otp;
   Timer? _presentTimer;
 
   bool _touchBack = false;
@@ -169,68 +171,51 @@ class ChannelProvider extends ChangeNotifier {
   //endregion
 
   startConnect({
-    required String encodedDisplayCode,
+    required String formattedDisplayCode,
     required String otp,
   }) async {
     // Generate a new client Id
     _clientId = const Uuid().v4();
+    final encodedDisplayCode = formattedDisplayCode.replaceAll('-', '');
 
-    displayCode = decodeDisplayCode(encodedDisplayCode.replaceAll('-', ''));
+    displayCode = decodeDisplayCode(encodedDisplayCode);
     this.otp = otp;
 
-    if (kIsWeb) {
-      await connectInternetChannel(encodedDisplayCode.replaceAll('-', ''),
-          (state, internetChannel) {
-        if (state == ChannelState.connected) {
-          _channel = internetChannel;
-          setUpChannel(encodedDisplayCode);
-        } else if (state == ChannelState.closed) {
-          _handleChannelCloseState(internetChannel?.closeReason);
-        }
-      });
-    } else {
-      bool lanResultBack = false, netResultBack = false;
-      connectLanChannel(encodedDisplayCode.replaceAll('-', ''),
-          (state, lanChannel) {
-        if (_channel == null) {
-          if (state == ChannelState.connected) {
-            _tempInternetChannel
-                ?.close(ChannelCloseReason(ChannelCloseCode.close));
-            _channel = lanChannel;
-            setUpChannel(encodedDisplayCode);
-          } else if (state == ChannelState.closed) {
-            if (lanResultBack) {
-              _handleChannelCloseState(lanChannel?.closeReason);
-            }
-          }
-          netResultBack = true;
-        } else {
-          lanChannel?.close(ChannelCloseReason(ChannelCloseCode.close));
-          _tempLanChannel = lanChannel = null;
-        }
-      });
-      connectInternetChannel(encodedDisplayCode.replaceAll('-', ''),
-          (state, internetChannel) {
-        if (_channel == null) {
-          if (state == ChannelState.connected) {
-            _tempLanChannel?.close(ChannelCloseReason(ChannelCloseCode.close));
-            _channel = internetChannel;
-            setUpChannel(encodedDisplayCode);
-          } else if (state == ChannelState.closed) {
-            if (netResultBack) {
-              _handleChannelCloseState(internetChannel?.closeReason);
-            }
-          }
-          lanResultBack = true;
-        } else {
-          internetChannel?.close(ChannelCloseReason(ChannelCloseCode.close));
-          _tempInternetChannel = internetChannel = null;
-        }
-      });
-    }
+    _channelConnector = DisplayChannelConnector(
+      clientId: _clientId!,
+      otp: otp,
+      displayCode: displayCode!,
+      encodedDisplayCode: encodedDisplayCode,
+      createConnectionTunnel: (url) => WebSocketClientConnection(url,
+          maxRetryDelay: const Duration(seconds: 3),
+          maxRetryAttempts: 3,
+          logger: (url, message) => print('tunnel connection: $url $message}')),
+      createConnectionDirect: (url) => WebSocketClientConnection(url,
+          maxRetryDelay: const Duration(seconds: 3),
+          maxRetryAttempts: 3,
+          logger: (url, message) => print('direct connection: $url $message}')),
+      fetchTunnelUrl: (int instanceIndex) async {
+        return await _fetchTunnelUrl(displayCode!.instanceIndex);
+      },
+      onOpened: (channel) {
+        // Note: To prevent missing events, ensure that the channel's callback is registered promptly.
+        // Specifically, register callbacks for 'onChannelMessage' and 'onStateChange'.
+        setUpChannel(channel, formattedDisplayCode);
+      },
+      onOpenError: (error) {
+        _onChannelOpenFailed(error);
+      },
+    );
+
+    _channelConnector!.open(
+      // Web does not support direct channel connection
+      directPort: kIsWeb ? null : port,
+    );
   }
 
-  void setUpChannel(String encodedDisplayCode) {
+  void setUpChannel(Channel channel, String formattedDisplayCode) {
+    _channel = channel;
+
     _channel?.onStateChange = (ChannelState state) {
       onChannelStateChange(state);
     };
@@ -243,7 +228,7 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.displayStatus:
           _invalidDisplayCode = false;
           _invalidOtp = false;
-          DataDisplayCode.getInstance().save(encodedDisplayCode);
+          DataDisplayCode.getInstance().save(formattedDisplayCode);
           _onDisplayStatus(message as DisplayStatusMessage);
           break;
         case ChannelMessageType.presentAccepted:
@@ -318,55 +303,6 @@ class ChannelProvider extends ChangeNotifier {
         _handleChannelCloseState(_channel?.closeReason);
         break;
     }
-  }
-
-  Future connectLanChannel(
-      String displayCodeRaw,
-      Function(ChannelState state, DisplayChannelClient? lanChannel)
-          onState) async {
-    String host = displayCode!.ipAddress;
-    Uri? uri = Uri(scheme: 'ws', host: host, port: port);
-
-    _tempLanChannel = DisplayChannelClient(
-        _clientId!,
-        uri,
-        (url) => WebSocketClientConnection(url,
-            maxRetryDelay: const Duration(seconds: 3),
-            maxRetryAttempts: 3,
-            logger: (url, message) =>
-                print('lanChannel logger $url $message}')));
-    _tempLanChannel?.openDirectChannel(otp!, displayCode: displayCodeRaw);
-    _tempLanChannel?.onStateChange = (ChannelState state) {
-      onState(state, _tempLanChannel);
-    };
-  }
-
-  Future connectInternetChannel(
-      String displayCodeRaw,
-      Function(ChannelState state, DisplayChannelClient? internetChannel)
-          onState) async {
-    String displayIndex = displayCode!.instanceIndex.toString();
-    _tunnelApiUrl = await _getTunnelUrl(displayIndex);
-    if (_tunnelApiUrl == null) {
-      setInvalidDisplayCode(true);
-      return;
-    }
-
-    if (_channel != null) return;
-    Uri? uri = Uri.parse(_tunnelApiUrl!);
-    _tempInternetChannel = DisplayChannelClient(
-        _clientId!,
-        uri,
-        (url) => WebSocketClientConnection(url,
-            maxRetryDelay: const Duration(seconds: 3),
-            maxRetryAttempts: 3,
-            logger: (url, message) =>
-                print('internetChannel logger  $url $message}')));
-    _tempInternetChannel?.openTunnelChannel(displayIndex, otp!,
-        displayCode: displayCodeRaw);
-    _tempInternetChannel?.onStateChange = (ChannelState state) {
-      onState(state, _tempInternetChannel);
-    };
   }
 
   Future<void> presentStart({
@@ -479,6 +415,29 @@ class ChannelProvider extends ChangeNotifier {
     _remoteScreenClient?.sendStartRemoteScreenMessage();
   }
 
+  void _onChannelOpenFailed(ChannelConnectorError error) {
+    print('Failed to open channel $error');
+
+    switch (error) {
+      case ChannelConnectorError.networkError:
+      // TODO:
+      case ChannelConnectorError.rateLimitExceeded:
+      // TODO:
+      case ChannelConnectorError.unknownError:
+      // TODO:
+      case ChannelConnectorError.instanceNotFound:
+      // TODO:
+      case ChannelConnectorError.invalidDisplayCode:
+        presentEnd(goIdleState: false);
+        setInvalidDisplayCode(true);
+        break;
+      case ChannelConnectorError.authenticationError:
+        presentEnd(goIdleState: false);
+        setInvalidOtp(true);
+        break;
+    }
+  }
+
   Future _handleRemoteScreenState(RemoteScreenStatusMessage message) async {
     switch (message.status) {
       case RemoteScreenStatus.accepted:
@@ -521,41 +480,70 @@ class ChannelProvider extends ChangeNotifier {
   void _handleChannelCloseState(ChannelCloseReason? closeReason) {
     ChannelCloseCode? reasonCode = closeReason?.code;
     switch (reasonCode) {
-      // TODO: Show different message for rateLimitExceeded
-      case ChannelCloseCode.rateLimitExceeded:
-      case ChannelCloseCode.instanceNotFound:
-      case ChannelCloseCode.invalidDisplayCode:
-        presentEnd(goIdleState: false);
-        setInvalidDisplayCode(true);
-        break;
-      case ChannelCloseCode.authenticationError:
-        presentEnd(goIdleState: false);
-        setInvalidOtp(true);
-        break;
-      case ChannelCloseCode.close:
-      case ChannelCloseCode.remoteClose:
-      case ChannelCloseCode.networkError:
-      case ChannelCloseCode.heartbeatTimeout:
-      case ChannelCloseCode.remoteUnknown:
-      case null:
+      // TODO
+      default:
         presentEnd();
         break;
     }
   }
 
-  Future<String?> _getTunnelUrl(String instanceIndex) async {
-    try {
-      http.Response response = await http
-          .get(Uri.parse('$_apiGateway?instanceIndex=$instanceIndex'));
-      if (response.statusCode >= HttpStatus.ok &&
-          response.statusCode < HttpStatus.multiStatus) {
-        Map<String, dynamic> json = jsonDecode(response.body);
+  Future<String> _fetchTunnelUrl(int instanceIndex) async {
+    late http.Response response;
 
-        return json['tunnelApiUrl'] ?? '';
-      }
+    try {
+      response = await http
+          .get(Uri.parse('$_apiGateway?instanceIndex=$instanceIndex'));
+    } on SocketException catch (e) {
+      print(e);
+
+      throw FetchChannelTunnelUrlException(
+        FetchChannelTunnelUrlError.networkError,
+      );
+    } on http.ClientException catch (e) {
+      print(e);
+
+      throw FetchChannelTunnelUrlException(
+        FetchChannelTunnelUrlError.networkError,
+      );
     } catch (e) {
-      // http.get maybe no network connection.
+      print(e);
+
+      throw FetchChannelTunnelUrlException(
+        FetchChannelTunnelUrlError.unknownError,
+      );
     }
-    return null;
+
+    if (response.statusCode != HttpStatus.ok) {
+      if (response.statusCode == HttpStatus.notFound) {
+        throw FetchChannelTunnelUrlException(
+          FetchChannelTunnelUrlError.instanceNotFound,
+        );
+      } else {
+        throw FetchChannelTunnelUrlException(
+          FetchChannelTunnelUrlError.unknownError,
+        );
+      }
+    }
+
+    late Map<String, dynamic> json;
+
+    try {
+      json = jsonDecode(response.body);
+    } on FormatException catch (e) {
+      print(e);
+
+      throw FetchChannelTunnelUrlException(
+        FetchChannelTunnelUrlError.unknownError,
+      );
+    }
+
+    final url = json['tunnelApiUrl'];
+    if (url == null) {
+      throw FetchChannelTunnelUrlException(
+        FetchChannelTunnelUrlError.instanceNotFound,
+      );
+    }
+
+    return url as String;
   }
 }
