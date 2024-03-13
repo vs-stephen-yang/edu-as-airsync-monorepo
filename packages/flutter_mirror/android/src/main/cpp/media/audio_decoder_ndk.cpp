@@ -186,6 +186,10 @@ bool AudioDecoderNdk::Decode(
 
   size_t buf_size = 0;
   uint8_t* buf = AMediaCodec_getInputBuffer(codec_.get(), buf_idx, &buf_size);
+  if (!buf) {
+    ALOGE("cannot get input buffer. buf_idx:%d", (int)buf_idx);
+    return false;
+  }
 
   memcpy(buf, frame, frame_size);
   uint32_t flags = 0;
