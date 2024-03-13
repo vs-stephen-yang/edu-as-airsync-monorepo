@@ -56,7 +56,7 @@ class WebSocketClientConnection implements ClientConnection {
   }
 
   @override
-  Future<void> close() async {
+  void close() {
     _closed = true;
 
     _closeSocket();
