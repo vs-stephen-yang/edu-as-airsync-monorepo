@@ -114,6 +114,10 @@ bool VideoDecoderNdk::Decode(const uint8_t* frame, size_t frameSize, uint64_t pr
   if (bufIdx >= 0) {
     size_t buf_size = 0;
     uint8_t* buf = AMediaCodec_getInputBuffer(codec_.get(), bufIdx, &buf_size);
+    if (!buf) {
+      ALOGE("cannot get input buffer. bufIdx:%d", (int)bufIdx);
+      return false;
+    }
 
     memcpy(buf, frame, frameSize);
     uint32_t flags = 0;
