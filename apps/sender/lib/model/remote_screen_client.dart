@@ -10,7 +10,7 @@ import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 class RemoteScreenClient {
   RemoteScreenClient(this._channel);
 
-  final DisplayChannelClient? _channel;
+  final Channel? _channel;
   final String _sessionId = const Uuid().v4();
   Client? _client;
   RTCVideoRenderer get remoteScreenRenderer => _remoteScreenRenderer;
@@ -61,7 +61,7 @@ class RemoteScreenClient {
 
     _client!.onSignalClose = (int code, String reason) {
       onClose(code, reason);
-    };  
+    };
   }
 
   Future sendStartRemoteScreenMessage() async {

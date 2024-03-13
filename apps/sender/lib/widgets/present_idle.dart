@@ -43,7 +43,7 @@ class PresentIdle extends StatelessWidget {
             await channelProvider.presentEnd(goIdleState: false);
 
             channelProvider.startConnect(
-              encodedDisplayCode: displayCode,
+              formattedDisplayCode: displayCode,
               otp: password,
             );
           },
