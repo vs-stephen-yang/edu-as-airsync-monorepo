@@ -173,10 +173,9 @@ class MirrorStateProvider extends ChangeNotifier
 
   clearRequestMirrorId(String? mirrorId) {
     var mirrorMap = HybridConnectionList().getMirrorMap();
-      for (var entry in mirrorMap.entries) {
-        if (entry.value.mirrorId == mirrorId) {
-          HybridConnectionList().removeConnection(entry);
-        }
+    for (var entry in mirrorMap.entries) {
+      if (entry.value.mirrorId == mirrorId) {
+        HybridConnectionList().removeConnection(entry);
       }
     }
     notifyListeners();
