@@ -2,6 +2,7 @@ import 'package:display_channel/src/channel.dart';
 import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/display_channel_client.dart';
 import 'package:display_channel/src/display_code.dart';
+import 'package:display_channel/src/messages/channel_message.dart';
 
 enum FetchChannelTunnelUrlError {
   instanceNotFound,
@@ -42,6 +43,9 @@ class DisplayChannelConnector {
   DisplayChannelClient? _directClient;
 
   bool _connected = false;
+
+  final _directPendingMessages = <ChannelMessage>[];
+  final _tunnelPendingMessages = <ChannelMessage>[];
 
   bool _useDirect = false;
   bool _useTunnel = false;
@@ -135,6 +139,11 @@ class DisplayChannelConnector {
       displayCode: _encodedDisplayCode,
     );
 
+    _tunnelClient!.onChannelMessage = (message) {
+      // store the messages that arrive before the channel becomes connected
+      _tunnelPendingMessages.add(message);
+    };
+
     _tunnelClient!.onStateChange = (state) {
       if (state == ChannelState.connected) {
         _onTunnelConnected();
@@ -170,6 +179,11 @@ class DisplayChannelConnector {
       displayCode: _encodedDisplayCode,
     );
 
+    _directClient!.onChannelMessage = (message) {
+      // store the messages that arrive before the channel becomes connected
+      _directPendingMessages.add(message);
+    };
+
     _directClient!.onStateChange = (ChannelState state) {
       if (state == ChannelState.connected) {
         _onDirectConnected();
@@ -178,6 +192,18 @@ class DisplayChannelConnector {
         _onConnectFailed();
       }
     };
+  }
+
+  drainPendingMessages(
+    DisplayChannelClient client,
+    List<ChannelMessage> messages,
+  ) {
+    // Note: messages may arrive early before the state of the channel switches to connected
+    for (var message in messages) {
+      client.onChannelMessage?.call(message);
+    }
+
+    messages.clear();
   }
 
   // direct channel is connected
@@ -192,6 +218,8 @@ class DisplayChannelConnector {
 
     _connected = true;
     _onOpened(_directClient!);
+
+    drainPendingMessages(_directClient!, _directPendingMessages);
   }
 
   // tunnel channel is connected
@@ -206,6 +234,8 @@ class DisplayChannelConnector {
 
     _connected = true;
     _onOpened(_tunnelClient!);
+
+    drainPendingMessages(_tunnelClient!, _tunnelPendingMessages);
   }
 
   _mapDualConnectError() {
