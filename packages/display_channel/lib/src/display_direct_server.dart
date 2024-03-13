@@ -58,7 +58,7 @@ class DisplayDirectServer {
 
     _httpServer!.listen((request) async {
       if (WebSocketTransformer.isUpgradeRequest(request)) {
-        _directServer!.onHttpRequest(request);
+        await _directServer!.onHttpRequest(request);
       }
     });
 

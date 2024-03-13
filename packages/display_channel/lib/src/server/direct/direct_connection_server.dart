@@ -41,7 +41,7 @@ class DirectConnectionServer {
 
     if (connectionRequest == null) {
       // invalid http request
-      httpRequest.response.close();
+      await httpRequest.response.close();
       return;
     }
 

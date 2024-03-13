@@ -143,7 +143,7 @@ class DisplayChannelClient implements Channel {
   }
 
   Future _handleChannelMessage(ChannelMessage message) async {
-    _handleControlMessage(message);
+    await _handleControlMessage(message);
 
     _continuity.processIncomingMessage(message);
   }

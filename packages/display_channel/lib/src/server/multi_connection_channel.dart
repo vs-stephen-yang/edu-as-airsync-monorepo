@@ -125,16 +125,16 @@ class MultiConnectionChannel implements Channel {
     _handleChannelMessage(parsedMessage);
   }
 
-  Future _handleChannelMessage(ChannelMessage message) async {
+  _handleChannelMessage(ChannelMessage message) {
     _handleControlMessage(message);
 
     _messageContinuity.processIncomingMessage(message);
   }
 
-  Future _handleControlMessage(ChannelMessage message) async {
+  _handleControlMessage(ChannelMessage message) {
     switch (message.messageType) {
       case ChannelMessageType.channelClosed:
-        await _onChannelClosedMessage(message as ChannelClosedMessage);
+        _onChannelClosedMessage(message as ChannelClosedMessage);
         return;
       default:
         return;
@@ -208,7 +208,7 @@ class MultiConnectionChannel implements Channel {
   }
 
   // the client initiates channel closure
-  Future _onChannelClosedMessage(ChannelClosedMessage message) async {
+  _onChannelClosedMessage(ChannelClosedMessage message) {
     if (_isClosed()) {
       return;
     }
