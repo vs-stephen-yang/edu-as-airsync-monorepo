@@ -12,12 +12,18 @@ class MirrorView extends StatefulWidget {
   State<StatefulWidget> createState() => MirrorViewState();
 }
 
-  class MirrorViewState extends State<MirrorView> {
+class MirrorViewState extends State<MirrorView> {
+  GlobalKey mirrorViewKey = GlobalKey();
   MirrorRequest? mirrorRequest;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     mirrorRequest = HybridConnectionList().hybridConnectionList[widget.index];
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Consumer<MirrorStateProvider>(
       builder: (context, mirror, child) {
         return ConstrainedBox(
@@ -36,16 +42,19 @@ class MirrorView extends StatefulWidget {
                       child: SizeChangedLayoutNotifier(
                         child: Listener(
                           onPointerDown: (PointerDownEvent event) {
-                            mirror.onTouchEvent(event, mirrorRequest?.mirrorId);
+                            mirror.onTouchEvent(
+                                event, mirrorRequest?.mirrorId, mirrorViewKey);
                           },
                           onPointerMove: (PointerMoveEvent event) {
-                            mirror.onTouchEvent(event, mirrorRequest?.mirrorId);
+                            mirror.onTouchEvent(
+                                event, mirrorRequest?.mirrorId, mirrorViewKey);
                           },
                           onPointerUp: (PointerUpEvent event) {
-                            mirror.onTouchEvent(event, mirrorRequest?.mirrorId);
+                            mirror.onTouchEvent(
+                                event, mirrorRequest?.mirrorId, mirrorViewKey);
                           },
                           child: AspectRatio(
-                            key: mirror.mirrorViewKey,
+                            key: mirrorViewKey,
                             aspectRatio: mirrorRequest?.aspectRatio ?? 2 / 3,
                             child: Texture(textureId: mirrorRequest?.textureId ?? 0),
                           ),

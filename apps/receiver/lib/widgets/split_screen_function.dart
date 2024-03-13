@@ -24,7 +24,7 @@ class SplitScreenFunction extends StatefulWidget {
   State<StatefulWidget> createState() => SplitScreenFunctionState();
 }
 
-  class SplitScreenFunctionState extends State<SplitScreenFunction> {
+class SplitScreenFunctionState extends State<SplitScreenFunction> {
   @override
   Widget build(BuildContext context) {
     double? left, top, bottom, right;
@@ -127,9 +127,9 @@ class SplitScreenFunction extends StatefulWidget {
                                       .audioEnable);
                               HybridConnectionList()
                                   .updateAudioEnableStateByIndex(
-                                      widget.index, isMute,
-                                      mirrorPlugin: widget.mirrorStateProvider
-                                          .flutterMirrorPlugin);
+                                  widget.index, isMute,
+                                  mirrorPlugin: widget.mirrorStateProvider
+                                      .flutterMirrorPlugin);
                               widget.mirrorStateProvider.setAudioEnable();
                             });
                           },
@@ -137,7 +137,7 @@ class SplitScreenFunction extends StatefulWidget {
                       ),
                       Visibility(
                         visible: Home.enlargedScreenPositionIndex.value !=
-                                widget.index && value[widget.index] &&
+                            widget.index && value[widget.index] &&
                             HybridConnectionList().getPresentingCount() > 1,
                         child: FocusIconButton(
                           icons: Icons.crop_free_sharp,

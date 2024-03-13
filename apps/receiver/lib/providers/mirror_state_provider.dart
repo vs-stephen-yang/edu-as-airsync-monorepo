@@ -40,8 +40,6 @@ class MirrorStateProvider extends ChangeNotifier
 
   get deviceName => _deviceName;
 
-  get mirrorViewKey => _mirrorViewKey;
-
   get isMirroring => HybridConnectionList().isMirroring();
 
   get airplayEnabled => _airplayEnabled;
@@ -50,13 +48,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   get miracastEnabled => _miracastEnabled;
 
-  // get mirrorRequestList => _mirrorRequestList;
-
-  // get textureId => _acceptedTextureId;
-
   get pinCode => _pinCode;
-
-  // get aspectRatio => _aspectRatio;
 
   get audioEnable => _audioEnabled;
   setAudioEnable() {
@@ -67,7 +59,6 @@ class MirrorStateProvider extends ChangeNotifier
 
   FlutterMirror? _flutterMirrorPlugin;
   String _deviceName = '';
-  final GlobalKey _mirrorViewKey = GlobalKey();
   bool _airplayEnabled = false;
   bool _googleCastEnabled = false;
   bool _miracastEnabled = false;
@@ -224,13 +215,13 @@ class MirrorStateProvider extends ChangeNotifier
     }
   }
 
-  onTouchEvent(PointerEvent event, String? mirrorId) {
+  onTouchEvent(PointerEvent event, String? mirrorId, GlobalKey mirrorViewKey) {
     if (mirrorId == null) {
       return;
     }
 
     if (_sizeChanged) {
-      _getWidgetInfo();
+      _getWidgetInfo(mirrorViewKey);
     }
 
     _flutterMirrorPlugin?.onMirrorTouch(
@@ -366,7 +357,7 @@ class MirrorStateProvider extends ChangeNotifier
     }
   }
 
-  void _getWidgetInfo() {
+  void _getWidgetInfo(GlobalKey mirrorViewKey) {
     final RenderBox renderBox =
         mirrorViewKey.currentContext?.findRenderObject() as RenderBox;
     _sizeChanged = false;

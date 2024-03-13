@@ -457,7 +457,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                     .getMirrorMap()
                                     .values
                                     .where((request) =>
-                                request.mirrorState == MirrorState.idle)
+                                        request.mirrorState == MirrorState.idle)
                                     .toList()[index]
                                     .mirrorId;
                                 mirror.clearRequestMirrorId(mirrorId);
@@ -486,7 +486,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                     .getMirrorMap()
                                     .values
                                     .where((request) =>
-                                request.mirrorState == MirrorState.idle)
+                                        request.mirrorState == MirrorState.idle)
                                     .toList()[index]
                                     .mirrorId;
                                 mirror.setAcceptMirrorId(mirrorId);
