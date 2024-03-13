@@ -43,6 +43,9 @@ class DisplayChannelConnector {
 
   bool _connected = false;
 
+  bool _useDirect = false;
+  bool _useTunnel = false;
+
   bool _directFailed = false;
   bool _tunnelFailed = false;
 
@@ -74,10 +77,12 @@ class DisplayChannelConnector {
   open({
     int? directPort,
   }) {
-    assert(directPort != null || _displayCode.hasInstanceIndex());
-
     // open direct channel
     if (directPort != null) {
+      assert(_displayCode.hasIpAddress());
+
+      _useDirect = true;
+
       _openDirectChannel(
         _displayCode.ipAddress,
         directPort,
@@ -86,6 +91,8 @@ class DisplayChannelConnector {
 
     // open tunnel channel
     if (_displayCode.instanceIndex > 0) {
+      _useTunnel = true;
+
       // fetching the tunnel URL
       _fetchTunnelUrl(
         _displayCode.instanceIndex,
@@ -220,8 +227,8 @@ class DisplayChannelConnector {
   }
 
   _onConnectFailed() {
-    if (_displayCode.isDual()) {
-      // Dual connections: direct and tunnel
+    if (_useDirect && _useTunnel) {
+      // dual connections: direct and tunnel
       if (_directFailed && _tunnelFailed) {
         // both failed
         final error = _mapDualConnectError();
@@ -229,7 +236,9 @@ class DisplayChannelConnector {
       }
     } else {
       // single connection: direct or tunnel
-      if (_tunnelFailed) {
+      if (_useTunnel) {
+        assert(_tunnelFailed);
+
         // tunnel
         final error = mapTunnelChannelError(
           _tunnelUrlFetchError,
@@ -238,6 +247,8 @@ class DisplayChannelConnector {
 
         _onOpenError(error);
       } else {
+        assert(_directFailed);
+
         // direct
         final error = mapCloseCodeToChannelConnectorError(
           _directClient?.closeReason?.code,
