@@ -129,7 +129,7 @@ class DisplayChannelClient implements Channel {
     _connection!.open();
   }
 
-  void _onConnectionData(Map<String, dynamic> message) async {
+  void _onConnectionData(Map<String, dynamic> message) {
     if (_isClosed()) {
       return;
     }
@@ -139,16 +139,16 @@ class DisplayChannelClient implements Channel {
     if (parsedMessage == null) {
       return;
     }
-    await _handleChannelMessage(parsedMessage);
+    _handleChannelMessage(parsedMessage);
   }
 
-  Future _handleChannelMessage(ChannelMessage message) async {
-    await _handleControlMessage(message);
+  void _handleChannelMessage(ChannelMessage message) {
+    _handleControlMessage(message);
 
     _continuity.processIncomingMessage(message);
   }
 
-  Future _handleControlMessage(ChannelMessage message) async {
+  void _handleControlMessage(ChannelMessage message) {
     switch (message.messageType) {
       case ChannelMessageType.channelConnected:
         _onChannelConnected(message as ChannelConnectedMessage);
@@ -157,7 +157,7 @@ class DisplayChannelClient implements Channel {
         _onHeartbeat(message as HeartbeatMessage);
         return;
       case ChannelMessageType.channelClosed:
-        await _onChannelClosedMessage(message as ChannelClosedMessage);
+        _onChannelClosedMessage(message as ChannelClosedMessage);
         return;
       default:
         return;
@@ -203,11 +203,11 @@ class DisplayChannelClient implements Channel {
       return;
     }
 
-    await _closeConnection();
+    _closeConnection();
   }
 
   Future _onConnectFailed(ConnectError error) async {
-    await _closeConnection();
+    _closeConnection();
 
     if (_isClosed()) {
       return;
@@ -229,8 +229,8 @@ class DisplayChannelClient implements Channel {
     );
   }
 
-  Future _onDisconnected() async {
-    await _closeConnection();
+  void _onDisconnected() {
+    _closeConnection();
 
     if (_isClosed()) {
       return;
@@ -240,8 +240,8 @@ class DisplayChannelClient implements Channel {
     _openNewConnection();
   }
 
-  Future _onChannelClosedMessage(ChannelClosedMessage message) async {
-    await _closeConnection();
+  void _onChannelClosedMessage(ChannelClosedMessage message) {
+    _closeConnection();
 
     if (_isClosed()) {
       return;
@@ -254,8 +254,8 @@ class DisplayChannelClient implements Channel {
     _changeState(ChannelState.closed);
   }
 
-  Future _closeConnection() async {
-    await _connection?.close();
+  void _closeConnection() {
+    _connection?.close();
     _connection = null;
   }
 

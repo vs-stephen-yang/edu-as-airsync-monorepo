@@ -52,10 +52,10 @@ class WebSocketClientConnection implements ClientConnection {
   }
 
   @override
-  Future<void> close() async {
+  void close() {
     _closed = true;
 
-    await _closeSocket();
+    _closeSocket();
   }
 
   void _connect() async {
@@ -155,16 +155,15 @@ class WebSocketClientConnection implements ClientConnection {
     await _reconnect();
   }
 
-  Future _closeSocket() async {
+  void _closeSocket() {
     _httpClient?.close(force: true);
     _httpClient = null;
 
-    await _socket?.close();
-    _socket = null;
+    _socket?.close();
   }
 
   Future _reconnect() async {
-    await _closeSocket();
+    _closeSocket();
 
     _connect();
   }

@@ -38,7 +38,7 @@ class WebSocketClientConnection implements ClientConnection {
   void open() {}
 
   @override
-  Future<void> close() async {}
+  void close() {}
 
   @override
   void send(Map<String, dynamic> message) {}
