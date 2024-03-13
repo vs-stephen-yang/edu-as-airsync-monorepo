@@ -38,6 +38,8 @@ class Home extends StatefulWidget {
   static ValueNotifier<bool> showCloudOff = ValueNotifier(false);
   static ValueNotifier<int?> enlargedScreenPositionIndex = ValueNotifier(null);
   static ValueNotifier<bool> isShowDisplayCode = ValueNotifier(true);
+  static ValueNotifier<bool> isShowAuthDialog = ValueNotifier(false);
+  static ValueNotifier<bool> isShowPinDialog = ValueNotifier(false);
 
   @override
   State createState() => _HomeState();
@@ -225,31 +227,42 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 ),
               ),
 
-              Consumer<MirrorStateProvider>(
-                  builder: (context, mirror, child) {
-                    if (mirror.pinCode != '') {
-                      Future.delayed(Duration.zero, () {
-                        _showPinCodeDialog(context, mirror);
-                      });
+              ValueListenableBuilder(
+                  valueListenable: Home.isShowPinDialog,
+                  builder: (BuildContext context, bool value, child) {
+                    if (value) {
+                      var mirror = context.read<MirrorStateProvider>();
+                      if (mirror.pinCode != '') {
+                        Future.delayed(Duration.zero, () {
+                          _showPinCodeDialog(context, mirror);
+                        });
+                      }
                     } else {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+                    }
+                    return const SizedBox.shrink();
+                  }
+              ),
+
+              ValueListenableBuilder(
+                  valueListenable: Home.isShowAuthDialog,
+                  builder: (BuildContext context, bool value, child) {
+                    if (value) {
+                      var mirror = context.read<MirrorStateProvider>();
                       var mirrorMap = HybridConnectionList().getMirrorMap();
                       for (MirrorRequest request in mirrorMap.values) {
                         if (request.mirrorState == MirrorState.idle) {
                           Future.delayed(Duration.zero, () {
-                            _showPromptDialog(context, mirror);
-                          });
-                        } else {
-                          Future.delayed(Duration.zero, () {
-                            if (Navigator.canPop(context)) {
-                              Navigator.pop(context);
-                            }
+                            _showAuthDialog(context, mirror);
                           });
                         }
                       }
                     }
                     return const SizedBox.shrink();
                   }
-              )
+              ),
             ],
           ),
         ),
@@ -296,17 +309,17 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }
   }
 
-  _showPinCodeDialog(BuildContext context, mirror) {
+  _showPinCodeDialog(BuildContext context, MirrorStateProvider mirror) {
     FocusScope.of(context).unfocus();
     showDialog(
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
       builder: (BuildContext buildContext) {
-        return WillPopScope(
+        return PopScope(
           // Using onWillPop to block back key return,
           // it will break "Show PinCode mechanism"
-          onWillPop: () async => false,
+          canPop: false,
           child: Dialog(
             backgroundColor: Colors.transparent,
             alignment: Alignment.bottomRight,
@@ -368,23 +381,22 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     );
   }
 
-  _showPromptDialog(BuildContext context, MirrorStateProvider mirror) {
+  _showAuthDialog(BuildContext context, MirrorStateProvider mirror) {
     FocusScope.of(context).unfocus();
     showDialog(
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
       builder: (context) {
-        // savedPromptBuildContext.add(context);
         var width = MediaQuery.of(context).size.width / 3;
         var height = MediaQuery.of(context).size.height / 4;
         double minHeight = min(
             (HybridConnectionList().getMirrorMap().length * height).toDouble(),
             500.0);
-        return WillPopScope(
+        return PopScope(
           // Using onWillPop to block back key return,
           // it will break "Show Prompt mechanism"
-          onWillPop: () async => false,
+          canPop: false,
           child: Dialog(
             backgroundColor: Colors.transparent,
             alignment: Alignment.bottomRight,
@@ -410,12 +422,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          sprintf(S.current.main_mirror_from_client,
-                              [HybridConnectionList()
-                                  .getMirrorMap()
-                                  .values
-                                  .where((request) => request.mirrorState == MirrorState.idle).firstOrNull?.mirrorId
-                              ]),
+                          sprintf(S.current.main_mirror_from_client, [
+                            HybridConnectionList()
+                                .getMirrorMap()
+                                .values
+                                .where((request) =>
+                                    request.mirrorState == MirrorState.idle)
+                                .toList()[index]
+                                .mirrorId
+                          ]),
                           style: const TextStyle(fontSize: 24),
                         ),
                         const Spacer(),
@@ -436,7 +451,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               notFocusHeight: 25,
                               onClick: () {
                                 //TODO: found that AirPlay icon on iMac keeps under working state even calling clearRequestMirrorId()
-                                mirror.clearRequestMirrorId(index);
+                                var mirrorId = HybridConnectionList()
+                                    .getMirrorMap()
+                                    .values
+                                    .where((request) =>
+                                request.mirrorState == MirrorState.idle)
+                                    .toList()[index]
+                                    .mirrorId;
+                                mirror.clearRequestMirrorId(mirrorId);
                                 Navigator.pop(context);
                               },
                               child: AutoSizeText(
@@ -458,7 +480,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               hasFocusHeight: 30,
                               notFocusHeight: 25,
                               onClick: () async {
-                                mirror.setAcceptMirrorId(index);
+                                var mirrorId = HybridConnectionList()
+                                    .getMirrorMap()
+                                    .values
+                                    .where((request) =>
+                                request.mirrorState == MirrorState.idle)
+                                    .toList()[index]
+                                    .mirrorId;
+                                mirror.setAcceptMirrorId(mirrorId);
                                 Navigator.pop(context);
                               },
                               child: AutoSizeText(

@@ -77,7 +77,6 @@ class MirrorStateProvider extends ChangeNotifier
   Size _videoWidgetSize = const Size(0, 0);
   Offset _videoWidgetOffset = const Offset(0, 0);
   bool _audioEnabled = true;
-  // bool menuOff = false;
   Map<MirrorType, bool> mirrorTypeState = {
     MirrorType.airplay: false,
     MirrorType.googlecast: false,
@@ -90,11 +89,12 @@ class MirrorStateProvider extends ChangeNotifier
     printInDebug('onMirrorAuth', type: runtimeType);
     _pinCode = pin;
     _pinTimer?.cancel();
+    Home.isShowPinDialog.value = true;
+
     _pinTimer = Timer(Duration(seconds: timeoutSec), () {
       _pinCode = '';
-      notifyListeners();
+      Home.isShowPinDialog.value = false;
     });
-    notifyListeners();
   }
 
   @override
@@ -103,39 +103,25 @@ class MirrorStateProvider extends ChangeNotifier
     printInDebug('onMirrorStart', type: runtimeType);
     _pinTimer?.cancel();
     _pinCode = '';
+    Home.isShowPinDialog.value = false;
 
     HybridConnectionList().addConnection(
         MirrorRequest(mirrorId, textureId, deviceName, mirrorType));
-
-    notifyListeners();
+    Home.isShowAuthDialog.value = false;
+    Home.isShowAuthDialog.value = true;
   }
 
   @override
   void onMirrorStop(String mirrorId) {
     printInDebug('onMirrorStop $mirrorId', type: runtimeType);
-    bool needNotify = false;
     for (MirrorRequest mirrorRequest in HybridConnectionList().getMirrorMap().values) {
       if (mirrorRequest.mirrorId == mirrorId) {
         HybridConnectionList().removeConnection(mirrorRequest);
-        needNotify = true;
+        HybridConnectionList().updateSplitScreen();
       }
     }
-    // print('_______onMirrorStop mirror map length = ${HybridConnectionList().getMirrorMap().length}');
-    // if (needNotify) {
-    //   notifyListeners();
 
-      // if (_acceptedMirrorId != mirrorId) {
-      //   // ignore the onMirrorStop that is not for the current mirror session
-      //   return;
-      // }
-      // _acceptedMirrorId = null;
-      // _acceptedTextureId = null;
-      // _acceptedMirrorType = null;
-      // _mirrorState = MirrorState.idle;
     Home.showTitleBottomBar.value = true;
-    HybridConnectionList().updateSplitScreen();
-    // menuOff = false;
-    notifyListeners();
   }
 
   @override
@@ -182,37 +168,32 @@ class MirrorStateProvider extends ChangeNotifier
   clearPinCode() {
     _pinTimer?.cancel();
     _pinCode = '';
-    notifyListeners();
+    Home.isShowPinDialog.value = false;
   }
 
-  clearRequestMirrorId(int index) {
-    if (HybridConnectionList().getMirrorMap().length > index) {
-      var mirrorMap = HybridConnectionList().getMirrorMap();
-      MirrorRequest request = mirrorMap.values.toList()[index];
+  clearRequestMirrorId(String? mirrorId) {
+    var mirrorMap = HybridConnectionList().getMirrorMap();
       for (var entry in mirrorMap.entries) {
-        if (entry.value == request) {
-          HybridConnectionList().removeConnection(request);
+        if (entry.value.mirrorId == mirrorId) {
+          HybridConnectionList().removeConnection(entry);
         }
       }
     }
     notifyListeners();
   }
 
-  setAcceptMirrorId(int index) {
-    print('setAcceptMirrorId');
+  setAcceptMirrorId(String? mirrorId) {
     if (HybridConnectionList().getMirrorMap().isNotEmpty) {
       var mirrorMap = HybridConnectionList().getMirrorMap();
-      var idleList = HybridConnectionList().getMirrorMap().values
-          .where((request) => request.mirrorState == MirrorState.idle).toList();
-      MirrorRequest request = idleList[index];
       for (var entry in mirrorMap.entries) {
-        if (entry.value == request) {
+        if (entry.value.mirrorId == mirrorId) {
+          MirrorRequest request = entry.value;
           request.mirrorState = MirrorState.mirroring;
           mirrorMap.update(entry.key, (value) => request);
         }
       }
-      if (request.mirrorId != null) {
-        _flutterMirrorPlugin?.enableAudio(request.mirrorId!, _audioEnabled);
+      if (mirrorId != null) {
+        _flutterMirrorPlugin?.enableAudio(mirrorId, _audioEnabled);
       }
 
       // _aspectRatio = _mirrorRequestList[index].aspectRatio;
@@ -220,7 +201,6 @@ class MirrorStateProvider extends ChangeNotifier
 
       HybridConnectionList().updateSplitScreen();
       StreamFunction.streamFunctionState.value = stateMenuOff;
-      // menuOff = true;
       // hideTitleBar
       Home.showTitleBottomBar.value = false;
       notifyListeners();
