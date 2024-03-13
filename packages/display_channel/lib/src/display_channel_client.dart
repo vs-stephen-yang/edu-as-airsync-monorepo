@@ -7,7 +7,7 @@ import 'package:display_channel/src/util/channel_util.dart';
 
 class DisplayChannelClient implements Channel {
   @override
-  void Function(ChannelMessage channel)? onChannelMessage;
+  void Function(ChannelMessage message)? onChannelMessage;
 
   @override
   void Function(ChannelState state)? onStateChange;
