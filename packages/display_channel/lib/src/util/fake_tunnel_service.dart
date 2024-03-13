@@ -95,7 +95,7 @@ class FakeTunnelService {
     final instanceIndex = parameters['instanceIndex'] as String;
 
     if (!_isServerOnline(instanceIndex)) {
-      httpRequest.response.close();
+      await httpRequest.response.close();
       return;
     }
     final websocket = await WebSocketTransformer.upgrade(httpRequest);

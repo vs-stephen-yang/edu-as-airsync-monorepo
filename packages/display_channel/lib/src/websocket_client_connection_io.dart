@@ -102,7 +102,7 @@ class WebSocketClientConnection implements ClientConnection {
       return;
     }
     if (_closed) {
-      socket!.close();
+      await socket!.close();
       return;
     }
 

@@ -17,7 +17,7 @@ void main() async {
 
   httpServer.listen((request) async {
     if (WebSocketTransformer.isUpgradeRequest(request)) {
-      tunnelService.onHttpRequest(request);
+      await tunnelService.onHttpRequest(request);
     }
   });
 

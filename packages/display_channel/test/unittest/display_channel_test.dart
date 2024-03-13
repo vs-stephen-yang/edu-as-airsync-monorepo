@@ -61,7 +61,7 @@ void main() {
 
     httpServer.listen((request) async {
       if (WebSocketTransformer.isUpgradeRequest(request)) {
-        tunnelService.onHttpRequest(request);
+        await tunnelService.onHttpRequest(request);
       }
     });
 
@@ -241,7 +241,7 @@ void main() {
     await serverChannelOpened.future;
 
     // action
-    client.close(ChannelCloseReason(ChannelCloseCode.close));
+    await client.close(ChannelCloseReason(ChannelCloseCode.close));
 
     // assert
     await serverChannelClosed.future;
@@ -257,7 +257,7 @@ void main() {
     await serverChannelOpened.future;
 
     // action
-    serverChannel.close(ChannelCloseReason(ChannelCloseCode.close));
+    await serverChannel.close(ChannelCloseReason(ChannelCloseCode.close));
 
     // assert
     await clientClosed.future;
