@@ -26,14 +26,14 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "main_connect_network_error": MessageLookupByLibrary.simpleMessage(
-            "Network error. Please check connection and try again"),
+            "Network error. Please check network connectivity and try again."),
         "main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
-            "Rate limit exceeded. Please try again later"),
-        "main_connect_unknown_error": MessageLookupByLibrary.simpleMessage(
-            "Unknown error occurred. Please try again or contact support"),
+            "AirSync instance is busy. Please try it later."),
+        "main_connect_unknown_error":
+            MessageLookupByLibrary.simpleMessage("Unknown error."),
         "main_connection_mode_unsupported":
             MessageLookupByLibrary.simpleMessage(
-                "Connection mode not supported"),
+                "AirSync does not connect to Internet."),
         "main_display_code":
             MessageLookupByLibrary.simpleMessage("Display code"),
         "main_display_code_description":
@@ -47,7 +47,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Invalid Display code"),
         "main_instance_not_found_or_offline":
             MessageLookupByLibrary.simpleMessage(
-                "Display code not found or instance offline"),
+                "Display code not found or instance is offline."),
         "main_language": MessageLookupByLibrary.simpleMessage("Language"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
         "main_password": MessageLookupByLibrary.simpleMessage("Password"),
@@ -55,10 +55,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please enter one-time password"),
         "main_password_invalid":
             MessageLookupByLibrary.simpleMessage("Password invalid."),
-        "main_present": MessageLookupByLibrary.simpleMessage("PRESENT"),
+        "main_present": MessageLookupByLibrary.simpleMessage("Next"),
         "main_setting": MessageLookupByLibrary.simpleMessage("Settings"),
         "main_touch_back": MessageLookupByLibrary.simpleMessage("Touchback"),
-        "moderator": MessageLookupByLibrary.simpleMessage("Moderator"),
+        "moderator":
+            MessageLookupByLibrary.simpleMessage("Please input your name"),
         "moderator_exit": MessageLookupByLibrary.simpleMessage("EXIT"),
         "moderator_fill_out":
             MessageLookupByLibrary.simpleMessage("Field required"),
@@ -66,8 +67,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "moderator_wait": MessageLookupByLibrary.simpleMessage(
             "Please wait while the moderator selects presenters..."),
         "present_role_cast_screen":
-            MessageLookupByLibrary.simpleMessage("Cast the screen"),
-        "present_role_receive": MessageLookupByLibrary.simpleMessage("Receive"),
+            MessageLookupByLibrary.simpleMessage("Share screen"),
+        "present_role_receive":
+            MessageLookupByLibrary.simpleMessage("Receive screen"),
         "present_select_screen_cancel":
             MessageLookupByLibrary.simpleMessage("Cancel"),
         "present_select_screen_description":
@@ -91,9 +93,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "present_time_unit_sec": MessageLookupByLibrary.simpleMessage("secs"),
         "present_wait": m0,
         "remote_screen_wait": MessageLookupByLibrary.simpleMessage(
-            "Waiting for presenter to share screen..."),
+            "Sharing is in processing, please wait."),
         "settings_audio_configuration":
-            MessageLookupByLibrary.simpleMessage("Audio Configuration"),
+            MessageLookupByLibrary.simpleMessage("Audio configuration"),
         "settings_knowledge_base":
             MessageLookupByLibrary.simpleMessage("Knowledge Base"),
         "toast_enable_remote_screen": MessageLookupByLibrary.simpleMessage(

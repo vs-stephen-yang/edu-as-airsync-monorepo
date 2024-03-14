@@ -90,10 +90,10 @@ class S {
     );
   }
 
-  /// `PRESENT`
+  /// `Next`
   String get main_present {
     return Intl.message(
-      'PRESENT',
+      'Next',
       name: 'main_present',
       desc: '',
       args: [],
@@ -270,10 +270,10 @@ class S {
     );
   }
 
-  /// `Moderator`
+  /// `Please input your name`
   String get moderator {
     return Intl.message(
-      'Moderator',
+      'Please input your name',
       name: 'moderator',
       desc: '',
       args: [],
@@ -390,10 +390,10 @@ class S {
     );
   }
 
-  /// `Waiting for presenter to share screen...`
+  /// `Sharing is in processing, please wait.`
   String get remote_screen_wait {
     return Intl.message(
-      'Waiting for presenter to share screen...',
+      'Sharing is in processing, please wait.',
       name: 'remote_screen_wait',
       desc: '',
       args: [],
@@ -440,80 +440,80 @@ class S {
     );
   }
 
-  /// `Audio Configuration`
+  /// `Audio configuration`
   String get settings_audio_configuration {
     return Intl.message(
-      'Audio Configuration',
+      'Audio configuration',
       name: 'settings_audio_configuration',
       desc: '',
       args: [],
     );
   }
 
-  /// `Receive`
+  /// `Receive screen`
   String get present_role_receive {
     return Intl.message(
-      'Receive',
+      'Receive screen',
       name: 'present_role_receive',
       desc: '',
       args: [],
     );
   }
 
-  /// `Cast the screen`
+  /// `Share screen`
   String get present_role_cast_screen {
     return Intl.message(
-      'Cast the screen',
+      'Share screen',
       name: 'present_role_cast_screen',
       desc: '',
       args: [],
     );
   }
 
-  /// `Display code not found or instance offline`
+  /// `Display code not found or instance is offline.`
   String get main_instance_not_found_or_offline {
     return Intl.message(
-      'Display code not found or instance offline',
+      'Display code not found or instance is offline.',
       name: 'main_instance_not_found_or_offline',
       desc: '',
       args: [],
     );
   }
 
-  /// `Network error. Please check connection and try again`
+  /// `Network error. Please check network connectivity and try again.`
   String get main_connect_network_error {
     return Intl.message(
-      'Network error. Please check connection and try again',
+      'Network error. Please check network connectivity and try again.',
       name: 'main_connect_network_error',
       desc: '',
       args: [],
     );
   }
 
-  /// `Rate limit exceeded. Please try again later`
+  /// `AirSync instance is busy. Please try it later.`
   String get main_connect_rate_limited {
     return Intl.message(
-      'Rate limit exceeded. Please try again later',
+      'AirSync instance is busy. Please try it later.',
       name: 'main_connect_rate_limited',
       desc: '',
       args: [],
     );
   }
 
-  /// `Unknown error occurred. Please try again or contact support`
+  /// `Unknown error.`
   String get main_connect_unknown_error {
     return Intl.message(
-      'Unknown error occurred. Please try again or contact support',
+      'Unknown error.',
       name: 'main_connect_unknown_error',
       desc: '',
       args: [],
     );
   }
 
-  /// `Connection mode not supported`
+  /// `AirSync does not connect to Internet.`
   String get main_connection_mode_unsupported {
     return Intl.message(
-      'Connection mode not supported',
+      'AirSync does not connect to Internet.',
       name: 'main_connection_mode_unsupported',
       desc: '',
       args: [],
