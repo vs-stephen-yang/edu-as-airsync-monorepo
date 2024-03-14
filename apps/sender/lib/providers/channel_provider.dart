@@ -64,10 +64,6 @@ class ChannelProvider extends ChangeNotifier {
     _currentRole = value;
   }
 
-  bool _exceedMaximumPresenters = false;
-
-  bool get exceedMaximumPresenters => _exceedMaximumPresenters;
-
   bool _invalidOtp = false;
 
   bool get invalidOtp => _invalidOtp;
@@ -388,7 +384,6 @@ class ChannelProvider extends ChangeNotifier {
   void resetMessage() {
     _invalidDisplayCode = false;
     _invalidOtp = false;
-    _exceedMaximumPresenters = false;
   }
 
   Future closeChannel() async {

@@ -135,10 +135,6 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      if (channelProvider.exceedMaximumPresenters) {
-        codeKey.currentState
-            ?.setErrorMsg(S.of(context).main_display_code_exceed);
-      }
       if (channelProvider.invalidDisplayCode) {
         codeKey.currentState
             ?.setErrorMsg(S.of(context).main_display_code_invalid);
