@@ -20,6 +20,9 @@ class ProductionConfig implements ConfigSettings {
   String appSecretIOS = '6027dbdc-c4ad-41fb-8dc2-9b9d2cbbce23';
 
   @override
+  String instrumentationKey = 'e510b3fd-38d5-46e6-973e-53e416050c98';
+
+  @override
   String icarHostName = 'api.myviewboard.com';
 
   @override

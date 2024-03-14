@@ -17,12 +17,14 @@ import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
+import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 Future<void> commonEntry(ConfigSettings settings) async {
   runZonedGuarded<Future<void>>(() async {
@@ -43,7 +45,15 @@ Future<void> commonEntry(ConfigSettings settings) async {
         child: const MyApp());
 
     await AppExceptionReport().ensureInitialized(settings, packageInfo);
-    await AppAnalytics().ensureInitialized(settings);
+
+    await AppAnalytics().ensureInitialized(
+      settings,
+      applicationVersion: packageInfo.version,
+      userId: AppInstanceCreate().instanceID,
+      sessionId: const Uuid().v4(),
+      deviceInfo: await ClientDeviceInfo.fetch(),
+    );
+
     AppAnalytics().setEventProperties(
         entityId: AppPreferences().entityId,
         instanceId: AppInstanceCreate().displayInstanceID);

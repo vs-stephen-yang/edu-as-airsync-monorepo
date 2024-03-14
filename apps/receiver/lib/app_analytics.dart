@@ -2,8 +2,11 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
+import 'package:azure_application_insights/azure_application_insights.dart';
+import 'package:http/http.dart';
 
 class AppAnalytics {
   static final AppAnalytics _instance = AppAnalytics._internal();
@@ -14,7 +17,15 @@ class AppAnalytics {
   // passes the instantiation to the _instance object
   factory AppAnalytics() => _instance;
 
-  ensureInitialized(ConfigSettings configSettings) async {
+  TelemetryClient? _client;
+
+  ensureInitialized(
+    ConfigSettings configSettings, {
+    String? applicationVersion,
+    String? sessionId,
+    String? userId,
+    ClientDeviceInfo? deviceInfo,
+  }) async {
     if (kIsWeb) {
       // todo: support other platform analytics.
     } else {
@@ -31,6 +42,50 @@ class AppAnalytics {
         // todo: support other platform analytics.
       }
     }
+
+    _initializeAppInsightsClient(
+      configSettings.instrumentationKey,
+      applicationVersion,
+      sessionId,
+      userId,
+      deviceInfo,
+    );
+  }
+
+  // initialize client for Azure Application Insights
+  _initializeAppInsightsClient(
+    String instrumentationKey,
+    String? applicationVersion,
+    String? sessionId,
+    String? userId,
+    ClientDeviceInfo? deviceInfo,
+  ) {
+    final processor = BufferedProcessor(
+      next: TransmissionProcessor(
+        instrumentationKey: instrumentationKey,
+        httpClient: Client(),
+        timeout: const Duration(seconds: 10),
+      ),
+    );
+
+    final context = TelemetryContext();
+    context
+      ..applicationVersion = applicationVersion
+      ..session.sessionId = sessionId
+      ..user.id = userId;
+
+    if (deviceInfo != null) {
+      context.device
+        ..locale = deviceInfo.locale
+        ..type = deviceInfo.clientType
+        ..osVersion = deviceInfo.clientOs
+        ..model = deviceInfo.clientModel;
+    }
+
+    _client = TelemetryClient(
+      processor: processor,
+      context: context,
+    );
   }
 
   bool _isInitialized = false;
@@ -97,7 +152,11 @@ class AppAnalytics {
   _trackEventWithProperties(String event, Map<String, String> properties) {
     if (_isInitialized) {
       log('event: $event, properties: $properties');
-      AppCenter.trackEventAsync(event, properties);
+
+      _client?.trackEvent(
+        name: event,
+        additionalProperties: properties,
+      );
     }
   }
 

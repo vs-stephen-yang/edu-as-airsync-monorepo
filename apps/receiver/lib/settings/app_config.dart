@@ -29,6 +29,9 @@ abstract class ConfigSettings {
   late String appSecretAndroid;
   late String appSecretIOS;
 
+  // Azure Application Insights
+  late String instrumentationKey;
+
   // Backdoor OTP. For development only.
   late String? defaultOtp;
 

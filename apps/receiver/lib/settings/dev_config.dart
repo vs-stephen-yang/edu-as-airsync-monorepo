@@ -20,6 +20,9 @@ class DevConfig implements ConfigSettings {
   String appSecretIOS = '0ffc5b6e-d024-4685-b7ab-214b636d2b8b';
 
   @override
+  String instrumentationKey = '28aec457-6961-41d2-9d92-0a89bc2c1cab';
+
+  @override
   String icarHostName = 'devapi.myviewboard.com';
 
   @override
