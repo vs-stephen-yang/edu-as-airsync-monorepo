@@ -20,6 +20,9 @@ class StageConfig implements ConfigSettings {
   String appSecretIOS = '0ffc5b6e-d024-4685-b7ab-214b636d2b8b';
 
   @override
+  String instrumentationKey = '3633800d-9edd-4c63-9b6f-b0ab2ada5448';
+
+  @override
   String icarHostName = 'stageapi.myviewboard.com';
 
   @override
