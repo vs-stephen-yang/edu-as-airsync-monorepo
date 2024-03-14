@@ -175,6 +175,13 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         );
         break;
 
+      case ChannelConnectError.connectionModeUnspported:
+        _setTextFormFieldErrorMsg(
+          codeKey,
+          S.of(context).main_connection_mode_unsupported,
+        );
+        break;
+
       case ChannelConnectError.unknownError:
         _setTextFormFieldErrorMsg(
           otpKey,

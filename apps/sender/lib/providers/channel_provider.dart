@@ -35,6 +35,7 @@ enum ChannelConnectError {
   networkError,
   invalidDisplayCode,
   invalidOtp,
+  connectionModeUnspported,
   unknownError,
 }
 
@@ -186,6 +187,16 @@ class ChannelProvider extends ChangeNotifier {
 
   //endregion
 
+  bool _isConnectionModeSupported(DisplayCode displayCode) {
+    if (kIsWeb) {
+      // web does not support direct connection
+      return displayCode.hasInstanceIndex();
+    } else {
+      // other platforms support direct and tunnel connections
+      return true;
+    }
+  }
+
   startConnect({
     required String formattedDisplayCode,
     required String otp,
@@ -196,6 +207,11 @@ class ChannelProvider extends ChangeNotifier {
 
     displayCode = decodeDisplayCode(encodedDisplayCode);
     this.otp = otp;
+
+    if (!_isConnectionModeSupported(displayCode!)) {
+      setChannelConnectError(ChannelConnectError.connectionModeUnspported);
+      return;
+    }
 
     _channelConnector = DisplayChannelConnector(
       clientId: _clientId!,
