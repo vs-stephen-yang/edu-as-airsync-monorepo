@@ -118,13 +118,6 @@ class MirrorStateProvider extends ChangeNotifier
   @override
   void onMirrorVideoResize(String mirrorId, int width, int height) {
     printInDebug('onMirrorVideoResize', type: runtimeType);
-    // if (_acceptedMirrorId == null || _acceptedMirrorId != mirrorId) {
-    // for (MirrorRequest request in _mirrorRequestList) {
-    //   if (request.mirrorId == mirrorId) {
-    //     request.aspectRatio = width/height;
-    //   }
-    // }
-
     if (HybridConnectionList().getMirrorMap().isNotEmpty) {
       for (var entry in HybridConnectionList().getMirrorMap().entries) {
         if (entry.value.mirrorId == mirrorId) {
@@ -138,15 +131,7 @@ class MirrorStateProvider extends ChangeNotifier
         }
       }
     }
-
-      // ignore the onMirrorStop that is not for the current mirror session
-    //   return;
-    // }
-    // _aspectRatio = width / height;
-    // _sizeChanged = true;
-    // notifyListeners();
   }
-
   // endregion
 
   // region Public method
