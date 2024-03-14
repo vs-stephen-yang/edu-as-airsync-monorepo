@@ -40,7 +40,7 @@ class OverlayTabProvider extends ChangeNotifier {
     _context = context;
   }
 
-  Future<bool> isFloatingInformationRunning() async {
+  Future<bool> isOverlayTabRunning() async {
     return android_window.isRunning();
   }
 
