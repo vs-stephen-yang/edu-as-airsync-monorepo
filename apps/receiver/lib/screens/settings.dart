@@ -89,11 +89,10 @@ class _SettingsState extends State<Settings> {
               FittedBox(
                 fit: BoxFit.fitHeight,
                 child: Consumer<OverlayTabProvider>(
-                  builder: (_, floatingInfoProvider, __) {
+                  builder: (_, overlayTabProvider, __) {
                     return FocusIconButton(
                       childNotFocus: FutureBuilder(
-                        future:
-                        floatingInfoProvider.isFloatingInformationRunning(),
+                        future: overlayTabProvider.isOverlayTabRunning(),
                         builder: (context, snapshot) {
                           bool isRunning = false;
                           if (snapshot.hasData) {
@@ -111,7 +110,7 @@ class _SettingsState extends State<Settings> {
                       onClick: () {
                         AppPreferences().set(
                             showOverlayTab: !AppPreferences().showOverlayTab);
-                        floatingInfoProvider
+                        overlayTabProvider
                             .openAndroidWindow(AppPreferences().showOverlayTab);
                         setState(() {});
                       },
