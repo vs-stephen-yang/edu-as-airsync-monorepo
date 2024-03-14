@@ -131,16 +131,65 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
     Overlay.of(context).insert(_overlayEntry);
   }
 
+  _setTextFormFieldErrorMsg(
+    GlobalKey<CustomTextFormFieldState> key,
+    String text,
+  ) {
+    key.currentState?.setErrorMsg(text);
+  }
+
+  _showConnectErrorMessage(ChannelConnectError error) {
+    switch (error) {
+      case ChannelConnectError.instanceNotFound:
+        _setTextFormFieldErrorMsg(
+          codeKey,
+          S.of(context).main_instance_not_found_or_offline,
+        );
+        break;
+
+      case ChannelConnectError.invalidDisplayCode:
+        _setTextFormFieldErrorMsg(
+          codeKey,
+          S.of(context).main_display_code_invalid,
+        );
+        break;
+
+      case ChannelConnectError.networkError:
+        _setTextFormFieldErrorMsg(
+          codeKey,
+          S.of(context).main_connect_network_error,
+        );
+        break;
+
+      case ChannelConnectError.invalidOtp:
+        _setTextFormFieldErrorMsg(
+          otpKey,
+          S.of(context).main_password_invalid,
+        );
+        break;
+
+      case ChannelConnectError.rateLimitExceeded:
+        _setTextFormFieldErrorMsg(
+          codeKey,
+          S.of(context).main_connect_rate_limited,
+        );
+        break;
+
+      case ChannelConnectError.unknownError:
+        _setTextFormFieldErrorMsg(
+          otpKey,
+          S.of(context).main_connect_unknown_error,
+        );
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      if (channelProvider.invalidDisplayCode) {
-        codeKey.currentState
-            ?.setErrorMsg(S.of(context).main_display_code_invalid);
-      }
-      if (channelProvider.invalidOtp) {
-        otpKey.currentState?.setErrorMsg(S.of(context).main_password_invalid);
+      if (channelProvider.channelConnectError != null) {
+        _showConnectErrorMessage(channelProvider.channelConnectError!);
       }
     });
     return SizedBox(

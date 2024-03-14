@@ -29,6 +29,38 @@ enum RejectReasonType {
   final int code;
 }
 
+enum ChannelConnectError {
+  instanceNotFound,
+  rateLimitExceeded,
+  networkError,
+  invalidDisplayCode,
+  invalidOtp,
+  unknownError,
+}
+
+// convert ChannelConnectorError to ChannelConnectError
+ChannelConnectError mapChannelConnectError(ChannelConnectorError error) {
+  switch (error) {
+    case ChannelConnectorError.networkError:
+      return ChannelConnectError.networkError;
+
+    case ChannelConnectorError.rateLimitExceeded:
+      return ChannelConnectError.rateLimitExceeded;
+
+    case ChannelConnectorError.unknownError:
+      return ChannelConnectError.unknownError;
+
+    case ChannelConnectorError.instanceNotFound:
+      return ChannelConnectError.instanceNotFound;
+
+    case ChannelConnectorError.invalidDisplayCode:
+      return ChannelConnectError.invalidDisplayCode;
+
+    case ChannelConnectorError.authenticationError:
+      return ChannelConnectError.invalidOtp;
+  }
+}
+
 class ChannelProvider extends ChangeNotifier {
   ChannelProvider(BuildContext context) {
     _urlIce = AppConfig.of(context)!.settings.urlGetIce;
@@ -64,23 +96,11 @@ class ChannelProvider extends ChangeNotifier {
     _currentRole = value;
   }
 
-  bool _invalidOtp = false;
+  ChannelConnectError? _channelConnectError;
+  ChannelConnectError? get channelConnectError => _channelConnectError;
 
-  bool get invalidOtp => _invalidOtp;
-
-  void setInvalidOtp(bool b) {
-    _invalidOtp = b;
-    _invalidDisplayCode = !b;
-    notifyListeners();
-  }
-
-  bool _invalidDisplayCode = false;
-
-  bool get invalidDisplayCode => _invalidDisplayCode;
-
-  void setInvalidDisplayCode(bool b) {
-    _invalidDisplayCode = b;
-    _invalidOtp = !b;
+  void setChannelConnectError(ChannelConnectError error) {
+    _channelConnectError = error;
     notifyListeners();
   }
 
@@ -222,8 +242,7 @@ class ChannelProvider extends ChangeNotifier {
           // reconnectionToken?
           break;
         case ChannelMessageType.displayStatus:
-          _invalidDisplayCode = false;
-          _invalidOtp = false;
+          resetMessage();
           DataDisplayCode.getInstance().save(formattedDisplayCode);
           _onDisplayStatus(message as DisplayStatusMessage);
           break;
@@ -382,8 +401,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void resetMessage() {
-    _invalidDisplayCode = false;
-    _invalidOtp = false;
+    _channelConnectError = null;
   }
 
   Future closeChannel() async {
@@ -413,24 +431,9 @@ class ChannelProvider extends ChangeNotifier {
   void _onChannelOpenFailed(ChannelConnectorError error) {
     print('Failed to open channel $error');
 
-    switch (error) {
-      case ChannelConnectorError.networkError:
-      // TODO:
-      case ChannelConnectorError.rateLimitExceeded:
-      // TODO:
-      case ChannelConnectorError.unknownError:
-      // TODO:
-      case ChannelConnectorError.instanceNotFound:
-      // TODO:
-      case ChannelConnectorError.invalidDisplayCode:
-        presentEnd(goIdleState: false);
-        setInvalidDisplayCode(true);
-        break;
-      case ChannelConnectorError.authenticationError:
-        presentEnd(goIdleState: false);
-        setInvalidOtp(true);
-        break;
-    }
+    presentEnd(goIdleState: false);
+
+    setChannelConnectError(mapChannelConnectError(error));
   }
 
   Future _handleRemoteScreenState(RemoteScreenStatusMessage message) async {
