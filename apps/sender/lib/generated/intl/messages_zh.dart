@@ -24,6 +24,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "main_connect_network_error":
+            MessageLookupByLibrary.simpleMessage("網路連線異常，請檢查網路連線"),
+        "main_connect_rate_limited":
+            MessageLookupByLibrary.simpleMessage("服務忙碌中，請稍後再試"),
+        "main_connect_unknown_error":
+            MessageLookupByLibrary.simpleMessage("未知的錯誤"),
+        "main_connection_mode_unsupported":
+            MessageLookupByLibrary.simpleMessage("AirSync無網際網路連線"),
         "main_display_code": MessageLookupByLibrary.simpleMessage("投影辨識碼"),
         "main_display_code_description":
             MessageLookupByLibrary.simpleMessage("請輸入投影辨識碼"),
@@ -33,20 +41,25 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("已達到分割螢幕數量上限"),
         "main_display_code_invalid":
             MessageLookupByLibrary.simpleMessage("無效的投影辨識碼"),
+        "main_instance_not_found_or_offline":
+            MessageLookupByLibrary.simpleMessage("找不到Display code或是服務未啟動"),
         "main_language": MessageLookupByLibrary.simpleMessage("語言"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("繁體中文"),
         "main_password": MessageLookupByLibrary.simpleMessage("一次性密碼"),
         "main_password_description":
             MessageLookupByLibrary.simpleMessage("請輸入一次性密碼"),
         "main_password_invalid": MessageLookupByLibrary.simpleMessage("密碼錯誤"),
-        "main_present": MessageLookupByLibrary.simpleMessage("投影"),
+        "main_present": MessageLookupByLibrary.simpleMessage("下一步"),
         "main_setting": MessageLookupByLibrary.simpleMessage("設定"),
         "main_touch_back": MessageLookupByLibrary.simpleMessage("觸控反饋"),
-        "moderator": MessageLookupByLibrary.simpleMessage("主持人"),
+        "moderator": MessageLookupByLibrary.simpleMessage("請輸入姓名"),
         "moderator_exit": MessageLookupByLibrary.simpleMessage("結束"),
         "moderator_fill_out": MessageLookupByLibrary.simpleMessage("必填欄位"),
         "moderator_name": MessageLookupByLibrary.simpleMessage("姓名"),
         "moderator_wait": MessageLookupByLibrary.simpleMessage("請等待主持人指定分享人員"),
+        "present_role_cast_screen":
+            MessageLookupByLibrary.simpleMessage("分享螢幕"),
+        "present_role_receive": MessageLookupByLibrary.simpleMessage("接收螢幕"),
         "present_select_screen_cancel":
             MessageLookupByLibrary.simpleMessage("取消分享"),
         "present_select_screen_description":
@@ -67,6 +80,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "present_time_unit_min": MessageLookupByLibrary.simpleMessage("分鐘"),
         "present_time_unit_sec": MessageLookupByLibrary.simpleMessage("秒"),
         "present_wait": m0,
+        "remote_screen_wait":
+            MessageLookupByLibrary.simpleMessage("分享畫面處理中，請稍後"),
+        "settings_audio_configuration":
+            MessageLookupByLibrary.simpleMessage("音訊設定說明"),
         "settings_knowledge_base": MessageLookupByLibrary.simpleMessage("知識庫"),
         "toast_enable_remote_screen":
             MessageLookupByLibrary.simpleMessage("請在AirSync開啟分享畫面到設備端功能"),
