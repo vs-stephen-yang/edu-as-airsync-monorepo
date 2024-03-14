@@ -340,46 +340,6 @@ class S {
     );
   }
 
-  /// `Display code not found or instance offline`
-  String get main_instance_not_found_or_offline {
-    return Intl.message(
-      'Display code not found or instance offline',
-      name: 'main_instance_not_found_or_offline',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Network error. Please check connection and try again`
-  String get main_connect_network_error {
-    return Intl.message(
-      'Network error. Please check connection and try again',
-      name: 'main_connect_network_error',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Rate limit exceeded. Please try again later`
-  String get main_connect_rate_limited {
-    return Intl.message(
-      'Rate limit exceeded. Please try again later',
-      name: 'main_connect_rate_limited',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Unknown error occurred. Please try again or contact support`
-  String get main_connect_unknown_error {
-    return Intl.message(
-      'Unknown error occurred. Please try again or contact support',
-      name: 'main_connect_unknown_error',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Maximum presenters (4) reached.`
   String get main_display_code_exceed_split_screen {
     return Intl.message(
@@ -505,6 +465,46 @@ class S {
     return Intl.message(
       'Cast the screen',
       name: 'present_role_cast_screen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Display code not found or instance offline`
+  String get main_instance_not_found_or_offline {
+    return Intl.message(
+      'Display code not found or instance offline',
+      name: 'main_instance_not_found_or_offline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network error. Please check connection and try again`
+  String get main_connect_network_error {
+    return Intl.message(
+      'Network error. Please check connection and try again',
+      name: 'main_connect_network_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rate limit exceeded. Please try again later`
+  String get main_connect_rate_limited {
+    return Intl.message(
+      'Rate limit exceeded. Please try again later',
+      name: 'main_connect_rate_limited',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unknown error occurred. Please try again or contact support`
+  String get main_connect_unknown_error {
+    return Intl.message(
+      'Unknown error occurred. Please try again or contact support',
+      name: 'main_connect_unknown_error',
       desc: '',
       args: [],
     );
