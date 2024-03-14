@@ -383,7 +383,7 @@ class ChannelProvider extends ChangeNotifier {
         _channel?.send(json);
       },
     );
-    webRTCConnector?.onWebStreamInterrupted = (() async {
+    webRTCConnector?.onStreamInterrupted = (() async {
       presentEnd();
     });
     await webRTCConnector?.makeCall(
