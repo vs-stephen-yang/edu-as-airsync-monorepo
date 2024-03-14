@@ -65,14 +65,14 @@ class RTCConnector {
 
   RTCConnector(this._channel, this._mode);
 
-  Future<void> init(JoinDisplayMessage message,
+  Future<void> init(JoinDisplayMessage message, isModeratorMode,
       {String? iceServersApiUrl, String? host}) async {
     _printPeerConnectionLog('init', null);
     this.iceServersApiUrl = iceServersApiUrl;
     this.host = host;
     _channel.onStateChange = (state) => _onChannelState(state);
 
-    onJoinDisplay(message);
+    _onJoinDisplay(message, isModeratorMode);
   }
 
   Future<void> _onChannelState(ChannelState state) async {
@@ -129,12 +129,12 @@ class RTCConnector {
     _pc!.onDataChannel = _onDataChannel;
   }
 
-  void onJoinDisplay(JoinDisplayMessage msg) {
+  void _onJoinDisplay(JoinDisplayMessage msg, bool isModeratorMode) {
     clientId = msg.clientId;
     senderName = msg.name;
     senderVersion = msg.version;
     senderPlatform = msg.platform;
-    if (ChannelProvider.isModeratorMode) {
+    if (isModeratorMode) {
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       // presentationState = PresentationState.occupied;
       onRefresh?.call();
@@ -186,10 +186,11 @@ class RTCConnector {
     onRefresh?.call();
   }
 
-  Future<void> onStopPresent(StopPresentMessage msg) async {
+  Future<void> onStopPresent(
+      StopPresentMessage msg, bool isModeratorMode) async {
     AppAnalytics().trackEventPresentStopReceived(clientId!, sessionId!);
 
-    if (ChannelProvider.isModeratorMode) {
+    if (isModeratorMode) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
       await disconnectPeerConnection(sendAnalytics: false);
       HybridConnectionList().updateSplitScreen();

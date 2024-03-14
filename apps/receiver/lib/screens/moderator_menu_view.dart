@@ -25,8 +25,7 @@ class ModeratorMenuView extends StatefulWidget {
 class _ModeratorMenuViewState extends State<ModeratorMenuView> {
   @override
   Widget build(BuildContext context) {
-    MirrorStateProvider mirrorStateProvider =
-        Provider.of<MirrorStateProvider>(context);
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
     return MenuDialog(
       backgroundColor: HybridConnectionList().isPresenting()
           ? AppColors.primary_grey_tran
@@ -34,17 +33,17 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
       topTitleText: S.of(context).moderator_presentersList,
       topTitleAction: FocusIconButton(
         childNotFocus: Image(
-          image: Svg(ChannelProvider.isModeratorMode == true
+          image: Svg(channelProvider.isModeratorMode == true
               ? 'assets/images/ic_activate_on.svg'
               : 'assets/images/ic_activate_off.svg'),
         ),
         splashRadius: 20,
         focusColor: Colors.grey,
         onClick: () {
-          if (ChannelProvider.isModeratorMode) {
+          if (channelProvider.isModeratorMode) {
             _callLogOutDialog();
           } else {
-            ChannelProvider.isModeratorMode = true;
+            channelProvider.isModeratorMode = true;
 
             //TODO Moderator button cannot be pressed while mirror is playing
             // mirrorStateProvider.pauseMirror();
@@ -59,14 +58,13 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) {
-        MirrorStateProvider mirrorStateProvider =
-            Provider.of<MirrorStateProvider>(context);
         return CustomAlertDialog(
           title: '',
           description: S.of(context).moderator_exit_dialog,
           positiveButton: S.of(context).moderator_exit,
           onPositive: () {
-            ChannelProvider.isModeratorMode = false;
+            Provider.of<ChannelProvider>(context, listen: false)
+                .isModeratorMode = false;
             AppAnalytics().trackEventModeratorOff();
             _switchModeratorOff();
             setState(() {});
