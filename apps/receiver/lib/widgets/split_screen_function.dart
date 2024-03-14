@@ -77,7 +77,8 @@ class SplitScreenFunctionState extends State<SplitScreenFunction> {
                     children: <Widget>[
                       Visibility(
                         visible:
-                        Home.enlargedScreenPositionIndex.value != widget.index && value[widget.index],
+                        Home.enlargedScreenPositionIndex.value !=
+                                widget.index && value[widget.index],
                         child: FocusIconButton(
                           icons: Icons.close,
                           iconForegroundColor: Colors.white,
