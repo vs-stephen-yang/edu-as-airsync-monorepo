@@ -372,8 +372,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
                       onClick: () {
-                        mirror.clearPinCode();
                         Navigator.pop(context);
+                        mirror.clearPinCode();
                       },
                     ),
                   ),
@@ -456,6 +456,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               notFocusHeight: 25,
                               onClick: () {
                                 //TODO: found that AirPlay icon on iMac keeps under working state even calling clearRequestMirrorId()
+                                Navigator.pop(context);
+                                Home.isShowAuthDialog.value = false;
                                 var mirrorId = HybridConnectionList()
                                     .getMirrorMap()
                                     .values
@@ -464,8 +466,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                     .toList()[index]
                                     .mirrorId;
                                 mirror.clearRequestMirrorId(mirrorId);
-                                Navigator.pop(context);
-                                Home.isShowAuthDialog.value = false;
                               },
                               child: AutoSizeText(
                                 S.of(context).main_mirror_prompt_cancel,
@@ -486,7 +486,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               hasFocusHeight: 30,
                               notFocusHeight: 25,
                               onClick: () async {
-                                var mirrorId = HybridConnectionList()
+                                Navigator.pop(context);
+                                Home.isShowAuthDialog.value = false;
+                                String? mirrorId = HybridConnectionList()
                                     .getMirrorMap()
                                     .values
                                     .where((request) =>
@@ -494,8 +496,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                     .toList()[index]
                                     .mirrorId;
                                 mirror.setAcceptMirrorId(mirrorId);
-                                Navigator.pop(context);
-                                Home.isShowAuthDialog.value = false;
                               },
                               child: AutoSizeText(
                                 S.of(context).main_mirror_prompt_accept,
