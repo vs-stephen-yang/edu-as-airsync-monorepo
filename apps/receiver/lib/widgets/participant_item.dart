@@ -48,7 +48,10 @@ class _ParticipantItemState extends State<ParticipantItem>
   @override
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
-    rtcConnector = HybridConnectionList().getRtcConnectorMap()[widget.index];
+    rtcConnector = HybridConnectionList()
+        .getRtcConnectorMap()
+        .values
+        .toList()[widget.index];
     String presenterId = rtcConnector?.clientId ?? '';
     String presenterName = rtcConnector?.senderName ?? '';
 

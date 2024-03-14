@@ -38,8 +38,7 @@ class _ParticipantListViewState extends State<ParticipantListView> {
             return ListView.separated(
               itemCount: HybridConnectionList().getRtcConnectorMap().length,
               itemBuilder: (BuildContext context, int index) {
-                if (index > 5 ||
-                    HybridConnectionList().hybridConnectionList[index] == null) {
+                if (index > 5) {
                   return const SizedBox.shrink();
                 }
                 return ParticipantItem(index: index);
