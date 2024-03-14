@@ -49,9 +49,6 @@ class AppInstanceCreate {
 
   bool get isInstalledInVBS200 => _modelName.startsWith('VBS200');
 
-  bool get isNoneTouchModel =>
-      _modelName.startsWith('CDE') || _modelName.startsWith('LD');
-
   int _versionCode = 0;
 
   bool get _isProduction => _versionCode % 2 == 0;

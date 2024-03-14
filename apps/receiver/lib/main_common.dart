@@ -162,8 +162,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               ),
             ),
             initialRoute: AppPreferences().showEULA &&
-                    !AppInstanceCreate().isInstalledInVBS100 &&
-                    !AppInstanceCreate().isNoneTouchModel
+                    !AppInstanceCreate().isInstalledInVBS100
                 ? '/eula'
                 : '/home',
             navigatorKey: NavigationService.navigationKey,

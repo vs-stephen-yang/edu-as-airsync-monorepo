@@ -230,13 +230,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               const Positioned(
                 child: StatusBar(),
               ),
-              Visibility(
-                visible: !AppInstanceCreate().isNoneTouchModel,
-                child: const Positioned(
-                  left: 20,
-                  bottom: 0,
-                  child: StreamFunction(),
-                ),
+              const Positioned(
+                left: 20,
+                bottom: 0,
+                child: StreamFunction(),
               ),
 
               ValueListenableBuilder(
