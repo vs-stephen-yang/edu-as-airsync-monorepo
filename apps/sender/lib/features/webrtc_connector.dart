@@ -26,6 +26,8 @@ class WebRTCConnector {
     _systemAudio = systemAudio;
   }
 
+  final List<StreamSubscription> _subscriptions = [];
+
   final String _urlIce;
   void Function(PresentSignalMessage message) sendSignalMessage;
 
@@ -68,7 +70,7 @@ class WebRTCConnector {
 
   int get trackHeight => _trackHeight;
   final _flutterInputInjectionPlugin = FlutterInputInjection();
-  Future<void> Function()? onWebStreamInterrupted;
+  Future<void> Function()? onStreamInterrupted;
 
   Timer? _statsTimer;
   final _statsTimerInterval = const Duration(seconds: 1);
@@ -90,6 +92,11 @@ class WebRTCConnector {
       deviceId = {'exact': source.id};
       _isSourceTypeScreen = (source.type == SourceType.Screen);
       if (Platform.isMacOS) {
+        DesktopCapturerSource s = source;
+        _subscriptions.add(s.onCaptureError.stream.listen((event) async {
+          await hangUp();
+          await onStreamInterrupted?.call();
+        }));
         isMainSource =
             _isSourceTypeScreen ? source.id == _macMainScreenOrder : false;
       } else if (Platform.isWindows) {
@@ -118,6 +125,10 @@ class WebRTCConnector {
         var stream = _localStream!;
         _localStream = null;
         await stream.dispose();
+
+        for (var element in _subscriptions) {
+          element.cancel();
+        }
       }
     } catch (e) {
       debugModePrint(e, type: runtimeType);
@@ -313,7 +324,7 @@ class WebRTCConnector {
     _localStream?.getTracks().forEach((element) {
       element.onEnded = () async {
         await hangUp();
-        await onWebStreamInterrupted?.call();
+        await onStreamInterrupted?.call();
       };
     });
     for (MediaStreamTrack track in _localStream!.getTracks()) {
