@@ -246,10 +246,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                           _showPinCodeDialog(context, mirror);
                         });
                       }
-                    } else {
-                      if (Navigator.canPop(context)) {
-                        Navigator.pop(context);
-                      }
                     }
                     return const SizedBox.shrink();
                   }
@@ -469,6 +465,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                     .mirrorId;
                                 mirror.clearRequestMirrorId(mirrorId);
                                 Navigator.pop(context);
+                                Home.isShowAuthDialog.value = false;
                               },
                               child: AutoSizeText(
                                 S.of(context).main_mirror_prompt_cancel,
@@ -498,6 +495,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                     .mirrorId;
                                 mirror.setAcceptMirrorId(mirrorId);
                                 Navigator.pop(context);
+                                Home.isShowAuthDialog.value = false;
                               },
                               child: AutoSizeText(
                                 S.of(context).main_mirror_prompt_accept,
