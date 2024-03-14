@@ -31,6 +31,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "Rate limit exceeded. Please try again later"),
         "main_connect_unknown_error": MessageLookupByLibrary.simpleMessage(
             "Unknown error occurred. Please try again or contact support"),
+        "main_connection_mode_unsupported":
+            MessageLookupByLibrary.simpleMessage(
+                "Connection mode not supported"),
         "main_display_code":
             MessageLookupByLibrary.simpleMessage("Display code"),
         "main_display_code_description":

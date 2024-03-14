@@ -509,6 +509,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Connection mode not supported`
+  String get main_connection_mode_unsupported {
+    return Intl.message(
+      'Connection mode not supported',
+      name: 'main_connection_mode_unsupported',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -44,5 +44,6 @@
     "main_instance_not_found_or_offline": "Display code not found or instance offline",
     "main_connect_network_error": "Network error. Please check connection and try again",
     "main_connect_rate_limited": "Rate limit exceeded. Please try again later",
-    "main_connect_unknown_error":"Unknown error occurred. Please try again or contact support"
+    "main_connect_unknown_error":"Unknown error occurred. Please try again or contact support",
+    "main_connection_mode_unsupported": "Connection mode not supported"
 }
