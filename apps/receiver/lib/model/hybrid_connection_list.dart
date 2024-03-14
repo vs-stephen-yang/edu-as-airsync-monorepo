@@ -72,8 +72,10 @@ class HybridConnectionList {
     bool presenting = false;
     if (index != null) {
       var connection = hybridConnectionList[index];
-      if (connection is RTCConnector && connection.presentationState ==
-              PresentationState.streaming) {
+      if (connection is RTCConnector &&
+          (connection.presentationState == PresentationState.streaming ||
+              connection.presentationState ==
+                  PresentationState.pauseStreaming)) {
         presenting = true;
       } else if (connection is MirrorRequest && connection.mirrorState ==
           MirrorState.mirroring) {
@@ -97,8 +99,12 @@ class HybridConnectionList {
   int getPresentingCount() {
     int count = 0;
     for (dynamic connection in hybridConnectionList.nonNulls) {
-      if ((connection is RTCConnector && connection.presentationState == PresentationState.streaming) ||
-          (connection is MirrorRequest && connection.mirrorState == MirrorState.mirroring)) {
+      if (connection is RTCConnector &&
+              (connection.presentationState == PresentationState.streaming ||
+                  connection.presentationState ==
+                      PresentationState.pauseStreaming) ||
+          (connection is MirrorRequest &&
+              connection.mirrorState == MirrorState.mirroring)) {
         count++;
       }
     }
