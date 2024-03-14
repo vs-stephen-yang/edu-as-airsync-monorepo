@@ -25,6 +25,12 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "main_connect_network_error": MessageLookupByLibrary.simpleMessage(
+            "Network error. Please check connection and try again"),
+        "main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
+            "Rate limit exceeded. Please try again later"),
+        "main_connect_unknown_error": MessageLookupByLibrary.simpleMessage(
+            "Unknown error occurred. Please try again or contact support"),
         "main_display_code":
             MessageLookupByLibrary.simpleMessage("Display code"),
         "main_display_code_description":
@@ -36,6 +42,9 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Maximum presenters (4) reached."),
         "main_display_code_invalid":
             MessageLookupByLibrary.simpleMessage("Invalid Display code"),
+        "main_instance_not_found_or_offline":
+            MessageLookupByLibrary.simpleMessage(
+                "Display code not found or instance offline"),
         "main_language": MessageLookupByLibrary.simpleMessage("Language"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
         "main_password": MessageLookupByLibrary.simpleMessage("Password"),
