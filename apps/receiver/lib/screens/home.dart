@@ -60,6 +60,16 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       Provider.of<OverlayTabProvider>(context, listen: false)
           .openAndroidWindow(AppPreferences().showOverlayTab);
     }
+
+    ChannelProvider channelProvider =
+        Provider.of<ChannelProvider>(context, listen: false);
+    channelProvider.addListener(() {
+      MirrorStateProvider mirrorStateProvider =
+          Provider.of<MirrorStateProvider>(context, listen: false);
+      mirrorStateProvider.setDeviceName(
+          AppPreferences().instanceName, channelProvider.displayCode);
+      mirrorStateProvider.restartMirror();
+    });
   }
 
   @override
