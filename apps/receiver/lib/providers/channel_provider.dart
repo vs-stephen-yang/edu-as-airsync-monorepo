@@ -47,6 +47,8 @@ class ChannelProvider extends ChangeNotifier {
 
   static final _log = getDefaultLogger();
 
+  ConnectivityResult _lastConnectivityResult = ConnectivityResult.none;
+
   bool _connectNet = false;
 
   bool get connectNet => _connectNet;
@@ -127,7 +129,7 @@ class ChannelProvider extends ChangeNotifier {
       }
     });
 
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) async {
       _log.info('Network connectivity has changed to $result');
 
       if (result == ConnectivityResult.none) {
@@ -135,8 +137,11 @@ class ChannelProvider extends ChangeNotifier {
         lanNetWork = false;
       } else {
         connectNet = true;
-        _checkNetWorkInfo().then((_) {
-          if (displayCode.isEmpty) {
+        _log.info('Last Network Connectivity is: $_lastConnectivityResult, result: $result');
+        // MUST add async/await, to compare connectivity result with last one.
+        await _checkNetWorkInfo().then((_) {
+          _log.info('Last Network Connectivity is: $_lastConnectivityResult, result: $result');
+          if (displayCode.isEmpty || _lastConnectivityResult != result) {
             getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
               if (value.isNotEmpty) {
                 displayCode =
@@ -149,6 +154,9 @@ class ChannelProvider extends ChangeNotifier {
           }
         });
       }
+
+      // Save connectivity result, for status compare.
+      _lastConnectivityResult = result;
     });
 
     _generateOTP();
