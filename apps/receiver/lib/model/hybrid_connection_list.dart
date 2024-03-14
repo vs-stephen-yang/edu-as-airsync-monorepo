@@ -254,8 +254,7 @@ class HybridConnectionList {
     if (connection != null && connection is RTCConnector) {
       if (connection.sessionId != null) {
         try {
-          await connection.disconnectPeerConnection(
-              sendAnalytics: true);
+          await connection.disconnectPeerConnection(sendAnalytics: true);
           await connection.disconnectChannel();
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
         } on PlatformException catch (e) {

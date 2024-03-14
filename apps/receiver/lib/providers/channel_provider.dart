@@ -401,9 +401,10 @@ class ChannelProvider extends ChangeNotifier {
     rtcConnector.onChannelDisconnect = (() async {
       // update UI
       bool presenting = false;
-      for (RTCConnector? controller in HybridConnectionList().hybridConnectionList) {
-        if (controller != null &&
-            controller.presentationState != PresentationState.stopStreaming) {
+      for (RTCConnector? rtcConnector
+          in HybridConnectionList().getRtcConnectorMap().values) {
+        if (rtcConnector != null &&
+            rtcConnector.presentationState != PresentationState.stopStreaming) {
           presenting = true;
         }
       }
@@ -415,7 +416,6 @@ class ChannelProvider extends ChangeNotifier {
       if (MyApp.isInBackgroundMode) {
         disconnectServer();
       }
-
       await rtcConnector.close(ChannelCloseCode.close);
       HybridConnectionList().removeConnection(rtcConnector);
       HybridConnectionList().updateSplitScreen();
