@@ -1,4 +1,3 @@
-
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -14,20 +13,17 @@ class ParticipantListView extends StatefulWidget {
 }
 
 class _ParticipantListViewState extends State<ParticipantListView> {
-
   @override
   Widget build(BuildContext context) {
-
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
         color: Colors.transparent,
       ),
       child: Consumer<ChannelProvider>(
-        builder: (context, provider, child) {
-          if (!ChannelProvider.isModeratorMode ||
-              HybridConnectionList().getRtcConnectorMap().isEmpty
-          ) {
+        builder: (context, channelProvider, child) {
+          if (!channelProvider.isModeratorMode ||
+              HybridConnectionList().getRtcConnectorMap().isEmpty) {
             return Container(
               alignment: Alignment.center,
               child: Text(
