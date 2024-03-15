@@ -32,6 +32,7 @@ class WebSocketClientConnection implements ClientConnection {
     this.connectionTimeout = defaultConnectionTimeout,
     this.maxRetryDelay = defaultMaxRetryDelay,
     this.maxRetryAttempts = defaultMaxRetryAttempts,
+    allowSelfSignedCertificates = false,
   });
 
   @override

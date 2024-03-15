@@ -33,6 +33,7 @@ class WebSocketClientConnection implements ClientConnection {
   Duration connectionTimeout;
   Duration maxRetryDelay;
   int maxRetryAttempts;
+  bool allowSelfSignedCertificates;
 
   WebSocket? _socket;
   HttpClient? _httpClient;
@@ -43,6 +44,7 @@ class WebSocketClientConnection implements ClientConnection {
     this.connectionTimeout = defaultConnectionTimeout,
     this.maxRetryDelay = defaultMaxRetryDelay,
     this.maxRetryAttempts = defaultMaxRetryAttempts,
+    this.allowSelfSignedCertificates = false,
     this.logger,
   });
 
@@ -75,6 +77,11 @@ class WebSocketClientConnection implements ClientConnection {
         () {
           _httpClient = HttpClient();
           _httpClient!.connectionTimeout = connectionTimeout;
+
+          // Determine whether to allow self-signed certificates.
+          _httpClient!.badCertificateCallback =
+              (X509Certificate cert, String host, int port) =>
+                  allowSelfSignedCertificates;
 
           return WebSocket.connect(
             _url,

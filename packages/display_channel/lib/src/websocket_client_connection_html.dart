@@ -45,6 +45,7 @@ class WebSocketClientConnection implements ClientConnection {
     connectionTimeout = defaultConnectionTimeout,
     maxRetryDelay = defaultMaxRetryDelay,
     maxRetryAttempts = defaultMaxRetryAttempts,
+    allowSelfSignedCertificates = false,
   }) : _retryOptions = RetryOptions(
           maxDelay: maxRetryDelay,
           maxAttempts: maxRetryAttempts,

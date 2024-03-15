@@ -160,8 +160,7 @@ class DisplayChannelConnector {
     int port,
   ) {
     final uri = Uri(
-      // TODO: use wss
-      scheme: 'ws',
+      scheme: 'wss',
       host: ipAddress,
       port: port,
     );
