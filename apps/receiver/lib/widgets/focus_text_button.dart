@@ -132,7 +132,9 @@ class _FocusTextButtonState extends State<FocusTextButton> {
         if (widget.onClick != null) {
           if (event.logicalKey == LogicalKeyboardKey.select ||
               event.logicalKey == LogicalKeyboardKey.enter) {
-            widget.onClick?.call();
+            if (event is KeyUpEvent) {
+              widget.onClick?.call();
+            }
             return KeyEventResult.handled;
           }
         }
