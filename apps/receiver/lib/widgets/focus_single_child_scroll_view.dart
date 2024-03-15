@@ -43,20 +43,18 @@ class _FocusSingleChildScrollViewState
           ),
         ),
       ),
-      onKey: (node, event) {
+      onKeyEvent: (FocusNode node, KeyEvent event) {
         double offset = _scrollController.offset;
-        if (event is RawKeyDownEvent) {
-          if (offset > _scrollController.position.minScrollExtent &&
-              event.logicalKey == LogicalKeyboardKey.arrowUp) {
-            _scrollController.animateTo(offset - 200,
-                duration: const Duration(milliseconds: 30), curve: Curves.ease);
-            return KeyEventResult.handled;
-          } else if (offset < _scrollController.position.maxScrollExtent &&
-              event.logicalKey == LogicalKeyboardKey.arrowDown) {
-            _scrollController.animateTo(offset + 200,
-                duration: const Duration(milliseconds: 30), curve: Curves.ease);
-            return KeyEventResult.handled;
-          }
+        if (offset > _scrollController.position.minScrollExtent &&
+            event.logicalKey == LogicalKeyboardKey.arrowUp) {
+          _scrollController.animateTo(offset - 200,
+              duration: const Duration(milliseconds: 30), curve: Curves.ease);
+          return KeyEventResult.handled;
+        } else if (offset < _scrollController.position.maxScrollExtent &&
+            event.logicalKey == LogicalKeyboardKey.arrowDown) {
+          _scrollController.animateTo(offset + 200,
+              duration: const Duration(milliseconds: 30), curve: Curves.ease);
+          return KeyEventResult.handled;
         }
         return KeyEventResult.ignored;
       },
