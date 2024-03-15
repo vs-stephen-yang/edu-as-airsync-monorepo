@@ -227,8 +227,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.3.0"
-      resolved-ref: "25937fa3d272c9b1f2216679dada79346805fd64"
+      ref: "release-0.4.0"
+      resolved-ref: "5e94288775d4d4dc5e7d6b4ad612d467b4505c4a"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection"
     source: git
     version: "0.0.1"
@@ -283,8 +283,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.9.36-24"
-      resolved-ref: "2e84406fa19af478e8a12c878664d081635bc752"
+      ref: "release-0.9.36-25"
+      resolved-ref: "6daa65ea01f79c85b4fb32bc6b8245c26381a771"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc"
     source: git
     version: "0.9.36"
@@ -380,8 +380,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.0.16"
-      resolved-ref: bb770cdaff37eb9393e2460bd7c6c41ed259392e
+      ref: "release-0.0.17"
+      resolved-ref: e04c7551ec0f509f4ed65fd21d48390dbf25a06a
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter"
     source: git
     version: "1.0.0"
