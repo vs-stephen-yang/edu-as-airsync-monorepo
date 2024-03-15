@@ -134,21 +134,12 @@ class _FocusElevatedButtonState extends State<FocusElevatedButton> {
           );
         },
       ),
-      onKey: (node, event) {
+      onKeyEvent: (FocusNode node, KeyEvent event) {
         if (widget.onClick != null) {
-          /*if (event is RawKeyDownEvent) {
-            if (event.logicalKey == LogicalKeyboardKey.select ||
-                event.logicalKey == LogicalKeyboardKey.enter) {
-              widget.onClick?.call();
-              return KeyEventResult.handled;
-            }
-          } else*/
-          if (event is RawKeyUpEvent) {
-            if (event.logicalKey == LogicalKeyboardKey.select ||
-                event.logicalKey == LogicalKeyboardKey.enter) {
-              widget.onClick?.call();
-              return KeyEventResult.handled;
-            }
+          if (event.logicalKey == LogicalKeyboardKey.select ||
+              event.logicalKey == LogicalKeyboardKey.enter) {
+            widget.onClick?.call();
+            return KeyEventResult.handled;
           }
         }
         return KeyEventResult.ignored;
