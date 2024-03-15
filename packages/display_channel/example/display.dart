@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:args/args.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/util/log.dart';
@@ -56,6 +58,19 @@ class Client {
   }
 }
 
+Future<SecurityContext> _loadSecurityContext(
+  String certPemPath,
+  String keyPemPath,
+) async {
+  final certificateChain = await File(certPemPath).readAsBytes();
+  final privateKey = await File(keyPemPath).readAsString();
+
+  // Create a security context
+  return SecurityContext()
+    ..useCertificateChainBytes(certificateChain)
+    ..usePrivateKeyBytes(privateKey.codeUnits);
+}
+
 class MockServer {
   late DisplayDirectServer _directServer;
   late DisplayTunnelServer _tunnelServer;
@@ -105,13 +120,17 @@ class MockServer {
     String instanceId,
     String tunnelServiceUrl,
     int localPort,
+    SecurityContext securityContext,
   ) async {
     // start the tunnel server
     log().info('Connecting to $tunnelServiceUrl for tunnel channels');
     _tunnelServer.start(instanceId, tunnelServiceUrl);
 
     // start the direct server
-    await _directServer.start(localPort);
+    await _directServer.start(
+      localPort,
+      securityContext: securityContext,
+    );
     log().info('Listened on port ${_directServer.port} for direct channels');
   }
 
@@ -144,13 +163,17 @@ main(List<String> arguments) async {
   const instanceId = '0001';
   const instanceIndex = 100043;
 
+  log().info('Current directory: ${Directory.current.path}');
+
+  final securityContext = await _loadSecurityContext(
+    'example/assets/cert.pem',
+    'example/assets/key.pem',
+  );
+
   final server = MockServer();
 
   await server.start(
-    instanceId,
-    tunnelServiceUrl,
-    localDirectPort,
-  );
+      instanceId, tunnelServiceUrl, localDirectPort, securityContext);
 
   final encodedDisplayCode = encodeDisplayCode(
     DisplayCode(host, instanceIndex),

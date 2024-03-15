@@ -26,11 +26,20 @@ main(List<String> arguments) async {
   final encodedDisplayCode = argResults['code'];
   final tunnelServiceUrl = argResults['tunnelUrl'];
 
-  createConnection(url) => WebSocketClientConnection(
+  createConnectionTunnel(url) => WebSocketClientConnection(
         url,
         maxRetryDelay: const Duration(seconds: 1),
         maxRetryAttempts: 4,
         logger: (url, message) => log().info('$url $message'),
+        allowSelfSignedCertificates: false,
+      );
+
+  createConnectionDirect(url) => WebSocketClientConnection(
+        url,
+        maxRetryDelay: const Duration(seconds: 1),
+        maxRetryAttempts: 4,
+        logger: (url, message) => log().info('$url $message'),
+        allowSelfSignedCertificates: true,
       );
 
   Future<String> fetchTunnelUrl(instanceIndex) async => tunnelServiceUrl;
@@ -42,8 +51,8 @@ main(List<String> arguments) async {
     otp: otp,
     displayCode: displayCode,
     encodedDisplayCode: encodedDisplayCode,
-    createConnectionTunnel: createConnection,
-    createConnectionDirect: createConnection,
+    createConnectionTunnel: createConnectionTunnel,
+    createConnectionDirect: createConnectionDirect,
     fetchTunnelUrl: fetchTunnelUrl,
     onOpened: (channel) {
       Client(clientId, channel);
