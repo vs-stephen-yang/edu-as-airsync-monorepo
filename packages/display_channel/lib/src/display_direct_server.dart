@@ -30,7 +30,10 @@ class DisplayDirectServer {
           requestsPerSecond,
         );
 
-  Future<void> start(int port) async {
+  Future<void> start(
+    int port, {
+    SecurityContext? securityContext,
+  }) async {
     // direct server
     _directServer = DirectConnectionServer(
       (String clientId, Connection connection) {
@@ -49,12 +52,24 @@ class DisplayDirectServer {
     );
 
     // HTTP server
-    _httpServer = await HttpServer.bind(
-      InternetAddress.anyIPv4,
-      port,
-      // https://blog.csdn.net/Lumend/article/details/115865931
-      shared: true,
-    );
+    if (securityContext != null) {
+      // https
+      _httpServer = await HttpServer.bindSecure(
+        InternetAddress.anyIPv4,
+        port,
+        securityContext,
+        // https://blog.csdn.net/Lumend/article/details/115865931
+        shared: true,
+      );
+    } else {
+      // http
+      _httpServer = await HttpServer.bind(
+        InternetAddress.anyIPv4,
+        port,
+        // https://blog.csdn.net/Lumend/article/details/115865931
+        shared: true,
+      );
+    }
 
     _httpServer!.listen((request) async {
       if (WebSocketTransformer.isUpgradeRequest(request)) {
