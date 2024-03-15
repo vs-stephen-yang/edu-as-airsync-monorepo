@@ -80,7 +80,7 @@ dependencies:
   flutter_input_injection:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection
-      ref: release-0.3.0
+      ref: release-0.4.0
   # ViewSonic plug-in
 
 dependency_overrides:
