@@ -14,20 +14,22 @@ class DeviceFeatureAdapter {
   // passes the instantiation to the _instance object
   factory DeviceFeatureAdapter() => _instance;
 
-  static List<String> deviceList = <String>['52-1C'];
-
-  static int maxHardwareDecodeSession = 1;
+  static Map<String, dynamic> deviceOptions = {
+    '52-1C': {
+      "maxHardwareDecodeSession": 1,
+      "selectCustomAudioFeed": "CVTE"
+    },
+    '50-3': {
+      "maxHardwareDecodeSession": 1,
+    }
+  };
 
   static ensureInitialized() async {
     String model = await _instance._loadModel() ?? '';
-    for (var element in deviceList) {
-      if (model.contains(element)) {
-        await WebRTC.initialize(
-            options: {
-              "maxHardwareDecodeSession": maxHardwareDecodeSession,
-              "selectCustomAudioFeed": "CVTE"
-            }
-        );
+    for (var entry in deviceOptions.entries) {
+      if (model.contains(entry.key)) {
+        await WebRTC.initialize(options: entry.value);
+        break;
       }
     }
   }
