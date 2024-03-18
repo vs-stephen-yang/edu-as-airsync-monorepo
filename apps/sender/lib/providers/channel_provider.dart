@@ -223,6 +223,7 @@ class ChannelProvider extends ChangeNotifier {
           maxRetryAttempts: 3,
           logger: (url, message) => print('tunnel connection: $url $message}')),
       createConnectionDirect: (url) => WebSocketClientConnection(url,
+          allowSelfSignedCertificates: true, // allow self-signed certificate
           maxRetryDelay: const Duration(seconds: 3),
           maxRetryAttempts: 3,
           logger: (url, message) => print('direct connection: $url $message}')),
