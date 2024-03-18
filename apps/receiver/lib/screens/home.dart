@@ -324,12 +324,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }
   }
 
-  _updateDeviceName(ChannelProvider channelProvider) {
+  _updateDeviceName(ChannelProvider channelProvider) async {
     MirrorStateProvider mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context, listen: false);
-    mirrorStateProvider.setDeviceName(
+    await mirrorStateProvider.setDeviceName(
         AppPreferences().instanceName, channelProvider.displayCode);
-    mirrorStateProvider.restartMirror();
   }
 
   _showPinCodeDialog(BuildContext context, MirrorStateProvider mirror) {
