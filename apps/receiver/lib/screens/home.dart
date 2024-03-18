@@ -64,12 +64,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
+    // Duo to in the EULA menu state, may already got display code,
+    // we need update device name with display code here
+    // and add listener to update while display code changed.
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _updateDeviceName(channelProvider);
+    });
     channelProvider.addListener(() {
-      MirrorStateProvider mirrorStateProvider =
-          Provider.of<MirrorStateProvider>(context, listen: false);
-      mirrorStateProvider.setDeviceName(
-          AppPreferences().instanceName, channelProvider.displayCode);
-      mirrorStateProvider.restartMirror();
+      _updateDeviceName(channelProvider);
     });
   }
 
@@ -320,6 +322,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       }
       return isWidth ? _halfWidth : _halfHeight;
     }
+  }
+
+  _updateDeviceName(ChannelProvider channelProvider) {
+    MirrorStateProvider mirrorStateProvider =
+        Provider.of<MirrorStateProvider>(context, listen: false);
+    mirrorStateProvider.setDeviceName(
+        AppPreferences().instanceName, channelProvider.displayCode);
+    mirrorStateProvider.restartMirror();
   }
 
   _showPinCodeDialog(BuildContext context, MirrorStateProvider mirror) {
