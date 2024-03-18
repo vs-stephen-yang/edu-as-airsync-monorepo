@@ -225,78 +225,16 @@ public class RtspClient
             break;
           }
           case METHOD_SET_PARAMETER: {
-            if (TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_TRIGGER_METHOD))) { // source->sink M4
-                                                                                  // request
-              WfdAudioCodec audioCodecInfo = new WfdAudioCodec();
-              if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_AUDIO_CODECS))) {
-                audioCodecs_ = rParams.bodyMap.get(KEY_WFD_AUDIO_CODECS);
-                parseAudioCodecs(audioCodecs_, audioCodecInfo);
-                if (audioFormatListener_ != null) {
-                  audioFormatListener_.onAudioFormatUpdate(audioCodecInfo.name,
-                      audioCodecInfo.sampleRate,
-                      audioCodecInfo.channelCount);
-                }
-              }
-              if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_VIDEO_FORMATS))) {
-                videoFormats_ = rParams.bodyMap.get(KEY_WFD_VIDEO_FORMATS);
-              }
-              if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_UIBC_CAP))) {
-                // uibcap e.g.
-                // "input_category_list=HIDC;generic_cap_list=none;hidc_cap_list=Keyboard/USB,
-                // Mouse/USB, MultiTouch/USB, Gesture/USB, RemoteControl/USB,
-                // Joystick/USB;port=50000\r\n"
-                String uibcCap = rParams.bodyMap.get(KEY_WFD_UIBC_CAP);
-                // Parse port from uibcCap
-                String[] uibcCapArray = uibcCap.split(";");
-                for (String uibcCapItem : uibcCapArray) {
-                  if (uibcCapItem.contains("port=")) {
-                    String[] uibcCapItemArray = uibcCapItem.split("=");
-                    if (uibcCapItemArray.length == 2) {
-                      uibcPort_ = Integer.parseInt(uibcCapItemArray[1]);
-                      break;
-                    }
-                  }
-                }
-                Log.d(TAG, "UIBC port: " + uibcPort_);
-              }
-
-              if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_UIBC_SETTING))) {
-                // uibSetting e.g. "enable\r\n"
-                String uibcSetting = rParams.bodyMap.get(KEY_WFD_UIBC_SETTING);
-                boolean uibcEnable = false;
-                if (uibcSetting.contains("enable")) {
-                  if (uibcPort_ != 0) {
-                    uibcEnable = true;
-                  }
-                } else {
-                  uibcEnable = false;
-                }
-
-                if (uibcEnable != isUibcEnable_) {
-                  isUibcEnable_ = uibcEnable;
-                  if (isUibcEnable_) {
-                    startUibc();
-                  } else {
-                    stopUibc();
-                  }
-                }
-              }
-
+            if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_TRIGGER_METHOD))) {
+              handleTriggerMethod(rParams);
+            } else {
+              // source->sink M4 request
+              handleAudioCodecs(rParams);
+              handleVideoFormats(rParams);
+              handleUibcCap(rParams);
+              handleUibcSetting(rParams);
               Log.d(TAG, "Get audioCodecs: " + audioCodecs_ + ", videoFormats: " + videoFormats_);
               sendResponseOK();
-            } else {
-              if (rParams.bodyMap.get(KEY_WFD_TRIGGER_METHOD).equals(METHOD_SETUP)) { // source->sink
-                                                                                      // M5
-                                                                                      // request
-                sendResponseOK();
-                sendRequestM6();
-              }
-              if (rParams.bodyMap.get(KEY_WFD_TRIGGER_METHOD).equals(METHOD_TEARDOWN)) { // source->sink
-                                                                                         // TearDown
-                                                                                         // request
-                sendResponseTeardown();
-                cleanResource();
-              }
             }
             break;
           }
@@ -306,6 +244,84 @@ public class RtspClient
       }
     } catch (Exception e) {
       Log.e(TAG, "Exception:" + e);
+    }
+  }
+
+  // SET_PARAMETER - wfd_trigger_method
+  private void handleTriggerMethod(RtspRequestMessage rParams) {
+    String triggerMethod = rParams.bodyMap.get(KEY_WFD_TRIGGER_METHOD);
+    switch (triggerMethod) {
+      case METHOD_SETUP: {
+        sendResponseOK();
+        sendRequestM6();
+        break;
+      }
+      case METHOD_TEARDOWN: {
+        sendResponseTeardown();
+        cleanResource();
+        break;
+      }
+    }
+  }
+
+  // SET_PARAMETER - wfd_audio_codecs
+  private void handleAudioCodecs(RtspRequestMessage rParams) {
+    if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_AUDIO_CODECS))) {
+      audioCodecs_ = rParams.bodyMap.get(KEY_WFD_AUDIO_CODECS);
+      WfdAudioCodec audioCodecInfo = new WfdAudioCodec();
+      parseAudioCodecs(audioCodecs_, audioCodecInfo);
+      if (audioFormatListener_ != null) {
+        audioFormatListener_.onAudioFormatUpdate(audioCodecInfo.name,
+            audioCodecInfo.sampleRate,
+            audioCodecInfo.channelCount);
+      }
+    }
+  }
+
+  // SET_PARAMETER - wfd_video_formats
+  private void handleVideoFormats(RtspRequestMessage rParams) {
+    if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_VIDEO_FORMATS))) {
+      videoFormats_ = rParams.bodyMap.get(KEY_WFD_VIDEO_FORMATS);
+    }
+  }
+
+  // SET_PARAMETER - wfd_uibc_capability
+  private void handleUibcCap(RtspRequestMessage rParams) {
+    if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_UIBC_CAP))) {
+      // uibcap e.g.
+      // "input_category_list=HIDC;generic_cap_list=none;hidc_cap_list=Keyboard/USB,
+      // Mouse/USB, MultiTouch/USB, Gesture/USB, RemoteControl/USB,
+      // Joystick/USB;port=50000\r\n"
+      String uibcCap = rParams.bodyMap.get(KEY_WFD_UIBC_CAP);
+      // Parse port from uibcCap
+      String[] uibcCapArray = uibcCap.split(";");
+      for (String uibcCapItem : uibcCapArray) {
+        if (uibcCapItem.contains("port=")) {
+          String[] uibcCapItemArray = uibcCapItem.split("=");
+          if (uibcCapItemArray.length == 2) {
+            uibcPort_ = Integer.parseInt(uibcCapItemArray[1]);
+            break;
+          }
+        }
+      }
+      Log.d(TAG, "UIBC port: " + uibcPort_);
+    }
+  }
+
+  // SET_PARAMETER - wfd_uibc_setting
+  private void handleUibcSetting(RtspRequestMessage rParams) {
+    if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_UIBC_SETTING))) {
+      // uibSetting e.g. "enable\r\n"
+      String uibcSetting = rParams.bodyMap.get(KEY_WFD_UIBC_SETTING);
+      boolean uibcEnable = uibcSetting.contains("enable") && uibcPort_ != 0;
+      if (uibcEnable != isUibcEnable_) {
+        isUibcEnable_ = uibcEnable;
+        if (isUibcEnable_) {
+          startUibc();
+        } else {
+          stopUibc();
+        }
+      }
     }
   }
 
