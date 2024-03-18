@@ -49,6 +49,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   double _fullWidth = 0, _fullHeight = 0, _halfWidth = 0, _halfHeight = 0;
   static const _androidAppRetain =
       MethodChannel('com.mvbcast.crosswalk/android_app_retain');
+  List<BuildContext> pinDialogContextList = [];
 
   @override
   void initState() {
@@ -246,6 +247,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                           _showPinCodeDialog(context, mirror);
                         });
                       }
+                    } else {
+                      if (pinDialogContextList.isNotEmpty) {
+                        for (var context in pinDialogContextList) {
+                          Navigator.pop(context);
+                        }
+                      }
+                      pinDialogContextList.clear();
                     }
                     return const SizedBox.shrink();
                   }
@@ -320,7 +328,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
-      builder: (BuildContext buildContext) {
+      builder: (BuildContext dialogContext) {
+        pinDialogContextList.add(dialogContext);
         return PopScope(
           // Using onWillPop to block back key return,
           // it will break "Show PinCode mechanism"
@@ -372,7 +381,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
                       onClick: () {
-                        Navigator.pop(context);
+                        if (pinDialogContextList.isNotEmpty) {
+                          for (var context in pinDialogContextList) {
+                            Navigator.pop(context);
+                          }
+                          pinDialogContextList.clear();
+                        }
                         mirror.clearPinCode();
                       },
                     ),
@@ -392,7 +406,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
-      builder: (context) {
+      builder: (BuildContext dialogContext) {
         var width = MediaQuery.of(context).size.width / 3;
         var height = MediaQuery.of(context).size.height / 4;
         double minHeight = min(
@@ -456,7 +470,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               notFocusHeight: 25,
                               onClick: () {
                                 //TODO: found that AirPlay icon on iMac keeps under working state even calling clearRequestMirrorId()
-                                Navigator.pop(context);
+                                Navigator.pop(dialogContext);
                                 Home.isShowAuthDialog.value = false;
                                 var mirrorId = HybridConnectionList()
                                     .getMirrorMap()
@@ -486,7 +500,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               hasFocusHeight: 30,
                               notFocusHeight: 25,
                               onClick: () async {
-                                Navigator.pop(context);
+                                Navigator.pop(dialogContext);
                                 Home.isShowAuthDialog.value = false;
                                 String? mirrorId = HybridConnectionList()
                                     .getMirrorMap()
