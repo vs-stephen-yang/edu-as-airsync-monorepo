@@ -83,14 +83,6 @@ void main() {
       msg.version = '2.5.2';
       msg.configuration = DisplayConfiguration();
 
-      final iceServer1 = RtcIceServer([
-        'turn:ice.myviewboard.cloud:3478?transport=udp',
-      ]);
-      iceServer1.username = 'u1';
-      iceServer1.credential = 's1';
-
-      msg.configuration!.iceServers.add(iceServer1);
-
       msg.status = DisplayStatus();
       msg.status!.moderator = true;
 
@@ -102,11 +94,6 @@ void main() {
       expect(actual.name, 'Room 1');
       expect(actual.platform, 'Windows');
       expect(actual.version, '2.5.2');
-
-      expect(actual.configuration!.iceServers[0].username, 'u1');
-      expect(actual.configuration!.iceServers[0].credential, 's1');
-      expect(actual.configuration!.iceServers[0].urls[0],
-          'turn:ice.myviewboard.cloud:3478?transport=udp');
 
       expect(actual.status!.moderator, true);
     });
@@ -156,6 +143,31 @@ void main() {
       // assert
       expect(actual.seq, 20);
       expect(actual.sessionId, '12345');
+    });
+
+    test('present-accepted', () {
+      // Arrange
+      final msg = PresentAcceptedMessage('12345');
+
+      final iceServer1 = RtcIceServer([
+        'turn:ice.myviewboard.cloud:3478?transport=udp',
+      ]);
+      iceServer1.username = 'u1';
+      iceServer1.credential = 's1';
+
+      msg.iceServers.add(iceServer1);
+
+      // action
+      final json = msg.toJson();
+      final actual = ChannelMessage.parse(json) as PresentAcceptedMessage;
+
+      // assert
+      expect(actual.sessionId, '12345');
+
+      expect(actual.iceServers[0].username, 'u1');
+      expect(actual.iceServers[0].credential, 's1');
+      expect(actual.iceServers[0].urls[0],
+          'turn:ice.myviewboard.cloud:3478?transport=udp');
     });
 
     test('stop-present', () {

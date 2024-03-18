@@ -230,28 +230,11 @@ class RtcIceServer {
 }
 
 class DisplayConfiguration {
-  final iceServers = <RtcIceServer>[];
-
   DisplayConfiguration();
-  DisplayConfiguration.fromJson(Map<String, dynamic> json) {
-    // iceServers
-    if (json['iceServers'] != null) {
-      for (var iceServer in json['iceServers'] as List) {
-        iceServers.add(
-          RtcIceServer.fromJson(iceServer),
-        );
-      }
-    }
-  }
+  DisplayConfiguration.fromJson(Map<String, dynamic> json);
 
   Map<String, dynamic> toJson() {
-    return {
-      'iceServers': iceServers
-          .map(
-            (iceServer) => iceServer.toJson(),
-          )
-          .toList(),
-    };
+    return {};
   }
 }
 
@@ -468,6 +451,7 @@ class PresentSignalMessage extends ChannelMessage {
 
 class PresentAcceptedMessage extends ChannelMessage {
   String? sessionId;
+  final iceServers = <RtcIceServer>[];
 
   PresentAcceptedMessage(this.sessionId)
       : super(ChannelMessageType.presentAccepted);
@@ -477,12 +461,26 @@ class PresentAcceptedMessage extends ChannelMessage {
     final data = super._fromJson(json);
 
     sessionId = data['sessionId'] as String?;
+
+    // iceServers
+    if (data['iceServers'] != null) {
+      for (var iceServer in data['iceServers'] as List) {
+        iceServers.add(
+          RtcIceServer.fromJson(iceServer),
+        );
+      }
+    }
   }
 
   @override
   Map<String, dynamic> toJson() {
     return super._toJson({
       'sessionId': sessionId,
+      'iceServers': iceServers
+          .map(
+            (iceServer) => iceServer.toJson(),
+          )
+          .toList(),
     });
   }
 }
