@@ -8,13 +8,13 @@ import 'package:flutter/material.dart';
 typedef TimeOutCallback = void Function();
 
 class ConnectionTimer {
-  Timer? mConnectionTimeoutTimer, mRemainingTimeTimer, _stopServerTimer, _shareSenderTimer;
-  StreamController<int> mConnectionTimeTimeout = StreamController<int>();
-  StreamController<int> mRemainingTimeTimeout = StreamController<int>.broadcast();
-  StreamController<int> _shareSenderTimeout = StreamController<int>.broadcast();
+  Timer? _connectionTimeoutTimer, _remainingTimeTimer, _stopServerTimer, _shareSenderTimer;
+  StreamController<int> connectionTimeTimeout = StreamController<int>();
+  StreamController<int> remainingTimeTimeout = StreamController<int>.broadcast();
+  StreamController<int> shareSenderTimeout = StreamController<int>.broadcast();
 
   static final ConnectionTimer _instance = ConnectionTimer.internal();
-  int remainingTimeLimit = 10800;
+  int threeHourTimeLimit = 10800; // seconds
 
   static ConnectionTimer getInstance() {
     return _instance;
@@ -23,19 +23,19 @@ class ConnectionTimer {
   ConnectionTimer.internal();
 
   void startConnectionTimer(TimeOutCallback onFinish) {
-    if (mConnectionTimeoutTimer != null) stopConnectionTimeoutTimer();
+    if (_connectionTimeoutTimer != null) stopConnectionTimeoutTimer();
 
     var count = 30;
-    mConnectionTimeoutTimer =
+    _connectionTimeoutTimer =
         Timer.periodic(const Duration(seconds: 1), (timer) {
           if (timer.tick < 30) {
             // onTick
             count = 30 - timer.tick;
-            mConnectionTimeTimeout.add(count);
+            connectionTimeTimeout.add(count);
           } else if (timer.tick == 30) {
             // onFinish
             timer.cancel();
-            mConnectionTimeTimeout.add(0);
+            connectionTimeTimeout.add(0);
             log('ConnectionTimeout onFinish');
             onFinish();
           }
@@ -43,35 +43,35 @@ class ConnectionTimer {
   }
 
   void stopConnectionTimeoutTimer() {
-    mConnectionTimeoutTimer?.cancel();
-    mConnectionTimeTimeout.add(0);
+    _connectionTimeoutTimer?.cancel();
+    connectionTimeTimeout.add(0);
   }
 
   void startRemainingTimeTimer(VoidCallback onFinish) {
     stopRemainingTimeTimer();
 
-    mRemainingTimeTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      log('RemainingTimeTimeout tick: ${timer.tick} // $remainingTimeLimit');
+    _remainingTimeTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      log('RemainingTimeTimeout tick: ${timer.tick} // $threeHourTimeLimit');
 
-      if (remainingTimeLimit - timer.tick == 300) {
-        int count = remainingTimeLimit - timer.tick;
-        mRemainingTimeTimeout.sink.add(count);
+      if (threeHourTimeLimit - timer.tick == 300) {
+        int count = threeHourTimeLimit - timer.tick;
+        remainingTimeTimeout.sink.add(count);
         StatusBar.showReamingTime.value = true;
         AppAnalytics().trackEventSessionTimeoutNotification();
         StatusBar.showReamingTimeAlert.value = true;
-      } else if (remainingTimeLimit - timer.tick < 300 &&
-          timer.tick != remainingTimeLimit) {
-        int count = remainingTimeLimit - timer.tick;
-        mRemainingTimeTimeout.sink.add(count);
-        if (remainingTimeLimit - timer.tick == 295) {
+      } else if (threeHourTimeLimit - timer.tick < 300 &&
+          timer.tick != threeHourTimeLimit) {
+        int count = threeHourTimeLimit - timer.tick;
+        remainingTimeTimeout.sink.add(count);
+        if (threeHourTimeLimit - timer.tick == 295) {
           StatusBar.showReamingTimeAlert.value = false;
         }
-      } else if (timer.tick == remainingTimeLimit) {
+      } else if (timer.tick == threeHourTimeLimit) {
         AppAnalytics().trackEventSessionTimeout();
         StatusBar.showReamingTime.value = false;
-        mRemainingTimeTimer?.cancel();
-        mRemainingTimeTimer = null;
-        mRemainingTimeTimeout.sink.add(0);
+        _remainingTimeTimer?.cancel();
+        _remainingTimeTimer = null;
+        remainingTimeTimeout.sink.add(0);
         log('RemainingTimeTimeout onFinish');
         // onFinish
         onFinish();
@@ -80,10 +80,10 @@ class ConnectionTimer {
   }
 
   void stopRemainingTimeTimer() {
-    mRemainingTimeTimer?.cancel();
-    mRemainingTimeTimer = null;
+    _remainingTimeTimer?.cancel();
+    _remainingTimeTimer = null;
     StatusBar.showReamingTime.value = false;
-    mRemainingTimeTimeout.sink.add(0);
+    remainingTimeTimeout.sink.add(0);
   }
 
   void startServerTimer(VoidCallback onFinish) {
@@ -91,7 +91,6 @@ class ConnectionTimer {
     _stopServerTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (timer.tick >= 30) {
         timer.cancel();
-        // stopServerTimer();
         onFinish();
       }
     });
@@ -105,18 +104,18 @@ class ConnectionTimer {
   }
 
   bool remainingTimeTimerIsActive() {
-    return mRemainingTimeTimer?.isActive ?? false;
+    return _remainingTimeTimer?.isActive ?? false;
   }
 
   void startShareSenderTimer(VoidCallback onFinish) {
     stopShareSenderTimer();
 
     _shareSenderTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (timer.tick == remainingTimeLimit) {
+      if (timer.tick == threeHourTimeLimit) {
         _shareSenderTimer?.cancel();
         _shareSenderTimer = null;
-        _shareSenderTimeout.sink.add(0);
-        log('_shareSenderTimer onFinish');
+        shareSenderTimeout.sink.add(0);
+        log('ShareSenderTimeout onFinish');
         // onFinish
         onFinish();
       }
@@ -126,6 +125,6 @@ class ConnectionTimer {
   void stopShareSenderTimer() {
     _shareSenderTimer?.cancel();
     _shareSenderTimer = null;
-    _shareSenderTimeout.sink.add(0);
+    shareSenderTimeout.sink.add(0);
   }
 }
