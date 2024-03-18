@@ -1,0 +1,16 @@
+import 'dart:io';
+
+import 'package:display_flutter/utility/assets_util.dart';
+
+const _certPemPath = 'assets/channel/certificate.pem';
+const _keyPemPath = 'assets/channel/private_key.pem';
+
+Future<SecurityContext> loadSecurityContextForChannel() async {
+  // load files from assets
+  final certificateChain = await loadAssetAsBytes(_certPemPath);
+  final privateKey = await loadAssetAsBytes(_keyPemPath);
+
+  return SecurityContext()
+    ..useCertificateChainBytes(certificateChain)
+    ..usePrivateKeyBytes(privateKey);
+}
