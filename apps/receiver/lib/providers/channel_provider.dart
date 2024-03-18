@@ -15,6 +15,7 @@ import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
@@ -240,8 +241,19 @@ class ChannelProvider extends ChangeNotifier {
     }
 
     // start the direct server
-    _log.info('Starting the direct channel server');
-    await _directServer?.start(port);
+    try {
+      final securityContext = await loadSecurityContextForChannel();
+
+      _log.info('Starting the direct channel server');
+      await _directServer?.start(
+        port,
+        securityContext: securityContext,
+      );
+    } on PathNotFoundException catch (e) {
+      _log.severe(
+          'Failed to load certificate or private key for secure direct connections. $e');
+    }
+
     isServerStart = true;
   }
 
