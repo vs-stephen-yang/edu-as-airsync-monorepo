@@ -136,7 +136,9 @@ class ChannelProvider extends ChangeNotifier {
       }
     });
 
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) async {
+    Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) async {
       _log.info('Network connectivity has changed to $result');
 
       if (result == ConnectivityResult.none) {
@@ -144,10 +146,12 @@ class ChannelProvider extends ChangeNotifier {
         lanNetWork = false;
       } else {
         connectNet = true;
-        _log.info('Last Network Connectivity is: $_lastConnectivityResult, result: $result');
+        _log.info(
+            'Last Network Connectivity is: $_lastConnectivityResult, result: $result');
         // MUST add async/await, to compare connectivity result with last one.
         await _checkNetWorkInfo().then((_) {
-          _log.info('Last Network Connectivity is: $_lastConnectivityResult, result: $result');
+          _log.info(
+              'Last Network Connectivity is: $_lastConnectivityResult, result: $result');
           if (displayCode.isEmpty || _lastConnectivityResult != result) {
             getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
               if (value.isNotEmpty) {
@@ -263,7 +267,8 @@ class ChannelProvider extends ChangeNotifier {
           JoinDisplayMessage msg = message as JoinDisplayMessage;
           if (msg.intent == JoinIntentType.present) {
             if (_isModeratorMode) {
-              if (HybridConnectionList().hybridConnectionList.nonNulls.length >= 6) {
+              if (HybridConnectionList().hybridConnectionList.nonNulls.length >=
+                  6) {
                 var message = PresentRejectedMessage();
                 message.reason = Reason(401, text: 'block');
                 channel.send(message);
@@ -493,8 +498,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   updateAllAudioEnableState(bool enable) {
-    for (RTCConnector rtcConnector in HybridConnectionList().getRtcConnectorMap()
-        .values) {
+    for (RTCConnector rtcConnector
+        in HybridConnectionList().getRtcConnectorMap().values) {
       rtcConnector.controlAudio(rtcConnector.isAudioEnabled & enable,
           setIsAudioEnabled: false);
     }
