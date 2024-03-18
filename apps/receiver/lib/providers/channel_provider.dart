@@ -223,6 +223,10 @@ class ChannelProvider extends ChangeNotifier {
   Future startRemoteScreen() async {
     await _remoteScreenServe.startSfuServer();
     await _remoteScreenServe.startRemoteScreenPublisher();
+    ConnectionTimer.getInstance().startShareSenderTimer(() {
+      removeSender();
+      ChannelProvider.isSenderMode = false;
+    });
   }
 
   void stopRemoteScreenPublisher() {
@@ -534,6 +538,7 @@ class ChannelProvider extends ChangeNotifier {
       }
       remoteScreenConnectors.clear();
       stopRemoteScreenPublisher();
+      ConnectionTimer.getInstance().stopShareSenderTimer();
     }
     notifyListeners();
   }
