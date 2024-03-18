@@ -33,7 +33,6 @@ class _InstanceNameEditorDialogState extends State<InstanceNameEditorDialog> {
         Provider.of<MirrorStateProvider>(context, listen: false);
 
     mirror.setDeviceName(newInstanceName, channel.displayCode);
-    await mirror.restartMirror();
 
     navService.goBack();
   }

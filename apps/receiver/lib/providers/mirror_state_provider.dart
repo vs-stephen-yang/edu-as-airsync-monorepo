@@ -135,9 +135,14 @@ class MirrorStateProvider extends ChangeNotifier
   // endregion
 
   // region Public method
-  setDeviceName(String instanceName, String displayCode) {
+  Future<void> setDeviceName(String instanceName, String displayCode) async {
+    String lastName = _deviceName;
     _deviceName =
         '$instanceName-${displayCode.substring(max(displayCode.length - 5, 0))}';
+    if (lastName != _deviceName) {
+      // Only restart in device name changed.
+      await _restartMirror();
+    }
     notifyListeners();
   }
 
@@ -308,7 +313,7 @@ class MirrorStateProvider extends ChangeNotifier
     // }
   }
 
-  Future<void> restartMirror() async {
+  Future<void> _restartMirror() async {
     printInDebug('restartMirror', type: runtimeType);
     if (!HybridConnectionList().isMirroring()) {
       if (_airplayEnabled) {
@@ -321,12 +326,12 @@ class MirrorStateProvider extends ChangeNotifier
         await startGoogleCast();
       }
 
-        if (_miracastEnabled) {
-          await stopMiracast();
-          await startMiracast();
-          }
-        }
+      if (_miracastEnabled) {
+        await stopMiracast();
+        await startMiracast();
       }
+    }
+  }
   // endregion
 
   // region Private method
