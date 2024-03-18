@@ -58,7 +58,7 @@ class _StatusBarState extends State<StatusBar> {
                       ),
                       StreamBuilder(
                         stream: ConnectionTimer.getInstance()
-                            .mRemainingTimeTimeout
+                            .remainingTimeTimeout
                             .stream,
                         builder: (BuildContext context,
                             AsyncSnapshot<int> snapData) {
