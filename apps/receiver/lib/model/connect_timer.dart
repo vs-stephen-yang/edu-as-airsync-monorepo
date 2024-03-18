@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 typedef TimeOutCallback = void Function();
 
 class ConnectionTimer {
-  Timer? mConnectionTimeoutTimer, mRemainingTimeTimer, _stopServerTimer;
+  Timer? mConnectionTimeoutTimer, mRemainingTimeTimer, _stopServerTimer, _shareSenderTimer;
   StreamController<int> mConnectionTimeTimeout = StreamController<int>();
-  StreamController<int> mRemainingTimeTimeout =
-      StreamController<int>.broadcast();
+  StreamController<int> mRemainingTimeTimeout = StreamController<int>.broadcast();
+  StreamController<int> _shareSenderTimeout = StreamController<int>.broadcast();
 
   static final ConnectionTimer _instance = ConnectionTimer.internal();
   int remainingTimeLimit = 10800;
@@ -106,5 +106,26 @@ class ConnectionTimer {
 
   bool remainingTimeTimerIsActive() {
     return mRemainingTimeTimer?.isActive ?? false;
+  }
+
+  void startShareSenderTimer(VoidCallback onFinish) {
+    stopShareSenderTimer();
+
+    _shareSenderTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (timer.tick == remainingTimeLimit) {
+        _shareSenderTimer?.cancel();
+        _shareSenderTimer = null;
+        _shareSenderTimeout.sink.add(0);
+        log('_shareSenderTimer onFinish');
+        // onFinish
+        onFinish();
+      }
+    });
+  }
+
+  void stopShareSenderTimer() {
+    _shareSenderTimer?.cancel();
+    _shareSenderTimer = null;
+    _shareSenderTimeout.sink.add(0);
   }
 }
