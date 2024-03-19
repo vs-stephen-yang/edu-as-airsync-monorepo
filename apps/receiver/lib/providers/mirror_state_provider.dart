@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
@@ -86,6 +87,8 @@ class MirrorStateProvider extends ChangeNotifier
       _pinCode = '';
       Home.isShowPinDialog.value = false;
     });
+
+    AppOverlayTab().launchApp();
   }
 
   @override
@@ -100,6 +103,8 @@ class MirrorStateProvider extends ChangeNotifier
         MirrorRequest(mirrorId, textureId, deviceName, mirrorType));
     Home.isShowAuthDialog.value = false;
     Home.isShowAuthDialog.value = true;
+
+    AppOverlayTab().launchApp();
   }
 
   @override
