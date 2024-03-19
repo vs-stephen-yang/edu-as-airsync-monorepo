@@ -17,7 +17,7 @@
   "main_language_title": "Language",
   "main_language_name": "English",
   "main_whats_new_title": "What’s New on AirSync?",
-  "main_whats_new_content": "[New Feature]\n1. Screen mirror\n - Miracast.\n - AirPlay.\n - Chromecast.\n2. Support multiple AirSync sender application\n - Windows sender application.\n - macOS sender application.\n - Android sender application.\n - iOS sender application.\n - Web sender.\n3. Split screen\n - By defaut AirSync supports up to 4-split screens.\n4. Moderator mode\n - By default AirSync supports up to 6 participants waiting room.\n - Moderator can freely choose participants to present and control the presentation.\n5. Share to sender\n - When enabled, up to 10 sender application can receive AirSync screen.",
+  "main_whats_new_content": "[New Feature]\n1. Screen mirror\n - Miracast.\n - AirPlay.\n - Google Cast.\n2. Support multiple AirSync sender application\n - Windows sender application.\n - macOS sender application.\n - Android sender application.\n - iOS sender application.\n - Web sender.\n3. Split screen\n - By defaut AirSync supports up to 4-split screens.\n4. Moderator mode\n - By default AirSync supports up to 6 participants waiting room.\n - Moderator can freely choose participants to present and control the presentation.\n5. Share to sender\n - When enabled, up to 10 sender application can receive AirSync screen.",
   "main_split_screen_title": "Split Screen",
   "main_split_screen_waiting": "Split screen enabled. Waiting for presenter to share screen...",
   "main_split_screen_question": "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once.",
@@ -38,7 +38,7 @@
   "main_cast_settings_title": "Cast Settings",
   "main_cast_settings_device_name": "Name",
   "main_cast_settings_airplay": "AirPlay",
-  "main_cast_settings_google_cast": "Chromecast",
+  "main_cast_settings_google_cast": "Google Cast",
   "main_cast_settings_miracast": "Miracast",
   "main_airplay_pin_code": "AirPlay Code",
   "main_mirror_from_client": "%s would like to share their screen.",
@@ -55,5 +55,5 @@
   "main_settings_device_name_hint": "Name",
   "main_settings_device_name_cancel": "CANCEL",
   "main_settings_device_name_save": "SAVE",
-  "main_settings_pin_visible": "PIN visible"
+    "main_settings_pin_visible": "Connect information"
 }

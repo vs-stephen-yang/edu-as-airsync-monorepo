@@ -34,7 +34,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_cast_settings_device_name":
             MessageLookupByLibrary.simpleMessage("Name"),
         "main_cast_settings_google_cast":
-            MessageLookupByLibrary.simpleMessage("Chromecast"),
+            MessageLookupByLibrary.simpleMessage("Google Cast"),
         "main_cast_settings_miracast":
             MessageLookupByLibrary.simpleMessage("Miracast"),
         "main_cast_settings_title":
@@ -73,7 +73,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_settings_language":
             MessageLookupByLibrary.simpleMessage("Language"),
         "main_settings_pin_visible":
-            MessageLookupByLibrary.simpleMessage("PIN visible"),
+            MessageLookupByLibrary.simpleMessage("Connect information"),
         "main_settings_share_to_sender":
             MessageLookupByLibrary.simpleMessage("Share screen to device"),
         "main_settings_share_to_sender_limit_desc":
@@ -100,7 +100,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Waiting for presenter to share screen..."),
         "main_wait_up_next": MessageLookupByLibrary.simpleMessage("UP NEXT"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "[New Feature]\n1. Screen mirror\n - Miracast.\n - AirPlay.\n - Chromecast.\n2. Support multiple AirSync sender application\n - Windows sender application.\n - macOS sender application.\n - Android sender application.\n - iOS sender application.\n - Web sender.\n3. Split screen\n - By defaut AirSync supports up to 4-split screens.\n4. Moderator mode\n - By default AirSync supports up to 6 participants waiting room.\n - Moderator can freely choose participants to present and control the presentation.\n5. Share to sender\n - When enabled, up to 10 sender application can receive AirSync screen."),
+            "[New Feature]\n1. Screen mirror\n - Miracast.\n - AirPlay.\n - Google Cast.\n2. Support multiple AirSync sender application\n - Windows sender application.\n - macOS sender application.\n - Android sender application.\n - iOS sender application.\n - Web sender.\n3. Split screen\n - By defaut AirSync supports up to 4-split screens.\n4. Moderator mode\n - By default AirSync supports up to 6 participants waiting room.\n - Moderator can freely choose participants to present and control the presentation.\n5. Share to sender\n - When enabled, up to 10 sender application can receive AirSync screen."),
         "main_whats_new_title":
             MessageLookupByLibrary.simpleMessage("What’s New on AirSync?"),
         "moderator_activate_split_screen": MessageLookupByLibrary.simpleMessage(

@@ -34,7 +34,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_cast_settings_device_name":
             MessageLookupByLibrary.simpleMessage("設備名稱"),
         "main_cast_settings_google_cast":
-            MessageLookupByLibrary.simpleMessage("Chromecast"),
+            MessageLookupByLibrary.simpleMessage("Google Cast"),
         "main_cast_settings_miracast":
             MessageLookupByLibrary.simpleMessage("Miracast"),
         "main_cast_settings_title":
@@ -67,6 +67,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_settings_device_name_title":
             MessageLookupByLibrary.simpleMessage("設定名稱"),
         "main_settings_language": MessageLookupByLibrary.simpleMessage("語言"),
+        "main_settings_pin_visible":
+            MessageLookupByLibrary.simpleMessage("顯示連線資訊"),
         "main_settings_share_to_sender":
             MessageLookupByLibrary.simpleMessage("分享畫面到設備端"),
         "main_settings_share_to_sender_limit_desc":
@@ -89,7 +91,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_wait_title": MessageLookupByLibrary.simpleMessage("等待投影中..."),
         "main_wait_up_next": MessageLookupByLibrary.simpleMessage("下一位投影者"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "[新功能]\n1. 支援螢幕鏡射\n - Miracast\n - AirPlay\n - Chromecast\n2. 提供多版本的螢幕分享傳送端應用軟體\n - Windows版本\n - macOS版本\n - Android版本\n - iOS版本\n - Web版本\n3. 分割螢幕\n - AirSync最多支援四分割螢幕，可同時允許四個螢幕投屏\n4. 主持人模式\n - AirSync最多同時允許六人連線\n - 主持人可自由選擇投影人員並控制投影過程\n5. 分享畫面至傳送端應用軟體\n - 最多可分享AirSync螢幕至十個傳送端應用軟體"),
+            "[新功能]\n1. 支援螢幕鏡射\n - Miracast\n - AirPlay\n - Google Cast\n2. 提供多版本的螢幕分享傳送端應用軟體\n - Windows版本\n - macOS版本\n - Android版本\n - iOS版本\n - Web版本\n3. 分割螢幕\n - AirSync最多支援四分割螢幕，可同時允許四個螢幕投屏\n4. 主持人模式\n - AirSync最多同時允許六人連線\n - 主持人可自由選擇投影人員並控制投影過程\n5. 分享畫面至傳送端應用軟體\n - 最多可分享AirSync螢幕至十個傳送端應用軟體"),
         "main_whats_new_title": MessageLookupByLibrary.simpleMessage("最新消息"),
         "moderator_activate_split_screen":
             MessageLookupByLibrary.simpleMessage("確定啟用分割畫面功能嗎?最多可四人同時投影。"),
