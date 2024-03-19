@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:android_window/android_window.dart';
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/providers/overlay_tab_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +16,7 @@ class OverlayTab extends StatefulWidget {
 }
 
 class _OverlayTabState extends State<OverlayTab> {
+  String _visibility = OverlayTabHandler.valueInvisible;
   String _deviceName = '';
   String _displayCode = '';
   String _otp = '';
@@ -32,69 +33,77 @@ class _OverlayTabState extends State<OverlayTab> {
       color: Colors.black,
       fontWeight: FontWeight.bold,
     );
-    return AndroidWindow(
-      child: ClipRRect(
-        clipBehavior: Clip.hardEdge,
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
-        child: Scaffold(
-          backgroundColor: AppColors.primaryWhiteA50,
-          body: ConstrainedBox(
-            constraints: const BoxConstraints.expand(),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                AndroidWindow.launchApp();
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(S.of(context).main_settings_device_name),
-                      Text(_deviceName, style: textStyle),
-                    ],
+    return _visibility == OverlayTabHandler.valueInvisible
+        ? const SizedBox.shrink()
+        : AndroidWindow(
+            child: ClipRRect(
+              clipBehavior: Clip.hardEdge,
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
+              child: Scaffold(
+                backgroundColor: AppColors.primaryWhiteA50,
+                body: ConstrainedBox(
+                  constraints: const BoxConstraints.expand(),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      AndroidWindow.launchApp();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(S.of(context).main_settings_device_name),
+                            Text(_deviceName, style: textStyle),
+                          ],
+                        ),
+                        Container(
+                          width: 2,
+                          height: 40,
+                          color: Colors.black,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(S.of(context).main_content_display_code),
+                            Text(_displayCode, style: textStyle),
+                          ],
+                        ),
+                        Container(
+                          width: 2,
+                          height: 40,
+                          color: Colors.transparent,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(S.of(context).main_content_one_time_password),
+                            Text(_otp, style: textStyle),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  Container(
-                    width: 2,
-                    height: 40,
-                    color: Colors.black,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(S.of(context).main_content_display_code),
-                      Text(_displayCode, style: textStyle),
-                    ],
-                  ),
-                  Container(
-                    width: 2,
-                    height: 40,
-                    color: Colors.transparent,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(S.of(context).main_content_one_time_password),
-                      Text(_otp, style: textStyle),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
   }
 
   _setUpAndroidWindow() {
     AndroidWindow.setHandler((String name, Object? data) async {
       switch (name) {
+        case OverlayTabHandler.nameOverlayTabCheck:
+          AndroidWindow.post(OverlayTabHandler.nameOverlayTabReady);
+          return OverlayTabHandler.resultEmptyString;
+
         case OverlayTabHandler.nameInitValue:
           if (data is Map<Object?, Object?>) {
             setState(() {
               var info = Map<String, String>.from(data);
+              _visibility = info[OverlayTabHandler.keyVisibility] ??
+                  OverlayTabHandler.valueInvisible;
               _deviceName = info[OverlayTabHandler.keyDeviceName] ?? '';
               _displayCode = info[OverlayTabHandler.keyDisplayCode] ?? '';
               _otp = info[OverlayTabHandler.keyOtpCode] ?? '';
@@ -106,6 +115,21 @@ class _OverlayTabState extends State<OverlayTab> {
             log('set init value with wrong data type: ${data.runtimeType}');
           }
           return OverlayTabHandler.resultEmptyString;
+
+        case OverlayTabHandler.nameSetVisibility:
+          if (data is Map<Object?, Object?>) {
+            setState(() {
+              var info = Map<String, String>.from(data);
+              _visibility = info[OverlayTabHandler.keyVisibility] ??
+                  OverlayTabHandler.valueInvisible;
+            });
+          } else {
+            log('set visibility with wrong data type: ${data.runtimeType}');
+          }
+          return OverlayTabHandler.resultEmptyString;
+
+        case OverlayTabHandler.nameGetVisibility:
+          return {OverlayTabHandler.keyVisibility: _visibility};
 
         case OverlayTabHandler.nameSetMainInfo:
           if (data is Map<Object?, Object?>) {
@@ -134,11 +158,9 @@ class _OverlayTabState extends State<OverlayTab> {
           if (data is Map<Object?, Object?>) {
             setState(() {
               var info = Map<String, String>.from(data);
-              setState(() {
-                Provider.of<PrefLanguageProvider>(context, listen: false)
-                    .setLanguage(
-                        info[OverlayTabHandler.keyLanguage] ?? 'English');
-              });
+              Provider.of<PrefLanguageProvider>(context, listen: false)
+                  .setLanguage(
+                      info[OverlayTabHandler.keyLanguage] ?? 'English');
             });
           } else {
             log('set language with wrong data type: ${data.runtimeType}');
@@ -159,6 +181,5 @@ class _OverlayTabState extends State<OverlayTab> {
       }
       return OverlayTabHandler.resultNullString;
     });
-    AndroidWindow.post(OverlayTabHandler.nameOverlayTabReady);
   }
 }

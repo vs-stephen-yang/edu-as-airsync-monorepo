@@ -4,13 +4,13 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
-import 'package:display_flutter/providers/overlay_tab_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
@@ -55,12 +55,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
-    Provider.of<OverlayTabProvider>(context, listen: false)
-        .initContext(context);
-    if (AppPreferences().showOverlayTab) {
-      Provider.of<OverlayTabProvider>(context, listen: false)
-          .openAndroidWindow(AppPreferences().showOverlayTab);
-    }
+    AppOverlayTab().setupOverlayTabHandler(
+        buildContext: context, isVisible: AppPreferences().showOverlayTab);
 
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
