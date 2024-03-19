@@ -230,10 +230,10 @@ class S {
     );
   }
 
-  /// `[New Feature]\n1. Screen mirror\n - Miracast.\n - AirPlay.\n - Chromecast.\n2. Support multiple AirSync sender application\n - Windows sender application.\n - macOS sender application.\n - Android sender application.\n - iOS sender application.\n - Web sender.\n3. Split screen\n - By defaut AirSync supports up to 4-split screens.\n4. Moderator mode\n - By default AirSync supports up to 6 participants waiting room.\n - Moderator can freely choose participants to present and control the presentation.\n5. Share to sender\n - When enabled, up to 10 sender application can receive AirSync screen.`
+  /// `[New Feature]\n1. Screen mirror\n - Miracast.\n - AirPlay.\n - Google Cast.\n2. Support multiple AirSync sender application\n - Windows sender application.\n - macOS sender application.\n - Android sender application.\n - iOS sender application.\n - Web sender.\n3. Split screen\n - By defaut AirSync supports up to 4-split screens.\n4. Moderator mode\n - By default AirSync supports up to 6 participants waiting room.\n - Moderator can freely choose participants to present and control the presentation.\n5. Share to sender\n - When enabled, up to 10 sender application can receive AirSync screen.`
   String get main_whats_new_content {
     return Intl.message(
-      '[New Feature]\n1. Screen mirror\n - Miracast.\n - AirPlay.\n - Chromecast.\n2. Support multiple AirSync sender application\n - Windows sender application.\n - macOS sender application.\n - Android sender application.\n - iOS sender application.\n - Web sender.\n3. Split screen\n - By defaut AirSync supports up to 4-split screens.\n4. Moderator mode\n - By default AirSync supports up to 6 participants waiting room.\n - Moderator can freely choose participants to present and control the presentation.\n5. Share to sender\n - When enabled, up to 10 sender application can receive AirSync screen.',
+      '[New Feature]\n1. Screen mirror\n - Miracast.\n - AirPlay.\n - Google Cast.\n2. Support multiple AirSync sender application\n - Windows sender application.\n - macOS sender application.\n - Android sender application.\n - iOS sender application.\n - Web sender.\n3. Split screen\n - By defaut AirSync supports up to 4-split screens.\n4. Moderator mode\n - By default AirSync supports up to 6 participants waiting room.\n - Moderator can freely choose participants to present and control the presentation.\n5. Share to sender\n - When enabled, up to 10 sender application can receive AirSync screen.',
       name: 'main_whats_new_content',
       desc: '',
       args: [],
@@ -440,10 +440,10 @@ class S {
     );
   }
 
-  /// `Chromecast`
+  /// `Google Cast`
   String get main_cast_settings_google_cast {
     return Intl.message(
-      'Chromecast',
+      'Google Cast',
       name: 'main_cast_settings_google_cast',
       desc: '',
       args: [],
@@ -610,10 +610,10 @@ class S {
     );
   }
 
-  /// `PIN visible`
+  /// `Connect information`
   String get main_settings_pin_visible {
     return Intl.message(
-      'PIN visible',
+      'Connect information',
       name: 'main_settings_pin_visible',
       desc: '',
       args: [],
