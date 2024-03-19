@@ -5,6 +5,7 @@ enum IonResolutionType {
 
 const deviceResolutionsMap = <String, IonResolutionType>{
   'IFP33': IonResolutionType.hd,
+  'CDE30': IonResolutionType.hd,
 };
 
 IonResolutionType getCaptureVideoResolution(
