@@ -214,6 +214,7 @@ public class MiraSession
         uibcConnection_.close();
         uibcConnection_ = null;
       }
+      uibcClient_ = null;
     } catch (IOException e) {
       // TODO
       e.printStackTrace();
