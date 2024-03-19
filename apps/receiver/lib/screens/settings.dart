@@ -1,9 +1,9 @@
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
-import 'package:display_flutter/providers/overlay_tab_provider.dart';
 import 'package:display_flutter/screens/language_selection.dart';
 import 'package:display_flutter/screens/sender_menu_view.dart';
 import 'package:display_flutter/screens/whats_new.dart';
@@ -88,33 +88,29 @@ class _SettingsState extends State<Settings> {
               const Spacer(),
               FittedBox(
                 fit: BoxFit.fitHeight,
-                child: Consumer<OverlayTabProvider>(
-                  builder: (_, overlayTabProvider, __) {
-                    return FocusIconButton(
-                      childNotFocus: FutureBuilder(
-                        future: overlayTabProvider.isOverlayTabRunning(),
-                        builder: (context, snapshot) {
-                          bool isRunning = false;
-                          if (snapshot.hasData) {
-                            isRunning = snapshot.data as bool;
-                          }
-                          return Image(
-                            image: Svg(isRunning
-                                ? 'assets/images/ic_activate_on.svg'
-                                : 'assets/images/ic_activate_off.svg'),
-                          );
-                        },
-                      ),
-                      splashRadius: 20,
-                      focusColor: Colors.grey,
-                      onClick: () {
-                        AppPreferences().set(
-                            showOverlayTab: !AppPreferences().showOverlayTab);
-                        overlayTabProvider
-                            .openAndroidWindow(AppPreferences().showOverlayTab);
-                        setState(() {});
-                      },
-                    );
+                child: FocusIconButton(
+                  childNotFocus: FutureBuilder(
+                    future: AppOverlayTab().getVisibility(),
+                    builder: (context, snapshot) {
+                      bool isRunning = false;
+                      if (snapshot.hasData) {
+                        isRunning = snapshot.data as bool;
+                      }
+                      return Image(
+                        image: Svg(isRunning
+                            ? 'assets/images/ic_activate_on.svg'
+                            : 'assets/images/ic_activate_off.svg'),
+                      );
+                    },
+                  ),
+                  splashRadius: 20,
+                  focusColor: Colors.grey,
+                  onClick: () {
+                    AppPreferences()
+                        .set(showOverlayTab: !AppPreferences().showOverlayTab);
+                    AppOverlayTab()
+                        .setVisibility(AppPreferences().showOverlayTab);
+                    setState(() {});
                   },
                 ),
               ),
