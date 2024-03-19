@@ -37,11 +37,14 @@ public class RtspClient
   private final static String KEY_CSEQ = "CSeq";
   private final static String KEY_TRANSPORT = "Transport";
   private final static String KEY_PUBLIC = "Public";
+  private final static String KEY_SERVER = "Server";
   private final static String KEY_WFD_TRIGGER_METHOD = "wfd_trigger_method";
   private final static String KEY_WFD_AUDIO_CODECS = "wfd_audio_codecs";
   private final static String KEY_WFD_VIDEO_FORMATS = "wfd_video_formats";
   private final static String KEY_WFD_UIBC_CAP = "wfd_uibc_capability";
   private final static String KEY_WFD_UIBC_SETTING = "wfd_uibc_setting";
+
+  private final static String WINDOWS_SOURCE_PRODUCT_ID = "MSMiracastSource";
 
   private int rtpPort_;
 
@@ -61,6 +64,9 @@ public class RtspClient
 
   private RtspHandler rtspHandler_;
   private RtspSender sender_;
+
+  private String sourceProductId_ = "";
+  private boolean isWindowsSource_ = false;
 
   public RtspClient(String method, String address) {
     String url = address.substring(address.indexOf("//") + 2);
@@ -183,6 +189,10 @@ public class RtspClient
       return;
 
     if (rParams.statusCode == 200) { // 200 ok
+      if (TextUtils.isEmpty(sourceProductId_)) {
+        handleSourceProductId(rParams);
+      }
+
       if (!TextUtils.isEmpty(rParams.headers.get(KEY_SESSION))
           && !TextUtils.isEmpty(rParams.headers.get(KEY_TRANSPORT))) {// source -> sink M6 response
         rtspParams_.session = rParams.headers.get(KEY_SESSION);
@@ -244,6 +254,19 @@ public class RtspClient
       }
     } catch (Exception e) {
       Log.e(TAG, "Exception:" + e);
+    }
+  }
+
+  private void handleSourceProductId(RtspResponseMessage rParams) {
+    if (!TextUtils.isEmpty(rParams.headers.get(KEY_SERVER))) {
+      String[] serverArray = rParams.headers.get(KEY_SERVER).split(" ");
+      if (serverArray.length > 0) {
+        sourceProductId_ = serverArray[0];
+        if (sourceProductId_.contains(WINDOWS_SOURCE_PRODUCT_ID)) {
+          isWindowsSource_ = true;
+        }
+        Log.d(TAG, "product id of miracast source: " + sourceProductId_ + " , isWindowsSource: " + isWindowsSource_);
+      }
     }
   }
 
@@ -310,6 +333,10 @@ public class RtspClient
 
   // SET_PARAMETER - wfd_uibc_setting
   private void handleUibcSetting(RtspRequestMessage rParams) {
+    if (!isWindowsSource_) {
+      return;
+    }
+
     if (!TextUtils.isEmpty(rParams.bodyMap.get(KEY_WFD_UIBC_SETTING))) {
       // uibSetting e.g. "enable\r\n"
       String uibcSetting = rParams.bodyMap.get(KEY_WFD_UIBC_SETTING);
@@ -364,8 +391,7 @@ public class RtspClient
         // 0000 0000 11, 01 04 0008 0000000194A0 000005155555 000000000555 00 0000 0000
         // 11 00\r\n" +
         "wfd_video_formats: " + getWfdVideoFormats() + "\r\n" +
-        "wfd_uibc_capability: input_category_list=HIDC;hidc_cap_list=Keyboard/USB, Mouse/USB, MultiTouch/USB, Gesture/USB, RemoteControl/USB;port=none\r\n"
-        +
+        "wfd_uibc_capability: " + getUibcCaps() + "\r\n" +
         "wfd_content_protection: none\r\n" +
         "wfd_idr_request_capability: 1\r\n" +
         "wfd_display_edid: 0001 00ffffffffffff004dd90100010000003017010380301b782e2795a55550a2270b5054210800818081c08100a9c0b300d1c001010101023a801871382d40582c4500dd0c1100001e000000ff0031323334353637380a20202020000000fd00324c1e5311000a202020202020000000fc004169725365727665722055484400b8\r\n"
@@ -546,6 +572,15 @@ public class RtspClient
     // max-vres: none
 
     return "40 00 01 10 000194A0 05155555 00000555 00 0000 0000 11 none none, 02 10 000194A0 05155555 00000555 00 0000 0000 11 none none";
+  }
+
+  private String getUibcCaps() {
+    // Currently, UIBC is only supported for Windows source.
+    if (isWindowsSource_) {
+      return "input_category_list=HIDC;hidc_cap_list=Keyboard/USB, Mouse/USB, MultiTouch/USB, Gesture/USB, RemoteControl/USB;port=none";
+    } else {
+      return "none";
+    }
   }
 
   private void startRTPReceiver() {
