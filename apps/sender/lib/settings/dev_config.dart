@@ -11,8 +11,5 @@ class DevConfig implements ConfigSettings {
   String urlGateway = 'https://api.gateway.dev.airsync.net/instances';
 
   @override
-  String urlGetIce = 'https://getice.stage.myviewboard.cloud';
-
-  @override
   String appInsightsInstrumentationKey = '30d6e31f-3fee-4258-af83-5474452eb932';
 }

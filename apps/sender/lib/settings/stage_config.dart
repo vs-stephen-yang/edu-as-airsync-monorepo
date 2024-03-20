@@ -11,8 +11,5 @@ class StageConfig implements ConfigSettings {
   String urlGateway = 'https://api.gateway.stage.airsync.net/instances';
 
   @override
-  String urlGetIce = 'https://getice.stage.myviewboard.cloud';
-
-  @override
   String appInsightsInstrumentationKey = '6e176c9a-ecc8-443c-a1ad-7cc3954efe80';
 }

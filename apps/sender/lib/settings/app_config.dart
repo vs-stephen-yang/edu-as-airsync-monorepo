@@ -33,7 +33,6 @@ abstract class ConfigSettings {
   late final String versionPostfix;
 
   late String urlGateway;
-  late String urlGetIce;
 
   late String appInsightsInstrumentationKey;
 }
