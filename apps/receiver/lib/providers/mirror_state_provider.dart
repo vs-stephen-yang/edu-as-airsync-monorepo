@@ -13,6 +13,7 @@ import 'package:flutter_mirror/flutter_mirror.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
+import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:uuid/uuid.dart';
 
 enum MirrorState {
@@ -186,6 +187,9 @@ class MirrorStateProvider extends ChangeNotifier
 
       HybridConnectionList().updateSplitScreen();
       StreamFunction.streamFunctionState.value = stateMenuOff;
+      while (navService.canPop()) {
+        navService.goBack();
+      }
       // hideTitleBar
       Home.showTitleBottomBar.value = false;
       notifyListeners();
