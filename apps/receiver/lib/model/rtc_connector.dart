@@ -8,6 +8,7 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/split_screen.dart';
+import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
@@ -37,6 +38,7 @@ class RTCConnector {
   final Map<String, dynamic> _configuration = {
     'sdpSemantics': 'unified-plan',
   };
+  List<RtcIceServer>? _iceServers;
 
   // the following device should not enable webrtc prerendererSmoothing flag
   final List<String> _prerendererSmoothingExcludedDevices = [
@@ -100,16 +102,19 @@ class RTCConnector {
 
     if (!_configuration.containsKey('iceServers')) {
       if (_mode == ChannelMode.tunnel) {
-        await _getIceServers(iceServersApiUrl).then((value) {
+        final value = await _getIceServers(iceServersApiUrl);
+        if (value != null) {
+          _iceServers = parseIceServersFromApi(value);
+
           _configuration.putIfAbsent('iceServers', () => value);
           print('zz then:$_configuration');
-        });
+        }
       } else {
         _configuration.putIfAbsent(
             'iceServers',
-                () => [
-              {'url': 'stun:$host'}
-            ]);
+            () => [
+                  {'url': 'stun:$host'}
+                ]);
       }
     }
     if (_prerendererSmoothingExcludedDevices.contains(deviceType)) {
@@ -152,7 +157,12 @@ class RTCConnector {
 
     await _remoteRenderer?.initialize();
     await _peerConnectionConnect();
+
     final message = PresentAcceptedMessage(sessionId = msg.sessionId);
+    if (_iceServers != null) {
+      message.iceServers.addAll(_iceServers!);
+    }
+
     _channel.send(message);
 
     presentationState = PresentationState.waitForStream;
