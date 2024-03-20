@@ -64,7 +64,6 @@ ChannelConnectError mapChannelConnectError(ChannelConnectorError error) {
 
 class ChannelProvider extends ChangeNotifier {
   ChannelProvider(BuildContext context) {
-    _urlIce = AppConfig.of(context)!.settings.urlGetIce;
     _apiGateway = AppConfig.of(context)!.settings.urlGateway;
   }
 
@@ -105,7 +104,7 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  late String _urlIce, _apiGateway = '';
+  late String _apiGateway = '';
   DisplayCode? displayCode;
   String? otp;
   Timer? _presentTimer;
@@ -264,8 +263,7 @@ class ChannelProvider extends ChangeNotifier {
           _onDisplayStatus(message as DisplayStatusMessage);
           break;
         case ChannelMessageType.presentAccepted:
-          // select screen
-          presentSelectScreenPage();
+          _onPresentAccepted(message as PresentAcceptedMessage);
           break;
         case ChannelMessageType.presentRejected:
           Reason? reason = (message as PresentRejectedMessage).reason;
@@ -323,6 +321,13 @@ class ChannelProvider extends ChangeNotifier {
     };
   }
 
+  void _onPresentAccepted(PresentAcceptedMessage message) {
+    _iceServerList = message.iceServers;
+
+    // select screen
+    presentSelectScreenPage();
+  }
+
   void onChannelStateChange(ChannelState state) {
     switch (state) {
       case ChannelState.initialized:
@@ -343,7 +348,6 @@ class ChannelProvider extends ChangeNotifier {
   }) async {
     // PeerConnect
     webRTCConnector = WebRTCConnector(
-      _urlIce,
       systemAudio: systemAudio,
       sendSignalMessage: (json) {
         // offer, answer, candidate
@@ -434,7 +438,6 @@ class ChannelProvider extends ChangeNotifier {
 
   /// get IceServer list and send join-display, start-present
   void _onDisplayStatus(DisplayStatusMessage message) async {
-    _iceServerList = message.configuration?.iceServers;
     _moderatorStatus = message.status!.moderator!;
 
     presentSelectRolePage();

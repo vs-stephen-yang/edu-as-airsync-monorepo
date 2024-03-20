@@ -1,6 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io' show HttpStatus, Platform;
+import 'dart:io' show Platform;
 
 import 'package:collection/collection.dart';
 import 'package:display_cast_flutter/features/protoc/event.pb.dart';
@@ -9,17 +8,17 @@ import 'package:display_cast_flutter/model/message.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
+import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:http/http.dart' as http;
 import 'package:window_size/window_size.dart';
 import 'package:ion_sdk_flutter/src/utils.dart' as sdpFormatUtils;
 
 class WebRTCConnector {
-  WebRTCConnector(this._urlIce,
+  WebRTCConnector(
       {this.touchBack = false,
       bool systemAudio = false,
       required this.sendSignalMessage}) {
@@ -28,12 +27,8 @@ class WebRTCConnector {
 
   final List<StreamSubscription> _subscriptions = [];
 
-  final String _urlIce;
   void Function(PresentSignalMessage message) sendSignalMessage;
 
-  final Map<String, dynamic> _configuration = {
-    'sdpSemantics': 'unified-plan',
-  };
 
   dynamic _deviceId;
   RTCPeerConnection? _pc;
@@ -192,11 +187,10 @@ class WebRTCConnector {
     return true;
   }
 
-  Future<void> _peerConnectionConnect(List<RtcIceServer>? iceServerList) async {
-    if (!_configuration.containsKey('iceServers')) {
-      await _getIceServers();
-    }
-    _pc = await createPeerConnection(_configuration);
+  Future<void> _peerConnectionConnect(List<RtcIceServer>? iceServers) async {
+    final configuration = buildWebRtcConfiguration(iceServers);
+
+    _pc = await createPeerConnection(configuration);
 
     _pc!.onAddTrack = _onAddTrack;
     _pc!.onSignalingState = _onSignalingState;
@@ -215,24 +209,6 @@ class WebRTCConnector {
       _pc = null;
     } catch (e) {
       debugModePrint(e, type: runtimeType);
-    }
-  }
-
-  Future<void> _getIceServers() async {
-    try {
-      http.Response response = await http.get(
-        Uri.parse(_urlIce),
-      );
-
-      if (response.statusCode >= HttpStatus.ok &&
-          response.statusCode < HttpStatus.multiStatus) {
-        Map<String, dynamic> iceServerList = jsonDecode(response.body);
-        if (iceServerList.containsKey('list')) {
-          _configuration.putIfAbsent('iceServers', () => iceServerList['list']);
-        }
-      }
-    } catch (e) {
-      // http.get maybe no network connection.
     }
   }
 
