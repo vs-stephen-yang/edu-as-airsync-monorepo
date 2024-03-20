@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/utility/assets_util.dart';
 
 const _certPemPath = 'assets/channel/certificate.pem';
@@ -13,4 +14,20 @@ Future<SecurityContext> loadSecurityContextForChannel() async {
   return SecurityContext()
     ..useCertificateChainBytes(certificateChain)
     ..usePrivateKeyBytes(privateKey);
+}
+
+List<RtcIceServer>? parseIceServersFromApi(List list) {
+  try {
+    return list
+        .map(
+          (e) => RtcIceServer(
+            [e['url']],
+            credential: e['credential'],
+            username: e['username'],
+          ),
+        )
+        .toList();
+  } catch (e) {
+    return null;
+  }
 }
