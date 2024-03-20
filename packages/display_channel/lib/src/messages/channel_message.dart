@@ -211,7 +211,11 @@ class RtcIceServer {
 
   var urls = <String>[]; // an array or URLs: [ url1, ..., urlN ]
 
-  RtcIceServer(this.urls);
+  RtcIceServer(
+    this.urls, {
+    this.username,
+    this.credential,
+  });
 
   RtcIceServer.fromJson(Map<String, dynamic> json) {
     username = json['username'] as String?;
