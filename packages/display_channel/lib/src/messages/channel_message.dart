@@ -221,7 +221,11 @@ class RtcIceServer {
     username = json['username'] as String?;
     credential = json['credential'] as String?;
 
-    urls = json['urls'] as List<String>;
+    urls = (json['urls'] as List<dynamic>)
+        .map(
+          (dynamic item) => item.toString(),
+        )
+        .toList();
   }
 
   Map<String, dynamic> toJson() {
