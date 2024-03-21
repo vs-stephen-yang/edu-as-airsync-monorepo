@@ -17,27 +17,6 @@ class ModeratorWait extends StatelessWidget {
       height: AppConstants.viewStateMenuHeight,
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.groups,
-                color: Colors.white,
-                size: 26,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 6),
-                child: Text(
-                  S.of(context).moderator,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 26,
-                  ),
-                ),
-              ),
-            ],
-          ),
           Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.fromLTRB(0, 32, 0, 16),
