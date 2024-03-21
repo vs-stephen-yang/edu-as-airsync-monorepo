@@ -20,15 +20,6 @@ import 'package:uuid/uuid.dart';
 import '../generated/l10n.dart';
 import '../widgets/toast.dart';
 
-enum RejectReasonType {
-  maxModeratorSessions(401),
-  maxSplitScreenSessions(402);
-
-  const RejectReasonType(this.code);
-
-  final int code;
-}
-
 enum ChannelConnectError {
   instanceNotFound,
   rateLimitExceeded,
@@ -265,20 +256,31 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.presentAccepted:
           _onPresentAccepted(message as PresentAcceptedMessage);
           break;
-        case ChannelMessageType.presentRejected:
-          Reason? reason = (message as PresentRejectedMessage).reason;
+        case ChannelMessageType.joinDisplayRejected:
+          Reason? reason = (message as JoinDisplayRejectedMessage).reason;
+
           if (currentRole == JoinIntentType.present) {
-            if (reason?.code == RejectReasonType.maxModeratorSessions.code) {
+            if (reason?.code ==
+                JoinDisplayRejectedReasonCode.maxClientsReached.code) {
               Toast.makeToast(S.current.toast_maximum_moderated);
-            } else if (reason?.code ==
-                RejectReasonType.maxSplitScreenSessions.code) {
-              Toast.makeToast(S.current.toast_maximum_split_screen);
             }
             presentEnd();
           } else {
-            if (reason?.code == RejectReasonType.maxModeratorSessions.code) {
+            if (reason?.code ==
+                JoinDisplayRejectedReasonCode.maxClientsReached.code) {
               Toast.makeToast(S.current.toast_maximum_remote_screen);
             }
+          }
+          break;
+        case ChannelMessageType.presentRejected:
+          Reason? reason = (message as PresentRejectedMessage).reason;
+
+          if (currentRole == JoinIntentType.present) {
+            if (reason?.code ==
+                PresentRejectedReasonCode.maxPresentReached.code) {
+              Toast.makeToast(S.current.toast_maximum_split_screen);
+            }
+            presentEnd();
           }
           break;
         case ChannelMessageType.presentSignal:
