@@ -5,6 +5,7 @@ import 'package:display_cast_flutter/widgets/remote_screen_tool.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
+import 'package:display_cast_flutter/utilities/app_constants.dart';
 
 class RemoteScreenWidget extends StatelessWidget {
   const RemoteScreenWidget({super.key});
@@ -28,7 +29,7 @@ class RemoteScreenWidget extends StatelessWidget {
                     child: RTCVideoView(channelProvider.remoteScreenClient!.remoteScreenRenderer, key: channelProvider.remoteScreenClient!.rtcWidgetKey),
                   ),
                 )
-                : SizedBox(child: Text(S.of(context).remote_screen_wait, style: const TextStyle(color: Colors.white, fontSize: 14)));
+                : SizedBox(child: Text(S.of(context).remote_screen_wait, style: const TextStyle(color: Colors.white, fontSize: AppConstants.fontSize_normal)));
           }),
         ),
         const Positioned(
