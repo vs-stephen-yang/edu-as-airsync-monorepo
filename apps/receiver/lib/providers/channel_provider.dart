@@ -286,15 +286,22 @@ class ChannelProvider extends ChangeNotifier {
             if (_isModeratorMode) {
               if (HybridConnectionList().hybridConnectionList.nonNulls.length >=
                   6) {
-                var message = PresentRejectedMessage();
-                message.reason = Reason(401, text: 'block');
+                final message = JoinDisplayRejectedMessage();
+                message.reason = Reason(
+                  JoinDisplayRejectedReasonCode.maxClientsReached.code,
+                  text: 'Max number of clients reached',
+                );
                 channel.send(message);
                 return;
               }
             } else {
+              // TODO: check the limit upon startPresent message
               if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] == 4) {
-                var message = PresentRejectedMessage();
-                message.reason = Reason(402, text: 'block');
+                final message = PresentRejectedMessage();
+                message.reason = Reason(
+                  PresentRejectedReasonCode.maxPresentReached.code,
+                  text: 'Max number of presentations reached',
+                );
                 channel.send(message);
                 return;
               }
@@ -302,8 +309,11 @@ class ChannelProvider extends ChangeNotifier {
             rtcConnector = _onJoinDisplay(rtcConnector, mode, msg);
           } else {
             if (_remoteScreenConnectors.length >= 10) {
-              var message = PresentRejectedMessage();
-              message.reason = Reason(401, text: 'block');
+              final message = JoinDisplayRejectedMessage();
+              message.reason = Reason(
+                JoinDisplayRejectedReasonCode.maxClientsReached.code,
+                text: 'Max number of clients reached',
+              );
               channel.send(message);
               return;
             }
