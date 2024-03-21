@@ -131,6 +131,20 @@ void main() {
       expect(actual.intent, JoinIntentType.remoteScreen);
     });
 
+    test('joint-display-rejected', () {
+      // arrange
+      final msg = JoinDisplayRejectedMessage();
+      msg.reason = Reason(100, text: 'error1');
+
+      //action
+      final json = msg.toJson();
+      final actual = ChannelMessage.parse(json) as JoinDisplayRejectedMessage;
+
+      //assert
+      expect(actual.reason!.code, 100);
+      expect(actual.reason!.text, 'error1');
+    });
+
     test('start-present', () {
       // Arrange
       final msg = StartPresentMessage('12345');
