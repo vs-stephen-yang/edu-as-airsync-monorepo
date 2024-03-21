@@ -18,6 +18,7 @@ enum ChannelMessageType {
   stopRemoteScreen,
   remoteScreenStatus,
   remoteScreenInfo,
+  joinDisplayRejected,
   unknown,
 }
 
@@ -26,6 +27,7 @@ final channelMessageActionNames = <int, String>{
   ChannelMessageType.clientConnected.index: 'client-connected',
   ChannelMessageType.displayStatus.index: 'display-status',
   ChannelMessageType.joinDisplay.index: 'join-display',
+  ChannelMessageType.joinDisplayRejected.index: 'join-display-rejected',
   ChannelMessageType.startPresent.index: 'start-present',
   ChannelMessageType.presentAccepted.index: 'present-accepted',
   ChannelMessageType.presentRejected.index: 'present-rejected',
@@ -64,6 +66,8 @@ final channelMessageParsers = {
   ChannelMessageType.remoteScreenStatus.index:
       RemoteScreenStatusMessage.fromJson,
   ChannelMessageType.remoteScreenInfo.index: RemoteScreenInfoMessage.fromJson,
+  ChannelMessageType.joinDisplayRejected.index:
+      JoinDisplayRejectedMessage.fromJson,
 };
 
 ChannelMessageType actionNameToChannelMessageType(String actionName) {
@@ -201,6 +205,28 @@ class JoinDisplayMessage extends ChannelMessage {
       'version': version,
       'platform': platform,
       'intent': intent?.name,
+    });
+  }
+}
+
+class JoinDisplayRejectedMessage extends ChannelMessage {
+  Reason? reason;
+
+  JoinDisplayRejectedMessage() : super(ChannelMessageType.joinDisplayRejected);
+
+  JoinDisplayRejectedMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.joinDisplayRejected, json) {
+    final data = super._fromJson(json);
+
+    if (data['reason'] != null) {
+      reason = Reason.fromJson(data['reason']);
+    }
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'reason': reason?.toJson(),
     });
   }
 }
