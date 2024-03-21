@@ -51,15 +51,17 @@ class PresentIdleButtonState extends State<PresentIdleButton> with TickerProvide
     });
   }
 
+  onButtonPressed() {
+    if (!isButtonLoading) {
+      setLoadingState(true);
+      widget.onPressed?.call();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: isButtonEnabled ? () {
-        if (!isButtonLoading) {
-          setLoadingState(true);
-          widget.onPressed?.call();
-        }
-      } : null,
+      onPressed: isButtonEnabled ? onButtonPressed : null,
       style: ElevatedButton.styleFrom(
         disabledBackgroundColor: const Color.fromARGB(255, 215, 229, 253),
         backgroundColor: const Color.fromARGB(255, 41, 121, 255), // isButtonEnabled?
