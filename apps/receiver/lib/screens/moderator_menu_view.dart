@@ -43,9 +43,6 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
             _callLogOutDialog();
           } else {
             channelProvider.isModeratorMode = true;
-
-            //TODO Moderator button cannot be pressed while mirror is playing
-            // mirrorStateProvider.pauseMirror();
           }
         },
       ),
@@ -67,9 +64,6 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
             AppAnalytics().trackEventModeratorOff();
             _switchModeratorOff();
             setState(() {});
-
-            //TODO Moderator button cannot be pressed while mirror is playing
-            // mirrorStateProvider.resumeMirror();
           },
           onNegative: () {},
         );
