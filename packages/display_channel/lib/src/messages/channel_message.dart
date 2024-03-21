@@ -22,6 +22,20 @@ enum ChannelMessageType {
   unknown,
 }
 
+enum JoinDisplayRejectedReasonCode {
+  maxClientsReached(401);
+
+  const JoinDisplayRejectedReasonCode(this.code);
+  final int code;
+}
+
+enum PresentRejectedReasonCode {
+  maxPresentReached(401);
+
+  const PresentRejectedReasonCode(this.code);
+  final int code;
+}
+
 final channelMessageActionNames = <int, String>{
   ChannelMessageType.channelConnected.index: 'channel-connected',
   ChannelMessageType.clientConnected.index: 'client-connected',
