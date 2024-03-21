@@ -32,7 +32,7 @@ class PresentIdle extends StatelessWidget {
           },
           onPasswordEnterEvent: (text) {
             if (presentBtnEnable) {
-              presentBtnKey.currentState?.widget.onPressed!();
+              presentBtnKey.currentState?.onButtonPressed();
             }
           },
         ),
