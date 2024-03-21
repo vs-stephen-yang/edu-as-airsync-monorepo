@@ -102,7 +102,9 @@ class HybridConnectionList {
       if (connection is RTCConnector &&
               (connection.presentationState == PresentationState.streaming ||
                   connection.presentationState ==
-                      PresentationState.pauseStreaming) ||
+                      PresentationState.pauseStreaming ||
+                  connection.presentationState ==
+                      PresentationState.resumeStreaming) ||
           (connection is MirrorRequest &&
               connection.mirrorState == MirrorState.mirroring)) {
         count++;
