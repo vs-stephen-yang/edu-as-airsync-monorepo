@@ -36,6 +36,12 @@ class HybridConnectionList {
     int index = hybridConnectionList.indexOf(connection);
     if (index != -1) {
       hybridConnectionList[hybridConnectionList.indexOf(connection)] = null;
+      for (index; index < hybridConnectionList.length - 1; index++) {
+        if (hybridConnectionList[index + 1] != null) {
+          hybridConnectionList[index] = hybridConnectionList[index + 1];
+          hybridConnectionList[index + 1] = null;
+        }
+      }
     }
     _remainingTimeOnOff();
   }
@@ -210,6 +216,22 @@ class HybridConnectionList {
           await Future.delayed(const Duration(milliseconds: 300));
         } on PlatformException catch (e) {
           log(e.toString());
+        }
+      }
+    }
+  }
+
+  reorderPresenters(RTCConnector? selectedRtcConnector) {
+    int index = hybridConnectionList.indexOf(selectedRtcConnector);
+    if (index != -1) {
+      for (int i = 0; i < hybridConnectionList.length; i++) {
+        RTCConnector rtcConnector = hybridConnectionList[i];
+        //Place the selected presenter to the front position, order by is presenting
+        if (rtcConnector != selectedRtcConnector &&
+            rtcConnector.presentationState != PresentationState.streaming) {
+          hybridConnectionList[i] = selectedRtcConnector;
+          hybridConnectionList[index] = rtcConnector;
+          break;
         }
       }
     }
