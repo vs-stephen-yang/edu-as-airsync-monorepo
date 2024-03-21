@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:display_cast_flutter/utilities/app_constants.dart';
 
 class PresentSelectRole extends StatelessWidget {
   const PresentSelectRole({super.key});
@@ -37,7 +38,7 @@ class PresentSelectRole extends StatelessWidget {
                           S.of(context).present_role_receive,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 16,
+                            fontSize: AppConstants.fontSize_title,
                           ),
                         )
                       ],
@@ -71,7 +72,7 @@ class PresentSelectRole extends StatelessWidget {
                         S.of(context).present_role_cast_screen,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: AppConstants.fontSize_title,
                         ),
                       )
                     ],

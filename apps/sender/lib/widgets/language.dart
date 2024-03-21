@@ -44,7 +44,7 @@ class Language extends StatelessWidget {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: AppConstants.fontSize_title,
                   ),
                 ),
               ),

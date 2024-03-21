@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:display_cast_flutter/utilities/app_constants.dart';
 
 class TouchBackButton extends StatefulWidget {
   const TouchBackButton(
@@ -42,7 +43,7 @@ class TouchBackButtonState extends State<TouchBackButton> {
               S.of(context).main_touch_back,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 14,
+                fontSize: AppConstants.fontSize_normal,
               ),
             ),
             IconButton(

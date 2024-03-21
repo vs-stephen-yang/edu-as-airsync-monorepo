@@ -133,7 +133,7 @@ class ModeratorPresentStart extends StatelessWidget {
                             const Padding(padding: EdgeInsets.only(left: 8)),
                             Text(value ? S.of(context).present_state_pause : S.of(context).present_state_resume,
                                 style: const TextStyle(
-                                    color: Colors.white, fontSize: 14)),
+                                    color: Colors.white, fontSize: AppConstants.fontSize_normal)),
                           ],
                         ),
                       );
@@ -155,7 +155,7 @@ class ModeratorPresentStart extends StatelessWidget {
                       children: [
                         const Icon(Icons.cancel_presentation, color: Colors.white,),
                         const Padding(padding: EdgeInsets.only(left: 8)),
-                        Text(S.of(context).present_state_stop, style: const TextStyle(color: Colors.white, fontSize: 14)),
+                        Text(S.of(context).present_state_stop, style: const TextStyle(color: Colors.white, fontSize: AppConstants.fontSize_normal)),
                       ],
                     ),
                   ),

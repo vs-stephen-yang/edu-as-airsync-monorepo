@@ -8,4 +8,7 @@ class AppConstants {
   static const double featureContainerWidth = iconHasFocusSize + 16;
   // FeatureContainerWidth need big than icon focus size: 56 + 8 * 2 (padding)
   static const double featureContainerHeight = iconHasFocusSize + 16;
+
+  static const double? fontSize_normal = 14;
+  static const double? fontSize_title = 16;
 }

@@ -4,6 +4,7 @@ import 'package:display_cast_flutter/widgets/present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/present_idle_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:display_cast_flutter/utilities/app_constants.dart';
 
 class PresentIdle extends StatelessWidget {
   PresentIdle({super.key});
@@ -72,7 +73,7 @@ class PresentIdle extends StatelessWidget {
                 S.of(context).main_setting,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 14,
+                  fontSize: AppConstants.fontSize_normal,
                 ),
               ),
             ],

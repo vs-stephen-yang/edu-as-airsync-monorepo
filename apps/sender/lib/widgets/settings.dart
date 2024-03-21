@@ -49,7 +49,7 @@ class Settings extends StatelessWidget {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: AppConstants.fontSize_title,
                   ),
                 ),
               ),
@@ -75,7 +75,7 @@ class Settings extends StatelessWidget {
                 S.of(context).settings_knowledge_base,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 14,
+                  fontSize: AppConstants.fontSize_normal,
                 ),
               ),
             ),
@@ -92,7 +92,7 @@ class Settings extends StatelessWidget {
                   S.of(context).settings_audio_configuration,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 14,
+                    fontSize: AppConstants.fontSize_normal,
                   ),
                 ),
               ),
@@ -107,7 +107,7 @@ class Settings extends StatelessWidget {
                 S.of(context).main_language,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 14,
+                  fontSize: AppConstants.fontSize_normal,
                 ),
               ),
             ),

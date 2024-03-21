@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'custom_icons_icons.dart';
+import 'package:display_cast_flutter/utilities/app_constants.dart';
 
 class PresentIdleButton extends StatefulWidget {
   const PresentIdleButton({super.key, required this.onPressed});
@@ -80,7 +81,7 @@ class PresentIdleButtonState extends State<PresentIdleButton> with TickerProvide
         S.of(context).main_present,
         style: const TextStyle(
           color: Colors.white, //isButtonEnabled? Colors.white : const Color.fromARGB(255, 153, 153, 153),
-          fontSize: 14,
+          fontSize: AppConstants.fontSize_normal,
         ),
       ),
     );

@@ -46,7 +46,7 @@ class ModeratorWait extends StatelessWidget {
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 14,
+                fontSize: AppConstants.fontSize_normal,
               ),
             ),
           ),

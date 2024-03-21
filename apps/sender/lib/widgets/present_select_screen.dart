@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
+import 'package:display_cast_flutter/utilities/app_constants.dart';
 
 class PresentSelectScreen extends StatelessWidget {
   const PresentSelectScreen({super.key});
@@ -151,7 +152,7 @@ class SelectScreenDialog extends Dialog {
                       alignment: Alignment.topLeft,
                       child: Text(
                         S.of(context).present_select_screen_description,
-                        style: const TextStyle(fontSize: 16, color: Colors.white),
+                        style: const TextStyle(fontSize: AppConstants.fontSize_title, color: Colors.white),
                       ),
                     ),
                     Align(

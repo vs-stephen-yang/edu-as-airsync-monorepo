@@ -55,7 +55,7 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 8),
-                    child: Text("Back", style: TextStyle(color: Colors.white, fontSize: 14),),
+                    child: Text("Back", style: TextStyle(color: Colors.white, fontSize: AppConstants.fontSize_normal),),
                   ),
                 ],
               )),
@@ -81,7 +81,7 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
-                          fontSize: 26,
+                          fontSize: AppConstants.fontSize_title,
                         ),
                       ),
                     ),
@@ -130,7 +130,7 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
                       color: presentBtnEnable
                           ? Colors.white
                           : const Color.fromARGB(255, 153, 153, 153),
-                      fontSize: 14,
+                      fontSize: AppConstants.fontSize_normal,
                     ),
                   ),
                 ),
