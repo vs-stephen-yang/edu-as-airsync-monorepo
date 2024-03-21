@@ -267,18 +267,25 @@ class WebRTCViewState extends State<WebRTCView> {
 
   Future<void> pauseVideo() async {
     // screenshot RTCView
-    final boundary = repaintBoundaryKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+    final boundary = repaintBoundaryKey.currentContext?.findRenderObject()
+        as RenderRepaintBoundary?;
     final image = await boundary?.toImage();
     final byteData = await image?.toByteData(format: ImageByteFormat.png);
     final imageBytes = byteData?.buffer.asUint8List();
     pauseScreenImageKey.currentState?.refresh(imageBytes);
-    HybridConnectionList().updateAudioEnableStateByIndex(widget.index, false);
+    HybridConnectionList()
+        .updateAudioEnableStateByIndex(widget.index, false, false);
   }
 
   void resumeVideo() {
     pauseScreenImageKey.currentState?.remove();
     pauseScreenImage = null;
-    HybridConnectionList().updateAudioEnableStateByIndex(widget.index, true);
+    var isAudioEnabled = HybridConnectionList()
+            .getRtcConnectorMap()[widget.index]
+            ?.isAudioEnabled ??
+        false;
+    HybridConnectionList().updateAudioEnableStateByIndex(
+        widget.index, isAudioEnabled & true, false);
   }
 }
 

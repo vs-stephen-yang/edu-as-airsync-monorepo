@@ -124,13 +124,13 @@ class SplitScreenFunctionState extends State<SplitScreenFunction> {
                             setState(() {
                               var isMute = HybridConnectionList()
                                   .getAudioDisableStateByIndex(widget.index,
-                                  mirrorAudioEnabled: widget.mirrorStateProvider
-                                      .audioEnable);
+                                      mirrorAudioEnabled: widget
+                                          .mirrorStateProvider.audioEnable);
                               HybridConnectionList()
                                   .updateAudioEnableStateByIndex(
-                                  widget.index, isMute,
-                                  mirrorPlugin: widget.mirrorStateProvider
-                                      .flutterMirrorPlugin);
+                                      widget.index, isMute, true,
+                                      mirrorPlugin: widget.mirrorStateProvider
+                                          .flutterMirrorPlugin);
                               widget.mirrorStateProvider.setAudioEnable();
                             });
                           },

@@ -260,17 +260,18 @@ class HybridConnectionList {
   }
   //End of RTCConnector function region
 
-  updateAudioEnableStateByIndex(int index, bool enable, {FlutterMirror? mirrorPlugin}) {
-    var connection = HybridConnectionList().hybridConnectionList[index];
+  updateAudioEnableStateByIndex(int index, bool enable, bool setIsAudioEnabled,
+      {FlutterMirror? mirrorPlugin}) {
+    var connection = hybridConnectionList[index];
     if (connection != null && connection is RTCConnector) {
-      connection.controlAudio(enable, setIsAudioEnabled: true);
+      connection.controlAudio(enable, setIsAudioEnabled: setIsAudioEnabled);
     } else if (connection != null && connection is MirrorRequest) {
       mirrorPlugin?.enableAudio(connection.mirrorId ?? '0', enable);
     }
   }
 
   bool getAudioDisableStateByIndex(int index, {bool? mirrorAudioEnabled}) {
-    var connection = HybridConnectionList().hybridConnectionList[index];
+    var connection = hybridConnectionList[index];
     if (connection != null && connection is RTCConnector) {
       return connection.getAudioState();
     } else if (connection != null && connection is MirrorRequest) {
