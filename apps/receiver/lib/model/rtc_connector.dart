@@ -411,7 +411,7 @@ class RTCConnector {
   }
 
   void _onDataChannel(RTCDataChannel channel) {
-    printInDebug('_onDataChannel: ${channel.label}');
+    _printPeerConnectionLog('_onDataChannel', channel.label);
     _dc = channel;
   }
 
@@ -460,7 +460,7 @@ class RTCConnector {
 
   void _printPeerConnectionLog(String? event, dynamic args) {
     if (kDebugMode) {
-      printInDebug('$runtimeType, PeerConnection $event ${args.toString()}');
+      printInDebug('PeerConnection $event ${args.toString()}', type: runtimeType);
       const DebugSwitch().write('PeerConnection $event ${args.toString()}');
     }
   }
