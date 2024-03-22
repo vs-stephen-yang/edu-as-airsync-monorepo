@@ -1,5 +1,6 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/present_idle_textfield.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class PresentIdle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    DemoProvider demoProvider = Provider.of<DemoProvider>(context);
     bool presentBtnEnable = false;
     String displayCode = '', password = '';
     return Column(
@@ -42,11 +44,15 @@ class PresentIdle extends StatelessWidget {
           onPressed: () async {
             if (!presentBtnEnable) return;
             await channelProvider.presentEnd(goIdleState: false);
-
-            channelProvider.startConnect(
-              formattedDisplayCode: displayCode,
-              otp: password,
-            );
+            if (displayCode == "000-000-000-00" && password == "0000") {
+              demoProvider.isDemoMode = true;
+              demoProvider.setViewState(DemoViewState.selectRole);
+            } else {
+              channelProvider.startConnect(
+                formattedDisplayCode: displayCode,
+                otp: password,
+              );
+            }
           },
         ),
         const SizedBox(
