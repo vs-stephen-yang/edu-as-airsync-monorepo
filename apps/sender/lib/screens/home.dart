@@ -1,4 +1,8 @@
+import 'package:display_cast_flutter/demo/present_present_start_demo.dart';
+import 'package:display_cast_flutter/demo/present_select_role_demo.dart';
+import 'package:display_cast_flutter/demo/remote_screen_widget_demo.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
@@ -63,8 +67,8 @@ class _HomeState extends State<Home> {
                   bottom: 0,
                   child: BottomBar(),
                 ),
-                Consumer<ChannelProvider>(
-                  builder: (context, channel, child) {
+                Consumer2<ChannelProvider, DemoProvider>(builder: (context, channel, demo, child) {
+                  if (!demo.isDemoMode) {
                     debugModePrint('PresentState: ${channel.state}');
                     if (!kIsWeb) {
                       FlutterWindowClose.setWindowShouldCloseHandler(() async {
@@ -115,8 +119,19 @@ class _HomeState extends State<Home> {
                       default:
                         return const SizedBox();
                     }
-                  },
-                ),
+                  } else {
+                    switch (demo.state) {
+                      case DemoViewState.off:
+                        return const SizedBox();
+                      case DemoViewState.selectRole:
+                        return const PresentSelectRoleDemo();
+                      case DemoViewState.presentStart:
+                        return PresentPresentStartDemo();
+                      case DemoViewState.remoteScreen:
+                        return const RemoteScreenDemo();
+                    }
+                  }
+                }),
               ],
             ),
           ),
