@@ -116,7 +116,9 @@ class MirrorStateProvider extends ChangeNotifier
       }
     }
 
-    Home.showTitleBottomBar.value = HybridConnectionList().getMirrorMap().isEmpty;
+    Home.showTitleBottomBar.value =
+        HybridConnectionList().getMirrorMap().isEmpty &&
+            HybridConnectionList().getRtcConnectorMap().isEmpty;
   }
 
   @override
