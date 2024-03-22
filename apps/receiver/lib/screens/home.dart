@@ -153,18 +153,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               child: Stack(
                                 children: <Widget>[
                                   if (HybridConnectionList()
-                                              .hybridConnectionList[index] !=
-                                          null &&
-                                      HybridConnectionList()
-                                              .hybridConnectionList[index]
-                                          is RTCConnector)
+                                      .isRTCConnector(index))
                                     WebRTCView(index: index),
                                   if (HybridConnectionList()
-                                              .hybridConnectionList[index] !=
-                                          null &&
-                                      HybridConnectionList()
-                                              .hybridConnectionList[index]
-                                          is MirrorRequest)
+                                      .isMirrorRequest(index))
                                     MirrorView(index: index),
                                   if (HybridConnectionList()
                                       .isPresenting(index: index))
@@ -416,7 +408,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               width: width,
               height: minHeight,
               child: ListView.separated(
-                reverse: mirror.isMirroring,
+                reverse: HybridConnectionList().isMirroring(),
                 itemCount: HybridConnectionList()
                     .getMirrorMap()
                     .values

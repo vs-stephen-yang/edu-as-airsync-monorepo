@@ -18,7 +18,8 @@ class MirrorViewState extends State<MirrorView> {
 
   @override
   void initState() {
-    mirrorRequest = HybridConnectionList().hybridConnectionList[widget.index];
+    mirrorRequest =
+        HybridConnectionList().getConnection<MirrorRequest>(widget.index);
     super.initState();
   }
 

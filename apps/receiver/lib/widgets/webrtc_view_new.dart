@@ -134,7 +134,8 @@ class WebRTCViewState extends State<WebRTCView> {
   @override
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
-    _rtcConnector = HybridConnectionList().hybridConnectionList[widget.index];
+    _rtcConnector =
+        HybridConnectionList().getConnection<RTCConnector>(widget.index);
     if (_rtcConnector?.presentationState == PresentationState.pauseStreaming && pauseScreenImage == null) {
       pauseVideo();
     } else if (_rtcConnector?.presentationState == PresentationState.resumeStreaming) {

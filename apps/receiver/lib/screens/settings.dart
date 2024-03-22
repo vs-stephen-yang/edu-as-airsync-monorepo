@@ -3,6 +3,7 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/language_selection.dart';
 import 'package:display_flutter/screens/sender_menu_view.dart';
@@ -41,7 +42,7 @@ class _SettingsState extends State<Settings> {
       return const SizedBox();
     }
     return MenuDialog(
-      backgroundColor: Provider.of<MirrorStateProvider>(context).isMirroring
+      backgroundColor: HybridConnectionList().isMirroring()
           ? AppColors.primary_grey_tran
           : AppColors.primary_grey,
       topTitleText: S.of(context).main_settings_title,
