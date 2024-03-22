@@ -6,6 +6,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/app_preferences.dart';
+import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
@@ -14,6 +15,8 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
+import 'package:display_flutter/widgets/focus_elevated_button.dart';
+import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/main_info_net.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
 import 'package:display_flutter/widgets/split_screen_function.dart';
@@ -27,15 +30,10 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
 
-import '../app_ui_constant.dart';
-import '../widgets/focus_elevated_button.dart';
-import '../widgets/focus_icon_button.dart';
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
   static ValueNotifier<bool> showTitleBottomBar = ValueNotifier(true);
-  static ValueNotifier<bool> showCloudOff = ValueNotifier(false);
   static ValueNotifier<int?> enlargedScreenPositionIndex = ValueNotifier(null);
   static ValueNotifier<bool> isShowDisplayCode = ValueNotifier(true);
   static ValueNotifier<bool> isShowAuthDialog = ValueNotifier(false);
@@ -155,35 +153,27 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               child: Stack(
                                 children: <Widget>[
                                   if (HybridConnectionList()
-                                      .hybridConnectionList[index] != null &&
+                                              .hybridConnectionList[index] !=
+                                          null &&
                                       HybridConnectionList()
-                                          .hybridConnectionList[index]
-                                      is RTCConnector)
-                                    Consumer<ChannelProvider>(
-                                      builder: (context, provider, child) {
-                                        return WebRTCView(index: index);
-                                      },
-                                    ),
+                                              .hybridConnectionList[index]
+                                          is RTCConnector)
+                                    WebRTCView(index: index),
                                   if (HybridConnectionList()
-                                      .hybridConnectionList[index] != null &&
+                                              .hybridConnectionList[index] !=
+                                          null &&
                                       HybridConnectionList()
-                                          .hybridConnectionList[index]
-                                      is MirrorRequest)
-                                    Consumer<MirrorStateProvider>(
-                                      builder: (context, provider, child) {
-                                        return MirrorView(index: index);
+                                              .hybridConnectionList[index]
+                                          is MirrorRequest)
+                                    MirrorView(index: index),
+                                  if (HybridConnectionList()
+                                      .isPresenting(index: index))
+                                    SplitScreenFunction(
+                                      index: index,
+                                      updateSize: () {
+                                        _updateSizeForSelected(index);
                                       },
                                     ),
-                                  SplitScreenFunction(
-                                    index: index,
-                                    channelProvider:
-                                    Provider.of<ChannelProvider>(context),
-                                    mirrorStateProvider:
-                                    Provider.of<MirrorStateProvider>(context),
-                                    updateSize: () {
-                                      _updateSizeForSelected(index);
-                                    },
-                                  ),
                                 ],
                               ),
                             ),
@@ -254,8 +244,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       pinDialogContextList.clear();
                     }
                     return const SizedBox.shrink();
-                  }
-              ),
+                  }),
 
               ValueListenableBuilder(
                   valueListenable: Home.isShowAuthDialog,
@@ -272,8 +261,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       }
                     }
                     return const SizedBox.shrink();
-                  }
-              ),
+                  }),
             ],
           ),
         ),
@@ -295,8 +283,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     } else {
       Home.enlargedScreenPositionIndex.value = selection;
     }
-      context.read<ChannelProvider>().updateAllQuality(
-          selection, Home.enlargedScreenPositionIndex.value == selection);
+    context.read<ChannelProvider>().updateAllQuality(
+        selection, Home.enlargedScreenPositionIndex.value == selection);
   }
 
   double _getWidthHeight(int index, bool isWidth) {
@@ -311,7 +299,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] == 1) {
         // if (index ==
         //     SplitScreen.mapSplitScreen.value[keySplitScreenLastId]) {
-          return isWidth ? _fullWidth : _fullHeight;
+        return isWidth ? _fullWidth : _fullHeight;
         // } else {
         //   return 0; // MUST use 1 to create view, 0 won't.
         // }
@@ -429,7 +417,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               height: minHeight,
               child: ListView.separated(
                 reverse: mirror.isMirroring,
-                itemCount: HybridConnectionList().getMirrorMap().values
+                itemCount: HybridConnectionList()
+                    .getMirrorMap()
+                    .values
                     .where((request) => request.mirrorState == MirrorState.idle)
                     .length,
                 itemBuilder: (BuildContext buildContext, int index) {
@@ -543,5 +533,4 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       },
     );
   }
-
 }
