@@ -453,9 +453,7 @@ class ChannelProvider extends ChangeNotifier {
           presenting = true;
         }
       }
-      if (!presenting) {
-        Home.showTitleBottomBar.value = true;
-      } else {
+      if (presenting) {
         Home.enlargedScreenPositionIndex.value = null;
       }
       if (MyApp.isInBackgroundMode) {
@@ -465,6 +463,10 @@ class ChannelProvider extends ChangeNotifier {
       HybridConnectionList().removeConnection(rtcConnector);
       HybridConnectionList().updateSplitScreen();
       HybridConnectionList().handleQualityUpdate();
+
+      Home.showTitleBottomBar.value = HybridConnectionList().getMirrorMap().isEmpty &&
+          HybridConnectionList().getRtcConnectorMap().isEmpty;
+
       notifyListeners();
     });
 
