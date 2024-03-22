@@ -284,8 +284,7 @@ class ChannelProvider extends ChangeNotifier {
           JoinDisplayMessage msg = message as JoinDisplayMessage;
           if (msg.intent == JoinIntentType.present) {
             if (_isModeratorMode) {
-              if (HybridConnectionList().hybridConnectionList.nonNulls.length >=
-                  6) {
+              if (HybridConnectionList().getConnectionCount() >= 6) {
                 final message = JoinDisplayRejectedMessage();
                 message.reason = Reason(
                   JoinDisplayRejectedReasonCode.maxClientsReached.code,

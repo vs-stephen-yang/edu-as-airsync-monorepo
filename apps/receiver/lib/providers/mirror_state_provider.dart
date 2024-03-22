@@ -42,8 +42,6 @@ class MirrorStateProvider extends ChangeNotifier
 
   get deviceName => _deviceName;
 
-  get isMirroring => HybridConnectionList().isMirroring();
-
   get airplayEnabled => _airplayEnabled;
 
   get googleCastEnabled => _googleCastEnabled;
