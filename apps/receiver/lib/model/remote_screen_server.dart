@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/model/remote_screen_utils.dart';
-import 'package:flutter_input_injection/flutter_input_injection.dart';
+import 'package:display_flutter/model/touch_event_manager.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -17,12 +17,6 @@ import 'package:display_flutter/protoc/internal.pb.dart';
 
 const defaultScreenWidth = 1920.0;
 const defaultScreenHeight = 1080.0;
-const maxEventId = 255;
-
-class EventSlot {
-  int channelId = -1;
-  int eventId = -1;
-}
 
 class RemoteScreenServer {
   Client? _ionSfuClient;
@@ -33,9 +27,7 @@ class RemoteScreenServer {
   final List<RTCDataChannel> _dataChannels = [];
   double _screenWidth = defaultScreenWidth;
   double _screenHeight = defaultScreenHeight;
-  final List<EventSlot> _eventSlots =
-      List.generate(maxEventId, (index) => EventSlot());
-  final _flutterInputInjectionPlugin = FlutterInputInjection();
+  final _touchEventManager = TouchEventManager();
 
   RemoteScreenServer();
 
@@ -65,7 +57,7 @@ class RemoteScreenServer {
 
           dc.onDataChannelState = (RTCDataChannelState state) {
             if (state == RTCDataChannelState.RTCDataChannelClosed) {
-              releaseEventSlotsByDataChannel(dc);
+              _touchEventManager.releaseEventSlotsByDataChannel(dc);
               _dataChannels.removeWhere((item) => item.id == dc.id);
             }
           };
@@ -152,80 +144,6 @@ class RemoteScreenServer {
     }
   }
 
-  int findSlotById(int channelId, int eventId) {
-    int slot = -1;
-    for (int i = 0; i < maxEventId; i++) {
-      if (_eventSlots[i].channelId == channelId &&
-          _eventSlots[i].eventId == eventId) {
-        slot = i;
-        break;
-      }
-    }
-    return slot;
-  }
-
-  int acquireSlot(int channelId, int eventId) {
-    // find a free slot
-    int slot = findFreeSlot();
-    if (slot < 0) {
-      return -1;
-    }
-
-    _eventSlots[slot].channelId = channelId;
-    _eventSlots[slot].eventId = eventId;
-    return slot;
-  }
-
-  void releaseSlot(int slot) {
-    assert(slot >= 0);
-    assert(slot < maxEventId);
-
-    _eventSlots[slot].channelId = -1;
-    _eventSlots[slot].eventId = -1;
-  }
-
-  int releaseSlotById(int channelId, int eventId) {
-    int slot = findSlotById(channelId, eventId);
-    if (slot == -1) {
-      return -1;
-    }
-
-    releaseSlot(slot);
-    return slot;
-  }
-
-  int findFreeSlot() {
-    for (int i = 0; i < maxEventId; i++) {
-      if (_eventSlots[i].channelId == -1) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  int reassignEventId(int channelId, int eventId, int action) {
-    switch (action) {
-      case FlutterInputInjection.TOUCH_POINT_START:
-        return acquireSlot(channelId, eventId);
-      case FlutterInputInjection.TOUCH_POINT_MOVE:
-        return findSlotById(channelId, eventId);
-      case FlutterInputInjection.TOUCH_POINT_END:
-        return releaseSlotById(channelId, eventId);
-      default:
-        return -1;
-    }
-  }
-
-  void releaseEventSlotsByDataChannel(RTCDataChannel dc) {
-    for (int i = 0; i < maxEventId; i++) {
-      if (_eventSlots[i].channelId == dc.id) {
-        _flutterInputInjectionPlugin.sendTouch(
-            FlutterInputInjection.TOUCH_POINT_END, i, 0, 0);
-        releaseSlot(i);
-      }
-    }
-  }
-
   void onTextMessage(RTCDataChannelMessage data) async {
     log('Received message: ${data.text}');
   }
@@ -233,33 +151,9 @@ class RemoteScreenServer {
   void onTouchMessage(RTCDataChannelMessage data, int dcIndex) async {
     EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
     if (eventMessage.hasTouchEvent()) {
-      int id = eventMessage.touchEvent.touchPoints[0].id;
-      int action = FlutterInputInjection.TOUCH_POINT_START;
-      if (eventMessage.touchEvent.eventType ==
-          TouchEvent_TouchEventType.TOUCH_POINT_START) {
-        action = FlutterInputInjection.TOUCH_POINT_START;
-      } else if (eventMessage.touchEvent.eventType ==
-          TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
-        action = FlutterInputInjection.TOUCH_POINT_MOVE;
-      } else if (eventMessage.touchEvent.eventType ==
-          TouchEvent_TouchEventType.TOUCH_POINT_END) {
-        action = FlutterInputInjection.TOUCH_POINT_END;
-      }
-
-      id = reassignEventId(dcIndex, id, action);
-      if (id == -1) {
-        return;
-      }
-
-      double remoteX = eventMessage.touchEvent.touchPoints[0].x;
-      double remoteY = eventMessage.touchEvent.touchPoints[0].y;
-
-      int injectX = (remoteX * _screenWidth).toInt();
-      injectX = injectX.clamp(0, _screenWidth.toInt() - 1);
-      int injectY = (remoteY * _screenHeight).toInt();
-      injectY = injectY.clamp(0, _screenHeight.toInt() - 1);
-
-      _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
+      TouchEvent touchEvent = eventMessage.touchEvent;
+      _touchEventManager.setScreenSize(_screenWidth, _screenHeight);
+      _touchEventManager.handleTouchEvent(touchEvent, dcIndex);
     }
   }
 
