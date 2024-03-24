@@ -34,6 +34,8 @@ class ApMirrorSession
   virtual void EnableAudio(bool enable) override;
   virtual void StopMirror() override;
 
+  virtual void Close() override;
+
   // implements MediaSession::Listener
   virtual void OnVideoFormatChanged(
       int width,

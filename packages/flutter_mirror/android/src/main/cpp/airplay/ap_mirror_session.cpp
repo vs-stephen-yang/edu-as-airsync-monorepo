@@ -40,19 +40,22 @@ bool ApMirrorSession::StartMirror(
 void ApMirrorSession::StopMirror() {
   ALOGD("ApMirrorSession::StopMirror()");
 
-  // Note that Stop() is asynchronous.
-  // Stop() will stop the mirror and trigger OnMirrorStop callback
+  // Note that StopMirror() is asynchronous.
+  // StopMirror() will stop the mirror and trigger OnMirrorStop callback
   session_->StopMirror();
 }
 
 void ApMirrorSession::OnMirrorStop() {
   ALOGD("ApMirrorSession::OnMirrorStop()");
 
+  Close();
+  mirror_listener_.OnMirrorStop(this);
+}
+
+void ApMirrorSession::Close() {
   if (media_session_) {
     media_session_->Stop();
   }
-
-  mirror_listener_.OnMirrorStop(this);
 }
 
 void ApMirrorSession::OnVideoFormatChanged(

@@ -80,7 +80,14 @@ class MirrorReceiver
  private:
   void AddSession(MirrorSessionPtr session);
   MirrorSessionPtr FindSession(const std::string& mirror_id);
-  void RemoveSession(const std::string& mirror_id);
+  // returns true if the mirro_id exists and is removed successfully
+  bool RemoveSession(const std::string& mirror_id);
+
+  void StopSessionsByType(
+      MirrorType mirrorType);
+
+  std::vector<MirrorSessionPtr> FindSessionsByType(
+      MirrorType mirrorType);
 
  private:
   jni::MirrorReceiverPtr proxy_;
