@@ -207,10 +207,13 @@ void MiracastMirrorSession::EnableAudio(bool enable) {
 
 void MiracastMirrorSession::OnMirrorStop() {
   ALOGD("MiracastMirrorSession::OnMirrorStop()");
+  Close();
 
+  mirror_listener_.OnMirrorStop(this);
+}
+
+void MiracastMirrorSession::Close() {
   if (media_session_) {
     media_session_->Stop();
   }
-
-  mirror_listener_.OnMirrorStop(this);
 }

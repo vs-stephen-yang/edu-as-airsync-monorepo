@@ -84,19 +84,22 @@ void GooglecastMirrorSession::EnableAudio(bool enable) {
 void GooglecastMirrorSession::StopMirror() {
   ALOGD("GooglecastMirrorSession::StopMirror()");
 
-  // Note that Stop() is asynchronous.
-  // Stop() will stop the mirror and trigger OnMirrorStop callback
+  // Note that StopMirror() is asynchronous.
+  // StopMirror() will stop the mirror and trigger OnMirrorStop callback
   session_->StopMirror();
 }
 
 void GooglecastMirrorSession::OnMirrorStop() {
   ALOGD("GooglecastMirrorSession::OnMirrorStop()");
+  Close();
 
+  mirror_listener_.OnMirrorStop(this);
+}
+
+void GooglecastMirrorSession::Close() {
   if (media_session_) {
     media_session_->Stop();
   }
-
-  mirror_listener_.OnMirrorStop(this);
 }
 
 void GooglecastMirrorSession::OnVideoFormatChanged(

@@ -67,6 +67,8 @@ void MirrorReceiver::StopAirplay() {
   ap_receiver_->Stop();
   ALOGD("Airplay has stopped");
 
+  StopSessionsByType(MirrorType::Airplay);
+
   ap_receiver_.reset();
   ALOGD("Airplay has been freed");
 }
@@ -98,6 +100,8 @@ void MirrorReceiver::StopGooglecast() {
   googlecast_receiver_->Stop();
   ALOGD("googlecast has stopped");
 
+  StopSessionsByType(MirrorType::Googlecast);
+
   googlecast_receiver_.reset();
   ALOGD("Googlecast has been freed");
 }
@@ -126,6 +130,37 @@ void MirrorReceiver::StopMirror(
     return;
   }
   session->StopMirror();
+}
+
+std::vector<MirrorSessionPtr> MirrorReceiver::FindSessionsByType(
+    MirrorType mirrorType) {
+  std::vector<MirrorSessionPtr> found;
+
+  std::lock_guard<std::mutex> lock(mutex_);
+
+  for (auto itr = sessions_.begin(); itr != sessions_.end(); ++itr) {
+    MirrorSessionPtr session = itr->second;
+
+    if (session->GetMirrorType() == mirrorType) {
+      found.push_back(session);
+    }
+  }
+  return found;
+}
+
+void MirrorReceiver::StopSessionsByType(
+    MirrorType mirrorType) {
+  auto sessions = FindSessionsByType(mirrorType);
+
+  for (auto session : sessions) {
+    session->Close();
+    std::string mirror_id = session->GetMirrorId();
+
+    bool isRemoved = RemoveSession(mirror_id);
+    if (isRemoved) {
+      proxy_->OnMirrorStop(mirror_id);
+    }
+  }
 }
 
 void MirrorReceiver::UpdateGooglecastCredentials(
@@ -201,9 +236,10 @@ void MirrorReceiver::OnMirrorStop(
   ALOGD("MirrorReceiver::OnMirrorStop(%s)", mirror_id.c_str());
 
   // delete the mirror session
-  RemoveSession(mirror_id);
-
-  proxy_->OnMirrorStop(mirror_id);
+  bool isRemoved = RemoveSession(mirror_id);
+  if (isRemoved) {
+    proxy_->OnMirrorStop(mirror_id);
+  }
 }
 
 void MirrorReceiver::OnMirrorVideoResize(
@@ -249,18 +285,18 @@ MirrorSessionPtr MirrorReceiver::FindSession(const std::string& mirror_id) {
 
   return itr->second;
 }
-void MirrorReceiver::RemoveSession(const std::string& mirror_id) {
+bool MirrorReceiver::RemoveSession(const std::string& mirror_id) {
   ALOGD("MirrorReceiver::RemoveSession(%s)", mirror_id.c_str());
 
   std::lock_guard<std::mutex> lock(mutex_);
 
   auto itr = sessions_.find(mirror_id);
 
-  assert(itr != sessions_.end());
   if (itr == sessions_.end()) {
-    return;
+    return false;
   }
 
   sessions_.erase(itr);
   ALOGD("Remaining mirror sessions = %u", (unsigned int)sessions_.size());
+  return true;
 }

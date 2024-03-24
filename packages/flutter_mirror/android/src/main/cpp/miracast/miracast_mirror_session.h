@@ -38,6 +38,7 @@ class MiracastMirrorSession
   virtual void EnableAudio(bool enable) override;
 
   virtual void StopMirror() override;
+  virtual void Close() override;
 
   //
   void OnMirrorStop();
