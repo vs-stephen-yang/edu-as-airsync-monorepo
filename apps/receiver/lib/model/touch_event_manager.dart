@@ -1,14 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:display_flutter/protoc/event.pb.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 const defaultScreenWidth = 1920.0;
 const defaultScreenHeight = 1080.0;
 const maxEventId = 255;
+const eventExpiredTime = 2000; //ms
 
 class EventSlot {
   int channelId = -1;
   int eventId = -1;
+  int timestamp = 0;
 }
 
 class TouchEventManager {
@@ -17,10 +22,43 @@ class TouchEventManager {
   final _flutterInputInjectionPlugin = FlutterInputInjection();
   double _injectScreenWidth = defaultScreenWidth;
   double _injectScreenHeight = defaultScreenHeight;
+  Timer? checkTimer;
+  static final _log = getDefaultLogger();
 
   void setScreenSize(double screenWidth, double screenHeight) {
     _injectScreenWidth = screenWidth;
     _injectScreenHeight = screenHeight;
+  }
+
+  void startCheckTimer() {
+    if (checkTimer != null && checkTimer!.isActive) return;
+
+    checkTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      final currentTime = DateTime.now().millisecondsSinceEpoch;
+      bool hasActiveEvent = false;
+      for (int i = 0; i < _eventSlots.length; i++) {
+        final event = _eventSlots[i];
+        if (event.eventId != -1) {
+          if (currentTime - event.timestamp > eventExpiredTime) {
+            _log.info('event expired slot: $i id: ${event.eventId}');
+            event.channelId = -1;
+            event.eventId = -1;
+            _flutterInputInjectionPlugin.sendTouch(
+                FlutterInputInjection.TOUCH_POINT_END, i, 0, 0);
+          } else {
+            hasActiveEvent = true;
+          }
+        }
+      }
+
+      if (!hasActiveEvent) {
+        stopCheckTimer();
+      }
+    });
+  }
+
+  void stopCheckTimer() {
+    checkTimer?.cancel();
   }
 
   int findSlotById(int channelId, int eventId) {
@@ -111,6 +149,9 @@ class TouchEventManager {
     id = reassignEventId(dcIndex, id, action);
     if (id == -1) {
       return;
+    } else {
+      _eventSlots[id].timestamp = DateTime.now().millisecondsSinceEpoch;
+      startCheckTimer();
     }
 
     double remoteX = touchEvent.touchPoints[0].x;
