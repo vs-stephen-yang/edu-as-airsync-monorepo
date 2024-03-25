@@ -41,7 +41,7 @@
     "settings_audio_configuration": "音訊設定說明",
     "present_role_receive": "接收螢幕",
     "present_role_cast_screen": "分享螢幕",
-    "main_instance_not_found_or_offline": "找不到Display code或是服務未啟動",
+    "main_instance_not_found_or_offline": "找不到投影辨識碼或是服務未啟動",
     "main_connect_network_error": "網路連線異常，請檢查網路連線",
     "main_connect_rate_limited": "服務忙碌中，請稍後再試",
     "main_connect_unknown_error": "未知的錯誤",

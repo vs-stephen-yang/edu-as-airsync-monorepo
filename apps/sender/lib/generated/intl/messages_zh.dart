@@ -42,7 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_display_code_invalid":
             MessageLookupByLibrary.simpleMessage("無效的投影辨識碼"),
         "main_instance_not_found_or_offline":
-            MessageLookupByLibrary.simpleMessage("找不到Display code或是服務未啟動"),
+            MessageLookupByLibrary.simpleMessage("找不到投影辨識碼或是服務未啟動"),
         "main_language": MessageLookupByLibrary.simpleMessage("語言"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("繁體中文"),
         "main_password": MessageLookupByLibrary.simpleMessage("一次性密碼"),
