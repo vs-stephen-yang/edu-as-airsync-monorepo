@@ -132,6 +132,7 @@ class _ParticipantItemState extends State<ParticipantItem>
       }
       _sendPresenterPlay();
     }
+    HybridConnectionList().reorderPresenters(rtcConnector);
   }
 
   _sendPresenterPlay() {
