@@ -12,6 +12,7 @@ import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -310,7 +311,10 @@ class ChannelProvider extends ChangeNotifier {
           await _remoteScreenClient?.handleRemoteScreenInfo(
               infoMessage.ionSfuRoom!.url!, infoMessage.ionSfuRoom!.roomId!,
               () {
-            presentRemoteScreenPage();
+                if(!kIsWeb && Platform.isIOS) {
+                  UndoManager.setUndoState(canUndo: false, canRedo: false);
+                }
+                presentRemoteScreenPage();
           },
               // onClose callback
               (int code, String reason) {
