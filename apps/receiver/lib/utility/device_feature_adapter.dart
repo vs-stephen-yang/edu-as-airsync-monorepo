@@ -21,7 +21,10 @@ class DeviceFeatureAdapter {
     },
     '50-3': {
       "maxHardwareDecodeSession": 1,
-    }
+    },
+    '6562': {
+      "maxHardwareDecodeSession": 1,
+    },
   };
 
   static ensureInitialized() async {
