@@ -8,7 +8,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 const defaultScreenWidth = 1920.0;
 const defaultScreenHeight = 1080.0;
 const maxEventId = 255;
-const eventExpiredTime = 2000; //ms
+const eventExpiredTime = 4000; //ms
 
 class EventSlot {
   int channelId = -1;
