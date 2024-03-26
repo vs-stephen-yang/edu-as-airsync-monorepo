@@ -73,7 +73,7 @@ class AppOverlayTab {
           PrefLanguageProvider languageProvider =
               Provider.of<PrefLanguageProvider>(buildContext, listen: false);
 
-          await postMessageToAndroidWindow(OverlayTabHandler.nameInitValue, {
+          await _postMessageToAndroidWindow(OverlayTabHandler.nameInitValue, {
             OverlayTabHandler.keyVisibility: isVisible
                 ? OverlayTabHandler.valueVisible
                 : OverlayTabHandler.valueInvisible,
@@ -122,11 +122,11 @@ class AppOverlayTab {
       }
       return OverlayTabHandler.resultNullString;
     });
-    postMessageToAndroidWindow(OverlayTabHandler.nameOverlayTabCheck, null);
+    _postMessageToAndroidWindow(OverlayTabHandler.nameOverlayTabCheck, null);
   }
 
   Future<void> setVisibility(bool isVisible) async {
-    await postMessageToAndroidWindow(OverlayTabHandler.nameSetVisibility, {
+    await _postMessageToAndroidWindow(OverlayTabHandler.nameSetVisibility, {
       OverlayTabHandler.keyVisibility: isVisible
           ? OverlayTabHandler.valueVisible
           : OverlayTabHandler.valueInvisible
@@ -134,7 +134,7 @@ class AppOverlayTab {
   }
 
   Future<bool> getVisibility() async {
-    final response = await postMessageToAndroidWindow(
+    final response = await _postMessageToAndroidWindow(
         OverlayTabHandler.nameGetVisibility, null);
     final visible = response[OverlayTabHandler.keyVisibility];
     return visible == OverlayTabHandler.valueVisible;
@@ -142,27 +142,27 @@ class AppOverlayTab {
 
   Future<void> setDeviceNameAndDisplayCode(
       String deviceName, String displayCode) async {
-    await postMessageToAndroidWindow(OverlayTabHandler.nameSetMainInfo, {
+    await _postMessageToAndroidWindow(OverlayTabHandler.nameSetMainInfo, {
       OverlayTabHandler.keyDeviceName: deviceName,
       OverlayTabHandler.keyDisplayCode: displayCode
     });
   }
 
   Future<void> setOtpCode(String otpCode) async {
-    await postMessageToAndroidWindow(
+    await _postMessageToAndroidWindow(
         OverlayTabHandler.nameSetOtp, {OverlayTabHandler.keyOtpCode: otpCode});
   }
 
   Future<void> setLanguage(String language) async {
-    await postMessageToAndroidWindow(OverlayTabHandler.nameSetLanguage,
+    await _postMessageToAndroidWindow(OverlayTabHandler.nameSetLanguage,
         {OverlayTabHandler.keyLanguage: language});
   }
 
   Future<void> launchApp() async {
-    await postMessageToAndroidWindow(OverlayTabHandler.nameLaunchApp, {});
+    await _postMessageToAndroidWindow(OverlayTabHandler.nameLaunchApp, {});
   }
 
-  Future<Map<Object?, Object?>> postMessageToAndroidWindow(
+  Future<Map<Object?, Object?>> _postMessageToAndroidWindow(
       String key, Map<String, String>? value) async {
     log('overlay tab post message-> key:$key, value:$value');
     if (await android_window.isRunning()) {
