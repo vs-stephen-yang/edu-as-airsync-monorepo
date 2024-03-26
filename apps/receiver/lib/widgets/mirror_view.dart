@@ -17,14 +17,15 @@ class MirrorViewState extends State<MirrorView> {
   MirrorRequest? mirrorRequest;
 
   @override
-  void initState() {
-    mirrorRequest =
-        HybridConnectionList().getConnection<MirrorRequest>(widget.index);
-    super.initState();
+  void deactivate() {
+    mirrorRequest = null;
+    super.deactivate();
   }
 
   @override
   Widget build(BuildContext context) {
+    mirrorRequest =
+        HybridConnectionList().getConnection<MirrorRequest>(widget.index);
     return Consumer<MirrorStateProvider>(
       builder: (context, mirror, child) {
         return ConstrainedBox(
