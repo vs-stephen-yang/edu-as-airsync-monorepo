@@ -61,6 +61,11 @@ class AppOverlayTab {
 
   void setupOverlayTabHandler(
       {required BuildContext buildContext, required bool isVisible}) {
+    if (isVisible) {
+      android_window.resize(infoWidth.toInt(), infoHeight.toInt());
+    } else {
+      android_window.resize(0, 0);
+    }
     android_window.setHandler((String name, Object? data) async {
       switch (name) {
         case OverlayTabHandler.nameOverlayTabReady:
@@ -126,6 +131,11 @@ class AppOverlayTab {
   }
 
   Future<void> setVisibility(bool isVisible) async {
+    if (isVisible) {
+      android_window.resize(infoWidth.toInt(), infoHeight.toInt());
+    } else {
+      android_window.resize(0, 0);
+    }
     await _postMessageToAndroidWindow(OverlayTabHandler.nameSetVisibility, {
       OverlayTabHandler.keyVisibility: isVisible
           ? OverlayTabHandler.valueVisible
