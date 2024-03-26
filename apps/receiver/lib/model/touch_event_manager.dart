@@ -33,7 +33,7 @@ class TouchEventManager {
   void startCheckTimer() {
     if (checkTimer != null && checkTimer!.isActive) return;
 
-    checkTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+    checkTimer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       final currentTime = DateTime.now().millisecondsSinceEpoch;
       bool hasActiveEvent = false;
       for (int i = 0; i < _eventSlots.length; i++) {
