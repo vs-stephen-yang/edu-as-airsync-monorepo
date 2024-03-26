@@ -1,59 +1,25 @@
-import 'dart:async';
-
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
+import 'package:display_cast_flutter/widgets/present_timer.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ModeratorPresentStart extends StatelessWidget {
   ModeratorPresentStart({super.key, this.countStartTime = 0});
 
-  final ValueNotifier<int> _countSecondsValue = ValueNotifier(0);
-  final ValueNotifier<int> _countMinutesValue = ValueNotifier(0);
-  final ValueNotifier<int> _countHoursValue = ValueNotifier(0);
-  final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
-
   final ValueNotifier<bool> _presentingState = ValueNotifier(true);
+  final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
   final int countStartTime;
 
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    if (kIsWeb && countStartTime != 0) {
-      final start = (DateTime.now().millisecondsSinceEpoch - countStartTime) ~/ 1000;
-      _countSecondsValue.value = start % 60;
-      _countMinutesValue.value = (start % 3600) ~/ 60;
-      _countHoursValue.value = start ~/ 3600;
-    } else {
-      _countSecondsValue.value = 0;
-      _countMinutesValue.value = 0;
-      _countHoursValue.value = 0;
-    }
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_presentingState.value) {
-        _countSecondsValue.value++;
-      }
-      if (_countSecondsValue.value == 60) {
-        _countSecondsValue.value = 0;
-        _countMinutesValue.value++;
-      }
-      if (_countMinutesValue.value == 60) {
-        _countMinutesValue.value = 0;
-        _countHoursValue.value++;
-      }
-      if (!context.mounted) {
-        timer.cancel();
-      }
-    });
-
-    var textStyle20 = const TextStyle(color: Colors.white, fontSize: 20);
     var textStyle30 = const TextStyle(color: Colors.white, fontSize: 28);
     return Column(
       children: [
-        const Expanded(flex:2, child: SizedBox()),
+        const Expanded(flex: 2, child: SizedBox()),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
           child: Text(
@@ -61,42 +27,9 @@ class ModeratorPresentStart extends StatelessWidget {
             style: textStyle30,
           ),
         ),
-        SizedBox(
-          width: AppConstants.viewStateMenuWidth,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ValueListenableBuilder(
-                  valueListenable: _countHoursValue,
-                  builder: (BuildContext context, int value, Widget? child) {
-                    return Text(
-                      value.toString().padLeft(2, '0'),
-                      style: textStyle30,
-                    );
-                  }),
-              Text(S.of(context).present_time_unit_hour, style: textStyle20),
-              Text(':', style: textStyle30),
-              ValueListenableBuilder(
-                  valueListenable: _countMinutesValue,
-                  builder: (BuildContext context, int value, Widget? child) {
-                    return Text(
-                      value.toString().padLeft(2, '0'),
-                      style: textStyle30,
-                    );
-                  }),
-              Text(S.of(context).present_time_unit_min, style: textStyle20),
-              Text(':', style: textStyle30),
-              ValueListenableBuilder(
-                  valueListenable: _countSecondsValue,
-                  builder: (BuildContext context, int value, Widget? child) {
-                    return Text(
-                      value.toString().padLeft(2, '0'),
-                      style: textStyle30,
-                    );
-                  }),
-              Text(S.of(context).present_time_unit_sec, style: textStyle20),
-            ],
-          ),
+        PresentTimer(
+          presentingState: _presentingState,
+          countStartTime: countStartTime,
         ),
         Expanded(
           flex: 3,
@@ -115,10 +48,8 @@ class ModeratorPresentStart extends StatelessWidget {
                           _presentingState.value = !_presentingState.value;
                           if (_presentingState.value) {
                             channelProvider.presentResume();
-                            // presentStateProvider.presentResume();
                           } else {
                             channelProvider.presentPause();
-                            // presentStateProvider.presentPause();
                           }
                         },
                         child: Row(
@@ -131,9 +62,15 @@ class ModeratorPresentStart extends StatelessWidget {
                               color: Colors.white,
                             ),
                             const Padding(padding: EdgeInsets.only(left: 8)),
-                            Text(value ? S.of(context).present_state_pause : S.of(context).present_state_resume,
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: AppConstants.fontSize_normal)),
+                            Text(
+                              value
+                                  ? S.of(context).present_state_pause
+                                  : S.of(context).present_state_resume,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: AppConstants.fontSize_normal,
+                              ),
+                            ),
                           ],
                         ),
                       );
@@ -153,9 +90,18 @@ class ModeratorPresentStart extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.cancel_presentation, color: Colors.white,),
+                        const Icon(
+                          Icons.cancel_presentation,
+                          color: Colors.white,
+                        ),
                         const Padding(padding: EdgeInsets.only(left: 8)),
-                        Text(S.of(context).present_state_stop, style: const TextStyle(color: Colors.white, fontSize: AppConstants.fontSize_normal)),
+                        Text(
+                          S.of(context).present_state_stop,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: AppConstants.fontSize_normal,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -172,7 +118,6 @@ class ModeratorPresentStart extends StatelessWidget {
             ],
           ),
         ),
-
       ],
     );
   }
