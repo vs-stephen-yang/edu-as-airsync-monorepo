@@ -1,5 +1,5 @@
 $ai_bin = '"C:\Program Files (x86)\Caphyon\Advanced Installer 18.5\bin\x86\AdvancedInstaller.com"'
-$url_base = 'https://store2.myviewboard.com/uploads/AirSyncSender'
+$url_base = 'https://store2.airsync.net/uploads/AirSyncSender'
 $version_reg_key = 'HKUD\Software\ViewSonic\AirSync Sender\Version'
 
 $update_ai_path = '.\windows\update.aip'
