@@ -29,12 +29,6 @@ class _SenderItemState extends State<SenderItem>
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
     remoteScreenConnector = ChannelProvider.remoteScreenConnectors[widget.index];
-    String presenterName = remoteScreenConnector.senderName ?? '';
-
-    if (presenterName.length > 10) {
-      presenterName = '${presenterName.substring(0, 10)}..';
-    }
-
     return SizedBox(
       child: Row(
         children: [
@@ -60,7 +54,7 @@ class _SenderItemState extends State<SenderItem>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    presenterName,
+                    remoteScreenConnector.senderNameWithEllipsis,
                     style: const TextStyle(fontSize: 16),
                   ),
                 ],

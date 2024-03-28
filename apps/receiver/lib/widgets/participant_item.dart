@@ -53,12 +53,6 @@ class _ParticipantItemState extends State<ParticipantItem>
         .values
         .toList()[widget.index];
     String presenterId = rtcConnector?.clientId ?? '';
-    String presenterName = rtcConnector?.senderName ?? '';
-
-    if (presenterName.length > 10) {
-      presenterName = '${presenterName.substring(0, 10)}..';
-    }
-
     return SizedBox(
       child: Row(
         children: [
@@ -83,7 +77,7 @@ class _ParticipantItemState extends State<ParticipantItem>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    presenterName,
+                    rtcConnector?.senderNameWithEllipsis ?? '',
                     style: const TextStyle(fontSize: 16),
                   ),
                   Visibility(

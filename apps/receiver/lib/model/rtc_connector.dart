@@ -33,6 +33,14 @@ class RTCConnector {
   String? senderPlatform;
   bool isAudioEnabled = false;
 
+  String get senderNameWithEllipsis {
+    String result = senderName ?? '';
+    if (result.length > 10) {
+      result = '${result.substring(0, 10)}..';
+    }
+    return result;
+  }
+
   static final _log = getDefaultLogger();
   String? iceServersApiUrl, host;
   final Map<String, dynamic> _configuration = {

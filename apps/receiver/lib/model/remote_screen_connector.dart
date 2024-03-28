@@ -18,6 +18,14 @@ class RemoteScreenConnector {
   bool isDeleted = false;
   bool isTouchEnabled = false;
 
+  String get senderNameWithEllipsis {
+    String result = senderName ?? '';
+    if (result.length > 10) {
+      result = '${result.substring(0, 10)}..';
+    }
+    return result;
+  }
+
   Function()? onChannelDisconnect;
 
   RemoteScreenConnector(this.channel, this.roomId, this.host, this.port, JoinDisplayMessage message) {

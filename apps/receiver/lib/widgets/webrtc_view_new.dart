@@ -121,11 +121,6 @@ class WebRTCViewState extends State<WebRTCView> {
         resumeVideo();
         rtcConnector.presentationState = PresentationState.streaming;
       }
-
-      String presenterName = rtcConnector.senderName ?? '';
-      if (presenterName.length > 10) {
-        presenterName = '${presenterName.substring(0, 10)}..';
-      }
       return Stack(
         fit: StackFit.expand,
         children: <Widget>[
@@ -164,7 +159,7 @@ class WebRTCViewState extends State<WebRTCView> {
             pauseScreenImage =
                 pauseScreenImage ?? PauseScreenImage(key: pauseScreenImageKey),
           if (rtcConnector.presentationState == PresentationState.streaming &&
-              presenterName.isNotEmpty)
+              rtcConnector.senderNameWithEllipsis.isNotEmpty)
             Align(
               alignment: Alignment.topCenter,
               child: ConstrainedBox(
@@ -178,7 +173,7 @@ class WebRTCViewState extends State<WebRTCView> {
                     color: AppColors.primaryBlackA50,
                   ),
                   child: AutoSizeText(
-                    presenterName,
+                    rtcConnector.senderNameWithEllipsis,
                     style: const TextStyle(fontSize: 20),
                     maxLines: 1,
                   ),
@@ -210,7 +205,7 @@ class WebRTCViewState extends State<WebRTCView> {
                             height: 20,
                           ),
                           Text(
-                            presenterName,
+                            rtcConnector.senderNameWithEllipsis,
                             style: const TextStyle(
                               color: AppColors.primary_blue,
                               fontWeight: FontWeight.w700,
