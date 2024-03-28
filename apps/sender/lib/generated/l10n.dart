@@ -519,6 +519,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Back`
+  String get moderator_back {
+    return Intl.message(
+      'Back',
+      name: 'moderator_back',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
