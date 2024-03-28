@@ -46,16 +46,16 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
                 channelProvider.resetMessage();
                 channelProvider.presentMainPage();
               },
-              child: const Row(
+              child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.arrow_back_ios_new_outlined,
                     color: Colors.white,
                     size: 14,
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 8),
-                    child: Text("Back", style: TextStyle(color: Colors.white, fontSize: AppConstants.fontSize_normal),),
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Text(S.of(context).moderator_back, style: const TextStyle(color: Colors.white, fontSize: AppConstants.fontSize_normal),),
                   ),
                 ],
               )),

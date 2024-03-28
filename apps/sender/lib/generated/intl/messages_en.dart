@@ -60,6 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_touch_back": MessageLookupByLibrary.simpleMessage("Touchback"),
         "moderator":
             MessageLookupByLibrary.simpleMessage("Please input your name"),
+        "moderator_back": MessageLookupByLibrary.simpleMessage("Back"),
         "moderator_exit": MessageLookupByLibrary.simpleMessage("EXIT"),
         "moderator_fill_out":
             MessageLookupByLibrary.simpleMessage("Field required"),

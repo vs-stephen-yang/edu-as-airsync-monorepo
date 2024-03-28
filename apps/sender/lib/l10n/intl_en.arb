@@ -45,5 +45,6 @@
     "main_connect_network_error": "Network error. Please check network connectivity and try again.",
     "main_connect_rate_limited": "AirSync instance is busy. Please try it later.",
     "main_connect_unknown_error": "Unknown error.",
-    "main_connection_mode_unsupported": "AirSync does not connect to Internet."
+    "main_connection_mode_unsupported": "AirSync does not connect to Internet.",
+    "moderator_back": "Back"
 }
