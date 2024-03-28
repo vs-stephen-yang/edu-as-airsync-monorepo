@@ -296,6 +296,11 @@ class WebRTCConnector {
     if (kIsWeb) {
       // GetDisplayMedia method will popup a system dialog to prompt the user to select screen, so close the connection timer here.
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+      if (_localStream == null) {
+        await hangUp();
+        await onStreamInterrupted?.call();
+        return;
+      }
     }
     _localStream?.getTracks().forEach((element) {
       element.onEnded = () async {
@@ -342,22 +347,26 @@ class WebRTCConnector {
     startStatsTimer();
   }
 
-  Future<MediaStream> getDisplayMedia() async {
-    final constraints = <String, dynamic>{
-      'audio': _isAudioCaptureAllowed() ? _audioConstraints : false,
-      'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
-          ? true
-          : {
-              'deviceId': _deviceId,
-              'mandatory': {
-                'frameRate': _trackFrameRate,
-              },
-              'width': _trackWidth,
-              'height': _trackHeight,
-            }
-    };
+  Future<MediaStream?> getDisplayMedia() async {
+    try {
+      final constraints = <String, dynamic>{
+        'audio': _isAudioCaptureAllowed() ? _audioConstraints : false,
+        'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
+            ? true
+            : {
+          'deviceId': _deviceId,
+          'mandatory': {
+            'frameRate': _trackFrameRate,
+          },
+          'width': _trackWidth,
+          'height': _trackHeight,
+        }
+      };
 
-    return await navigator.mediaDevices.getDisplayMedia(constraints);
+      return await navigator.mediaDevices.getDisplayMedia(constraints);
+    } catch (e) {
+      return null;
+    }
   }
 
   /// handle signal message from Display, ex. offer, answer, candidates
