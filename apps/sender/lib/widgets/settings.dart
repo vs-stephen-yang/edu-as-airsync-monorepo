@@ -70,7 +70,7 @@ class Settings extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
             child: InkWell(
               onTap: () async {
-                var url = Uri.parse('https://myviewboard.com/kb/en_US/display');
+                var url = Uri.parse('https://myviewboard.com/kb/t_CN');
                 await launchUrl(url);
               },
               child: Text(
@@ -87,7 +87,7 @@ class Settings extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
               child: InkWell(
                 onTap: () async {
-                  var url = Uri.parse('https://myviewboard.com/kb/');
+                  var url = Uri.parse('https://myviewboard.com/kb/t_CN/airsync/what-is-airsync');
                   await launchUrl(url);
                 },
                 child: Text(
