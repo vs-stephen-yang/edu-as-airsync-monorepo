@@ -174,7 +174,7 @@ class DisplayChannelConnector {
 
     // open the client
     _directClient!.openDirectChannel(
-      _otp,
+      token: _otp,
       displayCode: _encodedDisplayCode,
     );
 

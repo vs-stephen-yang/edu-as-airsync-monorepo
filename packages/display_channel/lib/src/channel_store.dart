@@ -10,6 +10,7 @@ enum ConnectRequestStatus {
   invalidOtp,
   invalidDisplayCode,
   rateLimitExceeded,
+  authenticationRequired,
 }
 
 typedef OnNewChannel = void Function(Channel channel);
@@ -73,6 +74,10 @@ class ChannelStore {
     if (channel == null) {
       return false;
     }
-    return channel.verifyReconnectionToken(connectionRequest.token);
+
+    if (connectionRequest.token == null) {
+      return false;
+    }
+    return channel.verifyReconnectionToken(connectionRequest.token!);
   }
 }

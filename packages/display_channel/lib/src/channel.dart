@@ -17,6 +17,7 @@ enum ChannelCloseCode {
   remoteUnknown,
   invalidDisplayCode,
   rateLimitExceeded,
+  authenticationRequired,
 }
 
 class ChannelCloseReason {

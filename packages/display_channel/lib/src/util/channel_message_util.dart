@@ -39,6 +39,13 @@ Reason? convertConnectRequestStatusToReason(ConnectRequestStatus status) {
         ChannelCloseCode.rateLimitExceeded.index,
         text: 'Too Many Requests',
       );
+
+    case ConnectRequestStatus.authenticationRequired:
+      return Reason(
+        ChannelCloseCode.authenticationRequired.index,
+        text: 'Require authentication',
+      );
+
     default:
       return null;
   }
