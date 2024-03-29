@@ -140,7 +140,10 @@ void main() {
 
       // action
       await submitRequests(
-        (client, index) => client.openDirectChannel('0000', displayCode: 'AVA'),
+        (client, index) => client.openDirectChannel(
+          token: '0000',
+          displayCode: 'AVA',
+        ),
         50, // 50 connection requests in 5 seconds
         const Duration(seconds: 5),
       );

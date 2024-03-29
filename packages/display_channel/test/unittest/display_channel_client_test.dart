@@ -75,6 +75,14 @@ void main() {
     );
   }
 
+  void injectChannelClosed(ChannelCloseCode closeCode) {
+    connection.onMessage?.call(
+      ChannelClosedMessage(Reason(
+        closeCode.index,
+      )).toJson(),
+    );
+  }
+
   setUp(() {
     incomingMessages1 = buildMessages([0, 3, 2, 1], true);
 
@@ -100,7 +108,7 @@ void main() {
     // arrange
 
     // action
-    client.openDirectChannel('1313', displayCode: 'DEF');
+    client.openDirectChannel(token: '1313', displayCode: 'DEF');
 
     // assert
     expect(connection.isOpenCalled, true);
@@ -130,7 +138,7 @@ void main() {
       'state should not switch to connected after the connection is established',
       () {
     // arrange
-    client.openDirectChannel('token', displayCode: 'ABC');
+    client.openDirectChannel(token: 'token', displayCode: 'ABC');
 
     // action
     connection.onConnected?.call();
@@ -142,7 +150,7 @@ void main() {
   test('state should switch to connected after receiving channel-connected',
       () {
     // arrange
-    client.openDirectChannel('token', displayCode: 'ABC');
+    client.openDirectChannel(token: 'token', displayCode: 'ABC');
 
     // action
     connection.onConnected?.call();
@@ -155,7 +163,7 @@ void main() {
 
   test('client-connected should be sent when the connection is connected', () {
     // arrange
-    client.openDirectChannel('token', displayCode: 'ABC');
+    client.openDirectChannel(token: 'token', displayCode: 'ABC');
 
     // action
     connection.onConnected?.call();
@@ -169,7 +177,7 @@ void main() {
   test('client-connected should be sent after the connection is reconnected',
       () {
     // arrange
-    client.openDirectChannel('token', displayCode: 'ABC');
+    client.openDirectChannel(token: 'token', displayCode: 'ABC');
     connection.onConnected?.call();
 
     injectChannelConnected('token2', 0);
@@ -189,7 +197,7 @@ void main() {
   test('shoud connect using the reconnection token during reconnection',
       () async {
     // arrange
-    client.openDirectChannel('token', displayCode: 'ABC');
+    client.openDirectChannel(token: 'token', displayCode: 'ABC');
     connection.onConnected?.call();
 
     injectChannelConnected('token2', 0);
@@ -216,7 +224,7 @@ void main() {
 
   test('A heartbeat should be sent when a heartbeat is received', () async {
     // arrange
-    client.openDirectChannel('token', displayCode: 'ABC');
+    client.openDirectChannel(token: 'token', displayCode: 'ABC');
     connection.onConnected?.call();
 
     injectChannelConnected('token2', 0);
@@ -228,5 +236,21 @@ void main() {
     expect(connection.sentMessages.length, 2);
 
     expect((connection.sentMessages[1] as HeartbeatMessage).ack, 0);
+  });
+
+  test('authenticationRequired ', () {
+    // arrange
+    client.openDirectChannel(displayCode: 'ABC');
+    connection.onConnected?.call();
+
+    injectChannelClosed(ChannelCloseCode.authenticationRequired);
+
+    // assert
+    expect(stateChanges[0], ChannelState.closed);
+
+    expect(
+      client.closeReason!.code.index,
+      ChannelCloseCode.authenticationRequired.index,
+    );
   });
 }
