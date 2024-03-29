@@ -25,6 +25,8 @@ void main() {
   late Completer serverChannelClosed;
   late Completer tunnelConnected;
 
+  late ConnectRequestStatus connectRequestStatus;
+
   // store messages received by the client
   late List<ChannelMessage> clientMessages;
 
@@ -70,13 +72,7 @@ void main() {
 
     ConnectRequestStatus verifyConnectRequest(
         ConnectionRequest connectionRequest) {
-      if (connectionRequest.token != 'token1') {
-        return ConnectRequestStatus.invalidOtp;
-      }
-      if (connectionRequest.displayCode != 'ABA') {
-        return ConnectRequestStatus.invalidDisplayCode;
-      }
-      return ConnectRequestStatus.success;
+      return connectRequestStatus;
     }
 
     // create a channel server
@@ -120,8 +116,8 @@ void main() {
 
   void openDirectChannel({
     int? port,
-    String token = 'token1',
-    String displayCode = 'ABA',
+    String? token,
+    String? displayCode,
   }) {
     const clientId = 'abc';
     final serverUrl = 'ws://127.0.0.1:${port ?? directServer.port}';
@@ -135,7 +131,7 @@ void main() {
     setupClient();
 
     client.openDirectChannel(
-      token,
+      token: token,
       displayCode: displayCode,
     );
   }
@@ -190,13 +186,15 @@ void main() {
 
       serverMessages = <ChannelMessage>[];
 
+      connectRequestStatus = ConnectRequestStatus.success;
+
       await setupServer();
     });
   });
 
   test('deliver messages directly to the server', () async {
     // arrange
-    openDirectChannel();
+    openDirectChannel(token: '1111', displayCode: 'ABC');
 
     // action
     await clientConnected.future;
@@ -235,7 +233,7 @@ void main() {
   test('The server-side should be notified when the client closes the channel.',
       () async {
     // arrange
-    openDirectChannel();
+    openDirectChannel(token: '1111', displayCode: 'ABC');
 
     await clientConnected.future;
     await serverChannelOpened.future;
@@ -251,7 +249,7 @@ void main() {
   test('The client-side should be notified when the server closes the channel.',
       () async {
     // arrange
-    openDirectChannel();
+    openDirectChannel(token: '1111', displayCode: 'ABC');
 
     await clientConnected.future;
     await serverChannelOpened.future;
@@ -267,7 +265,8 @@ void main() {
   test('The channel should be closed with authenticationError if otp is wrong',
       () async {
     // arrange
-    openDirectChannel(token: 'wrong');
+    connectRequestStatus = ConnectRequestStatus.invalidOtp;
+    openDirectChannel(token: 'wrong', displayCode: 'ABC');
 
     // action
 
@@ -280,7 +279,7 @@ void main() {
       'The channel should be closed with transportClose if the direct server does not exist',
       () async {
     // arrange
-    openDirectChannel(port: 1);
+    openDirectChannel(port: 1, token: 'wrong', displayCode: 'ABC');
 
     // action
 
@@ -306,6 +305,7 @@ void main() {
       'The tunnel channel should be closed with invalidDisplayCode if the display code does not match',
       () async {
     // arrange
+    connectRequestStatus = ConnectRequestStatus.invalidDisplayCode;
     openTunnelChannel(displayCode: 'XXXX');
 
     // action
@@ -319,12 +319,27 @@ void main() {
       'The direct channel should be closed with invalidDisplayCode if the display code does not match',
       () async {
     // arrange
-    openDirectChannel(displayCode: 'XXXX');
+    connectRequestStatus = ConnectRequestStatus.invalidDisplayCode;
+    openDirectChannel(displayCode: 'XXXX', token: 'wrong');
 
     // action
 
     // assert
     await clientClosed.future;
     expect(client.closeReason!.code, ChannelCloseCode.invalidDisplayCode);
+  });
+
+  test(
+      'The direct channel should be closed with authenticationRequired if the otp is required',
+      () async {
+    // arrange
+    connectRequestStatus = ConnectRequestStatus.authenticationRequired;
+    openDirectChannel(displayCode: 'ABC');
+
+    // action
+
+    // assert
+    await clientClosed.future;
+    expect(client.closeReason!.code, ChannelCloseCode.authenticationRequired);
   });
 }
