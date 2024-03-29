@@ -62,9 +62,10 @@ class DisplayChannelClient implements Channel {
     );
   }
 
-  void openDirectChannel(
-    String token, {
-    required String displayCode,
+  // allow direct connection without token
+  void openDirectChannel({
+    String? token,
+    String? displayCode,
   }) {
     _openChannel(
       displayCode,
@@ -94,15 +95,15 @@ class DisplayChannelClient implements Channel {
   }
 
   void _openChannel(
-    String displayCode,
-    String token,
+    String? displayCode,
+    String? token,
     Map<String, String> parameters,
   ) {
     // build the query parameters
     _queryParameters = {
       'clientId': _clientId,
-      'displayCode': displayCode,
-      'token': token,
+      'displayCode': displayCode ?? '',
+      'token': token ?? '',
       ...parameters,
       ..._uri.queryParameters,
     };

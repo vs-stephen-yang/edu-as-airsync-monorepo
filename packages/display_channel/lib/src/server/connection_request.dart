@@ -1,6 +1,6 @@
 class ConnectionRequest {
   String clientId;
-  String token;
+  String? token;
   String displayCode;
   String? clientIpAddress;
 
