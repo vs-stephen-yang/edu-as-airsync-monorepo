@@ -14,6 +14,10 @@ class Client {
     _channel.onChannelMessage = (message) => _onMessages(message);
     _channel.onStateChange = (state) {
       log().info('Channel state has changed to $state');
+      if (state == ChannelState.closed) {
+        log().info(
+            'Close reason: ${_channel.closeReason?.code} ${_channel.closeReason?.text}');
+      }
     };
   }
 
