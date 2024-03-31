@@ -32,6 +32,7 @@ void main() {
       '0001',
       'token1',
       heartbeatInterval: const Duration(seconds: 100),
+      heartbeatTimeout: const Duration(seconds: 100),
       reconnectTimeout: const Duration(seconds: 200),
     );
 

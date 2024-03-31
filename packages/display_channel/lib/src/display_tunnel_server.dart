@@ -9,24 +9,33 @@ class DisplayTunnelServer {
 
   final ChannelStore _store;
   TunnelConnectionServer? _tunnelServer;
-  final Duration heartbeatInterval;
   final CreateWebsocketClientConnection _createTunnelConnection;
 
   DisplayTunnelServer(
     this._createTunnelConnection,
     OnNewChannel onNewChannel,
     VerifyConnectRequest verifyConnectRequest, {
-    // AWS WebSocket Idle Connection Timeout 10 minutes
-    this.heartbeatInterval = const Duration(minutes: 9),
+    // the heartbeat interval for client connections
+    Duration heartbeatInterval = const Duration(seconds: 10),
+    // the hearbeat timeout for client connections
+    Duration heartbeatTimeout = const Duration(seconds: 10),
+    Duration reconnectTimeout = const Duration(seconds: 2),
   }) : _store = ChannelStore(
           onNewChannel,
           verifyConnectRequest,
+          // the heartbeat interval for client connections
+          heartbeatInterval: heartbeatInterval,
+          // the heartbeat timeout for client connections
+          heartbeatTimeout: heartbeatTimeout,
+          reconnectTimeout: reconnectTimeout,
         );
 
   void start(
     String instanceId,
-    String tunnelServiceUrl,
-  ) {
+    String tunnelServiceUrl, {
+    // AWS WebSocket Idle Connection Timeout 10 minutes
+    Duration tunnelHeartbeatInterval = const Duration(minutes: 9),
+  }) {
     final uri = Uri.parse(tunnelServiceUrl);
 
     final uriWithParameters = uri.replace(queryParameters: {
@@ -37,13 +46,15 @@ class DisplayTunnelServer {
     final connection = _createTunnelConnection(
       uriWithParameters.toString(),
     );
+
     _tunnelServer = TunnelConnectionServer(
       connection,
       (String clientId, connection) =>
           _store.handleNewConnection(clientId, connection),
       (ConnectionRequest connectionRequest) =>
           _store.verifyConnectionRequest(connectionRequest),
-      heartbeatInterval: heartbeatInterval,
+      // heartbeat interval for the tunnel connection
+      heartbeatInterval: tunnelHeartbeatInterval,
     );
 
     _tunnelServer!.onTunnelConnected = () => onTunnelConnected?.call();

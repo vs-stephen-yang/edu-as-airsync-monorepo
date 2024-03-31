@@ -24,10 +24,17 @@ class ChannelStore {
   final _channels = <String, MultiConnectionChannel>{};
   final _uuid = const Uuid();
 
+  final Duration heartbeatInterval;
+  final Duration heartbeatTimeout;
+  final Duration reconnectTimeout;
+
   ChannelStore(
     this._onNewChannel,
-    this._verifyConnectRequest,
-  );
+    this._verifyConnectRequest, {
+    this.heartbeatInterval = const Duration(seconds: 10),
+    this.heartbeatTimeout = const Duration(seconds: 10),
+    this.reconnectTimeout = const Duration(seconds: 2),
+  });
 
   // handle a new connection
   void handleNewConnection(
@@ -46,6 +53,9 @@ class ChannelStore {
       channel = MultiConnectionChannel(
         clientId,
         reconnectionToken,
+        heartbeatInterval: heartbeatInterval,
+        heartbeatTimeout: heartbeatTimeout,
+        reconnectTimeout: reconnectTimeout,
       );
       isNewChannelCreated = true;
       _channels[clientId] = channel;
