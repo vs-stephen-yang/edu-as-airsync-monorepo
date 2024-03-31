@@ -106,7 +106,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
   @override
   void onClientDisconnected(TunnelClientDisconnected msg) {
     // a client connection is being terminated
-    final connection = _connections[msg.connectionId];
+    final connection = _connections.remove(msg.connectionId);
 
     connection?.handleClientDisconnected();
   }
@@ -153,6 +153,8 @@ class TunnelConnectionServer extends TunnelMessageHandler {
     final msg = TunnelDisconnectClient(connectionId, reason);
 
     _tunnelConnection.send(msg.toJson());
+
+    _connections.remove(connectionId);
   }
 
   void sendMsgToClient(String connectionId, Map<String, dynamic> json) {
