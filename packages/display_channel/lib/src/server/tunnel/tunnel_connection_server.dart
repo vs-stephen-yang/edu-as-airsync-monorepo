@@ -22,7 +22,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
   late TunnelMessageParser _messageParser;
   final _connections = <String, TunnelClientConnection>{};
 
-  // Tunnel Heartbeat
+  // Heartbeat for tunnel connection
   // Avoid disconnection caused by AWS WebSocket Idle Connection Timeout.
   Timer? _heartbeatTimer;
   final Duration heartbeatInterval;
@@ -32,6 +32,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
     this._tunnelConnection,
     this._onNewClientConnection,
     this._verifyConnectRequest, {
+    // the heartbeat interval for the tunnel connection
     this.heartbeatInterval = const Duration(minutes: 9),
   }) {
     _messageParser = TunnelMessageParser(this);

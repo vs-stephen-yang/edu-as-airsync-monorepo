@@ -21,9 +21,15 @@ class DisplayDirectServer {
     VerifyConnectRequest verifyConnectRequest, {
     int maxBurstyRequests = 5,
     double requestsPerSecond = 5,
+    Duration heartbeatInterval = const Duration(seconds: 10),
+    Duration heartbeatTimeout = const Duration(seconds: 10),
+    Duration reconnectTimeout = const Duration(seconds: 2),
   })  : _store = ChannelStore(
           onNewChannel,
           verifyConnectRequest,
+          heartbeatInterval: heartbeatInterval,
+          heartbeatTimeout: heartbeatTimeout,
+          reconnectTimeout: reconnectTimeout,
         ),
         _rateLimiter = RateLimiter(
           maxBurstyRequests,
