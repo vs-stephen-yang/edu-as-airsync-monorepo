@@ -167,6 +167,7 @@ class WebSocketClientConnection implements ClientConnection {
     _httpClient = null;
 
     _socket?.close();
+    _socket = null;
   }
 
   Future _reconnect() async {
