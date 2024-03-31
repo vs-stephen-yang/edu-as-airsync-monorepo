@@ -11,6 +11,8 @@ class DisplayTunnelServer {
   TunnelConnectionServer? _tunnelServer;
   final CreateWebsocketClientConnection _createTunnelConnection;
 
+  late Duration _idleClientConnectionTimeout;
+
   DisplayTunnelServer(
     this._createTunnelConnection,
     OnNewChannel onNewChannel,
@@ -28,7 +30,10 @@ class DisplayTunnelServer {
           // the heartbeat timeout for client connections
           heartbeatTimeout: heartbeatTimeout,
           reconnectTimeout: reconnectTimeout,
-        );
+        ) {
+    // idle connection timeout=heartbeat interval + heartbeat timeout
+    _idleClientConnectionTimeout = heartbeatInterval + heartbeatTimeout;
+  }
 
   void start(
     String instanceId,
@@ -55,6 +60,8 @@ class DisplayTunnelServer {
           _store.verifyConnectionRequest(connectionRequest),
       // heartbeat interval for the tunnel connection
       heartbeatInterval: tunnelHeartbeatInterval,
+      // the idle timeout for client connections
+      idleConnectionTimeout: _idleClientConnectionTimeout,
     );
 
     _tunnelServer!.onTunnelConnected = () => onTunnelConnected?.call();
