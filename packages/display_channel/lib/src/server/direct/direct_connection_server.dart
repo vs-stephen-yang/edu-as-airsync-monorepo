@@ -11,10 +11,13 @@ class DirectConnectionServer {
   final void Function(String clientId, Connection) _onNewConnection;
   final VerifyConnectRequest _verifyConnectRequest;
 
+  final Duration idleConnectionTimeout;
+
   DirectConnectionServer(
     this._onNewConnection,
-    this._verifyConnectRequest,
-  );
+    this._verifyConnectRequest, {
+    required this.idleConnectionTimeout,
+  });
 
   ConnectionRequest? _parseConnectionRequest(HttpRequest req) {
     final parameters = req.requestedUri.queryParameters;
@@ -47,7 +50,10 @@ class DirectConnectionServer {
 
     final websocket = await WebSocketTransformer.upgrade(httpRequest);
 
-    final connection = DirectConnection(websocket);
+    final connection = DirectConnection(
+      websocket,
+      idleConnectionTimeout: idleConnectionTimeout,
+    );
 
     // authenticate the connectin request
     final status = _verifyConnectRequest(connectionRequest);

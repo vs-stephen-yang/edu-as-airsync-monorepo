@@ -12,6 +12,8 @@ class DisplayDirectServer {
   HttpServer? _httpServer;
   final RateLimiter _rateLimiter;
 
+  final Duration _idleConnectionTimeout;
+
   int? get port {
     return _httpServer?.port;
   }
@@ -34,7 +36,8 @@ class DisplayDirectServer {
         _rateLimiter = RateLimiter(
           maxBurstyRequests,
           requestsPerSecond,
-        );
+        ),
+        _idleConnectionTimeout = heartbeatInterval + heartbeatTimeout;
 
   Future<void> start(
     int port, {
@@ -55,6 +58,7 @@ class DisplayDirectServer {
 
         return _store.verifyConnectionRequest(connectionRequest);
       },
+      idleConnectionTimeout: _idleConnectionTimeout,
     );
 
     // HTTP server

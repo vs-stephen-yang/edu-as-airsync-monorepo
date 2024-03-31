@@ -90,6 +90,7 @@ void main() {
       (String clientId, Connection connection) => connections.add(connection),
       (ConnectionRequest connectRequest) => connectRequestStatus,
       heartbeatInterval: const Duration(minutes: 5),
+      idleConnectionTimeout: const Duration(seconds: 10),
     );
 
     onTunnelConnectedCalled = false;

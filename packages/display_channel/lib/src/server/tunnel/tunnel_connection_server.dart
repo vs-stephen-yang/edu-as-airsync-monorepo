@@ -5,6 +5,7 @@ import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
 import 'package:display_channel/src/server/connection.dart';
 import 'package:display_channel/src/server/connection_request.dart';
+import 'package:display_channel/src/server/idle_connection_timer.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_message.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_message_handler.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_message_parser.dart';
@@ -27,6 +28,8 @@ class TunnelConnectionServer extends TunnelMessageHandler {
   Timer? _heartbeatTimer;
   final Duration heartbeatInterval;
 
+  final Duration idleConnectionTimeout;
+
   // Constructor
   TunnelConnectionServer(
     this._tunnelConnection,
@@ -34,6 +37,8 @@ class TunnelConnectionServer extends TunnelMessageHandler {
     this._verifyConnectRequest, {
     // the heartbeat interval for the tunnel connection
     this.heartbeatInterval = const Duration(minutes: 9),
+    // the idle timeout for client connections
+    required this.idleConnectionTimeout,
   }) {
     _messageParser = TunnelMessageParser(this);
 
@@ -91,6 +96,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
       this,
       msg.connectionId,
       msg.clientId,
+      idleConnectionTimeout: idleConnectionTimeout,
     );
 
     _connections[msg.connectionId] = connection;
@@ -102,7 +108,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
     // a client connection is being terminated
     final connection = _connections[msg.connectionId];
 
-    connection?.onClosed?.call(connection);
+    connection?.handleClientDisconnected();
   }
 
   @override
@@ -110,7 +116,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
     // a message has been received from the client
     final connection = _connections[msg.connectionId];
 
-    connection?.onMessage?.call(connection, msg.data);
+    connection?.handleClientMessage(msg.data);
   }
 
   @override
@@ -190,12 +196,19 @@ class TunnelClientConnection implements Connection {
   final String _clientId;
 
   final TunnelConnectionServer _site;
+  late IdleConnectionTimer _idleTimer;
 
   TunnelClientConnection(
     this._site,
     this._connectionId,
-    this._clientId,
-  );
+    this._clientId, {
+    required Duration idleConnectionTimeout,
+  }) {
+    _idleTimer = IdleConnectionTimer(
+      _onIdleTimeout,
+      idleConnectionTimeout,
+    );
+  }
 
   @override
   void send(Map<String, dynamic> message) {
@@ -205,5 +218,28 @@ class TunnelClientConnection implements Connection {
   @override
   void close() {
     _site.disconnectClient(_connectionId);
+    _idleTimer.stop();
+  }
+
+  void handleClientDisconnected() {
+    onClosed?.call(this);
+    _idleTimer.stop();
+  }
+
+  void _onIdleTimeout() {
+    onClosed?.call(this);
+    _site.disconnectClient(_connectionId);
+
+    _idleTimer.stop();
+  }
+
+  void handleClientMessage(
+    Map<String, dynamic> message,
+  ) {
+    // receive message from the client
+    // reset the idle timer
+    _idleTimer.reset();
+
+    onMessage?.call(this, message);
   }
 }
