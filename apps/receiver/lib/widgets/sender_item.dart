@@ -2,6 +2,7 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
+import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +29,8 @@ class _SenderItemState extends State<SenderItem>
   @override
   Widget build(BuildContext context) {
     channelProvider = Provider.of<ChannelProvider>(context);
-    remoteScreenConnector = ChannelProvider.remoteScreenConnectors[widget.index];
+    remoteScreenConnector =
+        ChannelProvider.remoteScreenConnectors[widget.index];
     return SizedBox(
       child: Row(
         children: [
@@ -36,8 +38,8 @@ class _SenderItemState extends State<SenderItem>
             child: FocusElevatedButton(
               style: ElevatedButton.styleFrom(
                 elevation: 0,
-                backgroundColor:
-                remoteScreenConnector.presentationState == PresentationState.streaming
+                backgroundColor: remoteScreenConnector.presentationState ==
+                        PresentationState.streaming
                     ? AppColors.primary_blue
                     : AppColors.toggle_bg,
                 shape: RoundedRectangleBorder(
@@ -46,8 +48,10 @@ class _SenderItemState extends State<SenderItem>
               ),
               showWhiteBorder: true,
               onClick: () {
-                if (remoteScreenConnector.presentationState == PresentationState.streaming) {
-                  channelProvider.removeSender(remoteScreenConnector:remoteScreenConnector);
+                if (remoteScreenConnector.presentationState ==
+                    PresentationState.streaming) {
+                  channelProvider.removeSender(
+                      remoteScreenConnector: remoteScreenConnector);
                 }
               },
               child: Row(
@@ -63,13 +67,19 @@ class _SenderItemState extends State<SenderItem>
           ),
           FittedBox(
             fit: BoxFit.fitHeight,
-            child: IconButton(
-              icon: const Icon(Icons.touch_app),
-              color: remoteScreenConnector.isTouchEnabled? Colors.white:AppColors.toggle_bg,
+            child: FocusIconButton(
+              icons: Icons.touch_app,
+              iconForegroundColor: remoteScreenConnector.isTouchEnabled
+                  ? Colors.white
+                  : AppColors.toggle_bg,
+              focusColor: Colors.grey,
               splashRadius: 20,
-              onPressed: () {
-                remoteScreenConnector.isTouchEnabled = !remoteScreenConnector.isTouchEnabled;
-                channelProvider.remoteScreenServe.enableTouchBySessionId(remoteScreenConnector.sessionId!, remoteScreenConnector.isTouchEnabled);
+              onClick: () {
+                remoteScreenConnector.isTouchEnabled =
+                    !remoteScreenConnector.isTouchEnabled;
+                channelProvider.remoteScreenServe.enableTouchBySessionId(
+                    remoteScreenConnector.sessionId!,
+                    remoteScreenConnector.isTouchEnabled);
                 setState(() {});
               },
             ),
