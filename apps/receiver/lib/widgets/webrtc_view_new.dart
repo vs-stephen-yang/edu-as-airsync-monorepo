@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -6,14 +5,14 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
+import 'package:display_flutter/protoc/event.pb.dart';
+import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:display_flutter/protoc/event.pb.dart';
-import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:provider/provider.dart';
 
 import 'loading_icon.dart';
@@ -33,12 +32,11 @@ class WebRTCViewState extends State<WebRTCView> {
   Size _textureSize = const Size(0, 0);
   Offset _textureOffset = const Offset(0, 0);
   GlobalKey repaintBoundaryKey = GlobalKey();
-  GlobalKey<PauseScreenImageState> pauseScreenImageKey = GlobalKey();
   Widget? pauseScreenImage;
 
   @override
   void deactivate() {
-    pauseScreenImageKey.currentState?.clearImage();
+    pauseScreenImage = null;
     super.deactivate();
   }
 
@@ -115,49 +113,46 @@ class WebRTCViewState extends State<WebRTCView> {
       // to update PresentationState
       if (rtcConnector.presentationState == PresentationState.pauseStreaming &&
           pauseScreenImage == null) {
-        pauseVideo();
+        _pauseVideo();
       } else if (rtcConnector.presentationState ==
           PresentationState.resumeStreaming) {
-        resumeVideo();
+        _resumeVideo();
         rtcConnector.presentationState = PresentationState.streaming;
       }
       return Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          RepaintBoundary(
-            key: repaintBoundaryKey,
-            child: Focus(
-              descendantsAreFocusable: false,
-              canRequestFocus: false,
-              child: NotificationListener<SizeChangedLayoutNotification>(
-                onNotification: (notification) {
-                  printInDebug('onVideoWidgetResize');
-                  _textureSizeChanged = true;
-                  return false;
-                },
-                child: Listener(
-                  onPointerDown: (PointerEvent event) {
-                    onTouchEvent(
-                        TouchEvent_TouchEventType.TOUCH_POINT_START, event);
-                  },
-                  onPointerMove: (PointerEvent event) {
-                    onTouchEvent(
-                        TouchEvent_TouchEventType.TOUCH_POINT_MOVE, event);
-                  },
-                  onPointerUp: (PointerEvent event) {
-                    onTouchEvent(
-                        TouchEvent_TouchEventType.TOUCH_POINT_END, event);
-                  },
-                  child: RTCVideoView(rtcConnector.remoteRenderer!,
-                      key: _widgetKey),
+          pauseScreenImage ??
+              RepaintBoundary(
+                key: repaintBoundaryKey,
+                child: Focus(
+                  descendantsAreFocusable: false,
+                  canRequestFocus: false,
+                  child: NotificationListener<SizeChangedLayoutNotification>(
+                    onNotification: (notification) {
+                      printInDebug('onVideoWidgetResize');
+                      _textureSizeChanged = true;
+                      return false;
+                    },
+                    child: Listener(
+                      onPointerDown: (PointerEvent event) {
+                        onTouchEvent(
+                            TouchEvent_TouchEventType.TOUCH_POINT_START, event);
+                      },
+                      onPointerMove: (PointerEvent event) {
+                        onTouchEvent(
+                            TouchEvent_TouchEventType.TOUCH_POINT_MOVE, event);
+                      },
+                      onPointerUp: (PointerEvent event) {
+                        onTouchEvent(
+                            TouchEvent_TouchEventType.TOUCH_POINT_END, event);
+                      },
+                      child: RTCVideoView(rtcConnector.remoteRenderer!,
+                          key: _widgetKey),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          if (rtcConnector.presentationState ==
-              PresentationState.pauseStreaming)
-            pauseScreenImage =
-                pauseScreenImage ?? PauseScreenImage(key: pauseScreenImageKey),
           if (rtcConnector.presentationState == PresentationState.streaming &&
               rtcConnector.senderNameWithEllipsis.isNotEmpty)
             Align(
@@ -242,20 +237,29 @@ class WebRTCViewState extends State<WebRTCView> {
     });
   }
 
-  Future<void> pauseVideo() async {
+  Future<void> _pauseVideo() async {
     // screenshot RTCView
     final boundary = repaintBoundaryKey.currentContext?.findRenderObject()
         as RenderRepaintBoundary?;
     final image = await boundary?.toImage();
-    final byteData = await image?.toByteData(format: ImageByteFormat.png);
-    final imageBytes = byteData?.buffer.asUint8List();
-    pauseScreenImageKey.currentState?.refresh(imageBytes);
+    if (image != null) {
+      final byteData = await image.toByteData(format: ImageByteFormat.png);
+      final imageBytes = byteData?.buffer.asUint8List();
+      if (imageBytes != null) {
+        if (mounted) {
+          final imageProvider = MemoryImage(imageBytes);
+          // prevent flicking
+          await precacheImage(imageProvider, context);
+          pauseScreenImage = Image(image: imageProvider);
+        }
+      }
+    }
     HybridConnectionList()
         .updateAudioEnableStateByIndex(widget.index, false, false);
+    setState(() {});
   }
 
-  void resumeVideo() {
-    pauseScreenImageKey.currentState?.remove();
+  void _resumeVideo() {
     pauseScreenImage = null;
     var isAudioEnabled = HybridConnectionList()
             .getRtcConnectorMap()[widget.index]
@@ -263,44 +267,5 @@ class WebRTCViewState extends State<WebRTCView> {
         false;
     HybridConnectionList().updateAudioEnableStateByIndex(
         widget.index, isAudioEnabled & true, false);
-  }
-}
-
-class PauseScreenImage extends StatefulWidget {
-  const PauseScreenImage({super.key});
-
-  @override
-  PauseScreenImageState createState() => PauseScreenImageState();
-}
-
-class PauseScreenImageState extends State<PauseScreenImage> {
-  Uint8List? _capturedImage;
-
-  // 一个用于刷新小部件的方法
-  void refresh(Uint8List? imageBytes) {
-    if (mounted) {
-      setState(() {
-        _capturedImage = imageBytes;
-      });
-    }
-  }
-
-  void remove() {
-    if (mounted) {
-      setState(() {
-        _capturedImage = null;
-      });
-    }
-  }
-
-  void clearImage() {
-    _capturedImage = null;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _capturedImage != null
-        ? Image.memory(_capturedImage!, fit: BoxFit.fill)
-        : const SizedBox();
   }
 }
