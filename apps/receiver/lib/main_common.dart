@@ -80,8 +80,6 @@ class MyApp extends StatefulWidget {
   // This widget is the root of your application.
   const MyApp({super.key});
 
-  static bool isInBackgroundMode = false;
-
   @override
   State createState() => _MyAppState();
 }
