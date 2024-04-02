@@ -302,7 +302,7 @@ class HybridConnectionList {
   bool getAudioDisableStateByIndex(int index, {bool? mirrorAudioEnabled}) {
     var connection = _hybridConnectionList[index];
     if (connection != null && connection is RTCConnector) {
-      return connection.getAudioState();
+      return !connection.getAudioEnabled();
     } else if (connection != null && connection is MirrorRequest) {
       return !(mirrorAudioEnabled ?? false);
     }

@@ -196,12 +196,14 @@ class RTCConnector {
   Future<void> onPausePresent() async {
     AppAnalytics().trackEventPresentPauseReceived(clientId!, sessionId!);
     presentationState = PresentationState.pauseStreaming;
+    controlAudio(false, setIsAudioEnabled: false);
     onRefresh?.call();
   }
 
   Future<void> onResumePresent() async {
     AppAnalytics().trackEventPresentResumeReceived(clientId!, sessionId!);
     presentationState = PresentationState.resumeStreaming;
+    controlAudio(isAudioEnabled & true, setIsAudioEnabled: false);
     onRefresh?.call();
   }
 
@@ -339,9 +341,8 @@ class RTCConnector {
     }
   }
 
-  bool getAudioState() {
-    return _remoteRenderer?.srcObject!.getAudioTracks().firstOrNull?.muted ??
-        false;
+  bool getAudioEnabled() {
+    return isAudioEnabled;
   }
 
   //region PeerConnection interface
