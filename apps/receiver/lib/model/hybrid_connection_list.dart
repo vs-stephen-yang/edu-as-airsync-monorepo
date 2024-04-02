@@ -77,6 +77,7 @@ class HybridConnectionList {
       StreamFunction.streamFunctionState.value = stateStandby;
     }
     Home.isShowDisplayCode.value = inConnectionNumber == 0 ? true : false;
+    Home.showTitleBottomBar.value = inConnectionNumber == 0 ? true : false;
   }
 
   // Any type of connection is presenting
