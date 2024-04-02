@@ -60,15 +60,6 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool _lanNetWork = false;
-
-  bool get lanNetWork => _lanNetWork;
-
-  set lanNetWork(bool value) {
-    _lanNetWork = value;
-    notifyListeners();
-  }
-
   String _displayCode = '';
 
   String get displayCode => _displayCode;
@@ -145,7 +136,6 @@ class ChannelProvider extends ChangeNotifier {
 
       if (result == ConnectivityResult.none) {
         connectNet = false;
-        lanNetWork = false;
       } else {
         connectNet = true;
         _log.info(
@@ -564,6 +554,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future<String?> _checkNetWorkInfo() async {
+    bool _lanNetWork = false;
     List<NetworkInterface> interfaces = await NetworkInterface.list();
     for (NetworkInterface interface in interfaces) {
       if (interface.name.toLowerCase().contains("eth")) {
@@ -572,7 +563,7 @@ class ChannelProvider extends ChangeNotifier {
             ? interface.addresses[0].address
             : null;
         if (ethernetIp != null) {
-          lanNetWork = isPrivateIp(ethernetIp);
+          _lanNetWork = isPrivateIp(ethernetIp);
           host = ethernetIp;
           return host;
         }
@@ -584,7 +575,7 @@ class ChannelProvider extends ChangeNotifier {
             ? interface.addresses[0].address
             : null;
         if (wifiIp != null) {
-          lanNetWork = isPrivateIp(wifiIp);
+          _lanNetWork = isPrivateIp(wifiIp);
           host = wifiIp;
           return host;
         }
@@ -595,7 +586,7 @@ class ChannelProvider extends ChangeNotifier {
             ? interface.addresses[0].address
             : null;
         if (mobileIp != null) {
-          lanNetWork = isPrivateIp(mobileIp);
+          _lanNetWork = isPrivateIp(mobileIp);
           host = mobileIp;
           return host;
         }
