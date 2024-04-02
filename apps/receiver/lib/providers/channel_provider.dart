@@ -82,8 +82,8 @@ class ChannelProvider extends ChangeNotifier {
   String? host;
   int port = 5100;
   bool isServerStart = false;
-  late DisplayDirectServer? _directServer;
-  late DisplayTunnelServer? _tunnelServer;
+  DisplayDirectServer? _directServer;
+  DisplayTunnelServer? _tunnelServer;
   String _tunnelApiUrl = '';
 
   bool _isModeratorMode = false;
@@ -108,7 +108,6 @@ class ChannelProvider extends ChangeNotifier {
   static bool isSenderMode = false;
 
   ChannelProvider(this.appConfig) {
-
     _setConnectivityListener();
     _generateOTP();
     _startNewOTPTimer();
@@ -121,6 +120,7 @@ class ChannelProvider extends ChangeNotifier {
 
       if (result == ConnectivityResult.none) {
         connectNet = false;
+        stopServer();
       } else {
         connectNet = true;
         _log.info(
@@ -163,24 +163,17 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
-  void _setServerSide() {
-    // create a direct server
-    _directServer = DisplayDirectServer(
-      (Channel channel) => _onNewChannel(channel, ChannelMode.direct),
-      (ConnectionRequest connectionRequest) =>
-          _verifyConnectRequest(connectionRequest),
-    );
-
+  void _setTunnelServer() {
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
-      (String url) => WebSocketClientConnection(
+          (String url) => WebSocketClientConnection(
         url,
         logger: (url, message) {
           _log.finest('Tunnel $message');
         },
       ),
-      (Channel channel) => _onNewChannel(channel, ChannelMode.tunnel),
-      (ConnectionRequest connectionRequest) =>
+          (Channel channel) => _onNewChannel(channel, ChannelMode.tunnel),
+          (ConnectionRequest connectionRequest) =>
           _verifyConnectRequest(connectionRequest),
     );
 
@@ -190,6 +183,15 @@ class ChannelProvider extends ChangeNotifier {
     _tunnelServer?.onTunnelConnecting = () {
       _log.info('Tunnel is connecting');
     };
+  }
+
+  void _setDirectServer() {
+    // create a direct server
+    _directServer = DisplayDirectServer(
+      (Channel channel) => _onNewChannel(channel, ChannelMode.direct),
+      (ConnectionRequest connectionRequest) =>
+          _verifyConnectRequest(connectionRequest),
+    );
   }
 
   Future startRemoteScreen() async {
@@ -207,12 +209,12 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<void> startServer(String instanceId) async {
     if (isServerStart) return;
-    _setServerSide();
 
     // start the tunnel server
     _log.info('Starting the tunnel channel server $_tunnelApiUrl');
-    if (_tunnelApiUrl.isNotEmpty) {
+    if (_tunnelApiUrl.isNotEmpty && _tunnelServer == null) {
       // fix when _tunnelApiUrl is empty, will cause App UI not response.
+      _setTunnelServer();
       _tunnelServer?.start(instanceId, _tunnelApiUrl);
     }
 
@@ -221,10 +223,14 @@ class ChannelProvider extends ChangeNotifier {
       final securityContext = await loadSecurityContextForChannel();
 
       _log.info('Starting the direct channel server');
-      await _directServer?.start(
-        port,
-        securityContext: securityContext,
-      );
+      if (_directServer == null) {
+        _setDirectServer();
+        await _directServer?.start(
+          port,
+          securityContext: securityContext,
+        );
+      }
+
     } on PathNotFoundException catch (e) {
       _log.severe(
           'Failed to load certificate or private key for secure direct connections. $e');
