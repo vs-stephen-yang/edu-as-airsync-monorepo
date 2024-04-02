@@ -245,17 +245,19 @@ class HybridConnectionList {
     int index = _hybridConnectionList.indexOf(selectedRtcConnector);
     if (index != -1) {
       for (int i = 0; i < _hybridConnectionList.length; i++) {
-        RTCConnector rtcConnector = _hybridConnectionList[i];
-        //Place presenting presenter to the front position, order by if presenting
-        if ((i < index &&
-                rtcConnector.presentationState !=
-                    PresentationState.streaming) ||
-            (i > index &&
-                rtcConnector.presentationState ==
-                    PresentationState.streaming)) {
-          _hybridConnectionList[i] = selectedRtcConnector;
-          _hybridConnectionList[index] = rtcConnector;
-          break;
+        RTCConnector? rtcConnector = _hybridConnectionList[i];
+        if (rtcConnector != null) {
+          //Place presenting presenter to the front position, order by if presenting
+          if ((i < index &&
+                  rtcConnector.presentationState !=
+                      PresentationState.streaming) ||
+              (i > index &&
+                  rtcConnector.presentationState ==
+                      PresentationState.streaming)) {
+            _hybridConnectionList[i] = selectedRtcConnector;
+            _hybridConnectionList[index] = rtcConnector;
+            break;
+          }
         }
       }
     }
