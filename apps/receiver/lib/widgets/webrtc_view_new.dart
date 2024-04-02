@@ -254,18 +254,10 @@ class WebRTCViewState extends State<WebRTCView> {
         }
       }
     }
-    HybridConnectionList()
-        .updateAudioEnableStateByIndex(widget.index, false, false);
     setState(() {});
   }
 
   void _resumeVideo() {
     pauseScreenImage = null;
-    var isAudioEnabled = HybridConnectionList()
-            .getRtcConnectorMap()[widget.index]
-            ?.isAudioEnabled ??
-        false;
-    HybridConnectionList().updateAudioEnableStateByIndex(
-        widget.index, isAudioEnabled & true, false);
   }
 }
