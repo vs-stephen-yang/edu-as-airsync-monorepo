@@ -147,22 +147,6 @@ class ChannelProvider extends ChangeNotifier {
     });
   }
 
-  void connectServer(BuildContext context) {
-    MyApp.isInBackgroundMode = false;
-    ConnectionTimer.getInstance().stopServerTimer();
-    startServer(AppInstanceCreate().displayInstanceID);
-  }
-
-  void disconnectServer() {
-    MyApp.isInBackgroundMode = true;
-    if (!HybridConnectionList().hasPresenterOccupied()) {
-      ConnectionTimer.getInstance().startServerTimer(() {
-        // onFinish
-        stopServer();
-      });
-    }
-  }
-
   void _setTunnelServer() {
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
@@ -429,9 +413,6 @@ class ChannelProvider extends ChangeNotifier {
       }
       if (presenting) {
         Home.enlargedScreenPositionIndex.value = null;
-      }
-      if (MyApp.isInBackgroundMode) {
-        disconnectServer();
       }
       await rtcConnector.close(ChannelCloseCode.close);
       HybridConnectionList().removeConnection(rtcConnector);
