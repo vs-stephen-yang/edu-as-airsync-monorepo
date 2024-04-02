@@ -115,10 +115,6 @@ class MirrorStateProvider extends ChangeNotifier
         HybridConnectionList().updateSplitScreen();
       }
     }
-
-    Home.showTitleBottomBar.value =
-        HybridConnectionList().getMirrorMap().isEmpty &&
-            HybridConnectionList().getRtcConnectorMap().isEmpty;
   }
 
   @override
@@ -190,8 +186,6 @@ class MirrorStateProvider extends ChangeNotifier
       while (navService.canPop()) {
         navService.goBack();
       }
-      // hideTitleBar
-      Home.showTitleBottomBar.value = false;
       notifyListeners();
     }
   }
