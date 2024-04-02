@@ -108,29 +108,14 @@ class ChannelProvider extends ChangeNotifier {
   static bool isSenderMode = false;
 
   ChannelProvider(this.appConfig) {
-    _checkConnectivity().then((value) {
-      _log.info('checkConnectivity: $value');
-      if (value) {
-        connectNet = true;
-        _checkNetWorkInfo().then((value) {
-          host = value;
-          if (displayCode.isEmpty || _tunnelApiUrl.isEmpty) {
-            getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
-              if (value.isNotEmpty) {
-                displayCode =
-                    encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
-              } else {
-                displayCode = encodeDisplayCode(DisplayCode(host!, 0))!;
-              }
-              startServer(AppInstanceCreate().displayInstanceID);
-            });
-          }
-        });
-      }
-    });
 
-    Connectivity()
-        .onConnectivityChanged
+    _setConnectivityListener();
+    _generateOTP();
+    _startNewOTPTimer();
+  }
+
+  void _setConnectivityListener() {
+    Connectivity().onConnectivityChanged
         .listen((ConnectivityResult result) async {
       _log.info('Network connectivity has changed to $result');
 
@@ -139,12 +124,11 @@ class ChannelProvider extends ChangeNotifier {
       } else {
         connectNet = true;
         _log.info(
-            'Last Network Connectivity is: $_lastConnectivityResult, result: $result');
+            'Last Network Connectivity is: $_lastConnectivityResult, being changed to result: $result');
         // MUST add async/await, to compare connectivity result with last one.
-        await _checkNetWorkInfo().then((_) {
-          _log.info(
-              'Last Network Connectivity is: $_lastConnectivityResult, result: $result');
-          if (displayCode.isEmpty || _lastConnectivityResult != result) {
+        await _checkNetWorkInfo().then((value) {
+          host = value;
+          if (_lastConnectivityResult != result) { //displayCode.isEmpty || _tunnelApiUrl.isEmpty
             getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
               if (value.isNotEmpty) {
                 displayCode =
@@ -161,9 +145,6 @@ class ChannelProvider extends ChangeNotifier {
       // Save connectivity result, for status compare.
       _lastConnectivityResult = result;
     });
-
-    _generateOTP();
-    _startNewOTPTimer();
   }
 
   void connectServer(BuildContext context) {
