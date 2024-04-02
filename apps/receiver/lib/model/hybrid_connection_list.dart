@@ -1,12 +1,12 @@
 import 'dart:developer';
 
+import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_mirror/flutter_mirror.dart';
 
 import '../widgets/stream_function.dart';
 import 'connect_timer.dart';
@@ -289,27 +289,26 @@ class HybridConnectionList {
 
   //End of RTCConnector function region
 
-  updateAudioEnableStateByIndex(int index, bool enable, bool setIsAudioEnabled,
-      {FlutterMirror? mirrorPlugin}) {
+  updateAudioEnableStateByIndex(int index, bool enable, bool setIsAudioEnabled) {
     var connection = _hybridConnectionList[index];
     if (connection != null && connection is RTCConnector) {
       connection.controlAudio(enable, setIsAudioEnabled: setIsAudioEnabled);
     } else if (connection != null && connection is MirrorRequest) {
-      mirrorPlugin?.enableAudio(connection.mirrorId ?? '0', enable);
+      connection.controlAudio(enable, setIsAudioEnabled: setIsAudioEnabled);
     }
   }
 
-  bool getAudioDisableStateByIndex(int index, {bool? mirrorAudioEnabled}) {
+  bool getAudioDisableStateByIndex(int index) {
     var connection = _hybridConnectionList[index];
     if (connection != null && connection is RTCConnector) {
       return !connection.getAudioEnabled();
     } else if (connection != null && connection is MirrorRequest) {
-      return !(mirrorAudioEnabled ?? false);
+      return !connection.getAudioEnabled();
     }
     return false;
   }
 
-  removePresenterBy(int index, FlutterMirror? mirrorPlugin) async {
+  removePresenterBy(int index) async {
     var connection = _hybridConnectionList[index];
     if (connection != null && connection is RTCConnector) {
       if (connection.sessionId != null) {
@@ -322,7 +321,7 @@ class HybridConnectionList {
         }
       }
     } else if (connection != null && connection is MirrorRequest) {
-      mirrorPlugin?.stopMirror(connection.mirrorId ?? '0');
+      connection.stopMirror();
     }
   }
 

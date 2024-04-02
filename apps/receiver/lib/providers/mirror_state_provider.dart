@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
+import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
@@ -19,18 +20,6 @@ import 'package:uuid/uuid.dart';
 enum MirrorState {
   idle,
   mirroring,
-}
-
-class MirrorRequest {
-  String? mirrorId;
-  int textureId;
-  String? deviceName;
-  MirrorType? mirrorType;
-  double aspectRatio = 3 / 2;
-  MirrorState mirrorState = MirrorState.idle;
-
-  MirrorRequest(
-      this.mirrorId, this.textureId, this.deviceName, this.mirrorType);
 }
 
 class MirrorStateProvider extends ChangeNotifier
@@ -50,13 +39,6 @@ class MirrorStateProvider extends ChangeNotifier
 
   get pinCode => _pinCode;
 
-  get audioEnable => _audioEnabled;
-  setAudioEnable() {
-    _audioEnabled = !_audioEnabled;
-  }
-
-  get flutterMirrorPlugin => _flutterMirrorPlugin;
-
   FlutterMirror? _flutterMirrorPlugin;
   String _deviceName = '';
   bool _airplayEnabled = false;
@@ -67,7 +49,6 @@ class MirrorStateProvider extends ChangeNotifier
   bool _sizeChanged = false;
   Size _videoWidgetSize = const Size(0, 0);
   Offset _videoWidgetOffset = const Offset(0, 0);
-  bool _audioEnabled = true;
   Map<MirrorType, bool> mirrorTypeState = {
     MirrorType.airplay: false,
     MirrorType.googlecast: false,
@@ -98,8 +79,8 @@ class MirrorStateProvider extends ChangeNotifier
     _pinCode = '';
     Home.isShowPinDialog.value = false;
 
-    HybridConnectionList().addConnection(
-        MirrorRequest(mirrorId, textureId, deviceName, mirrorType));
+    HybridConnectionList().addConnection(MirrorRequest(
+        _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType));
     Home.isShowAuthDialog.value = false;
     Home.isShowAuthDialog.value = true;
 
@@ -171,11 +152,9 @@ class MirrorStateProvider extends ChangeNotifier
         if (entry.value.mirrorId == mirrorId) {
           MirrorRequest request = entry.value;
           request.mirrorState = MirrorState.mirroring;
+          request.controlAudio(true, setIsAudioEnabled: true);
           mirrorMap.update(entry.key, (value) => request);
         }
-      }
-      if (mirrorId != null) {
-        _flutterMirrorPlugin?.enableAudio(mirrorId, _audioEnabled);
       }
 
       // _aspectRatio = _mirrorRequestList[index].aspectRatio;
@@ -198,13 +177,11 @@ class MirrorStateProvider extends ChangeNotifier
     notifyListeners();
   }
 
-  updateAudioEnable(bool enable) {
-    var mirrorMap = HybridConnectionList().getMirrorMap();
-    for (MirrorRequest request in mirrorMap.values) {
-      if (request.mirrorId != null) {
-        _flutterMirrorPlugin?.enableAudio(
-            request.mirrorId!, enable & _audioEnabled);
-      }
+  updateAllAudioEnableState(bool enable) {
+    for (MirrorRequest request
+        in HybridConnectionList().getMirrorMap().values) {
+      request.controlAudio(request.isAudioEnabled & enable,
+          setIsAudioEnabled: false);
     }
   }
 
@@ -244,8 +221,7 @@ class MirrorStateProvider extends ChangeNotifier
   Future<void> stopAirPlay() async {
     printInDebug('stopAirPlay', type: runtimeType);
     for (MirrorRequest request in HybridConnectionList().getMirrorMap().values) {
-      if (request.mirrorId != null &&
-          request.mirrorType == MirrorType.airplay) {
+      if (request.mirrorType == MirrorType.airplay) {
         stopAcceptedMirror(request.mirrorId);
       }
     }
@@ -265,8 +241,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   Future<void> stopGoogleCast() async {
     for (MirrorRequest request in HybridConnectionList().getMirrorMap().values) {
-      if (request.mirrorId != null &&
-          request.mirrorType == MirrorType.googlecast) {
+      if (request.mirrorType == MirrorType.googlecast) {
         stopAcceptedMirror(request.mirrorId);
       }
     }
@@ -283,8 +258,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   Future<void> stopMiracast() async {
     for (MirrorRequest request in HybridConnectionList().getMirrorMap().values) {
-      if (request.mirrorId != null &&
-          request.mirrorType == MirrorType.miracast) {
+      if (request.mirrorType == MirrorType.miracast) {
         stopAcceptedMirror(request.mirrorId);
       }
     }

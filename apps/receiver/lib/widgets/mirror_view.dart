@@ -1,4 +1,5 @@
 import 'package:display_flutter/model/hybrid_connection_list.dart';
+import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

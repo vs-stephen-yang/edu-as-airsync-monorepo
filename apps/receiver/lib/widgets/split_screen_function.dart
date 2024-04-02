@@ -79,25 +79,20 @@ class _SplitScreenFunctionState extends State<SplitScreenFunction> {
                     hasFocusSize: AppUIConstant.iconHasFocusSize,
                     notFocusSize: AppUIConstant.iconNotFocusSize,
                     onClick: () {
-                      MirrorStateProvider mirrorStateProvider =
-                          Provider.of<MirrorStateProvider>(context,
-                              listen: false);
                       AppAnalytics().trackEventSplitScreenDisconnectClick();
                       SplitScreenFunction.isMenuOnList.value.fillRange(0,
                           SplitScreenFunction.isMenuOnList.value.length, false);
-                      HybridConnectionList().removePresenterBy(widget.index,
-                          mirrorStateProvider.flutterMirrorPlugin);
+                      HybridConnectionList().removePresenterBy(widget.index);
                     },
                   ),
                 if (Home.enlargedScreenPositionIndex.value != widget.index &&
                     value[widget.index])
                   Consumer<MirrorStateProvider>(
                     builder: (_, mirrorStateProvider, __) {
+                      var isMute = HybridConnectionList()
+                          .getAudioDisableStateByIndex(widget.index);
                       return FocusIconButton(
-                        icons: HybridConnectionList()
-                                .getAudioDisableStateByIndex(widget.index,
-                                    mirrorAudioEnabled:
-                                        mirrorStateProvider.audioEnable)
+                        icons: isMute
                             ? Icons.volume_up_outlined
                             : Icons.volume_off_outlined,
                         iconForegroundColor: Colors.white,
@@ -108,16 +103,9 @@ class _SplitScreenFunctionState extends State<SplitScreenFunction> {
                         notFocusSize: AppUIConstant.iconNotFocusSize,
                         onClick: () {
                           setState(() {
-                            var isMute = HybridConnectionList()
-                                .getAudioDisableStateByIndex(widget.index,
-                                    mirrorAudioEnabled:
-                                        mirrorStateProvider.audioEnable);
                             HybridConnectionList()
                                 .updateAudioEnableStateByIndex(
-                                    widget.index, isMute, true,
-                                    mirrorPlugin: mirrorStateProvider
-                                        .flutterMirrorPlugin);
-                            mirrorStateProvider.setAudioEnable();
+                                    widget.index, isMute, true);
                           });
                         },
                       );
