@@ -7,15 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PresentPresentStart extends StatelessWidget {
-  PresentPresentStart({super.key, this.countStartTime = 0});
+  PresentPresentStart({super.key});
 
-  final ValueNotifier<bool> _presentingState = ValueNotifier(true);
   final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
-  final int countStartTime;
 
   @override
   Widget build(BuildContext context) {
-    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    ChannelProvider channelProvider =
+        Provider.of<ChannelProvider>(context, listen: false);
     var textStyle30 = const TextStyle(color: Colors.white, fontSize: 28);
     return Column(
       children: [
@@ -27,10 +26,7 @@ class PresentPresentStart extends StatelessWidget {
             style: textStyle30,
           ),
         ),
-        PresentTimer(
-          presentingState: _presentingState,
-          countStartTime: countStartTime,
-        ),
+        const PresentTimer(),
         Expanded(
           flex: 3,
           child: Column(
@@ -41,12 +37,12 @@ class PresentPresentStart extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 38.0),
                   child: ValueListenableBuilder(
-                    valueListenable: _presentingState,
+                    valueListenable: presentingState,
                     builder: (BuildContext context, value, Widget? child) {
                       return InkWell(
                         onTap: () {
-                          _presentingState.value = !_presentingState.value;
-                          if (_presentingState.value) {
+                          presentingState.value = !presentingState.value;
+                          if (presentingState.value) {
                             AppAnalytics.instance.trackEvent('resume_clicked');
                             channelProvider.presentResume();
                           } else {

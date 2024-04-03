@@ -54,6 +54,11 @@ ChannelConnectError mapChannelConnectError(ChannelConnectorError error) {
   }
 }
 
+final ValueNotifier<int> countSecondsValue = ValueNotifier(0);
+final ValueNotifier<int> countMinutesValue = ValueNotifier(0);
+final ValueNotifier<int> countHoursValue = ValueNotifier(0);
+final ValueNotifier<bool> presentingState = ValueNotifier(true);
+
 class ChannelProvider extends ChangeNotifier {
   ChannelProvider(BuildContext context) {
     _apiGateway = AppConfig.of(context)!.settings.urlGateway;
@@ -83,6 +88,7 @@ class ChannelProvider extends ChangeNotifier {
   JoinIntentType currentRole = JoinIntentType.present;
 
   ChannelConnectError? _channelConnectError;
+
   ChannelConnectError? get channelConnectError => _channelConnectError;
 
   void setChannelConnectError(ChannelConnectError error) {
@@ -110,9 +116,39 @@ class ChannelProvider extends ChangeNotifier {
   //region setView
   _setViewState(ViewState newViewState) {
     _currentState = newViewState;
-    if (_presentTimer != null) {
-      _presentTimer!.cancel();
-      _presentTimer = null;
+    switch (newViewState) {
+      case ViewState.idle:
+      case ViewState.moderatorWait:
+        if (_presentTimer != null) {
+          _presentTimer!.cancel();
+          _presentTimer = null;
+        }
+        break;
+      case ViewState.presentStart:
+      case ViewState.moderatorStart:
+        if (_presentTimer != null) {
+          _presentTimer!.cancel();
+          _presentTimer = null;
+        }
+        countSecondsValue.value = 0;
+        countMinutesValue.value = 0;
+        countHoursValue.value = 0;
+        _presentTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+          if (presentingState.value) {
+            countSecondsValue.value++;
+          }
+          if (countSecondsValue.value == 60) {
+            countSecondsValue.value = 0;
+            countMinutesValue.value++;
+          }
+          if (countMinutesValue.value == 60) {
+            countMinutesValue.value = 0;
+            countHoursValue.value++;
+          }
+        });
+        break;
+      default:
+        break;
     }
     notifyListeners();
   }
@@ -208,7 +244,8 @@ class ChannelProvider extends ChangeNotifier {
           maxRetryAttempts: 3,
           logger: (url, message) => print('tunnel connection: $url $message}')),
       createConnectionDirect: (url) => WebSocketClientConnection(url,
-          allowSelfSignedCertificates: true, // allow self-signed certificate
+          allowSelfSignedCertificates: true,
+          // allow self-signed certificate
           maxRetryDelay: const Duration(seconds: 3),
           maxRetryAttempts: 3,
           logger: (url, message) => print('direct connection: $url $message}')),
@@ -305,10 +342,10 @@ class ChannelProvider extends ChangeNotifier {
           await _remoteScreenClient?.handleRemoteScreenInfo(
               infoMessage.ionSfuRoom!.url!, infoMessage.ionSfuRoom!.roomId!,
               () {
-                if(!kIsWeb && Platform.isIOS) {
-                  UndoManager.setUndoState(canUndo: false, canRedo: false);
-                }
-                presentRemoteScreenPage();
+            if (!kIsWeb && Platform.isIOS) {
+              UndoManager.setUndoState(canUndo: false, canRedo: false);
+            }
+            presentRemoteScreenPage();
           },
               // onClose callback
               (int code, String reason) {

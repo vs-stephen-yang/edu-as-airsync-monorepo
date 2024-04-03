@@ -1,4 +1,5 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/widgets/present_timer.dart';
@@ -7,11 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PresentPresentStartDemo extends StatelessWidget {
-  PresentPresentStartDemo({super.key, this.countStartTime = 0});
+  PresentPresentStartDemo({super.key});
 
-  final ValueNotifier<bool> _presentingState = ValueNotifier(true);
   final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
-  final int countStartTime;
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +26,7 @@ class PresentPresentStartDemo extends StatelessWidget {
             style: textStyle30,
           ),
         ),
-        PresentTimer(
-          presentingState: _presentingState,
-          countStartTime: countStartTime,
-        ),
+        const PresentTimer(),
         Expanded(
           flex: 3,
           child: Column(
@@ -41,12 +37,12 @@ class PresentPresentStartDemo extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 38.0),
                   child: ValueListenableBuilder(
-                    valueListenable: _presentingState,
+                    valueListenable: presentingState,
                     builder: (BuildContext context, value, Widget? child) {
                       return InkWell(
                         onTap: () {
-                          _presentingState.value = !_presentingState.value;
-                          if (_presentingState.value) {
+                          presentingState.value = !presentingState.value;
+                          if (presentingState.value) {
                             AppAnalytics.instance
                                 .trackEvent('resume_clicked_demo');
                           } else {
