@@ -73,7 +73,7 @@ class _RemoteScreenToolStates extends State<RemoteScreenToolDemo> {
               rotateY: math.pi,
               onClick: () {
                 demoProvider.isDemoMode = false;
-                demoProvider.setViewState(DemoViewState.off);
+                demoProvider.presentDemoOff();
               },
             ),
           ],

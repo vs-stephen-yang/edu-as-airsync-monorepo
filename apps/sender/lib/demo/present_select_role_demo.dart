@@ -46,7 +46,7 @@ class PresentSelectRoleDemo extends StatelessWidget {
                       AppAnalytics.instance
                           .trackEvent('remote_screen_selected_demo');
 
-                      demoProvider.setViewState(DemoViewState.remoteScreen);
+                      demoProvider.presentRemoteScreenDemoPage();
                     },
                   ),
                 const Padding(padding: EdgeInsets.all(10)),
@@ -78,7 +78,7 @@ class PresentSelectRoleDemo extends StatelessWidget {
                   onTap: () async {
                     AppAnalytics.instance.trackEvent('present_selected_demo');
 
-                    demoProvider.setViewState(DemoViewState.presentStart);
+                    demoProvider.presentBasicStartDemoPage();
                   },
                 ),
               ],

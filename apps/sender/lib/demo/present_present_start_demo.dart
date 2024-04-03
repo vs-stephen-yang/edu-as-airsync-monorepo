@@ -89,7 +89,7 @@ class PresentPresentStartDemo extends StatelessWidget {
                       AppAnalytics.instance
                           .trackEvent('stop_present_clicked_demo');
                       demoProvider.isDemoMode = false;
-                      demoProvider.setViewState(DemoViewState.off);
+                      demoProvider.presentDemoOff();
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

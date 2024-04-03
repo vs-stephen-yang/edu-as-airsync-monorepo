@@ -2,7 +2,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
-import 'package:display_cast_flutter/widgets/present_idle_textfield.dart';
+import 'package:display_cast_flutter/widgets/present_idle_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
@@ -46,7 +46,7 @@ class PresentIdle extends StatelessWidget {
             await channelProvider.presentEnd(goIdleState: false);
             if (displayCode == "000-000-000-00" && password == "0000") {
               demoProvider.isDemoMode = true;
-              demoProvider.setViewState(DemoViewState.selectRole);
+              demoProvider.presentSelectRoleDemoPage();
             } else {
               channelProvider.startConnect(
                 formattedDisplayCode: displayCode,

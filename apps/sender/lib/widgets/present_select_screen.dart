@@ -2,14 +2,13 @@ import 'dart:async';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
-import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
-import 'package:display_cast_flutter/utilities/app_constants.dart';
 
 class PresentSelectScreen extends StatelessWidget {
   const PresentSelectScreen({super.key});
@@ -49,7 +48,7 @@ class PresentSelectScreen extends StatelessWidget {
             // moderator mode
             if (provider.moderatorStatus) {
               provider.presentStop();
-              provider.setViewState(ViewState.moderatorWait);
+              provider.presentModeratorWaitPage();
             } else {
               provider.presentStop();
               provider.presentEnd();
