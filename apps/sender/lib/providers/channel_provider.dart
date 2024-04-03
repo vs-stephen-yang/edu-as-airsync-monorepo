@@ -27,7 +27,7 @@ enum ChannelConnectError {
   networkError,
   invalidDisplayCode,
   invalidOtp,
-  connectionModeUnspported,
+  connectionModeUnsupported,
   unknownError,
 }
 
@@ -80,13 +80,7 @@ class ChannelProvider extends ChangeNotifier {
     _currentState = value;
   }
 
-  JoinIntentType _currentRole = JoinIntentType.present;
-
-  JoinIntentType get currentRole => _currentRole;
-
-  set currentRole(JoinIntentType value) {
-    _currentRole = value;
-  }
+  JoinIntentType currentRole = JoinIntentType.present;
 
   ChannelConnectError? _channelConnectError;
   ChannelConnectError? get channelConnectError => _channelConnectError;
@@ -114,7 +108,7 @@ class ChannelProvider extends ChangeNotifier {
   RemoteScreenClient? get remoteScreenClient => _remoteScreenClient;
 
   //region setView
-  setViewState(ViewState newViewState) {
+  _setViewState(ViewState newViewState) {
     _currentState = newViewState;
     if (_presentTimer != null) {
       _presentTimer!.cancel();
@@ -137,43 +131,43 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future<void> presentMainPage() async {
-    setViewState(ViewState.idle);
+    _setViewState(ViewState.idle);
   }
 
   Future<void> presentSelectRolePage() async {
-    setViewState(ViewState.selectRole);
+    _setViewState(ViewState.selectRole);
   }
 
   Future<void> presentSelectScreenPage() async {
-    setViewState(ViewState.selectScreen);
+    _setViewState(ViewState.selectScreen);
   }
 
   Future<void> presentBasicStartPage() async {
-    setViewState(ViewState.presentStart);
+    _setViewState(ViewState.presentStart);
   }
 
   Future<void> presentRemoteScreenPage() async {
-    setViewState(ViewState.remoteScreen);
+    _setViewState(ViewState.remoteScreen);
   }
 
   Future<void> presentModeratorNamePage() async {
-    setViewState(ViewState.moderatorName);
+    _setViewState(ViewState.moderatorName);
   }
 
   Future<void> presentModeratorWaitPage() async {
-    setViewState(ViewState.moderatorWait);
+    _setViewState(ViewState.moderatorWait);
   }
 
   Future<void> presentModeratorStartPage() async {
-    setViewState(ViewState.moderatorStart);
+    _setViewState(ViewState.moderatorStart);
   }
 
   Future<void> presentSettingPage() async {
-    setViewState(ViewState.settings);
+    _setViewState(ViewState.settings);
   }
 
   Future<void> presentLanguagePage() async {
-    setViewState(ViewState.language);
+    _setViewState(ViewState.language);
   }
 
   //endregion
@@ -200,7 +194,7 @@ class ChannelProvider extends ChangeNotifier {
     this.otp = otp;
 
     if (!_isConnectionModeSupported(displayCode!)) {
-      setChannelConnectError(ChannelConnectError.connectionModeUnspported);
+      setChannelConnectError(ChannelConnectError.connectionModeUnsupported);
       return;
     }
 
@@ -415,7 +409,7 @@ class ChannelProvider extends ChangeNotifier {
 
   void setSenderName(String name) {
     _joinDisplay(name: name);
-    if (_currentRole == JoinIntentType.present) {
+    if (currentRole == JoinIntentType.present) {
       presentModeratorWaitPage();
     } else {
       _requestRemoteScreen();
@@ -481,7 +475,7 @@ class ChannelProvider extends ChangeNotifier {
   //region sendMessage
   void _joinDisplay({String? name}) {
     JoinDisplayMessage msg = JoinDisplayMessage(_clientId);
-    msg.intent = _currentRole;
+    msg.intent = currentRole;
     if (name != null) {
       msg.name = name;
     }

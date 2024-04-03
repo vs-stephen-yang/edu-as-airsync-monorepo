@@ -175,7 +175,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         );
         break;
 
-      case ChannelConnectError.connectionModeUnspported:
+      case ChannelConnectError.connectionModeUnsupported:
         _setTextFormFieldErrorMsg(
           codeKey,
           S.of(context).main_connection_mode_unsupported,

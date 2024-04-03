@@ -11,37 +11,30 @@ enum DemoViewState {
 class DemoProvider extends ChangeNotifier {
   DemoProvider();
 
-  bool _isDemoMode = false;
-  bool get isDemoMode => _isDemoMode;
-  set isDemoMode(bool value) {
-    _isDemoMode = value;
-  }
+  bool isDemoMode = false;
 
   //region setView
   DemoViewState _currentState = DemoViewState.off;
   DemoViewState get state => _currentState;
-  setViewState(DemoViewState newViewState) {
+  _setViewState(DemoViewState newViewState) {
     _currentState = newViewState;
     notifyListeners();
   }
 
-  // Future<void> presentMainPage() async {
-  //   setViewState(DemoViewState.idle);
-  // }
-
-  Future<void> presentSelectRolePage() async {
-    setViewState(DemoViewState.selectRole);
+  Future<void> presentDemoOff() async {
+    _setViewState(DemoViewState.off);
   }
 
-  Future<void> presentBasicStartPage() async {
-    setViewState(DemoViewState.presentStart);
+  Future<void> presentSelectRoleDemoPage() async {
+    _setViewState(DemoViewState.selectRole);
   }
 
-  Future<void> presentRemoteScreenPage() async {
-    setViewState(DemoViewState.remoteScreen);
+  Future<void> presentBasicStartDemoPage() async {
+    _setViewState(DemoViewState.presentStart);
   }
-  //endregion
 
-
-
+  Future<void> presentRemoteScreenDemoPage() async {
+    _setViewState(DemoViewState.remoteScreen);
+  }
+//endregion
 }
