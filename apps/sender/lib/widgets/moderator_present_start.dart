@@ -27,10 +27,7 @@ class ModeratorPresentStart extends StatelessWidget {
             style: textStyle30,
           ),
         ),
-        PresentTimer(
-          presentingState: _presentingState,
-          countStartTime: countStartTime,
-        ),
+        const PresentTimer(),
         Expanded(
           flex: 3,
           child: Column(

@@ -27,8 +27,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/web_hidden_helper.dart';
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -104,13 +102,9 @@ class _HomeState extends State<Home> {
                         case ViewState.selectScreen:
                           return const PresentSelectScreen();
                         case ViewState.presentStart:
-                          final widget = PresentPresentStart(countStartTime: WebOnHiddenHelper.getInstance().getOnHiddenTimestamp());
-                          WebOnHiddenHelper.getInstance().resetHiddenTime();
-                          return widget;
+                          return PresentPresentStart();
                         case ViewState.moderatorStart:
-                          final widget = ModeratorPresentStart(countStartTime: WebOnHiddenHelper.getInstance().getOnHiddenTimestamp());
-                          WebOnHiddenHelper.getInstance().resetHiddenTime();
-                          return widget;
+                          return ModeratorPresentStart();
                         case ViewState.remoteScreen:
                           return const RemoteScreenWidget();
                         case ViewState.settings:
