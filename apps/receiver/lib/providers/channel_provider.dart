@@ -6,7 +6,6 @@ import 'dart:math';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_instance_create.dart';
-import 'package:display_flutter/main_common.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
@@ -495,7 +494,6 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future<String?> _checkNetWorkInfo() async {
-    bool _lanNetWork = false;
     List<NetworkInterface> interfaces = await NetworkInterface.list();
     for (NetworkInterface interface in interfaces) {
       if (interface.name.toLowerCase().contains("eth")) {
@@ -504,9 +502,7 @@ class ChannelProvider extends ChangeNotifier {
             ? interface.addresses[0].address
             : null;
         if (ethernetIp != null) {
-          _lanNetWork = isPrivateIp(ethernetIp);
-          host = ethernetIp;
-          return host;
+          return ethernetIp;
         }
         break;
       } else if (interface.name.toLowerCase().contains("wi") ||
@@ -516,9 +512,7 @@ class ChannelProvider extends ChangeNotifier {
             ? interface.addresses[0].address
             : null;
         if (wifiIp != null) {
-          _lanNetWork = isPrivateIp(wifiIp);
-          host = wifiIp;
-          return host;
+          return wifiIp;
         }
         break;
       } else if (interface.name.toLowerCase().contains("rmnet") ||
@@ -527,28 +521,26 @@ class ChannelProvider extends ChangeNotifier {
             ? interface.addresses[0].address
             : null;
         if (mobileIp != null) {
-          _lanNetWork = isPrivateIp(mobileIp);
-          host = mobileIp;
-          return host;
+          return mobileIp;
         }
         break;
       }
     }
-    return host = null;
+    return null;
   }
 
-  bool isPrivateIp(String ip) {
-    if (ip.startsWith('192.168.')) return true;
-    if (ip.startsWith('10.')) return true;
-    if (ip.startsWith('172.')) {
-      var parts = ip.split('.');
-      var secondPart = int.tryParse(parts[1]);
-      if (secondPart != null && secondPart >= 16 && secondPart <= 31) {
-        return true;
-      }
-    }
-    return false;
-  }
+  // bool _isPrivateIp(String ip) {
+  //   if (ip.startsWith('192.168.')) return true;
+  //   if (ip.startsWith('10.')) return true;
+  //   if (ip.startsWith('172.')) {
+  //     var parts = ip.split('.');
+  //     var secondPart = int.tryParse(parts[1]);
+  //     if (secondPart != null && secondPart >= 16 && secondPart <= 31) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
 
   String _getPlatform() {
     String platform;
