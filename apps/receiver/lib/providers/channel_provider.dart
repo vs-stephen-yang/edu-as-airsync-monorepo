@@ -231,14 +231,6 @@ class ChannelProvider extends ChangeNotifier {
     channel.onChannelMessage = (ChannelMessage message) async {
       _log.info('Received channel message ${message.messageType}');
 
-      // if (blockRtcConnection) {
-      //   var message = PresentRejectedMessage();
-      //   message.reason = Reason(403, text: 'block');
-      //   channel.send(message);
-      //   rtcConnector.onPresentRejected(message);
-      //   return;
-      // }
-
       switch (message.messageType) {
         /// basic
         case ChannelMessageType.joinDisplay:
@@ -457,17 +449,6 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
-  // Future<void> basicStreamOff() async {
-  //   ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-  //   ConnectionTimer.getInstance().stopRemainingTimeTimer();
-  //   await RtcConnectorList().removeAllPresenters();
-  // }
-  //
-  // Future<void> splitScreenOff() async {
-  //   ConnectionTimer.getInstance().stopRemainingTimeTimer();
-  //   await RtcConnectorList().removeAllPresenters();
-  // }
-
   updateAllQuality(int selection, bool hasSelected) {
     var rtcConnectorMap = HybridConnectionList().getRtcConnectorMap();
     if (selection == -1) {
@@ -511,14 +492,6 @@ class ChannelProvider extends ChangeNotifier {
       ConnectionTimer.getInstance().stopShareSenderTimer();
     }
     notifyListeners();
-  }
-
-  Future<bool> _checkConnectivity() async {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult == ConnectivityResult.none) {
-      return false;
-    }
-    return true;
   }
 
   Future<String?> _checkNetWorkInfo() async {
