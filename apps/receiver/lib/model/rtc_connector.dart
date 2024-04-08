@@ -115,7 +115,6 @@ class RTCConnector {
           _iceServers = parseIceServersFromApi(value);
 
           _configuration.putIfAbsent('iceServers', () => value);
-          print('zz then:$_configuration');
         }
       } else {
         _configuration.putIfAbsent(
@@ -305,7 +304,11 @@ class RTCConnector {
       if (_remoteRenderer?.textureId != null && _remoteRenderer!.renderVideo) {
         _remoteRenderer?.srcObject = null;
       }
-      await _remoteRenderer?.dispose();
+      try {
+        await _remoteRenderer?.dispose();
+      } catch (e) {
+        _log.warning('[$clientId] Error on dispose remoteRenderer: $e');
+      }
       _remoteRenderer = RTCVideoRenderer();
     }
     _log.info('[$clientId] Close PeerConnection');
