@@ -113,7 +113,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _setConnectivityListener() {
-    Connectivity().onConnectivityChanged
+    Connectivity()
+        .onConnectivityChanged
         .listen((ConnectivityResult result) async {
       _log.info('Network connectivity has changed to $result');
 
@@ -127,7 +128,8 @@ class ChannelProvider extends ChangeNotifier {
         // MUST add async/await, to compare connectivity result with last one.
         await _checkNetWorkInfo().then((value) {
           host = value;
-          if (_lastConnectivityResult != result) { //displayCode.isEmpty || _tunnelApiUrl.isEmpty
+          if (_lastConnectivityResult != result) {
+            //displayCode.isEmpty || _tunnelApiUrl.isEmpty
             getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
               if (value.isNotEmpty) {
                 displayCode =
@@ -149,14 +151,14 @@ class ChannelProvider extends ChangeNotifier {
   void _setTunnelServer() {
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
-          (String url) => WebSocketClientConnection(
+      (String url) => WebSocketClientConnection(
         url,
         logger: (url, message) {
           _log.finest('Tunnel $message');
         },
       ),
-          (Channel channel) => _onNewChannel(channel, ChannelMode.tunnel),
-          (ConnectionRequest connectionRequest) =>
+      (Channel channel) => _onNewChannel(channel, ChannelMode.tunnel),
+      (ConnectionRequest connectionRequest) =>
           _verifyConnectRequest(connectionRequest),
     );
 
@@ -213,7 +215,6 @@ class ChannelProvider extends ChangeNotifier {
           securityContext: securityContext,
         );
       }
-
     } on PathNotFoundException catch (e) {
       _log.severe(
           'Failed to load certificate or private key for secure direct connections. $e');
