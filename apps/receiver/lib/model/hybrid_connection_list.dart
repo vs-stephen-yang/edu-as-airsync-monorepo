@@ -111,7 +111,7 @@ class HybridConnectionList {
 
   int getPresentingCount() {
     int count = 0;
-    for (dynamic connection in _hybridConnectionList.nonNulls) {
+    for (var connection in _hybridConnectionList.nonNulls) {
       if (connection is RTCConnector &&
               (connection.presentationState == PresentationState.streaming ||
                   connection.presentationState ==
@@ -141,14 +141,14 @@ class HybridConnectionList {
   //RTCConnector function region
   void handleQualityUpdate({RTCConnector? controller}) {
     if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
-      for (var connection in _hybridConnectionList) {
+      for (var connection in _hybridConnectionList.nonNulls) {
         if (connection is RTCConnector &&
             connection.presentationState == PresentationState.streaming) {
           connection.sendChangeQuality(true, true);
         }
       }
     } else {
-      for (var connection in _hybridConnectionList) {
+      for (var connection in _hybridConnectionList.nonNulls) {
         if (connection is RTCConnector && connection.clientId != null) {
           connection.sendChangeQuality(false, true);
         }
@@ -169,30 +169,11 @@ class HybridConnectionList {
     return false;
   }
 
-  bool hasPresenterOccupied({index}) {
-    bool presenting = false;
-    if (index != null) {
-      if (_hybridConnectionList[index] is RTCConnector &&
-          _hybridConnectionList[index]?.presentationState !=
-              PresentationState.stopStreaming) {
-        presenting = true;
-      }
-    } else {
-      for (RTCConnector? rtcConnector in _hybridConnectionList) {
-        if (rtcConnector != null &&
-            rtcConnector.presentationState != PresentationState.stopStreaming) {
-          presenting = true;
-        }
-      }
-    }
-    return presenting;
-  }
-
   bool isPresenterWaitForStream(String clientId) {
-    for (RTCConnector? rtcConnector in _hybridConnectionList) {
-      if (rtcConnector != null &&
-          rtcConnector.clientId == clientId &&
-          rtcConnector.presentationState == PresentationState.waitForStream) {
+    for (var connection in _hybridConnectionList.nonNulls) {
+      if (connection is RTCConnector &&
+          connection.clientId == clientId &&
+          connection.presentationState == PresentationState.waitForStream) {
         return true;
       }
     }
@@ -200,10 +181,10 @@ class HybridConnectionList {
   }
 
   bool isPresenterStreaming(String clientId) {
-    for (RTCConnector? rtcConnector in _hybridConnectionList) {
-      if (rtcConnector != null &&
-          rtcConnector.clientId == clientId &&
-          (rtcConnector.presentationState.index) >=
+    for (var connection in _hybridConnectionList.nonNulls) {
+      if (connection is RTCConnector &&
+          connection.clientId == clientId &&
+          (connection.presentationState.index) >=
               PresentationState.streaming.index) {
         return true;
       }
@@ -212,10 +193,10 @@ class HybridConnectionList {
   }
 
   bool isPresenterNotStopStreaming(String clientId) {
-    for (RTCConnector? rtcConnector in _hybridConnectionList) {
-      if (rtcConnector != null &&
-          rtcConnector.clientId == clientId &&
-          (rtcConnector.presentationState.index) >=
+    for (var connection in _hybridConnectionList.nonNulls) {
+      if (connection is RTCConnector &&
+          connection.clientId == clientId &&
+          (connection.presentationState.index) >=
               PresentationState.waitForStream.index) {
         // waitForStream and streaming
         return true;
@@ -247,8 +228,9 @@ class HybridConnectionList {
     int index = _hybridConnectionList.indexOf(selectedRtcConnector);
     if (index != -1) {
       for (int i = 0; i < _hybridConnectionList.length; i++) {
-        RTCConnector? rtcConnector = _hybridConnectionList[i];
-        if (rtcConnector != null) {
+        if (_hybridConnectionList[i] != null &&
+            _hybridConnectionList[i] is RTCConnector) {
+          RTCConnector rtcConnector = _hybridConnectionList[i];
           //Place presenting presenter to the front position, order by if presenting
           if ((i < index &&
                   rtcConnector.presentationState !=
@@ -267,8 +249,8 @@ class HybridConnectionList {
 
   _remainingTimeOnOff() {
     int connecting = 0;
-    for (var connection in _hybridConnectionList) {
-      if (connection != null && connection is RTCConnector) {
+    for (var connection in _hybridConnectionList.nonNulls) {
+      if (connection is RTCConnector) {
         connecting += 1;
       }
     }
