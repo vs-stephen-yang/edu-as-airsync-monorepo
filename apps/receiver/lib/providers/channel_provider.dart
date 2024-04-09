@@ -130,13 +130,14 @@ class ChannelProvider extends ChangeNotifier {
           host = value;
           if (_lastConnectivityResult != result) {
             //displayCode.isEmpty || _tunnelApiUrl.isEmpty
-            getDisplayCode(AppInstanceCreate().displayInstanceID).then((value) {
-              if (value.isNotEmpty) {
-                displayCode =
-                    encodeDisplayCode(DisplayCode(host!, int.parse(value)))!;
-              } else {
-                displayCode = encodeDisplayCode(DisplayCode(host!, 0))!;
-              }
+            registerInstanceIndexById(AppInstanceCreate().displayInstanceID)
+                .then((int? instanceIndex) {
+              displayCode = encodeDisplayCode(
+                DisplayCode(
+                  host!,
+                  instanceIndex ?? 0,
+                ),
+              )!;
               startServer(AppInstanceCreate().displayInstanceID);
             });
           }
@@ -419,14 +420,14 @@ class ChannelProvider extends ChangeNotifier {
     return rtcConnector;
   }
 
-  Future<String> getDisplayCode(String instanceID) async {
+  Future<int?> registerInstanceIndexById(String instanceId) async {
     try {
       _log.info('Registering the instance ${appConfig.settings.apiGateway}');
 
       http.Response response = await http.put(
         Uri.parse(appConfig.settings.apiGateway),
         body: json.encode({
-          'instanceId': instanceID,
+          'instanceId': instanceId,
           'version': appConfig.appVersion,
           'platform': "android",
         }),
@@ -438,14 +439,16 @@ class ChannelProvider extends ChangeNotifier {
         Map json = jsonDecode(response.body);
 
         _tunnelApiUrl = json['tunnelApiUrl'] ?? '';
-        return json['instanceIndex'];
+        final instanceIndex = json['instanceIndex'];
+
+        return int.parse(instanceIndex);
       } else {
-        return '';
+        return null;
       }
     } catch (e) {
       _log.warning('Instance Register API failed with $e');
       // http.get maybe no network connection.
-      return '';
+      return null;
     }
   }
 
