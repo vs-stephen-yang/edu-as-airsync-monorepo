@@ -141,15 +141,16 @@ class HybridConnectionList {
   //RTCConnector function region
   void handleQualityUpdate({RTCConnector? controller}) {
     if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
-      for (RTCConnector? connector in _hybridConnectionList) {
-        if (connector?.presentationState == PresentationState.streaming) {
-          connector?.sendChangeQuality(true, true);
+      for (var connection in _hybridConnectionList) {
+        if (connection is RTCConnector &&
+            connection.presentationState == PresentationState.streaming) {
+          connection.sendChangeQuality(true, true);
         }
       }
     } else {
-      for (RTCConnector? connector in _hybridConnectionList) {
-        if (connector?.clientId != null) {
-          connector?.sendChangeQuality(false, true);
+      for (var connection in _hybridConnectionList) {
+        if (connection is RTCConnector && connection.clientId != null) {
+          connection.sendChangeQuality(false, true);
         }
       }
     }
