@@ -15,6 +15,7 @@ import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/channel_util.dart';
+import 'package:display_flutter/utility/ip_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,6 +42,18 @@ enum PresentationState {
   streaming,
   pauseStreaming,
   resumeStreaming,
+}
+
+String _getPrivateIpWithDefault(String? ipAddress, String defaultIpAddress) {
+  if (ipAddress == null) {
+    return defaultIpAddress;
+  }
+
+  if (isPrivateIp(ipAddress)) {
+    return ipAddress;
+  }
+
+  return defaultIpAddress;
 }
 
 class ChannelProvider extends ChangeNotifier {
@@ -128,13 +141,14 @@ class ChannelProvider extends ChangeNotifier {
         // MUST add async/await, to compare connectivity result with last one.
         await _checkNetWorkInfo().then((value) {
           host = value;
+
           if (_lastConnectivityResult != result) {
             //displayCode.isEmpty || _tunnelApiUrl.isEmpty
             registerInstanceIndexById(AppInstanceCreate().displayInstanceID)
                 .then((int? instanceIndex) {
               displayCode = encodeDisplayCode(
                 DisplayCode(
-                  host!,
+                  _getPrivateIpWithDefault(host, '192.168.0.0'),
                   instanceIndex ?? 0,
                 ),
               )!;
@@ -532,19 +546,6 @@ class ChannelProvider extends ChangeNotifier {
     }
     return null;
   }
-
-  // bool _isPrivateIp(String ip) {
-  //   if (ip.startsWith('192.168.')) return true;
-  //   if (ip.startsWith('10.')) return true;
-  //   if (ip.startsWith('172.')) {
-  //     var parts = ip.split('.');
-  //     var secondPart = int.tryParse(parts[1]);
-  //     if (secondPart != null && secondPart >= 16 && secondPart <= 31) {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
 
   String _getPlatform() {
     String platform;
