@@ -137,7 +137,9 @@ public class EulaActivity extends FlutterActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.e(TAG, "AppAlarmOTA onReceive");
-            mAlarmOTA.invokeMethod("AppAlarmOTA", null);
+            if (mAlarmOTA != null) {
+                mAlarmOTA.invokeMethod("AppAlarmOTA", null);
+            }
         }
     }
     // endregion
