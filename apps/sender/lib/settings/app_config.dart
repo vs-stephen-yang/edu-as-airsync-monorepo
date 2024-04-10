@@ -34,5 +34,8 @@ abstract class ConfigSettings {
 
   late String urlGateway;
 
+  // App Insights
   late String appInsightsInstrumentationKey;
+
+  late String appInsightsIngestionEndpoint;
 }
