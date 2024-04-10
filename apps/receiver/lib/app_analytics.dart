@@ -6,7 +6,7 @@ import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 import 'package:azure_application_insights/azure_application_insights.dart';
-//import 'package:http/http.dart';
+import 'package:http/http.dart';
 
 class AppAnalytics {
   static final AppAnalytics _instance = AppAnalytics._internal();
@@ -43,50 +43,50 @@ class AppAnalytics {
       }
     }
 
-    // _initializeAppInsightsClient(
-    //   configSettings.instrumentationKey,
-    //   applicationVersion,
-    //   sessionId,
-    //   userId,
-    //   deviceInfo,
-    // );
+    _initializeAppInsightsClient(
+      configSettings.instrumentationKey,
+      applicationVersion,
+      sessionId,
+      userId,
+      deviceInfo,
+    );
   }
 
   // initialize client for Azure Application Insights
-  // _initializeAppInsightsClient(
-  //   String instrumentationKey,
-  //   String? applicationVersion,
-  //   String? sessionId,
-  //   String? userId,
-  //   ClientDeviceInfo? deviceInfo,
-  // ) {
-  //   final processor = BufferedProcessor(
-  //     next: TransmissionProcessor(
-  //       instrumentationKey: instrumentationKey,
-  //       httpClient: Client(),
-  //       timeout: const Duration(seconds: 10),
-  //     ),
-  //   );
+  _initializeAppInsightsClient(
+    String instrumentationKey,
+    String? applicationVersion,
+    String? sessionId,
+    String? userId,
+    ClientDeviceInfo? deviceInfo,
+  ) {
+    final processor = BufferedProcessor(
+      next: TransmissionProcessor(
+        instrumentationKey: instrumentationKey,
+        httpClient: Client(),
+        timeout: const Duration(seconds: 10),
+      ),
+    );
 
-  //   final context = TelemetryContext();
-  //   context
-  //     ..applicationVersion = applicationVersion
-  //     ..session.sessionId = sessionId
-  //     ..user.id = userId;
+    final context = TelemetryContext();
+    context
+      ..applicationVersion = applicationVersion
+      ..session.sessionId = sessionId
+      ..user.id = userId;
 
-  //   if (deviceInfo != null) {
-  //     context.device
-  //       ..locale = deviceInfo.locale
-  //       ..type = deviceInfo.clientType
-  //       ..osVersion = deviceInfo.clientOs
-  //       ..model = deviceInfo.clientModel;
-  //   }
+    if (deviceInfo != null) {
+      context.device
+        ..locale = deviceInfo.locale
+        ..type = deviceInfo.clientType
+        ..osVersion = deviceInfo.clientOs
+        ..model = deviceInfo.clientModel;
+    }
 
-  //   _client = TelemetryClient(
-  //     processor: processor,
-  //     context: context,
-  //   );
-  // }
+    _client = TelemetryClient(
+      processor: processor,
+      context: context,
+    );
+  }
 
   bool _isInitialized = false;
   final Map<String, String> _eventProperties = {};
