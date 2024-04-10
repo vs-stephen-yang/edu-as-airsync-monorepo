@@ -45,6 +45,7 @@ class AppAnalytics {
 
     _initializeAppInsightsClient(
       configSettings.instrumentationKey,
+      configSettings.ingestionEndpoint,
       applicationVersion,
       sessionId,
       userId,
@@ -55,6 +56,7 @@ class AppAnalytics {
   // initialize client for Azure Application Insights
   _initializeAppInsightsClient(
     String instrumentationKey,
+    String ingestionEndpoint,
     String? applicationVersion,
     String? sessionId,
     String? userId,
@@ -63,6 +65,7 @@ class AppAnalytics {
     final processor = BufferedProcessor(
       next: TransmissionProcessor(
         instrumentationKey: instrumentationKey,
+        ingestionEndpoint: ingestionEndpoint,
         httpClient: Client(),
         timeout: const Duration(seconds: 10),
       ),

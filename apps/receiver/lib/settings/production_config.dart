@@ -23,6 +23,10 @@ class ProductionConfig implements ConfigSettings {
   String instrumentationKey = 'e510b3fd-38d5-46e6-973e-53e416050c98';
 
   @override
+  String ingestionEndpoint =
+      'https://eastus-8.in.applicationinsights.azure.com/v2/track';
+
+  @override
   String icarHostName = 'api.myviewboard.com';
 
   @override

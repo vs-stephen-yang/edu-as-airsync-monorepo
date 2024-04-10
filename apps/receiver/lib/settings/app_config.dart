@@ -31,6 +31,7 @@ abstract class ConfigSettings {
 
   // Azure Application Insights
   late String instrumentationKey;
+  late String ingestionEndpoint;
 
   // Backdoor OTP. For development only.
   late String? defaultOtp;

@@ -23,6 +23,10 @@ class DevConfig implements ConfigSettings {
   String instrumentationKey = '28aec457-6961-41d2-9d92-0a89bc2c1cab';
 
   @override
+  String ingestionEndpoint =
+      'https://eastus-8.in.applicationinsights.azure.com/v2/track';
+
+  @override
   String icarHostName = 'devapi.myviewboard.com';
 
   @override

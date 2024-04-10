@@ -23,6 +23,10 @@ class StageConfig implements ConfigSettings {
   String instrumentationKey = '3633800d-9edd-4c63-9b6f-b0ab2ada5448';
 
   @override
+  String ingestionEndpoint =
+      'https://eastus-8.in.applicationinsights.azure.com/v2/track';
+
+  @override
   String icarHostName = 'stageapi.myviewboard.com';
 
   @override
