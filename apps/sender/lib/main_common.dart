@@ -28,6 +28,7 @@ void commonEntry(ConfigSettings settings) async {
 
   AppAnalytics.initializeApp(
     instrumentationKey: settings.appInsightsInstrumentationKey,
+    ingestionEndpoint: settings.appInsightsIngestionEndpoint,
     applicationVersion: packageInfo.version,
     userId: AppInstanceCreate().instanceId,
     sessionId: const Uuid().v4(),

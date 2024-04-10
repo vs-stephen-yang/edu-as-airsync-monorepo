@@ -12,4 +12,8 @@ class StageConfig implements ConfigSettings {
 
   @override
   String appInsightsInstrumentationKey = '6e176c9a-ecc8-443c-a1ad-7cc3954efe80';
+
+  @override
+  String appInsightsIngestionEndpoint =
+      'https://eastus-8.in.applicationinsights.azure.com/v2/track';
 }

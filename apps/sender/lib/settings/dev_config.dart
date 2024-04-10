@@ -12,4 +12,8 @@ class DevConfig implements ConfigSettings {
 
   @override
   String appInsightsInstrumentationKey = '30d6e31f-3fee-4258-af83-5474452eb932';
+
+  @override
+  String appInsightsIngestionEndpoint =
+      'https://eastus-8.in.applicationinsights.azure.com/v2/track';
 }
