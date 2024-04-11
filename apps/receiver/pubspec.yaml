@@ -42,12 +42,12 @@ dependencies:
   package_info_plus: ^4.2.0
   device_info_plus: ^9.1.2
   encrypt: ^5.0.3
-  uuid: ^4.3.3
+  uuid: ^4.4.0
   http: ^1.2.1
   path_provider: ^2.1.2
   http_parser: ^4.0.2
   intl: ^0.18.1
-  flutter_bloc: ^8.1.4
+  flutter_bloc: ^8.1.5
   socket_io_client: ^1.0.2
   qr_flutter: ^4.1.0
   flutter_svg_provider: ^1.0.7
@@ -120,7 +120,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.1
+  flutter_lints: ^3.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
