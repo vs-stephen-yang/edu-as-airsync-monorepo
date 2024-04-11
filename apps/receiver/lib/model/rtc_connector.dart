@@ -154,13 +154,16 @@ class RTCConnector {
     }
   }
 
-  Future<void> onStartPresent(StartPresentMessage msg) async {
-    // Timer
-    ConnectionTimer.getInstance().startConnectionTimer(() async {
-      sendRejectPresent(400, 'timeout');
-      await disconnectPeerConnection(sendAnalytics: true);
-      await disconnectChannel();
-    });
+  Future<void> onStartPresent(
+      StartPresentMessage msg, bool isModeratorMode) async {
+    if (!isModeratorMode) {
+      // Timer
+      ConnectionTimer.getInstance().startConnectionTimer(() async {
+        sendRejectPresent(400, 'timeout');
+        await disconnectPeerConnection(sendAnalytics: true);
+        await disconnectChannel();
+      });
+    }
 
     await _remoteRenderer?.initialize();
     await _peerConnectionConnect();
