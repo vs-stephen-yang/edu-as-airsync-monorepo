@@ -299,7 +299,8 @@ class ChannelProvider extends ChangeNotifier {
           notifyListeners();
           break;
         case ChannelMessageType.startPresent:
-          rtcConnector.onStartPresent(message as StartPresentMessage);
+          rtcConnector.onStartPresent(
+              message as StartPresentMessage, _isModeratorMode);
           break;
         case ChannelMessageType.presentAccepted:
           rtcConnector.onPresentAccepted();
