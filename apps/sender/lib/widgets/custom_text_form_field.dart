@@ -78,6 +78,13 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
     );
   }
 
+  void setDescriptionMsg(String text) {
+    setState(() {
+      _errorText = text;
+      errorTextStyle = const TextStyle(color: Color.fromRGBO(153, 153, 153, 1));
+    });
+  }
+
   void setErrorMsg(String text) {
     setState(() {
       _errorText = text;

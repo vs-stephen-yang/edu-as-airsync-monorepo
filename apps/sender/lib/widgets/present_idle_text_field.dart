@@ -4,6 +4,7 @@ import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
 import 'custom_text_form_field.dart';
@@ -31,7 +32,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
   final FocusNode _otpFocusNode = FocusNode();
   final GlobalKey<CustomTextFormFieldState> codeKey = GlobalKey();
   final GlobalKey<CustomTextFormFieldState> otpKey = GlobalKey();
-  late OverlayEntry _overlayEntry;
+  OverlayEntry? _overlayEntry;
   final LayerLink _layerLink = LayerLink();
   bool _isOverlayVisible = false;
 
@@ -53,7 +54,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         // remove display code overlay
         if (_isOverlayVisible) {
           _isOverlayVisible = false;
-          _overlayEntry.remove();
+          _overlayEntry?.remove();
         }
       }
     });
@@ -79,7 +80,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
           GestureDetector(
             onTap: () {
               _isOverlayVisible = false;
-              _overlayEntry.remove();
+              _overlayEntry?.remove();
             },
             child: Container(
               color: Colors.transparent, // 設置為透明色
@@ -107,7 +108,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                                 .remove(displayList[index]);
                             displayList.removeAt(index);
                             _isOverlayVisible = false;
-                            _overlayEntry.remove();
+                            _overlayEntry?.remove();
                           });
                         },
                         child: ListTile(
@@ -115,7 +116,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                           onTap: () {
                             _codeController.text = displayList[index];
                             _isOverlayVisible = false;
-                            _overlayEntry.remove();
+                            _overlayEntry?.remove();
                           },
                         ),
                       );
@@ -128,7 +129,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         ],
       );
     });
-    Overlay.of(context).insert(_overlayEntry);
+    Overlay.of(context).insert(_overlayEntry!);
   }
 
   _setTextFormFieldErrorMsg(
@@ -215,12 +216,23 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               errorText: S.of(context).main_display_code_description,
               inputFormatter: [
                 UpperCaseTextFormatter(),
-                MaskedInputFormatter(
+                WebRTC.platformIsWindows ? MaskedInputFormatter(
+                    '###-###-###-##'
+                ) : MaskedInputFormatter(
                   '###-###-###-##',
                   allowedCharMatcher: RegExp('[A-Za-z0-9]'),
-                )
+                ),
               ],
               onChanged: (text) {
+                if (WebRTC.platformIsWindows) {
+                  if(text.contains(RegExp(r'[^a-zA-Z0-9-]'))) {
+                    setCodeErrorMsg(S.of(context).main_display_code_error);
+                    _isOverlayVisible = false;
+                    _overlayEntry?.remove();
+                    return _codeFocusNode.unfocus();
+                  }
+                }
+                setCodeDescriptionMsg(S.of(context).main_display_code_description);
                 bool presentBtnEnable = false;
                 if (text.length >= limitDisplayCodeLength &&
                     _otpController.text.length == limitOtpLength) {
@@ -252,12 +264,21 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
             labelText: S.of(context).main_password,
             errorText: S.of(context).main_password_description,
             inputFormatter: [
-              MaskedInputFormatter(
+              WebRTC.platformIsWindows
+                  ? LengthLimitingTextInputFormatter(4)
+                  : MaskedInputFormatter(
                 '0000',
-                allowedCharMatcher: RegExp('[1-9]'),
-              )
+                allowedCharMatcher: RegExp('[0-9]'),
+              ),
             ],
             onChanged: (text) {
+              if (WebRTC.platformIsWindows) {
+                if (text.contains(RegExp(r'[^0-9]'))) {
+                  setOtpErrorMsg(S.of(context).main_otp_error);
+                  return _otpFocusNode.unfocus();
+                }
+              }
+              setOtpDescriptionMsg(S.of(context).main_password_description);
               bool presentBtnEnable = false;
               if (_codeController.text.length >= limitDisplayCodeLength &&
                   text.length == limitOtpLength) {
@@ -276,6 +297,18 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         ],
       ),
     );
+  }
+
+  void setCodeDescriptionMsg(String text) {
+    codeKey.currentState?.setDescriptionMsg(text);
+  }
+
+  void setCodeErrorMsg(String text) {
+    codeKey.currentState?.setErrorMsg(text);
+  }
+
+  void setOtpDescriptionMsg(String text) {
+    otpKey.currentState?.setDescriptionMsg(text);
   }
 
   void setOtpErrorMsg(String text) {
