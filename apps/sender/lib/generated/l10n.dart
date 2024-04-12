@@ -529,6 +529,56 @@ class S {
       args: [],
     );
   }
+
+  /// `*Display Code contains 11 characters!`
+  String get main_display_code_error {
+    return Intl.message(
+      '*Display Code contains 11 characters!',
+      name: 'main_display_code_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `*One Time Password contains 4 digits!`
+  String get main_otp_error {
+    return Intl.message(
+      '*One Time Password contains 4 digits!',
+      name: 'main_otp_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back`
+  String get moderator_back {
+    return Intl.message(
+      'Back',
+      name: 'moderator_back',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `*Display Code contains 11 characters!`
+  String get main_display_code_error {
+    return Intl.message(
+      '*Display Code contains 11 characters!',
+      name: 'main_display_code_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `*One Time Password contains 4 digits!`
+  String get main_otp_error {
+    return Intl.message(
+      '*One Time Password contains 4 digits!',
+      name: 'main_otp_error',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
