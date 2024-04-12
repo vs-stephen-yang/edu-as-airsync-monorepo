@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
@@ -216,7 +217,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               errorText: S.of(context).main_display_code_description,
               inputFormatter: [
                 UpperCaseTextFormatter(),
-                WebRTC.platformIsWindows ? MaskedInputFormatter(
+                (WebRTC.platformIsWindows || kIsWeb) ? MaskedInputFormatter(
                     '###-###-###-##'
                 ) : MaskedInputFormatter(
                   '###-###-###-##',
@@ -224,7 +225,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                 ),
               ],
               onChanged: (text) {
-                if (WebRTC.platformIsWindows) {
+                if (WebRTC.platformIsWindows || kIsWeb) {
                   if(text.contains(RegExp(r'[^a-zA-Z0-9-]'))) {
                     setCodeErrorMsg(S.of(context).main_display_code_error);
                     _isOverlayVisible = false;
@@ -264,7 +265,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
             labelText: S.of(context).main_password,
             errorText: S.of(context).main_password_description,
             inputFormatter: [
-              WebRTC.platformIsWindows
+              (WebRTC.platformIsWindows || kIsWeb)
                   ? LengthLimitingTextInputFormatter(4)
                   : MaskedInputFormatter(
                 '0000',
@@ -272,7 +273,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               ),
             ],
             onChanged: (text) {
-              if (WebRTC.platformIsWindows) {
+              if (WebRTC.platformIsWindows || kIsWeb) {
                 if (text.contains(RegExp(r'[^0-9]'))) {
                   setOtpErrorMsg(S.of(context).main_otp_error);
                   return _otpFocusNode.unfocus();
