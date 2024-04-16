@@ -206,6 +206,10 @@ class ChannelProvider extends ChangeNotifier {
     _setViewState(ViewState.language);
   }
 
+  Future<void> presentDeviceListPage() async {
+    _setViewState(ViewState.deviceList);
+  }
+
   //endregion
 
   bool _isConnectionModeSupported(DisplayCode displayCode) {
