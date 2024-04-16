@@ -4,6 +4,7 @@ import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/present_idle_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 
@@ -85,6 +86,41 @@ class PresentIdle extends StatelessWidget {
             ],
           ),
         ),
+        const SizedBox(
+          height: 10,
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: InkWell(
+              onTap: () {
+                channelProvider.presentDeviceListPage();
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    height: 12,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.only(right: 5),
+                    child: const Image(
+                      image: Svg('assets/images/ic_device_list.svg')
+                    ),
+                  ),
+                  Text(
+                    S.of(context).main_device_list,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: AppConstants.fontSize_normal,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
       ],
     );
   }

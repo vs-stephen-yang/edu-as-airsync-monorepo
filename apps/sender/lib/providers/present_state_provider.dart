@@ -15,4 +15,5 @@ enum ViewState {
 
   settings,
   language,
+  deviceList
 }

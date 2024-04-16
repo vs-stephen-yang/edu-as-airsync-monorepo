@@ -34,6 +34,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_connection_mode_unsupported":
             MessageLookupByLibrary.simpleMessage(
                 "AirSync does not connect to Internet."),
+        "main_device_list": MessageLookupByLibrary.simpleMessage("Device List"),
         "main_display_code":
             MessageLookupByLibrary.simpleMessage("Display code"),
         "main_display_code_description":

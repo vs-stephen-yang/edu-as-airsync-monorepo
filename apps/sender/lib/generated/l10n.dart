@@ -549,6 +549,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Device List`
+  String get main_device_list {
+    return Intl.message(
+      'Device List',
+      name: 'main_device_list',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

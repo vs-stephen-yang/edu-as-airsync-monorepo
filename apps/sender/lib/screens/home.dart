@@ -8,6 +8,7 @@ import 'package:display_cast_flutter/utilities/app_colors.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
 import 'package:display_cast_flutter/widgets/bottom_bar.dart';
+import 'package:display_cast_flutter/widgets/device_list.dart';
 import 'package:display_cast_flutter/widgets/language.dart';
 import 'package:display_cast_flutter/widgets/moderator_idle.dart';
 import 'package:display_cast_flutter/widgets/moderator_present_start.dart';
@@ -111,6 +112,8 @@ class _HomeState extends State<Home> {
                           return const Settings();
                         case ViewState.language:
                           return const Language();
+                        case ViewState.deviceList:
+                          return const DeviceList();
                         default:
                           return const SizedBox();
                       }
