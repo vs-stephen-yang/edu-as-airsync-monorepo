@@ -45,5 +45,8 @@
     "main_connect_network_error": "網路連線異常，請檢查網路連線",
     "main_connect_rate_limited": "服務忙碌中，請稍後再試",
     "main_connect_unknown_error": "未知的錯誤",
-    "main_connection_mode_unsupported": "AirSync無網際網路連線"
+    "main_connection_mode_unsupported": "AirSync無網際網路連線",
+    "moderator_back": "返回",
+    "main_display_code_error": "僅允許輸入英數字",
+    "main_otp_error": "一次性密碼輸入錯誤"
 }

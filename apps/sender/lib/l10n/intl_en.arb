@@ -47,6 +47,6 @@
     "main_connect_unknown_error": "Unknown error.",
     "main_connection_mode_unsupported": "AirSync does not connect to Internet.",
     "moderator_back": "Back",
-    "main_display_code_error": "*Display Code contains 11 characters!",
-    "main_otp_error": "*One Time Password contains 4 digits!"
+    "main_display_code_error": "Display code can only contain letters and numbers.",
+    "main_otp_error": "One Time Password error."
 }
