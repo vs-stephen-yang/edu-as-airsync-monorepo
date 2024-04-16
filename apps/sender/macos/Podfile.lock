@@ -1,4 +1,7 @@
 PODS:
+  - bonsoir_darwin (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - desktop_window (0.0.1):
     - FlutterMacOS
   - device_info_plus (0.0.1):
@@ -27,6 +30,7 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
+  - bonsoir_darwin (from `Flutter/ephemeral/.symlinks/plugins/bonsoir_darwin/darwin`)
   - desktop_window (from `Flutter/ephemeral/.symlinks/plugins/desktop_window/macos`)
   - device_info_plus (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos`)
   - flutter_input_injection (from `Flutter/ephemeral/.symlinks/plugins/flutter_input_injection/macos`)
@@ -40,6 +44,8 @@ DEPENDENCIES:
   - window_size (from `Flutter/ephemeral/.symlinks/plugins/window_size/macos`)
 
 EXTERNAL SOURCES:
+  bonsoir_darwin:
+    :path: Flutter/ephemeral/.symlinks/plugins/bonsoir_darwin/darwin
   desktop_window:
     :path: Flutter/ephemeral/.symlinks/plugins/desktop_window/macos
   device_info_plus:
@@ -64,6 +70,7 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/window_size/macos
 
 SPEC CHECKSUMS:
+  bonsoir_darwin: e3b8526c42ca46a885142df84229131dfabea842
   desktop_window: fb7c4f12c1129f947ac482296b6f14059d57a3c3
   device_info_plus: 5401765fde0b8d062a2f8eb65510fb17e77cf07f
   flutter_input_injection: 0103e805a95614dabd37a068a73e04b3a5b04e39
@@ -76,6 +83,6 @@ SPEC CHECKSUMS:
   url_launcher_macos: d2691c7dd33ed713bf3544850a623080ec693d95
   window_size: 339dafa0b27a95a62a843042038fa6c3c48de195
 
-PODFILE CHECKSUM: 353c8bcc5d5b0994e508d035b5431cfe18c1dea7
+PODFILE CHECKSUM: 0d3963a09fc94f580682bd88480486da345dc3f0
 
 COCOAPODS: 1.14.3
