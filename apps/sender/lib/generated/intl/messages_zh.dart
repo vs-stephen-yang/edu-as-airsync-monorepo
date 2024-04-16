@@ -35,6 +35,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_display_code": MessageLookupByLibrary.simpleMessage("投影辨識碼"),
         "main_display_code_description":
             MessageLookupByLibrary.simpleMessage("請輸入投影辨識碼"),
+        "main_display_code_error":
+            MessageLookupByLibrary.simpleMessage("僅允許輸入英數字"),
         "main_display_code_exceed":
             MessageLookupByLibrary.simpleMessage("已達到參與人員上限"),
         "main_display_code_exceed_split_screen":
@@ -45,6 +47,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("找不到投影辨識碼或是服務未啟動"),
         "main_language": MessageLookupByLibrary.simpleMessage("語言"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("繁體中文"),
+        "main_otp_error": MessageLookupByLibrary.simpleMessage("一次性密碼輸入錯誤"),
         "main_password": MessageLookupByLibrary.simpleMessage("一次性密碼"),
         "main_password_description":
             MessageLookupByLibrary.simpleMessage("請輸入一次性密碼"),
@@ -53,6 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_setting": MessageLookupByLibrary.simpleMessage("設定"),
         "main_touch_back": MessageLookupByLibrary.simpleMessage("觸控反饋"),
         "moderator": MessageLookupByLibrary.simpleMessage("請輸入姓名"),
+        "moderator_back": MessageLookupByLibrary.simpleMessage("返回"),
         "moderator_exit": MessageLookupByLibrary.simpleMessage("結束"),
         "moderator_fill_out": MessageLookupByLibrary.simpleMessage("必填欄位"),
         "moderator_name": MessageLookupByLibrary.simpleMessage("姓名"),
