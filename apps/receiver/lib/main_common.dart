@@ -14,6 +14,7 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
+import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -53,6 +54,14 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
     // register singletons
     GetIt.I.registerSingleton<InstanceInfoProvider>(InstanceInfoProvider());
+
+    getIt.registerSingleton<DisplayServiceBroadcast>(
+      DisplayServiceBroadcast(
+        '_vs-airsync._tcp',
+        directChannelPort,
+        getIt.get<InstanceInfoProvider>(),
+      ),
+    );
 
     // Initialize the instance name
     getIt.get<InstanceInfoProvider>().instanceName = AppPreferences().instanceName;
