@@ -26,6 +26,7 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:get_it/get_it.dart';
 
 Future<void> commonEntry(ConfigSettings settings) async {
   runZonedGuarded<Future<void>>(() async {
@@ -44,6 +45,9 @@ Future<void> commonEntry(ConfigSettings settings) async {
         appName: packageInfo.appName,
         appVersion: packageInfo.version,
         child: const MyApp());
+
+    // register singletons
+    GetIt.I.registerSingleton<InstanceInfoProvider>(InstanceInfoProvider());
 
     await AppExceptionReport().ensureInitialized(settings, packageInfo);
 
@@ -86,7 +90,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  final _instanceInfoProvider = InstanceInfoProvider();
 
   @override
   void initState() {
@@ -123,19 +126,21 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       overlays: [SystemUiOverlay.bottom],
     );
 
+    final instanceInfoProvider = GetIt.I.get<InstanceInfoProvider>();
+
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: _instanceInfoProvider),
+        ChangeNotifierProvider.value(value: instanceInfoProvider),
         ChangeNotifierProvider.value(value: PrefLanguageProvider()),
         ChangeNotifierProvider.value(
           value: ChannelProvider(
             AppConfig.of(context)!,
-            _instanceInfoProvider,
+            instanceInfoProvider,
           ),
         ),
         ChangeNotifierProvider.value(
           value: MirrorStateProvider(
-            _instanceInfoProvider,
+            instanceInfoProvider,
           ),
         ),
       ],

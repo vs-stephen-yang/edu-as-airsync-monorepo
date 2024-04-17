@@ -67,6 +67,7 @@ dependencies:
   flutter_background: ^1.2.0
   azure_application_insights: ^4.0.1
   gap: ^3.0.1
+  get_it: ^7.7.0
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding.git
