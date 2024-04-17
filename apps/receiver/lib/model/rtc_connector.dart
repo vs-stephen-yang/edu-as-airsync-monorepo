@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:device_info_vs/device_info_vs.dart';
@@ -24,6 +26,8 @@ class RTCConnector {
   String mUid = const Uuid().v4();
   final Channel _channel;
   final ChannelMode _mode;
+  Timer? _connectionTimeoutTimer;
+  StreamController<int> connectionTimeTimeout = StreamController<int>();
 
   PresentationState presentationState = PresentationState.stopStreaming;
   String? sessionId;
@@ -96,7 +100,6 @@ class RTCConnector {
       case ChannelState.connected:
         break;
       case ChannelState.closed:
-        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
         await disconnectPeerConnection();
         await disconnectChannel();
         break;
@@ -142,28 +145,53 @@ class RTCConnector {
     _pc!.onDataChannel = _onDataChannel;
   }
 
+  void startConnectionTimer(TimeOutCallback onFinish) {
+    if (_connectionTimeoutTimer != null) stopConnectionTimeoutTimer();
+
+    var count = 30;
+    _connectionTimeoutTimer =
+        Timer.periodic(const Duration(seconds: 1), (timer) {
+          if (timer.tick < 30) {
+            // onTick
+            count = 30 - timer.tick;
+            connectionTimeTimeout.add(count);
+          } else if (timer.tick == 30) {
+            // onFinish
+            timer.cancel();
+            connectionTimeTimeout.add(0);
+            log('ConnectionTimeout onFinish');
+            onFinish();
+          }
+        });
+  }
+
+  void stopConnectionTimeoutTimer() {
+    _connectionTimeoutTimer?.cancel();
+    connectionTimeTimeout.add(0);
+  }
+
   void _onJoinDisplay(JoinDisplayMessage msg, bool isModeratorMode) {
     clientId = msg.clientId;
     senderName = msg.name;
     senderVersion = msg.version;
     senderPlatform = msg.platform;
     if (isModeratorMode) {
-      ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-      // presentationState = PresentationState.occupied;
       onRefresh?.call();
     }
   }
 
   Future<void> onStartPresent(
       StartPresentMessage msg, bool isModeratorMode) async {
-    if (!isModeratorMode) {
-      // Timer
-      ConnectionTimer.getInstance().startConnectionTimer(() async {
+    // Timer
+    startConnectionTimer(() async {
+      if (!isModeratorMode) {
         sendRejectPresent(400, 'timeout');
         await disconnectPeerConnection(sendAnalytics: true);
         await disconnectChannel();
-      });
-    }
+      } else {
+        sendStopPresent();
+      }
+    });
 
     await _remoteRenderer?.initialize();
     await _peerConnectionConnect();
@@ -327,6 +355,7 @@ class RTCConnector {
   }
 
   Future<void> disconnectChannel() async {
+    stopConnectionTimeoutTimer();
     await onChannelDisconnect?.call();
   }
 
@@ -367,7 +396,6 @@ class RTCConnector {
   Future<void> _onPeerConnectionState(RTCPeerConnectionState state) async {
     _printPeerConnectionLog('_onPeerConnectionState', state);
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
-      ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       ConnectionTimer.getInstance().stopRemainingTimeTimer();
       await disconnectPeerConnection();
       await disconnectChannel();
@@ -398,7 +426,7 @@ class RTCConnector {
 
   void _onAddStream(MediaStream stream) {
     _printPeerConnectionLog('_onAddStream', stream.getTracks().first.id);
-    ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+    stopConnectionTimeoutTimer();
     presentationState = PresentationState.streaming;
     controlAudio(true, setIsAudioEnabled: true);
     onAddRemoteStream?.call(_remoteRenderer?.srcObject);

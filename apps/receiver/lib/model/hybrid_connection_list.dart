@@ -298,7 +298,6 @@ class HybridConnectionList {
         try {
           await connection.disconnectPeerConnection(sendAnalytics: true);
           await connection.disconnectChannel();
-          ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
         } on PlatformException catch (e) {
           log(e.toString());
         }
