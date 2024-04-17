@@ -1,15 +1,15 @@
 
-import 'dart:io';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/providers/device_list_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
 class DeviceList extends StatefulWidget {
-  const DeviceList({Key? key}) : super(key: key);
+  const DeviceList({super.key});
 
   @override
   _DeviceListState createState() => _DeviceListState();
@@ -20,7 +20,9 @@ class _DeviceListState extends State<DeviceList>{
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    // TODO: implement build
+    DeviceListProvider deviceListProvider = Provider.of<DeviceListProvider>(context, listen: false);
+    deviceListProvider.startDiscovery();
+
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       height: MediaQuery.of(context).size.height * 0.6,
@@ -72,46 +74,56 @@ class _DeviceListState extends State<DeviceList>{
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.45,
-            child: ListView.builder(
-                itemCount: 1,
-                itemBuilder: (context, index) {
-              return const ListTile(
-                title: Row(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('title1', style: const TextStyle(
-                        color: Colors.white,
-                      ),),
-                    ),
-                    Spacer(),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('subtitle', style: const TextStyle(
-                        color: Colors.white,
-                      ),),
-                    ),
-                  ]
-                ),
-                subtitle: Row(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('content1', style: const TextStyle(
-                        color: Colors.white,
-                      ),),
-                    ),
-                    Spacer(),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('content2', style: const TextStyle(
-                        color: Colors.white,
-                      ),),
-                    ),
-                  ],
-                ),
-              );
-            }),
+            child: Consumer<DeviceListProvider>(
+              builder: (BuildContext context, DeviceListProvider value, Widget? child) {
+                return ListView.builder(
+                  itemCount: value.devices.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        print('zz Device click');
+                      },
+                      child: ListTile(
+                        title: Row(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(value.devices[index].name, style: const TextStyle(
+                                color: Colors.white,
+                              ),),
+                            ),
+                            const Spacer(),
+                            const Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text('IP', style: TextStyle(
+                                color: Colors.white,
+                              ),),
+                            ),
+                          ]
+                        ),
+                        subtitle: Row(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(value.devices[index].host, style: const TextStyle(
+                                color: Colors.white,
+                              ),),
+                            ),
+                            const Spacer(),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(value.devices[index].ip, style: const TextStyle(
+                                color: Colors.white,
+                              ),),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                );
+              },
+            ),
           ),
           const Padding(
             padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
@@ -123,5 +135,4 @@ class _DeviceListState extends State<DeviceList>{
       ),
     );
   }
-
 }
