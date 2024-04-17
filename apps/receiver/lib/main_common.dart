@@ -40,10 +40,13 @@ Future<void> commonEntry(ConfigSettings settings) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     await AppInstanceCreate.ensureInitialized(settings, packageInfo);
 
+    const directChannelPort = 5100;
+
     var configureApp = AppConfig(
         settings: settings,
         appName: packageInfo.appName,
         appVersion: packageInfo.version,
+        directChannelPort: directChannelPort,
         child: const MyApp());
 
     // register singletons

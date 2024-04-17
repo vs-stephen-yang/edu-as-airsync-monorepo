@@ -72,7 +72,6 @@ class ChannelProvider extends ChangeNotifier {
   List<String> get otpList => _otpList;
 
   String? host;
-  int port = 5100;
   bool isServerStart = false;
   DisplayDirectServer? _directServer;
   DisplayTunnelServer? _tunnelServer;
@@ -214,7 +213,7 @@ class ChannelProvider extends ChangeNotifier {
       if (_directServer == null) {
         _setDirectServer();
         await _directServer?.start(
-          port,
+          appConfig.directChannelPort,
           securityContext: securityContext,
         );
       }
