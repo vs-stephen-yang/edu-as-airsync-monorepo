@@ -22,6 +22,15 @@ import 'package:uuid/uuid.dart';
 
 import 'connect_timer.dart';
 
+enum PresentationState {
+  stopStreaming,
+  occupied,
+  waitForStream,
+  streaming,
+  pauseStreaming,
+  resumeStreaming,
+}
+
 class RTCConnector {
   String mUid = const Uuid().v4();
   final Channel _channel;

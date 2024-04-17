@@ -1,6 +1,11 @@
 
 import 'package:display_channel/display_channel.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
+
+enum RemotePresentationState {
+  stopStreaming,
+  waitForStream,
+  streaming,
+}
 
 class RemoteScreenConnector {
 
@@ -8,7 +13,7 @@ class RemoteScreenConnector {
   String? host;
   int port;
   Channel channel;
-  PresentationState presentationState = PresentationState.stopStreaming;
+  RemotePresentationState remotePresentationState = RemotePresentationState.stopStreaming;
   String? _sessionId;
   String? get sessionId => _sessionId;
   String? clientId;
@@ -60,7 +65,7 @@ class RemoteScreenConnector {
     _sessionId = message.sessionId;
     // accept
     sendRemoteScreenState(RemoteScreenStatus.accepted);
-    presentationState = PresentationState.waitForStream;
+    remotePresentationState = RemotePresentationState.waitForStream;
     // info
     final remoteScreenInfoMessage = RemoteScreenInfoMessage(
       _sessionId,
@@ -69,6 +74,6 @@ class RemoteScreenConnector {
         roomId,
       ),);
     channel.send(remoteScreenInfoMessage);
-    presentationState = PresentationState.streaming;
+    remotePresentationState = RemotePresentationState.streaming;
   }
 }

@@ -18,7 +18,6 @@ import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/ip_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -33,15 +32,6 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 enum ChannelMode {
   tunnel,
   direct,
-}
-
-enum PresentationState {
-  stopStreaming,
-  occupied,
-  waitForStream,
-  streaming,
-  pauseStreaming,
-  resumeStreaming,
 }
 
 String _getPrivateIpWithDefault(String? ipAddress, String defaultIpAddress) {
