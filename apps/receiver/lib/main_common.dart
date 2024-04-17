@@ -27,9 +27,6 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:get_it/get_it.dart';
-
-final getIt = GetIt.instance;
 
 Future<void> commonEntry(ConfigSettings settings) async {
   runZonedGuarded<Future<void>>(() async {
@@ -52,19 +49,15 @@ Future<void> commonEntry(ConfigSettings settings) async {
         directChannelPort: directChannelPort,
         child: const MyApp());
 
-    // register singletons
-    GetIt.I.registerSingleton<InstanceInfoProvider>(InstanceInfoProvider());
-
-    getIt.registerSingleton<DisplayServiceBroadcast>(
-      DisplayServiceBroadcast(
-        '_vs-airsync._tcp',
-        directChannelPort,
-        getIt.get<InstanceInfoProvider>(),
-      ),
+    DisplayServiceBroadcast.ensureInitialized(
+      '_vs-airsync._tcp',
+      directChannelPort,
+      InstanceInfoProvider(),
     );
 
+
     // Initialize the instance name
-    getIt.get<InstanceInfoProvider>().instanceName = AppPreferences().instanceName;
+    InstanceInfoProvider().instanceName = AppPreferences().instanceName;
 
     await AppExceptionReport().ensureInitialized(settings, packageInfo);
 
@@ -143,21 +136,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       overlays: [SystemUiOverlay.bottom],
     );
 
-    final instanceInfoProvider = GetIt.I.get<InstanceInfoProvider>();
-
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: instanceInfoProvider),
+        ChangeNotifierProvider.value(value: InstanceInfoProvider()),
         ChangeNotifierProvider.value(value: PrefLanguageProvider()),
         ChangeNotifierProvider.value(
           value: ChannelProvider(
             AppConfig.of(context)!,
-            instanceInfoProvider,
+            InstanceInfoProvider(),
           ),
         ),
         ChangeNotifierProvider.value(
           value: MirrorStateProvider(
-            instanceInfoProvider,
+            InstanceInfoProvider(),
           ),
         ),
       ],
