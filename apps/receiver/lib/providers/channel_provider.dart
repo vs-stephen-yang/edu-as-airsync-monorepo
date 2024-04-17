@@ -11,6 +11,7 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -62,17 +63,6 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _displayCode = '';
-
-  String get displayCode => _displayCode;
-
-  String get displayCodeWithDash => _getDisplayCodeWithDash(_displayCode);
-
-  set displayCode(String value) {
-    _displayCode = value;
-    notifyListeners();
-  }
-
   final int maxCountDown = 300;
   final ValueNotifier<bool> isEyeOpen = ValueNotifier(true);
   final ValueNotifier<int> countDownProgress = ValueNotifier(300);
@@ -109,7 +99,12 @@ class ChannelProvider extends ChangeNotifier {
       _remoteScreenConnectors;
   static bool isSenderMode = false;
 
-  ChannelProvider(this.appConfig) {
+  final InstanceInfoProvider _instanceInfo;
+
+  ChannelProvider(
+    this.appConfig,
+    this._instanceInfo,
+  ) {
     _setConnectivityListener();
     _generateOTP();
     _startNewOTPTimer();
@@ -136,12 +131,15 @@ class ChannelProvider extends ChangeNotifier {
             //displayCode.isEmpty || _tunnelApiUrl.isEmpty
             registerInstanceIndexById(AppInstanceCreate().displayInstanceID)
                 .then((int? instanceIndex) {
-              displayCode = encodeDisplayCode(
+              final displayCode = encodeDisplayCode(
                 DisplayCode(
                   _getPrivateIpWithDefault(host, '192.168.0.0'),
                   instanceIndex ?? 0,
                 ),
-              )!;
+              );
+
+              _instanceInfo.displayCode = displayCode ?? '';
+
               startServer(AppInstanceCreate().displayInstanceID);
             });
           }
@@ -349,7 +347,7 @@ class ChannelProvider extends ChangeNotifier {
 
   ConnectRequestStatus _verifyConnectRequest(
       ConnectionRequest connectionRequest) {
-    if (connectionRequest.displayCode != displayCode) {
+    if (connectionRequest.displayCode != _instanceInfo.displayCode) {
       return ConnectRequestStatus.invalidDisplayCode;
     } else if (!_isValidOtp(connectionRequest.token)) {
       return ConnectRequestStatus.invalidOtp;
@@ -552,17 +550,6 @@ class ChannelProvider extends ChangeNotifier {
       }
     }
     return platform;
-  }
-
-  _getDisplayCodeWithDash(String displayCode) {
-    String result = '';
-    for (int i = 0; i < displayCode.length; i++) {
-      if (i % 3 == 0 && result.isNotEmpty) {
-        result += '-';
-      }
-      result += displayCode.substring(i, i + 1);
-    }
-    return result;
   }
 
   _startNewOTPTimer() {

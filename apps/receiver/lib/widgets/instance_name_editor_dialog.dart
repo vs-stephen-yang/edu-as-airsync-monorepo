@@ -2,9 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/custom_text_form_field.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,13 +25,10 @@ class _InstanceNameEditorDialogState extends State<InstanceNameEditorDialog> {
   Future<void> _clickSaveName(String newInstanceName) async {
     AppPreferences().set(instanceName: newInstanceName);
 
-    ChannelProvider channel =
-        Provider.of<ChannelProvider>(context, listen: false);
+    InstanceInfoProvider instanceInfoProvider =
+        Provider.of<InstanceInfoProvider>(context, listen: false);
 
-    MirrorStateProvider mirror =
-        Provider.of<MirrorStateProvider>(context, listen: false);
-
-    mirror.setDeviceName(newInstanceName, channel.displayCode);
+    instanceInfoProvider.instanceName = newInstanceName;
 
     navService.goBack();
   }

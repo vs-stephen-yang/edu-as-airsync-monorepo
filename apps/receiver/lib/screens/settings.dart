@@ -4,8 +4,8 @@ import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
-import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/language_selection.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/sender_menu_view.dart';
 import 'package:display_flutter/screens/whats_new.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
@@ -56,7 +56,7 @@ class _SettingsState extends State<Settings> {
                 children: [
                   Text(S.of(context).main_settings_device_name),
                   Text(
-                    Provider.of<MirrorStateProvider>(context).deviceName,
+                    Provider.of<InstanceInfoProvider>(context).deviceName,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

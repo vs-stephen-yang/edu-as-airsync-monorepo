@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
@@ -24,12 +24,14 @@ enum MirrorState {
 
 class MirrorStateProvider extends ChangeNotifier
     implements FlutterMirrorListener {
-  MirrorStateProvider() {
+  MirrorStateProvider(
+    this._instanceInfoProvider,
+  ) {
     _flutterMirrorPlugin = FlutterMirror();
     _initPlatformState();
-  }
 
-  get deviceName => _deviceName;
+    _instanceInfoProvider.addListener(_onInstanceInfoUpdated);
+  }
 
   get airplayEnabled => _airplayEnabled;
 
@@ -38,6 +40,8 @@ class MirrorStateProvider extends ChangeNotifier
   get miracastEnabled => _miracastEnabled;
 
   get pinCode => _pinCode;
+
+  final InstanceInfoProvider _instanceInfoProvider;
 
   FlutterMirror? _flutterMirrorPlugin;
   String _deviceName = '';
@@ -54,6 +58,15 @@ class MirrorStateProvider extends ChangeNotifier
     MirrorType.googlecast: false,
     MirrorType.miracast: false,
   };
+
+  void _onInstanceInfoUpdated() async {
+    if (_deviceName != _instanceInfoProvider.deviceName) {
+      _deviceName = _instanceInfoProvider.deviceName;
+
+      // restart when device name changed.
+      await _restartMirror();
+    }
+  }
 
   // region FlutterMirrorListener
   @override
@@ -118,16 +131,6 @@ class MirrorStateProvider extends ChangeNotifier
   // endregion
 
   // region Public method
-  Future<void> setDeviceName(String instanceName, String displayCode) async {
-    String lastName = _deviceName;
-    _deviceName =
-        '$instanceName-${displayCode.substring(max(displayCode.length - 5, 0))}';
-    if (lastName != _deviceName) {
-      // Only restart in device name changed.
-      await _restartMirror();
-    }
-    notifyListeners();
-  }
 
   clearPinCode() {
     _pinTimer?.cancel();

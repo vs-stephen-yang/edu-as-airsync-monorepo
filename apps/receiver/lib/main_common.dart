@@ -9,6 +9,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
@@ -85,6 +86,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  final _instanceInfoProvider = InstanceInfoProvider();
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -122,10 +125,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider.value(value: _instanceInfoProvider),
         ChangeNotifierProvider.value(value: PrefLanguageProvider()),
         ChangeNotifierProvider.value(
-            value: ChannelProvider(AppConfig.of(context)!)),
-        ChangeNotifierProvider.value(value: MirrorStateProvider()),
+          value: ChannelProvider(
+            AppConfig.of(context)!,
+            _instanceInfoProvider,
+          ),
+        ),
+        ChangeNotifierProvider.value(
+          value: MirrorStateProvider(
+            _instanceInfoProvider,
+          ),
+        ),
       ],
       child: Consumer<PrefLanguageProvider>(
         builder: (_, prefLanguageProvider, __) {

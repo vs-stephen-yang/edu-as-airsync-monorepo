@@ -5,6 +5,7 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,8 +23,8 @@ class MainInfoInternet extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(20)),
         color: AppColors.primary_grey,
       ),
-      child: Consumer<ChannelProvider>(
-        builder: (context, channelProvider, child) {
+      child: Consumer2<ChannelProvider, InstanceInfoProvider>(
+        builder: (context, channelProvider, instanceInfo, child) {
           return (channelProvider.connectNet)
               ? Wrap(
                   direction: Axis.vertical,
@@ -39,7 +40,7 @@ class MainInfoInternet extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      channelProvider.displayCode,
+                      instanceInfo.displayCodeWithDash,
                       style: const TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.w500,
@@ -52,7 +53,7 @@ class MainInfoInternet extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    if (channelProvider.displayCode.isNotEmpty)
+                    if (instanceInfo.displayCode.isNotEmpty)
                       ValueListenableBuilder<bool>(
                         valueListenable: channelProvider.isEyeOpen,
                         builder: (_, eyeOpen, __) {
