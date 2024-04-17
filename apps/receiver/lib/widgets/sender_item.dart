@@ -38,18 +38,19 @@ class _SenderItemState extends State<SenderItem>
             child: FocusElevatedButton(
               style: ElevatedButton.styleFrom(
                 elevation: 0,
-                backgroundColor: remoteScreenConnector.presentationState ==
-                        PresentationState.streaming
-                    ? AppColors.primary_blue
-                    : AppColors.toggle_bg,
+                backgroundColor:
+                    remoteScreenConnector.remotePresentationState ==
+                            RemotePresentationState.streaming
+                        ? AppColors.primary_blue
+                        : AppColors.toggle_bg,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
               showWhiteBorder: true,
               onClick: () {
-                if (remoteScreenConnector.presentationState ==
-                    PresentationState.streaming) {
+                if (remoteScreenConnector.remotePresentationState ==
+                    RemotePresentationState.streaming) {
                   channelProvider.removeSender(
                       remoteScreenConnector: remoteScreenConnector);
                 }
