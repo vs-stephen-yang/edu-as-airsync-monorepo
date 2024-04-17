@@ -2,13 +2,15 @@ import 'package:bonsoir/bonsoir.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 
 class DisplayServiceBroadcast {
+  static late DisplayServiceBroadcast instance;
+
   final String _serviceType;
   final int _port;
   final InstanceInfoProvider _instanceInfo;
 
   BonsoirBroadcast? _broadcast;
 
-  DisplayServiceBroadcast(
+  DisplayServiceBroadcast._internal(
     this._serviceType,
     this._port,
     this._instanceInfo,
@@ -18,6 +20,18 @@ class DisplayServiceBroadcast {
     if (_instanceInfo.deviceName.isNotEmpty) {
       _start();
     }
+  }
+
+  static void ensureInitialized(
+    String serviceType,
+    int port,
+    InstanceInfoProvider instanceInfoProvider,
+  ) {
+    instance = DisplayServiceBroadcast._internal(
+      serviceType,
+      port,
+      instanceInfoProvider,
+    );
   }
 
   void _onInstanceInfoUpdated() {
