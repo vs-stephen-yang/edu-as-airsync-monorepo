@@ -397,18 +397,32 @@ class ChannelProvider extends ChangeNotifier {
       },
     );
     webRTCConnector?.onStreamInterrupted = (() async {
-      presentEnd();
+      presentStop();
+      if (moderatorStatus) {
+        presentModeratorWaitPage();
+      } else {
+        presentEnd();
+      }
     });
-    await webRTCConnector?.makeCall(
-      selectedSource,
-      _iceServerList,
-    );
-
-    if (moderatorStatus) {
-      presentModeratorStartPage();
-    } else {
-      presentBasicStartPage();
-    }
+    await webRTCConnector
+        ?.makeCall(selectedSource, _iceServerList)
+        .then((value) {
+      debugModePrint('makeCall: ${value ? 'success' : 'failure'}');
+      if (value) {
+        if (moderatorStatus) {
+          presentModeratorStartPage();
+        } else {
+          presentBasicStartPage();
+        }
+      } else {
+        presentStop();
+        if (moderatorStatus) {
+          presentModeratorWaitPage();
+        } else {
+          presentEnd();
+        }
+      }
+    });
   }
 
   Future<void> presentEnd({bool goIdleState = true}) async {

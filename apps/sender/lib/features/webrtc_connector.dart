@@ -5,7 +5,6 @@ import 'package:collection/collection.dart';
 import 'package:display_cast_flutter/features/protoc/event.pb.dart';
 import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_cast_flutter/model/message.dart';
-import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
@@ -73,7 +72,7 @@ class WebRTCConnector {
   int? _outboundVideoHeight;
   int _outboundVideoCount = 0;
 
-  Future<void> makeCall(
+  Future<bool> makeCall(
       dynamic source, List<RtcIceServer>? iceServerList) async {
     dynamic deviceId;
 
@@ -101,7 +100,7 @@ class WebRTCConnector {
     }
 
     _deviceId = deviceId;
-    await _peerConnectionConnect(iceServerList);
+    return await _peerConnectionConnect(iceServerList);
   }
 
   Future<void> hangUp() async {
@@ -187,7 +186,7 @@ class WebRTCConnector {
     return true;
   }
 
-  Future<void> _peerConnectionConnect(List<RtcIceServer>? iceServers) async {
+  Future<bool> _peerConnectionConnect(List<RtcIceServer>? iceServers) async {
     final configuration = buildWebRtcConfiguration(iceServers);
 
     _pc = await createPeerConnection(configuration);
@@ -199,7 +198,7 @@ class WebRTCConnector {
     _pc!.onConnectionState = _onPeerConnectionState;
     _pc!.onIceCandidate = _onIceCandidate;
 
-    await _publish();
+    return await _publish();
   }
 
   Future<void> _peerConnectionDisconnect() async {
@@ -284,8 +283,8 @@ class WebRTCConnector {
         'modifySDPForCodecPreferences vcodec:${_codecPreferences[0]}');
   }
 
-  Future<void> _publish() async {
-    _dc = await _pc!.createDataChannel('pc-dc', RTCDataChannelInit()..id = 1);
+  Future<bool> _publish() async {
+    _dc = await _pc?.createDataChannel('pc-dc', RTCDataChannelInit()..id = 1);
     _setDataChannelListeners(_dc!);
 
     _trackFrameRate = _defaultFrameRate;
@@ -293,14 +292,17 @@ class WebRTCConnector {
     _trackHeight = _maxTrackHeight;
 
     _localStream = await getDisplayMedia();
-    if (kIsWeb) {
-      // GetDisplayMedia method will popup a system dialog to prompt the user to select screen, so close the connection timer here.
-      ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-      if (_localStream == null) {
+    if (_localStream == null || _pc == null) {
+      // GetDisplayMedia method will using different UI UX (control by system)
+      // to prompt the user to select screen in Web, Android, iOS.
+      // Therefore we did not implement timeout mechanism in those sender,
+      // it may disconnect (_pc will be null) due to receiver's timeout.
+      // Web: popup a system dialog
+      // Android: MediaProjection
+      // iOS: Broadcast extension
         await hangUp();
-        await onStreamInterrupted?.call();
-        return;
-      }
+        // return false to run makeCall's failure process.
+        return false;
     }
     _localStream?.getTracks().forEach((element) {
       element.onEnded = () async {
@@ -340,11 +342,13 @@ class WebRTCConnector {
       var message = PresentSignalMessage(null, SignalMessageType.offer);
       message.sdp = fixedOffer.sdp;
       sendSignalMessage(message);
+
+      startStatsTimer();
+      return true;
     } catch (e) {
       debugModePrint(e, type: runtimeType);
+      return false;
     }
-
-    startStatsTimer();
   }
 
   Future<MediaStream?> getDisplayMedia() async {

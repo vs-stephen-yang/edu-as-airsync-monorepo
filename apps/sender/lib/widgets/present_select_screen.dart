@@ -19,15 +19,15 @@ class PresentSelectScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ChannelProvider provider =
-      Provider.of<ChannelProvider>(context, listen: false);
-      // start timeout timer (30 sec)
-      ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
-        // onFinish
-        if (context.mounted) {
+          Provider.of<ChannelProvider>(context, listen: false);
+      if (WebRTC.platformIsDesktop) { // MacOS and Windows
+        // start timeout timer (30 sec)
+        ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
+          debugModePrint('timeout');
+          // onFinish
           selectScreenDialog?.cancel();
-        }
-      });
-      if (WebRTC.platformIsDesktop) {
+        });
+
         await showDialog<CustomDesktopCapturerSource>(
           context: context,
           builder: (context) => selectScreenDialog = SelectScreenDialog(),
@@ -35,8 +35,11 @@ class PresentSelectScreen extends StatelessWidget {
           debugModePrint('selectedSource: ${value?.selectedSource?.type})');
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
           if (value != null && value.selectedSource != null) {
-            if (WebRTC.platformIsWindows && value.selectedSource?.type != SourceType.Window) {
-              provider.presentStart(selectedSource: value.selectedSource, systemAudio: value.systemAudio);
+            if (WebRTC.platformIsWindows &&
+                value.selectedSource?.type != SourceType.Window) {
+              provider.presentStart(
+                  selectedSource: value.selectedSource,
+                  systemAudio: value.systemAudio);
             } else {
               provider.presentStart(selectedSource: value.selectedSource);
             }
@@ -55,8 +58,7 @@ class PresentSelectScreen extends StatelessWidget {
             }
           }
         });
-      } else {
-        ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+      } else {  // Android and iOS and Web
         if (WebRTC.platformIsAndroid) {
           // Android specific
           Future<void> requestBackgroundPermission() async {
