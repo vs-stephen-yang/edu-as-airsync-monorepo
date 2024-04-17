@@ -16,8 +16,7 @@ import 'package:display_cast_flutter/widgets/moderator_wait.dart';
 import 'package:display_cast_flutter/widgets/present_idle.dart';
 import 'package:display_cast_flutter/widgets/present_present_start.dart';
 import 'package:display_cast_flutter/widgets/present_select_role.dart';
-import 'package:display_cast_flutter/widgets/present_select_screen.dart'
-    if (dart.library.html) 'package:display_cast_flutter/widgets/present_select_screen_web.dart';
+import 'package:display_cast_flutter/widgets/present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/remote_screen_widget.dart';
 import 'package:display_cast_flutter/widgets/settings.dart';
