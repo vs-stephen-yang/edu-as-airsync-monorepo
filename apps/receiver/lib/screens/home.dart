@@ -11,7 +11,6 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
@@ -56,12 +55,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     super.initState();
     AppOverlayTab().setupOverlayTabHandler(
         buildContext: context, isVisible: AppPreferences().showOverlayTab);
-
-    // Initialize the instance name
-    InstanceInfoProvider instanceInfoProvider =
-        Provider.of<InstanceInfoProvider>(context, listen: false);
-
-    instanceInfoProvider.instanceName = AppPreferences().instanceName;
   }
 
   @override

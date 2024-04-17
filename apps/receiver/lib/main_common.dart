@@ -28,6 +28,8 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:get_it/get_it.dart';
 
+final getIt = GetIt.instance;
+
 Future<void> commonEntry(ConfigSettings settings) async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -51,6 +53,9 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
     // register singletons
     GetIt.I.registerSingleton<InstanceInfoProvider>(InstanceInfoProvider());
+
+    // Initialize the instance name
+    getIt.get<InstanceInfoProvider>().instanceName = AppPreferences().instanceName;
 
     await AppExceptionReport().ensureInitialized(settings, packageInfo);
 
