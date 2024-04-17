@@ -11,6 +11,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
@@ -56,17 +57,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     AppOverlayTab().setupOverlayTabHandler(
         buildContext: context, isVisible: AppPreferences().showOverlayTab);
 
-    ChannelProvider channelProvider =
-        Provider.of<ChannelProvider>(context, listen: false);
-    // Duo to in the EULA menu state, may already got display code,
-    // we need update device name with display code here
-    // and add listener to update while display code changed.
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _updateDeviceName(channelProvider);
-    });
-    channelProvider.addListener(() {
-      _updateDeviceName(channelProvider);
-    });
+    // Initialize the instance name
+    InstanceInfoProvider instanceInfoProvider =
+        Provider.of<InstanceInfoProvider>(context, listen: false);
+
+    instanceInfoProvider.instanceName = AppPreferences().instanceName;
   }
 
   @override
@@ -298,13 +293,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       }
       return isWidth ? _halfWidth : _halfHeight;
     }
-  }
-
-  _updateDeviceName(ChannelProvider channelProvider) async {
-    MirrorStateProvider mirrorStateProvider =
-        Provider.of<MirrorStateProvider>(context, listen: false);
-    await mirrorStateProvider.setDeviceName(
-        AppPreferences().instanceName, channelProvider.displayCode);
   }
 
   _showPinCodeDialog(BuildContext context, MirrorStateProvider mirror) {

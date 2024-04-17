@@ -2,6 +2,7 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
@@ -14,8 +15,8 @@ class CastSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MirrorStateProvider>(
-      builder: (context, mirror, child) {
+    return Consumer2<MirrorStateProvider, InstanceInfoProvider>(
+      builder: (context, mirror, instanceInfo, child) {
         ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
         return MenuDialog(
           backgroundColor: HybridConnectionList().isMirroring()
@@ -33,7 +34,7 @@ class CastSettings extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    mirror.deviceName,
+                    instanceInfo.deviceName,
                     style: const TextStyle(
                       color: Colors.blue,
                       fontSize: 18,

@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:android_window/main.dart' as android_window;
 import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -72,33 +72,30 @@ class AppOverlayTab {
           ChannelProvider channelProvider =
               Provider.of<ChannelProvider>(buildContext, listen: false);
 
-          MirrorStateProvider mirrorProvider =
-              Provider.of<MirrorStateProvider>(buildContext, listen: false);
-
           PrefLanguageProvider languageProvider =
               Provider.of<PrefLanguageProvider>(buildContext, listen: false);
+
+          InstanceInfoProvider instanceInfoProvider =
+              Provider.of<InstanceInfoProvider>(buildContext, listen: false);
 
           await _postMessageToAndroidWindow(OverlayTabHandler.nameInitValue, {
             OverlayTabHandler.keyVisibility: isVisible
                 ? OverlayTabHandler.valueVisible
                 : OverlayTabHandler.valueInvisible,
-            OverlayTabHandler.keyDeviceName: mirrorProvider.deviceName,
+            OverlayTabHandler.keyDeviceName: instanceInfoProvider.deviceName,
             OverlayTabHandler.keyDisplayCode:
-                channelProvider.displayCode,
+                instanceInfoProvider.displayCodeWithDash,
             OverlayTabHandler.keyOtpCode: channelProvider.isEyeOpen.value
                 ? channelProvider.otp.value.toString()
                 : 'XXXX',
             OverlayTabHandler.keyLanguage: languageProvider.language,
           });
 
-          channelProvider.addListener(() async {
+          instanceInfoProvider.addListener(() async {
             await setDeviceNameAndDisplayCode(
-                mirrorProvider.deviceName, channelProvider.displayCode);
-          });
-
-          mirrorProvider.addListener(() async {
-            await setDeviceNameAndDisplayCode(
-                mirrorProvider.deviceName, channelProvider.displayCode);
+              instanceInfoProvider.deviceName,
+              instanceInfoProvider.displayCodeWithDash,
+            );
           });
 
           channelProvider.otp.addListener(() async {
