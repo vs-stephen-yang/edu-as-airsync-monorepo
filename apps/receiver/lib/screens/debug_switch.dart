@@ -1,6 +1,7 @@
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/widgets/focus_text_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
+import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:flutter/material.dart';
 
 class DebugSwitch extends StatefulWidget {
@@ -18,13 +19,35 @@ class DebugSwitch extends StatefulWidget {
 }
 
 class _DebugSwitchState extends State<DebugSwitch> {
+  bool _useSoftwareDecode = false;
+
+  void _enableSoftwareDecode(bool value) async {
+    DeviceFeatureAdapter.UseSoftwareDecode = value;
+    await DeviceFeatureAdapter.save();
+
+    setState(() {
+      _useSoftwareDecode = value;
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text("Changes will take effect after restarting the program.")
+          )
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    _useSoftwareDecode = DeviceFeatureAdapter.UseSoftwareDecode;
     return MenuDialog(
       backgroundColor: AppColors.primary_grey,
       topTitleText: 'Debug Switch',
       content: Column(
         children: [
+          SwitchListTile(
+              title: const Text('Software Decode'),
+              value: _useSoftwareDecode,
+              onChanged: _enableSoftwareDecode
+          ),
           FocusTextButton(
             child: const Text(
               '-- clear --',
