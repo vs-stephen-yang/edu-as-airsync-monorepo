@@ -84,7 +84,7 @@ class AppOverlayTab {
                 : OverlayTabHandler.valueInvisible,
             OverlayTabHandler.keyDeviceName: instanceInfoProvider.deviceName,
             OverlayTabHandler.keyDisplayCode:
-                instanceInfoProvider.displayCodeWithDash,
+                instanceInfoProvider.displayCode,
             OverlayTabHandler.keyOtpCode: channelProvider.isEyeOpen.value
                 ? channelProvider.otp.value.toString()
                 : 'XXXX',
@@ -94,7 +94,7 @@ class AppOverlayTab {
           instanceInfoProvider.addListener(() async {
             await setDeviceNameAndDisplayCode(
               instanceInfoProvider.deviceName,
-              instanceInfoProvider.displayCodeWithDash,
+              instanceInfoProvider.displayCode,
             );
           });
 

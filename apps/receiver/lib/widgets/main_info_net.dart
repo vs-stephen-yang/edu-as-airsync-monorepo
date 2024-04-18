@@ -40,7 +40,7 @@ class MainInfoInternet extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      instanceInfo.displayCodeWithDash,
+                      instanceInfo.displayCode,
                       style: const TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.w500,
