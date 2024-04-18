@@ -17,11 +17,13 @@ class DeviceList extends StatefulWidget {
 
 class _DeviceListState extends State<DeviceList>{
 
+  late DeviceListProvider _deviceListProvider;
+
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    DeviceListProvider deviceListProvider = Provider.of<DeviceListProvider>(context, listen: false);
-    deviceListProvider.startDiscovery();
+    _deviceListProvider = Provider.of<DeviceListProvider>(context, listen: false);
+    _deviceListProvider.startDiscovery();
 
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
@@ -81,7 +83,7 @@ class _DeviceListState extends State<DeviceList>{
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                        print('zz Device click');
+                        channelProvider.startDirectConnect(otp: null, service: value.devices[index]);
                       },
                       child: ListTile(
                         title: Row(
@@ -134,5 +136,12 @@ class _DeviceListState extends State<DeviceList>{
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _deviceListProvider.stopDiscovery();
+    _deviceListProvider.clearDevices();
+    super.dispose();
   }
 }
