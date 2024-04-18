@@ -161,7 +161,7 @@ class ChannelProvider extends ChangeNotifier {
       ),
       (Channel channel) => _onNewChannel(channel, ChannelMode.tunnel),
       (ConnectionRequest connectionRequest) =>
-          _verifyConnectRequest(connectionRequest),
+          _verifyConnectRequest(connectionRequest, isDirectConnect: false),
     );
 
     _tunnelServer?.onTunnelConnected = () {
@@ -177,7 +177,7 @@ class ChannelProvider extends ChangeNotifier {
     _directServer = DisplayDirectServer(
       (Channel channel) => _onNewChannel(channel, ChannelMode.direct),
       (ConnectionRequest connectionRequest) =>
-          _verifyConnectRequest(connectionRequest),
+          _verifyConnectRequest(connectionRequest, isDirectConnect: true),
     );
   }
 
@@ -345,14 +345,35 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   ConnectRequestStatus _verifyConnectRequest(
-      ConnectionRequest connectionRequest) {
-    if (connectionRequest.displayCode != _instanceInfo.displayCode) {
-      return ConnectRequestStatus.invalidDisplayCode;
-    } else if (!_isValidOtp(connectionRequest.token)) {
-      return ConnectRequestStatus.invalidOtp;
+      ConnectionRequest connectionRequest, {
+        required bool isDirectConnect,
+      }) {
+    if (connectionRequest.displayCode.isNotEmpty) {
+      if (connectionRequest.displayCode != _instanceInfo.displayCode) {
+        return ConnectRequestStatus.invalidDisplayCode;
+      } else if (!_isValidOtp(connectionRequest.token!)) {
+        return ConnectRequestStatus.invalidOtp;
+      } else {
+        return ConnectRequestStatus.success;
+      }
     } else {
-      return ConnectRequestStatus.success;
+      if (isDirectConnect) {
+        // for direct connection
+        if (isAuthRequiredForDirectConnection()) {
+          return ConnectRequestStatus.authenticationRequired;
+        } else {
+          return ConnectRequestStatus.success;
+        }
+      } else {
+        // always reject tunnel connections without token
+        return ConnectRequestStatus.invalidDisplayCode;
+      }
     }
+  }
+
+  bool isAuthRequiredForDirectConnection() {
+    // TODO:
+    return false;
   }
 
   bool _isValidOtp(String token) {
