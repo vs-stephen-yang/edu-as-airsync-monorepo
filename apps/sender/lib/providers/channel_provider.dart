@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:display_cast_flutter/features/webrtc_connector.dart';
+import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
+import 'package:display_cast_flutter/model/direct_connector.dart';
 import 'package:display_cast_flutter/model/remote_screen_client.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
@@ -271,6 +273,19 @@ class ChannelProvider extends ChangeNotifier {
     );
   }
 
+  startDirectConnect({required String? otp, required AirSyncBonsoirService service}) {
+    // Generate a new client Id
+    _clientId = const Uuid().v4();
+    this.otp = otp;
+    DirectConnector connector = DirectConnector(clientId: _clientId!, otp: otp, onOpened: (channel) {
+      setUpChannel(channel, '');
+    }, onOpenError: (error) {
+      _onChannelOpenFailed(error);
+    });
+
+    connector.open(service: service);
+  }
+
   void setUpChannel(Channel channel, String formattedDisplayCode) {
     _channel = channel;
 
@@ -285,7 +300,7 @@ class ChannelProvider extends ChangeNotifier {
           break;
         case ChannelMessageType.displayStatus:
           resetMessage();
-          DataDisplayCode.getInstance().save(formattedDisplayCode);
+          if (formattedDisplayCode.isNotEmpty) DataDisplayCode.getInstance().save(formattedDisplayCode);
           _onDisplayStatus(message as DisplayStatusMessage);
           break;
         case ChannelMessageType.presentAccepted:
