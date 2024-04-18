@@ -46,5 +46,5 @@ class DevConfig implements ConfigSettings {
       'https://devapi.myviewboard.com/api/v1/application/extension/exception/uid/file?folder=DisplayExceptionLog';
 
   @override
-  String airSyncUrl = 'www.dev.airsync.net';
+  String airSyncUrl = 'dev.airsync.net';
 }
