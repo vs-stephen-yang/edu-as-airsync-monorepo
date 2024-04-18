@@ -118,6 +118,9 @@ class WebRTCViewState extends State<WebRTCView> {
           PresentationState.resumeStreaming) {
         _resumeVideo();
         rtcConnector.presentationState = PresentationState.streaming;
+      } else if (rtcConnector.presentationState ==
+          PresentationState.stopStreaming) {
+        _resumeVideo();
       }
       return Stack(
         fit: StackFit.expand,
