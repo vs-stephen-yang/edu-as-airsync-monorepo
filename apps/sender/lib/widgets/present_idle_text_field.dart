@@ -100,6 +100,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                   child: ListView.builder(
                     itemCount: displayList.length,
                     itemBuilder: (BuildContext context, int index) {
+                      String displayCode = displayList[index].replaceAll('-', '');
                       return Dismissible(
                         key: Key(displayList[index]),
                         background: Container(color: Colors.red),
@@ -113,9 +114,9 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                           });
                         },
                         child: ListTile(
-                          title: Text(displayList[index]),
+                          title: Text(displayCode),
                           onTap: () {
-                            _codeController.text = displayList[index];
+                            _codeController.text = displayCode;
                             _isOverlayVisible = false;
                             _overlayEntry?.remove();
                           },
@@ -218,15 +219,15 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               inputFormatter: [
                 UpperCaseTextFormatter(),
                 (WebRTC.platformIsWindows || kIsWeb) ? MaskedInputFormatter(
-                    '###-###-###-##'
+                    '###########'
                 ) : MaskedInputFormatter(
-                  '###-###-###-##',
+                  '###########',
                   allowedCharMatcher: RegExp('[A-Za-z0-9]'),
                 ),
               ],
               onChanged: (text) {
                 if (WebRTC.platformIsWindows || kIsWeb) {
-                  if(text.contains(RegExp(r'[^a-zA-Z0-9-]'))) {
+                  if(text.contains(RegExp(r'[^a-zA-Z0-9]'))) {
                     setCodeErrorMsg(S.of(context).main_display_code_error);
                     _isOverlayVisible = false;
                     _overlayEntry?.remove();
