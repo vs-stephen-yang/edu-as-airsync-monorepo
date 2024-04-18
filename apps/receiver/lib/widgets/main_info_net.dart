@@ -39,7 +39,7 @@ class MainInfoInternet extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      channelProvider.displayCodeWithDash,
+                      channelProvider.displayCode,
                       style: const TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.w500,

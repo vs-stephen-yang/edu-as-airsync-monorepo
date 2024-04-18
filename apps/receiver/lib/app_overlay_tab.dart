@@ -84,7 +84,7 @@ class AppOverlayTab {
                 : OverlayTabHandler.valueInvisible,
             OverlayTabHandler.keyDeviceName: mirrorProvider.deviceName,
             OverlayTabHandler.keyDisplayCode:
-                channelProvider.displayCodeWithDash,
+                channelProvider.displayCode,
             OverlayTabHandler.keyOtpCode: channelProvider.isEyeOpen.value
                 ? channelProvider.otp.value.toString()
                 : 'XXXX',
@@ -93,12 +93,12 @@ class AppOverlayTab {
 
           channelProvider.addListener(() async {
             await setDeviceNameAndDisplayCode(
-                mirrorProvider.deviceName, channelProvider.displayCodeWithDash);
+                mirrorProvider.deviceName, channelProvider.displayCode);
           });
 
           mirrorProvider.addListener(() async {
             await setDeviceNameAndDisplayCode(
-                mirrorProvider.deviceName, channelProvider.displayCodeWithDash);
+                mirrorProvider.deviceName, channelProvider.displayCode);
           });
 
           channelProvider.otp.addListener(() async {
