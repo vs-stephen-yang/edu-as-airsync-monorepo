@@ -49,15 +49,11 @@ class DirectConnector {
     _directClient?.onStateChange = (ChannelState state) {
 
       if (state == ChannelState.connected) {
-        _connected = true;
         _onOpened(_directClient!);
 
         drainPendingMessages(_directClient!, _directPendingMessages);
 
       } else if (state == ChannelState.closed) {
-        _connected = false;
-
-        // direct
         final error = mapCloseCodeToChannelConnectorError(
           _directClient?.closeReason?.code,
         );

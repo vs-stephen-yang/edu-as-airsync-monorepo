@@ -3,6 +3,7 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/present_idle_text_field.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -89,6 +90,7 @@ class PresentIdle extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
+        if (!kIsWeb)
         Align(
           alignment: Alignment.center,
           child: Padding(
