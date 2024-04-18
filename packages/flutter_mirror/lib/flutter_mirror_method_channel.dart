@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/airplay_config.dart';
+import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
 
@@ -35,9 +36,11 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
   }
 
   @override
-  Future<void> initialize() async {
+  Future<void> initialize(FlutterMirrorConfig config) async {
     await CredentialsStore.init();
-    await methodChannel.invokeMethod('initialize');
+    await methodChannel.invokeMethod('initialize', {
+      "additionalCodecParams": config.additionalCodecParams,
+    });
   }
 
   @override

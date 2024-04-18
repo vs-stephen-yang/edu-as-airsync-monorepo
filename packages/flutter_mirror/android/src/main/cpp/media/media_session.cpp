@@ -4,8 +4,10 @@
 #include "util/log.h"
 
 MediaSession::MediaSession(
-    jni::TextureRegistry& texture_registry)
-    : texture_registry_(texture_registry) {
+    jni::TextureRegistry& texture_registry,
+    const std::map<std::string, int>& additional_codec_params)
+    : texture_registry_(texture_registry),
+      additional_codec_params_(additional_codec_params) {
 }
 
 MediaSession::~MediaSession() {
@@ -75,6 +77,7 @@ bool MediaSession::InitVideoDecoder(
       codec_type,
       use_software_decoder,
       *csd_,
+      additional_codec_params_,
       texture_.wnd,
       this);
 

@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
+import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
 import 'package:flutter_mirror/airplay_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
@@ -62,7 +63,9 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
 
     try {
       _plugin.registerListener(this);
-      await _plugin.initialize();
+      await _plugin.initialize(const FlutterMirrorConfig({
+        "VideoPath": 1024 // 52-1C for testing
+      }));
 
       await startServices();
     } on PlatformException {

@@ -1,6 +1,8 @@
 #ifndef FLUTTER_MIRROR_PLUGIN_MEDIA_SESSION_H_
 #define FLUTTER_MIRROR_PLUGIN_MEDIA_SESSION_H_
 
+#include <map>
+#include <string>
 #include <memory>
 #include <optional>
 #include "jni/texture_registry.h"
@@ -21,7 +23,8 @@ class MediaSession
   };
 
   MediaSession(
-      jni::TextureRegistry& texture_registry);
+      jni::TextureRegistry& texture_registry,
+      const std::map<std::string, int>& additional_codec_params);
 
   ~MediaSession();
 
@@ -72,6 +75,7 @@ class MediaSession
   MediaSession::Listener* listener_ = nullptr;
 
   jni::TextureRegistry& texture_registry_;
+  const std::map<std::string, int>& additional_codec_params_;
 
   // video
   std::unique_ptr<VideoDecoder> video_decoder_;

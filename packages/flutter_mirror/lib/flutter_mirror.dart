@@ -1,4 +1,5 @@
 import 'package:flutter_mirror/airplay_config.dart';
+import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'flutter_mirror_platform_interface.dart';
@@ -9,9 +10,9 @@ class FlutterMirror {
     return FlutterMirrorPlatform.instance.registerListener(listener);
   }
 
-  Future<void> initialize() async{
+  Future<void> initialize(FlutterMirrorConfig config) async{
     await requestPermissions();
-    return FlutterMirrorPlatform.instance.initialize();
+    return await FlutterMirrorPlatform.instance.initialize(config);
   }
 
   Future<void> requestPermissions() async{

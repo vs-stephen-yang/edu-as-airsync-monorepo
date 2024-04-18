@@ -17,6 +17,7 @@
 #include "util/jni/byte_array.h"
 #include "util/jni/scoped_env.h"
 #include "util/jni/string.h"
+#include "util/jni/map_utils.h"
 #include "util/log.h"
 
 #define MIRROR(instance) \
@@ -57,9 +58,15 @@ JNIEXPORT jlong JNICALL
 Java_com_viewsonic_flutter_1mirror_MirrorReceiver_createInstanceNative(
     JNIEnv* env,
     jobject thiz,
-    jobject jtexture_registry) {
+    jobject jtexture_registry,
+    jobject additional_codec_params) {
   assert(g_vm);
   ALOGV("MirrorReceiver_createInstanceNative()");
+
+  std::map<std::string, int> codec_params;
+  if (additional_codec_params != nullptr) {
+      codec_params = jni::MapUtils::toStdMap(env, additional_codec_params);
+  }
 
   auto proxy = std::make_unique<jni::MirrorReceiver>(
       g_vm,
@@ -73,7 +80,8 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_createInstanceNative(
 
   MirrorReceiver* receiver = new MirrorReceiver(
       std::move(proxy),
-      std::move(texture_registry));
+      std::move(texture_registry),
+      std::move(codec_params));
 
   return reinterpret_cast<long>(receiver);
 }

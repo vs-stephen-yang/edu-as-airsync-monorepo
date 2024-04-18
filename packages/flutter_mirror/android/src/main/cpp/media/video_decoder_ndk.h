@@ -7,6 +7,8 @@
 #include "media/ndk_media_util.h"
 #include "media/video_decoder.h"
 
+#include <map>
+#include <string>
 #include <atomic>
 #include <thread>
 #include "media/video_csd.h"
@@ -19,6 +21,7 @@ class VideoDecoderNdk
 
   VideoDecoderNdk(
       AMediaCodec* codec,
+      const std::map<std::string, int>& codec_params,
       VideoDecoder::Callback* callback);
 
   ~VideoDecoderNdk();
@@ -40,6 +43,8 @@ class VideoDecoderNdk
   bool DeliverDecodedFrame();
 
   AMediaCodecPtr codec_;
+
+  const std::map<std::string, int>& codec_params_;
 
   std::unique_ptr<std::thread> thread_;
 

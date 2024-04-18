@@ -2,6 +2,7 @@
 #define FLUTTER_MIRROR_PLUGIN_MIRROR_RECEIVER_H_
 
 #include <map>
+#include <string>
 #include <thread>
 
 #include "jni/mirror_receiver.h"
@@ -18,7 +19,8 @@ class MirrorReceiver
  public:
   MirrorReceiver(
       jni::MirrorReceiverPtr&& proxy,
-      jni::TextureRegistryPtr&& texture_registry);
+      jni::TextureRegistryPtr&& texture_registry,
+      std::map<std::string, int>&& additional_codec_params);
 
   ~MirrorReceiver();
 
@@ -92,6 +94,7 @@ class MirrorReceiver
  private:
   jni::MirrorReceiverPtr proxy_;
   jni::TextureRegistryPtr texture_registry_;
+  std::map<std::string, int> additional_codec_params_;
 
   std::thread::id thread_id_;
   std::mutex mutex_;
