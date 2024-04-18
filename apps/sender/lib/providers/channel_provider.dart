@@ -228,9 +228,8 @@ class ChannelProvider extends ChangeNotifier {
   }) async {
     // Generate a new client Id
     _clientId = const Uuid().v4();
-    final encodedDisplayCode = formattedDisplayCode.replaceAll('-', '');
 
-    displayCode = decodeDisplayCode(encodedDisplayCode);
+    displayCode = decodeDisplayCode(formattedDisplayCode);
     this.otp = otp;
 
     if (!_isConnectionModeSupported(displayCode!)) {
@@ -242,7 +241,7 @@ class ChannelProvider extends ChangeNotifier {
       clientId: _clientId!,
       otp: otp,
       displayCode: displayCode!,
-      encodedDisplayCode: encodedDisplayCode,
+      encodedDisplayCode: formattedDisplayCode,
       createConnectionTunnel: (url) => WebSocketClientConnection(url,
           maxRetryDelay: const Duration(seconds: 3),
           maxRetryAttempts: 3,
