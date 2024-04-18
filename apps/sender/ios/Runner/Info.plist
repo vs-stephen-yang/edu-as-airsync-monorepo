@@ -59,5 +59,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocalNetworkUsageDescription</key>
+    <string>LocalNetworkUsage</string>
+    <key>NSBonjourServices</key>
+    <array>
+        <string>_vs-airsync._tcp</string>
+    </array>
 </dict>
 </plist>
