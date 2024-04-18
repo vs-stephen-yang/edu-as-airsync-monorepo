@@ -29,6 +29,7 @@ public class MirrorReceiver implements
   public MirrorReceiver(
       MirrorListener mirrorListener,
       TexRegistry textureRegistry,
+      Map<String, Integer> additionalCodecParams,
       Context context) {
     assert mirrorListener != null;
     assert textureRegistry != null;
@@ -37,7 +38,8 @@ public class MirrorReceiver implements
 
     // create C++ MirrorReceiver
     instance_ = createInstanceNative(
-        textureRegistry);
+      textureRegistry,
+      additionalCodecParams);
 
     assert instance_ != 0;
 
@@ -292,7 +294,7 @@ public class MirrorReceiver implements
   }
 
   private native long createInstanceNative(
-      TexRegistry textureRegistry);
+      TexRegistry textureRegistry, Map<String, Integer> options);
 
   private native void destroyInstanceNative(
       long instance);

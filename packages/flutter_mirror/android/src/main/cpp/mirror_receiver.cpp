@@ -24,9 +24,11 @@ void MirrorReceiver::InitializeOnce() {
 
 MirrorReceiver::MirrorReceiver(
     jni::MirrorReceiverPtr&& proxy,
-    jni::TextureRegistryPtr&& texture_registry)
+    jni::TextureRegistryPtr&& texture_registry,
+    std::map<std::string, int>&& additional_codec_params)
     : proxy_(std::move(proxy)),
-      texture_registry_(std::move(texture_registry)) {
+      texture_registry_(std::move(texture_registry)),
+      additional_codec_params_(std::move(additional_codec_params)) {
   ALOGV("MirrorReceiver()");
 
   thread_id_ = std::this_thread::get_id();
@@ -205,7 +207,8 @@ void MirrorReceiver::OnMirrorStart(
   ALOGD("MirrorReceiver::OnMirrorStart(%s)", mirror_id.c_str());
 
   auto media_session = std::make_unique<MediaSession>(
-      *texture_registry_);
+      *texture_registry_,
+      additional_codec_params_);
 
   if (!session->StartMirror(
           std::move(media_session))) {

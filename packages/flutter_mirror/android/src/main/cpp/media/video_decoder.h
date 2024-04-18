@@ -2,6 +2,8 @@
 #define FLUTTER_MIRROR_PLUGIN_VIDEO_DECODER_H_
 
 #include <android/native_window_jni.h>
+#include <map>
+#include <string>
 #include <memory>
 #include "media/media_format.h"
 #include "media/video_csd.h"
@@ -35,6 +37,7 @@ VideoDecoderPtr CreateVideoDecoder(
     VideoCodecType codec_type,
     bool use_software_decoder,
     const VideoCsd&,
+    const std::map<std::string, int>& codec_params,
     ANativeWindow* surface,
     VideoDecoder::Callback* callback);
 

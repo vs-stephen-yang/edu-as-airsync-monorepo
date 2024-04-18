@@ -133,8 +133,7 @@ public class FlutterMirrorPlugin implements
     Result result = new AnyThreadResult(res);
 
     if (call.method.equals("initialize")) {
-      initialize();
-
+      initialize(call.argument("additionalCodecParams"));
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
     } else if (call.method.equals("onMirrorTouch")) {
@@ -229,14 +228,14 @@ public class FlutterMirrorPlugin implements
     }
   }
 
-  private void initialize() {
+  private void initialize(Map<String, Integer> additionalCodecParams) {
     assert context_ != null;
 
     if (mirrorReceiver_ != null) {
       return;
     }
 
-    mirrorReceiver_ = new MirrorReceiver(this, this, context_);
+    mirrorReceiver_ = new MirrorReceiver(this, this, additionalCodecParams, context_);
   }
 
   private void startAirplay(String name, String security) {

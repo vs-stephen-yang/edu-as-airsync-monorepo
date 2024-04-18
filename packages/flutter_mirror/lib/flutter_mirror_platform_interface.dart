@@ -1,3 +1,4 @@
+import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -31,7 +32,7 @@ abstract class FlutterMirrorPlatform extends PlatformInterface {
     throw UnimplementedError('registerListener() has not been implemented.');
   }
 
-  Future<void> initialize() {
+  Future<void> initialize(FlutterMirrorConfig config) async {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 

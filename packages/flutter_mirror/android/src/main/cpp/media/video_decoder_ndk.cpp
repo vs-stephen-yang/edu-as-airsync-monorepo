@@ -1,5 +1,7 @@
 #include "video_decoder_ndk.h"
 #include "video_decoder_wrapper.h"
+#include <map>
+#include <string>
 #include <assert.h>
 #include "util/log.h"
 
@@ -22,8 +24,10 @@ void SetFmtCsd(AMediaFormat* fmt, const char* name, const std::vector<uint8_t>& 
 }  // namespace
 VideoDecoderNdk::VideoDecoderNdk(
     AMediaCodec* codec,
+    const std::map<std::string, int>& codec_params,
     VideoDecoder::Callback* callback)
     : codec_(codec),
+      codec_params_(codec_params),
       callback_(callback),
       running_(false) {
 }
@@ -49,6 +53,12 @@ bool VideoDecoderNdk::Init(
   // codec-specific data
   SetFmtCsd(fmt.get(), "csd-0", csd.csd0);
   SetFmtCsd(fmt.get(), "csd-1", csd.csd1);
+
+  // set codec specific parameters
+  for (const auto& kv : codec_params_) {
+    AMediaFormat_setInt32(fmt.get(), kv.first.c_str(), kv.second);
+    ALOGV("Set codec parameter: %s=%d", kv.first.c_str(), kv.second);
+  }
 
   media_status_t status = AMediaCodec_configure(
       codec_.get(),
@@ -199,6 +209,7 @@ VideoDecoderPtr CreateVideoDecoder(
     VideoCodecType codec_type,
     bool use_software_decoder,
     const VideoCsd& csd,
+    const std::map<std::string, int>& codec_params,
     ANativeWindow* surface,
     VideoDecoder::Callback* callback) {
   assert(surface);
@@ -221,6 +232,7 @@ VideoDecoderPtr CreateVideoDecoder(
 
   auto decoder = std::make_unique<VideoDecoderNdk>(
       codec,
+      codec_params,
       callback);
 
   if (!decoder->Init(
