@@ -45,7 +45,7 @@ class PresentIdle extends StatelessWidget {
           onPressed: () async {
             if (!presentBtnEnable) return;
             await channelProvider.presentEnd(goIdleState: false);
-            if (displayCode == "000-000-000-00" && password == "0000") {
+            if (displayCode == "00000000000" && password == "0000") {
               demoProvider.isDemoMode = true;
               demoProvider.presentSelectRoleDemoPage();
             } else {
