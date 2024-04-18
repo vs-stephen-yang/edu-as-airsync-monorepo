@@ -80,10 +80,6 @@ class ParticipantItem extends StatelessWidget {
       // waitForStream and streaming
       _sendPresenterStop(rtcConnector);
     } else {
-      // occupied and stopStreaming
-      if (!HybridConnectionList().occupyAvailableRTCConnector(index)) {
-        return;
-      }
       _sendPresenterPlay(rtcConnector);
     }
     HybridConnectionList().reorderPresenters(rtcConnector);

@@ -156,19 +156,6 @@ class HybridConnectionList {
     }
   }
 
-  bool occupyAvailableRTCConnector(int index) {
-    for (int i = 0; i < _hybridConnectionList.length; i++) {
-      if (_hybridConnectionList[i] is RTCConnector &&
-          (_hybridConnectionList[i]?.presentationState.index ?? 0) <
-              PresentationState.occupied.index) {
-        _hybridConnectionList[index]?.presentationState =
-            PresentationState.occupied;
-        return true;
-      }
-    }
-    return false;
-  }
-
   bool isPresenterWaitForStream(String clientId) {
     for (var connection in _hybridConnectionList.nonNulls) {
       if (connection is RTCConnector &&

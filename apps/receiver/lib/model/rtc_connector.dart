@@ -24,7 +24,6 @@ import 'connect_timer.dart';
 
 enum PresentationState {
   stopStreaming,
-  occupied,
   waitForStream,
   streaming,
   pauseStreaming,
