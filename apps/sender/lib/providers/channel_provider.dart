@@ -330,7 +330,12 @@ class ChannelProvider extends ChangeNotifier {
                 PresentRejectedReasonCode.maxPresentReached.code) {
               Toast.makeToast(S.current.toast_maximum_split_screen);
             }
-            presentEnd();
+            if (moderatorStatus) {
+              // moderator mode need keep sender in moderator list,
+              // do not send present end event.
+            } else {
+              presentEnd();
+            }
           }
           break;
         case ChannelMessageType.presentSignal:
