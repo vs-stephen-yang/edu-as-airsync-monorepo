@@ -45,6 +45,9 @@ class RTCConnector {
   String? senderPlatform;
   bool isAudioEnabled = false;
 
+  Timer? _statsTimer;
+  final _statsTimerInterval = const Duration(seconds: 1);
+
   String get senderNameWithEllipsis {
     String result = senderName ?? '';
     if (result.length > 10) {
@@ -83,6 +86,7 @@ class RTCConnector {
   Function(MediaStream? stream)? onAddRemoteStream;
   Function(MediaStream stream)? onRemoveRemoteStream;
   Function()? onRefresh;
+  Function(double fps)? onFPSReport;
   Function({bool? showMode})? onShowMode;
   Future<void> Function()? onChannelDisconnect;
 
@@ -111,6 +115,46 @@ class RTCConnector {
         await disconnectPeerConnection();
         await disconnectChannel();
         break;
+    }
+  }
+
+  void stopStatsTimer() {
+    _statsTimer?.cancel();
+    _statsTimer = null;
+  }
+
+  void startStatsTimer() {
+    _statsTimer?.cancel();
+    _statsTimer = Timer.periodic(_statsTimerInterval, (timer) async {
+        final reports = await _pc?.getStats(null);
+        if (reports != null) {
+          onStatsReports(reports);
+        }
+      },
+    );
+  }
+
+  void onStatsReports(List<StatsReport> reports) {
+    // currently, we only care about video stats
+    final inboundRtps = reports
+        .where((StatsReport report) => report.type == 'inbound-rtp')
+        .toList();
+
+    final videoInboundRtps = inboundRtps
+        .where((StatsReport report) => report.values['kind'] == 'video')
+        .toList();
+    _onVideoStatsReports(videoInboundRtps);
+  }
+
+  void _onVideoStatsReports(List<StatsReport> reports) {
+    if (reports.isEmpty) {
+      return;
+    }
+
+    final videoInboundRtp = reports.first;
+    final framesPerSecond = videoInboundRtp.values['framesPerSecond'];
+    if (framesPerSecond != null) {
+      onFPSReport?.call(framesPerSecond as double);
     }
   }
 
@@ -363,6 +407,7 @@ class RTCConnector {
   }
 
   Future<void> disconnectChannel() async {
+    stopStatsTimer();
     stopConnectionTimeoutTimer();
     await onChannelDisconnect?.call();
   }
@@ -444,6 +489,7 @@ class RTCConnector {
   void _onTrack(RTCTrackEvent event) async {
     _printPeerConnectionLog('_onTrack', event.track);
     if (event.track.kind == 'video') {
+      startStatsTimer();
       _remoteRenderer?.srcObject = event.streams[0];
     }
   }
