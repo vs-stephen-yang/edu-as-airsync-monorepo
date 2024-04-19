@@ -20,7 +20,10 @@ class HybridConnectionList {
   // passes the instantiation to the _instance object
   factory HybridConnectionList() => _instance;
 
-  final List<dynamic> _hybridConnectionList = List.filled(6, null);
+  static const int maxHybridConnection = 6;
+
+  final List<dynamic> _hybridConnectionList =
+      List.filled(maxHybridConnection, null);
 
   T getConnection<T>(int index) {
     return _hybridConnectionList[index];
