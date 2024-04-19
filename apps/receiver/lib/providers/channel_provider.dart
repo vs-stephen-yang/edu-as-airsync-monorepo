@@ -248,17 +248,6 @@ class ChannelProvider extends ChangeNotifier {
                 channel.send(message);
                 return;
               }
-            } else {
-              // TODO: check the limit upon startPresent message
-              if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] == 4) {
-                final message = PresentRejectedMessage();
-                message.reason = Reason(
-                  PresentRejectedReasonCode.maxPresentReached.code,
-                  text: 'Max number of presentations reached',
-                );
-                channel.send(message);
-                return;
-              }
             }
             rtcConnector = _onJoinDisplay(rtcConnector, mode, msg);
           } else {
@@ -286,6 +275,15 @@ class ChannelProvider extends ChangeNotifier {
           notifyListeners();
           break;
         case ChannelMessageType.startPresent:
+          if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] >= 4) {
+            final message = PresentRejectedMessage();
+            message.reason = Reason(
+              PresentRejectedReasonCode.maxPresentReached.code,
+              text: 'Max number of presentations reached',
+            );
+            channel.send(message);
+            break;
+          }
           rtcConnector.onStartPresent(
               message as StartPresentMessage, _isModeratorMode);
           break;
