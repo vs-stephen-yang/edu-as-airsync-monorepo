@@ -396,8 +396,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.29.0"
-      resolved-ref: bed193215a72ebfcc0f68a9c67fb5ffe7b3da220
+      ref: "release-0.30.0"
+      resolved-ref: "3f189bb56018ee502f8552367de9e70c221d236b"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror"
     source: git
     version: "0.0.1"
@@ -431,8 +431,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.9.36-26"
-      resolved-ref: d748602a41f05e10037af51cd1c93a52f5d256ea
+      ref: "release-0.9.36-28"
+      resolved-ref: "4b7f4d93aded223852238fb793932f1148931dee"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc"
     source: git
     version: "0.9.36"
@@ -520,8 +520,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.0.18"
-      resolved-ref: "8111870bf2360fd8aff78d7e338edf1e2c650f3e"
+      ref: "release-0.0.20"
+      resolved-ref: "7c4abba94f9a7b285d43230f2c0ebf23003f9da2"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter"
     source: git
     version: "1.0.0"
