@@ -6,11 +6,13 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
+import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/airplay_config.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
+import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
@@ -321,7 +323,8 @@ class MirrorStateProvider extends ChangeNotifier
     // We also handle the message potentially returning null.
     try {
       _flutterMirrorPlugin?.registerListener(this);
-      await _flutterMirrorPlugin?.initialize();
+      Map<String,int> options = DeviceFeatureAdapter.getQuickDecodeOptions();
+      await _flutterMirrorPlugin?.initialize(FlutterMirrorConfig(options));
     } on PlatformException {
       printInDebug('Mirror initialize failure.', type: runtimeType);
     }
