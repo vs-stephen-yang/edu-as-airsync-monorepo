@@ -300,7 +300,6 @@ class RTCConnector {
       }
       await disconnectPeerConnection(sendAnalytics: false);
       HybridConnectionList().updateSplitScreen();
-      HybridConnectionList().handleQualityUpdate();
       sessionId = null;
       onShowMode?.call();
       return;
