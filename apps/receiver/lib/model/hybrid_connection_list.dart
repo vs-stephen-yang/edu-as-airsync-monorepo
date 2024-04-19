@@ -156,6 +156,21 @@ class HybridConnectionList {
     }
   }
 
+  void setSpecifiedSplitScreenWindowQuality(int selection, bool hasSelected) {
+    var rtcConnectorMap = getRtcConnectorMap();
+    if (selection == -1) {
+      rtcConnectorMap.values.first.sendChangeQuality(true, true);
+    } else {
+      for (RTCConnector rtcConnector in rtcConnectorMap.values) {
+        if (rtcConnector.clientId != null) {
+          rtcConnector.sendChangeQuality(
+              (rtcConnector == rtcConnectorMap[selection] && hasSelected),
+              (rtcConnector == rtcConnectorMap[selection] || !hasSelected));
+        }
+      }
+    }
+  }
+
   bool isPresenterWaitForStream(String clientId) {
     for (var connection in _hybridConnectionList.nonNulls) {
       if (connection is RTCConnector &&

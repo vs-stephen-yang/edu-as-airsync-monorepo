@@ -263,7 +263,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     } else {
       Home.enlargedScreenPositionIndex.value = selection;
     }
-    context.read<ChannelProvider>().updateAllQuality(
+    HybridConnectionList().setSpecifiedSplitScreenWindowQuality(
         selection, Home.enlargedScreenPositionIndex.value == selection);
   }
 
