@@ -404,7 +404,6 @@ class ChannelProvider extends ChangeNotifier {
     rtcConnector.onAddRemoteStream = ((stream) {
       // update state and quality
       HybridConnectionList().updateSplitScreen();
-      HybridConnectionList().handleQualityUpdate(controller: rtcConnector);
 
       StreamFunction.streamFunctionState.value = stateMenuOff;
       while (navService.canPop()) {
@@ -433,7 +432,6 @@ class ChannelProvider extends ChangeNotifier {
       await rtcConnector.close(ChannelCloseCode.close);
       HybridConnectionList().removeConnection(rtcConnector);
       HybridConnectionList().updateSplitScreen();
-      HybridConnectionList().handleQualityUpdate();
 
       notifyListeners();
     });

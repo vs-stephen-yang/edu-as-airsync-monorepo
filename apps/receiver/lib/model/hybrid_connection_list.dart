@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/split_screen.dart';
@@ -78,6 +77,8 @@ class HybridConnectionList {
     }
     Home.isShowDisplayCode.value = inConnectionNumber == 0 ? true : false;
     Home.showTitleBottomBar.value = inConnectionNumber == 0 ? true : false;
+
+    _handleSplitScreenQualityPreset();
   }
 
   // Any type of connection is presenting
@@ -139,7 +140,7 @@ class HybridConnectionList {
   }
 
   //RTCConnector function region
-  void handleQualityUpdate({RTCConnector? controller}) {
+  void _handleSplitScreenQualityPreset() {
     if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
       for (var connection in _hybridConnectionList.nonNulls) {
         if (connection is RTCConnector &&
