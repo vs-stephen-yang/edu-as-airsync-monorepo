@@ -348,12 +348,10 @@ class RTCConnector {
 
   Future<void> onChannelClose(ChannelClosedMessage msg) async {}
 
-  void sendChangeQuality(bool isFullHeight, bool isFullFrameRate) async {
+  void sendChangeQuality(bool isFullHeight, bool isFullFrameRate) {
     var message = ChangePresentQuality(sessionId);
     message.constraints = PresentQualityConstraints(
         frameRate: isFullFrameRate ? 30 : 0, height: isFullHeight ? 1080 : 540);
-    // message.constraints?.frameRate = isFullFrameRate ? 30 : 0;
-    // message.constraints?.height = isFullHeight ? 1080 : 540;
     _channel.send(message);
   }
 
