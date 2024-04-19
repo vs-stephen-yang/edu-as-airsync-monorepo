@@ -15,6 +15,7 @@ class DeviceFeatureAdapter {
   // passes the instantiation to the _instance object
   factory DeviceFeatureAdapter() => _instance;
 
+  static bool ShowFPS = false;
   static bool UseSoftwareDecode = false;
   static bool UseRK3588QuickDecode = false;
   static bool UseRK3288_3399QuickDecode = false;
@@ -62,6 +63,7 @@ class DeviceFeatureAdapter {
 
   static save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("ShowFPS", ShowFPS);
     prefs.setBool("UseSoftwareDecode", UseSoftwareDecode);
     prefs.setBool("UseRK3588QuickDecode", UseRK3588QuickDecode);
     prefs.setBool("UseRK3288_3399QuickDecode", UseRK3288_3399QuickDecode);
@@ -72,6 +74,7 @@ class DeviceFeatureAdapter {
 
   static load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    ShowFPS = prefs.getBool("ShowFPS") ?? false;
     UseSoftwareDecode = prefs.getBool("UseSoftwareDecode") ?? false;
     UseRK3588QuickDecode = prefs.getBool("UseRK3588QuickDecode") ?? false;
     UseRK3288_3399QuickDecode = prefs.getBool("UseRK3288_3399QuickDecode") ?? false;

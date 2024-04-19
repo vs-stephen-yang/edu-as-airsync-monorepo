@@ -9,6 +9,7 @@ import 'package:display_flutter/protoc/event.pb.dart';
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/split_screen.dart';
+import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -33,6 +34,7 @@ class WebRTCViewState extends State<WebRTCView> {
   Offset _textureOffset = const Offset(0, 0);
   GlobalKey repaintBoundaryKey = GlobalKey();
   Widget? pauseScreenImage;
+  String debugOverlayText = '';
 
   @override
   void deactivate() {
@@ -72,6 +74,15 @@ class WebRTCViewState extends State<WebRTCView> {
     // When create widget in Home has check connection is RTCConnector.
     RTCConnector rtcConnector =
         HybridConnectionList().getConnection<RTCConnector>(widget.index);
+
+    rtcConnector.onFPSReport = (fps) {
+      if (!DeviceFeatureAdapter.ShowFPS) {
+        return;
+      }
+      setState(() {
+        debugOverlayText = 'FPS: $fps';
+      });
+    };
 
     onTouchEvent(TouchEvent_TouchEventType eventType, PointerEvent event) {
       if (_textureSizeChanged) {
@@ -235,6 +246,12 @@ class WebRTCViewState extends State<WebRTCView> {
                 ),
               ),
             ),
+            Text(debugOverlayText,
+                style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 60,
+                )
+            )
         ],
       );
     });
