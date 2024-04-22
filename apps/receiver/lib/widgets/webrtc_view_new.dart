@@ -33,6 +33,8 @@ class WebRTCViewState extends State<WebRTCView> {
   Offset _textureOffset = const Offset(0, 0);
   GlobalKey repaintBoundaryKey = GlobalKey();
   Widget? pauseScreenImage;
+  String fpsInfo = '';
+  String pairCandidateInfo = '';
   String debugOverlayText = '';
 
   @override
@@ -74,12 +76,25 @@ class WebRTCViewState extends State<WebRTCView> {
     RTCConnector rtcConnector =
         HybridConnectionList().getConnection<RTCConnector>(widget.index);
 
-    rtcConnector.onFPSReport = (fps) {
-      if (!DeviceFeatureAdapter.ShowFPS) {
+    rtcConnector.onPairCandidateType = (localCandidateType, remoteCandidateType) {
+      if (!DeviceFeatureAdapter.ShowDebugOverlay) {
         return;
       }
+
+      pairCandidateInfo = 'Local: $localCandidateType, Remote: $remoteCandidateType';
       setState(() {
-        debugOverlayText = 'FPS: $fps';
+        debugOverlayText = '$fpsInfo\n$pairCandidateInfo';
+      });
+    };
+
+    rtcConnector.onFPSReport = (fps) {
+      if (!DeviceFeatureAdapter.ShowDebugOverlay) {
+        return;
+      }
+
+      fpsInfo = 'FPS: $fps';
+      setState(() {
+        debugOverlayText = '$fpsInfo\n$pairCandidateInfo';
       });
     };
 
@@ -248,7 +263,7 @@ class WebRTCViewState extends State<WebRTCView> {
             Text(debugOverlayText,
                 style: const TextStyle(
                     color: Colors.red,
-                    fontSize: 60,
+                    fontSize: 30,
                 )
             )
         ],
