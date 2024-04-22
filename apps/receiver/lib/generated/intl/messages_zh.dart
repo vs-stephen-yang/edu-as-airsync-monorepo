@@ -109,6 +109,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "moderator_remove": MessageLookupByLibrary.simpleMessage("移除"),
         "moderator_verifyCode_fail":
             MessageLookupByLibrary.simpleMessage("抱歉，出現問題，請稍後再試。"),
+        "toast_maximum_split_screen":
+            MessageLookupByLibrary.simpleMessage("已達到投影人員上限"),
         "update_install_now": MessageLookupByLibrary.simpleMessage("立即安裝"),
         "update_message": MessageLookupByLibrary.simpleMessage("已有新版本可供安裝"),
         "update_title": MessageLookupByLibrary.simpleMessage("AirSync 更新"),

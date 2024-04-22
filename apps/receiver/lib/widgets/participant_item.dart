@@ -1,11 +1,14 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/loading_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:motion_toast/motion_toast.dart';
 
 class ParticipantItem extends StatelessWidget {
   const ParticipantItem({super.key, required this.index});
@@ -34,7 +37,7 @@ class ParticipantItem extends StatelessWidget {
               ),
               showWhiteBorder: true,
               onClick: () {
-                _presenterOnOff(rtcConnector, presenterId);
+                _presenterOnOff(context, rtcConnector, presenterId);
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -75,11 +78,24 @@ class ParticipantItem extends StatelessWidget {
     );
   }
 
-  _presenterOnOff(RTCConnector? rtcConnector, String presenterId) async {
+  _presenterOnOff(BuildContext context, RTCConnector? rtcConnector,
+      String presenterId) async {
     if (HybridConnectionList().isPresenterNotStopStreaming(presenterId)) {
       // waitForStream and streaming
       _sendPresenterStop(rtcConnector);
     } else {
+      if (HybridConnectionList().getPresentingCount() >= 4) {
+        MotionToast(
+          primaryColor: Colors.grey,
+          backgroundType: BackgroundType.solid,
+          description: AutoSizeText(
+            S.of(context).toast_maximum_split_screen,
+            maxLines: 1,
+          ),
+          displaySideBar: false,
+        ).show(context);
+        return;
+      }
       _sendPresenterPlay(rtcConnector);
     }
     HybridConnectionList().reorderPresenters(rtcConnector);
