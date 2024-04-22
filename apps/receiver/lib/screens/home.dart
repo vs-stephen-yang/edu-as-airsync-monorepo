@@ -12,7 +12,6 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
-import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
@@ -108,10 +107,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             alignment: Alignment.center,
             children: <Widget>[
               ValueListenableBuilder(
-                valueListenable: SplitScreen.mapSplitScreen,
-                builder: (context, Map<String, dynamic> value, child) {
+                valueListenable: HybridConnectionList.hybridSplitScreenCount,
+                builder: (context, int value, child) {
                   return Stack(
-                    children: List.generate(4, (index) {
+                    children: List.generate(value, (index) {
                       double? left, top, right, bottom;
                       if (index == 1) {
                         right = 0;
@@ -273,16 +272,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       return isWidth ? _fullWidth : _fullHeight;
     } else if (Home.enlargedScreenPositionIndex.value != null) {
       // one of the screens is enlarged
-      return 0; // MUST use 1 to create view, 0 won't.
+      return 0;
     } else {
       // no enlarged screen
-      if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] == 1) {
-        // if (index ==
-        //     SplitScreen.mapSplitScreen.value[keySplitScreenLastId]) {
+      if (HybridConnectionList.hybridSplitScreenCount.value == 1) {
         return isWidth ? _fullWidth : _fullHeight;
-        // } else {
-        //   return 0; // MUST use 1 to create view, 0 won't.
-        // }
       }
       return isWidth ? _halfWidth : _halfHeight;
     }

@@ -8,7 +8,6 @@ import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/protoc/event.pb.dart';
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:flutter/material.dart';
@@ -191,7 +190,7 @@ class WebRTCViewState extends State<WebRTCView> {
             ),
           if (rtcConnector.presentationState == PresentationState.waitForStream)
             Transform.scale(
-              scale: SplitScreen.mapSplitScreen.value[keySplitScreenCount] > 1
+              scale: HybridConnectionList.hybridSplitScreenCount.value > 1
                   ? 0.5
                   : 1.0,
               child: SizedBox(

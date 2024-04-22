@@ -9,7 +9,6 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
-import 'package:display_flutter/screens/split_screen.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
@@ -303,7 +302,7 @@ class RTCConnector {
       sessionId = null;
       onShowMode?.call();
       return;
-    } else if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] > 0) {
+    } else if (HybridConnectionList.hybridSplitScreenCount.value > 0) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
       while (navService.canPop()) {
         navService.goBack();
