@@ -4,7 +4,7 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/home.dart';
-import 'package:display_flutter/screens/split_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../widgets/stream_function.dart';
@@ -21,6 +21,10 @@ class HybridConnectionList {
   factory HybridConnectionList() => _instance;
 
   static const int maxHybridConnection = 6;
+
+  static const int maxHybridSplitScreen = 4;
+
+  static ValueNotifier<int> hybridSplitScreenCount = ValueNotifier(0);
 
   final List<dynamic> _hybridConnectionList =
       List.filled(maxHybridConnection, null);
@@ -54,7 +58,7 @@ class HybridConnectionList {
   }
 
   void updateSplitScreen() {
-    int inConnectionNumber = 0, lastID = 0;
+    int inConnectionNumber = 0;
     for (RTCConnector connector in getRtcConnectorMap().values) {
       if (connector.presentationState != PresentationState.stopStreaming) {
         inConnectionNumber++;
@@ -65,15 +69,8 @@ class HybridConnectionList {
         inConnectionNumber++;
       }
     }
-    lastID = _hybridConnectionList
-        .indexOf(_hybridConnectionList.nonNulls.lastOrNull);
-
-    SplitScreen.mapSplitScreen.value[keySplitScreenCount] = inConnectionNumber;
-    SplitScreen.mapSplitScreen.value[keySplitScreenLastId] = lastID;
-    // Using below method to trigger value changed.
-    // https://github.com/flutter/flutter/issues/29958
-    SplitScreen.mapSplitScreen.value =
-        Map.from(SplitScreen.mapSplitScreen.value);
+    hybridSplitScreenCount.value = 0; // workaround to trigger value changed.
+    hybridSplitScreenCount.value = inConnectionNumber;
 
     if (inConnectionNumber == 0) {
       StreamFunction.streamFunctionState.value = stateStandby;
@@ -144,7 +141,7 @@ class HybridConnectionList {
 
   //RTCConnector function region
   void _handleSplitScreenQualityPreset() {
-    if (SplitScreen.mapSplitScreen.value[keySplitScreenCount] < 2) {
+    if (hybridSplitScreenCount.value < 2) {
       for (var connection in _hybridConnectionList.nonNulls) {
         if (connection is RTCConnector &&
             connection.presentationState == PresentationState.streaming) {
@@ -228,6 +225,8 @@ class HybridConnectionList {
         }
       }
     }
+    hybridSplitScreenCount.value = 0; // workaround to trigger value changed.
+    hybridSplitScreenCount.value = mirroringCount();
   }
 
   reorderPresenters(RTCConnector? selectedRtcConnector) {
@@ -268,17 +267,14 @@ class HybridConnectionList {
       }
       ConnectionTimer.getInstance().startRemainingTimeTimer(() async {
         removeAllPresenters();
-        SplitScreen.mapSplitScreen.value[keySplitScreenCount] =
-            mirroringCount();
-        SplitScreen.mapSplitScreen.value =
-            Map.from(SplitScreen.mapSplitScreen.value);
       });
     }
   }
 
   //End of RTCConnector function region
 
-  updateAudioEnableStateByIndex(int index, bool enable, bool setIsAudioEnabled) {
+  updateAudioEnableStateByIndex(
+      int index, bool enable, bool setIsAudioEnabled) {
     var connection = _hybridConnectionList[index];
     if (connection != null && connection is RTCConnector) {
       connection.controlAudio(enable, setIsAudioEnabled: setIsAudioEnabled);
