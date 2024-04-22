@@ -19,7 +19,7 @@ class DebugSwitch extends StatefulWidget {
 }
 
 class _DebugSwitchState extends State<DebugSwitch> {
-  bool _showFPS = false;
+  bool _showDebugOverlay = false;
   bool _useSoftwareDecode = false;
   bool _applyRK3588 = false;
   bool _applyRK3288n3399 = false;
@@ -35,12 +35,12 @@ class _DebugSwitchState extends State<DebugSwitch> {
     );
   }
 
-  void _showFPSChanged(bool value) async {
-    DeviceFeatureAdapter.ShowFPS = value;
+  void _showDebugOverlayChanged(bool value) async {
+    DeviceFeatureAdapter.ShowDebugOverlay = value;
     await DeviceFeatureAdapter.save();
 
     setState(() {
-      _showFPS = value;
+      _showDebugOverlay = value;
       _notifyRestart();
     });
   }
@@ -87,7 +87,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   }
 
   void _initialize() {
-    _showFPS = DeviceFeatureAdapter.ShowFPS;
+    _showDebugOverlay = DeviceFeatureAdapter.ShowDebugOverlay;
     _useSoftwareDecode = DeviceFeatureAdapter.UseSoftwareDecode;
     _applyRK3588 = DeviceFeatureAdapter.UseRK3588QuickDecode;
     _applyRK3288n3399 = DeviceFeatureAdapter.UseRK3288_3399QuickDecode;
@@ -116,9 +116,9 @@ class _DebugSwitchState extends State<DebugSwitch> {
                     return Column(
                       children: [
                         SwitchListTile(
-                          title: const Text('Show FPS'),
-                          value: _showFPS,
-                          onChanged: _showFPSChanged
+                          title: const Text('Show Debug Overlay'),
+                          value: _showDebugOverlay,
+                          onChanged: _showDebugOverlayChanged
                         ),
                         SwitchListTile(
                           title: const Text('Software Decode'),
