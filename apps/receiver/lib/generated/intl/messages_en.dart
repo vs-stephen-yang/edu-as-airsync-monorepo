@@ -119,6 +119,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "moderator_remove": MessageLookupByLibrary.simpleMessage("REMOVE"),
         "moderator_verifyCode_fail": MessageLookupByLibrary.simpleMessage(
             "Something went wrong. Please try again."),
+        "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
+            "Has reached maximum split screen amount."),
         "update_install_now":
             MessageLookupByLibrary.simpleMessage("INSTALL NOW"),
         "update_message": MessageLookupByLibrary.simpleMessage(

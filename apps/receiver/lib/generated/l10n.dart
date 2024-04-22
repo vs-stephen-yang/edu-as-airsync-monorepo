@@ -619,6 +619,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Has reached maximum split screen amount.`
+  String get toast_maximum_split_screen {
+    return Intl.message(
+      'Has reached maximum split screen amount.',
+      name: 'toast_maximum_split_screen',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
