@@ -93,7 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_wait_title": MessageLookupByLibrary.simpleMessage("等待投影中..."),
         "main_wait_up_next": MessageLookupByLibrary.simpleMessage("下一位投影者"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "[新功能]\n1. 支援螢幕鏡射\n - Miracast\n - AirPlay\n - Google Cast\n2. 提供多版本的螢幕分享傳送端應用軟體\n - Windows版本\n - macOS版本\n - Android版本\n - iOS版本\n - Web版本\n3. 分割螢幕\n - AirSync最多支援四分割螢幕，可同時允許四個螢幕投屏\n4. 主持人模式\n - AirSync最多同時允許六人連線\n - 主持人可自由選擇投影人員並控制投影過程\n5. 分享畫面至傳送端應用軟體\n - 最多可分享AirSync螢幕至十個傳送端應用軟體"),
+            "[新功能]\n1. 裝置清單連線\n - 可無須輸入投影辨識碼及一次性密碼，快速投影到同一網路的AirSync裝置。\n\n[功能改善]\n1. 從Display code中移除\"-\"。\n2. 降低螢幕延遲。\n3. 更換Display code字型，以增加文字辨別度。"),
         "main_whats_new_title": MessageLookupByLibrary.simpleMessage("最新消息"),
         "moderator_activate_split_screen":
             MessageLookupByLibrary.simpleMessage("確定啟用分割畫面功能嗎?最多可四人同時投影。"),
