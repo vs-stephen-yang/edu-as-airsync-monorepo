@@ -30,6 +30,8 @@ class _OverlayTabState extends State<OverlayTab> {
   @override
   Widget build(BuildContext context) {
     var textStyle = const TextStyle(
+      fontFamily: 'Inconsolata',
+      fontSize: 15,
       color: Colors.black,
       fontWeight: FontWeight.bold,
     );
