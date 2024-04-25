@@ -550,20 +550,20 @@ class S {
     );
   }
 
-  /// `Device List`
+  /// `Quick Connect`
   String get main_device_list {
     return Intl.message(
-      'Device List',
+      'Quick Connect',
       name: 'main_device_list',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enter pin code`
+  /// `One-Time Password`
   String get device_list_enter_pin {
     return Intl.message(
-      'Enter pin code',
+      'One-Time Password',
       name: 'device_list_enter_pin',
       desc: '',
       args: [],
