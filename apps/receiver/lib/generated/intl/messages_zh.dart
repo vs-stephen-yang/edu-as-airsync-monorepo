@@ -58,7 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_register_display_code_failure":
             MessageLookupByLibrary.simpleMessage("取得投影辨識碼失敗，請稍後再試"),
         "main_settings_device_list":
-            MessageLookupByLibrary.simpleMessage("裝置清單快速連線"),
+            MessageLookupByLibrary.simpleMessage("快速連線"),
         "main_settings_device_name": MessageLookupByLibrary.simpleMessage("名稱"),
         "main_settings_device_name_cancel":
             MessageLookupByLibrary.simpleMessage("取消"),
