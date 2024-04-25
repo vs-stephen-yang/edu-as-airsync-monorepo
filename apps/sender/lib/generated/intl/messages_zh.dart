@@ -24,6 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "device_list_enter_pin": MessageLookupByLibrary.simpleMessage("一次性密碼"),
         "main_connect_network_error":
             MessageLookupByLibrary.simpleMessage("網路連線異常，請檢查網路連線"),
         "main_connect_rate_limited":
@@ -32,6 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("未知的錯誤"),
         "main_connection_mode_unsupported":
             MessageLookupByLibrary.simpleMessage("AirSync無網際網路連線"),
+        "main_device_list": MessageLookupByLibrary.simpleMessage("快速連線"),
         "main_display_code": MessageLookupByLibrary.simpleMessage("投影辨識碼"),
         "main_display_code_description":
             MessageLookupByLibrary.simpleMessage("請輸入投影辨識碼"),

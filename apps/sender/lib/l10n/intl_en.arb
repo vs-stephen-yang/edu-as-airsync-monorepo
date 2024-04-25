@@ -49,7 +49,7 @@
     "moderator_back": "Back",
     "main_display_code_error": "Display code can only contain letters and numbers.",
     "main_otp_error": "One Time Password error.",
-    "main_device_list": "Device List",
-    "device_list_enter_pin": "Enter pin code",
+    "main_device_list": "Quick Connect",
+    "device_list_enter_pin": "One-Time Password",
     "device_list_enter_pin_ok": "OK"
 }

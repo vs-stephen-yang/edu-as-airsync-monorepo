@@ -26,7 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "device_list_enter_pin":
-            MessageLookupByLibrary.simpleMessage("Enter pin code"),
+            MessageLookupByLibrary.simpleMessage("One-Time Password"),
         "device_list_enter_pin_ok": MessageLookupByLibrary.simpleMessage("OK"),
         "main_connect_network_error": MessageLookupByLibrary.simpleMessage(
             "Network error. Please check network connectivity and try again."),
@@ -37,7 +37,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_connection_mode_unsupported":
             MessageLookupByLibrary.simpleMessage(
                 "AirSync does not connect to Internet."),
-        "main_device_list": MessageLookupByLibrary.simpleMessage("Device List"),
+        "main_device_list":
+            MessageLookupByLibrary.simpleMessage("Quick Connect"),
         "main_display_code":
             MessageLookupByLibrary.simpleMessage("Display code"),
         "main_display_code_description":
