@@ -10,6 +10,7 @@ import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
+import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
@@ -141,10 +142,16 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                 children: <Widget>[
                                   if (HybridConnectionList()
                                       .isRTCConnector(index))
-                                    WebRTCView(index: index),
+                                    WebRTCView(
+                                        rtcConnector: HybridConnectionList()
+                                            .getConnection<RTCConnector>(
+                                                index)),
                                   if (HybridConnectionList()
                                       .isMirrorRequest(index))
-                                    MirrorView(index: index),
+                                    MirrorView(
+                                        mirrorRequest: HybridConnectionList()
+                                            .getConnection<MirrorRequest>(
+                                                index)),
                                   if (HybridConnectionList()
                                       .isPresenting(index: index))
                                     SplitScreenFunction(

@@ -11,14 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:motion_toast/motion_toast.dart';
 
 class ParticipantItem extends StatelessWidget {
-  const ParticipantItem({super.key, required this.index});
+  const ParticipantItem({super.key, required this.rtcConnector});
 
-  final int index;
+  final RTCConnector rtcConnector;
 
   @override
   Widget build(BuildContext context) {
-    RTCConnector rtcConnector =
-        HybridConnectionList().getRtcConnectorMap().values.toList()[index];
     String presenterId = rtcConnector.clientId ?? '';
     return SizedBox(
       child: Row(
@@ -78,8 +76,8 @@ class ParticipantItem extends StatelessWidget {
     );
   }
 
-  _presenterOnOff(BuildContext context, RTCConnector? rtcConnector,
-      String presenterId) async {
+  _presenterOnOff(
+      BuildContext context, RTCConnector rtcConnector, String presenterId) {
     if (HybridConnectionList().isPresenterNotStopStreaming(presenterId)) {
       // waitForStream and streaming
       _sendPresenterStop(rtcConnector);
@@ -101,19 +99,19 @@ class ParticipantItem extends StatelessWidget {
     HybridConnectionList().reorderPresenters(rtcConnector);
   }
 
-  _sendPresenterPlay(RTCConnector? rtcConnector) {
+  _sendPresenterPlay(RTCConnector rtcConnector) {
     AppAnalytics().trackEventModeratorPresenterPresent();
-    rtcConnector?.sendAllowPresent();
+    rtcConnector.sendAllowPresent();
   }
 
-  _sendPresenterStop(RTCConnector? rtcConnector) {
+  _sendPresenterStop(RTCConnector rtcConnector) {
     AppAnalytics().trackEventModeratorPresenterStop();
-    rtcConnector?.sendStopPresent();
+    rtcConnector.sendStopPresent();
   }
 
-  _sendPresenterRemove(RTCConnector? rtcConnector) async {
+  _sendPresenterRemove(RTCConnector rtcConnector) async {
     AppAnalytics().trackEventModeratorPresentersRemove();
-    await rtcConnector?.disconnectPeerConnection();
-    await rtcConnector?.disconnectChannel();
+    await rtcConnector.disconnectPeerConnection();
+    await rtcConnector.disconnectChannel();
   }
 }

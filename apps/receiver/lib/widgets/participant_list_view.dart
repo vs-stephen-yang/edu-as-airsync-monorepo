@@ -5,14 +5,9 @@ import 'package:display_flutter/widgets/participant_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ParticipantListView extends StatefulWidget {
+class ParticipantListView extends StatelessWidget {
   const ParticipantListView({super.key});
 
-  @override
-  State createState() => _ParticipantListViewState();
-}
-
-class _ParticipantListViewState extends State<ParticipantListView> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,7 +32,11 @@ class _ParticipantListViewState extends State<ParticipantListView> {
                 if (index > 5) {
                   return const SizedBox.shrink();
                 }
-                return ParticipantItem(index: index);
+                return ParticipantItem(
+                    rtcConnector: HybridConnectionList()
+                        .getRtcConnectorMap()
+                        .values
+                        .toList()[index]);
               },
               separatorBuilder: (BuildContext context, int index) {
                 return const Divider(height: 0, color: Colors.transparent);
