@@ -22,6 +22,7 @@ typedef FetchChannelTunnelUrl = Future<String> Function(int instanceIndex);
 enum ChannelConnectorError {
   instanceNotFound,
   authenticationError,
+  authenticationRequired,
   networkError,
   invalidDisplayCode,
   rateLimitExceeded,
@@ -346,6 +347,9 @@ ChannelConnectorError mapCloseCodeToChannelConnectorError(
 
     case ChannelCloseCode.networkError:
       return ChannelConnectorError.networkError;
+
+    case ChannelCloseCode.authenticationRequired:
+      return ChannelConnectorError.authenticationRequired;
 
     default:
       return ChannelConnectorError.unknownError;
