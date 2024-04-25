@@ -17,31 +17,17 @@ class DeviceFeatureAdapter {
 
   static bool ShowDebugOverlay = false;
   static bool UseSoftwareDecode = false;
-  static bool UseRK3588QuickDecode = false;
-  static bool UseRK3288_3399QuickDecode = false;
-  static bool UseMTK9950QuickDecode = false;
-  static bool UseAMLogic982_1516QuickDecode = false;
-  static bool UseGenericQuickDecode = false;
+  static bool UseQuickDecodeParams = false;
 
-  static Map<String, int> RK3588 = {
-    "low-latency": 1, // quick decode
-  };
+  static final bool DefaultShowDebugOverlay = false;
+  static final bool DefaultUseSoftwareDecode = false;
+  static final bool DefaultUseQuickDecodeParams = true;
 
-  static Map<String, int> RK3288_3399 = {
-    "rk-immediate-out": 1, // quick decode
-  };
-
-  static Map<String, int> MTK9950 = {
-    "VideoPath": 1, // green screen on 2nd decoder
-    "lowlatency": 1 // quick decode
-  };
-
-  static Map<String, int> AMLogic982_1516 = { // DrodiLogic or AMLogic
-    "vendor.low-latency.enable": 1, // quick decode
-  };
-
-  static Map<String, int> Generic = {
-    "vendor.low-latency.enable": 1, // quick decode
+  static Map<String, int> QuickDecodeParams = {
+    "low-latency": 1, // RK3588
+    "rk-immediate-out": 1, // RK3288_3399
+    "lowlatency": 1, // MTK9950
+    "vendor.low-latency.enable": 1 // AMLogic982_1516 or Generic
   };
 
   static Map<String, dynamic> deviceOptions = {
@@ -65,35 +51,19 @@ class DeviceFeatureAdapter {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool("ShowDebugOverlay", ShowDebugOverlay);
     prefs.setBool("UseSoftwareDecode", UseSoftwareDecode);
-    prefs.setBool("UseRK3588QuickDecode", UseRK3588QuickDecode);
-    prefs.setBool("UseRK3288_3399QuickDecode", UseRK3288_3399QuickDecode);
-    prefs.setBool("UseMTK9950QuickDecode", UseMTK9950QuickDecode);
-    prefs.setBool("UseAMLogic982_1516QuickDecode", UseAMLogic982_1516QuickDecode);
-    prefs.setBool("UseGenericQuickDecode", UseGenericQuickDecode);
+    prefs.setBool("UseQuickDecodeParams", UseQuickDecodeParams);
   }
 
   static load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    ShowDebugOverlay = prefs.getBool("ShowDebugOverlay") ?? false;
-    UseSoftwareDecode = prefs.getBool("UseSoftwareDecode") ?? false;
-    UseRK3588QuickDecode = prefs.getBool("UseRK3588QuickDecode") ?? false;
-    UseRK3288_3399QuickDecode = prefs.getBool("UseRK3288_3399QuickDecode") ?? false;
-    UseMTK9950QuickDecode = prefs.getBool("UseMTK9950QuickDecode") ?? false;
-    UseAMLogic982_1516QuickDecode = prefs.getBool("UseAMLogic982_1516QuickDecode") ?? false;
-    UseGenericQuickDecode = prefs.getBool("UseGenericQuickDecode") ?? false;
+    ShowDebugOverlay = prefs.getBool("ShowDebugOverlay") ?? DefaultShowDebugOverlay;
+    UseSoftwareDecode = prefs.getBool("UseSoftwareDecode") ?? DefaultUseSoftwareDecode;
+    UseQuickDecodeParams = prefs.getBool("UseQuickDecodeParams") ?? DefaultUseQuickDecodeParams;
   }
 
   static Map<String, int> getQuickDecodeOptions() {
-    if (UseRK3588QuickDecode) {
-      return RK3588;
-    } else if (UseRK3288_3399QuickDecode) {
-      return RK3288_3399;
-    } else if (UseMTK9950QuickDecode) {
-      return MTK9950;
-    } else if (UseAMLogic982_1516QuickDecode) {
-      return AMLogic982_1516;
-    } else if (UseGenericQuickDecode) {
-      return Generic;
+    if (UseQuickDecodeParams) {
+      return QuickDecodeParams;
     }
     return {};
   }
