@@ -14,6 +14,7 @@ import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -41,6 +42,7 @@ class _SettingsState extends State<Settings> {
     if (_isInChildDialog) {
       return const SizedBox();
     }
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
     return MenuDialog(
       backgroundColor: HybridConnectionList().isMirroring()
           ? AppColors.primary_grey_tran
@@ -77,6 +79,36 @@ class _SettingsState extends State<Settings> {
           Container(
             height: 2,
             color: Colors.black26,
+          ),
+          Row(
+            children: [
+              const Icon(Icons.pin, size: 32.0),
+              const SizedBox(width: 20),
+              Text(
+                S.of(context).main_settings_device_list,
+                style: const TextStyle(fontSize: 18),
+              ),
+              const Spacer(),
+              FittedBox(
+                fit: BoxFit.fitHeight,
+                child: FocusIconButton(
+                  childNotFocus: Image(
+                    image: Svg(channelProvider.isDeviceListQuickConnect
+                        ? 'assets/images/ic_activate_on.svg'
+                        : 'assets/images/ic_activate_off.svg'),
+                  ),
+                  splashRadius: 20,
+                  focusColor: Colors.grey,
+                  onClick: () {
+                    if (channelProvider.isDeviceListQuickConnect) {
+                      channelProvider.isDeviceListQuickConnect = false;
+                    } else {
+                      channelProvider.isDeviceListQuickConnect = true;
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
           Row(
             children: [

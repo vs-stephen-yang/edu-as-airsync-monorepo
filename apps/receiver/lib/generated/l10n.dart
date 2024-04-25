@@ -629,6 +629,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Device List Quick Connect`
+  String get main_settings_device_list {
+    return Intl.message(
+      'Device List Quick Connect',
+      name: 'main_settings_device_list',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
