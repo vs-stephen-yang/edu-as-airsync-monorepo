@@ -9,17 +9,16 @@ class DiscoverServices {
 
   String type = '_vs-airsync._tcp';
   BonsoirDiscovery? discovery;
+  ServiceResolver? serviceResolver;
 
   Future<void> startDiscovery(Function(BonsoirDiscoveryEvent event)? onEventOccurred) async {
-    print('zz ${discovery != null}');
     if (discovery != null) return;
     // start the discovery
-    discovery = BonsoirDiscovery(type: type);
-    await discovery?.ready;
-
+    discovery = BonsoirDiscovery(printLogs:true, type: type);
+    discovery?.ready.then((value) {
     discovery?.eventStream!.listen(onEventOccurred);
-
-    await discovery?.start();
+    discovery?.start();
+    });
   }
 
   Future<void> stopDiscovery() async {
@@ -28,8 +27,7 @@ class DiscoverServices {
   }
 
   Future<void> resolveService(BonsoirService service) async {
-    await service.resolve(discovery!.serviceResolver);
-    // await lookupIpAddress(service.name);
+    service.resolve(discovery!.serviceResolver);
   }
 
   Future<String?> lookupIpAddress(String hostName) async {
@@ -43,14 +41,11 @@ class DiscoverServices {
             break;
           }
         }
-        print('IPv4： $ipv4Address');
         return ipv4Address;
       }
       return null;
     } on SocketException catch (e) {
-      print('SocketException： $e');
       return null;
     }
   }
-
 }
