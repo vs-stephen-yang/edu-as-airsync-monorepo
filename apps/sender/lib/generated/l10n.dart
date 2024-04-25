@@ -559,6 +559,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Enter pin code`
+  String get device_list_enter_pin {
+    return Intl.message(
+      'Enter pin code',
+      name: 'device_list_enter_pin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get device_list_enter_pin_ok {
+    return Intl.message(
+      'OK',
+      name: 'device_list_enter_pin_ok',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

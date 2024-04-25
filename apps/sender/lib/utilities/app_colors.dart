@@ -10,4 +10,6 @@ class AppColors {
   static const Color presentIdleOnBackground = Color.fromRGBO(242, 242, 242, 1);
 
   static const Color iconFeatureBackground = Color.fromRGBO(0x89, 0x89, 0x89, 0.4);
+
+  static const Color iconPinCodeBackground = Color.fromRGBO(0xD9, 0xD9, 0xD9, 1);
 }
