@@ -42,8 +42,9 @@ class MainInfoInternet extends StatelessWidget {
                     Text(
                       instanceInfo.displayCode,
                       style: const TextStyle(
+                        fontFamily: 'Inconsolata',
                         fontSize: 35,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
@@ -69,8 +70,9 @@ class MainInfoInternet extends StatelessWidget {
                                   return Text(
                                     eyeOpen ? otp.toString() : 'XXXX',
                                     style: const TextStyle(
+                                      fontFamily: 'Inconsolata',
                                       fontSize: 35,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   );
                                 },

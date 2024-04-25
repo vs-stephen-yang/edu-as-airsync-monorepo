@@ -59,7 +59,7 @@ class _SettingsState extends State<Settings> {
                   Text(S.of(context).main_settings_device_name),
                   Text(
                     Provider.of<InstanceInfoProvider>(context).deviceName,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontFamily: 'Inconsolata', fontSize: 15, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
