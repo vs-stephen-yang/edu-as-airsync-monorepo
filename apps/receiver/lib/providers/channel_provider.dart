@@ -99,6 +99,13 @@ class ChannelProvider extends ChangeNotifier {
 
   final InstanceInfoProvider _instanceInfo;
 
+  bool _isDeviceListQuickConnect = false;
+  bool get isDeviceListQuickConnect => _isDeviceListQuickConnect;
+  set isDeviceListQuickConnect(bool value) {
+    _isDeviceListQuickConnect = value;
+    notifyListeners();
+  }
+
   ChannelProvider(
     this.appConfig,
     this._instanceInfo,
