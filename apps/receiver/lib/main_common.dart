@@ -50,9 +50,10 @@ Future<void> commonEntry(ConfigSettings settings) async {
         child: const MyApp());
 
     DisplayServiceBroadcast.ensureInitialized(
-      '_vs-airsync._tcp',
-      directChannelPort,
-      InstanceInfoProvider(),
+        '_vs-airsync._tcp',
+        directChannelPort,
+        InstanceInfoProvider(),
+        packageInfo.version
     );
 
 

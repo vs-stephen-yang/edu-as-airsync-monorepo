@@ -1,5 +1,6 @@
 import 'package:bonsoir/bonsoir.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class DisplayServiceBroadcast {
   static late DisplayServiceBroadcast instance;
@@ -7,6 +8,7 @@ class DisplayServiceBroadcast {
   final String _serviceType;
   final int _port;
   final InstanceInfoProvider _instanceInfo;
+  final String version;
 
   BonsoirBroadcast? _broadcast;
 
@@ -14,6 +16,7 @@ class DisplayServiceBroadcast {
     this._serviceType,
     this._port,
     this._instanceInfo,
+    this.version,
   ) {
     _instanceInfo.addListener(_onInstanceInfoUpdated);
 
@@ -26,11 +29,13 @@ class DisplayServiceBroadcast {
     String serviceType,
     int port,
     InstanceInfoProvider instanceInfoProvider,
+    String version,
   ) {
     instance = DisplayServiceBroadcast._internal(
       serviceType,
       port,
       instanceInfoProvider,
+      version,
     );
   }
 
@@ -42,9 +47,14 @@ class DisplayServiceBroadcast {
     assert(_instanceInfo.deviceName.isNotEmpty);
 
     final service = BonsoirService(
-      name: _instanceInfo.deviceName,
+      name: const Uuid().v4(),
       type: _serviceType,
       port: _port,
+      attributes: {
+        'fn': _instanceInfo.deviceName,
+        'ver': version,
+        'displayCode': _instanceInfo.displayCode,
+      },
     );
 
     _broadcast = BonsoirBroadcast(service: service);
