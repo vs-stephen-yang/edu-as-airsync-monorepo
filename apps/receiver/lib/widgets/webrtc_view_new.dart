@@ -18,9 +18,9 @@ import 'package:provider/provider.dart';
 import 'loading_icon.dart';
 
 class WebRTCView extends StatefulWidget {
-  const WebRTCView({super.key, required this.index});
+  const WebRTCView({super.key, required this.rtcConnector});
 
-  final int index;
+  final RTCConnector rtcConnector;
 
   @override
   State createState() => WebRTCViewState();
@@ -72,22 +72,20 @@ class WebRTCViewState extends State<WebRTCView> {
 
   @override
   Widget build(BuildContext context) {
-    // When create widget in Home has check connection is RTCConnector.
-    RTCConnector rtcConnector =
-        HybridConnectionList().getConnection<RTCConnector>(widget.index);
-
-    rtcConnector.onPairCandidateType = (localCandidateType, remoteCandidateType) {
+    widget.rtcConnector.onPairCandidateType =
+        (localCandidateType, remoteCandidateType) {
       if (!DeviceFeatureAdapter.ShowDebugOverlay) {
         return;
       }
 
-      pairCandidateInfo = 'Local: $localCandidateType, Remote: $remoteCandidateType';
+      pairCandidateInfo =
+          'Local: $localCandidateType, Remote: $remoteCandidateType';
       setState(() {
         debugOverlayText = '$fpsInfo\n$pairCandidateInfo';
       });
     };
 
-    rtcConnector.onFPSReport = (fps) {
+    widget.rtcConnector.onFPSReport = (fps) {
       if (!DeviceFeatureAdapter.ShowDebugOverlay) {
         return;
       }
@@ -130,20 +128,21 @@ class WebRTCViewState extends State<WebRTCView> {
       final curEventMessage = EventMessage();
       curEventMessage.touchEvent = curTouchEvent;
 
-      rtcConnector.sendRTCData(curEventMessage.writeToBuffer());
+      widget.rtcConnector.sendRTCData(curEventMessage.writeToBuffer());
     }
 
     return Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
       // Currently rtcConnector will call channelProvider's notifyListeners
       // to update PresentationState
-      if (rtcConnector.presentationState == PresentationState.pauseStreaming &&
+      if (widget.rtcConnector.presentationState ==
+              PresentationState.pauseStreaming &&
           pauseScreenImage == null) {
         _pauseVideo();
-      } else if (rtcConnector.presentationState ==
+      } else if (widget.rtcConnector.presentationState ==
           PresentationState.resumeStreaming) {
         _resumeVideo();
-        rtcConnector.presentationState = PresentationState.streaming;
-      } else if (rtcConnector.presentationState ==
+        widget.rtcConnector.presentationState = PresentationState.streaming;
+      } else if (widget.rtcConnector.presentationState ==
           PresentationState.stopStreaming) {
         _resumeVideo();
       }
@@ -175,14 +174,15 @@ class WebRTCViewState extends State<WebRTCView> {
                         onTouchEvent(
                             TouchEvent_TouchEventType.TOUCH_POINT_END, event);
                       },
-                      child: RTCVideoView(rtcConnector.remoteRenderer!,
+                      child: RTCVideoView(widget.rtcConnector.remoteRenderer!,
                           key: _widgetKey),
                     ),
                   ),
                 ),
               ),
-          if (rtcConnector.presentationState == PresentationState.streaming &&
-              rtcConnector.senderNameWithEllipsis.isNotEmpty)
+          if (widget.rtcConnector.presentationState ==
+                  PresentationState.streaming &&
+              widget.rtcConnector.senderNameWithEllipsis.isNotEmpty)
             Align(
               alignment: Alignment.topCenter,
               child: ConstrainedBox(
@@ -196,14 +196,15 @@ class WebRTCViewState extends State<WebRTCView> {
                     color: AppColors.primaryBlackA50,
                   ),
                   child: AutoSizeText(
-                    rtcConnector.senderNameWithEllipsis,
+                    widget.rtcConnector.senderNameWithEllipsis,
                     style: const TextStyle(fontSize: 20),
                     maxLines: 1,
                   ),
                 ),
               ),
             ),
-          if (rtcConnector.presentationState == PresentationState.waitForStream)
+          if (widget.rtcConnector.presentationState ==
+              PresentationState.waitForStream)
             Transform.scale(
               scale: HybridConnectionList.hybridSplitScreenCount.value > 1
                   ? 0.5
@@ -228,7 +229,7 @@ class WebRTCViewState extends State<WebRTCView> {
                             height: 20,
                           ),
                           Text(
-                            rtcConnector.senderNameWithEllipsis,
+                            widget.rtcConnector.senderNameWithEllipsis,
                             style: const TextStyle(
                               color: AppColors.primary_blue,
                               fontWeight: FontWeight.w700,
@@ -260,12 +261,13 @@ class WebRTCViewState extends State<WebRTCView> {
                 ),
               ),
             ),
-            Text(debugOverlayText,
-                style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 30,
-                )
-            )
+          Text(
+            debugOverlayText,
+            style: const TextStyle(
+              color: Colors.red,
+              fontSize: 30,
+            ),
+          )
         ],
       );
     });
