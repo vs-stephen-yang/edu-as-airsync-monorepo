@@ -82,11 +82,15 @@ class _SettingsState extends State<Settings> {
           ),
           Row(
             children: [
-              const Icon(Icons.pin, size: 32.0),
+              Image(
+                image: Svg('assets/images/ic_device_list.svg'),
+                width: 32,
+                height: 32,
+              ),
               const SizedBox(width: 20),
               Text(
                 S.of(context).main_settings_device_list,
-                style: const TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 16),
               ),
               const Spacer(),
               FittedBox(
