@@ -366,7 +366,14 @@ class ChannelProvider extends ChangeNotifier {
       if (isDirectConnect) {
         // for direct connection
         if (isAuthRequiredForDirectConnection()) {
-          return ConnectRequestStatus.authenticationRequired;
+          if (connectionRequest.token?.isEmpty ?? true) {
+            return ConnectRequestStatus.authenticationRequired;
+          }
+          if (!_isValidOtp(connectionRequest.token!)) {
+            return ConnectRequestStatus.invalidOtp;
+          } else {
+            return ConnectRequestStatus.success;
+          }
         } else {
           return ConnectRequestStatus.success;
         }
@@ -378,8 +385,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   bool isAuthRequiredForDirectConnection() {
-    // TODO:
-    return false;
+    return _isDeviceListQuickConnect;
   }
 
   bool _isValidOtp(String token) {
