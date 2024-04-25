@@ -48,7 +48,7 @@
     "main_connection_mode_unsupported": "AirSync無網際網路連線",
     "moderator_back": "返回",
     "main_display_code_error": "僅允許輸入英數字",
-    "main_otp_error": "一次性密碼輸入錯誤",
+    "main_otp_error": "僅允許輸入數字",
     "main_device_list": "快速連線",
     "device_list_enter_pin": "一次性密碼"
 }

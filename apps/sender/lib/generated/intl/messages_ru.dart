@@ -29,12 +29,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Код дисплея"),
         "main_display_code_description": MessageLookupByLibrary.simpleMessage(
             "Пожалуйста, введите отображаемый код"),
+        "main_display_code_error": MessageLookupByLibrary.simpleMessage(
+            "Принимайте только буквы и цифры."),
         "main_display_code_exceed": MessageLookupByLibrary.simpleMessage(
             "Достугнуто максимальное число участников (6)"),
         "main_display_code_exceed_split_screen":
             MessageLookupByLibrary.simpleMessage(
                 "Достугнуто максимальное число презентующих (4)"),
         "main_language": MessageLookupByLibrary.simpleMessage("Язык"),
+        "main_otp_error":
+            MessageLookupByLibrary.simpleMessage("Принимайте только цифры."),
         "main_password": MessageLookupByLibrary.simpleMessage("Пароль"),
         "main_password_description": MessageLookupByLibrary.simpleMessage(
             "Пожалуйста, введите одноразовый пароль"),

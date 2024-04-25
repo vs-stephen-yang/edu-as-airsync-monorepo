@@ -28,5 +28,7 @@
     "moderator_fill_out": "Pflichtfeld",
     "main_password_invalid": "Ungültiges Passwort.",
     "main_display_code_exceed": "Maximale Teilnehmerzahl (6) erreicht.",
-    "main_display_code_exceed_split_screen": "Maximale Anzahl von Präsentatoren (4) erreicht."
+    "main_display_code_exceed_split_screen": "Maximale Anzahl von Präsentatoren (4) erreicht.",
+    "main_display_code_error": "Akzeptieren Sie nur Buchstaben und Zahlen.",
+    "main_otp_error": "Akzeptieren Sie nur Zahlen."
 }
