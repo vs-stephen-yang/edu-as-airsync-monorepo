@@ -31,6 +31,7 @@ enum ChannelConnectError {
   invalidOtp,
   connectionModeUnsupported,
   unknownError,
+  authenticationRequired,
 }
 
 // convert ChannelConnectorError to ChannelConnectError
@@ -53,6 +54,9 @@ ChannelConnectError mapChannelConnectError(ChannelConnectorError error) {
 
     case ChannelConnectorError.authenticationError:
       return ChannelConnectError.invalidOtp;
+
+    case ChannelConnectorError.authenticationRequired:
+      return ChannelConnectError.authenticationRequired;
   }
 }
 

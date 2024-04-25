@@ -1,8 +1,11 @@
 
 
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/device_list_provider.dart';
+import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/app_colors.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -18,12 +21,24 @@ class DeviceList extends StatefulWidget {
 class _DeviceListState extends State<DeviceList>{
 
   late DeviceListProvider _deviceListProvider;
+  late ChannelProvider _channelProvider;
+  late AirSyncBonsoirService _connectService;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    _channelProvider = Provider.of<ChannelProvider>(context);
     _deviceListProvider = Provider.of<DeviceListProvider>(context, listen: false);
-    _deviceListProvider.startDiscovery();
+    _deviceListProvider.startDiscovery(AppConfig.of(context)?.settings.versionPostfix ?? '');
+    WidgetsBinding.instance.addPostFrameCallback((callback) {
+      if (_channelProvider.channelConnectError != null) {
+        _showConnectErrorMessage(_channelProvider.channelConnectError!);
+      }
+    });
 
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
@@ -39,7 +54,7 @@ class _DeviceListState extends State<DeviceList>{
                   children: [
                     InkWell(
                       onTap: () {
-                        channelProvider.presentMainPage();
+                        _channelProvider.presentMainPage();
                       },
                       child: const Icon(
                         Icons.arrow_back_ios_new_outlined,
@@ -83,7 +98,7 @@ class _DeviceListState extends State<DeviceList>{
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
-                        channelProvider.startDirectConnect(otp: null, service: value.devices[index]);
+                        _channelProvider.startDirectConnect(otp: null, service: _connectService = value.devices[index]);
                       },
                       child: ListTile(
                         title: Row(
@@ -142,6 +157,127 @@ class _DeviceListState extends State<DeviceList>{
   void dispose() {
     _deviceListProvider.stopDiscovery();
     _deviceListProvider.clearDevices();
+    _channelProvider.resetMessage();
     super.dispose();
+  }
+
+  _showConnectErrorMessage(ChannelConnectError error) {
+    switch (error) {
+      case ChannelConnectError.instanceNotFound:
+      case ChannelConnectError.invalidDisplayCode:
+      case ChannelConnectError.rateLimitExceeded:
+      case ChannelConnectError.connectionModeUnsupported:
+        break;
+      case ChannelConnectError.invalidOtp:
+        _showEnterPinDialog();
+        break;
+      case ChannelConnectError.authenticationRequired:
+        _showEnterPinDialog();
+        break;
+
+      case ChannelConnectError.networkError:
+        break;
+
+      case ChannelConnectError.unknownError:
+        break;
+
+    }
+  }
+
+  void onOkPressed(List<TextEditingController> _controllers) {
+    String _otp = '';
+    for (var element in _controllers) {
+      _otp+=element.text;
+    }
+    _channelProvider.startDirectConnect(otp: _otp, service: _connectService);
+  }
+
+  _showEnterPinDialog() {
+    List<TextEditingController> _controllers = List.generate(4, (index) => TextEditingController());
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(S.of(context).device_list_enter_pin),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: List.generate(4, (index) => Container(
+              width: 50,
+              decoration: BoxDecoration(
+                color: AppColors.iconPinCodeBackground,
+                borderRadius: BorderRadius.circular(6), // 设置圆角半径为10
+              ),
+              child: TextFormField(
+                controller: _controllers[index],
+                keyboardType: TextInputType.number,
+                maxLength: 1,
+                decoration: const InputDecoration(
+                  counterText: '',
+                  border: InputBorder.none,
+                ),
+                textAlign: TextAlign.center,
+                onChanged: (String value) {
+                  if (value.length == 1 && index < _controllers.length - 1) {
+                    FocusScope.of(context).nextFocus();
+                  }
+                },
+                onFieldSubmitted: (String value) {
+                  if (value.length == 1 && index == 3) {
+                    onOkPressed(_controllers);
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+            )),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮背景颜色
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.grey), // 设置按钮文字颜色
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // 设置按钮圆角
+                    side: const BorderSide(color: Colors.grey), // 设置按钮边框
+                  ),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(S.of(context).present_select_screen_cancel),
+            ),
+            TextButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // 设置按钮背景颜色
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮文字颜色
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // 设置按钮圆角
+                    side: const BorderSide(color: Colors.blue), // 设置按钮边框
+                  ),
+                ),
+              ),
+              onPressed: () {
+                onOkPressed(_controllers);
+                Navigator.of(context).pop();
+              },
+              child: Text(S.of(context).device_list_enter_pin_ok),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  String getVersionSuffix(String version) {
+    int dashIndex = version.lastIndexOf("-");
+    if (dashIndex != -1) {
+      return version.substring(dashIndex);
+    } else {
+      return '';
+    }
   }
 }

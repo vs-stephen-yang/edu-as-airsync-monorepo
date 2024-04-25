@@ -25,6 +25,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "device_list_enter_pin":
+            MessageLookupByLibrary.simpleMessage("Enter pin code"),
+        "device_list_enter_pin_ok": MessageLookupByLibrary.simpleMessage("OK"),
         "main_connect_network_error": MessageLookupByLibrary.simpleMessage(
             "Network error. Please check network connectivity and try again."),
         "main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
