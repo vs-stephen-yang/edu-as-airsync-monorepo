@@ -44,7 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_display_code_description":
             MessageLookupByLibrary.simpleMessage("Please input display code"),
         "main_display_code_error": MessageLookupByLibrary.simpleMessage(
-            "Display code can only contain letters and numbers."),
+            "Only accept letters and numbers."),
         "main_display_code_exceed": MessageLookupByLibrary.simpleMessage(
             "Maximum participants (6) reached."),
         "main_display_code_exceed_split_screen":
@@ -58,7 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_language": MessageLookupByLibrary.simpleMessage("Language"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
         "main_otp_error":
-            MessageLookupByLibrary.simpleMessage("One Time Password error."),
+            MessageLookupByLibrary.simpleMessage("Only accept numbers."),
         "main_password": MessageLookupByLibrary.simpleMessage("Password"),
         "main_password_description": MessageLookupByLibrary.simpleMessage(
             "Please enter one-time password"),

@@ -530,20 +530,20 @@ class S {
     );
   }
 
-  /// `Display code can only contain letters and numbers.`
+  /// `Only accept letters and numbers.`
   String get main_display_code_error {
     return Intl.message(
-      'Display code can only contain letters and numbers.',
+      'Only accept letters and numbers.',
       name: 'main_display_code_error',
       desc: '',
       args: [],
     );
   }
 
-  /// `One Time Password error.`
+  /// `Only accept numbers.`
   String get main_otp_error {
     return Intl.message(
-      'One Time Password error.',
+      'Only accept numbers.',
       name: 'main_otp_error',
       desc: '',
       args: [],

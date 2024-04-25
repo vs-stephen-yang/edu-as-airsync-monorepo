@@ -28,5 +28,7 @@
     "moderator_fill_out": "Обязательное поле",
     "main_password_invalid": "Недействительный пароль",
     "main_display_code_exceed": "Достугнуто максимальное число участников (6)",
-    "main_display_code_exceed_split_screen": "Достугнуто максимальное число презентующих (4)"
+    "main_display_code_exceed_split_screen": "Достугнуто максимальное число презентующих (4)",
+    "main_display_code_error": "Принимайте только буквы и цифры.",
+    "main_otp_error": "Принимайте только цифры."
 }

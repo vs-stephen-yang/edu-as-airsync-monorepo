@@ -29,12 +29,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Display Code"),
         "main_display_code_description": MessageLookupByLibrary.simpleMessage(
             "Bitte geben Sie den Anzeigecode ein"),
+        "main_display_code_error": MessageLookupByLibrary.simpleMessage(
+            "Akzeptieren Sie nur Buchstaben und Zahlen."),
         "main_display_code_exceed": MessageLookupByLibrary.simpleMessage(
             "Maximale Teilnehmerzahl (6) erreicht."),
         "main_display_code_exceed_split_screen":
             MessageLookupByLibrary.simpleMessage(
                 "Maximale Anzahl von Präsentatoren (4) erreicht."),
         "main_language": MessageLookupByLibrary.simpleMessage("Sprache"),
+        "main_otp_error":
+            MessageLookupByLibrary.simpleMessage("Akzeptieren Sie nur Zahlen."),
         "main_password": MessageLookupByLibrary.simpleMessage("Passwort"),
         "main_password_description": MessageLookupByLibrary.simpleMessage(
             "Bitte geben Sie ein Einmalpasswort ein"),
