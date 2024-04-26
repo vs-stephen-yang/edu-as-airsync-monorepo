@@ -438,7 +438,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               hasFocusHeight: 30,
                               notFocusHeight: 25,
                               onClick: () {
-                                //TODO: found that AirPlay icon on iMac keeps under working state even calling clearRequestMirrorId()
                                 Navigator.pop(dialogContext);
                                 Home.isShowAuthDialog.value = false;
                                 var mirrorId = HybridConnectionList()
