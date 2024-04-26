@@ -145,6 +145,7 @@ class MirrorStateProvider extends ChangeNotifier
     var mirrorMap = HybridConnectionList().getMirrorMap();
     for (var entry in mirrorMap.entries) {
       if (entry.value.mirrorId == mirrorId) {
+        _flutterMirrorPlugin?.stopMirror(entry.value.mirrorId);
         HybridConnectionList().removeConnection(entry);
       }
     }
