@@ -96,7 +96,6 @@ class ParticipantItem extends StatelessWidget {
       }
       _sendPresenterPlay(rtcConnector);
     }
-    HybridConnectionList().reorderPresenters(rtcConnector);
   }
 
   _sendPresenterPlay(RTCConnector rtcConnector) {
