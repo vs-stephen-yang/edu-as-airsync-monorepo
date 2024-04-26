@@ -58,6 +58,8 @@ class HybridConnectionList {
   }
 
   void updateSplitScreen() {
+    _reorderPresentingConnector();
+
     int inConnectionNumber = 0;
     for (RTCConnector connector in getRtcConnectorMap().values) {
       if (connector.presentationState != PresentationState.stopStreaming) {
@@ -229,29 +231,6 @@ class HybridConnectionList {
     hybridSplitScreenCount.value = mirroringCount();
   }
 
-  reorderPresenters(RTCConnector? selectedRtcConnector) {
-    int index = _hybridConnectionList.indexOf(selectedRtcConnector);
-    if (index != -1) {
-      for (int i = 0; i < _hybridConnectionList.length; i++) {
-        if (_hybridConnectionList[i] != null &&
-            _hybridConnectionList[i] is RTCConnector) {
-          RTCConnector rtcConnector = _hybridConnectionList[i];
-          //Place presenting presenter to the front position, order by if presenting
-          if ((i < index &&
-                  rtcConnector.presentationState !=
-                      PresentationState.streaming) ||
-              (i > index &&
-                  rtcConnector.presentationState ==
-                      PresentationState.streaming)) {
-            _hybridConnectionList[i] = selectedRtcConnector;
-            _hybridConnectionList[index] = rtcConnector;
-            break;
-          }
-        }
-      }
-    }
-  }
-
   _remainingTimeOnOff() {
     int connecting = 0;
     for (var connection in _hybridConnectionList.nonNulls) {
@@ -352,5 +331,40 @@ class HybridConnectionList {
     }
     return count;
   }
-//End region of Mirror functions
+  //End region of Mirror functions
+
+  _reorderPresentingConnector() {
+    final List<dynamic> presentingConnector = [];
+    final List<dynamic> notPresentingConnector = [];
+
+    // Separate to list "presenting" connector and "not presenting" connector.
+    for (int i = 0; i < _hybridConnectionList.length; i++) {
+      if (_hybridConnectionList[i] is RTCConnector) {
+        RTCConnector rtcConnector = _hybridConnectionList[i];
+        if (rtcConnector.presentationState.index >=
+            PresentationState.waitForStream.index) {
+          presentingConnector.add(rtcConnector);
+        } else {
+          notPresentingConnector.add(rtcConnector);
+        }
+      } else if (_hybridConnectionList[i] is MirrorRequest) {
+        MirrorRequest mirrorRequest = _hybridConnectionList[i];
+        if (mirrorRequest.mirrorState == MirrorState.mirroring) {
+          presentingConnector.add(mirrorRequest);
+        } else {
+          notPresentingConnector.add(mirrorRequest);
+        }
+      }
+    }
+
+    // Place presenting connector to the front position
+    for (int i = 0; i < presentingConnector.length; i++) {
+      _hybridConnectionList[i] = presentingConnector[i];
+    }
+    // Place not presenting connector behind presenting connector
+    for (int i = 0; i < notPresentingConnector.length; i++) {
+      _hybridConnectionList[i + presentingConnector.length] =
+      notPresentingConnector[i];
+    }
+  }
 }
