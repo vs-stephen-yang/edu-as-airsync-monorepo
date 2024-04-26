@@ -76,6 +76,7 @@ class MirrorStateProvider extends ChangeNotifier
     printInDebug('onMirrorAuth', type: runtimeType);
     _pinCode = pin;
     _pinTimer?.cancel();
+    Home.isShowPinDialog.value = false;
     Home.isShowPinDialog.value = true;
 
     _pinTimer = Timer(Duration(seconds: timeoutSec), () {
