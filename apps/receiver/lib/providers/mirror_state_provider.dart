@@ -5,8 +5,8 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
-import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
+import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -106,9 +106,10 @@ class MirrorStateProvider extends ChangeNotifier
   @override
   void onMirrorStop(String mirrorId) {
     printInDebug('onMirrorStop $mirrorId', type: runtimeType);
-    for (MirrorRequest mirrorRequest in HybridConnectionList().getMirrorMap().values) {
-      if (mirrorRequest.mirrorId == mirrorId) {
-        HybridConnectionList().removeConnection(mirrorRequest);
+    for (MirrorRequest request
+        in HybridConnectionList().getMirrorMap().values) {
+      if (request.mirrorId == mirrorId) {
+        HybridConnectionList().removeConnection(request);
         HybridConnectionList().updateSplitScreen();
       }
     }
@@ -117,20 +118,21 @@ class MirrorStateProvider extends ChangeNotifier
   @override
   void onMirrorVideoResize(String mirrorId, int width, int height) {
     printInDebug('onMirrorVideoResize', type: runtimeType);
-    if (HybridConnectionList().getMirrorMap().isNotEmpty) {
-      for (var entry in HybridConnectionList().getMirrorMap().entries) {
-        if (entry.value.mirrorId == mirrorId) {
-          MirrorRequest request = entry.value;
-          request.aspectRatio = width / height;
-          HybridConnectionList().getMirrorMap().update(entry.key, (value) => request);
+    for (var entry in HybridConnectionList().getMirrorMap().entries) {
+      if (entry.value.mirrorId == mirrorId) {
+        MirrorRequest request = entry.value;
+        request.aspectRatio = width / height;
+        HybridConnectionList()
+            .getMirrorMap()
+            .update(entry.key, (value) => request);
 
-          _sizeChanged = true;
-          notifyListeners();
-          break;
-        }
+        _sizeChanged = true;
+        notifyListeners();
+        break;
       }
     }
   }
+
   // endregion
 
   // region Public method
@@ -142,11 +144,11 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   clearRequestMirrorId(String? mirrorId) {
-    var mirrorMap = HybridConnectionList().getMirrorMap();
-    for (var entry in mirrorMap.entries) {
-      if (entry.value.mirrorId == mirrorId) {
-        _flutterMirrorPlugin?.stopMirror(entry.value.mirrorId);
-        HybridConnectionList().removeConnection(entry);
+    for (MirrorRequest request
+        in HybridConnectionList().getMirrorMap().values) {
+      if (request.mirrorId == mirrorId) {
+        _flutterMirrorPlugin?.stopMirror(request.mirrorId);
+        HybridConnectionList().removeConnection(request);
       }
     }
     notifyListeners();
@@ -154,13 +156,14 @@ class MirrorStateProvider extends ChangeNotifier
 
   setAcceptMirrorId(String? mirrorId) {
     if (HybridConnectionList().getMirrorMap().isNotEmpty) {
-      var mirrorMap = HybridConnectionList().getMirrorMap();
-      for (var entry in mirrorMap.entries) {
+      for (var entry in HybridConnectionList().getMirrorMap().entries) {
         if (entry.value.mirrorId == mirrorId) {
           MirrorRequest request = entry.value;
           request.mirrorState = MirrorState.mirroring;
           request.controlAudio(true, setIsAudioEnabled: true);
-          mirrorMap.update(entry.key, (value) => request);
+          HybridConnectionList()
+              .getMirrorMap()
+              .update(entry.key, (value) => request);
         }
       }
 
@@ -227,7 +230,8 @@ class MirrorStateProvider extends ChangeNotifier
 
   Future<void> stopAirPlay() async {
     printInDebug('stopAirPlay', type: runtimeType);
-    for (MirrorRequest request in HybridConnectionList().getMirrorMap().values) {
+    for (MirrorRequest request
+        in HybridConnectionList().getMirrorMap().values) {
       if (request.mirrorType == MirrorType.airplay) {
         stopAcceptedMirror(request.mirrorId);
       }
@@ -247,7 +251,8 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopGoogleCast() async {
-    for (MirrorRequest request in HybridConnectionList().getMirrorMap().values) {
+    for (MirrorRequest request
+        in HybridConnectionList().getMirrorMap().values) {
       if (request.mirrorType == MirrorType.googlecast) {
         stopAcceptedMirror(request.mirrorId);
       }
@@ -264,7 +269,8 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopMiracast() async {
-    for (MirrorRequest request in HybridConnectionList().getMirrorMap().values) {
+    for (MirrorRequest request
+        in HybridConnectionList().getMirrorMap().values) {
       if (request.mirrorType == MirrorType.miracast) {
         stopAcceptedMirror(request.mirrorId);
       }
@@ -316,6 +322,7 @@ class MirrorStateProvider extends ChangeNotifier
       }
     }
   }
+
   // endregion
 
   // region Private method
@@ -325,7 +332,7 @@ class MirrorStateProvider extends ChangeNotifier
     // We also handle the message potentially returning null.
     try {
       _flutterMirrorPlugin?.registerListener(this);
-      Map<String,int> options = DeviceFeatureAdapter.getQuickDecodeOptions();
+      Map<String, int> options = DeviceFeatureAdapter.getQuickDecodeOptions();
       await _flutterMirrorPlugin?.initialize(FlutterMirrorConfig(options));
     } on PlatformException {
       printInDebug('Mirror initialize failure.', type: runtimeType);
@@ -340,5 +347,5 @@ class MirrorStateProvider extends ChangeNotifier
     _videoWidgetSize = renderBox.size;
     _videoWidgetOffset = renderBox.localToGlobal(Offset.zero);
   }
-  // endregion
+// endregion
 }

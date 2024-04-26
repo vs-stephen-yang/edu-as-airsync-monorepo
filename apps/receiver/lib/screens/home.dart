@@ -237,8 +237,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   builder: (BuildContext context, bool value, child) {
                     if (value) {
                       var mirror = context.read<MirrorStateProvider>();
-                      var mirrorMap = HybridConnectionList().getMirrorMap();
-                      for (MirrorRequest request in mirrorMap.values) {
+                      for (MirrorRequest request
+                          in HybridConnectionList().getMirrorMap().values) {
                         if (request.mirrorState == MirrorState.idle) {
                           Future.delayed(Duration.zero, () {
                             _showAuthDialog(context, mirror);
@@ -376,9 +376,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       builder: (BuildContext dialogContext) {
         var width = MediaQuery.of(context).size.width / 3;
         var height = MediaQuery.of(context).size.height / 4;
-        double minHeight = min(
-            (HybridConnectionList().getMirrorMap().length * height).toDouble(),
-            500.0);
+        var mirrorRequestIdles = HybridConnectionList()
+            .getMirrorMap()
+            .values
+            .where((request) => request.mirrorState == MirrorState.idle);
+        double minHeight =
+            min((mirrorRequestIdles.length * height).toDouble(), 500.0);
         return PopScope(
           // Using onWillPop to block back key return,
           // it will break "Show Prompt mechanism"
@@ -391,11 +394,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               height: minHeight,
               child: ListView.separated(
                 reverse: HybridConnectionList().isMirroring(),
-                itemCount: HybridConnectionList()
-                    .getMirrorMap()
-                    .values
-                    .where((request) => request.mirrorState == MirrorState.idle)
-                    .length,
+                itemCount: mirrorRequestIdles.length,
                 itemBuilder: (BuildContext buildContext, int index) {
                   return Container(
                     width: width,
@@ -410,15 +409,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          sprintf(S.current.main_mirror_from_client, [
-                            HybridConnectionList()
-                                .getMirrorMap()
-                                .values
-                                .where((request) =>
-                                    request.mirrorState == MirrorState.idle)
-                                .toList()[index]
-                                .mirrorId
-                          ]),
+                          sprintf(S.current.main_mirror_from_client,
+                              [mirrorRequestIdles.toList()[index].mirrorId]),
                           style: const TextStyle(fontSize: 24),
                         ),
                         const Spacer(),
@@ -440,13 +432,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               onClick: () {
                                 Navigator.pop(dialogContext);
                                 Home.isShowAuthDialog.value = false;
-                                var mirrorId = HybridConnectionList()
-                                    .getMirrorMap()
-                                    .values
-                                    .where((request) =>
-                                        request.mirrorState == MirrorState.idle)
-                                    .toList()[index]
-                                    .mirrorId;
+                                var mirrorId =
+                                    mirrorRequestIdles.toList()[index].mirrorId;
                                 mirror.clearRequestMirrorId(mirrorId);
                               },
                               child: AutoSizeText(
@@ -470,13 +457,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               onClick: () async {
                                 Navigator.pop(dialogContext);
                                 Home.isShowAuthDialog.value = false;
-                                String? mirrorId = HybridConnectionList()
-                                    .getMirrorMap()
-                                    .values
-                                    .where((request) =>
-                                        request.mirrorState == MirrorState.idle)
-                                    .toList()[index]
-                                    .mirrorId;
+                                String? mirrorId =
+                                    mirrorRequestIdles.toList()[index].mirrorId;
                                 mirror.setAcceptMirrorId(mirrorId);
                               },
                               child: AutoSizeText(
