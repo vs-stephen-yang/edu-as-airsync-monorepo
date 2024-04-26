@@ -100,7 +100,9 @@ class ChannelProvider extends ChangeNotifier {
   final InstanceInfoProvider _instanceInfo;
 
   bool _isDeviceListQuickConnect = false;
+
   bool get isDeviceListQuickConnect => _isDeviceListQuickConnect;
+
   set isDeviceListQuickConnect(bool value) {
     _isDeviceListQuickConnect = value;
     notifyListeners();
@@ -351,9 +353,9 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   ConnectRequestStatus _verifyConnectRequest(
-      ConnectionRequest connectionRequest, {
-        required bool isDirectConnect,
-      }) {
+    ConnectionRequest connectionRequest, {
+    required bool isDirectConnect,
+  }) {
     if (connectionRequest.displayCode.isNotEmpty) {
       if (connectionRequest.displayCode != _instanceInfo.displayCode) {
         return ConnectRequestStatus.invalidDisplayCode;
@@ -431,10 +433,9 @@ class ChannelProvider extends ChangeNotifier {
     rtcConnector.onChannelDisconnect = (() async {
       // update UI
       bool presenting = false;
-      for (RTCConnector? rtcConnector
+      for (RTCConnector rtcConnector
           in HybridConnectionList().getRtcConnectorMap().values) {
-        if (rtcConnector != null &&
-            rtcConnector.presentationState != PresentationState.stopStreaming) {
+        if (rtcConnector.presentationState != PresentationState.stopStreaming) {
           presenting = true;
         }
       }
