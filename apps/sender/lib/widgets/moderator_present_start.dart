@@ -7,11 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ModeratorPresentStart extends StatelessWidget {
-  ModeratorPresentStart({super.key, this.countStartTime = 0});
+  ModeratorPresentStart({super.key});
 
-  final ValueNotifier<bool> _presentingState = ValueNotifier(true);
   final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
-  final int countStartTime;
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +36,12 @@ class ModeratorPresentStart extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 38.0),
                   child: ValueListenableBuilder(
-                    valueListenable: _presentingState,
+                    valueListenable: presentingState,
                     builder: (BuildContext context, value, Widget? child) {
                       return InkWell(
                         onTap: () {
-                          _presentingState.value = !_presentingState.value;
-                          if (_presentingState.value) {
+                          presentingState.value = !presentingState.value;
+                          if (presentingState.value) {
                             channelProvider.presentResume();
                           } else {
                             channelProvider.presentPause();
