@@ -27,17 +27,18 @@ class _DeviceListState extends State<DeviceList>{
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((callback) {
+      _deviceListProvider.startDiscovery(AppConfig.of(context)?.settings.versionPostfix ?? '');
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     _channelProvider = Provider.of<ChannelProvider>(context);
     _deviceListProvider = Provider.of<DeviceListProvider>(context, listen: false);
-    _deviceListProvider.startDiscovery(AppConfig.of(context)?.settings.versionPostfix ?? '');
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      if (_channelProvider.channelConnectError != null) {
+      if (_channelProvider.channelConnectError != null)
         _showConnectErrorMessage(_channelProvider.channelConnectError!);
-      }
     });
 
     return SizedBox(
@@ -122,7 +123,7 @@ class _DeviceListState extends State<DeviceList>{
                           children: [
                             Align(
                               alignment: Alignment.centerLeft,
-                              child: Text(value.devices[index].host, style: const TextStyle(
+                              child: Text(value.devices[index].displayCode, style: const TextStyle(
                                 color: Colors.white,
                               ),),
                             ),

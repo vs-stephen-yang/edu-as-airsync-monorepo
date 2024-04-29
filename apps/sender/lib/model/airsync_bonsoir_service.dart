@@ -3,7 +3,7 @@ class AirSyncBonsoirService {
   final String uuid;
   final String name;
   final String type;
-  final String host;
+  final String displayCode;
   final String ip;
   final int port;
 
@@ -11,18 +11,18 @@ class AirSyncBonsoirService {
     required this.uuid,
     required this.name,
     required this.type,
-    required this.host,
+    required this.displayCode,
     required this.ip,
     required this.port,
   });
 
   factory AirSyncBonsoirService.fromJson(Map<String, dynamic> json) {
     return AirSyncBonsoirService(
-      uuid: json['attributes']['uuid'],
-      name: json['name'],
+      uuid: json['name'],
+      name: json['attributes']['fn'],
       type: json['type'],
-      host: json['host'],
-      ip: json['ip'],
+      displayCode: json['attributes']['displayCode'],
+      ip: json['attributes']['ip'],
       port: json['port'],
     );
   }
@@ -32,7 +32,7 @@ class AirSyncBonsoirService {
       'uuid': uuid,
       'name': name,
       'type': type,
-      'domain': host,
+      'displayCode': displayCode,
       'ip': ip,
       'port': port,
     };
