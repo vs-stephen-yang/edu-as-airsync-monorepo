@@ -44,7 +44,7 @@
         android:banner="@drawable/banner"
         android:icon="@mipmap/ic_launcher"
         android:label="AirSync"
-        android:resizeableActivity="true">
+        android:resizeableActivity="false">
         <activity
             android:name=".EulaActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode|touchscreen"
