@@ -139,6 +139,7 @@ class ChannelProvider extends ChangeNotifier {
         countSecondsValue.value = 0;
         countMinutesValue.value = 0;
         countHoursValue.value = 0;
+        presentingState.value = true;
         _presentTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
           if (presentingState.value) {
             countSecondsValue.value++;
