@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:bonsoir/bonsoir.dart';
+import 'package:synchronized/synchronized.dart';
 
 class DiscoverServices {
 
@@ -9,7 +10,8 @@ class DiscoverServices {
 
   String type = '_vs-airsync._tcp';
   BonsoirDiscovery? discovery;
-  ServiceResolver? serviceResolver;
+
+  final lock = Lock();  // uses the “synchronized” package
 
   Future<void> startDiscovery(Function(BonsoirDiscoveryEvent event)? onEventOccurred) async {
     if (discovery != null) return;
@@ -27,7 +29,7 @@ class DiscoverServices {
   }
 
   Future<void> resolveService(BonsoirService service) async {
-    service.resolve(discovery!.serviceResolver);
+    lock.synchronized(() async => await service.resolve(discovery!.serviceResolver));
   }
 
   Future<String?> lookupIpAddress(String hostName) async {
