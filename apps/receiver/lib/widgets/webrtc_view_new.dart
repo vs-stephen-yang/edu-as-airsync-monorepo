@@ -38,6 +38,15 @@ class WebRTCViewState extends State<WebRTCView> {
   String debugOverlayText = '';
 
   @override
+  void didUpdateWidget(WebRTCView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // List.generate will reuse the widget, need clear pauseScreenImage here.
+    if (oldWidget.rtcConnector.clientId != widget.rtcConnector.clientId) {
+      pauseScreenImage = null;
+    }
+  }
+
+  @override
   void deactivate() {
     pauseScreenImage = null;
     super.deactivate();
