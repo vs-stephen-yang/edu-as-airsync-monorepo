@@ -132,7 +132,7 @@ class ChannelProvider extends ChangeNotifier {
             'Last Network Connectivity is: $_lastConnectivityResult, being changed to result: $result');
         // MUST add async/await, to compare connectivity result with last one.
         await _checkNetWorkInfo().then((value) {
-          host = value;
+          host = _instanceInfo.ipAddress = value;
 
           if (_lastConnectivityResult != result) {
             //displayCode.isEmpty || _tunnelApiUrl.isEmpty

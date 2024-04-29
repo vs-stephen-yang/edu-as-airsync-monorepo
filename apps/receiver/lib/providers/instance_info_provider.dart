@@ -13,11 +13,15 @@ class InstanceInfoProvider extends ChangeNotifier {
 
   String _deviceName = '';
 
+  String _ipAddress = '';
+
   String get deviceName => _deviceName;
 
   String get displayCode => _displayCode;
 
   String get displayCodeWithDash => _formatDisplayCodeWithDash(_displayCode);
+
+  String get ipAddress => _ipAddress;
 
   set displayCode(String displayCode) {
     _displayCode = displayCode;
@@ -30,6 +34,11 @@ class InstanceInfoProvider extends ChangeNotifier {
     _instanceName = instanceName;
 
     _updateDeviceName();
+    notifyListeners();
+  }
+
+  set ipAddress(String? ipAddress) {
+    if (ipAddress != null) _ipAddress = ipAddress;
     notifyListeners();
   }
 

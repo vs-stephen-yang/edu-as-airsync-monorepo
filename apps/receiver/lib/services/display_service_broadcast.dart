@@ -54,6 +54,7 @@ class DisplayServiceBroadcast {
         'fn': _instanceInfo.deviceName,
         'ver': version,
         'displayCode': _instanceInfo.displayCode,
+        'ip': _instanceInfo.ipAddress,
       },
     );
 
