@@ -1,5 +1,4 @@
 import 'package:display_flutter/app_colors.dart';
-import 'package:display_flutter/widgets/focus_text_button.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:flutter/material.dart';

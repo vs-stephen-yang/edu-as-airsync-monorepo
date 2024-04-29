@@ -154,7 +154,7 @@ class RTCConnector {
         .firstWhere((value) => value != null, orElse: () => null);
 
     if (bytesSend != null && bytesSend != 0) {
-      
+
       // get selectedCandidatePairId
       final selectedCandidatePairId = transports
           .map((StatsReport report) => report.values['selectedCandidatePairId'])
@@ -196,9 +196,6 @@ class RTCConnector {
   }
 
   void _onPairCandidatesReports(StatsReport localCandidateReport, StatsReport remoteCandidateReport) {
-    if (localCandidateReport == null || remoteCandidateReport == null) {
-      return;
-    }
     final localCandidateType = localCandidateReport.values['candidateType'];
     final remoteCandidateType = remoteCandidateReport.values['candidateType'];
     if (localCandidateType != null && remoteCandidateType != null) {
