@@ -270,11 +270,14 @@ class WebRTCViewState extends State<WebRTCView> {
                 ),
               ),
             ),
-          Text(
-            debugOverlayText,
-            style: const TextStyle(
-              color: Colors.red,
-              fontSize: 30,
+          IgnorePointer(
+            ignoring: true,
+            child: Text(
+              debugOverlayText,
+              style: const TextStyle(
+                color: Colors.red,
+                fontSize: 30,
+              ),
             ),
           )
         ],
