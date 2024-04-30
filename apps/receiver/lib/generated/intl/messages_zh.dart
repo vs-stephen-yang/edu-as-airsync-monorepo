@@ -93,7 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_wait_title": MessageLookupByLibrary.simpleMessage("等待投影中..."),
         "main_wait_up_next": MessageLookupByLibrary.simpleMessage("下一位投影者"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "[新功能]\n1. 裝置清單連線\n - 可無須輸入投影辨識碼及一次性密碼，快速投影到同一網路的AirSync裝置。\n\n[功能改善]\n1. 從Display code中移除\"-\"。\n2. 降低螢幕延遲。\n3. 更換Display code字型，以增加文字辨別度。"),
+            "[新功能]\n1. 快速連線\n - 可無須輸入投影辨識碼及一次性密碼，快速投影到同一網路的AirSync裝置。\n\n[功能改善]\n1. 從Display code中移除\"-\"。\n2. 降低螢幕延遲。\n3. 更換Display code字型，以增加文字辨別度。"),
         "main_whats_new_title": MessageLookupByLibrary.simpleMessage("最新消息"),
         "moderator_activate_split_screen":
             MessageLookupByLibrary.simpleMessage("確定啟用分割畫面功能嗎?最多可四人同時投影。"),
