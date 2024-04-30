@@ -24,7 +24,7 @@ class DeviceListProvider with ChangeNotifier {
         if (event.service!.attributes['ver'] != null) {
           String serviceVersionPostfix = getVersionSuffix(event.service!.attributes['ver']!);
           if (versionPostfix == serviceVersionPostfix) {
-            if (event.service!.attributes['displayCode'] != null && event.service!.attributes['displayCode']!.isNotEmpty) {
+            if (checkDisplayCode(event) && checkIP(event)) {
               addDevice(AirSyncBonsoirService(
                   uuid: event.service!.name ?? '',
                   name: event.service!.attributes['fn'] ?? 'AirSync',
@@ -40,7 +40,7 @@ class DeviceListProvider with ChangeNotifier {
           if (event.service!.attributes['ver'] != null) {
             String serviceVersionPostfix = getVersionSuffix(event.service!.attributes['ver']!);
             if (versionPostfix == serviceVersionPostfix) {
-              if (event.service!.attributes['displayCode'] != null && event.service!.attributes['displayCode']!.isNotEmpty) {
+              if (checkDisplayCode(event) && checkIP(event)) {
                 addDevice(AirSyncBonsoirService(
                     uuid: event.service!.name ?? '',
                     name: event.service!.attributes['fn'] ?? 'AirSync',
@@ -59,6 +59,14 @@ class DeviceListProvider with ChangeNotifier {
       }
     });
   }
+
+  bool checkDisplayCode(BonsoirDiscoveryEvent event) =>
+      event.service!.attributes['displayCode'] != null &&
+      event.service!.attributes['displayCode']!.isNotEmpty;
+
+  bool checkIP(BonsoirDiscoveryEvent event) =>
+      event.service!.attributes['ip'] != null &&
+          event.service!.attributes['ip']!.isNotEmpty;
 
   Future<void> stopDiscovery() async {
     await discoverServices.stopDiscovery();
