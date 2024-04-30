@@ -272,6 +272,21 @@ class HybridConnectionList {
     return false;
   }
 
+  stopPresenterBy(int index) {
+    var connection = _hybridConnectionList[index];
+    if (connection != null && connection is RTCConnector) {
+      if (connection.sessionId != null) {
+        try {
+          connection.sendStopPresent();
+        } on PlatformException catch (e) {
+          log(e.toString());
+        }
+      }
+    } else if (connection != null && connection is MirrorRequest) {
+      connection.stopMirror();
+    }
+  }
+
   removePresenterBy(int index) async {
     var connection = _hybridConnectionList[index];
     if (connection != null && connection is RTCConnector) {
