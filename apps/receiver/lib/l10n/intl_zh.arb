@@ -17,7 +17,7 @@
   "main_language_title": "語言",
   "main_language_name": "繁體中文",
   "main_whats_new_title": "最新消息",
-  "main_whats_new_content": "[新功能]\n1. 裝置清單連線\n - 可無須輸入投影辨識碼及一次性密碼，快速投影到同一網路的AirSync裝置。\n\n[功能改善]\n1. 從Display code中移除\"-\"。\n2. 降低螢幕延遲。\n3. 更換Display code字型，以增加文字辨別度。",
+  "main_whats_new_content": "[新功能]\n1. 快速連線\n - 可無須輸入投影辨識碼及一次性密碼，快速投影到同一網路的AirSync裝置。\n\n[功能改善]\n1. 從Display code中移除\"-\"。\n2. 降低螢幕延遲。\n3. 更換Display code字型，以增加文字辨別度。",
   "main_split_screen_title": "分割畫面",
   "main_split_screen_waiting": "分割畫面已啟動",
   "main_split_screen_question": "啟動分割畫面?",

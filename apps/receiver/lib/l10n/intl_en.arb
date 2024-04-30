@@ -17,7 +17,7 @@
   "main_language_title": "Language",
   "main_language_name": "English",
   "main_whats_new_title": "What’s New on AirSync?",
-  "main_whats_new_content": "[New Feature]\n1. Fast connect through device list.\n - Cast to AirSync devices in the same network without typing Display code and One Time Password.\n\n[Improvement]\n1. Remove \"-\" from Display code.\n2. Reduce screen latency.\n3. Change Display code font for better visual identity.",
+  "main_whats_new_content": "[New Feature]\n1. Quick connect through device list.\n - Cast to AirSync devices in the same network without typing Display code and One Time Password.\n\n[Improvement]\n1. Remove \"-\" from Display code.\n2. Reduce screen latency.\n3. Change Display code font for better visual identity.",
   "main_split_screen_title": "Split Screen",
   "main_split_screen_waiting": "Split screen enabled. Waiting for presenter to share screen...",
   "main_split_screen_question": "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once.",
