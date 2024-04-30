@@ -2,6 +2,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
@@ -80,9 +81,17 @@ class _SplitScreenFunctionState extends State<SplitScreenFunction> {
                     notFocusSize: AppUIConstant.iconNotFocusSize,
                     onClick: () {
                       AppAnalytics().trackEventSplitScreenDisconnectClick();
-                      SplitScreenFunction.isMenuOnList.value.fillRange(0,
-                          SplitScreenFunction.isMenuOnList.value.length, false);
-                      HybridConnectionList().removePresenterBy(widget.index);
+                      ChannelProvider channelProvider =
+                          Provider.of<ChannelProvider>(context, listen: false);
+                      if (channelProvider.isModeratorMode) {
+                        HybridConnectionList().stopPresenterBy(widget.index);
+                      } else {
+                        SplitScreenFunction.isMenuOnList.value.fillRange(
+                            0,
+                            SplitScreenFunction.isMenuOnList.value.length,
+                            false);
+                        HybridConnectionList().removePresenterBy(widget.index);
+                      }
                     },
                   ),
                 if (Home.enlargedScreenPositionIndex.value != widget.index &&
