@@ -63,7 +63,7 @@ class _DeviceListState extends State<DeviceList>{
                       ),
                     ),
                     const Image(
-                      image: Svg('assets/images/ic_device_list.svg'),
+                      image: Svg('assets/images/ic_quick_connect.svg'),
                     ),
                   ],
                 ),
@@ -91,7 +91,7 @@ class _DeviceListState extends State<DeviceList>{
             ),
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.45,
+            height: MediaQuery.of(context).size.height * 0.4,
             child: Consumer<DeviceListProvider>(
               builder: (BuildContext context, DeviceListProvider value, Widget? child) {
                 return ListView.builder(

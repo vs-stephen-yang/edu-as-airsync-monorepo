@@ -104,11 +104,11 @@ class PresentIdle extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    height: 12,
+                    height: 20,
                     alignment: Alignment.centerRight,
                     padding: const EdgeInsets.only(right: 5),
                     child: const Image(
-                      image: Svg('assets/images/ic_device_list.svg')
+                      image: Svg('assets/images/ic_quick_connect.svg')
                     ),
                   ),
                   Text(
