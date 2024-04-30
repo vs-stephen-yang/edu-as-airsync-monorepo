@@ -9,6 +9,7 @@ class DisplayServiceBroadcast {
   final int _port;
   final InstanceInfoProvider _instanceInfo;
   final String version;
+  final String uuid = const Uuid().v4();
 
   BonsoirBroadcast? _broadcast;
 
@@ -47,7 +48,7 @@ class DisplayServiceBroadcast {
     assert(_instanceInfo.deviceName.isNotEmpty);
 
     final service = BonsoirService(
-      name: const Uuid().v4(),
+      name: uuid,
       type: _serviceType,
       port: _port,
       attributes: {
