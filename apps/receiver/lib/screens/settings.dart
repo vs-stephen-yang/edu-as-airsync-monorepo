@@ -83,7 +83,7 @@ class _SettingsState extends State<Settings> {
           Row(
             children: [
               Image(
-                image: Svg('assets/images/ic_device_list.svg'),
+                image: Svg('assets/images/ic_quick_connect.svg'),
                 width: 32,
                 height: 32,
               ),
