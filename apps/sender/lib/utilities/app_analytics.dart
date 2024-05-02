@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 // https://medium.com/bina-nusantara-it-division/how-to-integrate-flutter-app-with-azure-application-insights-447fcc3bdacf
 class AppAnalytics {
   TelemetryClient? _client;
+  final _globalProperties = <String, String>{};
 
   // Private constructor
   AppAnalytics._();
@@ -52,6 +53,10 @@ class AppAnalytics {
   // Getter to access the singleton instance
   static AppAnalytics get instance => _instance;
 
+  void setGlobalProperty(String name, String value) {
+    _globalProperties[name] = value;
+  }
+
   // Log business events
   // Typically it is a user interaction such as button click or order checkout.
   // It can also be an application life cycle event like initialization or configuration update.
@@ -61,7 +66,10 @@ class AppAnalytics {
   }) {
     instance._client?.trackEvent(
       name: name,
-      additionalProperties: properties,
+      additionalProperties: {
+        ...properties,
+        ..._globalProperties,
+      },
     );
   }
 
