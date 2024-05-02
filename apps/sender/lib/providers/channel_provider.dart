@@ -8,6 +8,7 @@ import 'package:display_cast_flutter/model/direct_connector.dart';
 import 'package:display_cast_flutter/model/remote_screen_client.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_channel/display_channel.dart';
@@ -98,6 +99,13 @@ class ChannelProvider extends ChangeNotifier {
   ChannelConnectError? get channelConnectError => _channelConnectError;
 
   void setChannelConnectError(ChannelConnectError error) {
+    AppAnalytics.instance.trackEvent(
+      'connect_error',
+      properties: {
+        'error': error.name,
+      },
+    );
+
     _channelConnectError = error;
     notifyListeners();
   }
@@ -233,6 +241,11 @@ class ChannelProvider extends ChangeNotifier {
     required String formattedDisplayCode,
     required String otp,
   }) async {
+    AppAnalytics.instance
+        .setGlobalProperty('display_code', formattedDisplayCode);
+
+    AppAnalytics.instance.trackEvent('connect');
+
     // Generate a new client Id
     _clientId = const Uuid().v4();
 
@@ -263,6 +276,8 @@ class ChannelProvider extends ChangeNotifier {
         return await _fetchTunnelUrl(displayCode!.instanceIndex);
       },
       onOpened: (channel) {
+        AppAnalytics.instance.trackEvent('connect_successfully');
+
         // Note: To prevent missing events, ensure that the channel's callback is registered promptly.
         // Specifically, register callbacks for 'onChannelMessage' and 'onStateChange'.
         setUpChannel(channel, formattedDisplayCode);
