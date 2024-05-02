@@ -230,10 +230,10 @@ class S {
     );
   }
 
-  /// `[New Feature]\n1. Quick connect through device list.\n - Cast to AirSync devices in the same network without typing Display code and One Time Password.\n\n[Improvement]\n1. Remove "-" from Display code.\n2. Reduce screen latency.\n3. Change Display code font for better visual identity.`
+  /// `[New Feature]\n1. Quick connect through device list.\n - Cast to AirSync devices in the same network segment without typing Display code and One Time Password.\n\n[Improvement]\n1. Remove "-" from Display code.\n2. Reduce screen latency.\n3. Change Display code font for better visual identity.`
   String get main_whats_new_content {
     return Intl.message(
-      '[New Feature]\n1. Quick connect through device list.\n - Cast to AirSync devices in the same network without typing Display code and One Time Password.\n\n[Improvement]\n1. Remove "-" from Display code.\n2. Reduce screen latency.\n3. Change Display code font for better visual identity.',
+      '[New Feature]\n1. Quick connect through device list.\n - Cast to AirSync devices in the same network segment without typing Display code and One Time Password.\n\n[Improvement]\n1. Remove "-" from Display code.\n2. Reduce screen latency.\n3. Change Display code font for better visual identity.',
       name: 'main_whats_new_content',
       desc: '',
       args: [],
