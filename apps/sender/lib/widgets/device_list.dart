@@ -35,7 +35,7 @@ class _DeviceListState extends State<DeviceList>{
   @override
   Widget build(BuildContext context) {
     _channelProvider = Provider.of<ChannelProvider>(context);
-    _deviceListProvider = Provider.of<DeviceListProvider>(context, listen: false);
+    _deviceListProvider = Provider.of<DeviceListProvider>(context);
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       if (_channelProvider.channelConnectError != null)
         _showConnectErrorMessage(_channelProvider.channelConnectError!);
@@ -49,24 +49,20 @@ class _DeviceListState extends State<DeviceList>{
         children: [
           Row(
             children: [
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        _channelProvider.presentMainPage();
-                      },
-                      child: const Icon(
-                        Icons.arrow_back_ios_new_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const Image(
-                      image: Svg('assets/images/ic_quick_connect.svg'),
-                    ),
-                  ],
+              InkWell(
+                onTap: () {
+                  _channelProvider.presentMainPage();
+                },
+                child: const Icon(
+                  Icons.arrow_back_ios_new_outlined,
+                  color: Colors.white,
                 ),
+              ),
+              const Spacer(
+                flex: 1,
+              ),
+              const Image(
+                image: Svg('assets/images/ic_quick_connect.svg'),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 6),
@@ -82,6 +78,23 @@ class _DeviceListState extends State<DeviceList>{
               const Spacer(
                 flex: 1,
               ),
+              InkWell(
+                onTap: () {
+                  if (!_deviceListProvider.isDiscovering) {
+                    _deviceListProvider.startDiscovery(
+                        AppConfig.of(context)?.settings.versionPostfix ??
+                            '');
+                  }
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 18),
+                  child: Icon(
+                    Icons.refresh,
+                    color: _deviceListProvider.isDiscovering? Colors.transparent: Colors.white,
+                    size: 16,
+                  ),
+                ),
+              ),
             ],
           ),
           const Padding(
@@ -94,6 +107,13 @@ class _DeviceListState extends State<DeviceList>{
             height: MediaQuery.of(context).size.height * 0.4,
             child: Consumer<DeviceListProvider>(
               builder: (BuildContext context, DeviceListProvider value, Widget? child) {
+                if (value.isDiscovering) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  );
+                }
                 return ListView.builder(
                   itemCount: value.devices.length,
                   itemBuilder: (context, index) {
