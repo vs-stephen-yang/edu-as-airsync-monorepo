@@ -61,7 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_register_display_code_failure": MessageLookupByLibrary.simpleMessage(
             "Failure to get Display Code and One Time Password. This may be due to a network or server issue. Please try again later when connection is restored."),
         "main_settings_device_list":
-            MessageLookupByLibrary.simpleMessage("Quick Connect"),
+            MessageLookupByLibrary.simpleMessage("Quick Connect Password"),
         "main_settings_device_name":
             MessageLookupByLibrary.simpleMessage("Name"),
         "main_settings_device_name_cancel":
