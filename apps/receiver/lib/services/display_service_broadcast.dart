@@ -21,9 +21,7 @@ class DisplayServiceBroadcast {
   ) {
     _instanceInfo.addListener(_onInstanceInfoUpdated);
 
-    if (_instanceInfo.deviceName.isNotEmpty) {
-      _start();
-    }
+    _start();
   }
 
   static void ensureInitialized(
@@ -44,8 +42,17 @@ class DisplayServiceBroadcast {
     _restart();
   }
 
+  bool isInstanceInfoComplete(InstanceInfoProvider instanceInfo) {
+    return instanceInfo.deviceName.isNotEmpty &&
+        instanceInfo.displayCode.isNotEmpty &&
+        instanceInfo.ipAddress.isNotEmpty;
+  }
+
   Future<void> _start() async {
-    assert(_instanceInfo.deviceName.isNotEmpty);
+    // start only if the information is complet
+    if (!isInstanceInfoComplete(_instanceInfo)) {
+      return;
+    }
 
     final service = BonsoirService(
       name: uuid,
