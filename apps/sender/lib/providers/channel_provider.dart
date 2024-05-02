@@ -278,15 +278,23 @@ class ChannelProvider extends ChangeNotifier {
     );
   }
 
-  startDirectConnect({required String? otp, required AirSyncBonsoirService service}) {
+  startDirectConnect({
+    required String? otp,
+    required AirSyncBonsoirService service,
+  }) {
     // Generate a new client Id
     _clientId = const Uuid().v4();
     this.otp = otp;
-    DirectConnector connector = DirectConnector(clientId: _clientId!, otp: otp, onOpened: (channel) {
-      setUpChannel(channel, '');
-    }, onOpenError: (error) {
-      _onChannelOpenFailed(error);
-    });
+    DirectConnector connector = DirectConnector(
+      clientId: _clientId!,
+      otp: otp,
+      onOpened: (channel) {
+        setUpChannel(channel, '');
+      },
+      onOpenError: (error) {
+        _onChannelOpenFailed(error);
+      },
+    );
 
     connector.open(service: service);
   }
@@ -305,7 +313,9 @@ class ChannelProvider extends ChangeNotifier {
           break;
         case ChannelMessageType.displayStatus:
           resetMessage();
-          if (formattedDisplayCode.isNotEmpty) DataDisplayCode.getInstance().save(formattedDisplayCode);
+          if (formattedDisplayCode.isNotEmpty) {
+            DataDisplayCode.getInstance().save(formattedDisplayCode);
+          }
           _onDisplayStatus(message as DisplayStatusMessage);
           break;
         case ChannelMessageType.presentAccepted:
