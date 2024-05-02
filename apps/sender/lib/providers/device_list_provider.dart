@@ -10,17 +10,8 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 class DeviceListProvider with ChangeNotifier {
 
   DiscoverServices discoverServices = DiscoverServices();
-  bool _isDiscovering = false;
-  bool get isDiscovering => _isDiscovering;
 
    void startDiscovery(String versionPostfix) {
-     _isDiscovering = true;
-     clearDevices();
-     notifyListeners();
-
-     Timer(const Duration(seconds: 5), () {
-       stopDiscovery();
-     });
 
     discoverServices.startDiscovery((BonsoirDiscoveryEvent event) {
       if (event.type == BonsoirDiscoveryEventType.discoveryServiceFound) {
@@ -93,8 +84,6 @@ class DeviceListProvider with ChangeNotifier {
 
   Future<void> stopDiscovery() async {
     await discoverServices.stopDiscovery();
-    _isDiscovering = false;
-    notifyListeners();
   }
 
   List<AirSyncBonsoirService> _devices = [];
@@ -113,6 +102,7 @@ class DeviceListProvider with ChangeNotifier {
   void addDevice(AirSyncBonsoirService device) {
     _devices.removeWhere((element) => element.ip == device.ip);
     _devices.add(device);
+    notifyListeners();
   }
 
   void removeDevice(String? uuid) {
