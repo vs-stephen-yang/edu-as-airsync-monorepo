@@ -387,7 +387,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   bool isAuthRequiredForDirectConnection() {
-    return !_isDeviceListQuickConnect;
+    return _isDeviceListQuickConnect;
   }
 
   bool _isValidOtp(String token) {
