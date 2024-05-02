@@ -609,6 +609,13 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
+  _trackFetchError(String errorType, String details) {
+    AppAnalytics.instance.trackEvent('request_get_instance_error', properties: {
+      'error': errorType,
+      'details': details,
+    });
+  }
+
   Future<String> _fetchTunnelUrl(int instanceIndex) async {
     late http.Response response;
 
@@ -617,18 +624,21 @@ class ChannelProvider extends ChangeNotifier {
           .get(Uri.parse('$_apiGateway?instanceIndex=$instanceIndex'));
     } on SocketException catch (e) {
       print(e);
+      _trackFetchError('SocketException', e.toString());
 
       throw FetchChannelTunnelUrlException(
         FetchChannelTunnelUrlError.networkError,
       );
     } on http.ClientException catch (e) {
       print(e);
+      _trackFetchError('http.ClientException', e.toString());
 
       throw FetchChannelTunnelUrlException(
         FetchChannelTunnelUrlError.networkError,
       );
     } catch (e) {
       print(e);
+      _trackFetchError('Exception', e.toString());
 
       throw FetchChannelTunnelUrlException(
         FetchChannelTunnelUrlError.unknownError,
@@ -636,6 +646,8 @@ class ChannelProvider extends ChangeNotifier {
     }
 
     if (response.statusCode != HttpStatus.ok) {
+      _trackFetchError('StatusCode', response.statusCode.toString());
+
       if (response.statusCode == HttpStatus.notFound) {
         throw FetchChannelTunnelUrlException(
           FetchChannelTunnelUrlError.instanceNotFound,
@@ -653,6 +665,7 @@ class ChannelProvider extends ChangeNotifier {
       json = jsonDecode(response.body);
     } on FormatException catch (e) {
       print(e);
+      _trackFetchError('FormatException', e.toString());
 
       throw FetchChannelTunnelUrlException(
         FetchChannelTunnelUrlError.unknownError,
@@ -661,6 +674,8 @@ class ChannelProvider extends ChangeNotifier {
 
     final url = json['tunnelApiUrl'];
     if (url == null) {
+      _trackFetchError('InvalidResponse', 'tunnelApiUrl is empty');
+
       throw FetchChannelTunnelUrlException(
         FetchChannelTunnelUrlError.instanceNotFound,
       );
