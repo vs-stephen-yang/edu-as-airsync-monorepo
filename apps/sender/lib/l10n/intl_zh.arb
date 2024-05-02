@@ -1,6 +1,6 @@
 {
     "main_display_code": "投影辨識碼",
-    "main_display_code_description": "請輸入投影辨識碼",
+    "main_display_code_description": "請輸入投影辨識碼 (不含空格)",
     "main_password": "一次性密碼",
     "main_password_description": "請輸入一次性密碼",
     "main_present": "下一步",
@@ -50,5 +50,6 @@
     "main_display_code_error": "僅允許輸入英數字",
     "main_otp_error": "僅允許輸入數字",
     "main_device_list": "快速連線",
-    "device_list_enter_pin": "一次性密碼"
+    "device_list_enter_pin": "一次性密碼",
+    "device_list_enter_pin_ok": "OK"
 }
