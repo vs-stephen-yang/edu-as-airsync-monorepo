@@ -630,10 +630,10 @@ class S {
     );
   }
 
-  /// `Quick Connect`
+  /// `Quick Connect Password`
   String get main_settings_device_list {
     return Intl.message(
-      'Quick Connect',
+      'Quick Connect Password',
       name: 'main_settings_device_list',
       desc: '',
       args: [],
