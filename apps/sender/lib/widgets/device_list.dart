@@ -203,6 +203,7 @@ class _DeviceListState extends State<DeviceList>{
     isPinDialogShown = true;
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
@@ -253,6 +254,7 @@ class _DeviceListState extends State<DeviceList>{
               ),
               onPressed: () {
                 isPinDialogShown = false;
+                _channelProvider.resetMessage();
                 Navigator.of(context).pop();
               },
               child: Text(S.of(context).present_select_screen_cancel),
