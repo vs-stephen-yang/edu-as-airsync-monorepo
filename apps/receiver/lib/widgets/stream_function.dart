@@ -118,20 +118,6 @@ class _StreamFunctionStates extends State<StreamFunction> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  //Debug button
-                  if (StreamFunction.showDebugFunction)
-                    FocusIconButton(
-                      icons: Icons.build_outlined,
-                      iconForegroundColor: AppColors.iconStandbyForeground,
-                      iconBackgroundColor: AppColors.iconStandbyBackground,
-                      iconFocusBackgroundColor:
-                          AppColors.iconFeatureOnStandbyBackground,
-                      hasFocusSize: AppUIConstant.iconHasFocusSize,
-                      notFocusSize: AppUIConstant.iconNotFocusSize,
-                      onClick: () {
-                        _showMenuDialog(const DebugSwitch());
-                      },
-                    ),
 
                   //Exit button for VBS
                   if (AppInstanceCreate().isInstalledInVBS200 &&
