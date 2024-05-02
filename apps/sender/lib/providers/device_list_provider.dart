@@ -33,15 +33,17 @@ class DeviceListProvider with ChangeNotifier {
         if (event.service!.attributes['ver'] != null) {
           String serviceVersionPostfix = getVersionSuffix(event.service!.attributes['ver']!);
           if (versionPostfix == serviceVersionPostfix) {
-            if (checkDisplayCode(event) && checkIP(event)) {
-              addDevice(AirSyncBonsoirService(
-                  uuid: event.service!.name ?? '',
-                  name: event.service!.attributes['fn'] ?? 'AirSync',
-                  type: event.service!.type,
-                  displayCode: event.service!.attributes['displayCode'] ?? '',
-                  ip: event.service!.attributes['ip'] ?? '',
-                  port: 5100));
-            }
+            checkIP(event).then((value) {
+              if (value != null && checkDisplayCode(event)) {
+                addDevice(AirSyncBonsoirService(
+                    uuid: event.service!.name ?? '',
+                    name: event.service!.attributes['fn'] ?? 'AirSync',
+                    type: event.service!.type,
+                    displayCode: event.service!.attributes['dc'] ?? '',
+                    ip: value,
+                    port: 5100));
+              }
+            });
           }
         }
       } else if (event.type == BonsoirDiscoveryEventType.discoveryServiceResolved) {
@@ -49,15 +51,17 @@ class DeviceListProvider with ChangeNotifier {
           if (event.service!.attributes['ver'] != null) {
             String serviceVersionPostfix = getVersionSuffix(event.service!.attributes['ver']!);
             if (versionPostfix == serviceVersionPostfix) {
-              if (checkDisplayCode(event) && checkIP(event)) {
-                addDevice(AirSyncBonsoirService(
-                    uuid: event.service!.name ?? '',
-                    name: event.service!.attributes['fn'] ?? 'AirSync',
-                    type: event.service!.type,
-                    displayCode: event.service!.attributes['displayCode'] ?? '',
-                    ip: event.service!.attributes['ip'] ?? '',
-                    port: 5100));
-              }
+              checkIP(event).then((value) {
+                if (value != null) {
+                  addDevice(AirSyncBonsoirService(
+                      uuid: event.service!.name ?? '',
+                      name: event.service!.attributes['fn'] ?? 'AirSync',
+                      type: event.service!.type,
+                      displayCode: event.service!.attributes['dc'] ?? '',
+                      ip: value,
+                      port: 5100));
+                }
+              });
             }
           }
         }
@@ -70,12 +74,22 @@ class DeviceListProvider with ChangeNotifier {
   }
 
   bool checkDisplayCode(BonsoirDiscoveryEvent event) =>
-      event.service!.attributes['displayCode'] != null &&
-      event.service!.attributes['displayCode']!.isNotEmpty;
+      event.service!.attributes['dc'] != null &&
+      event.service!.attributes['dc']!.isNotEmpty;
 
-  bool checkIP(BonsoirDiscoveryEvent event) =>
-      event.service!.attributes['ip'] != null &&
-          event.service!.attributes['ip']!.isNotEmpty;
+  Future<String?> checkIP(BonsoirDiscoveryEvent event) async {
+    if (event.service!.attributes['ip'] != null &&
+        event.service!.attributes['ip']!.isNotEmpty) {
+      return event.service!.attributes['ip'];
+    }
+
+    if (event.service is ResolvedBonsoirService) {
+      String? ip = await discoverServices.lookupIpAddress((event.service as ResolvedBonsoirService).host!);
+      return ip;
+    }
+
+    return null;
+  }
 
   Future<void> stopDiscovery() async {
     await discoverServices.stopDiscovery();
