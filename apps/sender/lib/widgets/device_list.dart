@@ -24,6 +24,8 @@ class _DeviceListState extends State<DeviceList>{
   late ChannelProvider _channelProvider;
   late AirSyncBonsoirService _connectService;
 
+  bool isPinDialogShown = false;
+
   @override
   void initState() {
     super.initState();
@@ -215,7 +217,10 @@ class _DeviceListState extends State<DeviceList>{
 
   _showEnterPinDialog() {
     List<TextEditingController> _controllers = List.generate(4, (index) => TextEditingController());
-
+    if (isPinDialogShown) {
+      return;
+    }
+    isPinDialogShown = true;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -246,6 +251,7 @@ class _DeviceListState extends State<DeviceList>{
                 },
                 onFieldSubmitted: (String value) {
                   if (value.length == 1 && index == 3) {
+                    isPinDialogShown = false;
                     onOkPressed(_controllers);
                     Navigator.of(context).pop();
                   }
@@ -266,6 +272,7 @@ class _DeviceListState extends State<DeviceList>{
                 ),
               ),
               onPressed: () {
+                isPinDialogShown = false;
                 Navigator.of(context).pop();
               },
               child: Text(S.of(context).present_select_screen_cancel),
@@ -282,6 +289,7 @@ class _DeviceListState extends State<DeviceList>{
                 ),
               ),
               onPressed: () {
+                isPinDialogShown = false;
                 onOkPressed(_controllers);
                 Navigator.of(context).pop();
               },
