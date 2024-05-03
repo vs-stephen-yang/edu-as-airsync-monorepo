@@ -357,14 +357,6 @@ class ChannelProvider extends ChangeNotifier {
     required bool isDirectConnect,
   }) {
     if (connectionRequest.displayCode.isNotEmpty) {
-      if (connectionRequest.displayCode != _instanceInfo.displayCode) {
-        return ConnectRequestStatus.invalidDisplayCode;
-      } else if (!_isValidOtp(connectionRequest.token!)) {
-        return ConnectRequestStatus.invalidOtp;
-      } else {
-        return ConnectRequestStatus.success;
-      }
-    } else {
       if (isDirectConnect) {
         // for direct connection
         if (isAuthRequiredForDirectConnection()) {
@@ -380,9 +372,16 @@ class ChannelProvider extends ChangeNotifier {
           return ConnectRequestStatus.success;
         }
       } else {
-        // always reject tunnel connections without token
-        return ConnectRequestStatus.invalidDisplayCode;
+        if (connectionRequest.displayCode != _instanceInfo.displayCode) {
+          return ConnectRequestStatus.invalidDisplayCode;
+        } else if (!_isValidOtp(connectionRequest.token!)) {
+          return ConnectRequestStatus.invalidOtp;
+        } else {
+          return ConnectRequestStatus.success;
+        }
       }
+    } else {
+      return ConnectRequestStatus.invalidDisplayCode;
     }
   }
 
