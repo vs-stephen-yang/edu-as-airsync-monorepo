@@ -356,21 +356,25 @@ class ChannelProvider extends ChangeNotifier {
     ConnectionRequest connectionRequest, {
     required bool isDirectConnect,
   }) {
-    // verify display code
+    // Check if the display code is valid
     if (connectionRequest.displayCode.isEmpty ||
         connectionRequest.displayCode != _instanceInfo.displayCode) {
       return ConnectRequestStatus.invalidDisplayCode;
     }
 
     if (isDirectConnect) {
-      // for direct connection
+       // Handle verification for direct connections
       if (connectionRequest.token == null || connectionRequest.token!.isEmpty) {
+        // When the token is empty, we assume the connection is initiated from the device list.
+        // For connections from the device list, the token may not be required.
         if (isAuthRequiredForDirectConnection()) {
+          // the token is still required. reject the connection
           return ConnectRequestStatus.authenticationRequired;
         } else {
           return ConnectRequestStatus.success;
         }
       } else {
+        // check if the token is valid
         if (!_isValidOtp(connectionRequest.token!)) {
           return ConnectRequestStatus.invalidOtp;
         } else {
@@ -378,6 +382,7 @@ class ChannelProvider extends ChangeNotifier {
         }
       }
     } else {
+      // Handle verification for tunnel connections
       if (!_isValidOtp(connectionRequest.token!)) {
         return ConnectRequestStatus.invalidOtp;
       } else {
