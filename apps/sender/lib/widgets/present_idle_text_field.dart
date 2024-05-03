@@ -165,6 +165,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
         break;
 
       case ChannelConnectError.invalidOtp:
+      case ChannelConnectError.authenticationRequired:
         _setTextFormFieldErrorMsg(
           otpKey,
           S.of(context).main_password_invalid,
