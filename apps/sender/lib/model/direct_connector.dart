@@ -6,6 +6,8 @@ class DirectConnector {
 
   final String _clientId;
 
+  final String? _displayCode;
+
   final String? _otp;
 
   DisplayChannelClient? _directClient;
@@ -17,10 +19,12 @@ class DirectConnector {
 
   DirectConnector({
     required String clientId,
+    required String? displayCode,
     required String? otp,
     required void Function(Channel channel) onOpened,
     required void Function(ChannelConnectorError error) onOpenError,
   })  : _clientId = clientId,
+        _displayCode = displayCode,
         _otp = otp,
         _onOpened = onOpened,
         _onOpenError = onOpenError;
@@ -45,7 +49,7 @@ class DirectConnector {
             logger: (url, message) =>
                 print('_directClient logger $url $message}'),
             allowSelfSignedCertificates: true));
-    _directClient?.openDirectChannel(token: _otp, displayCode: null);
+    _directClient?.openDirectChannel(token: _otp, displayCode: _displayCode);
     _directClient?.onStateChange = (ChannelState state) {
 
       if (state == ChannelState.connected) {
