@@ -364,17 +364,18 @@ class ChannelProvider extends ChangeNotifier {
 
     if (isDirectConnect) {
       // for direct connection
-      if (isAuthRequiredForDirectConnection()) {
-        if (connectionRequest.token?.isEmpty ?? true) {
+      if (connectionRequest.token == null || connectionRequest.token!.isEmpty) {
+        if (isAuthRequiredForDirectConnection()) {
           return ConnectRequestStatus.authenticationRequired;
+        } else {
+          return ConnectRequestStatus.success;
         }
+      } else {
         if (!_isValidOtp(connectionRequest.token!)) {
           return ConnectRequestStatus.invalidOtp;
         } else {
           return ConnectRequestStatus.success;
         }
-      } else {
-        return ConnectRequestStatus.success;
       }
     } else {
       if (!_isValidOtp(connectionRequest.token!)) {
