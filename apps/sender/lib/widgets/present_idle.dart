@@ -81,7 +81,7 @@ class PresentIdle extends StatelessWidget {
                 S.of(context).main_setting,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: AppConstants.fontSize_normal,
+                  fontSize: AppConstants.fontSizeNormal,
                 ),
               ),
             ],
@@ -115,7 +115,7 @@ class PresentIdle extends StatelessWidget {
                     S.of(context).main_device_list,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: AppConstants.fontSize_normal,
+                      fontSize: AppConstants.fontSizeNormal,
                     ),
                   ),
                 ],

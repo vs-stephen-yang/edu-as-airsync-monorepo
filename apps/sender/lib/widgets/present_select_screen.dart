@@ -153,7 +153,7 @@ class SelectScreenDialog extends Dialog {
                       alignment: Alignment.topLeft,
                       child: Text(
                         S.of(context).present_select_screen_description,
-                        style: const TextStyle(fontSize: AppConstants.fontSize_title, color: Colors.white),
+                        style: const TextStyle(fontSize: AppConstants.fontSizeTitle, color: Colors.white),
                       ),
                     ),
                     Align(

@@ -46,7 +46,7 @@ class DiscoverServices {
         return ipv4Address;
       }
       return null;
-    } on SocketException catch (e) {
+    } on SocketException {
       return null;
     }
   }

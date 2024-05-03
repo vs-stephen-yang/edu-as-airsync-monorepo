@@ -45,7 +45,7 @@ class PresentIdleButtonState extends State<PresentIdleButton> with TickerProvide
       isButtonEnabled = presentBtnEnable;
     });
   }
-  
+
   void setLoadingState(bool loading) {
     setState(() {
       isButtonLoading = loading;
@@ -81,7 +81,7 @@ class PresentIdleButtonState extends State<PresentIdleButton> with TickerProvide
         S.of(context).main_present,
         style: const TextStyle(
           color: Colors.white, //isButtonEnabled? Colors.white : const Color.fromARGB(255, 153, 153, 153),
-          fontSize: AppConstants.fontSize_normal,
+          fontSize: AppConstants.fontSizeNormal,
         ),
       ),
     );
