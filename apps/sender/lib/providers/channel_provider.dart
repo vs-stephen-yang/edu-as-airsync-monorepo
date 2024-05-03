@@ -299,9 +299,11 @@ class ChannelProvider extends ChangeNotifier {
   }) {
     // Generate a new client Id
     _clientId = const Uuid().v4();
+    displayCode = decodeDisplayCode(service.displayCode);
     this.otp = otp;
     DirectConnector connector = DirectConnector(
       clientId: _clientId!,
+      displayCode: service.displayCode,
       otp: otp,
       onOpened: (channel) {
         setUpChannel(channel, '');
