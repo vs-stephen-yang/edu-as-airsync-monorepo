@@ -27,7 +27,7 @@ class DeviceListProvider with ChangeNotifier {
             checkIP(event).then((value) {
               if (value != null && checkDisplayCode(event)) {
                 addDevice(AirSyncBonsoirService(
-                    uuid: event.service!.name ?? '',
+                    uuid: event.service!.name,
                     name: event.service!.attributes['fn'] ?? 'AirSync',
                     type: event.service!.type,
                     displayCode: event.service!.attributes['dc'] ?? '',
@@ -45,7 +45,7 @@ class DeviceListProvider with ChangeNotifier {
               checkIP(event).then((value) {
                 if (value != null) {
                   addDevice(AirSyncBonsoirService(
-                      uuid: event.service!.name ?? '',
+                      uuid: event.service!.name,
                       name: event.service!.attributes['fn'] ?? 'AirSync',
                       type: event.service!.type,
                       displayCode: event.service!.attributes['dc'] ?? '',
@@ -86,7 +86,7 @@ class DeviceListProvider with ChangeNotifier {
     await discoverServices.stopDiscovery();
   }
 
-  List<AirSyncBonsoirService> _devices = [];
+  final List<AirSyncBonsoirService> _devices = [];
   List<AirSyncBonsoirService> get devices => _devices;
 
   bool checkDevice(String uuid) {

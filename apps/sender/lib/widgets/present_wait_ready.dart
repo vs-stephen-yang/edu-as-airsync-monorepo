@@ -72,7 +72,7 @@ class _PresentWaitReadyState extends State<PresentWaitReady> with TickerProvider
                 S.of(context).present_wait(value),
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: AppConstants.fontSize_title,
+                  fontSize: AppConstants.fontSizeTitle,
                 ),
               );
             },

@@ -37,7 +37,7 @@ class PresentSelectRoleDemo extends StatelessWidget {
                           S.of(context).present_role_receive,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: AppConstants.fontSize_title,
+                            fontSize: AppConstants.fontSizeTitle,
                           ),
                         )
                       ],
@@ -70,7 +70,7 @@ class PresentSelectRoleDemo extends StatelessWidget {
                         S.of(context).present_role_cast_screen,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: AppConstants.fontSize_title,
+                          fontSize: AppConstants.fontSizeTitle,
                         ),
                       )
                     ],

@@ -48,7 +48,7 @@ class RemoteScreenWidget extends StatelessWidget {
                             child: Text(S.of(context).remote_screen_wait,
                                 style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: AppConstants.fontSize_normal)));
+                                    fontSize: AppConstants.fontSizeNormal)));
                   },
                 ),
               ),

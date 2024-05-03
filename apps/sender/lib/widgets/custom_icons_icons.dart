@@ -21,7 +21,7 @@ class CustomIcons {
   static const _kFontFam = 'CustomIcons';
   static const String? _kFontPkg = null;
 
-  static const IconData split_screen = IconData(
+  static const IconData splitScreen = IconData(
     0xe800,
     fontFamily: _kFontFam,
     fontPackage: _kFontPkg,

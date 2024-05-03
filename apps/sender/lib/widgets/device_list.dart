@@ -15,7 +15,7 @@ class DeviceList extends StatefulWidget {
   const DeviceList({super.key});
 
   @override
-  _DeviceListState createState() => _DeviceListState();
+  State<DeviceList> createState() => _DeviceListState();
 }
 
 class _DeviceListState extends State<DeviceList>{
@@ -39,8 +39,9 @@ class _DeviceListState extends State<DeviceList>{
     _channelProvider = Provider.of<ChannelProvider>(context);
     _deviceListProvider = Provider.of<DeviceListProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      if (_channelProvider.channelConnectError != null)
+      if (_channelProvider.channelConnectError != null) {
         _showConnectErrorMessage(_channelProvider.channelConnectError!);
+      }
     });
 
     return SizedBox(
@@ -77,7 +78,7 @@ class _DeviceListState extends State<DeviceList>{
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    fontSize: AppConstants.fontSize_title,
+                    fontSize: AppConstants.fontSizeTitle,
                   ),
                 ),
               ),
@@ -187,16 +188,16 @@ class _DeviceListState extends State<DeviceList>{
     }
   }
 
-  void onOkPressed(List<TextEditingController> _controllers) {
-    String _otp = '';
-    for (var element in _controllers) {
-      _otp+=element.text;
+  void onOkPressed(List<TextEditingController> controllers) {
+    String otp = '';
+    for (var element in controllers) {
+      otp+=element.text;
     }
-    _channelProvider.startDirectConnect(otp: _otp, service: _connectService);
+    _channelProvider.startDirectConnect(otp: otp, service: _connectService);
   }
 
   _showEnterPinDialog() {
-    List<TextEditingController> _controllers = List.generate(4, (index) => TextEditingController());
+    List<TextEditingController> controllers = List.generate(4, (index) => TextEditingController());
     if (isPinDialogShown) {
       return;
     }
@@ -217,7 +218,7 @@ class _DeviceListState extends State<DeviceList>{
                 borderRadius: BorderRadius.circular(6), // 设置圆角半径为10
               ),
               child: TextFormField(
-                controller: _controllers[index],
+                controller: controllers[index],
                 autofocus: index == 0, // set the initial focus to the first digit of OTP
                 keyboardType: TextInputType.number,
                 maxLength: 1,
@@ -227,14 +228,14 @@ class _DeviceListState extends State<DeviceList>{
                 ),
                 textAlign: TextAlign.center,
                 onChanged: (String value) {
-                  if (value.length == 1 && index < _controllers.length - 1) {
+                  if (value.length == 1 && index < controllers.length - 1) {
                     FocusScope.of(context).nextFocus();
                   }
                 },
                 onFieldSubmitted: (String value) {
                   if (value.length == 1 && index == 3) {
                     isPinDialogShown = false;
-                    onOkPressed(_controllers);
+                    onOkPressed(controllers);
                     Navigator.of(context).pop();
                   }
                 },
@@ -273,7 +274,7 @@ class _DeviceListState extends State<DeviceList>{
               ),
               onPressed: () {
                 isPinDialogShown = false;
-                onOkPressed(_controllers);
+                onOkPressed(controllers);
                 Navigator.of(context).pop();
               },
               child: Text(S.of(context).device_list_enter_pin_ok),

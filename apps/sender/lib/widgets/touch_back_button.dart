@@ -43,7 +43,7 @@ class TouchBackButtonState extends State<TouchBackButton> {
               S.of(context).main_touch_back,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: AppConstants.fontSize_normal,
+                fontSize: AppConstants.fontSizeNormal,
               ),
             ),
             IconButton(

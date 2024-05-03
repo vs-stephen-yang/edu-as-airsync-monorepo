@@ -63,7 +63,7 @@ class ModeratorPresentStart extends StatelessWidget {
                                   : S.of(context).present_state_resume,
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: AppConstants.fontSize_normal,
+                                fontSize: AppConstants.fontSizeNormal,
                               ),
                             ),
                           ],
@@ -94,7 +94,7 @@ class ModeratorPresentStart extends StatelessWidget {
                           S.of(context).present_state_stop,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: AppConstants.fontSize_normal,
+                            fontSize: AppConstants.fontSizeNormal,
                           ),
                         ),
                       ],
