@@ -356,32 +356,32 @@ class ChannelProvider extends ChangeNotifier {
     ConnectionRequest connectionRequest, {
     required bool isDirectConnect,
   }) {
-    if (connectionRequest.displayCode.isNotEmpty) {
-      if (isDirectConnect) {
-        // for direct connection
-        if (isAuthRequiredForDirectConnection()) {
-          if (connectionRequest.token?.isEmpty ?? true) {
-            return ConnectRequestStatus.authenticationRequired;
-          }
-          if (!_isValidOtp(connectionRequest.token!)) {
-            return ConnectRequestStatus.invalidOtp;
-          } else {
-            return ConnectRequestStatus.success;
-          }
-        } else {
-          return ConnectRequestStatus.success;
+    // verify display code
+    if (connectionRequest.displayCode.isEmpty ||
+        connectionRequest.displayCode != _instanceInfo.displayCode) {
+      return ConnectRequestStatus.invalidDisplayCode;
+    }
+
+    if (isDirectConnect) {
+      // for direct connection
+      if (isAuthRequiredForDirectConnection()) {
+        if (connectionRequest.token?.isEmpty ?? true) {
+          return ConnectRequestStatus.authenticationRequired;
         }
-      } else {
-        if (connectionRequest.displayCode != _instanceInfo.displayCode) {
-          return ConnectRequestStatus.invalidDisplayCode;
-        } else if (!_isValidOtp(connectionRequest.token!)) {
+        if (!_isValidOtp(connectionRequest.token!)) {
           return ConnectRequestStatus.invalidOtp;
         } else {
           return ConnectRequestStatus.success;
         }
+      } else {
+        return ConnectRequestStatus.success;
       }
     } else {
-      return ConnectRequestStatus.invalidDisplayCode;
+      if (!_isValidOtp(connectionRequest.token!)) {
+        return ConnectRequestStatus.invalidOtp;
+      } else {
+        return ConnectRequestStatus.success;
+      }
     }
   }
 
