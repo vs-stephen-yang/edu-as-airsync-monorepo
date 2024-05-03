@@ -610,6 +610,8 @@ class RTCConnector {
   }
 
   void _printPeerConnectionLog(String? event, dynamic args) {
+    _log.info('[$clientId] PeerConnection $event ${args.toString()}');
+
     if (kDebugMode) {
       printInDebug('PeerConnection $event ${args.toString()}', type: runtimeType);
       const DebugSwitch().write('PeerConnection $event ${args.toString()}');
