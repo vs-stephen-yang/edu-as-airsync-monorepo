@@ -218,6 +218,7 @@ class _DeviceListState extends State<DeviceList>{
               ),
               child: TextFormField(
                 controller: _controllers[index],
+                autofocus: index == 0, // set the initial focus to the first digit of OTP
                 keyboardType: TextInputType.number,
                 maxLength: 1,
                 decoration: const InputDecoration(
