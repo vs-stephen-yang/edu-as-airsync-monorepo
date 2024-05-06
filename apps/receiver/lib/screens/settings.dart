@@ -170,7 +170,7 @@ class _SettingsState extends State<Settings> {
                   fit: BoxFit.fitHeight,
                   child: FocusIconButton(
                     childNotFocus: Image(
-                      image: Svg(mirrorStateProvider.isAirPlayCode
+                      image: Svg(mirrorStateProvider.isMirrorConfirmation
                           ? 'assets/images/ic_activate_on.svg'
                           : 'assets/images/ic_activate_off.svg'),
                     ),

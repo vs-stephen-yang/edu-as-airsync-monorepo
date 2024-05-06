@@ -67,6 +67,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   set isMirrorConfirmation(bool value) {
     _isMirrorConfirmation = value;
+    notifyListeners();
   }
 
   bool _isAirPlayCode = false;
@@ -75,6 +76,10 @@ class MirrorStateProvider extends ChangeNotifier
 
   set isAirPlayCode(bool value) {
     _isAirPlayCode = value;
+    if (_airplayEnabled) {
+      stopAirPlay().whenComplete(() => startAirPlay());
+    }
+    notifyListeners();
   }
 
   void _onInstanceInfoUpdated() async {
@@ -238,7 +243,7 @@ class MirrorStateProvider extends ChangeNotifier
     printInDebug('startAirPlay', type: runtimeType);
     await _flutterMirrorPlugin?.startAirplay(AirplayConfig(
       name: _deviceName,
-      security: AirplaySecurity.onscreenCode,
+      security: _isAirPlayCode? AirplaySecurity.onscreenCode: AirplaySecurity.none,
     ));
     _airplayEnabled = true;
     notifyListeners();
