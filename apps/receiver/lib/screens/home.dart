@@ -241,7 +241,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                           in HybridConnectionList().getMirrorMap().values) {
                         if (request.mirrorState == MirrorState.idle) {
                           Future.delayed(Duration.zero, () {
-                            _showAuthDialog(context, mirror);
+                            if (mirror.isMirrorConfirmation) {
+                              _showAuthDialog(context, mirror);
+                            } else {
+                              mirror.setAcceptMirrorId(request.mirrorId);
+                            }
                           });
                         }
                       }
