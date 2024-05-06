@@ -61,6 +61,22 @@ class MirrorStateProvider extends ChangeNotifier
     MirrorType.miracast: false,
   };
 
+  bool _isMirrorConfirmation = false;
+
+  bool get isMirrorConfirmation => _isMirrorConfirmation;
+
+  set isMirrorConfirmation(bool value) {
+    _isMirrorConfirmation = value;
+  }
+
+  bool _isAirPlayCode = false;
+
+  bool get isAirPlayCode => _isAirPlayCode;
+
+  set isAirPlayCode(bool value) {
+    _isAirPlayCode = value;
+  }
+
   void _onInstanceInfoUpdated() async {
     if (_deviceName != _instanceInfoProvider.deviceName) {
       _deviceName = _instanceInfoProvider.deviceName;
