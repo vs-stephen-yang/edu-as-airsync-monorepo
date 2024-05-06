@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -43,123 +44,187 @@ class _SettingsState extends State<Settings> {
       return const SizedBox();
     }
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    MirrorStateProvider mirrorStateProvider = Provider.of<MirrorStateProvider>(context);
     return MenuDialog(
       backgroundColor: HybridConnectionList().isMirroring()
           ? AppColors.primary_grey_tran
           : AppColors.primary_grey,
       topTitleText: S.of(context).main_settings_title,
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(S.of(context).main_settings_device_name),
-                  Text(
-                    Provider.of<InstanceInfoProvider>(context).deviceName,
-                    style: const TextStyle(fontFamily: 'Inconsolata', fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              const Spacer(),
-              FocusIconButton(
-                icons: Icons.edit,
-                splashRadius: 20,
-                focusColor: Colors.grey,
-                onClick: () {
-                  setState(() {
-                    _callInstanceNameEditorDialog();
-                  });
-                },
-              ),
-            ],
-          ),
-          Container(
-            height: 2,
-            color: Colors.black26,
-          ),
-          Row(
-            children: [
-              Image(
-                image: Svg('assets/images/ic_quick_connect.svg'),
-                width: 32,
-                height: 32,
-              ),
-              const SizedBox(width: 20),
-              Text(
-                S.of(context).main_settings_device_list,
-                style: const TextStyle(fontSize: 16),
-              ),
-              const Spacer(),
-              FittedBox(
-                fit: BoxFit.fitHeight,
-                child: FocusIconButton(
-                  childNotFocus: Image(
-                    image: Svg(channelProvider.isDeviceListQuickConnect
-                        ? 'assets/images/ic_activate_on.svg'
-                        : 'assets/images/ic_activate_off.svg'),
-                  ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(S.of(context).main_settings_device_name),
+                    Text(
+                      Provider.of<InstanceInfoProvider>(context).deviceName,
+                      style: const TextStyle(fontFamily: 'Inconsolata', fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                FocusIconButton(
+                  icons: Icons.edit,
                   splashRadius: 20,
                   focusColor: Colors.grey,
                   onClick: () {
-                    if (channelProvider.isDeviceListQuickConnect) {
-                      channelProvider.isDeviceListQuickConnect = false;
-                    } else {
-                      channelProvider.isDeviceListQuickConnect = true;
-                    }
+                    setState(() {
+                      _callInstanceNameEditorDialog();
+                    });
                   },
                 ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              const Icon(Icons.pin, size: 32.0),
-              const SizedBox(width: 20),
-              Text(
-                S.of(context).main_settings_pin_visible,
-                style: const TextStyle(fontSize: 18),
-              ),
-              const Spacer(),
-              FittedBox(
-                fit: BoxFit.fitHeight,
-                child: FocusIconButton(
-                  childNotFocus: FutureBuilder(
-                    future: AppOverlayTab().getVisibility(),
-                    builder: (context, snapshot) {
-                      bool isRunning = false;
-                      if (snapshot.hasData) {
-                        isRunning = snapshot.data as bool;
+              ],
+            ),
+            Container(
+              height: 2,
+              color: Colors.black26,
+            ),
+            Row(
+              children: [
+                Image(
+                  image: Svg('assets/images/ic_quick_connect.svg'),
+                  width: 32,
+                  height: 32,
+                ),
+                const SizedBox(width: 20),
+                Text(
+                  S.of(context).main_settings_device_list,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const Spacer(),
+                FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: FocusIconButton(
+                    childNotFocus: Image(
+                      image: Svg(channelProvider.isDeviceListQuickConnect
+                          ? 'assets/images/ic_activate_on.svg'
+                          : 'assets/images/ic_activate_off.svg'),
+                    ),
+                    splashRadius: 20,
+                    focusColor: Colors.grey,
+                    onClick: () {
+                      if (channelProvider.isDeviceListQuickConnect) {
+                        channelProvider.isDeviceListQuickConnect = false;
+                      } else {
+                        channelProvider.isDeviceListQuickConnect = true;
                       }
-                      return Image(
-                        image: Svg(isRunning
-                            ? 'assets/images/ic_activate_on.svg'
-                            : 'assets/images/ic_activate_off.svg'),
-                      );
                     },
                   ),
-                  splashRadius: 20,
-                  focusColor: Colors.grey,
-                  onClick: () {
-                    AppPreferences()
-                        .set(showOverlayTab: !AppPreferences().showOverlayTab);
-                    AppOverlayTab()
-                        .setVisibility(AppPreferences().showOverlayTab);
-                    setState(() {});
-                  },
                 ),
-              ),
-            ],
-          ),
-          Container(
-            height: 2,
-            color: Colors.black26,
-          ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: _listSettings.length,
+              ],
+            ),
+            Row(
+              children: [
+                const Icon(Icons.pin, size: 32.0),
+                const SizedBox(width: 20),
+                Text(
+                  S.of(context).main_settings_pin_visible,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const Spacer(),
+                FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: FocusIconButton(
+                    childNotFocus: FutureBuilder(
+                      future: AppOverlayTab().getVisibility(),
+                      builder: (context, snapshot) {
+                        bool isRunning = false;
+                        if (snapshot.hasData) {
+                          isRunning = snapshot.data as bool;
+                        }
+                        return Image(
+                          image: Svg(isRunning
+                              ? 'assets/images/ic_activate_on.svg'
+                              : 'assets/images/ic_activate_off.svg'),
+                        );
+                      },
+                    ),
+                    splashRadius: 20,
+                    focusColor: Colors.grey,
+                    onClick: () {
+                      AppPreferences()
+                          .set(showOverlayTab: !AppPreferences().showOverlayTab);
+                      AppOverlayTab()
+                          .setVisibility(AppPreferences().showOverlayTab);
+                      setState(() {});
+                    },
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                const Icon(Icons.cast, size: 32.0),
+                const SizedBox(width: 20),
+                Text(
+                  S.of(context).main_settings_mirror_confirmation,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const Spacer(),
+                FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: FocusIconButton(
+                    childNotFocus: Image(
+                      image: Svg(mirrorStateProvider.isAirPlayCode
+                          ? 'assets/images/ic_activate_on.svg'
+                          : 'assets/images/ic_activate_off.svg'),
+                    ),
+                    splashRadius: 10,
+                    focusColor: Colors.grey,
+                    onClick: () {
+                      if (mirrorStateProvider.isMirrorConfirmation) {
+                        mirrorStateProvider.isMirrorConfirmation = false;
+                      } else {
+                        mirrorStateProvider.isMirrorConfirmation = true;
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                const Icon(Icons.airplay, size: 32.0),
+                const SizedBox(width: 20),
+                Text(
+                  S.of(context).main_settings_airplay_code,
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const Spacer(),
+                FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: FocusIconButton(
+                    childNotFocus: Image(
+                      image: Svg(mirrorStateProvider.isAirPlayCode
+                          ? 'assets/images/ic_activate_on.svg'
+                          : 'assets/images/ic_activate_off.svg'),
+                    ),
+                    splashRadius: 10,
+                    focusColor: Colors.grey,
+                    onClick: () {
+                      if (mirrorStateProvider.isAirPlayCode) {
+                        mirrorStateProvider.isAirPlayCode = false;
+                      } else {
+                        mirrorStateProvider.isAirPlayCode = true;
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              height: 2,
+              color: Colors.black26,
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(), // 禁止ListView本身滚动
+              itemCount: _listSettings.length , // 考虑到分隔符，所以是项目数的两倍减1
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   onTap: _listSettings[index].callback,
@@ -169,18 +234,12 @@ class _SettingsState extends State<Settings> {
                     style: const TextStyle(fontSize: 18),
                   ),
                   contentPadding: EdgeInsets.zero,
-                  visualDensity:
-                      const VisualDensity(horizontal: 0, vertical: -4),
+                  visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
                 );
               },
-              separatorBuilder: (BuildContext context, int index) {
-                return const Divider(height: 0, color: Colors.transparent);
-              },
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),),);
   }
 
   _addSettingsToList() {

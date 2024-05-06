@@ -639,6 +639,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Mirror Confirmation`
+  String get main_settings_mirror_confirmation {
+    return Intl.message(
+      'Mirror Confirmation',
+      name: 'main_settings_mirror_confirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AirPlay code`
+  String get main_settings_airplay_code {
+    return Intl.message(
+      'AirPlay code',
+      name: 'main_settings_airplay_code',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

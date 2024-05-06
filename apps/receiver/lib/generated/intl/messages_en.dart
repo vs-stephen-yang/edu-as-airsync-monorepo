@@ -60,6 +60,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cancel"),
         "main_register_display_code_failure": MessageLookupByLibrary.simpleMessage(
             "Failure to get Display Code and One Time Password. This may be due to a network or server issue. Please try again later when connection is restored."),
+        "main_settings_airplay_code":
+            MessageLookupByLibrary.simpleMessage("AirPlay code"),
         "main_settings_device_list":
             MessageLookupByLibrary.simpleMessage("Quick Connect Password"),
         "main_settings_device_name":
@@ -74,6 +76,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Rename device"),
         "main_settings_language":
             MessageLookupByLibrary.simpleMessage("Language"),
+        "main_settings_mirror_confirmation":
+            MessageLookupByLibrary.simpleMessage("Mirror Confirmation"),
         "main_settings_pin_visible":
             MessageLookupByLibrary.simpleMessage("Connect information"),
         "main_settings_share_to_sender":
