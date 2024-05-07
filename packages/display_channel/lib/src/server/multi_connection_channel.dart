@@ -189,22 +189,19 @@ class MultiConnectionChannel implements Channel {
   // the server initiates channel closure
   @override
   Future<void> close(ChannelCloseReason? reason) async {
-    _stopHearbeat();
-    _stopReconnectTimer();
-
     if (_isClosed()) {
       return;
     }
-
-    _closeReason = reason ?? ChannelCloseReason(ChannelCloseCode.close);
-    _state = ChannelState.closed;
+    reason = reason ?? ChannelCloseReason(ChannelCloseCode.close);
 
     for (var connection in _connections) {
       // send channel-closed message
       connection.send(ChannelClosedMessage(
-        convertChannelCloseReasonToReason(_closeReason!),
+        convertChannelCloseReasonToReason(reason),
       ).toJson());
     }
+
+    _doClose(reason);
   }
 
   // the client initiates channel closure
@@ -217,11 +214,11 @@ class MultiConnectionChannel implements Channel {
       connection.close();
     }
 
-    _closeReason = message.reason != null
-        ? convertRemoteReasonToChannelCloseReason(message.reason!)
-        : ChannelCloseReason(ChannelCloseCode.remoteClose);
-
-    _changeState(ChannelState.closed);
+    _doClose(
+      message.reason != null
+          ? convertRemoteReasonToChannelCloseReason(message.reason!)
+          : ChannelCloseReason(ChannelCloseCode.remoteClose),
+    );
   }
 
   // the client does not reconnect within the timeout.
@@ -229,13 +226,12 @@ class MultiConnectionChannel implements Channel {
     assert(_connections.isEmpty);
     assert(_heartbeatTimer == null);
 
-    _reconnectTimer = null;
-
-    _closeReason = ChannelCloseReason(
-      ChannelCloseCode.networkError,
-      text: 'The client does not reconnect within timeout',
+    _doClose(
+      ChannelCloseReason(
+        ChannelCloseCode.networkError,
+        text: 'The client does not reconnect within timeout',
+      ),
     );
-    _changeState(ChannelState.closed);
   }
 
   void _changeState(ChannelState newState) {
@@ -245,5 +241,13 @@ class MultiConnectionChannel implements Channel {
 
     _state = newState;
     onStateChange?.call(_state);
+  }
+
+  void _doClose(ChannelCloseReason reason) {
+    _stopHearbeat();
+    _stopReconnectTimer();
+
+    _closeReason = reason;
+    _changeState(ChannelState.closed);
   }
 }
