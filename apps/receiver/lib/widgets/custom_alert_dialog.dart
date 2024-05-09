@@ -28,10 +28,15 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       backgroundColor: AppColors.primary_dialog,
-      alignment: Alignment.centerLeft,
+      alignment: MediaQuery.of(context).orientation == Orientation.portrait
+          ? const Alignment(-1.0, 0.5)
+          : Alignment.centerLeft,
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
       child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.25,
+        width: MediaQuery.of(context).size.width *
+            (MediaQuery.of(context).orientation == Orientation.portrait
+                ? 0.40
+                : 0.25),
         child: Container(
           margin: const EdgeInsets.all(15.0),
           child: Column(

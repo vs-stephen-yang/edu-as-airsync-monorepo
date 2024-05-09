@@ -35,10 +35,16 @@ class MenuDialog extends StatelessWidget {
       child: SizedBox(
         width: menuSize != null
             ? menuSize!.width
-            : MediaQuery.of(context).size.width * 0.25,
+            : MediaQuery.of(context).size.width *
+                (MediaQuery.of(context).orientation == Orientation.portrait
+                    ? 0.45
+                    : 0.25),
         height: menuSize != null
             ? menuSize!.height
-            : MediaQuery.of(context).size.height * 0.6,
+            : MediaQuery.of(context).size.height *
+                (MediaQuery.of(context).orientation == Orientation.portrait
+                    ? 0.35
+                    : 0.6),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
