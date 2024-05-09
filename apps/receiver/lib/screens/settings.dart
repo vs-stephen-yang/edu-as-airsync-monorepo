@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
@@ -43,8 +44,6 @@ class _SettingsState extends State<Settings> {
     if (_isInChildDialog) {
       return const SizedBox();
     }
-    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    MirrorStateProvider mirrorStateProvider = Provider.of<MirrorStateProvider>(context);
     return MenuDialog(
       backgroundColor: HybridConnectionList().isMirroring()
           ? AppColors.primary_grey_tran
@@ -92,27 +91,31 @@ class _SettingsState extends State<Settings> {
                   height: 32,
                 ),
                 const SizedBox(width: 20),
-                Text(
+                AutoSizeText(
                   S.of(context).main_settings_device_list,
-                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
                 ),
                 const Spacer(),
                 FittedBox(
                   fit: BoxFit.fitHeight,
-                  child: FocusIconButton(
-                    childNotFocus: Image(
-                      image: Svg(channelProvider.isDeviceListQuickConnect
-                          ? 'assets/images/ic_activate_on.svg'
-                          : 'assets/images/ic_activate_off.svg'),
-                    ),
-                    splashRadius: 20,
-                    focusColor: Colors.grey,
-                    onClick: () {
-                      if (channelProvider.isDeviceListQuickConnect) {
-                        channelProvider.isDeviceListQuickConnect = false;
-                      } else {
-                        channelProvider.isDeviceListQuickConnect = true;
-                      }
+                  child: Consumer<ChannelProvider>(
+                    builder: (_, channelProvider, __) {
+                      return FocusIconButton(
+                        childNotFocus: Image(
+                          image: Svg(channelProvider.isDeviceListQuickConnect
+                              ? 'assets/images/ic_activate_on.svg'
+                              : 'assets/images/ic_activate_off.svg'),
+                        ),
+                        splashRadius: 20,
+                        focusColor: Colors.grey,
+                        onClick: () {
+                          if (channelProvider.isDeviceListQuickConnect) {
+                            channelProvider.isDeviceListQuickConnect = false;
+                          } else {
+                            channelProvider.isDeviceListQuickConnect = true;
+                          }
+                        },
+                      );
                     },
                   ),
                 ),
@@ -122,9 +125,9 @@ class _SettingsState extends State<Settings> {
               children: [
                 const Icon(Icons.pin, size: 32.0),
                 const SizedBox(width: 20),
-                Text(
+                AutoSizeText(
                   S.of(context).main_settings_pin_visible,
-                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
                 ),
                 const Spacer(),
                 FittedBox(
@@ -161,27 +164,31 @@ class _SettingsState extends State<Settings> {
               children: [
                 const Icon(Icons.cast, size: 32.0),
                 const SizedBox(width: 20),
-                Text(
+                AutoSizeText(
                   S.of(context).main_settings_mirror_confirmation,
-                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
                 ),
                 const Spacer(),
                 FittedBox(
                   fit: BoxFit.fitHeight,
-                  child: FocusIconButton(
-                    childNotFocus: Image(
-                      image: Svg(mirrorStateProvider.isMirrorConfirmation
-                          ? 'assets/images/ic_activate_on.svg'
-                          : 'assets/images/ic_activate_off.svg'),
-                    ),
-                    splashRadius: 10,
-                    focusColor: Colors.grey,
-                    onClick: () {
-                      if (mirrorStateProvider.isMirrorConfirmation) {
-                        mirrorStateProvider.isMirrorConfirmation = false;
-                      } else {
-                        mirrorStateProvider.isMirrorConfirmation = true;
-                      }
+                  child: Consumer<MirrorStateProvider>(
+                    builder: (_, mirrorStateProvider, __) {
+                      return FocusIconButton(
+                        childNotFocus: Image(
+                          image: Svg(mirrorStateProvider.isMirrorConfirmation
+                              ? 'assets/images/ic_activate_on.svg'
+                              : 'assets/images/ic_activate_off.svg'),
+                        ),
+                        splashRadius: 20,
+                        focusColor: Colors.grey,
+                        onClick: () {
+                          if (mirrorStateProvider.isMirrorConfirmation) {
+                            mirrorStateProvider.isMirrorConfirmation = false;
+                          } else {
+                            mirrorStateProvider.isMirrorConfirmation = true;
+                          }
+                        },
+                      );
                     },
                   ),
                 ),
@@ -191,27 +198,31 @@ class _SettingsState extends State<Settings> {
               children: [
                 const Icon(Icons.airplay, size: 32.0),
                 const SizedBox(width: 20),
-                Text(
+                AutoSizeText(
                   S.of(context).main_settings_airplay_code,
-                  style: const TextStyle(fontSize: 18),
+                  maxLines: 1,
                 ),
                 const Spacer(),
                 FittedBox(
                   fit: BoxFit.fitHeight,
-                  child: FocusIconButton(
-                    childNotFocus: Image(
-                      image: Svg(mirrorStateProvider.isAirPlayCode
-                          ? 'assets/images/ic_activate_on.svg'
-                          : 'assets/images/ic_activate_off.svg'),
-                    ),
-                    splashRadius: 10,
-                    focusColor: Colors.grey,
-                    onClick: () {
-                      if (mirrorStateProvider.isAirPlayCode) {
-                        mirrorStateProvider.isAirPlayCode = false;
-                      } else {
-                        mirrorStateProvider.isAirPlayCode = true;
-                      }
+                  child: Consumer<MirrorStateProvider>(
+                    builder: (_, mirrorStateProvider, __) {
+                      return FocusIconButton(
+                        childNotFocus: Image(
+                          image: Svg(mirrorStateProvider.isAirPlayCode
+                              ? 'assets/images/ic_activate_on.svg'
+                              : 'assets/images/ic_activate_off.svg'),
+                        ),
+                        splashRadius: 20,
+                        focusColor: Colors.grey,
+                        onClick: () {
+                          if (mirrorStateProvider.isAirPlayCode) {
+                            mirrorStateProvider.isAirPlayCode = false;
+                          } else {
+                            mirrorStateProvider.isAirPlayCode = true;
+                          }
+                        },
+                      );
                     },
                   ),
                 ),
