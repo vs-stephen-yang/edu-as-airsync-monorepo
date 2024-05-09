@@ -1,7 +1,7 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/focus_text_button.dart';
-import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:display_flutter/widgets/text_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
@@ -24,8 +24,7 @@ class _TitleBarStates extends State<TitleBar> {
 
     return Container(
       padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
-      child: Stack(
-        alignment: Alignment.center,
+      child: Column(
         children: [
           Row(
             children: [
@@ -61,8 +60,9 @@ class _TitleBarStates extends State<TitleBar> {
               const TextClock(),
             ],
           ),
-          Text(
+          AutoSizeText(
             AppConfig.of(context)?.settings.airSyncUrl ?? '',
+            maxLines: 1,
             style: const TextStyle(fontSize: 40),
           ),
         ],
