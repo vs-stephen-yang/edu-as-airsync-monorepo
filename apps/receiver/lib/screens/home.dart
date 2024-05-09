@@ -107,6 +107,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[
+              OrientationBuilder(builder: (context, orientation) {
+                AppOverlayTab().updateWindowSize(
+                    orientation == Orientation.portrait,
+                    AppPreferences().showOverlayTab);
+                return const SizedBox.shrink();
+              }),
               ValueListenableBuilder(
                 valueListenable: HybridConnectionList.hybridSplitScreenCount,
                 builder: (context, int value, child) {

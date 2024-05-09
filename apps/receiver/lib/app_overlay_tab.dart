@@ -147,6 +147,21 @@ class AppOverlayTab {
     return visible == OverlayTabHandler.valueVisible;
   }
 
+  Future<void> updateWindowSize(bool isPortrait, bool isVisible) async {
+    if (isPortrait) {
+      infoWidth = PlatformDispatcher.instance.displays.first.size.width / 1.6;
+      infoHeight = PlatformDispatcher.instance.displays.first.size.height / 26;
+    } else {
+      infoWidth = PlatformDispatcher.instance.displays.first.size.width / 3;
+      infoHeight = PlatformDispatcher.instance.displays.first.size.height / 15;
+    }
+    if (isVisible) {
+      android_window.resize(infoWidth.toInt(), infoHeight.toInt());
+    } else {
+      android_window.resize(0, 0);
+    }
+  }
+
   Future<void> setDeviceNameAndDisplayCode(
       String deviceName, String displayCode) async {
     await _postMessageToAndroidWindow(OverlayTabHandler.nameSetMainInfo, {
