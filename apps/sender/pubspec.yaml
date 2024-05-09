@@ -37,7 +37,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.6
+  cupertino_icons: ^1.0.8
   no_context_navigation: ^2.1.2
   package_info_plus: ^4.2.0
   window_size:
@@ -46,12 +46,12 @@ dependencies:
       path: plugins/window_size
   protobuf: ^2.1.0
   provider: ^6.1.1
-  flutter_multi_formatter: ^2.12.4
+  flutter_multi_formatter: ^2.12.8
   socket_io_client: ^1.0.2
   http: ^1.2.0
   uuid: ^4.4.0
-  url_launcher: ^6.2.4
-  shared_preferences: ^2.2.2
+  url_launcher: ^6.2.6
+  shared_preferences: ^2.2.3
   device_info_plus: ^9.1.2
   flutter_svg_provider: ^1.0.7
   desktop_window: ^0.4.0
