@@ -122,9 +122,8 @@ class _VbsOTAState extends State<VbsOTA> {
                     Process.run('reboot', <String>[]);
                   },
                 ),
-                Visibility(
-                  visible: _systemOTAEnableUI,
-                  child: IntrinsicWidth(
+                if (_systemOTAEnableUI)
+                  IntrinsicWidth(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -146,7 +145,6 @@ class _VbsOTAState extends State<VbsOTA> {
                       ],
                     ),
                   ),
-                ),
               ],
             ),
         ],

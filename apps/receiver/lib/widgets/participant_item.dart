@@ -44,11 +44,9 @@ class ParticipantItem extends StatelessWidget {
                     rtcConnector.senderNameWithEllipsis,
                     style: const TextStyle(fontSize: 16),
                   ),
-                  Visibility(
-                    visible: HybridConnectionList()
-                        .isPresenterWaitForStream(presenterId),
-                    child: const LoadingIcon(),
-                  ),
+                  if (HybridConnectionList()
+                      .isPresenterWaitForStream(presenterId))
+                    const LoadingIcon(),
                 ],
               ),
             ),
