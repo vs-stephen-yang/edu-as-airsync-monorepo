@@ -27,14 +27,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
 
-class Home extends StatefulWidget {
+class Home extends StatelessWidget {
   const Home({super.key});
 
-  @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return AppRetain(
@@ -44,23 +39,27 @@ class _HomeState extends State<Home> {
             constraints: const BoxConstraints.expand(),
             child: Container(
               decoration: const BoxDecoration(
-                  gradient: RadialGradient(
-                      center: Alignment(0, -0.7),
-                      radius: 1,
-                      colors: [
-                        AppColors.homeBackground,
-                        Colors.black,
-                      ])),
+                gradient: RadialGradient(
+                  center: Alignment(0, -0.7),
+                  radius: 1,
+                  colors: [
+                    AppColors.homeBackground,
+                    Colors.black,
+                  ],
+                ),
+              ),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
                   const TitleBar(),
                   const BottomBar(),
-                  Consumer2<ChannelProvider, DemoProvider>(builder: (context, channel, demo, child) {
+                  Consumer2<ChannelProvider, DemoProvider>(
+                      builder: (context, channel, demo, child) {
                     if (!demo.isDemoMode) {
                       debugModePrint('PresentState: ${channel.state}');
                       if (!kIsWeb) {
-                        FlutterWindowClose.setWindowShouldCloseHandler(() async {
+                        FlutterWindowClose.setWindowShouldCloseHandler(
+                            () async {
                           await channel.presentStop();
                           await channel.presentEnd(goIdleState: false);
                           return true;
@@ -71,7 +70,7 @@ class _HomeState extends State<Home> {
                           return PresentIdle();
                         case ViewState.selectRole:
                           if (kIsWeb) {
-                            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
                               channel.currentRole = JoinIntentType.present;
                               if (channel.moderatorStatus) {
                                 channel.presentModeratorNamePage();
