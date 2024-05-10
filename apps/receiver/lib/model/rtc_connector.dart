@@ -16,7 +16,6 @@ import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
-import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:uuid/uuid.dart';
 
 import 'connect_timer.dart';
@@ -352,9 +351,6 @@ class RTCConnector {
 
     if (isModeratorMode) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
-      while (navService.canPop()) {
-        navService.goBack();
-      }
       await disconnectPeerConnection(sendAnalytics: false);
       HybridConnectionList().updateSplitScreen();
       sessionId = null;
@@ -362,9 +358,6 @@ class RTCConnector {
       return;
     } else if (HybridConnectionList.hybridSplitScreenCount.value > 0) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
-      while (navService.canPop()) {
-        navService.goBack();
-      }
     }
     // disconnect the channel
     await disconnectPeerConnection(sendAnalytics: true);

@@ -20,7 +20,6 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:no_context_navigation/no_context_navigation.dart';
 
 ///
 /// ChannelProvider
@@ -415,9 +414,6 @@ class ChannelProvider extends ChangeNotifier {
     rtcConnector.onConnect = (() {
       HybridConnectionList().updateSplitScreen();
       StreamFunction.streamFunctionState.value = stateMenuOff;
-      while (navService.canPop()) {
-        navService.goBack();
-      }
     });
 
     rtcConnector.onAddRemoteStream = ((stream) {
@@ -425,9 +421,6 @@ class ChannelProvider extends ChangeNotifier {
       HybridConnectionList().updateSplitScreen();
 
       StreamFunction.streamFunctionState.value = stateMenuOff;
-      while (navService.canPop()) {
-        navService.goBack();
-      }
       notifyListeners();
     });
 
