@@ -57,73 +57,72 @@ class PresentIdle extends StatelessWidget {
             }
           },
         ),
-        const SizedBox(
-          height: 20,
-        ),
-        InkWell(
-          onTap: () {
-            channelProvider.presentSettingPage();
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.only(right: 5),
-                child: const Icon(
-                  Icons.settings,
-                  size: 18,
-                  color: Colors.white,
-                ),
+        const SizedBox(height: 20),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            OptionMenu(
+              name: S.of(context).main_setting,
+              iconWidget: const Icon(
+                Icons.settings,
+                size: 18,
+                color: Colors.white,
               ),
-              Text(
-                S.of(context).main_setting,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: AppConstants.fontSizeNormal,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        if (!kIsWeb)
-        Align(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: InkWell(
               onTap: () {
-                channelProvider.presentDeviceListPage();
+                channelProvider.presentSettingPage();
               },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    height: 20,
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.only(right: 5),
-                    child: const Image(
-                      image: Svg('assets/images/ic_quick_connect.svg')
-                    ),
-                  ),
-                  Text(
-                    S.of(context).main_device_list,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: AppConstants.fontSizeNormal,
-                    ),
-                  ),
-                ],
+            ),
+            if (!kIsWeb) const SizedBox(height: 10),
+            if (!kIsWeb)
+              OptionMenu(
+                name: S.of(context).main_device_list,
+                iconWidget: const Image(
+                  image: Svg('assets/images/ic_quick_connect.svg'),
+                ),
+                onTap: () {
+                  channelProvider.presentDeviceListPage();
+                },
               ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class OptionMenu extends StatelessWidget {
+  const OptionMenu(
+      {super.key,
+        required this.name,
+        required this.iconWidget,
+        required this.onTap});
+
+  final String name;
+  final Widget iconWidget;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 18,
+            padding: const EdgeInsets.only(right: 5),
+            child: iconWidget,
+          ),
+          Text(
+            name,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: AppConstants.fontSizeNormal,
             ),
           ),
-        )
-      ],
+        ],
+      ),
     );
   }
 }
