@@ -7,6 +7,7 @@ import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
+import 'package:display_flutter/model/rtc_stats_parser.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/utility/channel_util.dart';
@@ -77,6 +78,8 @@ class RTCConnector {
   RTCDataChannel? _dc;
   RTCVideoRenderer? _remoteRenderer = RTCVideoRenderer();
 
+  RtcStatsParser? _rtcStatsParser;
+
   // implement in webrtc_view
   RTCVideoRenderer? get remoteRenderer => _remoteRenderer;
 
@@ -123,95 +126,20 @@ class RTCConnector {
   }
 
   void startStatsTimer() {
+
+    _rtcStatsParser = RtcStatsParser(
+      onFPSReport,
+      onPairCandidateType,
+    );
+
     _statsTimer?.cancel();
     _statsTimer = Timer.periodic(_statsTimerInterval, (timer) async {
         final reports = await _pc?.getStats(null);
         if (reports != null) {
-          onStatsReports(reports);
+          _rtcStatsParser?.onStatsReports(reports);
         }
       },
     );
-  }
-
-  void onStatsReports(List<StatsReport> reports) {
-
-    // create Map from candidate-pair reports
-    final candidatePairs = reports
-        .where((StatsReport report) => report.type == 'candidate-pair')
-        .toList();
-    final candidatePairMap = Map<String, StatsReport>.fromIterable(
-        candidatePairs,
-        key: (report) => report.id,
-        value: (report) => report);
-
-    // get active transport
-    final transports = reports
-        .where((StatsReport report) => report.type == 'transport')
-        .toList();
-    final bytesSend = transports
-        .map((StatsReport report) => report.values['bytesSent'])
-        .firstWhere((value) => value != null, orElse: () => null);
-
-    if (bytesSend != null && bytesSend != 0) {
-
-      // get selectedCandidatePairId
-      final selectedCandidatePairId = transports
-          .map((StatsReport report) => report.values['selectedCandidatePairId'])
-          .firstWhere((value) => value != null, orElse: () => null);
-
-      // get selected candidate pair
-      final selectedCandidatePair = candidatePairMap[selectedCandidatePairId];
-
-      // get local and remote candidate id
-      final localCandidateId = selectedCandidatePair
-          ?.values['localCandidateId'];
-      final remoteCandidateId = selectedCandidatePair
-          ?.values['remoteCandidateId'];
-
-      // find selected local and remote candidate reports
-      final localCandidates = reports
-          .where((StatsReport report) => report.type == 'local-candidate')
-          .toList();
-      final remoteCandidates = reports
-          .where((StatsReport report) => report.type == 'remote-candidate')
-          .toList();
-
-      _onPairCandidatesReports(
-          localCandidates.firstWhere(
-                  (StatsReport report) => report.id == localCandidateId),
-          remoteCandidates.firstWhere(
-                  (StatsReport report) => report.id == remoteCandidateId));
-    }
-
-    // find video inbound-rtp reports
-    final inboundRtps = reports
-        .where((StatsReport report) => report.type == 'inbound-rtp')
-        .toList();
-    final videoInboundRtps = inboundRtps
-        .where((StatsReport report) => report.values['kind'] == 'video')
-        .toList();
-
-    _onVideoStatsReports(videoInboundRtps);
-  }
-
-  void _onPairCandidatesReports(StatsReport localCandidateReport, StatsReport remoteCandidateReport) {
-    final localCandidateType = localCandidateReport.values['candidateType'];
-    final remoteCandidateType = remoteCandidateReport.values['candidateType'];
-    if (localCandidateType != null && remoteCandidateType != null) {
-      onPairCandidateType?.call(localCandidateType as String, remoteCandidateType as String);
-    }
-  }
-
-  void _onVideoStatsReports(List<StatsReport> reports) {
-    if (reports.isEmpty) {
-      return;
-    }
-
-    final videoInboundRtp = reports.first;
-    final framesPerSecond = videoInboundRtp.values['framesPerSecond'];
-    if (framesPerSecond != null) {
-      onFPSReport?.call(framesPerSecond as double);
-    }
   }
 
   Future<void> _peerConnectionConnect() async {
@@ -259,18 +187,18 @@ class RTCConnector {
     var count = 30;
     _connectionTimeoutTimer =
         Timer.periodic(const Duration(seconds: 1), (timer) {
-          if (timer.tick < 30) {
-            // onTick
-            count = 30 - timer.tick;
-            connectionTimeTimeout.add(count);
-          } else if (timer.tick == 30) {
-            // onFinish
-            timer.cancel();
-            connectionTimeTimeout.add(0);
-            log('ConnectionTimeout onFinish');
-            onFinish();
-          }
-        });
+      if (timer.tick < 30) {
+        // onTick
+        count = 30 - timer.tick;
+        connectionTimeTimeout.add(count);
+      } else if (timer.tick == 30) {
+        // onFinish
+        timer.cancel();
+        connectionTimeTimeout.add(0);
+        log('ConnectionTimeout onFinish');
+        onFinish();
+      }
+    });
   }
 
   void stopConnectionTimeoutTimer() {
@@ -606,7 +534,8 @@ class RTCConnector {
     _log.info('[$clientId] PeerConnection $event ${args.toString()}');
 
     if (kDebugMode) {
-      printInDebug('PeerConnection $event ${args.toString()}', type: runtimeType);
+      printInDebug('PeerConnection $event ${args.toString()}',
+          type: runtimeType);
       const DebugSwitch().write('PeerConnection $event ${args.toString()}');
     }
   }
