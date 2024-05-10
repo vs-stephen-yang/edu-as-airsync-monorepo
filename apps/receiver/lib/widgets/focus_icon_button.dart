@@ -102,24 +102,30 @@ class _FocusIconButtonState extends State<FocusIconButton> {
                         Transform(
                           alignment: Alignment.center,
                           transform: matrix4,
-                          child: widget.icons != null ? Icon(
-                            widget.icons,
-                            color: hasFocus
-                                ? widget.iconFocusForegroundColor ??
-                                    widget.iconForegroundColor
-                                : widget.iconForegroundColor,
-                            size: iconSize,
-                          ) : Image(image: widget.svgSource!, color: hasFocus
-                              ? widget.iconFocusForegroundColor ??
-                              widget.iconForegroundColor
-                              : widget.iconForegroundColor, width: iconSize, height: iconSize,),
+                          child: widget.icons != null
+                              ? Icon(
+                                  widget.icons,
+                                  color: hasFocus
+                                      ? widget.iconFocusForegroundColor ??
+                                          widget.iconForegroundColor
+                                      : widget.iconForegroundColor,
+                                  size: iconSize,
+                                )
+                              : Image(
+                                  image: widget.svgSource!,
+                                  color: hasFocus
+                                      ? widget.iconFocusForegroundColor ??
+                                          widget.iconForegroundColor
+                                      : widget.iconForegroundColor,
+                                  width: iconSize,
+                                  height: iconSize,
+                                ),
                         ),
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: Visibility(
-                            visible: widget.isAddGreenDot,
-                            child: const SizedBox(
+                        if (widget.isAddGreenDot)
+                          const Positioned(
+                            top: 0,
+                            right: 0,
+                            child: SizedBox(
                               width: 10,
                               height: 10,
                               child: CircleAvatar(
@@ -128,7 +134,6 @@ class _FocusIconButtonState extends State<FocusIconButton> {
                               ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                   )

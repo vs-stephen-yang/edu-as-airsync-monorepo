@@ -179,22 +179,27 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               ValueListenableBuilder(
                 valueListenable: Home.showTitleBottomBar,
                 builder: (BuildContext context, bool value, Widget? child) {
-                  return Visibility(
-                    visible: value,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: <Widget>[
-                        Positioned(
-                            left: 0, top: 0, right: 0, child: TitleBar()),
-                        const Positioned(
-                            left: 0, right: 0, bottom: 0, child: BottomBar()),
-                        if (AppInstanceCreate().isInstalledInVBS100 |
-                            AppInstanceCreate().isInstalledInVBS200)
-                          const Positioned(
-                              left: 0, right: 0, bottom: 0, child: VbsOTA()),
-                      ],
-                    ),
-                  );
+                  return value
+                      ? Stack(
+                          fit: StackFit.expand,
+                          children: <Widget>[
+                            const Positioned(
+                                left: 0, top: 0, right: 0, child: TitleBar()),
+                            const Positioned(
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                child: BottomBar()),
+                            if (AppInstanceCreate().isInstalledInVBS100 |
+                                AppInstanceCreate().isInstalledInVBS200)
+                              const Positioned(
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 0,
+                                  child: VbsOTA()),
+                          ],
+                        )
+                      : const SizedBox.shrink();
                 },
               ),
               ValueListenableBuilder(
