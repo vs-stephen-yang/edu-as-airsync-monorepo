@@ -54,18 +54,8 @@ class _HomeState extends State<Home> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  const Positioned(
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    child: TitleBar(),
-                  ),
-                  const Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: BottomBar(),
-                  ),
+                  const TitleBar(),
+                  const BottomBar(),
                   Consumer2<ChannelProvider, DemoProvider>(builder: (context, channel, demo, child) {
                     if (!demo.isDemoMode) {
                       debugModePrint('PresentState: ${channel.state}');

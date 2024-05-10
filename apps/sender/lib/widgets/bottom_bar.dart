@@ -5,19 +5,15 @@ class BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
-      child: Stack(
+    return Positioned(
+      left: 30,
+      bottom: 30,
+      child: Row(
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Image.asset(
-                'assets/images/ic_logo_build_by.png',
-                width: 150,
-                // height: 88,
-              ),
-            ],
+          Image.asset(
+            'assets/images/ic_logo_build_by.png',
+            width: 150,
+            // height: 88,
           ),
         ],
       ),
