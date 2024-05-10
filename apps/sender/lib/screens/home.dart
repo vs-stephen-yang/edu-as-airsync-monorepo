@@ -35,6 +35,7 @@ class Home extends StatelessWidget {
     return AppRetain(
       child: SafeArea(
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           body: ConstrainedBox(
             constraints: const BoxConstraints.expand(),
             child: Container(
