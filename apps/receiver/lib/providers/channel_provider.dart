@@ -61,9 +61,13 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  final int maxCountDown = 300;
+  final int maxCountDown;
+
+  static const _otpTickInterval = Duration(milliseconds: 100);
+  static const _otpDuration = Duration(seconds: 30);
+
   final ValueNotifier<bool> isEyeOpen = ValueNotifier(true);
-  final ValueNotifier<int> countDownProgress = ValueNotifier(300);
+  late ValueNotifier<int> countDownProgress;
   final ValueNotifier<int> otp = ValueNotifier(0000);
   final List<String> _otpList = [];
 
@@ -110,7 +114,10 @@ class ChannelProvider extends ChangeNotifier {
   ChannelProvider(
     this.appConfig,
     this._instanceInfo,
-  ) {
+  ) : maxCountDown =
+            _otpDuration.inMilliseconds ~/ _otpTickInterval.inMilliseconds {
+    countDownProgress = ValueNotifier(maxCountDown);
+
     _setConnectivityListener();
     _generateOTP();
     _startNewOTPTimer();
@@ -362,7 +369,7 @@ class ChannelProvider extends ChangeNotifier {
     }
 
     if (isDirectConnect) {
-       // Handle verification for direct connections
+      // Handle verification for direct connections
       if (connectionRequest.token == null || connectionRequest.token!.isEmpty) {
         // When the token is empty, we assume the connection is initiated from the device list.
         // For connections from the device list, the token may not be required.
@@ -568,7 +575,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   _startNewOTPTimer() {
-    Timer.periodic(const Duration(milliseconds: 100), (timer) {
+    Timer.periodic(_otpTickInterval, (timer) {
       countDownProgress.value -= 1;
       if (countDownProgress.value == 0) {
         _generateOTP();
