@@ -33,7 +33,7 @@ class WebRTCViewState extends State<WebRTCView> {
   Offset _textureOffset = const Offset(0, 0);
   GlobalKey repaintBoundaryKey = GlobalKey();
   Widget? pauseScreenImage;
-  String fpsInfo = '';
+  String videoInfo = '';
   String pairCandidateInfo = '';
   String debugOverlayText = '';
 
@@ -90,18 +90,37 @@ class WebRTCViewState extends State<WebRTCView> {
       pairCandidateInfo =
           'Local: $localCandidateType, Remote: $remoteCandidateType';
       setState(() {
-        debugOverlayText = '$fpsInfo\n$pairCandidateInfo';
+        debugOverlayText = '$videoInfo\n$pairCandidateInfo';
       });
     };
 
-    widget.rtcConnector.onFPSReport = (fps) {
+    widget.rtcConnector.onVideoStatsReport = (stats) {
       if (!DeviceFeatureAdapter.ShowDebugOverlay) {
         return;
       }
 
-      fpsInfo = 'FPS: $fps';
+      final fpsInfo = 'FPS: '
+          '${stats.framesPerSecond?.toStringAsFixed(0)},'
+          '${stats.framesDecodedPerSecond},'
+          '${stats.framesReceivedPerSecond} '
+          'Dropped: ${stats.framesDroppedPerSecond}';
+
+      final bytesPerSecond = stats.bytesPerSecond;
+      final bitrateKbps =
+          bytesPerSecond != null ? bytesPerSecond * 8 / 1024 : null;
+
+      final decodeTimeSec = stats.decodeTime?.toStringAsFixed(3);
+      final jitterSec = stats.jitterBufferDelay?.toStringAsFixed(3);
+
+      videoInfo = 'Res ${stats.frameWidth}x${stats.frameHeight} '
+          'Bitrate: ${bitrateKbps?.toStringAsFixed(0)} Kbps\n'
+          '$fpsInfo\n'
+          'JB: $jitterSec s PacketLost: ${stats.packetsLost}\n'
+          'Decode: $decodeTimeSec s\n'
+          '${stats.decoderName}';
+
       setState(() {
-        debugOverlayText = '$fpsInfo\n$pairCandidateInfo';
+        debugOverlayText = '$videoInfo\n$pairCandidateInfo';
       });
     };
 
