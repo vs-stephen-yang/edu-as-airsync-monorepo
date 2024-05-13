@@ -579,6 +579,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Update version`
+  String get main_update_title {
+    return Intl.message(
+      'Update version',
+      name: 'main_update_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Version is AVAILABLE NOW. Please update it from App Store.`
+  String get main_update_description_apple {
+    return Intl.message(
+      'New Version is AVAILABLE NOW. Please update it from App Store.',
+      name: 'main_update_description_apple',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Version is AVAILABLE NOW. Please update it from Google Play.`
+  String get main_update_description_android {
+    return Intl.message(
+      'New Version is AVAILABLE NOW. Please update it from Google Play.',
+      name: 'main_update_description_android',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Version is AVAILABLE NOW. Please install it.`
+  String get main_update_description_windows {
+    return Intl.message(
+      'New Version is AVAILABLE NOW. Please install it.',
+      name: 'main_update_description_windows',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `UPDATE`
+  String get main_update_positive_button {
+    return Intl.message(
+      'UPDATE',
+      name: 'main_update_positive_button',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `NO THANKS`
+  String get main_update_deny_button {
+    return Intl.message(
+      'NO THANKS',
+      name: 'main_update_deny_button',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

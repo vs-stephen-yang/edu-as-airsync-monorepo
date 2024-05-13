@@ -1,6 +1,9 @@
+import 'dart:io' show Platform;
+
 import 'package:display_cast_flutter/demo/present_present_start_demo.dart';
 import 'package:display_cast_flutter/demo/present_select_role_demo.dart';
 import 'package:display_cast_flutter/demo/remote_screen_widget_demo.dart';
+import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
@@ -30,8 +33,17 @@ import 'package:provider/provider.dart';
 class Home extends StatelessWidget {
   const Home({super.key});
 
+  final bool _checkUpdate = false;
+
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // todo: check update version
+      if (_checkUpdate) {
+        // show update dialog
+        if (!kIsWeb) _showUpdateDialog(context);
+      }
+    });
     return AppRetain(
       child: SafeArea(
         child: Scaffold(
@@ -125,6 +137,65 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _showUpdateDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(S.of(context).main_update_title),
+          content: SizedBox(
+            width: 100,
+            height: 100,
+            child: Column(
+              children: [
+                if (Platform.isIOS || Platform.isMacOS) Text(S.of(context).main_update_description_apple),
+                if (Platform.isAndroid) Text(S.of(context).main_update_description_android),
+                if (Platform.isWindows) Text(S.of(context).main_update_description_windows),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮背景颜色
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.grey), // 设置按钮文字颜色
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // 设置按钮圆角
+                    side: const BorderSide(color: Colors.grey), // 设置按钮边框
+                  ),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(S.of(context).main_update_deny_button),
+            ),
+            TextButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // 设置按钮背景颜色
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮文字颜色
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // 设置按钮圆角
+                    side: const BorderSide(color: Colors.blue), // 设置按钮边框
+                  ),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                // todo: go to App Store/Google Play/windows installer
+              },
+              child: Text(S.of(context).main_update_positive_button),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -67,6 +67,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_present": MessageLookupByLibrary.simpleMessage("Next"),
         "main_setting": MessageLookupByLibrary.simpleMessage("Settings"),
         "main_touch_back": MessageLookupByLibrary.simpleMessage("Touchback"),
+        "main_update_deny_button":
+            MessageLookupByLibrary.simpleMessage("NO THANKS"),
+        "main_update_description_android": MessageLookupByLibrary.simpleMessage(
+            "New Version is AVAILABLE NOW. Please update it from Google Play."),
+        "main_update_description_apple": MessageLookupByLibrary.simpleMessage(
+            "New Version is AVAILABLE NOW. Please update it from App Store."),
+        "main_update_description_windows": MessageLookupByLibrary.simpleMessage(
+            "New Version is AVAILABLE NOW. Please install it."),
+        "main_update_positive_button":
+            MessageLookupByLibrary.simpleMessage("UPDATE"),
+        "main_update_title":
+            MessageLookupByLibrary.simpleMessage("Update version"),
         "moderator":
             MessageLookupByLibrary.simpleMessage("Please input your name"),
         "moderator_back": MessageLookupByLibrary.simpleMessage("Back"),
