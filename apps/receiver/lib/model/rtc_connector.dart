@@ -88,7 +88,7 @@ class RTCConnector {
   Function(MediaStream stream)? onRemoveRemoteStream;
   Function()? onRefresh;
   Function(String localCandidateType, String remoteCandidateType)? onPairCandidateType;
-  Function(double fps)? onFPSReport;
+  Function(RtcVideoInboundStats stats)? onVideoStatsReport;
   Function({bool? showMode})? onShowMode;
   Future<void> Function()? onChannelDisconnect;
 
@@ -128,7 +128,7 @@ class RTCConnector {
   void startStatsTimer() {
 
     _rtcStatsParser = RtcStatsParser(
-      onFPSReport,
+      onVideoStatsReport,
       onPairCandidateType,
     );
 
