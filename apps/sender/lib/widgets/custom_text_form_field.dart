@@ -10,6 +10,7 @@ class CustomTextFormField extends StatefulWidget {
       this.labelBackgroundColor = Colors.white,
       this.labelTextColor = Colors.grey,
       this.inputFormatter,
+      this.maxLength,
       this.onChanged,
       this.onTap,
       required this.focusNode,
@@ -25,6 +26,7 @@ class CustomTextFormField extends StatefulWidget {
   final GestureTapCallback? onTap;
   final FocusNode focusNode;
   final ValueChanged<String> onFieldSubmitted;
+  final int? maxLength;
 
   @override
   State<StatefulWidget> createState() {
@@ -64,6 +66,7 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
         errorBorder: outlineInputBorderGrey,
         focusedErrorBorder: outlineInputBorderBlue,
       ),
+      maxLength: widget.maxLength,
       style: textStyle,
       inputFormatters: widget.inputFormatter,
       onChanged: (_) {

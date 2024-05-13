@@ -214,14 +214,12 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               key: codeKey,
               controller: _codeController,
               focusNode: _codeFocusNode,
-              // initialValue: displayCode,
               labelText: S.of(context).main_display_code,
               errorText: S.of(context).main_display_code_description,
+              maxLength: 11,
               inputFormatter: [
-                UpperCaseTextFormatter(),
-                (WebRTC.platformIsWindows || kIsWeb) ? MaskedInputFormatter(
-                    '###########'
-                ) : MaskedInputFormatter(
+                if (!WebRTC.platformIsWindows && !kIsWeb) UpperCaseTextFormatter(),
+                if (!WebRTC.platformIsWindows && !kIsWeb) MaskedInputFormatter(
                   '###########',
                   allowedCharMatcher: RegExp('[A-Za-z0-9]'),
                 ),
@@ -231,9 +229,14 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                   if(text.contains(RegExp(r'[^a-zA-Z0-9]'))) {
                     setCodeErrorMsg(S.of(context).main_display_code_error);
                     _isOverlayVisible = false;
-                    _overlayEntry?.remove();
-                    return _codeFocusNode.unfocus();
+                    if (_overlayEntry != null && _overlayEntry!.mounted) _overlayEntry?.remove();
+                    return;
                   }
+                  _codeController.value = _codeController.value.copyWith(
+                    text: text.toUpperCase(),
+                    selection: TextSelection.collapsed(offset: text.length),
+                    composing: TextRange.empty,
+                  );
                 }
                 setCodeDescriptionMsg(S.of(context).main_display_code_description);
                 bool presentBtnEnable = false;
@@ -263,13 +266,11 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
             key: otpKey,
             controller: _otpController,
             focusNode: _otpFocusNode,
-            // initialValue: otp,
             labelText: S.of(context).main_password,
             errorText: S.of(context).main_password_description,
+            maxLength: 4,
             inputFormatter: [
-              (WebRTC.platformIsWindows || kIsWeb)
-                  ? LengthLimitingTextInputFormatter(4)
-                  : MaskedInputFormatter(
+              if (!WebRTC.platformIsWindows && !kIsWeb) MaskedInputFormatter(
                 '0000',
                 allowedCharMatcher: RegExp('[0-9]'),
               ),
@@ -278,7 +279,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               if (WebRTC.platformIsWindows || kIsWeb) {
                 if (text.contains(RegExp(r'[^0-9]'))) {
                   setOtpErrorMsg(S.of(context).main_otp_error);
-                  return _otpFocusNode.unfocus();
+                  return;
                 }
               }
               setOtpDescriptionMsg(S.of(context).main_password_description);
