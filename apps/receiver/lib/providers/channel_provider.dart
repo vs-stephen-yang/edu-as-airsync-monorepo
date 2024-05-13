@@ -414,6 +414,7 @@ class ChannelProvider extends ChangeNotifier {
     rtcConnector.onConnect = (() {
       HybridConnectionList().updateSplitScreen();
       StreamFunction.streamFunctionState.value = stateMenuOff;
+      notifyListeners();
     });
 
     rtcConnector.onAddRemoteStream = ((stream) {
