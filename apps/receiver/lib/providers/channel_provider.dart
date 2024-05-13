@@ -64,7 +64,7 @@ class ChannelProvider extends ChangeNotifier {
   final int maxCountDown;
 
   static const _otpTickInterval = Duration(milliseconds: 100);
-  static const _otpDuration = Duration(seconds: 30);
+  static const _otpDuration = Duration(minutes: 2);
 
   final ValueNotifier<bool> isEyeOpen = ValueNotifier(true);
   late ValueNotifier<int> countDownProgress;
