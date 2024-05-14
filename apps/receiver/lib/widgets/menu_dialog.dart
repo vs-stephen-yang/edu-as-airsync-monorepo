@@ -9,7 +9,6 @@ class MenuDialog extends StatelessWidget {
       this.alignment = Alignment.bottomLeft,
       this.edgeInsets = const EdgeInsets.fromLTRB(20, 0, 0, 140),
       this.menuSize,
-      this.child,
       this.topTitleText,
       this.topTitleAction,
       this.content,
@@ -19,7 +18,6 @@ class MenuDialog extends StatelessWidget {
   final AlignmentGeometry? alignment;
   final EdgeInsets? edgeInsets;
   final Size? menuSize;
-  final Widget? child;
   final String? topTitleText; // Title text in menu top area.
   final Widget? topTitleAction; // Action items behind title text.
   final Widget? content; // Main content items
