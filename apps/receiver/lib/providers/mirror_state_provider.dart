@@ -297,29 +297,6 @@ class MirrorStateProvider extends ChangeNotifier
     notifyListeners();
   }
 
-  Future<void> pauseMirror() async {
-    // printInDebug('pauseMirror', type: runtimeType);
-    // mirrorTypeState[MirrorType.airplay] = _airplayEnabled;
-    // mirrorTypeState[MirrorType.googlecast] = _googleCastEnabled;
-    // mirrorTypeState[MirrorType.miracast] = _miracastEnabled;
-    // stopAirPlay();
-    // stopGoogleCast();
-    // stopMiracast();
-  }
-
-  Future<void> resumeMirror() async {
-    // printInDebug('resumeMirror', type: runtimeType);
-    // if (mirrorTypeState[MirrorType.airplay]!) {
-    //   startAirPlay();
-    // }
-    // if (mirrorTypeState[MirrorType.googlecast]!) {
-    //   startGoogleCast();
-    // }
-    // if (mirrorTypeState[MirrorType.miracast]!) {
-    //   startMiracast();
-    // }
-  }
-
   Future<void> _restartMirror() async {
     printInDebug('restartMirror', type: runtimeType);
     if (!HybridConnectionList().isMirroring()) {
