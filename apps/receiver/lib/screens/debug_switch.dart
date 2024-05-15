@@ -1,4 +1,5 @@
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,8 @@ class _DebugSwitchState extends State<DebugSwitch> {
   bool _showDebugOverlay = false;
   bool _useSoftwareDecode = false;
   bool _useQuickDecodeParams = false;
+  bool _enableWebRtcTracing = false;
+  bool _startWebRtcTracing = false;
 
   void _notifyRestart() {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -60,10 +63,33 @@ class _DebugSwitchState extends State<DebugSwitch> {
     });
   }
 
+  void _changeEnableWebRtcTracing(bool value) async {
+    DeviceFeatureAdapter.enableWebRtcTracing = value;
+    await DeviceFeatureAdapter.save();
+
+    setState(() {
+      _enableWebRtcTracing = value;
+      _notifyRestart();
+    });
+  }
+
+  void _changeStartWebRtcTracing(bool value) async {
+    if (value) {
+      startWebRtcTracingCapture();
+    } else {
+      stopWebRtcTracingCapture();
+    }
+
+    setState(() {
+      _startWebRtcTracing = value;
+    });
+  }
+
   void _initialize() {
     _showDebugOverlay = DeviceFeatureAdapter.ShowDebugOverlay;
     _useSoftwareDecode = DeviceFeatureAdapter.UseSoftwareDecode;
     _useQuickDecodeParams = DeviceFeatureAdapter.UseQuickDecodeParams;
+    _enableWebRtcTracing = DeviceFeatureAdapter.enableWebRtcTracing;
   }
 
   @override
@@ -99,6 +125,16 @@ class _DebugSwitchState extends State<DebugSwitch> {
                             title: const Text('Quick Decode'),
                             value: _useQuickDecodeParams,
                             onChanged: (value) => _enableQuickDecode(value)
+                        ),
+                        SwitchListTile(
+                            title: const Text('Enable WebRTC Tracing'),
+                            value: _enableWebRtcTracing,
+                            onChanged: (value) => _changeEnableWebRtcTracing(value)
+                        ),
+                        SwitchListTile(
+                            title: const Text('WebRTC Tracing Capture'),
+                            value: _startWebRtcTracing,
+                            onChanged: (value) => _changeStartWebRtcTracing(value)
                         ),
                       ],
                     );
