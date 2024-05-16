@@ -47,112 +47,127 @@ class _DeviceListState extends State<DeviceList>{
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       height: MediaQuery.of(context).size.height * 0.6,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        _channelProvider.presentMainPage();
-                      },
-                      child: const Icon(
-                        Icons.arrow_back_ios_new_outlined,
-                        color: Colors.white,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          _channelProvider.presentMainPage();
+                        },
+                        child: const Icon(
+                          Icons.arrow_back_ios_new_outlined,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    const Image(
-                      image: Svg('assets/images/ic_quick_connect.svg'),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 6),
-                child: Text(
-                  S.of(context).main_device_list,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: AppConstants.fontSizeTitle,
+                      const Image(
+                        image: Svg('assets/images/ic_quick_connect.svg'),
+                      ),
+                    ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 6),
+                  child: Text(
+                    S.of(context).main_device_list,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: AppConstants.fontSizeTitle,
+                    ),
+                  ),
+                ),
+                const Spacer(
+                  flex: 1,
+                ),
+              ],
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+              child: Divider(
+                color: Colors.white12,
               ),
-              const Spacer(
-                flex: 1,
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.4,
+              child: Consumer<DeviceListProvider>(
+                builder: (BuildContext context, DeviceListProvider value,
+                    Widget? child) {
+                  return ListView.builder(
+                      itemCount: value.devices.length,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            _channelProvider.startDirectConnect(
+                                otp: null,
+                                service: _connectService =
+                                    value.devices[index]);
+                          },
+                          child: ListTile(
+                            title: Row(children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  value.devices[index].name,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'IP',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ]),
+                            subtitle: Row(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    value.devices[index].displayCode,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                const Spacer(),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    value.devices[index].ip,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      });
+                },
               ),
-            ],
-          ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-            child: Divider(
-              color: Colors.white12,
             ),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: Consumer<DeviceListProvider>(
-              builder: (BuildContext context, DeviceListProvider value, Widget? child) {
-                return ListView.builder(
-                  itemCount: value.devices.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        _channelProvider.startDirectConnect(otp: null, service: _connectService = value.devices[index]);
-                      },
-                      child: ListTile(
-                        title: Row(
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(value.devices[index].name, style: const TextStyle(
-                                color: Colors.white,
-                              ),),
-                            ),
-                            const Spacer(),
-                            const Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text('IP', style: TextStyle(
-                                color: Colors.white,
-                              ),),
-                            ),
-                          ]
-                        ),
-                        subtitle: Row(
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(value.devices[index].displayCode, style: const TextStyle(
-                                color: Colors.white,
-                              ),),
-                            ),
-                            const Spacer(),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(value.devices[index].ip, style: const TextStyle(
-                                color: Colors.white,
-                              ),),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                );
-              },
+            const Padding(
+              padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
+              child: Divider(
+                color: Colors.white12,
+              ),
             ),
-          ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
-            child: Divider(
-              color: Colors.white12,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
