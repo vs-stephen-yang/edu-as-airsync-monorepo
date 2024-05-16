@@ -58,6 +58,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_present": MessageLookupByLibrary.simpleMessage("下一步"),
         "main_setting": MessageLookupByLibrary.simpleMessage("設定"),
         "main_touch_back": MessageLookupByLibrary.simpleMessage("觸控反饋"),
+        "main_update_deny_button": MessageLookupByLibrary.simpleMessage("現在不要"),
+        "main_update_description_android":
+            MessageLookupByLibrary.simpleMessage("請按下\"更新\"以安裝新的版本。"),
+        "main_update_description_apple":
+            MessageLookupByLibrary.simpleMessage("請按下\"更新\"以安裝新的版本。"),
+        "main_update_description_windows":
+            MessageLookupByLibrary.simpleMessage("請按下\"更新\"以安裝新的版本。"),
+        "main_update_positive_button":
+            MessageLookupByLibrary.simpleMessage("更新"),
+        "main_update_title": MessageLookupByLibrary.simpleMessage("有新的更新"),
         "moderator": MessageLookupByLibrary.simpleMessage("請輸入姓名"),
         "moderator_back": MessageLookupByLibrary.simpleMessage("返回"),
         "moderator_exit": MessageLookupByLibrary.simpleMessage("結束"),

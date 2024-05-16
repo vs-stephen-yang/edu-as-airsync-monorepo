@@ -51,5 +51,11 @@
     "main_otp_error": "僅允許輸入數字",
     "main_device_list": "快速連線",
     "device_list_enter_pin": "一次性密碼",
-    "device_list_enter_pin_ok": "OK"
+    "device_list_enter_pin_ok": "OK",
+    "main_update_title": "有新的更新",
+    "main_update_description_apple": "請按下\"更新\"以安裝新的版本。",
+    "main_update_description_android": "請按下\"更新\"以安裝新的版本。",
+    "main_update_description_windows": "請按下\"更新\"以安裝新的版本。",
+    "main_update_positive_button": "更新",
+    "main_update_deny_button": "現在不要"
 }
