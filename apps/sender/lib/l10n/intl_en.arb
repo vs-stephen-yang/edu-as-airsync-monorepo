@@ -52,10 +52,10 @@
     "main_device_list": "Quick Connect",
     "device_list_enter_pin": "One-Time Password",
     "device_list_enter_pin_ok": "OK",
-    "main_update_title": "Update version",
-    "main_update_description_apple": "New Version is AVAILABLE NOW. Please update it from App Store.",
-    "main_update_description_android": "New Version is AVAILABLE NOW. Please update it from Google Play.",
-    "main_update_description_windows": "New Version is AVAILABLE NOW. Please install it.",
-    "main_update_positive_button": "UPDATE",
-    "main_update_deny_button": "NO THANKS"
+    "main_update_title": "New version available",
+    "main_update_description_apple": "Please click \"Update\" to install the new version.",
+    "main_update_description_android": "Please click \"Update\" to install the new version.",
+    "main_update_description_windows": "Please click \"Update\" to install the new version.",
+    "main_update_positive_button": "Update",
+    "main_update_deny_button": "Not now"
 }

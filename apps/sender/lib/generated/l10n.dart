@@ -580,60 +580,60 @@ class S {
     );
   }
 
-  /// `Update version`
+  /// `New version available`
   String get main_update_title {
     return Intl.message(
-      'Update version',
+      'New version available',
       name: 'main_update_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `New Version is AVAILABLE NOW. Please update it from App Store.`
+  /// `Please click "Update" to install the new version.`
   String get main_update_description_apple {
     return Intl.message(
-      'New Version is AVAILABLE NOW. Please update it from App Store.',
+      'Please click "Update" to install the new version.',
       name: 'main_update_description_apple',
       desc: '',
       args: [],
     );
   }
 
-  /// `New Version is AVAILABLE NOW. Please update it from Google Play.`
+  /// `Please click "Update" to install the new version.`
   String get main_update_description_android {
     return Intl.message(
-      'New Version is AVAILABLE NOW. Please update it from Google Play.',
+      'Please click "Update" to install the new version.',
       name: 'main_update_description_android',
       desc: '',
       args: [],
     );
   }
 
-  /// `New Version is AVAILABLE NOW. Please install it.`
+  /// `Please click "Update" to install the new version.`
   String get main_update_description_windows {
     return Intl.message(
-      'New Version is AVAILABLE NOW. Please install it.',
+      'Please click "Update" to install the new version.',
       name: 'main_update_description_windows',
       desc: '',
       args: [],
     );
   }
 
-  /// `UPDATE`
+  /// `Update`
   String get main_update_positive_button {
     return Intl.message(
-      'UPDATE',
+      'Update',
       name: 'main_update_positive_button',
       desc: '',
       args: [],
     );
   }
 
-  /// `NO THANKS`
+  /// `Not now`
   String get main_update_deny_button {
     return Intl.message(
-      'NO THANKS',
+      'Not now',
       name: 'main_update_deny_button',
       desc: '',
       args: [],
