@@ -124,8 +124,12 @@ class WebSocketClientConnection implements ClientConnection {
       logger?.call(_url, 'Received $data');
 
       // receive data
-      final message = jsonDecode(data);
-      onMessage?.call(message);
+      try {
+        final message = jsonDecode(data);
+        onMessage?.call(message);
+      } catch (e) {
+        logger?.call(_url, 'Invalid message $data');
+      }
     }, onDone: () {
       logger?.call(_url, 'websocket onDone');
 
