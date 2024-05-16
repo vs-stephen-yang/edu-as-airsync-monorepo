@@ -20,11 +20,13 @@ class DeviceFeatureAdapter {
   static bool UseSoftwareDecode = false;
   static bool UseQuickDecodeParams = false;
   static bool enableWebRtcTracing = false;
+  static bool verboseWebRtcLog = false;
 
   static bool DefaultShowDebugOverlay = false;
   static bool DefaultUseSoftwareDecode = false;
   static bool DefaultUseQuickDecodeParams = true;
   static const defaultEnableWebRtcTracing = false;
+  static const defaultVerboseWebRtcLog = false;
 
   static Map<String, int> QuickDecodeParams = {
     "low-latency": 1, // RK3588
@@ -72,6 +74,7 @@ class DeviceFeatureAdapter {
     UseSoftwareDecode = prefs.getBool("UseSoftwareDecode") ?? DefaultUseSoftwareDecode;
     UseQuickDecodeParams = prefs.getBool("UseQuickDecodeParams") ?? DefaultUseQuickDecodeParams;
     enableWebRtcTracing = prefs.getBool("EnableWebRtcTracing") ?? defaultEnableWebRtcTracing;
+    verboseWebRtcLog = prefs.getBool("VerboseWebRtcLog") ?? defaultVerboseWebRtcLog;
   }
 
   static save() async {
@@ -81,6 +84,7 @@ class DeviceFeatureAdapter {
     prefs.setBool("UseQuickDecodeParams", UseQuickDecodeParams);
     prefs.setBool("UseQuickDecodeParams", UseQuickDecodeParams);
     prefs.setBool("EnableWebRtcTracing", enableWebRtcTracing);
+    prefs.setBool("VerboseWebRtcLog", verboseWebRtcLog);
   }
 
   static Map<String, int> getQuickDecodeOptions() {
@@ -100,6 +104,7 @@ class DeviceFeatureAdapter {
     Map<String, dynamic> options = {
       'additionalDecoderParameter': quickDecodeOptions,
       'enableTracing': enableWebRtcTracing,
+      'logSeverity': verboseWebRtcLog ? 'VERBOSE' : 'INFO',
     };
 
     if (UseSoftwareDecode) {

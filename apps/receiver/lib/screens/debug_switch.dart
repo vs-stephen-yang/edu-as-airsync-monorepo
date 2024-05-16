@@ -24,6 +24,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   bool _useQuickDecodeParams = false;
   bool _enableWebRtcTracing = false;
   bool _startWebRtcTracing = false;
+  bool _verboseWebRtcLog = false;
 
   void _notifyRestart() {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -85,11 +86,22 @@ class _DebugSwitchState extends State<DebugSwitch> {
     });
   }
 
+  void _changeWebRtcLogVerbose(bool value) async {
+    DeviceFeatureAdapter.verboseWebRtcLog = value;
+    await DeviceFeatureAdapter.save();
+
+    setState(() {
+      _verboseWebRtcLog = value;
+      _notifyRestart();
+    });
+  }
+
   void _initialize() {
     _showDebugOverlay = DeviceFeatureAdapter.ShowDebugOverlay;
     _useSoftwareDecode = DeviceFeatureAdapter.UseSoftwareDecode;
     _useQuickDecodeParams = DeviceFeatureAdapter.UseQuickDecodeParams;
     _enableWebRtcTracing = DeviceFeatureAdapter.enableWebRtcTracing;
+    _verboseWebRtcLog = DeviceFeatureAdapter.verboseWebRtcLog;
   }
 
   @override
@@ -135,6 +147,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
                             title: const Text('WebRTC Tracing Capture'),
                             value: _startWebRtcTracing,
                             onChanged: (value) => _changeStartWebRtcTracing(value)
+                        ),
+                        SwitchListTile(
+                            title: const Text('WebRTC Verbose log'),
+                            value: _verboseWebRtcLog,
+                            onChanged: (value) => _changeWebRtcLogVerbose(value)
                         ),
                       ],
                     );
