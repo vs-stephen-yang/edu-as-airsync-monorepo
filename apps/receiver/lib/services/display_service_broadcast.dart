@@ -1,5 +1,6 @@
 import 'package:bonsoir/bonsoir.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/settings/app_config.dart';
 import 'package:uuid/uuid.dart';
 
 class DisplayServiceBroadcast {
@@ -16,8 +17,8 @@ class DisplayServiceBroadcast {
   DisplayServiceBroadcast._internal(
     this._serviceType,
     this._port,
-    this._instanceInfo,
     this.version,
+    this._instanceInfo,
   ) {
     _instanceInfo.addListener(_onInstanceInfoUpdated);
 
@@ -25,16 +26,14 @@ class DisplayServiceBroadcast {
   }
 
   static void ensureInitialized(
-    String serviceType,
-    int port,
+    AppConfig appConfig,
     InstanceInfoProvider instanceInfoProvider,
-    String version,
   ) {
     instance = DisplayServiceBroadcast._internal(
-      serviceType,
-      port,
+      appConfig.broadcastServiceType,
+      appConfig.directChannelPort,
+      appConfig.appVersion,
       instanceInfoProvider,
-      version,
     );
   }
 
@@ -49,7 +48,7 @@ class DisplayServiceBroadcast {
   }
 
   Future<void> _start() async {
-    // start only if the information is complet
+    // start only if the information is complete
     if (!isInstanceInfoComplete(_instanceInfo)) {
       return;
     }

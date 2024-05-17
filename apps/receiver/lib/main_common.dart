@@ -16,10 +16,10 @@ import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
-import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -41,21 +41,20 @@ Future<void> commonEntry(ConfigSettings settings) async {
     await AppInstanceCreate.ensureInitialized(settings, packageInfo);
 
     const directChannelPort = 5100;
+    const broadcastServiceType = '_vs-airsync._tcp';
 
     var configureApp = AppConfig(
         settings: settings,
         appName: packageInfo.appName,
         appVersion: packageInfo.version,
         directChannelPort: directChannelPort,
+        broadcastServiceType: broadcastServiceType,
         child: const MyApp());
 
     DisplayServiceBroadcast.ensureInitialized(
-        '_vs-airsync._tcp',
-        directChannelPort,
-        InstanceInfoProvider(),
-        packageInfo.version
+      configureApp,
+      InstanceInfoProvider(),
     );
-
 
     // Initialize the instance name
     InstanceInfoProvider().instanceName = AppPreferences().instanceName;
@@ -101,7 +100,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
