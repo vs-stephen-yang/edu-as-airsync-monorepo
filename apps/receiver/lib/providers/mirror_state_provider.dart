@@ -30,7 +30,9 @@ class MirrorStateProvider extends ChangeNotifier
   ) {
     _flutterMirrorPlugin = FlutterMirror();
     _initPlatformState();
+  }
 
+  startMirrorStartProvider() {
     _instanceInfoProvider.addListener(_onInstanceInfoUpdated);
   }
 

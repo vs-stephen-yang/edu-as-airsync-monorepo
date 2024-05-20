@@ -117,7 +117,9 @@ class ChannelProvider extends ChangeNotifier {
   ) : maxCountDown =
             _otpDuration.inMilliseconds ~/ _otpTickInterval.inMilliseconds {
     countDownProgress = ValueNotifier(maxCountDown);
+  }
 
+  startChannelProvider() {
     _setConnectivityListener();
     _generateOTP();
     _startNewOTPTimer();
