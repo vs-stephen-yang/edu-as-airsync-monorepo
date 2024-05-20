@@ -16,6 +16,7 @@ import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/flutter_mirror_listener.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
 import 'package:flutter_mirror/mirror_type.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 enum MirrorState {
@@ -28,6 +29,7 @@ class MirrorStateProvider extends ChangeNotifier
   MirrorStateProvider(
     this._instanceInfoProvider,
   ) {
+    _load();
     _flutterMirrorPlugin = FlutterMirror();
     _initPlatformState();
   }
@@ -247,17 +249,20 @@ class MirrorStateProvider extends ChangeNotifier
     _sizeChanged = true;
   }
 
-  Future<void> startAirPlay() async {
+  Future<void> startAirPlay({bool updatePreference = true}) async {
     printInDebug('startAirPlay', type: runtimeType);
     await _flutterMirrorPlugin?.startAirplay(AirplayConfig(
       name: _deviceName,
-      security: _isAirPlayCode? AirplaySecurity.onscreenCode: AirplaySecurity.none,
+      security:
+          _isAirPlayCode ? AirplaySecurity.onscreenCode : AirplaySecurity.none,
     ));
-    _airplayEnabled = true;
+    if (updatePreference) {
+      await _set(airplayEnable: true);
+    }
     notifyListeners();
   }
 
-  Future<void> stopAirPlay() async {
+  Future<void> stopAirPlay({bool updatePreference = true}) async {
     printInDebug('stopAirPlay', type: runtimeType);
     for (MirrorRequest request
         in HybridConnectionList().getMirrorMap().values) {
@@ -266,20 +271,26 @@ class MirrorStateProvider extends ChangeNotifier
       }
     }
     await _flutterMirrorPlugin?.stopAirplay();
-    _airplayEnabled = false;
+    if (updatePreference) {
+      await _set(airplayEnable: false);
+    }
     notifyListeners();
   }
 
-  Future<void> startGoogleCast() async {
+  Future<void> startGoogleCast({bool updatePreference = true}) async {
+    printInDebug('startGoogleCast', type: runtimeType);
     await _flutterMirrorPlugin?.startGooglecast(GooglecastConfig(
       name: _deviceName,
       uniqueId: (const Uuid()).v4(),
     ));
-    _googleCastEnabled = true;
+    if (updatePreference) {
+      await _set(googleCastEnable: true);
+    }
     notifyListeners();
   }
 
-  Future<void> stopGoogleCast() async {
+  Future<void> stopGoogleCast({bool updatePreference = true}) async {
+    printInDebug('stopGoogleCast', type: runtimeType);
     for (MirrorRequest request
         in HybridConnectionList().getMirrorMap().values) {
       if (request.mirrorType == MirrorType.googlecast) {
@@ -287,17 +298,23 @@ class MirrorStateProvider extends ChangeNotifier
       }
     }
     await _flutterMirrorPlugin?.stopGooglecast();
-    _googleCastEnabled = false;
+    if (updatePreference) {
+      await _set(googleCastEnable: false);
+    }
     notifyListeners();
   }
 
-  Future<void> startMiracast() async {
+  Future<void> startMiracast({bool updatePreference = true}) async {
+    printInDebug('startMiracast', type: runtimeType);
     await _flutterMirrorPlugin?.startMiracast(_deviceName);
-    _miracastEnabled = true;
+    if (updatePreference) {
+      await _set(miracastEnable: true);
+    }
     notifyListeners();
   }
 
-  Future<void> stopMiracast() async {
+  Future<void> stopMiracast({bool updatePreference = true}) async {
+    printInDebug('stopMiracast', type: runtimeType);
     for (MirrorRequest request
         in HybridConnectionList().getMirrorMap().values) {
       if (request.mirrorType == MirrorType.miracast) {
@@ -305,7 +322,9 @@ class MirrorStateProvider extends ChangeNotifier
       }
     }
     await _flutterMirrorPlugin?.stopMiracast();
-    _miracastEnabled = false;
+    if (updatePreference) {
+      await _set(miracastEnable: false);
+    }
     notifyListeners();
   }
 
@@ -313,18 +332,18 @@ class MirrorStateProvider extends ChangeNotifier
     printInDebug('restartMirror', type: runtimeType);
     if (!HybridConnectionList().isMirroring()) {
       if (_airplayEnabled) {
-        await stopAirPlay();
-        await startAirPlay();
+        await stopAirPlay(updatePreference: false);
+        await startAirPlay(updatePreference: false);
       }
 
       if (_googleCastEnabled) {
-        await stopGoogleCast();
-        await startGoogleCast();
+        await stopGoogleCast(updatePreference: false);
+        await startGoogleCast(updatePreference: false);
       }
 
       if (_miracastEnabled) {
-        await stopMiracast();
-        await startMiracast();
+        await stopMiracast(updatePreference: false);
+        await startMiracast(updatePreference: false);
       }
     }
   }
@@ -353,6 +372,38 @@ class MirrorStateProvider extends ChangeNotifier
 
     _videoWidgetSize = renderBox.size;
     _videoWidgetOffset = renderBox.localToGlobal(Offset.zero);
+  }
+
+  _set({
+    bool? airplayEnable,
+    bool? googleCastEnable,
+    bool? miracastEnable,
+  }) async {
+    if (airplayEnable != null) {
+      _airplayEnabled = airplayEnable;
+    }
+    if (googleCastEnable != null) {
+      _googleCastEnabled = googleCastEnable;
+    }
+    if (miracastEnable != null) {
+      _miracastEnabled = miracastEnable;
+    }
+    await _save();
+  }
+
+  _save() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('app_AirPlayEnable', _airplayEnabled);
+    prefs.setBool('app_GoogleCastEnable', _googleCastEnabled);
+    prefs.setBool('app_MiracastEnable', _miracastEnabled);
+  }
+
+  _load() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _airplayEnabled = prefs.getBool('app_AirPlayEnable') ?? true;
+    _googleCastEnabled = prefs.getBool('app_GoogleCastEnable') ?? true;
+    _miracastEnabled = prefs.getBool('app_MiracastEnable') ?? true;
+    printInDebug('_LOREN_, load settings.');
   }
 // endregion
 }
