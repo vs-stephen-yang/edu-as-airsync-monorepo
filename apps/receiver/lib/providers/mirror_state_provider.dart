@@ -403,7 +403,7 @@ class MirrorStateProvider extends ChangeNotifier
     _airplayEnabled = prefs.getBool('app_AirPlayEnable') ?? true;
     _googleCastEnabled = prefs.getBool('app_GoogleCastEnable') ?? true;
     _miracastEnabled = prefs.getBool('app_MiracastEnable') ?? true;
-    printInDebug('_LOREN_, load settings.');
+    printInDebug('load settings.', type: runtimeType);
   }
 // endregion
 }
