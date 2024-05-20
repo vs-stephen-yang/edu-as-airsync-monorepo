@@ -51,6 +51,8 @@ class MirrorStateProvider extends ChangeNotifier
   bool _airplayEnabled = false;
   bool _googleCastEnabled = false;
   bool _miracastEnabled = false;
+  Timer? _initTimer;
+  bool isPlatformInitialized = false;
   String _pinCode = '';
   Timer? _pinTimer;
   bool _sizeChanged = false;
@@ -84,6 +86,14 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   void _onInstanceInfoUpdated() async {
+    if (!isPlatformInitialized) {
+      _initTimer?.cancel();
+      _initTimer = Timer(const Duration(milliseconds: 500), () {
+        _onInstanceInfoUpdated();
+        _initTimer = null;
+      });
+      return;
+    }
     if (_deviceName != _instanceInfoProvider.deviceName) {
       _deviceName = _instanceInfoProvider.deviceName;
 
@@ -333,6 +343,7 @@ class MirrorStateProvider extends ChangeNotifier
     } on PlatformException {
       printInDebug('Mirror initialize failure.', type: runtimeType);
     }
+    isPlatformInitialized = true;
   }
 
   void _getWidgetInfo(GlobalKey mirrorViewKey) {
