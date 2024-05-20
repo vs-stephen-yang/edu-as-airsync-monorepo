@@ -86,8 +86,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     _fullHeight = size.height;
     _halfWidth = size.width / 2;
     _halfHeight = size.height / 2;
-    Provider.of<ChannelProvider>(context).startChannelProvider();
-    Provider.of<MirrorStateProvider>(context).startMirrorStartProvider();
+    Provider.of<ChannelProvider>(context, listen: false).startChannelProvider();
+    Provider.of<MirrorStateProvider>(context, listen: false).startMirrorStartProvider();
     return PopScope(
       canPop: Platform.isAndroid ? false : true,
       onPopInvoked: (didPop) async {
