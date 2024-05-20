@@ -2,7 +2,7 @@
 <DOCUMENT Type="Advanced Installer" CreateVersion="18.5" version="18.5" Modules="professional" RootPath="." Language="en" Id="{CA8BCCFC-0D00-4251-8B2A-C4C856EBCDB6}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
-    <ROW Property="AI_CURRENT_YEAR" Value="2023" ValueLocId="-"/>
+    <ROW Property="AI_CURRENT_YEAR" Value="2024" ValueLocId="-"/>
     <ROW Property="ALLUSERS" Value="1" MultiBuildValue="DefaultBuild:2#DefaultBuild_1:2#ReleaseBuild_1:2"/>
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName][|EnvSuffix]." ValueLocId="*"/>
     <ROW Property="EnvSuffix" Value=" " MultiBuildValue="DefaultBuild:#DefaultBuild_1:-stage#ReleaseBuild_1:-dev"/>
@@ -53,6 +53,7 @@
     <ROW Component="SHORTCUTDIR" ComponentId="{8A6E9F44-DB30-4AE3-9A31-A96F629A8E58}" Directory_="SHORTCUTDIR" Attributes="0"/>
     <ROW Component="ad.png" ComponentId="{036315A3-5B40-4BBC-BF08-9E625ACA8BA1}" Directory_="png_Dir" Attributes="0" KeyPath="ad.png" Type="0"/>
     <ROW Component="app.so" ComponentId="{6EEEA41B-FDDF-48CE-A357-D7CD30EB66D3}" Directory_="data_Dir" Attributes="0" KeyPath="app.so" Type="0"/>
+    <ROW Component="bonsoir_windows_plugin.dll" ComponentId="{A8F31CDE-2EAA-4157-94BA-93BD80AA25F9}" Directory_="APPDIR" Attributes="256" KeyPath="bonsoir_windows_plugin.dll"/>
     <ROW Component="desktop_window_plugin.dll" ComponentId="{5C80C07D-A9D1-4482-AF19-C271D2711E9F}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_window_plugin.dll"/>
     <ROW Component="flutter_input_injection_plugin.dll" ComponentId="{12BBAEAE-F47D-409E-97E5-783BF339FBC4}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_input_injection_plugin.dll"/>
     <ROW Component="flutter_webrtc_plugin.dll" ComponentId="{7BE6E933-AD6E-4E4D-AAFC-D915EA00FC30}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_webrtc_plugin.dll"/>
@@ -87,8 +88,6 @@
     <ROW File="ic_launcher.png" Component_="ic_activate_off.svg" FileName="IC_LAU~1.PNG|ic_launcher.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_launcher.png" SelfReg="false"/>
     <ROW File="ic_logo_build_by.png" Component_="ic_activate_off.svg" FileName="IC_LOG~1.PNG|ic_logo_build_by.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_build_by.png" SelfReg="false"/>
     <ROW File="ic_logo_my_viewboard.png" Component_="ic_activate_off.svg" FileName="IC_LOG~2.PNG|ic_logo_my_viewboard.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_logo_my_viewboard.png" SelfReg="false"/>
-    <ROW File="ic_net_off.png" Component_="ic_activate_off.svg" FileName="IC_NET~1.PNG|ic_net_off.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_net_off.png" SelfReg="false"/>
-    <ROW File="ic_net_on.png" Component_="ic_activate_off.svg" FileName="IC_NET~2.PNG|ic_net_on.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_net_on.png" SelfReg="false"/>
     <ROW File="touch_app_black.svg" Component_="ic_activate_off.svg" FileName="TOUCH_~1.SVG|touch_app_black.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\touch_app_black.svg" SelfReg="false"/>
     <ROW File="FontManifest.json" Component_="AssetManifest.bin" FileName="FONTMA~1.JSO|FontManifest.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\FontManifest.json" SelfReg="false"/>
     <ROW File="CustomIcons.ttf" Component_="CustomIcons.ttf" FileName="CUSTOM~1.TTF|CustomIcons.ttf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\fonts\CustomIcons.ttf" SelfReg="false"/>
@@ -361,6 +360,14 @@
     <ROW File="libwebrtc.dll" Component_="libwebrtc.dll" FileName="LIBWEB~1.DLL|libwebrtc.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\libwebrtc.dll" SelfReg="false"/>
     <ROW File="url_launcher_windows_plugin.dll" Component_="url_launcher_windows_plugin.dll" FileName="URL_LA~1.DLL|url_launcher_windows_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\url_launcher_windows_plugin.dll" SelfReg="false"/>
     <ROW File="window_size_plugin.dll" Component_="window_size_plugin.dll" FileName="WINDOW~1.DLL|window_size_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\window_size_plugin.dll" SelfReg="false"/>
+    <ROW File="bonsoir_windows_plugin.dll" Component_="bonsoir_windows_plugin.dll" FileName="BONSOI~1.DLL|bonsoir_windows_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\bonsoir_windows_plugin.dll" SelfReg="false"/>
+    <ROW File="AssetManifest.bin.json" Component_="AssetManifest.bin" FileName="ASSETM~2.JSO|AssetManifest.bin.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\AssetManifest.bin.json" SelfReg="false"/>
+    <ROW File="demo_remote.png" Component_="ic_activate_off.svg" FileName="DEMO_R~1.PNG|demo_remote.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\demo_remote.png" SelfReg="false"/>
+    <ROW File="ic_cast_screen.svg" Component_="ic_activate_off.svg" FileName="IC_CAS~1.SVG|ic_cast_screen.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_cast_screen.svg" SelfReg="false"/>
+    <ROW File="ic_quick_connect.svg" Component_="ic_activate_off.svg" FileName="IC_QUI~1.SVG|ic_quick_connect.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_quick_connect.svg" SelfReg="false"/>
+    <ROW File="ic_receiver.svg" Component_="ic_activate_off.svg" FileName="IC_REC~1.SVG|ic_receiver.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_receiver.svg" SelfReg="false"/>
+    <ROW File="RobotoRegular.ttf" Component_="CustomIcons.ttf" FileName="ROBOTO~1.TTF|Roboto-Regular.ttf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\fonts\Roboto-Regular.ttf" SelfReg="false"/>
+    <ROW File="NOTICES" Component_="AssetManifest.bin" FileName="NOTICES" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\NOTICES" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AiPersistentPropComponent">
     <ROW Property="AI_INSTALLPERUSER" Registry="AI_INSTALLPERUSER" HklmSearch="AI_INSTALLPERUSER" HkcuSearch="AI_INSTALLPERUSER_1" Hklm64Search="AI_INSTALLPERUSER_2" Hkcu64Search="AI_INSTALLPERUSER_3"/>
@@ -476,6 +483,7 @@
     <ROW Feature_="MainFeature" Component_="libwebrtc.dll"/>
     <ROW Feature_="MainFeature" Component_="url_launcher_windows_plugin.dll"/>
     <ROW Feature_="MainFeature" Component_="window_size_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="bonsoir_windows_plugin.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="AirSync_Sender.exe" SourcePath="..\build\windows\x64\runner\Release\AirSync_Sender.exe" Index="0"/>
