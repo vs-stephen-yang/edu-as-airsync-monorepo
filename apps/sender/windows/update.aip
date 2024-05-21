@@ -12,7 +12,7 @@
     <ROW Section="Update" Key="SHA256" Value="package\AirSyncSender-2.0.0.msi" ValueLocId="-"/>
     <ROW Section="Update" Key="MD5" Value="package\AirSyncSender-2.0.0.msi" ValueLocId="-"/>
     <ROW Section="Update" Key="ServerFileName" Value="AirSyncSender-2.0.0.msi" ValueLocId="-"/>
-    <ROW Section="Update" Key="Flags" Value="Sys64|Os64" ValueLocId="-"/>
+    <ROW Section="Update" Key="Flags" Value="Sys64|Os64|Advertises" ValueLocId="-"/>
     <ROW Section="Update" Key="RegistryKey" Value="HKUD\Software\ViewSonic\AirSync Sender\Version" ValueLocId="-"/>
     <ROW Section="Update" Key="Version" Value="2.0.0" ValueLocId="-"/>
     <ROW Section="Update" Key="AutoCloseApplication" Value="[APPDIR]AirSync_Sender.exe|;;AlwaysRestart" ValueLocId="-"/>
