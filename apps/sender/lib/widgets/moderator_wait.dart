@@ -14,8 +14,9 @@ class ModeratorWait extends StatelessWidget {
     // PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context);
     return SizedBox(
       width: AppConstants.viewStateMenuWidth,
-      height: AppConstants.viewStateMenuHeight,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             alignment: Alignment.center,

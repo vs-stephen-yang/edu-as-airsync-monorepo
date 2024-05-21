@@ -14,8 +14,9 @@ class Language extends StatelessWidget {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
     return SizedBox(
       width: AppConstants.viewStateMenuWidth,
-      height: AppConstants.viewStateMenuHeight,
+      height: MediaQuery.of(context).size.height * 0.6,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
