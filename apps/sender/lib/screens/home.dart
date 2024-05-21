@@ -10,6 +10,7 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
+import 'package:display_cast_flutter/utilities/updater_windows.dart';
 import 'package:display_cast_flutter/utilities/version_update.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
 import 'package:display_cast_flutter/widgets/bottom_bar.dart';
@@ -29,6 +30,7 @@ import 'package:display_cast_flutter/widgets/title_bar.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -193,9 +195,6 @@ class Home extends StatelessWidget {
                 ),
               ),
               onPressed: () async {
-                if (status == CompareVersionResult.userChoose) {
-                  Navigator.of(context).pop();
-                }
                 if (Platform.isAndroid) {
                   launchUrl( Uri.parse('https://play.google.com/store/apps/details?id=com.viewsonic.display.cast'));
                 } else if (Platform.isIOS) {
@@ -203,9 +202,17 @@ class Home extends StatelessWidget {
                 } else if (Platform.isMacOS) {
                   launchUrl( Uri.parse('macappstore://apps.apple.com/app/airsync-sender/id6453759985'));
                 } else if (Platform.isWindows) {
-
+                  try {
+                    await installUpdates();
+                    SystemNavigator.pop();
+                  } on UpdateErrorExecption catch (e) {
+                    _showUpdateErrorDialog(context, e);
+                  }
                 }
 
+                if (status == CompareVersionResult.userChoose) {
+                  Navigator.of(context).pop();
+                }
               },
               child: Text(S.of(context).main_update_positive_button),
             ),
@@ -213,6 +220,42 @@ class Home extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _showUpdateErrorDialog(BuildContext context, UpdateErrorExecption e) {
+    showDialog(context: context, builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text('Update Error'),
+        content: SizedBox(
+          width: 100,
+          height: 100,
+          child: Column(
+            children: [
+              Text('Error: ${e.error.name} \nDetail: ${e.details.toString()}'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // 设置按钮背景颜色
+              foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮文字颜色
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // 设置按钮圆角
+                  side: const BorderSide(color: Colors.blue), // 设置按钮边框
+                ),
+              ),
+            ),
+            onPressed: () async {
+                Navigator.of(context).pop();
+            },
+            child: Text(S.of(context).device_list_enter_pin_ok),
+          ),
+        ],
+      );
+    });
   }
 
   Future<CompareVersionResult> _checkUpdateVersion(BuildContext context) async {
