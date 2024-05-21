@@ -18,8 +18,8 @@ class Settings extends StatelessWidget {
     AppConfig? appConfig = AppConfig.of(context);
     return SizedBox(
       width: AppConstants.viewStateMenuWidth,
-      height: AppConstants.viewStateMenuHeight,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(

@@ -63,8 +63,9 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
         Center(
           child: SizedBox(
             width: AppConstants.viewStateMenuWidth,
-            height: AppConstants.viewStateMenuHeight,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
