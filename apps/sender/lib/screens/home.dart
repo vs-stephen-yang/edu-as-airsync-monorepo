@@ -1,4 +1,4 @@
-import 'dart:io' show Platform;
+import 'dart:io' show Platform, exit;
 
 import 'package:display_cast_flutter/demo/present_present_start_demo.dart';
 import 'package:display_cast_flutter/demo/present_select_role_demo.dart';
@@ -7,8 +7,10 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
 import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
+import 'package:display_cast_flutter/utilities/version_update.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
 import 'package:display_cast_flutter/widgets/bottom_bar.dart';
 import 'package:display_cast_flutter/widgets/device_list.dart';
@@ -29,20 +31,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
 
-  final bool _checkUpdate = false;
-
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      // todo: check update version
-      if (_checkUpdate) {
-        // show update dialog
-        if (!kIsWeb) _showUpdateDialog(context);
-      }
+      _checkUpdateVersion(context).then((value) {
+        if (value != CompareVersionResult.none) {
+          // show update dialog
+          if (!kIsWeb) _showUpdateDialog(context , value);
+        }
+      });
     });
     return AppRetain(
       child: SafeArea(
@@ -140,7 +142,7 @@ class Home extends StatelessWidget {
     );
   }
 
-  void _showUpdateDialog(BuildContext context) {
+  void _showUpdateDialog(BuildContext context, CompareVersionResult status) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -160,22 +162,25 @@ class Home extends StatelessWidget {
             ),
           ),
           actions: <Widget>[
-            TextButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮背景颜色
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.grey), // 设置按钮文字颜色
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // 设置按钮圆角
-                    side: const BorderSide(color: Colors.grey), // 设置按钮边框
+            if (status == CompareVersionResult.userChoose)
+              TextButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Colors.white), // 设置按钮背景颜色
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.grey), // 设置按钮文字颜色
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // 设置按钮圆角
+                      side: const BorderSide(color: Colors.grey), // 设置按钮边框
+                    ),
                   ),
                 ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(S.of(context).main_update_deny_button),
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(S.of(context).main_update_deny_button),
-            ),
             TextButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // 设置按钮背景颜色
@@ -187,9 +192,20 @@ class Home extends StatelessWidget {
                   ),
                 ),
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                // todo: go to App Store/Google Play/windows installer
+              onPressed: () async {
+                if (status == CompareVersionResult.userChoose) {
+                  Navigator.of(context).pop();
+                }
+                if (Platform.isAndroid) {
+                  launchUrl( Uri.parse('https://play.google.com/store/apps/details?id=com.viewsonic.display.cast'));
+                } else if (Platform.isIOS) {
+                  launchUrl( Uri.parse('https://apps.apple.com/us/app/airsync-sender/id6453759985'));
+                } else if (Platform.isMacOS) {
+                  launchUrl( Uri.parse('macappstore://apps.apple.com/app/airsync-sender/id6453759985'));
+                } else if (Platform.isWindows) {
+
+                }
+
               },
               child: Text(S.of(context).main_update_positive_button),
             ),
@@ -197,5 +213,13 @@ class Home extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future<CompareVersionResult> _checkUpdateVersion(BuildContext context) async {
+    String version = AppConfig.of(context)?.appVersion;
+    String? api = AppConfig.of(context)?.settings.appUpdateVersionEndpoint;
+    if (api == null) return CompareVersionResult.none;
+
+    return getVersion(api, version);
   }
 }

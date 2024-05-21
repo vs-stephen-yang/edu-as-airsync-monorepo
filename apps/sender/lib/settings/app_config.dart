@@ -38,4 +38,6 @@ abstract class ConfigSettings {
   late String appInsightsInstrumentationKey;
 
   late String appInsightsIngestionEndpoint;
+
+  late String appUpdateVersionEndpoint;
 }

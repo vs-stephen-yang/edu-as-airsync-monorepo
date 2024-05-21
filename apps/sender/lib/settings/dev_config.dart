@@ -16,4 +16,7 @@ class DevConfig implements ConfigSettings {
   @override
   String appInsightsIngestionEndpoint =
       'https://eastus-8.in.applicationinsights.azure.com/v2/track';
+
+  @override
+  String appUpdateVersionEndpoint = 'https://appconfig.dev.airsync.net/airsync-sender/supported-versions.json';
 }
