@@ -36,8 +36,6 @@ class Home extends StatefulWidget {
   static ValueNotifier<bool> showTitleBottomBar = ValueNotifier(true);
   static ValueNotifier<int?> enlargedScreenPositionIndex = ValueNotifier(null);
   static ValueNotifier<bool> isShowDisplayCode = ValueNotifier(true);
-  static ValueNotifier<bool> isShowAuthDialog = ValueNotifier(false);
-  static ValueNotifier<bool> isShowPinDialog = ValueNotifier(false);
 
   @override
   State createState() => _HomeState();
@@ -48,6 +46,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   static const _androidAppRetain =
       MethodChannel('com.mvbcast.crosswalk/android_app_retain');
   List<BuildContext> pinDialogContextList = [];
+  List<BuildContext> authDialogContextList = [];
 
   @override
   void initState() {
@@ -223,48 +222,59 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 bottom: 0,
                 child: StreamFunction(),
               ),
-
-              ValueListenableBuilder(
-                  valueListenable: Home.isShowPinDialog,
-                  builder: (BuildContext context, bool value, child) {
-                    if (value) {
-                      var mirror = context.read<MirrorStateProvider>();
-                      if (mirror.pinCode != '') {
-                        Future.delayed(Duration.zero, () {
-                          _showPinCodeDialog(context, mirror);
-                        });
-                      }
-                    } else {
-                      if (pinDialogContextList.isNotEmpty) {
-                        for (var context in pinDialogContextList) {
-                          Navigator.pop(context);
-                        }
-                      }
-                      pinDialogContextList.clear();
-                    }
-                    return const SizedBox.shrink();
-                  }),
-
-              ValueListenableBuilder(
-                  valueListenable: Home.isShowAuthDialog,
-                  builder: (BuildContext context, bool value, child) {
-                    if (value) {
-                      var mirror = context.read<MirrorStateProvider>();
-                      for (MirrorRequest request
-                          in HybridConnectionList().getMirrorMap().values) {
-                        if (request.mirrorState == MirrorState.idle) {
-                          Future.delayed(Duration.zero, () {
-                            if (mirror.isMirrorConfirmation) {
-                              _showAuthDialog(context, mirror);
-                            } else {
-                              mirror.setAcceptMirrorId(request.mirrorId);
-                            }
-                          });
-                        }
+              Consumer<MirrorStateProvider>(
+                  builder: (_, mirrorStateProvider, __) {
+                if (mirrorStateProvider.pinCode.isNotEmpty &&
+                    pinDialogContextList.isEmpty) {
+                  Future.delayed(Duration.zero, () {
+                    _showPinCodeDialog(context);
+                  });
+                } else if (pinDialogContextList.isNotEmpty &&
+                    mirrorStateProvider.pinCode.isEmpty) {
+                  if (pinDialogContextList.isNotEmpty) {
+                    for (var context in pinDialogContextList) {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
                       }
                     }
-                    return const SizedBox.shrink();
-                  }),
+                  }
+                  pinDialogContextList.clear();
+                }
+
+                var mirrorRequestIdles = HybridConnectionList()
+                    .getMirrorMap()
+                    .values
+                    .where(
+                        (request) => request.mirrorState == MirrorState.idle);
+
+                if (mirrorRequestIdles.isNotEmpty &&
+                    authDialogContextList.isEmpty) {
+                  for (MirrorRequest request
+                      in HybridConnectionList().getMirrorMap().values) {
+                    if (request.mirrorState == MirrorState.idle) {
+                      Future.delayed(Duration.zero, () {
+                        if (mirrorStateProvider.isMirrorConfirmation) {
+                          _showAuthDialog(context);
+                        } else {
+                          mirrorStateProvider
+                              .setAcceptMirrorId(request.mirrorId);
+                        }
+                      });
+                    }
+                  }
+                } else if (authDialogContextList.isNotEmpty &&
+                    mirrorRequestIdles.isEmpty) {
+                  if (authDialogContextList.isNotEmpty) {
+                    for (var context in authDialogContextList) {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+                    }
+                  }
+                  authDialogContextList.clear();
+                }
+                return const SizedBox.shrink();
+              }),
             ],
           ),
         ),
@@ -306,7 +316,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }
   }
 
-  _showPinCodeDialog(BuildContext context, MirrorStateProvider mirror) {
+  _showPinCodeDialog(BuildContext context) {
     FocusScope.of(context).unfocus();
     showDialog(
       context: context,
@@ -314,193 +324,201 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       barrierColor: Colors.transparent,
       builder: (BuildContext dialogContext) {
         pinDialogContextList.add(dialogContext);
-        return PopScope(
-          // Using onWillPop to block back key return,
-          // it will break "Show PinCode mechanism"
-          canPop: false,
-          child: Dialog(
-            backgroundColor: Colors.transparent,
-            alignment: Alignment.bottomRight,
-            child: Container(
-              width: MediaQuery.of(context).size.width / 3,
-              height: MediaQuery.of(context).size.height / 4,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Stack(
-                children: [
-                  Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
+        return Consumer<MirrorStateProvider>(
+          builder: (_, mirrorStateProvider, __) {
+            return PopScope(
+              // Using onWillPop to block back key return,
+              // it will break "Show PinCode mechanism"
+              canPop: false,
+              child: Dialog(
+                backgroundColor: Colors.transparent,
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 3,
+                  height: MediaQuery.of(context).size.height / 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.airplay),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.airplay),
+                                Text(
+                                  S.of(context).main_airplay_pin_code,
+                                  style: const TextStyle(fontSize: 28),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
                             Text(
-                              S.of(context).main_airplay_pin_code,
+                              mirrorStateProvider.pinCode,
                               style: const TextStyle(fontSize: 28),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
-                        Consumer<MirrorStateProvider>(
-                          builder: (context, mirror, child) {
-                            return Text(
-                              mirror.pinCode,
-                              style: const TextStyle(fontSize: 28),
-                            );
+                      ),
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: FocusIconButton(
+                          icons: Icons.cancel_outlined,
+                          iconForegroundColor: Colors.white,
+                          hasFocusSize: AppUIConstant.iconHasFocusSize,
+                          notFocusSize: AppUIConstant.iconNotFocusSize,
+                          onClick: () {
+                            if (pinDialogContextList.isNotEmpty) {
+                              for (var context in pinDialogContextList) {
+                                if (Navigator.canPop(context)) {
+                                  Navigator.pop(context);
+                                }
+                              }
+                              pinDialogContextList.clear();
+                            }
+                            mirrorStateProvider.clearPinCode();
                           },
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Positioned(
-                    top: 10,
-                    right: 10,
-                    child: FocusIconButton(
-                      icons: Icons.cancel_outlined,
-                      iconForegroundColor: Colors.white,
-                      hasFocusSize: AppUIConstant.iconHasFocusSize,
-                      notFocusSize: AppUIConstant.iconNotFocusSize,
-                      onClick: () {
-                        if (pinDialogContextList.isNotEmpty) {
-                          for (var context in pinDialogContextList) {
-                            Navigator.pop(context);
-                          }
-                          pinDialogContextList.clear();
-                        }
-                        mirror.clearPinCode();
-                      },
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
   }
 
-  _showAuthDialog(BuildContext context, MirrorStateProvider mirror) {
+  _showAuthDialog(BuildContext context) {
     FocusScope.of(context).unfocus();
     showDialog(
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
       builder: (BuildContext dialogContext) {
-        var width = MediaQuery.of(context).size.width / 3;
-        var height = MediaQuery.of(context).size.height / 4;
-        var mirrorRequestIdles = HybridConnectionList()
-            .getMirrorMap()
-            .values
-            .where((request) => request.mirrorState == MirrorState.idle);
-        double minHeight =
-            min((mirrorRequestIdles.length * height).toDouble(), 500.0);
-        return PopScope(
-          // Using onWillPop to block back key return,
-          // it will break "Show Prompt mechanism"
-          canPop: false,
-          child: Dialog(
-            backgroundColor: Colors.transparent,
-            alignment: Alignment.bottomRight,
-            child: SizedBox(
-              width: width,
-              height: minHeight,
-              child: ListView.separated(
-                reverse: HybridConnectionList().isMirroring(),
-                itemCount: mirrorRequestIdles.length,
-                itemBuilder: (BuildContext buildContext, int index) {
-                  return Container(
-                    width: width,
-                    height: height,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          sprintf(S.current.main_mirror_from_client,
-                              [mirrorRequestIdles.toList()[index].mirrorId]),
-                          style: const TextStyle(fontSize: 24),
+        authDialogContextList.add(dialogContext);
+        return Consumer<MirrorStateProvider>(
+          builder: (_, mirrorStateProvider, __) {
+            var width = MediaQuery.of(context).size.width / 3;
+            var height = MediaQuery.of(context).size.height / 4;
+            var mirrorRequestIdles = HybridConnectionList()
+                .getMirrorMap()
+                .values
+                .where((request) => request.mirrorState == MirrorState.idle);
+            double minHeight =
+                min((mirrorRequestIdles.length * height).toDouble(), 500.0);
+            return PopScope(
+              // Using onWillPop to block back key return,
+              // it will break "Show Prompt mechanism"
+              canPop: false,
+              child: Dialog(
+                backgroundColor: Colors.transparent,
+                alignment: Alignment.bottomRight,
+                child: SizedBox(
+                  width: width,
+                  height: minHeight,
+                  child: ListView.separated(
+                    reverse: HybridConnectionList().isMirroring(),
+                    itemCount: mirrorRequestIdles.length,
+                    itemBuilder: (BuildContext buildContext, int index) {
+                      return Container(
+                        width: width,
+                        height: height,
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        const Spacer(),
-                        Wrap(
-                          direction: Axis.horizontal,
-                          alignment: WrapAlignment.center,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          spacing: 10,
-                          children: <Widget>[
-                            FocusElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor: Colors.white,
-                              ),
-                              hasFocusWidth: 110,
-                              notFocusWidth: 100,
-                              hasFocusHeight: 30,
-                              notFocusHeight: 25,
-                              onClick: () {
-                                Navigator.pop(dialogContext);
-                                Home.isShowAuthDialog.value = false;
-                                var mirrorId =
-                                    mirrorRequestIdles.toList()[index].mirrorId;
-                                mirror.clearRequestMirrorId(mirrorId);
-                              },
-                              child: AutoSizeText(
-                                S.of(context).main_mirror_prompt_cancel,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.blue,
-                                ),
-                                maxLines: 1,
-                              ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              sprintf(S.current.main_mirror_from_client, [
+                                mirrorRequestIdles.toList()[index].mirrorId
+                              ]),
+                              style: const TextStyle(fontSize: 24),
                             ),
-                            FocusElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.blue,
-                                backgroundColor: Colors.blue,
-                              ),
-                              hasFocusWidth: 110,
-                              notFocusWidth: 100,
-                              hasFocusHeight: 30,
-                              notFocusHeight: 25,
-                              onClick: () async {
-                                Navigator.pop(dialogContext);
-                                Home.isShowAuthDialog.value = false;
-                                String? mirrorId =
-                                    mirrorRequestIdles.toList()[index].mirrorId;
-                                mirror.setAcceptMirrorId(mirrorId);
-                              },
-                              child: AutoSizeText(
-                                S.of(context).main_mirror_prompt_accept,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
+                            const Spacer(),
+                            Wrap(
+                              direction: Axis.horizontal,
+                              alignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 10,
+                              children: <Widget>[
+                                FocusElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Colors.white,
+                                  ),
+                                  hasFocusWidth: 110,
+                                  notFocusWidth: 100,
+                                  hasFocusHeight: 30,
+                                  notFocusHeight: 25,
+                                  onClick: () {
+                                    var mirrorId = mirrorRequestIdles
+                                        .toList()[index]
+                                        .mirrorId;
+                                    mirrorStateProvider
+                                        .clearRequestMirrorId(mirrorId);
+                                  },
+                                  child: AutoSizeText(
+                                    S.of(context).main_mirror_prompt_cancel,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.blue,
+                                    ),
+                                    maxLines: 1,
+                                  ),
                                 ),
-                                maxLines: 1,
-                              ),
+                                FocusElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.blue,
+                                    backgroundColor: Colors.blue,
+                                  ),
+                                  hasFocusWidth: 110,
+                                  notFocusWidth: 100,
+                                  hasFocusHeight: 30,
+                                  notFocusHeight: 25,
+                                  onClick: () async {
+                                    String? mirrorId = mirrorRequestIdles
+                                        .toList()[index]
+                                        .mirrorId;
+                                    mirrorStateProvider
+                                        .setAcceptMirrorId(mirrorId);
+                                  },
+                                  child: AutoSizeText(
+                                    S.of(context).main_mirror_prompt_accept,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                    maxLines: 1,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  );
-                },
-                separatorBuilder: (BuildContext buildContext, int index) {
-                  return const SizedBox(
-                    height: 5,
-                  );
-                },
+                      );
+                    },
+                    separatorBuilder: (BuildContext buildContext, int index) {
+                      return const SizedBox(
+                        height: 5,
+                      );
+                    },
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );

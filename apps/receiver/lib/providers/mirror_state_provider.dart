@@ -4,7 +4,6 @@ import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
-import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
@@ -44,7 +43,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   get miracastEnabled => _miracastEnabled;
 
-  get pinCode => _pinCode;
+  String get pinCode => _pinCode;
 
   final InstanceInfoProvider _instanceInfoProvider;
 
@@ -110,13 +109,12 @@ class MirrorStateProvider extends ChangeNotifier
     printInDebug('onMirrorAuth', type: runtimeType);
     _pinCode = pin;
     _pinTimer?.cancel();
-    Home.isShowPinDialog.value = false;
-    Home.isShowPinDialog.value = true;
-
     _pinTimer = Timer(Duration(seconds: timeoutSec), () {
       _pinCode = '';
-      Home.isShowPinDialog.value = false;
+      notifyListeners();
     });
+
+    notifyListeners();
 
     AppOverlayTab().launchApp();
   }
@@ -127,12 +125,11 @@ class MirrorStateProvider extends ChangeNotifier
     printInDebug('onMirrorStart', type: runtimeType);
     _pinTimer?.cancel();
     _pinCode = '';
-    Home.isShowPinDialog.value = false;
 
     HybridConnectionList().addConnection(MirrorRequest(
         _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType));
-    Home.isShowAuthDialog.value = false;
-    Home.isShowAuthDialog.value = true;
+
+    notifyListeners();
 
     AppOverlayTab().launchApp();
   }
@@ -174,7 +171,6 @@ class MirrorStateProvider extends ChangeNotifier
   clearPinCode() {
     _pinTimer?.cancel();
     _pinCode = '';
-    Home.isShowPinDialog.value = false;
   }
 
   clearRequestMirrorId(String? mirrorId) {
