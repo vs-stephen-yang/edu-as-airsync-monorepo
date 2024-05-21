@@ -14,10 +14,15 @@ enum UpdateError {
   unknownError,
 }
 
-class UpdaterErrorException {
+class UpdaterErrorException implements Exception {
   int exitCode;
 
   UpdaterErrorException(this.exitCode);
+
+  @override
+  String toString() {
+    return 'UpdaterErrorException: $exitCode';
+  }
 }
 
 class UpdateErrorExecption implements Exception {
@@ -25,6 +30,11 @@ class UpdateErrorExecption implements Exception {
   String? details;
 
   UpdateErrorExecption(this.error, {this.details});
+
+  @override
+  String toString() {
+    return 'UpdateErrorExecption: $error $details';
+  }
 }
 
 String _getUpdaterPath() {
