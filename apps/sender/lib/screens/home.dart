@@ -231,7 +231,7 @@ class Home extends StatelessWidget {
           height: 100,
           child: Column(
             children: [
-              Text('Error: ${e.error.name} \nDetail: ${e.details.toString()}'),
+              Text('${S.of(context).main_update_error_type}: ${e.error.name} \n${S.of(context).main_update_error_detail}: ${e.details.toString()}'),
             ],
           ),
         ),
