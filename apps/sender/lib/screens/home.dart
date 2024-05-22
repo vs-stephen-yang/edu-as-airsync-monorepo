@@ -195,6 +195,9 @@ class Home extends StatelessWidget {
                 ),
               ),
               onPressed: () async {
+                if (status == CompareVersionResult.userChoose) {
+                  Navigator.of(context).pop();
+                }
                 if (Platform.isAndroid) {
                   launchUrl( Uri.parse('https://play.google.com/store/apps/details?id=com.viewsonic.display.cast'));
                 } else if (Platform.isIOS) {
@@ -204,14 +207,10 @@ class Home extends StatelessWidget {
                 } else if (Platform.isWindows) {
                   try {
                     await installUpdates();
-                    SystemNavigator.pop();
+                    exit(0);
                   } on UpdateErrorExecption catch (e) {
                     _showUpdateErrorDialog(context, e);
                   }
-                }
-
-                if (status == CompareVersionResult.userChoose) {
-                  Navigator.of(context).pop();
                 }
               },
               child: Text(S.of(context).main_update_positive_button),
@@ -226,7 +225,7 @@ class Home extends StatelessWidget {
     showDialog(context: context, builder: (BuildContext context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: Text('Update Error'),
+        title: Text(S.of(context).main_update_error_title),
         content: SizedBox(
           width: 100,
           height: 100,
