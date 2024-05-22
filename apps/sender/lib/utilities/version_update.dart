@@ -27,32 +27,36 @@ CompareVersionResult compareVersion(
 }
 
 Future<CompareVersionResult> getVersion(String url, String currentVersion) async {
-  http.Response response = await http.get(
-    Uri.parse(url),
-  );
+  try {
+    http.Response response = await http.get(
+      Uri.parse(url),
+    );
 
-  if (response.statusCode >= HttpStatus.ok && response.statusCode < HttpStatus.multiStatus) {
-    Map json = jsonDecode(response.body);
-    String targetVersion = '';
-    String minSupportedVersion = '';
-    if (Platform.isAndroid) {
-      targetVersion = json['android']['target-version'];
-      minSupportedVersion = json['android']['min-supported-version'];
-    } else if (Platform.isIOS) {
-      targetVersion = json['ios']['target-version'];
-      minSupportedVersion = json['ios']['min-supported-version'];
-    } else if (Platform.isMacOS) {
-      targetVersion = json['macos']['target-version'];
-      minSupportedVersion = json['macos']['min-supported-version'];
-    } else if (Platform.isWindows) {
-      targetVersion = json['windows']['target-version'];
-      minSupportedVersion = json['windows']['min-supported-version'];
-    } else if (kIsWeb) {
-      targetVersion = json['web']['target-version'];
-      minSupportedVersion = json['web']['min-supported-version'];
+    if (response.statusCode >= HttpStatus.ok && response.statusCode < HttpStatus.multiStatus) {
+      Map json = jsonDecode(response.body);
+      String targetVersion = '';
+      String minSupportedVersion = '';
+      if (Platform.isAndroid) {
+        targetVersion = json['android']['target-version'];
+        minSupportedVersion = json['android']['min-supported-version'];
+      } else if (Platform.isIOS) {
+        targetVersion = json['ios']['target-version'];
+        minSupportedVersion = json['ios']['min-supported-version'];
+      } else if (Platform.isMacOS) {
+        targetVersion = json['macos']['target-version'];
+        minSupportedVersion = json['macos']['min-supported-version'];
+      } else if (Platform.isWindows) {
+        targetVersion = json['windows']['target-version'];
+        minSupportedVersion = json['windows']['min-supported-version'];
+      } else if (kIsWeb) {
+        targetVersion = json['web']['target-version'];
+        minSupportedVersion = json['web']['min-supported-version'];
+      }
+
+      return compareVersion(currentVersion, targetVersion, minSupportedVersion);
     }
-
-    return compareVersion(currentVersion, targetVersion, minSupportedVersion);
+  } catch (e) {
+    debugPrint('Error getting version: $e');
   }
 
   return CompareVersionResult.none;
