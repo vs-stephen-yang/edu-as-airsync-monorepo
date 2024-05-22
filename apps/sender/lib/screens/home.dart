@@ -40,14 +40,16 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _checkUpdateVersion(context).then((value) {
-        if (value != CompareVersionResult.none) {
-          // show update dialog
-          if (!kIsWeb) _showUpdateDialog(context , value);
-        }
+    if (!kIsWeb) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _checkUpdateVersion(context).then((value) {
+          if (value != CompareVersionResult.none) {
+            // show update dialog
+            _showUpdateDialog(context, value);
+          }
+        });
       });
-    });
+    }
     return AppRetain(
       child: SafeArea(
         child: Scaffold(
