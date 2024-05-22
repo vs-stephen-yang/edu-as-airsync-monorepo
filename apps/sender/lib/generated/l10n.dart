@@ -639,6 +639,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Update Error`
+  String get main_update_error_title {
+    return Intl.message(
+      'Update Error',
+      name: 'main_update_error_title',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
