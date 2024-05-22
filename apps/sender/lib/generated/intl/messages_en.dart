@@ -75,8 +75,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please click \"Update\" to install the new version."),
         "main_update_description_windows": MessageLookupByLibrary.simpleMessage(
             "Please click \"Update\" to install the new version."),
+        "main_update_error_detail":
+            MessageLookupByLibrary.simpleMessage("Detail"),
         "main_update_error_title":
             MessageLookupByLibrary.simpleMessage("Update Error"),
+        "main_update_error_type": MessageLookupByLibrary.simpleMessage("Error"),
         "main_update_positive_button":
             MessageLookupByLibrary.simpleMessage("Update"),
         "main_update_title":

@@ -649,6 +649,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Error`
+  String get main_update_error_type {
+    return Intl.message(
+      'Error',
+      name: 'main_update_error_type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Detail`
+  String get main_update_error_detail {
+    return Intl.message(
+      'Detail',
+      name: 'main_update_error_detail',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
