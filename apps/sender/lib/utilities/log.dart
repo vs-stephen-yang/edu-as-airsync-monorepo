@@ -22,6 +22,14 @@ void initLogger() {
   });
 }
 
+bool isLogLevelVerbose() {
+  return Logger.root.level == Level.FINEST;
+}
+
+void setLogLevelVerbose(bool isVerbose) {
+  Logger.root.level = isVerbose ? Level.FINEST : Level.INFO;
+}
+
 LogStorage? _logStorage;
 
 void enableLogToMemory(bool enable) {
