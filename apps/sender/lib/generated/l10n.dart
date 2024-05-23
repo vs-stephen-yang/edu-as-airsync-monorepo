@@ -640,30 +640,30 @@ class S {
     );
   }
 
-  /// `Update Error`
+  /// `Version update fail`
   String get main_update_error_title {
     return Intl.message(
-      'Update Error',
+      'Version update fail',
       name: 'main_update_error_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Error`
+  /// `Fail reason`
   String get main_update_error_type {
     return Intl.message(
-      'Error',
+      'Fail reason',
       name: 'main_update_error_type',
       desc: '',
       args: [],
     );
   }
 
-  /// `Detail`
+  /// `Description`
   String get main_update_error_detail {
     return Intl.message(
-      'Detail',
+      'Description',
       name: 'main_update_error_detail',
       desc: '',
       args: [],
