@@ -57,6 +57,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_mirror_prompt_cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "main_register_display_code_failure":
             MessageLookupByLibrary.simpleMessage("取得投影辨識碼失敗，請稍後再試"),
+        "main_settings_airplay_code":
+            MessageLookupByLibrary.simpleMessage("需輸入AirPlay code"),
         "main_settings_device_list":
             MessageLookupByLibrary.simpleMessage("快速連線密碼"),
         "main_settings_device_name": MessageLookupByLibrary.simpleMessage("名稱"),
@@ -69,6 +71,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_settings_device_name_title":
             MessageLookupByLibrary.simpleMessage("設定名稱"),
         "main_settings_language": MessageLookupByLibrary.simpleMessage("語言"),
+        "main_settings_mirror_confirmation":
+            MessageLookupByLibrary.simpleMessage("需接受鏡射請求"),
         "main_settings_pin_visible":
             MessageLookupByLibrary.simpleMessage("顯示連線資訊"),
         "main_settings_share_to_sender":

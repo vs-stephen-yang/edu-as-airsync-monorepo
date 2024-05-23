@@ -57,5 +57,7 @@
   "main_settings_device_name_save": "儲存",
   "main_settings_pin_visible": "顯示連線資訊",
   "toast_maximum_split_screen": "已達到投影人員上限",
-  "main_settings_device_list": "快速連線密碼"
+  "main_settings_device_list": "快速連線密碼",
+  "main_settings_mirror_confirmation": "需接受鏡射請求",
+  "main_settings_airplay_code": "需輸入AirPlay code"
 }
