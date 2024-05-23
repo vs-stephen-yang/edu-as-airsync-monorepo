@@ -1,4 +1,5 @@
 
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_channel/display_channel.dart';
 
@@ -47,7 +48,7 @@ class DirectConnector {
             maxRetryDelay: const Duration(seconds: 3),
             maxRetryAttempts: 3,
             logger: (url, message) =>
-                print('_directClient logger $url $message}'),
+                log.fine('_directClient logger $url $message}'),
             allowSelfSignedCertificates: true));
     _directClient?.openDirectChannel(token: _otp, displayCode: _displayCode);
     _directClient?.onStateChange = (ChannelState state) {

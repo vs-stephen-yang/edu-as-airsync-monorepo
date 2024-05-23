@@ -1,3 +1,4 @@
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -102,14 +103,14 @@ class RemoteScreenClient {
 
     _rtcWidgetKey.currentContext?.visitChildElements(textureVisitor);
     if (textureElement == null) {
-      print('texture widget not found');
+      log.warning('texture widget not found');
       return;
     } else {
       final RenderBox renderBox =
           textureElement!.findRenderObject() as RenderBox;
       _textureSize = renderBox.size;
       _textureOffset = renderBox.localToGlobal(Offset.zero);
-      print(
+      log.info(
           'texture widget size: (${_textureSize.width.toStringAsFixed(2)}, ${_textureSize.height.toStringAsFixed(2)}), offset: (${_textureOffset.dx.toStringAsFixed(2)}, ${_textureOffset.dy.toStringAsFixed(2)})');
       _textureSizeChanged = false;
     }

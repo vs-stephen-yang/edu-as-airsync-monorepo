@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PrefLanguageProvider extends ChangeNotifier {
   PrefLanguageProvider() {
-    debugModePrint('PrefLanguageProvider: _load');
+    log.info('PrefLanguageProvider: _load');
     _load();
   }
 
@@ -40,7 +40,7 @@ class PrefLanguageProvider extends ChangeNotifier {
   _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _language = prefs.getString('app_language') ?? '';
-    debugModePrint('_language: $_language');
+    log.info('_language: $_language');
     notifyListeners();
   }
 

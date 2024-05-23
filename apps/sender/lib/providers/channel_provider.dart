@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/features/webrtc_connector.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/model/direct_connector.dart';
@@ -10,7 +11,6 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
-import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -265,13 +265,13 @@ class ChannelProvider extends ChangeNotifier {
       createConnectionTunnel: (url) => WebSocketClientConnection(url,
           maxRetryDelay: const Duration(seconds: 3),
           maxRetryAttempts: 3,
-          logger: (url, message) => print('tunnel connection: $url $message}')),
+          logger: (url, message) => log.fine('tunnel connection: $url $message}')),
       createConnectionDirect: (url) => WebSocketClientConnection(url,
           allowSelfSignedCertificates: true,
           // allow self-signed certificate
           maxRetryDelay: const Duration(seconds: 3),
           maxRetryAttempts: 3,
-          logger: (url, message) => print('direct connection: $url $message}')),
+          logger: (url, message) => log.fine('direct connection: $url $message}')),
       fetchTunnelUrl: (int instanceIndex) async {
         return await _fetchTunnelUrl(displayCode!.instanceIndex);
       },
@@ -458,7 +458,7 @@ class ChannelProvider extends ChangeNotifier {
     await webRTCConnector
         ?.makeCall(selectedSource, _iceServerList)
         .then((value) {
-      debugModePrint('makeCall: ${value ? 'success' : 'failure'}');
+      log.info('makeCall: ${value ? 'success' : 'failure'}');
       if (value) {
         if (moderatorStatus) {
           presentModeratorStartPage();
@@ -482,8 +482,8 @@ class ChannelProvider extends ChangeNotifier {
       webRTCConnector = null;
 
       await closeChannel();
-    } catch (e) {
-      debugModePrint(e, type: runtimeType);
+    } catch (e, stackTrace) {
+      log.severe('presentEnd', e, stackTrace);
     }
 
     if (goIdleState) {
@@ -555,7 +555,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _onChannelOpenFailed(ChannelConnectorError error) {
-    print('Failed to open channel $error');
+    log.warning('Failed to open channel $error');
 
     presentEnd(goIdleState: false);
 
@@ -612,6 +612,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   _trackFetchError(String errorType, String details) {
+    log.warning('Failed to fetch the instance info. $errorType $details');
+
     AppAnalytics.instance.trackEvent('request_get_instance_error', properties: {
       'error': errorType,
       'details': details,
@@ -625,21 +627,18 @@ class ChannelProvider extends ChangeNotifier {
       response = await http
           .get(Uri.parse('$_apiGateway?instanceIndex=$instanceIndex'));
     } on SocketException catch (e) {
-      print(e);
       _trackFetchError('SocketException', e.toString());
 
       throw FetchChannelTunnelUrlException(
         FetchChannelTunnelUrlError.networkError,
       );
     } on http.ClientException catch (e) {
-      print(e);
       _trackFetchError('http.ClientException', e.toString());
 
       throw FetchChannelTunnelUrlException(
         FetchChannelTunnelUrlError.networkError,
       );
     } catch (e) {
-      print(e);
       _trackFetchError('Exception', e.toString());
 
       throw FetchChannelTunnelUrlException(
@@ -666,7 +665,6 @@ class ChannelProvider extends ChangeNotifier {
     try {
       json = jsonDecode(response.body);
     } on FormatException catch (e) {
-      print(e);
       _trackFetchError('FormatException', e.toString());
 
       throw FetchChannelTunnelUrlException(
