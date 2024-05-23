@@ -2,15 +2,25 @@ import 'dart:io';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/screens/debug_switch.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
+import 'package:display_cast_flutter/widgets/focus_text_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   const Settings({super.key});
+
+  @override
+  State createState() => _Settings();
+}
+
+class _Settings extends State<Settings> {
+  int debugCounter = 0;
+  final int openDebugCounter = 5;
 
   @override
   Widget build(BuildContext context) {
@@ -122,16 +132,38 @@ class Settings extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
-            child: Text(
-              'Ver ${appConfig?.appVersion}',
-              style: const TextStyle(
-                color: Colors.white38,
-                fontSize: 12,
+            child: FocusTextButton(
+              onClick: () {
+                debugCounter++;
+                if (debugCounter == openDebugCounter) {
+                  _showMenuDialog(const DebugSwitch());
+                  debugCounter = 0;
+                }
+              },
+              child: Text(
+                'Ver ${appConfig?.appVersion}',
+                style: const TextStyle(
+                  color: Colors.white38,
+                  fontSize: 12,
+                ),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  _showMenuDialog(Widget widget) async {
+    FocusScope.of(context).unfocus();
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return widget;
+      },
+    ).then((_) {
+      setState(() {});
+    });
   }
 }
