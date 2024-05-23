@@ -26,6 +26,7 @@ import 'package:uuid/uuid.dart';
 void commonEntry(ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
   initLogger();
+  enableLogToMemory(true);
 
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   await AppInstanceCreate.ensureInitialized();
