@@ -12,7 +12,14 @@ void initLogger() {
   Logger.root.level = Level.INFO; // defaults to Level.INFO
 
   Logger.root.onRecord.listen((record) {
-    final msg = '${record.level.name} ${record.message}';
+    String msg = '${record.time} ${record.level.name} ${record.message}';
+
+    if (record.error != null) {
+      msg += ' ${record.error.toString()}';
+    }
+    if (record.stackTrace != null) {
+      msg += '\n${record.stackTrace.toString()}';
+    }
 
     if (kDebugMode) {
       print(msg);
