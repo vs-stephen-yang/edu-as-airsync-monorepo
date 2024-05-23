@@ -58,7 +58,7 @@
     "main_update_description_windows": "Please click \"Update\" to install the new version.",
     "main_update_positive_button": "Update",
     "main_update_deny_button": "Not now",
-    "main_update_error_title": "Update Error",
-    "main_update_error_type": "Error",
-    "main_update_error_detail": "Detail"
+    "main_update_error_title": "Version update fail",
+    "main_update_error_type": "Fail reason",
+    "main_update_error_detail": "Description"
 }
