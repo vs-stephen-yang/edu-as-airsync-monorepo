@@ -56,6 +56,8 @@ class WebRTCConnector {
 
   bool touchBack = false;
   bool isMainSource = false;
+  final int _defaultMaxBitrate = 5000000;
+  final int _defaultMinBitrate = 0;
   final List<String> _codecPreferences = ['h264', 'vp8', 'vp9'];
   final String _macMainScreenOrder = '1';
   final String _windowsMainScreenOrder = '0';
@@ -482,6 +484,12 @@ class WebRTCConnector {
           senders.firstWhereOrNull((sender) => sender.track?.kind == 'video');
       var params = sender!.parameters;
       params.degradationPreference = RTCDegradationPreference.DISABLED;
+      if (params.encodings != null) {
+        for (var encoding in params.encodings!) {
+          encoding.maxBitrate = _defaultMaxBitrate;
+          encoding.minBitrate = _defaultMinBitrate;
+        }
+      }
       await sender.setParameters(params);
     } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
       Toast.makeToast('Unstable network connection.');
