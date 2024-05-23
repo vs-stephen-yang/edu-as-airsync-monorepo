@@ -56,8 +56,8 @@ class WebRTCConnector {
 
   bool touchBack = false;
   bool isMainSource = false;
-  final int _defaultMaxBitrate = 5000000;
-  final int _defaultMinBitrate = 0;
+  final int _defaultMaxBitrateBps = 5000000;
+  final int _defaultMinBitrateBps = 0;
   final List<String> _codecPreferences = ['h264', 'vp8', 'vp9'];
   final String _macMainScreenOrder = '1';
   final String _windowsMainScreenOrder = '0';
@@ -486,8 +486,8 @@ class WebRTCConnector {
       params.degradationPreference = RTCDegradationPreference.DISABLED;
       if (params.encodings != null) {
         for (var encoding in params.encodings!) {
-          encoding.maxBitrate = _defaultMaxBitrate;
-          encoding.minBitrate = _defaultMinBitrate;
+          encoding.maxBitrate = _defaultMaxBitrateBps;
+          encoding.minBitrate = _defaultMinBitrateBps;
         }
       }
       await sender.setParameters(params);
