@@ -1,3 +1,4 @@
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/share_log.dart';
 import 'package:display_cast_flutter/widgets/menu_dialog.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
@@ -11,7 +12,19 @@ class DebugSwitch extends StatefulWidget {
 }
 
 class _DebugSwitchState extends State<DebugSwitch> {
-  void _initialize() {}
+  bool _isLogVerbose = false;
+
+  void _changeLogVerbose(bool value) async {
+    setLogLevelVerbose(value);
+
+    setState(() {
+      _isLogVerbose = value;
+    });
+  }
+
+  void _initialize() {
+    _isLogVerbose = isLogLevelVerbose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +60,10 @@ class _DebugSwitchState extends State<DebugSwitch> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    SwitchListTile(
+                        title: const Text('Verbose Log'),
+                        value: _isLogVerbose,
+                        onChanged: _changeLogVerbose),
                     shareLogsButton,
                   ],
                 ),
