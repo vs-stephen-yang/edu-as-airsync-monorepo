@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:collection/collection.dart';
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/features/protoc/event.pb.dart';
 import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_cast_flutter/model/message.dart';
-import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
@@ -126,8 +126,8 @@ class WebRTCConnector {
           element.cancel();
         }
       }
-    } catch (e) {
-      debugModePrint(e, type: runtimeType);
+    } catch (e, stackTrace) {
+      log.severe('_disposeStream', e, stackTrace);
     }
   }
 
@@ -208,8 +208,8 @@ class WebRTCConnector {
       await _pc?.close();
       await _pc?.dispose();
       _pc = null;
-    } catch (e) {
-      debugModePrint(e, type: runtimeType);
+    } catch (e, stackTrace) {
+      log.warning('_peerConnectionDisconnect', e, stackTrace);
     }
   }
 
@@ -251,9 +251,9 @@ class WebRTCConnector {
           await transceiver.setCodecPreferences(modifiedCapabilities);
         }
       }
-      debugModePrint('succeeded to set codec preferences');
-    } catch (e) {
-      debugModePrint('failed to set codec preferences');
+      log.info('succeeded to set codec preferences');
+    } catch (e, stackTrace) {
+      log.severe('failed to set codec preferences', e, stackTrace);
       return false;
     }
     return true;
@@ -281,7 +281,7 @@ class WebRTCConnector {
     }
     description.sdp = capSel.sdp();
 
-    debugModePrint(
+    log.info(
         'modifySDPForCodecPreferences vcodec:${_codecPreferences[0]}');
   }
 
@@ -313,7 +313,7 @@ class WebRTCConnector {
       };
     });
     for (MediaStreamTrack track in _localStream!.getTracks()) {
-      debugModePrint('track: ${track.kind}', type: runtimeType);
+      log.info('Adding track: ${track.kind}');
       await _pc!.addTrack(track, _localStream!);
     }
 
@@ -347,8 +347,8 @@ class WebRTCConnector {
 
       startStatsTimer();
       return true;
-    } catch (e) {
-      debugModePrint(e, type: runtimeType);
+    } catch (e, stackTrace) {
+      log.severe('setLocalDescription', e, stackTrace);
       return false;
     }
   }
@@ -370,7 +370,8 @@ class WebRTCConnector {
       };
 
       return await navigator.mediaDevices.getDisplayMedia(constraints);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      log.severe('getDisplayMedia', e, stackTrace);
       return null;
     }
   }
@@ -415,7 +416,7 @@ class WebRTCConnector {
   }
 
   void _onDataChannelState(RTCDataChannelState state) {
-    debugModePrint('onDataChannelState: $state');
+    log.info('onDataChannelState: $state');
   }
 
   void _onMessage(RTCDataChannelMessage data) async {
@@ -456,28 +457,28 @@ class WebRTCConnector {
       }
     } else {
       // text message
-      debugModePrint(data.text);
+      log.fine(data.text);
     }
   }
 
   void _onAddTrack(MediaStream stream, MediaStreamTrack track) {
-    debugModePrint('onAddTrack: ${track.kind}', type: runtimeType);
+    log.info('onAddTrack: ${track.kind}');
   }
 
   void _onSignalingState(RTCSignalingState state) {
-    debugModePrint(state, type: runtimeType);
+    log.info('onSignalingState: $state');
   }
 
   void _onIceGatheringState(RTCIceGatheringState state) {
-    debugModePrint(state, type: runtimeType);
+    log.info('onIceGatheringState: $state');
   }
 
   void _onIceConnectionState(RTCIceConnectionState state) {
-    debugModePrint(state, type: runtimeType);
+    log.info('onIceConnectionState: $state');
   }
 
   void _onPeerConnectionState(RTCPeerConnectionState state) async {
-    debugModePrint(state, type: runtimeType);
+    log.info('onPeerConnectionState: $state');
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
       var senders = await _pc!.getSenders();
       var sender =
@@ -497,7 +498,7 @@ class WebRTCConnector {
   }
 
   void _onIceCandidate(RTCIceCandidate candidate) {
-    debugModePrint('onCandidate: ${candidate.candidate}', type: runtimeType);
+    log.info('onIceCandidate: ${candidate.candidate}');
     var message = PresentSignalMessage(null, SignalMessageType.candidate);
     message.candidate = candidate.candidate;
     message.sdpMid = candidate.sdpMid;
@@ -539,7 +540,7 @@ class WebRTCConnector {
   void onVideoStatsReports(List<StatsReport> reports) {
     if (reports.length != _outboundVideoCount) {
       _outboundVideoCount = reports.length;
-      print('The number of outbound videos has changed to ${reports.length}');
+      log.info('The number of outbound videos has changed to ${reports.length}');
     }
 
     if (reports.isEmpty) {
@@ -556,7 +557,7 @@ class WebRTCConnector {
       _outboundVideoWidth = width;
       _outboundVideoHeight = height;
 
-      print('Outbound video size has changed to ${width}x$height');
+      log.info('Outbound video size has changed to ${width}x$height');
     }
   }
 }

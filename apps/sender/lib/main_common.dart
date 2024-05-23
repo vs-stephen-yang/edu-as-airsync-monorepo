@@ -13,6 +13,7 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_instance_create.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +25,8 @@ import 'package:uuid/uuid.dart';
 
 void commonEntry(ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
+  initLogger();
+
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   await AppInstanceCreate.ensureInitialized();
 

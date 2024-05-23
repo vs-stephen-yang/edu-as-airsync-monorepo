@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +21,7 @@ class AppRetain extends StatelessWidget {
     return PopScope(
       canPop: (!kIsWeb && Platform.isAndroid) ? false : true,
       onPopInvoked: (didPop) async {
-        debugModePrint('PopScope didPop: $didPop', type: runtimeType);
+        log.info('PopScope didPop: $didPop');
         if (didPop) {
           return;
         }
@@ -32,8 +32,8 @@ class AppRetain extends StatelessWidget {
           );
           await Future.delayed(const Duration(seconds: 1));
           _androidAppRetain.invokeMethod('sendToBackground');
-        } catch (e) {
-          debugModePrint(e);
+        } catch (e, stackTrace) {
+          log.severe('sendToBackground', e, stackTrace);
         }
       },
       child: child,

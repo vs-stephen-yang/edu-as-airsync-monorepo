@@ -3,6 +3,7 @@ import 'dart:io' show Platform, exit;
 import 'package:display_cast_flutter/demo/present_present_start_demo.dart';
 import 'package:display_cast_flutter/demo/present_select_role_demo.dart';
 import 'package:display_cast_flutter/demo/remote_screen_widget_demo.dart';
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
@@ -75,7 +76,7 @@ class Home extends StatelessWidget {
                   Consumer2<ChannelProvider, DemoProvider>(
                       builder: (context, channel, demo, child) {
                     if (!demo.isDemoMode) {
-                      debugModePrint('PresentState: ${channel.state}');
+                      log.info('PresentState: ${channel.state}');
                       if (!kIsWeb) {
                         FlutterWindowClose.setWindowShouldCloseHandler(
                             () async {

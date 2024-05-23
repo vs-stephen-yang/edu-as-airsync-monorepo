@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
-import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -23,7 +23,7 @@ class PresentSelectScreen extends StatelessWidget {
       if (WebRTC.platformIsDesktop) { // MacOS and Windows
         // start timeout timer (30 sec)
         ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
-          debugModePrint('timeout');
+          log.info('timeout');
           // onFinish
           selectScreenDialog?.cancel();
         });
@@ -32,7 +32,7 @@ class PresentSelectScreen extends StatelessWidget {
           context: context,
           builder: (context) => selectScreenDialog = SelectScreenDialog(),
         ).then((value) {
-          debugModePrint('selectedSource: ${value?.selectedSource?.type})');
+          log.info('selectedSource: ${value?.selectedSource?.type})');
           ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
           if (value != null && value.selectedSource != null) {
             if (WebRTC.platformIsWindows &&
@@ -84,8 +84,8 @@ class PresentSelectScreen extends StatelessWidget {
                   !FlutterBackground.isBackgroundExecutionEnabled) {
                 await FlutterBackground.enableBackgroundExecution();
               }
-            } catch (e) {
-              debugModePrint('could not publish video: $e');
+            } catch (e, stackTrace) {
+              log.severe('could not publish video: $e', e, stackTrace);
             }
           }
 
@@ -347,8 +347,8 @@ class SelectScreenDialog extends Dialog {
       }
       _stateSetter?.call(() {});
       return;
-    } catch (e) {
-      debugModePrint(e.toString());
+    } catch (e, stackTrace) {
+      log.severe('Failed to capture desktop', e, stackTrace);
     }
   }
 }
@@ -408,7 +408,7 @@ class _ThumbnailWidgetState extends State<ThumbnailWidget> {
               : null,
           child: InkWell(
             onTap: () {
-              debugModePrint('Selected source id => ${widget.source.id}');
+              log.info('Selected source id => ${widget.source.id}');
               widget.onTap(widget.source);
             },
             child: widget.source.thumbnail != null
