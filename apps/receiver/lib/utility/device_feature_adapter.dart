@@ -15,19 +15,26 @@ class DeviceFeatureAdapter {
   // passes the instantiation to the _instance object
   factory DeviceFeatureAdapter() => _instance;
 
+  static String model = '';
   static bool ShowDebugOverlay = false;
   static bool UseSoftwareDecode = false;
   static bool UseQuickDecodeParams = false;
 
-  static final bool DefaultShowDebugOverlay = false;
-  static final bool DefaultUseSoftwareDecode = false;
-  static final bool DefaultUseQuickDecodeParams = true;
+  static bool DefaultShowDebugOverlay = false;
+  static bool DefaultUseSoftwareDecode = false;
+  static bool DefaultUseQuickDecodeParams = true;
 
   static Map<String, int> QuickDecodeParams = {
     "low-latency": 1, // RK3588
     "rk-immediate-out": 1, // RK3288_3399
     "lowlatency": 1, // MTK9950
     "vendor.low-latency.enable": 1 // AMLogic982_1516 or Generic
+  };
+
+  static Map<String, dynamic> overrideDefaultParams = {
+    '50-3': {
+      "useQuickDecode": false
+    }
   };
 
   static Map<String, dynamic> deviceOptions = {
@@ -47,11 +54,14 @@ class DeviceFeatureAdapter {
     "maxHardwareDecodeSession": 0
   };
 
-  static save() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("ShowDebugOverlay", ShowDebugOverlay);
-    prefs.setBool("UseSoftwareDecode", UseSoftwareDecode);
-    prefs.setBool("UseQuickDecodeParams", UseQuickDecodeParams);
+  static initDefault() async {
+    for (var entry in overrideDefaultParams.entries) {
+      if (model.contains(entry.key)) {
+        DefaultShowDebugOverlay = entry.value["showDebugOverlay"] ?? DefaultShowDebugOverlay;
+        DefaultUseSoftwareDecode = entry.value["useSoftwareDecode"] ?? DefaultUseSoftwareDecode;
+        DefaultUseQuickDecodeParams = entry.value["useQuickDecode"] ?? DefaultUseQuickDecodeParams;
+      }
+    }
   }
 
   static load() async {
@@ -59,6 +69,13 @@ class DeviceFeatureAdapter {
     ShowDebugOverlay = prefs.getBool("ShowDebugOverlay") ?? DefaultShowDebugOverlay;
     UseSoftwareDecode = prefs.getBool("UseSoftwareDecode") ?? DefaultUseSoftwareDecode;
     UseQuickDecodeParams = prefs.getBool("UseQuickDecodeParams") ?? DefaultUseQuickDecodeParams;
+  }
+
+  static save() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("ShowDebugOverlay", ShowDebugOverlay);
+    prefs.setBool("UseSoftwareDecode", UseSoftwareDecode);
+    prefs.setBool("UseQuickDecodeParams", UseQuickDecodeParams);
   }
 
   static Map<String, int> getQuickDecodeOptions() {
@@ -69,6 +86,9 @@ class DeviceFeatureAdapter {
   }
 
   static ensureInitialized() async {
+    model = await _instance._loadModel() ?? '';
+
+    await initDefault();
     await load();
 
     Map<String, int> quickDecodeOptions = getQuickDecodeOptions();
@@ -79,7 +99,6 @@ class DeviceFeatureAdapter {
     if (UseSoftwareDecode) {
       options.addAll(softwareDecodeOptions);
     } else {
-      String model = await _instance._loadModel() ?? '';
       for (var entry in deviceOptions.entries) {
         if (model.contains(entry.key)) {
           options.addAll(Map<String, dynamic>.from(entry.value));
