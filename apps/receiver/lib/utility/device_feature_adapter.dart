@@ -82,7 +82,6 @@ class DeviceFeatureAdapter {
     prefs.setBool("ShowDebugOverlay", ShowDebugOverlay);
     prefs.setBool("UseSoftwareDecode", UseSoftwareDecode);
     prefs.setBool("UseQuickDecodeParams", UseQuickDecodeParams);
-    prefs.setBool("UseQuickDecodeParams", UseQuickDecodeParams);
     prefs.setBool("EnableWebRtcTracing", enableWebRtcTracing);
     prefs.setBool("VerboseWebRtcLog", verboseWebRtcLog);
   }
