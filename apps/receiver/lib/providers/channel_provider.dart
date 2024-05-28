@@ -617,18 +617,21 @@ class ChannelProvider extends ChangeNotifier {
   _onOTPTick() {
     countDownProgress.value -= 1;
     if (countDownProgress.value == 0) {
+      countDownProgress.value = maxCountDown;
+
       _generateOTP();
     }
   }
 
   _generateOTP() {
     otp.value = Random().nextInt(9000) + 1000;
+
     if (!otpList.contains(otp.value.toString())) {
       _otpList.add(otp.value.toString());
+
       if (_otpList.length > 2) {
         _otpList.remove(_otpList.first);
       }
     }
-    countDownProgress.value = maxCountDown;
   }
 }
