@@ -123,7 +123,6 @@ class ChannelProvider extends ChangeNotifier {
 
   startChannelProvider() {
     _setConnectivityListener();
-    _generateOTP();
     _startNewOTPTimer();
   }
 
@@ -607,6 +606,9 @@ class ChannelProvider extends ChangeNotifier {
     if (_otpTickTimer != null) {
       return;
     }
+
+    _generateOTP();
+
     _otpTickTimer = Timer.periodic(_otpTickInterval, (timer) {
       _onOTPTick();
     });
