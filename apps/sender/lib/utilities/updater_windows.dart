@@ -99,7 +99,7 @@ Future<void> installUpdates() async {
   ];
 
   try {
-    Process.run(_getUpdaterPath(), arguments);
+    await Process.start(_getUpdaterPath(), arguments);
   } catch (e) {
     throw UpdateErrorExecption(
       UpdateError.unknownError,
