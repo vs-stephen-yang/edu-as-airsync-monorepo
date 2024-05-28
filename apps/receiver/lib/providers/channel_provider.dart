@@ -66,6 +66,8 @@ class ChannelProvider extends ChangeNotifier {
   static const _otpTickInterval = Duration(milliseconds: 100);
   static const _otpDuration = Duration(minutes: 2);
 
+  Timer? _otpTickTimer;
+
   final ValueNotifier<bool> isEyeOpen = ValueNotifier(true);
   late ValueNotifier<int> countDownProgress;
   final ValueNotifier<int> otp = ValueNotifier(0000);
@@ -602,14 +604,19 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   _startNewOTPTimer() {
-    Timer.periodic(_otpTickInterval, (timer) {
-      countDownProgress.value -= 1;
-      if (countDownProgress.value == 0) {
-        _generateOTP();
-        timer.cancel();
-        _startNewOTPTimer();
-      }
+    if (_otpTickTimer != null) {
+      return;
+    }
+    _otpTickTimer = Timer.periodic(_otpTickInterval, (timer) {
+      _onOTPTick();
     });
+  }
+
+  _onOTPTick() {
+    countDownProgress.value -= 1;
+    if (countDownProgress.value == 0) {
+      _generateOTP();
+    }
   }
 
   _generateOTP() {
