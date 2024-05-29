@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:collection/collection.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/features/protoc/event.pb.dart';
 import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
@@ -29,7 +30,6 @@ class WebRTCConnector {
   final List<StreamSubscription> _subscriptions = [];
 
   void Function(PresentSignalMessage message) sendSignalMessage;
-
 
   dynamic _deviceId;
   RTCPeerConnection? _pc;
@@ -303,9 +303,9 @@ class WebRTCConnector {
       // Web: popup a system dialog
       // Android: MediaProjection
       // iOS: Broadcast extension
-        await hangUp();
-        // return false to run makeCall's failure process.
-        return false;
+      await hangUp();
+      // return false to run makeCall's failure process.
+      return false;
     }
     _localStream?.getTracks().forEach((element) {
       element.onEnded = () async {
@@ -361,13 +361,13 @@ class WebRTCConnector {
         'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
             ? true
             : {
-          'deviceId': _deviceId,
-          'mandatory': {
-            'frameRate': _trackFrameRate,
-          },
-          'width': _trackWidth,
-          'height': _trackHeight,
-        }
+                'deviceId': _deviceId,
+                'mandatory': {
+                  'frameRate': _trackFrameRate,
+                },
+                'width': _trackWidth,
+                'height': _trackHeight,
+              }
       };
 
       return await navigator.mediaDevices.getDisplayMedia(constraints);
@@ -417,7 +417,10 @@ class WebRTCConnector {
   }
 
   void _onDataChannelState(RTCDataChannelState state) {
-    log.info('onDataChannelState: $state');
+    log.info('Data channel state: ${state.name}');
+    AppAnalytics.instance.trackEvent('dc_state', properties: {
+      'state': state.name,
+    });
   }
 
   void _onMessage(RTCDataChannelMessage data) async {
@@ -467,19 +470,23 @@ class WebRTCConnector {
   }
 
   void _onSignalingState(RTCSignalingState state) {
-    log.info('onSignalingState: $state');
+    log.info('onSignalingState: ${state.name}');
   }
 
   void _onIceGatheringState(RTCIceGatheringState state) {
-    log.info('onIceGatheringState: $state');
+    log.info('onIceGatheringState: ${state.name}');
   }
 
   void _onIceConnectionState(RTCIceConnectionState state) {
-    log.info('onIceConnectionState: $state');
+    log.info('onIceConnectionState: ${state.name}');
   }
 
   void _onPeerConnectionState(RTCPeerConnectionState state) async {
-    log.info('onPeerConnectionState: $state');
+    log.info('Peer connection state: ${state.name}');
+    AppAnalytics.instance.trackEvent('pc_state', properties: {
+      'state': state.name,
+    });
+
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
       var senders = await _pc!.getSenders();
       var sender =
