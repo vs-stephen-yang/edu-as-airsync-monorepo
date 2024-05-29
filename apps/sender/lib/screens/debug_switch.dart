@@ -1,3 +1,5 @@
+import 'package:display_cast_flutter/model/profile.dart';
+import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/share_log.dart';
 import 'package:display_cast_flutter/widgets/menu_dialog.dart';
@@ -13,6 +15,9 @@ class DebugSwitch extends StatefulWidget {
 
 class _DebugSwitchState extends State<DebugSwitch> {
   bool _isLogVerbose = false;
+  String _selectedProfileName = '';
+  int _maxBitrateKbps = 0;
+  int _minBitrateKbps = 0;
 
   void _changeLogVerbose(bool value) async {
     setLogLevelVerbose(value);
@@ -22,13 +27,20 @@ class _DebugSwitchState extends State<DebugSwitch> {
     });
   }
 
-  void _initialize() {
+  void _initialize(BuildContext context) {
     _isLogVerbose = isLogLevelVerbose();
+
+    final Profile profile = AppConfig.of(context)!.profile;
+    final Preset preset = profile.presets.first;
+
+    _selectedProfileName = profile.name;
+    _maxBitrateKbps = preset.parameters.maxBitrateKbps;
+    _minBitrateKbps = preset.parameters.minBitrateKbps;
   }
 
   @override
   Widget build(BuildContext context) {
-    _initialize();
+    _initialize(context);
 
     final shareLogsButton = TextButton(
       style: ButtonStyle(
@@ -60,6 +72,12 @@ class _DebugSwitchState extends State<DebugSwitch> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    Text("profile: ${_selectedProfileName}", style: new TextStyle(
+                          fontSize: 14, color: Colors.red)),
+                    Text("minBitrateKbps: ${_minBitrateKbps}", style: new TextStyle(
+                        fontSize: 14, color: Colors.red),),
+                    Text("maxBitrateKbps: ${_maxBitrateKbps}", style: new TextStyle(
+                        fontSize: 14, color: Colors.red)),
                     SwitchListTile(
                         title: const Text('Verbose Log'),
                         value: _isLogVerbose,
