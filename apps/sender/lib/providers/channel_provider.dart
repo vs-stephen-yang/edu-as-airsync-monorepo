@@ -7,6 +7,7 @@ import 'package:display_cast_flutter/features/webrtc_connector.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/model/direct_connector.dart';
 import 'package:display_cast_flutter/model/remote_screen_client.dart';
+import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
@@ -69,6 +70,7 @@ final ValueNotifier<bool> presentingState = ValueNotifier(true);
 class ChannelProvider extends ChangeNotifier {
   ChannelProvider(BuildContext context) {
     _apiGateway = AppConfig.of(context)!.settings.urlGateway;
+    _profile = AppConfig.of(context)!.profile;
   }
 
   Channel? _channel;
@@ -111,6 +113,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   late String _apiGateway = '';
+  late Profile _profile;
   DisplayCode? displayCode;
   String? otp;
   Timer? _presentTimer;
@@ -440,6 +443,7 @@ class ChannelProvider extends ChangeNotifier {
   }) async {
     // PeerConnect
     webRTCConnector = WebRTCConnector(
+      profile: _profile,
       systemAudio: systemAudio,
       sendSignalMessage: (json) {
         // offer, answer, candidate
