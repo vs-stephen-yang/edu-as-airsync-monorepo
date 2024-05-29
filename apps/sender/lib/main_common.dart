@@ -26,23 +26,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-Future<Profile> initializeProfile(List<String> args, String selectedProfile) async {
-  final CommandLineArguments arguments = CommandLineArguments.parse(args);
-
-  if (arguments.selectedProfile.isNotEmpty) {
-    selectedProfile = arguments.selectedProfile;
-  }
-
-  List<Profile> profiles;
-  if (arguments.profilesPath.isNotEmpty) {
-    profiles = await ProfileUtil.fetchProfilesFromFile(arguments.profilesPath);
-  } else {
-    profiles = await ProfileUtil.fetchProfilesFromBundle();
-  }
-
-  return profiles.firstWhere((profile) => profile.name == selectedProfile, orElse: () => profiles.first);
-}
-
 void commonEntry(List<String> args, ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
   initLogger();
@@ -69,7 +52,8 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
 
   await DataDisplayCode.getInstance().initialize();
 
-  final Profile profile = await initializeProfile(args, settings.selectedProfile);
+  final Profile profile = await ProfileUtil.loadProfile(args);
+
   runApp(AppConfig(
     settings: settings,
     profile: profile,

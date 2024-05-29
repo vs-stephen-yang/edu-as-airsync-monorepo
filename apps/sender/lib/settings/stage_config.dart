@@ -8,9 +8,6 @@ class StageConfig implements ConfigSettings {
   String versionPostfix = '-s';
 
   @override
-  String selectedProfile = 'video_quality_first';
-
-  @override
   String urlGateway = 'https://api.gateway.stage.airsync.net/instances';
 
   @override

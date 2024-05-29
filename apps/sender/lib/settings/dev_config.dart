@@ -8,9 +8,6 @@ class DevConfig implements ConfigSettings {
   String versionPostfix = '-d';
 
   @override
-  String selectedProfile = 'video_quality_first';
-
-  @override
   String urlGateway = 'https://api.gateway.dev.airsync.net/instances';
 
   @override

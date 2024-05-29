@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/share_log.dart';
 import 'package:display_cast_flutter/widgets/menu_dialog.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
@@ -14,10 +15,19 @@ class DebugSwitch extends StatefulWidget {
 }
 
 class _DebugSwitchState extends State<DebugSwitch> {
+  bool _first = true;
   bool _isLogVerbose = false;
-  String _selectedProfileName = '';
+  bool _isVideoQualityFirst = false;
   int _maxBitrateKbps = 0;
   int _minBitrateKbps = 0;
+
+  void _notifyRestart() {
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text("Restart the program to apply the changes.")
+        )
+    );
+  }
 
   void _changeLogVerbose(bool value) async {
     setLogLevelVerbose(value);
@@ -27,15 +37,31 @@ class _DebugSwitchState extends State<DebugSwitch> {
     });
   }
 
+  void _changeVideoProfile(bool value) async {
+    String selectedProfile;
+    if (value) {
+      selectedProfile = ProfileUtil.videoQualityFirstProfile;
+    } else {
+      selectedProfile = ProfileUtil.videoSmoothnessFirstProfile;
+    }
+    await ProfileUtil.saveSelectedProfile(selectedProfile);
+
+    setState(() {
+      _isVideoQualityFirst = value;
+      _notifyRestart();
+    });
+  }
+
   void _initialize(BuildContext context) {
     _isLogVerbose = isLogLevelVerbose();
-
-    final Profile profile = AppConfig.of(context)!.profile;
-    final Preset preset = profile.presets.first;
-
-    _selectedProfileName = profile.name;
-    _maxBitrateKbps = preset.parameters.maxBitrateKbps;
-    _minBitrateKbps = preset.parameters.minBitrateKbps;
+    if (_first) {
+      final Profile profile = AppConfig.of(context)!.profile;
+      final Preset preset = profile.presets.first;
+      _isVideoQualityFirst = profile.name == ProfileUtil.videoQualityFirstProfile;
+      _maxBitrateKbps = preset.parameters.maxBitrateKbps;
+      _minBitrateKbps = preset.parameters.minBitrateKbps;
+    }
+    _first = false;
   }
 
   @override
@@ -72,8 +98,10 @@ class _DebugSwitchState extends State<DebugSwitch> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Text("profile: ${_selectedProfileName}", style: new TextStyle(
-                          fontSize: 14, color: Colors.red)),
+                    SwitchListTile(
+                        title: const Text('video_quality_first'),
+                        value: _isVideoQualityFirst,
+                        onChanged: _changeVideoProfile),
                     Text("minBitrateKbps: ${_minBitrateKbps}", style: new TextStyle(
                         fontSize: 14, color: Colors.red),),
                     Text("maxBitrateKbps: ${_maxBitrateKbps}", style: new TextStyle(
