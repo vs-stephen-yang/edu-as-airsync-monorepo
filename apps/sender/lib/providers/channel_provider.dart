@@ -424,6 +424,11 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void onChannelStateChange(ChannelState state) {
+    log.info('Channel state: ${state.name}');
+    AppAnalytics.instance.trackEvent('channel_state', properties: {
+      'state': state.name,
+    });
+
     switch (state) {
       case ChannelState.initialized:
         break;
@@ -536,6 +541,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future closeChannel() async {
+    log.info('Closing the channel');
+
     await _channel?.close(ChannelCloseReason(ChannelCloseCode.close));
     _channel = null;
   }
@@ -606,6 +613,11 @@ class ChannelProvider extends ChangeNotifier {
   //endregion
 
   void _handleChannelCloseState(ChannelCloseReason? closeReason) {
+    AppAnalytics.instance.trackEvent('channel_closed', properties: {
+      'code': closeReason?.code.toString() ?? '',
+      'text': closeReason?.text ?? '',
+    });
+
     ChannelCloseCode? reasonCode = closeReason?.code;
     switch (reasonCode) {
       // TODO
