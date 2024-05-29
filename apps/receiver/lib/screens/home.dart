@@ -29,6 +29,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
+import 'package:motion_toast/motion_toast.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -252,14 +253,22 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   for (MirrorRequest request
                       in HybridConnectionList().getMirrorMap().values) {
                     if (request.mirrorState == MirrorState.idle) {
-                      Future.delayed(Duration.zero, () {
-                        if (mirrorStateProvider.isMirrorConfirmation) {
-                          _showAuthDialog(context);
-                        } else {
-                          mirrorStateProvider
-                              .setAcceptMirrorId(request.mirrorId);
-                        }
-                      });
+                      if (HybridConnectionList.hybridSplitScreenCount.value <
+                          HybridConnectionList.maxHybridSplitScreen) {
+                        Future.delayed(Duration.zero, () {
+                          if (mirrorStateProvider.isMirrorConfirmation) {
+                            _showAuthDialog(context);
+                          } else {
+                            mirrorStateProvider
+                                .setAcceptMirrorId(request.mirrorId);
+                          }
+                        });
+                      } else {
+                        mirrorStateProvider.stopAcceptedMirror(request.mirrorId);
+                        Future.delayed(Duration.zero, () {
+                          _showMaxAmountToast();
+                        });
+                      }
                     }
                   }
                 } else if (authDialogContextList.isNotEmpty &&
@@ -280,6 +289,21 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         ),
       ),
     );
+  }
+
+  _showMaxAmountToast() {
+    MotionToast(
+      primaryColor: Colors.grey,
+      backgroundType: BackgroundType.solid,
+      description: Center(
+        child: AutoSizeText(
+          S.of(context).toast_maximum_split_screen,
+          maxLines: 1,
+        ),
+      ),
+      displaySideBar: false,
+      position: MotionToastPosition.center,
+    ).show(context);
   }
 
   _showSnackBarMessage(String message) {
