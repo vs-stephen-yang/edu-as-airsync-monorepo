@@ -443,7 +443,7 @@ class ChannelProvider extends ChangeNotifier {
   }) async {
     // PeerConnect
     webRTCConnector = WebRTCConnector(
-      profile: _profile,
+      preset: _profile.presets.first,
       systemAudio: systemAudio,
       sendSignalMessage: (json) {
         // offer, answer, candidate

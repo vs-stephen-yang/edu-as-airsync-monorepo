@@ -19,7 +19,7 @@ import 'package:ion_sdk_flutter/src/utils.dart' as sdpFormatUtils;
 
 class WebRTCConnector {
   WebRTCConnector(
-      { required this.profile,
+      { required this.preset,
         this.touchBack = false,
         bool systemAudio = false,
         required this.sendSignalMessage}) {
@@ -56,7 +56,7 @@ class WebRTCConnector {
     'noiseSuppression': false
   };
 
-  final Profile profile;
+  final Preset preset;
   bool touchBack = false;
   bool isMainSource = false;
   final List<String> _codecPreferences = ['h264', 'vp8', 'vp9'];
@@ -488,8 +488,8 @@ class WebRTCConnector {
       params.degradationPreference = RTCDegradationPreference.DISABLED;
       if (params.encodings != null) {
         for (var encoding in params.encodings!) {
-          encoding.maxBitrate = profile.presets.first.parameters.maxBitrateKbps * 1000;
-          encoding.minBitrate = profile.presets.first.parameters.minBitrateKbps * 1000;
+          encoding.maxBitrate = preset.parameters.maxBitrateKbps * 1000;
+          encoding.minBitrate = preset.parameters.minBitrateKbps * 1000;
         }
       }
       await sender.setParameters(params);
