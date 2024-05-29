@@ -15,7 +15,7 @@ class DebugSwitch extends StatefulWidget {
 }
 
 class _DebugSwitchState extends State<DebugSwitch> {
-  bool _first = true;
+  bool _initialized = false;
   bool _isLogVerbose = false;
   bool _isVideoQualityFirst = false;
   int _maxBitrateKbps = 0;
@@ -54,14 +54,14 @@ class _DebugSwitchState extends State<DebugSwitch> {
 
   void _initialize(BuildContext context) {
     _isLogVerbose = isLogLevelVerbose();
-    if (_first) {
+    if (!_initialized) {
       final Profile profile = AppConfig.of(context)!.profile;
       final Preset preset = profile.presets.first;
       _isVideoQualityFirst = profile.name == ProfileUtil.videoQualityFirstProfile;
       _maxBitrateKbps = preset.parameters.maxBitrateKbps;
       _minBitrateKbps = preset.parameters.minBitrateKbps;
     }
-    _first = false;
+    _initialized = true;
   }
 
   @override
