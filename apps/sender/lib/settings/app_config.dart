@@ -35,7 +35,6 @@ class AppConfig extends InheritedWidget {
 abstract class ConfigSettings {
   late final String envName;
   late final String versionPostfix;
-  late final String selectedProfile;
 
   late String urlGateway;
 
