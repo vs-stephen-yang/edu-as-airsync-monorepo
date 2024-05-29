@@ -12,7 +12,6 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_instance_create.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
-import 'package:display_cast_flutter/utilities/command_line_arguments.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
