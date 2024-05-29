@@ -10,7 +10,6 @@ import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
-import 'package:display_cast_flutter/utilities/debug_mode_print.dart';
 import 'package:display_cast_flutter/utilities/updater_windows.dart';
 import 'package:display_cast_flutter/utilities/version_update.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
