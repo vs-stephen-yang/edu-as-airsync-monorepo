@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:display_cast_flutter/model/profile.dart';
 
 class AppConfig extends InheritedWidget {
   const AppConfig(
       {super.key,
       required this.settings,
+      required this.profile,
       required String appName,
       required String appVersion,
       required super.child})
@@ -15,6 +17,8 @@ class AppConfig extends InheritedWidget {
   final String _appName;
 
   final String _appVersion;
+
+  final Profile profile;
 
   get appName => _appName;
 
@@ -31,6 +35,7 @@ class AppConfig extends InheritedWidget {
 abstract class ConfigSettings {
   late final String envName;
   late final String versionPostfix;
+  late final String selectedProfile;
 
   late String urlGateway;
 

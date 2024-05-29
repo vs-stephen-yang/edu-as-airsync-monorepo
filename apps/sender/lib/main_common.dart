@@ -12,8 +12,11 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_instance_create.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
+import 'package:display_cast_flutter/utilities/command_line_arguments.dart';
+import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:display_cast_flutter/model/profile.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,7 +26,24 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-void commonEntry(ConfigSettings settings) async {
+Future<Profile> initializeProfile(List<String> args, String selectedProfile) async {
+  final CommandLineArguments arguments = CommandLineArguments.parse(args);
+
+  if (arguments.selectedProfile.isNotEmpty) {
+    selectedProfile = arguments.selectedProfile;
+  }
+
+  List<Profile> profiles;
+  if (arguments.profilesPath.isNotEmpty) {
+    profiles = await ProfileUtil.fetchProfilesFromFile(arguments.profilesPath);
+  } else {
+    profiles = await ProfileUtil.fetchProfilesFromBundle();
+  }
+
+  return profiles.firstWhere((profile) => profile.name == selectedProfile, orElse: () => profiles.first);
+}
+
+void commonEntry(List<String> args, ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
   initLogger();
   enableLogToMemory(true);
@@ -49,8 +69,10 @@ void commonEntry(ConfigSettings settings) async {
 
   await DataDisplayCode.getInstance().initialize();
 
+  final Profile profile = await initializeProfile(args, settings.selectedProfile);
   runApp(AppConfig(
     settings: settings,
+    profile: profile,
     appName: packageInfo.appName,
     appVersion: packageInfo.version,
     child: const MyApp(),

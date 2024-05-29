@@ -6,6 +6,7 @@ import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/features/protoc/event.pb.dart';
 import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_cast_flutter/model/message.dart';
+import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
@@ -18,9 +19,10 @@ import 'package:ion_sdk_flutter/src/utils.dart' as sdpFormatUtils;
 
 class WebRTCConnector {
   WebRTCConnector(
-      {this.touchBack = false,
-      bool systemAudio = false,
-      required this.sendSignalMessage}) {
+      { required this.profile,
+        this.touchBack = false,
+        bool systemAudio = false,
+        required this.sendSignalMessage}) {
     _systemAudio = systemAudio;
   }
 
@@ -54,10 +56,9 @@ class WebRTCConnector {
     'noiseSuppression': false
   };
 
+  final Profile profile;
   bool touchBack = false;
   bool isMainSource = false;
-  final int _defaultMaxBitrateBps = 5000000;
-  final int _defaultMinBitrateBps = 0;
   final List<String> _codecPreferences = ['h264', 'vp8', 'vp9'];
   final String _macMainScreenOrder = '1';
   final String _windowsMainScreenOrder = '0';
@@ -487,8 +488,8 @@ class WebRTCConnector {
       params.degradationPreference = RTCDegradationPreference.DISABLED;
       if (params.encodings != null) {
         for (var encoding in params.encodings!) {
-          encoding.maxBitrate = _defaultMaxBitrateBps;
-          encoding.minBitrate = _defaultMinBitrateBps;
+          encoding.maxBitrate = profile.presets.first.parameters.maxBitrateKbps * 1000;
+          encoding.minBitrate = profile.presets.first.parameters.minBitrateKbps * 1000;
         }
       }
       await sender.setParameters(params);

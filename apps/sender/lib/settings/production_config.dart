@@ -8,6 +8,9 @@ class ProductionConfig implements ConfigSettings {
   String versionPostfix = '';
 
   @override
+  String selectedProfile = 'video_quality_first';
+
+  @override
   String urlGateway = 'https://api.gateway.airsync.net/instances';
 
   @override
