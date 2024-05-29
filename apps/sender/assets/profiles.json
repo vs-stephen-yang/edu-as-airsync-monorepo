@@ -6,7 +6,7 @@
         {
           "codec": "all",
           "platform": "all",
-          "describe": "maintain video quality between fair and good",
+          "description": "maintain video quality between fair and good",
           "parameters": {
             "minBitrateKbps": 3000,
             "maxBitrateKbps": 5000
@@ -20,7 +20,7 @@
         {
           "codec": "all",
           "platform": "all",
-          "describe": "maintain video smoothness and good quality when bandwidth is sufficient",
+          "description": "maintain video smoothness and good quality when bandwidth is sufficient",
           "parameters": {
             "minBitrateKbps": 0,
             "maxBitrateKbps": 5000

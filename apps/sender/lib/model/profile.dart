@@ -18,16 +18,16 @@ class Profile {
 class Preset {
   final String codec;
   final String platform;
-  final String describe;
+  final String description;
   final Parameters parameters;
 
-  Preset({required this.codec, required this.platform, required this.describe, required this.parameters});
+  Preset({required this.codec, required this.platform, required this.description, required this.parameters});
 
   factory Preset.fromJson(Map<String, dynamic> json) {
     return Preset(
       codec: json['codec'],
       platform: json['platform'],
-      describe: json['describe'],
+      description: json['description'],
       parameters: Parameters.fromJson(json['parameters']),
     );
   }
