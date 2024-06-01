@@ -55,7 +55,6 @@ class RTCConnector {
     return result;
   }
 
-  static final _log = getDefaultLogger();
   String? iceServersApiUrl, host;
   final Map<String, dynamic> _configuration = {
     'sdpSemantics': 'unified-plan',
@@ -105,7 +104,7 @@ class RTCConnector {
   }
 
   Future<void> _onChannelState(ChannelState state) async {
-    _log.info('[$clientId] Channel has changed state to $state');
+    log.info('[$clientId] Channel has changed state to $state');
     switch (state) {
       case ChannelState.initialized:
         break;
@@ -195,7 +194,7 @@ class RTCConnector {
         // onFinish
         timer.cancel();
         connectionTimeTimeout.add(0);
-        log('ConnectionTimeout onFinish');
+        log.info('ConnectionTimeout onFinish');
         onFinish();
       }
     });
@@ -365,11 +364,11 @@ class RTCConnector {
       try {
         await _remoteRenderer?.dispose();
       } catch (e) {
-        _log.warning('[$clientId] Error on dispose remoteRenderer: $e');
+        log.warning('[$clientId] Error on dispose remoteRenderer: $e');
       }
       _remoteRenderer = RTCVideoRenderer();
     }
-    _log.info('[$clientId] Close PeerConnection');
+    log.info('[$clientId] Close PeerConnection');
     if (_pc != null) {
       await _pc?.close();
       await _pc?.dispose();
@@ -388,7 +387,7 @@ class RTCConnector {
   }
 
   Future<void> close(ChannelCloseCode code, {String? reason}) async {
-    _log.info('[$clientId] Close channel $reason');
+    log.info('[$clientId] Close channel $reason');
     _channel.close(ChannelCloseReason(code, text: reason));
     _resetSetting();
   }
@@ -531,7 +530,7 @@ class RTCConnector {
   }
 
   void _printPeerConnectionLog(String? event, dynamic args) {
-    _log.info('[$clientId] PeerConnection $event ${args.toString()}');
+    log.info('[$clientId] PeerConnection $event ${args.toString()}');
 
     if (kDebugMode) {
       printInDebug('PeerConnection $event ${args.toString()}',

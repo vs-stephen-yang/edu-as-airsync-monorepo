@@ -23,7 +23,6 @@ class TouchEventManager {
   double _injectScreenWidth = defaultScreenWidth;
   double _injectScreenHeight = defaultScreenHeight;
   Timer? checkTimer;
-  static final _log = getDefaultLogger();
 
   void setScreenSize(double screenWidth, double screenHeight) {
     _injectScreenWidth = screenWidth;
@@ -40,7 +39,7 @@ class TouchEventManager {
         final event = _eventSlots[i];
         if (event.eventId != -1) {
           if (currentTime - event.timestamp > eventExpiredTime) {
-            _log.info('event expired slot: $i id: ${event.eventId}');
+            log.info('event expired slot: $i id: ${event.eventId}');
             event.channelId = -1;
             event.eventId = -1;
             _flutterInputInjectionPlugin.sendTouch(
