@@ -252,10 +252,6 @@ class RTCConnector {
     }
   }
 
-  Future<void> onChangeQuality(ChangePresentQuality msg) async {
-    //TODO:
-  }
-
   Future<void> onPausePresent() async {
     AppAnalytics().trackEventPresentPauseReceived(clientId!, sessionId!);
     presentationState = PresentationState.pauseStreaming;

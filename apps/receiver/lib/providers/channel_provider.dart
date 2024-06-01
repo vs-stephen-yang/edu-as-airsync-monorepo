@@ -311,7 +311,8 @@ class ChannelProvider extends ChangeNotifier {
           rtcConnector.onPresentRejected(message as PresentRejectedMessage);
           break;
         case ChannelMessageType.changePresentQuality:
-          rtcConnector.onChangeQuality(message as ChangePresentQuality);
+          // ignore
+          break;
         case ChannelMessageType.pausePresent:
           rtcConnector.onPausePresent();
           break;
