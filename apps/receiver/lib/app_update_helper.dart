@@ -1,7 +1,8 @@
-import 'dart:developer';
+
 
 import 'package:app_ota_flutter/app_ota_flutter.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -64,8 +65,8 @@ class AppUpdateHelper {
   }
 
   checkAppUpdate(bool isStartupCheck) async {
-    log('InApp _otaState: $_otaEnvironment');
-    log('InApp _otaFlavor: $_otaFlavor');
+    log.info('InApp _otaState: $_otaEnvironment');
+    log.info('InApp _otaFlavor: $_otaFlavor');
     AppOtaFlutter().startOTAProcess(OtaApp.display, _otaEnvironment, _otaFlavor,
         isStartupCheck: isStartupCheck);
   }
@@ -83,20 +84,20 @@ class AppUpdateHelper {
   checkInAppUpdate() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     await InAppUpdate.checkForUpdate().then((info) {
-      log('InApp info: ${info.toString()}');
+      log.info('InApp info: ${info.toString()}');
       AppOtaFlutter().isNeedInAppUpdate =
           info.availableVersionCode! > int.parse(packageInfo.buildNumber);
     }).catchError((e) {
-      print('InApp error: ${e.toString()}');
+      log.severe('InApp error', e);
       AppOtaFlutter().isNeedInAppUpdate = false;
     });
   }
 
   startInAppUpdate() {
     InAppUpdate.performImmediateUpdate().then((result) {
-      log('InApp result: ${result.toString()}');
+      log.info('InApp result: ${result.toString()}');
     }).catchError((e) {
-      print('InApp error: ${e.toString()}');
+      log.severe('InApp error', e);
     });
   }
 }
