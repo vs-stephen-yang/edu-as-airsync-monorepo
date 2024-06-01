@@ -21,7 +21,7 @@ class MainInfoInternet extends StatelessWidget {
       height: 400,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
-        color: AppColors.primary_grey,
+        color: AppColors.primaryGrey,
       ),
       child: Consumer2<ChannelProvider, InstanceInfoProvider>(
         builder: (context, channelProvider, instanceInfo, child) {

@@ -46,8 +46,8 @@ class _SettingsState extends State<Settings> {
     }
     return MenuDialog(
       backgroundColor: HybridConnectionList().isMirroring()
-          ? AppColors.primary_grey_tran
-          : AppColors.primary_grey,
+          ? AppColors.primaryGreyTran
+          : AppColors.primaryGrey,
       topTitleText: S.of(context).main_settings_title,
       content: SingleChildScrollView(
         child: Column(
@@ -85,7 +85,7 @@ class _SettingsState extends State<Settings> {
             ),
             Row(
               children: [
-                Image(
+                const Image(
                   image: Svg('assets/images/ic_quick_connect.svg'),
                   width: 32,
                   height: 32,
@@ -234,7 +234,7 @@ class _SettingsState extends State<Settings> {
             ),
             ListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(), // 禁止ListView本身滚动
+              physics: const NeverScrollableScrollPhysics(), // 禁止ListView本身滚动
               itemCount: _listSettings.length , // 考虑到分隔符，所以是项目数的两倍减1
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(

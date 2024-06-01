@@ -46,7 +46,7 @@ class _InstanceNameEditorDialogState extends State<InstanceNameEditorDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      backgroundColor: AppColors.primary_dialog,
+      backgroundColor: AppColors.primaryDialog,
       alignment: MediaQuery.of(context).orientation == Orientation.portrait
           ? const Alignment(-1.0, 0.5)
           : Alignment.centerLeft,
@@ -113,13 +113,13 @@ class _InstanceNameEditorDialogState extends State<InstanceNameEditorDialog> {
                     },
                     child: AutoSizeText(
                       S.of(context).main_settings_device_name_cancel,
-                      style: const TextStyle(color: AppColors.primary_grey),
+                      style: const TextStyle(color: AppColors.primaryGrey),
                     ),
                   ),
                   FocusElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: AppColors.primary_blue,
-                      backgroundColor: AppColors.primary_blue,
+                      foregroundColor: AppColors.primaryBlue,
+                      backgroundColor: AppColors.primaryBlue,
                     ),
                     hasFocusWidth: 120,
                     notFocusWidth: 110,

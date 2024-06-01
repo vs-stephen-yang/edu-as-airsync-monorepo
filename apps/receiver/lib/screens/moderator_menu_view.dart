@@ -26,8 +26,8 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
     return MenuDialog(
       backgroundColor: HybridConnectionList().isPresenting()
-          ? AppColors.primary_grey_tran
-          : AppColors.primary_grey,
+          ? AppColors.primaryGreyTran
+          : AppColors.primaryGrey,
       topTitleText: S.of(context).moderator_presentersList,
       topTitleAction: FocusIconButton(
         childNotFocus: Image(

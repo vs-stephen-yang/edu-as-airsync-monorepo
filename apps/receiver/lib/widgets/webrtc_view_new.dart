@@ -83,7 +83,7 @@ class WebRTCViewState extends State<WebRTCView> {
   Widget build(BuildContext context) {
     widget.rtcConnector.onPairCandidateType =
         (localCandidateType, remoteCandidateType) {
-      if (!DeviceFeatureAdapter.ShowDebugOverlay) {
+      if (!DeviceFeatureAdapter.showDebugOverlay) {
         return;
       }
 
@@ -95,7 +95,7 @@ class WebRTCViewState extends State<WebRTCView> {
     };
 
     widget.rtcConnector.onVideoStatsReport = (stats) {
-      if (!DeviceFeatureAdapter.ShowDebugOverlay) {
+      if (!DeviceFeatureAdapter.showDebugOverlay) {
         return;
       }
 
@@ -259,7 +259,7 @@ class WebRTCViewState extends State<WebRTCView> {
                           Text(
                             widget.rtcConnector.senderNameWithEllipsis,
                             style: const TextStyle(
-                              color: AppColors.primary_blue,
+                              color: AppColors.primaryBlue,
                               fontWeight: FontWeight.w700,
                               fontSize: 30,
                             ),
@@ -280,7 +280,7 @@ class WebRTCViewState extends State<WebRTCView> {
                     Text(
                       S.of(context).main_wait_title,
                       style: const TextStyle(
-                        color: AppColors.primary_blue,
+                        color: AppColors.primaryBlue,
                         fontWeight: FontWeight.w700,
                         fontSize: 25,
                       ),

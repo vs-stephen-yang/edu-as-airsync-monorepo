@@ -36,7 +36,7 @@ class _StatusBarState extends State<StatusBar> {
                       decoration: const BoxDecoration(
                         borderRadius:
                             BorderRadius.only(bottomLeft: Radius.circular(10)),
-                        color: AppColors.primary_grey_tran,
+                        color: AppColors.primaryGreyTran,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -44,7 +44,7 @@ class _StatusBarState extends State<StatusBar> {
                         children: [
                           if (StatusBar.showNetworkStatus.value)
                             const Icon(Icons.network_check,
-                                color: AppColors.timeout_red),
+                                color: AppColors.timeoutRed),
                           if (StatusBar.showNetworkStatus.value &&
                               StatusBar.showReamingTime.value)
                             FittedBox(
@@ -78,7 +78,7 @@ class _StatusBarState extends State<StatusBar> {
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
-                                        color: AppColors.timeout_red,
+                                        color: AppColors.timeoutRed,
                                       ),
                                     )
                                   : const SizedBox.shrink();
@@ -104,8 +104,8 @@ class _StatusBarState extends State<StatusBar> {
                         borderRadius:
                             const BorderRadius.all(Radius.circular(15)),
                         color: HybridConnectionList().isPresenting()
-                            ? AppColors.primary_grey_tran
-                            : AppColors.primary_grey,
+                            ? AppColors.primaryGreyTran
+                            : AppColors.primaryGrey,
                       ),
                       child: Text(
                         S.of(context).main_limit_time_message,

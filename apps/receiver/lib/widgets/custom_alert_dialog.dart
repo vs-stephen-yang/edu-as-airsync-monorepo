@@ -27,7 +27,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      backgroundColor: AppColors.primary_dialog,
+      backgroundColor: AppColors.primaryDialog,
       alignment: MediaQuery.of(context).orientation == Orientation.portrait
           ? const Alignment(-1.0, 0.5)
           : Alignment.centerLeft,
@@ -65,13 +65,13 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
                     },
                     child: AutoSizeText(
                       S.of(context).moderator_cancel,
-                      style: const TextStyle(color: AppColors.primary_grey),
+                      style: const TextStyle(color: AppColors.primaryGrey),
                     ),
                   ),
                   FocusElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: AppColors.primary_red,
-                      backgroundColor: AppColors.primary_red,
+                      foregroundColor: AppColors.primaryRed,
+                      backgroundColor: AppColors.primaryRed,
                     ),
                     hasFocusWidth: 120,
                     notFocusWidth: 110,

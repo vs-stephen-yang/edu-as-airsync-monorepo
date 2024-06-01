@@ -16,19 +16,19 @@ class DeviceFeatureAdapter {
   factory DeviceFeatureAdapter() => _instance;
 
   static String model = '';
-  static bool ShowDebugOverlay = false;
-  static bool UseSoftwareDecode = false;
-  static bool UseQuickDecodeParams = false;
+  static bool showDebugOverlay = false;
+  static bool useSoftwareDecode = false;
+  static bool useQuickDecodeParams = false;
   static bool enableWebRtcTracing = false;
   static bool verboseWebRtcLog = false;
 
-  static bool DefaultShowDebugOverlay = false;
-  static bool DefaultUseSoftwareDecode = false;
-  static bool DefaultUseQuickDecodeParams = true;
+  static bool defaultShowDebugOverlay = false;
+  static bool defaultUseSoftwareDecode = false;
+  static bool defaultUseQuickDecodeParams = true;
   static const defaultEnableWebRtcTracing = false;
   static const defaultVerboseWebRtcLog = false;
 
-  static Map<String, int> QuickDecodeParams = {
+  static Map<String, int> quickDecodeParams = {
     "low-latency": 1, // RK3588
     "rk-immediate-out": 1, // RK3288_3399
     "lowlatency": 1, // MTK9950
@@ -61,34 +61,34 @@ class DeviceFeatureAdapter {
   static initDefault() async {
     for (var entry in overrideDefaultParams.entries) {
       if (model.contains(entry.key)) {
-        DefaultShowDebugOverlay = entry.value["showDebugOverlay"] ?? DefaultShowDebugOverlay;
-        DefaultUseSoftwareDecode = entry.value["useSoftwareDecode"] ?? DefaultUseSoftwareDecode;
-        DefaultUseQuickDecodeParams = entry.value["useQuickDecode"] ?? DefaultUseQuickDecodeParams;
+        defaultShowDebugOverlay = entry.value["showDebugOverlay"] ?? defaultShowDebugOverlay;
+        defaultUseSoftwareDecode = entry.value["useSoftwareDecode"] ?? defaultUseSoftwareDecode;
+        defaultUseQuickDecodeParams = entry.value["useQuickDecode"] ?? defaultUseQuickDecodeParams;
       }
     }
   }
 
   static load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    ShowDebugOverlay = prefs.getBool("ShowDebugOverlay") ?? DefaultShowDebugOverlay;
-    UseSoftwareDecode = prefs.getBool("UseSoftwareDecode") ?? DefaultUseSoftwareDecode;
-    UseQuickDecodeParams = prefs.getBool("UseQuickDecodeParams") ?? DefaultUseQuickDecodeParams;
+    showDebugOverlay = prefs.getBool("ShowDebugOverlay") ?? defaultShowDebugOverlay;
+    useSoftwareDecode = prefs.getBool("UseSoftwareDecode") ?? defaultUseSoftwareDecode;
+    useQuickDecodeParams = prefs.getBool("UseQuickDecodeParams") ?? defaultUseQuickDecodeParams;
     enableWebRtcTracing = prefs.getBool("EnableWebRtcTracing") ?? defaultEnableWebRtcTracing;
     verboseWebRtcLog = prefs.getBool("VerboseWebRtcLog") ?? defaultVerboseWebRtcLog;
   }
 
   static save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("ShowDebugOverlay", ShowDebugOverlay);
-    prefs.setBool("UseSoftwareDecode", UseSoftwareDecode);
-    prefs.setBool("UseQuickDecodeParams", UseQuickDecodeParams);
+    prefs.setBool("ShowDebugOverlay", showDebugOverlay);
+    prefs.setBool("UseSoftwareDecode", useSoftwareDecode);
+    prefs.setBool("UseQuickDecodeParams", useQuickDecodeParams);
     prefs.setBool("EnableWebRtcTracing", enableWebRtcTracing);
     prefs.setBool("VerboseWebRtcLog", verboseWebRtcLog);
   }
 
   static Map<String, int> getQuickDecodeOptions() {
-    if (UseQuickDecodeParams) {
-      return QuickDecodeParams;
+    if (useQuickDecodeParams) {
+      return quickDecodeParams;
     }
     return {};
   }
@@ -106,7 +106,7 @@ class DeviceFeatureAdapter {
       'logSeverity': verboseWebRtcLog ? 'VERBOSE' : 'INFO',
     };
 
-    if (UseSoftwareDecode) {
+    if (useSoftwareDecode) {
       options.addAll(softwareDecodeOptions);
     } else {
       for (var entry in deviceOptions.entries) {

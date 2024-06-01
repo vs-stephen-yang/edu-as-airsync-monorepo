@@ -27,8 +27,8 @@ class ParticipantItem extends StatelessWidget {
                 elevation: 0,
                 backgroundColor:
                     HybridConnectionList().isPresenterStreaming(presenterId)
-                        ? AppColors.primary_blue
-                        : AppColors.toggle_bg,
+                        ? AppColors.primaryBlue
+                        : AppColors.toggleBg,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),

@@ -19,8 +19,8 @@ class _LanguageSelectionState extends State<LanguageSelection> {
   Widget build(BuildContext context) {
     return MenuDialog(
       backgroundColor: HybridConnectionList().isPresenting()
-          ? AppColors.primary_grey_tran
-          : AppColors.primary_grey,
+          ? AppColors.primaryGreyTran
+          : AppColors.primaryGrey,
       topTitleText: S.of(context).main_language_title,
       content: Consumer<PrefLanguageProvider>(
         builder: (_, prefLanguageProvider, __) {
@@ -34,8 +34,8 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
                   backgroundColor: (prefLanguageProvider.language == language)
-                      ? AppColors.primary_blue
-                      : AppColors.primary_grey_dark,
+                      ? AppColors.primaryBlue
+                      : AppColors.primaryGreyDark,
                   alignment: Alignment.centerLeft,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0)),
