@@ -9,7 +9,7 @@ import 'package:display_flutter/protoc/event.pb.dart';
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
-import 'package:display_flutter/utility/print_in_debug.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -66,14 +66,14 @@ class WebRTCViewState extends State<WebRTCView> {
 
     _widgetKey.currentContext?.visitChildElements(textureVisitor);
     if (textureElement == null) {
-      printInDebug('texture widget not found');
+      log.warning('texture widget not found');
       return;
     } else {
       final RenderBox renderBox =
           textureElement!.findRenderObject() as RenderBox;
       _textureSize = renderBox.size;
       _textureOffset = renderBox.localToGlobal(Offset.zero);
-      printInDebug(
+      log.info(
           'texture widget size: (${_textureSize.width.toStringAsFixed(2)}, ${_textureSize.height.toStringAsFixed(2)}), offset: (${_textureOffset.dx.toStringAsFixed(2)}, ${_textureOffset.dy.toStringAsFixed(2)})');
       _textureSizeChanged = false;
     }
@@ -185,7 +185,7 @@ class WebRTCViewState extends State<WebRTCView> {
                   canRequestFocus: false,
                   child: NotificationListener<SizeChangedLayoutNotification>(
                     onNotification: (notification) {
-                      printInDebug('onVideoWidgetResize');
+                      log.info('onVideoWidgetResize');
                       _textureSizeChanged = true;
                       return false;
                     },
