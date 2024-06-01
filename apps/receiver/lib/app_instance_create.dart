@@ -49,9 +49,6 @@ class AppInstanceCreate {
 
   bool get isInstalledInVBS200 => _modelName.startsWith('VBS200');
 
-  int _versionCode = 0;
-
-  bool get _isProduction => _versionCode % 2 == 0;
 
   // Display instance id, for Display backend used (Control socket, entity enroll,...)
   // "VBS100" is serial number, others is App instance id
@@ -76,8 +73,6 @@ class AppInstanceCreate {
 
   _createInstanceId(ConfigSettings settings, PackageInfo packageInfo) async {
     await _load();
-
-    _versionCode = int.parse(packageInfo.buildNumber);
 
     if (_instanceID.isEmpty) {
       try {
