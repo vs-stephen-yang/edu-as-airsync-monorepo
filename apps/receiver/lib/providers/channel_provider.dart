@@ -48,8 +48,6 @@ String _getPrivateIpWithDefault(String? ipAddress, String defaultIpAddress) {
 class ChannelProvider extends ChangeNotifier {
   AppConfig appConfig;
 
-  static final _log = getDefaultLogger();
-
   ConnectivityResult _lastConnectivityResult = ConnectivityResult.none;
 
   bool _connectNet = false;
@@ -130,14 +128,14 @@ class ChannelProvider extends ChangeNotifier {
     Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) async {
-      _log.info('Network connectivity has changed to $result');
+      log.info('Network connectivity has changed to $result');
 
       if (result == ConnectivityResult.none) {
         connectNet = false;
         stopServer();
       } else {
         connectNet = true;
-        _log.info(
+        log.info(
             'Last Network Connectivity is: $_lastConnectivityResult, being changed to result: $result');
         // MUST add async/await, to compare connectivity result with last one.
         await _checkNetWorkInfo().then((value) {
@@ -173,7 +171,7 @@ class ChannelProvider extends ChangeNotifier {
       (String url) => WebSocketClientConnection(
         url,
         logger: (url, message) {
-          _log.finest('Tunnel $message');
+          log.finest('Tunnel $message');
         },
       ),
       (Channel channel) => _onNewChannel(channel, ChannelMode.tunnel),
@@ -182,10 +180,10 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     _tunnelServer?.onTunnelConnected = () {
-      _log.info('Tunnel connected');
+      log.info('Tunnel connected');
     };
     _tunnelServer?.onTunnelConnecting = () {
-      _log.info('Tunnel is connecting');
+      log.info('Tunnel is connecting');
     };
   }
 
@@ -215,7 +213,7 @@ class ChannelProvider extends ChangeNotifier {
     if (isServerStart) return;
 
     // start the tunnel server
-    _log.info('Starting the tunnel channel server $_tunnelApiUrl');
+    log.info('Starting the tunnel channel server $_tunnelApiUrl');
     if (_tunnelApiUrl.isNotEmpty && _tunnelServer == null) {
       // fix when _tunnelApiUrl is empty, will cause App UI not response.
       _setTunnelServer();
@@ -226,7 +224,7 @@ class ChannelProvider extends ChangeNotifier {
     try {
       final securityContext = await loadSecurityContextForChannel();
 
-      _log.info('Starting the direct channel server');
+      log.info('Starting the direct channel server');
       if (_directServer == null) {
         _setDirectServer();
         await _directServer?.start(
@@ -235,7 +233,7 @@ class ChannelProvider extends ChangeNotifier {
         );
       }
     } on PathNotFoundException catch (e) {
-      _log.severe(
+      log.severe(
           'Failed to load certificate or private key for secure direct connections. $e');
     }
 
@@ -244,11 +242,11 @@ class ChannelProvider extends ChangeNotifier {
 
   void _onNewChannel(Channel channel, ChannelMode mode) {
     RTCConnector rtcConnector = RTCConnector(channel, mode);
-    _log.info('Received a new channel');
+    log.info('Received a new channel');
     RemoteScreenConnector? remoteScreenConnector;
 
     channel.onChannelMessage = (ChannelMessage message) async {
-      _log.info('Received channel message ${message.messageType}');
+      log.info('Received channel message ${message.messageType}');
 
       switch (message.messageType) {
         /// basic
@@ -352,7 +350,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   bool stopServer() {
-    _log.info('Stopping the channel server');
+    log.info('Stopping the channel server');
 
     _tunnelServer?.stop();
     _tunnelServer = null;
@@ -465,7 +463,7 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<int?> registerInstanceIndexById(String instanceId) async {
     try {
-      _log.info('Registering the instance ${appConfig.settings.apiGateway}');
+      log.info('Registering the instance ${appConfig.settings.apiGateway}');
 
       http.Response response = await http.put(
         Uri.parse(appConfig.settings.apiGateway),
@@ -475,7 +473,7 @@ class ChannelProvider extends ChangeNotifier {
           'platform': "android",
         }),
       );
-      _log.info('Status of Instance Register API: ${response.statusCode}');
+      log.info('Status of Instance Register API: ${response.statusCode}');
 
       if (response.statusCode >= HttpStatus.ok &&
           response.statusCode < HttpStatus.multiStatus) {
@@ -489,7 +487,7 @@ class ChannelProvider extends ChangeNotifier {
         return null;
       }
     } catch (e) {
-      _log.warning('Instance Register API failed with $e');
+      log.warning('Instance Register API failed with $e');
       // http.get maybe no network connection.
       return null;
     }

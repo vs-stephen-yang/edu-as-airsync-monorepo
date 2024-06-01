@@ -1,12 +1,35 @@
-import 'package:logging/logging.dart';
+import 'dart:io';
 
-Logger getDefaultLogger() {
-  return Logger('airsync');
+import 'package:display_flutter/utility/log_storage.dart';
+import 'package:logging/logging.dart';
+import 'package:flutter/foundation.dart';
+
+Logger log = Logger('airsync');
+
+
+void initLogger() {
+  Logger.root.level = Level.INFO; // defaults to Level.INFO
+
+  Logger.root.onRecord.listen((record) {
+    String msg = '${record.time} ${record.level.name} ${record.message}';
+
+    if (record.error != null) {
+      msg += ' ${record.error.toString()}';
+    }
+    if (record.stackTrace != null) {
+      msg += '\n${record.stackTrace.toString()}';
+    }
+
+    if (kDebugMode) {
+      print(msg);
+    }
+  });
 }
 
-void initLogger(){
-  Logger.root.level = Level.INFO; // defaults to Level.INFO
-  Logger.root.onRecord.listen((record) {
-    print('${record.level.name} ${record.message}');
-});
+bool isLogLevelVerbose() {
+  return Logger.root.level == Level.FINEST;
+}
+
+void setLogLevelVerbose(bool isVerbose) {
+  Logger.root.level = isVerbose ? Level.FINEST : Level.INFO;
 }
