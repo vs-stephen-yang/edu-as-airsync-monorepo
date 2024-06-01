@@ -33,6 +33,7 @@ Future<void> commonEntry(ConfigSettings settings) async {
     WidgetsFlutterBinding.ensureInitialized();
 
     initLogger();
+    enableLogToMemory(true);
 
     await DeviceFeatureAdapter.ensureInitialized();
 

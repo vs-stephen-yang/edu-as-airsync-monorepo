@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 Logger log = Logger('airsync');
 
+const _maxLogSize = 1000;
 
 void initLogger() {
   Logger.root.level = Level.INFO; // defaults to Level.INFO
@@ -23,6 +24,8 @@ void initLogger() {
     if (kDebugMode) {
       print(msg);
     }
+
+    _logStorage?.addLog(msg);
   });
 }
 
@@ -32,4 +35,28 @@ bool isLogLevelVerbose() {
 
 void setLogLevelVerbose(bool isVerbose) {
   Logger.root.level = isVerbose ? Level.FINEST : Level.INFO;
+}
+
+LogStorage? _logStorage;
+
+void enableLogToMemory(bool enable) {
+  if (enable) {
+    _logStorage = LogStorage(_maxLogSize);
+  } else {
+    _logStorage?.clearLogs();
+    _logStorage = null;
+  }
+}
+
+Future<void> writeLogToFile(File file) async {
+  if (_logStorage == null) {
+    return;
+  }
+
+  final logContent = _logStorage!.getLogs().join(Platform.lineTerminator);
+
+  await file.writeAsString(
+    logContent,
+    flush: true,
+  );
 }
