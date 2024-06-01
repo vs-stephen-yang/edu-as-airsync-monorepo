@@ -27,8 +27,8 @@ class _SenderMenuViewState extends State<SenderMenuView> {
       builder: (BuildContext context, bool value, Widget? child) {
         return MenuDialog(
           backgroundColor: HybridConnectionList().isPresenting()
-              ? AppColors.primary_grey_tran
-              : AppColors.primary_grey,
+              ? AppColors.primaryGreyTran
+              : AppColors.primaryGrey,
           topTitleText: S.of(context).main_settings_share_to_sender,
           topTitleAction: FocusIconButton(
             childNotFocus: Image(

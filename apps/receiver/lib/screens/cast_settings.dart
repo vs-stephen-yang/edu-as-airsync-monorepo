@@ -20,8 +20,8 @@ class CastSettings extends StatelessWidget {
         ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
         return MenuDialog(
           backgroundColor: HybridConnectionList().isMirroring()
-              ? AppColors.primary_grey_tran
-              : AppColors.primary_grey,
+              ? AppColors.primaryGreyTran
+              : AppColors.primaryGrey,
           topTitleText: S.of(context).main_cast_settings_title,
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

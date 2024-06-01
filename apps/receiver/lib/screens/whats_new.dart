@@ -17,8 +17,8 @@ class _WhatsNewState extends State<WhatsNew> {
   Widget build(BuildContext context) {
     return MenuDialog(
       backgroundColor: HybridConnectionList().isPresenting()
-          ? AppColors.primary_grey_tran
-          : AppColors.primary_grey,
+          ? AppColors.primaryGreyTran
+          : AppColors.primaryGrey,
       topTitleText: S.of(context).main_whats_new_title,
       content: FocusSingleChildScrollView(
           textContent: S.of(context).main_whats_new_content),

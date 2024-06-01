@@ -1,3 +1,4 @@
+import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class RtcVideoInboundStats {
@@ -63,7 +64,7 @@ class RtcStatsParser {
     try {
       _onStatsReports(reports);
     } catch (e, stacktrace) {
-      print('$stacktrace');
+      log.severe('onStatsReports', e, stacktrace);
     }
   }
 

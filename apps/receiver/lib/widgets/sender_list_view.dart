@@ -27,7 +27,7 @@ class _SenderListViewState extends State<SenderListView> {
               alignment: Alignment.center,
               child: Text(
                 S.of(context).main_settings_share_to_sender_limit_desc,
-                style: const TextStyle(color: AppColors.toggle_bg),
+                style: const TextStyle(color: AppColors.toggleBg),
               ),
             )
           : ListView.separated(

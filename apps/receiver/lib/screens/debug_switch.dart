@@ -35,7 +35,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   }
 
   void _showDebugOverlayChanged(bool value) async {
-    DeviceFeatureAdapter.ShowDebugOverlay = value;
+    DeviceFeatureAdapter.showDebugOverlay = value;
     await DeviceFeatureAdapter.save();
 
     setState(() {
@@ -45,7 +45,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   }
 
   void _enableSoftwareDecode(bool value) async {
-    DeviceFeatureAdapter.UseSoftwareDecode = value;
+    DeviceFeatureAdapter.useSoftwareDecode = value;
     await DeviceFeatureAdapter.save();
 
     setState(() {
@@ -55,7 +55,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   }
 
   void _enableQuickDecode(bool value) async {
-    DeviceFeatureAdapter.UseQuickDecodeParams = value;
+    DeviceFeatureAdapter.useQuickDecodeParams = value;
     await DeviceFeatureAdapter.save();
 
     setState(() {
@@ -97,9 +97,9 @@ class _DebugSwitchState extends State<DebugSwitch> {
   }
 
   void _initialize() {
-    _showDebugOverlay = DeviceFeatureAdapter.ShowDebugOverlay;
-    _useSoftwareDecode = DeviceFeatureAdapter.UseSoftwareDecode;
-    _useQuickDecodeParams = DeviceFeatureAdapter.UseQuickDecodeParams;
+    _showDebugOverlay = DeviceFeatureAdapter.showDebugOverlay;
+    _useSoftwareDecode = DeviceFeatureAdapter.useSoftwareDecode;
+    _useQuickDecodeParams = DeviceFeatureAdapter.useQuickDecodeParams;
     _enableWebRtcTracing = DeviceFeatureAdapter.enableWebRtcTracing;
     _verboseWebRtcLog = DeviceFeatureAdapter.verboseWebRtcLog;
   }
@@ -109,7 +109,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     _initialize();
 
     return MenuDialog(
-      backgroundColor: AppColors.primary_grey,
+      backgroundColor: AppColors.primaryGrey,
       topTitleText: 'Debug Switch',
       content: Column(
         children: [

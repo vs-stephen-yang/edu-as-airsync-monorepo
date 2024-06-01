@@ -41,8 +41,8 @@ class _SenderItemState extends State<SenderItem>
                 backgroundColor:
                     remoteScreenConnector.remotePresentationState ==
                             RemotePresentationState.streaming
-                        ? AppColors.primary_blue
-                        : AppColors.toggle_bg,
+                        ? AppColors.primaryBlue
+                        : AppColors.toggleBg,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
@@ -72,7 +72,7 @@ class _SenderItemState extends State<SenderItem>
               icons: Icons.touch_app,
               iconForegroundColor: remoteScreenConnector.isTouchEnabled
                   ? Colors.white
-                  : AppColors.toggle_bg,
+                  : AppColors.toggleBg,
               focusColor: Colors.grey,
               splashRadius: 20,
               onClick: () {
