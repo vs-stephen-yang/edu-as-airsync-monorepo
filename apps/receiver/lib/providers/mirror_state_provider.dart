@@ -5,7 +5,7 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
-import 'package:display_flutter/utility/print_in_debug.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -106,7 +106,7 @@ class MirrorStateProvider extends ChangeNotifier
   // region FlutterMirrorListener
   @override
   void onMirrorAuth(String pin, int timeoutSec) {
-    printInDebug('onMirrorAuth', type: runtimeType);
+    log.info('onMirrorAuth');
     _pinCode = pin;
     _pinTimer?.cancel();
     _pinTimer = Timer(Duration(seconds: timeoutSec), () {
@@ -122,7 +122,7 @@ class MirrorStateProvider extends ChangeNotifier
   @override
   void onMirrorStart(String mirrorId, int textureId, String deviceName,
       MirrorType mirrorType) {
-    printInDebug('onMirrorStart', type: runtimeType);
+    log.info('onMirrorStart');
     _pinTimer?.cancel();
     _pinCode = '';
 
@@ -136,7 +136,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   @override
   void onMirrorStop(String mirrorId) {
-    printInDebug('onMirrorStop $mirrorId', type: runtimeType);
+    log.info('onMirrorStop $mirrorId');
     for (MirrorRequest request
         in HybridConnectionList().getMirrorMap().values) {
       if (request.mirrorId == mirrorId) {
@@ -148,7 +148,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   @override
   void onMirrorVideoResize(String mirrorId, int width, int height) {
-    printInDebug('onMirrorVideoResize', type: runtimeType);
+    log.info('onMirrorVideoResize');
     for (var entry in HybridConnectionList().getMirrorMap().entries) {
       if (entry.value.mirrorId == mirrorId) {
         MirrorRequest request = entry.value;
@@ -207,7 +207,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   stopAcceptedMirror(String? mirrorId) {
-    printInDebug('stopAcceptedMirror', type: runtimeType);
+    log.info('stopAcceptedMirror');
     if (mirrorId != null) {
       _flutterMirrorPlugin?.stopMirror(mirrorId);
     }
@@ -246,7 +246,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> startAirPlay({bool updatePreference = true}) async {
-    printInDebug('startAirPlay', type: runtimeType);
+    log.info('startAirPlay');
     await _flutterMirrorPlugin?.startAirplay(AirplayConfig(
       name: _deviceName,
       security:
@@ -259,7 +259,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopAirPlay({bool updatePreference = true}) async {
-    printInDebug('stopAirPlay', type: runtimeType);
+    log.info('stopAirPlay');
     for (MirrorRequest request
         in HybridConnectionList().getMirrorMap().values) {
       if (request.mirrorType == MirrorType.airplay) {
@@ -274,7 +274,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> startGoogleCast({bool updatePreference = true}) async {
-    printInDebug('startGoogleCast', type: runtimeType);
+    log.info('startGoogleCast');
     await _flutterMirrorPlugin?.startGooglecast(GooglecastConfig(
       name: _deviceName,
       uniqueId: (const Uuid()).v4(),
@@ -286,7 +286,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopGoogleCast({bool updatePreference = true}) async {
-    printInDebug('stopGoogleCast', type: runtimeType);
+    log.info('stopGoogleCast');
     for (MirrorRequest request
         in HybridConnectionList().getMirrorMap().values) {
       if (request.mirrorType == MirrorType.googlecast) {
@@ -301,7 +301,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> startMiracast({bool updatePreference = true}) async {
-    printInDebug('startMiracast', type: runtimeType);
+    log.info('startMiracast');
     await _flutterMirrorPlugin?.startMiracast(_deviceName);
     if (updatePreference) {
       await _set(miracastEnable: true);
@@ -310,7 +310,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopMiracast({bool updatePreference = true}) async {
-    printInDebug('stopMiracast', type: runtimeType);
+    log.info('stopMiracast');
     for (MirrorRequest request
         in HybridConnectionList().getMirrorMap().values) {
       if (request.mirrorType == MirrorType.miracast) {
@@ -325,7 +325,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> _restartMirror() async {
-    printInDebug('restartMirror', type: runtimeType);
+    log.info('restartMirror');
     if (!HybridConnectionList().isMirroring()) {
       if (_airplayEnabled) {
         await stopAirPlay(updatePreference: false);
@@ -355,8 +355,8 @@ class MirrorStateProvider extends ChangeNotifier
       _flutterMirrorPlugin?.registerListener(this);
       Map<String, int> options = DeviceFeatureAdapter.getQuickDecodeOptions();
       await _flutterMirrorPlugin?.initialize(FlutterMirrorConfig(options));
-    } on PlatformException {
-      printInDebug('Mirror initialize failure.', type: runtimeType);
+    } on PlatformException catch(e, stackTrace) {
+      log.severe('Mirror initialize failure', e, stackTrace);
     }
     isPlatformInitialized = true;
   }
@@ -399,7 +399,7 @@ class MirrorStateProvider extends ChangeNotifier
     _airplayEnabled = prefs.getBool('app_AirPlayEnable') ?? true;
     _googleCastEnabled = prefs.getBool('app_GoogleCastEnable') ?? true;
     _miracastEnabled = prefs.getBool('app_MiracastEnable') ?? true;
-    printInDebug('load settings.', type: runtimeType);
+    log.info('load settings.');
   }
 // endregion
 }

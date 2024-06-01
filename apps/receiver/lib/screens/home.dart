@@ -13,7 +13,7 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
-import 'package:display_flutter/utility/print_in_debug.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
@@ -65,7 +65,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    printInDebug('AppLifecycleState: $state', type: runtimeType);
+    log.info('AppLifecycleState: $state');
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
     MirrorStateProvider mirrorStateProvider =
@@ -95,7 +95,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     return PopScope(
       canPop: Platform.isAndroid ? false : true,
       onPopInvoked: (didPop) async {
-        printInDebug('PopScope didPop: $didPop', type: runtimeType);
+        log.info('PopScope didPop: $didPop');
         if (didPop) {
           return;
         }
@@ -103,8 +103,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           _showSnackBarMessage(S.of(context).main_status_go_background);
           await Future.delayed(const Duration(seconds: 1));
           _androidAppRetain.invokeMethod('sendToBackground');
-        } catch (e) {
-          printInDebug(e, type: runtimeType);
+        } catch (e, stackTrace) {
+          log.severe('sendTiBackground', e, stackTrace);
         }
       },
       child: Scaffold(

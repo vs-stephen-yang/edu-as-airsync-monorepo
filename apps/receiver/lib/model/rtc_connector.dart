@@ -12,7 +12,6 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
-import 'package:display_flutter/utility/print_in_debug.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -533,8 +532,6 @@ class RTCConnector {
     log.info('[$clientId] PeerConnection $event ${args.toString()}');
 
     if (kDebugMode) {
-      printInDebug('PeerConnection $event ${args.toString()}',
-          type: runtimeType);
       const DebugSwitch().write('PeerConnection $event ${args.toString()}');
     }
   }

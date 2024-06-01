@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/screens/overlay_tab.dart';
-import 'package:display_flutter/utility/print_in_debug.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -13,12 +13,12 @@ commonOverlayTabEntry() {
     WidgetsFlutterBinding.ensureInitialized();
 
     FlutterError.onError = (FlutterErrorDetails details) async {
-      printInDebug('overlay tab details: $details');
+      log.severe('overlay tab details: $details');
     };
 
     runApp(const OverlayTabApp());
   }, (error, stack) {
-    printInDebug('overlay tab error: $error, stack: $stack');
+    log.severe('overlay tab error', error, stack);
   });
 }
 
