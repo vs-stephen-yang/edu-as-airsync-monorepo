@@ -546,7 +546,7 @@ class ChannelProvider extends ChangeNotifier {
     wifiInterfaces.sort((a, b) => a.name.compareTo(b.name));
     mobileInterfaces.sort((a, b) => a.name.compareTo(b.name));
 
-    if (ethernetInterfaces.length > 0) {
+    if (ethernetInterfaces.isNotEmpty) {
       for (NetworkInterface interface in ethernetInterfaces) {
         String? ethernetIp = interface.addresses.isNotEmpty
             ? interface.addresses[0].address
@@ -558,7 +558,7 @@ class ChannelProvider extends ChangeNotifier {
       }
     }
 
-    if (wifiInterfaces.length > 0) {
+    if (wifiInterfaces.isNotEmpty) {
       for (NetworkInterface interface in wifiInterfaces) {
         String? wifiIp = interface.addresses.isNotEmpty
             ? interface.addresses[0].address
@@ -570,7 +570,7 @@ class ChannelProvider extends ChangeNotifier {
       }
     }
 
-    if (mobileInterfaces.length > 0) {
+    if (mobileInterfaces.isNotEmpty) {
       for (NetworkInterface interface in mobileInterfaces) {
         String? mobileIp = interface.addresses.isNotEmpty
             ? interface.addresses[0].address
