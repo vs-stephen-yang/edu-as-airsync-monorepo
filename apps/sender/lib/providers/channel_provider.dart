@@ -261,6 +261,7 @@ class ChannelProvider extends ChangeNotifier {
 
     // Generate a new client Id
     _clientId = const Uuid().v4();
+    AppAnalytics.instance.setGlobalProperty('client_id', _clientId!);
 
     displayCode = decodeDisplayCode(formattedDisplayCode);
     this.otp = otp;
@@ -314,6 +315,8 @@ class ChannelProvider extends ChangeNotifier {
   }) {
     // Generate a new client Id
     _clientId = const Uuid().v4();
+    AppAnalytics.instance.setGlobalProperty('client_id', _clientId!);
+
     displayCode = decodeDisplayCode(service.displayCode);
     this.otp = otp;
     DirectConnector connector = DirectConnector(
@@ -565,6 +568,10 @@ class ChannelProvider extends ChangeNotifier {
 
     await _channel?.close(ChannelCloseReason(ChannelCloseCode.close));
     _channel = null;
+
+    // clear client_id
+    _clientId = null;
+    AppAnalytics.instance.setGlobalProperty('client_id', '');
   }
 
   void removeRemoteScreenClient() async {
