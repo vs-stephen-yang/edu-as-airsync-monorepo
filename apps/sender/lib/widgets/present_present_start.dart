@@ -49,10 +49,10 @@ class PresentPresentStart extends StatelessWidget {
                     onTap: () {
                       presentingState.value = !presentingState.value;
                       if (presentingState.value) {
-                        AppAnalytics.instance.trackEvent('resume_clicked');
+                        AppAnalytics.instance.trackEvent('click_resume');
                         channelProvider.presentResume();
                       } else {
-                        AppAnalytics.instance.trackEvent('pause_clicked');
+                        AppAnalytics.instance.trackEvent('click_pause');
                         channelProvider.presentPause();
                       }
                     },
@@ -80,7 +80,7 @@ class PresentPresentStart extends StatelessWidget {
               const SizedBox(height: 20),
               InkWell(
                 onTap: () {
-                  AppAnalytics.instance.trackEvent('stop_present_clicked');
+                  AppAnalytics.instance.trackEvent('click_stop');
                   channelProvider.presentStop();
                   channelProvider.presentEnd();
                 },
@@ -104,7 +104,7 @@ class PresentPresentStart extends StatelessWidget {
                   key: touchBtnKey,
                   initialValue: channelProvider.getTouchBack(),
                   onPressed: (state) {
-                    AppAnalytics.instance.trackEvent('touchback_toggled');
+                    AppAnalytics.instance.trackEvent('click_touchback');
                     channelProvider.setTouchBack(state);
                   },
                 ),

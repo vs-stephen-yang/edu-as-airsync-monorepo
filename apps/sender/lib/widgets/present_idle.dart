@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/present_idle_text_field.dart';
 import 'package:flutter/foundation.dart';
@@ -44,6 +45,8 @@ class PresentIdle extends StatelessWidget {
         PresentIdleButton(
           key: presentBtnKey,
           onPressed: () async {
+            AppAnalytics.instance.trackEvent('click_connect');
+
             if (!presentBtnEnable) return;
             await channelProvider.presentEnd(goIdleState: false);
             if (displayCode == "00000000000" && password == "0000") {
@@ -80,6 +83,8 @@ class PresentIdle extends StatelessWidget {
                   image: Svg('assets/images/ic_quick_connect.svg'),
                 ),
                 onTap: () {
+                  AppAnalytics.instance.trackEvent('click_device_list');
+
                   channelProvider.presentDeviceListPage();
                 },
               ),

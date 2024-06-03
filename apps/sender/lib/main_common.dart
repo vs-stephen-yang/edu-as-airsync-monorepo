@@ -41,7 +41,7 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     sessionId: const Uuid().v4(),
     deviceInfo: await ClientDeviceInfo.fetch(),
   );
-  AppAnalytics.instance.trackEvent('app_launch');
+  AppAnalytics.instance.trackEvent('launch');
 
   if (!kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
     // DesktopWindow only support above platform.

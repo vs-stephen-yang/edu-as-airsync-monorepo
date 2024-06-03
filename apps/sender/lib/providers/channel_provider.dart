@@ -107,6 +107,16 @@ class ChannelProvider extends ChangeNotifier {
         'error': error.name,
       },
     );
+    switch (error) {
+      case ChannelConnectError.invalidOtp:
+        AppAnalytics.instance.trackEvent('invalid_password');
+        break;
+      case ChannelConnectError.invalidDisplayCode:
+        AppAnalytics.instance.trackEvent('invalid_display_code');
+        break;
+      default:
+        break;
+    }
 
     _channelConnectError = error;
     notifyListeners();
