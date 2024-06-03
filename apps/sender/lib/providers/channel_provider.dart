@@ -288,7 +288,7 @@ class ChannelProvider extends ChangeNotifier {
       fetchTunnelUrl: (int instanceIndex) async {
         return await _fetchTunnelUrl(displayCode!.instanceIndex);
       },
-      onOpened: (channel) {
+      onOpened: (channel, bool isDirectChannel) {
         AppAnalytics.instance.trackEvent('connect_successfully');
 
         // Note: To prevent missing events, ensure that the channel's callback is registered promptly.
