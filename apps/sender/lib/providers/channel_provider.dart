@@ -112,6 +112,7 @@ class ChannelProvider extends ChangeNotifier {
         AppAnalytics.instance.trackEvent('invalid_password');
         break;
       case ChannelConnectError.invalidDisplayCode:
+      case ChannelConnectError.instanceNotFound:
         AppAnalytics.instance.trackEvent('invalid_display_code');
         break;
       default:
