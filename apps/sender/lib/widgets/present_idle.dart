@@ -22,6 +22,8 @@ class PresentIdle extends StatelessWidget {
     DemoProvider demoProvider = Provider.of<DemoProvider>(context);
     bool presentBtnEnable = false;
     String displayCode = '', password = '';
+    bool isDisplayCodeSelectedFromHistory = false;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -30,6 +32,9 @@ class PresentIdle extends StatelessWidget {
         PresentIdleTextField(
           key: fieldKey,
           onFieldChanged: (result) {
+            isDisplayCodeSelectedFromHistory =
+                result.isDisplayCodeSelectedFromHistory;
+
             presentBtnEnable = result.enable;
             displayCode = result.displayCode;
             password = result.password;
@@ -45,6 +50,10 @@ class PresentIdle extends StatelessWidget {
         PresentIdleButton(
           key: presentBtnKey,
           onPressed: () async {
+            AppAnalytics.instance.trackEvent('enter_display_code', properties: {
+              'target': isDisplayCodeSelectedFromHistory ? 'select' : 'type',
+            });
+
             AppAnalytics.instance.trackEvent('click_connect');
 
             if (!presentBtnEnable) return;
@@ -98,9 +107,9 @@ class PresentIdle extends StatelessWidget {
 class OptionMenu extends StatelessWidget {
   const OptionMenu(
       {super.key,
-        required this.name,
-        required this.iconWidget,
-        required this.onTap});
+      required this.name,
+      required this.iconWidget,
+      required this.onTap});
 
   final String name;
   final Widget iconWidget;

@@ -1,5 +1,6 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
   OverlayEntry? _overlayEntry;
   final LayerLink _layerLink = LayerLink();
   bool _isOverlayVisible = false;
+  bool _isCodeSelectedFromHistory = false;
 
   @override
   void initState() {
@@ -116,6 +118,10 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                         child: ListTile(
                           title: Text(displayCode),
                           onTap: () {
+                            AppAnalytics.instance
+                                .trackEvent('select_display_code');
+
+                            _isCodeSelectedFromHistory = true;
                             _codeController.text = displayCode;
                             _isOverlayVisible = false;
                             _overlayEntry?.remove();
@@ -220,9 +226,9 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               inputFormatter: [
                 if (!WebRTC.platformIsWindows && !kIsWeb) UpperCaseTextFormatter(),
                 if (!WebRTC.platformIsWindows && !kIsWeb) MaskedInputFormatter(
-                  '###########',
-                  allowedCharMatcher: RegExp('[A-Za-z0-9]'),
-                ),
+                    '###########',
+                    allowedCharMatcher: RegExp('[A-Za-z0-9]'),
+                  ),
               ],
               onChanged: (text) {
                 if (WebRTC.platformIsWindows || kIsWeb) {
@@ -238,6 +244,9 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                     composing: TextRange.empty,
                   );
                 }
+
+                _isCodeSelectedFromHistory = false;
+
                 setCodeDescriptionMsg(S.of(context).main_display_code_description);
                 bool presentBtnEnable = false;
                 if (text.length >= limitDisplayCodeLength &&
@@ -246,6 +255,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                 }
                 widget.onFieldChanged(FieldResult(
                     enable: presentBtnEnable,
+                    isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
                     displayCode: text,
                     password: _otpController.text));
               },
@@ -271,9 +281,9 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
             maxLength: 4,
             inputFormatter: [
               if (!WebRTC.platformIsWindows && !kIsWeb) MaskedInputFormatter(
-                '0000',
-                allowedCharMatcher: RegExp('[0-9]'),
-              ),
+                  '0000',
+                  allowedCharMatcher: RegExp('[0-9]'),
+                ),
             ],
             onChanged: (text) {
               if (WebRTC.platformIsWindows || kIsWeb) {
@@ -290,6 +300,7 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               }
               widget.onFieldChanged(FieldResult(
                   enable: presentBtnEnable,
+                  isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
                   displayCode: _codeController.text,
                   password: text));
             },
@@ -322,12 +333,14 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
 
 class FieldResult {
   bool enable = false;
+  bool isDisplayCodeSelectedFromHistory;
   String displayCode;
   String password;
 
   FieldResult(
       {required this.enable,
       required this.displayCode,
+      required this.isDisplayCodeSelectedFromHistory,
       required this.password});
 }
 
