@@ -45,6 +45,14 @@ class AppAnalytics {
       processor: processor,
       context: context,
     );
+
+    if (userId != null) {
+      instance.setGlobalProperty('instance_id', userId);
+    }
+
+    if (sessionId != null) {
+      instance.setGlobalProperty('session_id', sessionId);
+    }
   }
 
   // Singleton instance variable
