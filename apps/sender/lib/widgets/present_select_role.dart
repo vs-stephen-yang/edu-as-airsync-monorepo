@@ -21,7 +21,7 @@ class PresentSelectRole extends StatelessWidget {
           name: S.of(context).present_role_receive,
           iconWidget: const Image(image: Svg('assets/images/ic_receiver.svg')),
           onTap: () {
-            AppAnalytics.instance.trackEvent('remote_screen_selected');
+            AppAnalytics.instance.trackEvent('select_remote_screen');
 
             channelProvider.currentRole = JoinIntentType.remoteScreen;
             channelProvider.presentModeratorNamePage();
@@ -33,7 +33,7 @@ class PresentSelectRole extends StatelessWidget {
           iconWidget:
               const Image(image: Svg('assets/images/ic_cast_screen.svg')),
           onTap: () async {
-            AppAnalytics.instance.trackEvent('present_selected');
+            AppAnalytics.instance.trackEvent('select_cast');
 
             channelProvider.currentRole = JoinIntentType.present;
             if (channelProvider.moderatorStatus) {
