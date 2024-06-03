@@ -5,6 +5,7 @@ import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/device_list_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:flutter/material.dart';
@@ -104,6 +105,8 @@ class _DeviceListState extends State<DeviceList>{
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
+                            AppAnalytics.instance.trackEvent('click_connect_device');
+
                             _channelProvider.startDirectConnect(
                                 otp: null,
                                 service: _connectService =

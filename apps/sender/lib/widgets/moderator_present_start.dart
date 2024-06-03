@@ -1,5 +1,6 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/widgets/present_timer.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
@@ -48,8 +49,10 @@ class ModeratorPresentStart extends StatelessWidget {
                     onTap: () {
                       presentingState.value = !presentingState.value;
                       if (presentingState.value) {
+                        AppAnalytics.instance.trackEvent('click_resume');
                         channelProvider.presentResume();
                       } else {
+                        AppAnalytics.instance.trackEvent('click_pause');
                         channelProvider.presentPause();
                       }
                     },
@@ -77,6 +80,7 @@ class ModeratorPresentStart extends StatelessWidget {
               const SizedBox(height: 20),
               InkWell(
                 onTap: () {
+                  AppAnalytics.instance.trackEvent('click_stop');
                   channelProvider.presentStop();
                   channelProvider.presentModeratorWaitPage();
                 },
@@ -100,6 +104,7 @@ class ModeratorPresentStart extends StatelessWidget {
                   key: touchBtnKey,
                   initialValue: channelProvider.getTouchBack(),
                   onPressed: (state) {
+                    AppAnalytics.instance.trackEvent('click_touchback');
                     channelProvider.setTouchBack(state);
                   },
                 ),
