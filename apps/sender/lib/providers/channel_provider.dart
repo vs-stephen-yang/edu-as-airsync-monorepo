@@ -289,11 +289,13 @@ class ChannelProvider extends ChangeNotifier {
         return await _fetchTunnelUrl(displayCode!.instanceIndex);
       },
       onOpened: (channel, bool isDirectChannel) {
-        AppAnalytics.instance.trackEvent('connect_successfully');
-
         // Note: To prevent missing events, ensure that the channel's callback is registered promptly.
         // Specifically, register callbacks for 'onChannelMessage' and 'onStateChange'.
-        setUpChannel(channel, formattedDisplayCode);
+        setUpChannel(
+          channel,
+          formattedDisplayCode,
+          isDirectChannel: isDirectChannel,
+        );
       },
       onOpenError: (error) {
         _onChannelOpenFailed(error);
@@ -319,7 +321,7 @@ class ChannelProvider extends ChangeNotifier {
       displayCode: service.displayCode,
       otp: otp,
       onOpened: (channel) {
-        setUpChannel(channel, '');
+        setUpChannel(channel, '', isDirectChannel: true);
       },
       onOpenError: (error) {
         _onChannelOpenFailed(error);
@@ -329,7 +331,15 @@ class ChannelProvider extends ChangeNotifier {
     connector.open(service: service);
   }
 
-  void setUpChannel(Channel channel, String formattedDisplayCode) {
+  void setUpChannel(
+    Channel channel,
+    String formattedDisplayCode, {
+    required bool isDirectChannel,
+  }) {
+    AppAnalytics.instance.trackEvent('connect_successfully', properties: {
+      'target': isDirectChannel ? 'direct' : 'tunnel',
+    });
+
     _channel = channel;
 
     _channel?.onStateChange = (ChannelState state) {
