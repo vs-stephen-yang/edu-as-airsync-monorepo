@@ -54,7 +54,7 @@ main(List<String> arguments) async {
     createConnectionTunnel: createConnectionTunnel,
     createConnectionDirect: createConnectionDirect,
     fetchTunnelUrl: fetchTunnelUrl,
-    onOpened: (channel) {
+    onOpened: (channel, bool isDirectChannel) {
       Client(clientId, channel);
     },
     onOpenError: (error) {

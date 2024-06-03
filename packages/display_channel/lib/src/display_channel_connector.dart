@@ -56,7 +56,7 @@ class DisplayChannelConnector {
 
   FetchChannelTunnelUrlError? _tunnelUrlFetchError;
 
-  final void Function(Channel channel) _onOpened;
+  final void Function(Channel channel, bool isDirectChannel) _onOpened;
   final void Function(ChannelConnectorError error) _onOpenError;
 
   DisplayChannelConnector({
@@ -67,7 +67,7 @@ class DisplayChannelConnector {
     required CreateWebsocketClientConnection createConnectionTunnel,
     required CreateWebsocketClientConnection createConnectionDirect,
     required FetchChannelTunnelUrl fetchTunnelUrl,
-    required void Function(Channel channel) onOpened,
+    required void Function(Channel channel, bool isDirectChannel) onOpened,
     required void Function(ChannelConnectorError error) onOpenError,
   })  : _clientId = clientId,
         _otp = otp,
@@ -217,7 +217,7 @@ class DisplayChannelConnector {
     }
 
     _connected = true;
-    _onOpened(_directClient!);
+    _onOpened(_directClient!, true);
 
     drainPendingMessages(_directClient!, _directPendingMessages);
   }
@@ -233,7 +233,7 @@ class DisplayChannelConnector {
     }
 
     _connected = true;
-    _onOpened(_tunnelClient!);
+    _onOpened(_tunnelClient!, false);
 
     drainPendingMessages(_tunnelClient!, _tunnelPendingMessages);
   }
