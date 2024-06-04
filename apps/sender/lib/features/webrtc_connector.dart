@@ -513,7 +513,7 @@ class WebRTCConnector {
     if (sender == null) {
       return false;
     }
-    var params = sender!.parameters;
+    var params = sender.parameters;
     params.degradationPreference = RTCDegradationPreference.DISABLED;
     if (params.encodings != null) {
       for (var encoding in params.encodings!) {
