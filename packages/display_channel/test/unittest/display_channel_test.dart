@@ -1,5 +1,4 @@
 import 'package:display_channel/src/util/fake_tunnel_service.dart';
-import 'package:display_channel/src/websocket_client_connection_config.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:display_channel/display_channel.dart';
