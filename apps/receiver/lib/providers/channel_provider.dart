@@ -168,11 +168,13 @@ class ChannelProvider extends ChangeNotifier {
   void _setTunnelServer() {
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
-      (String url) => WebSocketClientConnection(
+      (String url, bool isReconnect) => WebSocketClientConnection(
         url,
-        logger: (url, message) {
-          log.finest('Tunnel $message');
-        },
+        WebSocketClientConnectionConfig(
+          logger: (url, message) {
+            log.finest('Tunnel $message');
+          },
+        ),
       ),
       (Channel channel) => _onNewChannel(channel, ChannelMode.tunnel),
       (ConnectionRequest connectionRequest) =>
