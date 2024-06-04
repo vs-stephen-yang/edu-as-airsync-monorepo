@@ -1,7 +1,7 @@
 import 'package:display_channel/display_channel.dart';
 
 const _initialRetryConfig = RetryConfig(
-  maxRetryDelay: Duration(seconds: 3),
+  maxRetryDelay: Duration(seconds: 1),
   maxRetryAttempts: 3,
 );
 
