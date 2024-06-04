@@ -39,8 +39,8 @@ class WebSocketClientConnection implements ClientConnection {
     this._url,
     this._config,
   ) : _retryOptions = RetryOptions(
-          maxDelay: _config.maxRetryDelay,
-          maxAttempts: _config.maxRetryAttempts,
+          maxDelay: _config.retry.maxRetryDelay,
+          maxAttempts: _config.retry.maxRetryAttempts,
         );
 
   @override

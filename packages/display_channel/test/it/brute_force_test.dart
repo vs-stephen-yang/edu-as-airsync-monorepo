@@ -94,7 +94,11 @@ void main() {
         uri,
         (url) => WebSocketClientConnection(
           url,
-          WebSocketClientConnectionConfig(maxRetryAttempts: 1),
+          WebSocketClientConnectionConfig(
+            retry: const RetryConfig(
+              maxRetryAttempts: 1,
+            ),
+          ),
         ),
       );
 

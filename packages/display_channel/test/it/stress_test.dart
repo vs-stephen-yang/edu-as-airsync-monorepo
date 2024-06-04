@@ -142,8 +142,10 @@ main(List<String> arguments) async {
     (url) => WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(
-          maxRetryDelay: const Duration(seconds: 1),
-          maxRetryAttempts: 4,
+          retry: const RetryConfig(
+            maxRetryDelay: Duration(seconds: 1),
+            maxRetryAttempts: 4,
+          ),
           logger: (url, message) => log().fine('c $message'),
         )),
   );
