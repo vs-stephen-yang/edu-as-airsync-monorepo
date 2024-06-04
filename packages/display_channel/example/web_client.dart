@@ -20,7 +20,7 @@ void main() {
   final channel = DisplayChannelClient(
     clientId,
     uri,
-    (url) => WebSocketClientConnection(
+    (url, bool isReconnect) => WebSocketClientConnection(
       url,
       WebSocketClientConnectionConfig(
         retry: const RetryConfig(

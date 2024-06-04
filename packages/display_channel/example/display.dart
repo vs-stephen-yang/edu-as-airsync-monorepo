@@ -105,7 +105,7 @@ class MockServer {
 
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
-      (String url) => WebSocketClientConnection(
+      (String url, bool isReconnect) => WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(
           logger: (String url, String message) {

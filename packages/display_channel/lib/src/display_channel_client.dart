@@ -111,13 +111,14 @@ class DisplayChannelClient implements Channel {
     _openNewConnection();
   }
 
-  void _openNewConnection() {
+  void _openNewConnection({bool isReconnect = false}) {
     final uri = _uri.replace(
       queryParameters: _queryParameters,
     );
 
     _connection = _createConnection(
       uri.toString(),
+      isReconnect,
     );
 
     _connection!.onConnected = _onConnected;
@@ -238,7 +239,7 @@ class DisplayChannelClient implements Channel {
     }
 
     // open new connection
-    _openNewConnection();
+    _openNewConnection(isReconnect: true);
   }
 
   void _onChannelClosedMessage(ChannelClosedMessage message) {

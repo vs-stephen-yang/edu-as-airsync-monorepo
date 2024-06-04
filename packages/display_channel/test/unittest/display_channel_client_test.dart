@@ -94,7 +94,7 @@ void main() {
     client = DisplayChannelClient(
       '1000',
       Uri.parse('ws://abc.com'),
-      (url) {
+      (url, bool isReconnect) {
         connection.create(url);
         return connection;
       },

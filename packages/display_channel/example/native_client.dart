@@ -27,7 +27,7 @@ main(List<String> arguments) async {
   final encodedDisplayCode = argResults['code'];
   final tunnelServiceUrl = argResults['tunnelUrl'];
 
-  createConnectionTunnel(url) => WebSocketClientConnection(
+  createConnectionTunnel(url, bool isReconnect) => WebSocketClientConnection(
       url,
       WebSocketClientConnectionConfig(
         retry: const RetryConfig(
@@ -38,7 +38,7 @@ main(List<String> arguments) async {
         allowSelfSignedCertificates: false,
       ));
 
-  createConnectionDirect(url) => WebSocketClientConnection(
+  createConnectionDirect(url, bool isReconnect) => WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(
           retry: const RetryConfig(

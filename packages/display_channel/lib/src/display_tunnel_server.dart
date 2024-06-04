@@ -50,6 +50,7 @@ class DisplayTunnelServer {
 
     final connection = _createTunnelConnection(
       uriWithParameters.toString(),
+      false,
     );
 
     _tunnelServer = TunnelConnectionServer(

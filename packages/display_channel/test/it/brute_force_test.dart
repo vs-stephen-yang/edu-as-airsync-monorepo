@@ -31,7 +31,7 @@ void main() {
   Future startTunnelServer() async {
     // create a tunnel server
     tunnelServer = DisplayTunnelServer(
-      (String url) => WebSocketClientConnection(
+      (String url, bool isReconnect) => WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(),
       ),
@@ -92,7 +92,7 @@ void main() {
       final client = DisplayChannelClient(
         '$clientIdPrefix-$i',
         uri,
-        (url) => WebSocketClientConnection(
+        (url, bool reconnect) => WebSocketClientConnection(
           url,
           WebSocketClientConnectionConfig(
             retry: const RetryConfig(
