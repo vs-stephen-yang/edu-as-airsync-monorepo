@@ -1,5 +1,6 @@
 import "dart:async";
 import "dart:convert";
+import "package:display_channel/src/websocket_client_connection_config.dart";
 import 'package:retry/retry.dart';
 
 import "package:display_channel/src/client_connection.dart";
@@ -23,32 +24,23 @@ class WebSocketClientConnection implements ClientConnection {
 
   final String _url;
 
-  static const defaultConnectionTimeout = Duration(seconds: 1);
+  final WebSocketClientConnectionConfig _config;
 
   final RetryOptions _retryOptions;
   int _retryAttempt = 0;
   Timer? _retryTimer;
 
-  static const defaultMaxRetryDelay = Duration(seconds: 15);
-  static const defaultMaxRetryAttempts = 8;
-
   var _connected = false;
   var _closed = false;
-
-  void Function(String url, String message)? logger;
 
   WebSocket? _socket;
 
   WebSocketClientConnection(
-    this._url, {
-    this.logger,
-    connectionTimeout = defaultConnectionTimeout,
-    maxRetryDelay = defaultMaxRetryDelay,
-    maxRetryAttempts = defaultMaxRetryAttempts,
-    allowSelfSignedCertificates = false,
-  }) : _retryOptions = RetryOptions(
-          maxDelay: maxRetryDelay,
-          maxAttempts: maxRetryAttempts,
+    this._url,
+    this._config,
+  ) : _retryOptions = RetryOptions(
+          maxDelay: _config.maxRetryDelay,
+          maxAttempts: _config.maxRetryAttempts,
         );
 
   @override
@@ -64,12 +56,12 @@ class WebSocketClientConnection implements ClientConnection {
   }
 
   void _connect() async {
-    logger?.call(_url, "connect");
+    _config.logger?.call(_url, "connect");
     if (_closed) {
       return;
     }
 
-    logger?.call(_url, "connecting");
+    _config.logger?.call(_url, "connecting");
     onConnecting?.call();
 
     _retryAttempt++;
@@ -79,7 +71,7 @@ class WebSocketClientConnection implements ClientConnection {
     );
 
     _socket?.onOpen.listen((Event e) {
-      logger?.call(_url, "connected");
+      _config.logger?.call(_url, "connected");
 
       _connected = true;
 
@@ -143,7 +135,7 @@ class WebSocketClientConnection implements ClientConnection {
   }
 
   void _handleDisconnected() async {
-    logger?.call(_url, "disconnected");
+    _config.logger?.call(_url, "disconnected");
     onDisconnected?.call();
 
     await _reconnect();

@@ -1,4 +1,5 @@
 import 'package:args/args.dart';
+import 'package:display_channel/src/websocket_client_connection_config.dart';
 import 'package:uuid/uuid.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/util/log.dart';
@@ -27,19 +28,22 @@ main(List<String> arguments) async {
   final tunnelServiceUrl = argResults['tunnelUrl'];
 
   createConnectionTunnel(url) => WebSocketClientConnection(
-        url,
+      url,
+      WebSocketClientConnectionConfig(
         maxRetryDelay: const Duration(seconds: 1),
         maxRetryAttempts: 4,
         logger: (url, message) => log().info('$url $message'),
         allowSelfSignedCertificates: false,
-      );
+      ));
 
   createConnectionDirect(url) => WebSocketClientConnection(
         url,
-        maxRetryDelay: const Duration(seconds: 1),
-        maxRetryAttempts: 4,
-        logger: (url, message) => log().info('$url $message'),
-        allowSelfSignedCertificates: true,
+        WebSocketClientConnectionConfig(
+          maxRetryDelay: const Duration(seconds: 1),
+          maxRetryAttempts: 4,
+          logger: (url, message) => log().info('$url $message'),
+          allowSelfSignedCertificates: true,
+        ),
       );
 
   Future<String> fetchTunnelUrl(instanceIndex) async => tunnelServiceUrl;

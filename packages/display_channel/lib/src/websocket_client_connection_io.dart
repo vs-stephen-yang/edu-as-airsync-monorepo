@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:display_channel/src/client_connection.dart';
+import 'package:display_channel/src/websocket_client_connection_config.dart';
 import 'package:retry/retry.dart';
 
 class WebSocketClientConnection implements ClientConnection {
@@ -22,31 +23,15 @@ class WebSocketClientConnection implements ClientConnection {
   final String _url;
   var _closed = false;
 
-  void Function(String url, String message)? logger;
-
-  static const defaultPingInterval = Duration(seconds: 1);
-  static const defaultConnectionTimeout = Duration(seconds: 1);
-  static const defaultMaxRetryDelay = Duration(seconds: 15);
-  static const defaultMaxRetryAttempts = 8;
-
-  Duration pingInterval;
-  Duration connectionTimeout;
-  Duration maxRetryDelay;
-  int maxRetryAttempts;
-  bool allowSelfSignedCertificates;
+  final WebSocketClientConnectionConfig _config;
 
   WebSocket? _socket;
   HttpClient? _httpClient;
 
   WebSocketClientConnection(
-    this._url, {
-    this.pingInterval = defaultPingInterval,
-    this.connectionTimeout = defaultConnectionTimeout,
-    this.maxRetryDelay = defaultMaxRetryDelay,
-    this.maxRetryAttempts = defaultMaxRetryAttempts,
-    this.allowSelfSignedCertificates = false,
-    this.logger,
-  });
+    this._url,
+    this._config,
+  );
 
   @override
   void open() {
@@ -61,27 +46,27 @@ class WebSocketClientConnection implements ClientConnection {
   }
 
   void _connect() async {
-    logger?.call(_url, "connect");
+    _config.logger?.call(_url, "connect");
     if (_closed) {
       return;
     }
 
-    logger?.call(_url, "connecting");
+    _config.logger?.call(_url, "connecting");
     onConnecting?.call();
 
     WebSocket? socket;
     try {
       socket = await retry(
-        maxDelay: maxRetryDelay,
-        maxAttempts: maxRetryAttempts,
+        maxDelay: _config.maxRetryDelay,
+        maxAttempts: _config.maxRetryAttempts,
         () {
           _httpClient = HttpClient();
-          _httpClient!.connectionTimeout = connectionTimeout;
+          _httpClient!.connectionTimeout = _config.connectionTimeout;
 
           // Determine whether to allow self-signed certificates.
           _httpClient!.badCertificateCallback =
               (X509Certificate cert, String host, int port) =>
-                  allowSelfSignedCertificates;
+                  _config.allowSelfSignedCertificates;
 
           return WebSocket.connect(
             _url,
@@ -89,7 +74,7 @@ class WebSocketClientConnection implements ClientConnection {
           );
         },
         retryIf: (e) {
-          logger?.call(_url, e.toString());
+          _config.logger?.call(_url, e.toString());
           return !_closed &&
               (e is SocketException ||
                   e is HttpException ||
@@ -114,29 +99,29 @@ class WebSocketClientConnection implements ClientConnection {
     }
 
     _socket = socket;
-    _socket!.pingInterval = pingInterval;
+    _socket!.pingInterval = _config.pingInterval;
 
     // connected
-    logger?.call(_url, "connected");
+    _config.logger?.call(_url, "connected");
     onConnected?.call();
 
     _socket!.listen((dynamic data) {
-      logger?.call(_url, 'Received $data');
+      _config.logger?.call(_url, 'Received $data');
 
       // receive data
       try {
         final message = jsonDecode(data);
         onMessage?.call(message);
       } catch (e) {
-        logger?.call(_url, 'Invalid message $data');
+        _config.logger?.call(_url, 'Invalid message $data');
       }
     }, onDone: () {
-      logger?.call(_url, 'websocket onDone');
+      _config.logger?.call(_url, 'websocket onDone');
 
       // websocket connection closed
       _handleDisconnected();
     }, onError: (error) {
-      logger?.call(_url, 'websocket onError $error');
+      _config.logger?.call(_url, 'websocket onError $error');
 
       // websocket connection error
       _handleDisconnected();
@@ -148,7 +133,7 @@ class WebSocketClientConnection implements ClientConnection {
     final data = jsonEncode(message);
     _socket?.add(data);
 
-    logger?.call(_url, 'Sent $data');
+    _config.logger?.call(_url, 'Sent $data');
   }
 
   void _handleConnectFailed(ConnectErrorType error, String message) async {
@@ -160,7 +145,7 @@ class WebSocketClientConnection implements ClientConnection {
   }
 
   void _handleDisconnected() async {
-    logger?.call(_url, "disconnected");
+    _config.logger?.call(_url, "disconnected");
     onDisconnected?.call();
 
     await _reconnect();

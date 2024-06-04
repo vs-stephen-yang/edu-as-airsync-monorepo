@@ -1,3 +1,4 @@
+import 'package:display_channel/src/websocket_client_connection_config.dart';
 import 'package:flutter/material.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:uuid/uuid.dart';
@@ -21,9 +22,11 @@ void main() {
     uri,
     (url) => WebSocketClientConnection(
       url,
-      maxRetryDelay: const Duration(seconds: 1),
-      maxRetryAttempts: 4,
-      logger: (url, message) => log().info('$url $message'),
+      WebSocketClientConnectionConfig(
+        maxRetryDelay: const Duration(seconds: 1),
+        maxRetryAttempts: 4,
+        logger: (url, message) => log().info('$url $message'),
+      ),
     ),
   );
 

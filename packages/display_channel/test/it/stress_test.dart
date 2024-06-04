@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:display_channel/src/websocket_client_connection_config.dart';
 import 'package:logging/logging.dart';
 import 'package:args/args.dart';
 import 'package:uuid/uuid.dart';
@@ -139,11 +140,12 @@ main(List<String> arguments) async {
     clientId,
     tunnelServiceUri,
     (url) => WebSocketClientConnection(
-      url,
-      maxRetryDelay: const Duration(seconds: 1),
-      maxRetryAttempts: 4,
-      logger: (url, message) => log().fine('c $message'),
-    ),
+        url,
+        WebSocketClientConnectionConfig(
+          maxRetryDelay: const Duration(seconds: 1),
+          maxRetryAttempts: 4,
+          logger: (url, message) => log().fine('c $message'),
+        )),
   );
 
   final runner = TestRunner(client);
@@ -151,9 +153,11 @@ main(List<String> arguments) async {
   final server = DisplayTunnelServer(
     (String url) => WebSocketClientConnection(
       url,
-      logger: (String url, String message) {
-        log().fine('s $message');
-      },
+      WebSocketClientConnectionConfig(
+        logger: (String url, String message) {
+          log().fine('s $message');
+        },
+      ),
     ),
     (Channel channel) => runner._onNewChannel(channel),
     (connectionRequest) => ConnectRequestStatus.success,
