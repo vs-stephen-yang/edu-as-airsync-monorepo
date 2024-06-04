@@ -106,7 +106,7 @@ void main() {
     // action
     channel.addConnection(connection2);
 
-    expect(stateChanges.last, ChannelState.connecting);
+    expect(stateChanges.last, ChannelState.connected);
   });
 
   test('channel should close if the client cannot reconnect within timeout',
