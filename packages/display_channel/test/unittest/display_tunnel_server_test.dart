@@ -44,7 +44,7 @@ void main() {
     connection = FakeClientConnection();
 
     server = DisplayTunnelServer(
-      (String url) {
+      (String url, bool isReconnect) {
         connection.url = url;
         return connection;
       },

@@ -83,7 +83,7 @@ void main() {
     );
 
     tunnelServer = DisplayTunnelServer(
-      (String url) => WebSocketClientConnection(
+      (String url, bool isReconnect) => WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(),
       ),
@@ -129,7 +129,7 @@ void main() {
     client = DisplayChannelClient(
       clientId,
       Uri.parse(serverUrl),
-      (url) => WebSocketClientConnection(
+      (url, bool isReconnect) => WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(
           retry: const RetryConfig(
@@ -159,7 +159,7 @@ void main() {
     client = DisplayChannelClient(
       clientId,
       Uri.parse(serverUrl),
-      (url) => WebSocketClientConnection(
+      (url, bool isReconnect) => WebSocketClientConnection(
           url,
           WebSocketClientConnectionConfig(
             retry: const RetryConfig(

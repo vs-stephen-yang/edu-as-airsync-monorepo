@@ -139,7 +139,7 @@ main(List<String> arguments) async {
   final client = DisplayChannelClient(
     clientId,
     tunnelServiceUri,
-    (url) => WebSocketClientConnection(
+    (url, bool isReconnect) => WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(
           retry: const RetryConfig(
@@ -153,7 +153,7 @@ main(List<String> arguments) async {
   final runner = TestRunner(client);
 
   final server = DisplayTunnelServer(
-    (String url) => WebSocketClientConnection(
+    (String url, bool isReconnect) => WebSocketClientConnection(
       url,
       WebSocketClientConnectionConfig(
         logger: (String url, String message) {
