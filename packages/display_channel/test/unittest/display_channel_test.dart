@@ -132,7 +132,9 @@ void main() {
       (url) => WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(
-          maxRetryAttempts: 1,
+          retry: const RetryConfig(
+            maxRetryAttempts: 1,
+          ),
         ),
       ),
     );
@@ -160,7 +162,9 @@ void main() {
       (url) => WebSocketClientConnection(
           url,
           WebSocketClientConnectionConfig(
-            maxRetryAttempts: 1,
+            retry: const RetryConfig(
+              maxRetryAttempts: 1,
+            ),
           )),
     );
 

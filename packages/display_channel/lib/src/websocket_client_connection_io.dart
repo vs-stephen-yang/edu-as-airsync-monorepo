@@ -57,8 +57,8 @@ class WebSocketClientConnection implements ClientConnection {
     WebSocket? socket;
     try {
       socket = await retry(
-        maxDelay: _config.maxRetryDelay,
-        maxAttempts: _config.maxRetryAttempts,
+        maxDelay: _config.retry.maxRetryDelay,
+        maxAttempts: _config.retry.maxRetryAttempts,
         () {
           _httpClient = HttpClient();
           _httpClient!.connectionTimeout = _config.connectionTimeout;
