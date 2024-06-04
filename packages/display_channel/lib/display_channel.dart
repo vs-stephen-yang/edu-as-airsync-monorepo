@@ -27,6 +27,8 @@ export 'package:display_channel/src/websocket_client_connection_stub.dart'
     if (dart.library.io) 'package:display_channel/src/websocket_client_connection_io.dart' // dart:io implementation
     if (dart.library.html) 'package:display_channel/src/websocket_client_connection_html.dart'; // dart:html implementation
 
+export 'package:display_channel/src/websocket_client_connection_config.dart';
+
 // encoding and decoding of display code
 export 'package:display_channel/src/display_code.dart'
     show decodeDisplayCode, encodeDisplayCode, DisplayCode;
