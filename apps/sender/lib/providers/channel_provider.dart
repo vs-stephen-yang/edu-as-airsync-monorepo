@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:display_cast_flutter/settings/channel_retry_config.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/features/webrtc_connector.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
@@ -281,10 +282,7 @@ class ChannelProvider extends ChangeNotifier {
           WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(
-          retry: const RetryConfig(
-            maxRetryDelay: Duration(seconds: 3),
-            maxRetryAttempts: 3,
-          ),
+          retry: getChannelRetryConfig(isReconnect),
           logger: (url, message) => log.fine('tunnel connection: $url $message}'),
         ),
       ),
@@ -294,10 +292,7 @@ class ChannelProvider extends ChangeNotifier {
         WebSocketClientConnectionConfig(
           // allow self-signed certificate
           allowSelfSignedCertificates: true,
-          retry: const RetryConfig(
-            maxRetryDelay: Duration(seconds: 3),
-            maxRetryAttempts: 3,
-          ),
+          retry: getChannelRetryConfig(isReconnect),
           logger: (url, message) => log.fine('direct connection: $url $message}'),
         ),
       ),
