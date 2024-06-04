@@ -11,12 +11,17 @@ class DirectConnectionServer {
   final void Function(String clientId, Connection) _onNewConnection;
   final VerifyConnectRequest _verifyConnectRequest;
 
+  static const defaultPingInterval = Duration(seconds: 1);
+
   final Duration idleConnectionTimeout;
+  // websocket ping interval
+  final Duration pingInterval;
 
   DirectConnectionServer(
     this._onNewConnection,
     this._verifyConnectRequest, {
     required this.idleConnectionTimeout,
+    this.pingInterval = defaultPingInterval,
   });
 
   ConnectionRequest? _parseConnectionRequest(HttpRequest req) {
@@ -49,6 +54,7 @@ class DirectConnectionServer {
     }
 
     final websocket = await WebSocketTransformer.upgrade(httpRequest);
+    websocket.pingInterval = pingInterval;
 
     final connection = DirectConnection(
       websocket,
