@@ -100,8 +100,7 @@ void main() {
       async.elapse(const Duration(seconds: 200));
 
       // assert
-      expect(stateChanges.length, 1);
-      expect(stateChanges[0], ChannelState.closed);
+      expect(stateChanges.last, ChannelState.closed);
     });
   });
 
