@@ -51,11 +51,11 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
 
   await DataDisplayCode.getInstance().initialize();
 
-  final Profile profile = await ProfileUtil.loadProfile(args);
+  final ProfileStore profileStore = await ProfileUtil.loadProfileStore(args);
 
   runApp(AppConfig(
     settings: settings,
-    profile: profile,
+    profileStore: profileStore,
     appName: packageInfo.appName,
     appVersion: packageInfo.version,
     child: const MyApp(),

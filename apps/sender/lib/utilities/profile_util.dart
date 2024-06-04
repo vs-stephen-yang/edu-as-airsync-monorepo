@@ -7,13 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'command_line_arguments.dart';
 
 class ProfileUtil {
-  // must match the profile name in the profiles.json
-  static final String videoQualityFirstProfile = 'video_quality_first';
-  static final String videoSmoothnessFirstProfile = 'video_smoothness_first';
-
-  static final String defaultSelectedProfile = videoQualityFirstProfile;
-  static String _selectedProfile = '';
-
   static Future<List<Profile>> fetchProfiles(String content) async {
     final data = await json.decode(content);
     List<Profile> profiles = (data['profiles'] as List).map((i) => Profile.fromJson(i)).toList();
@@ -44,17 +37,17 @@ class ProfileUtil {
     prefs.setString("SelectedProfile", selectedProfile);
   }
 
-  static Future<Profile> loadProfile(List<String> args) async {
+  static Future<ProfileStore> loadProfileStore(List<String> args) async {
     // load selected profile from shared preferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _selectedProfile = prefs.getString("SelectedProfile") ?? defaultSelectedProfile;
+    String selectedProfile = prefs.getString("SelectedProfile") ?? ProfileStore.defaultSelectedProfile;
 
     // load profile from command line arguments
     // if not found, load bundle profile
     final CommandLineArguments arguments = CommandLineArguments.parse(args);
 
     if (arguments.selectedProfile.isNotEmpty) {
-      _selectedProfile = arguments.selectedProfile;
+      selectedProfile = arguments.selectedProfile;
     }
 
     List<Profile> profiles;
@@ -64,7 +57,6 @@ class ProfileUtil {
       profiles = await ProfileUtil.fetchProfilesFromBundle();
     }
 
-    return profiles.firstWhere((profile) => profile.name == _selectedProfile, orElse: () => profiles.first);
+    return ProfileStore(profiles: profiles, selectedProfile: selectedProfile);
   }
-
 }

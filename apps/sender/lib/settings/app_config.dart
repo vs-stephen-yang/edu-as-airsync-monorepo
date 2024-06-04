@@ -5,7 +5,7 @@ class AppConfig extends InheritedWidget {
   const AppConfig(
       {super.key,
       required this.settings,
-      required this.profile,
+      required this.profileStore,
       required String appName,
       required String appVersion,
       required super.child})
@@ -18,7 +18,7 @@ class AppConfig extends InheritedWidget {
 
   final String _appVersion;
 
-  final Profile profile;
+  final ProfileStore profileStore;
 
   get appName => _appName;
 
