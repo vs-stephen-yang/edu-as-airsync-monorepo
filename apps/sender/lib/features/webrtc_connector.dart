@@ -56,7 +56,7 @@ class WebRTCConnector {
     'noiseSuppression': false
   };
 
-  final Preset preset;
+  Preset preset;
   bool touchBack = false;
   bool isMainSource = false;
   final List<String> _codecPreferences = ['h264', 'vp8', 'vp9'];
@@ -488,18 +488,8 @@ class WebRTCConnector {
     });
 
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
-      var senders = await _pc!.getSenders();
-      var sender =
-          senders.firstWhereOrNull((sender) => sender.track?.kind == 'video');
-      var params = sender!.parameters;
-      params.degradationPreference = RTCDegradationPreference.DISABLED;
-      if (params.encodings != null) {
-        for (var encoding in params.encodings!) {
-          encoding.maxBitrate = preset.parameters.maxBitrateKbps * 1000;
-          encoding.minBitrate = preset.parameters.minBitrateKbps * 1000;
-        }
-      }
-      await sender.setParameters(params);
+      bool result = await _updateEncodingParameters();
+      log.info('updateEncodingParameters result: {$result}');
     } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
       Toast.makeToast('Unstable network connection.');
     }
@@ -512,6 +502,33 @@ class WebRTCConnector {
     message.sdpMid = candidate.sdpMid;
     message.sdpMLineIndex = candidate.sdpMLineIndex;
     sendSignalMessage(message);
+  }
+
+  Future<bool> _updateEncodingParameters() async {
+    if (_pc == null) {
+      return false;
+    }
+    var senders = await _pc!.getSenders();
+    var sender = senders.firstWhereOrNull((sender) => sender.track?.kind == 'video');
+    if (sender == null) {
+      return false;
+    }
+    var params = sender!.parameters;
+    params.degradationPreference = RTCDegradationPreference.DISABLED;
+    if (params.encodings != null) {
+      for (var encoding in params.encodings!) {
+        encoding.maxBitrate = preset.parameters.maxBitrateKbps * 1000;
+        encoding.minBitrate = preset.parameters.minBitrateKbps * 1000;
+      }
+    }
+    return await sender.setParameters(params);
+  }
+
+  Future<bool> updateEncodingPreset(Preset preset) async {
+    this.preset = preset;
+    bool result = await _updateEncodingParameters();
+    log.info('updateEncodingParameters result: {$result}');
+    return result;
   }
 
   void stopStatsTimer() {
