@@ -41,15 +41,20 @@ class DirectConnector {
     _directClient = DisplayChannelClient(
       _clientId,
       uri,
-      (url) => WebSocketClientConnection(
+      (url, bool isReconnect) => WebSocketClientConnection(
         url,
-        maxRetryDelay: const Duration(seconds: 3),
-        maxRetryAttempts: 3,
-        logger: (url, message) =>
-            log.fine('_directClient logger $url $message}'),
-        allowSelfSignedCertificates: true,
+        WebSocketClientConnectionConfig(
+          retry: const RetryConfig(
+            maxRetryDelay: Duration(seconds: 3),
+            maxRetryAttempts: 3,
+          ),
+          logger: (url, message) =>
+              log.fine('_directClient logger $url $message}'),
+          allowSelfSignedCertificates: true,
+        ),
       ),
     );
+
     _directClient?.openDirectChannel(token: _otp, displayCode: _displayCode);
     _directClient?.onStateChange = (ChannelState state) {
       if (state == ChannelState.connected) {
