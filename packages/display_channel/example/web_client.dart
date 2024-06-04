@@ -1,4 +1,3 @@
-import 'package:display_channel/src/websocket_client_connection_config.dart';
 import 'package:flutter/material.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:uuid/uuid.dart';

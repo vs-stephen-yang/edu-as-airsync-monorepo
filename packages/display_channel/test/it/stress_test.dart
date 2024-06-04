@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:display_channel/src/websocket_client_connection_config.dart';
 import 'package:logging/logging.dart';
 import 'package:args/args.dart';
 import 'package:uuid/uuid.dart';

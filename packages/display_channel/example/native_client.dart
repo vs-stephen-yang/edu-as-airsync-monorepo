@@ -1,5 +1,4 @@
 import 'package:args/args.dart';
-import 'package:display_channel/src/websocket_client_connection_config.dart';
 import 'package:uuid/uuid.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/util/log.dart';

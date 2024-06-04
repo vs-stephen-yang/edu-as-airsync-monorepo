@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:display_channel/display_channel.dart';
-import 'package:display_channel/src/websocket_client_connection_config.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const tunnelServiceUrl = 'wss://ap-northeast-1.gateway.dev.airsync.net';
