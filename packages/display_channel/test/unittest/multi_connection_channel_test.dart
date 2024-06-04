@@ -88,6 +88,27 @@ void main() {
     expect(channel.state, ChannelState.connected);
   });
 
+  test('The state should change to connecting after disconnected', () {
+    // arrange
+    channel.addConnection(connection1);
+
+    // action
+    connection1.onClosed?.call(connection1);
+
+    expect(stateChanges.last, ChannelState.connecting);
+  });
+
+  test('The state should change to connected after reconnected', () {
+    // arrange
+    channel.addConnection(connection1);
+    connection1.onClosed?.call(connection1);
+
+    // action
+    channel.addConnection(connection2);
+
+    expect(stateChanges.last, ChannelState.connecting);
+  });
+
   test('channel should close if the client cannot reconnect within timeout',
       () {
     // arrange
