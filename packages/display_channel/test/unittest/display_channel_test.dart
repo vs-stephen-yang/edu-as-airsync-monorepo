@@ -1,4 +1,5 @@
 import 'package:display_channel/src/util/fake_tunnel_service.dart';
+import 'package:display_channel/src/websocket_client_connection_config.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:display_channel/display_channel.dart';
@@ -82,7 +83,10 @@ void main() {
     );
 
     tunnelServer = DisplayTunnelServer(
-      (String url) => WebSocketClientConnection(url),
+      (String url) => WebSocketClientConnection(
+        url,
+        WebSocketClientConnectionConfig(),
+      ),
       (Channel channel) => handleNewChannel(channel),
       verifyConnectRequest,
     );
@@ -125,7 +129,12 @@ void main() {
     client = DisplayChannelClient(
       clientId,
       Uri.parse(serverUrl),
-      (url) => WebSocketClientConnection(url, maxRetryAttempts: 1),
+      (url) => WebSocketClientConnection(
+        url,
+        WebSocketClientConnectionConfig(
+          maxRetryAttempts: 1,
+        ),
+      ),
     );
 
     setupClient();
@@ -148,7 +157,11 @@ void main() {
     client = DisplayChannelClient(
       clientId,
       Uri.parse(serverUrl),
-      (url) => WebSocketClientConnection(url, maxRetryAttempts: 1),
+      (url) => WebSocketClientConnection(
+          url,
+          WebSocketClientConnectionConfig(
+            maxRetryAttempts: 1,
+          )),
     );
 
     setupClient();

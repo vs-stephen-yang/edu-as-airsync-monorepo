@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:display_channel/display_channel.dart';
+import 'package:display_channel/src/websocket_client_connection_config.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const tunnelServiceUrl = 'wss://ap-northeast-1.gateway.dev.airsync.net';
@@ -30,7 +31,10 @@ void main() {
   Future startTunnelServer() async {
     // create a tunnel server
     tunnelServer = DisplayTunnelServer(
-      (String url) => WebSocketClientConnection(url),
+      (String url) => WebSocketClientConnection(
+        url,
+        WebSocketClientConnectionConfig(),
+      ),
       (Channel channel) => {},
       (ConnectionRequest connectRequest) {
         return ConnectRequestStatus.invalidOtp;
@@ -88,7 +92,10 @@ void main() {
       final client = DisplayChannelClient(
         '$clientIdPrefix-$i',
         uri,
-        (url) => WebSocketClientConnection(url, maxRetryAttempts: 1),
+        (url) => WebSocketClientConnection(
+          url,
+          WebSocketClientConnectionConfig(maxRetryAttempts: 1),
+        ),
       );
 
       final closedCompleter = Completer();

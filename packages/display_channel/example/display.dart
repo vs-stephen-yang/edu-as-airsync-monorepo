@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/util/log.dart';
+import 'package:display_channel/src/websocket_client_connection_config.dart';
 
 class Client {
   final Channel _channel;
@@ -106,9 +107,11 @@ class MockServer {
     _tunnelServer = DisplayTunnelServer(
       (String url) => WebSocketClientConnection(
         url,
-        logger: (String url, String message) {
-          log().info('$url $message');
-        },
+        WebSocketClientConnectionConfig(
+          logger: (String url, String message) {
+            log().info('$url $message');
+          },
+        ),
       ),
       (Channel channel) => _onNewChannel(channel),
       _verifyConnectRequest,
