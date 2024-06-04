@@ -76,6 +76,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     } else if (state == AppLifecycleState.resumed) {
       channelProvider.updateAllAudioEnableState(true);
       mirrorStateProvider.updateAllAudioEnableState(true);
+    } else if (state == AppLifecycleState.detached) {
+      mirrorStateProvider.stopAirPlay();
+      mirrorStateProvider.stopGoogleCast();
+      mirrorStateProvider.stopMiracast();
     }
   }
 
