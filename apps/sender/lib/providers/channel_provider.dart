@@ -277,16 +277,20 @@ class ChannelProvider extends ChangeNotifier {
       otp: otp,
       displayCode: displayCode!,
       encodedDisplayCode: formattedDisplayCode,
-      createConnectionTunnel: (url) => WebSocketClientConnection(url,
-          maxRetryDelay: const Duration(seconds: 3),
-          maxRetryAttempts: 3,
-          logger: (url, message) => log.fine('tunnel connection: $url $message}')),
-      createConnectionDirect: (url) => WebSocketClientConnection(url,
-          allowSelfSignedCertificates: true,
-          // allow self-signed certificate
-          maxRetryDelay: const Duration(seconds: 3),
-          maxRetryAttempts: 3,
-          logger: (url, message) => log.fine('direct connection: $url $message}')),
+      createConnectionTunnel: (url) => WebSocketClientConnection(
+        url,
+        maxRetryDelay: const Duration(seconds: 3),
+        maxRetryAttempts: 3,
+        logger: (url, message) => log.fine('tunnel connection: $url $message}'),
+      ),
+      createConnectionDirect: (url) => WebSocketClientConnection(
+        url,
+        allowSelfSignedCertificates: true,
+        // allow self-signed certificate
+        maxRetryDelay: const Duration(seconds: 3),
+        maxRetryAttempts: 3,
+        logger: (url, message) => log.fine('direct connection: $url $message}'),
+      ),
       fetchTunnelUrl: (int instanceIndex) async {
         return await _fetchTunnelUrl(displayCode!.instanceIndex);
       },
