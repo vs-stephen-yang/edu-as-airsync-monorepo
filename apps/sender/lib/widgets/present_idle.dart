@@ -54,6 +54,9 @@ class PresentIdle extends StatelessWidget {
               'target': isDisplayCodeSelectedFromHistory ? 'select' : 'type',
             });
 
+            AppAnalytics.instance
+                .setGlobalProperty('display_code', displayCode);
+
             AppAnalytics.instance.trackEvent('click_connect');
 
             if (!presentBtnEnable) return;
