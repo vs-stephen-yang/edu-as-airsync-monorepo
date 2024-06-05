@@ -14,6 +14,7 @@ import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/ip_util.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -168,6 +169,7 @@ class ChannelProvider extends ChangeNotifier {
   void _setTunnelServer() {
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
+      reconnectTimeout: defaultChannelReconnectTimeout,
       (String url, bool isReconnect) => WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(
@@ -192,6 +194,7 @@ class ChannelProvider extends ChangeNotifier {
   void _setDirectServer() {
     // create a direct server
     _directServer = DisplayDirectServer(
+      reconnectTimeout: defaultChannelReconnectTimeout,
       (Channel channel) => _onNewChannel(channel, ChannelMode.direct),
       (ConnectionRequest connectionRequest) =>
           _verifyConnectRequest(connectionRequest, isDirectConnect: true),
