@@ -1,4 +1,4 @@
-import 'package:display_cast_flutter/settings/channel_retry_config.dart';
+import 'package:display_cast_flutter/settings/channel_config.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_channel/display_channel.dart';
