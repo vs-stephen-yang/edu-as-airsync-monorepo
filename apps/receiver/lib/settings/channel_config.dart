@@ -1,1 +1,1 @@
-const defaultChannelReconnectTimeout = Duration(seconds: 10);
+const defaultChannelReconnectTimeout = Duration(seconds: 15);
