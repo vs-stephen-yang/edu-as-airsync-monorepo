@@ -105,7 +105,7 @@ class ChannelProvider extends ChangeNotifier {
     AppAnalytics.instance.trackEvent(
       'connect_error',
       properties: {
-        'error': error.name,
+        'target': error.name,
       },
     );
     switch (error) {
@@ -256,9 +256,6 @@ class ChannelProvider extends ChangeNotifier {
     required String formattedDisplayCode,
     required String otp,
   }) async {
-    AppAnalytics.instance
-        .setGlobalProperty('display_code', formattedDisplayCode);
-
     AppAnalytics.instance.trackEvent('connect');
 
     // Generate a new client Id
@@ -325,6 +322,8 @@ class ChannelProvider extends ChangeNotifier {
     required String? otp,
     required AirSyncBonsoirService service,
   }) {
+    AppAnalytics.instance.trackEvent('quick_connect');
+
     // Generate a new client Id
     _clientId = const Uuid().v4();
     AppAnalytics.instance.setGlobalProperty('client_id', _clientId!);

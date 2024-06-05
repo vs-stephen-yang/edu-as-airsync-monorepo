@@ -105,12 +105,14 @@ class _DeviceListState extends State<DeviceList>{
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
+                            _connectService = value.devices[index];
+
+                            AppAnalytics.instance.setGlobalProperty('display_code', _connectService.displayCode);
                             AppAnalytics.instance.trackEvent('click_connect_device');
 
                             _channelProvider.startDirectConnect(
                                 otp: null,
-                                service: _connectService =
-                                    value.devices[index]);
+                                service: _connectService);
                           },
                           child: ListTile(
                             title: Row(children: [
