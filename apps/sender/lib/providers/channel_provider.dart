@@ -282,6 +282,7 @@ class ChannelProvider extends ChangeNotifier {
           WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(
+          connectionTimeout: defaultTunnelConnectionTimeout,
           retry: getChannelRetryConfig(isReconnect),
           logger: (url, message) => log.fine('tunnel connection: $url $message}'),
         ),
@@ -290,6 +291,7 @@ class ChannelProvider extends ChangeNotifier {
           WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(
+          connectionTimeout: defaultDirectConnectionTimeout,
           // allow self-signed certificate
           allowSelfSignedCertificates: true,
           retry: getChannelRetryConfig(isReconnect),
