@@ -13,3 +13,6 @@ const _reconnectRetryConfig = RetryConfig(
 RetryConfig getChannelRetryConfig(bool isReconnect) {
   return isReconnect ? _reconnectRetryConfig : _initialRetryConfig;
 }
+
+const defaultTunnelConnectionTimeout = Duration(milliseconds: 500);
+const defaultDirectConnectionTimeout = Duration(milliseconds: 200);
