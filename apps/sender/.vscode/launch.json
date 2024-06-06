@@ -9,12 +9,14 @@
             "name": "Dev",
             "request": "launch",
             "type": "dart",
+            "args": ["--web-browser-flag=--disable-web-security"],
             "program": "lib/main_dev.dart"
         },
         {
             "name": "Dev (profile mode)",
             "request": "launch",
             "type": "dart",
+            "args": ["--web-browser-flag=--disable-web-security"],
             "flutterMode": "profile",
             "program": "lib/main_dev.dart"
         },
@@ -22,6 +24,7 @@
             "name": "Dev (release mode)",
             "request": "launch",
             "type": "dart",
+            "args": ["--web-browser-flag=--disable-web-security"],
             "flutterMode": "release",
             "program": "lib/main_dev.dart"
         },
@@ -30,12 +33,14 @@
             "name": "Stage",
             "request": "launch",
             "type": "dart",
+            "args": ["--web-browser-flag=--disable-web-security"],
             "program": "lib/main_stage.dart"
         },
         {
             "name": "Stage (profile mode)",
             "request": "launch",
             "type": "dart",
+            "args": ["--web-browser-flag=--disable-web-security"],
             "flutterMode": "profile",
             "program": "lib/main_stage.dart"
         },
@@ -51,12 +56,14 @@
             "name": "Production",
             "request": "launch",
             "type": "dart",
+            "args": ["--web-browser-flag=--disable-web-security"],
             "program": "lib/main_production.dart"
         },
         {
             "name": "Production (profile mode)",
             "request": "launch",
             "type": "dart",
+            "args": ["--web-browser-flag=--disable-web-security"],
             "flutterMode": "profile",
             "program": "lib/main_production.dart"
         },
@@ -64,6 +71,7 @@
             "name": "Production (release mode)",
             "request": "launch",
             "type": "dart",
+            "args": ["--web-browser-flag=--disable-web-security"],
             "flutterMode": "release",
             "program": "lib/main_production.dart"
         }
