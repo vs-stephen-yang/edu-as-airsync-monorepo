@@ -385,4 +385,14 @@ class AppAnalytics {
     _trackEventWithProperties('control_disconnected', _eventProperties);
   }
 // endregion
+
+  trackEventRtcMetric(
+    String metricName,
+    Map<String, String> values,
+  ) {
+    _trackEventWithProperties(metricName, {
+      ..._eventProperties,
+      ...values,
+    });
+  }
 }

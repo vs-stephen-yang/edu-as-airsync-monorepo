@@ -11,6 +11,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/rtc_metrics.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -89,6 +90,8 @@ class RTCConnector {
   Function({bool? showMode})? onShowMode;
   Future<void> Function()? onChannelDisconnect;
 
+  final _videoBitrateHistory = <int?>[];
+
   RTCConnector(this._channel, this._mode);
 
   Future<void> init(JoinDisplayMessage message, isModeratorMode,
@@ -123,9 +126,8 @@ class RTCConnector {
   }
 
   void startStatsTimer() {
-
     _rtcStatsParser = RtcStatsParser(
-      onVideoStatsReport,
+      _handleVideoStatsReport,
       onPairCandidateType,
     );
 
@@ -137,6 +139,12 @@ class RTCConnector {
         }
       },
     );
+  }
+
+  void _handleVideoStatsReport(RtcVideoInboundStats stats) {
+    _videoBitrateHistory.add(stats.bytesPerSecond);
+
+    onVideoStatsReport?.call(stats);
   }
 
   Future<void> _peerConnectionConnect() async {
@@ -376,8 +384,22 @@ class RTCConnector {
 
   Future<void> disconnectChannel() async {
     stopStatsTimer();
+    _trackMetrics();
     stopConnectionTimeoutTimer();
     await onChannelDisconnect?.call();
+  }
+
+  _trackMetrics() {
+    try {
+      final videoBitrateEvent = aggregateRtcMetricHistory(_videoBitrateHistory);
+
+      AppAnalytics().trackEventRtcMetric(
+        'video_bitrate',
+        videoBitrateEvent.toJson(),
+      );
+    } catch (e, stackTrace) {
+      log.severe('_trackMetrics', e, stackTrace);
+    }
   }
 
   Future<void> close(ChannelCloseCode code, {String? reason}) async {
