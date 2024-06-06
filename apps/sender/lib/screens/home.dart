@@ -2,6 +2,7 @@ import 'dart:io' show Platform, exit;
 import 'dart:ui';
 import 'dart:async';
 
+import "package:universal_html/html.dart" as html;
 import 'package:display_cast_flutter/demo/present_present_start_demo.dart';
 import 'package:display_cast_flutter/demo/present_select_role_demo.dart';
 import 'package:display_cast_flutter/demo/remote_screen_widget_demo.dart';
@@ -64,12 +65,16 @@ class _HomeStates extends State<Home> {
 
   Future<AppExitResponse> _handleExitRequest() {
     final completer = Completer<AppExitResponse>();
-    _presentEndOnExit(completer);
+
+    () async {
+      await _presentEndOnExit();
+      completer.complete(AppExitResponse.exit);
+    }();
 
     return completer.future;
   }
 
-  void _presentEndOnExit(Completer<AppExitResponse> completer) async {
+  Future<void> _presentEndOnExit() async {
     final channelProvider = Provider.of<ChannelProvider>(
       context,
       listen: false,
@@ -81,8 +86,6 @@ class _HomeStates extends State<Home> {
     // Workaround:
     // adding a short delay to give the receiver sufficient time to receive the close message.
     await Future.delayed(const Duration(milliseconds: 100));
-
-    completer.complete(AppExitResponse.exit);
   }
 
   @override
