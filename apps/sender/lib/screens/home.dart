@@ -54,6 +54,10 @@ class _HomeStates extends State<Home> {
     _lifecycleListener = AppLifecycleListener(
       onExitRequested: _handleExitRequest,
     );
+
+    html.window.onBeforeUnload.listen((event) async {
+      await _presentEndOnExit();
+    });
   }
 
   @override
