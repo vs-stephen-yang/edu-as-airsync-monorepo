@@ -8,10 +8,10 @@ import 'command_line_arguments.dart';
 
 class ProfileUtil {
   // must match the profile name in the profiles.json
-  static final String videoQualityFirstProfile = 'video_quality_first';
-  static final String videoSmoothnessFirstProfile = 'video_smoothness_first';
+  static const videoQualityFirstProfile = 'video_quality_first';
+  static const videoSmoothnessFirstProfile = 'video_smoothness_first';
 
-  static final String defaultSelectedProfile = videoQualityFirstProfile;
+  static const defaultSelectedProfile = videoQualityFirstProfile;
   static String _selectedProfile = '';
 
   static Future<List<Profile>> fetchProfiles(String content) async {

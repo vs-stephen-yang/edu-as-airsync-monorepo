@@ -102,9 +102,9 @@ class _DebugSwitchState extends State<DebugSwitch> {
                         title: const Text('video_quality_first'),
                         value: _isVideoQualityFirst,
                         onChanged: _changeVideoProfile),
-                    Text("minBitrateKbps: ${_minBitrateKbps}", style: new TextStyle(
+                    Text("minBitrateKbps: $_minBitrateKbps", style: const TextStyle(
                         fontSize: 14, color: Colors.red),),
-                    Text("maxBitrateKbps: ${_maxBitrateKbps}", style: new TextStyle(
+                    Text("maxBitrateKbps: $_maxBitrateKbps", style: const TextStyle(
                         fontSize: 14, color: Colors.red)),
                     SwitchListTile(
                         title: const Text('Verbose Log'),
