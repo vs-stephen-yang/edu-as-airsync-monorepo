@@ -1,4 +1,6 @@
 import 'dart:io' show Platform, exit;
+import 'dart:ui';
+import 'dart:async';
 
 import 'package:display_cast_flutter/demo/present_present_start_demo.dart';
 import 'package:display_cast_flutter/demo/present_select_role_demo.dart';
@@ -35,8 +37,54 @@ import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
+
+  @override
+  State createState() => _HomeStates();
+}
+
+class _HomeStates extends State<Home> {
+  late final AppLifecycleListener _lifecycleListener;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _lifecycleListener = AppLifecycleListener(
+      onExitRequested: _handleExitRequest,
+    );
+  }
+
+  @override
+  void dispose() {
+    _lifecycleListener.dispose();
+
+    super.dispose();
+  }
+
+  Future<AppExitResponse> _handleExitRequest() {
+    final completer = Completer<AppExitResponse>();
+    _presentEndOnExit(completer);
+
+    return completer.future;
+  }
+
+  void _presentEndOnExit(Completer<AppExitResponse> completer) async {
+    final channelProvider = Provider.of<ChannelProvider>(
+      context,
+      listen: false,
+    );
+
+    await channelProvider.presentStop();
+    await channelProvider.presentEnd(goIdleState: false);
+
+    // Workaround:
+    // adding a short delay to give the receiver sufficient time to receive the close message.
+    await Future.delayed(const Duration(milliseconds: 100));
+
+    completer.complete(AppExitResponse.exit);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,38 +273,38 @@ class Home extends StatelessWidget {
 
   void _showUpdateErrorDialog(BuildContext context, UpdateErrorExecption e) {
     showDialog(context: context, builder: (BuildContext context) {
-      return AlertDialog(
-        backgroundColor: Colors.white,
-        title: Text(S.of(context).main_update_error_title),
-        content: SizedBox(
-          width: 100,
-          height: 100,
-          child: Column(
-            children: [
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: Text(S.of(context).main_update_error_title),
+            content: SizedBox(
+              width: 100,
+              height: 100,
+              child: Column(
+                children: [
               Text('${S.of(context).main_update_error_type}: ${e.error.name} \n${S.of(context).main_update_error_detail}: ${e.details.toString()}'),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // 设置按钮背景颜色
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮文字颜色
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // 设置按钮圆角
-                  side: const BorderSide(color: Colors.blue), // 设置按钮边框
-                ),
+                ],
               ),
             ),
-            onPressed: () async {
-                Navigator.of(context).pop();
-            },
-            child: Text(S.of(context).device_list_enter_pin_ok),
-          ),
-        ],
-      );
-    });
+            actions: <Widget>[
+              TextButton(
+                style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // 设置按钮背景颜色
+              foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮文字颜色
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // 设置按钮圆角
+                      side: const BorderSide(color: Colors.blue), // 设置按钮边框
+                    ),
+                  ),
+                ),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                },
+                child: Text(S.of(context).device_list_enter_pin_ok),
+              ),
+            ],
+          );
+        });
   }
 
   Future<CompareVersionResult> _checkUpdateVersion(BuildContext context) async {
