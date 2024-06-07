@@ -66,6 +66,7 @@ class ChannelProvider extends ChangeNotifier {
   static const _otpDuration = Duration(minutes: 2);
 
   Timer? _otpTickTimer;
+  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
 
   final ValueNotifier<bool> isEyeOpen = ValueNotifier(true);
   late ValueNotifier<int> countDownProgress;
@@ -126,7 +127,11 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _setConnectivityListener() {
-    Connectivity()
+    if (_connectivitySubscription != null) {
+      return;
+    }
+
+    _connectivitySubscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) async {
       log.info('Network connectivity has changed to $result');
