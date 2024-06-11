@@ -36,8 +36,12 @@ class WebRTCConnector {
   RTCDataChannel? _dc;
   MediaStream? _localStream;
   List<RTCIceCandidate> remoteCandidates = [];
+  
+  // change present quality
+  bool _streamPublished = false;
+  Map<String, dynamic>? _pendingChangePresentQuality;
 
-  // io.Socket? _socket;
+    // io.Socket? _socket;
   double _screenWidth = 1920.0;
   double _screenHeight = 1080.0;
   static const int _maxTrackWidth = 1920;
@@ -130,6 +134,7 @@ class WebRTCConnector {
     } catch (e, stackTrace) {
       log.severe('_disposeStream', e, stackTrace);
     }
+    _streamPublished = false;
   }
 
   void streamStop() {
@@ -140,7 +145,12 @@ class WebRTCConnector {
     });
   }
 
-  Future<void> changePresentQuality(Map<String, dynamic> json) async {
+  Future changePresentQuality(Map<String, dynamic> json) async {
+    if (!_streamPublished) {
+      _pendingChangePresentQuality = json;
+      return;
+    }
+
     final msg = PresentChangeQualityMessage.fromJson(json);
 
     if (msg.height == _trackHeight) return;
@@ -201,7 +211,12 @@ class WebRTCConnector {
     _pc!.onConnectionState = _onPeerConnectionState;
     _pc!.onIceCandidate = _onIceCandidate;
 
-    return await _publish();
+    _streamPublished = await _publish();
+    if (_streamPublished && _pendingChangePresentQuality != null) {
+      await changePresentQuality(_pendingChangePresentQuality!);
+      _pendingChangePresentQuality = null;
+    }
+    return _streamPublished;
   }
 
   Future<void> _peerConnectionDisconnect() async {
