@@ -140,7 +140,7 @@ class WebRTCConnector {
     });
   }
 
-  Future<void> changeStreamFrameRate(Map<String, dynamic> json) async {
+  Future<void> changePresentQuality(Map<String, dynamic> json) async {
     final msg = PresentChangeQualityMessage.fromJson(json);
 
     if (msg.height == _trackHeight) return;
