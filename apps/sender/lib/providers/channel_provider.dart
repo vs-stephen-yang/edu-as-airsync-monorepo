@@ -411,7 +411,7 @@ class ChannelProvider extends ChangeNotifier {
           webRTCConnector?.handleSignal(message as PresentSignalMessage);
           break;
         case ChannelMessageType.changePresentQuality:
-          webRTCConnector?.changePresentQuality(message.toJson());
+          unawaited(webRTCConnector?.changePresentQuality(message.toJson()));
           break;
         case ChannelMessageType.stopPresent:
           // split-screen / moderator mode
