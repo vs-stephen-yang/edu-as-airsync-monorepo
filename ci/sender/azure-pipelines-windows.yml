@@ -97,6 +97,9 @@ jobs:
       demands:
         - EVKey -equals 1
     steps:
+      - checkout: self
+        lfs: "true"
+
       - task: DownloadBuildArtifacts@0
         displayName: 'Download build'
         inputs:
