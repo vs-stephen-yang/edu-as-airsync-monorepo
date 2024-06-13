@@ -12,6 +12,7 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
+import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -125,17 +126,11 @@ class ChannelProvider extends ChangeNotifier {
 
   late String _apiGateway = '';
   late ProfileStore _profileStore;
+  ProfileStore get profileStore => _profileStore;
+
   DisplayCode? displayCode;
   String? otp;
   Timer? _presentTimer;
-
-  bool _touchBack = false;
-
-  bool get touchBack => _touchBack;
-
-  set touchBack(bool touchBack) {
-    _touchBack = touchBack;
-  }
 
   RemoteScreenClient? _remoteScreenClient;
 
@@ -544,6 +539,23 @@ class ChannelProvider extends ChangeNotifier {
     // handle stream
     var message = ResumePresentMessage(_sessionId);
     _channel?.send(message);
+  }
+  
+  Future<bool> presentChangeHighQuality({required bool isHighQuality}) async {
+    if (isHighQuality) {
+      _profileStore.setSelectedProfile(ProfileStore.videoQualityFirstProfile);
+    } else {
+      _profileStore.setSelectedProfile(ProfileStore.videoSmoothnessFirstProfile);
+    }
+    Preset preset = _profileStore.getSelectedProfile().presets.first;
+    bool result = await webRTCConnector?.updateEncodingPreset(preset) ?? false;
+    ProfileUtil.saveSelectedProfile(_profileStore.getSelectedProfile().name);
+    if (result) {
+      log.info('updateEncodingPreset success');
+    } else {
+      log.info('updateEncodingPreset fail');
+    }
+    return result;
   }
 
   void setSenderName(String name) {

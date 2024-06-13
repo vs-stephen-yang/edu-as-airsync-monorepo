@@ -669,6 +669,86 @@ class S {
       args: [],
     );
   }
+
+  /// `Reconnecting...`
+  String get main_webrtc_reconnecting_toast {
+    return Intl.message(
+      'Reconnecting...',
+      name: 'main_webrtc_reconnecting_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reconnected Fail`
+  String get main_webrtc_reconnect_fail_toast {
+    return Intl.message(
+      'Reconnected Fail',
+      name: 'main_webrtc_reconnect_fail_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reconnect Success`
+  String get main_webrtc_reconnect_success_toast {
+    return Intl.message(
+      'Reconnect Success',
+      name: 'main_webrtc_reconnect_success_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The feature is reconnecting`
+  String get main_feature_reconnecting_toast {
+    return Intl.message(
+      'The feature is reconnecting',
+      name: 'main_feature_reconnecting_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reconnected Fail`
+  String get main_feature_reconnect_fail_toast {
+    return Intl.message(
+      'Reconnected Fail',
+      name: 'main_feature_reconnect_fail_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reconnect Success`
+  String get main_feature_reconnect_success_toast {
+    return Intl.message(
+      'Reconnect Success',
+      name: 'main_feature_reconnect_success_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `High Quality`
+  String get present_state_high_quality_title {
+    return Intl.message(
+      'High Quality',
+      name: 'present_state_high_quality_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable High Quality with good network condition.`
+  String get present_state_high_quality_description {
+    return Intl.message(
+      'Enable High Quality with good network condition.',
+      name: 'present_state_high_quality_description',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
