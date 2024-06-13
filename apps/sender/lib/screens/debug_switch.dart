@@ -40,9 +40,9 @@ class _DebugSwitchState extends State<DebugSwitch> {
   void _changeVideoProfile(bool value) async {
     String selectedProfile;
     if (value) {
-      selectedProfile = ProfileUtil.videoQualityFirstProfile;
+      selectedProfile = ProfileStore.videoQualityFirstProfile;
     } else {
-      selectedProfile = ProfileUtil.videoSmoothnessFirstProfile;
+      selectedProfile = ProfileStore.videoSmoothnessFirstProfile;
     }
     await ProfileUtil.saveSelectedProfile(selectedProfile);
 
@@ -55,9 +55,9 @@ class _DebugSwitchState extends State<DebugSwitch> {
   void _initialize(BuildContext context) {
     _isLogVerbose = isLogLevelVerbose();
     if (!_initialized) {
-      final Profile profile = AppConfig.of(context)!.profile;
+      final Profile profile = AppConfig.of(context)!.profileStore.getSelectedProfile();
       final Preset preset = profile.presets.first;
-      _isVideoQualityFirst = profile.name == ProfileUtil.videoQualityFirstProfile;
+      _isVideoQualityFirst = profile.name == ProfileStore.videoQualityFirstProfile;
       _maxBitrateKbps = preset.parameters.maxBitrateKbps;
       _minBitrateKbps = preset.parameters.minBitrateKbps;
     }

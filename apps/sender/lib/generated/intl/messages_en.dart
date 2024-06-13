@@ -52,6 +52,12 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Maximum presenters (4) reached."),
         "main_display_code_invalid":
             MessageLookupByLibrary.simpleMessage("Invalid Display code"),
+        "main_feature_reconnect_fail_toast":
+            MessageLookupByLibrary.simpleMessage("Reconnected Fail"),
+        "main_feature_reconnect_success_toast":
+            MessageLookupByLibrary.simpleMessage("Reconnect Success"),
+        "main_feature_reconnecting_toast":
+            MessageLookupByLibrary.simpleMessage("The feature is reconnecting"),
         "main_instance_not_found_or_offline":
             MessageLookupByLibrary.simpleMessage(
                 "Display code not found or instance is offline."),
@@ -85,6 +91,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Update"),
         "main_update_title":
             MessageLookupByLibrary.simpleMessage("New version available"),
+        "main_webrtc_reconnect_fail_toast":
+            MessageLookupByLibrary.simpleMessage("Reconnected Fail"),
+        "main_webrtc_reconnect_success_toast":
+            MessageLookupByLibrary.simpleMessage("Reconnect Success"),
+        "main_webrtc_reconnecting_toast":
+            MessageLookupByLibrary.simpleMessage("Reconnecting..."),
         "moderator":
             MessageLookupByLibrary.simpleMessage("Please input your name"),
         "moderator_back": MessageLookupByLibrary.simpleMessage("Back"),
@@ -111,6 +123,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Share screen audio"),
         "present_select_screen_window":
             MessageLookupByLibrary.simpleMessage("Window"),
+        "present_state_high_quality_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Enable High Quality with good network condition."),
+        "present_state_high_quality_title":
+            MessageLookupByLibrary.simpleMessage("High Quality"),
         "present_state_pause": MessageLookupByLibrary.simpleMessage("Pause"),
         "present_state_resume": MessageLookupByLibrary.simpleMessage("Resume"),
         "present_state_stop":

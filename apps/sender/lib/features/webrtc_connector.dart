@@ -16,7 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:window_size/window_size.dart';
-import 'package:ion_sdk_flutter/src/utils.dart' as sdpFormatUtils;
+import 'package:ion_sdk_flutter/src/utils.dart' as sdp_format_utils;
 
 class WebRTCConnector {
   WebRTCConnector(
@@ -60,7 +60,7 @@ class WebRTCConnector {
     'noiseSuppression': false
   };
 
-  final Preset preset;
+  Preset preset;
   bool touchBack = false;
   bool isMainSource = false;
   final List<String> _codecPreferences = ['h264', 'vp8', 'vp9'];
@@ -276,7 +276,7 @@ class WebRTCConnector {
   }
 
   void _modifySDPForCodecPreferences(RTCSessionDescription description) {
-    var capSel = sdpFormatUtils.CodecCapabilitySelector(description.sdp!);
+    var capSel = sdp_format_utils.CodecCapabilitySelector(description.sdp!);
     var acaps = capSel.getCapabilities('audio');
     if (acaps != null) {
       acaps.codecs = acaps.codecs
@@ -503,18 +503,8 @@ class WebRTCConnector {
     });
 
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
-      var senders = await _pc!.getSenders();
-      var sender =
-          senders.firstWhereOrNull((sender) => sender.track?.kind == 'video');
-      var params = sender!.parameters;
-      params.degradationPreference = RTCDegradationPreference.DISABLED;
-      if (params.encodings != null) {
-        for (var encoding in params.encodings!) {
-          encoding.maxBitrate = preset.parameters.maxBitrateKbps * 1000;
-          encoding.minBitrate = preset.parameters.minBitrateKbps * 1000;
-        }
-      }
-      await sender.setParameters(params);
+      bool result = await _updateEncodingParameters();
+      log.info('updateEncodingParameters result: {$result}');
     } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
       Toast.makeToast('Unstable network connection.');
     }
@@ -527,6 +517,33 @@ class WebRTCConnector {
     message.sdpMid = candidate.sdpMid;
     message.sdpMLineIndex = candidate.sdpMLineIndex;
     sendSignalMessage(message);
+  }
+
+  Future<bool> _updateEncodingParameters() async {
+    if (_pc == null) {
+      return false;
+    }
+    var senders = await _pc!.getSenders();
+    var sender = senders.firstWhereOrNull((sender) => sender.track?.kind == 'video');
+    if (sender == null) {
+      return false;
+    }
+    var params = sender.parameters;
+    params.degradationPreference = RTCDegradationPreference.DISABLED;
+    if (params.encodings != null) {
+      for (var encoding in params.encodings!) {
+        encoding.maxBitrate = preset.parameters.maxBitrateKbps * 1000;
+        encoding.minBitrate = preset.parameters.minBitrateKbps * 1000;
+      }
+    }
+    return await sender.setParameters(params);
+  }
+
+  Future<bool> updateEncodingPreset(Preset preset) async {
+    this.preset = preset;
+    bool result = await _updateEncodingParameters();
+    log.info('updateEncodingParameters result: {$result}');
+    return result;
   }
 
   void stopStatsTimer() {

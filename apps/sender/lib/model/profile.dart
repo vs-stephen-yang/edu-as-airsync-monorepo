@@ -46,3 +46,26 @@ class Parameters {
     );
   }
 }
+
+class ProfileStore {
+  // must match the profile name in the profiles.json
+  static const String videoQualityFirstProfile = 'video_quality_first';
+  static const String videoSmoothnessFirstProfile = 'video_smoothness_first';
+  static const String defaultSelectedProfile = videoQualityFirstProfile; // by default
+
+  final List<Profile> profiles;
+  String selectedProfile = '';
+
+  ProfileStore({required this.profiles, required this.selectedProfile});
+
+  void setSelectedProfile(String profile) {
+    selectedProfile = profile;
+  }
+
+  Profile getSelectedProfile() {
+    return profiles.firstWhere(
+          (element) => element.name == selectedProfile,
+      orElse: () => profiles.firstWhere((element) => element.name == defaultSelectedProfile),
+    );
+  }
+}
