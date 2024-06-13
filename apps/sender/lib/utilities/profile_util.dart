@@ -33,13 +33,11 @@ class ProfileUtil {
   }
 
   static saveSelectedProfile(String selectedProfile) async {
-    print('zz saveSelectedProfile ${selectedProfile}');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("SelectedProfile", selectedProfile);
   }
 
   static Future<ProfileStore> loadProfileStore(List<String> args) async {
-    print('zz loadProfileStore ${args}');
     // load selected profile from shared preferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String selectedProfile = prefs.getString("SelectedProfile") ?? ProfileStore.defaultSelectedProfile;
