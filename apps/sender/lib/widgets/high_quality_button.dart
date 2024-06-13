@@ -1,7 +1,5 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
@@ -61,10 +59,9 @@ class HighQualityButtonState extends State<HighQualityButton> {
           ],
         ),
         Row(
-          // mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              margin: EdgeInsets.fromLTRB(8, 0, 11, 0),
+              margin: const EdgeInsets.fromLTRB(8, 0, 11, 0),
               height: 20,
               width: 5,
               color: Colors.grey,
@@ -75,28 +72,6 @@ class HighQualityButtonState extends State<HighQualityButton> {
               S.of(context).present_state_high_quality_description,
               style: textStyle14,
             ),
-            // IconButton(
-            //   icon: Image(
-            //     image: isButtonEnabled
-            //         ? const Svg('assets/images/ic_activate_on.svg')
-            //         : const Svg('assets/images/ic_activate_off.svg'),
-            //   ),
-            //   focusColor: Colors.grey,
-            //   onPressed: () {
-            //     isButtonEnabled = !isButtonEnabled;
-            //     widget.onPressed(isButtonEnabled);
-            //     setState(() {});
-            //   },
-            // ),
-            // Container(
-            //   height: 20,
-            //   width: 20,
-            // ),
-            // const SizedBox(width: 8),
-            // Text(
-            //   S.of(context).present_state_high_quality_description,
-            //   style: textStyle14,
-            // ),
           ],
         )
       ],
