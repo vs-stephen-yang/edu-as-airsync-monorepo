@@ -16,7 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:window_size/window_size.dart';
-import 'package:ion_sdk_flutter/src/utils.dart' as sdpFormatUtils;
+import 'package:ion_sdk_flutter/src/utils.dart' as sdp_format_utils;
 
 class WebRTCConnector {
   WebRTCConnector(
@@ -261,7 +261,7 @@ class WebRTCConnector {
   }
 
   void _modifySDPForCodecPreferences(RTCSessionDescription description) {
-    var capSel = sdpFormatUtils.CodecCapabilitySelector(description.sdp!);
+    var capSel = sdp_format_utils.CodecCapabilitySelector(description.sdp!);
     var acaps = capSel.getCapabilities('audio');
     if (acaps != null) {
       acaps.codecs = acaps.codecs
