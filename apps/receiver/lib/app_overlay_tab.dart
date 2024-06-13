@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:android_window/main.dart' as android_window;
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
@@ -56,17 +57,15 @@ class AppOverlayTab {
   }
 
   Future<bool> isOverlayTabRunning() async {
-    return android_window.isRunning();
+    var isRunning = await android_window.isRunning();
+    log('overlay tab isRunning: $isRunning');
+    return isRunning;
   }
 
   void setupOverlayTabHandler(
       {required BuildContext buildContext, required bool isVisible}) {
-    if (isVisible) {
-      android_window.resize(infoWidth.toInt(), infoHeight.toInt());
-    } else {
-      android_window.resize(0, 0);
-    }
     android_window.setHandler((String name, Object? data) async {
+      log('overlay tab handler-> name:$name');
       switch (name) {
         case OverlayTabHandler.nameOverlayTabReady:
           ChannelProvider channelProvider =
@@ -83,8 +82,7 @@ class AppOverlayTab {
                 ? OverlayTabHandler.valueVisible
                 : OverlayTabHandler.valueInvisible,
             OverlayTabHandler.keyDeviceName: instanceInfoProvider.deviceName,
-            OverlayTabHandler.keyDisplayCode:
-                instanceInfoProvider.displayCode,
+            OverlayTabHandler.keyDisplayCode: instanceInfoProvider.displayCode,
             OverlayTabHandler.keyOtpCode: channelProvider.isEyeOpen.value
                 ? channelProvider.otp.value.toString()
                 : 'XXXX',
@@ -119,6 +117,15 @@ class AppOverlayTab {
               launchApp();
             }
           });
+
+          Home.orientation.addListener(() {
+            AppOverlayTab().updateWindowSize(
+                Home.orientation.value == Orientation.portrait.index,
+                AppPreferences().showOverlayTab);
+          });
+          AppOverlayTab().updateWindowSize(
+              Home.orientation.value == Orientation.portrait.index,
+              AppPreferences().showOverlayTab);
 
           return OverlayTabHandler.resultEmptyString;
       }
@@ -155,10 +162,14 @@ class AppOverlayTab {
       infoWidth = PlatformDispatcher.instance.displays.first.size.width / 3;
       infoHeight = PlatformDispatcher.instance.displays.first.size.height / 15;
     }
-    if (isVisible) {
-      android_window.resize(infoWidth.toInt(), infoHeight.toInt());
-    } else {
-      android_window.resize(0, 0);
+    log('overlay tab isPortrait: $isPortrait, infoWidth: $infoWidth, infoHeight: $infoHeight');
+    bool running = await isOverlayTabRunning();
+    if (running) {
+      if (isVisible) {
+        android_window.resize(infoWidth.toInt(), infoHeight.toInt());
+      } else {
+        android_window.resize(0, 0);
+      }
     }
   }
 
@@ -186,8 +197,9 @@ class AppOverlayTab {
 
   Future<Map<Object?, Object?>> _postMessageToAndroidWindow(
       String key, Map<String, String>? value) async {
-    log('overlay tab post message-> key:$key, value:$value');
-    if (await android_window.isRunning()) {
+    bool running = await isOverlayTabRunning();
+    if (running) {
+      log('overlay tab post message-> key:$key, value:$value');
       final response = await android_window.post(key, value);
       log('overlay tab response: $response');
       if (response is Map<Object?, Object?>) {
