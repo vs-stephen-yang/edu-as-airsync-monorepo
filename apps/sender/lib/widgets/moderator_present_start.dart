@@ -1,11 +1,15 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/widgets/present_timer.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'high_quality_button.dart';
 
 class ModeratorPresentStart extends StatelessWidget {
   ModeratorPresentStart({super.key});
@@ -99,6 +103,15 @@ class ModeratorPresentStart extends StatelessWidget {
                   ],
                 ),
               ),
+              if (!kIsWeb)
+                HighQualityButton(
+                    onPressed: (state) {
+                      channelProvider.presentChangeHighQuality(
+                          isHighQuality: state);
+                    },
+                    initialValue:
+                        channelProvider.profileStore.selectedProfile ==
+                            ProfileStore.videoQualityFirstProfile),
               if (channelProvider.showTouchBack())
                 TouchBackButton(
                   key: touchBtnKey,

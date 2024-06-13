@@ -60,5 +60,13 @@
     "main_update_deny_button": "Not now",
     "main_update_error_title": "Version update fail",
     "main_update_error_type": "Fail reason",
-    "main_update_error_detail": "Description"
+    "main_update_error_detail": "Description",
+    "main_webrtc_reconnecting_toast": "Reconnecting...",
+    "main_webrtc_reconnect_fail_toast": "Reconnected Fail",
+    "main_webrtc_reconnect_success_toast": "Reconnect Success",
+    "main_feature_reconnecting_toast": "The feature is reconnecting",
+    "main_feature_reconnect_fail_toast": "Reconnected Fail",
+    "main_feature_reconnect_success_toast": "Reconnect Success",
+    "present_state_high_quality_title": "High Quality",
+    "present_state_high_quality_description": "Enable High Quality with good network condition."
 }
