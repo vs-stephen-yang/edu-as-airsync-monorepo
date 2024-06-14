@@ -46,6 +46,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_content_one_time_password_get_fail":
             MessageLookupByLibrary.simpleMessage(
                 "Failed to refresh password.\nPlease wait for 30 seconds before retrying."),
+        "main_feature_reconnect_fail_toast":
+            MessageLookupByLibrary.simpleMessage(
+                "Network (Control) reconnect fail"),
+        "main_feature_reconnect_success_toast":
+            MessageLookupByLibrary.simpleMessage(
+                "Network (Control) reconnect success"),
+        "main_feature_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
+            "Network (Control) reconnecting"),
         "main_get_display_code_failure": MessageLookupByLibrary.simpleMessage(
             "Failed to get display code. Wait for network connectivity to resume, or restart the app."),
         "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
@@ -105,6 +113,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_wait_title": MessageLookupByLibrary.simpleMessage(
             "Waiting for presenter to share screen..."),
         "main_wait_up_next": MessageLookupByLibrary.simpleMessage("UP NEXT"),
+        "main_webrtc_reconnect_fail_toast":
+            MessageLookupByLibrary.simpleMessage(
+                "Network (WebRTC) reconnect fail"),
+        "main_webrtc_reconnect_success_toast":
+            MessageLookupByLibrary.simpleMessage(
+                "Network (WebRTC) reconnect success"),
+        "main_webrtc_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
+            "Network (WebRTC) reconnecting"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
             "[New Feature]\n1. Quick connect through device list.\n - Cast to AirSync devices in the same network segment without typing Display code and One Time Password.\n\n[Improvement]\n1. Remove \"-\" from Display code.\n2. Reduce screen latency.\n3. Change Display code font for better visual identity."),
         "main_whats_new_title":

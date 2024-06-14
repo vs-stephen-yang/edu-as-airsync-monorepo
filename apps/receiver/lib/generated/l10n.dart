@@ -659,6 +659,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Network (WebRTC) reconnecting`
+  String get main_webrtc_reconnecting_toast {
+    return Intl.message(
+      'Network (WebRTC) reconnecting',
+      name: 'main_webrtc_reconnecting_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network (WebRTC) reconnect fail`
+  String get main_webrtc_reconnect_fail_toast {
+    return Intl.message(
+      'Network (WebRTC) reconnect fail',
+      name: 'main_webrtc_reconnect_fail_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network (WebRTC) reconnect success`
+  String get main_webrtc_reconnect_success_toast {
+    return Intl.message(
+      'Network (WebRTC) reconnect success',
+      name: 'main_webrtc_reconnect_success_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network (Control) reconnecting`
+  String get main_feature_reconnecting_toast {
+    return Intl.message(
+      'Network (Control) reconnecting',
+      name: 'main_feature_reconnecting_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network (Control) reconnect fail`
+  String get main_feature_reconnect_fail_toast {
+    return Intl.message(
+      'Network (Control) reconnect fail',
+      name: 'main_feature_reconnect_fail_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network (Control) reconnect success`
+  String get main_feature_reconnect_success_toast {
+    return Intl.message(
+      'Network (Control) reconnect success',
+      name: 'main_feature_reconnect_success_toast',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
