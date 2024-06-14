@@ -59,5 +59,11 @@
   "toast_maximum_split_screen": "Has reached maximum split screen amount.",
   "main_settings_device_list": "Quick Connect Password",
   "main_settings_mirror_confirmation": "Mirror Confirmation",
-  "main_settings_airplay_code": "AirPlay code"
+  "main_settings_airplay_code": "AirPlay code",
+  "main_webrtc_reconnecting_toast": "Network (WebRTC) reconnecting",
+  "main_webrtc_reconnect_fail_toast": "Network (WebRTC) reconnect fail",
+  "main_webrtc_reconnect_success_toast": "Network (WebRTC) reconnect success",
+  "main_feature_reconnecting_toast": "Network (Control) reconnecting",
+  "main_feature_reconnect_fail_toast": "Network (Control) reconnect fail",
+  "main_feature_reconnect_success_toast": "Network (Control) reconnect success"
 }

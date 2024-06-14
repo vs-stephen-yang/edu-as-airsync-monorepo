@@ -59,5 +59,11 @@
   "toast_maximum_split_screen": "已達到投影人員上限",
   "main_settings_device_list": "快速連線密碼",
   "main_settings_mirror_confirmation": "需接受鏡射請求",
-  "main_settings_airplay_code": "需輸入AirPlay code"
+  "main_settings_airplay_code": "需輸入AirPlay code",
+  "main_webrtc_reconnecting_toast": "網路(影像)重連中",
+  "main_webrtc_reconnect_fail_toast": "網路(影像)重連失敗",
+  "main_webrtc_reconnect_success_toast": "網路(影像)重連成功",
+  "main_feature_reconnecting_toast": "網路(控制)重連中",
+  "main_feature_reconnect_fail_toast": "網路(控制)重連失敗",
+  "main_feature_reconnect_success_toast": "網路(控制)重連成功"
 }

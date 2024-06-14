@@ -45,6 +45,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("一次性密碼"),
         "main_content_one_time_password_get_fail":
             MessageLookupByLibrary.simpleMessage("無法取得一次性密碼\n30秒後將再次執行"),
+        "main_feature_reconnect_fail_toast":
+            MessageLookupByLibrary.simpleMessage("網路(控制)重連失敗"),
+        "main_feature_reconnect_success_toast":
+            MessageLookupByLibrary.simpleMessage("網路(控制)重連成功"),
+        "main_feature_reconnecting_toast":
+            MessageLookupByLibrary.simpleMessage("網路(控制)重連中"),
         "main_get_display_code_failure":
             MessageLookupByLibrary.simpleMessage("取得投影辨識碼失敗"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("繁體中文"),
@@ -96,6 +102,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("感謝您使用 AirSync"),
         "main_wait_title": MessageLookupByLibrary.simpleMessage("等待投影中..."),
         "main_wait_up_next": MessageLookupByLibrary.simpleMessage("下一位投影者"),
+        "main_webrtc_reconnect_fail_toast":
+            MessageLookupByLibrary.simpleMessage("網路(影像)重連失敗"),
+        "main_webrtc_reconnect_success_toast":
+            MessageLookupByLibrary.simpleMessage("網路(影像)重連成功"),
+        "main_webrtc_reconnecting_toast":
+            MessageLookupByLibrary.simpleMessage("網路(影像)重連中"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
             "[新功能]\n1. 快速連線\n - 可無須輸入投影辨識碼及一次性密碼，快速投影到同一網段的AirSync裝置。\n\n[功能改善]\n1. 從Display code中移除\"-\"。\n2. 降低螢幕延遲。\n3. 更換Display code字型，以增加文字辨別度。"),
         "main_whats_new_title": MessageLookupByLibrary.simpleMessage("最新消息"),
