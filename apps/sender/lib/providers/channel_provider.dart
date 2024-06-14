@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:display_cast_flutter/settings/channel_config.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/features/webrtc_connector.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
@@ -101,6 +102,8 @@ class ChannelProvider extends ChangeNotifier {
   ChannelConnectError? _channelConnectError;
 
   ChannelConnectError? get channelConnectError => _channelConnectError;
+
+  ChannelReconnectState reconnectState = ChannelReconnectState.idle;
 
   void setChannelConnectError(ChannelConnectError error) {
     AppAnalytics.instance.trackEvent(
@@ -462,10 +465,19 @@ class ChannelProvider extends ChangeNotifier {
       case ChannelState.initialized:
         break;
       case ChannelState.connecting:
+        reconnectState = ChannelReconnectState.reconnecting;
+        notifyListeners();
         break;
       case ChannelState.connected:
+        if (reconnectState == ChannelReconnectState.reconnecting) {
+          reconnectState = ChannelReconnectState.success;
+          notifyListeners();
+        }
         break;
       case ChannelState.closed:
+        if (reconnectState == ChannelReconnectState.reconnecting) {
+          reconnectState = ChannelReconnectState.fail;
+        }
         _handleChannelCloseState(_channel?.closeReason);
         break;
     }
@@ -661,6 +673,11 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   //endregion
+
+  bool isConnectAvailable() {
+    if (reconnectState == ChannelReconnectState.reconnecting || reconnectState == ChannelReconnectState.fail) return false;
+    return true;
+  }
 
   void _handleChannelCloseState(ChannelCloseReason? closeReason) {
     AppAnalytics.instance.trackEvent('channel_closed', properties: {
