@@ -60,5 +60,13 @@
     "main_update_deny_button": "現在不要",
     "main_update_error_title": "版本更新失敗",
     "main_update_error_type": "失敗原因",
-    "main_update_error_detail": "描述"
+    "main_update_error_detail": "描述",
+    "main_webrtc_reconnecting_toast": "網路(影像)重連中",
+    "main_webrtc_reconnect_fail_toast": "網路(影像)重連失敗",
+    "main_webrtc_reconnect_success_toast": "網路(影像)重連成功",
+    "main_feature_reconnecting_toast": "網路(控制)重連中",
+    "main_feature_reconnect_fail_toast": "網路(控制)重連失敗",
+    "main_feature_reconnect_success_toast": "網路(控制)重連成功",
+    "present_state_high_quality_title": "高畫質",
+    "present_state_high_quality_description": "僅適用於良好的網路環境"
 }

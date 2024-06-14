@@ -46,6 +46,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("已達到分割螢幕數量上限"),
         "main_display_code_invalid":
             MessageLookupByLibrary.simpleMessage("無效的投影辨識碼"),
+        "main_feature_reconnect_fail_toast":
+            MessageLookupByLibrary.simpleMessage("網路(控制)重連失敗"),
+        "main_feature_reconnect_success_toast":
+            MessageLookupByLibrary.simpleMessage("網路(控制)重連成功"),
+        "main_feature_reconnecting_toast":
+            MessageLookupByLibrary.simpleMessage("網路(控制)重連中"),
         "main_instance_not_found_or_offline":
             MessageLookupByLibrary.simpleMessage("找不到投影辨識碼或是服務未啟動"),
         "main_language": MessageLookupByLibrary.simpleMessage("語言"),
@@ -72,6 +78,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_update_positive_button":
             MessageLookupByLibrary.simpleMessage("更新"),
         "main_update_title": MessageLookupByLibrary.simpleMessage("有新的更新"),
+        "main_webrtc_reconnect_fail_toast":
+            MessageLookupByLibrary.simpleMessage("網路(影像)重連失敗"),
+        "main_webrtc_reconnect_success_toast":
+            MessageLookupByLibrary.simpleMessage("網路(影像)重連成功"),
+        "main_webrtc_reconnecting_toast":
+            MessageLookupByLibrary.simpleMessage("網路(影像)重連中"),
         "moderator": MessageLookupByLibrary.simpleMessage("請輸入姓名"),
         "moderator_back": MessageLookupByLibrary.simpleMessage("返回"),
         "moderator_exit": MessageLookupByLibrary.simpleMessage("結束"),
@@ -93,6 +105,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("分享音訊"),
         "present_select_screen_window":
             MessageLookupByLibrary.simpleMessage("分享應用程式視窗"),
+        "present_state_high_quality_description":
+            MessageLookupByLibrary.simpleMessage("僅適用於良好的網路環境"),
+        "present_state_high_quality_title":
+            MessageLookupByLibrary.simpleMessage("高畫質"),
         "present_state_pause": MessageLookupByLibrary.simpleMessage("暫停分享"),
         "present_state_resume": MessageLookupByLibrary.simpleMessage("恢復分享"),
         "present_state_stop": MessageLookupByLibrary.simpleMessage("停止分享"),
