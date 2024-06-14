@@ -670,60 +670,60 @@ class S {
     );
   }
 
-  /// `Reconnecting...`
+  /// `Network (WebRTC) reconnecting`
   String get main_webrtc_reconnecting_toast {
     return Intl.message(
-      'Reconnecting...',
+      'Network (WebRTC) reconnecting',
       name: 'main_webrtc_reconnecting_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `Reconnected Fail`
+  /// `Network (WebRTC) reconnect fail`
   String get main_webrtc_reconnect_fail_toast {
     return Intl.message(
-      'Reconnected Fail',
+      'Network (WebRTC) reconnect fail',
       name: 'main_webrtc_reconnect_fail_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `Reconnect Success`
+  /// `Network (WebRTC) reconnect success`
   String get main_webrtc_reconnect_success_toast {
     return Intl.message(
-      'Reconnect Success',
+      'Network (WebRTC) reconnect success',
       name: 'main_webrtc_reconnect_success_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `The feature is reconnecting`
+  /// `Network (Control) reconnecting`
   String get main_feature_reconnecting_toast {
     return Intl.message(
-      'The feature is reconnecting',
+      'Network (Control) reconnecting',
       name: 'main_feature_reconnecting_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `Reconnected Fail`
+  /// `Network (Control) reconnect fail`
   String get main_feature_reconnect_fail_toast {
     return Intl.message(
-      'Reconnected Fail',
+      'Network (Control) reconnect fail',
       name: 'main_feature_reconnect_fail_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `Reconnect Success`
+  /// `Network (Control) reconnect success`
   String get main_feature_reconnect_success_toast {
     return Intl.message(
-      'Reconnect Success',
+      'Network (Control) reconnect success',
       name: 'main_feature_reconnect_success_toast',
       desc: '',
       args: [],
@@ -740,10 +740,10 @@ class S {
     );
   }
 
-  /// `Enable High Quality with good network condition.`
+  /// `Enable High Quality in good network condition.`
   String get present_state_high_quality_description {
     return Intl.message(
-      'Enable High Quality with good network condition.',
+      'Enable High Quality in good network condition.',
       name: 'present_state_high_quality_description',
       desc: '',
       args: [],

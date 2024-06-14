@@ -53,11 +53,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_display_code_invalid":
             MessageLookupByLibrary.simpleMessage("Invalid Display code"),
         "main_feature_reconnect_fail_toast":
-            MessageLookupByLibrary.simpleMessage("Reconnected Fail"),
+            MessageLookupByLibrary.simpleMessage(
+                "Network (Control) reconnect fail"),
         "main_feature_reconnect_success_toast":
-            MessageLookupByLibrary.simpleMessage("Reconnect Success"),
-        "main_feature_reconnecting_toast":
-            MessageLookupByLibrary.simpleMessage("The feature is reconnecting"),
+            MessageLookupByLibrary.simpleMessage(
+                "Network (Control) reconnect success"),
+        "main_feature_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
+            "Network (Control) reconnecting"),
         "main_instance_not_found_or_offline":
             MessageLookupByLibrary.simpleMessage(
                 "Display code not found or instance is offline."),
@@ -92,11 +94,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_update_title":
             MessageLookupByLibrary.simpleMessage("New version available"),
         "main_webrtc_reconnect_fail_toast":
-            MessageLookupByLibrary.simpleMessage("Reconnected Fail"),
+            MessageLookupByLibrary.simpleMessage(
+                "Network (WebRTC) reconnect fail"),
         "main_webrtc_reconnect_success_toast":
-            MessageLookupByLibrary.simpleMessage("Reconnect Success"),
-        "main_webrtc_reconnecting_toast":
-            MessageLookupByLibrary.simpleMessage("Reconnecting..."),
+            MessageLookupByLibrary.simpleMessage(
+                "Network (WebRTC) reconnect success"),
+        "main_webrtc_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
+            "Network (WebRTC) reconnecting"),
         "moderator":
             MessageLookupByLibrary.simpleMessage("Please input your name"),
         "moderator_back": MessageLookupByLibrary.simpleMessage("Back"),
@@ -125,7 +129,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Window"),
         "present_state_high_quality_description":
             MessageLookupByLibrary.simpleMessage(
-                "Enable High Quality with good network condition."),
+                "Enable High Quality in good network condition."),
         "present_state_high_quality_title":
             MessageLookupByLibrary.simpleMessage("High Quality"),
         "present_state_pause": MessageLookupByLibrary.simpleMessage("Pause"),
