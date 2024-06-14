@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
+import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -301,7 +303,17 @@ class SelectScreenDialog extends Dialog {
                         backgroundColor: MaterialStatePropertyAll<Color>(Color.fromARGB(255, 147, 179, 242)),
                       ),
                       onPressed: () {
-                        _ok(_selectedSource, _systemAudio);
+                        ChannelProvider channelProvider = Provider.of<ChannelProvider>(context, listen: false);
+                        if (channelProvider.isConnectAvailable()) {
+                          _ok(_selectedSource, _systemAudio);
+                        } else {
+                          Toast.makeFeatureReconnectToast(
+                              channelProvider.reconnectState,
+                              channelProvider.reconnectState == ChannelReconnectState.reconnecting
+                                  ? S.of(context).main_feature_reconnecting_toast
+                                  : S.of(context).main_feature_reconnect_fail_toast
+                          );
+                        }
                       },
                       child: Text(
                         S.of(context).present_select_screen_share,

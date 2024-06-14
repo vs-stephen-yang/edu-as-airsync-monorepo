@@ -4,6 +4,8 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
+import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,7 +33,16 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
         if (_nameController.text.isEmpty) {
           _showOverlayMessage(context, nameKey);
         } else if (channelProvider.displayCode != null) {
-          channelProvider.setSenderName(_nameController.text);
+          if (channelProvider.isConnectAvailable()) {
+            channelProvider.setSenderName(_nameController.text);
+          }  else {
+            Toast.makeFeatureReconnectToast(
+                channelProvider.reconnectState,
+                channelProvider.reconnectState ==
+                    ChannelReconnectState.reconnecting
+                    ? S.of(context).main_feature_reconnecting_toast
+                    : S.of(context).main_feature_reconnect_fail_toast);
+          }
         }
       }
     }
