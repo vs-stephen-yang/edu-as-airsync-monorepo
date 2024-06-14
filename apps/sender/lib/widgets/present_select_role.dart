@@ -2,6 +2,8 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
+import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -39,7 +41,18 @@ class PresentSelectRole extends StatelessWidget {
             if (channelProvider.moderatorStatus) {
               channelProvider.presentModeratorNamePage();
             } else {
-              await channelProvider.beginBasicMode();
+              if (channelProvider.isConnectAvailable()) {
+                channelProvider.beginBasicMode();
+              } else {
+                Toast.makeFeatureReconnectToast(
+                    channelProvider.reconnectState,
+                    channelProvider.reconnectState ==
+                        ChannelReconnectState.reconnecting
+                        ? S.of(context)
+                        .main_feature_reconnecting_toast
+                        : S.of(context)
+                        .main_feature_reconnect_fail_toast);
+              }
             }
           },
         ),

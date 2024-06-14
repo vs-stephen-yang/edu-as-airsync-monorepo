@@ -2,6 +2,8 @@ import 'dart:io' show Platform, exit;
 import 'dart:ui';
 import 'dart:async';
 
+import 'package:display_cast_flutter/utilities/channel_util.dart';
+import 'package:display_cast_flutter/widgets/toast.dart';
 import "package:universal_html/html.dart" as html;
 import 'package:display_cast_flutter/demo/present_present_start_demo.dart';
 import 'package:display_cast_flutter/demo/present_select_role_demo.dart';
@@ -138,6 +140,15 @@ class _HomeStates extends State<Home> {
                           return true;
                         });
                       }
+                      if (channel.reconnectState == ChannelReconnectState.reconnecting) {
+                        Toast.makeFeatureReconnectToast(channel.reconnectState, S.of(context).main_webrtc_reconnecting_toast);
+                      } else if (channel.reconnectState == ChannelReconnectState.success) {
+                        Toast.makeFeatureReconnectToast(channel.reconnectState, S.of(context).main_webrtc_reconnect_success_toast);
+                        channel.reconnectState = ChannelReconnectState.idle;
+                      } else if (channel.reconnectState == ChannelReconnectState.fail) {
+                        Toast.makeFeatureReconnectToast(channel.reconnectState, S.of(context).main_webrtc_reconnect_fail_toast);
+                        channel.reconnectState = ChannelReconnectState.idle;
+                      }
                       switch (channel.state) {
                         case ViewState.idle:
                           return PresentIdle();
@@ -148,7 +159,18 @@ class _HomeStates extends State<Home> {
                               if (channel.moderatorStatus) {
                                 channel.presentModeratorNamePage();
                               } else {
-                                channel.beginBasicMode();
+                                if (channel.isConnectAvailable()) {
+                                  channel.beginBasicMode();
+                                } else {
+                                  Toast.makeFeatureReconnectToast(
+                                      channel.reconnectState,
+                                      channel.reconnectState ==
+                                          ChannelReconnectState.reconnecting
+                                          ? S.of(context)
+                                          .main_feature_reconnecting_toast
+                                          : S.of(context)
+                                          .main_feature_reconnect_fail_toast);
+                                }
                               }
                             });
                             return const SizedBox();

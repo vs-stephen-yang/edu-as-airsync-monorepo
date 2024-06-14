@@ -3,8 +3,10 @@ import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/widgets/high_quality_button.dart';
 import 'package:display_cast_flutter/widgets/present_timer.dart';
+import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,15 @@ class PresentPresentStart extends StatelessWidget {
   PresentPresentStart({super.key});
 
   final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
+
+  void sendReconnectStateToast(
+      BuildContext context, ChannelReconnectState state) {
+    Toast.makeFeatureReconnectToast(
+        state,
+        state == ChannelReconnectState.reconnecting
+            ? S.of(context).main_feature_reconnecting_toast
+            : S.of(context).main_feature_reconnect_fail_toast);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +61,22 @@ class PresentPresentStart extends StatelessWidget {
                 builder: (BuildContext context, value, Widget? child) {
                   return InkWell(
                     onTap: () {
-                      presentingState.value = !presentingState.value;
                       if (presentingState.value) {
                         AppAnalytics.instance.trackEvent('click_resume');
-                        channelProvider.presentResume();
+                        if (channelProvider.isConnectAvailable()) {
+                          presentingState.value = !presentingState.value;
+                          channelProvider.presentResume();
+                        } else {
+                          sendReconnectStateToast(context, channelProvider.reconnectState);
+                        }
                       } else {
                         AppAnalytics.instance.trackEvent('click_pause');
-                        channelProvider.presentPause();
+                        if (channelProvider.isConnectAvailable()) {
+                          presentingState.value = !presentingState.value;
+                          channelProvider.presentPause();
+                        } else {
+                          sendReconnectStateToast(context, channelProvider.reconnectState);
+                        }
                       }
                     },
                     child: Row(
