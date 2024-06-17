@@ -32,6 +32,8 @@ Future<void> commonEntry(ConfigSettings settings) async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
+    await AppOverlayTab().ensureInitialized();
+
     initLogger();
     enableLogToMemory(true);
 
@@ -82,7 +84,6 @@ Future<void> commonEntry(ConfigSettings settings) async {
           details.exceptionAsString(), details.stack.toString());
     };
 
-    AppOverlayTab().ensureInitialized();
     runApp(configureApp);
   }, (error, stack) async {
     // Report errors to a service
