@@ -50,22 +50,35 @@ class AppOverlayTab {
   // passes the instantiation to the _instance object
   factory AppOverlayTab() => _instance;
 
-  ensureInitialized() {
+  ensureInitialized() async {
     android_window.open(
       size: Size(infoWidth, infoHeight),
       position: Offset(infoWidth * 2, 0),
       draggableY: false,
     );
+    // wait 10 milliseconds for handle above open process.
+    await Future.delayed(const Duration(milliseconds: 10));
+    await isOverlayTabRunning();
   }
 
   Future<bool> isOverlayTabRunning() async {
-    var isRunning = await android_window.isRunning();
-    log('overlay tab isRunning: $isRunning');
-    return isRunning;
+    bool isRunning = false;
+    var retryCount = 10;
+    while (retryCount > 0 && !isRunning) {
+      isRunning = await android_window.isRunning();
+      log('overlay tab isRunning: $isRunning');
+      if (isRunning) return true;
+      retryCount--;
+      // wait 5 milliseconds for next check.
+      await Future.delayed(const Duration(milliseconds: 5));
+    }
+    log('overlay tab is not Running!!');
+    return false;
   }
 
-  void setupOverlayTabHandler(
-      {required BuildContext buildContext, required bool isVisible}) {
+  Future<void> setupOverlayTabHandler(
+      {required BuildContext buildContext, required bool isVisible}) async {
+    await isOverlayTabRunning();
     android_window.setHandler((String name, Object? data) async {
       log('overlay tab handler-> name:$name');
       switch (name) {
@@ -131,7 +144,8 @@ class AppOverlayTab {
       }
       return OverlayTabHandler.resultNullString;
     });
-    _postMessageToAndroidWindow(OverlayTabHandler.nameOverlayTabCheck, null);
+    await _postMessageToAndroidWindow(
+        OverlayTabHandler.nameOverlayTabCheck, null);
   }
 
   Future<void> setVisibility(bool isVisible) async {
@@ -181,8 +195,8 @@ class AppOverlayTab {
 
   Future<Map<Object?, Object?>> _postMessageToAndroidWindow(
       String key, Map<String, String>? value) async {
-    bool running = await isOverlayTabRunning();
-    if (running) {
+    var isRunning = await isOverlayTabRunning();
+    if (isRunning) {
       log('overlay tab post message-> key:$key, value:$value');
       final response = await android_window.post(key, value);
       log('overlay tab response: $response');
