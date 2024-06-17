@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:android_window/main.dart' as android_window;
-import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
@@ -18,12 +17,15 @@ class OverlayTabHandler {
   static const String nameInitValue = 'init_value';
   static const String nameSetVisibility = 'set_visibility';
   static const String nameGetVisibility = 'get_visibility';
+  static const String nameSetSize = 'set_size';
   static const String nameSetMainInfo = 'set_main_info';
   static const String nameSetOtp = 'set_otp';
   static const String nameSetLanguage = 'set_language';
   static const String nameLaunchApp = 'launch_app';
 
   static const String keyVisibility = 'visibility';
+  static const String keySizeWidth = 'size_width';
+  static const String keySizeHeight = 'size_height';
   static const String keyDeviceName = 'device_name';
   static const String keyDisplayCode = 'display_code';
   static const String keyOtpCode = 'otp_code';
@@ -77,10 +79,13 @@ class AppOverlayTab {
           InstanceInfoProvider instanceInfoProvider =
               Provider.of<InstanceInfoProvider>(buildContext, listen: false);
 
+          _calculateInfoSize();
           await _postMessageToAndroidWindow(OverlayTabHandler.nameInitValue, {
             OverlayTabHandler.keyVisibility: isVisible
                 ? OverlayTabHandler.valueVisible
                 : OverlayTabHandler.valueInvisible,
+            OverlayTabHandler.keySizeWidth: infoWidth.ceil().toString(),
+            OverlayTabHandler.keySizeHeight: infoHeight.ceil().toString(),
             OverlayTabHandler.keyDeviceName: instanceInfoProvider.deviceName,
             OverlayTabHandler.keyDisplayCode: instanceInfoProvider.displayCode,
             OverlayTabHandler.keyOtpCode: channelProvider.isEyeOpen.value
@@ -118,14 +123,9 @@ class AppOverlayTab {
             }
           });
 
-          Home.orientation.addListener(() {
-            AppOverlayTab().updateWindowSize(
-                Home.orientation.value == Orientation.portrait.index,
-                AppPreferences().showOverlayTab);
+          Home.orientation.addListener(() async {
+            await setWindowSize();
           });
-          AppOverlayTab().updateWindowSize(
-              Home.orientation.value == Orientation.portrait.index,
-              AppPreferences().showOverlayTab);
 
           return OverlayTabHandler.resultEmptyString;
       }
@@ -135,11 +135,6 @@ class AppOverlayTab {
   }
 
   Future<void> setVisibility(bool isVisible) async {
-    if (isVisible) {
-      android_window.resize(infoWidth.toInt(), infoHeight.toInt());
-    } else {
-      android_window.resize(0, 0);
-    }
     await _postMessageToAndroidWindow(OverlayTabHandler.nameSetVisibility, {
       OverlayTabHandler.keyVisibility: isVisible
           ? OverlayTabHandler.valueVisible
@@ -154,23 +149,12 @@ class AppOverlayTab {
     return visible == OverlayTabHandler.valueVisible;
   }
 
-  Future<void> updateWindowSize(bool isPortrait, bool isVisible) async {
-    if (isPortrait) {
-      infoWidth = PlatformDispatcher.instance.displays.first.size.width / 1.6;
-      infoHeight = PlatformDispatcher.instance.displays.first.size.height / 26;
-    } else {
-      infoWidth = PlatformDispatcher.instance.displays.first.size.width / 3;
-      infoHeight = PlatformDispatcher.instance.displays.first.size.height / 15;
-    }
-    log('overlay tab isPortrait: $isPortrait, infoWidth: $infoWidth, infoHeight: $infoHeight');
-    bool running = await isOverlayTabRunning();
-    if (running) {
-      if (isVisible) {
-        android_window.resize(infoWidth.toInt(), infoHeight.toInt());
-      } else {
-        android_window.resize(0, 0);
-      }
-    }
+  Future<void> setWindowSize() async {
+    _calculateInfoSize();
+    await _postMessageToAndroidWindow(OverlayTabHandler.nameSetSize, {
+      OverlayTabHandler.keySizeWidth: infoWidth.ceil().toString(),
+      OverlayTabHandler.keySizeHeight: infoHeight.ceil().toString(),
+    });
   }
 
   Future<void> setDeviceNameAndDisplayCode(
@@ -207,5 +191,22 @@ class AppOverlayTab {
       }
     }
     return <Object?, Object?>{};
+  }
+
+  _calculateInfoSize() {
+    var isPortrait =
+        Home.orientation.value == Orientation.portrait.index;
+    if (isPortrait) {
+      infoWidth =
+          PlatformDispatcher.instance.displays.first.size.width / 1.6;
+      infoHeight =
+          PlatformDispatcher.instance.displays.first.size.height / 26;
+    } else {
+      infoWidth =
+          PlatformDispatcher.instance.displays.first.size.width / 3;
+      infoHeight =
+          PlatformDispatcher.instance.displays.first.size.height / 15;
+    }
+    log('overlay tab isPortrait: $isPortrait, infoWidth: $infoWidth, infoHeight: $infoHeight');
   }
 }
