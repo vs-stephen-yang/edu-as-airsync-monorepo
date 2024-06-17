@@ -17,6 +17,8 @@ class OverlayTab extends StatefulWidget {
 
 class _OverlayTabState extends State<OverlayTab> {
   String _visibility = OverlayTabHandler.valueInvisible;
+  var _width = 0;
+  var _height = 0;
   String _deviceName = '';
   String _displayCode = '';
   String _otp = '';
@@ -35,6 +37,11 @@ class _OverlayTabState extends State<OverlayTab> {
       color: Colors.black,
       fontWeight: FontWeight.bold,
     );
+    if (_visibility == OverlayTabHandler.valueVisible) {
+      AndroidWindow.resize(_width.ceil(), _height.ceil());
+    } else {
+      AndroidWindow.resize(0, 0);
+    }
     return _visibility == OverlayTabHandler.valueInvisible
         ? const SizedBox.shrink()
         : AndroidWindow(
@@ -106,6 +113,8 @@ class _OverlayTabState extends State<OverlayTab> {
               var info = Map<String, String>.from(data);
               _visibility = info[OverlayTabHandler.keyVisibility] ??
                   OverlayTabHandler.valueInvisible;
+              _width = int.parse(info[OverlayTabHandler.keySizeWidth] ?? '0');
+              _height = int.parse(info[OverlayTabHandler.keySizeHeight] ?? '0');
               _deviceName = info[OverlayTabHandler.keyDeviceName] ?? '';
               _displayCode = info[OverlayTabHandler.keyDisplayCode] ?? '';
               _otp = info[OverlayTabHandler.keyOtpCode] ?? '';
@@ -132,6 +141,18 @@ class _OverlayTabState extends State<OverlayTab> {
 
         case OverlayTabHandler.nameGetVisibility:
           return {OverlayTabHandler.keyVisibility: _visibility};
+
+        case OverlayTabHandler.nameSetSize:
+          if (data is Map<Object?, Object?>) {
+            setState(() {
+              var info = Map<String, String>.from(data);
+              _width = int.parse(info[OverlayTabHandler.keySizeWidth] ?? '0');
+              _height = int.parse(info[OverlayTabHandler.keySizeHeight] ?? '0');
+            });
+          } else {
+            log('set size with wrong data type: ${data.runtimeType}');
+          }
+          return OverlayTabHandler.resultEmptyString;
 
         case OverlayTabHandler.nameSetMainInfo:
           if (data is Map<Object?, Object?>) {
