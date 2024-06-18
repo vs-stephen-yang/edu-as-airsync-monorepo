@@ -45,7 +45,6 @@ class DeviceFeatureAdapter {
 
   static Map<String, dynamic> deviceOptions = {
     'IFP52_1C': {
-      "maxHardwareDecodeSession": 1,
       "selectCustomAudioFeed": "CVTE"
     },
     'IFP50_3': {
@@ -61,6 +60,16 @@ class DeviceFeatureAdapter {
 
 
   static const Map<String, Map<String, int>> deviceDecodeParams = {
+    'IFP52_1C': {
+      // https://viewsonic-ssi.visualstudio.com/CVTE/_workitems/edit/58867
+      // fix green video on MT9950
+      "VideoPath": 1024,
+    },
+    'IFP52_K': {
+      // https://viewsonic-ssi.visualstudio.com/CVTE/_workitems/edit/58867
+      // fix green video on MT9950
+      "VideoPath": 1024,
+    },
   };
 
   static initDefault() async {
