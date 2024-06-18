@@ -63,10 +63,6 @@ class DeviceFeatureAdapter {
   static const Map<String, Map<String, int>> deviceDecodeParams = {
   };
 
-  static dynamic softwareDecodeOptions = {
-    "maxHardwareDecodeSession": 0
-  };
-
   static initDefault() async {
     final params = overrideDefaultParams[_deviceType];
 
@@ -125,14 +121,13 @@ class DeviceFeatureAdapter {
       'logSeverity': verboseWebRtcLog ? 'VERBOSE' : 'INFO',
     };
 
-    if (useSoftwareDecode) {
-      options.addAll(softwareDecodeOptions);
-    } else {
-      final opts = deviceOptions[_deviceType];
+    final opts = deviceOptions[_deviceType];
+    if (opts != null) {
+      options.addAll(opts);
+    }
 
-      if (opts != null) {
-        options.addAll(opts);
-      }
+    if (useSoftwareDecode) {
+      options['maxHardwareDecodeSession'] = 0;
     }
 
     log.info('Initialize webrtc. Options: ${options.toString()}');
