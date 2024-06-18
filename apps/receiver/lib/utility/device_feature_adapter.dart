@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -54,6 +55,10 @@ class DeviceFeatureAdapter {
     },
   };
 
+
+  static const Map<String, Map<String, int>> deviceDecodeParams = {
+  };
+
   static dynamic softwareDecodeOptions = {
     "maxHardwareDecodeSession": 0
   };
@@ -89,9 +94,17 @@ class DeviceFeatureAdapter {
   static Map<String, int> getDecodeOptions() {
     final options = <String, int>{};
 
+    // add quick decode parameters
     if (useQuickDecodeParams) {
       options.addAll(quickDecodeParams);
     }
+
+    // add device-specific decode parameters
+    final params = deviceDecodeParams[model];
+    if (params != null) {
+      options.addAll(params);
+    }
+
     return options;
   }
 
@@ -119,6 +132,7 @@ class DeviceFeatureAdapter {
       }
     }
 
+    log.info('Initialize webrtc. Options: ${options.toString()}');
     await WebRTC.initialize(options: options);
   }
 
