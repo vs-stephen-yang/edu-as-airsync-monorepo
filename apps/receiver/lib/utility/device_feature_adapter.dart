@@ -1,7 +1,5 @@
 
-import 'dart:io';
-
-import 'package:device_info_plus/device_info_plus.dart';
+import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,7 +14,7 @@ class DeviceFeatureAdapter {
   // passes the instantiation to the _instance object
   factory DeviceFeatureAdapter() => _instance;
 
-  static String model = '';
+  static String _deviceType = '';
   static bool showDebugOverlay = false;
   static bool useSoftwareDecode = false;
   static bool useQuickDecodeParams = false;
@@ -37,20 +35,26 @@ class DeviceFeatureAdapter {
   };
 
   static Map<String, dynamic> overrideDefaultParams = {
-    '50-3': {
+    'IFP50_3': {
+      "useQuickDecode": false
+    },
+    'IFP50_3_9850': {
       "useQuickDecode": false
     }
   };
 
   static Map<String, dynamic> deviceOptions = {
-    '52-1C': {
+    'IFP52_1C': {
       "maxHardwareDecodeSession": 1,
       "selectCustomAudioFeed": "CVTE"
     },
-    '50-3': {
+    'IFP50_3': {
       "maxHardwareDecodeSession": 1,
     },
-    '6562': {
+    'IFP50_3_9850': {
+      "maxHardwareDecodeSession": 1,
+    },
+    'IFP62': {
       "maxHardwareDecodeSession": 1,
     },
   };
@@ -64,12 +68,12 @@ class DeviceFeatureAdapter {
   };
 
   static initDefault() async {
-    for (var entry in overrideDefaultParams.entries) {
-      if (model.contains(entry.key)) {
-        defaultShowDebugOverlay = entry.value["showDebugOverlay"] ?? defaultShowDebugOverlay;
-        defaultUseSoftwareDecode = entry.value["useSoftwareDecode"] ?? defaultUseSoftwareDecode;
-        defaultUseQuickDecodeParams = entry.value["useQuickDecode"] ?? defaultUseQuickDecodeParams;
-      }
+    final params = overrideDefaultParams[_deviceType];
+
+    if (params != null) {
+      defaultShowDebugOverlay = params.value["showDebugOverlay"] ?? defaultShowDebugOverlay;
+      defaultUseSoftwareDecode = params.value["useSoftwareDecode"] ?? defaultUseSoftwareDecode;
+      defaultUseQuickDecodeParams = params.value["useQuickDecode"] ?? defaultUseQuickDecodeParams;
     }
   }
 
@@ -100,7 +104,7 @@ class DeviceFeatureAdapter {
     }
 
     // add device-specific decode parameters
-    final params = deviceDecodeParams[model];
+    final params = deviceDecodeParams[_deviceType];
     if (params != null) {
       options.addAll(params);
     }
@@ -109,7 +113,7 @@ class DeviceFeatureAdapter {
   }
 
   static ensureInitialized() async {
-    model = await _instance._loadModel() ?? '';
+    _deviceType = await DeviceInfoVs.deviceType ?? '';
 
     await initDefault();
     await load();
@@ -124,28 +128,15 @@ class DeviceFeatureAdapter {
     if (useSoftwareDecode) {
       options.addAll(softwareDecodeOptions);
     } else {
-      for (var entry in deviceOptions.entries) {
-        if (model.contains(entry.key)) {
-          options.addAll(Map<String, dynamic>.from(entry.value));
-          break;
-        }
+      final opts = deviceOptions[_deviceType];
+
+      if (opts != null) {
+        options.addAll(opts);
       }
     }
 
     log.info('Initialize webrtc. Options: ${options.toString()}');
     await WebRTC.initialize(options: options);
-  }
-
-  Future<String?> _loadModel() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    if (Platform.isAndroid) {
-      AndroidDeviceInfo info = await deviceInfo.androidInfo;
-      return info.model;
-    } else if (Platform.isIOS) {
-      IosDeviceInfo info = await deviceInfo.iosInfo;
-      return info.model;
-    }
-    return null;
   }
 
 }
