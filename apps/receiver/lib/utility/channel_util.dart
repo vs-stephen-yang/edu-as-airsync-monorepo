@@ -3,6 +3,13 @@ import 'dart:io';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/utility/assets_util.dart';
 
+enum ReconnectState {
+  idle,
+  reconnecting,
+  success,
+  fail
+}
+
 const _certPemPath = 'assets/channel/certificate.pem';
 const _keyPemPath = 'assets/channel/private_key.pem';
 
