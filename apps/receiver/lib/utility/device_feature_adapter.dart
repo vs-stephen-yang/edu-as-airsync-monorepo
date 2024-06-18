@@ -86,11 +86,13 @@ class DeviceFeatureAdapter {
     prefs.setBool("VerboseWebRtcLog", verboseWebRtcLog);
   }
 
-  static Map<String, int> getQuickDecodeOptions() {
+  static Map<String, int> getDecodeOptions() {
+    final options = <String, int>{};
+
     if (useQuickDecodeParams) {
-      return quickDecodeParams;
+      options.addAll(quickDecodeParams);
     }
-    return {};
+    return options;
   }
 
   static ensureInitialized() async {
@@ -99,9 +101,9 @@ class DeviceFeatureAdapter {
     await initDefault();
     await load();
 
-    Map<String, int> quickDecodeOptions = getQuickDecodeOptions();
+    Map<String, int> decodeOptions = getDecodeOptions();
     Map<String, dynamic> options = {
-      'additionalDecoderParameter': quickDecodeOptions,
+      'additionalDecoderParameter': decodeOptions,
       'enableTracing': enableWebRtcTracing,
       'logSeverity': verboseWebRtcLog ? 'VERBOSE' : 'INFO',
     };

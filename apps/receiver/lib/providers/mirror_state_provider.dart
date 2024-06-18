@@ -353,7 +353,7 @@ class MirrorStateProvider extends ChangeNotifier
     // We also handle the message potentially returning null.
     try {
       _flutterMirrorPlugin?.registerListener(this);
-      Map<String, int> options = DeviceFeatureAdapter.getQuickDecodeOptions();
+      Map<String, int> options = DeviceFeatureAdapter.getDecodeOptions();
       await _flutterMirrorPlugin?.initialize(FlutterMirrorConfig(options));
     } on PlatformException catch(e, stackTrace) {
       log.severe('Mirror initialize failure', e, stackTrace);
