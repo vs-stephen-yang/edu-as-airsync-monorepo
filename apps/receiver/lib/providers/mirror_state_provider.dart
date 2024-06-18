@@ -354,6 +354,9 @@ class MirrorStateProvider extends ChangeNotifier
     try {
       _flutterMirrorPlugin?.registerListener(this);
       Map<String, int> options = DeviceFeatureAdapter.getDecodeOptions();
+
+      log.info('Initialize mirror. Options: ${options.toString()}');
+
       await _flutterMirrorPlugin?.initialize(FlutterMirrorConfig(options));
     } on PlatformException catch(e, stackTrace) {
       log.severe('Mirror initialize failure', e, stackTrace);
