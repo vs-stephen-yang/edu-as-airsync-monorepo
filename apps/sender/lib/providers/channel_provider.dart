@@ -603,7 +603,7 @@ class ChannelProvider extends ChangeNotifier {
 
     await _channel?.close(ChannelCloseReason(ChannelCloseCode.close));
     _channel = null;
-
+    reconnectState = ChannelReconnectState.idle;
     // clear client_id
     _clientId = null;
     AppAnalytics.instance.setGlobalProperty('client_id', '');

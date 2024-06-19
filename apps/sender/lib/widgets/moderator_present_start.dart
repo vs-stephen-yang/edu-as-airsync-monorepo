@@ -100,6 +100,27 @@ class ModeratorPresentStart extends StatelessWidget {
                   );
                 },
               ),
+              ValueListenableBuilder(
+                  valueListenable:
+                  channelProvider.webRTCConnector!.reconnectStateNotifier,
+                  builder: (BuildContext context, ChannelReconnectState state,
+                      Widget? child) {
+                    if (state == ChannelReconnectState.reconnecting) {
+                      Toast.makeFeatureReconnectToast(
+                          state, S.of(context).main_webrtc_reconnecting_toast);
+                    } else if (state == ChannelReconnectState.success) {
+                      Toast.makeFeatureReconnectToast(
+                          state, S.of(context).main_webrtc_reconnect_success_toast);
+                      channelProvider.webRTCConnector!.reconnectState =
+                          ChannelReconnectState.idle;
+                    } else if (state == ChannelReconnectState.fail) {
+                      Toast.makeFeatureReconnectToast(
+                          state, S.of(context).main_webrtc_reconnect_fail_toast);
+                      channelProvider.webRTCConnector!.reconnectState =
+                          ChannelReconnectState.idle;
+                    }
+                    return Container();
+                  }),
               const SizedBox(height: 20),
               InkWell(
                 onTap: () {
