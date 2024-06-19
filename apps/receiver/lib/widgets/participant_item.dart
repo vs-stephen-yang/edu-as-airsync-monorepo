@@ -4,6 +4,8 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
+import 'package:display_flutter/utility/channel_util.dart';
+import 'package:display_flutter/utility/toast.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:display_flutter/widgets/loading_icon.dart';
@@ -35,6 +37,13 @@ class ParticipantItem extends StatelessWidget {
               ),
               showWhiteBorder: true,
               onClick: () {
+                if (!rtcConnector.isChannelConnectAvailable()) {
+                  Toast.makeReconnectToast(rtcConnector.reconnectChannelState, rtcConnector.reconnectChannelState ==
+                      ReconnectState.reconnecting
+                      ? S.of(context).main_feature_reconnecting_toast
+                      : S.of(context).main_feature_reconnect_fail_toast)?.show(context);
+                  return;
+                }
                 _presenterOnOff(context, rtcConnector, presenterId);
               },
               child: Row(
@@ -65,10 +74,30 @@ class ParticipantItem extends StatelessWidget {
               splashRadius: 20,
               focusColor: Colors.white,
               onClick: () {
+                if (!rtcConnector.isChannelConnectAvailable()) {
+                  Toast.makeReconnectToast(rtcConnector.reconnectChannelState, rtcConnector.reconnectChannelState ==
+                      ReconnectState.reconnecting
+                      ? S.of(context).main_feature_reconnecting_toast
+                      : S.of(context).main_feature_reconnect_fail_toast)?.show(context);
+                  return;
+                }
                 _sendPresenterRemove(rtcConnector);
               },
             ),
           ),
+          ValueListenableBuilder(
+              valueListenable: rtcConnector.reconnectChannelStateNotifier,
+              builder: (BuildContext context, ReconnectState value,
+                  Widget? child) {
+                if (value == ReconnectState.success) {
+                  Toast.makeReconnectToast(value, S.of(context).main_feature_reconnect_success_toast)?.show(context);
+                  rtcConnector.reconnectChannelStateNotifier.value = ReconnectState.idle;
+                } else if (value == ReconnectState.fail) {
+                  Toast.makeReconnectToast(value, S.of(context).main_feature_reconnect_fail_toast)?.show(context);
+                  rtcConnector.reconnectChannelStateNotifier.value = ReconnectState.idle;
+                }
+                return Container();
+              }),
         ],
       ),
     );
