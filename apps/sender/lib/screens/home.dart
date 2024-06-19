@@ -140,15 +140,7 @@ class _HomeStates extends State<Home> {
                           return true;
                         });
                       }
-                      if (channel.reconnectState == ChannelReconnectState.reconnecting) {
-                        Toast.makeFeatureReconnectToast(channel.reconnectState, S.of(context).main_webrtc_reconnecting_toast);
-                      } else if (channel.reconnectState == ChannelReconnectState.success) {
-                        Toast.makeFeatureReconnectToast(channel.reconnectState, S.of(context).main_webrtc_reconnect_success_toast);
-                        channel.reconnectState = ChannelReconnectState.idle;
-                      } else if (channel.reconnectState == ChannelReconnectState.fail) {
-                        Toast.makeFeatureReconnectToast(channel.reconnectState, S.of(context).main_webrtc_reconnect_fail_toast);
-                        channel.reconnectState = ChannelReconnectState.idle;
-                      }
+
                       switch (channel.state) {
                         case ViewState.idle:
                           return PresentIdle();

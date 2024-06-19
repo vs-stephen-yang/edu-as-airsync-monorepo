@@ -67,7 +67,8 @@ class PresentPresentStart extends StatelessWidget {
                           presentingState.value = !presentingState.value;
                           channelProvider.presentResume();
                         } else {
-                          sendReconnectStateToast(context, channelProvider.reconnectState);
+                          sendReconnectStateToast(
+                              context, channelProvider.reconnectState);
                         }
                       } else {
                         AppAnalytics.instance.trackEvent('click_pause');
@@ -75,7 +76,8 @@ class PresentPresentStart extends StatelessWidget {
                           presentingState.value = !presentingState.value;
                           channelProvider.presentPause();
                         } else {
-                          sendReconnectStateToast(context, channelProvider.reconnectState);
+                          sendReconnectStateToast(
+                              context, channelProvider.reconnectState);
                         }
                       }
                     },
@@ -143,6 +145,27 @@ class PresentPresentStart extends StatelessWidget {
             ],
           ),
         ),
+        ValueListenableBuilder(
+            valueListenable:
+                channelProvider.webRTCConnector!.reconnectStateNotifier,
+            builder: (BuildContext context, ChannelReconnectState state,
+                Widget? child) {
+              if (state == ChannelReconnectState.reconnecting) {
+                Toast.makeFeatureReconnectToast(
+                    state, S.of(context).main_webrtc_reconnecting_toast);
+              } else if (state == ChannelReconnectState.success) {
+                Toast.makeFeatureReconnectToast(
+                    state, S.of(context).main_webrtc_reconnect_success_toast);
+                channelProvider.webRTCConnector!.reconnectState =
+                    ChannelReconnectState.idle;
+              } else if (state == ChannelReconnectState.fail) {
+                Toast.makeFeatureReconnectToast(
+                    state, S.of(context).main_webrtc_reconnect_fail_toast);
+                channelProvider.webRTCConnector!.reconnectState =
+                    ChannelReconnectState.idle;
+              }
+              return Container();
+            }),
       ],
     );
   }

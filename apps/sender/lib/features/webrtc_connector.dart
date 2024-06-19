@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 
 import 'package:collection/collection.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/features/protoc/event.pb.dart';
 import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
@@ -10,7 +11,6 @@ import 'package:display_cast_flutter/model/message.dart';
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
-import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
@@ -78,6 +78,12 @@ class WebRTCConnector {
   int? _outboundVideoWidth;
   int? _outboundVideoHeight;
   int _outboundVideoCount = 0;
+
+  ValueNotifier<ChannelReconnectState> reconnectStateNotifier = ValueNotifier<ChannelReconnectState>(ChannelReconnectState.idle);
+  set reconnectState(ChannelReconnectState state) {
+    reconnectStateNotifier.value = state;
+  }
+  ChannelReconnectState get reconnectState => reconnectStateNotifier.value;
 
   Future<bool> makeCall(
       dynamic source, List<RtcIceServer>? iceServerList) async {
@@ -220,6 +226,9 @@ class WebRTCConnector {
   }
 
   Future<void> _peerConnectionDisconnect() async {
+    if (reconnectState == ChannelReconnectState.reconnecting) {
+      reconnectState = ChannelReconnectState.fail;
+    }
     try {
       await _pc?.close();
       await _pc?.dispose();
@@ -503,10 +512,17 @@ class WebRTCConnector {
     });
 
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
+      if (reconnectState == ChannelReconnectState.reconnecting) {
+        reconnectState = ChannelReconnectState.success;
+      }
       bool result = await _updateEncodingParameters();
       log.info('updateEncodingParameters result: {$result}');
+    } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateDisconnected) {
+      reconnectState = ChannelReconnectState.reconnecting;
     } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
-      Toast.makeToast('Unstable network connection.');
+      if (reconnectState == ChannelReconnectState.reconnecting) {
+        reconnectState = ChannelReconnectState.fail;
+      }
     }
   }
 
