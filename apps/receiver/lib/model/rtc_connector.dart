@@ -43,6 +43,20 @@ class RTCConnector {
   String? senderPlatform;
   bool isAudioEnabled = false;
 
+  ValueNotifier<ReconnectState> reconnectRtcStateNotifier = ValueNotifier<ReconnectState>(ReconnectState.idle);
+  set reconnectRtcState(ReconnectState state) {
+    reconnectRtcStateNotifier.value = state;
+  }
+  ReconnectState get reconnectRtcState => reconnectRtcStateNotifier.value;
+
+  ValueNotifier<ReconnectState> reconnectChannelStateNotifier = ValueNotifier<ReconnectState>(ReconnectState.idle);
+  set reconnectChannelState(ReconnectState state) {
+    reconnectChannelStateNotifier.value = state;
+  }
+  ReconnectState get reconnectChannelState => reconnectChannelStateNotifier.value;
+
+
+
   Timer? _statsTimer;
   final _statsTimerInterval = const Duration(seconds: 1);
 
@@ -110,10 +124,17 @@ class RTCConnector {
       case ChannelState.initialized:
         break;
       case ChannelState.connecting:
+        reconnectChannelState = ReconnectState.reconnecting;
         break;
       case ChannelState.connected:
+        if (reconnectChannelState == ReconnectState.reconnecting) {
+          reconnectChannelState = ReconnectState.success;
+        }
         break;
       case ChannelState.closed:
+        if (reconnectChannelState == ReconnectState.reconnecting) {
+          reconnectChannelState = ReconnectState.fail;
+        }
         await disconnectPeerConnection();
         await disconnectChannel();
         break;
@@ -551,5 +572,15 @@ class RTCConnector {
     if (kDebugMode) {
       const DebugSwitch().write('PeerConnection $event ${args.toString()}');
     }
+  }
+
+  bool isRtcConnectAvailable() {
+    if (reconnectRtcState == ReconnectState.reconnecting || reconnectRtcState == ReconnectState.fail) return false;
+    return true;
+  }
+
+  bool isChannelConnectAvailable() {
+    if (reconnectChannelState == ReconnectState.reconnecting || reconnectChannelState == ReconnectState.fail) return false;
+    return true;
   }
 }

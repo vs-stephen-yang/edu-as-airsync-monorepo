@@ -13,7 +13,9 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/toast.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
@@ -169,7 +171,19 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                     SplitScreenFunction(
                                       index: index,
                                       updateSize: () {
-                                        _updateSizeForSelected(index);
+                                        RTCConnector webrtcConnector = HybridConnectionList().getConnection<RTCConnector>(index);
+                                        if (webrtcConnector.isChannelConnectAvailable()) {
+                                          _updateSizeForSelected(index);
+                                        } else {
+                                          Toast.showSplitScreenReconnectToast(
+                                              context, webrtcConnector.reconnectChannelState ==
+                                              ReconnectState.reconnecting
+                                              ? S.of(context).main_feature_reconnecting_toast
+                                              : S.of(context).main_feature_reconnect_fail_toast,
+                                              index,
+                                              isWebRTC: false,
+                                              state: webrtcConnector.reconnectChannelState);
+                                        }
                                       },
                                     ),
                                 ],
