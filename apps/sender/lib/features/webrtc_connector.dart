@@ -19,24 +19,27 @@ import 'package:window_size/window_size.dart';
 import 'package:ion_sdk_flutter/src/utils.dart' as sdp_format_utils;
 
 class WebRTCConnector {
-  WebRTCConnector(
-      { required this.preset,
-        this.touchBack = false,
-        bool systemAudio = false,
-        required this.sendSignalMessage}) {
+  WebRTCConnector({
+    required this.preset,
+    this.touchBack = false,
+    bool systemAudio = false,
+    required this.sendSignalMessage,
+    required this.onConnectionState,
+  }) {
     _systemAudio = systemAudio;
   }
 
   final List<StreamSubscription> _subscriptions = [];
 
   void Function(PresentSignalMessage message) sendSignalMessage;
+  void Function(RTCPeerConnectionState state) onConnectionState;
 
   dynamic _deviceId;
   RTCPeerConnection? _pc;
   RTCDataChannel? _dc;
   MediaStream? _localStream;
   List<RTCIceCandidate> remoteCandidates = [];
-  
+
   // change present quality
   bool _streamPublished = false;
   Map<String, dynamic>? _pendingChangePresentQuality;
@@ -510,6 +513,7 @@ class WebRTCConnector {
     AppAnalytics.instance.trackEvent('pc_state', properties: {
       'state': state.name,
     });
+    onConnectionState(state);
 
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
       if (reconnectState == ChannelReconnectState.reconnecting) {

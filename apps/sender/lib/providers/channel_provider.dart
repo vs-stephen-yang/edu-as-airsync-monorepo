@@ -136,6 +136,8 @@ class ChannelProvider extends ChangeNotifier {
   String? otp;
   Timer? _presentTimer;
 
+  bool _isRtcFirstConnected = false;
+
   RemoteScreenClient? _remoteScreenClient;
 
   RemoteScreenClient? get remoteScreenClient => _remoteScreenClient;
@@ -478,6 +480,10 @@ class ChannelProvider extends ChangeNotifier {
         if (reconnectState == ChannelReconnectState.reconnecting) {
           reconnectState = ChannelReconnectState.fail;
         }
+
+        // The receiver closes the channel when the RTC connection is not established or encounters a failure
+        _handleRtcConnectionErrors();
+
         _handleChannelCloseState(_channel?.closeReason);
         break;
     }
@@ -487,6 +493,8 @@ class ChannelProvider extends ChangeNotifier {
     required dynamic selectedSource,
     bool systemAudio = false,
   }) async {
+    _isRtcFirstConnected = false;
+
     // PeerConnect
     webRTCConnector = WebRTCConnector(
       preset: _profileStore.getSelectedProfile().presets.first,
@@ -496,6 +504,7 @@ class ChannelProvider extends ChangeNotifier {
         json.sessionId = _sessionId;
         _channel?.send(json);
       },
+      onConnectionState: _onRtcConnectionState,
     );
     webRTCConnector?.onStreamInterrupted = (() async {
       presentStop();
@@ -562,7 +571,6 @@ class ChannelProvider extends ChangeNotifier {
     var message = ResumePresentMessage(_sessionId);
     _channel?.send(message);
   }
-  
   Future<bool> presentChangeHighQuality({required bool isHighQuality}) async {
     if (isHighQuality) {
       _profileStore.setSelectedProfile(ProfileStore.videoQualityFirstProfile);
@@ -765,5 +773,42 @@ class ChannelProvider extends ChangeNotifier {
     }
 
     return url as String;
+  }
+
+  void _onRtcConnectionState(RTCPeerConnectionState state) {
+    switch(state) {
+      case RTCPeerConnectionState.RTCPeerConnectionStateConnected:
+        _onRtcConnectionConnected();
+        break;
+
+      case RTCPeerConnectionState.RTCPeerConnectionStateFailed:
+        _onRtcConnectionFailed();
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  void _onRtcConnectionConnected() {
+    if (!_isRtcFirstConnected) {
+      AppAnalytics.instance.trackEvent('cast_successfully');
+    } else {
+      _isRtcFirstConnected = true;
+    }
+  }
+
+  void _onRtcConnectionFailed() {
+    _handleRtcConnectionErrors();
+  }
+
+  void _handleRtcConnectionErrors() {
+    if (_isRtcFirstConnected) {
+      // When users lose the webrtc connection while casting
+      AppAnalytics.instance.trackEvent('cast_fail');
+    } else {
+      // When users fail to cast their screen on the first attempt
+      AppAnalytics.instance.trackEvent('cast_error');
+    }
   }
 }
