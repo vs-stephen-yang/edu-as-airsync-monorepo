@@ -793,7 +793,6 @@ class ChannelProvider extends ChangeNotifier {
   void _onRtcConnectionConnected() {
     if (!_isRtcFirstConnected) {
       AppAnalytics.instance.trackEvent('cast_successfully');
-    } else {
       _isRtcFirstConnected = true;
     }
   }
