@@ -523,6 +523,8 @@ class WebRTCConnector {
       if (reconnectState == ChannelReconnectState.reconnecting) {
         reconnectState = ChannelReconnectState.fail;
       }
+      await hangUp();
+      await onStreamInterrupted?.call();
     }
   }
 
