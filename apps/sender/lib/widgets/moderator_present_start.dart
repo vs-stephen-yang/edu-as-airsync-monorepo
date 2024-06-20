@@ -125,8 +125,13 @@ class ModeratorPresentStart extends StatelessWidget {
               InkWell(
                 onTap: () {
                   AppAnalytics.instance.trackEvent('click_stop');
-                  channelProvider.presentStop();
-                  channelProvider.presentModeratorWaitPage();
+                  if (channelProvider.isConnectAvailable()) {
+                    channelProvider.presentStop();
+                    channelProvider.presentModeratorWaitPage();
+                  } else {
+                    sendReconnectStateToast(
+                        context, channelProvider.reconnectState);
+                  }
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
