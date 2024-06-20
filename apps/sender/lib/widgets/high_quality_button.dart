@@ -1,11 +1,7 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
-import 'package:display_cast_flutter/utilities/channel_util.dart';
-import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:provider/provider.dart';
 
 class HighQualityButton extends StatefulWidget {
   const HighQualityButton(
@@ -20,13 +16,11 @@ class HighQualityButton extends StatefulWidget {
 
 class HighQualityButtonState extends State<HighQualityButton> {
   bool isButtonEnabled = false;
-  bool previousState = false;
 
   @override
   void initState() {
     super.initState();
     isButtonEnabled = widget.initialValue;
-    previousState = widget.initialValue;
   }
 
   @override
@@ -57,20 +51,8 @@ class HighQualityButtonState extends State<HighQualityButton> {
               ),
               focusColor: Colors.grey,
               onPressed: () {
-                ChannelProvider channelProvider = Provider.of<ChannelProvider>(context, listen: false);
-                if (channelProvider.isConnectAvailable()) {
-                  previousState = isButtonEnabled;
-                  isButtonEnabled = !isButtonEnabled;
-                  widget.onPressed(isButtonEnabled);
-                } else {
-                  isButtonEnabled = previousState;
-                  Toast.makeFeatureReconnectToast(
-                      channelProvider.reconnectState,
-                      channelProvider.reconnectState == ChannelReconnectState.reconnecting
-                          ? S.of(context).main_feature_reconnecting_toast
-                          : S.of(context).main_feature_reconnect_fail_toast
-                  );
-                }
+                isButtonEnabled = !isButtonEnabled;
+                widget.onPressed(isButtonEnabled);
                 setState(() {});
               },
             ),
