@@ -144,7 +144,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       return ValueListenableBuilder(
                         valueListenable: Home.enlargedScreenPositionIndex,
                         builder: (context, value, child) {
-                          RTCConnector webrtcConnector = HybridConnectionList().getConnection<RTCConnector>(index);
                           return Positioned(
                             left: left,
                             top: top,
@@ -167,7 +166,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                     SplitScreenFunction(
                                       index: index,
                                       updateSize: () {
-                                        if (webrtcConnector.isChannelConnectAvailable()) {
+                                        if (HybridConnectionList().isMirrorRequest(index)) {
+                                          var connection = HybridConnectionList().getConnection<MirrorRequest>(index);
+                                          if (connection.mirrorState == MirrorState.mirroring) {
+                                            _updateSizeForSelected(index);
+                                            return;
+                                          }
+                                        }
+                                        var webrtcConnector = HybridConnectionList().getConnection<RTCConnector>(index);
+                                        if (webrtcConnector.isChannelConnectAvailable() ) {
                                           _updateSizeForSelected(index);
                                         } else {
                                           webrtcConnector.clickButtonWhenReconnect = true;
@@ -182,6 +189,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                         }
                                       },
                                       onClose: () {
+                                        if (HybridConnectionList().isMirrorRequest(index)) {
+                                          var connection = HybridConnectionList().getConnection<MirrorRequest>(index);
+                                          if (connection.mirrorState == MirrorState.mirroring) {
+                                            HybridConnectionList().stopPresenterBy(index);
+                                            return;
+                                          }
+                                        }
+                                        RTCConnector webrtcConnector = HybridConnectionList().getConnection<RTCConnector>(index);
                                         if (webrtcConnector.isChannelConnectAvailable()) {
                                           ChannelProvider channelProvider =
                                           Provider.of<ChannelProvider>(context, listen: false);
