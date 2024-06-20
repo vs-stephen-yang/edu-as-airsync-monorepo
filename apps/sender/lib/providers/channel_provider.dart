@@ -460,7 +460,7 @@ class ChannelProvider extends ChangeNotifier {
   void onChannelStateChange(ChannelState state) {
     log.info('Channel state: ${state.name}');
     AppAnalytics.instance.trackEvent('channel_state', properties: {
-      'state': state.name,
+      'target': state.name,
     });
 
     switch (state) {
@@ -689,8 +689,8 @@ class ChannelProvider extends ChangeNotifier {
 
   void _handleChannelCloseState(ChannelCloseReason? closeReason) {
     AppAnalytics.instance.trackEvent('channel_closed', properties: {
-      'code': closeReason?.code.toString() ?? '',
-      'text': closeReason?.text ?? '',
+      'target': closeReason?.code.toString() ?? '',
+      'details': closeReason?.text ?? '',
     });
 
     ChannelCloseCode? reasonCode = closeReason?.code;
@@ -706,7 +706,7 @@ class ChannelProvider extends ChangeNotifier {
     log.warning('Failed to fetch the instance info. $errorType $details');
 
     AppAnalytics.instance.trackEvent('request_get_instance_error', properties: {
-      'error': errorType,
+      'target': errorType,
       'details': details,
     });
   }

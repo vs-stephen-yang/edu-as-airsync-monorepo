@@ -446,7 +446,7 @@ class WebRTCConnector {
   void _onDataChannelState(RTCDataChannelState state) {
     log.info('Data channel state: ${state.name}');
     AppAnalytics.instance.trackEvent('dc_state', properties: {
-      'state': state.name,
+      'target': state.name,
     });
   }
 
@@ -511,7 +511,7 @@ class WebRTCConnector {
   void _onPeerConnectionState(RTCPeerConnectionState state) async {
     log.info('Peer connection state: ${state.name}');
     AppAnalytics.instance.trackEvent('pc_state', properties: {
-      'state': state.name,
+      'target': state.name,
     });
     onConnectionState(state);
 
