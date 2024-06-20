@@ -154,20 +154,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               height: _getWidthHeight(index, false),
                               child: Stack(
                                 children: <Widget>[
-                                  if (HybridConnectionList()
-                                      .isRTCConnector(index))
-                                    WebRTCView(
-                                        rtcConnector: HybridConnectionList()
-                                            .getConnection<RTCConnector>(
-                                                index)),
-                                  if (HybridConnectionList()
-                                      .isMirrorRequest(index))
-                                    MirrorView(
-                                        mirrorRequest: HybridConnectionList()
-                                            .getConnection<MirrorRequest>(
-                                                index)),
-                                  if (HybridConnectionList()
-                                      .isPresenting(index: index))
+                                  if (HybridConnectionList().isRTCConnector(index))
+                                    WebRTCView(rtcConnector: HybridConnectionList()
+                                        .getConnection<RTCConnector>(
+                                        index), index:index),
+                                  if (HybridConnectionList().isMirrorRequest(index))
+                                    MirrorView(mirrorRequest: HybridConnectionList()
+                                        .getConnection<MirrorRequest>(
+                                        index)),
+                                  if (HybridConnectionList().isPresenting(index: index))
                                     SplitScreenFunction(
                                       index: index,
                                       updateSize: () {

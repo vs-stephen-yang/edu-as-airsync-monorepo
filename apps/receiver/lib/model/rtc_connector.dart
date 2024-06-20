@@ -459,7 +459,16 @@ class RTCConnector {
 
   Future<void> _onPeerConnectionState(RTCPeerConnectionState state) async {
     _printPeerConnectionLog('_onPeerConnectionState', state);
-    if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
+    if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
+      if (reconnectRtcState == ReconnectState.reconnecting) {
+        reconnectRtcState = ReconnectState.success;
+      }
+    } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateDisconnected) {
+      reconnectRtcState = ReconnectState.reconnecting;
+    } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
+      if (reconnectRtcState == ReconnectState.reconnecting) {
+        reconnectRtcState = ReconnectState.fail;
+      }
       ConnectionTimer.getInstance().stopRemainingTimeTimer();
       await disconnectPeerConnection();
       await disconnectChannel();

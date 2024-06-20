@@ -8,8 +8,10 @@ import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/protoc/event.pb.dart';
 import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -18,9 +20,10 @@ import 'package:provider/provider.dart';
 import 'loading_icon.dart';
 
 class WebRTCView extends StatefulWidget {
-  const WebRTCView({super.key, required this.rtcConnector});
+  const WebRTCView({super.key, required this.rtcConnector, required this.index});
 
   final RTCConnector rtcConnector;
+  final int index;
 
   @override
   State createState() => WebRTCViewState();
@@ -298,7 +301,29 @@ class WebRTCViewState extends State<WebRTCView> {
                 fontSize: 30,
               ),
             ),
-          )
+          ),
+          ValueListenableBuilder(
+            valueListenable: widget.rtcConnector.reconnectRtcStateNotifier,
+            builder: (context, ReconnectState reconnectState, child) {
+
+              String message = S.of(context).main_webrtc_reconnecting_toast;
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                if (widget.rtcConnector.reconnectRtcState == ReconnectState.reconnecting) {
+                  Toast.showSplitScreenReconnectToast(context, message, widget.index);
+                } else if (widget.rtcConnector.reconnectRtcState == ReconnectState.success) {
+                  message = S.of(context).main_webrtc_reconnect_success_toast;
+                  Toast.showSplitScreenReconnectToast(context, message, widget.index);
+                  widget.rtcConnector.reconnectRtcState = ReconnectState.idle;
+                } else if (widget.rtcConnector.reconnectRtcState == ReconnectState.fail) {
+                  message = S.of(context).main_webrtc_reconnect_fail_toast;
+                  Toast.showSplitScreenReconnectToast(context, message, widget.index);
+                  widget.rtcConnector.reconnectRtcState = ReconnectState.idle;
+                }
+              });
+
+              return Container();
+            },
+          ),
         ],
       );
     });
