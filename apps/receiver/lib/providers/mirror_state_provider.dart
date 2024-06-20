@@ -211,7 +211,6 @@ class MirrorStateProvider extends ChangeNotifier
     if (mirrorId != null) {
       _flutterMirrorPlugin?.stopMirror(mirrorId);
     }
-    notifyListeners();
   }
 
   updateAllAudioEnableState(bool enable) {
