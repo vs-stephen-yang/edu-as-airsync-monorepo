@@ -303,6 +303,35 @@ class WebRTCViewState extends State<WebRTCView> {
             ),
           ),
           ValueListenableBuilder(
+            valueListenable: widget.rtcConnector.reconnectChannelStateNotifier,
+            builder: (context, ReconnectState reconnectState, child) {
+              if (widget.rtcConnector.clickButtonWhenReconnect) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  if (widget.rtcConnector.reconnectChannelState == ReconnectState.success) {
+                    widget.rtcConnector.clickButtonWhenReconnect = false;
+                    Toast.showSplitScreenReconnectToast(
+                        context,
+                        S.of(context).main_feature_reconnect_success_toast,
+                        widget.index,
+                        isWebRTC: false,
+                        state: ReconnectState.success);
+                    widget.rtcConnector.reconnectChannelState = ReconnectState.idle;
+                  } else if (widget.rtcConnector.reconnectChannelState == ReconnectState.fail) {
+                    widget.rtcConnector.clickButtonWhenReconnect = false;
+                    Toast.showSplitScreenReconnectToast(
+                        context,
+                        S.of(context).main_feature_reconnect_fail_toast,
+                        widget.index,
+                        isWebRTC: false,
+                        state: ReconnectState.fail);
+                    widget.rtcConnector.reconnectChannelState = ReconnectState.idle;
+                  }
+                });
+              }
+              return Container();
+            },
+          ),
+          ValueListenableBuilder(
             valueListenable: widget.rtcConnector.reconnectRtcStateNotifier,
             builder: (context, ReconnectState reconnectState, child) {
 

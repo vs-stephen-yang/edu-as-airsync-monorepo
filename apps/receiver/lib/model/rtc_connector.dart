@@ -54,8 +54,7 @@ class RTCConnector {
     reconnectChannelStateNotifier.value = state;
   }
   ReconnectState get reconnectChannelState => reconnectChannelStateNotifier.value;
-
-
+  bool clickButtonWhenReconnect = false;
 
   Timer? _statsTimer;
   final _statsTimerInterval = const Duration(seconds: 1);

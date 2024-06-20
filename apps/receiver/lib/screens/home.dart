@@ -144,6 +144,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       return ValueListenableBuilder(
                         valueListenable: Home.enlargedScreenPositionIndex,
                         builder: (context, value, child) {
+                          RTCConnector webrtcConnector = HybridConnectionList().getConnection<RTCConnector>(index);
                           return Positioned(
                             left: left,
                             top: top,
@@ -166,10 +167,35 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                     SplitScreenFunction(
                                       index: index,
                                       updateSize: () {
-                                        RTCConnector webrtcConnector = HybridConnectionList().getConnection<RTCConnector>(index);
                                         if (webrtcConnector.isChannelConnectAvailable()) {
                                           _updateSizeForSelected(index);
                                         } else {
+                                          webrtcConnector.clickButtonWhenReconnect = true;
+                                          Toast.showSplitScreenReconnectToast(
+                                              context, webrtcConnector.reconnectChannelState ==
+                                              ReconnectState.reconnecting
+                                              ? S.of(context).main_feature_reconnecting_toast
+                                              : S.of(context).main_feature_reconnect_fail_toast,
+                                              index,
+                                              isWebRTC: false,
+                                              state: webrtcConnector.reconnectChannelState);
+                                        }
+                                      },
+                                      onClose: () {
+                                        if (webrtcConnector.isChannelConnectAvailable()) {
+                                          ChannelProvider channelProvider =
+                                          Provider.of<ChannelProvider>(context, listen: false);
+                                          if (channelProvider.isModeratorMode) {
+                                            HybridConnectionList().stopPresenterBy(index);
+                                          } else {
+                                            SplitScreenFunction.isMenuOnList.value.fillRange(
+                                                0,
+                                                SplitScreenFunction.isMenuOnList.value.length,
+                                                false);
+                                            HybridConnectionList().removePresenterBy(index);
+                                          }
+                                        } else {
+                                          webrtcConnector.clickButtonWhenReconnect = true;
                                           Toast.showSplitScreenReconnectToast(
                                               context, webrtcConnector.reconnectChannelState ==
                                               ReconnectState.reconnecting

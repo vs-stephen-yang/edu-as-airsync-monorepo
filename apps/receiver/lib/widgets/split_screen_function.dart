@@ -2,7 +2,6 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
@@ -10,13 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SplitScreenFunction extends StatefulWidget {
-  const SplitScreenFunction({super.key, required this.index, this.updateSize});
+  const SplitScreenFunction({super.key, required this.index, this.updateSize, this.onClose});
 
   static ValueNotifier<List<bool>> isMenuOnList =
       ValueNotifier(List.filled(4, false, growable: false));
 
   final int index;
   final VoidCallback? updateSize;
+  final VoidCallback? onClose;
 
   @override
   State<StatefulWidget> createState() => _SplitScreenFunctionState();
@@ -81,17 +81,7 @@ class _SplitScreenFunctionState extends State<SplitScreenFunction> {
                     notFocusSize: AppUIConstant.iconNotFocusSize,
                     onClick: () {
                       AppAnalytics().trackEventSplitScreenDisconnectClick();
-                      ChannelProvider channelProvider =
-                          Provider.of<ChannelProvider>(context, listen: false);
-                      if (channelProvider.isModeratorMode) {
-                        HybridConnectionList().stopPresenterBy(widget.index);
-                      } else {
-                        SplitScreenFunction.isMenuOnList.value.fillRange(
-                            0,
-                            SplitScreenFunction.isMenuOnList.value.length,
-                            false);
-                        HybridConnectionList().removePresenterBy(widget.index);
-                      }
+                      widget.onClose?.call();
                     },
                   ),
                 if (Home.enlargedScreenPositionIndex.value != widget.index &&
