@@ -38,6 +38,7 @@ class ParticipantItem extends StatelessWidget {
               showWhiteBorder: true,
               onClick: () {
                 if (!rtcConnector.isChannelConnectAvailable()) {
+                  rtcConnector.clickButtonWhenReconnect = true;
                   Toast.makeReconnectToast(rtcConnector.reconnectChannelState, rtcConnector.reconnectChannelState ==
                       ReconnectState.reconnecting
                       ? S.of(context).main_feature_reconnecting_toast
@@ -75,6 +76,7 @@ class ParticipantItem extends StatelessWidget {
               focusColor: Colors.white,
               onClick: () {
                 if (!rtcConnector.isChannelConnectAvailable()) {
+                  rtcConnector.clickButtonWhenReconnect = true;
                   Toast.makeReconnectToast(rtcConnector.reconnectChannelState, rtcConnector.reconnectChannelState ==
                       ReconnectState.reconnecting
                       ? S.of(context).main_feature_reconnecting_toast
@@ -87,14 +89,20 @@ class ParticipantItem extends StatelessWidget {
           ),
           ValueListenableBuilder(
               valueListenable: rtcConnector.reconnectChannelStateNotifier,
-              builder: (BuildContext context, ReconnectState value,
-                  Widget? child) {
-                if (value == ReconnectState.success) {
-                  Toast.makeReconnectToast(value, S.of(context).main_feature_reconnect_success_toast)?.show(context);
-                  rtcConnector.reconnectChannelStateNotifier.value = ReconnectState.idle;
-                } else if (value == ReconnectState.fail) {
-                  Toast.makeReconnectToast(value, S.of(context).main_feature_reconnect_fail_toast)?.show(context);
-                  rtcConnector.reconnectChannelStateNotifier.value = ReconnectState.idle;
+              builder:
+                  (BuildContext context, ReconnectState value, Widget? child) {
+                if (rtcConnector.clickButtonWhenReconnect) {
+                  if (value == ReconnectState.success) {
+                    rtcConnector.clickButtonWhenReconnect = false;
+                    Toast.makeReconnectToast(value,
+                            S.of(context).main_feature_reconnect_success_toast)?.show(context);
+                    rtcConnector.reconnectChannelStateNotifier.value = ReconnectState.idle;
+                  } else if (value == ReconnectState.fail) {
+                    rtcConnector.clickButtonWhenReconnect = false;
+                    Toast.makeReconnectToast(value,
+                            S.of(context).main_feature_reconnect_fail_toast)?.show(context);
+                    rtcConnector.reconnectChannelStateNotifier.value = ReconnectState.idle;
+                  }
                 }
                 return Container();
               }),
