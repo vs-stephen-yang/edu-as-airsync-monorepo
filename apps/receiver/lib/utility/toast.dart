@@ -13,33 +13,34 @@ class Toast {
   static final Map<ReconnectState, DateTime> _lastToastTimes = {};
   static const int second = 3;
 
-  static OverlayEntry makeSplitScreenReconnectToast(BuildContext context, String message, int index, {bool isWebRTC = true}) {
-
+  static OverlayEntry makeSplitScreenReconnectToast(
+      BuildContext context, String message, int index,
+      {bool isWebRTC = true}) {
     Size screenSize = MediaQuery.of(context).size;
     double sectionWidth = screenSize.width / 2;
     double sectionHeight = screenSize.height / 2;
     double? top, left;
     if (Home.enlargedScreenPositionIndex.value == null) {
       if (index == 1) {
-        top = sectionHeight - 50;
+        top = sectionHeight - 80;
         left = sectionWidth + (sectionWidth / 2 - 80);
       } else if (index == 2) {
-        top = sectionHeight*2 - 50;
+        top = sectionHeight * 2 - 80;
         left = sectionWidth / 2 - 80;
       } else if (index == 3) {
-        top = sectionHeight*2 - 50;
+        top = sectionHeight * 2 - 80;
         left = sectionWidth + (sectionWidth / 2 - 80);
       } else {
         if (HybridConnectionList.hybridSplitScreenCount.value > 1) {
-          top = sectionHeight - 50;
+          top = sectionHeight - 80;
           left = sectionWidth / 2 - 80;
         } else {
-          top = screenSize.height - 50;
+          top = screenSize.height - 80;
           left = screenSize.width / 2 - 80;
         }
       }
     } else {
-      top = screenSize.height - 50;
+      top = screenSize.height - 80;
       left = screenSize.width / 2 - 80;
     }
 
@@ -47,7 +48,7 @@ class Toast {
       builder: (BuildContext context) => Positioned(
         left: left,
         top: top,
-        width: 160,  // Width of the Toast
+        width: 160, // Width of the Toast
         child: Material(
           color: Colors.transparent,
           child: Container(
@@ -55,7 +56,8 @@ class Toast {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.grey, // Change the color of the Toast
-              borderRadius: BorderRadius.circular(20), // Change the border radius of the Toast
+              borderRadius: BorderRadius.circular(
+                  20), // Change the border radius of the Toast
             ),
             child: AutoSizeText(
               message,
