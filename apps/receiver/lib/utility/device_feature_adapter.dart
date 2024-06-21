@@ -73,12 +73,12 @@ class DeviceFeatureAdapter {
   };
 
   static initDefault() async {
-    final params = overrideDefaultParams[_deviceType];
+    final Map<String, dynamic>? params = overrideDefaultParams[_deviceType];
 
     if (params != null) {
-      defaultShowDebugOverlay = params.value["showDebugOverlay"] ?? defaultShowDebugOverlay;
-      defaultUseSoftwareDecode = params.value["useSoftwareDecode"] ?? defaultUseSoftwareDecode;
-      defaultUseQuickDecodeParams = params.value["useQuickDecode"] ?? defaultUseQuickDecodeParams;
+      defaultShowDebugOverlay = params["showDebugOverlay"] ?? defaultShowDebugOverlay;
+      defaultUseSoftwareDecode = params["useSoftwareDecode"] ?? defaultUseSoftwareDecode;
+      defaultUseQuickDecodeParams = params["useQuickDecode"] ?? defaultUseQuickDecodeParams;
     }
   }
 
