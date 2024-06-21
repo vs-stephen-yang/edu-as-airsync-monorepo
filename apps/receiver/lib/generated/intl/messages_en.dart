@@ -122,7 +122,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_webrtc_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
             "Network (WebRTC) reconnecting"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "[New Feature]\n1. Quick connect through device list.\n - Cast to AirSync devices in the same network segment without typing Display code and One Time Password.\n\n[Improvement]\n1. Remove \"-\" from Display code.\n2. Reduce screen latency.\n3. Change Display code font for better visual identity."),
+            "[New Feature]\n\n1. Auto - accept mirror request.\n\n2. Set AirPlay PIN code as optional.\n\n3. Provide AirSync Sender application upgrade mechanism.\n\n[Improvement]\n\n1. By default all mirror is ON and keep the latest mirror setting.\n\n2. Increase One Time Password interval to 2 minutes.\n\n3. Improve image quality.\n\n4. Bugs fixed."),
         "main_whats_new_title":
             MessageLookupByLibrary.simpleMessage("What’s New on AirSync?"),
         "moderator_activate_split_screen": MessageLookupByLibrary.simpleMessage(
