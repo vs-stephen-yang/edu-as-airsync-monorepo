@@ -18,11 +18,13 @@ class DeviceFeatureAdapter {
   static bool showDebugOverlay = false;
   static bool useSoftwareDecode = false;
   static bool useQuickDecodeParams = false;
+  static bool enableWebRtcH264BaselineProfile = false;
   static bool enableWebRtcTracing = false;
   static bool verboseWebRtcLog = false;
 
   static bool defaultShowDebugOverlay = false;
   static bool defaultUseSoftwareDecode = false;
+  static bool defaultEnableWebRtcH264BaselineProfile = false;
   static bool defaultUseQuickDecodeParams = true;
   static const defaultEnableWebRtcTracing = false;
   static const defaultVerboseWebRtcLog = false;
@@ -86,6 +88,7 @@ class DeviceFeatureAdapter {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     showDebugOverlay = prefs.getBool("ShowDebugOverlay") ?? defaultShowDebugOverlay;
     useSoftwareDecode = prefs.getBool("UseSoftwareDecode") ?? defaultUseSoftwareDecode;
+    enableWebRtcH264BaselineProfile = prefs.getBool("EnableWebRtcH264BaselineProfile") ?? defaultEnableWebRtcH264BaselineProfile;
     useQuickDecodeParams = prefs.getBool("UseQuickDecodeParams") ?? defaultUseQuickDecodeParams;
     enableWebRtcTracing = prefs.getBool("EnableWebRtcTracing") ?? defaultEnableWebRtcTracing;
     verboseWebRtcLog = prefs.getBool("VerboseWebRtcLog") ?? defaultVerboseWebRtcLog;
@@ -95,6 +98,7 @@ class DeviceFeatureAdapter {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool("ShowDebugOverlay", showDebugOverlay);
     prefs.setBool("UseSoftwareDecode", useSoftwareDecode);
+    prefs.setBool("EnableWebRtcH264BaselineProfile", enableWebRtcH264BaselineProfile);
     prefs.setBool("UseQuickDecodeParams", useQuickDecodeParams);
     prefs.setBool("EnableWebRtcTracing", enableWebRtcTracing);
     prefs.setBool("VerboseWebRtcLog", verboseWebRtcLog);
@@ -126,6 +130,7 @@ class DeviceFeatureAdapter {
     Map<String, int> decodeOptions = getDecodeOptions();
     Map<String, dynamic> options = {
       'additionalDecoderParameter': decodeOptions,
+      'enableH264BaselineProfile': enableWebRtcH264BaselineProfile,
       'enableTracing': enableWebRtcTracing,
       'logSeverity': verboseWebRtcLog ? 'VERBOSE' : 'INFO',
     };
