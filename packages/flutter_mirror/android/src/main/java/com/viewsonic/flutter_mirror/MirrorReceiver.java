@@ -38,8 +38,8 @@ public class MirrorReceiver implements
 
     // create C++ MirrorReceiver
     instance_ = createInstanceNative(
-      textureRegistry,
-      additionalCodecParams);
+        textureRegistry,
+        additionalCodecParams);
 
     assert instance_ != 0;
 
@@ -116,8 +116,17 @@ public class MirrorReceiver implements
   }
 
   public void stop() {
-    // TODO: stop all receivers
     miracastReceiver_.stop();
+
+    stopGooglecast();
+    stopAirplay();
+  }
+
+  public void dispose() {
+    if (instance_ != 0) {
+      destroyInstanceNative(instance_);
+      instance_ = 0;
+    }
   }
 
   // stop a mirror session by its Id
