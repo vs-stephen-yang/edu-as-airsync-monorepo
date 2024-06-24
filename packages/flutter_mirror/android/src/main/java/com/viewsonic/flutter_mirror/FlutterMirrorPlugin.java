@@ -325,11 +325,21 @@ public class FlutterMirrorPlugin implements
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     Log.d(TAG, "FlutterMirrorPlugin.onDetachedFromEngine()");
-    if (mirrorReceiver_ != null) {
-      mirrorReceiver_.stop();
+    if (channel_ != null) {
+      // stop receiving messages from the Flutter side
+      channel_.setMethodCallHandler(null);
     }
 
-    channel_.setMethodCallHandler(null);
+    if (mirrorReceiver_ != null) {
+      mirrorReceiver_.stop();
+      mirrorReceiver_.dispose();
+      mirrorReceiver_ = null;
+    }
+
+    // Note: set channel_ to null after mirrorReceiver_.stop() and
+    // mirrorReceiver_.dispose()
+    // Reason: stop() may trigger a callback to the Flutter side
+    channel_ = null;
   }
 
   // create a surface and return its id
