@@ -25,6 +25,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   bool _enableWebRtcTracing = false;
   bool _startWebRtcTracing = false;
   bool _verboseWebRtcLog = false;
+  bool _enableWebRtcH264BaselineProfile = false;
 
   void _notifyRestart() {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -64,6 +65,16 @@ class _DebugSwitchState extends State<DebugSwitch> {
     });
   }
 
+  void _changeH264BaselineProfile(bool value) async {
+    DeviceFeatureAdapter.enableWebRtcH264BaselineProfile = value;
+    await DeviceFeatureAdapter.save();
+
+    setState(() {
+      _enableWebRtcH264BaselineProfile = value;
+      _notifyRestart();
+    });
+  }
+
   void _changeEnableWebRtcTracing(bool value) async {
     DeviceFeatureAdapter.enableWebRtcTracing = value;
     await DeviceFeatureAdapter.save();
@@ -99,6 +110,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   void _initialize() {
     _showDebugOverlay = DeviceFeatureAdapter.showDebugOverlay;
     _useSoftwareDecode = DeviceFeatureAdapter.useSoftwareDecode;
+    _enableWebRtcH264BaselineProfile = DeviceFeatureAdapter.enableWebRtcH264BaselineProfile;
     _useQuickDecodeParams = DeviceFeatureAdapter.useQuickDecodeParams;
     _enableWebRtcTracing = DeviceFeatureAdapter.enableWebRtcTracing;
     _verboseWebRtcLog = DeviceFeatureAdapter.verboseWebRtcLog;
@@ -132,6 +144,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
                           title: const Text('Software Decode'),
                           value: _useSoftwareDecode,
                           onChanged: _enableSoftwareDecode,
+                        ),
+                        SwitchListTile(
+                          title: const Text('Enable WebRTC H264 Baseline Profile'),
+                          value: _enableWebRtcH264BaselineProfile,
+                          onChanged: _changeH264BaselineProfile,
                         ),
                         SwitchListTile(
                             title: const Text('Quick Decode'),
