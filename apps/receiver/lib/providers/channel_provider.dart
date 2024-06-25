@@ -476,14 +476,15 @@ class ChannelProvider extends ChangeNotifier {
     try {
       log.info('Registering the instance ${appConfig.settings.apiGateway}');
 
-      http.Response response = await http.put(
-        Uri.parse(appConfig.settings.apiGateway),
-        body: json.encode({
-          'instanceId': instanceId,
-          'version': appConfig.appVersion,
-          'platform': "android",
-        }),
-      );
+      http.Response response = await http
+          .put(
+            Uri.parse(appConfig.settings.apiGateway),
+            body: json.encode({
+              'instanceId': instanceId,
+              'version': appConfig.appVersion,
+              'platform': "android",
+            }),
+          ).timeout(const Duration(seconds: 3));
       log.info('Status of Instance Register API: ${response.statusCode}');
 
       if (response.statusCode >= HttpStatus.ok &&
