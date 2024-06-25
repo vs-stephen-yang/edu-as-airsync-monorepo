@@ -61,25 +61,17 @@ class PresentPresentStart extends StatelessWidget {
                 builder: (BuildContext context, value, Widget? child) {
                   return InkWell(
                     onTap: () {
-                      if (presentingState.value) {
-                        AppAnalytics.instance.trackEvent('click_resume');
-                        if (channelProvider.isConnectAvailable()) {
-                          presentingState.value = !presentingState.value;
-                          channelProvider.presentResume();
-                        } else {
-                          sendReconnectStateToast(
-                              context, channelProvider.reconnectState);
-                        }
-                      } else {
-                        AppAnalytics.instance.trackEvent('click_pause');
-                        if (channelProvider.isConnectAvailable()) {
-                          presentingState.value = !presentingState.value;
-                          channelProvider.presentPause();
-                        } else {
-                          sendReconnectStateToast(
-                              context, channelProvider.reconnectState);
-                        }
+                      // Toggle current state
+                      bool tempState = !presentingState.value;
+                      AppAnalytics.instance.trackEvent(tempState ? 'click_resume' : 'click_pause');
+                      if (!channelProvider.isConnectAvailable()) {
+                        sendReconnectStateToast(context, channelProvider.reconnectState);
+                        return;
                       }
+
+                      // Update state
+                      presentingState.value = tempState;
+                      tempState ? channelProvider.presentResume() : channelProvider.presentPause();
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
