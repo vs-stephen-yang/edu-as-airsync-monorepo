@@ -100,11 +100,11 @@ class DeviceFeatureAdapter {
     prefs.setBool("VerboseWebRtcLog", verboseWebRtcLog);
   }
 
-  static Map<String, int> getDecodeOptions() {
+  static Map<String, int> getDecodeOptions({bool excludeQuickDecodeParams = false}) {
     final options = <String, int>{};
 
     // add quick decode parameters
-    if (useQuickDecodeParams) {
+    if (!excludeQuickDecodeParams && useQuickDecodeParams) {
       options.addAll(quickDecodeParams);
     }
 

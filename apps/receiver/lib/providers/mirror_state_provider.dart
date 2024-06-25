@@ -352,7 +352,12 @@ class MirrorStateProvider extends ChangeNotifier
     // We also handle the message potentially returning null.
     try {
       _flutterMirrorPlugin?.registerListener(this);
-      Map<String, int> options = DeviceFeatureAdapter.getDecodeOptions();
+
+      // Since quick decode is only effective in addressing latency issue with
+      // WebRTC (web sender), and using quick decode with AirPlay and ChromeCast
+      // results in decode failures, we have decided to apply quick decode
+      // exclusively to WebRTC scenarios for now.
+      Map<String, int> options = DeviceFeatureAdapter.getDecodeOptions(excludeQuickDecodeParams: true);
 
       log.info('Initialize mirror. Options: ${options.toString()}');
 
