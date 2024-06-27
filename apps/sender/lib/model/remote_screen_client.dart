@@ -34,7 +34,7 @@ class RemoteScreenClient {
     String url,
     String roomId,
     Function onTrack,
-    Function onClose
+    Function onClose,
   ) async {
     JsonRPCSignal signal = JsonRPCSignal(url);
 
