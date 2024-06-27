@@ -77,6 +77,8 @@ class ChannelProvider extends ChangeNotifier {
 
   String? host;
   bool isServerStart = false;
+  bool _isTunnelServerStart = false;
+  bool _isDirectServerStart = false;
   DisplayDirectServer? _directServer;
   DisplayTunnelServer? _tunnelServer;
   String _tunnelApiUrl = '';
@@ -127,48 +129,51 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _setConnectivityListener() {
-    if (_connectivitySubscription != null) {
-      return;
-    }
-
-    _connectivitySubscription = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) async {
+    _connectivitySubscription ??=
+        Connectivity().onConnectivityChanged.listen((result) async {
       log.info('Network connectivity has changed to $result');
 
       if (result == ConnectivityResult.none) {
-        connectNet = false;
-        stopServer();
+        _handleNoConnectivity();
       } else {
-        connectNet = true;
-        log.info(
-            'Last Network Connectivity is: $_lastConnectivityResult, being changed to result: $result');
-        // MUST add async/await, to compare connectivity result with last one.
-        await _checkNetWorkInfo().then((value) {
-          host = _instanceInfo.ipAddress = value;
-
-          if (_lastConnectivityResult != result) {
-            //displayCode.isEmpty || _tunnelApiUrl.isEmpty
-            registerInstanceIndexById(AppInstanceCreate().displayInstanceID)
-                .then((int? instanceIndex) {
-              final displayCode = encodeDisplayCode(
-                DisplayCode(
-                  _getPrivateIpWithDefault(host, '192.168.0.0'),
-                  instanceIndex ?? 0,
-                ),
-              );
-
-              _instanceInfo.displayCode = displayCode ?? '';
-
-              startServer(AppInstanceCreate().displayInstanceID);
-            });
-          }
-        });
+        await _handleConnectivity(result);
       }
-
-      // Save connectivity result, for status compare.
       _lastConnectivityResult = result;
     });
+  }
+
+  void _handleNoConnectivity() {
+    connectNet = false;
+    stopServer();
+  }
+
+  Future<void> _handleConnectivity(ConnectivityResult result) async {
+    connectNet = true;
+    log.info('Last Network Connectivity is: $_lastConnectivityResult, being changed to result: $result');
+
+    final value = await _checkNetWorkInfo();
+    host = _instanceInfo.ipAddress = value;
+
+    if (_lastConnectivityResult != result) {
+      registerInstanceIndexById(AppInstanceCreate().displayInstanceID)
+          .then((value) => _handleInstanceIndex(value));
+    }
+  }
+
+  void _handleInstanceIndex(int? instanceIndex) {
+    final displayCode = encodeDisplayCode(
+      DisplayCode(
+        _getPrivateIpWithDefault(host, '192.168.0.0'),
+        instanceIndex ?? 0,
+      ),
+    );
+
+    _instanceInfo.displayCode = displayCode ?? '';
+    if (instanceIndex != null) {
+      startServer(AppInstanceCreate().displayInstanceID);
+    } else {
+      startDirectServer();
+    }
   }
 
   void _setTunnelServer() {
@@ -219,8 +224,8 @@ class ChannelProvider extends ChangeNotifier {
     _remoteScreenServe.stopRemoteScreenPublisher();
   }
 
-  Future<void> startServer(String instanceId) async {
-    if (isServerStart) return;
+  Future<void> startTunnelServer(String instanceId) async {
+    if (_isTunnelServerStart) return;
 
     // start the tunnel server
     log.info('Starting the tunnel channel server $_tunnelApiUrl');
@@ -229,6 +234,11 @@ class ChannelProvider extends ChangeNotifier {
       _setTunnelServer();
       _tunnelServer?.start(instanceId, _tunnelApiUrl);
     }
+    _isTunnelServerStart = true;
+  }
+
+  Future<void> startDirectServer() async {
+    if (_isDirectServerStart) return;
 
     // start the direct server
     try {
@@ -242,12 +252,17 @@ class ChannelProvider extends ChangeNotifier {
           securityContext: securityContext,
         );
       }
-    } on PathNotFoundException catch (e) {
+      _isDirectServerStart = true;
+    } on Exception catch (e) {
       log.severe(
           'Failed to load certificate or private key for secure direct connections. $e');
+      _isDirectServerStart = false;
     }
+  }
 
-    isServerStart = true;
+  Future<void> startServer(String instanceId) async {
+    if (!_isTunnelServerStart) startTunnelServer(instanceId);
+    if (!_isDirectServerStart) startDirectServer();
   }
 
   void _onNewChannel(Channel channel, ChannelMode mode) {
@@ -360,14 +375,16 @@ class ChannelProvider extends ChangeNotifier {
     sendDisplayStatus(channel);
   }
 
-  bool stopServer() {
+  void stopServer() {
     log.info('Stopping the channel server');
 
     _tunnelServer?.stop();
     _tunnelServer = null;
     _directServer?.stop();
     _directServer = null;
-    return isServerStart = false;
+    _isTunnelServerStart = false;
+    _isDirectServerStart = false;
+    isServerStart = false;
   }
 
   ConnectRequestStatus _verifyConnectRequest(
