@@ -112,7 +112,6 @@ class Toast {
 
     MotionToast toast = MotionToast(
       primaryColor: Colors.grey,
-      backgroundType: BackgroundType.solid,
       description: Center(
         child: AutoSizeText(
           message,
