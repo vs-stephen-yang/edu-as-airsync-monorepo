@@ -429,25 +429,31 @@ class ChannelProvider extends ChangeNotifier {
           _handleRemoteScreenState(message as RemoteScreenStatusMessage);
           break;
         case ChannelMessageType.remoteScreenInfo:
-          RemoteScreenInfoMessage infoMessage =
-              message as RemoteScreenInfoMessage;
-          await _remoteScreenClient?.handleRemoteScreenInfo(
-              infoMessage.ionSfuRoom!.url!, infoMessage.ionSfuRoom!.roomId!,
-              () {
-            if (!kIsWeb && Platform.isIOS) {
-              UndoManager.setUndoState(canUndo: false, canRedo: false);
-            }
-            presentRemoteScreenPage();
-          },
-              // onClose callback
-              (int code, String reason) {
-            removeRemoteScreenClient();
-          });
+          await _handleRemoteScreenInfo(message as RemoteScreenInfoMessage);
           break;
         default:
           break;
       }
     };
+  }
+
+  Future<void> _handleRemoteScreenInfo(
+    RemoteScreenInfoMessage infoMessage,
+  ) async {
+    await _remoteScreenClient?.handleRemoteScreenInfo(
+      infoMessage.ionSfuRoom!.url!,
+      infoMessage.ionSfuRoom!.roomId!,
+      () {
+        if (!kIsWeb && Platform.isIOS) {
+          UndoManager.setUndoState(canUndo: false, canRedo: false);
+        }
+        presentRemoteScreenPage();
+      },
+      // onClose callback
+      (int code, String reason) {
+        removeRemoteScreenClient();
+      },
+    );
   }
 
   void _onPresentAccepted(PresentAcceptedMessage message) {
@@ -783,7 +789,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _onRtcConnectionState(RTCPeerConnectionState state) {
-    switch(state) {
+    switch (state) {
       case RTCPeerConnectionState.RTCPeerConnectionStateConnected:
         _onRtcConnectionConnected();
         break;
