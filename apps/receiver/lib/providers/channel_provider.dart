@@ -647,6 +647,7 @@ class ChannelProvider extends ChangeNotifier {
       countDownProgress.value = maxCountDown;
 
       _generateOTP();
+      _updateDisplayCode();
     }
   }
 
@@ -660,5 +661,14 @@ class ChannelProvider extends ChangeNotifier {
         _otpList.remove(_otpList.first);
       }
     }
+  }
+
+  _updateDisplayCode() async {
+    if (_isTunnelServerStart) return;
+    final value = await _checkNetWorkInfo();
+    host = _instanceInfo.ipAddress = value;
+
+    registerInstanceIndexById(AppInstanceCreate().displayInstanceID)
+        .then((value) => _handleInstanceIndex(value));
   }
 }
