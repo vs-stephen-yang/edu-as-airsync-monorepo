@@ -25,11 +25,12 @@ type IonSfuListener interface {
 }
 
 type IonSfuServer struct {
-	ionSfuListener_ IonSfuListener
+	listener_ IonSfuListener
+	sfu       *sfu.SFU
 }
 
 var (
-	ionSfuServer   = new(IonSfuServer)
+	sfuServer      = new(IonSfuServer)
 	conf           = sfu.Config{}
 	cert           string
 	key            string
@@ -81,14 +82,26 @@ func Initialize() {
 	if verbosityLevel < 0 {
 		verbosityLevel = logConfig.Config.V
 	}
+
+	log.SetGlobalOptions(log.GlobalConfig{V: verbosityLevel})
 }
 
 func RegisterListener(listener IonSfuListener) {
-	ionSfuServer.ionSfuListener_ = listener
+	sfuServer.listener_ = listener
+}
+
+func InitializeSFU() {
+	sfu.Logger = logger
+
+	sfuServer.sfu = sfu.NewSFU(conf)
+
+	dc := sfuServer.sfu.NewDatachannel(sfu.APIChannelLabel)
+	dc.Use(datachannel.SubscriberAPI)
 }
 
 func StartServer(configInfo *ConfigInfo) {
 	updateConfig(configInfo)
+	InitializeSFU()
 	go serverMain()
 }
 
@@ -118,8 +131,6 @@ func updateConfig(configInfo *ConfigInfo) {
 }
 
 func serverMain() {
-
-	log.SetGlobalOptions(log.GlobalConfig{V: verbosityLevel})
 	logger.Info("--- Starting SFU Node ---")
 
 	defer func() {
@@ -127,11 +138,6 @@ func serverMain() {
 			logger.Error(fmt.Errorf("recover from panic: %v", r), "error")
 		}
 	}()
-
-	sfu.Logger = logger
-	s := sfu.NewSFU(conf)
-	dc := s.NewDatachannel(sfu.APIChannelLabel)
-	dc.Use(datachannel.SubscriberAPI)
 
 	upgrader := websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool {
@@ -153,7 +159,7 @@ func serverMain() {
 		}
 		defer c.Close()
 
-		p := server.NewJSONSignal(sfu.NewPeer(s), logger)
+		p := server.NewJSONSignal(sfu.NewPeer(sfuServer.sfu), logger)
 		defer p.Close()
 
 		jc := jsonrpc2.NewConn(r.Context(), websocketjsonrpc2.NewObjectStream(c), p)
@@ -176,10 +182,11 @@ func serverMain() {
 	var err error
 	srv = &http.Server{Addr: addr}
 	err = srv.ListenAndServe()
+
 	if err != http.ErrServerClosed {
 		logger.Error(err, "error")
-		if ionSfuServer.ionSfuListener_ != nil {
-			ionSfuServer.ionSfuListener_.OnError("http-server", err.Error())
+		if sfuServer.listener_ != nil {
+			sfuServer.listener_.OnError("http-server", err.Error())
 		}
 	}
 	<-idleConnsClosed
