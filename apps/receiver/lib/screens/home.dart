@@ -348,7 +348,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   _showMaxAmountToast() {
     MotionToast(
       primaryColor: Colors.grey,
-      backgroundType: BackgroundType.solid,
       description: Center(
         child: AutoSizeText(
           S.of(context).toast_maximum_split_screen,

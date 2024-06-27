@@ -120,7 +120,6 @@ class ParticipantItem extends StatelessWidget {
       if (HybridConnectionList().getPresentingCount() >= 4) {
         MotionToast(
           primaryColor: Colors.grey,
-          backgroundType: BackgroundType.solid,
           description: AutoSizeText(
             S.of(context).toast_maximum_split_screen,
             maxLines: 1,
