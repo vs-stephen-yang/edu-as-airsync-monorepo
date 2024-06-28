@@ -719,6 +719,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Support Lan Mode only`
+  String get main_content_lan_only {
+    return Intl.message(
+      'Support Lan Mode only',
+      name: 'main_content_lan_only',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

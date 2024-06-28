@@ -41,6 +41,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("螢幕鏡射"),
         "main_content_display_code":
             MessageLookupByLibrary.simpleMessage("投影辨識碼"),
+        "main_content_lan_only":
+            MessageLookupByLibrary.simpleMessage("僅支援區域網路連線模式"),
         "main_content_one_time_password":
             MessageLookupByLibrary.simpleMessage("一次性密碼"),
         "main_content_one_time_password_get_fail":

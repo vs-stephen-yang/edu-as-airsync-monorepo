@@ -41,6 +41,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cast Settings"),
         "main_content_display_code":
             MessageLookupByLibrary.simpleMessage("Display Code"),
+        "main_content_lan_only":
+            MessageLookupByLibrary.simpleMessage("Support Lan Mode only"),
         "main_content_one_time_password":
             MessageLookupByLibrary.simpleMessage("One Time Password"),
         "main_content_one_time_password_get_fail":
