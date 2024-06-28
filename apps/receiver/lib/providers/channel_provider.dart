@@ -303,6 +303,8 @@ class ChannelProvider extends ChangeNotifier {
                   remoteScreenConnector: remoteScreenConnector, kick: false);
             });
             _remoteScreenConnectors.add(remoteScreenConnector!);
+
+            _remoteScreenServe.addConnector(remoteScreenConnector!);
           }
           notifyListeners();
           break;
@@ -358,6 +360,12 @@ class ChannelProvider extends ChangeNotifier {
             removeSender(remoteScreenConnector: remoteScreenConnector);
           }
           break;
+
+        case ChannelMessageType.remoteScreenSignal:
+          final signalMessage = message as RemoteScreenSignalMessage;
+          remoteScreenConnector?.processSignalFromPeer(signalMessage.signal!);
+          break;
+
         default:
           break;
       }
@@ -529,6 +537,7 @@ class ChannelProvider extends ChangeNotifier {
           remoteScreenConnector
               .sendRemoteScreenState(RemoteScreenStatus.kicked);
         }
+        _remoteScreenServe.removeConnector(remoteScreenConnectors[index]);
         remoteScreenConnectors.removeAt(index);
       }
     } else {
