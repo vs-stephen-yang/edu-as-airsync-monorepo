@@ -19,7 +19,7 @@ import 'package:display_flutter/utility/toast.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
-import 'package:display_flutter/widgets/main_info_net.dart';
+import 'package:display_flutter/widgets/main_info.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
 import 'package:display_flutter/widgets/split_screen_function.dart';
 import 'package:display_flutter/widgets/status_bar.dart';
@@ -258,7 +258,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 valueListenable: Home.isShowDisplayCode,
                 builder: (BuildContext context, bool value, child) {
                   if (value) {
-                    return const MainInfoInternet();
+                    return const MainInfo();
                   } else {
                     return const SizedBox();
                   }

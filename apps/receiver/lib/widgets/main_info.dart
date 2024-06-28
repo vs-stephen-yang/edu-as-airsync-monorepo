@@ -11,8 +11,8 @@ import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MainInfoInternet extends StatelessWidget {
-  const MainInfoInternet({super.key});
+class MainInfo extends StatelessWidget {
+  const MainInfo({super.key});
 
   @override
   Widget build(BuildContext context) {
