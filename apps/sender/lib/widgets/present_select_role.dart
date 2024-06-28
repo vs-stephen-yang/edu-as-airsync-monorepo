@@ -26,7 +26,18 @@ class PresentSelectRole extends StatelessWidget {
             AppAnalytics.instance.trackEvent('select_remote_screen');
 
             channelProvider.currentRole = JoinIntentType.remoteScreen;
-            channelProvider.presentModeratorNamePage();
+            if (channelProvider.isConnectAvailable()) {
+              channelProvider.presentModeratorNamePage();
+            } else {
+              Toast.makeFeatureReconnectToast(
+                  channelProvider.reconnectState,
+                  channelProvider.reconnectState ==
+                      ChannelReconnectState.reconnecting
+                      ? S.of(context)
+                      .main_feature_reconnecting_toast
+                      : S.of(context)
+                      .main_feature_reconnect_fail_toast);
+            }
           },
         ),
         const SizedBox(width: 10),
