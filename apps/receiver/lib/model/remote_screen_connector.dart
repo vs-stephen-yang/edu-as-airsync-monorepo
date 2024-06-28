@@ -22,6 +22,8 @@ class RemoteScreenConnector {
   bool isDeleted = false;
   bool isTouchEnabled = false;
 
+  Function(String message)? _signalHandler;
+
   String get senderNameWithEllipsis {
     String result = senderName ?? '';
     if (result.length > 10) {
@@ -81,5 +83,20 @@ class RemoteScreenConnector {
     );
     channel.send(remoteScreenInfoMessage);
     remotePresentationState = RemotePresentationState.streaming;
+  }
+
+  void registerSignalHandler(Function(String message)? handler) {
+    _signalHandler = handler;
+  }
+
+  void processSignalFromPeer(String message) {
+    _signalHandler?.call(message);
+  }
+
+  // send signal message to the peer
+  void sendSignalToPeer(String message) {
+    channel.send(
+      RemoteScreenSignalMessage(_sessionId, message),
+    );
   }
 }

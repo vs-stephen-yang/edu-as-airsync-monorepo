@@ -2,10 +2,12 @@ import 'dart:io';
 import 'dart:developer';
 
 import 'package:device_info_vs/device_info_vs.dart';
+import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_utils.dart';
 import 'package:display_flutter/model/touch_event_manager.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
+import 'package:flutter_ion_sfu/flutter_ion_sfu_listener.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:uuid/uuid.dart';
@@ -18,7 +20,17 @@ import 'package:display_flutter/protoc/internal.pb.dart';
 const defaultScreenWidth = 1920.0;
 const defaultScreenHeight = 1080.0;
 
-class RemoteScreenServer {
+class RemoteScreenConnectorChannel {
+  final int signalChannelId;
+  final RemoteScreenConnector connector;
+
+  RemoteScreenConnectorChannel(
+    this.signalChannelId,
+    this.connector,
+  );
+}
+
+class RemoteScreenServer extends FlutterIonSfuListener {
   Client? _ionSfuClient;
   final FlutterIonSfu _ionSfuServer = FlutterIonSfu();
   bool _iosSfuServerStart = false;
@@ -29,13 +41,20 @@ class RemoteScreenServer {
   double _screenHeight = defaultScreenHeight;
   final _touchEventManager = TouchEventManager();
 
+  final _connectorChannels = <int, RemoteScreenConnectorChannel>{};
+
   RemoteScreenServer();
 
   Future startSfuServer() async {
     if (_iosSfuServerStart) return;
+
     final configuration = FlutterIonSfuConfiguration();
+
+    _ionSfuServer.registerListener(this);
+
     await _ionSfuServer.initialize();
     await _ionSfuServer.start(configuration);
+
     _iosSfuServerStart = true;
   }
 
@@ -126,6 +145,27 @@ class RemoteScreenServer {
     _ionSfuClient = null;
   }
 
+  void addConnector(RemoteScreenConnector connector) async {
+    final channelId = await _ionSfuServer.createSignalChannel();
+
+    _connectorChannels[channelId] = RemoteScreenConnectorChannel(
+      channelId,
+      connector,
+    );
+
+    connector.registerSignalHandler((String message) {
+      _sendSignalToSfu(channelId, message);
+    });
+  }
+
+  void removeConnector(RemoteScreenConnector connector) {
+    connector.registerSignalHandler(null);
+
+    _connectorChannels.removeWhere(
+      (channelId, channel) => channel.connector == connector,
+    );
+  }
+
   Future<void> updateScreenSize() async {
     if (Platform.isWindows) {
       // PlatformDispatcher did not support get windows width and height yet.
@@ -172,5 +212,32 @@ class RemoteScreenServer {
         break;
       }
     }
+  }
+
+  // onError callback from FlutterIonSfu
+  @override
+  void onError(String error, String msg) {}
+
+  @override
+  void onSignalMessage(int channelId, String message) {
+    // Received a signal message from sfu server
+    final channel = _connectorChannels[channelId];
+
+    if (channel == null) {
+      return;
+    }
+
+    // forward the signal message to the peer
+    channel.connector.sendSignalToPeer(message);
+  }
+
+  // Send a signal message to the sfu server
+  void _sendSignalToSfu(int channelId, String message) {
+    final channel = _connectorChannels[channelId];
+    if (channel == null) {
+      return;
+    }
+
+    _ionSfuServer.processSignalMessage(channelId, message);
   }
 }
