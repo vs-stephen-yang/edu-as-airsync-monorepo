@@ -1,4 +1,3 @@
-
 import 'package:display_channel/display_channel.dart';
 
 enum RemotePresentationState {
@@ -8,12 +7,12 @@ enum RemotePresentationState {
 }
 
 class RemoteScreenConnector {
-
   String roomId;
   String? host;
   int port;
   Channel channel;
-  RemotePresentationState remotePresentationState = RemotePresentationState.stopStreaming;
+  RemotePresentationState remotePresentationState =
+      RemotePresentationState.stopStreaming;
   String? _sessionId;
   String? get sessionId => _sessionId;
   String? clientId;
@@ -33,7 +32,13 @@ class RemoteScreenConnector {
 
   Function()? onChannelDisconnect;
 
-  RemoteScreenConnector(this.channel, this.roomId, this.host, this.port, JoinDisplayMessage message) {
+  RemoteScreenConnector(
+    this.channel,
+    this.roomId,
+    this.host,
+    this.port,
+    JoinDisplayMessage message,
+  ) {
     clientId = message.clientId;
     senderName = message.name;
     senderVersion = message.version;
@@ -72,7 +77,8 @@ class RemoteScreenConnector {
       IonSfuRoom(
         "ws://$host:$port/ws",
         roomId,
-      ),);
+      ),
+    );
     channel.send(remoteScreenInfoMessage);
     remotePresentationState = RemotePresentationState.streaming;
   }
