@@ -431,6 +431,9 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.remoteScreenInfo:
           await _handleRemoteScreenInfo(message as RemoteScreenInfoMessage);
           break;
+        case ChannelMessageType.remoteScreenSignal:
+          await _handleRemoteScreenSignal(message as RemoteScreenSignalMessage);
+          break;
         default:
           break;
       }
@@ -441,7 +444,7 @@ class ChannelProvider extends ChangeNotifier {
     RemoteScreenInfoMessage infoMessage,
   ) async {
     await _remoteScreenClient?.handleRemoteScreenInfo(
-      infoMessage.ionSfuRoom!.url!,
+      infoMessage.ionSfuRoom!.signalUrl,
       infoMessage.ionSfuRoom!.roomId!,
       () {
         if (!kIsWeb && Platform.isIOS) {
@@ -454,6 +457,12 @@ class ChannelProvider extends ChangeNotifier {
         removeRemoteScreenClient();
       },
     );
+  }
+
+  Future<void> _handleRemoteScreenSignal(
+    RemoteScreenSignalMessage message,
+  ) async {
+    _remoteScreenClient?.handleSignalMessage(message.signal!);
   }
 
   void _onPresentAccepted(PresentAcceptedMessage message) {
