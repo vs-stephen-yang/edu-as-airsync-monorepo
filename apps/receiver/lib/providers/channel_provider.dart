@@ -70,13 +70,13 @@ class ChannelProvider extends ChangeNotifier {
 
   final ValueNotifier<bool> isEyeOpen = ValueNotifier(true);
   late ValueNotifier<int> countDownProgress;
+  final ValueNotifier<bool> isLanModeOnly = ValueNotifier(false);
   final ValueNotifier<int> otp = ValueNotifier(0000);
   final List<String> _otpList = [];
 
   List<String> get otpList => _otpList;
 
   String? host;
-  bool isServerStart = false;
   bool _isTunnelServerStart = false;
   bool _isDirectServerStart = false;
   DisplayDirectServer? _directServer;
@@ -145,6 +145,7 @@ class ChannelProvider extends ChangeNotifier {
   void _handleNoConnectivity() {
     connectNet = false;
     stopServer();
+    _instanceInfo.displayCode = '';
   }
 
   Future<void> _handleConnectivity(ConnectivityResult result) async {
@@ -171,8 +172,10 @@ class ChannelProvider extends ChangeNotifier {
     _instanceInfo.displayCode = displayCode ?? '';
     if (instanceIndex != null) {
       startServer(AppInstanceCreate().displayInstanceID);
+      isLanModeOnly.value = false;
     } else {
       startDirectServer();
+      isLanModeOnly.value = true;
     }
   }
 
@@ -384,7 +387,6 @@ class ChannelProvider extends ChangeNotifier {
     _directServer = null;
     _isTunnelServerStart = false;
     _isDirectServerStart = false;
-    isServerStart = false;
   }
 
   ConnectRequestStatus _verifyConnectRequest(
