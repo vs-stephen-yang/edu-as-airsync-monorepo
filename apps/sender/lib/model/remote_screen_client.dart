@@ -1,3 +1,4 @@
+import 'package:display_cast_flutter/model/remote_screen_channel_signal.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +24,8 @@ class RemoteScreenClient {
   Size _textureSize = const Size(0, 0);
   Offset _textureOffset = const Offset(0, 0);
 
+  RemoteScreenChannelSignal? _channelSignal;
+
   onDataChannelState(RTCDataChannelState state) {
     //print('onDataChannelState: $state');
     if (state == RTCDataChannelState.RTCDataChannelClosed) {
@@ -30,13 +33,40 @@ class RemoteScreenClient {
     }
   }
 
+// send signal messages to the peer via the channel
+  void _sendSignalMessageToPeer(String message) {
+    _channel?.send(
+      RemoteScreenSignalMessage(_sessionId, message),
+    );
+  }
+
+  Signal _createChannelSignal() {
+    _channelSignal = RemoteScreenChannelSignal(_sendSignalMessageToPeer);
+    return _channelSignal!;
+  }
+
+  Signal _createWebsocketSignal(String url) {
+    return JsonRPCSignal(url);
+  }
+
+  Signal _createSignal(String? url) {
+    if (url == null) {
+      // Signaling through the channel
+      return _createChannelSignal();
+    } else {
+      // Signaling through a separate websocket connection
+      // TODO: Retain for backward compatibility. Plan to deprecate and remove in future versions.
+      return _createWebsocketSignal(url);
+    }
+  }
+
   Future handleRemoteScreenInfo(
-    String url,
+    String? url,
     String roomId,
     Function onTrack,
     Function onClose,
   ) async {
-    JsonRPCSignal signal = JsonRPCSignal(url);
+    final signal = _createSignal(url);
 
     _client = await Client.create(
       sid: roomId,
@@ -63,6 +93,11 @@ class RemoteScreenClient {
     _client!.onSignalClose = (int code, String reason) {
       onClose(code, reason);
     };
+  }
+
+  void handleSignalMessage(String signal) {
+    // handle signal messages from the channel
+    _channelSignal?.onPeerMessage(signal);
   }
 
   Future sendStartRemoteScreenMessage() async {
