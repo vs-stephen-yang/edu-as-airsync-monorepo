@@ -34,18 +34,6 @@ enum ChannelMode {
   direct,
 }
 
-String _getPrivateIpWithDefault(String? ipAddress, String defaultIpAddress) {
-  if (ipAddress == null) {
-    return defaultIpAddress;
-  }
-
-  if (isPrivateIp(ipAddress)) {
-    return ipAddress;
-  }
-
-  return defaultIpAddress;
-}
-
 class ChannelProvider extends ChangeNotifier {
   AppConfig appConfig;
 
@@ -613,6 +601,18 @@ class ChannelProvider extends ChangeNotifier {
       }
     }
     return null;
+  }
+
+  String _getPrivateIpWithDefault(String? ipAddress, String defaultIpAddress) {
+    if (ipAddress == null) {
+      return defaultIpAddress;
+    }
+
+    if (isPrivateIp(ipAddress)) {
+      return ipAddress;
+    }
+
+    return defaultIpAddress;
   }
 
   String _getPlatform() {
