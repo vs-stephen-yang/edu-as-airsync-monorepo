@@ -37,6 +37,32 @@ class MethodChannelFlutterIonSfu extends FlutterIonSfuPlatform {
   }
 
   @override
+  Future<int> createSignalChannel() async {
+    return await methodChannel.invokeMethod(
+      'createSignalChannel',
+      <String, dynamic>{},
+    );
+  }
+
+  @override
+  Future<int> closeSignalChannel(int channelId) async {
+    return await methodChannel.invokeMethod(
+      'closeSignalChannel',
+      <String, dynamic>{
+        'channelId': channelId,
+      },
+    );
+  }
+
+  @override
+  Future<void> processSignalMessage(int channelId, String message) async {
+    await methodChannel.invokeMethod('processSignalMessage', <String, dynamic>{
+      'channelId': channelId,
+      'message': message,
+    });
+  }
+
+  @override
   void registerListener(FlutterIonSfuListener listener) {
     _listener = listener;
   }
@@ -46,6 +72,13 @@ class MethodChannelFlutterIonSfu extends FlutterIonSfuPlatform {
     try {
       print("onMethodCallFromNative: ${call.method}");
       switch (call.method) {
+        case 'onSignalMessage':
+          _listener?.onSignalMessage(
+            call.arguments['channelId'],
+            call.arguments['message'],
+          );
+          break;
+
         case 'onError':
           _listener?.onError(call.arguments['error'], call.arguments['msg']);
           break;

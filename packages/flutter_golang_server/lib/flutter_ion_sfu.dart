@@ -20,4 +20,22 @@ class FlutterIonSfu {
   Future<void> stop() {
     return FlutterIonSfuPlatform.instance.stop();
   }
+
+  Future<int> createSignalChannel() {
+    return FlutterIonSfuPlatform.instance.createSignalChannel();
+  }
+
+  Future<void> closeSignalChannel(int channelId) {
+    return FlutterIonSfuPlatform.instance.closeSignalChannel(channelId);
+  }
+
+  Future<void> processSignalMessage(
+    int channelId,
+    String message,
+  ) {
+    return FlutterIonSfuPlatform.instance.processSignalMessage(
+      channelId,
+      message,
+    );
+  }
 }

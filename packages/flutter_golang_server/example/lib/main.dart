@@ -74,4 +74,9 @@ class _MyAppState extends State<MyApp> implements FlutterIonSfuListener {
       _message = message;
     });
   }
+
+  @override
+  void onSignalMessage(int channelId, String message) {
+    // TODO: implement onSignal
+  }
 }
