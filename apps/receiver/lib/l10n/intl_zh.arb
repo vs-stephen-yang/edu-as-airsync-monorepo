@@ -66,5 +66,5 @@
   "main_feature_reconnecting_toast": "網路(控制)重連中",
   "main_feature_reconnect_fail_toast": "網路(控制)重連失敗",
   "main_feature_reconnect_success_toast": "網路(控制)重連成功",
-  "main_content_lan_only": "僅支援區域網路連線模式"
+  "main_content_lan_only": "僅接受區域網路連線"
 }

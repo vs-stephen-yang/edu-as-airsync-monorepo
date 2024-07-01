@@ -66,5 +66,5 @@
   "main_feature_reconnecting_toast": "Network (Control) reconnecting",
   "main_feature_reconnect_fail_toast": "Network (Control) reconnect fail",
   "main_feature_reconnect_success_toast": "Network (Control) reconnect success",
-  "main_content_lan_only": "Support Lan Mode only"
+  "main_content_lan_only": "Only LAN connection"
 }
