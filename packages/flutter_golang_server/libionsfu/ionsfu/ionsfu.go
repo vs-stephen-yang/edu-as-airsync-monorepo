@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
@@ -99,6 +100,10 @@ func RegisterListener(listener IonSfuListener) {
 }
 
 func CreateSignalChannel() int {
+	if sfuServer.channelIdCounter >= math.MaxInt32 {
+		sfuServer.channelIdCounter = 0
+	}
+
 	sfuServer.channelIdCounter++
 
 	peer := sfu.NewPeer(sfuServer.sfu)
