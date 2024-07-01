@@ -46,7 +46,7 @@ public class FlutterIonSfuPlugin implements FlutterPlugin, MethodCallHandler, Io
       result.success(reply);
     } else if (call.method.equals("start")) {
       Map<String, Object> configuration = call.argument("configuration");
-      if(configuration == null) {
+      if (configuration == null) {
         result.error("InvalidArgument", "configuration is null", null);
         return;
       }
@@ -57,6 +57,26 @@ public class FlutterIonSfuPlugin implements FlutterPlugin, MethodCallHandler, Io
       result.success(reply);
     } else if (call.method.equals("stop")) {
       ionSfuServer_.stop();
+
+      Map<String, Long> reply = new HashMap<>();
+      result.success(reply);
+    } else if (call.method.equals("createSignalChannel")) {
+
+      long channelId = ionSfuServer_.createSignalChannel();
+
+      result.success(channelId);
+    } else if (call.method.equals("closeSignalChannel")) {
+      int channelId = call.argument("channelId");
+
+      ionSfuServer_.closeSignalChannel(channelId);
+
+      Map<String, Long> reply = new HashMap<>();
+      result.success(reply);
+    } else if (call.method.equals("processSignalMessage")) {
+      int channelId = call.argument("channelId");
+      String message = call.argument("message");
+
+      ionSfuServer_.processSignalMessage(channelId, message);
 
       Map<String, Long> reply = new HashMap<>();
       result.success(reply);
@@ -80,6 +100,19 @@ public class FlutterIonSfuPlugin implements FlutterPlugin, MethodCallHandler, Io
       arguments.put("msg", msg);
 
       channel.invokeMethod("onError", arguments);
+    });
+  }
+
+  @Override
+  public void onSignalMessage(long channelId, String message) {
+    Log.d(TAG, "FlutterIonSfuPlugin::onSignalMessage() " + channelId + " " + message);
+
+    post(() -> {
+      Map<String, Object> arguments = new HashMap<>();
+      arguments.put("channelId", channelId);
+      arguments.put("message", message);
+
+      channel.invokeMethod("onSignalMessage", arguments);
     });
   }
 

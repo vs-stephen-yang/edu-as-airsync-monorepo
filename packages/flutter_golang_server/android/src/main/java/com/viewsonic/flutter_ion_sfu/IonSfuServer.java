@@ -88,8 +88,25 @@ public class IonSfuServer implements IonSfuListener {
         ionsfu.Ionsfu.stopServer();
     }
 
+    public long createSignalChannel() {
+        return ionsfu.Ionsfu.createSignalChannel();
+    }
+
+    public void closeSignalChannel(long channelId) {
+        ionsfu.Ionsfu.closeSignalChannel(channelId);
+    }
+
+    public void processSignalMessage(long channelId, String message) {
+        ionsfu.Ionsfu.processSignalMessage(channelId, message);
+    }
+
     @Override
     public void onError(String error, String msg) {
         ionSfuServerListener_.onError(error, msg);
+    }
+
+    @Override
+    public void onSignalMessage(long channelId, String message) {
+        ionSfuServerListener_.onSignalMessage(channelId, message);
     }
 }

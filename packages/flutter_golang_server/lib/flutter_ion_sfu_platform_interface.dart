@@ -42,4 +42,16 @@ abstract class FlutterIonSfuPlatform extends PlatformInterface {
   Future<void> stop() {
     throw UnimplementedError('stop() has not been implemented.');
   }
+
+  Future<int> createSignalChannel() {
+    throw UnimplementedError('createSignalChannel() has not been implemented.');
+  }
+
+  Future<void> closeSignalChannel(int channelId) {
+    throw UnimplementedError('closeSignalChannel() has not been implemented.');
+  }
+
+  Future<void> processSignalMessage(int channelId, String message) {
+    throw UnimplementedError('processSignalMessage() has not been implemented.');
+  }
 }
