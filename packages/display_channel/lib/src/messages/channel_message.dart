@@ -19,6 +19,7 @@ enum ChannelMessageType {
   remoteScreenStatus,
   remoteScreenInfo,
   joinDisplayRejected,
+  remoteScreenSignal,
   unknown,
 }
 
@@ -57,6 +58,7 @@ final channelMessageActionNames = <int, String>{
   ChannelMessageType.stopRemoteScreen.index: 'stop-remote-screen',
   ChannelMessageType.remoteScreenStatus.index: 'remote-screen-status',
   ChannelMessageType.remoteScreenInfo.index: 'remote-screen-info',
+  ChannelMessageType.remoteScreenSignal.index: 'remote-screen-signal',
 };
 
 final channelMessageParsers = {
@@ -82,6 +84,8 @@ final channelMessageParsers = {
   ChannelMessageType.remoteScreenInfo.index: RemoteScreenInfoMessage.fromJson,
   ChannelMessageType.joinDisplayRejected.index:
       JoinDisplayRejectedMessage.fromJson,
+  ChannelMessageType.remoteScreenSignal.index:
+      RemoteScreenSignalMessage.fromJson,
 };
 
 ChannelMessageType actionNameToChannelMessageType(String actionName) {
@@ -779,19 +783,35 @@ class RemoteScreenStatusMessage extends ChannelMessage {
 class IonSfuRoom {
   IonSfuRoom(
     this.url,
-    this.roomId,
-  );
+    this.roomId, {
+    this.signalOverChannel = true,
+  });
 
+  // TODO: Retain url for backward compatibility.
+  // Plan to deprecate and remove in future versions.
   String? url;
   String? roomId;
+  bool? signalOverChannel;
+
+  String? get signalUrl {
+    /// If `signalOverChannel` is true, returns `null` to indicate
+    /// that the signaling is handled through the existing channel. Otherwise,
+    /// it returns the value of `url` for backward compatibility.
+    if (signalOverChannel != null && signalOverChannel!) {
+      return null;
+    }
+    return url;
+  }
 
   IonSfuRoom.fromJson(Map<String, dynamic> json)
       : url = json['url'] as String?,
+        signalOverChannel = json['signalOverChannel'] as bool?,
         roomId = json['roomId'] as String?;
 
   Map<String, dynamic> toJson() => {
         'url': url,
         'roomId': roomId,
+        'signalOverChannel': signalOverChannel,
       };
 }
 
@@ -820,6 +840,32 @@ class RemoteScreenInfoMessage extends ChannelMessage {
     return super._toJson({
       'sessionId': sessionId,
       'ionSfuRoom': ionSfuRoom?.toJson(),
+    });
+  }
+}
+
+class RemoteScreenSignalMessage extends ChannelMessage {
+  String? sessionId;
+  String? signal;
+
+  RemoteScreenSignalMessage(
+    this.sessionId,
+    this.signal,
+  ) : super(ChannelMessageType.remoteScreenSignal);
+
+  RemoteScreenSignalMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.remoteScreenSignal, json) {
+    final data = super._fromJson(json);
+
+    sessionId = data['sessionId'] as String?;
+    signal = data['signal'] as String?;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'sessionId': sessionId,
+      'signal': signal,
     });
   }
 }

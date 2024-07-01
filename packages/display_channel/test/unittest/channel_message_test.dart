@@ -378,6 +378,69 @@ void main() {
     expect(actual.ionSfuRoom!.roomId, 'room1');
   });
 
+  test('signalUrl should return url for old version', () {
+    // Arrange
+    final room = IonSfuRoom(
+      'ws://127.0.0.1:7999/dev',
+      'room1',
+      signalOverChannel: null,
+    );
+
+    // action
+    // assert
+    expect(room.signalUrl, 'ws://127.0.0.1:7999/dev');
+  });
+
+  test('signalUrl should return null for new version', () {
+    // Arrange
+    final room = IonSfuRoom(
+      'ws://127.0.0.1:7999/dev',
+      'room1',
+      signalOverChannel: true,
+    );
+
+    // action
+    // assert
+    expect(room.signalUrl, null);
+  });
+
+  test('remote-screen-info message with signalOverChannel', () {
+    // Arrange
+    final msg = RemoteScreenInfoMessage(
+        '1000',
+        IonSfuRoom(
+          'ws://127.0.0.1:7999/dev',
+          'room1',
+          signalOverChannel: true,
+        ));
+
+    // action
+    final json = msg.toJson();
+    final actual = ChannelMessage.parse(json) as RemoteScreenInfoMessage;
+
+    // assert
+    expect(actual.sessionId, '1000');
+    expect(actual.ionSfuRoom!.url, 'ws://127.0.0.1:7999/dev');
+    expect(actual.ionSfuRoom!.roomId, 'room1');
+    expect(actual.ionSfuRoom!.signalOverChannel, true);
+  });
+
+  test('remote-screen-signal message', () {
+    // Arrange
+    final msg = RemoteScreenSignalMessage(
+      '1000',
+      '{"method":"offer"}',
+    );
+
+    // action
+    final json = msg.toJson();
+    final actual = ChannelMessage.parse(json) as RemoteScreenSignalMessage;
+
+    // assert
+    expect(actual.sessionId, '1000');
+    expect(actual.signal, '{"method":"offer"}');
+  });
+
   test('isControlMessage() should return false for non control messages', () {
     // arrange
     final messages = [
@@ -434,6 +497,7 @@ void main() {
       actionNameToChannelMessageType('stop-remote-screen'),
       actionNameToChannelMessageType('remote-screen-status'),
       actionNameToChannelMessageType('remote-screen-info'),
+      actionNameToChannelMessageType('remote-screen-signal'),
     ];
 
     //assert
@@ -456,6 +520,7 @@ void main() {
     expect(actual[16], ChannelMessageType.stopRemoteScreen);
     expect(actual[17], ChannelMessageType.remoteScreenStatus);
     expect(actual[18], ChannelMessageType.remoteScreenInfo);
+    expect(actual[19], ChannelMessageType.remoteScreenSignal);
   });
 
   test('actionNameToChannelMessageType() unknown', () {
