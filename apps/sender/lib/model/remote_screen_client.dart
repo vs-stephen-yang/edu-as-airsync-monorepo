@@ -1,5 +1,6 @@
 import 'package:display_cast_flutter/model/remote_screen_channel_signal.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -63,6 +64,7 @@ class RemoteScreenClient {
   Future handleRemoteScreenInfo(
     String? url,
     String roomId,
+    List<RtcIceServer>? iceServers,
     Function onTrack,
     Function onClose,
   ) async {
@@ -72,6 +74,7 @@ class RemoteScreenClient {
       sid: roomId,
       uid: const Uuid().v4(),
       signal: signal,
+      config: buildWebRtcConfiguration(iceServers),
     );
 
     _dataChannel = await _client!.createDataChannel(_sessionId);

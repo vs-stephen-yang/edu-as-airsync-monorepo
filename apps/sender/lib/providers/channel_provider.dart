@@ -446,6 +446,7 @@ class ChannelProvider extends ChangeNotifier {
     await _remoteScreenClient?.handleRemoteScreenInfo(
       infoMessage.ionSfuRoom!.signalUrl,
       infoMessage.ionSfuRoom!.roomId!,
+      infoMessage.ionSfuRoom!.iceServers,
       () {
         if (!kIsWeb && Platform.isIOS) {
           UndoManager.setUndoState(canUndo: false, canRedo: false);
