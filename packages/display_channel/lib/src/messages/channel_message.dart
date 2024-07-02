@@ -785,6 +785,7 @@ class IonSfuRoom {
     this.url,
     this.roomId, {
     this.signalOverChannel = true,
+    this.iceServers,
   });
 
   // TODO: Retain url for backward compatibility.
@@ -792,6 +793,7 @@ class IonSfuRoom {
   String? url;
   String? roomId;
   bool? signalOverChannel;
+  List<RtcIceServer>? iceServers;
 
   String? get signalUrl {
     /// If `signalOverChannel` is true, returns `null` to indicate
@@ -806,12 +808,29 @@ class IonSfuRoom {
   IonSfuRoom.fromJson(Map<String, dynamic> json)
       : url = json['url'] as String?,
         signalOverChannel = json['signalOverChannel'] as bool?,
-        roomId = json['roomId'] as String?;
+        roomId = json['roomId'] as String? {
+    // iceServers
+    if (json['iceServers'] != null) {
+      iceServers = <RtcIceServer>[];
+
+      for (var iceServer in json['iceServers'] as List) {
+        iceServers!.add(
+          RtcIceServer.fromJson(iceServer),
+        );
+      }
+    }
+  }
 
   Map<String, dynamic> toJson() => {
         'url': url,
         'roomId': roomId,
         'signalOverChannel': signalOverChannel,
+        if (iceServers != null)
+          'iceServers': iceServers!
+              .map(
+                (iceServer) => iceServer.toJson(),
+              )
+              .toList(),
       };
 }
 
