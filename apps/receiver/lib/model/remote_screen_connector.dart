@@ -68,7 +68,7 @@ class RemoteScreenConnector {
     channel.send(acceptedMessage);
   }
 
-  onStartRemoteScreen(StartRemoteScreenMessage message) {
+  onStartRemoteScreen(StartRemoteScreenMessage message, List<RtcIceServer>? iceServers,) {
     _sessionId = message.sessionId;
     // accept
     sendRemoteScreenState(RemoteScreenStatus.accepted);
@@ -79,6 +79,7 @@ class RemoteScreenConnector {
       IonSfuRoom(
         "ws://$host:$port/ws",
         roomId,
+        iceServers: iceServers,
       ),
     );
     channel.send(remoteScreenInfoMessage);
