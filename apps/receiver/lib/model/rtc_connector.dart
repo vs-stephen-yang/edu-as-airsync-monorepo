@@ -1,21 +1,18 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_stats_parser.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/rtc_metrics.dart';
+import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
 import 'connect_timer.dart';
@@ -31,7 +28,6 @@ enum PresentationState {
 class RTCConnector {
   String mUid = const Uuid().v4();
   final Channel _channel;
-  final ChannelMode _mode;
   Timer? _connectionTimeoutTimer;
   StreamController<int> connectionTimeTimeout = StreamController<int>();
 
@@ -67,11 +63,7 @@ class RTCConnector {
     return result;
   }
 
-  String? iceServersApiUrl, host;
-  final Map<String, dynamic> _configuration = {
-    'sdpSemantics': 'unified-plan',
-  };
-  List<RtcIceServer>? _iceServers;
+
 
   // the following device should not enable webrtc prerendererSmoothing flag
   final List<String> _prerendererSmoothingExcludedDevices = [
@@ -105,13 +97,10 @@ class RTCConnector {
 
   final _videoBitrateHistory = <int?>[];
 
-  RTCConnector(this._channel, this._mode);
+  RTCConnector(this._channel);
 
-  Future<void> init(JoinDisplayMessage message, isModeratorMode,
-      {String? iceServersApiUrl, String? host}) async {
+  Future<void> init(JoinDisplayMessage message, isModeratorMode,) async {
     _printPeerConnectionLog('init', null);
-    this.iceServersApiUrl = iceServersApiUrl;
-    this.host = host;
     _channel.onStateChange = (state) => _onChannelState(state);
 
     _onJoinDisplay(message, isModeratorMode);
@@ -167,31 +156,17 @@ class RTCConnector {
     onVideoStatsReport?.call(stats);
   }
 
-  Future<void> _peerConnectionConnect() async {
+  Future<void> _peerConnectionConnect(List<RtcIceServer>? iceServers,) async {
     if (_pc != null) return;
 
     String? deviceType = await DeviceInfoVs.deviceType;
 
-    if (!_configuration.containsKey('iceServers')) {
-      if (_mode == ChannelMode.tunnel) {
-        final value = await _getIceServers(iceServersApiUrl);
-        if (value != null) {
-          _iceServers = parseIceServersFromApi(value);
+    final configuration = createPcConfiguration(iceServers);
 
-          _configuration.putIfAbsent('iceServers', () => value);
-        }
-      } else {
-        _configuration.putIfAbsent(
-            'iceServers',
-            () => [
-                  {'url': 'stun:$host'}
-                ]);
-      }
-    }
     if (_prerendererSmoothingExcludedDevices.contains(deviceType)) {
-      _configuration['enablePrerendererSmoothing'] = false;
+      configuration['enablePrerendererSmoothing'] = false;
     }
-    _pc = await createPeerConnection(_configuration);
+    _pc = await createPeerConnection(configuration);
 
     _pc!.onSignalingState = _onSignalingState;
     _pc!.onIceGatheringState = _onIceGatheringState;
@@ -242,7 +217,7 @@ class RTCConnector {
   }
 
   Future<void> onStartPresent(
-      StartPresentMessage msg, bool isModeratorMode) async {
+      StartPresentMessage msg, bool isModeratorMode, List<RtcIceServer>? iceServers,) async {
     // Timer
     startConnectionTimer(() async {
       if (!isModeratorMode) {
@@ -255,11 +230,11 @@ class RTCConnector {
     });
 
     await _remoteRenderer?.initialize();
-    await _peerConnectionConnect();
+    await _peerConnectionConnect(iceServers);
 
     final message = PresentAcceptedMessage(sessionId = msg.sessionId);
-    if (_iceServers != null) {
-      message.iceServers.addAll(_iceServers!);
+    if (iceServers != null) {
+      message.iceServers.addAll(iceServers);
     }
 
     _channel.send(message);
@@ -538,26 +513,6 @@ class RTCConnector {
   }
 
   //endregion
-
-  Future<List?> _getIceServers(String? iceServersApiUrl) async {
-    try {
-      http.Response response = await http.get(
-        Uri.parse(iceServersApiUrl!),
-      );
-
-      if (response.statusCode >= HttpStatus.ok &&
-          response.statusCode < HttpStatus.multiStatus) {
-        Map<String, dynamic> iceServerList = jsonDecode(response.body);
-        if (iceServerList.containsKey('list')) {
-          List list = iceServerList['list'];
-          return list;
-        }
-      }
-    } catch (e) {
-      // http.get maybe no network connection.
-    }
-    return null;
-  }
 
   RTCSessionDescription _fixSdp(RTCSessionDescription s) {
     var sdp = s.sdp;

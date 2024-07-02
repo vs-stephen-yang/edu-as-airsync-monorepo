@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_channel/display_channel.dart';
+import 'package:display_flutter/api/ice_api.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
@@ -257,7 +258,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _onNewChannel(Channel channel, ChannelMode mode) {
-    RTCConnector rtcConnector = RTCConnector(channel, mode);
+    RTCConnector rtcConnector = RTCConnector(channel);
     log.info('Received a new channel');
     RemoteScreenConnector? remoteScreenConnector;
 
@@ -319,8 +320,9 @@ class ChannelProvider extends ChangeNotifier {
             channel.send(message);
             break;
           }
+          final iceServers = await _getIceServers(mode);
           rtcConnector.onStartPresent(
-              message as StartPresentMessage, _isModeratorMode);
+              message as StartPresentMessage, _isModeratorMode, iceServers,);
           break;
         case ChannelMessageType.presentAccepted:
           rtcConnector.onPresentAccepted();
@@ -443,8 +445,7 @@ class ChannelProvider extends ChangeNotifier {
   RTCConnector _onJoinDisplay(
       RTCConnector rtcConnector, ChannelMode mode, JoinDisplayMessage message) {
     // create a client object to handle this channel
-    rtcConnector.init(message, _isModeratorMode,
-        iceServersApiUrl: appConfig.settings.getIceServer);
+    rtcConnector.init(message, _isModeratorMode);
     rtcConnector.onConnect = (() {
       HybridConnectionList().updateSplitScreen();
       StreamFunction.streamFunctionState.value = stateMenuOff;
@@ -681,5 +682,15 @@ class ChannelProvider extends ChangeNotifier {
 
     registerInstanceIndexById(AppInstanceCreate().displayInstanceID)
         .then((value) => _handleInstanceIndex(value));
+  }
+
+  Future<List<RtcIceServer>?> _getIceServers(ChannelMode mode) async {
+    if (mode == ChannelMode.tunnel) {
+      return await getIceServers(appConfig.settings.getIceServer);
+    } else {
+      return [
+        RtcIceServer(['stun:$host'])
+      ];
+    }
   }
 }

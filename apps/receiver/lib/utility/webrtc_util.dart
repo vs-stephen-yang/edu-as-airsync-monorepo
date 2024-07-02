@@ -1,3 +1,4 @@
+import 'package:display_channel/display_channel.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
@@ -5,7 +6,7 @@ import 'package:path/path.dart' as path;
 Future<void> startWebRtcTracingCapture() async {
   final directory = await getApplicationDocumentsDirectory();
 
-  final tracingFilename = path.join(directory.path,'webrtc-trace.txt');
+  final tracingFilename = path.join(directory.path, 'webrtc-trace.txt');
 
   await WebRTC.invokeMethod(
     'startInternalTracingCapture',
@@ -17,4 +18,23 @@ Future<void> startWebRtcTracingCapture() async {
 
 Future<void> stopWebRtcTracingCapture() async {
   await WebRTC.invokeMethod('stopInternalTracingCapture');
+}
+
+// create config for peerconnection
+Map<String, dynamic> createPcConfiguration(
+  List<RtcIceServer>? iceServers,
+) {
+  return {
+    'sdpSemantics': 'unified-plan',
+    if (iceServers != null)
+      'iceServers': iceServers
+          .map(
+            (e) => {
+              if (e.credential != null) 'credential': e.credential,
+              if (e.username != null) 'username': e.username,
+              'urls': e.urls,
+            },
+          )
+          .toList(),
+  };
 }
