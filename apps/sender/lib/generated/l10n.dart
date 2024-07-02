@@ -749,6 +749,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Notice`
+  String get main_notice_title {
+    return Intl.message(
+      'Notice',
+      name: 'main_notice_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This platform is not currently supported. For a better experience, please download the app.`
+  String get main_notice_not_support_description {
+    return Intl.message(
+      'This platform is not currently supported. For a better experience, please download the app.',
+      name: 'main_notice_not_support_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download`
+  String get main_notice_positive_button {
+    return Intl.message(
+      'Download',
+      name: 'main_notice_positive_button',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
