@@ -20,16 +20,6 @@ import 'package:display_flutter/protoc/internal.pb.dart';
 const defaultScreenWidth = 1920.0;
 const defaultScreenHeight = 1080.0;
 
-class RemoteScreenConnectorChannel {
-  final int signalChannelId;
-  final RemoteScreenConnector connector;
-
-  RemoteScreenConnectorChannel(
-    this.signalChannelId,
-    this.connector,
-  );
-}
-
 class RemoteScreenServer extends FlutterIonSfuListener {
   Client? _ionSfuClient;
   final FlutterIonSfu _ionSfuServer = FlutterIonSfu();
@@ -41,7 +31,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   double _screenHeight = defaultScreenHeight;
   final _touchEventManager = TouchEventManager();
 
-  final _connectorChannels = <int, RemoteScreenConnectorChannel>{};
+  final _connectorChannels = <int, RemoteScreenConnector>{};
 
   RemoteScreenServer();
 
@@ -146,24 +136,35 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   }
 
   void addConnector(RemoteScreenConnector connector) async {
+    // Check if the connector already exists in the map.
+    if (_connectorChannels.containsValue(connector)) {
+      log('Channel already exists for connector');
+      return;
+    }
     final channelId = await _ionSfuServer.createSignalChannel();
 
-    _connectorChannels[channelId] = RemoteScreenConnectorChannel(
-      channelId,
-      connector,
-    );
+    _connectorChannels[channelId] = connector;
 
     connector.registerSignalHandler((String message) {
       _sendSignalToSfu(channelId, message);
     });
   }
 
-  void removeConnector(RemoteScreenConnector connector) {
+  void removeConnector(RemoteScreenConnector connector) async {
     connector.registerSignalHandler(null);
 
-    _connectorChannels.removeWhere(
-      (channelId, channel) => channel.connector == connector,
-    );
+    try {
+      final entry = _connectorChannels.entries.firstWhere(
+        (entry) => entry.value == connector,
+      );
+      final channelId = entry.key;
+
+      await _ionSfuServer.closeSignalChannel(channelId);
+
+      _connectorChannels.remove(channelId);
+    } on StateError {
+      log('No channel is found for connector');
+    }
   }
 
   Future<void> updateScreenSize() async {
@@ -221,14 +222,14 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   @override
   void onSignalMessage(int channelId, String message) {
     // Received a signal message from sfu server
-    final channel = _connectorChannels[channelId];
+    final connector = _connectorChannels[channelId];
 
-    if (channel == null) {
+    if (connector == null) {
       return;
     }
 
     // forward the signal message to the peer
-    channel.connector.sendSignalToPeer(message);
+    connector.sendSignalToPeer(message);
   }
 
   // Send a signal message to the sfu server
