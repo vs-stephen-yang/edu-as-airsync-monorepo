@@ -353,8 +353,12 @@ class ChannelProvider extends ChangeNotifier {
         /// remote
         case ChannelMessageType.startRemoteScreen:
           if (isSenderMode) {
-            await remoteScreenConnector
-                ?.onStartRemoteScreen(message as StartRemoteScreenMessage);
+            final iceServers = await _getIceServers(mode);
+
+            await remoteScreenConnector?.onStartRemoteScreen(
+              message as StartRemoteScreenMessage,
+              iceServers,
+            );
             notifyListeners();
           } else {
             await remoteScreenConnector
