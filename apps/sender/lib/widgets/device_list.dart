@@ -40,7 +40,7 @@ class _DeviceListState extends State<DeviceList>{
     _channelProvider = Provider.of<ChannelProvider>(context);
     _deviceListProvider = Provider.of<DeviceListProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      if (_channelProvider.channelConnectError != null) {
+      if (_channelProvider.channelConnectError != null && !isPinDialogShown) {
         _showConnectErrorMessage(_channelProvider.channelConnectError!);
       }
     });
@@ -198,30 +198,27 @@ class _DeviceListState extends State<DeviceList>{
       case ChannelConnectError.authenticationRequired:
         _showEnterPinDialog();
         break;
-
       case ChannelConnectError.networkError:
         break;
-
       case ChannelConnectError.unknownError:
         break;
-
+      default:
+        break;
     }
   }
 
-  void onOkPressed(List<TextEditingController> controllers) {
+  void _onOkPressed(List<TextEditingController> controllers) {
     String otp = '';
     for (var element in controllers) {
-      otp+=element.text;
+      otp += _convertFullWidthToHalfWidth(element.text);
     }
     _channelProvider.startDirectConnect(otp: otp, service: _connectService);
   }
 
-  _showEnterPinDialog() {
-    List<TextEditingController> controllers = List.generate(4, (index) => TextEditingController());
-    if (isPinDialogShown) {
-      return;
-    }
+  void _showEnterPinDialog() {
     isPinDialogShown = true;
+
+    List<TextEditingController> controllers = List.generate(4, (index) => TextEditingController());
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -254,9 +251,10 @@ class _DeviceListState extends State<DeviceList>{
                 },
                 onFieldSubmitted: (String value) {
                   if (value.length == 1 && index == 3) {
-                    isPinDialogShown = false;
-                    onOkPressed(controllers);
+                    _channelProvider.resetMessage();
+                    _onOkPressed(controllers);
                     Navigator.of(context).pop();
+                    isPinDialogShown = false;
                   }
                 },
               ),
@@ -275,9 +273,9 @@ class _DeviceListState extends State<DeviceList>{
                 ),
               ),
               onPressed: () {
-                isPinDialogShown = false;
                 _channelProvider.resetMessage();
                 Navigator.of(context).pop();
+                isPinDialogShown = false;
               },
               child: Text(S.of(context).present_select_screen_cancel),
             ),
@@ -293,9 +291,10 @@ class _DeviceListState extends State<DeviceList>{
                 ),
               ),
               onPressed: () {
-                isPinDialogShown = false;
-                onOkPressed(controllers);
+                _channelProvider.resetMessage();
+                _onOkPressed(controllers);
                 Navigator.of(context).pop();
+                isPinDialogShown = false;
               },
               child: Text(S.of(context).device_list_enter_pin_ok),
             ),
@@ -305,12 +304,10 @@ class _DeviceListState extends State<DeviceList>{
     );
   }
 
-  String getVersionSuffix(String version) {
-    int dashIndex = version.lastIndexOf("-");
-    if (dashIndex != -1) {
-      return version.substring(dashIndex);
-    } else {
-      return '';
-    }
+  String _convertFullWidthToHalfWidth(String input) {
+    return input.replaceAllMapped(
+      RegExp(r'[０-９]'),
+          (Match match) => String.fromCharCode(match.group(0)!.codeUnitAt(0) - 0xFEE0),
+    );
   }
 }
