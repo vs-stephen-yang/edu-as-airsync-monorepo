@@ -65,6 +65,11 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Display code not found or instance is offline."),
         "main_language": MessageLookupByLibrary.simpleMessage("Language"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
+        "main_notice_not_support_description": MessageLookupByLibrary.simpleMessage(
+            "This platform is not currently supported. For a better experience, please download the app."),
+        "main_notice_positive_button":
+            MessageLookupByLibrary.simpleMessage("Download"),
+        "main_notice_title": MessageLookupByLibrary.simpleMessage("Notice"),
         "main_otp_error":
             MessageLookupByLibrary.simpleMessage("Only accept numbers."),
         "main_password": MessageLookupByLibrary.simpleMessage("Password"),

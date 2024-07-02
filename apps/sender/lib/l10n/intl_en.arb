@@ -68,5 +68,8 @@
     "main_feature_reconnect_fail_toast": "Network (Control) reconnect fail",
     "main_feature_reconnect_success_toast": "Network (Control) reconnect success",
     "present_state_high_quality_title": "High Quality",
-    "present_state_high_quality_description": "Enable High Quality in good network condition."
+    "present_state_high_quality_description": "Enable High Quality in good network condition.",
+    "main_notice_title": "Notice",
+    "main_notice_not_support_description": "This platform is not currently supported. For a better experience, please download the app.",
+    "main_notice_positive_button": "Download"
 }

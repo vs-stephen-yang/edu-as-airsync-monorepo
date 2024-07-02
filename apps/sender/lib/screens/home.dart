@@ -96,16 +96,21 @@ class _HomeStates extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    if (!kIsWeb) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (!kIsWeb) {
         _checkUpdateVersion(context).then((value) {
           if (value != CompareVersionResult.none) {
             // show update dialog
             _showUpdateDialog(context, value);
           }
         });
-      });
-    }
+      } else {
+        if (!isWebSupportPlatform()) {
+          _showNotSupportDialog();
+        }
+      }
+    });
+
     return AppRetain(
       child: SafeArea(
         child: Scaffold(
@@ -333,5 +338,53 @@ class _HomeStates extends State<Home> {
     if (api == null) return CompareVersionResult.none;
 
     return getVersion(api, version);
+  }
+
+  bool isWebSupportPlatform() {
+    return defaultTargetPlatform != TargetPlatform.android && defaultTargetPlatform != TargetPlatform.iOS;
+  }
+
+  void _showNotSupportDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(S.of(context).main_notice_title),
+          content: SizedBox(
+            width: 100,
+            height: 100,
+            child: Column(
+              children: [
+                Text(S.of(context).main_notice_not_support_description),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // 设置按钮背景颜色
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮文字颜色
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // 设置按钮圆角
+                    side: const BorderSide(color: Colors.blue), // 设置按钮边框
+                  ),
+                ),
+              ),
+              onPressed: () async {
+                if (Platform.isAndroid) {
+                  launchUrl( Uri.parse('https://play.google.com/store/apps/details?id=com.viewsonic.display.cast'));
+                } else if (Platform.isIOS) {
+                  launchUrl( Uri.parse('https://apps.apple.com/us/app/airsync-sender/id6453759985'));
+                }
+              },
+              child: Text(S.of(context).main_notice_positive_button),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
