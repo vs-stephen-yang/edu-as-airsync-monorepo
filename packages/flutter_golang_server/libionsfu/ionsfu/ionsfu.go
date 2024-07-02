@@ -88,6 +88,8 @@ type ConfigInfo struct {
 }
 
 func Initialize() {
+	logger.Info("Initialize")
+
 	if verbosityLevel < 0 {
 		verbosityLevel = logConfig.Config.V
 	}
@@ -100,6 +102,8 @@ func RegisterListener(listener IonSfuListener) {
 }
 
 func CreateSignalChannel() int {
+	logger.Info("CreateSignalChannel")
+
 	if sfuServer.channelIdCounter >= math.MaxInt32 {
 		sfuServer.channelIdCounter = 0
 	}
@@ -110,12 +114,16 @@ func CreateSignalChannel() int {
 
 	sfuServer.channels[sfuServer.channelIdCounter] = peer
 
+	logger.Info("CreateSignalChannel returns", sfuServer.channelIdCounter)
 	return sfuServer.channelIdCounter
 }
 
 func CloseSignalChannel(channelId int) {
+	logger.Info("CloseSignalChannel", channelId)
+
 	peer, exists := sfuServer.channels[channelId]
 	if !exists {
+		logger.Info("CloseSignalChannel: channel not found", channelId)
 		return
 	}
 
@@ -174,12 +182,14 @@ func sendReply(channelId int, id jsonrpc2.ID, result interface{}) error {
 func ProcessSignalMessage(channelId int, message string) {
 	peer, exists := sfuServer.channels[channelId]
 	if !exists {
+		logger.Info("ProcessSignalMessage: channel not found", channelId)
 		return
 	}
 
 	var req jsonrpc2.Request
 	err := json.Unmarshal([]byte(message), &req)
 	if err != nil {
+		logger.Error(err, "ProcessSignalMessage: invalid request", message)
 		return
 	}
 
@@ -210,12 +220,14 @@ func ProcessSignalMessage(channelId int, message string) {
 
 		err = peer.Join(join.SID, join.UID, join.Config)
 		if err != nil {
+			logger.Error(err, "PeerLocal Join")
 			replyError(err)
 			break
 		}
 
 		answer, err := peer.Answer(join.Offer)
 		if err != nil {
+			logger.Error(err, "PeerLocal Answer")
 			replyError(err)
 			break
 		}
@@ -233,6 +245,7 @@ func ProcessSignalMessage(channelId int, message string) {
 
 		answer, err := peer.Answer(negotiation.Desc)
 		if err != nil {
+			logger.Error(err, "PeerLocal Answer")
 			replyError(err)
 			break
 		}
@@ -249,6 +262,7 @@ func ProcessSignalMessage(channelId int, message string) {
 
 		err = peer.SetRemoteDescription(negotiation.Desc)
 		if err != nil {
+			logger.Error(err, "PeerLocal SetRemoteDescription")
 			replyError(err)
 		}
 
@@ -263,6 +277,7 @@ func ProcessSignalMessage(channelId int, message string) {
 
 		err = peer.Trickle(trickle.Candidate, trickle.Target)
 		if err != nil {
+			logger.Error(err, "PeerLocal Trickle")
 			replyError(err)
 		}
 	}
