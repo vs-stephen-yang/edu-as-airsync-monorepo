@@ -97,6 +97,11 @@ class _HomeStates extends State<Home> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (!isSupportPlatform()) {
+        _showNotSupportDialog();
+        return;
+      }
+
       if (!kIsWeb) {
         _checkUpdateVersion(context).then((value) {
           if (value != CompareVersionResult.none) {
@@ -104,10 +109,6 @@ class _HomeStates extends State<Home> {
             _showUpdateDialog(context, value);
           }
         });
-      } else {
-        if (!isWebSupportPlatform()) {
-          _showNotSupportDialog();
-        }
       }
     });
 
@@ -340,8 +341,12 @@ class _HomeStates extends State<Home> {
     return getVersion(api, version);
   }
 
-  bool isWebSupportPlatform() {
-    return defaultTargetPlatform != TargetPlatform.android && defaultTargetPlatform != TargetPlatform.iOS;
+  bool isSupportPlatform() {
+    if(kIsWeb) {
+      return defaultTargetPlatform != TargetPlatform.android && defaultTargetPlatform != TargetPlatform.iOS;
+    } else {
+      return true;
+    }
   }
 
   void _showNotSupportDialog() {
