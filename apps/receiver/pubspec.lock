@@ -374,8 +374,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.0.3"
-      resolved-ref: "08f32a63a97ff22dda5c1cd6f97f006c487592ce"
+      ref: "release-0.0.4"
+      resolved-ref: "0b7b4477238e86a62f39fcf99012b8656554f198"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-ion-sfu"
     source: git
     version: "0.0.1"
