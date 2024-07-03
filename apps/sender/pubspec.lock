@@ -235,7 +235,7 @@ packages:
     source: git
     version: "0.0.1"
   events2:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: events2
       sha256: "41eec2689af52ecd2581494b9241589769b2873359909c9260588e51fbc188e7"
