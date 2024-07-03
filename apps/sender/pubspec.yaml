@@ -68,12 +68,13 @@ dependencies:
   azure_application_insights: ^4.0.1
   universal_html: ^2.2.4
   synchronized: ^3.1.0+1
+  bonsoir: ^5.1.9
 
   # ViewSonic plug-in
   flutter_webrtc:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc
-      ref: release-0.9.36-27
+      ref: release-0.9.36-31
   display_channel:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
@@ -81,12 +82,11 @@ dependencies:
   ion_sdk_flutter:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter
-      ref: release-0.0.19
+      ref: release-0.0.23
   flutter_input_injection:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection
       ref: release-0.4.0
-  bonsoir: ^5.1.9
   # ViewSonic plug-in
 
 dependency_overrides:
