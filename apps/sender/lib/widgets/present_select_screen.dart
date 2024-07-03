@@ -100,6 +100,71 @@ class PresentSelectScreen extends StatelessWidget {
             systemAudio: value.systemAudio);
       }
     });
+    if (WebRTC.platformIsIOS) {
+      ChannelProvider channelProvider =
+          Provider.of<ChannelProvider>(context, listen: false);
+      return Stack(
+        children: [
+          Positioned(
+            left: 30,
+            top: 100,
+            child: InkWell(
+              onTap: () {
+                channelProvider.presentStop();
+                channelProvider.presentEnd();
+              },
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.arrow_back_ios_new_outlined,
+                    color: Colors.white,
+                    size: 14,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Text(
+                      S.of(context).moderator_back,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: AppConstants.fontSizeNormal),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ConstrainedBox(
+            constraints: const BoxConstraints.expand(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: AppConstants.viewStateMenuWidth,
+                  child: Text(
+                    S.of(context).present_select_screen_ios_restart_description,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // WebRTC already connected,
+                    // just call "makeCall" to restart broadcast extension.
+                    channelProvider.makeCall(
+                        selectedSource: null, systemAudio: true);
+                  },
+                  child: Text(
+                    S.of(context).present_select_screen_ios_restart,
+                    style: const TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
     return const SizedBox();
   }
 }

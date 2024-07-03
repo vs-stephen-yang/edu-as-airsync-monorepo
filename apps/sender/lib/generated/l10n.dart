@@ -779,6 +779,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Use below button to restart presenting, or use "Back" to stop presenting.`
+  String get present_select_screen_ios_restart_description {
+    return Intl.message(
+      'Use below button to restart presenting, or use "Back" to stop presenting.',
+      name: 'present_select_screen_ios_restart_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start broadcast`
+  String get present_select_screen_ios_restart {
+    return Intl.message(
+      'Start broadcast',
+      name: 'present_select_screen_ios_restart',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

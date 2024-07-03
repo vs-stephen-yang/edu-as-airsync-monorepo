@@ -126,6 +126,11 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Choose a view to share with the receiving screen."),
         "present_select_screen_entire":
             MessageLookupByLibrary.simpleMessage("Entire screen"),
+        "present_select_screen_ios_restart":
+            MessageLookupByLibrary.simpleMessage("Start broadcast"),
+        "present_select_screen_ios_restart_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Use below button to restart presenting, or use \"Back\" to stop presenting."),
         "present_select_screen_share":
             MessageLookupByLibrary.simpleMessage("Share"),
         "present_select_screen_share_audio":
