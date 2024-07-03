@@ -71,5 +71,7 @@
     "present_state_high_quality_description": "Enable High Quality in good network condition.",
     "main_notice_title": "Notice",
     "main_notice_not_support_description": "This platform is not currently supported. For a better experience, please download the app.",
-    "main_notice_positive_button": "Download"
+    "main_notice_positive_button": "Download",
+    "present_select_screen_ios_restart_description": "Use below button to restart presenting, or use \"Back\" to stop presenting.",
+    "present_select_screen_ios_restart": "Start broadcast"
 }

@@ -514,6 +514,13 @@ class ChannelProvider extends ChangeNotifier {
         presentEnd();
       }
     });
+    await makeCall(selectedSource: selectedSource, systemAudio: systemAudio);
+  }
+
+  Future<void> makeCall({
+    required dynamic selectedSource,
+    bool systemAudio = false,
+  }) async {
     await webRTCConnector
         ?.makeCall(selectedSource, _iceServerList)
         .then((value) {
