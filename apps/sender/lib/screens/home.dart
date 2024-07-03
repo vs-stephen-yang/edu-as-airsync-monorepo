@@ -379,10 +379,10 @@ class _HomeStates extends State<Home> {
                 ),
               ),
               onPressed: () async {
-                if (Platform.isAndroid) {
-                  launchUrl( Uri.parse('https://play.google.com/store/apps/details?id=com.viewsonic.display.cast'));
-                } else if (Platform.isIOS) {
-                  launchUrl( Uri.parse('https://apps.apple.com/us/app/airsync-sender/id6453759985'));
+                if (defaultTargetPlatform == TargetPlatform.android) {
+                  launchUrl( Uri.parse('https://play.google.com/store/apps/details?id=com.viewsonic.display.cast&pcampaignid=web_share'));
+                } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+                  launchUrl( Uri.parse('https://apps.apple.com/tw/app/airsync-sender/id6453759985'));
                 }
               },
               child: Text(S.of(context).main_notice_positive_button),
