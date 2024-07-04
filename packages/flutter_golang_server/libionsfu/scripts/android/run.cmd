@@ -13,7 +13,7 @@ set TARGET_ROOT=/data/local/tmp/ionsfu
 set TARGET_BIN=%TARGET_ROOT%/%BIN%
 
 rem Build the executable
-go build -work -o %BIN% test/main.go
+go build -work -o %BIN% main.go
 
 if %errorlevel% neq 0 exit /b %errorlevel%
 
