@@ -204,7 +204,9 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future startRemoteScreen() async {
-    await _remoteScreenServe.startSfuServer();
+    final iceServers = await _getIceServers(ChannelMode.tunnel);
+
+    await _remoteScreenServe.startSfuServer(iceServers);
     await _remoteScreenServe.startRemoteScreenPublisher();
     ConnectionTimer.getInstance().startShareSenderTimer(() {
       removeSender();

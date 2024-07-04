@@ -2,11 +2,12 @@ import 'dart:io';
 import 'dart:developer';
 
 import 'package:device_info_vs/device_info_vs.dart';
+import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_utils.dart';
 import 'package:display_flutter/model/touch_event_manager.dart';
+import 'package:display_flutter/utility/ion_sfu_util.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu.dart';
-import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu_listener.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:ion_sdk_flutter/flutter_ion.dart';
@@ -35,10 +36,10 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
   RemoteScreenServer();
 
-  Future startSfuServer() async {
+  Future startSfuServer(List<RtcIceServer>? iceServers) async {
     if (_iosSfuServerStart) return;
 
-    final configuration = FlutterIonSfuConfiguration();
+    final configuration = createIonSfuConfiguration(iceServers);
 
     _ionSfuServer.registerListener(this);
 
