@@ -89,11 +89,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_update_description_windows": MessageLookupByLibrary.simpleMessage(
             "Please click \"Update\" to install the new version."),
         "main_update_error_detail":
-            MessageLookupByLibrary.simpleMessage("Description"),
+            MessageLookupByLibrary.simpleMessage("Description: "),
         "main_update_error_title":
             MessageLookupByLibrary.simpleMessage("Version update fail"),
         "main_update_error_type":
-            MessageLookupByLibrary.simpleMessage("Fail reason"),
+            MessageLookupByLibrary.simpleMessage("Fail reason: "),
         "main_update_positive_button":
             MessageLookupByLibrary.simpleMessage("Update"),
         "main_update_title":
@@ -158,7 +158,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_knowledge_base":
             MessageLookupByLibrary.simpleMessage("Knowledge Base"),
         "toast_enable_remote_screen": MessageLookupByLibrary.simpleMessage(
-            "Please enable share to sender in AirSync."),
+            "Please enable share screen to device in AirSync."),
         "toast_install_audio_driver": MessageLookupByLibrary.simpleMessage(
             "Please install virtual audio driver."),
         "toast_maximum_moderated": MessageLookupByLibrary.simpleMessage(

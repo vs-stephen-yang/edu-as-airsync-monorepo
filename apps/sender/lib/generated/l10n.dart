@@ -410,10 +410,10 @@ class S {
     );
   }
 
-  /// `Please enable share to sender in AirSync.`
+  /// `Please enable share screen to device in AirSync.`
   String get toast_enable_remote_screen {
     return Intl.message(
-      'Please enable share to sender in AirSync.',
+      'Please enable share screen to device in AirSync.',
       name: 'toast_enable_remote_screen',
       desc: '',
       args: [],
@@ -650,20 +650,20 @@ class S {
     );
   }
 
-  /// `Fail reason`
+  /// `Fail reason: `
   String get main_update_error_type {
     return Intl.message(
-      'Fail reason',
+      'Fail reason: ',
       name: 'main_update_error_type',
       desc: '',
       args: [],
     );
   }
 
-  /// `Description`
+  /// `Description: `
   String get main_update_error_detail {
     return Intl.message(
-      'Description',
+      'Description: ',
       name: 'main_update_error_detail',
       desc: '',
       args: [],

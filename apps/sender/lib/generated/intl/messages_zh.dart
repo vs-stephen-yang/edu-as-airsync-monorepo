@@ -77,10 +77,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("請按下\"更新\"以安裝新的版本。"),
         "main_update_description_windows":
             MessageLookupByLibrary.simpleMessage("請按下\"更新\"以安裝新的版本。"),
-        "main_update_error_detail": MessageLookupByLibrary.simpleMessage("描述"),
+        "main_update_error_detail":
+            MessageLookupByLibrary.simpleMessage("描述: "),
         "main_update_error_title":
             MessageLookupByLibrary.simpleMessage("版本更新失敗"),
-        "main_update_error_type": MessageLookupByLibrary.simpleMessage("失敗原因"),
+        "main_update_error_type":
+            MessageLookupByLibrary.simpleMessage("失敗原因: "),
         "main_update_positive_button":
             MessageLookupByLibrary.simpleMessage("更新"),
         "main_update_title": MessageLookupByLibrary.simpleMessage("有新的更新"),
