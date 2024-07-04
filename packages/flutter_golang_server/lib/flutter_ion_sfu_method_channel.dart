@@ -45,8 +45,8 @@ class MethodChannelFlutterIonSfu extends FlutterIonSfuPlatform {
   }
 
   @override
-  Future<int> closeSignalChannel(int channelId) async {
-    return await methodChannel.invokeMethod(
+  Future<void> closeSignalChannel(int channelId) async {
+    await methodChannel.invokeMethod(
       'closeSignalChannel',
       <String, dynamic>{
         'channelId': channelId,
