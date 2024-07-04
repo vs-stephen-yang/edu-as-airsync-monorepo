@@ -78,6 +78,7 @@ class ChannelProvider extends ChangeNotifier {
 
   Channel? _channel;
   DisplayChannelConnector? _channelConnector;
+  RemoteScreenClient? _remoteScreenClient;
 
   String? _clientId;
   var _sessionId = const Uuid().v4();
@@ -85,25 +86,29 @@ class ChannelProvider extends ChangeNotifier {
   WebRTCConnector? webRTCConnector;
   List<RtcIceServer>? _iceServerList;
 
-  bool _moderatorStatus = false;
+  late String _apiGateway = '';
+  late ProfileStore _profileStore;
+  bool _isRtcFirstConnected = false;
 
-  bool get moderatorStatus => _moderatorStatus;
+  DisplayCode? displayCode;
+  String? otp;
+  Timer? _presentTimer;
 
   ViewState _currentState = ViewState.idle;
+  JoinIntentType currentRole = JoinIntentType.present;
+  bool _moderatorStatus = false;
+  ChannelConnectError? _channelConnectError;
+  ChannelReconnectState reconnectState = ChannelReconnectState.idle;
 
+  ProfileStore get profileStore => _profileStore;
   ViewState get state => _currentState;
+  bool get moderatorStatus => _moderatorStatus;
+  ChannelConnectError? get channelConnectError => _channelConnectError;
+  RemoteScreenClient? get remoteScreenClient => _remoteScreenClient;
 
   set currentState(ViewState value) {
     _currentState = value;
   }
-
-  JoinIntentType currentRole = JoinIntentType.present;
-
-  ChannelConnectError? _channelConnectError;
-
-  ChannelConnectError? get channelConnectError => _channelConnectError;
-
-  ChannelReconnectState reconnectState = ChannelReconnectState.idle;
 
   void setChannelConnectError(ChannelConnectError error) {
     AppAnalytics.instance.trackEvent(
@@ -127,20 +132,6 @@ class ChannelProvider extends ChangeNotifier {
     _channelConnectError = error;
     notifyListeners();
   }
-
-  late String _apiGateway = '';
-  late ProfileStore _profileStore;
-  ProfileStore get profileStore => _profileStore;
-
-  DisplayCode? displayCode;
-  String? otp;
-  Timer? _presentTimer;
-
-  bool _isRtcFirstConnected = false;
-
-  RemoteScreenClient? _remoteScreenClient;
-
-  RemoteScreenClient? get remoteScreenClient => _remoteScreenClient;
 
   //region setView
   _setViewState(ViewState newViewState) {
@@ -716,13 +707,7 @@ class ChannelProvider extends ChangeNotifier {
       'details': closeReason?.text ?? '',
     });
 
-    ChannelCloseCode? reasonCode = closeReason?.code;
-    switch (reasonCode) {
-      // TODO
-      default:
-        presentEnd();
-        break;
-    }
+    presentEnd();
   }
 
   _trackFetchError(String errorType, String details) {
