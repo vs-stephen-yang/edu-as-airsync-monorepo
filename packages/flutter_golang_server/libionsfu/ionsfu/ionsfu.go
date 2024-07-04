@@ -121,8 +121,6 @@ func RegisterListener(listener IonSfuListener) {
 }
 
 func CreateSignalChannel() int {
-	logger.Info("CreateSignalChannel")
-
 	if sfuServer.channelIdCounter >= math.MaxInt32 {
 		sfuServer.channelIdCounter = 0
 	}
@@ -133,16 +131,16 @@ func CreateSignalChannel() int {
 
 	sfuServer.channels[sfuServer.channelIdCounter] = peer
 
-	logger.Info("CreateSignalChannel returns", sfuServer.channelIdCounter)
+	logger.Info("CreateSignalChannel", "channelId", sfuServer.channelIdCounter)
 	return sfuServer.channelIdCounter
 }
 
 func CloseSignalChannel(channelId int) {
-	logger.Info("CloseSignalChannel", channelId)
+	logger.Info("CloseSignalChannel", "channelId", channelId)
 
 	peer, exists := sfuServer.channels[channelId]
 	if !exists {
-		logger.Info("CloseSignalChannel: channel not found", channelId)
+		logger.Info("CloseSignalChannel: channel not found", "channelId", channelId)
 		return
 	}
 
@@ -201,14 +199,14 @@ func sendReply(channelId int, id jsonrpc2.ID, result interface{}) error {
 func ProcessSignalMessage(channelId int, message string) {
 	peer, exists := sfuServer.channels[channelId]
 	if !exists {
-		logger.Info("ProcessSignalMessage: channel not found", channelId)
+		logger.Info("ProcessSignalMessage: channel not found", "channelId", channelId)
 		return
 	}
 
 	var req jsonrpc2.Request
 	err := json.Unmarshal([]byte(message), &req)
 	if err != nil {
-		logger.Error(err, "ProcessSignalMessage: invalid request", message)
+		logger.Error(err, "ProcessSignalMessage: invalid request", "message", message)
 		return
 	}
 
