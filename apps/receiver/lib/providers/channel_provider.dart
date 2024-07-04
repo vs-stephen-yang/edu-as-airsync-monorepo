@@ -666,7 +666,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   _updateDisplayCode() async {
-    if (_isTunnelServerStart) return;
+    if (_isTunnelServerStart || !connectNet) return;
     final value = await _checkNetWorkInfo();
     host = _instanceInfo.ipAddress = value;
 
