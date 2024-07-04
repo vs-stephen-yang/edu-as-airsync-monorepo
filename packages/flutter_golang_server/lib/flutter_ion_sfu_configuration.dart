@@ -1,3 +1,23 @@
+class IceServer {
+  final List<String> urls;
+  final String? username;
+  final String? credential;
+
+  IceServer(
+    this.urls, {
+    this.username,
+    this.credential,
+  });
+
+  Map<String, Object> toMap() {
+    return {
+      'urls': urls,
+      if (username != null) 'username': username!,
+      if (credential != null) 'credential': credential!,
+    };
+  }
+}
+
 class FlutterIonSfuConfiguration {
   final int ballast;
   final bool withStats;
@@ -16,6 +36,7 @@ class FlutterIonSfuConfiguration {
   final int iceFailedTimeout;
   final int iceKeepaliveInterval;
   final String credentials;
+  final List<IceServer>? iceServers;
 
   FlutterIonSfuConfiguration({
     this.ballast = 0,
@@ -35,6 +56,7 @@ class FlutterIonSfuConfiguration {
     this.iceFailedTimeout = 25,
     this.iceKeepaliveInterval = 2,
     this.credentials = 'pion=ion,pion2=ion2',
+    this.iceServers,
   });
 
   Map<String, Object> toMap() {
@@ -56,6 +78,8 @@ class FlutterIonSfuConfiguration {
       'iceFailedTimeout': iceFailedTimeout,
       'iceKeepaliveInterval': iceKeepaliveInterval,
       'credentials': credentials,
+      if (iceServers != null)
+        'iceServers': iceServers!.map((server) => server.toMap()).toList(),
     };
   }
 }
