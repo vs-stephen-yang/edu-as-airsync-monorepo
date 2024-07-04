@@ -56,6 +56,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("找不到投影辨識碼或是服務未啟動"),
         "main_language": MessageLookupByLibrary.simpleMessage("語言"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("繁體中文"),
+        "main_notice_not_support_description":
+            MessageLookupByLibrary.simpleMessage(
+                "行動設備端不支援透過瀏覽器分享畫面。請下載並使用AirSync傳送端app以分享畫面。"),
+        "main_notice_positive_button":
+            MessageLookupByLibrary.simpleMessage("下載AirSync傳送端app"),
+        "main_notice_title": MessageLookupByLibrary.simpleMessage("請注意"),
         "main_otp_error": MessageLookupByLibrary.simpleMessage("僅允許輸入數字"),
         "main_password": MessageLookupByLibrary.simpleMessage("一次性密碼"),
         "main_password_description":
@@ -99,6 +105,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("選擇要分享的螢幕"),
         "present_select_screen_entire":
             MessageLookupByLibrary.simpleMessage("分享整個螢幕"),
+        "present_select_screen_ios_restart":
+            MessageLookupByLibrary.simpleMessage("開始直播"),
+        "present_select_screen_ios_restart_description":
+            MessageLookupByLibrary.simpleMessage(
+                "請在連線逾時前點擊\"開始直播\"以分享畫面，或點擊\"返回\"回到初始畫面。"),
         "present_select_screen_share":
             MessageLookupByLibrary.simpleMessage("分享"),
         "present_select_screen_share_audio":

@@ -70,8 +70,8 @@
     "present_state_high_quality_title": "High Quality",
     "present_state_high_quality_description": "Enable High Quality in good network condition.",
     "main_notice_title": "Notice",
-    "main_notice_not_support_description": "This platform is not currently supported. For a better experience, please download the app.",
-    "main_notice_positive_button": "Download",
-    "present_select_screen_ios_restart_description": "Use below button to restart presenting, or use \"Back\" to stop presenting.",
+    "main_notice_not_support_description": "Sharing through browser is not supported on mobile device. Please download and use AirSync sender app for better experience.",
+    "main_notice_positive_button": "Download AirSync sender app.",
+    "present_select_screen_ios_restart_description": "Click \"Start broadcast\" to resume sharing before timeout or click \"Back\" to return to initial screen.",
     "present_select_screen_ios_restart": "Start broadcast"
 }

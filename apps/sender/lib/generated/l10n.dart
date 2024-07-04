@@ -760,30 +760,30 @@ class S {
     );
   }
 
-  /// `This platform is not currently supported. For a better experience, please download the app.`
+  /// `Sharing through browser is not supported on mobile device. Please download and use AirSync sender app for better experience.`
   String get main_notice_not_support_description {
     return Intl.message(
-      'This platform is not currently supported. For a better experience, please download the app.',
+      'Sharing through browser is not supported on mobile device. Please download and use AirSync sender app for better experience.',
       name: 'main_notice_not_support_description',
       desc: '',
       args: [],
     );
   }
 
-  /// `Download`
+  /// `Download AirSync sender app.`
   String get main_notice_positive_button {
     return Intl.message(
-      'Download',
+      'Download AirSync sender app.',
       name: 'main_notice_positive_button',
       desc: '',
       args: [],
     );
   }
 
-  /// `Use below button to restart presenting, or use "Back" to stop presenting.`
+  /// `Click "Start broadcast" to resume sharing before timeout or click "Back" to return to initial screen.`
   String get present_select_screen_ios_restart_description {
     return Intl.message(
-      'Use below button to restart presenting, or use "Back" to stop presenting.',
+      'Click "Start broadcast" to resume sharing before timeout or click "Back" to return to initial screen.',
       name: 'present_select_screen_ios_restart_description',
       desc: '',
       args: [],
