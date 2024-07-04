@@ -66,9 +66,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_language": MessageLookupByLibrary.simpleMessage("Language"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
         "main_notice_not_support_description": MessageLookupByLibrary.simpleMessage(
-            "This platform is not currently supported. For a better experience, please download the app."),
-        "main_notice_positive_button":
-            MessageLookupByLibrary.simpleMessage("Download"),
+            "Sharing through browser is not supported on mobile device. Please download and use AirSync sender app for better experience."),
+        "main_notice_positive_button": MessageLookupByLibrary.simpleMessage(
+            "Download AirSync sender app."),
         "main_notice_title": MessageLookupByLibrary.simpleMessage("Notice"),
         "main_otp_error":
             MessageLookupByLibrary.simpleMessage("Only accept numbers."),
@@ -130,7 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Start broadcast"),
         "present_select_screen_ios_restart_description":
             MessageLookupByLibrary.simpleMessage(
-                "Use below button to restart presenting, or use \"Back\" to stop presenting."),
+                "Click \"Start broadcast\" to resume sharing before timeout or click \"Back\" to return to initial screen."),
         "present_select_screen_share":
             MessageLookupByLibrary.simpleMessage("Share"),
         "present_select_screen_share_audio":
