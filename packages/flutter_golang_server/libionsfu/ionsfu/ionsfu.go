@@ -67,6 +67,18 @@ func showHelp() {
 	fmt.Println("      -v {0-10} (verbosity level, default 0)")
 }
 
+type ICEServerConfig struct {
+	URLs       []string
+	Username   string
+	Credential string
+}
+
+func NewICEServerConfig() *ICEServerConfig { return &ICEServerConfig{} }
+
+func (config *ICEServerConfig) AddURL(url string) {
+	config.URLs = append(config.URLs, url)
+}
+
 type ConfigInfo struct {
 	Ballast                int
 	WithStats              bool
@@ -79,12 +91,19 @@ type ConfigInfo struct {
 	EnableTemporalLayer    bool
 	ICEPortRangeStart      int
 	ICEPortRangeEnd        int
+	ICEServers             []ICEServerConfig
 	SDPSemantics           string
 	MDNS                   bool
 	ICEDisconnectedTimeout int
 	ICEFailedTimeout       int
 	ICEKeepaliveInterval   int
 	Credentials            string
+}
+
+func NewConfigInfo() *ConfigInfo { return &ConfigInfo{} }
+
+func (config *ConfigInfo) AddICEServer(iceServer *ICEServerConfig) {
+	config.ICEServers = append(config.ICEServers, *iceServer)
 }
 
 func Initialize() {
@@ -283,9 +302,17 @@ func ProcessSignalMessage(channelId int, message string) {
 	}
 }
 
+func printICEServers(config sfu.Config) {
+	logger.Info("ICEServers:")
+	for _, iceServer := range config.WebRTC.ICEServers {
+		logger.Info("ICEServer", "URL", iceServer.URLs[0], "Username", iceServer.Username, "Credential", iceServer.Credential)
+	}
+}
+
 func initializeSFU() {
 	sfu.Logger = logger
 
+	printICEServers(conf)
 	sfuServer.sfu = sfu.NewSFU(conf)
 
 	dc := sfuServer.sfu.NewDatachannel(sfu.APIChannelLabel)
@@ -303,9 +330,24 @@ func StopServer() {
 	<-stoppedChann
 }
 
+func convertICEServerConfig(iceServers []ICEServerConfig) []sfu.ICEServerConfig {
+	var sfuIceServers []sfu.ICEServerConfig
+
+	for _, server := range iceServers {
+		sfuServer := sfu.ICEServerConfig{
+			URLs:       server.URLs,
+			Username:   server.Username,
+			Credential: server.Credential,
+		}
+		sfuIceServers = append(sfuIceServers, sfuServer)
+	}
+	return sfuIceServers
+}
+
 func updateConfig(configInfo *ConfigInfo) {
 	conf.SFU.Ballast = int64(configInfo.Ballast)
 	conf.SFU.WithStats = configInfo.WithStats
+
 	conf.Router.MaxBandwidth = uint64(configInfo.MaxBandwidth)
 	conf.Router.MaxPacketTrack = configInfo.MaxPacketTrack
 	conf.Router.AudioLevelThreshold = uint8(configInfo.AudioLevelThreshold)
@@ -314,12 +356,13 @@ func updateConfig(configInfo *ConfigInfo) {
 	conf.Router.Simulcast.BestQualityFirst = configInfo.BestQualityFirst
 	conf.Router.Simulcast.EnableTemporalLayer = configInfo.EnableTemporalLayer
 	conf.WebRTC.ICEPortRange = []uint16{uint16(configInfo.ICEPortRangeStart), uint16(configInfo.ICEPortRangeEnd)}
+	conf.WebRTC.ICEServers = convertICEServerConfig(configInfo.ICEServers)
 	conf.WebRTC.SDPSemantics = configInfo.SDPSemantics
 	conf.WebRTC.MDNS = configInfo.MDNS
 	conf.WebRTC.Timeouts.ICEDisconnectedTimeout = configInfo.ICEDisconnectedTimeout
 	conf.WebRTC.Timeouts.ICEFailedTimeout = configInfo.ICEFailedTimeout
 	conf.WebRTC.Timeouts.ICEKeepaliveInterval = configInfo.ICEKeepaliveInterval
-	conf.Turn.Auth.Credentials = configInfo.Credentials
+
 	logger.Info("Update config", "conf", fmt.Sprintf("%+v", conf))
 }
 

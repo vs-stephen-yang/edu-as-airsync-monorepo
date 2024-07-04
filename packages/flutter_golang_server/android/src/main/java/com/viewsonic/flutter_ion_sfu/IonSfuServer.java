@@ -1,9 +1,11 @@
 package com.viewsonic.flutter_ion_sfu;
 
 import java.util.Map;
+import java.util.List;
 
 import ionsfu.IonSfuListener;
 import ionsfu.ConfigInfo;
+import ionsfu.ICEServerConfig;
 
 public class IonSfuServer implements IonSfuListener {
     private static final String TAG = "IonSfuServer";
@@ -21,6 +23,7 @@ public class IonSfuServer implements IonSfuListener {
 
     public boolean start(Map<String, Object> configuration) {
         ConfigInfo configInfo = new ConfigInfo();
+
         if (configuration.containsKey("ballast")) {
             configInfo.setBallast((int) configuration.get("ballast"));
         }
@@ -71,6 +74,11 @@ public class IonSfuServer implements IonSfuListener {
         }
         if (configuration.containsKey("credentials")) {
             configInfo.setCredentials((String) configuration.get("credentials"));
+        }
+
+        if (configuration.containsKey("iceServers")) {
+            List<Map<String, Object>> iceServerConfigs = (List<Map<String, Object>>) configuration.get("iceServers");
+            IonSfuUtil.addIceServers(configInfo, iceServerConfigs);
         }
 
         try {
