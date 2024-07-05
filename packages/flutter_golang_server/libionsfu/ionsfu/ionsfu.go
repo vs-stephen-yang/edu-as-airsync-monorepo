@@ -143,10 +143,15 @@ func CloseSignalChannel(channelId int) {
 		logger.Info("CloseSignalChannel: channel not found", "channelId", channelId)
 		return
 	}
-
-	peer.Close()
-
 	delete(sfuServer.channels, channelId)
+
+	go func() {
+		// peer.Close() is a blocking call.
+		// execute peer.Close() concurrently without blocking the current flow
+		if err := peer.Close(); err != nil {
+			logger.Error(err, "Error closing peer", "channelId", channelId)
+		}
+	}()
 }
 
 func replyError(err error) {
