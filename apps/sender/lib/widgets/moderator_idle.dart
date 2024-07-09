@@ -27,9 +27,10 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context, listen: false);
 
     Future<void> clickPresent() async {
-      if (channelProvider.state == ViewState.moderatorName) {
+      if (presentStateProvider.currentState == ViewState.moderatorName) {
         if (_nameController.text.isEmpty) {
           _showOverlayMessage(context, nameKey);
         } else if (channelProvider.displayCode != null) {
@@ -55,7 +56,7 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
           child: InkWell(
               onTap: () {
                 channelProvider.resetMessage();
-                channelProvider.presentMainPage();
+                presentStateProvider.presentMainPage();
               },
               child: Row(
                 children: [

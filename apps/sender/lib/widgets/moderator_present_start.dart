@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
@@ -121,7 +122,8 @@ class ModeratorPresentStart extends StatelessWidget {
                   AppAnalytics.instance.trackEvent('click_stop');
                   if (channelProvider.isConnectAvailable()) {
                     channelProvider.presentStop();
-                    channelProvider.presentModeratorWaitPage();
+                    Provider.of<PresentStateProvider>(context, listen: false)
+                        .presentModeratorWaitPage();
                   } else {
                     sendReconnectStateToast(
                         context, channelProvider.reconnectState);

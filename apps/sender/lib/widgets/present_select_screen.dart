@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
@@ -19,153 +20,160 @@ class PresentSelectScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      ChannelProvider provider =
-          Provider.of<ChannelProvider>(context, listen: false);
-      if (WebRTC.platformIsDesktop) { // MacOS and Windows
-        // start timeout timer (30 sec)
-        ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
-          log.info('timeout');
-          // onFinish
-          selectScreenDialog?.cancel();
-        });
-
-        await showDialog<CustomDesktopCapturerSource>(
-          context: context,
-          builder: (context) => selectScreenDialog = SelectScreenDialog(),
-        ).then((value) {
-          log.info('selectedSource: ${value?.selectedSource?.type})');
-          ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
-          if (value != null && value.selectedSource != null) {
-            if (WebRTC.platformIsWindows &&
-                value.selectedSource?.type != SourceType.Window) {
-              provider.presentStart(
-                  selectedSource: value.selectedSource,
-                  systemAudio: value.systemAudio);
-            } else {
-              provider.presentStart(selectedSource: value.selectedSource);
-            }
-          } else {
-            SelectScreenDialog._timer?.cancel();
-            for (var element in selectScreenDialog!._subscriptions) {
-              element.cancel();
-            }
-            // moderator mode
-            if (provider.moderatorStatus) {
-              provider.presentStop();
-              provider.presentModeratorWaitPage();
-            } else {
-              provider.presentStop();
-              provider.presentEnd();
-            }
-          }
-        });
-      } else {  // Android and iOS and Web
+      if (WebRTC.platformIsDesktop) {
+        // MacOS and Windows
+        await _handleDesktopPlatform(context, channelProvider);
+      } else {
+        // Android and iOS and Web
         if (WebRTC.platformIsAndroid) {
           // Android specific
-          Future<void> requestBackgroundPermission() async {
-            // Required for android screen share.
-            try {
-              var hasPermissions = await FlutterBackground.hasPermissions;
-              const androidConfig = FlutterBackgroundAndroidConfig(
-                notificationTitle: 'Screen Sharing',
-                notificationText: 'AirSync is sharing the screen.',
-                notificationImportance: AndroidNotificationImportance.Default,
-                notificationIcon: AndroidResource(
-                  name: 'ic_launcher',
-                  defType: 'mipmap',
-                ),
-                // Above Android 12 will has some issue if set below option true.
-                shouldRequestBatteryOptimizationsOff: false,
-              );
-
-              hasPermissions = await FlutterBackground.initialize(
-                  androidConfig: androidConfig);
-
-              if (hasPermissions &&
-                  !FlutterBackground.isBackgroundExecutionEnabled) {
-                await FlutterBackground.enableBackgroundExecution();
-              }
-            } catch (e, stackTrace) {
-              log.severe('could not publish video: $e', e, stackTrace);
-            }
-          }
-
-          await requestBackgroundPermission();
+          await _requestBackgroundPermission();
         }
-
         var value = CustomDesktopCapturerSource(null, true);
-        provider.presentStart(
+        channelProvider.presentStart(
             selectedSource: value.selectedSource,
             systemAudio: value.systemAudio);
       }
     });
+
     if (WebRTC.platformIsIOS) {
-      ChannelProvider channelProvider =
-          Provider.of<ChannelProvider>(context, listen: false);
-      return Stack(
-        children: [
-          Positioned(
-            left: 30,
-            top: 100,
-            child: InkWell(
-              onTap: () {
-                channelProvider.presentStop();
-                channelProvider.presentEnd();
-              },
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.arrow_back_ios_new_outlined,
-                    color: Colors.white,
-                    size: 14,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Text(
-                      S.of(context).moderator_back,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: AppConstants.fontSizeNormal),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          ConstrainedBox(
-            constraints: const BoxConstraints.expand(),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+      return _buildIosView(context, channelProvider);
+    }
+    return const SizedBox();
+  }
+
+  Future<void> _handleDesktopPlatform(BuildContext context, ChannelProvider provider) async {
+    // start timeout timer (30 sec)
+    ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
+      log.info('timeout');
+      // onFinish
+      selectScreenDialog?.cancel();
+    });
+
+    await showDialog<CustomDesktopCapturerSource>(
+      context: context,
+      builder: (context) => selectScreenDialog = SelectScreenDialog(),
+    ).then((value) {
+      log.info('selectedSource: ${value?.selectedSource?.type})');
+      ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+      if (value != null && value.selectedSource != null) {
+        if (WebRTC.platformIsWindows &&
+            value.selectedSource?.type != SourceType.Window) {
+          provider.presentStart(
+              selectedSource: value.selectedSource,
+              systemAudio: value.systemAudio);
+        } else {
+          provider.presentStart(selectedSource: value.selectedSource);
+        }
+      } else {
+        SelectScreenDialog._timer?.cancel();
+        for (var element in selectScreenDialog!._subscriptions) {
+          element.cancel();
+        }
+        // moderator mode
+        if (provider.moderatorStatus) {
+          provider.presentStop();
+          Provider.of<PresentStateProvider>(context, listen: false).presentModeratorWaitPage();
+        } else {
+          provider.presentStop();
+          provider.presentEnd();
+        }
+      }
+    });
+  }
+
+  Future<void> _requestBackgroundPermission() async {
+    // Required for android screen share.
+    try {
+      var hasPermissions = await FlutterBackground.hasPermissions;
+      const androidConfig = FlutterBackgroundAndroidConfig(
+        notificationTitle: 'Screen Sharing',
+        notificationText: 'AirSync is sharing the screen.',
+        notificationImportance: AndroidNotificationImportance.Default,
+        notificationIcon: AndroidResource(
+          name: 'ic_launcher',
+          defType: 'mipmap',
+        ),
+        // Above Android 12 will has some issue if set below option true.
+        shouldRequestBatteryOptimizationsOff: false,
+      );
+
+      hasPermissions = await FlutterBackground.initialize(
+          androidConfig: androidConfig);
+
+      if (hasPermissions &&
+          !FlutterBackground.isBackgroundExecutionEnabled) {
+        await FlutterBackground.enableBackgroundExecution();
+      }
+    } catch (e, stackTrace) {
+      log.severe('could not publish video: $e', e, stackTrace);
+    }
+  }
+
+  Widget _buildIosView(BuildContext context, ChannelProvider provider) {
+    return Stack(
+      children: [
+        Positioned(
+          left: 30,
+          top: 100,
+          child: InkWell(
+            onTap: () {
+              provider.presentStop();
+              provider.presentEnd();
+            },
+            child: Row(
               children: [
-                SizedBox(
-                  width: AppConstants.viewStateMenuWidth,
-                  child: Text(
-                    S.of(context).present_select_screen_ios_restart_description,
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
-                  ),
+                const Icon(
+                  Icons.arrow_back_ios_new_outlined,
+                  color: Colors.white,
+                  size: 14,
                 ),
-                TextButton(
-                  onPressed: () {
-                    // WebRTC already connected,
-                    // just call "makeCall" to restart broadcast extension.
-                    channelProvider.makeCall(
-                        selectedSource: null, systemAudio: true);
-                  },
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
                   child: Text(
-                    S.of(context).present_select_screen_ios_restart,
-                    style: const TextStyle(color: Colors.white, fontSize: 20),
+                    S.of(context).moderator_back,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: AppConstants.fontSizeNormal),
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      );
-    }
-    return const SizedBox();
+        ),
+        ConstrainedBox(
+          constraints: const BoxConstraints.expand(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: AppConstants.viewStateMenuWidth,
+                child: Text(
+                  S.of(context).present_select_screen_ios_restart_description,
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  // WebRTC already connected,
+                  // just call "makeCall" to restart broadcast extension.
+                  provider.makeCall(
+                      selectedSource: null, systemAudio: true);
+                },
+                child: Text(
+                  S.of(context).present_select_screen_ios_restart,
+                  style: const TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
@@ -14,6 +15,8 @@ class PresentSelectRole extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    PresentStateProvider presentStateProvider =
+        Provider.of<PresentStateProvider>(context, listen: false);
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
     return Row(
@@ -27,7 +30,7 @@ class PresentSelectRole extends StatelessWidget {
 
             channelProvider.currentRole = JoinIntentType.remoteScreen;
             if (channelProvider.isConnectAvailable()) {
-              channelProvider.presentModeratorNamePage();
+              presentStateProvider.presentModeratorNamePage();
             } else {
               Toast.makeFeatureReconnectToast(
                   channelProvider.reconnectState,
@@ -50,7 +53,7 @@ class PresentSelectRole extends StatelessWidget {
 
             channelProvider.currentRole = JoinIntentType.present;
             if (channelProvider.moderatorStatus) {
-              channelProvider.presentModeratorNamePage();
+              presentStateProvider.presentModeratorNamePage();
             } else {
               if (channelProvider.isConnectAvailable()) {
                 channelProvider.beginBasicMode();
