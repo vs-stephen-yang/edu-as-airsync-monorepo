@@ -28,17 +28,6 @@ import 'package:uuid/uuid.dart';
 import '../generated/l10n.dart';
 import '../widgets/toast.dart';
 
-enum ChannelConnectError {
-  instanceNotFound,
-  rateLimitExceeded,
-  networkError,
-  invalidDisplayCode,
-  invalidOtp,
-  connectionModeUnsupported,
-  unknownError,
-  authenticationRequired,
-}
-
 // convert ChannelConnectorError to ChannelConnectError
 ChannelConnectError mapChannelConnectError(ChannelConnectorError error) {
   switch (error) {

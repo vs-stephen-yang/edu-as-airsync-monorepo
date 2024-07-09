@@ -4,3 +4,14 @@ enum ChannelReconnectState {
   success,
   fail
 }
+
+enum ChannelConnectError {
+  instanceNotFound,
+  rateLimitExceeded,
+  networkError,
+  invalidDisplayCode,
+  invalidOtp,
+  connectionModeUnsupported,
+  unknownError,
+  authenticationRequired,
+}

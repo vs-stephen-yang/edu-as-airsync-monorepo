@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
