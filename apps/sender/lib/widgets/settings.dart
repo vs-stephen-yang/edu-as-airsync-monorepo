@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/screens/debug_switch.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
@@ -24,7 +25,7 @@ class _Settings extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context, listen: false);
     AppConfig? appConfig = AppConfig.of(context);
     return SizedBox(
       width: AppConstants.viewStateMenuWidth,
@@ -40,7 +41,7 @@ class _Settings extends State<Settings> {
                   children: [
                     InkWell(
                       onTap: () {
-                        channelProvider.presentMainPage();
+                        presentStateProvider.presentMainPage();
                       },
                       child: const Icon(
                         Icons.arrow_back_ios_new_outlined,
@@ -113,7 +114,7 @@ class _Settings extends State<Settings> {
             padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
             child: InkWell(
               onTap: () {
-                channelProvider.presentLanguagePage();
+                presentStateProvider.presentLanguagePage();
               },
               child: Text(
                 S.of(context).main_language,
