@@ -52,7 +52,6 @@ class _HomeStates extends State<Home> {
   @override
   void initState() {
     super.initState();
-
     _lifecycleListener = AppLifecycleListener(
       onExitRequested: _handleExitRequest,
     );
@@ -134,10 +133,10 @@ class _HomeStates extends State<Home> {
                 children: [
                   const TitleBar(),
                   const BottomBar(),
-                  Consumer2<ChannelProvider, DemoProvider>(
-                      builder: (context, channel, demo, child) {
+                  Consumer3<PresentStateProvider, ChannelProvider, DemoProvider>(
+                      builder: (context, present, channel, demo, child) {
                     if (!demo.isDemoMode) {
-                      log.info('PresentState: ${channel.state}');
+                      log.info('PresentState: ${present.currentState}');
                       if (!kIsWeb) {
                         FlutterWindowClose.setWindowShouldCloseHandler(
                             () async {
@@ -147,7 +146,7 @@ class _HomeStates extends State<Home> {
                         });
                       }
 
-                      switch (channel.state) {
+                      switch (present.currentState) {
                         case ViewState.idle:
                           return PresentIdle();
                         case ViewState.selectRole:
@@ -155,7 +154,7 @@ class _HomeStates extends State<Home> {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               channel.currentRole = JoinIntentType.present;
                               if (channel.moderatorStatus) {
-                                channel.presentModeratorNamePage();
+                                present.presentModeratorNamePage();
                               } else {
                                 if (channel.isConnectAvailable()) {
                                   channel.beginBasicMode();
