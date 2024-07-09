@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:display_cast_flutter/settings/channel_config.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
-import 'package:display_cast_flutter/features/webrtc_connector.dart';
+import 'package:display_cast_flutter/model/webrtc_connector.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/model/direct_connector.dart';
 import 'package:display_cast_flutter/model/remote_screen_client.dart';
