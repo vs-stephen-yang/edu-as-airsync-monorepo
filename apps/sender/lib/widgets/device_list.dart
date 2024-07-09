@@ -9,6 +9,7 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -48,8 +49,6 @@ class _DeviceListState extends State<DeviceList>{
         _showConnectErrorMessage(_channelProvider.channelConnectError!);
       }
     });
-
-    // todo: consumer(ChannelProvider)
 
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
