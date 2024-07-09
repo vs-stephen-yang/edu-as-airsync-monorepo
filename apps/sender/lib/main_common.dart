@@ -7,6 +7,7 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/device_list_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
+import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/screens/home.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
@@ -76,9 +77,10 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider.value(value: PresentStateProvider()),
         ChangeNotifierProvider.value(value: PrefLanguageProvider()),
-        ChangeNotifierProvider.value(value: ChannelProvider(context)),
         ChangeNotifierProvider.value(value: DemoProvider()),
+        ChangeNotifierProvider.value(value: ChannelProvider(context)),
         ChangeNotifierProvider.value(value: DeviceListProvider()),
       ],
       child: Consumer<PrefLanguageProvider>(
