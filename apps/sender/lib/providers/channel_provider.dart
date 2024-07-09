@@ -86,6 +86,7 @@ class ChannelProvider extends ChangeNotifier {
   WebRTCConnector? webRTCConnector;
   List<RtcIceServer>? _iceServerList;
 
+  PresentStateProvider? _presentStateProvider;
   late String _apiGateway = '';
   late ProfileStore _profileStore;
   bool _isRtcFirstConnected = false;
@@ -94,21 +95,15 @@ class ChannelProvider extends ChangeNotifier {
   String? otp;
   Timer? _presentTimer;
 
-  ViewState _currentState = ViewState.idle;
   JoinIntentType currentRole = JoinIntentType.present;
   bool _moderatorStatus = false;
   ChannelConnectError? _channelConnectError;
   ChannelReconnectState reconnectState = ChannelReconnectState.idle;
 
   ProfileStore get profileStore => _profileStore;
-  ViewState get state => _currentState;
   bool get moderatorStatus => _moderatorStatus;
   ChannelConnectError? get channelConnectError => _channelConnectError;
   RemoteScreenClient? get remoteScreenClient => _remoteScreenClient;
-
-  set currentState(ViewState value) {
-    _currentState = value;
-  }
 
   void setChannelConnectError(ChannelConnectError error) {
     AppAnalytics.instance.trackEvent(
@@ -133,47 +128,6 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  //region setView
-  _setViewState(ViewState newViewState) {
-    _currentState = newViewState;
-    switch (newViewState) {
-      case ViewState.idle:
-      case ViewState.moderatorWait:
-        if (_presentTimer != null) {
-          _presentTimer!.cancel();
-          _presentTimer = null;
-        }
-        break;
-      case ViewState.presentStart:
-      case ViewState.moderatorStart:
-        if (_presentTimer != null) {
-          _presentTimer!.cancel();
-          _presentTimer = null;
-        }
-        countSecondsValue.value = 0;
-        countMinutesValue.value = 0;
-        countHoursValue.value = 0;
-        presentingState.value = true;
-        _presentTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-          if (presentingState.value) {
-            countSecondsValue.value++;
-          }
-          if (countSecondsValue.value == 60) {
-            countSecondsValue.value = 0;
-            countMinutesValue.value++;
-          }
-          if (countMinutesValue.value == 60) {
-            countMinutesValue.value = 0;
-            countHoursValue.value++;
-          }
-        });
-        break;
-      default:
-        break;
-    }
-    notifyListeners();
-  }
-
   setTouchBack(bool touchBack) {
     webRTCConnector!.touchBack = touchBack;
   }
@@ -186,52 +140,6 @@ class ChannelProvider extends ChangeNotifier {
     return (WebRTC.platformIsWindows || WebRTC.platformIsMacOS) &&
         (webRTCConnector!.isMainSource);
   }
-
-  Future<void> presentMainPage() async {
-    _setViewState(ViewState.idle);
-  }
-
-  Future<void> presentSelectRolePage() async {
-    _setViewState(ViewState.selectRole);
-  }
-
-  Future<void> presentSelectScreenPage() async {
-    _setViewState(ViewState.selectScreen);
-  }
-
-  Future<void> presentBasicStartPage() async {
-    _setViewState(ViewState.presentStart);
-  }
-
-  Future<void> presentRemoteScreenPage() async {
-    _setViewState(ViewState.remoteScreen);
-  }
-
-  Future<void> presentModeratorNamePage() async {
-    _setViewState(ViewState.moderatorName);
-  }
-
-  Future<void> presentModeratorWaitPage() async {
-    _setViewState(ViewState.moderatorWait);
-  }
-
-  Future<void> presentModeratorStartPage() async {
-    _setViewState(ViewState.moderatorStart);
-  }
-
-  Future<void> presentSettingPage() async {
-    _setViewState(ViewState.settings);
-  }
-
-  Future<void> presentLanguagePage() async {
-    _setViewState(ViewState.language);
-  }
-
-  Future<void> presentDeviceListPage() async {
-    _setViewState(ViewState.deviceList);
-  }
-
-  //endregion
 
   bool _isConnectionModeSupported(DisplayCode displayCode) {
     if (kIsWeb) {
@@ -246,13 +154,14 @@ class ChannelProvider extends ChangeNotifier {
   startConnect({
     required String formattedDisplayCode,
     required String otp,
+    required PresentStateProvider presentStateProvider,
   }) async {
     AppAnalytics.instance.trackEvent('connect');
-
     // Generate a new client Id
     _clientId = const Uuid().v4();
     AppAnalytics.instance.setGlobalProperty('client_id', _clientId!);
 
+    _presentStateProvider = presentStateProvider;
     displayCode = decodeDisplayCode(formattedDisplayCode);
     this.otp = otp;
 
@@ -312,13 +221,14 @@ class ChannelProvider extends ChangeNotifier {
   startDirectConnect({
     required String? otp,
     required AirSyncBonsoirService service,
+    required PresentStateProvider presentStateProvider,
   }) {
     AppAnalytics.instance.trackEvent('quick_connect');
 
     // Generate a new client Id
     _clientId = const Uuid().v4();
     AppAnalytics.instance.setGlobalProperty('client_id', _clientId!);
-
+    _presentStateProvider = presentStateProvider;
     displayCode = decodeDisplayCode(service.displayCode);
     this.otp = otp;
     DirectConnector connector = DirectConnector(
@@ -408,7 +318,7 @@ class ChannelProvider extends ChangeNotifier {
           // split-screen / moderator mode
           if (moderatorStatus) {
             presentStop();
-            presentModeratorWaitPage();
+            _presentStateProvider?.presentModeratorWaitPage();
           }
           break;
         case ChannelMessageType.allowPresent:
@@ -442,7 +352,7 @@ class ChannelProvider extends ChangeNotifier {
         if (!kIsWeb && Platform.isIOS) {
           UndoManager.setUndoState(canUndo: false, canRedo: false);
         }
-        presentRemoteScreenPage();
+        _presentStateProvider?.presentRemoteScreenPage();
       },
       // onClose callback
       (int code, String reason) {
@@ -461,7 +371,7 @@ class ChannelProvider extends ChangeNotifier {
     _iceServerList = message.iceServers;
 
     // select screen
-    presentSelectScreenPage();
+    _presentStateProvider?.presentSelectScreenPage();
   }
 
   void onChannelStateChange(ChannelState state) {
@@ -516,7 +426,7 @@ class ChannelProvider extends ChangeNotifier {
     webRTCConnector?.onStreamInterrupted = (() async {
       presentStop();
       if (moderatorStatus) {
-        presentModeratorWaitPage();
+        _presentStateProvider?.presentModeratorWaitPage();
       } else {
         presentEnd();
       }
@@ -534,14 +444,16 @@ class ChannelProvider extends ChangeNotifier {
       log.info('makeCall: ${value ? 'success' : 'failure'}');
       if (value) {
         if (moderatorStatus) {
-          presentModeratorStartPage();
+          _presentStateProvider?.presentModeratorStartPage();
         } else {
-          presentBasicStartPage();
+          _presentStateProvider?.presentBasicStartPage();
         }
+        presentingState.value = true;
+        _startPresentTimer();
       } else {
         presentStop();
         if (moderatorStatus) {
-          presentModeratorWaitPage();
+          _presentStateProvider?.presentModeratorWaitPage();
         } else {
           presentEnd();
         }
@@ -558,11 +470,12 @@ class ChannelProvider extends ChangeNotifier {
     } catch (e, stackTrace) {
       log.severe('presentEnd', e, stackTrace);
     }
+    _resetTimer();
 
     if (goIdleState) {
       resetMessage();
       navService.popUntil('/home');
-      presentMainPage();
+      _presentStateProvider?.presentMainPage();
     }
   }
 
@@ -572,6 +485,7 @@ class ChannelProvider extends ChangeNotifier {
     webRTCConnector?.hangUp();
     // send command
     _stopPresent();
+    _resetTimer();
   }
 
   Future<void> presentPause() async {
@@ -605,7 +519,7 @@ class ChannelProvider extends ChangeNotifier {
   void setSenderName(String name) {
     _joinDisplay(name: name);
     if (currentRole == JoinIntentType.present) {
-      presentModeratorWaitPage();
+      _presentStateProvider?.presentModeratorWaitPage();
     } else {
       _requestRemoteScreen();
     }
@@ -634,14 +548,15 @@ class ChannelProvider extends ChangeNotifier {
   void removeRemoteScreenClient() async {
     await remoteScreenClient?.remove();
     await closeChannel();
-    presentMainPage();
+    _resetTimer();
+    _presentStateProvider?.presentMainPage();
   }
 
   /// get IceServer list and send join-display, start-present
   void _onDisplayStatus(DisplayStatusMessage message) async {
     _moderatorStatus = message.status!.moderator!;
 
-    presentSelectRolePage();
+    _presentStateProvider?.presentSelectRolePage();
   }
 
   Future _requestRemoteScreen() async {
@@ -662,8 +577,9 @@ class ChannelProvider extends ChangeNotifier {
       case RemoteScreenStatus.accepted:
         break;
       case RemoteScreenStatus.rejected:
+        _resetTimer();
         Toast.makeToast(S.current.toast_enable_remote_screen);
-        presentMainPage();
+        _presentStateProvider?.presentMainPage();
         break;
       case RemoteScreenStatus.kicked:
         removeRemoteScreenClient();
@@ -817,5 +733,33 @@ class ChannelProvider extends ChangeNotifier {
       // When users fail to cast their screen on the first attempt
       AppAnalytics.instance.trackEvent('cast_error');
     }
+  }
+
+  void _resetTimer() {
+    if (_presentTimer != null) {
+      _presentTimer!.cancel();
+      _presentTimer = null;
+    }
+    countSecondsValue.value = 0;
+    countMinutesValue.value = 0;
+    countHoursValue.value = 0;
+  }
+
+  void _startPresentTimer() {
+    _resetTimer();
+    _presentTimer = Timer.periodic(const Duration(seconds: 1), (timer)
+    {
+      if (presentingState.value) {
+        countSecondsValue.value++;
+        if (countSecondsValue.value == 60) {
+          countSecondsValue.value = 0;
+          countMinutesValue.value++;
+        }
+        if (countMinutesValue.value == 60) {
+          countMinutesValue.value = 0;
+          countHoursValue.value++;
+        }
+      }
+    });
   }
 }
