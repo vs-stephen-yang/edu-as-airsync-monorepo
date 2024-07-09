@@ -4,6 +4,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/device_list_provider.dart';
+import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
@@ -24,6 +25,7 @@ class _DeviceListState extends State<DeviceList>{
   late DeviceListProvider _deviceListProvider;
   late ChannelProvider _channelProvider;
   late AirSyncBonsoirService _connectService;
+  late PresentStateProvider _presentStateProvider;
 
   bool isPinDialogShown = false;
 
@@ -33,17 +35,21 @@ class _DeviceListState extends State<DeviceList>{
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       _deviceListProvider.startDiscovery(AppConfig.of(context)?.settings.versionPostfix ?? '');
     });
+    _presentStateProvider = Provider.of<PresentStateProvider>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
     _channelProvider = Provider.of<ChannelProvider>(context);
     _deviceListProvider = Provider.of<DeviceListProvider>(context, listen: false);
+
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       if (_channelProvider.channelConnectError != null && !isPinDialogShown) {
         _showConnectErrorMessage(_channelProvider.channelConnectError!);
       }
     });
+
+    // todo: consumer(ChannelProvider)
 
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
@@ -60,7 +66,7 @@ class _DeviceListState extends State<DeviceList>{
                     children: [
                       InkWell(
                         onTap: () {
-                          _channelProvider.presentMainPage();
+                          _presentStateProvider.presentMainPage();
                         },
                         child: const Icon(
                           Icons.arrow_back_ios_new_outlined,
@@ -112,7 +118,8 @@ class _DeviceListState extends State<DeviceList>{
 
                             _channelProvider.startDirectConnect(
                                 otp: null,
-                                service: _connectService);
+                                service: _connectService,
+                                presentStateProvider: _presentStateProvider);
                           },
                           child: ListTile(
                             title: Row(children: [
@@ -212,7 +219,7 @@ class _DeviceListState extends State<DeviceList>{
     for (var element in controllers) {
       otp += _convertFullWidthToHalfWidth(element.text);
     }
-    _channelProvider.startDirectConnect(otp: otp, service: _connectService);
+    _channelProvider.startDirectConnect(otp: otp, service: _connectService, presentStateProvider: _presentStateProvider);
   }
 
   void _showEnterPinDialog() {

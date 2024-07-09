@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
+import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/widgets/present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/present_idle_text_field.dart';
@@ -18,7 +19,10 @@ class PresentIdle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    PresentStateProvider presentStateProvider =
+        Provider.of<PresentStateProvider>(context, listen: false);
+    ChannelProvider channelProvider =
+        Provider.of<ChannelProvider>(context, listen: false);
     DemoProvider demoProvider = Provider.of<DemoProvider>(context);
     bool presentBtnEnable = false;
     String displayCode = '', password = '';
@@ -68,6 +72,7 @@ class PresentIdle extends StatelessWidget {
               channelProvider.startConnect(
                 formattedDisplayCode: displayCode,
                 otp: password,
+                presentStateProvider: presentStateProvider
               );
             }
           },
@@ -84,7 +89,7 @@ class PresentIdle extends StatelessWidget {
                 color: Colors.white,
               ),
               onTap: () {
-                channelProvider.presentSettingPage();
+                presentStateProvider.presentSettingPage();
               },
             ),
             if (!kIsWeb) const SizedBox(height: 10),
@@ -96,8 +101,7 @@ class PresentIdle extends StatelessWidget {
                 ),
                 onTap: () {
                   AppAnalytics.instance.trackEvent('click_device_list');
-
-                  channelProvider.presentDeviceListPage();
+                  presentStateProvider.presentDeviceListPage();
                 },
               ),
           ],
