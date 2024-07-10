@@ -1,5 +1,4 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';

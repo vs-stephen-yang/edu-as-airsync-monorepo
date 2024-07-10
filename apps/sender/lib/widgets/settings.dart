@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/screens/debug_switch.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
