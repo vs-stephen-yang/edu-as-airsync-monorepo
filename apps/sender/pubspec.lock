@@ -444,8 +444,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.0.24"
-      resolved-ref: "11abc0a5a6a71f464df40cbd65d5c455b946c582"
+      ref: "release-0.0.25"
+      resolved-ref: b278f7440ace8963770951bb5c423f6be155950d
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter"
     source: git
     version: "1.0.0"
