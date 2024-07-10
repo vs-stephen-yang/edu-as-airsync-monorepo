@@ -105,6 +105,7 @@ class Client {
   Function(MediaStreamTrack track, RemoteStream stream)? ontrack;
   Function(MediaStreamTrack track, RemoteStream stream)? onAddTrack;
   Function(MediaStreamTrack track, RemoteStream stream)? onRemoveTrack;
+  Function(RTCPeerConnectionState state)? onConnectionState;
   Function(RTCDataChannel channel)? ondatachannel;
   Function(Map<String, dynamic> speakers)? onspeaker;
   Function(int code, String reason)? onSignalClose;
@@ -143,6 +144,9 @@ class Client {
   Future<void> join(String sid, String uid) async {
     var completer = Completer<void>();
     try {
+      transports[RoleSub]!.pc!.onConnectionState = (RTCPeerConnectionState state) {
+        onConnectionState?.call(state);
+      };
       transports[RoleSub]!.pc!.onTrack = (RTCTrackEvent ev) {
         var remote = makeRemote(ev.streams[0], transports[RoleSub]!);
         ontrack?.call(ev.track, remote);
