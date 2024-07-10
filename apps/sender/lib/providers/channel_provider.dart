@@ -339,7 +339,7 @@ class ChannelProvider extends ChangeNotifier {
       infoMessage.ionSfuRoom!.iceServers,
       _onRemoteScreenTrack,
       // onClose callback
-      (int code, String reason) {
+      () {
         removeRemoteScreenClient();
       },
     );
