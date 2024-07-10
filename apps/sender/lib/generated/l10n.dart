@@ -799,6 +799,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Remote screen connection error`
+  String get remote_screen_connect_error {
+    return Intl.message(
+      'Remote screen connection error',
+      name: 'remote_screen_connect_error',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

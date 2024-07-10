@@ -340,6 +340,7 @@ class ChannelProvider extends ChangeNotifier {
       _onRemoteScreenTrack,
       // onClose callback
       () {
+        Toast.makeToast(S.current.remote_screen_connect_error);
         removeRemoteScreenClient();
       },
     );
