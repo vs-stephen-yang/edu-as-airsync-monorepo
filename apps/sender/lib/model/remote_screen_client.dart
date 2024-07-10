@@ -28,7 +28,8 @@ class RemoteScreenClient {
   RemoteScreenChannelSignal? _channelSignal;
 
   onDataChannelState(RTCDataChannelState state) {
-    //print('onDataChannelState: $state');
+    log.info('Remote screen: Data channel state ${state.name}');
+
     if (state == RTCDataChannelState.RTCDataChannelClosed) {
       _dataChannel = null;
     }
@@ -68,6 +69,8 @@ class RemoteScreenClient {
     Function onTrack,
     Function onClose,
   ) async {
+    log.info('Remote screen: Create client');
+
     final signal = _createSignal(url);
 
     _client = await Client.create(
@@ -81,12 +84,15 @@ class RemoteScreenClient {
     _dataChannel!.onDataChannelState = onDataChannelState;
 
     _client!.ontrack = (track, RemoteStream remoteStream) async {
+      log.info('Remote screen: Track added ${track.label}');
+
       await _remoteScreenRenderer.initialize();
       _remoteScreenRenderer.srcObject = remoteStream.stream;
       onTrack();
     };
 
     _client!.ondatachannel = (RTCDataChannel dc) {
+      log.info('Remote screen: Data channel added ${dc.label}');
       if (dc.label == _sessionId) {
         _dataChannel = dc;
         _dataChannel!.onDataChannelState = onDataChannelState;
@@ -119,6 +125,8 @@ class RemoteScreenClient {
     }
     await _remoteScreenRenderer.dispose();
     _remoteScreenRenderer = RTCVideoRenderer();
+
+    log.info('Remote screen: Closing client');
     _client?.close();
     _client = null;
   }
