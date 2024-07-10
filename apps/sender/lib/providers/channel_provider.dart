@@ -346,7 +346,6 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _onRemoteScreenTrack() {
-    log.info('Remote Screen onTrack');
     notifyListeners();
   }
 
