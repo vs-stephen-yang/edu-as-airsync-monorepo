@@ -337,17 +337,17 @@ class ChannelProvider extends ChangeNotifier {
       infoMessage.ionSfuRoom!.signalUrl,
       infoMessage.ionSfuRoom!.roomId!,
       infoMessage.ionSfuRoom!.iceServers,
-      () {
-        if (!kIsWeb && Platform.isIOS) {
-          UndoManager.setUndoState(canUndo: false, canRedo: false);
-        }
-        _presentStateProvider?.presentRemoteScreenPage();
-      },
+      _onRemoteScreenTrack,
       // onClose callback
       (int code, String reason) {
         removeRemoteScreenClient();
       },
     );
+  }
+
+  void _onRemoteScreenTrack() {
+    log.info('Remote Screen onTrack');
+    notifyListeners();
   }
 
   Future<void> _handleRemoteScreenSignal(
@@ -510,6 +510,11 @@ class ChannelProvider extends ChangeNotifier {
     if (currentRole == JoinIntentType.present) {
       _presentStateProvider?.presentModeratorWaitPage();
     } else {
+      if (!kIsWeb && Platform.isIOS) {
+        UndoManager.setUndoState(canUndo: false, canRedo: false);
+      }
+      _presentStateProvider?.presentRemoteScreenPage();
+
       _requestRemoteScreen();
     }
   }
