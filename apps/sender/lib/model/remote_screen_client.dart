@@ -66,8 +66,8 @@ class RemoteScreenClient {
     String? url,
     String roomId,
     List<RtcIceServer>? iceServers,
-    Function onTrack,
-    Function onClose,
+    Function() onTrack,
+    Function() onClose,
   ) async {
     log.info('Remote screen: Create client');
 
@@ -90,6 +90,13 @@ class RemoteScreenClient {
       _remoteScreenRenderer.srcObject = remoteStream.stream;
       onTrack();
     };
+    _client!.onConnectionState = (RTCPeerConnectionState state) {
+      log.info('Remote screen: Connection state ${state.name}');
+
+      if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
+        onClose();
+      }
+    };
 
     _client!.ondatachannel = (RTCDataChannel dc) {
       log.info('Remote screen: Data channel added ${dc.label}');
@@ -100,7 +107,8 @@ class RemoteScreenClient {
     };
 
     _client!.onSignalClose = (int code, String reason) {
-      onClose(code, reason);
+      log.info('Remote screen: signal closed');
+      onClose();
     };
   }
 
