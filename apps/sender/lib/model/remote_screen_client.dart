@@ -24,6 +24,7 @@ class RemoteScreenClient {
   bool _textureSizeChanged = false;
   Size _textureSize = const Size(0, 0);
   Offset _textureOffset = const Offset(0, 0);
+  bool _isFirstConnected = true;
 
   RemoteScreenChannelSignal? _channelSignal;
 
@@ -88,13 +89,21 @@ class RemoteScreenClient {
 
       await _remoteScreenRenderer.initialize();
       _remoteScreenRenderer.srcObject = remoteStream.stream;
-      onTrack();
     };
     _client!.onConnectionState = (RTCPeerConnectionState state) {
       log.info('Remote screen: Connection state ${state.name}');
 
-      if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
-        onClose();
+      switch (state) {
+        case RTCPeerConnectionState.RTCPeerConnectionStateFailed:
+          onClose();
+          break;
+        case RTCPeerConnectionState.RTCPeerConnectionStateConnected:
+          if (_isFirstConnected) {
+            onTrack();
+            _isFirstConnected = false;
+          }
+          break;
+        default:
       }
     };
 
