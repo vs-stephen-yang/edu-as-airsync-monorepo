@@ -396,8 +396,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.32.0"
-      resolved-ref: "8cf5de353564994c5f9601218297d86e528c0774"
+      ref: "release-0.33.0"
+      resolved-ref: f7c713ee8c66b76a5187d6559169d3744f6f090e
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror"
     source: git
     version: "0.0.1"
@@ -561,8 +561,8 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: "release-0.6.0"
-      resolved-ref: "18f8ea902625330c433e4fe7684fa11ec7b0da14"
+      ref: "release-0.7.0"
+      resolved-ref: "129855d82a71b17695fdf17ff4b83d5e31bdc05b"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/libcastauth"
     source: git
     version: "1.0.0"
