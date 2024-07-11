@@ -151,6 +151,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "present_time_unit_min": MessageLookupByLibrary.simpleMessage("mins"),
         "present_time_unit_sec": MessageLookupByLibrary.simpleMessage("secs"),
         "present_wait": m0,
+        "remote_screen_connect_error": MessageLookupByLibrary.simpleMessage(
+            "Remote screen connection error"),
         "remote_screen_wait": MessageLookupByLibrary.simpleMessage(
             "Sharing is in processing, please wait."),
         "settings_audio_configuration":
