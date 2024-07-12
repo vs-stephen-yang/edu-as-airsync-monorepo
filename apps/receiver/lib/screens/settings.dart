@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
-import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/screens/language_selection.dart';
@@ -135,29 +134,25 @@ class _SettingsState extends State<Settings> {
                   const Spacer(),
                   FittedBox(
                     fit: BoxFit.fitHeight,
-                    child: FocusIconButton(
-                      childNotFocus: FutureBuilder(
-                        future: AppOverlayTab().getVisibility(),
-                        builder: (context, snapshot) {
-                          bool isRunning = false;
-                          if (snapshot.hasData) {
-                            isRunning = snapshot.data as bool;
-                          }
-                          return Image(
+                    child: FutureBuilder(
+                      future: AppOverlayTab().getVisibility(),
+                      builder: (context, snapshot) {
+                        bool isRunning = false;
+                        if (snapshot.hasData) {
+                          isRunning = snapshot.data as bool;
+                        }
+                        return FocusIconButton(
+                          childNotFocus: Image(
                             image: Svg(isRunning
                                 ? 'assets/images/ic_activate_on.svg'
                                 : 'assets/images/ic_activate_off.svg'),
-                          );
-                        },
-                      ),
-                      splashRadius: 20,
-                      focusColor: Colors.grey,
-                      onClick: () {
-                        AppPreferences()
-                            .set(showOverlayTab: !AppPreferences().showOverlayTab);
-                        AppOverlayTab()
-                            .setVisibility(AppPreferences().showOverlayTab);
-                        setState(() {});
+                          ),
+                          splashRadius: 20,
+                          focusColor: Colors.grey,
+                          onClick: () {
+                            _setVisibility(!isRunning);
+                          },
+                        );
                       },
                     ),
                   ),
@@ -322,6 +317,11 @@ class _SettingsState extends State<Settings> {
         FocusScope.of(context).requestFocus();
       });
     });
+  }
+
+  _setVisibility(bool visible) async {
+    await AppOverlayTab().setVisibility(visible);
+    setState(() {});
   }
 }
 

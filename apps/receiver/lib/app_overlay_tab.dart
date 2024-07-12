@@ -76,8 +76,7 @@ class AppOverlayTab {
     return false;
   }
 
-  Future<void> setupOverlayTabHandler(
-      {required BuildContext buildContext, required bool isVisible}) async {
+  Future<void> setupOverlayTabHandler(BuildContext buildContext) async {
     await isOverlayTabRunning();
     android_window.setHandler((String name, Object? data) async {
       log('overlay tab handler-> name:$name');
@@ -94,9 +93,6 @@ class AppOverlayTab {
 
           _calculateInfoSize();
           await _postMessageToAndroidWindow(OverlayTabHandler.nameInitValue, {
-            OverlayTabHandler.keyVisibility: isVisible
-                ? OverlayTabHandler.valueVisible
-                : OverlayTabHandler.valueInvisible,
             OverlayTabHandler.keySizeWidth: infoWidth.ceil().toString(),
             OverlayTabHandler.keySizeHeight: infoHeight.ceil().toString(),
             OverlayTabHandler.keyDeviceName: instanceInfoProvider.deviceName,
