@@ -56,8 +56,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
-    AppOverlayTab().setupOverlayTabHandler(
-        buildContext: context, isVisible: AppPreferences().showOverlayTab);
+    AppOverlayTab().setupOverlayTabHandler(context);
     Provider.of<ChannelProvider>(context, listen: false).startChannelProvider();
     Provider.of<MirrorStateProvider>(context, listen: false)
         .startMirrorStartProvider();
