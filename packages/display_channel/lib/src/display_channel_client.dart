@@ -86,8 +86,11 @@ class DisplayChannelClient implements Channel {
     if (_isClosed()) {
       return;
     }
-    _state = newState;
-    onStateChange?.call(_state);
+
+    if (_state != newState) {
+      _state = newState;
+      onStateChange?.call(_state);
+    }
   }
 
   updateQueryParameters(String token) {
