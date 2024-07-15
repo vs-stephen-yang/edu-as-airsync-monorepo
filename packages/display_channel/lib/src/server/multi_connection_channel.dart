@@ -242,8 +242,10 @@ class MultiConnectionChannel implements Channel {
       return;
     }
 
-    _state = newState;
-    onStateChange?.call(_state);
+    if (_state != newState) {
+      _state = newState;
+      onStateChange?.call(_state);
+    }
   }
 
   void _doClose(ChannelCloseReason reason) {
