@@ -189,11 +189,7 @@ class _OverlayTabState extends State<OverlayTab> {
 
         case OverlayTabHandler.nameLaunchApp:
           if (data is Map<Object?, Object?>) {
-            setState(() {
-              setState(() {
-                AndroidWindow.launchApp();
-              });
-            });
+            AndroidWindow.launchApp();
           } else {
             log('launch app with wrong data type: ${data.runtimeType}');
           }
