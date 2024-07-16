@@ -171,7 +171,7 @@ class ChannelProvider extends ChangeNotifier {
   void _setTunnelServer() {
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
-      reconnectTimeout: defaultChannelReconnectTimeout,
+      reconnectTimeout: channelReconnectTimeoutInStreaming,
       (String url, bool isReconnect) => WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(
@@ -196,7 +196,7 @@ class ChannelProvider extends ChangeNotifier {
   void _setDirectServer() {
     // create a direct server
     _directServer = DisplayDirectServer(
-      reconnectTimeout: defaultChannelReconnectTimeout,
+      reconnectTimeout: channelReconnectTimeoutInStreaming,
       (Channel channel) => _onNewChannel(channel, ChannelMode.direct),
       (ConnectionRequest connectionRequest) =>
           _verifyConnectRequest(connectionRequest, isDirectConnect: true),

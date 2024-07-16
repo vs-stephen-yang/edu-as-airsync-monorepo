@@ -6,6 +6,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_stats_parser.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
+import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/rtc_metrics.dart';
@@ -95,6 +96,9 @@ class RTCConnector {
   Function({bool? showMode})? onShowMode;
   Future<void> Function()? onChannelDisconnect;
 
+  Timer? _channelReconnectTimer;
+  bool _isRtcFirstConnected = false;
+
   final _videoBitrateHistory = <int?>[];
 
   RTCConnector(this._channel);
@@ -113,16 +117,24 @@ class RTCConnector {
         break;
       case ChannelState.connecting:
         reconnectChannelState = ReconnectState.reconnecting;
+        if (!_isStreaming()) {
+          // If no streaming is active, interrupt if the channel remains disconnected for an extended period
+          _startChannelReconnectTimer();
+        }
         break;
       case ChannelState.connected:
         if (reconnectChannelState == ReconnectState.reconnecting) {
           reconnectChannelState = ReconnectState.success;
         }
+
+        _stopChannelReconnectTimer();
+
         break;
       case ChannelState.closed:
-        if (reconnectChannelState == ReconnectState.reconnecting) {
-          reconnectChannelState = ReconnectState.fail;
-        }
+        // The channel will no longer switch its state to "closed" solely because of a disconnection.
+        // This means that if a disconnection occurs, the channel will continuously attempt to reconnect without changing the state to "closed".
+        // A state change to "closed" will only occur if there is an explicit close request from the peer.
+
         await disconnectPeerConnection();
         await disconnectChannel();
         break;
@@ -148,6 +160,40 @@ class RTCConnector {
         }
       },
     );
+  }
+
+
+  // The channel failed to reconnect within the specified timeout period
+  void _onChannelReconnectTimeout() async {
+    log.info('The channel failed to reconnect within the timeout period');
+    _channelReconnectTimer = null;
+
+    if (reconnectChannelState == ReconnectState.reconnecting) {
+      reconnectChannelState = ReconnectState.fail;
+    }
+    await disconnectPeerConnection();
+    await disconnectChannel();
+  }
+
+  void _startChannelReconnectTimer() {
+    log.info('Start channel reconnect timer');
+
+    _channelReconnectTimer = Timer(
+      channelReconnectTimeoutInIdle,
+      _onChannelReconnectTimeout,
+    );
+  }
+
+  void _stopChannelReconnectTimer() {
+    if (_channelReconnectTimer != null) {
+      log.info('Stop channel reconnect timer');
+      _channelReconnectTimer!.cancel();
+      _channelReconnectTimer = null;
+    }
+  }
+
+  bool _isStreaming() {
+    return _isRtcFirstConnected;
   }
 
   void _handleVideoStatsReport(RtcVideoInboundStats stats) {
@@ -434,6 +480,13 @@ class RTCConnector {
   Future<void> _onPeerConnectionState(RTCPeerConnectionState state) async {
     _printPeerConnectionLog('_onPeerConnectionState', state);
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
+      if (!_isRtcFirstConnected) {
+        _isRtcFirstConnected = true;
+      }
+
+      // Ensure streaming remains uninterrupted even if the channel disconnects
+      _stopChannelReconnectTimer();
+
       if (reconnectRtcState == ReconnectState.reconnecting) {
         reconnectRtcState = ReconnectState.success;
       }
