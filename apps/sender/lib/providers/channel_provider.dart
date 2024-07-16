@@ -569,6 +569,8 @@ class ChannelProvider extends ChangeNotifier {
   Future closeChannel() async {
     log.info('Closing the channel');
 
+    _stopChannelReconnectTimer();
+
     await _channel?.close(ChannelCloseReason(ChannelCloseCode.close));
     _channel = null;
     reconnectState = ChannelReconnectState.idle;
