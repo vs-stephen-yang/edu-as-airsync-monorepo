@@ -736,33 +736,14 @@ class ChannelProvider extends ChangeNotifier {
       case RTCPeerConnectionState.RTCPeerConnectionStateConnected:
         _onRtcConnectionConnected();
         break;
-
-      case RTCPeerConnectionState.RTCPeerConnectionStateFailed:
-        _onRtcConnectionFailed();
-        break;
-
       default:
         break;
     }
   }
 
   void _onRtcConnectionConnected() {
-    if (!webRTCConnector!.isFirstConnected) {
-      AppAnalytics.instance.trackEvent('cast_successfully');
-    }
-
     // Ensure streaming is uninterrupted when the channel connection drops
     _stopChannelReconnectTimer();
-  }
-
-  void _onRtcConnectionFailed() {
-    if (webRTCConnector!.isFirstConnected) {
-      // When users lose the webrtc connection while casting
-      AppAnalytics.instance.trackEvent('cast_fail');
-    } else {
-      // When users fail to cast their screen on the first attempt
-      AppAnalytics.instance.trackEvent('cast_error');
-    }
   }
 
   void _resetTimer() {
