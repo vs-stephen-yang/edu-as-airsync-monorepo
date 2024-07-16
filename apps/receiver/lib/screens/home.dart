@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
-import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
