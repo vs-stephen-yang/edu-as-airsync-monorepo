@@ -445,6 +445,9 @@ class RTCConnector {
 
   Future<void> close(ChannelCloseCode code, {String? reason}) async {
     log.info('[$clientId] Close channel $reason');
+
+    _stopChannelReconnectTimer();
+
     _channel.close(ChannelCloseReason(code, text: reason));
     _resetSetting();
   }
