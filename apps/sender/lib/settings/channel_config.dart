@@ -7,8 +7,12 @@ const _initialRetryConfig = RetryConfig(
 
 const _reconnectRetryConfig = RetryConfig(
   maxRetryDelay: Duration(seconds: 1),
-  maxRetryAttempts: 12,
+  // Reconnect indefinitely by setting a high number of retry attempts
+  maxRetryAttempts: 60 * 60 * 10, // roughly 10 hours of retries
 );
+
+// Channel reconnect timeout during idle
+const channelReconnectTimeoutInIdle = Duration(seconds: 10);
 
 RetryConfig getChannelRetryConfig(bool isReconnect) {
   return isReconnect ? _reconnectRetryConfig : _initialRetryConfig;

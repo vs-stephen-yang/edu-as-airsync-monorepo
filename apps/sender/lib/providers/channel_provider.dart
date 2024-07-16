@@ -78,11 +78,12 @@ class ChannelProvider extends ChangeNotifier {
   PresentStateProvider? _presentStateProvider;
   late String _apiGateway = '';
   late ProfileStore _profileStore;
-  bool _isRtcFirstConnected = false;
 
   DisplayCode? displayCode;
   String? otp;
   Timer? _presentTimer;
+
+  Timer? _channelReconnectTimer;
 
   JoinIntentType currentRole = JoinIntentType.present;
   bool _moderatorStatus = false;
@@ -363,6 +364,35 @@ class ChannelProvider extends ChangeNotifier {
     _presentStateProvider?.presentSelectScreenPage();
   }
 
+  // The channel failed to reconnect within the specified timeout period
+  void _onChannelReconnectTimeout() {
+    log.info('The channel failed to reconnect within the timeout period');
+
+    _channelReconnectTimer = null;
+    AppAnalytics.instance.trackEvent('channel_reconnect_timeout');
+
+    reconnectState = ChannelReconnectState.fail;
+
+    presentEnd();
+  }
+
+  void _startChannelReconnectTimer() {
+    log.info('Start channel reconnect timer');
+
+    _channelReconnectTimer = Timer(
+      channelReconnectTimeoutInIdle,
+      _onChannelReconnectTimeout,
+    );
+  }
+
+  void _stopChannelReconnectTimer() {
+    if (_channelReconnectTimer!= null) {
+      log.info('Stop channel reconnect timer');
+      _channelReconnectTimer!.cancel();
+      _channelReconnectTimer = null;
+    }
+  }
+
   void onChannelStateChange(ChannelState state) {
     log.info('Channel state: ${state.name}');
     AppAnalytics.instance.trackEvent('channel_state', properties: {
@@ -375,20 +405,24 @@ class ChannelProvider extends ChangeNotifier {
       case ChannelState.connecting:
         reconnectState = ChannelReconnectState.reconnecting;
         notifyListeners();
+
+        if (!_isStreaming()) {
+           // If no streaming is active, interrupt if the channel remains disconnected for an period
+          _startChannelReconnectTimer();
+        }
         break;
       case ChannelState.connected:
         if (reconnectState == ChannelReconnectState.reconnecting) {
           reconnectState = ChannelReconnectState.success;
           notifyListeners();
         }
+
+        _stopChannelReconnectTimer();
         break;
       case ChannelState.closed:
-        if (reconnectState == ChannelReconnectState.reconnecting) {
-          reconnectState = ChannelReconnectState.fail;
-        }
-
-        // The receiver closes the channel when the RTC connection is not established or encounters a failure
-        _handleRtcConnectionErrors();
+        // The channel will no longer switch its state to "closed" solely because of a disconnection.
+        // This means that if a disconnection occurs, the channel will continuously attempt to reconnect without changing the state to "closed".
+        // A state change to "closed" will only occur if there is an explicit close request from the peer.
 
         _handleChannelCloseState(_channel?.closeReason);
         break;
@@ -399,7 +433,6 @@ class ChannelProvider extends ChangeNotifier {
     required dynamic selectedSource,
     bool systemAudio = false,
   }) async {
-    _isRtcFirstConnected = false;
 
     // PeerConnect
     webRTCConnector = WebRTCConnector(
@@ -422,6 +455,10 @@ class ChannelProvider extends ChangeNotifier {
     });
     await makeCall(selectedSource: selectedSource, systemAudio: systemAudio);
   }
+
+  bool _isStreaming() {
+  return webRTCConnector?.isFirstConnected ?? false;
+}
 
   Future<void> makeCall({
     required dynamic selectedSource,
@@ -488,6 +525,7 @@ class ChannelProvider extends ChangeNotifier {
     var message = ResumePresentMessage(_sessionId);
     _channel?.send(message);
   }
+
   Future<bool> presentChangeHighQuality({required bool isHighQuality}) async {
     if (isHighQuality) {
       _profileStore.setSelectedProfile(ProfileStore.videoQualityFirstProfile);
@@ -709,18 +747,16 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _onRtcConnectionConnected() {
-    if (!_isRtcFirstConnected) {
+    if (!webRTCConnector!.isFirstConnected) {
       AppAnalytics.instance.trackEvent('cast_successfully');
-      _isRtcFirstConnected = true;
     }
+
+    // Ensure streaming is uninterrupted when the channel connection drops
+    _stopChannelReconnectTimer();
   }
 
   void _onRtcConnectionFailed() {
-    _handleRtcConnectionErrors();
-  }
-
-  void _handleRtcConnectionErrors() {
-    if (_isRtcFirstConnected) {
+    if (webRTCConnector!.isFirstConnected) {
       // When users lose the webrtc connection while casting
       AppAnalytics.instance.trackEvent('cast_fail');
     } else {

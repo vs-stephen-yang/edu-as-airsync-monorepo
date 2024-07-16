@@ -40,6 +40,11 @@ class WebRTCConnector {
   MediaStream? _localStream;
   List<RTCIceCandidate> remoteCandidates = [];
 
+  bool get isFirstConnected {
+    return _isRtcFirstConnected;
+  }
+  bool _isRtcFirstConnected = false;
+
   // change present quality
   bool _streamPublished = false;
   Map<String, dynamic>? _pendingChangePresentQuality;
@@ -519,6 +524,10 @@ class WebRTCConnector {
       if (reconnectState == ChannelReconnectState.reconnecting) {
         reconnectState = ChannelReconnectState.success;
       }
+      if (!_isRtcFirstConnected) {
+        _isRtcFirstConnected = true;
+      }
+
       bool result = await _updateEncodingParameters();
       log.info('updateEncodingParameters result: {$result}');
     } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateDisconnected) {
