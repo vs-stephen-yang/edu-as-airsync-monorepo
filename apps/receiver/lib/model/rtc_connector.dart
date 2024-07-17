@@ -6,6 +6,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_stats_parser.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
+import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -322,6 +323,7 @@ class RTCConnector {
     if (isModeratorMode) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
       await disconnectPeerConnection(sendAnalytics: false);
+      Home.enlargedScreenPositionIndex.value = null;
       HybridConnectionList().updateSplitScreen();
       sessionId = null;
       onShowMode?.call();
