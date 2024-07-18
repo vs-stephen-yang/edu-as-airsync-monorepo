@@ -5,7 +5,6 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,15 +16,12 @@ class OverlayTabHandler {
   static const String nameInitValue = 'init_value';
   static const String nameSetVisibility = 'set_visibility';
   static const String nameGetVisibility = 'get_visibility';
-  static const String nameSetSize = 'set_size';
   static const String nameSetMainInfo = 'set_main_info';
   static const String nameSetOtp = 'set_otp';
   static const String nameSetLanguage = 'set_language';
   static const String nameLaunchApp = 'launch_app';
 
   static const String keyVisibility = 'visibility';
-  static const String keySizeWidth = 'size_width';
-  static const String keySizeHeight = 'size_height';
   static const String keyDeviceName = 'device_name';
   static const String keyDisplayCode = 'display_code';
   static const String keyOtpCode = 'otp_code';
@@ -39,9 +35,6 @@ class OverlayTabHandler {
 }
 
 class AppOverlayTab {
-  var infoWidth = PlatformDispatcher.instance.displays.first.size.width / 3;
-  var infoHeight = PlatformDispatcher.instance.displays.first.size.height / 15;
-
   static final AppOverlayTab _instance = AppOverlayTab._internal();
 
   //private "Named constructors"
@@ -51,11 +44,7 @@ class AppOverlayTab {
   factory AppOverlayTab() => _instance;
 
   ensureInitialized() async {
-    android_window.open(
-      size: Size(infoWidth, infoHeight),
-      position: Offset(infoWidth * 2, 0),
-      draggableY: false,
-    );
+    android_window.open();
     // wait 10 milliseconds for handle above open process.
     await Future.delayed(const Duration(milliseconds: 10));
     await isOverlayTabRunning();
@@ -91,10 +80,7 @@ class AppOverlayTab {
           InstanceInfoProvider instanceInfoProvider =
               Provider.of<InstanceInfoProvider>(buildContext, listen: false);
 
-          _calculateInfoSize();
           await _postMessageToAndroidWindow(OverlayTabHandler.nameInitValue, {
-            OverlayTabHandler.keySizeWidth: infoWidth.ceil().toString(),
-            OverlayTabHandler.keySizeHeight: infoHeight.ceil().toString(),
             OverlayTabHandler.keyDeviceName: instanceInfoProvider.deviceName,
             OverlayTabHandler.keyDisplayCode: instanceInfoProvider.displayCode,
             OverlayTabHandler.keyOtpCode: channelProvider.isEyeOpen.value
@@ -132,10 +118,6 @@ class AppOverlayTab {
             }
           });
 
-          Home.orientation.addListener(() async {
-            await setWindowSize();
-          });
-
           return OverlayTabHandler.resultEmptyString;
       }
       return OverlayTabHandler.resultNullString;
@@ -157,14 +139,6 @@ class AppOverlayTab {
         OverlayTabHandler.nameGetVisibility, null);
     final visible = response[OverlayTabHandler.keyVisibility];
     return visible == OverlayTabHandler.valueVisible;
-  }
-
-  Future<void> setWindowSize() async {
-    _calculateInfoSize();
-    await _postMessageToAndroidWindow(OverlayTabHandler.nameSetSize, {
-      OverlayTabHandler.keySizeWidth: infoWidth.ceil().toString(),
-      OverlayTabHandler.keySizeHeight: infoHeight.ceil().toString(),
-    });
   }
 
   Future<void> setDeviceNameAndDisplayCode(
@@ -201,22 +175,5 @@ class AppOverlayTab {
       }
     }
     return <Object?, Object?>{};
-  }
-
-  _calculateInfoSize() {
-    var isPortrait =
-        Home.orientation.value == Orientation.portrait.index;
-    if (isPortrait) {
-      infoWidth =
-          PlatformDispatcher.instance.displays.first.size.width / 1.6;
-      infoHeight =
-          PlatformDispatcher.instance.displays.first.size.height / 26;
-    } else {
-      infoWidth =
-          PlatformDispatcher.instance.displays.first.size.width / 3;
-      infoHeight =
-          PlatformDispatcher.instance.displays.first.size.height / 15;
-    }
-    log('overlay tab isPortrait: $isPortrait, infoWidth: $infoWidth, infoHeight: $infoHeight');
   }
 }
