@@ -92,6 +92,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       constraints.audio = false;
       constraints.resolution = captureResolution.name;
 
+      await Helper.requestCapturePermission();
       if (!kIsWeb && Platform.isAndroid) {
         // Android specific
         Future<void> requestBackgroundPermission() async {

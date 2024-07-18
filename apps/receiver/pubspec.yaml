@@ -39,15 +39,15 @@ dependencies:
   in_app_update: ^4.2.3
   no_context_navigation: ^2.1.2
   shared_preferences: ^2.2.3
-  package_info_plus: ^4.2.0
-  device_info_plus: ^9.1.2
+  package_info_plus: ^6.0.0
+  device_info_plus: ^10.0.1
   encrypt: ^5.0.3
   path: ^1.9.0
   uuid: ^4.4.0
   http: ^1.2.1
   path_provider: ^2.1.3
   http_parser: ^4.0.2
-  intl: ^0.18.1
+  intl: ^0.19.0
   flutter_bloc: ^8.1.6
   socket_io_client: ^1.0.2
   qr_flutter: ^4.1.0
@@ -79,7 +79,7 @@ dependencies:
   app_ota_flutter:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/App_OTA_Flutter
-      ref: 1.0.1
+      ref: 1.0.4
   device_info_vs:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS
@@ -87,7 +87,7 @@ dependencies:
   flutter_webrtc:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc
-      ref: release-0.9.36-33
+      ref: release-0.9.36-34
   display_channel:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
@@ -95,7 +95,7 @@ dependencies:
   ion_sdk_flutter:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter
-      ref: release-0.0.26
+      ref: release-0.0.27
   flutter_input_injection:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection
@@ -111,7 +111,7 @@ dependencies:
   android_window:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-android-window
-      ref: v0.4.0-4
+      ref: v0.4.0-5
   # ViewSonic plug-in
 
 dev_dependencies:
