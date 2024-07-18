@@ -123,14 +123,14 @@ void main() {
     // arrange
 
     // action
-    client.openTunnelChannel('100000', '1313', displayCode: 'DEF');
+    client.openTunnelChannel('100000', 1, '1313', displayCode: 'DEF');
 
     // assert
     expect(connection.isOpenCalled, true);
 
     expect(
       connection.urls.first,
-      'ws://abc.com?clientId=1000&displayCode=DEF&token=1313&role=client&instanceIndex=100000',
+      'ws://abc.com?clientId=1000&displayCode=DEF&token=1313&role=client&instanceIndex=100000&instanceGroupId=1',
     );
   });
 

@@ -37,6 +37,7 @@ class DisplayTunnelServer {
 
   void start(
     String instanceId,
+    int instanceGroupId,
     String tunnelServiceUrl, {
     // AWS WebSocket Idle Connection Timeout 10 minutes
     Duration tunnelHeartbeatInterval = const Duration(minutes: 9),
@@ -46,6 +47,7 @@ class DisplayTunnelServer {
     final uriWithParameters = uri.replace(queryParameters: {
       'role': 'server',
       'instanceId': instanceId,
+      'instanceGroupId': '$instanceGroupId',
     });
 
     final connection = _createTunnelConnection(

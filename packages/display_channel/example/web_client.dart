@@ -9,6 +9,7 @@ void main() {
   const tunnelServiceUrl = 'wss://ap-northeast-1.gateway.dev.airsync.net';
   const token = '1111';
   const instanceIndex = '100043';
+  const instanceGroupId = 1;
   const displayCode = 'ABA';
 
   final uri = Uri.parse(tunnelServiceUrl);
@@ -35,6 +36,7 @@ void main() {
 
   channel.openTunnelChannel(
     instanceIndex,
+    instanceGroupId,
     token,
     displayCode: displayCode,
   );

@@ -47,12 +47,14 @@ class DisplayChannelClient implements Channel {
 
   void openTunnelChannel(
     String instanceIndex,
+    int instanceGroupId,
     String token, {
     required String displayCode,
   }) {
     final parameters = <String, String>{
       'role': 'client',
       'instanceIndex': instanceIndex,
+      'instanceGroupId': '$instanceGroupId',
     };
 
     _openChannel(

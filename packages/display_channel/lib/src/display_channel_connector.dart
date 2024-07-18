@@ -1,7 +1,7 @@
 import 'package:display_channel/src/channel.dart';
 import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/display_channel_client.dart';
-import 'package:display_channel/src/display_code.dart';
+import 'package:display_channel/src/display_code2.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
 
 enum FetchChannelTunnelUrlError {
@@ -17,7 +17,10 @@ class FetchChannelTunnelUrlException implements Exception {
 }
 
 // throw FetchChannelTunnelUrlException
-typedef FetchChannelTunnelUrl = Future<String> Function(int instanceIndex);
+typedef FetchChannelTunnelUrl = Future<String> Function(
+  int instanceIndex,
+  int instanceGroupId,
+);
 
 enum ChannelConnectorError {
   instanceNotFound,
@@ -38,6 +41,7 @@ class DisplayChannelConnector {
 
   final String _encodedDisplayCode;
   final DisplayCode _displayCode;
+  final List<String>? _localIpAddresses;
   final String _otp;
 
   DisplayChannelClient? _tunnelClient;
@@ -63,6 +67,7 @@ class DisplayChannelConnector {
     required String clientId,
     required String otp,
     required DisplayCode displayCode,
+    List<String>? localIpAddresses,
     required String encodedDisplayCode,
     required CreateWebsocketClientConnection createConnectionTunnel,
     required CreateWebsocketClientConnection createConnectionDirect,
@@ -72,6 +77,7 @@ class DisplayChannelConnector {
   })  : _clientId = clientId,
         _otp = otp,
         _displayCode = displayCode,
+        _localIpAddresses = localIpAddresses,
         _encodedDisplayCode = encodedDisplayCode,
         _createConnectionTunnel = createConnectionTunnel,
         _createConnectionDirect = createConnectionDirect,
@@ -83,24 +89,29 @@ class DisplayChannelConnector {
     int? directPort,
   }) {
     // open direct channel
-    if (directPort != null) {
-      assert(_displayCode.hasIpAddress());
-
+    if (directPort != null && _localIpAddresses != null) {
       _useDirect = true;
 
+      final remoteIpAddress = createRemoteIp(
+        // TODO: handle multiple local IP addresses
+        _localIpAddresses![0],
+        _displayCode.instanceGroupId,
+      );
+
       _openDirectChannel(
-        _displayCode.ipAddress,
+        remoteIpAddress,
         directPort,
       );
     }
 
     // open tunnel channel
-    if (_displayCode.instanceIndex > 0) {
+    if (_displayCode.instanceIndex != null) {
       _useTunnel = true;
 
       // fetching the tunnel URL
       _fetchTunnelUrl(
-        _displayCode.instanceIndex,
+        _displayCode.instanceIndex!,
+        _displayCode.instanceGroupId,
       ).then(
         // fetch the tunnel URL successfully
         (String tunnelUrl) {
@@ -136,6 +147,7 @@ class DisplayChannelConnector {
     // open the client
     _tunnelClient!.openTunnelChannel(
       _displayCode.instanceIndex.toString(),
+      _displayCode.instanceGroupId,
       _otp,
       displayCode: _encodedDisplayCode,
     );

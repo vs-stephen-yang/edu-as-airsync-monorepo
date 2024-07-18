@@ -26,6 +26,8 @@ main(List<String> arguments) async {
   final encodedDisplayCode = argResults['code'];
   final tunnelServiceUrl = argResults['tunnelUrl'];
 
+  final localIpAddresses = await getLocalIpAddresses();
+
   createConnectionTunnel(url, bool isReconnect) => WebSocketClientConnection(
       url,
       WebSocketClientConnectionConfig(
@@ -49,14 +51,23 @@ main(List<String> arguments) async {
         ),
       );
 
-  Future<String> fetchTunnelUrl(instanceIndex) async => tunnelServiceUrl;
+  Future<String> fetchTunnelUrl(
+    int instanceIndex,
+    int instanceGroupId,
+  ) async =>
+      tunnelServiceUrl;
 
+  log().info('Display Code: $encodedDisplayCode');
   final displayCode = decodeDisplayCode(encodedDisplayCode);
+
+  log().info('Instance Group Id: ${displayCode.instanceGroupId}');
+  log().info('Instance Index: ${displayCode.instanceIndex}');
 
   final client = DisplayChannelConnector(
     clientId: clientId,
     otp: otp,
     displayCode: displayCode,
+    localIpAddresses: localIpAddresses,
     encodedDisplayCode: encodedDisplayCode,
     createConnectionTunnel: createConnectionTunnel,
     createConnectionDirect: createConnectionDirect,
@@ -71,5 +82,5 @@ main(List<String> arguments) async {
 
   log().info('opening the channel');
 
-  client.open(directPort: 5100);
+  client.open();
 }
