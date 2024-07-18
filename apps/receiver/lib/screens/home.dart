@@ -38,7 +38,6 @@ class Home extends StatefulWidget {
   static ValueNotifier<bool> showTitleBottomBar = ValueNotifier(true);
   static ValueNotifier<int?> enlargedScreenPositionIndex = ValueNotifier(null);
   static ValueNotifier<bool> isShowDisplayCode = ValueNotifier(true);
-  static ValueNotifier<int> orientation = ValueNotifier(-1);
 
   @override
   State createState() => _HomeState();
@@ -111,10 +110,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[
-              OrientationBuilder(builder: (context, orientation) {
-                Home.orientation.value = orientation.index;
-                return const SizedBox.shrink();
-              }),
               ValueListenableBuilder(
                 valueListenable: HybridConnectionList.hybridSplitScreenCount,
                 builder: (context, int value, child) {

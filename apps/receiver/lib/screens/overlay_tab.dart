@@ -16,8 +16,6 @@ class OverlayTab extends StatefulWidget {
 }
 
 class _OverlayTabState extends State<OverlayTab> {
-  var _width = 0;
-  var _height = 0;
   String _deviceName = '';
   String _displayCode = '';
   String _otp = '';
@@ -37,56 +35,46 @@ class _OverlayTabState extends State<OverlayTab> {
       fontWeight: FontWeight.bold,
     );
     return AndroidWindow(
-      width: _width,
-      height: _height,
       child: ClipRRect(
         clipBehavior: Clip.hardEdge,
         borderRadius: const BorderRadius.all(Radius.circular(8)),
         child: Scaffold(
           backgroundColor: AppColors.primaryWhiteA50,
-          body: ConstrainedBox(
-            constraints: const BoxConstraints.expand(),
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                AndroidWindow.launchApp();
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(S.of(context).main_settings_device_name),
-                      Text(_deviceName, style: textStyle),
-                    ],
-                  ),
-                  Container(
-                    width: 2,
-                    height: 40,
-                    color: Colors.black,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(S.of(context).main_content_display_code),
-                      Text(_displayCode, style: textStyle),
-                    ],
-                  ),
-                  Container(
-                    width: 2,
-                    height: 40,
-                    color: Colors.transparent,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(S.of(context).main_content_one_time_password),
-                      Text(_otp, style: textStyle),
-                    ],
-                  ),
-                ],
-              ),
+          body: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              AndroidWindow.launchApp();
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(S.of(context).main_settings_device_name),
+                    Text(_deviceName, style: textStyle),
+                  ],
+                ),
+                Container(
+                  width: 2,
+                  height: 40,
+                  color: Colors.black,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(S.of(context).main_content_display_code),
+                    Text(_displayCode, style: textStyle),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(S.of(context).main_content_one_time_password),
+                    Text(_otp, style: textStyle),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
@@ -105,8 +93,6 @@ class _OverlayTabState extends State<OverlayTab> {
           if (data is Map<Object?, Object?>) {
             setState(() {
               var info = Map<String, String>.from(data);
-              _width = int.parse(info[OverlayTabHandler.keySizeWidth] ?? '0');
-              _height = int.parse(info[OverlayTabHandler.keySizeHeight] ?? '0');
               _deviceName = info[OverlayTabHandler.keyDeviceName] ?? '';
               _displayCode = info[OverlayTabHandler.keyDisplayCode] ?? '';
               _otp = info[OverlayTabHandler.keyOtpCode] ?? '';
@@ -138,18 +124,6 @@ class _OverlayTabState extends State<OverlayTab> {
               ? OverlayTabHandler.valueVisible
               : OverlayTabHandler.valueInvisible;
           return {OverlayTabHandler.keyVisibility: visible};
-
-        case OverlayTabHandler.nameSetSize:
-          if (data is Map<Object?, Object?>) {
-            setState(() {
-              var info = Map<String, String>.from(data);
-              _width = int.parse(info[OverlayTabHandler.keySizeWidth] ?? '0');
-              _height = int.parse(info[OverlayTabHandler.keySizeHeight] ?? '0');
-            });
-          } else {
-            log('set size with wrong data type: ${data.runtimeType}');
-          }
-          return OverlayTabHandler.resultEmptyString;
 
         case OverlayTabHandler.nameSetMainInfo:
           if (data is Map<Object?, Object?>) {
