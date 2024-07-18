@@ -4,6 +4,8 @@ import 'package:args/args.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/util/log.dart';
 
+import 'api_util.dart';
+
 class Client {
   final Channel _channel;
 
@@ -127,13 +129,14 @@ class MockServer {
   // start the server
   Future<void> start(
     String instanceId,
+    int instanceGroupId,
     String tunnelServiceUrl,
     int localPort,
     SecurityContext securityContext,
   ) async {
     // start the tunnel server
     log().info('Connecting to $tunnelServiceUrl for tunnel channels');
-    _tunnelServer.start(instanceId, tunnelServiceUrl);
+    _tunnelServer.start(instanceId, instanceGroupId, tunnelServiceUrl);
 
     // start the direct server
     await _directServer.start(
@@ -160,19 +163,48 @@ main(List<String> arguments) async {
       mandatory: true,
     )
     ..addOption(
-      'tunnelUrl',
-      defaultsTo: 'wss://ap-northeast-1.gateway.dev.airsync.net',
+      'instanceId',
+      defaultsTo: '0001',
+    )
+    ..addOption(
+      'apiUrl',
+      defaultsTo: 'https://api.gateway.dev.airsync.net',
     );
 
   ArgResults argResults = parser.parse(arguments);
 
-  final tunnelServiceUrl = argResults['tunnelUrl'];
   final host = argResults['host'];
   const localDirectPort = 5100;
-  const instanceId = '0001';
-  const instanceIndex = 100043;
+  final apiUrl = argResults['apiUrl'];
+  final instanceId = argResults['instanceId'];
+
+  log().info('Host: $host');
+
+  final instanceGroupId = getInstanceGroupIdFromIp(host);
+  final instanceInfo = await registerInstance(
+    apiUrl,
+    instanceId,
+    instanceGroupId,
+  );
 
   log().info('Current directory: ${Directory.current.path}');
+
+  final encodedDisplayCode = encodeDisplayCode(
+    DisplayCode(
+      instanceGroupId: instanceGroupId,
+      instanceIndex: instanceInfo.instanceIndex,
+    ),
+  );
+  final encodedDisplayCode1 = encodeDisplayCode(
+    DisplayCode(
+      instanceGroupId: instanceGroupId,
+    ),
+  );
+
+  log().info('Instance Id: $instanceId');
+  log().info('Instance Group Id: $instanceGroupId');
+  log().info('Instance Index: ${instanceInfo.instanceIndex}');
+  log().info('Display Code: $encodedDisplayCode $encodedDisplayCode1');
 
   final securityContext = await _loadSecurityContext(
     'example/assets/cert.pem',
@@ -182,14 +214,10 @@ main(List<String> arguments) async {
   final server = MockServer();
 
   await server.start(
-      instanceId, tunnelServiceUrl, localDirectPort, securityContext);
-
-  final encodedDisplayCode = encodeDisplayCode(
-    DisplayCode(host, instanceIndex),
+    instanceId,
+    instanceGroupId,
+    instanceInfo.tunnelApiUrl,
+    localDirectPort,
+    securityContext,
   );
-  final encodedDisplayCode1 = encodeDisplayCode(
-    DisplayCode(host, 0),
-  );
-
-  log().info('Display Code: $encodedDisplayCode $encodedDisplayCode1');
 }

@@ -94,7 +94,7 @@ void main() {
       tunnelConnected.complete();
     };
     // start the tunnel server
-    tunnelServer.start("1234", tunnelServiceUrl);
+    tunnelServer.start("1234", 1, tunnelServiceUrl);
 
     // start the direct server
     await directServer.start(0);
@@ -171,6 +171,7 @@ void main() {
 
     client.openTunnelChannel(
       instanceIndex,
+      1,
       token,
       displayCode: displayCode,
     );

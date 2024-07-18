@@ -121,6 +121,10 @@ main(List<String> arguments) async {
       defaultsTo: '0001',
     )
     ..addOption(
+      'instanceGroupId',
+      defaultsTo: '1',
+    )
+    ..addOption(
       'instanceIndex',
       defaultsTo: '100043',
     );
@@ -130,6 +134,7 @@ main(List<String> arguments) async {
   final clientId = const Uuid().v4();
   final instanceIndex = argResults['instanceIndex'];
   final instanceId = argResults['instanceId'];
+  final instanceGroupId = int.parse(argResults['instanceGroupId']);
   final tunnelServiceUrl = argResults['tunnelUrl'];
 
   final tunnelServiceUri = Uri.parse(tunnelServiceUrl);
@@ -171,7 +176,7 @@ main(List<String> arguments) async {
     log().info('Tunnel is connecting');
   };
 
-  server.start(instanceId, tunnelServiceUrl);
+  server.start(instanceId, instanceGroupId, tunnelServiceUrl);
 
   log().info('Opening the channel to ${tunnelServiceUri.toString()}');
 
@@ -179,6 +184,7 @@ main(List<String> arguments) async {
 
   client.openTunnelChannel(
     instanceIndex,
+    1,
     'token',
     displayCode: 'ABCDE',
   );

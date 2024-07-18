@@ -30,5 +30,12 @@ export 'package:display_channel/src/websocket_client_connection_stub.dart'
 export 'package:display_channel/src/websocket_client_connection_config.dart';
 
 // encoding and decoding of display code
-export 'package:display_channel/src/display_code.dart'
-    show decodeDisplayCode, encodeDisplayCode, DisplayCode;
+export 'package:display_channel/src/display_code2.dart'
+    show
+        decodeDisplayCode,
+        encodeDisplayCode,
+        DisplayCode,
+        getInstanceGroupIdFromIp;
+
+export 'package:display_channel/src/util/channel_util.dart'
+    show getLocalIpAddresses;

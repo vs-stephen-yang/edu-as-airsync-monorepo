@@ -70,15 +70,16 @@ void main() {
     // arrange
 
     // action
-    server.start('1000', 'wss://example.com/dev');
+    server.start('1000', 1, 'wss://example.com/dev');
 
     // assert
-    expect(connection.url, 'wss://example.com/dev?role=server&instanceId=1000');
+    expect(connection.url,
+        'wss://example.com/dev?role=server&instanceId=1000&instanceGroupId=1');
   });
 
   test('stop should close the connection', () async {
     // arrange
-    server.start('1000', 'wss://example.com/dev');
+    server.start('1000', 1, 'wss://example.com/dev');
 
     // action
     server.stop();
@@ -89,7 +90,7 @@ void main() {
 
   test('a new channel should be created when connected is received', () async {
     // arrange
-    server.start('1000', 'wss://example.com/dev');
+    server.start('1000', 1, 'wss://example.com/dev');
 
     // action
     injectTunnelConnectedMessage('1000', 'token');
@@ -101,7 +102,7 @@ void main() {
 
   test('should be notified when the connected is connected', () async {
     // arrange
-    server.start('1000', 'wss://example.com/dev');
+    server.start('1000', 1, 'wss://example.com/dev');
 
     // action
     connection.onConnected?.call();
@@ -112,7 +113,7 @@ void main() {
 
   test('should be notified when the connected is connecting', () async {
     // arrange
-    server.start('1000', 'wss://example.com/dev');
+    server.start('1000', 1, 'wss://example.com/dev');
 
     // action
     connection.onConnecting?.call();

@@ -6,6 +6,7 @@ const tunnelServiceUrl = 'wss://ap-northeast-1.gateway.dev.airsync.net';
 
 const defaultInstanceIndex = '100043';
 const defaultInstanceId = '0001';
+const defaultInstanceGroupId = 1;
 
 int countByCloseCodes(
   List<DisplayChannelClient> clients,
@@ -47,7 +48,11 @@ void main() {
     };
 
     // start the tunnel server
-    tunnelServer.start(defaultInstanceId, tunnelServiceUrl);
+    tunnelServer.start(
+      defaultInstanceId,
+      defaultInstanceGroupId,
+      tunnelServiceUrl,
+    );
 
     await tunnelServerConnectedCompleter?.future;
   }
@@ -185,6 +190,7 @@ void main() {
       await submitRequests(
         (client, index) => client.openTunnelChannel(
           defaultInstanceIndex,
+          1,
           '0000',
           displayCode: 'AVA',
         ),
