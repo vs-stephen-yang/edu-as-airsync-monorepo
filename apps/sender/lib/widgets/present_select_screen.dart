@@ -29,6 +29,7 @@ class PresentSelectScreen extends StatelessWidget {
         // Android and iOS and Web
         if (WebRTC.platformIsAndroid) {
           // Android specific
+          await Helper.requestCapturePermission();
           await _requestBackgroundPermission();
         }
         var value = CustomDesktopCapturerSource(null, true);
