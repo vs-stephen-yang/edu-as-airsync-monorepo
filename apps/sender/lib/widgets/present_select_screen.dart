@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:display_cast_flutter/providers/present_state_provider.dart';
-import 'package:display_cast_flutter/utilities/channel_util.dart';
-import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
@@ -162,8 +162,7 @@ class PresentSelectScreen extends StatelessWidget {
                 onPressed: () {
                   // WebRTC already connected,
                   // just call "makeCall" to restart broadcast extension.
-                  provider.makeCall(
-                      selectedSource: null, systemAudio: true);
+                  provider.makeCall(selectedSource: null);
                 },
                 child: Text(
                   S.of(context).present_select_screen_ios_restart,

@@ -2,19 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:display_cast_flutter/settings/channel_config.dart';
-import 'package:display_cast_flutter/utilities/channel_util.dart';
-import 'package:display_cast_flutter/utilities/log.dart';
-import 'package:display_cast_flutter/model/webrtc_connector.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/model/direct_connector.dart';
-import 'package:display_cast_flutter/model/remote_screen_client.dart';
 import 'package:display_cast_flutter/model/profile.dart';
+import 'package:display_cast_flutter/model/remote_screen_client.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/settings/channel_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
+import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -72,8 +72,6 @@ class ChannelProvider extends ChangeNotifier {
   String? _clientId;
   var _sessionId = const Uuid().v4();
   int port = 5100;
-  WebRTCConnector? webRTCConnector;
-  List<RtcIceServer>? _iceServerList;
 
   PresentStateProvider? _presentStateProvider;
   late String _apiGateway = '';
@@ -116,19 +114,6 @@ class ChannelProvider extends ChangeNotifier {
 
     _channelConnectError = error;
     notifyListeners();
-  }
-
-  setTouchBack(bool touchBack) {
-    webRTCConnector!.touchBack = touchBack;
-  }
-
-  bool getTouchBack() {
-    return webRTCConnector!.touchBack;
-  }
-
-  bool showTouchBack() {
-    return (WebRTC.platformIsWindows || WebRTC.platformIsMacOS) &&
-        (webRTCConnector!.isMainSource);
   }
 
   bool _isConnectionModeSupported(DisplayCode displayCode) {
@@ -299,10 +284,10 @@ class ChannelProvider extends ChangeNotifier {
           }
           break;
         case ChannelMessageType.presentSignal:
-          webRTCConnector?.handleSignal(message as PresentSignalMessage);
+          WebRTCHelper().receiveSignalMessage(message as PresentSignalMessage);
           break;
         case ChannelMessageType.changePresentQuality:
-          unawaited(webRTCConnector?.changePresentQuality(message.toJson()));
+          unawaited(WebRTCHelper().receiveChangeQuality(message));
           break;
         case ChannelMessageType.stopPresent:
           // split-screen / moderator mode
@@ -358,7 +343,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _onPresentAccepted(PresentAcceptedMessage message) {
-    _iceServerList = message.iceServers;
+    // get ice servers
+    WebRTCHelper().iceServerList = message.iceServers;
 
     // select screen
     _presentStateProvider?.presentSelectScreenPage();
@@ -406,8 +392,8 @@ class ChannelProvider extends ChangeNotifier {
         reconnectState = ChannelReconnectState.reconnecting;
         notifyListeners();
 
-        if (!_isStreaming()) {
-           // If no streaming is active, interrupt if the channel remains disconnected for an period
+        if (!WebRTCHelper().isStreaming()) {
+          // If no streaming is active, interrupt if the channel remains disconnected for an period
           _startChannelReconnectTimer();
         }
         break;
@@ -435,63 +421,54 @@ class ChannelProvider extends ChangeNotifier {
   }) async {
 
     // PeerConnect
-    webRTCConnector = WebRTCConnector(
-      preset: _profileStore.getSelectedProfile().presets.first,
-      systemAudio: systemAudio,
-      sendSignalMessage: (json) {
-        // offer, answer, candidate
-        json.sessionId = _sessionId;
-        _channel?.send(json);
-      },
-      onConnectionState: _onRtcConnectionState,
-    );
-    webRTCConnector?.onStreamInterrupted = (() async {
-      presentStop();
-      if (moderatorStatus) {
-        _presentStateProvider?.presentModeratorWaitPage();
-      } else {
-        presentEnd();
-      }
-    });
-    await makeCall(selectedSource: selectedSource, systemAudio: systemAudio);
+    WebRTCHelper().init(
+        sessionId: _sessionId,
+        profileStore: profileStore,
+        systemAudio: systemAudio,
+        sendPresentSignalMessage: (PresentSignalMessage message) {
+          // offer, answer, candidate
+          message.sessionId = _sessionId;
+          _channel?.send(message);
+        },
+        onRTCPeerConnectionState: _onRtcConnectionState,
+        onStreamInterrupted: () async {
+          presentStop();
+          if (moderatorStatus) {
+            _presentStateProvider?.presentModeratorWaitPage();
+          } else {
+            presentEnd();
+          }
+        });
+
+    await makeCall(selectedSource: selectedSource);
   }
 
-  bool _isStreaming() {
-  return webRTCConnector?.isFirstConnected ?? false;
-}
-
-  Future<void> makeCall({
-    required dynamic selectedSource,
-    bool systemAudio = false,
-  }) async {
-    await webRTCConnector
-        ?.makeCall(selectedSource, _iceServerList)
-        .then((value) {
-      log.info('makeCall: ${value ? 'success' : 'failure'}');
-      if (value) {
-        if (moderatorStatus) {
-          _presentStateProvider?.presentModeratorStartPage();
-        } else {
-          _presentStateProvider?.presentBasicStartPage();
-        }
-        presentingState.value = true;
-        _startPresentTimer();
-      } else {
-        presentStop();
-        if (moderatorStatus) {
-          _presentStateProvider?.presentModeratorWaitPage();
-        } else {
-          presentEnd();
-        }
-      }
-    });
+  Future<void> makeCall({required dynamic selectedSource}) async {
+    await WebRTCHelper().start(
+        selectedSource: selectedSource,
+        onResult: (result) {
+          if (result) {
+            if (moderatorStatus) {
+              _presentStateProvider?.presentModeratorStartPage();
+            } else {
+              _presentStateProvider?.presentBasicStartPage();
+            }
+            presentingState.value = true;
+            _startPresentTimer();
+          } else {
+            presentStop();
+            if (moderatorStatus) {
+              _presentStateProvider?.presentModeratorWaitPage();
+            } else {
+              presentEnd();
+            }
+          }
+        });
   }
 
   Future<void> presentEnd({bool goIdleState = true}) async {
     try {
-      if (webRTCConnector != null) await webRTCConnector?.hangUp();
-      webRTCConnector = null;
-
+      await WebRTCHelper().close();
       await closeChannel();
     } catch (e, stackTrace) {
       log.severe('presentEnd', e, stackTrace);
@@ -507,8 +484,8 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<void> presentStop() async {
     // handle stream
-    webRTCConnector?.streamStop();
-    webRTCConnector?.hangUp();
+    WebRTCHelper().stop();
+
     // send command
     _stopPresent();
     _resetTimer();
@@ -533,7 +510,7 @@ class ChannelProvider extends ChangeNotifier {
       _profileStore.setSelectedProfile(ProfileStore.videoSmoothnessFirstProfile);
     }
     Preset preset = _profileStore.getSelectedProfile().presets.first;
-    bool result = await webRTCConnector?.updateEncodingPreset(preset) ?? false;
+    bool result = await WebRTCHelper().changeHighQuality(preset);
     ProfileUtil.saveSelectedProfile(_profileStore.getSelectedProfile().name);
     if (result) {
       log.info('updateEncodingPreset success');
