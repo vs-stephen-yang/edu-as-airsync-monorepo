@@ -5,6 +5,7 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
+import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
 import 'package:display_cast_flutter/widgets/high_quality_button.dart';
 import 'package:display_cast_flutter/widgets/present_timer.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
@@ -97,7 +98,7 @@ class ModeratorPresentStart extends StatelessWidget {
               ),
               ValueListenableBuilder(
                   valueListenable:
-                  channelProvider.webRTCConnector!.reconnectStateNotifier,
+                      WebRTCHelper().webRTCConnector!.reconnectStateNotifier,
                   builder: (BuildContext context, ChannelReconnectState state,
                       Widget? child) {
                     if (state == ChannelReconnectState.reconnecting) {
@@ -106,13 +107,13 @@ class ModeratorPresentStart extends StatelessWidget {
                     } else if (state == ChannelReconnectState.success) {
                       Toast.makeFeatureReconnectToast(
                           state, S.of(context).main_webrtc_reconnect_success_toast);
-                      channelProvider.webRTCConnector!.reconnectState =
-                          ChannelReconnectState.idle;
+                      WebRTCHelper()
+                          .setReconnectState(ChannelReconnectState.idle);
                     } else if (state == ChannelReconnectState.fail) {
                       Toast.makeFeatureReconnectToast(
                           state, S.of(context).main_webrtc_reconnect_fail_toast);
-                      channelProvider.webRTCConnector!.reconnectState =
-                          ChannelReconnectState.idle;
+                      WebRTCHelper()
+                          .setReconnectState(ChannelReconnectState.idle);
                     }
                     return Container();
                   }),
@@ -153,13 +154,13 @@ class ModeratorPresentStart extends StatelessWidget {
                     initialValue:
                         channelProvider.profileStore.selectedProfile ==
                             ProfileStore.videoQualityFirstProfile),
-              if (channelProvider.showTouchBack())
+              if (WebRTCHelper().showTouchBack())
                 TouchBackButton(
                   key: touchBtnKey,
-                  initialValue: channelProvider.getTouchBack(),
+                  initialValue: WebRTCHelper().getTouchBack(),
                   onPressed: (state) {
                     AppAnalytics.instance.trackEvent('click_touchback');
-                    channelProvider.setTouchBack(state);
+                    WebRTCHelper().setTouchBack(state);
                   },
                 ),
             ],
