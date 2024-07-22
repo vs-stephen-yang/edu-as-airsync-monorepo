@@ -2,34 +2,31 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:collection/collection.dart';
-import 'package:display_cast_flutter/utilities/app_analytics.dart';
-import 'package:display_cast_flutter/utilities/channel_util.dart';
-import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/features/protoc/event.pb.dart';
 import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_cast_flutter/model/message.dart';
 import 'package:display_cast_flutter/model/profile.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:window_size/window_size.dart';
 import 'package:ion_sdk_flutter/src/utils.dart' as sdp_format_utils;
+import 'package:window_size/window_size.dart';
 
 class WebRTCConnector {
   WebRTCConnector({
     required this.preset,
-    this.touchBack = false,
-    bool systemAudio = false,
+    required this.systemAudio,
     required this.sendSignalMessage,
     required this.onConnectionState,
-  }) {
-    _systemAudio = systemAudio;
-  }
+  });
 
-  final List<StreamSubscription> _subscriptions = [];
+  final List<StreamSubscription> subscriptions = [];
 
   void Function(PresentSignalMessage message) sendSignalMessage;
   void Function(RTCPeerConnectionState state) onConnectionState;
@@ -49,7 +46,6 @@ class WebRTCConnector {
   bool _streamPublished = false;
   Map<String, dynamic>? _pendingChangePresentQuality;
 
-    // io.Socket? _socket;
   double _screenWidth = 1920.0;
   double _screenHeight = 1080.0;
   static const int _maxTrackWidth = 1920;
@@ -70,12 +66,9 @@ class WebRTCConnector {
 
   Preset preset;
   bool touchBack = false;
-  bool isMainSource = false;
+  bool systemAudio = false;
   final List<String> _codecPreferences = ['h264', 'vp8', 'vp9'];
-  final String _macMainScreenOrder = '1';
-  final String _windowsMainScreenOrder = '0';
-  bool _isSourceTypeScreen = false;
-  bool _systemAudio = false;
+  bool _isScreenType = false;
 
   int get trackHeight => _trackHeight;
   final _flutterInputInjectionPlugin = FlutterInputInjection();
@@ -87,44 +80,26 @@ class WebRTCConnector {
   int? _outboundVideoHeight;
   int _outboundVideoCount = 0;
 
-  ValueNotifier<ChannelReconnectState> reconnectStateNotifier = ValueNotifier<ChannelReconnectState>(ChannelReconnectState.idle);
+  ValueNotifier<ChannelReconnectState> reconnectStateNotifier =
+      ValueNotifier<ChannelReconnectState>(ChannelReconnectState.idle);
+
   set reconnectState(ChannelReconnectState state) {
     reconnectStateNotifier.value = state;
   }
+
   ChannelReconnectState get reconnectState => reconnectStateNotifier.value;
 
   Future<bool> makeCall(
-      dynamic source, List<RtcIceServer>? iceServerList) async {
-    dynamic deviceId;
-
-    if (kIsWeb) {
-    } else if (Platform.isAndroid) {
-      isMainSource = true;
-    } else if (Platform.isIOS) {
-      deviceId = 'broadcast';
-      isMainSource = true;
-    } else {
-      deviceId = {'exact': source.id};
-      _isSourceTypeScreen = (source.type == SourceType.Screen);
-      if (Platform.isMacOS) {
-        DesktopCapturerSource s = source;
-        _subscriptions.add(s.onCaptureError.stream.listen((event) async {
-          await hangUp();
-          await onStreamInterrupted?.call();
-        }));
-        isMainSource =
-            _isSourceTypeScreen ? source.id == _macMainScreenOrder : false;
-      } else if (Platform.isWindows) {
-        isMainSource =
-            _isSourceTypeScreen ? source.id == _windowsMainScreenOrder : false;
-      }
-    }
-
+      {required dynamic deviceId,
+      required bool isScreenType,
+      required List<RtcIceServer>? iceServerList}) async {
     _deviceId = deviceId;
+    _isScreenType = isScreenType;
     return await _peerConnectionConnect(iceServerList);
   }
 
   Future<void> hangUp() async {
+    print('zz hangUp s');
     stopStatsTimer();
 
     await _disposeStream();
@@ -141,7 +116,7 @@ class WebRTCConnector {
         _localStream = null;
         await stream.dispose();
 
-        for (var element in _subscriptions) {
+        for (var element in subscriptions) {
           element.cancel();
         }
       }
@@ -157,6 +132,7 @@ class WebRTCConnector {
       element?.getTracks().first.enabled = false;
       element?.getTracks().first.stop();
     });
+    print('zz streamStop end');
   }
 
   Future changePresentQuality(Map<String, dynamic> json) async {
@@ -201,14 +177,14 @@ class WebRTCConnector {
 
   bool _isTouchBackAllowed() {
     return !kIsWeb &&
-        (Platform.isAndroid || _isSourceTypeScreen) &&
+        (Platform.isAndroid || _isScreenType) &&
         touchBack &&
         _localStream!.getTracks().first.enabled;
   }
 
   bool _isAudioCaptureAllowed() {
     if (WebRTC.platformIsWindows) {
-      return _isSourceTypeScreen && _systemAudio;
+      return _isScreenType && systemAudio;
     }
     return true;
   }
