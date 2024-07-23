@@ -7,6 +7,8 @@
 #include <cerrno>
 #include <string>
 
+#include "keybits.h"
+
 #define TAG "libuinput"
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, TAG, __VA_ARGS__)
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, TAG, __VA_ARGS__)
@@ -72,6 +74,9 @@ static bool setupDevice(
 
   // enable key events
   ioctl(fd, UI_SET_EVBIT, EV_KEY);
+  for (int key : kKeyBits) {
+    ioctl(fd, UI_SET_KEYBIT, key);
+  }
 
   // ABS
   // https://source.android.com/devices/input/touch-devices#touch-device-classification
@@ -160,7 +165,7 @@ Java_com_viewsonic_flutter_1input_1injection_UInput_init(
     jint height) {
   assert(width > 0);
   assert(height > 0);
-  //assert(g_input_fd == INVALID_FD);
+  // assert(g_input_fd == INVALID_FD);
 
   LOGI("Creating a virtual input device");
   if (g_input_fd != INVALID_FD) {
@@ -198,6 +203,17 @@ Java_com_viewsonic_flutter_1input_1injection_UInput_close(
     JNIEnv* /* env */,
     jclass /* this */) {
   closeDevice();
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1input_1injection_UInput_injectKey(
+    JNIEnv* /*env*/,
+    jclass /* this */,
+    int nativeKeyCode,
+    int pressed) {
+  // https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h
+  emitEvent(g_input_fd, EV_KEY, nativeKeyCode, pressed);
+  emitEvent(g_input_fd, EV_SYN, SYN_REPORT, 0);
 }
 
 extern "C" JNIEXPORT void JNICALL

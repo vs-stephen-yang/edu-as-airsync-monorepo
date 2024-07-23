@@ -6,7 +6,11 @@ import java.util.Map;
 
 // Implements InputStub and injects input events via UInput
 public class InputInjectUInput implements InputStub {
+  // key code mapping table
+  private KeyCodeMap mKeyMap = new KeyCodeMap();
+
   private boolean mCloseDeviceOnDispose = false;
+
   private static final int MAX_SLOT = 9;
   private static final int MAX_TRACKING_ID = 1000;
 
@@ -25,6 +29,17 @@ public class InputInjectUInput implements InputStub {
     }
 
     Arrays.fill(mSlots, false);
+  }
+
+  // inject keyboard events
+  @Override
+  public void InjectKeyEvent(int usbKeyCode, boolean pressed) {
+    // convert usb key code to native key code
+    int nativeKeyCode = mKeyMap.map(usbKeyCode);
+
+    if (nativeKeyCode != 0) {
+      UInput.injectKey(nativeKeyCode, pressed ? 1 : 0);
+    }
   }
 
   @Override

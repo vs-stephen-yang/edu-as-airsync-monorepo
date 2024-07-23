@@ -75,6 +75,12 @@ public class FlutterInputInjectionPlugin implements FlutterPlugin, MethodCallHan
       }
 
       result.success(true);
+    } else if (call.method.equals("sendKey")) {
+      int usbKeyCode = call.argument("usbKeyCode");
+      boolean pressed = call.argument("pressed");
+
+      inputInjector.InjectKeyEvent(usbKeyCode, pressed);
+      result.success(true);
     } else if (call.method.equals("getPlatformVersion")) {
       result.success("Android " + android.os.Build.VERSION.RELEASE);
     } else {
