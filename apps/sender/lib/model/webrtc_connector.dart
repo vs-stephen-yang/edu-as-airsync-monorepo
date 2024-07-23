@@ -89,108 +89,15 @@ class WebRTCConnector {
 
   ChannelReconnectState get reconnectState => reconnectStateNotifier.value;
 
-  Future<bool> makeCall(
+  //region connect and communication
+
+  Future<bool> peerConnectionConnect(
       {required dynamic deviceId,
       required bool isScreenType,
       required List<RtcIceServer>? iceServerList}) async {
     _deviceId = deviceId;
     _isScreenType = isScreenType;
-    return await _peerConnectionConnect(iceServerList);
-  }
-
-  Future<void> hangUp() async {
-    print('zz hangUp s');
-    stopStatsTimer();
-
-    await _disposeStream();
-    await _peerConnectionDisconnect();
-  }
-
-  Future<void> _disposeStream() async {
-    try {
-      if (_localStream != null) {
-        if (kIsWeb) {
-          _localStream?.getTracks().forEach((track) => track.stop());
-        }
-        var stream = _localStream!;
-        _localStream = null;
-        await stream.dispose();
-
-        for (var element in subscriptions) {
-          element.cancel();
-        }
-      }
-    } catch (e, stackTrace) {
-      log.severe('_disposeStream', e, stackTrace);
-    }
-    _streamPublished = false;
-  }
-
-  void streamStop() {
-    if (kIsWeb) return;
-    _pc?.getLocalStreams().forEach((element) {
-      element?.getTracks().first.enabled = false;
-      element?.getTracks().first.stop();
-    });
-    print('zz streamStop end');
-  }
-
-  Future changePresentQuality(Map<String, dynamic> json) async {
-    if (!_streamPublished) {
-      _pendingChangePresentQuality = json;
-      return;
-    }
-
-    final msg = PresentChangeQualityMessage.fromJson(json);
-
-    if (msg.height == _trackHeight) return;
-
-    if (msg.height > _maxTrackHeight) {
-      // make sure the width/height is not greater than the max width
-      _trackWidth = _maxTrackWidth;
-      _trackHeight = _maxTrackHeight;
-    } else {
-      _trackWidth = _maxTrackWidth ~/ (_maxTrackHeight / msg.height);
-      _trackHeight = msg.height;
-    }
-    _trackFrameRate = msg.frameRate.toDouble();
-
-    if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
-      final constraints = <String, dynamic>{
-        'frameRate': _trackFrameRate,
-        'width': _trackWidth,
-        'height': _trackHeight,
-      };
-
-      final videoTrack = _localStream?.getVideoTracks().first;
-      await videoTrack?.applyConstraints(constraints);
-    } else {
-      _localStream = await getDisplayMedia();
-
-      for (MediaStreamTrack track in _localStream!.getTracks()) {
-        _pc?.getSenders().then((value) async {
-          await value.first.replaceTrack(track);
-        });
-      }
-    }
-  }
-
-  bool _isTouchBackAllowed() {
-    return !kIsWeb &&
-        (Platform.isAndroid || _isScreenType) &&
-        touchBack &&
-        _localStream!.getTracks().first.enabled;
-  }
-
-  bool _isAudioCaptureAllowed() {
-    if (WebRTC.platformIsWindows) {
-      return _isScreenType && systemAudio;
-    }
-    return true;
-  }
-
-  Future<bool> _peerConnectionConnect(List<RtcIceServer>? iceServers) async {
-    final configuration = buildWebRtcConfiguration(iceServers);
+    final configuration = buildWebRtcConfiguration(iceServerList);
 
     _pc = await createPeerConnection(configuration);
 
@@ -207,19 +114,6 @@ class WebRTCConnector {
       _pendingChangePresentQuality = null;
     }
     return _streamPublished;
-  }
-
-  Future<void> _peerConnectionDisconnect() async {
-    if (reconnectState == ChannelReconnectState.reconnecting) {
-      reconnectState = ChannelReconnectState.fail;
-    }
-    try {
-      await _pc?.close();
-      await _pc?.dispose();
-      _pc = null;
-    } catch (e, stackTrace) {
-      log.warning('_peerConnectionDisconnect', e, stackTrace);
-    }
   }
 
   Future<void> _updateScreenSize() async {
@@ -560,6 +454,113 @@ class WebRTCConnector {
     bool result = await _updateEncodingParameters();
     log.info('updateEncodingParameters result: {$result}');
     return result;
+  }
+
+  Future changePresentQuality(Map<String, dynamic> json) async {
+    if (!_streamPublished) {
+      _pendingChangePresentQuality = json;
+      return;
+    }
+
+    final msg = PresentChangeQualityMessage.fromJson(json);
+
+    if (msg.height == _trackHeight) return;
+
+    if (msg.height > _maxTrackHeight) {
+      // make sure the width/height is not greater than the max width
+      _trackWidth = _maxTrackWidth;
+      _trackHeight = _maxTrackHeight;
+    } else {
+      _trackWidth = _maxTrackWidth ~/ (_maxTrackHeight / msg.height);
+      _trackHeight = msg.height;
+    }
+    _trackFrameRate = msg.frameRate.toDouble();
+
+    if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
+      final constraints = <String, dynamic>{
+        'frameRate': _trackFrameRate,
+        'width': _trackWidth,
+        'height': _trackHeight,
+      };
+
+      final videoTrack = _localStream?.getVideoTracks().first;
+      await videoTrack?.applyConstraints(constraints);
+    } else {
+      _localStream = await getDisplayMedia();
+
+      for (MediaStreamTrack track in _localStream!.getTracks()) {
+        _pc?.getSenders().then((value) async {
+          await value.first.replaceTrack(track);
+        });
+      }
+    }
+  }
+
+  //endregion
+
+  //region disconnect
+  Future<void> _peerConnectionDisconnect() async {
+    if (reconnectState == ChannelReconnectState.reconnecting) {
+      reconnectState = ChannelReconnectState.fail;
+    }
+    try {
+      await _pc?.close();
+      await _pc?.dispose();
+      _pc = null;
+    } catch (e, stackTrace) {
+      log.warning('_peerConnectionDisconnect', e, stackTrace);
+    }
+  }
+
+  Future<void> hangUp() async {
+    stopStatsTimer();
+
+    await _disposeStream();
+    await _peerConnectionDisconnect();
+  }
+
+  Future<void> _disposeStream() async {
+    try {
+      if (_localStream != null) {
+        if (kIsWeb) {
+          _localStream?.getTracks().forEach((track) => track.stop());
+        }
+        var stream = _localStream!;
+        _localStream = null;
+        await stream.dispose();
+
+        for (var element in subscriptions) {
+          element.cancel();
+        }
+      }
+    } catch (e, stackTrace) {
+      log.severe('_disposeStream', e, stackTrace);
+    }
+    _streamPublished = false;
+  }
+
+  void stopStream() {
+    if (kIsWeb) return;
+    _pc?.getLocalStreams().forEach((element) {
+      element?.getTracks().first.enabled = false;
+      element?.getTracks().first.stop();
+    });
+  }
+
+  //endregion
+
+  bool _isTouchBackAllowed() {
+    return !kIsWeb &&
+        (Platform.isAndroid || _isScreenType) &&
+        touchBack &&
+        _localStream!.getTracks().first.enabled;
+  }
+
+  bool _isAudioCaptureAllowed() {
+    if (WebRTC.platformIsWindows) {
+      return _isScreenType && systemAudio;
+    }
+    return true;
   }
 
   void stopStatsTimer() {

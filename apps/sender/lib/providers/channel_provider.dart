@@ -447,6 +447,7 @@ class ChannelProvider extends ChangeNotifier {
     await WebRTCHelper().start(
         selectedSource: selectedSource,
         onResult: (result) {
+          log.info('makeCall: ${result ? 'success' : 'failure'}');
           if (result) {
             if (moderatorStatus) {
               _presentStateProvider?.presentModeratorStartPage();
