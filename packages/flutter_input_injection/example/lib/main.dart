@@ -24,6 +24,18 @@ class TouchEvent {
   );
 }
 
+class KeyEvent {
+  final int usbKeyCode;
+  final bool pressed;
+  final int delayMs;
+
+  KeyEvent(
+    this.usbKeyCode,
+    this.pressed,
+    this.delayMs,
+  );
+}
+
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -34,6 +46,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   final _flutterInputInjectionPlugin = FlutterInputInjection();
+  final _focusNode = FocusNode();
+  final _controller = TextEditingController();
 
   @override
   void initState() {
@@ -62,6 +76,50 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _platformVersion = platformVersion;
     });
+  }
+
+  List<KeyEvent> generateKeyEvents() {
+    final keyEvents = <KeyEvent>[];
+
+    const delayMs = 20;
+    // type 'a' - 'z'
+    for (var i = 0; i < 26; i += 1) {
+      keyEvents.add(KeyEvent(0x070004 + i, true, delayMs));
+      keyEvents.add(KeyEvent(0x070004 + i, false, delayMs));
+    }
+
+    // type '1' - '9', '0'
+    for (var i = 0; i < 10; i += 1) {
+      keyEvents.add(KeyEvent(0x07001e + i, true, delayMs));
+      keyEvents.add(KeyEvent(0x07001e + i, false, delayMs));
+    }
+
+    for (var i = 0; i < 13; i += 1) {
+      keyEvents.add(KeyEvent(0x07002c + i, true, delayMs));
+      keyEvents.add(KeyEvent(0x07002c + i, false, delayMs));
+    }
+
+    // type 'A' - 'Z'
+    keyEvents.add(KeyEvent(0x0700e1, true, 10));
+    for (var i = 0; i < 26; i += 1) {
+      keyEvents.add(KeyEvent(0x070004 + i, true, delayMs));
+      keyEvents.add(KeyEvent(0x070004 + i, false, delayMs));
+    }
+    keyEvents.add(KeyEvent(0x0700e1, false, 10));
+
+    // type 'a' - 'z'
+    for (var i = 0; i < 26; i += 1) {
+      keyEvents.add(KeyEvent(0x070004 + i, true, delayMs));
+      keyEvents.add(KeyEvent(0x070004 + i, false, delayMs));
+    }
+
+    // delete
+    for (var i = 0; i < 26; i += 1) {
+      keyEvents.add(KeyEvent(0x07002a, true, delayMs));
+      keyEvents.add(KeyEvent(0x07002a, false, delayMs));
+    }
+
+    return keyEvents;
   }
 
   List<TouchEvent> generateTouchEvents() {
@@ -101,6 +159,22 @@ class _MyAppState extends State<MyApp> {
       id += 1;
     }
     return touchEvents;
+  }
+
+  Future<void> testKey() async {
+    final keyEvents = generateKeyEvents();
+
+    // replay the key events
+    for (var keyEvent in keyEvents) {
+      await _flutterInputInjectionPlugin.sendKey(
+        keyEvent.usbKeyCode,
+        keyEvent.pressed,
+      );
+
+      await Future.delayed(
+        Duration(milliseconds: keyEvent.delayMs),
+      );
+    }
   }
 
   Future<void> testSingleTouch() async {
@@ -170,6 +244,26 @@ class _MyAppState extends State<MyApp> {
                   testMultiTouch();
                 },
                 child: const Text('Test MultiTouch'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _controller.clear();
+
+                  // move focus to the text field
+                  FocusScope.of(context).requestFocus(_focusNode);
+
+                  testKey();
+                },
+                child: const Text('Test Key'),
+              ),
+              TextField(
+                controller: _controller,
+                focusNode: _focusNode,
+                keyboardType: TextInputType.none,
+                decoration: const InputDecoration(
+                  labelText: '',
+                  border: OutlineInputBorder(),
+                ),
               ),
             ],
           ),
