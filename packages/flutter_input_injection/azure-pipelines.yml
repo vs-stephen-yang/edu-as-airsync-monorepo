@@ -6,7 +6,7 @@ trigger:
 
 variables:
   - name: Flutter.Version
-    value: "3.16.4"
+    value: "3.22.3"
   - name: Flutter.Bin
     value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
   - name: GRADLE_USER_HOME
