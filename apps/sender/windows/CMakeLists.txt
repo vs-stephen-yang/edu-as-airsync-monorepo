@@ -52,11 +52,11 @@ add_subdirectory(${FLUTTER_MANAGED_DIR})
 
 # Application build; see runner/CMakeLists.txt.
 add_subdirectory("runner")
+add_subdirectory("launcher")
 
 # Generated plugin build rules, which manage building the plugins and adding
 # them to the application.
 include(flutter/generated_plugins.cmake)
-
 
 # === Installation ===
 # Support files are copied into place next to the executable, so that it can
@@ -89,6 +89,9 @@ endif()
 
 # Fully re-copy the assets directory on each build to avoid having stale files
 # from a previous install.
+install(TARGETS launcher RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}"
+        COMPONENT Runtime)
+
 set(FLUTTER_ASSET_DIR_NAME "flutter_assets")
 install(CODE "
   file(REMOVE_RECURSE \"${INSTALL_BUNDLE_DATA_DIR}/${FLUTTER_ASSET_DIR_NAME}\")

@@ -15,7 +15,7 @@
     <ROW Section="Update" Key="Flags" Value="Sys64|Os64|Advertises" ValueLocId="-"/>
     <ROW Section="Update" Key="RegistryKey" Value="HKUD\Software\ViewSonic\AirSync Sender\Version" ValueLocId="-"/>
     <ROW Section="Update" Key="Version" Value="2.0.0" ValueLocId="-"/>
-    <ROW Section="Update" Key="AutoCloseApplication" Value="[APPDIR]AirSync_Sender.exe|;;AlwaysRestart" ValueLocId="-"/>
+    <ROW Section="Update" Key="AutoCloseApplication" Value="[APPDIR]launcher.exe|--exe=AirSync_Sender.exe;;AlwaysRestart" ValueLocId="-"/>
     <ATTRIBUTE name="OutputFileName" value="updates.txt"/>
     <ATTRIBUTE name="OutputFolder" value="package"/>
   </COMPONENT>
