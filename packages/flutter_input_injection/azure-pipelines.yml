@@ -19,32 +19,32 @@ jobs:
     strategy:
       matrix:
         mac:
-          imageName: 'macOS-latest'
-          platform: 'mac'
-          sdkPlatform: 'macos'
-          buildCommand: 'macos'
-          extraBuildOptions: ''
+          imageName: "macOS-latest"
+          platform: "mac"
+          sdkPlatform: "macos"
+          buildCommand: "macos"
+          extraBuildOptions: ""
         android:
-          imageName: 'macOS-latest'
-          platform: 'android'
-          sdkPlatform: 'macos'
-          buildCommand: 'apk'
-          extraBuildOptions: ''
+          imageName: "macOS-latest"
+          platform: "android"
+          sdkPlatform: "macos"
+          buildCommand: "apk"
+          extraBuildOptions: ""
         windows:
-          imageName: 'windows-2022'
-          platform: 'windows'
-          sdkPlatform: 'windows'
-          buildCommand: 'windows'
-          extraBuildOptions: ''
+          imageName: "windows-2022"
+          platform: "windows"
+          sdkPlatform: "windows"
+          buildCommand: "windows"
+          extraBuildOptions: ""
     pool:
       vmImage: $(imageName)
 
     steps:
       - task: JavaToolInstaller@0
         inputs:
-          versionSpec: '11'
-          jdkArchitectureOption: 'x64'
-          jdkSourceOption: 'PreInstalled'
+          versionSpec: "11"
+          jdkArchitectureOption: "x64"
+          jdkSourceOption: "PreInstalled"
 
       - task: Cache@2
         displayName: Configure Gradle caching
@@ -83,4 +83,3 @@ jobs:
       - script: $(Flutter.Bin) build $(buildCommand) $(extraBuildOptions)
         displayName: Build
         workingDirectory: "$(Build.SourcesDirectory)/example"
-
