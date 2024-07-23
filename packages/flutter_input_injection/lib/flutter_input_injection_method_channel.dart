@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'flutter_input_injection_platform_interface.dart';
@@ -6,12 +5,12 @@ import 'flutter_input_injection_platform_interface.dart';
 /// An implementation of [FlutterInputInjectionPlatform] that uses method channels.
 class MethodChannelFlutterInputInjection extends FlutterInputInjectionPlatform {
   /// The method channel used to interact with the native platform.
-  @visibleForTesting
   final methodChannel = const MethodChannel('flutter_input_injection');
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version =
+        await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
 
@@ -22,6 +21,14 @@ class MethodChannelFlutterInputInjection extends FlutterInputInjectionPlatform {
       'id': id,
       'x': x,
       'y': y,
+    });
+  }
+
+  @override
+  Future<void> sendKey(int usbKeyCode, bool pressed) async {
+    await methodChannel.invokeMethod<void>('sendKey', {
+      'usbKeyCode': usbKeyCode,
+      'pressed': pressed,
     });
   }
 }

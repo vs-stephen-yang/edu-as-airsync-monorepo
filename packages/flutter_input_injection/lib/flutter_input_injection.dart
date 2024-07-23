@@ -1,4 +1,3 @@
-
 import 'flutter_input_injection_platform_interface.dart';
 
 class FlutterInputInjection {
@@ -12,7 +11,13 @@ class FlutterInputInjection {
     return FlutterInputInjectionPlatform.instance.getPlatformVersion();
   }
 
+  // Injects a touch event to the system
   Future<void> sendTouch(int action, int id, int x, int y) {
     return FlutterInputInjectionPlatform.instance.sendTouch(action, id, x, y);
+  }
+
+  // Injects a keyboard event to the system
+  Future<void> sendKey(int usbKeyCode, bool pressed) {
+    return FlutterInputInjectionPlatform.instance.sendKey(usbKeyCode, pressed);
   }
 }

@@ -8,7 +8,8 @@ abstract class FlutterInputInjectionPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static FlutterInputInjectionPlatform _instance = MethodChannelFlutterInputInjection();
+  static FlutterInputInjectionPlatform _instance =
+      MethodChannelFlutterInputInjection();
 
   /// The default instance of [FlutterInputInjectionPlatform] to use.
   ///
@@ -29,5 +30,9 @@ abstract class FlutterInputInjectionPlatform extends PlatformInterface {
 
   Future<void> sendTouch(int action, int id, int x, int y) {
     throw UnimplementedError('sendTouch() has not been implemented.');
+  }
+
+  Future<void> sendKey(int usbKeyCode, bool pressed) {
+    throw UnimplementedError('sendKey() has not been implemented.');
   }
 }

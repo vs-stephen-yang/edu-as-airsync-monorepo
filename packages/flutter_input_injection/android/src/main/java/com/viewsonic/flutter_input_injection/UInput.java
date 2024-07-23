@@ -16,6 +16,8 @@ public class UInput {
 
   public static native void close();
 
+  public static native void injectKey(int nativeKeyCode, int pressed);
+
   public static native void injectTouchStart(int slot, int trackingId, int x, int y);
 
   public static native void injectTouchMove(int slot, int x, int y);
