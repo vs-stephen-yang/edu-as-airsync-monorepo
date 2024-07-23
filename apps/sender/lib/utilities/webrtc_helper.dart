@@ -11,13 +11,9 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'log.dart';
 
 class WebRTCHelper {
-  // 1. 創建一個靜態變量 _instance，用來存儲單例對象
   static WebRTCHelper? _instance;
-
-  // 2. 將構造函數設為私有，防止被外部實例化
   WebRTCHelper._internal();
 
-  // 3. 提供一個靜態的工廠構造函數，用來獲取單例對象
   factory WebRTCHelper() {
     _instance ??= WebRTCHelper._internal();
     return _instance!;
@@ -88,19 +84,18 @@ class WebRTCHelper {
     }
 
     await webRTCConnector
-        ?.makeCall(
+        ?.peerConnectionConnect(
             deviceId: deviceId,
             isScreenType: _isScreenType,
             iceServerList: iceServerList)
         .then((value) {
-      log.info('makeCall: ${value ? 'success' : 'failure'}');
       onResult(value);
     });
   }
 
   void stop() {
     // handle stream
-    webRTCConnector?.streamStop();
+    webRTCConnector?.stopStream();
     webRTCConnector?.hangUp();
   }
 
