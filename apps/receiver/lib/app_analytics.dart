@@ -384,6 +384,14 @@ class AppAnalytics {
   trackEventTunnelConnecting() {
     _trackEventWithProperties('tunnel_connecting', _eventProperties);
   }
+
+  trackEventNetworkConnectivity(String connectivityType) {
+    _trackEventWithProperties('network_connectivity', {
+      'target': connectivityType,
+      ..._eventProperties,
+    });
+  }
+
 // endregion
 
   trackEventRtcMetric(
