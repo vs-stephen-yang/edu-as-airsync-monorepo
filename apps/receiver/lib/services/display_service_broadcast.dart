@@ -1,23 +1,24 @@
 import 'package:bonsoir/bonsoir.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
-import 'package:display_flutter/settings/app_config.dart';
 import 'package:uuid/uuid.dart';
 
 class DisplayServiceBroadcast {
   static late DisplayServiceBroadcast instance;
 
   final String _serviceType;
-  final int _port;
+  final int _directChannelPort;
   final InstanceInfoProvider _instanceInfo;
-  final String version;
-  final String uuid = const Uuid().v4();
+  final String _version;
+  final String _uuid = const Uuid().v4();
+
+  int get directChannelPort => _directChannelPort;
 
   BonsoirBroadcast? _broadcast;
 
   DisplayServiceBroadcast._internal(
     this._serviceType,
-    this._port,
-    this.version,
+    this._directChannelPort,
+    this._version,
     this._instanceInfo,
   ) {
     _instanceInfo.addListener(_onInstanceInfoUpdated);
@@ -25,14 +26,16 @@ class DisplayServiceBroadcast {
     _start();
   }
 
-  static void ensureInitialized(
-    AppConfig appConfig,
-    InstanceInfoProvider instanceInfoProvider,
-  ) {
+  static void ensureInitialized({
+    required String broadcastServiceType,
+    required int directChannelPort,
+    required String appVersion,
+    required InstanceInfoProvider instanceInfoProvider,
+  }) {
     instance = DisplayServiceBroadcast._internal(
-      appConfig.broadcastServiceType,
-      appConfig.directChannelPort,
-      appConfig.appVersion,
+      broadcastServiceType,
+      directChannelPort,
+      appVersion,
       instanceInfoProvider,
     );
   }
@@ -54,12 +57,12 @@ class DisplayServiceBroadcast {
     }
 
     final service = BonsoirService(
-      name: uuid,
+      name: _uuid,
       type: _serviceType,
-      port: _port,
+      port: _directChannelPort,
       attributes: {
         'fn': _instanceInfo.deviceName,
-        'ver': version,
+        'ver': _version,
         'dc': _instanceInfo.displayCode,
         'ip': _instanceInfo.ipAddress,
       },
