@@ -145,6 +145,6 @@ class ParticipantItem extends StatelessWidget {
   _sendPresenterRemove(RTCConnector rtcConnector) async {
     AppAnalytics().trackEventModeratorPresentersRemove();
     await rtcConnector.disconnectPeerConnection();
-    await rtcConnector.disconnectChannel();
+    await rtcConnector.disconnectChannel(reason: 'User removed the presenter');
   }
 }

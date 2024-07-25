@@ -95,7 +95,7 @@ class RTCConnector {
   Function(String localCandidateType, String remoteCandidateType)? onPairCandidateType;
   Function(RtcVideoInboundStats stats)? onVideoStatsReport;
   Function({bool? showMode})? onShowMode;
-  Future<void> Function()? onChannelDisconnect;
+  Future<void> Function({String? reason})? onChannelDisconnect;
 
   Timer? _channelReconnectTimer;
   bool _isRtcFirstConnected = false;
@@ -140,7 +140,7 @@ class RTCConnector {
         // A state change to "closed" will only occur if there is an explicit close request from the peer.
 
         await disconnectPeerConnection();
-        await disconnectChannel();
+        await disconnectChannel(reason: 'Channel closed');
         break;
     }
   }
@@ -176,7 +176,7 @@ class RTCConnector {
       reconnectChannelState = ReconnectState.fail;
     }
     await disconnectPeerConnection();
-    await disconnectChannel();
+    await disconnectChannel(reason: 'Channel reconnect timeout');
   }
 
   void _startChannelReconnectTimer() {
@@ -273,7 +273,7 @@ class RTCConnector {
       if (!isModeratorMode) {
         sendRejectPresent(400, 'timeout');
         await disconnectPeerConnection(sendAnalytics: true);
-        await disconnectChannel();
+        await disconnectChannel(reason: 'Timeout: present rejected');
       } else {
         sendStopPresent();
       }
@@ -337,7 +337,7 @@ class RTCConnector {
     // disconnect the channel
     await disconnectPeerConnection(sendAnalytics: true);
     // clear renderer and close connection
-    await disconnectChannel();
+    await disconnectChannel(reason: 'User stopped the present');
     // stop timer
     ConnectionTimer.getInstance().stopRemainingTimeTimer();
   }
@@ -428,11 +428,11 @@ class RTCConnector {
     onRefresh?.call();
   }
 
-  Future<void> disconnectChannel() async {
+  Future<void> disconnectChannel({required String? reason}) async {
     stopStatsTimer();
     _trackMetrics();
     stopConnectionTimeoutTimer();
-    await onChannelDisconnect?.call();
+    await onChannelDisconnect?.call(reason: reason);
   }
 
   _trackMetrics() {
@@ -509,7 +509,7 @@ class RTCConnector {
       }
       ConnectionTimer.getInstance().stopRemainingTimeTimer();
       await disconnectPeerConnection();
-      await disconnectChannel();
+      await disconnectChannel(reason: 'RTC connection failed');
     }
   }
 

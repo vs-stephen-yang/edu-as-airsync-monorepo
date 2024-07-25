@@ -123,7 +123,7 @@ class ChannelProvider extends ChangeNotifier {
     _connectivitySubscription ??=
         Connectivity().onConnectivityChanged.listen((result) async {
       log.info('Network connectivity has changed to $result');
-      
+
       AppAnalytics().trackEventNetworkConnectivity(result.name);
 
       if (result == ConnectivityResult.none) {
@@ -483,7 +483,7 @@ class ChannelProvider extends ChangeNotifier {
       notifyListeners();
     });
 
-    rtcConnector.onChannelDisconnect = (() async {
+    rtcConnector.onChannelDisconnect = (({String? reason}) async {
       // update UI
       bool presenting = false;
       for (RTCConnector rtcConnector
@@ -495,7 +495,7 @@ class ChannelProvider extends ChangeNotifier {
       if (presenting) {
         Home.enlargedScreenPositionIndex.value = null;
       }
-      await rtcConnector.close(ChannelCloseCode.close);
+      await rtcConnector.close(ChannelCloseCode.close, reason: reason);
       HybridConnectionList().removeConnection(rtcConnector);
       HybridConnectionList().updateSplitScreen();
 
