@@ -113,6 +113,9 @@ class RTCConnector {
 
   Future<void> _onChannelState(ChannelState state) async {
     log.info('[$clientId] Channel has changed state to $state');
+
+    AppAnalytics().trackEventChannelState(clientId, state.name);
+
     switch (state) {
       case ChannelState.initialized:
         break;
@@ -484,6 +487,9 @@ class RTCConnector {
 
   Future<void> _onPeerConnectionState(RTCPeerConnectionState state) async {
     _printPeerConnectionLog('_onPeerConnectionState', state);
+
+    AppAnalytics().trackEventPcConnectionState(clientId, state.name);
+
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
       if (!_isRtcFirstConnected) {
         _isRtcFirstConnected = true;

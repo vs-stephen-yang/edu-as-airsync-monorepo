@@ -392,6 +392,22 @@ class AppAnalytics {
     });
   }
 
+  trackEventPcConnectionState(String? clientId, String state) {
+    _trackEventWithProperties('pc_state', {
+      'target': state,
+      'clientId': clientId ?? '',
+      ..._eventProperties,
+    });
+  }
+
+  trackEventChannelState(String? clientId, String state) {
+    _trackEventWithProperties('channel_state', {
+      'target': state,
+      'clientId': clientId ?? '',
+      ..._eventProperties,
+    });
+  }
+
 // endregion
 
   trackEventRtcMetric(
