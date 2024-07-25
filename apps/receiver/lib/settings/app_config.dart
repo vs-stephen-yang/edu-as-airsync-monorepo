@@ -6,15 +6,11 @@ class AppConfig extends InheritedWidget {
       required this.settings,
       required this.appName,
       required this.appVersion,
-      required this.directChannelPort,
-      required this.broadcastServiceType,
       required super.child});
 
   final ConfigSettings settings;
   final String appName;
   final String appVersion;
-  final int directChannelPort;
-  final String broadcastServiceType;
 
   static AppConfig? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<AppConfig>();

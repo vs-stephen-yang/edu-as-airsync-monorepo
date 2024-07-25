@@ -14,6 +14,7 @@ import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
+import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/channel_util.dart';
@@ -242,7 +243,7 @@ class ChannelProvider extends ChangeNotifier {
       if (_directServer == null) {
         _setDirectServer();
         await _directServer?.start(
-          appConfig.directChannelPort,
+          DisplayServiceBroadcast.instance.directChannelPort,
           securityContext: securityContext,
         );
       }
