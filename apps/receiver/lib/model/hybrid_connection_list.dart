@@ -218,7 +218,7 @@ class HybridConnectionList {
       if (rtcConnector?.clientId != null) {
         try {
           await rtcConnector?.disconnectPeerConnection(sendAnalytics: true);
-          await rtcConnector?.disconnectChannel();
+          await rtcConnector?.disconnectChannel(reason: 'User removed the presenter');
           // need some delay to prevent exception:
           // 'package:flutter/src/rendering/object.dart': Failed assertion: line 2250 pos 12: '!_debugDisposed': is not true.
           await Future.delayed(const Duration(milliseconds: 300));
@@ -293,7 +293,7 @@ class HybridConnectionList {
       if (connection.sessionId != null) {
         try {
           await connection.disconnectPeerConnection(sendAnalytics: true);
-          await connection.disconnectChannel();
+          await connection.disconnectChannel(reason: 'User removed the presenter');
         } on PlatformException catch (e) {
           log(e.toString());
         }
