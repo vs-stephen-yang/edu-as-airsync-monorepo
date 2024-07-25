@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/api/ice_api.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
@@ -160,6 +161,8 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     _instanceInfo.displayCode = displayCode ?? '';
+    AppAnalytics().setEventProperties(displayCode: displayCode);
+
     if (instanceIndex != null) {
       startServer(AppInstanceCreate().displayInstanceID);
       isLanModeOnly.value = false;
