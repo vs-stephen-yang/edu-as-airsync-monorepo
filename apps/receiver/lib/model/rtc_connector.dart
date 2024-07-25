@@ -452,8 +452,10 @@ class RTCConnector {
     log.info('[$clientId] Close channel $reason');
 
     _stopChannelReconnectTimer();
-    AppAnalytics().trackEventCloseChannel(clientId, reason);
 
+    if (_channel.state != ChannelState.closed) {
+      AppAnalytics().trackEventCloseChannel(clientId, reason);
+    }
     _channel.close(ChannelCloseReason(code, text: reason));
     _resetSetting();
   }
