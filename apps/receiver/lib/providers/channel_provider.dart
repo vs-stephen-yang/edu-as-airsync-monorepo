@@ -275,12 +275,13 @@ class ChannelProvider extends ChangeNotifier {
             if (_isModeratorMode) {
               if (HybridConnectionList().getConnectionCount() >=
                   HybridConnectionList.maxHybridConnection) {
-                final message = JoinDisplayRejectedMessage();
-                message.reason = Reason(
-                  JoinDisplayRejectedReasonCode.maxClientsReached.code,
-                  text: 'Max number of clients reached',
-                );
-                channel.send(message);
+                sendPresentRejectMessage(channel);
+                return;
+              }
+            } else {
+              if (HybridConnectionList.hybridSplitScreenCount.value >=
+                  HybridConnectionList.maxHybridSplitScreen) {
+                sendPresentRejectMessage(channel);
                 return;
               }
             }
@@ -314,12 +315,7 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.startPresent:
           if (HybridConnectionList.hybridSplitScreenCount.value >=
               HybridConnectionList.maxHybridSplitScreen) {
-            final message = PresentRejectedMessage();
-            message.reason = Reason(
-              PresentRejectedReasonCode.maxPresentReached.code,
-              text: 'Max number of presentations reached',
-            );
-            channel.send(message);
+            sendPresentRejectMessage(channel);
             break;
           }
           final iceServers = await _getIceServers(mode);
@@ -446,6 +442,15 @@ class ChannelProvider extends ChangeNotifier {
     displayStatusMessage.status =
         DisplayStatus.fromJson({'moderator': _isModeratorMode});
     channel.send(displayStatusMessage);
+  }
+
+  void sendPresentRejectMessage(Channel channel) {
+    final message = PresentRejectedMessage();
+    message.reason = Reason(
+      PresentRejectedReasonCode.maxPresentReached.code,
+      text: 'Max number of presentations reached',
+    );
+    channel.send(message);
   }
 
   RTCConnector _onJoinDisplay(
