@@ -377,12 +377,12 @@ class AppAnalytics {
     _trackEventWithProperties('app_stop', _eventProperties);
   }
 
-  trackEventControlConnected() {
-    _trackEventWithProperties('control_connected', _eventProperties);
+  trackEventTunnelConnected() {
+    _trackEventWithProperties('tunnel_connected', _eventProperties);
   }
 
-  trackEventControlDisconnected() {
-    _trackEventWithProperties('control_disconnected', _eventProperties);
+  trackEventTunnelConnecting() {
+    _trackEventWithProperties('tunnel_connecting', _eventProperties);
   }
 // endregion
 

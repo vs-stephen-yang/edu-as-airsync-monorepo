@@ -191,9 +191,11 @@ class ChannelProvider extends ChangeNotifier {
 
     _tunnelServer?.onTunnelConnected = () {
       log.info('Tunnel connected');
+       AppAnalytics().trackEventTunnelConnected();
     };
     _tunnelServer?.onTunnelConnecting = () {
       log.info('Tunnel is connecting');
+      AppAnalytics().trackEventTunnelConnecting();
     };
   }
 
