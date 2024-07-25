@@ -123,6 +123,8 @@ class ChannelProvider extends ChangeNotifier {
     _connectivitySubscription ??=
         Connectivity().onConnectivityChanged.listen((result) async {
       log.info('Network connectivity has changed to $result');
+      
+      AppAnalytics().trackEventNetworkConnectivity(result.name);
 
       if (result == ConnectivityResult.none) {
         _handleNoConnectivity();
