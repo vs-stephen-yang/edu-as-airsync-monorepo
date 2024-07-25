@@ -408,6 +408,13 @@ class AppAnalytics {
     });
   }
 
+  trackEventCloseChannel(String? clientId, String? reason) {
+    _trackEventWithProperties('close_channel', {
+      'target': reason ?? '',
+      'clientId': clientId ?? '',
+      ..._eventProperties,
+    });
+  }
 // endregion
 
   trackEventRtcMetric(
