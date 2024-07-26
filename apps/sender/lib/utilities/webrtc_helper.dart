@@ -52,35 +52,30 @@ class WebRTCHelper {
   }) async {
     dynamic deviceId;
 
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        _isMainScreen = true;
-        break;
-      case TargetPlatform.iOS:
-        deviceId = 'broadcast';
-        _isMainScreen = true;
-        break;
-      case TargetPlatform.macOS:
-      case TargetPlatform.windows:
-        deviceId = {'exact': selectedSource.id};
-        _isScreenType = (selectedSource.type == SourceType.Screen);
-        if (Platform.isMacOS) {
-          DesktopCapturerSource s = selectedSource;
-          webRTCConnector?.subscriptions
-              .add(s.onCaptureError.stream.listen((event) async {
-            await webRTCConnector?.hangUp();
-            await webRTCConnector?.onStreamInterrupted?.call();
-          }));
-          _isMainScreen =
-              _isScreenType ? selectedSource.id == _macMainScreenOrder : false;
-        } else {
-          _isMainScreen = _isScreenType
-              ? selectedSource.id == _windowsMainScreenOrder
-              : false;
-        }
-        break;
-      default:
-        break;
+    if (kIsWeb) {
+      // In web environment, if do not enter this case first, an error will occur immediately if enter other platforms case.
+    } else if (Platform.isAndroid) {
+      _isMainScreen = true;
+    } else if (Platform.isIOS) {
+      deviceId = 'broadcast';
+      _isMainScreen = true;
+    } else {
+      deviceId = {'exact': selectedSource.id};
+      _isScreenType = (selectedSource.type == SourceType.Screen);
+      if (Platform.isMacOS) {
+        DesktopCapturerSource s = selectedSource;
+        webRTCConnector?.subscriptions
+            .add(s.onCaptureError.stream.listen((event) async {
+          await webRTCConnector?.hangUp();
+          await webRTCConnector?.onStreamInterrupted?.call();
+        }));
+        _isMainScreen =
+            _isScreenType ? selectedSource.id == _macMainScreenOrder : false;
+      } else if (Platform.isWindows) {
+        _isMainScreen = _isScreenType
+            ? selectedSource.id == _windowsMainScreenOrder
+            : false;
+      }
     }
 
     await webRTCConnector
