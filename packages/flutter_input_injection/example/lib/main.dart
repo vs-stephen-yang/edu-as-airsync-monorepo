@@ -99,6 +99,23 @@ class _MyAppState extends State<MyApp> {
       keyEvents.add(KeyEvent(0x07002c + i, false, delayMs));
     }
 
+    // keypad /
+    keyEvents.add(KeyEvent(0x070054, true, delayMs));
+    keyEvents.add(KeyEvent(0x070054, false, delayMs));
+    // keypad *
+    keyEvents.add(KeyEvent(0x070055, true, delayMs));
+    keyEvents.add(KeyEvent(0x070055, false, delayMs));
+
+    // Keypad Numlock
+    keyEvents.add(KeyEvent(0x070053, true, delayMs));
+    keyEvents.add(KeyEvent(0x070053, false, delayMs));
+
+    // type keypad '1' - '9', '0'
+    for (var i = 0; i < 10; i += 1) {
+      keyEvents.add(KeyEvent(0x070059 + i, true, delayMs));
+      keyEvents.add(KeyEvent(0x070059 + i, false, delayMs));
+    }
+
     // type 'A' - 'Z'
     keyEvents.add(KeyEvent(0x0700e1, true, 10));
     for (var i = 0; i < 26; i += 1) {
