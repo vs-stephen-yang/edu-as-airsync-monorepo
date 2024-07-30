@@ -415,6 +415,14 @@ class AppAnalytics {
       ..._eventProperties,
     });
   }
+
+  trackEventRtcCandidateTypes(String? clientId, String localCandidateType, String remoteCandidateType) {
+    _trackEventWithProperties('pc_candidates', {
+      'target': '$localCandidateType-$remoteCandidateType',
+      'clientId': clientId ?? '',
+      ..._eventProperties,
+    });
+  }
 // endregion
 
   trackEventRtcMetric(

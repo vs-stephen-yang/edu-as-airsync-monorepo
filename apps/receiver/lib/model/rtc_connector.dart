@@ -101,6 +101,8 @@ class RTCConnector {
   bool _isRtcFirstConnected = false;
 
   final _videoBitrateHistory = <int?>[];
+  String? _localCandidateType;
+  String? _remoteCandidateType;
 
   RTCConnector(this._channel);
 
@@ -153,7 +155,18 @@ class RTCConnector {
   void startStatsTimer() {
     _rtcStatsParser = RtcStatsParser(
       _handleVideoStatsReport,
-      onPairCandidateType,
+      (String localCandidateType, String remoteCandidateType) {
+        onPairCandidateType?.call(localCandidateType, remoteCandidateType);
+
+        if (_localCandidateType != localCandidateType &&
+            _remoteCandidateType != remoteCandidateType) {
+
+          AppAnalytics().trackEventRtcCandidateTypes(clientId!, localCandidateType, remoteCandidateType);
+
+          _localCandidateType = localCandidateType;
+          _remoteCandidateType = remoteCandidateType;
+        }
+      },
     );
 
     _statsTimer?.cancel();
