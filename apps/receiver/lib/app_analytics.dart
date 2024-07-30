@@ -398,7 +398,7 @@ class AppAnalytics {
   trackEventPcConnectionState(String? clientId, String state) {
     _trackEventWithProperties('pc_state', {
       'target': state,
-      'clientId': clientId ?? '',
+      'client_id': clientId ?? '',
       ..._eventProperties,
     });
   }
@@ -406,7 +406,7 @@ class AppAnalytics {
   trackEventChannelState(String? clientId, String state) {
     _trackEventWithProperties('channel_state', {
       'target': state,
-      'clientId': clientId ?? '',
+      'client_id': clientId ?? '',
       ..._eventProperties,
     });
   }
@@ -414,7 +414,7 @@ class AppAnalytics {
   trackEventCloseChannel(String? clientId, String? reason) {
     _trackEventWithProperties('close_channel', {
       'target': reason ?? '',
-      'clientId': clientId ?? '',
+      'client_id': clientId ?? '',
       ..._eventProperties,
     });
   }
@@ -422,7 +422,7 @@ class AppAnalytics {
   trackEventRtcCandidateTypes(String? clientId, String localCandidateType, String remoteCandidateType) {
     _trackEventWithProperties('pc_candidates', {
       'target': '$localCandidateType-$remoteCandidateType',
-      'clientId': clientId ?? '',
+      'client_id': clientId ?? '',
       ..._eventProperties,
     });
   }
@@ -451,7 +451,7 @@ class AppAnalytics {
     final decodeTime = formatDoubleList(statsLists.decodeTime, precision);
 
     _trackEventWithProperties('video_inbound_stats', {
-      'clientId': clientId ?? '',
+      'client_id': clientId ?? '',
       'framesPerSecond': statsLists.framesPerSecond.join(','),
       'framesReceivedPerSecond': statsLists.framesReceivedPerSecond.join(','),
       'framesDecodedPerSecond': statsLists.framesDecodedPerSecond.join(','),
