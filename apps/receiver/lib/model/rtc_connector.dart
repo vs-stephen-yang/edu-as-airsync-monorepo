@@ -4,11 +4,14 @@ import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
+import 'package:display_flutter/model/rtc_stats.dart';
 import 'package:display_flutter/model/rtc_stats_parser.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/channel_config.dart';
+import 'package:display_flutter/utility/bounded_list.dart';
 import 'package:display_flutter/utility/channel_util.dart';
+import 'package:display_flutter/utility/list_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/rtc_metrics.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
@@ -100,7 +103,11 @@ class RTCConnector {
   Timer? _channelReconnectTimer;
   bool _isRtcFirstConnected = false;
 
+  // rtc stats
   final _videoBitrateHistory = <int?>[];
+  // keep last 20 RtcVideoInboundStats
+  final _videoInboundStatsHistory = BoundedList<RtcVideoInboundStats>(20);
+
   String? _localCandidateType;
   String? _remoteCandidateType;
 
@@ -215,6 +222,9 @@ class RTCConnector {
 
   void _handleVideoStatsReport(RtcVideoInboundStats stats) {
     _videoBitrateHistory.add(stats.bytesPerSecond);
+
+    _videoInboundStatsHistory.add(stats);
+
 
     onVideoStatsReport?.call(stats);
   }
@@ -456,6 +466,13 @@ class RTCConnector {
         'video_bitrate',
         videoBitrateEvent.toJson(),
       );
+
+      AppAnalytics().trackEventRtcVideoInboundStats(
+        clientId,
+        // track every second videoInboundStats over last 10 seconds
+        filterEverySecond(_videoInboundStatsHistory.elements),
+      );
+
     } catch (e, stackTrace) {
       log.severe('_trackMetrics', e, stackTrace);
     }

@@ -1,25 +1,7 @@
+import 'package:display_flutter/model/rtc_stats.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-class RtcVideoInboundStats {
-  String? decoderName;
-
-  int? frameWidth;
-  int? frameHeight;
-
-  double? framesPerSecond;
-
-  int? framesReceivedPerSecond;
-  int? framesDecodedPerSecond;
-  int? framesDroppedPerSecond;
-
-  int? bytesPerSecond;
-
-  int? packetsLost;
-  double? jitterBufferDelay;
-
-  double? decodeTime;
-}
 
 int? _diff(int? a, int? b) {
   if (a == null || b == null) {
@@ -147,6 +129,10 @@ class RtcStatsParser {
 
     stats.decoderName = videoInboundRtp.values['decoderImplementation'];
     stats.packetsLost = videoInboundRtp.values['packetsLost'];
+    stats.packetsReceived = videoInboundRtp.values['packetsReceived'];
+    stats.jitter = videoInboundRtp.values['jitter'];
+    stats.pauseCount = videoInboundRtp.values['pauseCount'];
+
     stats.framesPerSecond = videoInboundRtp.values['framesPerSecond'];
 
     stats.frameWidth = videoInboundRtp.values['frameWidth'];

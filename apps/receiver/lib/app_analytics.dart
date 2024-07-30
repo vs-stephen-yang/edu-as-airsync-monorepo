@@ -1,8 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:display_flutter/model/rtc_stats.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/utility/app_analytics_util.dart';
 import 'package:display_flutter/utility/client_device_info.dart';
+import 'package:display_flutter/utility/list_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 import 'package:azure_application_insights/azure_application_insights.dart';
@@ -432,6 +435,35 @@ class AppAnalytics {
     _trackEventWithProperties(metricName, {
       ..._eventProperties,
       ...values,
+    });
+  }
+
+  trackEventRtcVideoInboundStats(
+    String? clientId,
+    List<RtcVideoInboundStats> stats,
+  ) {
+    final statsLists = RtcVideoInboundStatsLists.fromStatsList(stats);
+
+    //  formats each double value to 2 precision
+    const precision = 2;
+
+    final jitterBufferDelay = formatDoubleList(statsLists.jitterBufferDelay, precision);
+    final decodeTime = formatDoubleList(statsLists.decodeTime, precision);
+
+    _trackEventWithProperties('video_inbound_stats', {
+      'clientId': clientId ?? '',
+      'framesPerSecond': statsLists.framesPerSecond.join(','),
+      'framesReceivedPerSecond': statsLists.framesReceivedPerSecond.join(','),
+      'framesDecodedPerSecond': statsLists.framesDecodedPerSecond.join(','),
+      'framesDroppedPerSecond': statsLists.framesDroppedPerSecond.join(','),
+      'bytesPerSecond': statsLists.bytesPerSecond.join(','),
+      'packetsLost': statsLists.packetsLost.join(','),
+      'packetsReceived': statsLists.packetsReceived.join(','),
+      'jitter': statsLists.jitter.join(','),
+      'pauseCount': statsLists.pauseCount.join(','),
+      'jitterBufferDelay': jitterBufferDelay.join(','),
+      'decodeTime': decodeTime.join(','),
+      ..._eventProperties,
     });
   }
 }
