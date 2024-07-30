@@ -439,6 +439,13 @@ class RTCConnector {
       }
       _remoteRenderer = RTCVideoRenderer();
     }
+
+    if (_statsTimer != null) {
+      _trackMetrics();
+
+      stopStatsTimer();
+    }
+
     log.info('[$clientId] Close PeerConnection');
     if (_pc != null) {
       await _pc?.close();
@@ -452,8 +459,6 @@ class RTCConnector {
   }
 
   Future<void> disconnectChannel({required String? reason}) async {
-    stopStatsTimer();
-    _trackMetrics();
     stopConnectionTimeoutTimer();
     await onChannelDisconnect?.call(reason: reason);
   }
