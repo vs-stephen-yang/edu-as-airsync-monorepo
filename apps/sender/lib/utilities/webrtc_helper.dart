@@ -59,23 +59,20 @@ class WebRTCHelper {
     } else if (Platform.isIOS) {
       deviceId = 'broadcast';
       _isMainScreen = true;
-    } else {
+    } else if (WebRTC.platformIsDesktop) {
       deviceId = {'exact': selectedSource.id};
       _isScreenType = (selectedSource.type == SourceType.Screen);
-      if (Platform.isMacOS) {
-        DesktopCapturerSource s = selectedSource;
-        webRTCConnector?.subscriptions
-            .add(s.onCaptureError.stream.listen((event) async {
-          await webRTCConnector?.hangUp();
-          await webRTCConnector?.onStreamInterrupted?.call();
-        }));
-        _isMainScreen =
-            _isScreenType ? selectedSource.id == _macMainScreenOrder : false;
-      } else if (Platform.isWindows) {
-        _isMainScreen = _isScreenType
-            ? selectedSource.id == _windowsMainScreenOrder
-            : false;
-      }
+      _isMainScreen = _isScreenType &&
+          (Platform.isMacOS
+              ? selectedSource.id == _macMainScreenOrder
+              : selectedSource.id == _windowsMainScreenOrder);
+
+      DesktopCapturerSource s = selectedSource;
+      webRTCConnector?.subscriptions
+          .add(s.onCaptureError.stream.listen((event) async {
+        await webRTCConnector?.hangUp();
+        await webRTCConnector?.onStreamInterrupted?.call();
+      }));
     }
 
     await webRTCConnector
