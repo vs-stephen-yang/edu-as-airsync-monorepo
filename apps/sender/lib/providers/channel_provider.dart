@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/model/direct_connector.dart';
 import 'package:display_cast_flutter/model/profile.dart';
@@ -63,11 +64,16 @@ class ChannelProvider extends ChangeNotifier {
   ChannelProvider(BuildContext context) {
     _apiGateway = AppConfig.of(context)!.settings.urlGateway;
     _profileStore = AppConfig.of(context)!.profileStore;
+
+    Connectivity().onConnectivityChanged.listen(_onConnectivityChange);
   }
 
   Channel? _channel;
   DisplayChannelConnector? _channelConnector;
   RemoteScreenClient? _remoteScreenClient;
+
+  // Current network connectivity
+  ConnectivityResult? _connectivityResult;
 
   String? _clientId;
   var _sessionId = const Uuid().v4();
@@ -351,6 +357,15 @@ class ChannelProvider extends ChangeNotifier {
 
     // select screen
     _presentStateProvider?.presentSelectScreenPage();
+  }
+
+  void _onConnectivityChange(ConnectivityResult result) {
+    if (_connectivityResult == result) {
+      return;
+    }
+
+    log.info('Network connectivity has changed to $result');
+    _connectivityResult = result;
   }
 
   // The channel failed to reconnect within the specified timeout period
@@ -759,13 +774,16 @@ class ChannelProvider extends ChangeNotifier {
       return;
     }
 
-    if (_isRtcFirstConnected) {
-      // When users lose the webrtc connection while casting
-      AppAnalytics.instance.trackEvent('cast_fail');
-    } else {
-      // When users fail to cast their screen on the first attempt
-      AppAnalytics.instance.trackEvent('cast_error');
-    }
+    // cast_fail: when users lose the webrtc connection while casting
+    // cast_error: when users fail to cast their screen on the first attempt
+    final eventName = _isRtcFirstConnected ? 'cast_fail' : 'cast_error';
+
+    AppAnalytics.instance.trackEvent(
+      eventName,
+      properties: {
+        'network_connectivity': _connectivityResult?.name ?? '',
+      },
+    );
 
     _isPresentingErrorReported = true;
   }
