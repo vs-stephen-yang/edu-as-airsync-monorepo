@@ -5,10 +5,10 @@ import 'package:display_flutter/protoc/event.pb.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-const defaultScreenWidth = 1920.0;
-const defaultScreenHeight = 1080.0;
-const maxEventId = 255;
-const eventExpiredTime = 4000; //ms
+const _defaultScreenWidth = 1920.0;
+const _defaultScreenHeight = 1080.0;
+const _maxEventId = 255;
+const _eventExpiredTime = 4000; //ms
 
 class EventSlot {
   int channelId = -1;
@@ -17,32 +17,34 @@ class EventSlot {
 }
 
 class TouchEventManager {
-  final List<EventSlot> _eventSlots =
-  List.generate(maxEventId, (index) => EventSlot());
-  final _flutterInputInjectionPlugin = FlutterInputInjection();
-  double _injectScreenWidth = defaultScreenWidth;
-  double _injectScreenHeight = defaultScreenHeight;
-  Timer? checkTimer;
+  final _eventSlots = List.generate(_maxEventId, (index) => EventSlot());
+
+  final _inputInjection = FlutterInputInjection();
+
+  double _injectScreenWidth = _defaultScreenWidth;
+  double _injectScreenHeight = _defaultScreenHeight;
+
+  Timer? _checkTimer;
 
   void setScreenSize(double screenWidth, double screenHeight) {
     _injectScreenWidth = screenWidth;
     _injectScreenHeight = screenHeight;
   }
 
-  void startCheckTimer() {
-    if (checkTimer != null && checkTimer!.isActive) return;
+  void _startCheckTimer() {
+    if (_checkTimer != null && _checkTimer!.isActive) return;
 
-    checkTimer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+    _checkTimer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       final currentTime = DateTime.now().millisecondsSinceEpoch;
       bool hasActiveEvent = false;
       for (int i = 0; i < _eventSlots.length; i++) {
         final event = _eventSlots[i];
         if (event.eventId != -1) {
-          if (currentTime - event.timestamp > eventExpiredTime) {
+          if (currentTime - event.timestamp > _eventExpiredTime) {
             log.info('event expired slot: $i id: ${event.eventId}');
             event.channelId = -1;
             event.eventId = -1;
-            _flutterInputInjectionPlugin.sendTouch(
+            _inputInjection.sendTouch(
                 FlutterInputInjection.TOUCH_POINT_END, i, 0, 0);
           } else {
             hasActiveEvent = true;
@@ -57,12 +59,12 @@ class TouchEventManager {
   }
 
   void stopCheckTimer() {
-    checkTimer?.cancel();
+    _checkTimer?.cancel();
   }
 
-  int findSlotById(int channelId, int eventId) {
+  int _findSlotById(int channelId, int eventId) {
     int slot = -1;
-    for (int i = 0; i < maxEventId; i++) {
+    for (int i = 0; i < _maxEventId; i++) {
       if (_eventSlots[i].channelId == channelId &&
           _eventSlots[i].eventId == eventId) {
         slot = i;
@@ -72,7 +74,7 @@ class TouchEventManager {
     return slot;
   }
 
-  int acquireSlot(int channelId, int eventId) {
+  int _acquireSlot(int channelId, int eventId) {
     // find a free slot
     int slot = findFreeSlot();
     if (slot < 0) {
@@ -84,26 +86,26 @@ class TouchEventManager {
     return slot;
   }
 
-  void releaseSlot(int slot) {
+  void _releaseSlot(int slot) {
     assert(slot >= 0);
-    assert(slot < maxEventId);
+    assert(slot < _maxEventId);
 
     _eventSlots[slot].channelId = -1;
     _eventSlots[slot].eventId = -1;
   }
 
-  int releaseSlotById(int channelId, int eventId) {
-    int slot = findSlotById(channelId, eventId);
+  int _releaseSlotById(int channelId, int eventId) {
+    int slot = _findSlotById(channelId, eventId);
     if (slot == -1) {
       return -1;
     }
 
-    releaseSlot(slot);
+    _releaseSlot(slot);
     return slot;
   }
 
   int findFreeSlot() {
-    for (int i = 0; i < maxEventId; i++) {
+    for (int i = 0; i < _maxEventId; i++) {
       if (_eventSlots[i].channelId == -1) {
         return i;
       }
@@ -111,56 +113,61 @@ class TouchEventManager {
     return -1;
   }
 
-  int reassignEventId(int channelId, int eventId, int action) {
+  int _reassignEventId(int channelId, int eventId, int action) {
     switch (action) {
       case FlutterInputInjection.TOUCH_POINT_START:
-        return acquireSlot(channelId, eventId);
+        return _acquireSlot(channelId, eventId);
       case FlutterInputInjection.TOUCH_POINT_MOVE:
-        return findSlotById(channelId, eventId);
+        return _findSlotById(channelId, eventId);
       case FlutterInputInjection.TOUCH_POINT_END:
-        return releaseSlotById(channelId, eventId);
+        return _releaseSlotById(channelId, eventId);
       default:
         return -1;
     }
   }
 
   void releaseEventSlotsByDataChannel(RTCDataChannel dc) {
-    for (int i = 0; i < maxEventId; i++) {
+    for (int i = 0; i < _maxEventId; i++) {
       if (_eventSlots[i].channelId == dc.id) {
-        _flutterInputInjectionPlugin.sendTouch(
+        _inputInjection.sendTouch(
             FlutterInputInjection.TOUCH_POINT_END, i, 0, 0);
-        releaseSlot(i);
+        _releaseSlot(i);
       }
     }
   }
 
   void handleTouchEvent(TouchEvent touchEvent, int dcIndex) {
     int id = touchEvent.touchPoints[0].id;
+
     int action = FlutterInputInjection.TOUCH_POINT_START;
+
     if (touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_START) {
       action = FlutterInputInjection.TOUCH_POINT_START;
-    } else if (touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
+    } else if (touchEvent.eventType ==
+        TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
       action = FlutterInputInjection.TOUCH_POINT_MOVE;
-    } else if (touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_END) {
+    } else if (touchEvent.eventType ==
+        TouchEvent_TouchEventType.TOUCH_POINT_END) {
       action = FlutterInputInjection.TOUCH_POINT_END;
     }
 
-    id = reassignEventId(dcIndex, id, action);
+    id = _reassignEventId(dcIndex, id, action);
     if (id == -1) {
       return;
-    } else {
-      _eventSlots[id].timestamp = DateTime.now().millisecondsSinceEpoch;
-      startCheckTimer();
     }
+
+    _eventSlots[id].timestamp = DateTime.now().millisecondsSinceEpoch;
+    _startCheckTimer();
 
     double remoteX = touchEvent.touchPoints[0].x;
     double remoteY = touchEvent.touchPoints[0].y;
 
     int injectX = (remoteX * _injectScreenWidth).toInt();
     injectX = injectX.clamp(0, _injectScreenWidth.toInt() - 1);
+
     int injectY = (remoteY * _injectScreenHeight).toInt();
     injectY = injectY.clamp(0, _injectScreenHeight.toInt() - 1);
 
-    _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
+    _inputInjection.sendTouch(action, id, injectX, injectY);
   }
 }
