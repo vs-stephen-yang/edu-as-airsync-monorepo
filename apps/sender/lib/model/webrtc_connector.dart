@@ -396,7 +396,6 @@ class WebRTCConnector {
       }
       if (!_isRtcFirstConnected) {
         _isRtcFirstConnected = true;
-        AppAnalytics.instance.trackEvent('cast_successfully');
       }
 
       bool result = await _updateEncodingParameters();
@@ -404,14 +403,6 @@ class WebRTCConnector {
     } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateDisconnected) {
       reconnectState = ChannelReconnectState.reconnecting;
     } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
-      if (_isRtcFirstConnected) {
-        // When users lose the webrtc connection while casting
-        AppAnalytics.instance.trackEvent('cast_fail');
-      } else {
-        // When users fail to cast their screen on the first attempt
-        AppAnalytics.instance.trackEvent('cast_error');
-      }
-
       if (reconnectState == ChannelReconnectState.reconnecting) {
         reconnectState = ChannelReconnectState.fail;
       }
