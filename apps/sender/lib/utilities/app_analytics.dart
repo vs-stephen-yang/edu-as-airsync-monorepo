@@ -1,6 +1,7 @@
 import 'package:azure_application_insights/azure_application_insights.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
 import 'package:http/http.dart';
+import 'package:display_cast_flutter/utilities/log.dart';
 
 // https://medium.com/bina-nusantara-it-division/how-to-integrate-flutter-app-with-azure-application-insights-447fcc3bdacf
 class AppAnalytics {
@@ -72,6 +73,8 @@ class AppAnalytics {
     String name, {
     Map<String, Object> properties = const <String, Object>{},
   }) {
+    log.info('Track event: $name');
+
     instance._client?.trackEvent(
       name: name,
       additionalProperties: {

@@ -81,6 +81,9 @@ class ChannelProvider extends ChangeNotifier {
   String? otp;
   Timer? _presentTimer;
 
+  bool _isRtcFirstConnected = false;
+  bool _isPresentingErrorReported = false;
+
   Timer? _channelReconnectTimer;
 
   JoinIntentType currentRole = JoinIntentType.present;
@@ -372,7 +375,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _stopChannelReconnectTimer() {
-    if (_channelReconnectTimer!= null) {
+    if (_channelReconnectTimer != null) {
       log.info('Stop channel reconnect timer');
       _channelReconnectTimer!.cancel();
       _channelReconnectTimer = null;
@@ -419,6 +422,9 @@ class ChannelProvider extends ChangeNotifier {
     required dynamic selectedSource,
     bool systemAudio = false,
   }) async {
+    // reset states
+    _isRtcFirstConnected = false;
+    _isPresentingErrorReported = false;
 
     // PeerConnect
     WebRTCHelper().init(
@@ -629,11 +635,20 @@ class ChannelProvider extends ChangeNotifier {
     return true;
   }
 
+  bool _isRtcFailedOnRemote(ChannelCloseReason? closeReason) {
+    // IMPROVE
+    return closeReason?.text?.contains('RTC connection failed') ?? false;
+  }
+
   void _handleChannelCloseState(ChannelCloseReason? closeReason) {
     AppAnalytics.instance.trackEvent('channel_closed', properties: {
       'target': closeReason?.code.toString() ?? '',
       'details': closeReason?.text ?? '',
     });
+
+    if (_isRtcFailedOnRemote(closeReason)) {
+      _reportPresentingErrors();
+    }
 
     presentEnd();
   }
@@ -716,14 +731,43 @@ class ChannelProvider extends ChangeNotifier {
       case RTCPeerConnectionState.RTCPeerConnectionStateConnected:
         _onRtcConnectionConnected();
         break;
+      case RTCPeerConnectionState.RTCPeerConnectionStateFailed:
+        _onRtcConnectionFailed();
+        break;
       default:
         break;
     }
   }
 
   void _onRtcConnectionConnected() {
+    if (!_isRtcFirstConnected) {
+      AppAnalytics.instance.trackEvent('cast_successfully');
+      _isRtcFirstConnected = true;
+    }
+
     // Ensure streaming is uninterrupted when the channel connection drops
     _stopChannelReconnectTimer();
+  }
+
+  void _onRtcConnectionFailed() {
+    _reportPresentingErrors();
+  }
+
+  void _reportPresentingErrors() {
+    if (_isPresentingErrorReported) {
+      // ensure that the rtc error is only reported once.
+      return;
+    }
+
+    if (_isRtcFirstConnected) {
+      // When users lose the webrtc connection while casting
+      AppAnalytics.instance.trackEvent('cast_fail');
+    } else {
+      // When users fail to cast their screen on the first attempt
+      AppAnalytics.instance.trackEvent('cast_error');
+    }
+
+    _isPresentingErrorReported = true;
   }
 
   void _resetTimer() {
@@ -738,8 +782,7 @@ class ChannelProvider extends ChangeNotifier {
 
   void _startPresentTimer() {
     _resetTimer();
-    _presentTimer = Timer.periodic(const Duration(seconds: 1), (timer)
-    {
+    _presentTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (presentingState.value) {
         countSecondsValue.value++;
         if (countSecondsValue.value == 60) {
