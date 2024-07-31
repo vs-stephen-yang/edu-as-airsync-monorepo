@@ -11,9 +11,19 @@ const _maxEventId = 255;
 const _eventExpiredTime = 4000; //ms
 
 class EventSlot {
-  int channelId = -1;
-  int eventId = -1;
+  int? channelId;
+  int? eventId;
   int timestamp = 0;
+
+  void clear() {
+    channelId = null;
+    eventId = null;
+    timestamp = 0;
+  }
+
+  bool isEmpty() {
+    return channelId == null || eventId == null;
+  }
 }
 
 class TouchEventManager {
@@ -39,11 +49,10 @@ class TouchEventManager {
       bool hasActiveEvent = false;
       for (int i = 0; i < _eventSlots.length; i++) {
         final event = _eventSlots[i];
-        if (event.eventId != -1) {
+        if (!event.isEmpty()) {
           if (currentTime - event.timestamp > _eventExpiredTime) {
             log.info('event expired slot: $i id: ${event.eventId}');
-            event.channelId = -1;
-            event.eventId = -1;
+            event.clear();
             _inputInjection.sendTouch(
                 FlutterInputInjection.TOUCH_POINT_END, i, 0, 0);
           } else {
@@ -62,23 +71,21 @@ class TouchEventManager {
     _checkTimer?.cancel();
   }
 
-  int _findSlotById(int channelId, int eventId) {
-    int slot = -1;
+  int? _findSlotById(int channelId, int eventId) {
     for (int i = 0; i < _maxEventId; i++) {
       if (_eventSlots[i].channelId == channelId &&
           _eventSlots[i].eventId == eventId) {
-        slot = i;
-        break;
+        return i;
       }
     }
-    return slot;
+    return null;
   }
 
-  int _acquireSlot(int channelId, int eventId) {
+  int? _acquireSlot(int channelId, int eventId) {
     // find a free slot
-    int slot = findFreeSlot();
-    if (slot < 0) {
-      return -1;
+    final slot = findFreeSlot();
+    if (slot == null) {
+      return null;
     }
 
     _eventSlots[slot].channelId = channelId;
@@ -90,30 +97,30 @@ class TouchEventManager {
     assert(slot >= 0);
     assert(slot < _maxEventId);
 
-    _eventSlots[slot].channelId = -1;
-    _eventSlots[slot].eventId = -1;
+    _eventSlots[slot].channelId = null;
+    _eventSlots[slot].eventId = null;
   }
 
-  int _releaseSlotById(int channelId, int eventId) {
-    int slot = _findSlotById(channelId, eventId);
-    if (slot == -1) {
-      return -1;
+  int? _releaseSlotById(int channelId, int eventId) {
+    final slot = _findSlotById(channelId, eventId);
+    if (slot == null) {
+      return null;
     }
 
     _releaseSlot(slot);
     return slot;
   }
 
-  int findFreeSlot() {
+  int? findFreeSlot() {
     for (int i = 0; i < _maxEventId; i++) {
-      if (_eventSlots[i].channelId == -1) {
+      if (_eventSlots[i].isEmpty()) {
         return i;
       }
     }
-    return -1;
+    return null;
   }
 
-  int _reassignEventId(int channelId, int eventId, int action) {
+  int? _reassignEventId(int channelId, int eventId, int action) {
     switch (action) {
       case FlutterInputInjection.TOUCH_POINT_START:
         return _acquireSlot(channelId, eventId);
@@ -122,7 +129,7 @@ class TouchEventManager {
       case FlutterInputInjection.TOUCH_POINT_END:
         return _releaseSlotById(channelId, eventId);
       default:
-        return -1;
+        return null;
     }
   }
 
@@ -137,7 +144,7 @@ class TouchEventManager {
   }
 
   void handleTouchEvent(TouchEvent touchEvent, int dcIndex) {
-    int id = touchEvent.touchPoints[0].id;
+    final id = touchEvent.touchPoints[0].id;
 
     int action = FlutterInputInjection.TOUCH_POINT_START;
 
@@ -151,12 +158,12 @@ class TouchEventManager {
       action = FlutterInputInjection.TOUCH_POINT_END;
     }
 
-    id = _reassignEventId(dcIndex, id, action);
-    if (id == -1) {
+    final reassignedId = _reassignEventId(dcIndex, id, action);
+    if (reassignedId == null) {
       return;
     }
 
-    _eventSlots[id].timestamp = DateTime.now().millisecondsSinceEpoch;
+    _eventSlots[reassignedId].timestamp = DateTime.now().millisecondsSinceEpoch;
     _startCheckTimer();
 
     double remoteX = touchEvent.touchPoints[0].x;
@@ -168,6 +175,6 @@ class TouchEventManager {
     int injectY = (remoteY * _injectScreenHeight).toInt();
     injectY = injectY.clamp(0, _injectScreenHeight.toInt() - 1);
 
-    _inputInjection.sendTouch(action, id, injectX, injectY);
+    _inputInjection.sendTouch(action, reassignedId, injectX, injectY);
   }
 }
