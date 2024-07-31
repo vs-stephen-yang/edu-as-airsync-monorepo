@@ -13,16 +13,24 @@ const _eventExpiredTime = 4000; //ms
 class EventSlot {
   int? channelId;
   int? eventId;
-  int timestamp = 0;
+  DateTime? timestamp;
 
   void clear() {
     channelId = null;
     eventId = null;
-    timestamp = 0;
+    timestamp = null;
+  }
+
+  bool isExpired(DateTime now) {
+    if (timestamp == null) {
+      return false;
+    }
+
+    return now.difference(timestamp!).inMilliseconds > _eventExpiredTime;
   }
 
   bool isEmpty() {
-    return channelId == null || eventId == null;
+    return channelId == null || eventId == null || timestamp == null;
   }
 }
 
@@ -42,33 +50,46 @@ class TouchEventManager {
   }
 
   void _startCheckTimer() {
-    if (_checkTimer != null && _checkTimer!.isActive) return;
+    if (_checkTimer != null) {
+      return;
+    }
 
-    _checkTimer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-      final currentTime = DateTime.now().millisecondsSinceEpoch;
-      bool hasActiveEvent = false;
-      for (int i = 0; i < _eventSlots.length; i++) {
-        final event = _eventSlots[i];
-        if (!event.isEmpty()) {
-          if (currentTime - event.timestamp > _eventExpiredTime) {
-            log.info('event expired slot: $i id: ${event.eventId}');
-            event.clear();
-            _inputInjection.sendTouch(
-                FlutterInputInjection.TOUCH_POINT_END, i, 0, 0);
-          } else {
-            hasActiveEvent = true;
-          }
-        }
+    _checkTimer = Timer.periodic(
+      const Duration(seconds: 1),
+      _handleExpiredEvents,
+    );
+  }
+
+  void _handleExpiredEvents(Timer t) {
+    final currentTime = DateTime.now();
+
+    bool hasActiveEvent = false;
+    for (int i = 0; i < _eventSlots.length; i++) {
+      final event = _eventSlots[i];
+
+      if (event.isEmpty()) {
+        continue;
       }
 
-      if (!hasActiveEvent) {
-        stopCheckTimer();
+      if (event.isExpired(currentTime)) {
+        log.info('event expired slot: $i id: ${event.eventId}');
+        event.clear();
+
+        _inputInjection.sendTouch(
+            FlutterInputInjection.TOUCH_POINT_END, i, 0, 0);
+      } else {
+        hasActiveEvent = true;
       }
-    });
+    }
+
+    if (!hasActiveEvent) {
+      stopCheckTimer();
+    }
   }
 
   void stopCheckTimer() {
     _checkTimer?.cancel();
+    _checkTimer = null;
   }
 
   int? _findSlotById(int channelId, int eventId) {
@@ -163,7 +184,7 @@ class TouchEventManager {
       return;
     }
 
-    _eventSlots[reassignedId].timestamp = DateTime.now().millisecondsSinceEpoch;
+    _eventSlots[reassignedId].timestamp = DateTime.now();
     _startCheckTimer();
 
     double remoteX = touchEvent.touchPoints[0].x;
