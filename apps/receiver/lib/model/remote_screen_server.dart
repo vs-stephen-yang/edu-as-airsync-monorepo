@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:developer';
 
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_channel/display_channel.dart';
@@ -7,6 +6,7 @@ import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_utils.dart';
 import 'package:display_flutter/model/touch_event_manager.dart';
 import 'package:display_flutter/utility/ion_sfu_util.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu_listener.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -62,7 +62,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
       _ionSfuClient!.ondatachannel = (RTCDataChannel dc) {
         if (dc.label != API_CHANNEL) {
-          log("ondatachannel: ${dc.label}");
+          log.info("ondatachannel: ${dc.label}");
           _dataChannels.add(dc);
 
           dc.onDataChannelState = (RTCDataChannelState state) {
@@ -82,7 +82,8 @@ class RemoteScreenServer extends FlutterIonSfuListener {
         _screenWidth,
         _screenHeight,
       );
-      log('Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
+      log.info(
+          'Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
 
       var constraints = Constraints.defaults;
       // Note: ion-sdk-flutter currently hard-code H264, so the settings here
@@ -118,8 +119,8 @@ class RemoteScreenServer extends FlutterIonSfuListener {
                 !FlutterBackground.isBackgroundExecutionEnabled) {
               await FlutterBackground.enableBackgroundExecution();
             }
-          } catch (e) {
-            log(e.toString());
+          } catch (e, stackTrace) {
+            log.severe('requestBackgroundPermission', e, stackTrace);
           }
         }
 
@@ -140,7 +141,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   void addConnector(RemoteScreenConnector connector) async {
     // Check if the connector already exists in the map.
     if (_connectorChannels.containsValue(connector)) {
-      log('Channel already exists for connector');
+      log.warning('Channel already exists for connector');
       return;
     }
     final channelId = await _ionSfuServer.createSignalChannel();
@@ -165,7 +166,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
       _connectorChannels.remove(channelId);
     } on StateError {
-      log('No channel is found for connector');
+      log.warning('No channel is found for connector');
     }
   }
 
@@ -188,7 +189,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   }
 
   void onTextMessage(RTCDataChannelMessage data) async {
-    log('Received message: ${data.text}');
+    log.fine('Received message: ${data.text}');
   }
 
   void onTouchMessage(RTCDataChannelMessage data, int dcIndex) async {
@@ -201,7 +202,8 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   }
 
   void enableTouchBySessionId(String sessionID, bool touchEnabled) {
-    log('enableTouch: $sessionID $touchEnabled');
+    log.fine('enableTouch: $sessionID $touchEnabled');
+
     for (int i = 0; i < _dataChannels.length; i++) {
       if (_dataChannels[i].label == sessionID) {
         int dcIndex = _dataChannels[i].id ?? i;
