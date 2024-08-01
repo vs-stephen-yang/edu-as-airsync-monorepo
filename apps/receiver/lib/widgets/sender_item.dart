@@ -78,9 +78,10 @@ class _SenderItemState extends State<SenderItem>
               onClick: () {
                 remoteScreenConnector.isTouchEnabled =
                     !remoteScreenConnector.isTouchEnabled;
-                channelProvider.remoteScreenServe.enableTouchBySessionId(
-                    remoteScreenConnector.sessionId!,
-                    remoteScreenConnector.isTouchEnabled);
+                channelProvider.remoteScreenServe
+                    .enableRemoteControlBySessionId(
+                        remoteScreenConnector.sessionId!,
+                        remoteScreenConnector.isTouchEnabled);
                 setState(() {});
               },
             ),

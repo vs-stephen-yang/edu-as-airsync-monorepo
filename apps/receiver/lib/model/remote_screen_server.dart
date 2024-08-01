@@ -21,6 +21,46 @@ import 'package:display_flutter/protoc/internal.pb.dart';
 const defaultScreenWidth = 1920.0;
 const defaultScreenHeight = 1080.0;
 
+class RemoteControlChannel {
+  final RTCDataChannel _channel;
+  bool _isControlAllowed = false;
+  final int _id;
+
+  int get id {
+    return _id;
+  }
+
+  RemoteControlChannel(
+    this._id,
+    this._channel,
+    Function(RemoteControlChannel) onClosed,
+    Function(RTCDataChannelMessage, int id) onMessage,
+  ) {
+    assert(_channel.label != null);
+
+    _channel.onDataChannelState = (RTCDataChannelState state) {
+      if (state == RTCDataChannelState.RTCDataChannelClosed) {
+        // channel is closed
+        onClosed(this);
+      }
+    };
+
+    _channel.onMessage = (RTCDataChannelMessage data) async {
+      if (!data.isBinary) {
+        // ignore text data
+        return;
+      }
+      if (!_isControlAllowed) {
+        return;
+      }
+      onMessage(data, _id);
+    };
+  }
+  void setControlAllowed(bool isAllowed) {
+    _isControlAllowed = isAllowed;
+  }
+}
+
 class RemoteScreenServer extends FlutterIonSfuListener {
   Client? _ionSfuClient;
 
@@ -30,7 +70,8 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   String roomId = 'remote-screen';
   int roomPort = 7000;
 
-  final List<RTCDataChannel> _dataChannels = [];
+  final _channels = <String, RemoteControlChannel>{};
+  int _nextChannelId = 0;
 
   double _screenWidth = defaultScreenWidth;
   double _screenHeight = defaultScreenHeight;
@@ -53,6 +94,22 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     _sfuServerStarted = true;
   }
 
+  void _onControlChannelClosed(RemoteControlChannel channel) {
+    _touchEventManager.releaseEventSlotsByChannelId(channel.id);
+    _channels.removeWhere((key, item) => item.id == channel.id);
+  }
+
+  RemoteControlChannel _createRemoteControlChannel(RTCDataChannel dataChannel) {
+    _nextChannelId += 1;
+
+    return RemoteControlChannel(
+      _nextChannelId,
+      dataChannel,
+      _onControlChannelClosed,
+      _onControlMessage,
+    );
+  }
+
   Future startRemoteScreenPublisher() async {
     if (_ionSfuClient != null) {
       return;
@@ -71,16 +128,14 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       if (dc.label == API_CHANNEL) {
         return;
       }
+      log.info("New data channel: ${dc.label} ${dc.id}");
 
-      log.info("ondatachannel: ${dc.label}");
-      _dataChannels.add(dc);
+      if (dc.label == null) {
+        log.warning('Data channel has no label');
+        return;
+      }
 
-      dc.onDataChannelState = (RTCDataChannelState state) {
-        if (state == RTCDataChannelState.RTCDataChannelClosed) {
-          _touchEventManager.releaseEventSlotsByDataChannel(dc);
-          _dataChannels.removeWhere((item) => item.id == dc.id);
-        }
-      };
+      _channels[dc.label!] = _createRemoteControlChannel(dc);
     };
 
     await updateScreenSize();
@@ -201,31 +256,24 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     log.fine('Received message: ${data.text}');
   }
 
-  void onTouchMessage(RTCDataChannelMessage data, int dcIndex) async {
+  void _onControlMessage(RTCDataChannelMessage data, int channelId) async {
     EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
+
     if (eventMessage.hasTouchEvent()) {
       TouchEvent touchEvent = eventMessage.touchEvent;
       _touchEventManager.setScreenSize(_screenWidth, _screenHeight);
-      _touchEventManager.handleTouchEvent(touchEvent, dcIndex);
+      _touchEventManager.handleTouchEvent(touchEvent, channelId);
     }
   }
 
-  void enableTouchBySessionId(String sessionID, bool touchEnabled) {
-    log.fine('enableTouch: $sessionID $touchEnabled');
+  void enableRemoteControlBySessionId(String sessionId, bool enable) {
+    log.info('Enable remote control for $sessionId $enable');
 
-    for (int i = 0; i < _dataChannels.length; i++) {
-      if (_dataChannels[i].label == sessionID) {
-        int dcIndex = _dataChannels[i].id ?? i;
-        _dataChannels[i].onMessage = (data) async {
-          if (data.isBinary && touchEnabled) {
-            onTouchMessage(data, dcIndex);
-          } else {
-            onTextMessage(data);
-          }
-        };
-        break;
-      }
+    final channel = _channels[sessionId];
+    if (channel == null) {
+      return;
     }
+    channel.setControlAllowed(enable);
   }
 
   // onError callback from FlutterIonSfu
