@@ -3,8 +3,10 @@ package com.viewsonic.flutter_input_injection;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
+import android.view.Surface;
 
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
@@ -27,7 +29,8 @@ public class FlutterInputInjectionPlugin implements FlutterPlugin, MethodCallHan
   private static final String TAG = "InputInjectionPlugin";
 
   private MethodChannel channel;
-  private InputInjectUInput inputInjector;
+  private InputStub inputInjector;
+  private WindowManager windowManager;
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -39,17 +42,49 @@ public class FlutterInputInjectionPlugin implements FlutterPlugin, MethodCallHan
     Context context = flutterPluginBinding.getApplicationContext();
 
     // display size
-    WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+    windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
     Display display = windowManager.getDefaultDisplay();
 
     // get real screen resolution
     Point displaySize = new Point();
     display.getRealSize(displaySize);
 
-    Log.i(TAG, String.format("Real display size: %dx%d", displaySize.x, displaySize.y));
+    boolean isNaturalPortrait = isDeviceNaturalOrientationPortrait();
+    boolean isPortrait = isDeviceOrientationPortrait(isNaturalPortrait);
+
+    Log.i(TAG, String.format("Real display size: %dx%d isNaturalPortrait: %b isPortrait: %b", 
+      displaySize.x, displaySize.y, isNaturalPortrait, isPortrait));
 
     // create an input injector
-    inputInjector = new InputInjectUInput(displaySize.x, displaySize.y);
+    // TODO: need to handle the case when the device is rotated dynamically
+    if (isPortrait) {
+      inputInjector = new PortraitInputStub(new InputInjectUInput(displaySize.y, displaySize.x), displaySize.x);
+    } else {
+      inputInjector = new InputInjectUInput(displaySize.x, displaySize.y);
+    }
+  }
+
+  // Reference: https://gist.github.com/SammyVimes/92c0627195c4c55ea800
+  private boolean isDeviceNaturalOrientationPortrait() {
+      final int rotation = windowManager.getDefaultDisplay().getRotation();
+      DisplayMetrics metrics = new DisplayMetrics();
+      windowManager.getDefaultDisplay().getMetrics(metrics);
+      int width = metrics.widthPixels;
+      int height = metrics.heightPixels;
+      if ((rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) && height > width
+          || (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) && width > height) {
+          return true;
+      }
+      return false;
+  }
+
+  private boolean isDeviceOrientationPortrait(boolean isNaturalPortrait) {
+    final int rotation = windowManager.getDefaultDisplay().getRotation();  
+    if (isNaturalPortrait) {
+      return rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180;
+    } else {
+      return rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270;
+    }
   }
 
   @Override
