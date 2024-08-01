@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:display_flutter/protoc/event.pb.dart';
 import 'package:display_flutter/utility/log.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 const _defaultScreenWidth = 1920.0;
 const _defaultScreenHeight = 1080.0;
@@ -154,9 +153,9 @@ class TouchEventManager {
     }
   }
 
-  void releaseEventSlotsByDataChannel(RTCDataChannel dc) {
+  void releaseEventSlotsByChannelId(int channelId) {
     for (int i = 0; i < _maxEventId; i++) {
-      if (_eventSlots[i].channelId == dc.id) {
+      if (_eventSlots[i].channelId == channelId) {
         _inputInjection.sendTouch(
             FlutterInputInjection.TOUCH_POINT_END, i, 0, 0);
         _releaseSlot(i);
@@ -177,10 +176,10 @@ class TouchEventManager {
     }
   }
 
-  void handleTouchEvent(TouchEvent touchEvent, int dcIndex) {
+  void handleTouchEvent(TouchEvent touchEvent, int channelId) {
     final id = touchEvent.touchPoints[0].id;
     int action = _convertTouchEventType(touchEvent.eventType);
-    final reassignedId = _reassignEventId(dcIndex, id, action);
+    final reassignedId = _reassignEventId(channelId, id, action);
     if (reassignedId == null) {
       return;
     }
