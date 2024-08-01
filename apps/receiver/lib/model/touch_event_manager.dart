@@ -164,21 +164,22 @@ class TouchEventManager {
     }
   }
 
+  int _convertTouchEventType(TouchEvent_TouchEventType touchEventType) {
+    switch (touchEventType) {
+      case TouchEvent_TouchEventType.TOUCH_POINT_START:
+        return FlutterInputInjection.TOUCH_POINT_START;
+      case TouchEvent_TouchEventType.TOUCH_POINT_MOVE:
+        return FlutterInputInjection.TOUCH_POINT_MOVE;
+      case TouchEvent_TouchEventType.TOUCH_POINT_END:
+        return FlutterInputInjection.TOUCH_POINT_END;
+      default:
+        return FlutterInputInjection.TOUCH_POINT_START;
+    }
+  }
+
   void handleTouchEvent(TouchEvent touchEvent, int dcIndex) {
     final id = touchEvent.touchPoints[0].id;
-
-    int action = FlutterInputInjection.TOUCH_POINT_START;
-
-    if (touchEvent.eventType == TouchEvent_TouchEventType.TOUCH_POINT_START) {
-      action = FlutterInputInjection.TOUCH_POINT_START;
-    } else if (touchEvent.eventType ==
-        TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
-      action = FlutterInputInjection.TOUCH_POINT_MOVE;
-    } else if (touchEvent.eventType ==
-        TouchEvent_TouchEventType.TOUCH_POINT_END) {
-      action = FlutterInputInjection.TOUCH_POINT_END;
-    }
-
+    int action = _convertTouchEventType(touchEvent.eventType);
     final reassignedId = _reassignEventId(dcIndex, id, action);
     if (reassignedId == null) {
       return;
