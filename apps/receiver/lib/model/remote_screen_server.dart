@@ -68,17 +68,19 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     );
 
     _ionSfuClient!.ondatachannel = (RTCDataChannel dc) {
-      if (dc.label != API_CHANNEL) {
-        log.info("ondatachannel: ${dc.label}");
-        _dataChannels.add(dc);
-
-        dc.onDataChannelState = (RTCDataChannelState state) {
-          if (state == RTCDataChannelState.RTCDataChannelClosed) {
-            _touchEventManager.releaseEventSlotsByDataChannel(dc);
-            _dataChannels.removeWhere((item) => item.id == dc.id);
-          }
-        };
+      if (dc.label == API_CHANNEL) {
+        return;
       }
+
+      log.info("ondatachannel: ${dc.label}");
+      _dataChannels.add(dc);
+
+      dc.onDataChannelState = (RTCDataChannelState state) {
+        if (state == RTCDataChannelState.RTCDataChannelClosed) {
+          _touchEventManager.releaseEventSlotsByDataChannel(dc);
+          _dataChannels.removeWhere((item) => item.id == dc.id);
+        }
+      };
     };
 
     await updateScreenSize();
