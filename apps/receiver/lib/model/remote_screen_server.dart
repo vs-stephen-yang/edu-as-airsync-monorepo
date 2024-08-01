@@ -23,11 +23,15 @@ const defaultScreenHeight = 1080.0;
 
 class RemoteScreenServer extends FlutterIonSfuListener {
   Client? _ionSfuClient;
-  final FlutterIonSfu _ionSfuServer = FlutterIonSfu();
-  bool _iosSfuServerStart = false;
+
+  final FlutterIonSfu _sfuServer = FlutterIonSfu();
+  bool _sfuServerStarted = false;
+
   String roomId = 'remote-screen';
   int roomPort = 7000;
+
   final List<RTCDataChannel> _dataChannels = [];
+
   double _screenWidth = defaultScreenWidth;
   double _screenHeight = defaultScreenHeight;
   final _touchEventManager = TouchEventManager();
@@ -37,16 +41,16 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   RemoteScreenServer();
 
   Future startSfuServer(List<RtcIceServer>? iceServers) async {
-    if (_iosSfuServerStart) return;
+    if (_sfuServerStarted) return;
 
     final configuration = createIonSfuConfiguration(iceServers);
 
-    _ionSfuServer.registerListener(this);
+    _sfuServer.registerListener(this);
 
-    await _ionSfuServer.initialize();
-    await _ionSfuServer.start(configuration);
+    await _sfuServer.initialize();
+    await _sfuServer.start(configuration);
 
-    _iosSfuServerStart = true;
+    _sfuServerStarted = true;
   }
 
   Future startRemoteScreenPublisher() async {
@@ -147,7 +151,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       log.warning('Channel already exists for connector');
       return;
     }
-    final channelId = await _ionSfuServer.createSignalChannel();
+    final channelId = await _sfuServer.createSignalChannel();
 
     _connectorChannels[channelId] = connector;
 
@@ -165,7 +169,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       );
       final channelId = entry.key;
 
-      await _ionSfuServer.closeSignalChannel(channelId);
+      await _sfuServer.closeSignalChannel(channelId);
 
       _connectorChannels.remove(channelId);
     } on StateError {
@@ -246,6 +250,6 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       return;
     }
 
-    _ionSfuServer.processSignalMessage(channelId, message);
+    _sfuServer.processSignalMessage(channelId, message);
   }
 }
