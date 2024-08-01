@@ -6,8 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
-class RemoteScreenWidget extends StatelessWidget {
+class RemoteScreenWidget extends StatefulWidget {
   const RemoteScreenWidget({super.key});
+
+  @override
+  State createState() => _RemoteScreenToolStates();
+}
+
+class _RemoteScreenToolStates extends State<RemoteScreenWidget> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
