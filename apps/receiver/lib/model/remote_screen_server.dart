@@ -50,87 +50,90 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   }
 
   Future startRemoteScreenPublisher() async {
-    if (_ionSfuClient == null) {
-      final ionSignal = JsonRPCSignal("ws://127.0.0.1:$roomPort/ws");
+    if (_ionSfuClient != null) {
+      return;
+    }
 
-      final uuid = const Uuid().v4();
-      _ionSfuClient = await Client.create(
-        sid: roomId,
-        uid: uuid,
-        signal: ionSignal,
-      );
+    final ionSignal = JsonRPCSignal("ws://127.0.0.1:$roomPort/ws");
 
-      _ionSfuClient!.ondatachannel = (RTCDataChannel dc) {
-        if (dc.label != API_CHANNEL) {
-          log.info("ondatachannel: ${dc.label}");
-          _dataChannels.add(dc);
+    final uuid = const Uuid().v4();
+    _ionSfuClient = await Client.create(
+      sid: roomId,
+      uid: uuid,
+      signal: ionSignal,
+    );
 
-          dc.onDataChannelState = (RTCDataChannelState state) {
-            if (state == RTCDataChannelState.RTCDataChannelClosed) {
-              _touchEventManager.releaseEventSlotsByDataChannel(dc);
-              _dataChannels.removeWhere((item) => item.id == dc.id);
-            }
-          };
-        }
-      };
+    _ionSfuClient!.ondatachannel = (RTCDataChannel dc) {
+      if (dc.label != API_CHANNEL) {
+        log.info("ondatachannel: ${dc.label}");
+        _dataChannels.add(dc);
 
-      await updateScreenSize();
-      String? deviceType = await DeviceInfoVs.deviceType;
-
-      final captureResolution = getCaptureVideoResolution(
-        deviceType,
-        _screenWidth,
-        _screenHeight,
-      );
-      log.info(
-          'Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
-
-      var constraints = Constraints.defaults;
-      // Note: ion-sdk-flutter currently hard-code H264, so the settings here
-      // are ineffective.
-      constraints.codec = "h264";
-      constraints.simulcast = false;
-      constraints.audio = false;
-      constraints.resolution = captureResolution.name;
-
-      await Helper.requestCapturePermission();
-      if (!kIsWeb && Platform.isAndroid) {
-        // Android specific
-        Future<void> requestBackgroundPermission() async {
-          // Required for android screen share.
-          try {
-            var hasPermissions = await FlutterBackground.hasPermissions;
-            const androidConfig = FlutterBackgroundAndroidConfig(
-              notificationTitle: 'Screen Sharing',
-              notificationText: 'AirSync is sharing the screen.',
-              notificationImportance: AndroidNotificationImportance.Default,
-              notificationIcon: AndroidResource(
-                name: 'ic_launcher',
-                defType: 'mipmap',
-              ),
-              // Above Android 12 will has some issue if set below option true.
-              shouldRequestBatteryOptimizationsOff: false,
-            );
-
-            hasPermissions = await FlutterBackground.initialize(
-                androidConfig: androidConfig);
-
-            if (hasPermissions &&
-                !FlutterBackground.isBackgroundExecutionEnabled) {
-              await FlutterBackground.enableBackgroundExecution();
-            }
-          } catch (e, stackTrace) {
-            log.severe('requestBackgroundPermission', e, stackTrace);
+        dc.onDataChannelState = (RTCDataChannelState state) {
+          if (state == RTCDataChannelState.RTCDataChannelClosed) {
+            _touchEventManager.releaseEventSlotsByDataChannel(dc);
+            _dataChannels.removeWhere((item) => item.id == dc.id);
           }
-        }
+        };
+      }
+    };
 
-        await requestBackgroundPermission();
+    await updateScreenSize();
+    String? deviceType = await DeviceInfoVs.deviceType;
+
+    final captureResolution = getCaptureVideoResolution(
+      deviceType,
+      _screenWidth,
+      _screenHeight,
+    );
+    log.info(
+        'Set capture resolution ${captureResolution.name} for ${_screenWidth}x$_screenHeight $deviceType');
+
+    var constraints = Constraints.defaults;
+    // Note: ion-sdk-flutter currently hard-code H264, so the settings here
+    // are ineffective.
+    constraints.codec = "h264";
+    constraints.simulcast = false;
+    constraints.audio = false;
+    constraints.resolution = captureResolution.name;
+
+    await Helper.requestCapturePermission();
+    if (!kIsWeb && Platform.isAndroid) {
+      // Android specific
+      Future<void> requestBackgroundPermission() async {
+        // Required for android screen share.
+        try {
+          var hasPermissions = await FlutterBackground.hasPermissions;
+          const androidConfig = FlutterBackgroundAndroidConfig(
+            notificationTitle: 'Screen Sharing',
+            notificationText: 'AirSync is sharing the screen.',
+            notificationImportance: AndroidNotificationImportance.Default,
+            notificationIcon: AndroidResource(
+              name: 'ic_launcher',
+              defType: 'mipmap',
+            ),
+            // Above Android 12 will has some issue if set below option true.
+            shouldRequestBatteryOptimizationsOff: false,
+          );
+
+          hasPermissions = await FlutterBackground.initialize(
+            androidConfig: androidConfig,
+          );
+
+          if (hasPermissions &&
+              !FlutterBackground.isBackgroundExecutionEnabled) {
+            await FlutterBackground.enableBackgroundExecution();
+          }
+        } catch (e, stackTrace) {
+          log.severe('requestBackgroundPermission', e, stackTrace);
+        }
       }
 
-      var localStream =
-          await LocalStream.getDisplayMedia(constraints: constraints);
-      await _ionSfuClient?.publish(localStream);
+      await requestBackgroundPermission();
     }
+
+    var localStream =
+        await LocalStream.getDisplayMedia(constraints: constraints);
+    await _ionSfuClient?.publish(localStream);
   }
 
   void stopRemoteScreenPublisher() {
