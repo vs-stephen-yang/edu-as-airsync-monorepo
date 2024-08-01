@@ -58,6 +58,10 @@ class DeviceFeatureAdapter {
     'IFP62': {
       "maxHardwareDecodeSession": 1,
     },
+    'CDE30': {  // to avoid green line issue see 66146 and 63865
+      "overridePortraitCaptureSize": "736x1280",
+      "overrideLandscapeCaptureSize": "1280x720",
+    }
   };
 
 
