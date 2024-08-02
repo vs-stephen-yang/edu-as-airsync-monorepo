@@ -7,6 +7,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/v3_footer_bar.dart';
+import 'package:display_flutter/widgets/v3_header_bar.dart';
 import 'package:display_flutter/widgets/v3_main_info.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:flutter/material.dart';
@@ -93,6 +94,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                               color: const Color(0xFFEAEBF1),
                             ),
                             const V3FooterBar(),
+                            const V3HeaderBar(),
                             if (AppInstanceCreate().isInstalledInVBS100 |
                                 AppInstanceCreate().isInstalledInVBS200)
                               const Positioned(

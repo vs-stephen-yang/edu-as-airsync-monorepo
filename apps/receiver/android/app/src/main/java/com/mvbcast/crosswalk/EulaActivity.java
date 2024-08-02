@@ -7,6 +7,10 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,7 +39,8 @@ public class EulaActivity extends FlutterActivity {
         super.configureFlutterEngine(flutterEngine);
         BinaryMessenger binaryMessenger = flutterEngine.getDartExecutor().getBinaryMessenger();
 
-        MethodChannel mAndroidRetain = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/android_app_retain");
+        MethodChannel mAndroidRetain = new MethodChannel(binaryMessenger, "com.mvbcast" +
+                ".crosswalk/android_app_retain");
         mAndroidRetain.setMethodCallHandler((call, result) -> {
             if (call.method.equals("sendToBackground")) {
                 moveTaskToBack(true);
@@ -45,7 +50,8 @@ public class EulaActivity extends FlutterActivity {
         mVbsOTA = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/vbs_ota");
         SystemImageOTAHelper.getInstance().registerBroadcastReceiver(EulaActivity.this);
 
-        MethodChannel otaMethodChannel = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/app_update");
+        MethodChannel otaMethodChannel = new MethodChannel(binaryMessenger, "com.mvbcast" +
+                ".crosswalk/app_update");
         otaMethodChannel.setMethodCallHandler((call, result) -> {
             if (call.method.equals("getFlavor")) {
                 result.success(BuildConfig.FLAVOR_channel);
@@ -55,11 +61,13 @@ public class EulaActivity extends FlutterActivity {
         });
         mAlarmOTA = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/app_update_alarm");
 
-        MethodChannel bootMethodChannel = new MethodChannel(binaryMessenger, "com.mvbcast.crosswalk/auto_startup");
+        MethodChannel bootMethodChannel = new MethodChannel(binaryMessenger, "com.mvbcast" +
+                ".crosswalk/auto_startup");
         bootMethodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
             @SuppressLint("ApplySharedPref")
             @Override
-            public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+            public void onMethodCall(@NonNull MethodCall call,
+                                     @NonNull MethodChannel.Result result) {
                 if (call.method.equals("getAutoStartupValue")) {
                     boolean autoStartUp = getSharedPreferences("display", MODE_PRIVATE)
                             .getBoolean("autoStartup", true);
@@ -71,6 +79,50 @@ public class EulaActivity extends FlutterActivity {
                             .putBoolean("autoStartup", autoStartUp)
                             .commit();
                     result.success(null);
+                } else {
+                    result.notImplemented();
+                }
+            }
+        });
+
+        MethodChannel strengthMethodChannel = new MethodChannel(binaryMessenger, "com.mvbcast" +
+                ".crosswalk/wifi_signal_strength");
+        strengthMethodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
+            @SuppressWarnings("deprecation")
+            @Override
+            public void onMethodCall(@NonNull MethodCall call,
+                                     @NonNull MethodChannel.Result result) {
+                if (call.method.equals("getWifiSignalStrength")) {
+                    WifiManager wifiManager =
+                            (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    ConnectivityManager connectivityManager =
+                            (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    int signalStrength = 0;
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        Network network = connectivityManager.getActiveNetwork();
+                        NetworkCapabilities networkCapabilities =
+                                connectivityManager.getNetworkCapabilities(network);
+
+                        if (networkCapabilities != null && networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                            int rssi = networkCapabilities.getSignalStrength();
+                            signalStrength = WifiManager.calculateSignalLevel(rssi, 100);
+                        }
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        Network currentNetwork = connectivityManager.getActiveNetwork();
+                        NetworkCapabilities caps =
+                                connectivityManager.getNetworkCapabilities(currentNetwork);
+                        if (caps != null && caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                            int rssi = wifiManager.getConnectionInfo().getRssi();
+                            signalStrength = WifiManager.calculateSignalLevel(rssi, 100);
+                        } else {
+                            signalStrength = -1; // Not connected to WiFi
+                        }
+                    } else {
+                        int rssi = wifiManager.getConnectionInfo().getRssi();
+                        signalStrength = WifiManager.calculateSignalLevel(rssi, 100);
+                    }
+                    result.success(signalStrength);
                 } else {
                     result.notImplemented();
                 }
@@ -112,9 +164,11 @@ public class EulaActivity extends FlutterActivity {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         PendingIntent pendingIntent;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, AppAlarmOTA.class), PendingIntent.FLAG_IMMUTABLE);
+            pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(context,
+                    AppAlarmOTA.class), PendingIntent.FLAG_IMMUTABLE);
         } else {
-            pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, AppAlarmOTA.class), 0);
+            pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(context,
+                    AppAlarmOTA.class), 0);
         }
 
         // noinspection ConstantConditions
