@@ -264,6 +264,12 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       _touchEventManager.setScreenSize(_screenWidth, _screenHeight);
       _touchEventManager.handleTouchEvent(touchEvent, channelId);
     }
+
+    if (eventMessage.hasKeyEvent()) {
+      KeyEvent event = eventMessage.keyEvent;
+
+      _touchEventManager.handleKeyEvent(event, channelId);
+    }
   }
 
   void enableRemoteControlBySessionId(String sessionId, bool enable) {
