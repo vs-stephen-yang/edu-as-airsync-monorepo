@@ -176,6 +176,10 @@ class TouchEventManager {
     }
   }
 
+  void handleKeyEvent(KeyEvent event, int channelId) {
+    _inputInjection.sendKey(event.usbKeycode, event.pressed);
+  }
+
   void handleTouchEvent(TouchEvent touchEvent, int channelId) {
     final id = touchEvent.touchPoints[0].id;
     int action = _convertTouchEventType(touchEvent.eventType);
