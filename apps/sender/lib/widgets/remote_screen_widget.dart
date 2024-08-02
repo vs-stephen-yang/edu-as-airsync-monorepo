@@ -19,6 +19,30 @@ class _RemoteScreenToolStates extends State<RemoteScreenWidget> {
     super.initState();
   }
 
+  bool _isVideoAvailable(ChannelProvider channelProvider) {
+    return channelProvider.remoteScreenClient != null &&
+        channelProvider.remoteScreenClient?.remoteScreenRenderer.textureId !=
+            null;
+  }
+
+  Widget _buildVideoView(ChannelProvider channelProvider) {
+    return NotificationListener<SizeChangedLayoutNotification>(
+      onNotification: (notification) {
+        channelProvider.remoteScreenClient!.onVideoSizeChanged();
+        return true;
+      },
+      child: Listener(
+        onPointerDown: channelProvider.remoteScreenClient!.onTouchStart,
+        onPointerMove: channelProvider.remoteScreenClient!.onTouchMove,
+        onPointerUp: channelProvider.remoteScreenClient!.onTouchEnd,
+        child: RTCVideoView(
+          channelProvider.remoteScreenClient!.remoteScreenRenderer,
+          key: channelProvider.remoteScreenClient!.rtcWidgetKey,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
@@ -30,30 +54,8 @@ class _RemoteScreenToolStates extends State<RemoteScreenWidget> {
               Center(
                 child: Consumer<ChannelProvider>(
                   builder: (context, channelProvider, _) {
-                    return channelProvider.remoteScreenClient != null &&
-                            channelProvider.remoteScreenClient
-                                    ?.remoteScreenRenderer.textureId !=
-                                null
-                        ? NotificationListener<SizeChangedLayoutNotification>(
-                            onNotification: (notification) {
-                              channelProvider.remoteScreenClient!
-                                  .onVideoSizeChanged();
-                              return true;
-                            },
-                            child: Listener(
-                              onPointerDown: channelProvider
-                                  .remoteScreenClient!.onTouchStart,
-                              onPointerMove: channelProvider
-                                  .remoteScreenClient!.onTouchMove,
-                              onPointerUp: channelProvider
-                                  .remoteScreenClient!.onTouchEnd,
-                              child: RTCVideoView(
-                                  channelProvider
-                                      .remoteScreenClient!.remoteScreenRenderer,
-                                  key: channelProvider
-                                      .remoteScreenClient!.rtcWidgetKey),
-                            ),
-                          )
+                    return _isVideoAvailable(channelProvider)
+                        ? _buildVideoView(channelProvider)
                         : SizedBox(
                             child: Text(S.of(context).remote_screen_wait,
                                 style: const TextStyle(
