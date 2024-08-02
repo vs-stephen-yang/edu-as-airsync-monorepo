@@ -1,0 +1,302 @@
+import 'dart:io';
+import 'dart:math' as math;
+
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:provider/provider.dart';
+
+class V3Instruction extends StatefulWidget {
+  const V3Instruction({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _V3InstructionState();
+}
+
+class _V3InstructionState extends State<V3Instruction> {
+  ConnectivityResult _lastConnectivityResult = ConnectivityResult.none;
+
+  @override
+  void initState() {
+    super.initState();
+    _initConnectivity();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer2<ChannelProvider, InstanceInfoProvider>(
+        builder: (_, channelProvider, instanceInfoProvider, __) {
+      return SizedBox(
+        width: 765,
+        child: Stack(
+          children: [
+            Positioned(
+              left: 50,
+              top: 50,
+              bottom: 118,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AutoSizeText(
+                    S.of(context).v3_instruction_share_screen,
+                    style: const TextStyle(
+                      color: Color(0xFF838CA6),
+                      fontSize: 21,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      const Image(
+                        image: Svg('assets/images/ic_item1.svg'),
+                        height: 27,
+                        width: 27,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: FutureBuilder(
+                          future: checkInternetConnection(),
+                          builder: (context, snapshot) {
+                            bool isInternet = false;
+                            if (snapshot.hasData) {
+                              isInternet = snapshot.data as bool;
+                            }
+                            return AutoSizeText.rich(
+                              _buildTextSpan(
+                                  fullText: isInternet
+                                      ? S.of(context).v3_instruction1a
+                                      : S.of(context).v3_instruction1b,
+                                  formatTexts: ['airsync.net'],
+                                  formatStyle: const TextStyle(
+                                      fontWeight: FontWeight.w700)),
+                              style: const TextStyle(
+                                color: Color(0xFF838CA6),
+                                fontSize: 21,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Image(
+                        image: Svg('assets/images/ic_item2.svg'),
+                        height: 27,
+                        width: 27,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: AutoSizeText(
+                          S.of(context).v3_instruction2,
+                          style: const TextStyle(
+                            color: Color(0xFF838CA6),
+                            fontSize: 21,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 35),
+                    child: AutoSizeText(
+                      _getDisplayCodeVisualIdentity(
+                          instanceInfoProvider.displayCode),
+                      style: const TextStyle(
+                        color: Color(0xFF636D8A),
+                        fontSize: 45,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      const Image(
+                        image: Svg('assets/images/ic_item3.svg'),
+                        height: 27,
+                        width: 27,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: AutoSizeText(
+                          S.of(context).v3_instruction3,
+                          style: const TextStyle(
+                            color: Color(0xFF838CA6),
+                            fontSize: 21,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: ValueListenableBuilder<int>(
+                          valueListenable: channelProvider.countDownProgress,
+                          builder: (_, progress, __) {
+                            return Transform(
+                              alignment: Alignment.center,
+                              transform: Matrix4.rotationY(math.pi),
+                              child: SizedBox(
+                                width: 26,
+                                height: 26,
+                                child: CircularProgressIndicator(
+                                  value:
+                                      progress / channelProvider.maxCountDown,
+                                  strokeWidth: 4,
+                                  backgroundColor: const Color(0xFFE9EAF0),
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                          Color(0xFF636D8A)),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 35),
+                    child: ValueListenableBuilder<int>(
+                      valueListenable: channelProvider.otp,
+                      builder: (_, otp, __) {
+                        return AutoSizeText(
+                          otp.toString(),
+                          style: const TextStyle(
+                            color: Color(0xFF636D8A),
+                            fontSize: 45,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              left: 50,
+              bottom: 30,
+              child: Row(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(left: 35),
+                    child: Image(
+                      image: Svg('assets/images/ic_arrow_to_screen.svg'),
+                      height: 21,
+                      width: 21,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5),
+                    child: AutoSizeText.rich(
+                      _buildTextSpan(
+                          fullText: S.of(context).v3_instruction_support,
+                          formatTexts: ['AirPlay, Google Cast', 'Miracast'],
+                          formatStyle:
+                              const TextStyle(fontWeight: FontWeight.w700)),
+                      style: const TextStyle(
+                        color: Color(0xFF838CA6),
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  String _getDisplayCodeVisualIdentity(String displayCode) {
+    String result = displayCode;
+    if (displayCode.length > 5) {
+      // https://stackoverflow.com/a/56845471/13160681
+      result = displayCode
+          .replaceAllMapped(RegExp(r".{4}"), (match) => "${match.group(0)} ")
+          .trimRight();
+    }
+    return result;
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> _initConnectivity() async {
+    Connectivity().onConnectivityChanged.listen((result) async {
+      setState(() {
+        _lastConnectivityResult = result;
+      });
+    });
+  }
+
+  Future<bool> checkInternetConnection() async {
+    if (_lastConnectivityResult == ConnectivityResult.none) {
+      return false;
+    }
+
+    // Try pinging a public internet address
+    try {
+      final result = await InternetAddress.lookup('www.google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true; // Connect to Internet
+      }
+    } on SocketException catch (_) {
+      return false; // Only connect to Intranet
+    }
+
+    return false;
+  }
+
+  TextSpan _buildTextSpan(
+      {required String fullText,
+      required List<String> formatTexts,
+      required TextStyle formatStyle}) {
+    List<TextSpan> spans = [];
+    int start = 0;
+
+    // Process text based on each substring that needs to be formatted
+    while (start < fullText.length) {
+      int closestBoldStart = -1;
+      String? closestBoldText;
+
+      // Find the earliest occurrence of format text
+      for (String boldText in formatTexts) {
+        int index = fullText.indexOf(boldText, start);
+        if (index != -1 &&
+            (closestBoldStart == -1 || index < closestBoldStart)) {
+          closestBoldStart = index;
+          closestBoldText = boldText;
+        }
+      }
+
+      // If there is no more format text, add the remaining text
+      if (closestBoldStart == -1) {
+        spans.add(TextSpan(
+          text: fullText.substring(start),
+        ));
+        break;
+      }
+
+      // Add the normal part before the format text
+      if (closestBoldStart > start) {
+        spans.add(TextSpan(
+          text: fullText.substring(start, closestBoldStart),
+        ));
+      }
+
+      // Add format text
+      spans.add(TextSpan(
+        text: closestBoldText,
+        style: formatStyle,
+      ));
+
+      // Update the start position
+      start = closestBoldStart + closestBoldText!.length;
+    }
+    return TextSpan(children: spans);
+  }
+}

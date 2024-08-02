@@ -14,6 +14,7 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
+import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/client_device_info.dart';
@@ -169,8 +170,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               // Set App background color
               scaffoldBackgroundColor: Colors.black,
               // Set Text default body color
-              textTheme:
-                  Theme.of(context).textTheme.apply(bodyColor: Colors.white),
+              textTheme: Theme.of(context).textTheme.apply(
+                  bodyColor: DeviceFeatureAdapter.showUIRevamp
+                      ? const Color(0xFF2A2A2A)
+                      : Colors.white),
               // Set ElevatedButton default foreground color
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(foregroundColor: Colors.white),
@@ -184,8 +187,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 style: IconButton.styleFrom(foregroundColor: Colors.white),
               ),
               // Set Icon default color
-              iconTheme: const IconThemeData(
-                color: Colors.white,
+              iconTheme: IconThemeData(
+                color: DeviceFeatureAdapter.showUIRevamp
+                    ? const Color(0xFF2A2A2A)
+                    : Colors.white,
               ),
               listTileTheme: const ListTileThemeData(
                 textColor: Colors.white,
@@ -195,11 +200,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             initialRoute: AppPreferences().showEULA &&
                     !AppInstanceCreate().isInstalledInVBS100
                 ? '/eula'
-                : '/home',
+                : DeviceFeatureAdapter.showUIRevamp
+                    ? '/v3Home'
+                    : '/home',
             navigatorKey: NavigationService.navigationKey,
             routes: {
               // for "navService.popUntil('/home')"
               '/home': (context) => const AppOTADialog(child: Home()),
+              // for "navService.popUntil('/v3Home')"
+              '/v3Home': (context) => const AppOTADialog(child: V3Home()),
               '/eula': (context) => const AppOTADialog(child: Eula()),
             },
           );

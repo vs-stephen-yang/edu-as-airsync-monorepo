@@ -152,6 +152,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_message": MessageLookupByLibrary.simpleMessage(
             "A new version of software is available"),
         "update_title": MessageLookupByLibrary.simpleMessage("AirSync Update"),
+        "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
+            "Visit airsync.net or open the AisSync app"),
+        "v3_instruction1b":
+            MessageLookupByLibrary.simpleMessage("Open the AisSync app"),
+        "v3_instruction2":
+            MessageLookupByLibrary.simpleMessage("Enter display code"),
+        "v3_instruction3":
+            MessageLookupByLibrary.simpleMessage("Enter one-time password"),
+        "v3_instruction_share_screen":
+            MessageLookupByLibrary.simpleMessage("Share your screen"),
+        "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
+            "Supports sharing via AirPlay, Google Cast or Miracast"),
         "vbs_ota_progress_msg":
             MessageLookupByLibrary.simpleMessage("Downloading system updates")
       };
