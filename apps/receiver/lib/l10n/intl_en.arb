@@ -83,5 +83,7 @@
   "v3_shortcuts_mirroring": "Mirroring",
   "v3_shortcuts_airplay": "AirPlay",
   "v3_shortcuts_google_cast": "Google Cast",
-  "v3_shortcuts_miracast": "Miracast"
+  "v3_shortcuts_miracast": "Miracast",
+  "v3_waiting_up_next": "Up Next",
+  "v3_waiting_desc": "Waiting for this participant to share their screen"
 }

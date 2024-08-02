@@ -4,8 +4,9 @@ import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/screens/v3_quick_connect_menu.dart';
 import 'package:display_flutter/screens/v3_shortcuts_menu.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
+import 'package:display_flutter/widgets/v3_header_bar.dart';
 import 'package:display_flutter/widgets/v3_streaming_function.dart';
-import 'package:display_flutter/widgets/webrtc_view_new.dart';
+import 'package:display_flutter/widgets/v3_webrtc_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
@@ -33,66 +34,79 @@ class _V3StreamingViewState extends State<V3StreamingView> {
           valueListenable: HybridConnectionList.hybridSplitScreenCount,
           builder: (context, int splitScreenCount, child) {
             return Stack(
-              children: List.generate(splitScreenCount, (index) {
-                double? left, top, right, bottom;
-                if (index == 1) {
-                  right = 0;
-                  top = 0;
-                } else if (index == 2) {
-                  left = 0;
-                  bottom = 0;
-                } else if (index == 3) {
-                  right = 0;
-                  bottom = 0;
-                } else {
-                  // index 0 and default.
-                  left = 0;
-                  top = 0;
-                }
-                return ValueListenableBuilder(
-                  valueListenable: HybridConnectionList().enlargedScreenIndex,
-                  builder: (context, enlargedIndex, child) {
-                    return Positioned(
-                      left: left,
-                      top: top,
-                      right: right,
-                      bottom: bottom,
-                      child: SizedBox(
-                        width: _getWidthHeight(
-                            index: index,
-                            splitScreenCount: splitScreenCount,
-                            enlargedScreenIndex: enlargedIndex,
-                            isWidth: true),
-                        height: _getWidthHeight(
-                            index: index,
-                            splitScreenCount: splitScreenCount,
-                            enlargedScreenIndex: enlargedIndex,
-                            isWidth: false),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: <Widget>[
-                            if (HybridConnectionList().isRTCConnector(index))
-                              WebRTCView(
-                                  rtcConnector: HybridConnectionList()
-                                      .getConnection<RTCConnector>(index),
-                                  index: index),
-                            if (HybridConnectionList().isMirrorRequest(index))
-                              MirrorView(
-                                  mirrorRequest: HybridConnectionList()
-                                      .getConnection<MirrorRequest>(index)),
-                            if (HybridConnectionList()
-                                .isPresenting(index: index))
-                              Positioned(
-                                bottom: 8,
-                                child: V3StreamingFunction(index: index),
-                              ),
-                          ],
-                        ),
-                      ),
+              children: [
+                Stack(
+                  children: List.generate(splitScreenCount, (index) {
+                    double? left, top, right, bottom;
+                    if (index == 1) {
+                      right = 0;
+                      top = 0;
+                    } else if (index == 2) {
+                      left = 0;
+                      bottom = 0;
+                    } else if (index == 3) {
+                      right = 0;
+                      bottom = 0;
+                    } else {
+                      // index 0 and default.
+                      left = 0;
+                      top = 0;
+                    }
+                    return ValueListenableBuilder(
+                      valueListenable:
+                          HybridConnectionList().enlargedScreenIndex,
+                      builder: (context, enlargedIndex, child) {
+                        return Positioned(
+                          left: left,
+                          top: top,
+                          right: right,
+                          bottom: bottom,
+                          child: SizedBox(
+                            width: _getWidthHeight(
+                                index: index,
+                                splitScreenCount: splitScreenCount,
+                                enlargedScreenIndex: enlargedIndex,
+                                isWidth: true),
+                            height: _getWidthHeight(
+                                index: index,
+                                splitScreenCount: splitScreenCount,
+                                enlargedScreenIndex: enlargedIndex,
+                                isWidth: false),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: <Widget>[
+                                if (HybridConnectionList()
+                                    .isRTCConnector(index))
+                                  V3WebrtcView(
+                                      rtcConnector: HybridConnectionList()
+                                          .getConnection<RTCConnector>(index),
+                                      index: index),
+                                if (HybridConnectionList()
+                                    .isMirrorRequest(index))
+                                  MirrorView(
+                                      mirrorRequest: HybridConnectionList()
+                                          .getConnection<MirrorRequest>(index)),
+                                if (HybridConnectionList()
+                                    .isPresenting(index: index))
+                                  Positioned(
+                                    bottom: 8,
+                                    child: V3StreamingFunction(index: index),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     );
-                  },
-                );
-              }),
+                  }),
+                ),
+                if (splitScreenCount == 1 &&
+                    HybridConnectionList().isRTCConnector(0) &&
+                    (HybridConnectionList().getConnection(0) as RTCConnector)
+                            .presentationState ==
+                        PresentationState.waitForStream)
+                  const V3HeaderBar(isWaitForStream: true),
+              ],
             );
           },
         ),
