@@ -1390,6 +1390,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Passcode`
+  String get v3_mirror_request_passcode {
+    return Intl.message(
+      'Passcode',
+      name: 'v3_mirror_request_passcode',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

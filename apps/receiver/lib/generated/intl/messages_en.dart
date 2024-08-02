@@ -184,6 +184,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Share your screen"),
         "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
             "Supports sharing via AirPlay, Google Cast or Miracast"),
+        "v3_mirror_request_passcode":
+            MessageLookupByLibrary.simpleMessage("Passcode"),
         "v3_moderator_mode":
             MessageLookupByLibrary.simpleMessage("Moderator mode"),
         "v3_new_sharing_join_session":

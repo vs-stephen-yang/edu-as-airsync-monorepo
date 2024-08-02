@@ -132,5 +132,6 @@
   "v3_settings_display_group_only_casting": "Only when casting",
   "v3_settings_display_group_all_the_time": "All the time",
   "v3_settings_display_group": "Display Group",
-  "v3_settings_display_group_cast": "Cast"
+  "v3_settings_display_group_cast": "Cast",
+  "v3_mirror_request_passcode": "Passcode"
 }

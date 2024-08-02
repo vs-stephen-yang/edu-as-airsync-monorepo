@@ -123,8 +123,10 @@ class MirrorStateProvider extends ChangeNotifier
   void onMirrorStart(String mirrorId, int textureId, String deviceName,
       MirrorType mirrorType) {
     log.info('onMirrorStart');
-    _pinTimer?.cancel();
-    _pinCode = '';
+    if (mirrorType == MirrorType.airplay) {
+      _pinTimer?.cancel();
+      _pinCode = '';
+    }
 
     HybridConnectionList().addConnection(MirrorRequest(
         _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType));
