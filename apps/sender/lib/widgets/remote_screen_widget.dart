@@ -14,6 +14,9 @@ class RemoteScreenWidget extends StatefulWidget {
 }
 
 class _RemoteScreenToolStates extends State<RemoteScreenWidget> {
+  // focus node to capture keyboard events
+  final FocusNode _focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -31,13 +34,20 @@ class _RemoteScreenToolStates extends State<RemoteScreenWidget> {
         channelProvider.remoteScreenClient!.onVideoSizeChanged();
         return true;
       },
-      child: Listener(
-        onPointerDown: channelProvider.remoteScreenClient!.onTouchStart,
-        onPointerMove: channelProvider.remoteScreenClient!.onTouchMove,
-        onPointerUp: channelProvider.remoteScreenClient!.onTouchEnd,
-        child: RTCVideoView(
-          channelProvider.remoteScreenClient!.remoteScreenRenderer,
-          key: channelProvider.remoteScreenClient!.rtcWidgetKey,
+      child: KeyboardListener(
+        focusNode: _focusNode,
+        autofocus: true,
+        onKeyEvent: (KeyEvent event) {
+          channelProvider.remoteScreenClient!.onKeyDown(event);
+        },
+        child: Listener(
+          onPointerDown: channelProvider.remoteScreenClient!.onTouchStart,
+          onPointerMove: channelProvider.remoteScreenClient!.onTouchMove,
+          onPointerUp: channelProvider.remoteScreenClient!.onTouchEnd,
+          child: RTCVideoView(
+            channelProvider.remoteScreenClient!.remoteScreenRenderer,
+            key: channelProvider.remoteScreenClient!.rtcWidgetKey,
+          ),
         ),
       ),
     );
