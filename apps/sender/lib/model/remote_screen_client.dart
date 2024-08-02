@@ -1,5 +1,6 @@
 import 'package:display_cast_flutter/model/remote_screen_channel_signal.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:display_cast_flutter/utilities/remote_screen_util.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
@@ -177,6 +178,15 @@ class RemoteScreenClient {
           'texture widget size: (${_textureSize.width.toStringAsFixed(2)}, ${_textureSize.height.toStringAsFixed(2)}), offset: (${_textureOffset.dx.toStringAsFixed(2)}, ${_textureOffset.dy.toStringAsFixed(2)})');
       _textureSizeChanged = false;
     }
+  }
+
+  void onKeyDown(KeyEvent event) {
+    final eventMessage = EventMessage();
+    eventMessage.keyEvent = toKeyEvent(event);
+
+    _dataChannel?.send(
+      RTCDataChannelMessage.fromBinary(eventMessage.writeToBuffer()),
+    );
   }
 
   void onTouchStart(PointerEvent event) {
