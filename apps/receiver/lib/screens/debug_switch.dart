@@ -19,6 +19,7 @@ class DebugSwitch extends StatefulWidget {
 }
 
 class _DebugSwitchState extends State<DebugSwitch> {
+  bool _showUIRevamp = false;
   bool _showDebugOverlay = false;
   bool _useSoftwareDecode = false;
   bool _useQuickDecodeParams = false;
@@ -30,6 +31,16 @@ class _DebugSwitchState extends State<DebugSwitch> {
   void _notifyRestart() {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Restart the program to apply the changes.")));
+  }
+
+  void _showUIRevampChanged(bool value) async {
+    DeviceFeatureAdapter.showUIRevamp = value;
+    await DeviceFeatureAdapter.save();
+
+    setState(() {
+      _showUIRevamp = value;
+      _notifyRestart();
+    });
   }
 
   void _showDebugOverlayChanged(bool value) async {
@@ -105,6 +116,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   }
 
   void _initialize() {
+    _showUIRevamp = DeviceFeatureAdapter.showUIRevamp;
     _showDebugOverlay = DeviceFeatureAdapter.showDebugOverlay;
     _useSoftwareDecode = DeviceFeatureAdapter.useSoftwareDecode;
     _enableWebRtcH264BaselineProfile =
@@ -133,6 +145,10 @@ class _DebugSwitchState extends State<DebugSwitch> {
                     DebugSwitch.log.write('$value \n');
                     return Column(
                       children: [
+                        SwitchListTile(
+                            title: const Text('Show UI Revamp'),
+                            value: _showUIRevamp,
+                            onChanged: _showUIRevampChanged),
                         SwitchListTile(
                           title: const Text('Show Debug Overlay'),
                           value: _showDebugOverlay,
