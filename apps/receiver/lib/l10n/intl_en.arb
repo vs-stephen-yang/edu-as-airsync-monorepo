@@ -67,5 +67,11 @@
   "main_feature_reconnect_fail_toast": "Network (Control) reconnect fail",
   "main_feature_reconnect_success_toast": "Network (Control) reconnect success",
   "main_content_lan_only": "Only LAN connection",
-  "main_feature_no_network_warning": "Control connection is disconnected. Please reconnect"
+  "main_feature_no_network_warning": "Control connection is disconnected. Please reconnect",
+  "v3_instruction_share_screen": "Share your screen",
+  "v3_instruction1a": "Visit airsync.net or open the AisSync app",
+  "v3_instruction1b": "Open the AisSync app",
+  "v3_instruction2": "Enter display code",
+  "v3_instruction3": "Enter one-time password",
+  "v3_instruction_support": "Supports sharing via AirPlay, Google Cast or Miracast"
 }

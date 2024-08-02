@@ -740,6 +740,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Share your screen`
+  String get v3_instruction_share_screen {
+    return Intl.message(
+      'Share your screen',
+      name: 'v3_instruction_share_screen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Visit airsync.net or open the AisSync app`
+  String get v3_instruction1a {
+    return Intl.message(
+      'Visit airsync.net or open the AisSync app',
+      name: 'v3_instruction1a',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open the AisSync app`
+  String get v3_instruction1b {
+    return Intl.message(
+      'Open the AisSync app',
+      name: 'v3_instruction1b',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter display code`
+  String get v3_instruction2 {
+    return Intl.message(
+      'Enter display code',
+      name: 'v3_instruction2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter one-time password`
+  String get v3_instruction3 {
+    return Intl.message(
+      'Enter one-time password',
+      name: 'v3_instruction3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supports sharing via AirPlay, Google Cast or Miracast`
+  String get v3_instruction_support {
+    return Intl.message(
+      'Supports sharing via AirPlay, Google Cast or Miracast',
+      name: 'v3_instruction_support',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
