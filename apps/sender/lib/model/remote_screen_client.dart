@@ -7,7 +7,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 // import 'package:ion_sdk_flutter/flutter_ion.dart' as ion;
 import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:uuid/uuid.dart';
-import 'package:display_cast_flutter/features/protoc/event.pb.dart';
+import 'package:display_cast_flutter/features/protoc/event.pb.dart' as pb;
 import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 
 class RemoteScreenClient {
@@ -180,23 +180,26 @@ class RemoteScreenClient {
   }
 
   void onTouchStart(PointerEvent event) {
-    onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_START, event);
+    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_START, event);
   }
 
   void onTouchMove(PointerEvent event) {
-    onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_MOVE, event);
+    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_MOVE, event);
   }
 
   void onTouchEnd(PointerEvent event) {
-    onTouchEvent(TouchEvent_TouchEventType.TOUCH_POINT_END, event);
+    onTouchEvent(pb.TouchEvent_TouchEventType.TOUCH_POINT_END, event);
   }
 
-  void onTouchEvent(TouchEvent_TouchEventType eventType, PointerEvent event) {
+  void onTouchEvent(
+    pb.TouchEvent_TouchEventType eventType,
+    PointerEvent event,
+  ) {
     if (_textureSizeChanged) {
       updateTextureInfo();
     }
 
-    final curTouchEventPoint = TouchEventPoint();
+    final curTouchEventPoint = pb.TouchEventPoint();
     curTouchEventPoint.x =
         (event.position.dx - _textureOffset.dx) / _textureSize.width;
     /* make curTouchEventPoint.x between 0.0 ~ 1.0 */
@@ -208,7 +211,7 @@ class RemoteScreenClient {
 
     curTouchEventPoint.id = event.pointer;
 
-    final curTouchEvent = TouchEvent();
+    final curTouchEvent = pb.TouchEvent();
     curTouchEvent.eventType = eventType;
     curTouchEvent.touchPoints.add(curTouchEventPoint);
 
