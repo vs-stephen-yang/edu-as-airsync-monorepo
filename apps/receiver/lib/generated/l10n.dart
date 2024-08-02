@@ -900,6 +900,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Up Next`
+  String get v3_waiting_up_next {
+    return Intl.message(
+      'Up Next',
+      name: 'v3_waiting_up_next',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting for this participant to share their screen`
+  String get v3_waiting_desc {
+    return Intl.message(
+      'Waiting for this participant to share their screen',
+      name: 'v3_waiting_desc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

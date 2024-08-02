@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class V3HeaderBar extends StatefulWidget {
-  const V3HeaderBar({super.key});
+  const V3HeaderBar({super.key, this.isWaitForStream = false});
+
+  final bool isWaitForStream;
 
   @override
   State<StatefulWidget> createState() => _V3HeaderBarState();
@@ -40,15 +42,16 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
                 ),
               ),
               const Padding(padding: EdgeInsets.only(left: 7)),
-              const Image(
-                image: Svg('assets/images/ic_logo_airsync_text.svg'),
+              Image(
+                image: const Svg('assets/images/ic_logo_airsync_text.svg'),
                 height: 31,
                 width: 140,
+                color: widget.isWaitForStream ? Colors.white : Colors.black,
               ),
             ],
           ),
           const Spacer(),
-          const V3Status(),
+          if (!widget.isWaitForStream) const V3Status(),
         ],
       ),
     );
