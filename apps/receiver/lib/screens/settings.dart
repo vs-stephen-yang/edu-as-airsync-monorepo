@@ -4,8 +4,10 @@ import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
-import 'package:display_flutter/screens/language_selection.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/screens/language_selection.dart';
 import 'package:display_flutter/screens/sender_menu_view.dart';
 import 'package:display_flutter/screens/whats_new.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
@@ -14,8 +16,6 @@ import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/providers/mirror_state_provider.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -207,17 +207,17 @@ class _SettingsState extends State<Settings> {
                       builder: (_, mirrorStateProvider, __) {
                         return FocusIconButton(
                           childNotFocus: Image(
-                            image: Svg(mirrorStateProvider.isAirPlayCode
+                            image: Svg(mirrorStateProvider.airPlayCodeEnable
                                 ? 'assets/images/ic_activate_on.svg'
                                 : 'assets/images/ic_activate_off.svg'),
                           ),
                           splashRadius: 20,
                           focusColor: Colors.grey,
                           onClick: () {
-                            if (mirrorStateProvider.isAirPlayCode) {
-                              mirrorStateProvider.isAirPlayCode = false;
+                            if (mirrorStateProvider.airPlayCodeEnable) {
+                              mirrorStateProvider.setAirPlayCodeEnable(false);
                             } else {
-                              mirrorStateProvider.isAirPlayCode = true;
+                              mirrorStateProvider.setAirPlayCodeEnable(true);
                             }
                           },
                         );

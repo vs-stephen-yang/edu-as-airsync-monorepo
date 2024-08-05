@@ -74,12 +74,12 @@ class MirrorStateProvider extends ChangeNotifier
     notifyListeners();
   }
 
-  bool _isAirPlayCode = false;
+  bool _airplayCodeEnabled = false;
 
-  bool get isAirPlayCode => _isAirPlayCode;
+  bool get airPlayCodeEnable => _airplayCodeEnabled;
 
-  set isAirPlayCode(bool value) {
-    _isAirPlayCode = value;
+  Future<void> setAirPlayCodeEnable(bool value) async {
+    await _set(airplayCodeEnable: _airplayCodeEnabled = value);
     if (_airplayEnabled) {
       stopAirPlay().whenComplete(() => startAirPlay());
     }
@@ -248,8 +248,9 @@ class MirrorStateProvider extends ChangeNotifier
     log.info('startAirPlay');
     await _flutterMirrorPlugin?.startAirplay(AirplayConfig(
       name: _deviceName,
-      security:
-          _isAirPlayCode ? AirplaySecurity.onscreenCode : AirplaySecurity.none,
+      security: _airplayCodeEnabled
+          ? AirplaySecurity.onscreenCode
+          : AirplaySecurity.none,
     ));
     if (updatePreference) {
       await _set(airplayEnable: true);
@@ -381,6 +382,7 @@ class MirrorStateProvider extends ChangeNotifier
     bool? airplayEnable,
     bool? googleCastEnable,
     bool? miracastEnable,
+    bool? airplayCodeEnable,
   }) async {
     if (airplayEnable != null) {
       _airplayEnabled = airplayEnable;
@@ -391,6 +393,9 @@ class MirrorStateProvider extends ChangeNotifier
     if (miracastEnable != null) {
       _miracastEnabled = miracastEnable;
     }
+    if (airplayCodeEnable != null) {
+      _airplayCodeEnabled = airplayCodeEnable;
+    }
     await _save();
   }
 
@@ -399,6 +404,7 @@ class MirrorStateProvider extends ChangeNotifier
     prefs.setBool('app_AirPlayEnable', _airplayEnabled);
     prefs.setBool('app_GoogleCastEnable', _googleCastEnabled);
     prefs.setBool('app_MiracastEnable', _miracastEnabled);
+    prefs.setBool('app_AirPlayCodeEnable', _airplayCodeEnabled);
   }
 
   _load() async {
@@ -406,6 +412,7 @@ class MirrorStateProvider extends ChangeNotifier
     _airplayEnabled = prefs.getBool('app_AirPlayEnable') ?? true;
     _googleCastEnabled = prefs.getBool('app_GoogleCastEnable') ?? true;
     _miracastEnabled = prefs.getBool('app_MiracastEnable') ?? true;
+    _airplayCodeEnabled = prefs.getBool('app_AirPlayCodeEnable') ?? false;
     log.info('load settings.');
   }
 // endregion
