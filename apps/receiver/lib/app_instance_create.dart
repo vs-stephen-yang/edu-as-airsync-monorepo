@@ -49,7 +49,6 @@ class AppInstanceCreate {
 
   bool get isInstalledInVBS200 => _modelName.startsWith('VBS200');
 
-
   // Display instance id, for Display backend used (Control socket, entity enroll,...)
   // "VBS100" is serial number, others is App instance id
   String get displayInstanceID =>

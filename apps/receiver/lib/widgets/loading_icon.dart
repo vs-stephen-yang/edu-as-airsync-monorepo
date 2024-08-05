@@ -28,7 +28,7 @@ class LoadingIconState extends State<LoadingIcon>
 
   @override
   void dispose() {
-    _animationController.dispose();// MUST before super.dispose!!
+    _animationController.dispose(); // MUST before super.dispose!!
     super.dispose();
   }
 

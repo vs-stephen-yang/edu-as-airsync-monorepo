@@ -2,7 +2,6 @@ import 'package:display_flutter/model/rtc_stats.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-
 int? _diff(int? a, int? b) {
   if (a == null || b == null) {
     return null;

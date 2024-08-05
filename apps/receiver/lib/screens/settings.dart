@@ -64,7 +64,11 @@ class _SettingsState extends State<Settings> {
                       Text(S.of(context).main_settings_device_name),
                       Text(
                         Provider.of<InstanceInfoProvider>(context).deviceName,
-                        style: const TextStyle(fontFamily: 'Inconsolata', fontSize: 15, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontFamily: 'Inconsolata',
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -233,7 +237,7 @@ class _SettingsState extends State<Settings> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(), // 禁止ListView本身滚动
-                itemCount: _listSettings.length , // 考虑到分隔符，所以是项目数的两倍减1
+                itemCount: _listSettings.length, // 考虑到分隔符，所以是项目数的两倍减1
                 itemBuilder: (BuildContext context, int index) {
                   return ListTile(
                     onTap: _listSettings[index].callback,
@@ -243,13 +247,16 @@ class _SettingsState extends State<Settings> {
                       style: const TextStyle(fontSize: 18),
                     ),
                     contentPadding: EdgeInsets.zero,
-                    visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                    visualDensity:
+                        const VisualDensity(horizontal: 0, vertical: -4),
                   );
                 },
               ),
             ],
-          ),),
-      ),);
+          ),
+        ),
+      ),
+    );
   }
 
   _addSettingsToList() {

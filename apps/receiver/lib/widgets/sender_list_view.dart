@@ -1,4 +1,3 @@
-
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 
 class SenderListView extends StatefulWidget {
   const SenderListView(this.editMode, {super.key});
+
   final bool editMode;
 
   @override
@@ -14,7 +14,6 @@ class SenderListView extends StatefulWidget {
 }
 
 class _SenderListViewState extends State<SenderListView> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +21,8 @@ class _SenderListViewState extends State<SenderListView> {
       decoration: const BoxDecoration(
         color: Colors.transparent,
       ),
-      child: !ChannelProvider.isSenderMode || ChannelProvider.remoteScreenConnectors.isEmpty
+      child: !ChannelProvider.isSenderMode ||
+              ChannelProvider.remoteScreenConnectors.isEmpty
           ? Container(
               alignment: Alignment.center,
               child: Text(

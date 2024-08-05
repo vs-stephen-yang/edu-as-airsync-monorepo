@@ -165,8 +165,10 @@ class MainInfo extends StatelessWidget {
                           child: Container(
                             padding: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
-                              color: Colors.grey, // Change the color of the Toast
-                              borderRadius: BorderRadius.circular(30), // Change the border radius of the Toast
+                              // Change the color of the Toast
+                              color: Colors.grey,
+                              // Change the border radius of the Toast
+                              borderRadius: BorderRadius.circular(30),
                             ),
                             child: AutoSizeText(
                               S.of(context).main_content_lan_only,

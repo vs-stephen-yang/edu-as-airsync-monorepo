@@ -143,7 +143,8 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<void> _handleConnectivity(ConnectivityResult result) async {
     connectNet = true;
-    log.info('Last Network Connectivity is: $_lastConnectivityResult, being changed to result: $result');
+    log.info(
+        'Last Network Connectivity is: $_lastConnectivityResult, being changed to result: $result');
 
     final value = await _checkNetWorkInfo();
     host = _instanceInfo.ipAddress = value;
@@ -193,7 +194,7 @@ class ChannelProvider extends ChangeNotifier {
 
     _tunnelServer?.onTunnelConnected = () {
       log.info('Tunnel connected');
-       AppAnalytics().trackEventTunnelConnected();
+      AppAnalytics().trackEventTunnelConnected();
     };
     _tunnelServer?.onTunnelConnecting = () {
       log.info('Tunnel is connecting');
@@ -328,7 +329,10 @@ class ChannelProvider extends ChangeNotifier {
           }
           final iceServers = await _getIceServers(mode);
           rtcConnector.onStartPresent(
-              message as StartPresentMessage, _isModeratorMode, iceServers,);
+            message as StartPresentMessage,
+            _isModeratorMode,
+            iceServers,
+          );
           break;
         case ChannelMessageType.presentAccepted:
           rtcConnector.onPresentAccepted();
@@ -519,7 +523,8 @@ class ChannelProvider extends ChangeNotifier {
               'version': appConfig.appVersion,
               'platform': "android",
             }),
-          ).timeout(const Duration(seconds: 3));
+          )
+          .timeout(const Duration(seconds: 3));
       log.info('Status of Instance Register API: ${response.statusCode}');
 
       if (response.statusCode >= HttpStatus.ok &&

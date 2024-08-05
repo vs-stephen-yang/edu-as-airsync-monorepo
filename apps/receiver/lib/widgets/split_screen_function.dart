@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SplitScreenFunction extends StatefulWidget {
-  const SplitScreenFunction({super.key, required this.index, this.updateSize, this.onClose});
+  const SplitScreenFunction(
+      {super.key, required this.index, this.updateSize, this.onClose});
 
   static ValueNotifier<List<bool>> isMenuOnList =
       ValueNotifier(List.filled(4, false, growable: false));

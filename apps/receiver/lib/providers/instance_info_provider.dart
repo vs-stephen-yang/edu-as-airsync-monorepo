@@ -1,11 +1,14 @@
 import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 
 class InstanceInfoProvider extends ChangeNotifier {
   // singleton
   static final InstanceInfoProvider _instance =
       InstanceInfoProvider._internal();
+
   InstanceInfoProvider._internal();
+
   factory InstanceInfoProvider() => _instance;
 
   String _instanceName = '';

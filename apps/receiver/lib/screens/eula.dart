@@ -134,6 +134,7 @@ class _EulaState extends State<Eula> {
   }
 
   Future<String> _loadEulaFromAssets() async {
-    return await rootBundle.loadString('assets/ViewSonic-MVB-EULA-20230508.txt');
+    return await rootBundle
+        .loadString('assets/ViewSonic-MVB-EULA-20230508.txt');
   }
 }

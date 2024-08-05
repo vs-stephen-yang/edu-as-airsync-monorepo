@@ -58,14 +58,14 @@ class AppColors {
       Color.fromRGBO(0x89, 0x89, 0x89, 0.4);
 
   static const Color iconDisableStandbyForeground =
-  Color.fromRGBO(0x4E, 0x4E, 0x4E, 1);
+      Color.fromRGBO(0x4E, 0x4E, 0x4E, 1);
 
   static const Color iconDisableStandbyBackground =
-  Color.fromRGBO(0x38, 0x38, 0x38, 1);
+      Color.fromRGBO(0x38, 0x38, 0x38, 1);
 
   static const Color iconDisablePresentingForeground =
-  Color.fromRGBO(0x4E, 0x4E, 0x4E, 0.4);
+      Color.fromRGBO(0x4E, 0x4E, 0x4E, 0.4);
 
   static const Color iconDisablePresentingBackground =
-  Color.fromRGBO(0x38, 0x38, 0x38, 0.4);
+      Color.fromRGBO(0x38, 0x38, 0x38, 0.4);
 }

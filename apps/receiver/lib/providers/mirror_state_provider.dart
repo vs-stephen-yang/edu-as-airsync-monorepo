@@ -358,12 +358,13 @@ class MirrorStateProvider extends ChangeNotifier
       // WebRTC (web sender), and using quick decode with AirPlay and ChromeCast
       // results in decode failures, we have decided to apply quick decode
       // exclusively to WebRTC scenarios for now.
-      Map<String, int> options = DeviceFeatureAdapter.getDecodeOptions(excludeQuickDecodeParams: true);
+      Map<String, int> options =
+          DeviceFeatureAdapter.getDecodeOptions(excludeQuickDecodeParams: true);
 
       log.info('Initialize mirror. Options: ${options.toString()}');
 
       await _flutterMirrorPlugin?.initialize(FlutterMirrorConfig(options));
-    } on PlatformException catch(e, stackTrace) {
+    } on PlatformException catch (e, stackTrace) {
       log.severe('Mirror initialize failure', e, stackTrace);
     }
     isPlatformInitialized = true;

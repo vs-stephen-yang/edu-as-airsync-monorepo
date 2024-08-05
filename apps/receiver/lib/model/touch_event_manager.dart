@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:display_flutter/protoc/event.pb.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:flutter_input_injection/flutter_input_injection.dart';
 
 const _defaultScreenWidth = 1920.0;
 const _defaultScreenHeight = 1080.0;

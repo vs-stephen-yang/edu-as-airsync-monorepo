@@ -1,7 +1,7 @@
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
-import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:flutter/material.dart';
 
 class DebugSwitch extends StatefulWidget {
@@ -28,11 +28,8 @@ class _DebugSwitchState extends State<DebugSwitch> {
   bool _enableWebRtcH264BaselineProfile = false;
 
   void _notifyRestart() {
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Restart the program to apply the changes.")
-        )
-    );
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Restart the program to apply the changes.")));
   }
 
   void _showDebugOverlayChanged(bool value) async {
@@ -110,7 +107,8 @@ class _DebugSwitchState extends State<DebugSwitch> {
   void _initialize() {
     _showDebugOverlay = DeviceFeatureAdapter.showDebugOverlay;
     _useSoftwareDecode = DeviceFeatureAdapter.useSoftwareDecode;
-    _enableWebRtcH264BaselineProfile = DeviceFeatureAdapter.enableWebRtcH264BaselineProfile;
+    _enableWebRtcH264BaselineProfile =
+        DeviceFeatureAdapter.enableWebRtcH264BaselineProfile;
     _useQuickDecodeParams = DeviceFeatureAdapter.useQuickDecodeParams;
     _enableWebRtcTracing = DeviceFeatureAdapter.enableWebRtcTracing;
     _verboseWebRtcLog = DeviceFeatureAdapter.verboseWebRtcLog;
@@ -138,7 +136,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
                         SwitchListTile(
                           title: const Text('Show Debug Overlay'),
                           value: _showDebugOverlay,
-                          onChanged: _showDebugOverlayChanged
+                          onChanged: _showDebugOverlayChanged,
                         ),
                         SwitchListTile(
                           title: const Text('Software Decode'),
@@ -146,29 +144,32 @@ class _DebugSwitchState extends State<DebugSwitch> {
                           onChanged: _enableSoftwareDecode,
                         ),
                         SwitchListTile(
-                          title: const Text('Enable WebRTC H264 Baseline Profile'),
+                          title:
+                              const Text('Enable WebRTC H264 Baseline Profile'),
                           value: _enableWebRtcH264BaselineProfile,
                           onChanged: _changeH264BaselineProfile,
                         ),
                         SwitchListTile(
-                            title: const Text('Quick Decode'),
-                            value: _useQuickDecodeParams,
-                            onChanged: (value) => _enableQuickDecode(value)
+                          title: const Text('Quick Decode'),
+                          value: _useQuickDecodeParams,
+                          onChanged: (value) => _enableQuickDecode(value),
                         ),
                         SwitchListTile(
-                            title: const Text('Enable WebRTC Tracing'),
-                            value: _enableWebRtcTracing,
-                            onChanged: (value) => _changeEnableWebRtcTracing(value)
+                          title: const Text('Enable WebRTC Tracing'),
+                          value: _enableWebRtcTracing,
+                          onChanged: (value) =>
+                              _changeEnableWebRtcTracing(value),
                         ),
                         SwitchListTile(
-                            title: const Text('WebRTC Tracing Capture'),
-                            value: _startWebRtcTracing,
-                            onChanged: (value) => _changeStartWebRtcTracing(value)
+                          title: const Text('WebRTC Tracing Capture'),
+                          value: _startWebRtcTracing,
+                          onChanged: (value) =>
+                              _changeStartWebRtcTracing(value),
                         ),
                         SwitchListTile(
-                            title: const Text('WebRTC Verbose log'),
-                            value: _verboseWebRtcLog,
-                            onChanged: (value) => _changeWebRtcLogVerbose(value)
+                          title: const Text('WebRTC Verbose log'),
+                          value: _verboseWebRtcLog,
+                          onChanged: (value) => _changeWebRtcLogVerbose(value),
                         ),
                       ],
                     );

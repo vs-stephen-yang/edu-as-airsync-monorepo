@@ -14,6 +14,7 @@ class RemoteScreenConnector {
   RemotePresentationState remotePresentationState =
       RemotePresentationState.stopStreaming;
   String? _sessionId;
+
   String? get sessionId => _sessionId;
   String? clientId;
   String? senderName;
@@ -68,7 +69,10 @@ class RemoteScreenConnector {
     channel.send(acceptedMessage);
   }
 
-  onStartRemoteScreen(StartRemoteScreenMessage message, List<RtcIceServer>? iceServers,) {
+  onStartRemoteScreen(
+    StartRemoteScreenMessage message,
+    List<RtcIceServer>? iceServers,
+  ) {
     _sessionId = message.sessionId;
     // accept
     sendRemoteScreenState(RemoteScreenStatus.accepted);

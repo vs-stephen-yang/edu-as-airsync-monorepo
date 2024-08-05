@@ -1,4 +1,3 @@
-
 /// This function takes a list of elements and returns a new list containing
 /// every second element from the original list, starting with the first element.
 /// It iterates through the original list, incrementing the index by 2 in each iteration,
@@ -12,7 +11,6 @@ List<T> filterEverySecond<T>(List<T> originalList) {
 
   return newList;
 }
-
 
 /// This function takes a list of nullable double values and a precision value.
 /// It formats each double value in the list to the specified number of decimal places.
