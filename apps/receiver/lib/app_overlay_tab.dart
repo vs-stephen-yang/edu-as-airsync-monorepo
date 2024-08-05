@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:android_window/main.dart' as android_window;
 import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

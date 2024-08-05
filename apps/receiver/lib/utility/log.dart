@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:display_flutter/utility/log_storage.dart';
-import 'package:logging/logging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logging/logging.dart';
 
 Logger log = Logger('airsync');
 

@@ -1,5 +1,3 @@
-
-
 import 'package:app_ota_flutter/app_ota_flutter.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/log.dart';

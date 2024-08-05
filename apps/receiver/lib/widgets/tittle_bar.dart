@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/focus_text_button.dart';
 import 'package:display_flutter/widgets/text_clock.dart';
 import 'package:flutter/material.dart';
-import 'package:display_flutter/screens/debug_switch.dart';
 
 class TitleBar extends StatefulWidget {
   const TitleBar({super.key});
@@ -14,7 +14,6 @@ class TitleBar extends StatefulWidget {
 }
 
 class _TitleBarStates extends State<TitleBar> {
-
   int debugCounter = 0;
   final int openDebugCounter = 5;
 
@@ -41,12 +40,12 @@ class _TitleBarStates extends State<TitleBar> {
               ),
               FocusTextButton(
                 onClick: () {
-                            debugCounter++;
-                            if (debugCounter == openDebugCounter) {
-                              _showMenuDialog(const DebugSwitch());
-                              debugCounter = 0;
-                            }
-                          },
+                  debugCounter++;
+                  if (debugCounter == openDebugCounter) {
+                    _showMenuDialog(const DebugSwitch());
+                    debugCounter = 0;
+                  }
+                },
                 child: Text(
                   'Ver ${appConfig?.appVersion ?? ' '}',
                   style: const TextStyle(

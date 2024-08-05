@@ -7,9 +7,8 @@ import 'package:motion_toast/motion_toast.dart';
 import 'channel_util.dart';
 
 class Toast {
-
-  static final List<Map<ReconnectState, DateTime>> _splitScreenLastToastTimes = List.filled(6,
-      {ReconnectState.idle: DateTime.now()});
+  static final List<Map<ReconnectState, DateTime>> _splitScreenLastToastTimes =
+      List.filled(6, {ReconnectState.idle: DateTime.now()});
   static final Map<ReconnectState, DateTime> _lastToastTimes = {};
   static const int second = 3;
 
@@ -74,7 +73,6 @@ class Toast {
   static void showSplitScreenReconnectToast(
       BuildContext context, String message, int index,
       {bool isWebRTC = true, ReconnectState state = ReconnectState.idle}) {
-
     if (!isWebRTC) {
       if (!shouldSplitScreenToast(index, state)) {
         return;
@@ -127,7 +125,7 @@ class Toast {
     return toast;
   }
 
-   static bool shouldToast(ReconnectState state) {
+  static bool shouldToast(ReconnectState state) {
     final now = DateTime.now();
     final lastToastTime = _lastToastTimes[state];
     if (lastToastTime != null) {

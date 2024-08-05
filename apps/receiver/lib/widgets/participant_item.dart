@@ -39,10 +39,13 @@ class ParticipantItem extends StatelessWidget {
               onClick: () {
                 if (!rtcConnector.isChannelConnectAvailable()) {
                   rtcConnector.clickButtonWhenReconnect = true;
-                  Toast.makeReconnectToast(rtcConnector.reconnectChannelState, rtcConnector.reconnectChannelState ==
-                      ReconnectState.reconnecting
-                      ? S.of(context).main_feature_reconnecting_toast
-                      : S.of(context).main_feature_reconnect_fail_toast)?.show(context);
+                  Toast.makeReconnectToast(
+                          rtcConnector.reconnectChannelState,
+                          rtcConnector.reconnectChannelState ==
+                                  ReconnectState.reconnecting
+                              ? S.of(context).main_feature_reconnecting_toast
+                              : S.of(context).main_feature_reconnect_fail_toast)
+                      ?.show(context);
                   return;
                 }
                 _presenterOnOff(context, rtcConnector, presenterId);
@@ -77,10 +80,13 @@ class ParticipantItem extends StatelessWidget {
               onClick: () {
                 if (!rtcConnector.isChannelConnectAvailable()) {
                   rtcConnector.clickButtonWhenReconnect = true;
-                  Toast.makeReconnectToast(rtcConnector.reconnectChannelState, rtcConnector.reconnectChannelState ==
-                      ReconnectState.reconnecting
-                      ? S.of(context).main_feature_reconnecting_toast
-                      : S.of(context).main_feature_reconnect_fail_toast)?.show(context);
+                  Toast.makeReconnectToast(
+                          rtcConnector.reconnectChannelState,
+                          rtcConnector.reconnectChannelState ==
+                                  ReconnectState.reconnecting
+                              ? S.of(context).main_feature_reconnecting_toast
+                              : S.of(context).main_feature_reconnect_fail_toast)
+                      ?.show(context);
                   return;
                 }
                 _sendPresenterRemove(rtcConnector);
@@ -95,13 +101,17 @@ class ParticipantItem extends StatelessWidget {
                   if (value == ReconnectState.success) {
                     rtcConnector.clickButtonWhenReconnect = false;
                     Toast.makeReconnectToast(value,
-                            S.of(context).main_feature_reconnect_success_toast)?.show(context);
-                    rtcConnector.reconnectChannelStateNotifier.value = ReconnectState.idle;
+                            S.of(context).main_feature_reconnect_success_toast)
+                        ?.show(context);
+                    rtcConnector.reconnectChannelStateNotifier.value =
+                        ReconnectState.idle;
                   } else if (value == ReconnectState.fail) {
                     rtcConnector.clickButtonWhenReconnect = false;
                     Toast.makeReconnectToast(value,
-                            S.of(context).main_feature_reconnect_fail_toast)?.show(context);
-                    rtcConnector.reconnectChannelStateNotifier.value = ReconnectState.idle;
+                            S.of(context).main_feature_reconnect_fail_toast)
+                        ?.show(context);
+                    rtcConnector.reconnectChannelStateNotifier.value =
+                        ReconnectState.idle;
                   }
                 }
                 return Container();

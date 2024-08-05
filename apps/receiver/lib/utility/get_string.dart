@@ -1,6 +1,7 @@
-import 'dart:math';
-import 'package:intl/intl.dart';
 import 'dart:convert';
+import 'dart:math';
+
+import 'package:intl/intl.dart';
 
 class GetString {
   static getRandomString(int length) {

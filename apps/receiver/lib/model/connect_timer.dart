@@ -9,7 +9,8 @@ typedef TimeOutCallback = void Function();
 
 class ConnectionTimer {
   Timer? _remainingTimeTimer, _stopServerTimer, _shareSenderTimer;
-  StreamController<int> remainingTimeTimeout = StreamController<int>.broadcast();
+  StreamController<int> remainingTimeTimeout =
+      StreamController<int>.broadcast();
   StreamController<int> shareSenderTimeout = StreamController<int>.broadcast();
 
   static final ConnectionTimer _instance = ConnectionTimer.internal();

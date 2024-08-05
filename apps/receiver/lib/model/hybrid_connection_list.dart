@@ -218,7 +218,8 @@ class HybridConnectionList {
       if (rtcConnector?.clientId != null) {
         try {
           await rtcConnector?.disconnectPeerConnection(sendAnalytics: true);
-          await rtcConnector?.disconnectChannel(reason: 'User removed the presenter');
+          await rtcConnector?.disconnectChannel(
+              reason: 'User removed the presenter');
           // need some delay to prevent exception:
           // 'package:flutter/src/rendering/object.dart': Failed assertion: line 2250 pos 12: '!_debugDisposed': is not true.
           await Future.delayed(const Duration(milliseconds: 300));
@@ -293,7 +294,8 @@ class HybridConnectionList {
       if (connection.sessionId != null) {
         try {
           await connection.disconnectPeerConnection(sendAnalytics: true);
-          await connection.disconnectChannel(reason: 'User removed the presenter');
+          await connection.disconnectChannel(
+              reason: 'User removed the presenter');
         } on PlatformException catch (e) {
           log(e.toString());
         }
@@ -346,6 +348,7 @@ class HybridConnectionList {
     }
     return count;
   }
+
   //End region of Mirror functions
 
   _reorderPresentingConnector() {
@@ -379,7 +382,7 @@ class HybridConnectionList {
     // Place not presenting connector behind presenting connector
     for (int i = 0; i < notPresentingConnector.length; i++) {
       _hybridConnectionList[i + presentingConnector.length] =
-      notPresentingConnector[i];
+          notPresentingConnector[i];
     }
   }
 }

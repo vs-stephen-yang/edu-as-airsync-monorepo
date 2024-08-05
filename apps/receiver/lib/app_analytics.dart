@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:azure_application_insights/azure_application_insights.dart';
 import 'package:display_flutter/model/rtc_stats.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/app_analytics_util.dart';
@@ -8,7 +9,6 @@ import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/list_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
-import 'package:azure_application_insights/azure_application_insights.dart';
 import 'package:http/http.dart';
 
 class AppAnalytics {
@@ -419,13 +419,15 @@ class AppAnalytics {
     });
   }
 
-  trackEventRtcCandidateTypes(String? clientId, String localCandidateType, String remoteCandidateType) {
+  trackEventRtcCandidateTypes(
+      String? clientId, String localCandidateType, String remoteCandidateType) {
     _trackEventWithProperties('pc_candidates', {
       'target': '$localCandidateType-$remoteCandidateType',
       'client_id': clientId ?? '',
       ..._eventProperties,
     });
   }
+
 // endregion
 
   trackEventRtcMetric(
@@ -447,7 +449,8 @@ class AppAnalytics {
     //  formats each double value to 2 precision
     const precision = 2;
 
-    final jitterBufferDelay = formatDoubleList(statsLists.jitterBufferDelay, precision);
+    final jitterBufferDelay =
+        formatDoubleList(statsLists.jitterBufferDelay, precision);
     final decodeTime = formatDoubleList(statsLists.decodeTime, precision);
 
     _trackEventWithProperties('video_inbound_stats', {

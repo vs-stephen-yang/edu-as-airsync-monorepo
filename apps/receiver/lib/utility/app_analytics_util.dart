@@ -1,6 +1,6 @@
 import 'package:display_flutter/model/rtc_stats.dart';
 
-class RtcVideoInboundStatsLists{
+class RtcVideoInboundStatsLists {
   List<double?> framesPerSecond;
 
   List<int?> framesReceivedPerSecond;
@@ -32,7 +32,8 @@ class RtcVideoInboundStatsLists{
     required this.decodeTime,
   });
 
-  factory RtcVideoInboundStatsLists.fromStatsList(List<RtcVideoInboundStats> statsList) {
+  factory RtcVideoInboundStatsLists.fromStatsList(
+      List<RtcVideoInboundStats> statsList) {
     List<double?> framesPerSecond = [];
     List<int?> framesReceivedPerSecond = [];
     List<int?> framesDecodedPerSecond = [];

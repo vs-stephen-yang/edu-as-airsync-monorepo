@@ -5,18 +5,18 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_utils.dart';
 import 'package:display_flutter/model/touch_event_manager.dart';
+import 'package:display_flutter/protoc/event.pb.dart';
+import 'package:display_flutter/protoc/internal.pb.dart';
 import 'package:display_flutter/utility/ion_sfu_util.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu.dart';
 import 'package:flutter_ion_sfu/flutter_ion_sfu_listener.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_background/flutter_background.dart';
 import 'package:window_size/window_size.dart';
-import 'package:display_flutter/protoc/event.pb.dart';
-import 'package:display_flutter/protoc/internal.pb.dart';
 
 const defaultScreenWidth = 1920.0;
 const defaultScreenHeight = 1080.0;
@@ -56,6 +56,7 @@ class RemoteControlChannel {
       onMessage(data, _id);
     };
   }
+
   void setControlAllowed(bool isAllowed) {
     _isControlAllowed = isAllowed;
   }

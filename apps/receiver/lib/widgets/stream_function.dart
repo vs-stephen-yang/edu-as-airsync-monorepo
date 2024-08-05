@@ -117,7 +117,6 @@ class _StreamFunctionStates extends State<StreamFunction> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-
                   //Exit button for VBS
                   if (AppInstanceCreate().isInstalledInVBS200 &&
                       value == stateStandby)
@@ -229,36 +228,33 @@ class _StreamFunctionStates extends State<StreamFunction> {
 
                   //Settings and In-connection button
                   // if (value != stateCast)
-                    FocusIconButton(
-                      icons: iconMain,
-                      childNotFocus: iconMainImageNotFocus,
-                      childHasFocus: iconMainImageHasFocus,
-                      iconForegroundColor: value == stateStandby
-                          ? AppColors.iconStandbyForeground
-                          : AppColors.iconPresentingForeground,
-                      iconBackgroundColor: value == stateStandby
-                          ? AppColors.iconStandbyBackground
-                          : AppColors.iconPresentingForeground,
-                      iconFocusBackgroundColor:
-                          AppColors.iconFeatureOnStandbyBackground,
-                      hasFocusSize: AppUIConstant.iconHasFocusSize,
-                      notFocusSize: AppUIConstant.iconNotFocusSize,
-                      onClick: () {
-                        if (value == stateStandby) {
-                          _showMenuDialog(const Settings());
-                        } else if (value == stateMenuOff) {
-                          StreamFunction.streamFunctionState.value =
-                              stateMenuOn;
-                        } else if (value == stateMenuOn) {
-                          StreamFunction.streamFunctionState.value =
-                              stateMenuOff;
-                        } else if (value == stateBackArrow) {
-                          StreamFunction.streamFunctionState.value =
-                              stateMenuOff;
-                          Home.isShowDisplayCode.value = false;
-                        }
-                      },
-                    ),
+                  FocusIconButton(
+                    icons: iconMain,
+                    childNotFocus: iconMainImageNotFocus,
+                    childHasFocus: iconMainImageHasFocus,
+                    iconForegroundColor: value == stateStandby
+                        ? AppColors.iconStandbyForeground
+                        : AppColors.iconPresentingForeground,
+                    iconBackgroundColor: value == stateStandby
+                        ? AppColors.iconStandbyBackground
+                        : AppColors.iconPresentingForeground,
+                    iconFocusBackgroundColor:
+                        AppColors.iconFeatureOnStandbyBackground,
+                    hasFocusSize: AppUIConstant.iconHasFocusSize,
+                    notFocusSize: AppUIConstant.iconNotFocusSize,
+                    onClick: () {
+                      if (value == stateStandby) {
+                        _showMenuDialog(const Settings());
+                      } else if (value == stateMenuOff) {
+                        StreamFunction.streamFunctionState.value = stateMenuOn;
+                      } else if (value == stateMenuOn) {
+                        StreamFunction.streamFunctionState.value = stateMenuOff;
+                      } else if (value == stateBackArrow) {
+                        StreamFunction.streamFunctionState.value = stateMenuOff;
+                        Home.isShowDisplayCode.value = false;
+                      }
+                    },
+                  ),
                 ],
               ),
             ),

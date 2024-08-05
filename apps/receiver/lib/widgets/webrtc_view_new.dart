@@ -20,7 +20,8 @@ import 'package:provider/provider.dart';
 import 'loading_icon.dart';
 
 class WebRTCView extends StatefulWidget {
-  const WebRTCView({super.key, required this.rtcConnector, required this.index});
+  const WebRTCView(
+      {super.key, required this.rtcConnector, required this.index});
 
   final RTCConnector rtcConnector;
   final int index;
@@ -307,7 +308,8 @@ class WebRTCViewState extends State<WebRTCView> {
             builder: (context, ReconnectState reconnectState, child) {
               if (widget.rtcConnector.clickButtonWhenReconnect) {
                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                  if (widget.rtcConnector.reconnectChannelState == ReconnectState.success) {
+                  if (widget.rtcConnector.reconnectChannelState ==
+                      ReconnectState.success) {
                     widget.rtcConnector.clickButtonWhenReconnect = false;
                     Toast.showSplitScreenReconnectToast(
                         context,
@@ -315,8 +317,10 @@ class WebRTCViewState extends State<WebRTCView> {
                         widget.index,
                         isWebRTC: false,
                         state: ReconnectState.success);
-                    widget.rtcConnector.reconnectChannelState = ReconnectState.idle;
-                  } else if (widget.rtcConnector.reconnectChannelState == ReconnectState.fail) {
+                    widget.rtcConnector.reconnectChannelState =
+                        ReconnectState.idle;
+                  } else if (widget.rtcConnector.reconnectChannelState ==
+                      ReconnectState.fail) {
                     widget.rtcConnector.clickButtonWhenReconnect = false;
                     Toast.showSplitScreenReconnectToast(
                         context,
@@ -324,7 +328,8 @@ class WebRTCViewState extends State<WebRTCView> {
                         widget.index,
                         isWebRTC: false,
                         state: ReconnectState.fail);
-                    widget.rtcConnector.reconnectChannelState = ReconnectState.idle;
+                    widget.rtcConnector.reconnectChannelState =
+                        ReconnectState.idle;
                   }
                 });
               }
@@ -334,18 +339,23 @@ class WebRTCViewState extends State<WebRTCView> {
           ValueListenableBuilder(
             valueListenable: widget.rtcConnector.reconnectRtcStateNotifier,
             builder: (context, ReconnectState reconnectState, child) {
-
               String message = S.of(context).main_webrtc_reconnecting_toast;
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                if (widget.rtcConnector.reconnectRtcState == ReconnectState.reconnecting) {
-                  Toast.showSplitScreenReconnectToast(context, message, widget.index);
-                } else if (widget.rtcConnector.reconnectRtcState == ReconnectState.success) {
+                if (widget.rtcConnector.reconnectRtcState ==
+                    ReconnectState.reconnecting) {
+                  Toast.showSplitScreenReconnectToast(
+                      context, message, widget.index);
+                } else if (widget.rtcConnector.reconnectRtcState ==
+                    ReconnectState.success) {
                   message = S.of(context).main_webrtc_reconnect_success_toast;
-                  Toast.showSplitScreenReconnectToast(context, message, widget.index);
+                  Toast.showSplitScreenReconnectToast(
+                      context, message, widget.index);
                   widget.rtcConnector.reconnectRtcState = ReconnectState.idle;
-                } else if (widget.rtcConnector.reconnectRtcState == ReconnectState.fail) {
+                } else if (widget.rtcConnector.reconnectRtcState ==
+                    ReconnectState.fail) {
                   message = S.of(context).main_webrtc_reconnect_fail_toast;
-                  Toast.showSplitScreenReconnectToast(context, message, widget.index);
+                  Toast.showSplitScreenReconnectToast(
+                      context, message, widget.index);
                   widget.rtcConnector.reconnectRtcState = ReconnectState.idle;
                 }
               });

@@ -1,12 +1,11 @@
-
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DeviceFeatureAdapter {
-
-  static final DeviceFeatureAdapter _instance = DeviceFeatureAdapter._internal();
+  static final DeviceFeatureAdapter _instance =
+      DeviceFeatureAdapter._internal();
 
   //private "Named constructors"
   DeviceFeatureAdapter._internal();
@@ -38,16 +37,16 @@ class DeviceFeatureAdapter {
 
   static Map<String, dynamic> overrideDefaultParams = {
     'IFP50_3': {
-      "useQuickDecode": false
+      "useQuickDecode": false,
     },
     'IFP50_3_9850': {
-      "useQuickDecode": false
+      "useQuickDecode": false,
     }
   };
 
   static Map<String, dynamic> deviceOptions = {
     'IFP52_1C': {
-      "selectCustomAudioFeed": "CVTE"
+      "selectCustomAudioFeed": "CVTE",
     },
     'IFP50_3': {
       "maxHardwareDecodeSession": 1,
@@ -58,12 +57,12 @@ class DeviceFeatureAdapter {
     'IFP62': {
       "maxHardwareDecodeSession": 1,
     },
-    'CDE30': {  // to avoid green line issue see 66146 and 63865
+    'CDE30': {
+      // to avoid green line issue see 66146 and 63865
       "overridePortraitCaptureSize": "736x1280",
       "overrideLandscapeCaptureSize": "1280x720",
     }
   };
-
 
   static const Map<String, Map<String, int>> deviceDecodeParams = {
     'IFP52_1C': {
@@ -82,33 +81,45 @@ class DeviceFeatureAdapter {
     final Map<String, dynamic>? params = overrideDefaultParams[_deviceType];
 
     if (params != null) {
-      defaultShowDebugOverlay = params["showDebugOverlay"] ?? defaultShowDebugOverlay;
-      defaultUseSoftwareDecode = params["useSoftwareDecode"] ?? defaultUseSoftwareDecode;
-      defaultUseQuickDecodeParams = params["useQuickDecode"] ?? defaultUseQuickDecodeParams;
+      defaultShowDebugOverlay =
+          params["showDebugOverlay"] ?? defaultShowDebugOverlay;
+      defaultUseSoftwareDecode =
+          params["useSoftwareDecode"] ?? defaultUseSoftwareDecode;
+      defaultUseQuickDecodeParams =
+          params["useQuickDecode"] ?? defaultUseQuickDecodeParams;
     }
   }
 
   static load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    showDebugOverlay = prefs.getBool("ShowDebugOverlay") ?? defaultShowDebugOverlay;
-    useSoftwareDecode = prefs.getBool("UseSoftwareDecode") ?? defaultUseSoftwareDecode;
-    enableWebRtcH264BaselineProfile = prefs.getBool("EnableWebRtcH264BaselineProfile") ?? defaultEnableWebRtcH264BaselineProfile;
-    useQuickDecodeParams = prefs.getBool("UseQuickDecodeParams") ?? defaultUseQuickDecodeParams;
-    enableWebRtcTracing = prefs.getBool("EnableWebRtcTracing") ?? defaultEnableWebRtcTracing;
-    verboseWebRtcLog = prefs.getBool("VerboseWebRtcLog") ?? defaultVerboseWebRtcLog;
+    showDebugOverlay =
+        prefs.getBool("ShowDebugOverlay") ?? defaultShowDebugOverlay;
+    useSoftwareDecode =
+        prefs.getBool("UseSoftwareDecode") ?? defaultUseSoftwareDecode;
+    enableWebRtcH264BaselineProfile =
+        prefs.getBool("EnableWebRtcH264BaselineProfile") ??
+            defaultEnableWebRtcH264BaselineProfile;
+    useQuickDecodeParams =
+        prefs.getBool("UseQuickDecodeParams") ?? defaultUseQuickDecodeParams;
+    enableWebRtcTracing =
+        prefs.getBool("EnableWebRtcTracing") ?? defaultEnableWebRtcTracing;
+    verboseWebRtcLog =
+        prefs.getBool("VerboseWebRtcLog") ?? defaultVerboseWebRtcLog;
   }
 
   static save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool("ShowDebugOverlay", showDebugOverlay);
     prefs.setBool("UseSoftwareDecode", useSoftwareDecode);
-    prefs.setBool("EnableWebRtcH264BaselineProfile", enableWebRtcH264BaselineProfile);
+    prefs.setBool(
+        "EnableWebRtcH264BaselineProfile", enableWebRtcH264BaselineProfile);
     prefs.setBool("UseQuickDecodeParams", useQuickDecodeParams);
     prefs.setBool("EnableWebRtcTracing", enableWebRtcTracing);
     prefs.setBool("VerboseWebRtcLog", verboseWebRtcLog);
   }
 
-  static Map<String, int> getDecodeOptions({bool excludeQuickDecodeParams = false}) {
+  static Map<String, int> getDecodeOptions(
+      {bool excludeQuickDecodeParams = false}) {
     final options = <String, int>{};
 
     // add quick decode parameters
@@ -151,5 +162,4 @@ class DeviceFeatureAdapter {
     log.info('Initialize webrtc. Options: ${options.toString()}');
     await WebRTC.initialize(options: options);
   }
-
 }

@@ -44,17 +44,24 @@ class RTCConnector {
   String? senderPlatform;
   bool isAudioEnabled = false;
 
-  ValueNotifier<ReconnectState> reconnectRtcStateNotifier = ValueNotifier<ReconnectState>(ReconnectState.idle);
+  ValueNotifier<ReconnectState> reconnectRtcStateNotifier =
+      ValueNotifier<ReconnectState>(ReconnectState.idle);
+
   set reconnectRtcState(ReconnectState state) {
     reconnectRtcStateNotifier.value = state;
   }
+
   ReconnectState get reconnectRtcState => reconnectRtcStateNotifier.value;
 
-  ValueNotifier<ReconnectState> reconnectChannelStateNotifier = ValueNotifier<ReconnectState>(ReconnectState.idle);
+  ValueNotifier<ReconnectState> reconnectChannelStateNotifier =
+      ValueNotifier<ReconnectState>(ReconnectState.idle);
+
   set reconnectChannelState(ReconnectState state) {
     reconnectChannelStateNotifier.value = state;
   }
-  ReconnectState get reconnectChannelState => reconnectChannelStateNotifier.value;
+
+  ReconnectState get reconnectChannelState =>
+      reconnectChannelStateNotifier.value;
   bool clickButtonWhenReconnect = false;
 
   Timer? _statsTimer;
@@ -67,8 +74,6 @@ class RTCConnector {
     }
     return result;
   }
-
-
 
   // the following device should not enable webrtc prerendererSmoothing flag
   final List<String> _prerendererSmoothingExcludedDevices = [
@@ -95,7 +100,8 @@ class RTCConnector {
   Function(MediaStream? stream)? onAddRemoteStream;
   Function(MediaStream stream)? onRemoveRemoteStream;
   Function()? onRefresh;
-  Function(String localCandidateType, String remoteCandidateType)? onPairCandidateType;
+  Function(String localCandidateType, String remoteCandidateType)?
+      onPairCandidateType;
   Function(RtcVideoInboundStats stats)? onVideoStatsReport;
   Function({bool? showMode})? onShowMode;
   Future<void> Function({String? reason})? onChannelDisconnect;
@@ -105,6 +111,7 @@ class RTCConnector {
 
   // rtc stats
   final _videoBitrateHistory = <int?>[];
+
   // keep last 20 RtcVideoInboundStats
   final _videoInboundStatsHistory = BoundedList<RtcVideoInboundStats>(20);
 
@@ -113,7 +120,10 @@ class RTCConnector {
 
   RTCConnector(this._channel);
 
-  Future<void> init(JoinDisplayMessage message, isModeratorMode,) async {
+  Future<void> init(
+    JoinDisplayMessage message,
+    isModeratorMode,
+  ) async {
     _printPeerConnectionLog('init', null);
     _channel.onStateChange = (state) => _onChannelState(state);
 
@@ -167,8 +177,8 @@ class RTCConnector {
 
         if (_localCandidateType != localCandidateType &&
             _remoteCandidateType != remoteCandidateType) {
-
-          AppAnalytics().trackEventRtcCandidateTypes(clientId!, localCandidateType, remoteCandidateType);
+          AppAnalytics().trackEventRtcCandidateTypes(
+              clientId!, localCandidateType, remoteCandidateType);
 
           _localCandidateType = localCandidateType;
           _remoteCandidateType = remoteCandidateType;
@@ -177,7 +187,9 @@ class RTCConnector {
     );
 
     _statsTimer?.cancel();
-    _statsTimer = Timer.periodic(_statsTimerInterval, (timer) async {
+    _statsTimer = Timer.periodic(
+      _statsTimerInterval,
+      (timer) async {
         final reports = await _pc?.getStats(null);
         if (reports != null) {
           _rtcStatsParser?.onStatsReports(reports);
@@ -185,7 +197,6 @@ class RTCConnector {
       },
     );
   }
-
 
   // The channel failed to reconnect within the specified timeout period
   void _onChannelReconnectTimeout() async {
@@ -225,11 +236,12 @@ class RTCConnector {
 
     _videoInboundStatsHistory.add(stats);
 
-
     onVideoStatsReport?.call(stats);
   }
 
-  Future<void> _peerConnectionConnect(List<RtcIceServer>? iceServers,) async {
+  Future<void> _peerConnectionConnect(
+    List<RtcIceServer>? iceServers,
+  ) async {
     if (_pc != null) return;
 
     String? deviceType = await DeviceInfoVs.deviceType;
@@ -290,7 +302,10 @@ class RTCConnector {
   }
 
   Future<void> onStartPresent(
-      StartPresentMessage msg, bool isModeratorMode, List<RtcIceServer>? iceServers,) async {
+    StartPresentMessage msg,
+    bool isModeratorMode,
+    List<RtcIceServer>? iceServers,
+  ) async {
     // Timer
     startConnectionTimer(() async {
       if (!isModeratorMode) {
@@ -477,7 +492,6 @@ class RTCConnector {
         // track every second videoInboundStats over last 10 seconds
         filterEverySecond(_videoInboundStatsHistory.elements),
       );
-
     } catch (e, stackTrace) {
       log.severe('_trackMetrics', e, stackTrace);
     }
@@ -539,7 +553,8 @@ class RTCConnector {
       if (reconnectRtcState == ReconnectState.reconnecting) {
         reconnectRtcState = ReconnectState.success;
       }
-    } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateDisconnected) {
+    } else if (state ==
+        RTCPeerConnectionState.RTCPeerConnectionStateDisconnected) {
       reconnectRtcState = ReconnectState.reconnecting;
     } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
       if (reconnectRtcState == ReconnectState.reconnecting) {
@@ -640,12 +655,14 @@ class RTCConnector {
   }
 
   bool isRtcConnectAvailable() {
-    if (reconnectRtcState == ReconnectState.reconnecting || reconnectRtcState == ReconnectState.fail) return false;
+    if (reconnectRtcState == ReconnectState.reconnecting ||
+        reconnectRtcState == ReconnectState.fail) return false;
     return true;
   }
 
   bool isChannelConnectAvailable() {
-    if (reconnectChannelState == ReconnectState.reconnecting || reconnectChannelState == ReconnectState.fail) return false;
+    if (reconnectChannelState == ReconnectState.reconnecting ||
+        reconnectChannelState == ReconnectState.fail) return false;
     return true;
   }
 }
