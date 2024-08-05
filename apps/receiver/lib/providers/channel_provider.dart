@@ -509,6 +509,7 @@ class ChannelProvider extends ChangeNotifier {
       }
       if (presenting) {
         Home.enlargedScreenPositionIndex.value = null;
+        HybridConnectionList().enlargedScreenIndex.value = null;
       } else {
         if (reason == 'Channel reconnect timeout') {
           showReconnectWarnToast.value = true;

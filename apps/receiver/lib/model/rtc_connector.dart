@@ -379,6 +379,7 @@ class RTCConnector {
       StreamFunction.streamFunctionState.value = stateMenuOff;
       await disconnectPeerConnection(sendAnalytics: false);
       Home.enlargedScreenPositionIndex.value = null;
+      HybridConnectionList().enlargedScreenIndex.value = null;
       HybridConnectionList().updateSplitScreen();
       sessionId = null;
       onShowMode?.call();

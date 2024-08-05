@@ -4,10 +4,11 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/home.dart';
+import 'package:display_flutter/screens/v3_home.dart';
+import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../widgets/stream_function.dart';
 import 'connect_timer.dart';
 
 class HybridConnectionList {
@@ -23,6 +24,8 @@ class HybridConnectionList {
   static const int maxHybridConnection = 6;
 
   static const int maxHybridSplitScreen = 4;
+
+  ValueNotifier<int?> enlargedScreenIndex = ValueNotifier(null);
 
   static ValueNotifier<int> hybridSplitScreenCount = ValueNotifier(0);
 
@@ -79,6 +82,8 @@ class HybridConnectionList {
     }
     Home.isShowDisplayCode.value = inConnectionNumber == 0 ? true : false;
     Home.showTitleBottomBar.value = inConnectionNumber == 0 ? true : false;
+    V3Home.isShowDisplayCode.value = inConnectionNumber == 0 ? true : false;
+    V3Home.isShowHeaderFooterBar.value = inConnectionNumber == 0 ? true : false;
 
     _handleSplitScreenQualityPreset();
   }

@@ -9,6 +9,7 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/v3_footer_bar.dart';
 import 'package:display_flutter/widgets/v3_header_bar.dart';
 import 'package:display_flutter/widgets/v3_main_info.dart';
+import 'package:display_flutter/widgets/v3_streaming_view.dart';
 import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -83,6 +84,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[
+              const V3StreamingView(),
               ValueListenableBuilder(
                 valueListenable: V3Home.isShowHeaderFooterBar,
                 builder: (_, bool value, __) {
