@@ -52,23 +52,8 @@ class _HomeStates extends State<Home> {
   @override
   void initState() {
     super.initState();
-    PresentStateProvider presentStateProvider =
-        Provider.of<PresentStateProvider>(context, listen: false);
     _lifecycleListener = AppLifecycleListener(
-      onResume: () {
-        print('zz onResume');
-        if (!kIsWeb && presentStateProvider.currentState == ViewState.idle) {
-          _checkUpdateVersion(context).then((value) {
-            if (value != CompareVersionResult.none) {
-              // show update dialog
-              _showUpdateDialog(context, value);
-            }
-          });
-        }
-      },
-      onStateChange: (_) {
-        print('zz onStateChange ${_.name}');
-      },
+      onResume: _handleResume,
       onExitRequested: _handleExitRequest,
     );
 
@@ -82,6 +67,25 @@ class _HomeStates extends State<Home> {
     _lifecycleListener.dispose();
 
     super.dispose();
+  }
+
+  void _handleResume() {
+    if (_shouldCheckUpdate()) {
+      _checkUpdateVersion(context).then((value) {
+        if (value != CompareVersionResult.none) {
+          _showUpdateDialog(context, value);
+        }
+      });
+    }
+  }
+
+  bool _shouldCheckUpdate() {
+    PresentStateProvider presentStateProvider =
+        Provider.of<PresentStateProvider>(context, listen: false);
+    return !kIsWeb &&
+        !Platform.isWindows &&
+        !Platform.isMacOS &&
+        presentStateProvider.currentState == ViewState.idle;
   }
 
   Future<AppExitResponse> _handleExitRequest() {
@@ -111,9 +115,6 @@ class _HomeStates extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    PresentStateProvider presentStateProvider =
-        Provider.of<PresentStateProvider>(context, listen: false);
-    print('zz home build ${presentStateProvider.currentState.name}');
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (!isSupportPlatform()) {
         _showNotSupportDialog();
@@ -321,7 +322,6 @@ class _HomeStates extends State<Home> {
         );
       },
     ).then((_) {
-      print('zz then');
       _isDialogShowing = false;
     });
   }
@@ -363,7 +363,6 @@ class _HomeStates extends State<Home> {
   }
 
   Future<CompareVersionResult> _checkUpdateVersion(BuildContext context) async {
-    print('zz _checkUpdateVersion');
     String version = AppConfig.of(context)?.appVersion;
     String? api = AppConfig.of(context)?.settings.appUpdateVersionEndpoint;
     if (api == null) return CompareVersionResult.none;
