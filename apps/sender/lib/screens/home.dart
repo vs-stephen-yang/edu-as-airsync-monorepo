@@ -1,20 +1,18 @@
+import 'dart:async';
 import 'dart:io' show Platform, exit;
 import 'dart:ui';
-import 'dart:async';
 
-import 'package:display_cast_flutter/utilities/channel_util.dart';
-import 'package:display_cast_flutter/widgets/toast.dart';
-import "package:universal_html/html.dart" as html;
 import 'package:display_cast_flutter/demo/present_present_start_demo.dart';
 import 'package:display_cast_flutter/demo/present_select_role_demo.dart';
 import 'package:display_cast_flutter/demo/remote_screen_widget_demo.dart';
-import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/updater_windows.dart';
 import 'package:display_cast_flutter/utilities/version_update.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
@@ -32,11 +30,13 @@ import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/remote_screen_widget.dart';
 import 'package:display_cast_flutter/widgets/settings.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
+import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
+import "package:universal_html/html.dart" as html;
 import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
@@ -52,7 +52,23 @@ class _HomeStates extends State<Home> {
   @override
   void initState() {
     super.initState();
+    PresentStateProvider presentStateProvider =
+        Provider.of<PresentStateProvider>(context, listen: false);
     _lifecycleListener = AppLifecycleListener(
+      onResume: () {
+        print('zz onResume');
+        if (!kIsWeb && presentStateProvider.currentState == ViewState.idle) {
+          _checkUpdateVersion(context).then((value) {
+            if (value != CompareVersionResult.none) {
+              // show update dialog
+              _showUpdateDialog(context, value);
+            }
+          });
+        }
+      },
+      onStateChange: (_) {
+        print('zz onStateChange ${_.name}');
+      },
       onExitRequested: _handleExitRequest,
     );
 
@@ -95,6 +111,9 @@ class _HomeStates extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    PresentStateProvider presentStateProvider =
+        Provider.of<PresentStateProvider>(context, listen: false);
+    print('zz home build ${presentStateProvider.currentState.name}');
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (!isSupportPlatform()) {
         _showNotSupportDialog();
@@ -219,7 +238,15 @@ class _HomeStates extends State<Home> {
     );
   }
 
+  bool _isDialogShowing = false;
+
   void _showUpdateDialog(BuildContext context, CompareVersionResult status) {
+    // check dialog
+    if (_isDialogShowing) {
+      return;
+    }
+    _isDialogShowing = true;
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -293,7 +320,10 @@ class _HomeStates extends State<Home> {
           ],
         );
       },
-    );
+    ).then((_) {
+      print('zz then');
+      _isDialogShowing = false;
+    });
   }
 
   void _showUpdateErrorDialog(BuildContext context, UpdateErrorExecption e) {
@@ -333,6 +363,7 @@ class _HomeStates extends State<Home> {
   }
 
   Future<CompareVersionResult> _checkUpdateVersion(BuildContext context) async {
+    print('zz _checkUpdateVersion');
     String version = AppConfig.of(context)?.appVersion;
     String? api = AppConfig.of(context)?.settings.appUpdateVersionEndpoint;
     if (api == null) return CompareVersionResult.none;
