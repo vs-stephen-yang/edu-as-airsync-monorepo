@@ -20,6 +20,7 @@ import 'package:window_size/window_size.dart';
 
 const defaultScreenWidth = 1920.0;
 const defaultScreenHeight = 1080.0;
+const int roomIdLength = 8;
 
 class RemoteControlChannel {
   final RTCDataChannel _channel;
@@ -68,8 +69,8 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   final FlutterIonSfu _sfuServer = FlutterIonSfu();
   bool _sfuServerStarted = false;
 
-  String roomId = 'remote-screen';
   int roomPort = 7000;
+  String roomId = "default-room-id"; // will be updated when starting the publisher
 
   final _channels = <String, RemoteControlChannel>{};
   int _nextChannelId = 0;
@@ -111,12 +112,21 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     );
   }
 
+  static String _generateRoomId() {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    var rand = Uuid().v4();
+    return String.fromCharCodes(Iterable.generate(roomIdLength, (_) => chars.codeUnitAt(rand.codeUnitAt(_ % rand.length) % chars.length)));
+  }
+
   Future startRemoteScreenPublisher() async {
     if (_ionSfuClient != null) {
       return;
     }
 
     final ionSignal = JsonRPCSignal("ws://127.0.0.1:$roomPort/ws");
+
+    roomId = _generateRoomId();
+    log.info('Start remote screen publisher for room $roomId');
 
     final uuid = const Uuid().v4();
     _ionSfuClient = await Client.create(
@@ -199,6 +209,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   }
 
   void stopRemoteScreenPublisher() {
+    log.info('Stop remote screen publisher for room $roomId');
     _ionSfuClient?.close();
     _ionSfuClient = null;
   }
