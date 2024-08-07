@@ -11,7 +11,9 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
 class V3Instruction extends StatefulWidget {
-  const V3Instruction({super.key});
+  const V3Instruction({super.key, this.isQuickConnect = false});
+
+  final bool isQuickConnect;
 
   @override
   State<StatefulWidget> createState() => _V3InstructionState();
@@ -30,185 +32,173 @@ class _V3InstructionState extends State<V3Instruction> {
   Widget build(BuildContext context) {
     return Consumer2<ChannelProvider, InstanceInfoProvider>(
         builder: (_, channelProvider, instanceInfoProvider, __) {
-      return SizedBox(
-        width: 765,
-        child: Stack(
-          children: [
-            Positioned(
-              left: 50,
-              top: 50,
-              bottom: 118,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AutoSizeText(
-                    S.of(context).v3_instruction_share_screen,
-                    style: const TextStyle(
-                      color: Color(0xFF838CA6),
-                      fontSize: 21,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      const Image(
-                        image: Svg('assets/images/ic_item1.svg'),
-                        height: 27,
-                        width: 27,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: FutureBuilder(
-                          future: checkInternetConnection(),
-                          builder: (context, snapshot) {
-                            bool isInternet = false;
-                            if (snapshot.hasData) {
-                              isInternet = snapshot.data as bool;
-                            }
-                            return AutoSizeText.rich(
-                              _buildTextSpan(
-                                  fullText: isInternet
-                                      ? S.of(context).v3_instruction1a
-                                      : S.of(context).v3_instruction1b,
-                                  formatTexts: ['airsync.net'],
-                                  formatStyle: const TextStyle(
-                                      fontWeight: FontWeight.w700)),
-                              style: const TextStyle(
-                                color: Color(0xFF838CA6),
-                                fontSize: 21,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const Image(
-                        image: Svg('assets/images/ic_item2.svg'),
-                        height: 27,
-                        width: 27,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: AutoSizeText(
-                          S.of(context).v3_instruction2,
-                          style: const TextStyle(
-                            color: Color(0xFF838CA6),
-                            fontSize: 21,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 35),
-                    child: AutoSizeText(
-                      _getDisplayCodeVisualIdentity(
-                          instanceInfoProvider.displayCode),
-                      style: const TextStyle(
-                        color: Color(0xFF636D8A),
-                        fontSize: 45,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      const Image(
-                        image: Svg('assets/images/ic_item3.svg'),
-                        height: 27,
-                        width: 27,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: AutoSizeText(
-                          S.of(context).v3_instruction3,
-                          style: const TextStyle(
-                            color: Color(0xFF838CA6),
-                            fontSize: 21,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: ValueListenableBuilder<int>(
-                          valueListenable: channelProvider.countDownProgress,
-                          builder: (_, progress, __) {
-                            return Transform(
-                              alignment: Alignment.center,
-                              transform: Matrix4.rotationY(math.pi),
-                              child: SizedBox(
-                                width: 26,
-                                height: 26,
-                                child: CircularProgressIndicator(
-                                  value:
-                                      progress / channelProvider.maxCountDown,
-                                  strokeWidth: 4,
-                                  backgroundColor: const Color(0xFFE9EAF0),
-                                  valueColor:
-                                      const AlwaysStoppedAnimation<Color>(
-                                          Color(0xFF636D8A)),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 35),
-                    child: ValueListenableBuilder<int>(
-                      valueListenable: channelProvider.otp,
-                      builder: (_, otp, __) {
-                        return AutoSizeText(
-                          otp.toString(),
-                          style: const TextStyle(
-                            color: Color(0xFF636D8A),
-                            fontSize: 45,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: widget.isQuickConnect
+            ? CrossAxisAlignment.center
+            : CrossAxisAlignment.start,
+        children: [
+          if (!widget.isQuickConnect)
+            AutoSizeText(
+              S.of(context).v3_instruction_share_screen,
+              style: const TextStyle(
+                color: Color(0xFF838CA6),
+                fontSize: 21,
               ),
             ),
-            Positioned(
-              left: 50,
-              bottom: 30,
-              child: Row(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 35),
-                    child: Image(
-                      image: Svg('assets/images/ic_arrow_to_screen.svg'),
-                      height: 21,
-                      width: 21,
-                    ),
+          if (widget.isQuickConnect)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Image(
+                  image: Svg('assets/images/ic_screen.svg'),
+                  height: 27,
+                  width: 27,
+                  color: Color(0xFF838CA6),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: Consumer<InstanceInfoProvider>(
+                    builder: (_, provider, __) {
+                      return AutoSizeText(
+                        provider.deviceName,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF838CA6),
+                        ),
+                      );
+                    },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 5),
-                    child: AutoSizeText.rich(
+                ),
+              ],
+            ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Image(
+                image: Svg('assets/images/ic_item1.svg'),
+                height: 27,
+                width: 27,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: FutureBuilder(
+                  future: checkInternetConnection(),
+                  builder: (context, snapshot) {
+                    bool isInternet = false;
+                    if (snapshot.hasData) {
+                      isInternet = snapshot.data as bool;
+                    }
+                    return AutoSizeText.rich(
                       _buildTextSpan(
-                          fullText: S.of(context).v3_instruction_support,
-                          formatTexts: ['AirPlay, Google Cast', 'Miracast'],
+                          fullText: isInternet
+                              ? S.of(context).v3_instruction1a
+                              : S.of(context).v3_instruction1b,
+                          formatTexts: ['airsync.net'],
                           formatStyle:
                               const TextStyle(fontWeight: FontWeight.w700)),
                       style: const TextStyle(
                         color: Color(0xFF838CA6),
-                        fontSize: 16,
+                        fontSize: 21,
                       ),
-                    ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Image(
+                image: Svg('assets/images/ic_item2.svg'),
+                height: 27,
+                width: 27,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: AutoSizeText(
+                  S.of(context).v3_instruction2,
+                  style: const TextStyle(
+                    color: Color(0xFF838CA6),
+                    fontSize: 21,
                   ),
-                ],
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 35),
+            child: AutoSizeText(
+              _getDisplayCodeVisualIdentity(instanceInfoProvider.displayCode),
+              style: const TextStyle(
+                color: Color(0xFF636D8A),
+                fontSize: 45,
+                fontWeight: FontWeight.w700,
               ),
             ),
-          ],
-        ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Image(
+                image: Svg('assets/images/ic_item3.svg'),
+                height: 27,
+                width: 27,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: AutoSizeText(
+                  S.of(context).v3_instruction3,
+                  style: const TextStyle(
+                    color: Color(0xFF838CA6),
+                    fontSize: 21,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: ValueListenableBuilder<int>(
+                  valueListenable: channelProvider.countDownProgress,
+                  builder: (_, progress, __) {
+                    return Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.rotationY(math.pi),
+                      child: SizedBox(
+                        width: 26,
+                        height: 26,
+                        child: CircularProgressIndicator(
+                          value: progress / channelProvider.maxCountDown,
+                          strokeWidth: 4,
+                          backgroundColor: const Color(0xFFE9EAF0),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                              Color(0xFF636D8A)),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 35),
+            child: ValueListenableBuilder<int>(
+              valueListenable: channelProvider.otp,
+              builder: (_, otp, __) {
+                return AutoSizeText(
+                  otp.toString(),
+                  style: const TextStyle(
+                    color: Color(0xFF636D8A),
+                    fontSize: 45,
+                    fontWeight: FontWeight.w700,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       );
     });
   }

@@ -73,5 +73,15 @@
   "v3_instruction1b": "Open the AisSync app",
   "v3_instruction2": "Enter display code",
   "v3_instruction3": "Enter one-time password",
-  "v3_instruction_support": "Supports sharing via AirPlay, Google Cast or Miracast"
+  "v3_instruction_support": "Supports sharing via AirPlay, Google Cast or Miracast",
+  "v3_qrcode_quick_connect": "Quick Connect",
+  "v3_quick_connect_menu_display_code": "Display Code",
+  "v3_quick_connect_menu_qrcode": "QR Code",
+  "v3_shortcuts_menu_title": "Shortcuts",
+  "v3_shortcuts_cast_device": "Cast to devices",
+  "v3_shortcuts_cast_device_desc": "Cast your screen to multiple devices, including laptops, tablets and mobile devices simultaneously.",
+  "v3_shortcuts_mirroring": "Mirroring",
+  "v3_shortcuts_airplay": "AirPlay",
+  "v3_shortcuts_google_cast": "Google Cast",
+  "v3_shortcuts_miracast": "Miracast"
 }

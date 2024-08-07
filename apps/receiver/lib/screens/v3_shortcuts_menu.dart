@@ -1,0 +1,276 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:provider/provider.dart';
+
+class V3ShortcutsMenu extends StatelessWidget {
+  const V3ShortcutsMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      alignment: Alignment.bottomLeft,
+      backgroundColor: const Color(0xFF151C32),
+      insetPadding: const EdgeInsets.only(left: 8, bottom: 8),
+      child: SizedBox(
+        width: 226,
+        height: 358,
+        child: Stack(
+          children: [
+            Positioned(
+              left: 13,
+              top: 13,
+              child: AutoSizeText(
+                S.of(context).v3_shortcuts_menu_title,
+                style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white),
+              ),
+            ),
+            Positioned(
+              left: 13,
+              top: 57,
+              right: 13,
+              child: Column(
+                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          AutoSizeText(
+                            S.of(context).v3_shortcuts_cast_device,
+                            style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white),
+                          ),
+                          const Spacer(),
+                          Consumer<ChannelProvider>(
+                              builder: (_, channelProvider, __) {
+                            return SizedBox(
+                              height: 21,
+                              child: IconButton(
+                                icon: Image(
+                                  image: Svg(ChannelProvider.isSenderMode
+                                      ? 'assets/images/ic_switch_on.svg'
+                                      : 'assets/images/ic_switch_off.svg'),
+                                ),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                onPressed: () {
+                                  ChannelProvider.isSenderMode =
+                                      !ChannelProvider.isSenderMode;
+                                  if (!ChannelProvider.isSenderMode) {
+                                    channelProvider.removeSender();
+                                  } else {
+                                    channelProvider.startRemoteScreen();
+                                  }
+                                },
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                      AutoSizeText(
+                        S.of(context).v3_shortcuts_cast_device_desc,
+                        style: const TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF838CA6),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Container(
+                      height: 1,
+                      color: const Color(0xFF3C455D),
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AutoSizeText(
+                        S.of(context).v3_shortcuts_mirroring,
+                        style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 13,
+                            ),
+                            child: AutoSizeText(
+                              S.of(context).v3_shortcuts_airplay,
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white),
+                            ),
+                          ),
+                          Consumer<MirrorStateProvider>(
+                              builder: (_, mirrorStateProvider, __) {
+                            return SizedBox(
+                              height: 21,
+                              child: IconButton(
+                                icon: Image(
+                                  image: Svg(mirrorStateProvider.airplayEnabled
+                                      ? 'assets/images/ic_switch_on.svg'
+                                      : 'assets/images/ic_switch_off.svg'),
+                                ),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                onPressed: () {
+                                  ChannelProvider channelProvider =
+                                      Provider.of<ChannelProvider>(context,
+                                          listen: false);
+                                  if (mirrorStateProvider.airplayEnabled) {
+                                    mirrorStateProvider.stopAirPlay();
+                                    channelProvider.blockRtcConnection = false;
+                                  } else {
+                                    mirrorStateProvider.startAirPlay();
+                                    channelProvider.blockRtcConnection = true;
+                                  }
+                                },
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 13,
+                            ),
+                            child: AutoSizeText(
+                              S.of(context).v3_shortcuts_google_cast,
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white),
+                            ),
+                          ),
+                          Consumer<MirrorStateProvider>(
+                              builder: (_, mirrorStateProvider, __) {
+                            return SizedBox(
+                              height: 21,
+                              child: IconButton(
+                                icon: Image(
+                                  image: Svg(
+                                      mirrorStateProvider.googleCastEnabled
+                                          ? 'assets/images/ic_switch_on.svg'
+                                          : 'assets/images/ic_switch_off.svg'),
+                                ),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                onPressed: () {
+                                  ChannelProvider channelProvider =
+                                      Provider.of<ChannelProvider>(context,
+                                          listen: false);
+                                  if (mirrorStateProvider.googleCastEnabled) {
+                                    mirrorStateProvider.stopGoogleCast();
+                                    channelProvider.blockRtcConnection = false;
+                                  } else {
+                                    mirrorStateProvider.startGoogleCast();
+                                    channelProvider.blockRtcConnection = true;
+                                  }
+                                },
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 13,
+                            ),
+                            child: AutoSizeText(
+                              S.of(context).v3_shortcuts_miracast,
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white),
+                            ),
+                          ),
+                          Consumer<MirrorStateProvider>(
+                              builder: (_, mirrorStateProvider, __) {
+                            return SizedBox(
+                              height: 21,
+                              child: IconButton(
+                                icon: Image(
+                                  image: Svg(mirrorStateProvider.miracastEnabled
+                                      ? 'assets/images/ic_switch_on.svg'
+                                      : 'assets/images/ic_switch_off.svg'),
+                                ),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                onPressed: () {
+                                  ChannelProvider channelProvider =
+                                      Provider.of<ChannelProvider>(context,
+                                          listen: false);
+                                  if (mirrorStateProvider.miracastEnabled) {
+                                    mirrorStateProvider.stopMiracast();
+                                    channelProvider.blockRtcConnection = false;
+                                  } else {
+                                    mirrorStateProvider.startMiracast();
+                                    channelProvider.blockRtcConnection = true;
+                                  }
+                                },
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              left: 8,
+              bottom: 8,
+              child: SizedBox(
+                width: 33,
+                height: 33,
+                child: IconButton(
+                  icon: const Image(
+                    image: Svg('assets/images/ic_menu_close.svg'),
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () {
+                    if (navService.canPop()) {
+                      navService.goBack();
+                    }
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

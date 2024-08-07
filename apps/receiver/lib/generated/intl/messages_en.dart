@@ -164,6 +164,25 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Share your screen"),
         "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
             "Supports sharing via AirPlay, Google Cast or Miracast"),
+        "v3_qrcode_quick_connect":
+            MessageLookupByLibrary.simpleMessage("Quick Connect"),
+        "v3_quick_connect_menu_display_code":
+            MessageLookupByLibrary.simpleMessage("Display Code"),
+        "v3_quick_connect_menu_qrcode":
+            MessageLookupByLibrary.simpleMessage("QR Code"),
+        "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
+        "v3_shortcuts_cast_device":
+            MessageLookupByLibrary.simpleMessage("Cast to devices"),
+        "v3_shortcuts_cast_device_desc": MessageLookupByLibrary.simpleMessage(
+            "Cast your screen to multiple devices, including laptops, tablets and mobile devices simultaneously."),
+        "v3_shortcuts_google_cast":
+            MessageLookupByLibrary.simpleMessage("Google Cast"),
+        "v3_shortcuts_menu_title":
+            MessageLookupByLibrary.simpleMessage("Shortcuts"),
+        "v3_shortcuts_miracast":
+            MessageLookupByLibrary.simpleMessage("Miracast"),
+        "v3_shortcuts_mirroring":
+            MessageLookupByLibrary.simpleMessage("Mirroring"),
         "vbs_ota_progress_msg":
             MessageLookupByLibrary.simpleMessage("Downloading system updates")
       };
