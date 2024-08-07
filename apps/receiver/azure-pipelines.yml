@@ -5,7 +5,7 @@ trigger:
       - main
 
 pool:
-  vmImage: windows-2022
+  vmImage: macos-latest
 
 variables:
   - name: Flutter.Version
@@ -25,7 +25,7 @@ jobs:
       matrix:
         openproduction:
           flavor: "open-production"
-          buildOptions: '--flavor openproduction -t .\lib\main_production.dart'
+          buildOptions: '--flavor openproduction -t lib/main_production.dart'
     steps:
       - checkout: self
         persistCredentials: "true"
@@ -45,7 +45,7 @@ jobs:
           jdkArchitectureOption: "x64"
           jdkSourceOption: "PreInstalled"
 
-      - script: curl https://storage.googleapis.com/flutter_infra_release/releases/stable/windows/flutter_windows_$(Flutter.Version)-stable.zip --output $(Pipeline.Workspace)/flutter.zip
+      - script: curl https://storage.googleapis.com/flutter_infra_release/releases/stable/$(FlutterSdkPlatform)/flutter_$(FlutterSdkPlatform)_$(Flutter.Version)-stable.zip --output $(Pipeline.Workspace)/flutter.zip
         displayName: Download the flutter SDK
 
       - task: ExtractFiles@1
@@ -64,7 +64,7 @@ jobs:
         inputs:
           targetType: "inline"
           script: |
-            [xml]$doc = Get-Content -path $env:USERPROFILE\.m2\settings.xml
+            [xml]$doc = Get-Content -path ~/.m2/settings.xml
             $username=$doc.settings.servers.server.username
             $password=$doc.settings.servers.server.password
             Write-Host "##vso[task.setvariable variable=artifacts.username]$username"
