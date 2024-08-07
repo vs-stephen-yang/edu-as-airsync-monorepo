@@ -31,7 +31,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
       child: Container(
         decoration: BoxDecoration(
           color: const Color(0xCC151C32),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(9999),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

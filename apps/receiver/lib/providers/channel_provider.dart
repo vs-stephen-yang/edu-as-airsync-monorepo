@@ -228,6 +228,7 @@ class ChannelProvider extends ChangeNotifier {
       removeSender();
       ChannelProvider.isSenderMode = false;
     });
+    notifyListeners();
   }
 
   void stopRemoteScreenPublisher() {

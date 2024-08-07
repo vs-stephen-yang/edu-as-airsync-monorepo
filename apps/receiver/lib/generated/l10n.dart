@@ -800,6 +800,106 @@ class S {
       args: [],
     );
   }
+
+  /// `Quick Connect`
+  String get v3_qrcode_quick_connect {
+    return Intl.message(
+      'Quick Connect',
+      name: 'v3_qrcode_quick_connect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Display Code`
+  String get v3_quick_connect_menu_display_code {
+    return Intl.message(
+      'Display Code',
+      name: 'v3_quick_connect_menu_display_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `QR Code`
+  String get v3_quick_connect_menu_qrcode {
+    return Intl.message(
+      'QR Code',
+      name: 'v3_quick_connect_menu_qrcode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shortcuts`
+  String get v3_shortcuts_menu_title {
+    return Intl.message(
+      'Shortcuts',
+      name: 'v3_shortcuts_menu_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cast to devices`
+  String get v3_shortcuts_cast_device {
+    return Intl.message(
+      'Cast to devices',
+      name: 'v3_shortcuts_cast_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cast your screen to multiple devices, including laptops, tablets and mobile devices simultaneously.`
+  String get v3_shortcuts_cast_device_desc {
+    return Intl.message(
+      'Cast your screen to multiple devices, including laptops, tablets and mobile devices simultaneously.',
+      name: 'v3_shortcuts_cast_device_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mirroring`
+  String get v3_shortcuts_mirroring {
+    return Intl.message(
+      'Mirroring',
+      name: 'v3_shortcuts_mirroring',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AirPlay`
+  String get v3_shortcuts_airplay {
+    return Intl.message(
+      'AirPlay',
+      name: 'v3_shortcuts_airplay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Google Cast`
+  String get v3_shortcuts_google_cast {
+    return Intl.message(
+      'Google Cast',
+      name: 'v3_shortcuts_google_cast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Miracast`
+  String get v3_shortcuts_miracast {
+    return Intl.message(
+      'Miracast',
+      name: 'v3_shortcuts_miracast',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
