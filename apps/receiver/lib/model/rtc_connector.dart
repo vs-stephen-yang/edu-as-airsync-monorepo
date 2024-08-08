@@ -665,4 +665,9 @@ class RTCConnector {
         reconnectChannelState == ReconnectState.fail) return false;
     return true;
   }
+
+  bool isChannelReconnect() {
+    if (reconnectChannelState == ReconnectState.reconnecting) return true;
+    return false;
+  }
 }
