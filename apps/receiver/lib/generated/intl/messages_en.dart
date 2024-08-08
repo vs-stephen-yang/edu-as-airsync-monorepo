@@ -48,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_content_one_time_password_get_fail":
             MessageLookupByLibrary.simpleMessage(
                 "Failed to refresh password.\nPlease wait for 30 seconds before retrying."),
+        "main_feature_no_network_warning":
+            MessageLookupByLibrary.simpleMessage(""),
         "main_feature_reconnect_fail_toast":
             MessageLookupByLibrary.simpleMessage(
                 "Network (Control) reconnect fail"),

@@ -47,6 +47,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("一次性密碼"),
         "main_content_one_time_password_get_fail":
             MessageLookupByLibrary.simpleMessage("無法取得一次性密碼\n30秒後將再次執行"),
+        "main_feature_no_network_warning":
+            MessageLookupByLibrary.simpleMessage("控制網路異常，請重新連線"),
         "main_feature_reconnect_fail_toast":
             MessageLookupByLibrary.simpleMessage("網路(控制)重連失敗"),
         "main_feature_reconnect_success_toast":

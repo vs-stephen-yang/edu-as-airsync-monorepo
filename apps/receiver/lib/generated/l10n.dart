@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -725,6 +726,16 @@ class S {
     return Intl.message(
       'Only LAN connection',
       name: 'main_content_lan_only',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get main_feature_no_network_warning {
+    return Intl.message(
+      '',
+      name: 'main_feature_no_network_warning',
       desc: '',
       args: [],
     );

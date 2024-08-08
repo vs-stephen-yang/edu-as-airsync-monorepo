@@ -159,108 +159,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                       .isPresenting(index: index))
                                     SplitScreenFunction(
                                       index: index,
-                                      updateSize: () {
-                                        if (HybridConnectionList()
-                                            .isMirrorRequest(index)) {
-                                          var connection =
-                                              HybridConnectionList()
-                                                  .getConnection<MirrorRequest>(
-                                                      index);
-                                          if (connection.mirrorState ==
-                                              MirrorState.mirroring) {
-                                            _updateSizeForSelected(index);
-                                            return;
-                                          }
-                                        }
-                                        var webrtcConnector =
-                                            HybridConnectionList()
-                                                .getConnection<RTCConnector>(
-                                                    index);
-                                        if (webrtcConnector
-                                            .isChannelConnectAvailable()) {
-                                          _updateSizeForSelected(index);
-                                        } else {
-                                          webrtcConnector
-                                              .clickButtonWhenReconnect = true;
-                                          Toast.showSplitScreenReconnectToast(
-                                              context,
-                                              webrtcConnector
-                                                          .reconnectChannelState ==
-                                                      ReconnectState
-                                                          .reconnecting
-                                                  ? S
-                                                      .of(context)
-                                                      .main_feature_reconnecting_toast
-                                                  : S
-                                                      .of(context)
-                                                      .main_feature_reconnect_fail_toast,
-                                              index,
-                                              isWebRTC: false,
-                                              state: webrtcConnector
-                                                  .reconnectChannelState);
-                                        }
-                                      },
-                                      onClose: () {
-                                        if (HybridConnectionList()
-                                            .isMirrorRequest(index)) {
-                                          var connection =
-                                              HybridConnectionList()
-                                                  .getConnection<MirrorRequest>(
-                                                      index);
-                                          if (connection.mirrorState ==
-                                              MirrorState.mirroring) {
-                                            HybridConnectionList()
-                                                .stopPresenterBy(index);
-                                            return;
-                                          }
-                                        }
-                                        RTCConnector webrtcConnector =
-                                            HybridConnectionList()
-                                                .getConnection<RTCConnector>(
-                                                    index);
-                                        if (webrtcConnector
-                                            .isChannelConnectAvailable()) {
-                                          ChannelProvider channelProvider =
-                                              Provider.of<ChannelProvider>(
-                                                  context,
-                                                  listen: false);
-                                          if (channelProvider.isModeratorMode) {
-                                            HybridConnectionList()
-                                                .stopPresenterBy(index);
-                                          } else {
-                                            SplitScreenFunction
-                                                .isMenuOnList.value
-                                                .fillRange(
-                                                    0,
-                                                    SplitScreenFunction
-                                                        .isMenuOnList
-                                                        .value
-                                                        .length,
-                                                    false);
-                                            HybridConnectionList()
-                                                .removePresenterBy(index);
-                                          }
-                                        } else {
-                                          webrtcConnector
-                                              .clickButtonWhenReconnect = true;
-                                          Toast.showSplitScreenReconnectToast(
-                                              context,
-                                              webrtcConnector
-                                                          .reconnectChannelState ==
-                                                      ReconnectState
-                                                          .reconnecting
-                                                  ? S
-                                                      .of(context)
-                                                      .main_feature_reconnecting_toast
-                                                  : S
-                                                      .of(context)
-                                                      .main_feature_reconnect_fail_toast,
-                                              index,
-                                              isWebRTC: false,
-                                              state: webrtcConnector
-                                                  .reconnectChannelState);
-                                        }
-                                      },
+                                      updateSize: () =>
+                                          _handleSizeForSelected(index),
+                                      onClose: () => _handleClose(index),
                                     ),
                                 ],
                               ),
@@ -384,6 +285,60 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         ),
       ),
     );
+  }
+
+  void _handleSizeForSelected(int index) {
+    if (HybridConnectionList().isMirrorRequest(index)) {
+      var connection =
+          HybridConnectionList().getConnection<MirrorRequest>(index);
+      if (connection.mirrorState == MirrorState.mirroring) {
+        _updateSizeForSelected(index);
+        return;
+      }
+    }
+    var webrtcConnector =
+        HybridConnectionList().getConnection<RTCConnector>(index);
+    if (webrtcConnector.isChannelConnectAvailable()) {
+      _updateSizeForSelected(index);
+    } else if (webrtcConnector.isChannelReconnect()) {
+      webrtcConnector.clickButtonWhenReconnect = true;
+      Toast.showSplitScreenReconnectToast(
+          context, S.of(context).main_feature_reconnecting_toast, index,
+          isWebRTC: false, state: webrtcConnector.reconnectChannelState);
+    } else {
+      Toast.showSplitScreenReconnectToast(
+          context, S.of(context).main_feature_reconnect_fail_toast, index,
+          isWebRTC: false, state: webrtcConnector.reconnectChannelState);
+    }
+  }
+
+  void _handleClose(int index) {
+    if (HybridConnectionList().isMirrorRequest(index)) {
+      var connection =
+          HybridConnectionList().getConnection<MirrorRequest>(index);
+      if (connection.mirrorState == MirrorState.mirroring) {
+        HybridConnectionList().stopPresenterBy(index);
+        return;
+      }
+    }
+    RTCConnector webrtcConnector =
+        HybridConnectionList().getConnection<RTCConnector>(index);
+    if (webrtcConnector.isChannelReconnect()) {
+      webrtcConnector.clickButtonWhenReconnect = true;
+      Toast.showSplitScreenReconnectToast(
+          context, S.of(context).main_feature_reconnecting_toast, index,
+          isWebRTC: false, state: webrtcConnector.reconnectChannelState);
+    } else {
+      ChannelProvider channelProvider =
+          Provider.of<ChannelProvider>(context, listen: false);
+      if (channelProvider.isModeratorMode) {
+        HybridConnectionList().stopPresenterBy(index);
+      } else {
+        SplitScreenFunction.isMenuOnList.value
+            .fillRange(0, SplitScreenFunction.isMenuOnList.value.length, false);
+        HybridConnectionList().removePresenterBy(index);
+      }
+    }
   }
 
   _showMaxAmountToast() {
