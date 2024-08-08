@@ -10,7 +10,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
-import 'package:display_flutter/utility/toast.dart';
+import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -285,7 +285,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                   if (widget.rtcConnector.reconnectChannelState ==
                       ReconnectState.success) {
                     widget.rtcConnector.clickButtonWhenReconnect = false;
-                    Toast.showSplitScreenReconnectToast(
+                    V3Toast().makeSplitScreenReconnectToast(
                         context,
                         S.of(context).main_feature_reconnect_success_toast,
                         widget.index,
@@ -296,7 +296,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                   } else if (widget.rtcConnector.reconnectChannelState ==
                       ReconnectState.fail) {
                     widget.rtcConnector.clickButtonWhenReconnect = false;
-                    Toast.showSplitScreenReconnectToast(
+                    V3Toast().makeSplitScreenReconnectToast(
                         context,
                         S.of(context).main_feature_reconnect_fail_toast,
                         widget.index,
@@ -317,18 +317,18 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 if (widget.rtcConnector.reconnectRtcState ==
                     ReconnectState.reconnecting) {
-                  Toast.showSplitScreenReconnectToast(
+                  V3Toast().makeSplitScreenReconnectToast(
                       context, message, widget.index);
                 } else if (widget.rtcConnector.reconnectRtcState ==
                     ReconnectState.success) {
                   message = S.of(context).main_webrtc_reconnect_success_toast;
-                  Toast.showSplitScreenReconnectToast(
+                  V3Toast().makeSplitScreenReconnectToast(
                       context, message, widget.index);
                   widget.rtcConnector.reconnectRtcState = ReconnectState.idle;
                 } else if (widget.rtcConnector.reconnectRtcState ==
                     ReconnectState.fail) {
                   message = S.of(context).main_webrtc_reconnect_fail_toast;
-                  Toast.showSplitScreenReconnectToast(
+                  V3Toast().makeSplitScreenReconnectToast(
                       context, message, widget.index);
                   widget.rtcConnector.reconnectRtcState = ReconnectState.idle;
                 }
