@@ -6,6 +6,7 @@ import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/utility/toast.dart';
+import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:display_flutter/widgets/split_screen_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -70,7 +71,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                           isWebRTC: false,
                           state: webrtcConnector.reconnectChannelState);
                     } else {
-                      Toast.showSplitScreenReconnectToast(
+                      V3Toast().makeSplitScreenReconnectToast(
                           context,
                           S.of(context).main_feature_reconnect_fail_toast,
                           widget.index,
@@ -127,7 +128,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                       .getConnection<RTCConnector>(widget.index);
                   if (webrtcConnector.isChannelReconnect()) {
                     webrtcConnector.clickButtonWhenReconnect = true;
-                    Toast.showSplitScreenReconnectToast(
+                    V3Toast().makeSplitScreenReconnectToast(
                         context,
                         S.of(context).main_feature_reconnecting_toast,
                         widget.index,
