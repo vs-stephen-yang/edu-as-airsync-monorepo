@@ -1,0 +1,228 @@
+trigger: none
+pr: none
+
+pool:
+  vmImage: macos-latest
+
+variables:
+  - name: Flutter.Version
+    value: "3.22.3"
+  - name: Flutter.Bin
+    value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
+  - name: FlutterSdkPlatform
+    value: "macos"
+  - name: PUB_CACHE
+    value: $(Pipeline.Workspace)/.pub-cache
+  - name: GRADLE_USER_HOME
+    value: $(Pipeline.Workspace)/.gradle
+  - name: GRADLE_OPTS
+    value: "-Dorg.gradle.jvmargs=-Xmx5g"
+  - name: Flutter.Verbose
+    value: ""
+  - name: Flutter.Build.Options
+    value: "--no-pub --obfuscate --split-debug-info=debug_info/"
+  - name: Signing.Arguments
+    value: "--min-sdk-version 21"
+  - group: "ifp-keystore-secrets"
+  - group: "store-keystore-secrets"
+
+jobs:
+  - job: Build
+    strategy:
+      maxParallel: 4
+      matrix:
+        edlaStage:
+          flavor: "edlaStage"
+          channel: "edla"
+          target: "stage"
+          appFileExt: '.apk'
+          signingConfig: "ifp"
+          splitPerAbi: true
+
+        edlaProduction:
+          flavor: "edlaProduction"
+          channel: "edla"
+          target: "production"
+          appFileExt: '.apk'
+          signingConfig: "ifp"
+          splitPerAbi: true
+
+        ifpStage:
+          flavor: "ifpStage"
+          channel: "ifp"
+          target: "stage"
+          appFileExt: '.apk'
+          signingConfig: "ifp"
+          splitPerAbi: true
+
+        ifpProduction:
+          flavor: "ifpProduction"
+          channel: "ifp"
+          target: "production"
+          appFileExt: '.apk'
+          signingConfig: "ifp"
+          splitPerAbi: true
+
+        openStage:
+          flavor: "openStage"
+          channel: "open"
+          target: "stage"
+          appFileExt: '.apk'
+          signingConfig: "store"
+
+        openProduction:
+          flavor: "openProduction"
+          channel: "open"
+          target: "production"
+          appFileExt: '.apk'
+          signingConfig: "store"
+
+        storeStage:
+          flavor: "storeStage"
+          channel: "store"
+          target: "stage"
+          appFileExt: '.aab'
+          signingConfig: "store"
+          appbundle: true
+
+        storeProduction:
+          flavor: "storeProduction"
+          channel: "store"
+          target: "production"
+          appFileExt: '.aab'
+          signingConfig: "store"
+          appbundle: true
+    steps:
+      - checkout: self
+        fetchDepth: 1
+        fetchTags: "false"
+        persistCredentials: "true"
+
+      - task: PowerShell@2
+        displayName: Authenticates git repos
+        inputs:
+          targetType: "inline"
+          script: |
+            $header = "AUTHORIZATION: bearer $(System.AccessToken)"
+            git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
+
+      - task: JavaToolInstaller@0
+        inputs:
+          versionSpec: "17"
+          jdkArchitectureOption: "x64"
+          jdkSourceOption: "PreInstalled"
+
+      - script: curl https://storage.googleapis.com/flutter_infra_release/releases/stable/$(FlutterSdkPlatform)/flutter_$(FlutterSdkPlatform)_$(Flutter.Version)-stable.zip --output $(Pipeline.Workspace)/flutter.zip
+        displayName: Download the flutter SDK
+
+      - task: ExtractFiles@1
+        displayName: Extract the flutter SDK
+        inputs:
+          archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
+          destinationFolder: "$(Pipeline.Workspace)/flutter"
+
+      - task: MavenAuthenticate@0
+        displayName: "Provides maven credentials for Azure Artifacts"
+        inputs:
+          artifactsFeeds: "myViewBoard_Artifacts"
+
+      - task: PowerShell@2
+        displayName: Extract the credentials of Azure Artifacts
+        inputs:
+          targetType: "inline"
+          script: |
+            [xml]$doc = Get-Content -path ~/.m2/settings.xml
+            $username=$doc.settings.servers.server.username
+            $password=$doc.settings.servers.server.password
+            Write-Host "##vso[task.setvariable variable=artifacts.username]$username"
+            Write-Host "##vso[task.setvariable variable=artifacts.password;issecret=true]$password"
+
+      - task: Cache@2
+        enabled: "false"
+        displayName: Configure Gradle caching
+        inputs:
+          key: 'gradle | "$(Agent.OS)" | android/**/build.gradle'
+          restoreKeys: |
+            gradle | "$(Agent.OS)"
+            gradle
+          path: $(GRADLE_USER_HOME)
+
+      - script: $(Flutter.Bin) pub get
+        displayName: Download packages
+
+      - script: $(Flutter.Bin) analyze --no-fatal-infos
+        enabled: "true"
+        displayName: Run lint checks
+
+      # Build Single APK
+      - script: $(Flutter.Bin) $(Flutter.Verbose) build apk --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options)
+        displayName: Build Single APK
+        condition: ne(variables['appbundle'], true)
+        env:
+          GRADLE_OPTS: $(GRADLE_OPTS)
+          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME: $(artifacts.username)
+          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD: $(artifacts.password)
+
+      # Build Split APK
+      - script: $(Flutter.Bin) $(Flutter.Verbose) build apk --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options) --split-per-abi
+        displayName: Build Split APK
+        condition: eq(variables['splitPerAbi'], true)
+        env:
+          GRADLE_OPTS: $(GRADLE_OPTS)
+          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME: $(artifacts.username)
+          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD: $(artifacts.password)
+
+      # Build App bundle
+      - script: $(Flutter.Bin) $(Flutter.Verbose) build appbundle --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options)
+        displayName: Build App Bundle
+        condition: eq(variables['appbundle'], true)
+        env:
+          GRADLE_OPTS: $(GRADLE_OPTS)
+          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME: $(artifacts.username)
+          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD: $(artifacts.password)
+
+      # Stop Gradle daemon
+      - script: ./gradlew --stop
+        displayName: Stop Gradle daemon
+        workingDirectory: "$(Build.SourcesDirectory)/android/"
+
+      - task: AndroidSigning@3
+        displayName: Sign App - ifp
+        condition: eq(variables['signingConfig'], 'ifp')
+        inputs:
+          apkFiles: '$(Build.SourcesDirectory)/build/app/outputs/**/*$(appFileExt)'
+          keystoreFile: ifp.keystore
+          keystorePass: $(ifp.keystore.password)
+          keystoreAlias: $(ifp.keystore.alias)
+          keyPass: '$(ifp.key.password)'
+          apksignerArguments: $(Signing.Arguments)
+
+      - task: AndroidSigning@3
+        displayName: Sign App - store
+        condition: eq(variables['signingConfig'], 'store')
+        inputs:
+          apkFiles: '$(Build.SourcesDirectory)/build/app/outputs/**/*$(appFileExt)'
+          keystoreFile: store.keystore
+          keystorePass: $(store.keystore.password)
+          keystoreAlias: $(store.keystore.alias)
+          keyPass: '$(store.key.password)'
+          apksignerArguments: $(Signing.Arguments)
+
+      # Prepare to publish
+      - task: CopyFiles@2
+        displayName: Copy artifacts
+        inputs:
+          flattenFolders: true
+          contents: |
+            build/app/outputs/flutter-apk/*.apk
+            build/app/outputs/bundle/**/*.aab
+
+          targetFolder: "$(Build.ArtifactStagingDirectory)/$(channel)"
+
+      # Publish artifacts
+      - task: PublishBuildArtifacts@1
+        displayName: Publish build
+        inputs:
+          pathToPublish: "$(Build.ArtifactStagingDirectory)"
+          ArtifactName: "$(target)"
+          Parallel: true
