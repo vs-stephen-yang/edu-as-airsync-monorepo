@@ -23,7 +23,7 @@ class HybridConnectionList {
 
   static const int maxHybridConnection = 6;
 
-  static const int maxHybridSplitScreen = 4;
+  static const int maxHybridSplitScreen = 6;
 
   ValueNotifier<int?> enlargedScreenIndex = ValueNotifier(null);
 

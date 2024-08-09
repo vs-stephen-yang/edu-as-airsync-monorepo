@@ -188,22 +188,30 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
               widget.rtcConnector.senderNameWithEllipsis.isNotEmpty)
             Align(
               alignment: Alignment.topCenter,
-              child: ConstrainedBox(
-                constraints:
-                    const BoxConstraints.tightFor(height: 30, width: 160),
-                child: Container(
-                  padding: const EdgeInsets.all(5),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
-                  ),
-                  child: AutoSizeText(
-                    widget.rtcConnector.senderNameWithEllipsis,
-                    style: const TextStyle(fontSize: 20),
-                    maxLines: 1,
-                  ),
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    height: 24,
+                    padding: const EdgeInsets.only(
+                        left: 8, top: 1, right: 8, bottom: 5),
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10)),
+                      color: Color(0xFF20273E),
+                    ),
+                    child: AutoSizeText(
+                      widget.rtcConnector.senderNameWithEllipsis,
+                      style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white),
+                      maxLines: 1,
+                    ),
+                  )
+                ],
               ),
             ),
           if (widget.rtcConnector.presentationState ==

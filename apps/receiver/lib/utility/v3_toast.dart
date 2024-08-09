@@ -79,38 +79,69 @@ class V3Toast {
   OverlayEntry _buildSplitScreenReconnectToast(
       BuildContext context, String message, int index) {
     Size screenSize = MediaQuery.of(context).size;
-    double sectionWidth = screenSize.width / 2;
-    double sectionHeight = screenSize.height / 2;
+    double toastWidth = 300;
+    double toastPadding = 83;
+    double halfWidth = screenSize.width / 2;
+    double halfHeight = screenSize.height / 2;
+    double thirdWidth = screenSize.width / 3;
     double? top, left;
-    if (HybridConnectionList().enlargedScreenIndex.value == null) {
-      if (index == 1) {
-        top = sectionHeight - 80;
-        left = sectionWidth + (sectionWidth / 2 - 80);
-      } else if (index == 2) {
-        top = sectionHeight * 2 - 80;
-        left = sectionWidth / 2 - 80;
-      } else if (index == 3) {
-        top = sectionHeight * 2 - 80;
-        left = sectionWidth + (sectionWidth / 2 - 80);
-      } else {
-        if (HybridConnectionList.hybridSplitScreenCount.value > 1) {
-          top = sectionHeight - 80;
-          left = sectionWidth / 2 - 80;
-        } else {
-          top = screenSize.height - 80;
-          left = screenSize.width / 2 - 80;
-        }
-      }
+    if (HybridConnectionList().enlargedScreenIndex.value != null) {
+      top = screenSize.height - toastPadding;
+      left = (screenSize.width - toastWidth) / 2;
     } else {
-      top = screenSize.height - 80;
-      left = screenSize.width / 2 - 80;
+      if (HybridConnectionList.hybridSplitScreenCount.value > 4) {
+        if (index == 1) {
+          top = halfHeight - toastPadding;
+          left = thirdWidth + (thirdWidth - toastWidth) / 2;
+        } else if (index == 2) {
+          top = halfHeight - toastPadding;
+          left = thirdWidth * 2 + (thirdWidth - toastWidth) / 2;
+        } else if (index == 3) {
+          top = halfHeight * 2 - toastPadding;
+          left = (thirdWidth - toastWidth) / 2;
+        } else if (index == 4) {
+          top = halfHeight * 2 - toastPadding;
+          left = thirdWidth + (thirdWidth - toastWidth) / 2;
+        } else if (index == 5) {
+          top = halfHeight * 2 - toastPadding;
+          left = thirdWidth * 2 + (thirdWidth - toastWidth) / 2;
+        } else {
+          top = halfHeight - toastPadding;
+          left = (thirdWidth - toastWidth) / 2;
+        }
+      } else if (HybridConnectionList.hybridSplitScreenCount.value > 2) {
+        if (index == 1) {
+          top = halfHeight - toastPadding;
+          left = halfWidth + (halfWidth - toastWidth) / 2;
+        } else if (index == 2) {
+          top = halfHeight * 2 - toastPadding;
+          left = (halfWidth - toastWidth) / 2;
+        } else if (index == 3) {
+          top = halfHeight * 2 - toastPadding;
+          left = halfWidth + (halfWidth - toastWidth) / 2;
+        } else {
+          top = halfHeight - toastPadding;
+          left = (halfWidth - toastWidth) / 2;
+        }
+      } else if (HybridConnectionList.hybridSplitScreenCount.value > 1) {
+        if (index == 1) {
+          top = screenSize.height - toastPadding;
+          left = halfWidth + (halfWidth - toastWidth) / 2;
+        } else {
+          top = screenSize.height - toastPadding;
+          left = (halfWidth - toastWidth) / 2;
+        }
+      } else {
+        top = screenSize.height - toastPadding;
+        left = (screenSize.width - toastWidth) / 2;
+      }
     }
 
     OverlayEntry toast = OverlayEntry(
       builder: (BuildContext context) => Positioned(
         left: left,
         top: top,
-        width: 298, // Width of the Toast
+        width: toastWidth,
         child: Material(
           color: Colors.transparent,
           child: Container(
