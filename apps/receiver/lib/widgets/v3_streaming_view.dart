@@ -18,7 +18,11 @@ class V3StreamingView extends StatefulWidget {
 }
 
 class _V3StreamingViewState extends State<V3StreamingView> {
-  double _fullWidth = 0, _fullHeight = 0, _halfWidth = 0, _halfHeight = 0;
+  double _fullWidth = 0,
+      _fullHeight = 0,
+      _halfWidth = 0,
+      _halfHeight = 0,
+      _thirdWidth = 0;
   final isAnnotationImplement = false; // todo: annotation
 
   @override
@@ -28,6 +32,7 @@ class _V3StreamingViewState extends State<V3StreamingView> {
     _fullHeight = size.height;
     _halfWidth = size.width / 2;
     _halfHeight = size.height / 2;
+    _thirdWidth = size.width / 3;
     return Stack(
       children: [
         ValueListenableBuilder(
@@ -37,25 +42,76 @@ class _V3StreamingViewState extends State<V3StreamingView> {
               children: [
                 Stack(
                   children: List.generate(splitScreenCount, (index) {
-                    double? left, top, right, bottom;
-                    if (index == 1) {
-                      right = 0;
-                      top = 0;
-                    } else if (index == 2) {
-                      left = 0;
-                      bottom = 0;
-                    } else if (index == 3) {
-                      right = 0;
-                      bottom = 0;
-                    } else {
-                      // index 0 and default.
-                      left = 0;
-                      top = 0;
-                    }
                     return ValueListenableBuilder(
                       valueListenable:
                           HybridConnectionList().enlargedScreenIndex,
                       builder: (context, enlargedIndex, child) {
+                        double? left, top, right, bottom;
+                        if (enlargedIndex != null) {
+                          // enlarged screen
+                          left = 0;
+                          top = 0;
+                        } else {
+                          // no enlarged screen
+                          if (splitScreenCount <= 2) {
+                            // index 0: left (default)
+                            // index 1: right
+                            if (index == 1) {
+                              right = 0;
+                              top = 0;
+                            } else {
+                              left = 0;
+                              top = 0;
+                            }
+                          } else if (splitScreenCount <= 4) {
+                            // index 0: left-top (default)
+                            // index 1: right-top
+                            // index 2: left-bottom
+                            // index 3: right-bottom
+                            if (index == 1) {
+                              right = 0;
+                              top = 0;
+                            } else if (index == 2) {
+                              left = 0;
+                              bottom = 0;
+                            } else if (index == 3) {
+                              right = 0;
+                              bottom = 0;
+                            } else {
+                              left = 0;
+                              top = 0;
+                            }
+                          } else if (splitScreenCount <= 6) {
+                            // index 0: left-top  (default)
+                            // index 1: middle-top
+                            // index 2: right-top
+                            // index 3: left-bottom
+                            // index 4: middle-bottom
+                            // index 5: right-bottom
+                            if (index == 1) {
+                              left = _thirdWidth;
+                              top = 0;
+                            } else if (index == 2) {
+                              right = 0;
+                              top = 0;
+                            } else if (index == 3) {
+                              left = 0;
+                              bottom = 0;
+                            } else if (index == 4) {
+                              left = _thirdWidth;
+                              bottom = 0;
+                            } else if (index == 5) {
+                              right = 0;
+                              bottom = 0;
+                            } else {
+                              left = 0;
+                              top = 0;
+                            }
+                          } else {
+                            left = 0;
+                            top = 0;
+                          }
+                        }
                         return Positioned(
                           left: left,
                           top: top,
@@ -192,18 +248,24 @@ class _V3StreamingViewState extends State<V3StreamingView> {
     required int? enlargedScreenIndex,
     required bool isWidth,
   }) {
-    if (enlargedScreenIndex == index) {
+    if (enlargedScreenIndex != null) {
       // enlarged screen
-      return isWidth ? _fullWidth : _fullHeight;
-    } else if (enlargedScreenIndex != null) {
-      // one of the screens is enlarged
-      return 0;
+      if (enlargedScreenIndex == index) {
+        return isWidth ? _fullWidth : _fullHeight;
+      } else {
+        return 0;
+      }
     } else {
       // no enlarged screen
-      if (splitScreenCount == 1) {
+      if (splitScreenCount > 4) {
+        return isWidth ? _thirdWidth : _halfHeight;
+      } else if (splitScreenCount > 2) {
+        return isWidth ? _halfWidth : _halfHeight;
+      } else if (splitScreenCount > 1) {
+        return isWidth ? _halfWidth : _fullHeight;
+      } else {
         return isWidth ? _fullWidth : _fullHeight;
       }
-      return isWidth ? _halfWidth : _halfHeight;
     }
   }
 
