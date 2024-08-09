@@ -280,6 +280,35 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 }
                 return const SizedBox.shrink();
               }),
+              ValueListenableBuilder(
+                  valueListenable: ChannelProvider.showReconnectWarnToast,
+                  builder: (BuildContext context, bool value, Widget? child) {
+                    if (value) {
+                      for (RTCConnector connector in HybridConnectionList()
+                          .getRtcConnectorMap()
+                          .values) {
+                        if (connector.reconnectChannelState ==
+                                ReconnectState.fail &&
+                            connector.presentationState ==
+                                PresentationState.stopStreaming) {
+                          ChannelProvider channelProvider =
+                              Provider.of<ChannelProvider>(context,
+                                  listen: false);
+                          if (channelProvider.isModeratorMode) {
+                            Future.delayed(Duration.zero, () {
+                              Toast.makeReconnectToast(
+                                connector.reconnectChannelState,
+                                '${connector.senderNameWithEllipsis} ${S.of(context).main_feature_no_network_warning}',
+                              )?.show(context);
+                              ChannelProvider.showReconnectWarnToast.value =
+                                  false;
+                            });
+                          }
+                        }
+                      }
+                    }
+                    return Container();
+                  }),
             ],
           ),
         ),

@@ -106,6 +106,9 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  static ValueNotifier<bool> showReconnectWarnToast =
+      ValueNotifier<bool>(false);
+
   ChannelProvider(
     this.appConfig,
     this._instanceInfo,
@@ -498,6 +501,11 @@ class ChannelProvider extends ChangeNotifier {
       }
       if (presenting) {
         Home.enlargedScreenPositionIndex.value = null;
+      } else {
+        if (reason == 'Channel reconnect timeout') {
+          showReconnectWarnToast.value = true;
+          await Future.delayed(const Duration(seconds: 1));
+        }
       }
       await rtcConnector.close(ChannelCloseCode.close, reason: reason);
       HybridConnectionList().removeConnection(rtcConnector);

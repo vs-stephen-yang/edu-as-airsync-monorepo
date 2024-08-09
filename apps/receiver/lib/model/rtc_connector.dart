@@ -157,9 +157,6 @@ class RTCConnector {
         // The channel will no longer switch its state to "closed" solely because of a disconnection.
         // This means that if a disconnection occurs, the channel will continuously attempt to reconnect without changing the state to "closed".
         // A state change to "closed" will only occur if there is an explicit close request from the peer.
-
-        await disconnectPeerConnection();
-        await disconnectChannel(reason: 'Channel closed');
         break;
     }
   }
@@ -206,7 +203,7 @@ class RTCConnector {
     if (reconnectChannelState == ReconnectState.reconnecting) {
       reconnectChannelState = ReconnectState.fail;
     }
-    await disconnectPeerConnection();
+
     await disconnectChannel(reason: 'Channel reconnect timeout');
   }
 
@@ -562,7 +559,8 @@ class RTCConnector {
       }
       ConnectionTimer.getInstance().stopRemainingTimeTimer();
       await disconnectPeerConnection();
-      await disconnectChannel(reason: 'RTC connection failed');
+      await disconnectChannel(
+          reason: 'RTC connection failed'); // todo: WebRTC連線fail, 不影響moderator
     }
   }
 
