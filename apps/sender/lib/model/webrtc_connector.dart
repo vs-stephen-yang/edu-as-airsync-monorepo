@@ -40,6 +40,7 @@ class WebRTCConnector {
   bool get isFirstConnected {
     return _isRtcFirstConnected;
   }
+
   bool _isRtcFirstConnected = false;
 
   // change present quality
@@ -184,8 +185,7 @@ class WebRTCConnector {
     }
     description.sdp = capSel.sdp();
 
-    log.info(
-        'modifySDPForCodecPreferences vcodec:${_codecPreferences[0]}');
+    log.info('modifySDPForCodecPreferences vcodec:${_codecPreferences[0]}');
   }
 
   Future<bool> _publish() async {
@@ -400,7 +400,8 @@ class WebRTCConnector {
 
       bool result = await _updateEncodingParameters();
       log.info('updateEncodingParameters result: {$result}');
-    } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateDisconnected) {
+    } else if (state ==
+        RTCPeerConnectionState.RTCPeerConnectionStateDisconnected) {
       reconnectState = ChannelReconnectState.reconnecting;
     } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
       if (reconnectState == ChannelReconnectState.reconnecting) {
@@ -425,7 +426,9 @@ class WebRTCConnector {
       return false;
     }
     var senders = await _pc!.getSenders();
-    var sender = senders.firstWhereOrNull((sender) => sender.track?.kind == 'video');
+    var sender = senders.firstWhereOrNull(
+      (sender) => sender.track?.kind == 'video',
+    );
     if (sender == null) {
       return false;
     }
@@ -588,7 +591,8 @@ class WebRTCConnector {
   void onVideoStatsReports(List<StatsReport> reports) {
     if (reports.length != _outboundVideoCount) {
       _outboundVideoCount = reports.length;
-      log.info('The number of outbound videos has changed to ${reports.length}');
+      log.info(
+          'The number of outbound videos has changed to ${reports.length}');
     }
 
     if (reports.isEmpty) {
