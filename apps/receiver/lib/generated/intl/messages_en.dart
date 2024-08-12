@@ -185,6 +185,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Mirroring"),
         "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
             "Waiting for this participant to share their screen"),
+        "v3_waiting_join":
+            MessageLookupByLibrary.simpleMessage("Waiting for others to join"),
         "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("Up Next"),
         "vbs_ota_progress_msg":
             MessageLookupByLibrary.simpleMessage("Downloading system updates")
