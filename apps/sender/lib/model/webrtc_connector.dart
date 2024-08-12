@@ -33,7 +33,7 @@ class WebRTCConnector {
 
   dynamic _deviceId;
   RTCPeerConnection? _pc;
-  RTCDataChannel? _dc;
+  RTCDataChannel? _touchbackDataChannel;
   MediaStream? _localStream;
   List<RTCIceCandidate> remoteCandidates = [];
 
@@ -188,9 +188,26 @@ class WebRTCConnector {
     log.info('modifySDPForCodecPreferences vcodec:${_codecPreferences[0]}');
   }
 
+  Future<void> _createTouchbackDataChannel() async {
+    // Create a data channel for touchback event
+    _touchbackDataChannel = await _pc?.createDataChannel(
+      'pc-dc',
+      RTCDataChannelInit()..id = 1,
+    );
+
+    _touchbackDataChannel!.onDataChannelState = (state) {
+      log.info('Data channel state of touchback: ${state.name}');
+
+      AppAnalytics.instance.trackEvent('dc_state', properties: {
+        'target': state.name,
+      });
+    };
+
+    _touchbackDataChannel!.onMessage = _onTouchbackMessage;
+  }
+
   Future<bool> _publish() async {
-    _dc = await _pc?.createDataChannel('pc-dc', RTCDataChannelInit()..id = 1);
-    _setDataChannelListeners(_dc!);
+    await _createTouchbackDataChannel();
 
     _trackFrameRate = _defaultFrameRate;
     _trackWidth = _maxTrackWidth;
@@ -313,19 +330,7 @@ class WebRTCConnector {
     }
   }
 
-  void _setDataChannelListeners(RTCDataChannel dc) {
-    dc.onDataChannelState = _onDataChannelState;
-    dc.onMessage = _onMessage;
-  }
-
-  void _onDataChannelState(RTCDataChannelState state) {
-    log.info('Data channel state: ${state.name}');
-    AppAnalytics.instance.trackEvent('dc_state', properties: {
-      'target': state.name,
-    });
-  }
-
-  void _onMessage(RTCDataChannelMessage data) async {
+  void _onTouchbackMessage(RTCDataChannelMessage data) async {
     if (!data.isBinary) {
       return;
     }
