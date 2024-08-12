@@ -4,7 +4,6 @@ import 'dart:io' show Platform;
 import 'package:collection/collection.dart';
 import 'package:display_cast_flutter/features/protoc/event.pb.dart';
 import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
-import 'package:display_cast_flutter/model/message.dart';
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
@@ -45,7 +44,7 @@ class WebRTCConnector {
 
   // change present quality
   bool _streamPublished = false;
-  Map<String, dynamic>? _pendingChangePresentQuality;
+  ChangePresentQuality? _pendingChangePresentQuality;
 
   double _screenWidth = 1920.0;
   double _screenHeight = 1080.0;
@@ -463,25 +462,28 @@ class WebRTCConnector {
     return result;
   }
 
-  Future changePresentQuality(Map<String, dynamic> json) async {
+  Future changePresentQuality(ChangePresentQuality msg) async {
     if (!_streamPublished) {
-      _pendingChangePresentQuality = json;
+      _pendingChangePresentQuality = msg;
       return;
     }
 
-    final msg = PresentChangeQualityMessage.fromJson(json);
+    final constraints = msg.constraints;
+    if (constraints == null) {
+      return;
+    }
 
-    if (msg.height == _trackHeight) return;
+    if (constraints.height == _trackHeight) return;
 
-    if (msg.height > _maxTrackHeight) {
+    if (constraints.height! > _maxTrackHeight) {
       // make sure the width/height is not greater than the max width
       _trackWidth = _maxTrackWidth;
       _trackHeight = _maxTrackHeight;
     } else {
-      _trackWidth = _maxTrackWidth ~/ (_maxTrackHeight / msg.height);
-      _trackHeight = msg.height;
+      _trackWidth = _maxTrackWidth ~/ (_maxTrackHeight / constraints.height!);
+      _trackHeight = constraints.height!;
     }
-    _trackFrameRate = msg.frameRate.toDouble();
+    _trackFrameRate = constraints.frameRate!.toDouble();
 
     if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
       final constraints = <String, dynamic>{
