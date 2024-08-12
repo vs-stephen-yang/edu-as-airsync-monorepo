@@ -126,8 +126,8 @@ class WebRTCHelper {
     await webRTCConnector?.handleSignal(message);
   }
 
-  Future<void> receiveChangeQuality(ChannelMessage message) async {
-    await webRTCConnector?.changePresentQuality(message.toJson());
+  Future<void> receiveChangeQuality(ChangePresentQuality message) async {
+    await webRTCConnector?.changePresentQuality(message);
   }
 
   Future<bool> changeHighQuality(Preset preset) async {

@@ -298,7 +298,9 @@ class ChannelProvider extends ChangeNotifier {
           WebRTCHelper().receiveSignalMessage(message as PresentSignalMessage);
           break;
         case ChannelMessageType.changePresentQuality:
-          unawaited(WebRTCHelper().receiveChangeQuality(message));
+          unawaited(WebRTCHelper().receiveChangeQuality(
+            message as ChangePresentQuality,
+          ));
           break;
         case ChannelMessageType.stopPresent:
           // split-screen / moderator mode
