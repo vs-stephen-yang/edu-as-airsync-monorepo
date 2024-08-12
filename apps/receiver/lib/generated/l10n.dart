@@ -920,6 +920,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Waiting for others to join`
+  String get v3_waiting_join {
+    return Intl.message(
+      'Waiting for others to join',
+      name: 'v3_waiting_join',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

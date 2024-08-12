@@ -117,6 +117,19 @@ class HybridConnectionList {
     return presenting;
   }
 
+  bool isStopPresenting(int index) {
+    bool stopPresenting = true;
+    var connection = _hybridConnectionList[index];
+    if (connection is RTCConnector &&
+        (connection.presentationState != PresentationState.stopStreaming)) {
+      stopPresenting = false;
+    } else if (connection is MirrorRequest &&
+        connection.mirrorState != MirrorState.idle) {
+      stopPresenting = false;
+    }
+    return stopPresenting;
+  }
+
   int getPresentingCount() {
     int count = 0;
     for (var connection in _hybridConnectionList.nonNulls) {

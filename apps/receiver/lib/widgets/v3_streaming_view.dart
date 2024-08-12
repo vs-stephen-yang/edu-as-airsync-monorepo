@@ -1,3 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
@@ -38,6 +40,10 @@ class _V3StreamingViewState extends State<V3StreamingView> {
         ValueListenableBuilder(
           valueListenable: HybridConnectionList.hybridSplitScreenCount,
           builder: (context, int splitScreenCount, child) {
+            if (splitScreenCount == 3 || splitScreenCount == 5) {
+              // add one more to show "Waiting for others to join".
+              splitScreenCount++;
+            }
             return Stack(
               children: [
                 Stack(
@@ -147,6 +153,29 @@ class _V3StreamingViewState extends State<V3StreamingView> {
                                   Positioned(
                                     bottom: 8,
                                     child: V3StreamingFunction(index: index),
+                                  ),
+                                if (HybridConnectionList()
+                                    .isStopPresenting(index))
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(
+                                        width: 92,
+                                        height: 80,
+                                        child: Image(
+                                          image: Svg(
+                                              'assets/images/ic_split_screen_waiting.svg'),
+                                        ),
+                                      ),
+                                      AutoSizeText(
+                                        S.of(context).v3_waiting_join,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                          color: Color(0xFF3C455D),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                               ],
                             ),
