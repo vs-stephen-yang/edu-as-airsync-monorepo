@@ -160,7 +160,7 @@ class WebRTCViewState extends State<WebRTCView> {
       final curEventMessage = EventMessage();
       curEventMessage.touchEvent = curTouchEvent;
 
-      widget.rtcConnector.sendRTCData(curEventMessage.writeToBuffer());
+      widget.rtcConnector.sendTouchback(curEventMessage.writeToBuffer());
     }
 
     return Consumer<ChannelProvider>(builder: (_, channelProvider, __) {

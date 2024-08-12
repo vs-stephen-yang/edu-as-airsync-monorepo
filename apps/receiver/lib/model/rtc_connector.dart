@@ -88,7 +88,7 @@ class RTCConnector {
   RTCPeerConnection? _pc;
 
   RTCPeerConnection? get pc => _pc;
-  RTCDataChannel? _dc;
+  RTCDataChannel? _touchbackDataChannel;
   RTCVideoRenderer? _remoteRenderer = RTCVideoRenderer();
 
   RtcStatsParser? _rtcStatsParser;
@@ -618,12 +618,17 @@ class RTCConnector {
 
   void _onDataChannel(RTCDataChannel channel) {
     _printPeerConnectionLog('_onDataChannel', channel.label);
-    _dc = channel;
+
+    if (channel.label == 'pc-dc') {
+      _touchbackDataChannel = channel;
+    }
   }
 
-  void sendRTCData(Uint8List data) {
-    if (_dc != null && _dc!.state == RTCDataChannelState.RTCDataChannelOpen) {
-      _dc!.send(RTCDataChannelMessage.fromBinary(data));
+  void sendTouchback(Uint8List data) {
+    if (_touchbackDataChannel != null &&
+        _touchbackDataChannel!.state ==
+            RTCDataChannelState.RTCDataChannelOpen) {
+      _touchbackDataChannel!.send(RTCDataChannelMessage.fromBinary(data));
     }
   }
 
