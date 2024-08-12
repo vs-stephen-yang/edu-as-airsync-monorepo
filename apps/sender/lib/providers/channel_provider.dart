@@ -165,7 +165,8 @@ class ChannelProvider extends ChangeNotifier {
         WebSocketClientConnectionConfig(
           connectionTimeout: defaultTunnelConnectionTimeout,
           retry: getChannelRetryConfig(isReconnect),
-          logger: (url, message) => log.fine('tunnel connection: $url $message}'),
+          logger: (url, message) =>
+              log.fine('tunnel connection: $url $message}'),
         ),
       ),
       createConnectionDirect: (url, bool isReconnect) =>
@@ -176,7 +177,8 @@ class ChannelProvider extends ChangeNotifier {
           // allow self-signed certificate
           allowSelfSignedCertificates: true,
           retry: getChannelRetryConfig(isReconnect),
-          logger: (url, message) => log.fine('direct connection: $url $message}'),
+          logger: (url, message) =>
+              log.fine('direct connection: $url $message}'),
         ),
       ),
       fetchTunnelUrl: (int instanceIndex) async {
@@ -529,7 +531,9 @@ class ChannelProvider extends ChangeNotifier {
     if (isHighQuality) {
       _profileStore.setSelectedProfile(ProfileStore.videoQualityFirstProfile);
     } else {
-      _profileStore.setSelectedProfile(ProfileStore.videoSmoothnessFirstProfile);
+      _profileStore.setSelectedProfile(
+        ProfileStore.videoSmoothnessFirstProfile,
+      );
     }
     Preset preset = _profileStore.getSelectedProfile().presets.first;
     bool result = await WebRTCHelper().changeHighQuality(preset);
@@ -646,7 +650,8 @@ class ChannelProvider extends ChangeNotifier {
   //endregion
 
   bool isConnectAvailable() {
-    if (reconnectState == ChannelReconnectState.reconnecting || reconnectState == ChannelReconnectState.fail) return false;
+    if (reconnectState == ChannelReconnectState.reconnecting ||
+        reconnectState == ChannelReconnectState.fail) return false;
     return true;
   }
 
