@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io' show Platform;
 
 import 'package:collection/collection.dart';
@@ -33,6 +34,8 @@ class WebRTCConnector {
   dynamic _deviceId;
   RTCPeerConnection? _pc;
   RTCDataChannel? _touchbackDataChannel;
+  RTCDataChannel? _controlDataChannel;
+
   MediaStream? _localStream;
   List<RTCIceCandidate> remoteCandidates = [];
 
@@ -187,6 +190,23 @@ class WebRTCConnector {
     log.info('modifySDPForCodecPreferences vcodec:${_codecPreferences[0]}');
   }
 
+  Future<void> _createControlDataChannel() async {
+    _controlDataChannel = await _pc?.createDataChannel(
+      'pc-dc-control',
+      RTCDataChannelInit()..id = 2,
+    );
+
+    _controlDataChannel!.onDataChannelState = (state) {
+      log.info('Data channel state of control: ${state.name}');
+
+      AppAnalytics.instance.trackEvent('control_dc_state', properties: {
+        'target': state.name,
+      });
+    };
+
+    _controlDataChannel!.onMessage = _onControlMessage;
+  }
+
   Future<void> _createTouchbackDataChannel() async {
     // Create a data channel for touchback event
     _touchbackDataChannel = await _pc?.createDataChannel(
@@ -207,6 +227,7 @@ class WebRTCConnector {
 
   Future<bool> _publish() async {
     await _createTouchbackDataChannel();
+    await _createControlDataChannel();
 
     _trackFrameRate = _defaultFrameRate;
     _trackWidth = _maxTrackWidth;
@@ -325,6 +346,60 @@ class WebRTCConnector {
         }
         break;
       case null:
+        break;
+    }
+  }
+
+  // Receive a control message from the data channel
+  void _onControlMessage(RTCDataChannelMessage data) {
+    // The control message is in json format
+    if (data.isBinary) {
+      // Ignore the binary message
+      return;
+    }
+
+    try {
+      final json = jsonDecode(data.text);
+      final message = ChannelMessage.parse(json);
+
+      if (message != null) {
+        _onChannelMessageFromDataChannel(message);
+      }
+    } catch (e, stackTrace) {
+      log.severe('_onControlMessage', e, stackTrace);
+    }
+  }
+
+  // send a control message over the data channel
+  void _sendControlMessage(ChannelMessage message) {
+    final text = jsonEncode(message.toJson());
+
+    _controlDataChannel?.send(
+      RTCDataChannelMessage(text),
+    );
+  }
+
+  void pause(String sessionId) {
+    // Sends a control message to remotely pause rendering.
+    _sendControlMessage(
+      PausePresentMessage(sessionId),
+    );
+  }
+
+  void resume(String sessionId) {
+    // Sends a control message to remotely resume rendering.
+    _sendControlMessage(
+      ResumePresentMessage(sessionId),
+    );
+  }
+
+  // handle a channel message from the data channel
+  void _onChannelMessageFromDataChannel(ChannelMessage message) {
+    switch (message.messageType) {
+      case ChannelMessageType.changePresentQuality:
+        changePresentQuality(message as ChangePresentQuality);
+        break;
+      default:
         break;
     }
   }
