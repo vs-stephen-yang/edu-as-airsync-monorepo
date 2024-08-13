@@ -66,10 +66,6 @@ class ModeratorPresentStart extends StatelessWidget {
                       // Toggle current state
                       bool tempState = !presentingState.value;
                       AppAnalytics.instance.trackEvent(tempState ? 'click_resume' : 'click_pause');
-                      if (!channelProvider.isConnectAvailable()) {
-                        sendReconnectStateToast(context, channelProvider.reconnectState);
-                        return;
-                      }
 
                       // Update state
                       presentingState.value = tempState;
@@ -121,14 +117,10 @@ class ModeratorPresentStart extends StatelessWidget {
               InkWell(
                 onTap: () {
                   AppAnalytics.instance.trackEvent('click_stop');
-                  if (channelProvider.isConnectAvailable()) {
-                    channelProvider.presentStop();
-                    Provider.of<PresentStateProvider>(context, listen: false)
-                        .presentModeratorWaitPage();
-                  } else {
-                    sendReconnectStateToast(
-                        context, channelProvider.reconnectState);
-                  }
+
+                  channelProvider.presentStop();
+                  Provider.of<PresentStateProvider>(context, listen: false)
+                      .presentModeratorWaitPage();
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
