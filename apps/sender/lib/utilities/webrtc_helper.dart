@@ -85,6 +85,14 @@ class WebRTCHelper {
     });
   }
 
+  void pause(String sessionId) {
+    webRTCConnector?.pause(sessionId);
+  }
+
+  void resume(String sessionId) {
+    webRTCConnector?.resume(sessionId);
+  }
+
   void stop() {
     // handle stream
     webRTCConnector?.stopStream();

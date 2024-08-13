@@ -297,11 +297,6 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.presentSignal:
           WebRTCHelper().receiveSignalMessage(message as PresentSignalMessage);
           break;
-        case ChannelMessageType.changePresentQuality:
-          unawaited(WebRTCHelper().receiveChangeQuality(
-            message as ChangePresentQuality,
-          ));
-          break;
         case ChannelMessageType.stopPresent:
           // split-screen / moderator mode
           if (moderatorStatus) {
@@ -518,15 +513,11 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future<void> presentPause() async {
-    // handle stream
-    var message = PausePresentMessage(_sessionId);
-    _channel?.send(message);
+    WebRTCHelper().pause(_sessionId);
   }
 
   Future<void> presentResume() async {
-    // handle stream
-    var message = ResumePresentMessage(_sessionId);
-    _channel?.send(message);
+    WebRTCHelper().resume(_sessionId);
   }
 
   Future<bool> presentChangeHighQuality({required bool isHighQuality}) async {
