@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_channel/display_channel.dart';
@@ -89,6 +90,8 @@ class RTCConnector {
 
   RTCPeerConnection? get pc => _pc;
   RTCDataChannel? _touchbackDataChannel;
+  RTCDataChannel? _controlDataChannel;
+
   RTCVideoRenderer? _remoteRenderer = RTCVideoRenderer();
 
   RtcStatsParser? _rtcStatsParser;
@@ -342,6 +345,7 @@ class RTCConnector {
 
   Future<void> onPausePresent() async {
     AppAnalytics().trackEventPresentPauseReceived(clientId!, sessionId!);
+
     presentationState = PresentationState.pauseStreaming;
     controlAudio(false, setIsAudioEnabled: false);
     onRefresh?.call();
@@ -349,6 +353,7 @@ class RTCConnector {
 
   Future<void> onResumePresent() async {
     AppAnalytics().trackEventPresentResumeReceived(clientId!, sessionId!);
+
     presentationState = PresentationState.resumeStreaming;
     controlAudio(isAudioEnabled & true, setIsAudioEnabled: false);
     onRefresh?.call();
@@ -409,9 +414,13 @@ class RTCConnector {
 
   void sendChangeQuality(bool isFullHeight, bool isFullFrameRate) {
     var message = ChangePresentQuality(sessionId);
+
     message.constraints = PresentQualityConstraints(
         frameRate: isFullFrameRate ? 30 : 0, height: isFullHeight ? 1080 : 540);
-    _channel.send(message);
+
+    _controlDataChannel?.send(
+      RTCDataChannelMessage(jsonEncode(message.toJson())),
+    );
   }
 
   void sendAllowPresent() {
@@ -621,6 +630,10 @@ class RTCConnector {
 
     if (channel.label == 'pc-dc') {
       _touchbackDataChannel = channel;
+    } else if (channel.label == 'pc-dc-control') {
+      _controlDataChannel = channel;
+
+      _controlDataChannel!.onMessage = _onControlMessage;
     }
   }
 
@@ -632,6 +645,38 @@ class RTCConnector {
     }
   }
 
+  void _onControlMessage(RTCDataChannelMessage data) {
+    // The control message is in json (text-based format).
+    if (data.isBinary) {
+      // Ignore the binary message
+      return;
+    }
+
+    try {
+      final json = jsonDecode(data.text);
+      final message = ChannelMessage.parse(json);
+
+      if (message != null) {
+        _onChannelMessageFromDataChannel(message);
+      }
+    } catch (e, stackTrace) {
+      log.severe('_onControlMessage', e, stackTrace);
+    }
+  }
+
+  // handle a channel message from the data channel
+  void _onChannelMessageFromDataChannel(ChannelMessage message) {
+    switch (message.messageType) {
+      case ChannelMessageType.pausePresent:
+        onPausePresent();
+        break;
+      case ChannelMessageType.resumePresent:
+        onResumePresent();
+        break;
+      default:
+        break;
+    }
+  }
   //endregion
 
   RTCSessionDescription _fixSdp(RTCSessionDescription s) {
