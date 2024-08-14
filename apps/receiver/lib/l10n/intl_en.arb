@@ -86,5 +86,15 @@
   "v3_shortcuts_miracast": "Miracast",
   "v3_waiting_up_next": "Up Next",
   "v3_waiting_desc": "Waiting for this participant to share their screen",
-  "v3_waiting_join": "Waiting for others to join"
+  "v3_waiting_join": "Waiting for others to join",
+  "v3_moderator_mode": "Moderator mode",
+  "v3_exit_moderator_mode_title": "Exit Moderator Mode",
+  "v3_exit_moderator_mode_desc": "Are you sure? This will disconnect all participants.",
+  "v3_exit_moderator_mode_cancel": "Cancel",
+  "v3_exit_moderator_mode_exit": "Exit",
+  "v3_participants_desc": "Maximum up to 6 participants.",
+  "v3_participants_title": "Participants",
+  "v3_participant_item_casting": "Casting",
+  "v3_participant_item_connected": "Connected",
+  "v3_participant_item_share": "Share"
 }

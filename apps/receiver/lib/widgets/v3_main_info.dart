@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
+import 'package:display_flutter/widgets/v3_participants_view.dart';
 import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class V3MainInfo extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 765,
+            width: 764,
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -86,6 +87,10 @@ class V3MainInfo extends StatelessWidget {
           Container(
             width: 1,
             color: const Color(0xFFE9EAF0),
+          ),
+          const SizedBox(
+            width: 300,
+            child: V3ParticipantsView(),
           ),
         ],
       ),

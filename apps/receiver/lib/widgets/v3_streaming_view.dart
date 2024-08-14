@@ -3,14 +3,17 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/v3_quick_connect_menu.dart';
 import 'package:display_flutter/screens/v3_shortcuts_menu.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
 import 'package:display_flutter/widgets/v3_header_bar.dart';
+import 'package:display_flutter/widgets/v3_participants_menu.dart';
 import 'package:display_flutter/widgets/v3_streaming_function.dart';
 import 'package:display_flutter/widgets/v3_webrtc_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:provider/provider.dart';
 
 class V3StreamingView extends StatefulWidget {
   const V3StreamingView({super.key});
@@ -26,6 +29,8 @@ class _V3StreamingViewState extends State<V3StreamingView> {
       _halfHeight = 0,
       _thirdWidth = 0;
   final isAnnotationImplement = false; // todo: annotation
+  final isDeviceListImplement = false; // todo: device list
+  final isDeviceListMenuOnScreen = false; // todo: device list menu
 
   @override
   Widget build(BuildContext context) {
@@ -267,6 +272,133 @@ class _V3StreamingViewState extends State<V3StreamingView> {
             ),
           ),
         ),
+        Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
+          return ChannelProvider.isModeratorMode || isDeviceListImplement
+              ? Positioned(
+                  right: 0,
+                  bottom: 80,
+                  child: SizedBox(
+                    width: 41,
+                    height: isDeviceListImplement ? 123 : 68,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: Container(
+                            width: 32,
+                            height: isDeviceListImplement ? 123 : 68,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFFFFFFF),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                bottomLeft: Radius.circular(20),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: 20,
+                          right: 3,
+                          child: SizedBox(
+                            width: 27,
+                            height: 27,
+                            child: IconButton(
+                              icon: const Image(
+                                image: Svg(
+                                    'assets/images/ic_streaming_moderator.svg'),
+                              ),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              onPressed: () {
+                                _showParticipantsMenuDialog();
+                              },
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 0,
+                          top: 9,
+                          child: Container(
+                            width: 16,
+                            height: 16,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF5D80ED),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                            padding: EdgeInsets.zero,
+                            child: const AutoSizeText(
+                              '9',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (isDeviceListImplement)
+                          Positioned(
+                            top: 61,
+                            right: 5,
+                            child: Container(
+                              width: 21,
+                              height: 1,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        if (isDeviceListImplement)
+                          Positioned(
+                            right: 3,
+                            bottom: 20,
+                            child: SizedBox(
+                              width: 27,
+                              height: 27,
+                              child: IconButton(
+                                icon: Image(
+                                  image: Svg(isDeviceListMenuOnScreen
+                                      ? 'assets/images/ic_streaming_device_list_on.svg'
+                                      : 'assets/images/ic_streaming_device_list_off.svg'),
+                                ),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                onPressed: () {
+                                  // todo: device list menu
+                                },
+                              ),
+                            ),
+                          ),
+                        if (isDeviceListImplement)
+                          Positioned(
+                            left: 0,
+                            top: 64,
+                            child: Container(
+                              width: 16,
+                              height: 16,
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF5D80ED),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                              ),
+                              padding: EdgeInsets.zero,
+                              child: const AutoSizeText(
+                                '1',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink();
+        }),
       ],
     );
   }
@@ -316,6 +448,17 @@ class _V3StreamingViewState extends State<V3StreamingView> {
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
         return const V3QuickConnectMenu();
+      },
+    );
+  }
+
+  _showParticipantsMenuDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return const V3ParticipantsMenu();
       },
     );
   }

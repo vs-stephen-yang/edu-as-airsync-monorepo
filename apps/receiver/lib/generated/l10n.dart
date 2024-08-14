@@ -930,6 +930,106 @@ class S {
       args: [],
     );
   }
+
+  /// `Moderator mode`
+  String get v3_moderator_mode {
+    return Intl.message(
+      'Moderator mode',
+      name: 'v3_moderator_mode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exit Moderator Mode`
+  String get v3_exit_moderator_mode_title {
+    return Intl.message(
+      'Exit Moderator Mode',
+      name: 'v3_exit_moderator_mode_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure? This will disconnect all participants.`
+  String get v3_exit_moderator_mode_desc {
+    return Intl.message(
+      'Are you sure? This will disconnect all participants.',
+      name: 'v3_exit_moderator_mode_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get v3_exit_moderator_mode_cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'v3_exit_moderator_mode_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exit`
+  String get v3_exit_moderator_mode_exit {
+    return Intl.message(
+      'Exit',
+      name: 'v3_exit_moderator_mode_exit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Maximum up to 6 participants.`
+  String get v3_participants_desc {
+    return Intl.message(
+      'Maximum up to 6 participants.',
+      name: 'v3_participants_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Participants`
+  String get v3_participants_title {
+    return Intl.message(
+      'Participants',
+      name: 'v3_participants_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Casting`
+  String get v3_participant_item_casting {
+    return Intl.message(
+      'Casting',
+      name: 'v3_participant_item_casting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connected`
+  String get v3_participant_item_connected {
+    return Intl.message(
+      'Connected',
+      name: 'v3_participant_item_connected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share`
+  String get v3_participant_item_share {
+    return Intl.message(
+      'Share',
+      name: 'v3_participant_item_share',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
