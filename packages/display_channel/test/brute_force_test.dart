@@ -2,11 +2,7 @@ import 'dart:async';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-const tunnelServiceUrl = 'wss://ap-northeast-1.gateway.dev.airsync.net';
-
-const defaultInstanceIndex = '2';
-const defaultInstanceId = 'integration-test-001';
-const defaultInstanceGroupId = 16777214;
+import 'test_config.dart';
 
 int countByCloseCodes(
   List<DisplayChannelClient> clients,
@@ -49,8 +45,8 @@ void main() {
 
     // start the tunnel server
     tunnelServer.start(
-      defaultInstanceId,
-      defaultInstanceGroupId,
+      instanceId,
+      groupId,
       Uri.parse(tunnelServiceUrl),
     );
 
@@ -189,8 +185,8 @@ void main() {
       // action
       await submitRequests(
         (client, index) => client.openTunnelChannel(
-          defaultInstanceIndex,
-          defaultInstanceGroupId,
+          instanceIndex,
+          groupId,
           '0000',
           displayCode: 'AVA',
         ),
