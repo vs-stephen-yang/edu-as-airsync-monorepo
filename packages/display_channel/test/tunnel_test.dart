@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'test_config.dart';
+
 class Message {
   int seq; // the sequence number of the message
 
@@ -61,7 +63,8 @@ class Runner {
   final clientReceived = <Message>[];
   final serverReceived = <Message>[];
 
-  final String instanceIndex;
+  final int instanceIndex;
+  final int groupId;
   final String instanceId;
   final String tunnelServiceUrl;
 
@@ -71,6 +74,7 @@ class Runner {
 
   Runner({
     required this.instanceIndex,
+    required this.groupId,
     required this.instanceId,
     required this.tunnelServiceUrl,
   });
@@ -81,9 +85,10 @@ class Runner {
     const displayCode = 'ABCDEF';
 
     final clientUrl =
-        '$tunnelServiceUrl?role=client&clientId=$clientId&instanceIndex=$instanceIndex&token=$token&displayCode=$displayCode';
+        '$tunnelServiceUrl?role=client&clientId=$clientId&instanceIndex=$instanceIndex&groupId=$groupId&token=$token&displayCode=$displayCode';
 
-    final serverUrl = '$tunnelServiceUrl?role=server&instanceId=$instanceId';
+    final serverUrl =
+        '$tunnelServiceUrl?role=server&instanceId=$instanceId&groupId=$groupId';
 
     // server
     server = await WebSocket.connect(serverUrl);
@@ -184,11 +189,8 @@ void main() {
 
   setUp(() {
     return Future(() async {
-      const instanceIndex = '100043';
-      const instanceId = '0001';
-      const tunnelServiceUrl = 'wss://ap-northeast-1.gateway.dev.airsync.net';
-
       runner = Runner(
+        groupId: groupId,
         instanceIndex: instanceIndex,
         instanceId: instanceId,
         tunnelServiceUrl: tunnelServiceUrl,
