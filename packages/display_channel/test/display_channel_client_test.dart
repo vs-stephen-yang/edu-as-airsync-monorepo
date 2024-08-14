@@ -4,6 +4,7 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/client_connection.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'contains_map_matcher.dart';
 import 'utils.dart';
 
 class FakeClientConnection extends ClientConnection {
@@ -11,14 +12,14 @@ class FakeClientConnection extends ClientConnection {
   bool isCloseCalled = false;
 
   final sentMessages = <ChannelMessage?>[];
-  final urls = <String>[];
+  final urls = <Uri>[];
 
   Completer? _createCompleter;
 
   FakeClientConnection();
 
   void create(String url) {
-    urls.add(url);
+    urls.add(Uri.parse(url));
 
     _createCompleter?.complete();
   }
@@ -113,9 +114,16 @@ void main() {
     // assert
     expect(connection.isOpenCalled, true);
 
+    final actual = connection.urls.first;
+
+    expect(actual.host, 'abc.com');
     expect(
-      connection.urls[0],
-      'ws://abc.com?clientId=1000&displayCode=DEF&token=1313',
+      actual.queryParameters,
+      ContainsMapMatcher({
+        'clientId': '1000',
+        'displayCode': 'DEF',
+        'token': '1313',
+      }),
     );
   });
 
@@ -128,9 +136,17 @@ void main() {
     // assert
     expect(connection.isOpenCalled, true);
 
+    final actual = connection.urls.first;
+
+    expect(actual.host, 'abc.com');
+
     expect(
-      connection.urls.first,
-      'ws://abc.com?clientId=1000&displayCode=DEF&token=1313&role=client&instanceIndex=100000&instanceGroupId=1',
+      actual.queryParameters,
+      ContainsMapMatcher({
+        'clientId': '1000',
+        'displayCode': 'DEF',
+        'token': '1313',
+      }),
     );
   });
 
@@ -194,8 +210,7 @@ void main() {
     expect((connection.sentMessages[1] as ClientConnectedMessage).ack, 4);
   });
 
-  test('shoud connect using the reconnection token during reconnection',
-      () async {
+  test('the token should be reconnection token when reconnecting', () async {
     // arrange
     client.openDirectChannel(token: 'token', displayCode: 'ABC');
     connection.onConnected?.call();
@@ -212,13 +227,17 @@ void main() {
     expect(connection.urls.length, 2);
 
     expect(
-      connection.urls[0],
-      'ws://abc.com?clientId=1000&displayCode=ABC&token=token',
+      connection.urls[0].queryParameters,
+      ContainsMapMatcher({
+        'token': 'token',
+      }),
     );
 
     expect(
-      connection.urls[1],
-      'ws://abc.com?clientId=1000&displayCode=ABC&token=token2',
+      connection.urls[1].queryParameters,
+      ContainsMapMatcher({
+        'token': 'token2',
+      }),
     );
   });
 

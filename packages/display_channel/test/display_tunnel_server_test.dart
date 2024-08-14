@@ -3,11 +3,13 @@ import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_message.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'contains_map_matcher.dart';
+
 class FakeClientConnection extends ClientConnection {
   FakeClientConnection();
   bool isCloseCalled = false;
 
-  String? url;
+  Uri? url;
 
   @override
   void open() {}
@@ -45,7 +47,7 @@ void main() {
 
     server = DisplayTunnelServer(
       (String url, bool isReconnect) {
-        connection.url = url;
+        connection.url = Uri.parse(url);
         return connection;
       },
       (Channel c) {
@@ -70,16 +72,25 @@ void main() {
     // arrange
 
     // action
-    server.start('1000', 1, 'wss://example.com/dev');
+    server.start('1000', 1, Uri.parse('wss://example.com/dev'));
 
     // assert
-    expect(connection.url,
-        'wss://example.com/dev?role=server&instanceId=1000&instanceGroupId=1');
+    final actual = connection.url;
+    expect(actual?.path, '/dev');
+
+    expect(
+      actual?.queryParameters,
+      ContainsMapMatcher({
+        'role': 'server',
+        'instanceId': '1000',
+        'groupId': '1',
+      }),
+    );
   });
 
   test('stop should close the connection', () async {
     // arrange
-    server.start('1000', 1, 'wss://example.com/dev');
+    server.start('1000', 1, Uri.parse('wss://example.com/dev'));
 
     // action
     server.stop();
@@ -90,7 +101,7 @@ void main() {
 
   test('a new channel should be created when connected is received', () async {
     // arrange
-    server.start('1000', 1, 'wss://example.com/dev');
+    server.start('1000', 1, Uri.parse('wss://example.com/dev'));
 
     // action
     injectTunnelConnectedMessage('1000', 'token');
@@ -102,7 +113,7 @@ void main() {
 
   test('should be notified when the connected is connected', () async {
     // arrange
-    server.start('1000', 1, 'wss://example.com/dev');
+    server.start('1000', 1, Uri.parse('wss://example.com/dev'));
 
     // action
     connection.onConnected?.call();
@@ -113,7 +124,7 @@ void main() {
 
   test('should be notified when the connected is connecting', () async {
     // arrange
-    server.start('1000', 1, 'wss://example.com/dev');
+    server.start('1000', 1, Uri.parse('wss://example.com/dev'));
 
     // action
     connection.onConnecting?.call();
