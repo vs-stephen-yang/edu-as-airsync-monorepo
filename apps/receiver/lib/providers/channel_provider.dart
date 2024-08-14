@@ -106,6 +106,9 @@ class ChannelProvider extends ChangeNotifier {
   static ValueNotifier<bool> showReconnectWarnToast =
       ValueNotifier<bool>(false);
 
+  ValueNotifier<List<String>> showNewSharingNameList =
+      ValueNotifier<List<String>>([]);
+
   ChannelProvider(
     this.appConfig,
     this._instanceInfo,
@@ -298,6 +301,11 @@ class ChannelProvider extends ChangeNotifier {
                   HybridConnectionList.maxHybridConnection) {
                 sendPresentRejectMessage(channel);
                 return;
+              }
+              if (msg.name != null && HybridConnectionList().isPresenting()) {
+                showNewSharingNameList.value.add(msg.name!);
+                showNewSharingNameList.value =
+                    List.from(showNewSharingNameList.value);
               }
             } else {
               if (HybridConnectionList.hybridSplitScreenCount.value >=

@@ -8,6 +8,7 @@ import 'package:display_flutter/screens/v3_quick_connect_menu.dart';
 import 'package:display_flutter/screens/v3_shortcuts_menu.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
 import 'package:display_flutter/widgets/v3_header_bar.dart';
+import 'package:display_flutter/widgets/v3_new_sharing_menu.dart';
 import 'package:display_flutter/widgets/v3_participants_menu.dart';
 import 'package:display_flutter/widgets/v3_streaming_function.dart';
 import 'package:display_flutter/widgets/v3_webrtc_view.dart';
@@ -28,6 +29,7 @@ class _V3StreamingViewState extends State<V3StreamingView> {
       _halfWidth = 0,
       _halfHeight = 0,
       _thirdWidth = 0;
+  bool _isNewSharingOnScreen = false;
   final isAnnotationImplement = false; // todo: annotation
   final isDeviceListImplement = false; // todo: device list
   final isDeviceListMenuOnScreen = false; // todo: device list menu
@@ -399,6 +401,21 @@ class _V3StreamingViewState extends State<V3StreamingView> {
                 )
               : const SizedBox.shrink();
         }),
+        ValueListenableBuilder(
+          valueListenable: Provider.of<ChannelProvider>(context, listen: false)
+              .showNewSharingNameList,
+          builder: (_, value, __) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (value.isNotEmpty &&
+                  HybridConnectionList.hybridSplitScreenCount.value > 0) {
+                if (!_isNewSharingOnScreen) {
+                  _showNewSharingMessageDialog(value);
+                }
+              }
+            });
+            return const SizedBox.shrink();
+          },
+        ),
       ],
     );
   }
@@ -461,5 +478,25 @@ class _V3StreamingViewState extends State<V3StreamingView> {
         return const V3ParticipantsMenu();
       },
     );
+  }
+
+  _showNewSharingMessageDialog(List<String> names) async {
+    String name = names.first;
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        _isNewSharingOnScreen = true;
+        return V3NewSharingMenu(name: name);
+      },
+    ).then((_) {
+      ChannelProvider channelProvider =
+          Provider.of<ChannelProvider>(context, listen: false);
+      channelProvider.showNewSharingNameList.value.remove(name);
+      channelProvider.showNewSharingNameList.value =
+          List.from(channelProvider.showNewSharingNameList.value);
+      _isNewSharingOnScreen = false;
+    });
   }
 }

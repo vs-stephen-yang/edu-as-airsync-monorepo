@@ -174,6 +174,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Supports sharing via AirPlay, Google Cast or Miracast"),
         "v3_moderator_mode":
             MessageLookupByLibrary.simpleMessage("Moderator mode"),
+        "v3_new_sharing_join_session":
+            MessageLookupByLibrary.simpleMessage(" joined the session"),
         "v3_participant_item_casting":
             MessageLookupByLibrary.simpleMessage("Casting"),
         "v3_participant_item_connected":
