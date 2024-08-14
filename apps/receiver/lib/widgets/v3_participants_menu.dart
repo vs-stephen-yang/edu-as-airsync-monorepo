@@ -17,7 +17,8 @@ class V3ParticipantsMenu extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            insetPadding: const EdgeInsets.only(left: 8, bottom: 8),
+            backgroundColor: Colors.white,
+            insetPadding: EdgeInsets.zero,
             child: SizedBox(
               width: 310,
               height: 507,
@@ -31,10 +32,11 @@ class V3ParticipantsMenu extends StatelessWidget {
                     child: V3ParticipantList(),
                   ),
                   Positioned(
-                    right: 13,
-                    bottom: 13,
+                    right: 5,
+                    bottom: 5,
                     child: SizedBox(
                       width: 33,
+                      height: 33,
                       child: IconButton(
                         icon: const Image(
                           image: Svg('assets/images/ic_menu_minimal.svg'),

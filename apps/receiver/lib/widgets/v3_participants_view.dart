@@ -28,7 +28,7 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
           left: 13,
           top: 27,
           right: 13,
-          bottom: 100,
+          bottom: 13,
           child: V3ParticipantList(),
         ),
         Positioned(
@@ -93,7 +93,7 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
                 bottomRight: Radius.circular(20),
               ),
               color: isShowLogOutMenu
-                  ? const Color(0x80808080)
+                  ? const Color(0x2B151C32)
                   : Colors.transparent,
             ),
           ),
