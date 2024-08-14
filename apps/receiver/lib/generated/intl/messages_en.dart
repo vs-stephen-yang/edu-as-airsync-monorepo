@@ -152,6 +152,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_message": MessageLookupByLibrary.simpleMessage(
             "A new version of software is available"),
         "update_title": MessageLookupByLibrary.simpleMessage("AirSync Update"),
+        "v3_exit_moderator_mode_cancel":
+            MessageLookupByLibrary.simpleMessage("Cancel"),
+        "v3_exit_moderator_mode_desc": MessageLookupByLibrary.simpleMessage(
+            "Are you sure? This will disconnect all participants."),
+        "v3_exit_moderator_mode_exit":
+            MessageLookupByLibrary.simpleMessage("Exit"),
+        "v3_exit_moderator_mode_title":
+            MessageLookupByLibrary.simpleMessage("Exit Moderator Mode"),
         "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
             "Visit airsync.net or open the AisSync app"),
         "v3_instruction1b":
@@ -164,6 +172,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Share your screen"),
         "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
             "Supports sharing via AirPlay, Google Cast or Miracast"),
+        "v3_moderator_mode":
+            MessageLookupByLibrary.simpleMessage("Moderator mode"),
+        "v3_participant_item_casting":
+            MessageLookupByLibrary.simpleMessage("Casting"),
+        "v3_participant_item_connected":
+            MessageLookupByLibrary.simpleMessage("Connected"),
+        "v3_participant_item_share":
+            MessageLookupByLibrary.simpleMessage("Share"),
+        "v3_participants_desc": MessageLookupByLibrary.simpleMessage(
+            "Maximum up to 6 participants."),
+        "v3_participants_title":
+            MessageLookupByLibrary.simpleMessage("Participants"),
         "v3_qrcode_quick_connect":
             MessageLookupByLibrary.simpleMessage("Quick Connect"),
         "v3_quick_connect_menu_display_code":
