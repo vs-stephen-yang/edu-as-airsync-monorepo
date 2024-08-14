@@ -131,7 +131,7 @@ void main() {
     // arrange
 
     // action
-    client.openTunnelChannel('100000', 1, '1313', displayCode: 'DEF');
+    client.openTunnelChannel(100000, 1, '1313', displayCode: 'DEF');
 
     // assert
     expect(connection.isOpenCalled, true);

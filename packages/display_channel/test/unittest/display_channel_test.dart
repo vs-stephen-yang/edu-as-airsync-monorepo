@@ -149,7 +149,7 @@ void main() {
   void openTunnelChannel({
     int? port,
     String token = 'token1',
-    String instanceIndex = '1111111',
+    int instanceIndex = 1111111,
     String displayCode = 'ABA',
   }) {
     const clientId = 'abc';
@@ -309,7 +309,7 @@ void main() {
       'The channel should be closed with channelNotFound if the instanceIndex does not exist',
       () async {
     // arrange
-    openTunnelChannel(instanceIndex: '000');
+    openTunnelChannel(instanceIndex: 1);
 
     // action
 
