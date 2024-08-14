@@ -1,6 +1,6 @@
 import 'package:display_channel/src/util/log.dart';
 
-import 'api_util.dart';
+import 'package:display_channel/src/util/api_util.dart';
 
 void main() async {
   const instanceId = '100';
