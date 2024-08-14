@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:display_channel/src/api/api_request.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterInstanceResult {
@@ -13,47 +14,64 @@ class RegisterInstanceResult {
 }
 
 Future<RegisterInstanceResult> registerInstance(
-  String apiBaseUrl,
+  String apiOrigin,
   String instanceId,
   int instanceGroupId,
 ) async {
-  final url = '$apiBaseUrl/instances';
-  http.Response response = await http.put(
-    Uri.parse(url),
-    body: json.encode(
-      {
-        'instanceId': instanceId,
-        'instanceGroupId': '$instanceGroupId',
-      },
-    ),
+  final request = buildApiRequest(
+    apiOrigin,
+    '/v1/instance/$instanceId',
+    queryParameters: {
+      'groupId': '$instanceGroupId',
+    },
+    time: DateTime.now(),
+    signatureLocation: SignatureLocation.header,
+  );
+
+  final response = await http.put(
+    request.url,
+    headers: request.headers,
+    body: request.body,
   );
 
   if (response.statusCode != HttpStatus.ok) {
-    throw Exception('$url status ${response.statusCode}');
+    throw Exception('${request.url} status ${response.statusCode}');
   }
 
   final data = jsonDecode(response.body);
 
   return RegisterInstanceResult(
-    data['tunnelApiUrl'],
-    int.parse(data['instanceIndex']),
+    data['tunnelUrl'],
+    data['instanceIndex'],
   );
 }
 
 Future<String> fetchInstanceInfo(
-  String apiBaseUrl,
+  String apiOrigin,
   int instanceIndex,
   int instanceGroupId,
 ) async {
-  final url =
-      '$apiBaseUrl?instanceIndex=$instanceIndex&instanceGroupId=$instanceGroupId';
+  final request = buildApiRequest(
+    apiOrigin,
+    '/v1/instance',
+    queryParameters: {
+      'groupId': '$instanceGroupId',
+      'instanceIndex': instanceIndex,
+    },
+    time: DateTime.now(),
+    signatureLocation: SignatureLocation.header,
+  );
 
-  final response = await http.get(Uri.parse(url));
+  final response = await http.get(
+    request.url,
+    headers: request.headers,
+  );
 
   if (response.statusCode != HttpStatus.ok) {
-    throw Exception('$url status ${response.statusCode}');
+    throw Exception('${request.url} status ${response.statusCode}');
   }
 
-  Map data = jsonDecode(response.body);
-  return data['tunnelApiUrl'];
+  final data = jsonDecode(response.body);
+
+  return data['tunnelUrl'];
 }
