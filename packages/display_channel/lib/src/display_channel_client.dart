@@ -1,9 +1,11 @@
+import 'package:display_channel/src/api/api_request.dart';
 import 'package:display_channel/src/channel.dart';
 import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/messages/message_continuity.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
 import 'package:display_channel/src/util/channel_message_util.dart';
 import 'package:display_channel/src/util/channel_util.dart';
+import 'package:display_channel/src/util/uri_util.dart';
 
 class DisplayChannelClient implements Channel {
   @override
@@ -54,7 +56,7 @@ class DisplayChannelClient implements Channel {
     final parameters = <String, String>{
       'role': 'client',
       'instanceIndex': instanceIndex,
-      'instanceGroupId': '$instanceGroupId',
+      'groupId': '$instanceGroupId',
     };
 
     _openChannel(
@@ -117,12 +119,17 @@ class DisplayChannelClient implements Channel {
   }
 
   void _openNewConnection({bool isReconnect = false}) {
-    final uri = _uri.replace(
+    // Add signature to query string for API authentication
+    final request = buildApiRequest(
+      getUriOrigin(_uri),
+      _uri.path,
       queryParameters: _queryParameters,
+      time: DateTime.now(),
+      signatureLocation: SignatureLocation.queryString,
     );
 
     _connection = _createConnection(
-      uri.toString(),
+      request.url.toString(),
       isReconnect,
     );
 

@@ -1,7 +1,9 @@
+import 'package:display_channel/src/api/api_request.dart';
 import 'package:display_channel/src/channel_store.dart';
 import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/server/connection_request.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_connection_server.dart';
+import 'package:display_channel/src/util/uri_util.dart';
 
 class DisplayTunnelServer {
   void Function()? onTunnelConnected;
@@ -38,20 +40,25 @@ class DisplayTunnelServer {
   void start(
     String instanceId,
     int instanceGroupId,
-    String tunnelServiceUrl, {
+    Uri uri, {
     // AWS WebSocket Idle Connection Timeout 10 minutes
     Duration tunnelHeartbeatInterval = const Duration(minutes: 9),
   }) {
-    final uri = Uri.parse(tunnelServiceUrl);
-
-    final uriWithParameters = uri.replace(queryParameters: {
-      'role': 'server',
-      'instanceId': instanceId,
-      'instanceGroupId': '$instanceGroupId',
-    });
+    // Add signature to query string for API authentication
+    final request = buildApiRequest(
+      getUriOrigin(uri),
+      uri.path,
+      queryParameters: {
+        'role': 'server',
+        'instanceId': instanceId,
+        'groupId': '$instanceGroupId',
+      },
+      time: DateTime.now(),
+      signatureLocation: SignatureLocation.queryString,
+    );
 
     final connection = _createTunnelConnection(
-      uriWithParameters.toString(),
+      request.url.toString(),
       false,
     );
 
