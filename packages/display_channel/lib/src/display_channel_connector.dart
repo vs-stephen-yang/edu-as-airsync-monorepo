@@ -146,7 +146,7 @@ class DisplayChannelConnector {
 
     // open the client
     _tunnelClient!.openTunnelChannel(
-      _displayCode.instanceIndex.toString(),
+      _displayCode.instanceIndex!,
       _displayCode.instanceGroupId,
       _otp,
       displayCode: _encodedDisplayCode,
