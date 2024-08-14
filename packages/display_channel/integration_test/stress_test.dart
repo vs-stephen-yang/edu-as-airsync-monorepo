@@ -118,15 +118,15 @@ main(List<String> arguments) async {
     )
     ..addOption(
       'instanceId',
-      defaultsTo: '0001',
+      defaultsTo: 'integration-test-001',
     )
     ..addOption(
       'instanceGroupId',
-      defaultsTo: '1',
+      defaultsTo: '16777214',
     )
     ..addOption(
       'instanceIndex',
-      defaultsTo: '100043',
+      defaultsTo: '2',
     );
 
   ArgResults argResults = parser.parse(arguments);
@@ -184,7 +184,7 @@ main(List<String> arguments) async {
 
   client.openTunnelChannel(
     instanceIndex,
-    1,
+    instanceGroupId,
     'token',
     displayCode: 'ABCDE',
   );

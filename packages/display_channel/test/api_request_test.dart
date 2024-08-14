@@ -14,6 +14,7 @@ void main() {
         'groupId': '1379699',
       },
       time: DateTime.fromMillisecondsSinceEpoch(1722854068762),
+      signatureLocation: SignatureLocation.header,
     );
 
     //assert
