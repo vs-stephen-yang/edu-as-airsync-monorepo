@@ -2,7 +2,7 @@ import 'package:args/args.dart';
 import 'package:uuid/uuid.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/util/log.dart';
-import 'api_util.dart';
+import 'package:display_channel/src/util/api_util.dart';
 import 'client.dart';
 
 main(List<String> arguments) async {

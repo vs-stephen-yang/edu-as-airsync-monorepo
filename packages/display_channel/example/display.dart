@@ -4,7 +4,7 @@ import 'package:args/args.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/util/log.dart';
 
-import 'api_util.dart';
+import 'package:display_channel/src/util/api_util.dart';
 
 class Client {
   final Channel _channel;
