@@ -96,5 +96,6 @@
   "v3_participants_title": "Participants",
   "v3_participant_item_casting": "Casting",
   "v3_participant_item_connected": "Connected",
-  "v3_participant_item_share": "Share"
+  "v3_participant_item_share": "Share",
+  "v3_new_sharing_join_session": " joined the session"
 }

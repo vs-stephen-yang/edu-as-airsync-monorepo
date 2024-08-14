@@ -1030,6 +1030,16 @@ class S {
       args: [],
     );
   }
+
+  /// ` joined the session`
+  String get v3_new_sharing_join_session {
+    return Intl.message(
+      ' joined the session',
+      name: 'v3_new_sharing_join_session',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
