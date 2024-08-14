@@ -130,13 +130,17 @@ class MockServer {
   Future<void> start(
     String instanceId,
     int instanceGroupId,
-    String tunnelServiceUrl,
+    Uri uri,
     int localPort,
     SecurityContext securityContext,
   ) async {
     // start the tunnel server
-    log().info('Connecting to $tunnelServiceUrl for tunnel channels');
-    _tunnelServer.start(instanceId, instanceGroupId, tunnelServiceUrl);
+    log().info('Connecting to ${uri.toString()} for tunnel channels');
+    _tunnelServer.start(
+      instanceId,
+      instanceGroupId,
+      uri,
+    );
 
     // start the direct server
     await _directServer.start(
@@ -167,27 +171,29 @@ main(List<String> arguments) async {
       defaultsTo: '0001',
     )
     ..addOption(
-      'apiUrl',
-      defaultsTo: 'https://api.gateway.dev.airsync.net',
+      'apiOrigin',
+      defaultsTo: 'https://api.gateway.dev2.airsync.net',
     );
 
   ArgResults argResults = parser.parse(arguments);
 
   final host = argResults['host'];
   const localDirectPort = 5100;
-  final apiUrl = argResults['apiUrl'];
+  final apiOrigin = argResults['apiOrigin'];
   final instanceId = argResults['instanceId'];
 
   log().info('Host: $host');
+  log().info('Current directory: ${Directory.current.path}');
 
   final instanceGroupId = getInstanceGroupIdFromIp(host);
+
+  // Register the instance
+  log().info('Registering the instance');
   final instanceInfo = await registerInstance(
-    apiUrl,
+    apiOrigin,
     instanceId,
     instanceGroupId,
   );
-
-  log().info('Current directory: ${Directory.current.path}');
 
   final encodedDisplayCode = encodeDisplayCode(
     DisplayCode(
@@ -216,7 +222,7 @@ main(List<String> arguments) async {
   await server.start(
     instanceId,
     instanceGroupId,
-    instanceInfo.tunnelApiUrl,
+    Uri.parse(instanceInfo.tunnelApiUrl),
     localDirectPort,
     securityContext,
   );

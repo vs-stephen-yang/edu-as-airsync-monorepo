@@ -2,6 +2,7 @@ import 'package:args/args.dart';
 import 'package:uuid/uuid.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/util/log.dart';
+import 'api_util.dart';
 import 'client.dart';
 
 main(List<String> arguments) async {
@@ -15,6 +16,10 @@ main(List<String> arguments) async {
       defaultsTo: '1111',
     )
     ..addOption(
+      'apiOrigin',
+      defaultsTo: 'https://api.gateway.dev2.airsync.net',
+    )
+    ..addOption(
       'code',
       mandatory: true,
     );
@@ -24,7 +29,7 @@ main(List<String> arguments) async {
   final clientId = const Uuid().v4();
   final otp = argResults['otp'];
   final encodedDisplayCode = argResults['code'];
-  final tunnelServiceUrl = argResults['tunnelUrl'];
+  final apiOrigin = argResults['apiOrigin'];
 
   final localIpAddresses = await getLocalIpAddresses();
 
@@ -54,8 +59,16 @@ main(List<String> arguments) async {
   Future<String> fetchTunnelUrl(
     int instanceIndex,
     int instanceGroupId,
-  ) async =>
-      tunnelServiceUrl;
+  ) async {
+    log().info('Fetching the instance Info');
+    final tunnelUrl = await fetchInstanceInfo(
+      apiOrigin,
+      instanceIndex,
+      instanceGroupId,
+    );
+    log().info('Fetched the instance Info. $tunnelUrl');
+    return tunnelUrl;
+  }
 
   log().info('Display Code: $encodedDisplayCode');
   final displayCode = decodeDisplayCode(encodedDisplayCode);
@@ -80,7 +93,7 @@ main(List<String> arguments) async {
     },
   );
 
-  log().info('opening the channel');
+  log().info('Opening the channel');
 
   client.open();
 }
