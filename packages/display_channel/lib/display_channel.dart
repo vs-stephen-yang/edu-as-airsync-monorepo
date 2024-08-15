@@ -41,4 +41,4 @@ export 'package:display_channel/src/util/channel_util.dart'
     show getLocalIpAddresses;
 
 export 'package:display_channel/src/api/api_request.dart'
-    show ApiRequest, buildApiRequest;
+    show ApiRequest, buildApiRequest, SignatureLocation;
