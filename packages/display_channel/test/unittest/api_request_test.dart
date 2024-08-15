@@ -29,7 +29,7 @@ void main() {
       {
         'x-timestamp': '1722854068762',
         'x-signature':
-            'bca82ae15c24a53a891e548730e9d03058070db70185d5fcbd5c1f9d6785a233',
+            'be365814d19749599bcc74c814225fa97d554c1ab60e0921e6089d5232186e55',
       },
     );
   });

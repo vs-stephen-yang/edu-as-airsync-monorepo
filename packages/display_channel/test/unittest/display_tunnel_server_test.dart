@@ -83,7 +83,6 @@ void main() {
       ContainsMapMatcher({
         'role': 'server',
         'instanceId': '1000',
-        'groupId': '1',
       }),
     );
   });

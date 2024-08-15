@@ -32,3 +32,12 @@ List<ChannelMessage> buildMessages(
 
   return messages;
 }
+
+//  take the last n elements from a list
+List<T> lastN<T>(List<T> list, int n) {
+  // Ensure n is greater than or equal to the length of the list
+  assert(n <= list.length,
+      'n must be greater than or equal to the length of the list');
+
+  return list.sublist(list.length - n);
+}
