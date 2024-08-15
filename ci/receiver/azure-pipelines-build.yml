@@ -134,8 +134,8 @@ jobs:
             [xml]$doc = Get-Content -path ~/.m2/settings.xml
             $username=$doc.settings.servers.server.username
             $password=$doc.settings.servers.server.password
-            Write-Host "##vso[task.setvariable variable=artifacts.username]$username"
-            Write-Host "##vso[task.setvariable variable=artifacts.password;issecret=true]$password"
+            Write-Host "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME]$username"
+            Write-Host "##vso[task.setvariable variable=ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD]$password"
 
       - task: Cache@2
         enabled: "false"
@@ -158,28 +158,16 @@ jobs:
       - script: $(Flutter.Bin) $(Flutter.Verbose) build apk --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options)
         displayName: Build Single APK
         condition: ne(variables['appbundle'], true)
-        env:
-          GRADLE_OPTS: $(GRADLE_OPTS)
-          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME: $(artifacts.username)
-          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD: $(artifacts.password)
 
       # Build Split APK
       - script: $(Flutter.Bin) $(Flutter.Verbose) build apk --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options) --split-per-abi
         displayName: Build Split APK
         condition: eq(variables['splitPerAbi'], true)
-        env:
-          GRADLE_OPTS: $(GRADLE_OPTS)
-          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME: $(artifacts.username)
-          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD: $(artifacts.password)
 
       # Build App bundle
       - script: $(Flutter.Bin) $(Flutter.Verbose) build appbundle --flavor $(flavor) -t lib/main_$(target).dart $(Flutter.Build.Options)
         displayName: Build App Bundle
         condition: eq(variables['appbundle'], true)
-        env:
-          GRADLE_OPTS: $(GRADLE_OPTS)
-          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_USERNAME: $(artifacts.username)
-          ORG_GRADLE_PROJECT_AZURE_ARTIFACTS_PASSWORD: $(artifacts.password)
 
       # Stop Gradle daemon
       - script: ./gradlew --stop
@@ -218,6 +206,30 @@ jobs:
             build/app/outputs/bundle/**/*.aab
 
           targetFolder: "$(Build.ArtifactStagingDirectory)/$(channel)"
+
+      # Rename single APK
+      - task: PowerShell@2
+        displayName: Rename Single
+        condition: ne(variables['appbundle'], true)
+        inputs:
+          filePath: "ci/scripts/rename.ps1"
+          arguments: -Wd $(Build.ArtifactStagingDirectory)/$(channel) -Channel $(channel) -Target $(target) -Single
+
+      # Rename split APKs
+      - task: PowerShell@2
+        displayName: Rename Split
+        condition: eq(variables['splitPerAbi'], true)
+        inputs:
+          filePath: "ci/scripts/rename.ps1"
+          arguments: -Wd $(Build.ArtifactStagingDirectory)/$(channel) -Channel $(channel) -Target $(target) -Split
+
+      # Rename bundle
+      - task: PowerShell@2
+        displayName: Rename App Bundle
+        condition: eq(variables['appbundle'], true)
+        inputs:
+          filePath: "ci/scripts/rename.ps1"
+          arguments: -Wd $(Build.ArtifactStagingDirectory)/$(channel) -Channel $(channel) -Target $(target) -Bundle
 
       # Publish artifacts
       - task: PublishBuildArtifacts@1
