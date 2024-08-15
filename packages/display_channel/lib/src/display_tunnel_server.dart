@@ -51,7 +51,6 @@ class DisplayTunnelServer {
       queryParameters: {
         'role': 'server',
         'instanceId': instanceId,
-        'groupId': '$instanceGroupId',
       },
       time: DateTime.now(),
       signatureLocation: SignatureLocation.queryString,
