@@ -10,7 +10,7 @@ void main() {
       'https://api.gateway.dev2.airsync.net/',
       '/v1/instance/v-456',
       queryParameters: {
-        'instanceIndex': 0,
+        'instanceIndex': '0',
         'groupId': '1379699',
       },
       time: DateTime.fromMillisecondsSinceEpoch(1722854068762),

@@ -19,24 +19,58 @@ bool _compareMaps(Map map1, Map map2) {
 }
 
 void main() {
-  test('orderMapWithKeys', () {
-    // arrange
+  test(
+    'orderMapWithKeys should return a map ordered by keys in ascending order',
+    () {
+      // arrange
 
-    //action
-    final actual = orderMapWithKeys(
-      {
-        'b': 2,
+      //action
+      final actual = orderMapWithKeys(
+        {
+          'b': 2,
+          'a': 1,
+          'c': 3,
+        },
+      );
+
+      //assert
+      const expected = {
         'a': 1,
+        'b': 2,
         'c': 3,
-      },
-    );
+      };
+      expect(_compareMaps(actual, expected), true);
+    },
+  );
 
-    //assert
-    const expected = {
-      'a': 1,
-      'b': 2,
-      'c': 3,
-    };
-    expect(_compareMaps(actual, expected), true);
-  });
+  test(
+    'orderMapWithKeys should return a map ordered by keys in ascending order',
+    () {
+      // arrange
+
+      //action
+      final actual = orderMapWithKeys(
+        {
+          'clientId': 'sender-123',
+          'displayCode': 'test-code',
+          'instanceIndex': 1,
+          'token': 'test',
+          'groupId': 1379699,
+          'role': 'client',
+        },
+      );
+
+      //assert
+      const expected = {
+        'clientId': 'sender-123',
+        'displayCode': 'test-code',
+        'groupId': 1379699,
+        'instanceIndex': 1,
+        'role': 'client',
+        'token': 'test',
+      };
+
+      expect(_compareMaps(actual, expected), true);
+    },
+  );
 }

@@ -56,7 +56,7 @@ Future<String> fetchInstanceInfo(
     '/v1/instance',
     queryParameters: {
       'groupId': '$instanceGroupId',
-      'instanceIndex': instanceIndex,
+      'instanceIndex': '$instanceIndex',
     },
     time: DateTime.now(),
     signatureLocation: SignatureLocation.header,

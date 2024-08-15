@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
+import 'package:display_channel/src/api/api_util.dart';
 
 String generateApiSignature({
-  required Map<String, Object> queryParameters,
+  required Map<String, String> queryParameters,
   required Map<String, Object> body,
   required int timestampMs, // in unix timestamp in milliseconds
   required String path,
@@ -12,9 +13,9 @@ String generateApiSignature({
     ...queryParameters,
     ...body,
   };
+  final orderedPayload = orderMapWithKeys(payload);
 
-  final message = '$timestampMs#${json.encode(payload)}';
-
+  final message = '$timestampMs#${json.encode(orderedPayload)}';
   // Convert key to bytes
   final keyBytes = utf8.encode(path);
 
