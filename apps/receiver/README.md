@@ -59,3 +59,11 @@ followed by an optional build number separated by a +.
 ![Image](/README_TestFlight.png)
 
 ![Image](/README_GooglePlay.png)
+
+# __Other Packages__
+
+## [figma2flutter](https://pub.dev/packages/figma2flutter)
+
+- Run the command in the root of your project to generate tokens:
+
+`figma2flutter --input ./design/airsync-token-v2.json --output ./lib/assets/tokens/`

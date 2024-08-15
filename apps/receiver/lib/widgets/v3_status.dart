@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/widgets/v3_text_clock.dart';
 import 'package:flutter/material.dart';
@@ -58,9 +59,10 @@ class _V3StatusState extends State<V3Status> {
             builder: (_, provider, __) {
               return Text(
                 provider.deviceName,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
+                  color: context.tokens.color.vsdslColorOnSurface,
                 ),
               );
             },
@@ -76,7 +78,7 @@ class _V3StatusState extends State<V3Status> {
           child: Container(
             width: 1,
             height: 27,
-            color: const Color(0xFF3C455D),
+            color: context.tokens.color.vsdslColorOutlineVariant,
           ),
         ),
         const V3TextClock(),

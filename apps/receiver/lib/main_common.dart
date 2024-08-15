@@ -7,6 +7,7 @@ import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/app_update_helper.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
@@ -45,10 +46,14 @@ Future<void> commonEntry(ConfigSettings settings) async {
     await AppInstanceCreate.ensureInitialized(settings, packageInfo);
 
     var configureApp = AppConfig(
-        settings: settings,
-        appName: packageInfo.appName,
-        appVersion: packageInfo.version,
-        child: const MyApp());
+      settings: settings,
+      appName: packageInfo.appName,
+      appVersion: packageInfo.version,
+      child: Tokens(
+        tokens: DefaultTokens(),
+        child: const MyApp(),
+      ),
+    );
 
     DisplayServiceBroadcast.ensureInitialized(
       directChannelPort: 5100,
