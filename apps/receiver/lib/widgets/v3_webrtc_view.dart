@@ -13,8 +13,8 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class V3WebrtcView extends StatefulWidget {
@@ -264,12 +264,11 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                     const SizedBox(
                       height: 20,
                     ),
-                    const SizedBox(
+                    SizedBox(
                       width: 76,
                       height: 76,
-                      child: Image(
-                        image: Svg('assets/images/ic_waiting_participant.svg'),
-                      ),
+                      child: Lottie.asset(
+                          'assets/lottie_files/vsdsl-spinner-sty1.json'),
                     ),
                   ],
                 ),
