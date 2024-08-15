@@ -106,13 +106,10 @@ class MultiConnectionChannel implements Channel {
 
     newConnection.onClosed = (connection) => _onConnectionClosed(connection);
 
-    newConnection.onMessage = (Connection c, Map<String, dynamic> message) =>
-        _onConnectionData(message);
-
-    _notifyConnected(newConnection);
+    newConnection.onMessage = _onConnectionData;
   }
 
-  void _onConnectionData(Map<String, dynamic> message) {
+  void _onConnectionData(Connection connection, Map<String, dynamic> message) {
     if (_isClosed()) {
       return;
     }
@@ -123,17 +120,23 @@ class MultiConnectionChannel implements Channel {
       return;
     }
 
-    _handleChannelMessage(parsedMessage);
+    _handleChannelMessage(connection, parsedMessage);
   }
 
-  _handleChannelMessage(ChannelMessage message) {
-    _handleControlMessage(message);
+  _handleChannelMessage(Connection connection, ChannelMessage message) {
+    _handleControlMessage(connection, message);
 
     _messageContinuity.processIncomingMessage(message);
   }
 
-  _handleControlMessage(ChannelMessage message) {
+  _handleControlMessage(Connection connection, ChannelMessage message) {
     switch (message.messageType) {
+      case ChannelMessageType.clientConnected:
+        _onChannelClientConnected(
+          connection,
+          message as ClientConnectedMessage,
+        );
+        return;
       case ChannelMessageType.channelClosed:
         _onChannelClosedMessage(message as ChannelClosedMessage);
         return;
@@ -205,6 +208,13 @@ class MultiConnectionChannel implements Channel {
     }
 
     _doClose(reason);
+  }
+
+  void _onChannelClientConnected(
+    Connection connection,
+    ClientConnectedMessage message,
+  ) {
+    _notifyConnected(connection);
   }
 
   // the client initiates channel closure
