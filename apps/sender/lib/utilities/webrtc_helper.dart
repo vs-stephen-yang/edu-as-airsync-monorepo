@@ -32,6 +32,7 @@ class WebRTCHelper {
     required bool systemAudio,
     required Function(PresentSignalMessage message) sendPresentSignalMessage,
     required Function(RTCPeerConnectionState state) onRTCPeerConnectionState,
+    required Function() onStopPresent,
     required Function() onStreamInterrupted,
   }) async {
     // PeerConnect
@@ -40,6 +41,7 @@ class WebRTCHelper {
       systemAudio: systemAudio,
       sendSignalMessage: sendPresentSignalMessage,
       onConnectionState: onRTCPeerConnectionState,
+      onStopPresent: onStopPresent,
     );
     webRTCConnector?.onStreamInterrupted = (() async {
       onStreamInterrupted();
@@ -91,6 +93,10 @@ class WebRTCHelper {
 
   void resume(String sessionId) {
     webRTCConnector?.resume(sessionId);
+  }
+
+  void sendStop(String sessionId) {
+    webRTCConnector?.sendStop(sessionId);
   }
 
   void stop() {

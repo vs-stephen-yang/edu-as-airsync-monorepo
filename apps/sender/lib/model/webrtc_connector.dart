@@ -24,12 +24,14 @@ class WebRTCConnector {
     required this.systemAudio,
     required this.sendSignalMessage,
     required this.onConnectionState,
+    required this.onStopPresent,
   });
 
   final List<StreamSubscription> subscriptions = [];
 
   void Function(PresentSignalMessage message) sendSignalMessage;
   void Function(RTCPeerConnectionState state) onConnectionState;
+  void Function() onStopPresent;
 
   dynamic _deviceId;
   RTCPeerConnection? _pc;
@@ -393,11 +395,23 @@ class WebRTCConnector {
     );
   }
 
+  void sendStop(String sessionId) {
+    final message = StopPresentMessage();
+    message.sessionId = sessionId;
+
+    _sendControlMessage(
+      message,
+    );
+  }
+
   // handle a channel message from the data channel
   void _onChannelMessageFromDataChannel(ChannelMessage message) {
     switch (message.messageType) {
       case ChannelMessageType.changePresentQuality:
         changePresentQuality(message as ChangePresentQuality);
+        break;
+      case ChannelMessageType.stopPresent:
+        onStopPresent();
         break;
       default:
         break;
