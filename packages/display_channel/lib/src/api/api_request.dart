@@ -33,7 +33,7 @@ Map<String, V>? _mergeWithSignature<V>(
 ApiRequest buildApiRequest(
   String origin,
   String path, {
-  Map<String, Object>? queryParameters,
+  Map<String, String>? queryParameters,
   Map<String, String>? headers,
   Map<String, Object>? body,
   required DateTime time,
