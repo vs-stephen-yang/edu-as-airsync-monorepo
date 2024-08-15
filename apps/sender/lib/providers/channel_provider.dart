@@ -442,23 +442,28 @@ class ChannelProvider extends ChangeNotifier {
 
     // PeerConnect
     WebRTCHelper().init(
-        sessionId: _sessionId,
-        profileStore: profileStore,
-        systemAudio: systemAudio,
-        sendPresentSignalMessage: (PresentSignalMessage message) {
-          // offer, answer, candidate
-          message.sessionId = _sessionId;
-          _channel?.send(message);
-        },
-        onRTCPeerConnectionState: _onRtcConnectionState,
-        onStreamInterrupted: () async {
-          presentStop();
-          if (moderatorStatus) {
-            _presentStateProvider?.presentModeratorWaitPage();
-          } else {
-            presentEnd();
-          }
-        });
+      sessionId: _sessionId,
+      profileStore: profileStore,
+      systemAudio: systemAudio,
+      sendPresentSignalMessage: (PresentSignalMessage message) {
+        // offer, answer, candidate
+        message.sessionId = _sessionId;
+        _channel?.send(message);
+      },
+      onRTCPeerConnectionState: _onRtcConnectionState,
+      onStreamInterrupted: () async {
+        presentStop();
+        if (moderatorStatus) {
+          _presentStateProvider?.presentModeratorWaitPage();
+        } else {
+          presentEnd();
+        }
+      },
+      onStopPresent: () {
+        // Received StopPresent from the peer via data channel
+        presentStop();
+      },
+    );
 
     await makeCall(selectedSource: selectedSource);
   }
@@ -638,6 +643,8 @@ class ChannelProvider extends ChangeNotifier {
     final msg = StopPresentMessage();
     msg.sessionId = _sessionId;
     _channel?.send(msg);
+
+    WebRTCHelper().sendStop(_sessionId);
   }
 
   //endregion
