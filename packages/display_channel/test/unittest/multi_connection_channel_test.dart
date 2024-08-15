@@ -46,22 +46,6 @@ void main() {
     connection2 = FakeConnection();
   });
 
-  test('channel should send channel-connected for each new connection', () {
-    // arrange
-
-    // action
-    channel.addConnection(connection1);
-
-    channel.addConnection(connection2);
-
-    // assert
-    expect(connection1.sentMessages.length, 1);
-    expect(connection1.sentMessages[0], isA<ChannelConnectedMessage>());
-
-    expect(connection2.sentMessages.length, 1);
-    expect(connection2.sentMessages[0], isA<ChannelConnectedMessage>());
-  });
-
   test('channel should send heartbeat periodically', () {
     // arrange
 
@@ -72,10 +56,12 @@ void main() {
       async.elapse(const Duration(seconds: 200));
 
       // assert
-      expect(connection1.sentMessages.length, 3);
+
+      final messages = lastN(connection1.sentMessages, 2);
+
       // two hearbeats
-      expect(connection1.sentMessages[1], isA<HeartbeatMessage>());
-      expect(connection1.sentMessages[2], isA<HeartbeatMessage>());
+      expect(messages[0], isA<HeartbeatMessage>());
+      expect(messages[1], isA<HeartbeatMessage>());
     });
   });
 
@@ -109,7 +95,8 @@ void main() {
     expect(stateChanges.last, ChannelState.connected);
   });
 
-  test('channel should close if the client cannot reconnect within timeout',
+  test(
+      'Channel should close when client fails to reconnect within the timeout period',
       () {
     // arrange
     channel.addConnection(connection1);
@@ -125,7 +112,7 @@ void main() {
     });
   });
 
-  test('channel should send message to each connection', () {
+  test('Channel should broadcasts messages to all active connections', () {
     // arrange
     channel.addConnection(connection1);
     channel.addConnection(connection2);
@@ -134,20 +121,19 @@ void main() {
     channel.send(AllowPresentMessage());
 
     // assert
-    expect(connection1.sentMessages.length, 2);
-    expect(connection1.sentMessages[1], isA<AllowPresentMessage>());
+    expect(connection1.sentMessages.last, isA<AllowPresentMessage>());
 
-    expect(connection2.sentMessages.length, 2);
-    expect(connection2.sentMessages[1], isA<AllowPresentMessage>());
+    expect(connection2.sentMessages.last, isA<AllowPresentMessage>());
   });
 
-  test('channel should receive messages from a connection', () {
+  test('Channel correctly receives messages from a connection', () {
     // arrange
     channel.addConnection(connection1);
 
     // action
     final messages = buildMessages([0, 3, 2, 1], true);
 
+    // inject the messages
     for (var message in messages) {
       connection1.onMessage?.call(
         connection1,
@@ -159,7 +145,7 @@ void main() {
     expect(receivedMessages.length, 4);
   });
 
-  test('client should receive channel-close when channel is closed', () {
+  test('channel-close should be sent when the channel is closed', () {
     // arrange
     channel.addConnection(connection1);
 
@@ -167,7 +153,22 @@ void main() {
     channel.close(null);
 
     // assert
-    expect(connection1.sentMessages.length, 2);
-    expect(connection1.sentMessages[1], isA<ChannelClosedMessage>());
+    expect(connection1.sentMessages.last, isA<ChannelClosedMessage>());
+  });
+
+  test(
+      'Channel should respond with channel-connected after receiving client-connected',
+      () {
+    // arrange
+    channel.addConnection(connection1);
+
+    // action
+    connection1.onMessage?.call(
+      connection1,
+      ClientConnectedMessage(0).toJson(),
+    );
+
+    // assert
+    expect(connection1.sentMessages.first, isA<ChannelConnectedMessage>());
   });
 }
