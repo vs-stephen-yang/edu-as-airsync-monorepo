@@ -20,11 +20,13 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
   Widget build(BuildContext context) {
     return Positioned(
       left: 25,
-      top: 30,
+      top: 25,
       right: 25,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               GestureDetector(
@@ -50,7 +52,6 @@ class _V3HeaderBarState extends State<V3HeaderBar> {
               ),
             ],
           ),
-          const Spacer(),
           if (!widget.isWaitForStream) const V3Status(),
         ],
       ),

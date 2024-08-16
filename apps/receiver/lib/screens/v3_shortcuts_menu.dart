@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
@@ -29,10 +30,11 @@ class V3ShortcutsMenu extends StatelessWidget {
               top: 13,
               child: AutoSizeText(
                 S.of(context).v3_shortcuts_menu_title,
-                style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                ),
               ),
             ),
             Positioned(
@@ -40,23 +42,23 @@ class V3ShortcutsMenu extends StatelessWidget {
               top: 57,
               right: 13,
               child: Column(
-                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Column(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          AutoSizeText(
-                            S.of(context).v3_shortcuts_cast_device,
-                            style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white),
-                          ),
-                          const Spacer(),
-                          Consumer<ChannelProvider>(
-                              builder: (_, channelProvider, __) {
-                            return SizedBox(
+                      AutoSizeText(
+                        S.of(context).v3_shortcuts_cast_device,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color:
+                              context.tokens.color.vsdslColorOnSurfaceInverse,
+                        ),
+                      ),
+                      Consumer<ChannelProvider>(
+                          builder: (_, channelProvider, __) {
+                        return SizedBox(
                               height: 21,
                               child: IconButton(
                                 icon: Image(
@@ -68,8 +70,8 @@ class V3ShortcutsMenu extends StatelessWidget {
                                 constraints: const BoxConstraints(),
                                 onPressed: () {
                                   ChannelProvider.isSenderMode =
-                                      !ChannelProvider.isSenderMode;
-                                  if (!ChannelProvider.isSenderMode) {
+                                  !ChannelProvider.isSenderMode;
+                              if (!ChannelProvider.isSenderMode) {
                                     channelProvider.removeSender();
                                   } else {
                                     channelProvider.startRemoteScreen();
@@ -78,23 +80,21 @@ class V3ShortcutsMenu extends StatelessWidget {
                               ),
                             );
                           }),
-                        ],
-                      ),
-                      AutoSizeText(
-                        S.of(context).v3_shortcuts_cast_device_desc,
-                        style: const TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xFF838CA6),
-                        ),
-                      ),
                     ],
                   ),
+                  AutoSizeText(
+                    S.of(context).v3_shortcuts_cast_device_desc,
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w400,
+                      color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                    ),
+                  ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    padding: const EdgeInsets.symmetric(vertical: 6),
                     child: Container(
-                      height: 1,
-                      color: const Color(0xFF3C455D),
+                      height: 2,
+                      color: context.tokens.color.vsdslColorOutlineVariant,
                     ),
                   ),
                   Column(
@@ -102,10 +102,12 @@ class V3ShortcutsMenu extends StatelessWidget {
                     children: [
                       AutoSizeText(
                         S.of(context).v3_shortcuts_mirroring,
-                        style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white),
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color:
+                              context.tokens.color.vsdslColorOnSurfaceInverse,
+                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,10 +119,12 @@ class V3ShortcutsMenu extends StatelessWidget {
                             ),
                             child: AutoSizeText(
                               S.of(context).v3_shortcuts_airplay,
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white),
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                              ),
                             ),
                           ),
                           Consumer<MirrorStateProvider>(
@@ -162,10 +166,12 @@ class V3ShortcutsMenu extends StatelessWidget {
                             ),
                             child: AutoSizeText(
                               S.of(context).v3_shortcuts_google_cast,
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white),
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                              ),
                             ),
                           ),
                           Consumer<MirrorStateProvider>(
@@ -208,10 +214,12 @@ class V3ShortcutsMenu extends StatelessWidget {
                             ),
                             child: AutoSizeText(
                               S.of(context).v3_shortcuts_miracast,
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white),
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                              ),
                             ),
                           ),
                           Consumer<MirrorStateProvider>(

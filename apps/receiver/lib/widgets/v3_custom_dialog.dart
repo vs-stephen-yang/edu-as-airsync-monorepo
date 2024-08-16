@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:flutter/material.dart';
 
 class V3CustomDialog extends StatelessWidget {
@@ -32,8 +33,12 @@ class V3CustomDialog extends StatelessWidget {
               width: 253,
               height: 192,
               child: Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: context.tokens.radii.vsdslRadiusXl,
+                ),
                 insetPadding: EdgeInsets.zero,
-                backgroundColor: Colors.white,
+                backgroundColor:
+                    context.tokens.color.vsdslColorOnSurfaceInverse,
                 child: Stack(
                   children: [
                     Positioned(
@@ -43,10 +48,10 @@ class V3CustomDialog extends StatelessWidget {
                       child: AutoSizeText(
                         title,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black,
+                          color: context.tokens.color.vsdslColorNeutral,
                         ),
                       ),
                     ),
@@ -57,10 +62,10 @@ class V3CustomDialog extends StatelessWidget {
                       child: AutoSizeText(
                         content,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
-                          color: Colors.black,
+                          color: context.tokens.color.vsdslColorNeutral,
                         ),
                       ),
                     ),
@@ -76,10 +81,12 @@ class V3CustomDialog extends StatelessWidget {
                             height: 40,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: const Color(0xFF3C5AAA),
+                                foregroundColor:
+                                    context.tokens.color.vsdslColorSecondary,
                                 backgroundColor: Colors.white,
-                                side: const BorderSide(
-                                  color: Color(0xFF3C5AAA),
+                                side: BorderSide(
+                                  color:
+                                      context.tokens.color.vsdslColorSecondary,
                                   width: 1.5,
                                 ),
                                 textStyle: const TextStyle(
@@ -97,8 +104,10 @@ class V3CustomDialog extends StatelessWidget {
                             height: 40,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor: const Color(0xFF3C5AAA),
+                                foregroundColor: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                                backgroundColor:
+                                    context.tokens.color.vsdslColorSecondary,
                                 textStyle: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,

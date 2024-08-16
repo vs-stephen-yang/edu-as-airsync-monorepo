@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
@@ -196,18 +197,19 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                     padding: const EdgeInsets.only(
                         left: 8, top: 1, right: 8, bottom: 5),
                     alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.only(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(10),
                           bottomRight: Radius.circular(10)),
-                      color: Color(0xFF20273E),
+                      color: context.tokens.color.vsdslColorSurface900,
                     ),
                     child: AutoSizeText(
                       widget.rtcConnector.senderNameWithEllipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
-                          color: Colors.white),
+                          color:
+                              context.tokens.color.vsdslColorOnSurfaceInverse),
                       maxLines: 1,
                     ),
                   )
@@ -231,10 +233,10 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                         children: <Widget>[
                           AutoSizeText(
                             S.of(context).v3_waiting_up_next,
-                            style: const TextStyle(
-                              color: Color(0xFF3C5AAA),
-                              fontWeight: FontWeight.w600,
+                            style: TextStyle(
                               fontSize: 21,
+                              fontWeight: FontWeight.w600,
+                              color: context.tokens.color.vsdslColorSecondary,
                             ),
                           ),
                           const SizedBox(
@@ -242,10 +244,11 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                           ),
                           AutoSizeText(
                             widget.rtcConnector.senderNameWithEllipsis,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
+                            style: TextStyle(
                               fontSize: 45,
+                              fontWeight: FontWeight.w600,
+                              color: context
+                                  .tokens.color.vsdslColorOnSurfaceInverse,
                             ),
                           ),
                         ],
@@ -255,10 +258,10 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                     ),
                     AutoSizeText(
                       S.of(context).v3_waiting_desc,
-                      style: const TextStyle(
-                        color: Color(0xFF838CA6),
-                        fontWeight: FontWeight.w400,
+                      style: TextStyle(
                         fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: context.tokens.color.vsdslColorOnSurfaceVariant,
                       ),
                     ),
                     const SizedBox(

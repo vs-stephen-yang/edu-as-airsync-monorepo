@@ -1,4 +1,5 @@
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
@@ -31,8 +32,8 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xCC151C32),
-          borderRadius: BorderRadius.circular(9999),
+          color: context.tokens.color.vsdslColorOpacityNeutralXl,
+          borderRadius: context.tokens.radii.vsdslRadiusFull,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -87,6 +88,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                     .getAudioDisableStateByIndex(widget.index);
                 return SizedBox(
                   width: 27,
+                  height: 27,
                   child: IconButton(
                     icon: Image(
                       image: isMute
@@ -107,6 +109,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
             ),
             SizedBox(
               width: 27,
+              height: 27,
               child: IconButton(
                 icon: const Image(
                   image: Svg('assets/images/ic_streaming_stop.svg'),

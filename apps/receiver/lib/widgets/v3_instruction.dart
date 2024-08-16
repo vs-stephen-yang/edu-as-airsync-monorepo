@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
@@ -20,7 +21,7 @@ class V3Instruction extends StatefulWidget {
 }
 
 class _V3InstructionState extends State<V3Instruction> {
-  ConnectivityResult _lastConnectivityResult = ConnectivityResult.none;
+  static ConnectivityResult _lastConnectivityResult = ConnectivityResult.none;
 
   @override
   void initState() {
@@ -33,7 +34,7 @@ class _V3InstructionState extends State<V3Instruction> {
     return Consumer2<ChannelProvider, InstanceInfoProvider>(
         builder: (_, channelProvider, instanceInfoProvider, __) {
       return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: widget.isQuickConnect
             ? CrossAxisAlignment.center
             : CrossAxisAlignment.start,
@@ -41,20 +42,21 @@ class _V3InstructionState extends State<V3Instruction> {
           if (!widget.isQuickConnect)
             AutoSizeText(
               S.of(context).v3_instruction_share_screen,
-              style: const TextStyle(
-                color: Color(0xFF838CA6),
+              style: TextStyle(
                 fontSize: 21,
+                fontWeight: FontWeight.w500,
+                color: context.tokens.color.vsdslColorSurface600,
               ),
             ),
           if (widget.isQuickConnect)
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Image(
-                  image: Svg('assets/images/ic_screen.svg'),
-                  height: 27,
+                Image(
+                  image: const Svg('assets/images/ic_screen.svg'),
                   width: 27,
-                  color: Color(0xFF838CA6),
+                  height: 27,
+                  color: context.tokens.color.vsdslColorSurface600,
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -62,10 +64,10 @@ class _V3InstructionState extends State<V3Instruction> {
                     builder: (_, provider, __) {
                       return AutoSizeText(
                         provider.deviceName,
-                        style: const TextStyle(
-                          fontSize: 14,
+                        style: TextStyle(
+                          fontSize: 19,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF838CA6),
+                          color: context.tokens.color.vsdslColorSurface600,
                         ),
                       );
                     },
@@ -92,15 +94,20 @@ class _V3InstructionState extends State<V3Instruction> {
                     }
                     return AutoSizeText.rich(
                       _buildTextSpan(
-                          fullText: isInternet
-                              ? S.of(context).v3_instruction1a
-                              : S.of(context).v3_instruction1b,
-                          formatTexts: ['airsync.net'],
-                          formatStyle:
-                              const TextStyle(fontWeight: FontWeight.w700)),
-                      style: const TextStyle(
-                        color: Color(0xFF838CA6),
+                        fullText: isInternet
+                            ? S.of(context).v3_instruction1a
+                            : S.of(context).v3_instruction1b,
+                        formatTexts: ['airsync.net'],
+                        formatStyle: TextStyle(
+                          fontSize: 21,
+                          fontWeight: FontWeight.w700,
+                          color: context.tokens.color.vsdslColorSurface600,
+                        ),
+                      ),
+                      style: TextStyle(
                         fontSize: 21,
+                        fontWeight: FontWeight.w500,
+                        color: context.tokens.color.vsdslColorSurface600,
                       ),
                     );
                   },
@@ -120,9 +127,10 @@ class _V3InstructionState extends State<V3Instruction> {
                 padding: const EdgeInsets.only(left: 8),
                 child: AutoSizeText(
                   S.of(context).v3_instruction2,
-                  style: const TextStyle(
-                    color: Color(0xFF838CA6),
+                  style: TextStyle(
                     fontSize: 21,
+                    fontWeight: FontWeight.w500,
+                    color: context.tokens.color.vsdslColorSurface600,
                   ),
                 ),
               ),
@@ -132,10 +140,10 @@ class _V3InstructionState extends State<V3Instruction> {
             padding: const EdgeInsets.only(left: 35),
             child: AutoSizeText(
               _getDisplayCodeVisualIdentity(instanceInfoProvider.displayCode),
-              style: const TextStyle(
-                color: Color(0xFF636D8A),
+              style: TextStyle(
                 fontSize: 45,
                 fontWeight: FontWeight.w700,
+                color: context.tokens.color.vsdslColorSurface700,
               ),
             ),
           ),
@@ -151,9 +159,10 @@ class _V3InstructionState extends State<V3Instruction> {
                 padding: const EdgeInsets.only(left: 8),
                 child: AutoSizeText(
                   S.of(context).v3_instruction3,
-                  style: const TextStyle(
-                    color: Color(0xFF838CA6),
+                  style: TextStyle(
                     fontSize: 21,
+                    fontWeight: FontWeight.w500,
+                    color: context.tokens.color.vsdslColorSurface600,
                   ),
                 ),
               ),
@@ -189,10 +198,10 @@ class _V3InstructionState extends State<V3Instruction> {
               builder: (_, otp, __) {
                 return AutoSizeText(
                   otp.toString(),
-                  style: const TextStyle(
-                    color: Color(0xFF636D8A),
+                  style: TextStyle(
                     fontSize: 45,
                     fontWeight: FontWeight.w700,
+                    color: context.tokens.color.vsdslColorSurface700,
                   ),
                 );
               },

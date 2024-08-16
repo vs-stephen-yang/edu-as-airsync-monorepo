@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
@@ -176,10 +177,11 @@ class _V3StreamingViewState extends State<V3StreamingView> {
                                       ),
                                       AutoSizeText(
                                         S.of(context).v3_waiting_join,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w400,
-                                          color: Color(0xFF3C455D),
+                                          color: context.tokens.color
+                                              .vsdslColorSurface800,
                                         ),
                                       ),
                                     ],
@@ -229,8 +231,8 @@ class _V3StreamingViewState extends State<V3StreamingView> {
             ),
             child: Container(
               decoration: BoxDecoration(
-                color: const Color(0xFF3C455D),
-                borderRadius: BorderRadius.circular(9999),
+                color: context.tokens.color.vsdslColorSurface800,
+                borderRadius: context.tokens.radii.vsdslRadiusFull,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -254,7 +256,7 @@ class _V3StreamingViewState extends State<V3StreamingView> {
                     Container(
                       width: 1,
                       height: 21,
-                      color: const Color(0xFF838CA6),
+                      color: context.tokens.color.vsdslColorOnSurfaceVariant,
                     ),
                   SizedBox(
                     width: 27,
@@ -291,9 +293,10 @@ class _V3StreamingViewState extends State<V3StreamingView> {
                           child: Container(
                             width: 32,
                             height: isDeviceListImplement ? 123 : 68,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFFFFFFFF),
-                              borderRadius: BorderRadius.only(
+                            decoration: BoxDecoration(
+                              color: context
+                                  .tokens.color.vsdslColorOnSurfaceInverse,
+                              borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(20),
                                 bottomLeft: Radius.circular(20),
                               ),
@@ -331,12 +334,14 @@ class _V3StreamingViewState extends State<V3StreamingView> {
                                   BorderRadius.all(Radius.circular(10)),
                             ),
                             padding: EdgeInsets.zero,
-                            child: const AutoSizeText(
+                            child: AutoSizeText(
                               '9',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 10,
-                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
                               ),
                             ),
                           ),
@@ -348,7 +353,7 @@ class _V3StreamingViewState extends State<V3StreamingView> {
                             child: Container(
                               width: 21,
                               height: 1,
-                              color: Colors.grey,
+                              color: context.tokens.color.vsdslColorOutline,
                             ),
                           ),
                         if (isDeviceListImplement)
@@ -385,12 +390,14 @@ class _V3StreamingViewState extends State<V3StreamingView> {
                                     BorderRadius.all(Radius.circular(10)),
                               ),
                               padding: EdgeInsets.zero,
-                              child: const AutoSizeText(
+                              child: AutoSizeText(
                                 '1',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 10,
-                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  color: context
+                                      .tokens.color.vsdslColorOnSurfaceInverse,
                                 ),
                               ),
                             ),

@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_participants_view.dart';
@@ -17,9 +18,9 @@ class V3MainInfo extends StatelessWidget {
       alignment: Alignment.center,
       width: 1065,
       height: 505,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        color: Color(0xFFFFFFFF),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(30)),
+        color: context.tokens.color.vsdslColorSurface100,
       ),
       child: Row(
         children: [
@@ -29,8 +30,8 @@ class V3MainInfo extends StatelessWidget {
               alignment: Alignment.center,
               children: [
                 const Positioned(
-                  left: 50,
-                  top: 50,
+                  left: 53,
+                  top: 53,
                   bottom: 118,
                   child: V3Instruction(),
                 ),
@@ -39,12 +40,14 @@ class V3MainInfo extends StatelessWidget {
                   bottom: 30,
                   child: Row(
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(left: 35),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 35),
                         child: Image(
-                          image: Svg('assets/images/ic_arrow_to_screen.svg'),
-                          height: 21,
+                          image:
+                              const Svg('assets/images/ic_arrow_to_screen.svg'),
                           width: 21,
+                          height: 21,
+                          color: context.tokens.color.vsdslColorSurface600,
                         ),
                       ),
                       Padding(
@@ -53,11 +56,16 @@ class V3MainInfo extends StatelessWidget {
                           _buildTextSpan(
                               fullText: S.of(context).v3_instruction_support,
                               formatTexts: ['AirPlay, Google Cast', 'Miracast'],
-                              formatStyle:
-                                  const TextStyle(fontWeight: FontWeight.w700)),
-                          style: const TextStyle(
-                            color: Color(0xFF838CA6),
-                            fontSize: 16,
+                              formatStyle: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color:
+                                    context.tokens.color.vsdslColorSurface600,
+                              )),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: context.tokens.color.vsdslColorSurface600,
                           ),
                         ),
                       ),
@@ -71,10 +79,10 @@ class V3MainInfo extends StatelessWidget {
                     height: 220,
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: const BorderSide(
+                        borderRadius: context.tokens.radii.vsdslRadiusXl,
+                        side: BorderSide(
                           width: 1,
-                          color: Color(0xFFE9EAF0),
+                          color: context.tokens.color.vsdslColorOutline,
                         ),
                       ),
                     ),
@@ -86,7 +94,7 @@ class V3MainInfo extends StatelessWidget {
           ),
           Container(
             width: 1,
-            color: const Color(0xFFE9EAF0),
+            color: context.tokens.color.vsdslColorOutline,
           ),
           const SizedBox(
             width: 300,
