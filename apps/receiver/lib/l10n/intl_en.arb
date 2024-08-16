@@ -97,5 +97,8 @@
   "v3_participant_item_casting": "Casting",
   "v3_participant_item_connected": "Connected",
   "v3_participant_item_share": "Share",
-  "v3_new_sharing_join_session": " joined the session"
+  "v3_new_sharing_join_session": " joined the session",
+  "v3_download_app_entry": "Download AirSync App",
+  "v3_download_app_title": "Download AirSync App",
+  "v3_download_app_desc": "Scan the QR code with your iOS or Android device for instant access"
 }

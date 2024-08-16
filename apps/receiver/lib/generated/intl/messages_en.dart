@@ -152,6 +152,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_message": MessageLookupByLibrary.simpleMessage(
             "A new version of software is available"),
         "update_title": MessageLookupByLibrary.simpleMessage("AirSync Update"),
+        "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
+            "Scan the QR code with your iOS or Android device for instant access"),
+        "v3_download_app_entry":
+            MessageLookupByLibrary.simpleMessage("Download AirSync App"),
+        "v3_download_app_title":
+            MessageLookupByLibrary.simpleMessage("Download AirSync App"),
         "v3_exit_moderator_mode_cancel":
             MessageLookupByLibrary.simpleMessage("Cancel"),
         "v3_exit_moderator_mode_desc": MessageLookupByLibrary.simpleMessage(

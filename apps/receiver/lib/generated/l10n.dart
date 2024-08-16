@@ -1040,6 +1040,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Download AirSync App`
+  String get v3_download_app_entry {
+    return Intl.message(
+      'Download AirSync App',
+      name: 'v3_download_app_entry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download AirSync App`
+  String get v3_download_app_title {
+    return Intl.message(
+      'Download AirSync App',
+      name: 'v3_download_app_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan the QR code with your iOS or Android device for instant access`
+  String get v3_download_app_desc {
+    return Intl.message(
+      'Scan the QR code with your iOS or Android device for instant access',
+      name: 'v3_download_app_desc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
