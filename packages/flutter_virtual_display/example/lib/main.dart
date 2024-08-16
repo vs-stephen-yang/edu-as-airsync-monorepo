@@ -4,7 +4,9 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display.dart';
 
-void main() {
+void main(List<String> args) async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterVirtualDisplay.instance.initialize();
   runApp(const MyApp());
 }
 
@@ -16,35 +18,32 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _flutterVirtualDisplayPlugin = FlutterVirtualDisplay();
+  bool _isVirtualDisplayStarted = false;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+
+    FlutterVirtualDisplay.instance.onVirtualDisplayStarted.stream.listen((device_index) {
+      setState(() {
+        _isVirtualDisplayStarted = true;
+      });
+    });
+
+    FlutterVirtualDisplay.instance.onVirtualDisplayStopped.stream.listen((_) {
+      setState(() {
+        _isVirtualDisplayStarted = false;
+      });
+    });
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _flutterVirtualDisplayPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
+  void _startVirtualDisplay() async {
+    int? device_id = await FlutterVirtualDisplay.instance.startVirtualDisplay();
+    print('device_id: $device_id');
+  }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+  void _stopVirtualDisplay() async {
+    await FlutterVirtualDisplay.instance.stopVirtualDisplay();
   }
 
   @override
@@ -55,7 +54,16 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              ElevatedButton(
+                  onPressed: _isVirtualDisplayStarted ?
+                    _stopVirtualDisplay : _startVirtualDisplay,
+                  child: _isVirtualDisplayStarted ?
+                    const Text('Stop Virtual Display') : const Text('Start Virtual Display'))
+            ],
+          )
         ),
       ),
     );
