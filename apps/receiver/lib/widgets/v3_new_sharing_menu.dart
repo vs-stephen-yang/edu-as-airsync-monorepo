@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -48,10 +49,10 @@ class _V3NewSharingMenuState extends State<V3NewSharingMenu> {
               height: 87,
               child: Dialog(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: context.tokens.radii.vsdslRadiusLg,
                 ),
                 insetPadding: EdgeInsets.zero,
-                backgroundColor: const Color(0xFF20273E),
+                backgroundColor: context.tokens.color.vsdslColorSurface800,
                 child: Stack(
                   children: [
                     const Positioned(
@@ -75,18 +76,20 @@ class _V3NewSharingMenuState extends State<V3NewSharingMenu> {
                         children: [
                           AutoSizeText(
                             widget.name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              color: context
+                                  .tokens.color.vsdslColorOnSurfaceInverse,
                             ),
                           ),
                           AutoSizeText(
                             S.of(context).v3_new_sharing_join_session,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 9,
                               fontWeight: FontWeight.w400,
-                              color: Colors.white,
+                              color: context
+                                  .tokens.color.vsdslColorOnSurfaceInverse,
                             ),
                           )
                         ],
@@ -126,8 +129,8 @@ class _V3NewSharingMenuState extends State<V3NewSharingMenu> {
                           value: _progress,
                           minHeight: 5,
                           backgroundColor: Colors.transparent,
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                            Color(0xFF3AC9CC),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            context.tokens.color.vsdslColorSuccess,
                           ),
                         ),
                       ),

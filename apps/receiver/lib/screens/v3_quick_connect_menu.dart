@@ -1,3 +1,4 @@
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
@@ -11,14 +12,9 @@ class V3QuickConnectMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-        side: const BorderSide(
-          width: 1,
-          color: Color(0xFFE9EAF0),
-        ),
-      ),
-      backgroundColor: Colors.white,
+      backgroundColor: context.tokens.color.vsdslColorSurface100,
+      shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
+      elevation: 5,
       child: SizedBox(
         width: 512,
         height: 507,
@@ -28,21 +24,25 @@ class V3QuickConnectMenu extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               Positioned(
+                left: 13,
                 top: 27,
+                right: 13,
                 child: Container(
                   width: 485,
-                  height: 34,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: Color(0xFFE9EAF0),
+                  height: 37,
+                  decoration: BoxDecoration(
+                    borderRadius: context.tokens.radii.vsdslRadiusLg,
+                    color: context.tokens.color.vsdslColorSurface200,
                   ),
                   child: TabBar(
                     indicator: BoxDecoration(
-                      color: const Color(0xFF3C5AAA),
-                      borderRadius: BorderRadius.circular(11),
+                      color: context.tokens.color.vsdslColorSecondary,
+                      borderRadius: context.tokens.radii.vsdslRadiusLg,
                     ),
                     indicatorSize: TabBarIndicatorSize.tab,
-                    labelColor: Colors.white,
+                    labelColor: context.tokens.color.vsdslColorOnSurfaceInverse,
+                    unselectedLabelColor:
+                        context.tokens.color.vsdslColorSecondary,
                     dividerHeight: 0,
                     tabs: [
                       Tab(
@@ -56,9 +56,9 @@ class V3QuickConnectMenu extends StatelessWidget {
                 ),
               ),
               const Positioned(
-                top: 61,
-                height: 400,
-                width: 500,
+                top: 118,
+                height: 320,
+                width: 450,
                 child: TabBarView(
                   children: [
                     V3Instruction(isQuickConnect: true),
@@ -71,6 +71,7 @@ class V3QuickConnectMenu extends StatelessWidget {
                 bottom: 13,
                 child: SizedBox(
                   width: 33,
+                  height: 33,
                   child: IconButton(
                     icon: const Image(
                       image: Svg('assets/images/ic_menu_minimal.svg'),

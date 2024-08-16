@@ -48,10 +48,11 @@ class _V3StatusState extends State<V3Status> {
     }
     return Row(
       children: [
-        const Image(
-          image: Svg('assets/images/ic_screen.svg'),
-          height: 27,
+        Image(
+          image: const Svg('assets/images/ic_screen.svg'),
           width: 27,
+          height: 27,
+          color: context.tokens.color.vsdslColorOnSurface,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5),

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
@@ -32,10 +33,10 @@ class V3ParticipantItem extends StatelessWidget {
                 height: 18,
                 child: AutoSizeText(
                   rtcConnector.senderNameWithEllipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF2A2A2A),
+                    color: context.tokens.color.vsdslColorOnSurface,
                   ),
                   maxLines: 1,
                 ),
@@ -49,8 +50,8 @@ class V3ParticipantItem extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                   color:
                       (HybridConnectionList().isPresenterStreaming(presenterId))
-                          ? const Color(0xFF3AC9CC)
-                          : const Color(0xFF838CA6),
+                          ? context.tokens.color.vsdslColorSuccess
+                          : context.tokens.color.vsdslColorOnSurfaceVariant,
                 ),
               ),
             ],
@@ -63,9 +64,9 @@ class V3ParticipantItem extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
-                  backgroundColor: const Color(0xFF3C5AAA),
+                  backgroundColor: context.tokens.color.vsdslColorSecondary,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(9999),
+                    borderRadius: context.tokens.radii.vsdslRadiusFull,
                   ),
                   padding: EdgeInsets.zero,
                 ),
@@ -74,10 +75,10 @@ class V3ParticipantItem extends StatelessWidget {
                 },
                 child: AutoSizeText(
                   S.of(context).v3_participant_item_share,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
                   ),
                 ),
               ),

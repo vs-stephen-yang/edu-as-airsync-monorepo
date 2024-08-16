@@ -1,3 +1,4 @@
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/widgets/v3_participant_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -17,7 +18,7 @@ class V3ParticipantsMenu extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            backgroundColor: Colors.white,
+            backgroundColor: context.tokens.color.vsdslColorSurface100,
             insetPadding: EdgeInsets.zero,
             child: SizedBox(
               width: 310,

@@ -139,6 +139,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       SystemUiMode.manual,
       overlays: [SystemUiOverlay.bottom],
     );
+    //debugPaintSizeEnabled = true;
 
     return MultiProvider(
       providers: [
@@ -171,6 +172,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             title: 'AirSync',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
+              splashFactory: NoSplash.splashFactory,
               primarySwatch: Colors.blue,
               // Set App background color
               scaffoldBackgroundColor: Colors.black,

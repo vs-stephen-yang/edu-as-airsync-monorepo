@@ -17,10 +17,11 @@ class V3FooterBar extends StatelessWidget {
             width: 1280,
           ),
           Positioned(
-            right: 15,
-            bottom: 15,
+            right: 13,
+            bottom: 13,
             child: Image.asset(
               'assets/images/ic_logo_viewsonic.png',
+              width: 513 / 3,
               height: 160 / 3,
             ),
           ),

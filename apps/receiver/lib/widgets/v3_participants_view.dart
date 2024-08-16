@@ -89,8 +89,8 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(20),
-                bottomRight: Radius.circular(20),
+                topRight: Radius.circular(30),
+                bottomRight: Radius.circular(30),
               ),
               color: isShowLogOutMenu
                   ? const Color(0x2B151C32)

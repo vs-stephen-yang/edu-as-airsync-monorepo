@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -36,9 +37,10 @@ class _V3TextClockState extends State<V3TextClock> {
         return Text(
           DateFormat('hh:mma', prefLanguageProvider.locale?.languageCode)
               .format(DateTime.now()),
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w700,
+            color: context.tokens.color.vsdslColorOnSurface,
           ),
         );
       },

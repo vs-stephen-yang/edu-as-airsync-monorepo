@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:flutter/material.dart';
@@ -149,9 +150,9 @@ class V3Toast {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               // Change the color of the Toast
-              color: const Color(0xFF151C32),
+              color: context.tokens.color.vsdslColorSurface1000,
               // Change the border radius of the Toast
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: context.tokens.radii.vsdslRadiusXl,
             ),
             child: Row(
               children: [
@@ -168,10 +169,10 @@ class V3Toast {
                   width: 250,
                   child: AutoSizeText(
                     message,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 9,
                       fontWeight: FontWeight.w400,
-                      color: Color(0xFFFC9700),
+                      color: context.tokens.color.vsdslColorWarning,
                     ),
                     minFontSize: 8,
                     maxLines: 1,

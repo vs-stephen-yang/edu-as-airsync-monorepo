@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -21,6 +22,7 @@ class V3ParticipantList extends StatelessWidget {
             children: [
               SizedBox(
                 width: 126,
+                height: 110,
                 child: Image(
                   image: Svg(ChannelProvider.isModeratorMode
                       ? 'assets/images/ic_moderator_people.svg'
@@ -29,10 +31,10 @@ class V3ParticipantList extends StatelessWidget {
               ),
               AutoSizeText(
                 S.of(context).v3_participants_desc,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
-                  color: Color(0xFFC2C6D5),
+                  color: context.tokens.color.vsdslColorSurface400,
                 ),
               ),
             ],
@@ -45,17 +47,19 @@ class V3ParticipantList extends StatelessWidget {
                 TextSpan(children: [
                   TextSpan(
                     text: S.of(context).v3_participants_title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
+                      color: context.tokens.color.vsdslColorOnSurface,
                     ),
                   ),
                   TextSpan(
                     text:
                         ' (${HybridConnectionList().getRtcConnectorMap().length}/${HybridConnectionList.maxHybridConnection})',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
+                      color: context.tokens.color.vsdslColorOnSurface,
                     ),
                   )
                 ]),
