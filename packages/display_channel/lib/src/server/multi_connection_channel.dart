@@ -99,7 +99,6 @@ class MultiConnectionChannel implements Channel {
 
     if (_connections.isEmpty) {
       _startHearbeat();
-      _changeState(ChannelState.connected);
     }
 
     _connections.add(newConnection);
@@ -215,6 +214,8 @@ class MultiConnectionChannel implements Channel {
     ClientConnectedMessage message,
   ) {
     _notifyConnected(connection);
+
+    _changeState(ChannelState.connected);
   }
 
   // the client initiates channel closure
