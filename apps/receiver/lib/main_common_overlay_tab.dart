@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/screens/overlay_tab.dart';
@@ -16,7 +17,7 @@ commonOverlayTabEntry() {
       log.severe('overlay tab details: $details');
     };
 
-    runApp(const OverlayTabApp());
+    runApp(Tokens(tokens: DefaultTokens(), child: const OverlayTabApp()));
   }, (error, stack) {
     log.severe('overlay tab error', error, stack);
   });
