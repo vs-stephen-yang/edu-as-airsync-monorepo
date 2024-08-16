@@ -1,0 +1,98 @@
+; indirect_display_1_2.inf
+; All rights reserved
+
+[Version]
+Signature="$Windows NT$"
+Class=Display
+ClassGuid={4d36e968-e325-11ce-bfc1-08002be10318}
+ClassVer=2.0
+Provider=%ManufacturerName%
+CatalogFile=indirect_display_1_2.cat
+DriverVer = 08/12/2024,13.41.9.911
+PnpLockdown=1
+
+[DestinationDirs]
+DefaultDestDir  = 11
+indirect_display_1_2.CopyFiles = 12,UMDF  	; drivers\UMDF
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTamd64
+
+[Standard.NTamd64]
+%DeviceName%= v3DDKIndirect_1.2_Install, Root\VID_VIEWSONIC_PID_INDIRECT_DISPLAY_VIRTUAL_DISPLAY_0003 ; TODO: edit hw-id
+
+;
+; ================================== UMDF Device ==================================
+;
+
+;
+; === IddCx 1.2 - Windows 10 1709 and above ===
+;
+[v3DDKIndirect_1.2_Install.NT]
+CopyFiles=indirect_display_1_2.CopyFiles
+
+[v3DDKIndirect_1.2_Install.NT.hw]
+AddReg=HardwareKey_AddReg
+
+[v3DDKIndirect_1.2_Install.NT.Wdf]
+;UmdfDispatcher=NativeUSB
+UmdfService=indirect_display_Test1_2,v3DDKIndirect_1.2_Install
+UmdfServiceOrder=indirect_display_Test1_2
+UmdfKernelModeClientPolicy = AllowKernelModeClients
+UmdfMethodNeitherAction	= Copy
+UmdfFileObjectPolicy = AllowNullAndUnknownFileObjects
+
+[v3DDKIndirect_1.2_Install]
+UmdfLibraryVersion=2.15.0
+ServiceBinary=%12%\UMDF\indirect_display_1_2.dll
+UmdfExtensions=IddCx0102
+
+[v3DDKIndirect_1.2_Install.NT.services]
+AddService = WUDFRd,0x000001fa,WUDFRD_ServiceInstall
+
+;
+; === IddCx 1.0 - Windows 10 1607 to 1703 ===
+;
+
+; other separate INF file
+;
+; === Install sections for all platforms ===
+;
+[HardwareKey_AddReg]
+HKR,,FriendlyName,,%DeviceName%
+HKR,,"UpperFilters", %REG_MULTI_SZ%, "IndirectKmd"
+HKR,"WUDF","DeviceGroupId",0x00000000,"v3DDKIndirectGroup"
+HKR,,DeviceCharacteristics,0x10001,0x100
+HKR,,Security,,"D:P(A;;GA;;;SY)(A;;GA;;;BA)"
+;HKR,,Security,,"D:P(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;WD)(A;;GA;;;RC)"  ;for lower security
+
+[WUDFRD_ServiceInstall]
+DisplayName = %WudfRdDisplayName%
+ServiceType = 1
+StartType = 3
+ErrorControl = 1
+ServiceBinary = %12%\WUDFRd.sys
+
+;
+; file section
+;
+[indirect_display_1_2.CopyFiles]
+indirect_display_1_2.dll
+
+[SourceDisksNames]
+1 = %DISKID1%
+
+[SourceDisksFiles]
+indirect_display_1_2.dll = 1
+
+;
+; ================================== Generic ==================================
+;
+[Strings]
+ManufacturerName="Viewsonic"
+DISKID1 = "Indirect Display Virtual Graphics Adapter Driver Setup Disk"
+WudfRdDisplayName="Windows Driver Foundation - User-mode Driver Framework Reflector"
+DeviceName="Indirect Display Graphics Adapter"
+
+REG_MULTI_SZ = 0x00010000
+
