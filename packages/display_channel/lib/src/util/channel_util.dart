@@ -13,16 +13,21 @@ ChannelCloseCode connectErrorToChannelCloseCode(ConnectErrorType error) {
 }
 
 // get the local IP v4 addresses
-Future<List<String>> getLocalIpAddresses() async {
-  final interfaces = await NetworkInterface.list(
-    type: InternetAddressType.IPv4,
-  );
+Future<List<String>> fetchIPv4Addresses() async {
+  try {
+    final interfaces = await NetworkInterface.list(
+      type: InternetAddressType.IPv4,
+    );
 
-  final addresses = <String>[];
-  for (var interface in interfaces) {
-    for (var address in interface.addresses) {
-      addresses.add(address.address);
+    final ipAddresses = <String>[];
+    for (var interface in interfaces) {
+      for (var address in interface.addresses) {
+        ipAddresses.add(address.address);
+      }
     }
+
+    return ipAddresses;
+  } on UnsupportedError {
+    return [];
   }
-  return addresses;
 }
