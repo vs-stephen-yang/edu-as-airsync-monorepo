@@ -74,6 +74,7 @@ dependencies:
       url: https://github.com/google/flutter-desktop-embedding.git
       path: plugins/window_size
   motion_toast: ^2.10.0
+  dropdown_button2: ^2.3.8
 
   # ViewSonic plug-in
   app_ota_flutter:

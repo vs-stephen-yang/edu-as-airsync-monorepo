@@ -11,6 +11,7 @@ class AppPreferences {
 
   static ensureInitialized() async {
     await _instance._load();
+    await _instance._loadInvitedToGroupSelectedItem();
   }
 
   bool _showEULA = true;
@@ -62,4 +63,30 @@ class AppPreferences {
     _entityId = prefs.getString('app_entityId') ?? '';
     _moderatorId = prefs.getString('app_moderatorId') ?? '';
   }
+
+  //TODO: MOVE TO GROUP FEATURE FILE
+  final List<String> invitedToGroupItems = [
+    'Notify me',
+    'Auto accept',
+    'Ignore'
+  ];
+  String _invitedToGroup = 'Notify me';
+
+  String get invitedToGroup => _invitedToGroup;
+
+  void setInvitedToGroupSelectedItem({String? item}) async {
+    if (item != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _invitedToGroup = item;
+      await prefs.setString('app_setting_invited_to_group', item);
+    }
+  }
+
+  _loadInvitedToGroupSelectedItem() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _invitedToGroup =
+        prefs.getString('app_setting_invited_to_group') ?? _invitedToGroup;
+  }
+
+  bool autoFillOneTimePassword = true;
 }
