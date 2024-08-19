@@ -11,7 +11,7 @@ trigger:
 
 variables:
   - name: Flutter.Version
-    value: "3.13.4"
+    value: "3.22.3"
   - name: Flutter.Url
     value: https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_$(Flutter.Version)-stable.zip
   - name: Flutter.Bin
