@@ -38,7 +38,7 @@ export 'package:display_channel/src/display_code2.dart'
         getInstanceGroupIdFromIp;
 
 export 'package:display_channel/src/util/channel_util.dart'
-    show getLocalIpAddresses;
+    show fetchIPv4Addresses;
 
 export 'package:display_channel/src/api/api_request.dart'
     show ApiRequest, buildApiRequest, SignatureLocation;

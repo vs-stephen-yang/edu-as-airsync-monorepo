@@ -31,7 +31,7 @@ main(List<String> arguments) async {
   final encodedDisplayCode = argResults['code'];
   final apiOrigin = argResults['apiOrigin'];
 
-  final localIpAddresses = await getLocalIpAddresses();
+  final localIpAddresses = await fetchIPv4Addresses();
 
   createConnectionTunnel(url, bool isReconnect) => WebSocketClientConnection(
       url,
