@@ -100,5 +100,15 @@
   "v3_new_sharing_join_session": " joined the session",
   "v3_download_app_entry": "Download AirSync App",
   "v3_download_app_title": "Download AirSync App",
-  "v3_download_app_desc": "Scan the QR code with your iOS or Android device for instant access"
+  "v3_download_app_desc": "Scan the QR code with your iOS or Android device for instant access",
+  "v3_waiting_desc": "Waiting for this participant to share their screen",
+  "v3_settings_device_setting": "Device setting",
+  "v3_settings_broadcast": "Broadcast",
+  "v3_settings_connectivity": "Connectivity",
+  "v3_settings_whats_new": "What's new",
+  "v3_settings_device_name": "Device Name",
+  "v3_settings_device_show_display_code": "Show display code on top",
+  "v3_settings_device_show_display_code_desc": "Keep the code visible at the top of the screen, even when switching to other apps and screen sharing is active.",
+  "v3_settings_invite_group": "If invited to a display group",
+  "v3_settings_device_name_save": "Save"
 }

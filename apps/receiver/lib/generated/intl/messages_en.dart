@@ -198,6 +198,25 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Display Code"),
         "v3_quick_connect_menu_qrcode":
             MessageLookupByLibrary.simpleMessage("QR Code"),
+        "v3_settings_broadcast":
+            MessageLookupByLibrary.simpleMessage("Broadcast"),
+        "v3_settings_connectivity":
+            MessageLookupByLibrary.simpleMessage("Connectivity"),
+        "v3_settings_device_name":
+            MessageLookupByLibrary.simpleMessage("Device Name"),
+        "v3_settings_device_name_save":
+            MessageLookupByLibrary.simpleMessage("Save"),
+        "v3_settings_device_setting":
+            MessageLookupByLibrary.simpleMessage("Device setting"),
+        "v3_settings_device_show_display_code":
+            MessageLookupByLibrary.simpleMessage("Show display code on top"),
+        "v3_settings_device_show_display_code_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "Keep the code visible at the top of the screen, even when switching to other apps and screen sharing is active."),
+        "v3_settings_invite_group": MessageLookupByLibrary.simpleMessage(
+            "If invited to a display group"),
+        "v3_settings_whats_new":
+            MessageLookupByLibrary.simpleMessage("What\'s new"),
         "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
         "v3_shortcuts_cast_device":
             MessageLookupByLibrary.simpleMessage("Cast to devices"),
