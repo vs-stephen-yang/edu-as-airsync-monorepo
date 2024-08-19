@@ -91,6 +91,10 @@ void main() {
 
     // action
     channel.addConnection(connection2);
+    connection2.onMessage?.call(
+      connection1,
+      ClientConnectedMessage(0).toJson(),
+    );
 
     expect(stateChanges.last, ChannelState.connected);
   });
