@@ -1,6 +1,7 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/screens/v3_download_app_menu.dart';
+import 'package:display_flutter/screens/v3_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
@@ -27,6 +28,25 @@ class V3FooterBar extends StatelessWidget {
               'assets/images/ic_logo_viewsonic.png',
               width: 513 / 3,
               height: 160 / 3,
+            ),
+          ),
+          Positioned(
+            left: 8,
+            bottom: 8,
+            child: SizedBox(
+              width: 33,
+              height: 33,
+              child: IconButton(
+                icon: const Image(
+                  image: Svg('assets/images/ic_menu_settings.svg'),
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () {
+                  V3Home.isShowSettingsMenu.value =
+                      !V3Home.isShowSettingsMenu.value;
+                },
+              ),
             ),
           ),
           Positioned(

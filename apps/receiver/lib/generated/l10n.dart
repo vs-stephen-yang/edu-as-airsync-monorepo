@@ -1070,6 +1070,96 @@ class S {
       args: [],
     );
   }
+
+  /// `Device setting`
+  String get v3_settings_device_setting {
+    return Intl.message(
+      'Device setting',
+      name: 'v3_settings_device_setting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Broadcast`
+  String get v3_settings_broadcast {
+    return Intl.message(
+      'Broadcast',
+      name: 'v3_settings_broadcast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connectivity`
+  String get v3_settings_connectivity {
+    return Intl.message(
+      'Connectivity',
+      name: 'v3_settings_connectivity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `What's new`
+  String get v3_settings_whats_new {
+    return Intl.message(
+      'What\'s new',
+      name: 'v3_settings_whats_new',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device Name`
+  String get v3_settings_device_name {
+    return Intl.message(
+      'Device Name',
+      name: 'v3_settings_device_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show display code on top`
+  String get v3_settings_device_show_display_code {
+    return Intl.message(
+      'Show display code on top',
+      name: 'v3_settings_device_show_display_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep the code visible at the top of the screen, even when switching to other apps and screen sharing is active.`
+  String get v3_settings_device_show_display_code_desc {
+    return Intl.message(
+      'Keep the code visible at the top of the screen, even when switching to other apps and screen sharing is active.',
+      name: 'v3_settings_device_show_display_code_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If invited to a display group`
+  String get v3_settings_invite_group {
+    return Intl.message(
+      'If invited to a display group',
+      name: 'v3_settings_invite_group',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get v3_settings_device_name_save {
+    return Intl.message(
+      'Save',
+      name: 'v3_settings_device_name_save',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

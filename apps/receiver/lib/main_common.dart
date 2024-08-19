@@ -13,6 +13,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
+import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/v3_home.dart';
@@ -155,6 +156,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           value: MirrorStateProvider(
             InstanceInfoProvider(),
           ),
+        ),
+        ChangeNotifierProvider.value(
+          value: SettingsProvider(),
         ),
       ],
       child: Consumer<PrefLanguageProvider>(
