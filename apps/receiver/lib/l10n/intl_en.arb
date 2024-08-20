@@ -107,8 +107,14 @@
   "v3_settings_connectivity": "Connectivity",
   "v3_settings_whats_new": "What's new",
   "v3_settings_device_name": "Device Name",
+  "v3_settings_device_name_save": "Save",
   "v3_settings_device_show_display_code": "Show display code on top",
   "v3_settings_device_show_display_code_desc": "Keep the code visible at the top of the screen, even when switching to other apps and screen sharing is active.",
   "v3_settings_invite_group": "If invited to a display group",
-  "v3_settings_device_name_save": "Save"
+  "v3_settings_invite_group_notify_me": "Notify me",
+  "v3_settings_invite_group_auto_accept": "Auto Accept",
+  "v3_settings_invite_group_ignore": "Ignore",
+  "v3_settings_device_auto_fill_otp": "Auto-fill one-time password",
+  "v3_settings_device_auto_fill_otp_desc": "Enable one-touch connection when selecting a device from the device list."
+
 }

@@ -1121,6 +1121,16 @@ class S {
     );
   }
 
+  /// `Save`
+  String get v3_settings_device_name_save {
+    return Intl.message(
+      'Save',
+      name: 'v3_settings_device_name_save',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Show display code on top`
   String get v3_settings_device_show_display_code {
     return Intl.message(
@@ -1151,11 +1161,51 @@ class S {
     );
   }
 
-  /// `Save`
-  String get v3_settings_device_name_save {
+  /// `Notify me`
+  String get v3_settings_invite_group_notify_me {
     return Intl.message(
-      'Save',
-      name: 'v3_settings_device_name_save',
+      'Notify me',
+      name: 'v3_settings_invite_group_notify_me',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto Accept`
+  String get v3_settings_invite_group_auto_accept {
+    return Intl.message(
+      'Auto Accept',
+      name: 'v3_settings_invite_group_auto_accept',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ignore`
+  String get v3_settings_invite_group_ignore {
+    return Intl.message(
+      'Ignore',
+      name: 'v3_settings_invite_group_ignore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto-fill one-time password`
+  String get v3_settings_device_auto_fill_otp {
+    return Intl.message(
+      'Auto-fill one-time password',
+      name: 'v3_settings_device_auto_fill_otp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable one-touch connection when selecting a device from the device list.`
+  String get v3_settings_device_auto_fill_otp_desc {
+    return Intl.message(
+      'Enable one-touch connection when selecting a device from the device list.',
+      name: 'v3_settings_device_auto_fill_otp_desc',
       desc: '',
       args: [],
     );
