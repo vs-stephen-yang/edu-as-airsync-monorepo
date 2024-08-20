@@ -65,13 +65,7 @@ class AppPreferences {
   }
 
   //TODO: MOVE TO GROUP FEATURE FILE
-  final List<String> invitedToGroupItems = [
-    'Notify me',
-    'Auto accept',
-    'Ignore'
-  ];
   String _invitedToGroup = 'Notify me';
-
   String get invitedToGroup => _invitedToGroup;
 
   void setInvitedToGroupSelectedItem({String? item}) async {
@@ -88,5 +82,4 @@ class AppPreferences {
         prefs.getString('app_setting_invited_to_group') ?? _invitedToGroup;
   }
 
-  bool autoFillOneTimePassword = true;
 }

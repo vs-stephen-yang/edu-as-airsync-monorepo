@@ -28,12 +28,13 @@ class V3SettingsDeviceLanguage extends StatelessWidget {
                     width: 21,
                     height: 21,
                   ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
                   onPressed: () {
                     settingsProvider.setPage(SettingPageState.deviceSetting);
                   },
                 ),
+                Padding(
+                    padding: EdgeInsets.only(
+                        right: context.tokens.spacing.vsdslSpacingXs.right)),
                 Text(
                   S.of(context).main_language_title,
                   style: const TextStyle(
@@ -44,18 +45,16 @@ class V3SettingsDeviceLanguage extends StatelessWidget {
               ],
             )),
         Positioned(
-          top: 53,
+          top: 57,
+          left: 13,
           width: 352,
           child: RadioGroup(
               defaultLanguage: languageProvider.language,
               languageList: languageProvider.localeMap,
-              onChange: (String? language) {}),
+              onChange: (String language) {
+                languageProvider.setLanguage(language);
+              }),
         ),
-        // RadioGroup(
-        //   defaultLanguage: languageProvider.language,
-        //   onChange: (String? language) {
-        //
-        // }, ),
       ],
     );
   }
@@ -70,7 +69,7 @@ class RadioGroup extends StatefulWidget {
 
   String defaultLanguage;
   final Map<String, Locale> languageList;
-  final Function(String? language) onChange;
+  final Function(String language) onChange;
 
   @override
   _RadioGroupState createState() => _RadioGroupState();
@@ -84,31 +83,38 @@ class _RadioGroupState extends State<RadioGroup> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: widget.languageList.keys.toList().map<Widget>((String key) {
-        return RadioListTile(
-          title: Text(
-            key,
-            style: TextStyle(fontSize: 12),
+        return Container(
+          height: 26,
+          margin: EdgeInsets.only(
+              bottom: context.tokens.spacing.vsdslSpacingSm.bottom),
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                widget.defaultLanguage = key;
+                widget.onChange(key);
+              });
+            },
+            child: Row(
+              children: [
+                Image(
+                  width: 20,
+                  height: 20,
+                  image: widget.defaultLanguage == key
+                      ? const Svg(
+                          'assets/images/ic_settings_radio_selected.svg')
+                      : const Svg(
+                          'assets/images/ic_settings_radio_unselect.svg'),
+                ),
+                Padding(
+                    padding: EdgeInsets.only(
+                        right: context.tokens.spacing.vsdslSpacingSm.right)),
+                Text(
+                  key,
+                  style: const TextStyle(fontSize: 12, color: Colors.white),
+                )
+              ],
+            ),
           ),
-          value: key,
-          groupValue: widget.defaultLanguage,
-          // activeColor: const Color(0xFF3C5AAA),
-          fillColor: WidgetStateProperty.resolveWith<Color>((states) {
-            if (states.contains(WidgetState.selected)) {
-              return context.tokens.color.vsdslColorSecondary; // 设置选中时的填充颜色
-            }
-            return Colors.white; // 设置未选中时的填充颜色
-          }),
-          dense: true,
-          visualDensity: VisualDensity(horizontal: -3, vertical: -4),
-          // contentPadding: EdgeInsets.all(0),
-          onChanged: (String? value) {
-            setState(() {
-              if (value != null) {
-                widget.defaultLanguage = value;
-                widget.onChange(value);
-              }
-            });
-          },
         );
       }).toList(),
     );

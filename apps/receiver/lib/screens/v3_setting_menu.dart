@@ -23,7 +23,7 @@ class V3SettingMenu extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
         ),
         alignment: Alignment.bottomLeft,
-        backgroundColor: const Color(0xFF151C32),
+        backgroundColor: context.tokens.color.vsdslColorSurface1000,
         insetPadding: const EdgeInsets.only(left: 8, bottom: 8),
         child: SizedBox(
             width: 518,
@@ -62,6 +62,8 @@ class V3SettingMenu extends StatelessWidget {
                                   settingsProvider
                                       .setPage(SettingPageState.deviceSetting);
                                 }),
+                                const Padding(
+                                    padding: EdgeInsets.only(bottom: 5)),
                                 _subTittleButton(context,
                                     state: SettingPageState.broadcast,
                                     text: S.of(context).v3_settings_broadcast,
@@ -69,6 +71,17 @@ class V3SettingMenu extends StatelessWidget {
                                   settingsProvider
                                       .setPage(SettingPageState.broadcast);
                                 }),
+                                const Padding(
+                                    padding: EdgeInsets.only(bottom: 5)),
+                                _subTittleButton(context,
+                                    state: SettingPageState.mirroring,
+                                    text: S.of(context).v3_shortcuts_mirroring,
+                                    onClick: () {
+                                  settingsProvider
+                                      .setPage(SettingPageState.mirroring);
+                                }),
+                                const Padding(
+                                    padding: EdgeInsets.only(bottom: 5)),
                                 _subTittleButton(context,
                                     state: SettingPageState.connectivity,
                                     text: S
@@ -77,13 +90,8 @@ class V3SettingMenu extends StatelessWidget {
                                   settingsProvider
                                       .setPage(SettingPageState.connectivity);
                                 }),
-                                _subTittleButton(context,
-                                    state: SettingPageState.mirroring,
-                                    text: S.of(context).v3_shortcuts_mirroring,
-                                    onClick: () {
-                                  settingsProvider
-                                      .setPage(SettingPageState.mirroring);
-                                }),
+                                const Padding(
+                                    padding: EdgeInsets.only(bottom: 5)),
                                 _subTittleButton(context,
                                     state: SettingPageState.whatsNew,
                                     text: S.of(context).v3_settings_whats_new,
@@ -158,13 +166,14 @@ class V3SettingMenu extends StatelessWidget {
       },
       child: Container(
         width: 140,
-        height: 30,
-        padding: const EdgeInsets.only(left: 16),
+        height: 26,
+        padding:
+            EdgeInsets.only(left: context.tokens.spacing.vsdslSpacingMd.left),
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
           color: SettingsProvider.currentTittlePage == state
               ? context.tokens.color.vsdslColorSecondary
-              : const Color(0xFF151C32),
+              : context.tokens.color.vsdslColorSurface1000,
           borderRadius: BorderRadius.circular(15),
         ),
         child: AutoSizeText(
