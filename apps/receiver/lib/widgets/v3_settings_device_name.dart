@@ -59,12 +59,13 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                     width: 21,
                     height: 21,
                   ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
                   onPressed: () {
                     settingsProvider.setPage(SettingPageState.deviceSetting);
                   },
                 ),
+                Padding(
+                    padding: EdgeInsets.only(
+                        right: context.tokens.spacing.vsdslSpacingXs.right)),
                 Text(
                   S.of(context).v3_settings_device_name,
                   style: const TextStyle(
@@ -76,7 +77,7 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
             )),
         Positioned(
             left: 13,
-            top: 53,
+            top: 48,
             width: 352,
             child: Row(
               children: [
@@ -92,7 +93,6 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                   width: 100,
                   child: TextField(
                     textAlign: TextAlign.right,
-                    // 使文字靠右顯示
                     controller: _controller,
                     focusNode: _focusNode,
                     style: const TextStyle(
@@ -117,10 +117,8 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                     ),
                     padding: const EdgeInsets.only(left: 0, right: 13),
                     onPressed: () {
-                      print('zz ${_controller.text}');
                       _isEditing = false;
                       _focusNode.unfocus();
-                      // FocusScope.of(context).requestFocus(FocusNode());
                     },
                   ),
                 )
@@ -146,12 +144,13 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
         onClick();
       },
       child: Container(
-        width: 48,
+        width: 80,
         height: 26,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: context.tokens.color.vsdslColorSecondary,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius:
+              BorderRadius.circular(context.tokens.spacing.vsdslSpacing2xl.top),
         ),
         child: AutoSizeText(
           text,
