@@ -202,6 +202,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Broadcast"),
         "v3_settings_connectivity":
             MessageLookupByLibrary.simpleMessage("Connectivity"),
+        "v3_settings_device_auto_fill_otp":
+            MessageLookupByLibrary.simpleMessage("Auto-fill one-time password"),
+        "v3_settings_device_auto_fill_otp_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "Enable one-touch connection when selecting a device from the device list."),
         "v3_settings_device_name":
             MessageLookupByLibrary.simpleMessage("Device Name"),
         "v3_settings_device_name_save":
@@ -215,6 +220,12 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Keep the code visible at the top of the screen, even when switching to other apps and screen sharing is active."),
         "v3_settings_invite_group": MessageLookupByLibrary.simpleMessage(
             "If invited to a display group"),
+        "v3_settings_invite_group_auto_accept":
+            MessageLookupByLibrary.simpleMessage("Auto Accept"),
+        "v3_settings_invite_group_ignore":
+            MessageLookupByLibrary.simpleMessage("Ignore"),
+        "v3_settings_invite_group_notify_me":
+            MessageLookupByLibrary.simpleMessage("Notify me"),
         "v3_settings_whats_new":
             MessageLookupByLibrary.simpleMessage("What\'s new"),
         "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
