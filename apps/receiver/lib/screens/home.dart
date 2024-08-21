@@ -350,23 +350,16 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         return;
       }
     }
-    RTCConnector webrtcConnector =
-        HybridConnectionList().getConnection<RTCConnector>(index);
-    if (webrtcConnector.isChannelReconnect()) {
-      webrtcConnector.clickButtonWhenReconnect = true;
-      Toast.showSplitScreenReconnectToast(
-          context, S.of(context).main_feature_reconnecting_toast, index,
-          isWebRTC: false, state: webrtcConnector.reconnectChannelState);
+
+    ChannelProvider channelProvider =
+        Provider.of<ChannelProvider>(context, listen: false);
+
+    if (channelProvider.isModeratorMode) {
+      HybridConnectionList().stopPresenterBy(index);
     } else {
-      ChannelProvider channelProvider =
-          Provider.of<ChannelProvider>(context, listen: false);
-      if (channelProvider.isModeratorMode) {
-        HybridConnectionList().stopPresenterBy(index);
-      } else {
-        SplitScreenFunction.isMenuOnList.value
-            .fillRange(0, SplitScreenFunction.isMenuOnList.value.length, false);
-        HybridConnectionList().removePresenterBy(index);
-      }
+      SplitScreenFunction.isMenuOnList.value
+          .fillRange(0, SplitScreenFunction.isMenuOnList.value.length, false);
+      HybridConnectionList().removePresenterBy(index);
     }
   }
 
