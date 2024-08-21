@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_virtual_display/flutter_virtual_display.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display_platform_interface.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -9,7 +8,19 @@ class MockFlutterVirtualDisplayPlatform
     implements FlutterVirtualDisplayPlatform {
 
   @override
-  Future<String?> getPlatformVersion() => Future.value('42');
+  Future<bool?> initialize({Map<String, dynamic>? options}) {
+    return Future.value(true);
+  }
+
+  @override
+  Future<int?> startVirtualDisplay() {
+    return Future.value(0);
+  }
+
+  @override
+  Future<void> stopVirtualDisplay() {
+    return Future.value();
+  }
 }
 
 void main() {
@@ -17,13 +28,5 @@ void main() {
 
   test('$MethodChannelFlutterVirtualDisplay is the default instance', () {
     expect(initialPlatform, isInstanceOf<MethodChannelFlutterVirtualDisplay>());
-  });
-
-  test('getPlatformVersion', () async {
-    FlutterVirtualDisplay flutterVirtualDisplayPlugin = FlutterVirtualDisplay();
-    MockFlutterVirtualDisplayPlatform fakePlatform = MockFlutterVirtualDisplayPlatform();
-    FlutterVirtualDisplayPlatform.instance = fakePlatform;
-
-    expect(await flutterVirtualDisplayPlugin.getPlatformVersion(), '42');
   });
 }
