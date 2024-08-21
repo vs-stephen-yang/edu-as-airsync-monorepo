@@ -1,0 +1,85 @@
+# Xcode
+# Build, test, and archive an Xcode workspace on macOS.
+# Add steps that install certificates, test, sign, and distribute an app, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/xcode
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: 'macos-latest'
+
+variables:
+  flutterVersion: '3.22.2'
+
+stages:
+  - stage: iosStage
+    flavor: stage
+    displayName: ios stage start
+    jobs:
+      - job: iosJob
+        displayName: ios job start
+        steps:
+          - checkout: self
+            persistCredentials: true
+          
+          - script: |
+              xcodebuild -version
+              sw_vers
+            displayName: 'Check Xcode Version'
+          
+          - script: |
+              curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+              source $HOME/.cargo/env
+              rustup target add aarch64-apple-darwin
+            displayName: 'Install Rust for arm64'
+          
+            # chmod 0600 讓cocoapods可以下載
+          - script: |
+              echo "machine viewsonic-ssi.visualstudio.com login $(GIT_CREDENTIALS)" > ~/.netrc
+              chmod 0600 ~/.netrc
+            displayName: 'Get and configure credentials'
+          
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec: '17'
+              jdkArchitectureOption: 'x64'
+              jdkSourceOption: 'PreInstalled'
+          
+          - task: InstallAppleCertificate@2
+            inputs:
+              certSecureFile: 'airsync_sender_ios.p12'
+              certPwd: 'vs22463456'
+              keychain: 'temp'
+          - task: InstallAppleProvisioningProfile@1
+            inputs:
+              provisioningProfileLocation: 'secureFiles'
+              provProfileSecureFile: 'AirSync_Sender_iOS.mobileprovision'
+          
+          - task: InstallAppleProvisioningProfile@1
+            inputs:
+              provisioningProfileLocation: 'secureFiles'
+              provProfileSecureFile: 'AirSync_Sender_Broadcast_Extension_iOS.mobileprovision'
+      
+          - task: FlutterInstall@0
+            inputs:
+              mode: 'auto'
+              channel: 'stable'
+              version: 'custom'
+              customVersion: '$(flutterVersion)'
+
+          - task: FlutterCommand@0
+            displayName: "Run Flutter diagnostics"
+            inputs:
+              projectDirectory: '.'
+              arguments: 'doctor -v'
+          - task: FlutterAnalyzeTask@0
+            inputs:
+              projectDirectory: '.'
+              extraArgs: '--[no-]fatal-infos'
+          
+
+
+
+
+  
