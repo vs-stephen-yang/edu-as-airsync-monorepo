@@ -418,6 +418,10 @@ class RTCConnector {
     message.constraints = PresentQualityConstraints(
         frameRate: isFullFrameRate ? 30 : 0, height: isFullHeight ? 1080 : 540);
 
+    _sendControlMessage(message);
+  }
+
+  void _sendControlMessage(ChannelMessage message) {
     _controlDataChannel?.send(
       RTCDataChannelMessage(jsonEncode(message.toJson())),
     );
@@ -439,7 +443,10 @@ class RTCConnector {
   void sendStopPresent() {
     var message = StopPresentMessage();
     message.sessionId = sessionId;
+
     _channel.send(message);
+
+    _sendControlMessage(message);
   }
 
   Future<void> disconnectPeerConnection({bool sendAnalytics = false}) async {
@@ -667,6 +674,10 @@ class RTCConnector {
   // handle a channel message from the data channel
   void _onChannelMessageFromDataChannel(ChannelMessage message) {
     switch (message.messageType) {
+      case ChannelMessageType.stopPresent:
+        // TODO: handle moderator mode
+        onStopPresent(message as StopPresentMessage, false);
+        break;
       case ChannelMessageType.pausePresent:
         onPausePresent();
         break;
