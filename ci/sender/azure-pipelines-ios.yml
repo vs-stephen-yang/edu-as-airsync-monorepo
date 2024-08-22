@@ -11,14 +11,24 @@ pool:
 
 variables:
   flutterVersion: '3.22.2'
+  group: "sender-apple-p12"
 
 stages:
   - stage: iosStage
-    flavor: stage
     displayName: ios stage start
     jobs:
       - job: iosJob
         displayName: ios job start
+        strategy:
+          matrix:
+            stage:
+              flavor: stage
+              entryPoint: 'lib/main_stage.dart'
+              exportOptionsPlist: ExportOptionsDebug.plist
+            production:
+              flavor: production
+              entryPoint: 'lib/main_production.dart'
+              exportOptionsPlist: ExportOptionsProduction.plist
         steps:
           - checkout: self
             persistCredentials: true
@@ -49,8 +59,9 @@ stages:
           - task: InstallAppleCertificate@2
             inputs:
               certSecureFile: 'airsync_sender_ios.p12'
-              certPwd: 'vs22463456'
+              certPwd: '${ios.certPwd}'
               keychain: 'temp'
+
           - task: InstallAppleProvisioningProfile@1
             inputs:
               provisioningProfileLocation: 'secureFiles'
@@ -73,11 +84,38 @@ stages:
             inputs:
               projectDirectory: '.'
               arguments: 'doctor -v'
+
           - task: FlutterAnalyzeTask@0
+            displayName: 'ios lint ckeck'
             inputs:
               projectDirectory: '.'
               extraArgs: '--[no-]fatal-infos'
           
+          - task: FlutterBuild@0
+            displayName: 'build ${flavor} version'
+            inputs:
+              target: 'ipa'
+              buildFlavour: ${flavor}
+              projectDirectory: '$(Build.SourcesDirectory)'
+              exportOptionsPlist: 'ios/$(exportOptionsPlist)'
+              entryPoint: '${entryPoint}'
+              
+          - task: CopyFiles@2
+            inputs:
+              SourceFolder: '$(Agent.BuildDirectory)'
+              Contents: '**/ipa/*.ipa'
+              TargetFolder: '$(Build.StagingDirectory)'
+              flattenFolders: true
+          
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: '${flavor}'
+              publishLocation: 'Container'
+              Parallel: true
+          
+
+
 
 
 
