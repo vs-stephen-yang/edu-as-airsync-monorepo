@@ -155,9 +155,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
             "Scan the QR code with your iOS or Android device for instant access"),
         "v3_download_app_entry":
-            MessageLookupByLibrary.simpleMessage("Download AirSync App"),
+            MessageLookupByLibrary.simpleMessage("Download Sender App"),
         "v3_download_app_title":
-            MessageLookupByLibrary.simpleMessage("Download AirSync App"),
+            MessageLookupByLibrary.simpleMessage("Download Sender App"),
         "v3_exit_moderator_mode_cancel":
             MessageLookupByLibrary.simpleMessage("Cancel"),
         "v3_exit_moderator_mode_desc": MessageLookupByLibrary.simpleMessage(
@@ -167,9 +167,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_exit_moderator_mode_title":
             MessageLookupByLibrary.simpleMessage("Exit Moderator Mode"),
         "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
-            "Visit airsync.net or open the AisSync app"),
+            "Visit airsync.net or open the sender app"),
         "v3_instruction1b":
-            MessageLookupByLibrary.simpleMessage("Open the AisSync app"),
+            MessageLookupByLibrary.simpleMessage("Open the sender app"),
         "v3_instruction2":
             MessageLookupByLibrary.simpleMessage("Enter display code"),
         "v3_instruction3":
