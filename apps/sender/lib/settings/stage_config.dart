@@ -8,7 +8,7 @@ class StageConfig implements ConfigSettings {
   String versionPostfix = '-s';
 
   @override
-  String urlGateway = 'https://api.gateway.stage.airsync.net/instances';
+  String baseApiUrl = 'https://api.gateway.stage.airsync.net/';
 
   @override
   String appInsightsInstrumentationKey = '6e176c9a-ecc8-443c-a1ad-7cc3954efe80';
@@ -18,5 +18,6 @@ class StageConfig implements ConfigSettings {
       'https://eastus-8.in.applicationinsights.azure.com/v2/track';
 
   @override
-  String appUpdateVersionEndpoint = 'https://appconfig.stage.airsync.net/airsync-sender/supported-versions.json';
+  String appUpdateVersionEndpoint =
+      'https://appconfig.stage.airsync.net/airsync-sender/supported-versions.json';
 }

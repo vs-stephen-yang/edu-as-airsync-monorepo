@@ -8,7 +8,7 @@ class ProductionConfig implements ConfigSettings {
   String versionPostfix = '';
 
   @override
-  String urlGateway = 'https://api.gateway.airsync.net/instances';
+  String baseApiUrl = 'https://api.gateway.airsync.net/';
 
   @override
   String appInsightsInstrumentationKey = 'c38c02f2-1bb1-4da1-8011-1e592a1e8c11';
@@ -18,5 +18,6 @@ class ProductionConfig implements ConfigSettings {
       'https://eastus-8.in.applicationinsights.azure.com/v2/track';
 
   @override
-  String appUpdateVersionEndpoint = 'https://appconfig.airsync.net/airsync-sender/supported-versions.json';
+  String appUpdateVersionEndpoint =
+      'https://appconfig.airsync.net/airsync-sender/supported-versions.json';
 }
