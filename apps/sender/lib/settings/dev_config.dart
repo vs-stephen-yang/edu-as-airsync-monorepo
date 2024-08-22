@@ -8,7 +8,7 @@ class DevConfig implements ConfigSettings {
   String versionPostfix = '-d';
 
   @override
-  String baseApiUrl = 'https://api.gateway.dev.airsync.net/';
+  String baseApiUrl = 'https://api2.gateway.dev.airsync.net/';
 
   @override
   String appInsightsInstrumentationKey = '30d6e31f-3fee-4258-af83-5474452eb932';
