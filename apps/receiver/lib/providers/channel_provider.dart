@@ -552,7 +552,7 @@ class ChannelProvider extends ChangeNotifier {
             headers: request.headers,
             body: request.body,
           )
-          .timeout(const Duration(seconds: 3));
+          .timeout(const Duration(seconds: 6));
       log.info('Status of Instance Register API: ${response.statusCode}');
 
       if (response.statusCode >= HttpStatus.ok &&
