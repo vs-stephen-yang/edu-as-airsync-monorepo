@@ -8,7 +8,7 @@ class DevConfig implements ConfigSettings {
   String versionPostfix = '-d';
 
   @override
-  String urlGateway = 'https://api.gateway.dev.airsync.net/instances';
+  String baseApiUrl = 'https://api.gateway.dev.airsync.net/';
 
   @override
   String appInsightsInstrumentationKey = '30d6e31f-3fee-4258-af83-5474452eb932';
@@ -18,5 +18,6 @@ class DevConfig implements ConfigSettings {
       'https://eastus-8.in.applicationinsights.azure.com/v2/track';
 
   @override
-  String appUpdateVersionEndpoint = 'https://appconfig.dev.airsync.net/airsync-sender/supported-versions.json';
+  String appUpdateVersionEndpoint =
+      'https://appconfig.dev.airsync.net/airsync-sender/supported-versions.json';
 }

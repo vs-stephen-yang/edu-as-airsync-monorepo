@@ -62,7 +62,7 @@ final ValueNotifier<bool> presentingState = ValueNotifier(true);
 
 class ChannelProvider extends ChangeNotifier {
   ChannelProvider(BuildContext context) {
-    _apiGateway = AppConfig.of(context)!.settings.urlGateway;
+    _baseApiUrl = AppConfig.of(context)!.settings.baseApiUrl;
     _profileStore = AppConfig.of(context)!.profileStore;
 
     Connectivity().onConnectivityChanged.listen(_onConnectivityChange);
@@ -80,7 +80,7 @@ class ChannelProvider extends ChangeNotifier {
   int port = 5100;
 
   PresentStateProvider? _presentStateProvider;
-  late String _apiGateway = '';
+  late String _baseApiUrl = '';
   late ProfileStore _profileStore;
 
   DisplayCode? displayCode;
@@ -127,8 +127,8 @@ class ChannelProvider extends ChangeNotifier {
 
   bool _isConnectionModeSupported(DisplayCode displayCode) {
     if (kIsWeb) {
-      // web does not support direct connection
-      return displayCode.hasInstanceIndex();
+      // web supports only tunnel connection
+      return displayCode.hasTunnelSupport();
     } else {
       // other platforms support direct and tunnel connections
       return true;
@@ -154,10 +154,13 @@ class ChannelProvider extends ChangeNotifier {
       return;
     }
 
+    final localIpAddresses = await fetchIPv4Addresses();
+
     _channelConnector = DisplayChannelConnector(
       clientId: _clientId!,
       otp: otp,
       displayCode: displayCode!,
+      localIpAddresses: localIpAddresses,
       encodedDisplayCode: formattedDisplayCode,
       createConnectionTunnel: (url, bool isReconnect) =>
           WebSocketClientConnection(
@@ -181,8 +184,8 @@ class ChannelProvider extends ChangeNotifier {
               log.fine('direct connection: $url $message}'),
         ),
       ),
-      fetchTunnelUrl: (int instanceIndex) async {
-        return await _fetchTunnelUrl(displayCode!.instanceIndex);
+      fetchTunnelUrl: (int instanceIndex, int instanceGroupId) async {
+        return await _fetchTunnelUrl(instanceIndex, instanceGroupId);
       },
       onOpened: (channel, bool isDirectChannel) {
         // Note: To prevent missing events, ensure that the channel's callback is registered promptly.
@@ -682,12 +685,25 @@ class ChannelProvider extends ChangeNotifier {
     });
   }
 
-  Future<String> _fetchTunnelUrl(int instanceIndex) async {
+  Future<String> _fetchTunnelUrl(int instanceIndex, int instanceGroupId) async {
     late http.Response response;
 
+    final request = buildApiRequest(
+      _baseApiUrl,
+      '/v1/instance',
+      queryParameters: {
+        'instanceIndex': instanceIndex.toString(),
+        'groupId': '$instanceGroupId',
+      },
+      time: DateTime.now(),
+      signatureLocation: SignatureLocation.header,
+    );
+
     try {
-      response = await http
-          .get(Uri.parse('$_apiGateway?instanceIndex=$instanceIndex'));
+      response = await http.get(
+        request.url,
+        headers: request.headers,
+      );
     } on SocketException catch (e) {
       _trackFetchError('SocketException', e.toString());
 
@@ -734,9 +750,9 @@ class ChannelProvider extends ChangeNotifier {
       );
     }
 
-    final url = json['tunnelApiUrl'];
+    final url = json['tunnelUrl'];
     if (url == null) {
-      _trackFetchError('InvalidResponse', 'tunnelApiUrl is empty');
+      _trackFetchError('InvalidResponse', 'tunnelUrl is empty');
 
       throw FetchChannelTunnelUrlException(
         FetchChannelTunnelUrlError.instanceNotFound,

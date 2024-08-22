@@ -36,7 +36,7 @@ abstract class ConfigSettings {
   late final String envName;
   late final String versionPostfix;
 
-  late String urlGateway;
+  late String baseApiUrl;
 
   // App Insights
   late String appInsightsInstrumentationKey;
