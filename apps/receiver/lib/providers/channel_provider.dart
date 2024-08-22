@@ -172,7 +172,7 @@ class ChannelProvider extends ChangeNotifier {
       ),
     );
 
-    _instanceInfo.displayCode = displayCode ?? '';
+    _instanceInfo.displayCode = displayCode;
     AppAnalytics().setEventProperties(displayCode: displayCode);
 
     if (instanceIndex != null) {
