@@ -5,7 +5,7 @@ class ProductionConfig implements ConfigSettings {
   bool isDevelopEnvironment = false;
 
   @override
-  String baseApiUrl = 'https://api.gateway.airsync.net/';
+  String baseApiUrl = 'https://api2.gateway.airsync.net/';
 
   @override
   String getIceServer = 'https://getice.myviewboard.cloud';
