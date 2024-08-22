@@ -5,7 +5,7 @@ class DevConfig implements ConfigSettings {
   bool isDevelopEnvironment = true;
 
   @override
-  String apiGateway = 'https://api.gateway.dev.airsync.net/instances';
+  String baseApiUrl = 'https://api.gateway.dev2.airsync.net/';
 
   @override
   String getIceServer = 'https://getice.stage.myviewboard.cloud';
