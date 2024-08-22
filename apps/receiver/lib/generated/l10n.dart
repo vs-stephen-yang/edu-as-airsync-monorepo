@@ -751,20 +751,20 @@ class S {
     );
   }
 
-  /// `Visit airsync.net or open the AisSync app`
+  /// `Visit airsync.net or open the sender app`
   String get v3_instruction1a {
     return Intl.message(
-      'Visit airsync.net or open the AisSync app',
+      'Visit airsync.net or open the sender app',
       name: 'v3_instruction1a',
       desc: '',
       args: [],
     );
   }
 
-  /// `Open the AisSync app`
+  /// `Open the sender app`
   String get v3_instruction1b {
     return Intl.message(
-      'Open the AisSync app',
+      'Open the sender app',
       name: 'v3_instruction1b',
       desc: '',
       args: [],
@@ -1041,20 +1041,20 @@ class S {
     );
   }
 
-  /// `Download AirSync App`
+  /// `Download Sender App`
   String get v3_download_app_entry {
     return Intl.message(
-      'Download AirSync App',
+      'Download Sender App',
       name: 'v3_download_app_entry',
       desc: '',
       args: [],
     );
   }
 
-  /// `Download AirSync App`
+  /// `Download Sender App`
   String get v3_download_app_title {
     return Intl.message(
-      'Download AirSync App',
+      'Download Sender App',
       name: 'v3_download_app_title',
       desc: '',
       args: [],
