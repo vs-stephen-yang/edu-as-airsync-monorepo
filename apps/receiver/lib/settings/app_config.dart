@@ -23,7 +23,7 @@ class AppConfig extends InheritedWidget {
 abstract class ConfigSettings {
   late bool isDevelopEnvironment;
 
-  late String apiGateway;
+  late String baseApiUrl;
   late String getIceServer;
 
   late String appSecretAndroid;

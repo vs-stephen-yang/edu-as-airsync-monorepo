@@ -19,7 +19,6 @@ import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/channel_util.dart';
-import 'package:display_flutter/utility/ip_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
@@ -151,18 +150,25 @@ class ChannelProvider extends ChangeNotifier {
 
     final value = await _checkNetWorkInfo();
     host = _instanceInfo.ipAddress = value;
+    final instanceGroupId = getInstanceGroupIdFromIp(host!);
 
     if (_lastConnectivityResult != result) {
-      registerInstanceIndexById(AppInstanceCreate().displayInstanceID)
-          .then((value) => _handleInstanceIndex(value));
+      registerInstanceIndexById(
+        AppInstanceCreate().displayInstanceID,
+        instanceGroupId,
+      ).then((value) => _handleInstanceIndex(value, instanceGroupId));
     }
   }
 
-  void _handleInstanceIndex(int? instanceIndex) {
+  void _handleInstanceIndex(int? instanceIndex, int instanceGroupId) {
+    if (host == null) {
+      return;
+    }
+
     final displayCode = encodeDisplayCode(
       DisplayCode(
-        _getPrivateIpWithDefault(host, '192.168.0.0'),
-        instanceIndex ?? 0,
+        instanceGroupId: instanceGroupId,
+        instanceIndex: instanceIndex,
       ),
     );
 
@@ -170,7 +176,7 @@ class ChannelProvider extends ChangeNotifier {
     AppAnalytics().setEventProperties(displayCode: displayCode);
 
     if (instanceIndex != null) {
-      startServer(AppInstanceCreate().displayInstanceID);
+      startServer(AppInstanceCreate().displayInstanceID, instanceGroupId);
       isLanModeOnly.value = false;
     } else {
       startDirectServer();
@@ -230,7 +236,7 @@ class ChannelProvider extends ChangeNotifier {
     _remoteScreenServe.stopRemoteScreenPublisher();
   }
 
-  Future<void> startTunnelServer(String instanceId) async {
+  Future<void> startTunnelServer(String instanceId, int instanceGroupId) async {
     if (_isTunnelServerStart) return;
 
     // start the tunnel server
@@ -238,7 +244,11 @@ class ChannelProvider extends ChangeNotifier {
     if (_tunnelApiUrl.isNotEmpty && _tunnelServer == null) {
       // fix when _tunnelApiUrl is empty, will cause App UI not response.
       _setTunnelServer();
-      _tunnelServer?.start(instanceId, _tunnelApiUrl);
+      _tunnelServer?.start(
+        instanceId,
+        instanceGroupId,
+        Uri.parse(_tunnelApiUrl),
+      );
     }
     _isTunnelServerStart = true;
   }
@@ -266,8 +276,8 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> startServer(String instanceId) async {
-    if (!_isTunnelServerStart) startTunnelServer(instanceId);
+  Future<void> startServer(String instanceId, int instanceGroupId) async {
+    if (!_isTunnelServerStart) startTunnelServer(instanceId, instanceGroupId);
     if (!_isDirectServerStart) startDirectServer();
   }
 
@@ -519,18 +529,28 @@ class ChannelProvider extends ChangeNotifier {
     return rtcConnector;
   }
 
-  Future<int?> registerInstanceIndexById(String instanceId) async {
+  Future<int?> registerInstanceIndexById(
+    String instanceId,
+    int instanceGroupId,
+  ) async {
     try {
-      log.info('Registering the instance ${appConfig.settings.apiGateway}');
+      log.info('Registering the instance ${appConfig.settings.baseApiUrl}');
+
+      final request = buildApiRequest(
+        appConfig.settings.baseApiUrl,
+        '/v1/instance/$instanceId',
+        queryParameters: {
+          'groupId': '$instanceGroupId',
+        },
+        time: DateTime.now(),
+        signatureLocation: SignatureLocation.header,
+      );
 
       http.Response response = await http
           .put(
-            Uri.parse(appConfig.settings.apiGateway),
-            body: json.encode({
-              'instanceId': instanceId,
-              'version': appConfig.appVersion,
-              'platform': "android",
-            }),
+            request.url,
+            headers: request.headers,
+            body: request.body,
           )
           .timeout(const Duration(seconds: 3));
       log.info('Status of Instance Register API: ${response.statusCode}');
@@ -539,10 +559,10 @@ class ChannelProvider extends ChangeNotifier {
           response.statusCode < HttpStatus.multiStatus) {
         Map json = jsonDecode(response.body);
 
-        _tunnelApiUrl = json['tunnelApiUrl'] ?? '';
+        _tunnelApiUrl = json['tunnelUrl'] ?? '';
         final instanceIndex = json['instanceIndex'];
 
-        return int.parse(instanceIndex);
+        return instanceIndex;
       } else {
         return null;
       }
@@ -645,18 +665,6 @@ class ChannelProvider extends ChangeNotifier {
     return null;
   }
 
-  String _getPrivateIpWithDefault(String? ipAddress, String defaultIpAddress) {
-    if (ipAddress == null) {
-      return defaultIpAddress;
-    }
-
-    if (isPrivateIp(ipAddress)) {
-      return ipAddress;
-    }
-
-    return defaultIpAddress;
-  }
-
   String _getPlatform() {
     String platform;
     if (kIsWeb) {
@@ -711,9 +719,12 @@ class ChannelProvider extends ChangeNotifier {
     if (_isTunnelServerStart || !connectNet) return;
     final value = await _checkNetWorkInfo();
     host = _instanceInfo.ipAddress = value;
+    final instanceGroupId = getInstanceGroupIdFromIp(host!);
 
-    registerInstanceIndexById(AppInstanceCreate().displayInstanceID)
-        .then((value) => _handleInstanceIndex(value));
+    registerInstanceIndexById(
+      AppInstanceCreate().displayInstanceID,
+      instanceGroupId,
+    ).then((value) => _handleInstanceIndex(value, instanceGroupId));
   }
 
   Future<List<RtcIceServer>?> _getIceServers(ChannelMode mode) async {
