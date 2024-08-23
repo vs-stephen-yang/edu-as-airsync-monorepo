@@ -4,6 +4,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/screens/overlay_tab.dart';
+import 'package:display_flutter/screens/v3_overlay_tab.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,9 @@ class OverlayTabApp extends StatelessWidget {
                         Theme.of(context).textTheme.apply(fontFamily: 'Inter'),
                   )
                 : null,
-            home: const OverlayTab(),
+            home: DeviceFeatureAdapter.showUIRevamp
+                ? const V3OverlayTab()
+                : const OverlayTab(),
           );
         },
       ),
