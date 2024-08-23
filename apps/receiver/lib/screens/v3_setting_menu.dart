@@ -3,6 +3,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_home.dart';
+import 'package:display_flutter/widgets/v3_settings_broadcast.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:display_flutter/widgets/v3_settings_device_language.dart';
 import 'package:display_flutter/widgets/v3_settings_device_name.dart';
@@ -116,6 +117,8 @@ class V3SettingMenu extends StatelessWidget {
                                 constraints: const BoxConstraints(),
                                 onPressed: () {
                                   V3Home.isShowSettingsMenu.value = false;
+                                  settingsProvider
+                                      .setPage(SettingPageState.deviceSetting);
                                 },
                               ),
                             ),
@@ -138,6 +141,8 @@ class V3SettingMenu extends StatelessWidget {
                             case SettingPageState.deviceLanguage:
                               return const V3SettingsDeviceLanguage();
                             case SettingPageState.broadcast:
+                              return const V3SettingsBroadcast();
+                            case SettingPageState.broadcastBoards:
                             // TODO: Handle this case.
                             case SettingPageState.mirroring:
                             // TODO: Handle this case.
