@@ -1,18 +1,11 @@
 import 'package:flutter/cupertino.dart';
 
-enum SettingTittleState {
-  deviceSetting,
-  broadcast,
-  mirroring,
-  connectivity,
-  whatsNew
-}
-
 enum SettingPageState {
   deviceSetting,
   deviceName,
   deviceLanguage,
   broadcast,
+  broadcastBoards,
   mirroring,
   connectivity,
   whatsNew
@@ -30,6 +23,16 @@ class SettingsProvider with ChangeNotifier {
   static SettingPageState get currentTittlePage => _currentTittlePage;
 
   setPage(SettingPageState state) {
+    switch (state) {
+      case SettingPageState.deviceSetting:
+      case SettingPageState.broadcast:
+      case SettingPageState.mirroring:
+      case SettingPageState.connectivity:
+      case SettingPageState.whatsNew:
+        _currentTittlePage = state;
+      default:
+        break;
+    }
     _currentPage = state;
     notifyListeners();
   }

@@ -1210,6 +1210,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Cast to boards`
+  String get v3_settings_broadcast_cast_boards {
+    return Intl.message(
+      'Cast to boards',
+      name: 'v3_settings_broadcast_cast_boards',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share your screen to all Interactive Flat Panels (IFPs) in the network.`
+  String get v3_settings_broadcast_cast_boards_desc {
+    return Intl.message(
+      'Share your screen to all Interactive Flat Panels (IFPs) in the network.',
+      name: 'v3_settings_broadcast_cast_boards_desc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

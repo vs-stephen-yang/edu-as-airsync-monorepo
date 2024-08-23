@@ -114,6 +114,8 @@
   "v3_settings_invite_group_auto_accept": "Auto Accept",
   "v3_settings_invite_group_ignore": "Ignore",
   "v3_settings_device_auto_fill_otp": "Auto-fill one-time password",
-  "v3_settings_device_auto_fill_otp_desc": "Enable one-touch connection when selecting a device from the device list."
+  "v3_settings_device_auto_fill_otp_desc": "Enable one-touch connection when selecting a device from the device list.",
+  "v3_settings_broadcast_cast_boards": "Cast to boards",
+  "v3_settings_broadcast_cast_boards_desc": "Share your screen to all Interactive Flat Panels (IFPs) in the network."
 
 }
