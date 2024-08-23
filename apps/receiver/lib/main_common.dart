@@ -182,9 +182,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               scaffoldBackgroundColor: Colors.black,
               // Set Text default body color
               textTheme: Theme.of(context).textTheme.apply(
-                  bodyColor: DeviceFeatureAdapter.showUIRevamp
-                      ? const Color(0xFF2A2A2A)
-                      : Colors.white),
+                    fontFamily:
+                        DeviceFeatureAdapter.showUIRevamp ? 'Inter' : null,
+                    bodyColor: DeviceFeatureAdapter.showUIRevamp
+                        ? const Color(0xFF2A2A2A)
+                        : Colors.white,
+                  ),
               // Set ElevatedButton default foreground color
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(foregroundColor: Colors.white),
