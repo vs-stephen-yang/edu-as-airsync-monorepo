@@ -4,6 +4,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/screens/overlay_tab.dart';
+import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -12,6 +13,8 @@ import 'package:provider/provider.dart';
 commonOverlayTabEntry() {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    await DeviceFeatureAdapter.ensureInitialized();
 
     FlutterError.onError = (FlutterErrorDetails details) async {
       log.severe('overlay tab details: $details');
@@ -46,6 +49,12 @@ class OverlayTabApp extends StatelessWidget {
             locale: prefLanguageProvider.locale,
             title: 'AirSync Overlay Tab',
             debugShowCheckedModeBanner: false,
+            theme: DeviceFeatureAdapter.showUIRevamp
+                ? ThemeData(
+                    textTheme:
+                        Theme.of(context).textTheme.apply(fontFamily: 'Inter'),
+                  )
+                : null,
             home: const OverlayTab(),
           );
         },
