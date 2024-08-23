@@ -6,14 +6,22 @@ void main(List<String> arguments) async {
   final parser = ArgParser()
     ..addOption(
       'apiOrigin',
-      defaultsTo: 'https://api.gateway.dev2.airsync.net',
+      defaultsTo: 'https://api2.gateway.dev.airsync.net',
+    )
+    ..addOption(
+      'instanceId',
+      defaultsTo: 'integration-test-001',
+    )
+    ..addOption(
+      'groupId',
+      defaultsTo: '1',
     );
 
   ArgResults argResults = parser.parse(arguments);
 
   final apiOrigin = argResults['apiOrigin'];
-  String instanceId = 'integration-test-001';
-  int groupId = 1;
+  String instanceId = argResults['instanceId'];
+  int groupId = int.parse(argResults['groupId']);
 
   log().info('instanceId: $instanceId');
   log().info('groupId: $groupId');
@@ -33,6 +41,7 @@ void main(List<String> arguments) async {
 
   log().info('Fetching instance info');
 
+  stopwatch.reset();
   stopwatch.start();
   final tunnelApiUrl =
       await fetchInstanceInfo(apiOrigin, instanceInfo.instanceIndex, groupId);

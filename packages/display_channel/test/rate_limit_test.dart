@@ -30,12 +30,12 @@ void main() {
       (String url, bool isReconnect) => WebSocketClientConnection(
         url,
         WebSocketClientConnectionConfig(
-          logger: (url, message) => print('$url $message'),
-        ),
+            //logger: (url, message) => print('$url $message'),
+            ),
       ),
       (Channel channel) => {},
       (ConnectionRequest connectRequest) {
-        print('Connect request ${connectRequest.clientId}');
+        //print('Connect request ${connectRequest.clientId}');
         return ConnectRequestStatus.invalidOtp;
       },
     );
@@ -102,7 +102,7 @@ void main() {
                 maxRetryAttempts: 1,
               ),
               logger: (String url, String message) {
-                print('$url $message');
+                //print('$url $message');
               }),
         ),
       );
@@ -111,7 +111,7 @@ void main() {
       closedCompleters.add(closedCompleter);
 
       client.onStateChange = (state) {
-        print('$clientIdPrefix-$i $state');
+        //print('$clientIdPrefix-$i $state');
         if (state == ChannelState.closed) {
           closedCompleter.complete();
         }

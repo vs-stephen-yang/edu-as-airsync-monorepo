@@ -172,7 +172,7 @@ main(List<String> arguments) async {
     )
     ..addOption(
       'apiOrigin',
-      defaultsTo: 'https://api.gateway.dev2.airsync.net',
+      defaultsTo: 'https://api2.gateway.dev.airsync.net',
     );
 
   ArgResults argResults = parser.parse(arguments);
