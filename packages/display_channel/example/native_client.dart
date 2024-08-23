@@ -8,16 +8,12 @@ import 'client.dart';
 main(List<String> arguments) async {
   final parser = ArgParser()
     ..addOption(
-      'tunnelUrl',
-      defaultsTo: 'wss://ap-northeast-1.gateway.dev.airsync.net',
-    )
-    ..addOption(
       'otp',
       defaultsTo: '1111',
     )
     ..addOption(
       'apiOrigin',
-      defaultsTo: 'https://api.gateway.dev2.airsync.net',
+      defaultsTo: 'https://api2.gateway.dev.airsync.net',
     )
     ..addOption(
       'code',

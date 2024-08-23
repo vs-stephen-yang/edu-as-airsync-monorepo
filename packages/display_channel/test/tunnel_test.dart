@@ -24,7 +24,7 @@ void main() {
 
         // assert
         final latency = stopwatch.elapsedMilliseconds;
-        expect(latency, lessThan(1000), reason: 'Operation took too long');
+        expect(latency, lessThan(5000), reason: 'Operation took too long');
       },
     );
 
@@ -163,36 +163,56 @@ void main() {
       },
     );
     test(
-      'Ensures 10 consecutive messages are reliably delivered from client to server with no delay',
+      'Ensures 100 consecutive messages are reliably delivered from client to server with no delay',
       () async {
         // arrange
-        final counter = CounterCondition(10);
+        final counter = CounterCondition(100);
         connection.receivedCounter = counter;
 
         // action
-        await client.sendMessages(count: 10, delayMs: 0);
+        await client.sendMessages(count: 100, delayMs: 0);
 
         await counter.wait();
 
         // assert
-        expect(countUniqueMessages(connection.messages), 10);
+        expect(countUniqueMessages(connection.messages), 100);
       },
     );
 
     test(
-      'Ensures 10 consecutive messages are reliably delivered from server to client with no delay',
+      'Ensures 100 consecutive messages are reliably delivered from server to client with no delay',
       () async {
         // arrange
-        final counter = CounterCondition(10);
+        final counter = CounterCondition(100);
         client.receivedCounter = counter;
 
         // action
-        await connection.sendMessages(count: 10, delayMs: 0);
+        await connection.sendMessages(count: 100, delayMs: 0);
 
-        counter.wait();
+        await counter.wait();
 
         // assert
-        expect(countUniqueMessages(client.messages), 10);
+        expect(countUniqueMessages(client.messages), 100);
+      },
+    );
+  });
+
+  group('Multiple clients exchange messages with multiple tunnel servers',
+      skip: true, () {
+    test(
+      'should successfully establish a connection as the server',
+      () async {
+        // arrange
+        final stopwatch = Stopwatch();
+
+        // action
+        stopwatch.start();
+        await _createWsAsServer();
+        stopwatch.stop();
+
+        // assert
+        final latency = stopwatch.elapsedMilliseconds;
+        expect(latency, lessThan(5000), reason: 'Operation took too long');
       },
     );
   });

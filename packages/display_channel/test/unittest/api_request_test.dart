@@ -7,7 +7,7 @@ void main() {
 
     //action
     final actual = buildApiRequest(
-      'https://api.gateway.dev2.airsync.net/',
+      'https://api2.gateway.dev.airsync.net/',
       '/v1/instance/v-456',
       queryParameters: {
         'instanceIndex': '0',
@@ -21,7 +21,7 @@ void main() {
 
     expect(
       actual.url.toString(),
-      'https://api.gateway.dev2.airsync.net/v1/instance/v-456?instanceIndex=0&groupId=1379699',
+      'https://api2.gateway.dev.airsync.net/v1/instance/v-456?instanceIndex=0&groupId=1379699',
     );
 
     expect(

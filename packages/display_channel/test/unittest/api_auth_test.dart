@@ -52,7 +52,7 @@ void main() {
   test(
     'generateApiSignature should calculate correct signature with query parameters 2',
     () {
-      // wss://ap-southeast-1.gateway.dev2.airsync.net?instanceId=v-789&role=server&x-timestamp=1723692488641&x-signature=4a597b74f882fbc891bd97ba4ce50ee9e58b501e5df505371c0d3e5f57b45761
+      // instanceId=v-789&role=server&x-timestamp=1723692488641&x-signature=4a597b74f882fbc891bd97ba4ce50ee9e58b501e5df505371c0d3e5f57b45761
 
       // arrange
 
@@ -78,7 +78,7 @@ void main() {
   test(
     'generateApiSignature should calculate correct signature with query parameters 3',
     () {
-      // wss://ap-southeast-1.gateway.dev2.airsync.net?clientId=sender-123&displayCode=test-code&instanceIndex=1&token=test&groupId=1379699&role=client&x-timestamp=1723692544552&x-signature=b32733fb4871eff1a08c3177f343300af7796ad55a331a097db7b338082bdbcb
+      // clientId=sender-123&displayCode=test-code&instanceIndex=1&token=test&groupId=1379699&role=client&x-timestamp=1723692544552&x-signature=b32733fb4871eff1a08c3177f343300af7796ad55a331a097db7b338082bdbcb
 
       // arrange
 
