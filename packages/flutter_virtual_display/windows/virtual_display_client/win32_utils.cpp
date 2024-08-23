@@ -1,7 +1,6 @@
 #include "win32_utils.h"
 
 #include <string.h>
-#include <windows.h>
 
 using namespace virtual_display_client;
 
@@ -24,4 +23,24 @@ int Win32Utils::IsMonitorAttached(const wchar_t* device_id) {
 	deviceNum++;
   }
   return INVALID_DISPLAY_ID;
+}
+
+bool Win32Utils::ReadRegistryValue(const wchar_t* sub_key, const wchar_t* value_name, DWORD* value) {
+  HKEY hKey;
+  LONG result = RegOpenKeyEx(HKEY_LOCAL_MACHINE, sub_key, 0, KEY_READ, &hKey);
+  if (result != ERROR_SUCCESS) {
+    return false;
+  }
+
+  DWORD dwType = REG_DWORD;
+  DWORD dwSize = sizeof(DWORD);
+  LONG Result = RegQueryValueExW(hKey, value_name, NULL, &dwType, (LPBYTE)value, &dwSize);
+  if (ERROR_SUCCESS != Result)
+  {
+      RegCloseKey(hKey);
+      return false;
+  }
+
+  RegCloseKey(hKey);
+  return true;
 }

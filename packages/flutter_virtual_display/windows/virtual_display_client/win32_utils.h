@@ -2,6 +2,7 @@
 #define WIN32_UTILS_H
 
 #include <stdint.h>
+#include <windows.h>
 
 namespace virtual_display_client {
 
@@ -10,6 +11,7 @@ namespace virtual_display_client {
 class Win32Utils {
  public:
   static int IsMonitorAttached(const wchar_t* device_id);
+  static bool ReadRegistryValue(const wchar_t* sub_key, const wchar_t* value_name, DWORD* value);
 };
 
 } // namespace virtual_display_client
