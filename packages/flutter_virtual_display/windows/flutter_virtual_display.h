@@ -21,11 +21,11 @@ class FlutterVirtualDisplay {
   virtual ~FlutterVirtualDisplay();
 
   bool Initialize(const char* ip = DEFAULT_IP, int port = DEFAULT_PORT);
-  bool StartVirtualDisplay(int& device_index);
+  bool StartVirtualDisplay();
   void StopVirtualDisplay();
 
  private:
-  void NotifyVirtualDisplayStarted(int device_index);
+  void NotifyVirtualDisplayStarted();
   void NotifyVirtualDisplayStopped();
 
  private:

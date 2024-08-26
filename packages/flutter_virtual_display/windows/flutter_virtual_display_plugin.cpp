@@ -59,9 +59,7 @@ void FlutterVirtualDisplayPlugin::HandleMethodCall(
       result->Success(_flutter_virtual_display->Initialize());
     }
   } else if (method_name.compare("startVirtualDisplay") == 0) {
-    int device_index = 0;
-    _flutter_virtual_display->StartVirtualDisplay(device_index);
-    result->Success(flutter::EncodableValue(device_index));
+    result->Success(_flutter_virtual_display->StartVirtualDisplay());
   } else if (method_name.compare("stopVirtualDisplay") == 0) {
     _flutter_virtual_display->StopVirtualDisplay();
     result->Success();

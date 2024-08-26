@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    FlutterVirtualDisplay.instance.onVirtualDisplayStarted.stream.listen((device_index) {
+    FlutterVirtualDisplay.instance.onVirtualDisplayStarted.stream.listen((_) {
       setState(() {
         _isVirtualDisplayStarted = true;
       });
@@ -38,8 +38,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _startVirtualDisplay() async {
-    int? device_id = await FlutterVirtualDisplay.instance.startVirtualDisplay();
-    print('device_id: $device_id');
+    await FlutterVirtualDisplay.instance.startVirtualDisplay();
   }
 
   void _stopVirtualDisplay() async {

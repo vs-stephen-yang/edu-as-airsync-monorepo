@@ -21,11 +21,11 @@ class MethodChannelFlutterVirtualDisplay extends FlutterVirtualDisplayPlatform {
   }
 
   @override
-  Future<int?> startVirtualDisplay() async {
+  Future<bool?> startVirtualDisplay() async {
     if (!_initialized) {
       throw Exception('FlutterVirtualDisplay is not initialized');
     }
-    return await methodChannel.invokeMethod<int>('startVirtualDisplay');
+    return await methodChannel.invokeMethod<bool?>('startVirtualDisplay');
   }
 
   @override

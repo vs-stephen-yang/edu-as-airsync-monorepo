@@ -12,12 +12,11 @@ class FlutterVirtualDisplay {
     });
   }
 
-  static int InvalidDeviceId = -1;
   static final FlutterVirtualDisplay instance = FlutterVirtualDisplay._internal();
 
-  StreamController<int> get onVirtualDisplayStarted => _onVirtualDisplayStarted;
-  final StreamController<int> _onVirtualDisplayStarted =
-    StreamController<int>.broadcast(sync: true);
+  StreamController<void> get onVirtualDisplayStarted => _onVirtualDisplayStarted;
+  final StreamController _onVirtualDisplayStarted =
+    StreamController.broadcast(sync: true);
 
   StreamController<void> get onVirtualDisplayStopped => _onVirtualDisplayStopped;
   final StreamController _onVirtualDisplayStopped =
@@ -27,7 +26,7 @@ class FlutterVirtualDisplay {
     return FlutterVirtualDisplayPlatform.instance.initialize();
   }
 
-  Future<int?> startVirtualDisplay() {
+  Future<bool?> startVirtualDisplay() {
     return FlutterVirtualDisplayPlatform.instance.startVirtualDisplay();
   }
 
@@ -38,7 +37,7 @@ class FlutterVirtualDisplay {
   void handleEvent(String event, Map<dynamic, dynamic> map) async {
     switch (event) {
       case 'virtualDisplayStarted':
-        _onVirtualDisplayStarted.add(int.parse(map['device_index']));
+        _onVirtualDisplayStarted.add(null);
         break;
 
       case 'virtualDisplayStopped':

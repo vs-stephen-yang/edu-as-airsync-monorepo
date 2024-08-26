@@ -29,16 +29,11 @@ bool FlutterVirtualDisplay::Initialize(const char* ip, int port) {
   return sn_client_->Start(ip, port);
 }
 
-bool FlutterVirtualDisplay::StartVirtualDisplay(int& device_index) {
-  device_index = INVALID_DISPLAY_ID;
+bool FlutterVirtualDisplay::StartVirtualDisplay() {
   if (!sn_client_->DisplayConnect()) {
     return false;
   }
-  device_index = VirtualDisplayStateWatcher::WaitForAttach(VIEWSONIC_INDIRECT_DISPLAY_DEVICE_ID);
-  if (device_index == INVALID_DISPLAY_ID) {
-    return false;
-  }
-  NotifyVirtualDisplayStarted(device_index);
+  NotifyVirtualDisplayStarted();
   return true;
 }
 
@@ -47,10 +42,9 @@ void FlutterVirtualDisplay::StopVirtualDisplay() {
   NotifyVirtualDisplayStopped();
 }
 
-void FlutterVirtualDisplay::NotifyVirtualDisplayStarted(int device_index) {
+void FlutterVirtualDisplay::NotifyVirtualDisplayStarted() {
   EncodableMap params;
   params[EncodableValue("event")] = "virtualDisplayStarted";
-  params[EncodableValue("device_index")] = EncodableValue(std::to_string(device_index));
   event_channel_->Success(flutter::EncodableValue(params));
 }
 
