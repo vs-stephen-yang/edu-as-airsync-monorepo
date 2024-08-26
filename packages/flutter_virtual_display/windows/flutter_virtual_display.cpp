@@ -5,11 +5,7 @@
 #include <flutter/standard_message_codec.h>
 #include <flutter/standard_method_codec.h>
 #include <flutter/event_stream_handler_functions.h>
-
 #include "virtual_display_client/sn_client.h"
-
-#include "virtual_display_client/win32_utils.h"
-#include "virtual_display_client/virtual_display_state_watcher.h"
 
 using namespace virtual_display_client;
 
@@ -26,31 +22,49 @@ FlutterVirtualDisplay::FlutterVirtualDisplay(flutter::BinaryMessenger* messenger
 FlutterVirtualDisplay::~FlutterVirtualDisplay() {}
 
 bool FlutterVirtualDisplay::Initialize(const char* ip, int port) {
-  return sn_client_->Start(ip, port);
+  bool success = false;
+  if (sn_client_->Start(ip, port)) {
+   success = true;
+  }
+  NotifyVirtualDisplayInitialized(success, sn_client_->GetLastError().c_str());
+  return success;
 }
 
 bool FlutterVirtualDisplay::StartVirtualDisplay() {
-  if (!sn_client_->DisplayConnect()) {
-    return false;
+  bool success = false;
+  if (sn_client_->DisplayConnect()) {
+    success = true;
   }
-  NotifyVirtualDisplayStarted();
+  NotifyVirtualDisplayStarted(success, sn_client_->GetLastError().c_str());
   return true;
 }
 
 void FlutterVirtualDisplay::StopVirtualDisplay() {
-  sn_client_->DisplayDisconnect();
-  NotifyVirtualDisplayStopped();
+  bool success = sn_client_->DisplayDisconnect();
+  NotifyVirtualDisplayStopped(success, sn_client_->GetLastError().c_str());
 }
 
-void FlutterVirtualDisplay::NotifyVirtualDisplayStarted() {
+void FlutterVirtualDisplay::NotifyVirtualDisplayInitialized(bool success, const char* error_message) {
   EncodableMap params;
-  params[EncodableValue("event")] = "virtualDisplayStarted";
+  params[EncodableValue("event")] = "virtualDisplayInitialized";
+  params[EncodableValue("success")] = success;
+  params[EncodableValue("errorMessage")] = error_message;
   event_channel_->Success(flutter::EncodableValue(params));
 }
 
-void FlutterVirtualDisplay::NotifyVirtualDisplayStopped() {
+void FlutterVirtualDisplay::NotifyVirtualDisplayStarted(bool success, const char* error_message) {
+  EncodableMap params;
+  params[EncodableValue("event")] = "virtualDisplayStarted";
+  params[EncodableValue("success")] = success;
+  params[EncodableValue("errorMessage")] = error_message;
+  event_channel_->Success(flutter::EncodableValue(params));
+}
+
+void FlutterVirtualDisplay::NotifyVirtualDisplayStopped(bool success, const char* error_message) {
   EncodableMap params;
   params[EncodableValue("event")] = "virtualDisplayStopped";
+  params[EncodableValue("success")] = success;
+  params[EncodableValue("errorMessage")] = error_message;
   event_channel_->Success(flutter::EncodableValue(params));
 }
 

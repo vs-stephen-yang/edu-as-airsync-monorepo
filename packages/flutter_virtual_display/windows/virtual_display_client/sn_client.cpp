@@ -1,13 +1,14 @@
 #include "tcp_client.h"
 #include "sn_client.h"
+#include "sn_service_controller.h"
 #include "sa_net_protocol.h"
-
-#include <chrono>
 
 using namespace virtual_display_client;
 
-SNClient::SNClient() {
+SNClient::SNClient(bool check_service_status)
+  : last_error_(Error::ERROR_NONE), check_service_status_(check_service_status) {
   tcp_client_ = std::make_unique<TCPClient>();
+  sn_service_controller_ = std::make_unique<SNServiceController>();
 }
 
 SNClient::~SNClient() {
@@ -15,6 +16,12 @@ SNClient::~SNClient() {
 }
 
 bool SNClient::Start(const char* ip, int port) {
+  if (check_service_status_) {
+    if (!sn_service_controller_->IsRunning()) {
+      last_error_ = Error::ERROR_WINDOW_SERVICE_NOT_RUNNING;
+      return false;
+    }
+  }
   if (!tcp_client_->Initialize(ip, port)) {
     return false;
   }
@@ -27,12 +34,14 @@ void SNClient::Stop() {
 
 bool SNClient::DisplayConnect() {
   if (!tcp_client_->Connect()) {
+    last_error_ = Error::ERROR_FAILED_TO_CONNECT_TO_SERVER;
     return false;
   }
   try {
 	auto buf = SANetProtocol::DisplayConnectPacketCreate();
 	tcp_client_->SendAll(buf.data(), (int)buf.size());
   } catch (...) {
+    last_error_ = Error::ERROR_UNKNOWN;
 	return false;
   }
   return true;
@@ -44,7 +53,12 @@ bool SNClient::DisplayDisconnect() {
 	tcp_client_->SendAll(buf.data(), (int)buf.size());
   }
   catch (...) {
+    last_error_ = Error::ERROR_UNKNOWN;
 	return false;
   }
   return true;
+}
+
+std::string SNClient::GetLastError() {
+  return GetErrorString(last_error_);
 }
