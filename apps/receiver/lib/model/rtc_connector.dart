@@ -121,6 +121,7 @@ class RTCConnector {
 
   String? _localCandidateType;
   String? _remoteCandidateType;
+  ChannelMessage? _changeQualityMessage;
 
   RTCConnector(this._channel);
 
@@ -419,7 +420,11 @@ class RTCConnector {
     message.constraints = PresentQualityConstraints(
         frameRate: isFullFrameRate ? 30 : 0, height: isFullHeight ? 1080 : 540);
 
-    _sendControlMessage(message);
+    if (_controlDataChannel == null) {
+      _changeQualityMessage = message;
+    } else {
+      _sendControlMessage(message);
+    }
   }
 
   void _sendControlMessage(ChannelMessage message) {
@@ -642,6 +647,10 @@ class RTCConnector {
       _controlDataChannel = channel;
 
       _controlDataChannel!.onMessage = _onControlMessage;
+      if (_changeQualityMessage != null) {
+        _sendControlMessage(_changeQualityMessage!);
+        _changeQualityMessage = null;
+      }
     }
   }
 
