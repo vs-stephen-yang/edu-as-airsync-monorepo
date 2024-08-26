@@ -6,6 +6,7 @@
 #include <flutter/standard_method_codec.h>
 #include <flutter/event_stream_handler_functions.h>
 #include "virtual_display_client/sn_client.h"
+#include "virtual_display_client/win32_utils.h"
 
 using namespace virtual_display_client;
 
