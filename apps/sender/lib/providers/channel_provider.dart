@@ -14,6 +14,7 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:display_cast_flutter/utilities/platform_util.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
 import 'package:display_channel/display_channel.dart';
@@ -630,10 +631,13 @@ class ChannelProvider extends ChangeNotifier {
   //region sendMessage
   void _joinDisplay({String? name}) {
     JoinDisplayMessage msg = JoinDisplayMessage(_clientId);
+
     msg.intent = currentRole;
     if (name != null) {
       msg.name = name;
     }
+    msg.platform = getPlatformName();
+
     _channel?.send(msg);
   }
 
