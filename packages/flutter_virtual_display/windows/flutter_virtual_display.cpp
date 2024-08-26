@@ -24,6 +24,7 @@ FlutterVirtualDisplay::~FlutterVirtualDisplay() {}
 
 bool FlutterVirtualDisplay::Initialize(const char* ip, int port, bool from_registry) {
   bool success = false;
+  
   if (!from_registry) {
     success = sn_client_->Start(ip, port);
   }
@@ -46,7 +47,7 @@ bool FlutterVirtualDisplay::StartVirtualDisplay() {
     success = true;
   }
   NotifyVirtualDisplayStarted(success, sn_client_->GetLastError().c_str());
-  return true;
+  return success;
 }
 
 void FlutterVirtualDisplay::StopVirtualDisplay() {
