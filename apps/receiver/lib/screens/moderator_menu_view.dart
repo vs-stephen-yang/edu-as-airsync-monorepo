@@ -31,17 +31,17 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
       topTitleText: S.of(context).moderator_presentersList,
       topTitleAction: FocusIconButton(
         childNotFocus: Image(
-          image: Svg(channelProvider.isModeratorMode == true
+          image: Svg(ChannelProvider.isModeratorMode == true
               ? 'assets/images/ic_activate_on.svg'
               : 'assets/images/ic_activate_off.svg'),
         ),
         splashRadius: 20,
         focusColor: Colors.grey,
         onClick: () {
-          if (channelProvider.isModeratorMode) {
+          if (ChannelProvider.isModeratorMode) {
             _callLogOutDialog();
           } else {
-            channelProvider.isModeratorMode = true;
+            channelProvider.setModeratorMode(true);
           }
         },
       ),
@@ -59,7 +59,7 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
           positiveButton: S.of(context).moderator_exit,
           onPositive: () {
             Provider.of<ChannelProvider>(context, listen: false)
-                .isModeratorMode = false;
+                .setModeratorMode(false);
             AppAnalytics().trackEventModeratorOff();
             _switchModeratorOff();
             setState(() {});

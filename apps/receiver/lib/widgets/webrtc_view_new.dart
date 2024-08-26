@@ -247,7 +247,7 @@ class WebRTCViewState extends State<WebRTCView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    if (channelProvider.isModeratorMode)
+                    if (ChannelProvider.isModeratorMode)
                       Column(
                         children: <Widget>[
                           Text(

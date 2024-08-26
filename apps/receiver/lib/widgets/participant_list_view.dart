@@ -17,7 +17,7 @@ class ParticipantListView extends StatelessWidget {
       ),
       child: Consumer<ChannelProvider>(
         builder: (context, channelProvider, child) {
-          if (!channelProvider.isModeratorMode ||
+          if (!ChannelProvider.isModeratorMode ||
               HybridConnectionList().getRtcConnectorMap().isEmpty) {
             return Container(
               alignment: Alignment.center,
