@@ -73,12 +73,10 @@ class ChannelProvider extends ChangeNotifier {
   DisplayTunnelServer? _tunnelServer;
   String _tunnelApiUrl = '';
 
-  bool _isModeratorMode = false;
+  static bool isModeratorMode = false;
 
-  bool get isModeratorMode => _isModeratorMode;
-
-  set isModeratorMode(bool value) {
-    _isModeratorMode = value;
+  setModeratorMode(bool value) {
+    isModeratorMode = value;
     notifyListeners();
   }
 
@@ -294,7 +292,7 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.joinDisplay:
           JoinDisplayMessage msg = message as JoinDisplayMessage;
           if (msg.intent == JoinIntentType.present) {
-            if (_isModeratorMode) {
+            if (isModeratorMode) {
               if (HybridConnectionList().getConnectionCount() >=
                   HybridConnectionList.maxHybridConnection) {
                 sendPresentRejectMessage(channel);
@@ -343,7 +341,7 @@ class ChannelProvider extends ChangeNotifier {
           final iceServers = await _getIceServers(mode);
           rtcConnector.onStartPresent(
             message as StartPresentMessage,
-            _isModeratorMode,
+            isModeratorMode,
             iceServers,
           );
           break;
@@ -364,7 +362,7 @@ class ChannelProvider extends ChangeNotifier {
           break;
         case ChannelMessageType.stopPresent:
           rtcConnector.onStopPresent(
-              message as StopPresentMessage, _isModeratorMode);
+              message as StopPresentMessage, isModeratorMode);
           break;
         case ChannelMessageType.presentSignal:
           rtcConnector.onPresentSignal(message as PresentSignalMessage);
@@ -465,7 +463,7 @@ class ChannelProvider extends ChangeNotifier {
     final displayStatusMessage = DisplayStatusMessage();
     displayStatusMessage.platform = _getPlatform();
     displayStatusMessage.status =
-        DisplayStatus.fromJson({'moderator': _isModeratorMode});
+        DisplayStatus.fromJson({'moderator': isModeratorMode});
     channel.send(displayStatusMessage);
   }
 
@@ -481,7 +479,7 @@ class ChannelProvider extends ChangeNotifier {
   RTCConnector _onJoinDisplay(
       RTCConnector rtcConnector, ChannelMode mode, JoinDisplayMessage message) {
     // create a client object to handle this channel
-    rtcConnector.init(message, _isModeratorMode);
+    rtcConnector.init(message, isModeratorMode);
     rtcConnector.onConnect = (() {
       HybridConnectionList().updateSplitScreen();
       StreamFunction.streamFunctionState.value = stateMenuOff;

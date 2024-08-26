@@ -50,7 +50,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
             Provider.of<ChannelProvider>(context, listen: false);
         // region Mirror buttons
         Color? colorButtonForeground, colorButtonBackground;
-        if (channelProvider.isModeratorMode) {
+        if (ChannelProvider.isModeratorMode) {
           if (value == stateMenuOn) {
             colorButtonForeground = AppColors.iconDisablePresentingForeground;
             colorButtonBackground = AppColors.iconDisablePresentingBackground;
@@ -71,7 +71,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
 
         // region Moderator icon
         Color? colorModeratorForeground, colorModeratorBackground;
-        if (channelProvider.isModeratorMode &&
+        if (ChannelProvider.isModeratorMode &&
             HybridConnectionList().getRtcConnectorMap().isNotEmpty) {
           if (value == stateMenuOn) {
             colorModeratorForeground = AppColors.iconPresentingForeground;
@@ -153,7 +153,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                           AppColors.iconFeatureOnStandbyBackground,
                       hasFocusSize: AppUIConstant.iconHasFocusSize,
                       notFocusSize: AppUIConstant.iconNotFocusSize,
-                      onClick: (!channelProvider.isModeratorMode)
+                      onClick: (!ChannelProvider.isModeratorMode)
                           ? () {
                               _showCastSettings();
                             }
@@ -162,7 +162,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
 
                   //Moderator button
                   if (value == stateStandby ||
-                      (value == stateMenuOn && channelProvider.isModeratorMode))
+                      (value == stateMenuOn && ChannelProvider.isModeratorMode))
                     Consumer<MirrorStateProvider>(builder: (_, mirror, __) {
                       bool mirrorEnable = mirror.airplayEnabled |
                           mirror.googleCastEnabled |
@@ -181,7 +181,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                             AppColors.iconFeatureOnStandbyBackground,
                         hasFocusSize: AppUIConstant.iconHasFocusSize,
                         notFocusSize: AppUIConstant.iconNotFocusSize,
-                        isAddGreenDot: channelProvider.isModeratorMode,
+                        isAddGreenDot: ChannelProvider.isModeratorMode,
                         onClick: !mirrorEnable
                             ? () {
                                 _showModerator(value == stateMenuOn);

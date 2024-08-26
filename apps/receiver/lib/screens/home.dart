@@ -294,7 +294,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                           ChannelProvider channelProvider =
                               Provider.of<ChannelProvider>(context,
                                   listen: false);
-                          if (channelProvider.isModeratorMode) {
+                          if (ChannelProvider.isModeratorMode) {
                             Future.delayed(Duration.zero, () {
                               Toast.makeReconnectToast(
                                 connector.reconnectChannelState,
@@ -351,10 +351,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       }
     }
 
-    ChannelProvider channelProvider =
-        Provider.of<ChannelProvider>(context, listen: false);
-
-    if (channelProvider.isModeratorMode) {
+    if (ChannelProvider.isModeratorMode) {
       HybridConnectionList().stopPresenterBy(index);
     } else {
       SplitScreenFunction.isMenuOnList.value
