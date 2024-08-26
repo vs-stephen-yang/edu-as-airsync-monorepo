@@ -13,8 +13,8 @@ class MockFlutterVirtualDisplayPlatform
   }
 
   @override
-  Future<int?> startVirtualDisplay() {
-    return Future.value(0);
+  Future<bool?> startVirtualDisplay() {
+    return Future.value(true);
   }
 
   @override
