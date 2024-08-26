@@ -8,6 +8,8 @@
 #define DEFAULT_IP "127.0.0.1"
 #define DEFAULT_PORT 28252
 #define VIEWSONIC_INDIRECT_DISPLAY_DEVICE_ID L"VID_VIEWSONIC_PID_INDIRECT_DISPLAY_VIRTUAL_DISPLAY_0003"
+#define VIEWSONIC_REGISTRY_PATH L"Software\\Viewsonic\\AirSync Sender"
+#define VIEWSONIC_REGISTRY_SERVICE_PORT_NAME L"ServicePort"
 
 namespace virtual_display_client {
 class SNClient;
@@ -20,7 +22,7 @@ class FlutterVirtualDisplay {
   FlutterVirtualDisplay(flutter::BinaryMessenger* messenger);
   virtual ~FlutterVirtualDisplay();
 
-  bool Initialize(const char* ip = DEFAULT_IP, int port = DEFAULT_PORT);
+  bool Initialize(const char* ip = DEFAULT_IP, int port = DEFAULT_PORT, bool from_registry = false);
   bool StartVirtualDisplay();
   void StopVirtualDisplay();
 

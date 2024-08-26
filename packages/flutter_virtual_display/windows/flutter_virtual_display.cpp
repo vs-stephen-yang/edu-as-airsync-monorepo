@@ -21,11 +21,20 @@ FlutterVirtualDisplay::FlutterVirtualDisplay(flutter::BinaryMessenger* messenger
 
 FlutterVirtualDisplay::~FlutterVirtualDisplay() {}
 
-bool FlutterVirtualDisplay::Initialize(const char* ip, int port) {
+bool FlutterVirtualDisplay::Initialize(const char* ip, int port, bool from_registry) {
   bool success = false;
-  if (sn_client_->Start(ip, port)) {
-   success = true;
+  if (!from_registry) {
+    success = sn_client_->Start(ip, port);
   }
+  else {
+    DWORD dynamicPort = 0;
+    if (Win32Utils::ReadRegistryValue(VIEWSONIC_REGISTRY_PATH, VIEWSONIC_REGISTRY_SERVICE_PORT_NAME, &dynamicPort)) {
+        success = sn_client_->Start(ip, dynamicPort);
+    } else {
+        success = sn_client_->Start(ip, port);
+    }
+  }
+  
   NotifyVirtualDisplayInitialized(success, sn_client_->GetLastError().c_str());
   return success;
 }
