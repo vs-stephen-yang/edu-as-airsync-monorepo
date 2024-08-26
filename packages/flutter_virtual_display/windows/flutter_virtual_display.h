@@ -25,8 +25,9 @@ class FlutterVirtualDisplay {
   void StopVirtualDisplay();
 
  private:
-  void NotifyVirtualDisplayStarted();
-  void NotifyVirtualDisplayStopped();
+  void NotifyVirtualDisplayInitialized(bool success, const char* error_message);
+  void NotifyVirtualDisplayStarted(bool success, const char* error_message);
+  void NotifyVirtualDisplayStopped(bool success, const char* error_message);
 
  private:
   BinaryMessenger* messenger_;

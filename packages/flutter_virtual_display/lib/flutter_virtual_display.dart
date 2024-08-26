@@ -14,12 +14,16 @@ class FlutterVirtualDisplay {
 
   static final FlutterVirtualDisplay instance = FlutterVirtualDisplay._internal();
 
-  StreamController<void> get onVirtualDisplayStarted => _onVirtualDisplayStarted;
-  final StreamController _onVirtualDisplayStarted =
+  StreamController<Map<dynamic, dynamic>> get onVirtualDisplayInitialized => _onVirtualDisplayInitialized;
+  final StreamController<Map<dynamic, dynamic>> _onVirtualDisplayInitialized =
     StreamController.broadcast(sync: true);
 
-  StreamController<void> get onVirtualDisplayStopped => _onVirtualDisplayStopped;
-  final StreamController _onVirtualDisplayStopped =
+  StreamController<Map<dynamic, dynamic>> get onVirtualDisplayStarted => _onVirtualDisplayStarted;
+  final StreamController<Map<dynamic, dynamic>> _onVirtualDisplayStarted =
+    StreamController.broadcast(sync: true);
+
+  StreamController<Map<dynamic, dynamic>> get onVirtualDisplayStopped => _onVirtualDisplayStopped;
+  final StreamController<Map<dynamic, dynamic>> _onVirtualDisplayStopped =
     StreamController.broadcast(sync: true);
 
   Future<bool?> initialize() {
@@ -35,13 +39,19 @@ class FlutterVirtualDisplay {
   }
 
   void handleEvent(String event, Map<dynamic, dynamic> map) async {
+    // print event and map
+    print('Event: $event');
     switch (event) {
+      case 'virtualDisplayInitialized':
+        _onVirtualDisplayInitialized.add(map);
+        break;
+
       case 'virtualDisplayStarted':
-        _onVirtualDisplayStarted.add(null);
+        _onVirtualDisplayStarted.add(map);
         break;
 
       case 'virtualDisplayStopped':
-        _onVirtualDisplayStopped.add(null);
+        _onVirtualDisplayStopped.add(map);
         break;
 
       default:

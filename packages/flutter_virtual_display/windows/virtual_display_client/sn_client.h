@@ -3,16 +3,18 @@
 
 #include <memory>
 #include <thread>
+#include <functional>
 #include <atomic>
+#include "sn_error.h"
 
 namespace virtual_display_client {
 
 class TCPClient;
+class SNServiceController;
 
-class SNClient
-{
+class SNClient {
  public:
-  SNClient();
+  SNClient(bool check_service_status = true);
   virtual ~SNClient();
 
   bool Start(const char* ip, int port);
@@ -21,8 +23,13 @@ class SNClient
   bool DisplayConnect();
   bool DisplayDisconnect();
 
+  std::string GetLastError();
+
 private:
+  bool check_service_status_;
+  Error last_error_;
   std::unique_ptr<TCPClient> tcp_client_;
+  std::unique_ptr<SNServiceController> sn_service_controller_;
 };
 
 } // namespace virtual_display_client
