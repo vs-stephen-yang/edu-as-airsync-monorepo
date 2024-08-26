@@ -37,17 +37,6 @@ class ParticipantItem extends StatelessWidget {
               ),
               showWhiteBorder: true,
               onClick: () {
-                if (!rtcConnector.isChannelConnectAvailable()) {
-                  rtcConnector.clickButtonWhenReconnect = true;
-                  Toast.makeReconnectToast(
-                          rtcConnector.reconnectChannelState,
-                          rtcConnector.reconnectChannelState ==
-                                  ReconnectState.reconnecting
-                              ? S.of(context).main_feature_reconnecting_toast
-                              : S.of(context).main_feature_reconnect_fail_toast)
-                      ?.show(context);
-                  return;
-                }
                 _presenterOnOff(context, rtcConnector, presenterId);
               },
               child: Row(
@@ -78,17 +67,6 @@ class ParticipantItem extends StatelessWidget {
               splashRadius: 20,
               focusColor: Colors.white,
               onClick: () {
-                if (!rtcConnector.isChannelConnectAvailable()) {
-                  rtcConnector.clickButtonWhenReconnect = true;
-                  Toast.makeReconnectToast(
-                          rtcConnector.reconnectChannelState,
-                          rtcConnector.reconnectChannelState ==
-                                  ReconnectState.reconnecting
-                              ? S.of(context).main_feature_reconnecting_toast
-                              : S.of(context).main_feature_reconnect_fail_toast)
-                      ?.show(context);
-                  return;
-                }
                 _sendPresenterRemove(rtcConnector);
               },
             ),
@@ -136,6 +114,17 @@ class ParticipantItem extends StatelessWidget {
           ),
           displaySideBar: false,
         ).show(context);
+        return;
+      }
+      if (!rtcConnector.isChannelConnectAvailable()) {
+        rtcConnector.clickButtonWhenReconnect = true;
+        Toast.makeReconnectToast(
+                rtcConnector.reconnectChannelState,
+                rtcConnector.reconnectChannelState ==
+                        ReconnectState.reconnecting
+                    ? S.of(context).main_feature_reconnecting_toast
+                    : S.of(context).main_feature_reconnect_fail_toast)
+            ?.show(context);
         return;
       }
       _sendPresenterPlay(rtcConnector);

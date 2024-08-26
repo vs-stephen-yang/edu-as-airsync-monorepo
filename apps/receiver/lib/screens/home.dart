@@ -325,20 +325,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         return;
       }
     }
-    var webrtcConnector =
-        HybridConnectionList().getConnection<RTCConnector>(index);
-    if (webrtcConnector.isChannelConnectAvailable()) {
-      _updateSizeForSelected(index);
-    } else if (webrtcConnector.isChannelReconnect()) {
-      webrtcConnector.clickButtonWhenReconnect = true;
-      Toast.showSplitScreenReconnectToast(
-          context, S.of(context).main_feature_reconnecting_toast, index,
-          isWebRTC: false, state: webrtcConnector.reconnectChannelState);
-    } else {
-      Toast.showSplitScreenReconnectToast(
-          context, S.of(context).main_feature_reconnect_fail_toast, index,
-          isWebRTC: false, state: webrtcConnector.reconnectChannelState);
-    }
+
+    _updateSizeForSelected(index);
   }
 
   void _handleClose(int index) {
