@@ -31,6 +31,9 @@ class DisplayChannelClient implements Channel {
   ChannelState _state = ChannelState.initialized;
   ChannelCloseReason? _closeReason;
 
+  // Stores messages received before the channel is connected.
+  final _pendingMessages = <ChannelMessage>[];
+
   final CreateWebsocketClientConnection _createConnection;
 
   DisplayChannelClient(
@@ -41,7 +44,7 @@ class DisplayChannelClient implements Channel {
     _continuity = MessageContinuity(
       MessageContinuityRole.client,
       // Process messages received from the peer
-      (message) => onChannelMessage?.call(message),
+      _onChannelMessage,
       // Send message requiring retransmission
       (message) => _connection?.send(message.toJson()),
     );
@@ -153,13 +156,10 @@ class DisplayChannelClient implements Channel {
     if (parsedMessage == null) {
       return;
     }
-    _handleChannelMessage(parsedMessage);
-  }
 
-  void _handleChannelMessage(ChannelMessage message) {
-    _handleControlMessage(message);
+    _handleControlMessage(parsedMessage);
 
-    _continuity.processIncomingMessage(message);
+    _continuity.processIncomingMessage(parsedMessage);
   }
 
   void _handleControlMessage(ChannelMessage message) {
@@ -185,6 +185,24 @@ class DisplayChannelClient implements Channel {
 
     // state changes to "connected" after receiving channel-connected
     _changeState(ChannelState.connected);
+
+    _drainPendingMessages();
+  }
+
+  // Process messages received before the channel is connected.
+  void _drainPendingMessages() {
+    for (var message in _pendingMessages) {
+      onChannelMessage?.call(message);
+    }
+    _pendingMessages.clear();
+  }
+
+  void _onChannelMessage(ChannelMessage message) {
+    if (_isConnected()) {
+      onChannelMessage?.call(message);
+    } else {
+      _pendingMessages.add(message);
+    }
   }
 
   @override

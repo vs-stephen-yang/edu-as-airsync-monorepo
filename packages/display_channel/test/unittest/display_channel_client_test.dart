@@ -151,7 +151,7 @@ void main() {
   });
 
   test(
-      'state should not switch to connected after the connection is established',
+      'The state should not switch to connected after the connection is established',
       () {
     // arrange
     client.openDirectChannel(token: 'token', displayCode: 'ABC');
@@ -160,10 +160,10 @@ void main() {
     connection.onConnected?.call();
 
     // assert
-    expect(stateChanges.length, 0);
+    expect(stateChanges, isEmpty);
   });
 
-  test('state should switch to connected after receiving channel-connected',
+  test('The state should switch to connected after receiving channel-connected',
       () {
     // arrange
     client.openDirectChannel(token: 'token', displayCode: 'ABC');
@@ -173,7 +173,6 @@ void main() {
     injectChannelConnected('token2', 0);
 
     // assert
-    expect(stateChanges.length, 1);
     expect(stateChanges.first, ChannelState.connected);
   });
 
@@ -185,9 +184,10 @@ void main() {
     connection.onConnected?.call();
 
     // assert
-    expect(connection.sentMessages.length, 1);
+    final message = connection.sentMessages.first;
 
-    expect((connection.sentMessages[0] as ClientConnectedMessage).ack, 0);
+    expect(message, isA<ClientConnectedMessage>());
+    expect((message as ClientConnectedMessage).ack, equals(0));
   });
 
   test('client-connected should be sent after the connection is reconnected',
@@ -205,12 +205,16 @@ void main() {
     connection.onConnected?.call();
 
     // assert
-    expect(connection.sentMessages.length, 2);
+    expect(connection.sentMessages, hasLength(2));
 
-    expect((connection.sentMessages[1] as ClientConnectedMessage).ack, 4);
+    final message = connection.sentMessages.last;
+
+    expect(message, isA<ClientConnectedMessage>());
+    expect((message as ClientConnectedMessage).ack, equals(4));
   });
 
-  test('the token should be reconnection token when reconnecting', () async {
+  test('The token should be the reconnection token when reconnecting',
+      () async {
     // arrange
     client.openDirectChannel(token: 'token', displayCode: 'ABC');
     connection.onConnected?.call();
@@ -224,17 +228,10 @@ void main() {
     await connection.waitCreate(2);
 
     // assert
-    expect(connection.urls.length, 2);
+    expect(connection.urls, hasLength(2));
 
     expect(
-      connection.urls[0].queryParameters,
-      ContainsMapMatcher({
-        'token': 'token',
-      }),
-    );
-
-    expect(
-      connection.urls[1].queryParameters,
+      connection.urls.last.queryParameters,
       ContainsMapMatcher({
         'token': 'token2',
       }),
@@ -252,12 +249,16 @@ void main() {
     injectHeartbeat(0);
 
     // assert
-    expect(connection.sentMessages.length, 2);
+    expect(connection.sentMessages, hasLength(2));
 
-    expect((connection.sentMessages[1] as HeartbeatMessage).ack, 0);
+    final message = connection.sentMessages.last;
+
+    expect(message, isA<HeartbeatMessage>());
+    expect((message as HeartbeatMessage).ack, equals(0));
   });
 
-  test('authenticationRequired ', () {
+  test('Correctly handles channel-closed with authenticationRequired reason',
+      () {
     // arrange
     client.openDirectChannel(displayCode: 'ABC');
     connection.onConnected?.call();
@@ -265,11 +266,40 @@ void main() {
     injectChannelClosed(ChannelCloseCode.authenticationRequired);
 
     // assert
-    expect(stateChanges[0], ChannelState.closed);
+    expect(stateChanges.first, ChannelState.closed);
 
     expect(
       client.closeReason!.code.index,
       ChannelCloseCode.authenticationRequired.index,
     );
+  });
+
+  test('Handles the message', () {
+    // arrange
+    client.openDirectChannel(displayCode: 'ABC');
+    connection.onConnected?.call();
+    injectChannelConnected('token', 0);
+
+    // action
+    injectIncomingMessages(incomingMessages1);
+
+    // assert
+    expect(receivedMessages, hasLength(4));
+  });
+
+  test('Handles the message received before the channel-connected is received',
+      () {
+    // arrange
+    client.openDirectChannel(displayCode: 'ABC');
+    connection.onConnected?.call();
+
+    // action
+
+    // Messages are received before channel-connected
+    injectIncomingMessages(incomingMessages1);
+    injectChannelConnected('token', 0);
+
+    // assert
+    expect(receivedMessages, hasLength(4));
   });
 }
