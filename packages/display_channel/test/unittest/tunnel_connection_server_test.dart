@@ -65,8 +65,10 @@ void main() {
   late TunnelConnectionServer server;
   late FakeClientConnection tunnelConnection;
   late ConnectRequestStatus connectRequestStatus;
+
   late bool onTunnelConnectedCalled;
   late bool onTunnelConnectingCalled;
+  late int createTunnelConnectionCalledCount;
   late List<Connection> connections;
 
   injectTunnelConnectedMessage() {
@@ -86,7 +88,10 @@ void main() {
     tunnelConnection = FakeClientConnection();
 
     server = TunnelConnectionServer(
-      tunnelConnection,
+      () {
+        createTunnelConnectionCalledCount += 1;
+        return tunnelConnection;
+      },
       (String clientId, Connection connection) => connections.add(connection),
       (ConnectionRequest connectRequest) => connectRequestStatus,
       heartbeatInterval: const Duration(minutes: 5),
@@ -95,6 +100,7 @@ void main() {
 
     onTunnelConnectedCalled = false;
     onTunnelConnectingCalled = false;
+    createTunnelConnectionCalledCount = 0;
 
     connectRequestStatus = ConnectRequestStatus.success;
 
@@ -205,7 +211,7 @@ void main() {
         ChannelCloseCode.invalidDisplayCode.index);
   });
 
-  test('should be notified if the tunnel connection connects', () async {
+  test('notifies when tunnel connection is successfully established', () async {
     // arrange
     server.start();
 
@@ -216,7 +222,7 @@ void main() {
     expect(onTunnelConnectedCalled, isTrue);
   });
 
-  test('should be notified if the tunnel connection disconnects', () async {
+  test('notifies when tunnel connection enters connecting state', () async {
     // arrange
     server.start();
     tunnelConnection.onConnecting?.call();
@@ -225,5 +231,17 @@ void main() {
 
     // assert
     expect(onTunnelConnectingCalled, isTrue);
+  });
+
+  test('Reconnect when tunnel connection is disconnected', () async {
+    // arrange
+    server.start();
+    tunnelConnection.onConnected?.call();
+
+    // action
+    tunnelConnection.onDisconnected?.call();
+
+    // assert
+    expect(createTunnelConnectionCalledCount, greaterThan(1));
   });
 }
