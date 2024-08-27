@@ -11,12 +11,15 @@ class DisplayTunnelServer {
 
   final ChannelStore _store;
   TunnelConnectionServer? _tunnelServer;
-  final CreateWebsocketClientConnection _createTunnelConnection;
+  final CreateWebsocketClientConnection _createWebSocketConnection;
+
+  Uri? _tunnelUrl;
+  String? _instanceId;
 
   late Duration _idleClientConnectionTimeout;
 
   DisplayTunnelServer(
-    this._createTunnelConnection,
+    this._createWebSocketConnection,
     OnNewChannel onNewChannel,
     VerifyConnectRequest verifyConnectRequest, {
     // the heartbeat interval for client connections
@@ -44,25 +47,11 @@ class DisplayTunnelServer {
     // AWS WebSocket Idle Connection Timeout 10 minutes
     Duration tunnelHeartbeatInterval = const Duration(minutes: 9),
   }) {
-    // Add signature to query string for API authentication
-    final request = buildApiRequest(
-      getUriOrigin(uri),
-      uri.path,
-      queryParameters: {
-        'role': 'server',
-        'instanceId': instanceId,
-      },
-      time: DateTime.now(),
-      signatureLocation: SignatureLocation.queryString,
-    );
-
-    final connection = _createTunnelConnection(
-      request.url.toString(),
-      false,
-    );
+    _tunnelUrl = uri;
+    _instanceId = instanceId;
 
     _tunnelServer = TunnelConnectionServer(
-      connection,
+      _createTunnelConnection,
       (String clientId, connection) =>
           _store.handleNewConnection(clientId, connection),
       (ConnectionRequest connectionRequest) =>
@@ -81,5 +70,24 @@ class DisplayTunnelServer {
 
   void stop() {
     _tunnelServer?.stop();
+  }
+
+  ClientConnection _createTunnelConnection() {
+    // Add signature to query string for API authentication
+    final request = buildApiRequest(
+      getUriOrigin(_tunnelUrl!),
+      _tunnelUrl!.path,
+      queryParameters: {
+        'role': 'server',
+        'instanceId': _instanceId!,
+      },
+      time: DateTime.now(),
+      signatureLocation: SignatureLocation.queryString,
+    );
+
+    return _createWebSocketConnection(
+      request.url.toString(),
+      false,
+    );
   }
 }

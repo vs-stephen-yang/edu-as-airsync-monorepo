@@ -18,7 +18,8 @@ class TunnelConnectionServer extends TunnelMessageHandler {
   final void Function(String clientId, Connection) _onNewClientConnection;
   final VerifyConnectRequest _verifyConnectRequest;
 
-  final ClientConnection _tunnelConnection;
+  ClientConnection? _tunnelConnection;
+  final ClientConnection Function() _createTunnelConnection;
 
   late TunnelMessageParser _messageParser;
   final _connections = <String, TunnelClientConnection>{};
@@ -32,7 +33,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
 
   // Constructor
   TunnelConnectionServer(
-    this._tunnelConnection,
+    this._createTunnelConnection,
     this._onNewClientConnection,
     this._verifyConnectRequest, {
     // the heartbeat interval for the tunnel connection
@@ -41,29 +42,35 @@ class TunnelConnectionServer extends TunnelMessageHandler {
     required this.idleConnectionTimeout,
   }) {
     _messageParser = TunnelMessageParser(this);
+  }
 
-    _tunnelConnection.onConnected = _onTunnelConnected;
+  void _openTunnelConnection() {
+    _tunnelConnection = _createTunnelConnection();
 
-    _tunnelConnection.onDisconnected = _onTunnelDisconnected;
+    _tunnelConnection!.onConnected = _onTunnelConnected;
 
-    _tunnelConnection.onConnecting = () {
+    _tunnelConnection!.onDisconnected = _onTunnelDisconnected;
+
+    _tunnelConnection!.onConnecting = () {
       onTunnelConnecting?.call();
     };
 
-    _tunnelConnection.onMessage = (Map<String, dynamic> message) {
+    _tunnelConnection!.onMessage = (Map<String, dynamic> message) {
       // parse the tunnel messages
       _messageParser.parse(message);
     };
+
+    _tunnelConnection!.open();
   }
 
   start() {
-    _tunnelConnection.open();
+    _openTunnelConnection();
   }
 
   stop() {
     _enableHeartbeat(false);
 
-    _tunnelConnection.close();
+    _closeTunnelConnection();
   }
 
   @override
@@ -144,6 +151,16 @@ class TunnelConnectionServer extends TunnelMessageHandler {
     _connections.forEach((_, connection) {
       connection.onClosed?.call(connection);
     });
+
+    _closeTunnelConnection();
+
+    // Reconnect
+    _openTunnelConnection();
+  }
+
+  void _closeTunnelConnection() {
+    _tunnelConnection?.close();
+    _tunnelConnection = null;
   }
 
   void disconnectClient(String connectionId) {
@@ -152,7 +169,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
 
     final msg = TunnelDisconnectClient(connectionId, reason);
 
-    _tunnelConnection.send(msg.toJson());
+    _tunnelConnection?.send(msg.toJson());
 
     _connections.remove(connectionId);
   }
@@ -161,7 +178,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
     // send a message to the client via the tunnel
     final msg = TunnelClientMsg(connectionId, json);
 
-    _tunnelConnection.send(msg.toJson());
+    _tunnelConnection?.send(msg.toJson());
   }
 
   _enableHeartbeat(bool enable) {
@@ -172,7 +189,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
       _heartbeatTimer?.cancel();
       _heartbeatTimer = Timer.periodic(heartbeatInterval, (Timer timer) {
         // send tunnel hearbeat message
-        _tunnelConnection.send(
+        _tunnelConnection?.send(
           TunnelHeartbeatMessage().toJson(),
         );
       });
