@@ -147,13 +147,13 @@ class HybridConnectionList {
       for (var connection in _hybridConnectionList.nonNulls) {
         if (connection is RTCConnector &&
             connection.presentationState == PresentationState.streaming) {
-          connection.sendChangeQuality(true, true);
+          connection.sendChangeQuality(true, true, hybridSplitScreenCount.value);
         }
       }
     } else {
       for (var connection in _hybridConnectionList.nonNulls) {
         if (connection is RTCConnector && connection.clientId != null) {
-          connection.sendChangeQuality(false, true);
+          connection.sendChangeQuality(false, true, hybridSplitScreenCount.value);
         }
       }
     }
@@ -162,13 +162,13 @@ class HybridConnectionList {
   void setSpecifiedSplitScreenWindowQuality(int selection, bool hasSelected) {
     var rtcConnectorMap = getRtcConnectorMap();
     if (selection == -1) {
-      rtcConnectorMap.values.first.sendChangeQuality(true, true);
+      rtcConnectorMap.values.first.sendChangeQuality(true, true, hybridSplitScreenCount.value);
     } else {
       for (RTCConnector rtcConnector in rtcConnectorMap.values) {
         if (rtcConnector.clientId != null) {
           rtcConnector.sendChangeQuality(
               (rtcConnector == rtcConnectorMap[selection] && hasSelected),
-              (rtcConnector == rtcConnectorMap[selection] || !hasSelected));
+              (rtcConnector == rtcConnectorMap[selection] || !hasSelected), hybridSplitScreenCount.value);
         }
       }
     }
