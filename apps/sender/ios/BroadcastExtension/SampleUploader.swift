@@ -162,9 +162,20 @@ private extension SampleUploader {
         CVPixelBufferLockBaseAddress(imageBuffer, .readOnly)
         
         let orientation = CMGetAttachment(buffer, key: RPVideoSampleOrientationKey as CFString, attachmentModeOut: nil)?.uintValue ?? 0
-        let scaleFactor = calcScaleFactor(width: CVPixelBufferGetWidth(imageBuffer), height: CVPixelBufferGetHeight(imageBuffer), orientation: orientation, constraintWidth: videoConstraintWidth, constraintHeight: videoConstraintHeight)
-        let width = Double(CVPixelBufferGetWidth(imageBuffer))/(scaleFactor)
-        let height = Double(CVPixelBufferGetHeight(imageBuffer))/(scaleFactor)
+        var scaleFactor = calcScaleFactor(width: CVPixelBufferGetWidth(imageBuffer), height: CVPixelBufferGetHeight(imageBuffer), orientation: orientation, constraintWidth: videoConstraintWidth, constraintHeight: videoConstraintHeight)
+        var width = Double(CVPixelBufferGetWidth(imageBuffer))/(scaleFactor)
+        var height = Double(CVPixelBufferGetHeight(imageBuffer))/(scaleFactor)
+
+        // 70703 Workaround to solve iOS WebRTC screen freeze on IFP52-1 issue
+        if (videoConstraintHeight == 720) {
+            var i = 0
+            while(width >= 1000 || height >= 1000) {
+                scaleFactor += 0.2
+                width = Double(CVPixelBufferGetWidth(imageBuffer))/(scaleFactor)
+                height = Double(CVPixelBufferGetHeight(imageBuffer))/(scaleFactor)
+                i += 1
+            }
+        }
                                     
         let scaleTransform = CGAffineTransform(scaleX: CGFloat(1.0/scaleFactor), y: CGFloat(1.0/scaleFactor))
         let bufferData = self.jpegData(from: imageBuffer, scale: scaleTransform)
