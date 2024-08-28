@@ -1230,6 +1230,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Require passcode`
+  String get v3_settings_mirroring_require_passcode {
+    return Intl.message(
+      'Require passcode',
+      name: 'v3_settings_mirroring_require_passcode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto Accept`
+  String get v3_settings_mirroring_auto_accept {
+    return Intl.message(
+      'Auto Accept',
+      name: 'v3_settings_mirroring_auto_accept',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Instantly enable mirroring without requiring moderator approval.`
+  String get v3_settings_mirroring_auto_accept_desc {
+    return Intl.message(
+      'Instantly enable mirroring without requiring moderator approval.',
+      name: 'v3_settings_mirroring_auto_accept_desc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
