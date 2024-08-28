@@ -70,7 +70,7 @@ class MirrorStateProvider extends ChangeNotifier
   bool get isMirrorConfirmation => _isMirrorConfirmation;
 
   set isMirrorConfirmation(bool value) {
-    _isMirrorConfirmation = value;
+    _set(autoAcceptRequired: _isMirrorConfirmation = value);
     notifyListeners();
   }
 
@@ -384,6 +384,7 @@ class MirrorStateProvider extends ChangeNotifier
     bool? googleCastEnable,
     bool? miracastEnable,
     bool? airplayCodeEnable,
+    bool? autoAcceptRequired,
   }) async {
     if (airplayEnable != null) {
       _airplayEnabled = airplayEnable;
@@ -397,6 +398,9 @@ class MirrorStateProvider extends ChangeNotifier
     if (airplayCodeEnable != null) {
       _airplayCodeEnabled = airplayCodeEnable;
     }
+    if (autoAcceptRequired != null) {
+      _isMirrorConfirmation = autoAcceptRequired;
+    }
     await _save();
   }
 
@@ -406,6 +410,7 @@ class MirrorStateProvider extends ChangeNotifier
     prefs.setBool('app_GoogleCastEnable', _googleCastEnabled);
     prefs.setBool('app_MiracastEnable', _miracastEnabled);
     prefs.setBool('app_AirPlayCodeEnable', _airplayCodeEnabled);
+    prefs.setBool('app_autoAcceptRequired', _isMirrorConfirmation);
   }
 
   _load() async {
@@ -414,6 +419,7 @@ class MirrorStateProvider extends ChangeNotifier
     _googleCastEnabled = prefs.getBool('app_GoogleCastEnable') ?? true;
     _miracastEnabled = prefs.getBool('app_MiracastEnable') ?? true;
     _airplayCodeEnabled = prefs.getBool('app_AirPlayCodeEnable') ?? false;
+    _isMirrorConfirmation = prefs.getBool('app_autoAcceptRequired') ?? false;
     log.info('load settings.');
   }
 // endregion
