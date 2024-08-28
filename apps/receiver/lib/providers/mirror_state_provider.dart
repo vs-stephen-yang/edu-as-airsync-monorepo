@@ -81,7 +81,7 @@ class MirrorStateProvider extends ChangeNotifier
   Future<void> setAirPlayCodeEnable(bool value) async {
     await _set(airplayCodeEnable: _airplayCodeEnabled = value);
     if (_airplayEnabled) {
-      stopAirPlay().whenComplete(() => startAirPlay());
+      stopAirPlay(updatePreference: false).whenComplete(() => startAirPlay());
     }
     notifyListeners();
   }

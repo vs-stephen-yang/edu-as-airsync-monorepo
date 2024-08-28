@@ -7,6 +7,7 @@ import 'package:display_flutter/widgets/v3_settings_broadcast.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:display_flutter/widgets/v3_settings_device_language.dart';
 import 'package:display_flutter/widgets/v3_settings_device_name.dart';
+import 'package:display_flutter/widgets/v3_settings_mirroring.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -143,9 +144,10 @@ class V3SettingMenu extends StatelessWidget {
                             case SettingPageState.broadcast:
                               return const V3SettingsBroadcast();
                             case SettingPageState.broadcastBoards:
-                            // TODO: Handle this case.
+                              // TODO: Handle this case.
+                              return const SizedBox();
                             case SettingPageState.mirroring:
-                            // TODO: Handle this case.
+                              return const V3SettingsMirroring();
                             case SettingPageState.connectivity:
                             // TODO: Handle this case.
                             case SettingPageState.whatsNew:

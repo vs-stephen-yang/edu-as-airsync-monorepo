@@ -231,6 +231,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ignore"),
         "v3_settings_invite_group_notify_me":
             MessageLookupByLibrary.simpleMessage("Notify me"),
+        "v3_settings_mirroring_auto_accept":
+            MessageLookupByLibrary.simpleMessage("Auto Accept"),
+        "v3_settings_mirroring_auto_accept_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "Instantly enable mirroring without requiring moderator approval."),
+        "v3_settings_mirroring_require_passcode":
+            MessageLookupByLibrary.simpleMessage("Require passcode"),
         "v3_settings_whats_new":
             MessageLookupByLibrary.simpleMessage("What\'s new"),
         "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
