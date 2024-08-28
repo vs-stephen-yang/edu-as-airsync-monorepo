@@ -114,7 +114,7 @@ class RemoteScreenServer extends FlutterIonSfuListener {
 
   static String _generateRoomId() {
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    var rand = Uuid().v4();
+    var rand = const Uuid().v4();
     return String.fromCharCodes(Iterable.generate(roomIdLength, (_) => chars.codeUnitAt(rand.codeUnitAt(_ % rand.length) % chars.length)));
   }
 

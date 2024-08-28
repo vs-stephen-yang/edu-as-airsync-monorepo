@@ -291,9 +291,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                 ReconnectState.fail &&
                             connector.presentationState ==
                                 PresentationState.stopStreaming) {
-                          ChannelProvider channelProvider =
-                              Provider.of<ChannelProvider>(context,
-                                  listen: false);
+                          Provider.of<ChannelProvider>(context, listen: false);
                           if (ChannelProvider.isModeratorMode) {
                             Future.delayed(Duration.zero, () {
                               Toast.makeReconnectToast(

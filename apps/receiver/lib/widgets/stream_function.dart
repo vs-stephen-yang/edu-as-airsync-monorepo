@@ -46,8 +46,6 @@ class _StreamFunctionStates extends State<StreamFunction> {
     return ValueListenableBuilder(
       valueListenable: StreamFunction.streamFunctionState,
       builder: (BuildContext context, String value, Widget? child) {
-        ChannelProvider channelProvider =
-            Provider.of<ChannelProvider>(context, listen: false);
         // region Mirror buttons
         Color? colorButtonForeground, colorButtonBackground;
         if (ChannelProvider.isModeratorMode) {
