@@ -87,6 +87,11 @@ class RTCConnector {
     'IFP52_1C',
   ];
 
+  static const List<String> _mtk9950Models = [
+    'IFP52_K',
+    'IFP52_1C',
+  ];
+
   RTCPeerConnection? _pc;
 
   RTCPeerConnection? get pc => _pc;
@@ -122,6 +127,7 @@ class RTCConnector {
   String? _localCandidateType;
   String? _remoteCandidateType;
   ChannelMessage? _changeQualityMessage;
+  String? _deviceType;
 
   RTCConnector(this._channel);
 
@@ -250,11 +256,11 @@ class RTCConnector {
   ) async {
     if (_pc != null) return;
 
-    String? deviceType = await DeviceInfoVs.deviceType;
+    _deviceType = await DeviceInfoVs.deviceType;
 
     final configuration = createPcConfiguration(iceServers);
 
-    if (_prerendererSmoothingExcludedDevices.contains(deviceType)) {
+    if (_prerendererSmoothingExcludedDevices.contains(_deviceType)) {
       configuration['enablePrerendererSmoothing'] = false;
     }
     _pc = await createPeerConnection(configuration);
@@ -418,11 +424,29 @@ class RTCConnector {
 
   Future<void> onChannelClose(ChannelClosedMessage msg) async {}
 
-  void sendChangeQuality(bool isFullHeight, bool isFullFrameRate) {
+  static bool isMtk9950Model(String? deviceType) {
+    return RTCConnector._mtk9950Models.contains(deviceType) ? true : false;
+  }
+
+  int getFullHeight(int attenderCount) {
+    int fullHeight = 1080;
+
+    // 70703 Workaround to solve iOS WebRTC screen freeze on IFP52-1 issue
+    if (RTCConnector.isMtk9950Model(_deviceType)
+        && attenderCount > 1
+        && senderPlatform != null
+        && senderPlatform == "ios") {
+      fullHeight = 720;
+    }
+
+    return fullHeight;
+  }
+
+  void sendChangeQuality(bool isFullHeight, bool isFullFrameRate, int attendeeCount) {
     var message = ChangePresentQuality(sessionId);
 
     message.constraints = PresentQualityConstraints(
-        frameRate: isFullFrameRate ? 30 : 0, height: isFullHeight ? 1080 : 540);
+        frameRate: isFullFrameRate ? 30 : 0, height: isFullHeight ? getFullHeight(attendeeCount) : 540);
 
     if (_controlDataChannel == null) {
       _changeQualityMessage = message;
