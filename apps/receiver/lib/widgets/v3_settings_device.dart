@@ -194,104 +194,6 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
                 AppPreferences().setInvitedToGroupSelectedItem(item: value);
               });
             }));
-
-    //   return DropdownButtonHideUnderline(
-    //   child: DropdownButton2<String>(
-    //   isDense:true,
-    //   isExpanded: true,
-    //   value: AppPreferences().invitedToGroup,
-    //   items: AppPreferences()
-    //       .invitedToGroupItems
-    //       .map((String item) => DropdownMenuItem<String>(
-    //   value: item,
-    //   child: SizedBox(
-    //   height: 26,
-    //   child: Row(
-    //   children: [
-    //   Text(
-    //   item,
-    //   style: const TextStyle(
-    //   fontSize
-    // }: 9,
-    //                                         color: Colors.black,
-    //                                       ),
-    //                                     ),
-    //                                   ],
-    //                                 ),
-    //                               ),
-    //                             ))
-    //                         .toList(),
-    //                     onChanged: (String? value) {
-    //                       setState(() {
-    //                         if (value != null) {
-    //                           valueListenable.value = value;
-    //                           AppPreferences()
-    //                               .setInvitedToGroupSelectedItem(item: value);
-    //                         }
-    //                       });
-    //                     },
-    //                     selectedItemBuilder: (context) {
-    //                       return AppPreferences()
-    //                           .invitedToGroupItems
-    //                           .map(
-    //                             (item) {
-    //                           return ValueListenableBuilder<String>(
-    //                               valueListenable: valueListenable,
-    //                               builder: (context, multiValue, _) {
-    //                                 return Text(
-    //                                   AppPreferences().invitedToGroup,
-    //                                   style: const TextStyle(
-    //                                     fontSize: 9,
-    //                                   ),
-    //                                 );
-    //                               });
-    //                         },
-    //                       ).toList();
-    //                     },
-    //                     buttonStyleData: ButtonStyleData(
-    //                         padding: const EdgeInsets.symmetric(horizontal: 8),
-    //                         height: 26,
-    //                         width: 105,
-    //                         decoration: BoxDecoration(
-    //                           color: context.tokens.color.vsdslColorSurface300,
-    //                           borderRadius: BorderRadius.circular(6),
-    //                         )),
-    //                     dropdownStyleData: DropdownStyleData(
-    //                       width: 105,
-    //                       padding: const EdgeInsets.only(top: 0),
-    //                       decoration: BoxDecoration(
-    //                         borderRadius: BorderRadius.circular(6),
-    //                         // color: Colors.black,
-    //                       ),
-    //                     ),
-    //                     menuItemStyleData: MenuItemStyleData(
-    //                       height: 26,
-    //                       selectedMenuItemBuilder: (context , child) {
-    //                         return Container(
-    //                           height: 26,
-    //                           padding: const EdgeInsets.only(left: 16),
-    //                           color: context.tokens.color.vsdslColorSecondary,
-    //                           child: Row(
-    //                             children: [
-    //                               Text(
-    //                                 AppPreferences().invitedToGroup,
-    //                                 style: TextStyle(
-    //                                   fontSize: 9,
-    //                                   color: context.tokens.color.vsdslColorOnSurfaceInverse,
-    //                                 ),
-    //                               ),
-    //                               const Spacer(),
-    //                               const Padding(
-    //                                 padding: EdgeInsets.only(right: 8),
-    //                                 child: Image(image: Svg('assets/images/ic_checkmark.svg'), width: 16, height: 16,),
-    //                               ),
-    //                             ],
-    //                           ),
-    //                         );
-    //                       }
-    //                     ),
-    //                   ),
-    //                 );
   }
 
   Row _buildInviteGroup(BuildContext context) {
@@ -478,7 +380,6 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
               ))
           .toList(),
       onChanged: (String? value) {
-        print('zz class: value: $value');
         if (value != null) {
           widget.valueListenable.value = value;
           widget.onChange(value);

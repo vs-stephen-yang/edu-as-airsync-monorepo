@@ -37,45 +37,9 @@ class V3SettingsMirroring extends StatelessWidget {
                   visible: mirrorStateProvider.airplayEnabled,
                   child: SizedBox(
                     height: 26,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: Checkbox(
-                              value: mirrorStateProvider.airPlayCodeEnable,
-                              activeColor:
-                                  context.tokens.color.vsdslColorSecondary,
-                              side: BorderSide(
-                                  color:
-                                      context.tokens.color.vsdslColorOnPrimary,
-                                  width: 2),
-                              onChanged: (bool? value) {
-                                if (value != null) {
-                                  mirrorStateProvider
-                                      .setAirPlayCodeEnable(value);
-                                }
-                              }),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              right:
-                                  context.tokens.spacing.vsdslSpacingSm.right),
-                        ),
-                        AutoSizeText(
-                          S.of(context).v3_settings_mirroring_require_passcode,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: context.tokens.color.vsdslColorOnPrimary,
-                          ),
-                          maxLines: 1,
-                        ),
-                      ],
-                    ),
+                    child: _buildAirPlayPasscode(mirrorStateProvider, context),
                   )),
-              Padding(
-                  padding: EdgeInsets.only(
-                      bottom: context.tokens.spacing.vsdslSpacingSm.bottom)),
+              _buildSpacing(context),
               MirroringItem(
                   name: S.of(context).v3_shortcuts_google_cast,
                   enabled: mirrorStateProvider.googleCastEnabled,
@@ -88,9 +52,7 @@ class V3SettingsMirroring extends StatelessWidget {
                       channelProvider.blockRtcConnection = true;
                     }
                   }),
-              Padding(
-                  padding: EdgeInsets.only(
-                      bottom: context.tokens.spacing.vsdslSpacingSm.bottom)),
+              _buildSpacing(context),
               MirroringItem(
                   name: S.of(context).v3_shortcuts_miracast,
                   enabled: mirrorStateProvider.miracastEnabled,
@@ -110,53 +72,101 @@ class V3SettingsMirroring extends StatelessWidget {
                     bottom: context.tokens.spacing.vsdslSpacingSm.bottom),
                 color: context.tokens.color.vsdslColorOutlineVariant,
               ),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: Checkbox(
-                        value: mirrorStateProvider.isMirrorConfirmation,
-                        side: BorderSide(
-                            color: context.tokens.color.vsdslColorOnPrimary,
-                            width: 2),
-                        activeColor: context.tokens.color.vsdslColorSecondary,
-                        onChanged: (bool? value) {
-                          mirrorStateProvider.isMirrorConfirmation =
-                              !mirrorStateProvider.isMirrorConfirmation;
-                        }),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        right: context.tokens.spacing.vsdslSpacingSm.right),
-                  ),
-                  AutoSizeText(
-                    S.of(context).v3_settings_mirroring_auto_accept,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.white,
-                    ),
-                    maxLines: 1,
-                  ),
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    bottom: context.tokens.spacing.vsdslSpacingSm.bottom,
-                    left: 20 + context.tokens.spacing.vsdslSpacingSm.right),
-                child: AutoSizeText(
-                  S.of(context).v3_settings_mirroring_auto_accept_desc,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
-                  ),
-                  maxLines: 1,
-                ),
-              )
+              _buildAutoAccept(mirrorStateProvider, context),
+              _buildAutoAcceptDesc(context),
             ],
           );
         },
       ),
+    );
+  }
+
+  Padding _buildAutoAcceptDesc(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+          bottom: context.tokens.spacing.vsdslSpacingSm.bottom,
+          left: 20 + context.tokens.spacing.vsdslSpacingSm.right),
+      child: AutoSizeText(
+        S.of(context).v3_settings_mirroring_auto_accept_desc,
+        style: TextStyle(
+          fontSize: 12,
+          color: context.tokens.color.vsdslColorOnSurfaceVariant,
+        ),
+        maxLines: 1,
+      ),
+    );
+  }
+
+  Row _buildAutoAccept(
+      MirrorStateProvider mirrorStateProvider, BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 20,
+          height: 20,
+          child: Checkbox(
+              value: mirrorStateProvider.isMirrorConfirmation,
+              side: BorderSide(
+                  color: context.tokens.color.vsdslColorOnPrimary, width: 2),
+              activeColor: context.tokens.color.vsdslColorSecondary,
+              onChanged: (bool? value) {
+                mirrorStateProvider.isMirrorConfirmation =
+                    !mirrorStateProvider.isMirrorConfirmation;
+              }),
+        ),
+        Padding(
+          padding: EdgeInsets.only(
+              right: context.tokens.spacing.vsdslSpacingSm.right),
+        ),
+        AutoSizeText(
+          S.of(context).v3_settings_mirroring_auto_accept,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.white,
+          ),
+          maxLines: 1,
+        ),
+      ],
+    );
+  }
+
+  Padding _buildSpacing(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.only(
+            bottom: context.tokens.spacing.vsdslSpacingSm.bottom));
+  }
+
+  Row _buildAirPlayPasscode(
+      MirrorStateProvider mirrorStateProvider, BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 20,
+          height: 20,
+          child: Checkbox(
+              value: mirrorStateProvider.airPlayCodeEnable,
+              activeColor: context.tokens.color.vsdslColorSecondary,
+              side: BorderSide(
+                  color: context.tokens.color.vsdslColorOnPrimary, width: 2),
+              onChanged: (bool? value) {
+                if (value != null) {
+                  mirrorStateProvider.setAirPlayCodeEnable(value);
+                }
+              }),
+        ),
+        Padding(
+          padding: EdgeInsets.only(
+              right: context.tokens.spacing.vsdslSpacingSm.right),
+        ),
+        AutoSizeText(
+          S.of(context).v3_settings_mirroring_require_passcode,
+          style: TextStyle(
+            fontSize: 12,
+            color: context.tokens.color.vsdslColorOnPrimary,
+          ),
+          maxLines: 1,
+        ),
+      ],
     );
   }
 }
