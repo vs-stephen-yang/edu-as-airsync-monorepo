@@ -12,8 +12,6 @@ class DirectConnector {
 
   DisplayChannelClient? _directClient;
 
-  final _directPendingMessages = <ChannelMessage>[];
-
   final void Function(Channel channel) _onOpened;
   final void Function(ChannelConnectorError error) _onOpenError;
 
@@ -57,8 +55,6 @@ class DirectConnector {
     _directClient?.onStateChange = (ChannelState state) {
       if (state == ChannelState.connected) {
         _onOpened(_directClient!);
-
-        drainPendingMessages(_directClient!, _directPendingMessages);
       } else if (state == ChannelState.closed) {
         final error = mapCloseCodeToChannelConnectorError(
           _directClient?.closeReason?.code,
@@ -66,17 +62,5 @@ class DirectConnector {
         _onOpenError(error);
       }
     };
-  }
-
-  drainPendingMessages(
-    DisplayChannelClient client,
-    List<ChannelMessage> messages,
-  ) {
-    // Note: messages may arrive early before the state of the channel switches to connected
-    for (var message in messages) {
-      client.onChannelMessage?.call(message);
-    }
-
-    messages.clear();
   }
 }
