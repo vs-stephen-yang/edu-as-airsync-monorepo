@@ -41,6 +41,13 @@ class SampleUploader {
 
     private var videoConstraintWidth = 0
     private var videoConstraintHeight = 0
+
+    private var currWidth: Int = 0
+    private var currHeight: Int = 0
+    private var currConstraintHeight: Int = 0
+    private var currScaleWidth: Double = 0.0
+    private var currScaleHeight: Double = 0.0
+    private var currScaleFactor: Double = -1.0
     
     init(connection: SocketConnection, isVideo: Bool) {
         self.connection = connection
@@ -160,24 +167,41 @@ private extension SampleUploader {
         }
         
         CVPixelBufferLockBaseAddress(imageBuffer, .readOnly)
-        
-        let orientation = CMGetAttachment(buffer, key: RPVideoSampleOrientationKey as CFString, attachmentModeOut: nil)?.uintValue ?? 0
-        var scaleFactor = calcScaleFactor(width: CVPixelBufferGetWidth(imageBuffer), height: CVPixelBufferGetHeight(imageBuffer), orientation: orientation, constraintWidth: videoConstraintWidth, constraintHeight: videoConstraintHeight)
-        var width = Double(CVPixelBufferGetWidth(imageBuffer))/(scaleFactor)
-        var height = Double(CVPixelBufferGetHeight(imageBuffer))/(scaleFactor)
 
-        // 70703 Workaround to solve iOS WebRTC screen freeze on IFP52-1 issue
-        if (videoConstraintHeight == 720) {
-            var i = 0
-            while(width >= 1000 || height >= 1000) {
-                scaleFactor += 0.2
-                width = Double(CVPixelBufferGetWidth(imageBuffer))/(scaleFactor)
-                height = Double(CVPixelBufferGetHeight(imageBuffer))/(scaleFactor)
-                i += 1
+        let width = CVPixelBufferGetWidth(imageBuffer)
+        let height = CVPixelBufferGetHeight(imageBuffer)
+        let orientation = CMGetAttachment(buffer, key: RPVideoSampleOrientationKey as CFString, attachmentModeOut: nil)?.uintValue ?? 0
+
+        //
+        // Calculate the currScaleWidth, currScaleHeight, currScaleFactor if changed
+        //
+        if (width != currWidth || height != currHeight || currConstraintHeight != videoConstraintHeight) {
+            currScaleFactor = calcScaleFactor(width: width, height: height, orientation: orientation, constraintWidth: videoConstraintWidth, constraintHeight: videoConstraintHeight)
+            currScaleWidth = Double(width)/(currScaleFactor)
+            currScaleHeight = Double(height)/(currScaleFactor)
+
+            os_log(.error, log: .default, "#### update currWidth... from %dx%d to %.3fx%.3f Scale:%.3f "
+                , width, height, currScaleWidth, currScaleHeight, currScaleFactor)
+
+            // 70703 Workaround to solve iOS WebRTC screen freeze on IFP52-1 issue
+            // TODO: improve the while loop
+            if (videoConstraintHeight == 720) {
+                while(currScaleWidth >= 1000 || currScaleHeight >= 1000) {
+                    currScaleFactor += 0.1
+                    currScaleWidth = Double(width)/(currScaleFactor)
+                    currScaleHeight = Double(height)/(currScaleFactor)
+
+                    os_log(.error, log: .default, "#### update currWidth for IFP52-1 ... to %.3fx%.3f Scale:%.3f "
+                    , currScaleWidth, currScaleHeight, currScaleFactor)
+                }
             }
+
+            currWidth = width
+            currHeight = height
+            currConstraintHeight = videoConstraintHeight
         }
-                                    
-        let scaleTransform = CGAffineTransform(scaleX: CGFloat(1.0/scaleFactor), y: CGFloat(1.0/scaleFactor))
+
+        let scaleTransform = CGAffineTransform(scaleX: CGFloat(1.0/currScaleFactor), y: CGFloat(1.0/currScaleFactor))
         let bufferData = self.jpegData(from: imageBuffer, scale: scaleTransform)
         
         CVPixelBufferUnlockBaseAddress(imageBuffer, .readOnly)
@@ -188,8 +212,8 @@ private extension SampleUploader {
         }
         
         var videoFrameHeader = VideoFrameHeader(
-          width: UInt32(width), 
-          height: UInt32(height), 
+          width: UInt32(currScaleWidth),
+          height: UInt32(currScaleHeight),
           orientation: UInt32(orientation),
           palyoadLength: UInt32(messageData.count))
       
