@@ -1260,6 +1260,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Both internet & local connection`
+  String get v3_settings_connectivity_both {
+    return Intl.message(
+      'Both internet & local connection',
+      name: 'v3_settings_connectivity_both',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Local connection`
+  String get v3_settings_connectivity_local {
+    return Intl.message(
+      'Local connection',
+      name: 'v3_settings_connectivity_local',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Local connections operate within a private network, offering more security and stability.`
+  String get v3_settings_connectivity_local_desc {
+    return Intl.message(
+      'Local connections operate within a private network, offering more security and stability.',
+      name: 'v3_settings_connectivity_local_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Internet connection`
+  String get v3_settings_connectivity_internet {
+    return Intl.message(
+      'Internet connection',
+      name: 'v3_settings_connectivity_internet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Internet connection requires a stable network.`
+  String get v3_settings_connectivity_internet_desc {
+    return Intl.message(
+      'Internet connection requires a stable network.',
+      name: 'v3_settings_connectivity_internet_desc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
