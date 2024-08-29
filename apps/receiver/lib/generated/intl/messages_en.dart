@@ -207,6 +207,17 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Share your screen to all Interactive Flat Panels (IFPs) in the network."),
         "v3_settings_connectivity":
             MessageLookupByLibrary.simpleMessage("Connectivity"),
+        "v3_settings_connectivity_both": MessageLookupByLibrary.simpleMessage(
+            "Both internet & local connection"),
+        "v3_settings_connectivity_internet":
+            MessageLookupByLibrary.simpleMessage("Internet connection"),
+        "v3_settings_connectivity_internet_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "Internet connection requires a stable network."),
+        "v3_settings_connectivity_local":
+            MessageLookupByLibrary.simpleMessage("Local connection"),
+        "v3_settings_connectivity_local_desc": MessageLookupByLibrary.simpleMessage(
+            "Local connections operate within a private network, offering more security and stability."),
         "v3_settings_device_auto_fill_otp":
             MessageLookupByLibrary.simpleMessage("Auto-fill one-time password"),
         "v3_settings_device_auto_fill_otp_desc":

@@ -12,6 +12,7 @@ class AppPreferences {
   static ensureInitialized() async {
     await _instance._load();
     await _instance._loadInvitedToGroupSelectedItem();
+    await _instance._loadSelectedConnectivityType();
   }
 
   bool _showEULA = true;
@@ -32,6 +33,7 @@ class AppPreferences {
     String? instanceName,
     String? entityId,
     String? moderatorId,
+    String? connectivityType,
   }) {
     if (showEULA != null) {
       _showEULA = showEULA;
@@ -82,4 +84,26 @@ class AppPreferences {
         prefs.getString('app_setting_invited_to_group') ?? _invitedToGroup;
   }
 
+  String _connectivityType = ConnectivityType.both.toString();
+
+  String get connectivityType => _connectivityType;
+
+  Future<void> setSelectedConnectivityType(ConnectivityType type) async {
+    _connectivityType = type.toString();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('app_setting_connectivity_type', _connectivityType);
+  }
+
+  _loadSelectedConnectivityType() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String type = prefs.getString('app_setting_connectivity_type') ??
+        ConnectivityType.both.toString();
+    _connectivityType = type;
+  }
+}
+
+enum ConnectivityType {
+  both,
+  local,
+  internet,
 }

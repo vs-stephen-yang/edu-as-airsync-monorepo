@@ -119,6 +119,10 @@
   "v3_settings_broadcast_cast_boards_desc": "Share your screen to all Interactive Flat Panels (IFPs) in the network.",
   "v3_settings_mirroring_require_passcode": "Require passcode",
   "v3_settings_mirroring_auto_accept": "Auto Accept",
-  "v3_settings_mirroring_auto_accept_desc": "Instantly enable mirroring without requiring moderator approval."
-
+  "v3_settings_mirroring_auto_accept_desc": "Instantly enable mirroring without requiring moderator approval.",
+  "v3_settings_connectivity_both": "Both internet & local connection",
+  "v3_settings_connectivity_local": "Local connection",
+  "v3_settings_connectivity_local_desc": "Local connections operate within a private network, offering more security and stability.",
+  "v3_settings_connectivity_internet": "Internet connection",
+  "v3_settings_connectivity_internet_desc": "Internet connection requires a stable network."
 }
