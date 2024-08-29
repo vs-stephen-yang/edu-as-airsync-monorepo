@@ -7,6 +7,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/widgets/v3_feature_set.dart';
 import 'package:display_flutter/widgets/v3_footer_bar.dart';
 import 'package:display_flutter/widgets/v3_header_bar.dart';
 import 'package:display_flutter/widgets/v3_main_info.dart';
@@ -22,6 +23,7 @@ class V3Home extends StatefulWidget {
   static ValueNotifier<bool> isShowHeaderFooterBar = ValueNotifier(true);
   static ValueNotifier<bool> isShowDisplayCode = ValueNotifier(true);
   static ValueNotifier<bool> isShowSettingsMenu = ValueNotifier(false);
+  static ValueNotifier<bool> isShowCastDevice = ValueNotifier(false);
 
   @override
   State<StatefulWidget> createState() => _V3HomeState();
@@ -117,6 +119,18 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                   return value ? const V3MainInfo() : const SizedBox();
                 },
               ),
+              ValueListenableBuilder(
+                valueListenable: V3Home.isShowCastDevice,
+                builder: (_, bool value, __) {
+                  return value
+                      ? const Align(
+                          alignment: Alignment(0.2, -0.2),
+                          child: V3MainInfo(isCastToDevice: true),
+                        )
+                      : const SizedBox.shrink();
+                },
+              ),
+              const V3FeatureSet(),
               ValueListenableBuilder(
                   valueListenable: V3Home.isShowSettingsMenu,
                   builder: (_, bool value, __) {

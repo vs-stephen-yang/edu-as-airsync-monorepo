@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/widgets/v3_cast_devices_view.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_participants_view.dart';
 import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
@@ -10,7 +11,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class V3MainInfo extends StatelessWidget {
-  const V3MainInfo({super.key});
+  const V3MainInfo({super.key, this.isCastToDevice = false});
+
+  final bool isCastToDevice;
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +21,20 @@ class V3MainInfo extends StatelessWidget {
       alignment: Alignment.center,
       width: 1065,
       height: 505,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(30)),
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(30)),
+          side: BorderSide(
+            width: 1,
+            color: context.tokens.color.vsdslColorOutline,
+          ),
+        ),
         color: context.tokens.color.vsdslColorSurface100,
       ),
       child: Row(
         children: [
           SizedBox(
-            width: 764,
+            width: 762,
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -96,9 +105,11 @@ class V3MainInfo extends StatelessWidget {
             width: 1,
             color: context.tokens.color.vsdslColorOutline,
           ),
-          const SizedBox(
+          SizedBox(
             width: 300,
-            child: V3ParticipantsView(),
+            child: isCastToDevice
+                ? const V3CastDevicesView()
+                : const V3ParticipantsView(),
           ),
         ],
       ),

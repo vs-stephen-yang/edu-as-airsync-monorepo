@@ -124,5 +124,8 @@
   "v3_settings_connectivity_local": "Local connection",
   "v3_settings_connectivity_local_desc": "Local connections operate within a private network, offering more security and stability.",
   "v3_settings_connectivity_internet": "Internet connection",
-  "v3_settings_connectivity_internet_desc": "Internet connection requires a stable network."
+  "v3_settings_connectivity_internet_desc": "Internet connection requires a stable network.",
+  "v3_cast_to_device_title": "Device list",
+  "v3_cast_to_device_touch_back": "Touchback",
+  "v3_cast_to_device_touch_back_enabled": "Remote controlling"
 }
