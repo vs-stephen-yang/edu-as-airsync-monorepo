@@ -1310,6 +1310,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Device list`
+  String get v3_cast_to_device_title {
+    return Intl.message(
+      'Device list',
+      name: 'v3_cast_to_device_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Touchback`
+  String get v3_cast_to_device_touch_back {
+    return Intl.message(
+      'Touchback',
+      name: 'v3_cast_to_device_touch_back',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remote controlling`
+  String get v3_cast_to_device_touch_back_enabled {
+    return Intl.message(
+      'Remote controlling',
+      name: 'v3_cast_to_device_touch_back_enabled',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

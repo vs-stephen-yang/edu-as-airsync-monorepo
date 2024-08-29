@@ -85,6 +85,7 @@ class ChannelProvider extends ChangeNotifier {
   final RemoteScreenServer _remoteScreenServe = RemoteScreenServer();
 
   RemoteScreenServer get remoteScreenServe => _remoteScreenServe;
+  static const int maxRemoteScreenConnection = 10;
   static final List<RemoteScreenConnector> _remoteScreenConnectors =
       <RemoteScreenConnector>[];
 
@@ -316,7 +317,7 @@ class ChannelProvider extends ChangeNotifier {
             }
             rtcConnector = _onJoinDisplay(rtcConnector, mode, msg);
           } else {
-            if (_remoteScreenConnectors.length >= 10) {
+            if (_remoteScreenConnectors.length >= maxRemoteScreenConnection) {
               final message = JoinDisplayRejectedMessage();
               message.reason = Reason(
                 JoinDisplayRejectedReasonCode.maxClientsReached.code,

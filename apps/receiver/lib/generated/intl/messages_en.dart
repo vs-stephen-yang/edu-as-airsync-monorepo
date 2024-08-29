@@ -152,6 +152,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_message": MessageLookupByLibrary.simpleMessage(
             "A new version of software is available"),
         "update_title": MessageLookupByLibrary.simpleMessage("AirSync Update"),
+        "v3_cast_to_device_title":
+            MessageLookupByLibrary.simpleMessage("Device list"),
+        "v3_cast_to_device_touch_back":
+            MessageLookupByLibrary.simpleMessage("Touchback"),
+        "v3_cast_to_device_touch_back_enabled":
+            MessageLookupByLibrary.simpleMessage("Remote controlling"),
         "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
             "Scan the QR code with your iOS or Android device for instant access"),
         "v3_download_app_entry":
