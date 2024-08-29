@@ -47,4 +47,7 @@ class ProductionConfig implements ConfigSettings {
 
   @override
   String airSyncUrl = 'airsync.net';
+
+  @override
+  String appStoreUrl = 'https://www.airsync.net/download';
 }

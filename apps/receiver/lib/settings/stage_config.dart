@@ -47,4 +47,7 @@ class StageConfig implements ConfigSettings {
 
   @override
   String airSyncUrl = 'stage.airsync.net';
+
+  @override
+  String appStoreUrl = 'https://www.stage.airsync.net/download';
 }

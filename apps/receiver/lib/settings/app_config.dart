@@ -43,4 +43,5 @@ abstract class ConfigSettings {
   late String icarExceptionFileUrl;
 
   late String airSyncUrl;
+  late String appStoreUrl;
 }

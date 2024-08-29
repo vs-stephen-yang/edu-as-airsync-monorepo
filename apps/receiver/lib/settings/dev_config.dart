@@ -47,4 +47,7 @@ class DevConfig implements ConfigSettings {
 
   @override
   String airSyncUrl = 'dev.airsync.net';
+
+  @override
+  String appStoreUrl = 'https://www.dev.airsync.net/download';
 }
