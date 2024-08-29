@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -41,9 +42,7 @@ class V3DownloadAppMenu extends StatelessWidget {
                   Positioned(
                     top: 135,
                     child: QrImageView(
-                      // todo: change to using backend api
-                      data:
-                          'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast',
+                      data: AppConfig.of(context)!.settings.appStoreUrl,
                       version: QrVersions.auto,
                       size: 144,
                     ),
