@@ -10,31 +10,36 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 class V3QrcodeQuickConnect extends StatelessWidget {
   const V3QrcodeQuickConnect(
-      {super.key, this.isStringOnTop = false, this.width = 130});
+      {super.key, this.isStringOnTop = false, this.size = 139});
 
   final bool isStringOnTop;
-  final double width;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    Widget title = AutoSizeText(
+      S.of(context).v3_qrcode_quick_connect,
+      style: TextStyle(
+        color: context.tokens.color.vsdslColorNeutral,
+        fontWeight: FontWeight.w600,
+        fontSize: isStringOnTop ? 21 : 14,
+      ),
+    );
+
+    Widget space = SizedBox(
+        height: isStringOnTop
+            ? context.tokens.spacing.vsdslSpacing3xl.top - 1
+            : context.tokens.spacing.vsdslSpacingXl.top - 1);
+
+    Widget qrCode = Stack(
       alignment: Alignment.center,
       children: [
-        Positioned(
-          top: isStringOnTop ? 8 : null,
-          bottom: isStringOnTop ? null : 20,
-          child: AutoSizeText(
-            S.of(context).v3_qrcode_quick_connect,
-            style: TextStyle(
-              color: context.tokens.color.vsdslColorNeutral,
-              fontWeight: FontWeight.w600,
-              fontSize: isStringOnTop ? 21 : 14,
-            ),
-          ),
-        ),
         Image(
-          width: width,
-          image: const Svg('assets/images/ic_qrcode_background.svg'),
+          width: size,
+          height: size,
+          image: Svg(isStringOnTop
+              ? 'assets/images/ic_qrcode_background2.svg'
+              : 'assets/images/ic_qrcode_background1.svg'),
         ),
         Consumer2<InstanceInfoProvider, ChannelProvider>(
             builder: (_, instanceProvider, channelProvider, __) {
@@ -44,10 +49,30 @@ class V3QrcodeQuickConnect extends StatelessWidget {
           return QrImageView(
             data: 'Not implement yet!!. $quickConnectData',
             version: QrVersions.auto,
-            size: width - 20,
+            padding: EdgeInsets.zero,
+            size: isStringOnTop ? size - 35 : size - 32,
           );
         }),
       ],
+    );
+
+    List<Widget> children = [];
+    if (isStringOnTop) {
+      children.add(title);
+      children.add(space);
+      children.add(qrCode);
+    } else {
+      children.add(qrCode);
+      children.add(space);
+      children.add(title);
+    }
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+          vertical: context.tokens.spacing.vsdslSpacing4xl.top - 1),
+      child: Column(
+        children: children,
+      ),
     );
   }
 }

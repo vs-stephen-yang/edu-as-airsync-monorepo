@@ -37,7 +37,7 @@ class V3MainInfo extends StatelessWidget {
                 ),
                 Positioned(
                   left: 50,
-                  bottom: 30,
+                  bottom: 44,
                   child: Row(
                     children: [
                       Padding(
@@ -75,8 +75,8 @@ class V3MainInfo extends StatelessWidget {
                 Positioned(
                   right: 8,
                   child: Container(
-                    width: 170,
-                    height: 220,
+                    width: 171,
+                    height: 229,
                     decoration: ShapeDecoration(
                       shape: RoundedRectangleBorder(
                         borderRadius: context.tokens.radii.vsdslRadiusXl,

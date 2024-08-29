@@ -34,7 +34,7 @@ class _V3InstructionState extends State<V3Instruction> {
     return Consumer2<ChannelProvider, InstanceInfoProvider>(
         builder: (_, channelProvider, instanceInfoProvider, __) {
       return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: widget.isQuickConnect
             ? CrossAxisAlignment.center
             : CrossAxisAlignment.start,
@@ -46,8 +46,12 @@ class _V3InstructionState extends State<V3Instruction> {
                 fontSize: 21,
                 fontWeight: FontWeight.w500,
                 color: context.tokens.color.vsdslColorSurface600,
+                letterSpacing: -0.48,
+                height: 1.3,
               ),
             ),
+          if (!widget.isQuickConnect)
+            SizedBox(height: context.tokens.spacing.vsdslSpacing5xl.top),
           if (widget.isQuickConnect)
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -59,7 +63,8 @@ class _V3InstructionState extends State<V3Instruction> {
                   color: context.tokens.color.vsdslColorSurface600,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  padding: EdgeInsets.only(
+                      left: context.tokens.spacing.vsdslSpacingSm.left),
                   child: Consumer<InstanceInfoProvider>(
                     builder: (_, provider, __) {
                       return AutoSizeText(
@@ -68,6 +73,8 @@ class _V3InstructionState extends State<V3Instruction> {
                           fontSize: 19,
                           fontWeight: FontWeight.w700,
                           color: context.tokens.color.vsdslColorSurface600,
+                          letterSpacing: -0.48,
+                          height: 1.3,
                         ),
                       );
                     },
@@ -75,6 +82,8 @@ class _V3InstructionState extends State<V3Instruction> {
                 ),
               ],
             ),
+          if (widget.isQuickConnect)
+            SizedBox(height: context.tokens.spacing.vsdslSpacing4xl.top),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -84,7 +93,8 @@ class _V3InstructionState extends State<V3Instruction> {
                 width: 27,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 8),
+                padding: EdgeInsets.only(
+                    left: context.tokens.spacing.vsdslSpacingMd.left),
                 child: FutureBuilder(
                   future: checkInternetConnection(),
                   builder: (context, snapshot) {
@@ -102,12 +112,16 @@ class _V3InstructionState extends State<V3Instruction> {
                           fontSize: 21,
                           fontWeight: FontWeight.w700,
                           color: context.tokens.color.vsdslColorSurface600,
+                          letterSpacing: -0.48,
+                          height: 1.3,
                         ),
                       ),
                       style: TextStyle(
                         fontSize: 21,
                         fontWeight: FontWeight.w500,
                         color: context.tokens.color.vsdslColorSurface600,
+                        letterSpacing: -0.48,
+                        height: 1.3,
                       ),
                     );
                   },
@@ -115,6 +129,7 @@ class _V3InstructionState extends State<V3Instruction> {
               ),
             ],
           ),
+          SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -124,29 +139,38 @@ class _V3InstructionState extends State<V3Instruction> {
                 width: 27,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 8),
+                padding: EdgeInsets.only(
+                    left: context.tokens.spacing.vsdslSpacingMd.left),
                 child: AutoSizeText(
                   S.of(context).v3_instruction2,
                   style: TextStyle(
                     fontSize: 21,
                     fontWeight: FontWeight.w500,
                     color: context.tokens.color.vsdslColorSurface600,
+                    letterSpacing: -0.48,
+                    height: 1.3,
                   ),
                 ),
               ),
             ],
           ),
+          SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
           Padding(
-            padding: const EdgeInsets.only(left: 35),
+            padding: widget.isQuickConnect
+                ? EdgeInsets.zero
+                : const EdgeInsets.only(left: 35),
             child: AutoSizeText(
               _getDisplayCodeVisualIdentity(instanceInfoProvider.displayCode),
               style: TextStyle(
                 fontSize: 45,
                 fontWeight: FontWeight.w700,
                 color: context.tokens.color.vsdslColorSurface700,
+                letterSpacing: 5.76,
+                height: 1.3,
               ),
             ),
           ),
+          SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -156,18 +180,22 @@ class _V3InstructionState extends State<V3Instruction> {
                 width: 27,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 8),
+                padding: EdgeInsets.only(
+                    left: context.tokens.spacing.vsdslSpacingMd.left),
                 child: AutoSizeText(
                   S.of(context).v3_instruction3,
                   style: TextStyle(
                     fontSize: 21,
                     fontWeight: FontWeight.w500,
                     color: context.tokens.color.vsdslColorSurface600,
+                    letterSpacing: -0.48,
+                    height: 1.3,
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 8),
+                padding: EdgeInsets.only(
+                    left: context.tokens.spacing.vsdslSpacingMd.left),
                 child: ValueListenableBuilder<int>(
                   valueListenable: channelProvider.countDownProgress,
                   builder: (_, progress, __) {
@@ -175,8 +203,8 @@ class _V3InstructionState extends State<V3Instruction> {
                       alignment: Alignment.center,
                       transform: Matrix4.rotationY(math.pi),
                       child: SizedBox(
-                        width: 26,
-                        height: 26,
+                        width: 27,
+                        height: 27,
                         child: CircularProgressIndicator(
                           value: progress / channelProvider.maxCountDown,
                           strokeWidth: 4,
@@ -191,8 +219,11 @@ class _V3InstructionState extends State<V3Instruction> {
               ),
             ],
           ),
+          SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
           Padding(
-            padding: const EdgeInsets.only(left: 35),
+            padding: widget.isQuickConnect
+                ? EdgeInsets.zero
+                : const EdgeInsets.only(left: 35),
             child: ValueListenableBuilder<int>(
               valueListenable: channelProvider.otp,
               builder: (_, otp, __) {
@@ -202,6 +233,8 @@ class _V3InstructionState extends State<V3Instruction> {
                     fontSize: 45,
                     fontWeight: FontWeight.w700,
                     color: context.tokens.color.vsdslColorSurface700,
+                    letterSpacing: 5.76,
+                    height: 1.3,
                   ),
                 );
               },
