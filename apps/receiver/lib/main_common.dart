@@ -225,6 +225,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               '/v3Home': (context) => const AppOTADialog(child: V3Home()),
               '/eula': (context) => const AppOTADialog(child: Eula()),
             },
+            builder: (context, child) {
+              return MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                child: child!,
+              );
+            },
           );
         },
       ),
