@@ -11,8 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'focus_icon_button.dart';
-
 class V3SettingsDevice extends StatefulWidget {
   const V3SettingsDevice({super.key});
 
@@ -30,62 +28,58 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
         Provider.of<PrefLanguageProvider>(context, listen: false);
     SettingsProvider settingsProvider =
         Provider.of<SettingsProvider>(context, listen: false);
-    return Stack(
-      children: [
-        Positioned(
-          left: 13,
-          top: 57,
-          right: 13,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 26,
-                child: _buildDeviceName(context, settingsProvider),
-              ),
-              _buildDivider(context),
-              SizedBox(
-                height: 26,
-                child:
-                    _buildLanguage(context, languageProvider, settingsProvider),
-              ),
-              _buildDivider(context),
-              _buildShowDisplayCode(context),
-              AutoSizeText(
-                S.of(context).v3_settings_device_show_display_code_desc,
-                style: TextStyle(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w400,
-                  color: context.tokens.color.vsdslColorSurface600,
-                ),
-              ),
-              _buildDivider(context),
-              SizedBox(
-                height: 26,
-                child: _buildInviteGroup(context),
-              ),
-              _buildDivider(context),
-              Consumer<ChannelProvider>(
-                builder: (_, channelProvider, __) {
-                  return _buildAutoFillOTP(channelProvider, context);
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10, left: 24),
-                child: Text(
-                  S.of(context).v3_settings_device_auto_fill_otp_desc,
-                  style: TextStyle(
-                    fontSize: 9,
-                    color: context.tokens.color.vsdslColorSurface600,
-                  ),
-                  maxLines: 2,
-                ),
-              ),
-              _buildDivider(context),
-            ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 13, top: 57, right: 13),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 26,
+            child: _buildDeviceName(context, settingsProvider),
           ),
-        ),
-      ],
+          _buildDivider(context),
+          SizedBox(
+            height: 26,
+            child: _buildLanguage(context, languageProvider, settingsProvider),
+          ),
+          _buildDivider(context),
+          SizedBox(height: 26, child: _buildShowDisplayCode(context)),
+          Padding(
+            padding:
+                EdgeInsets.only(top: context.tokens.spacing.vsdslSpacingSm.top),
+            child: _buildTextDesc(context,
+                S.of(context).v3_settings_device_show_display_code_desc),
+          ),
+          _buildDivider(context),
+          SizedBox(
+            height: 26,
+            child: _buildInviteGroup(context),
+          ),
+          _buildDivider(context),
+          Consumer<ChannelProvider>(
+            builder: (_, channelProvider, __) {
+              return _buildAutoFillOTP(channelProvider, context);
+            },
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+                top: context.tokens.spacing.vsdslSpacingSm.top, left: 24),
+            child: _buildTextDesc(
+                context, S.of(context).v3_settings_device_auto_fill_otp_desc),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Text _buildTextDesc(BuildContext context, String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 9,
+        color: context.tokens.color.vsdslColorOnSurfaceVariant,
+        fontWeight: FontWeight.w400,
+      ),
     );
   }
 
@@ -220,8 +214,8 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
       children: [
         Text(
           S.of(context).v3_settings_device_show_display_code,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.tokens.color.vsdslColorOnSurfaceInverse,
             fontSize: 12,
           ),
         ),
@@ -233,19 +227,20 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             if (snapshot.hasData) {
               isRunning = snapshot.data as bool;
             }
-            return FocusIconButton(
-              childNotFocus: Image(
-                image: Svg(isRunning
-                    ? 'assets/images/ic_switch_on.svg'
-                    : 'assets/images/ic_switch_off.svg'),
-                width: 36,
-                height: 21,
+            return SizedBox(
+              height: 21,
+              child: IconButton(
+                icon: Image(
+                  image: Svg(isRunning
+                      ? 'assets/images/ic_switch_on.svg'
+                      : 'assets/images/ic_switch_off.svg'),
+                ),
+                padding: EdgeInsets.zero,
+                // constraints: const BoxConstraints(),
+                onPressed: () async {
+                  _setVisibility(!isRunning);
+                },
               ),
-              // splashRadius: 20,
-              focusColor: Colors.grey,
-              onClick: () {
-                _setVisibility(!isRunning);
-              },
             );
           },
         ),
