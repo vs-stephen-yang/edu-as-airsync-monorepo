@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -31,14 +30,8 @@ class V3SettingsBroadcast extends StatelessWidget {
                 Padding(
                     padding: EdgeInsets.only(
                         bottom: context.tokens.spacing.vsdslSpacingSm.bottom)),
-                AutoSizeText(
-                  S.of(context).v3_shortcuts_cast_device_desc,
-                  style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w400,
-                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
-                  ),
-                ),
+                _buildTextDesc(
+                    context, S.of(context).v3_shortcuts_cast_device_desc),
                 Container(
                   height: 1,
                   margin: EdgeInsets.only(
@@ -53,17 +46,22 @@ class V3SettingsBroadcast extends StatelessWidget {
                 Padding(
                     padding: EdgeInsets.only(
                         bottom: context.tokens.spacing.vsdslSpacingSm.bottom)),
-                AutoSizeText(
-                  S.of(context).v3_settings_broadcast_cast_boards_desc,
-                  style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w400,
-                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
-                  ),
-                ),
+                _buildTextDesc(context,
+                    S.of(context).v3_settings_broadcast_cast_boards_desc),
               ],
             ))
       ],
+    );
+  }
+
+  Text _buildTextDesc(BuildContext context, String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 9,
+        fontWeight: FontWeight.w400,
+        color: context.tokens.color.vsdslColorOnSurfaceVariant,
+      ),
     );
   }
 
@@ -73,8 +71,8 @@ class V3SettingsBroadcast extends StatelessWidget {
       children: [
         Text(
           S.of(context).v3_shortcuts_cast_device,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.tokens.color.vsdslColorOnSurfaceInverse,
             fontSize: 12,
           ),
         ),
@@ -100,8 +98,8 @@ class V3SettingsBroadcast extends StatelessWidget {
       children: [
         Text(
           S.of(context).v3_shortcuts_cast_device,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: context.tokens.color.vsdslColorOnSurfaceInverse,
             fontSize: 12,
           ),
         ),
