@@ -19,6 +19,7 @@ import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/settings/theme_config.dart';
 import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -175,42 +176,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             locale: prefLanguageProvider.locale,
             title: 'AirSync',
             debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              splashFactory: NoSplash.splashFactory,
-              primarySwatch: Colors.blue,
-              // Set App background color
-              scaffoldBackgroundColor: Colors.black,
-              // Set Text default body color
-              textTheme: Theme.of(context).textTheme.apply(
-                    fontFamily:
-                        DeviceFeatureAdapter.showUIRevamp ? 'Inter' : null,
-                    bodyColor: DeviceFeatureAdapter.showUIRevamp
-                        ? const Color(0xFF2A2A2A)
-                        : Colors.white,
-                  ),
-              // Set ElevatedButton default foreground color
-              elevatedButtonTheme: ElevatedButtonThemeData(
-                style: ElevatedButton.styleFrom(foregroundColor: Colors.white),
-              ),
-              // Set TextButton default foreground color
-              textButtonTheme: TextButtonThemeData(
-                style: TextButton.styleFrom(foregroundColor: Colors.white),
-              ),
-              // Set IconButton default foreground color
-              iconButtonTheme: IconButtonThemeData(
-                style: IconButton.styleFrom(foregroundColor: Colors.white),
-              ),
-              // Set Icon default color
-              iconTheme: IconThemeData(
-                color: DeviceFeatureAdapter.showUIRevamp
-                    ? const Color(0xFF2A2A2A)
-                    : Colors.white,
-              ),
-              listTileTheme: const ListTileThemeData(
-                textColor: Colors.white,
-                iconColor: Colors.white,
-              ),
-            ),
+            theme: createThemeData(context, DeviceFeatureAdapter.showUIRevamp),
             initialRoute: AppPreferences().showEULA &&
                     !AppInstanceCreate().isInstalledInVBS100
                 ? '/eula'
