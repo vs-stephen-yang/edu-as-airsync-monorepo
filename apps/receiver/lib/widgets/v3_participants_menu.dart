@@ -12,14 +12,16 @@ class V3ParticipantsMenu extends StatelessWidget {
     return Stack(
       children: [
         Positioned(
-          top: 133,
           right: 40,
+          bottom: 80,
           child: Dialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
             backgroundColor: context.tokens.color.vsdslColorSurface100,
             insetPadding: EdgeInsets.zero,
+            elevation: 16.0,
+            shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
             child: SizedBox(
               width: 310,
               height: 507,
@@ -30,7 +32,7 @@ class V3ParticipantsMenu extends StatelessWidget {
                     top: 20,
                     right: 13,
                     bottom: 100,
-                    child: V3ParticipantList(),
+                    child: V3ParticipantList(isForMenuUse: true),
                   ),
                   Positioned(
                     right: 5,

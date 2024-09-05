@@ -9,7 +9,9 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
 class V3ParticipantList extends StatelessWidget {
-  const V3ParticipantList({super.key});
+  const V3ParticipantList({super.key, this.isForMenuUse = false});
+
+  final bool isForMenuUse;
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +20,35 @@ class V3ParticipantList extends StatelessWidget {
         if (!ChannelProvider.isModeratorMode ||
             HybridConnectionList().getRtcConnectorMap().isEmpty) {
           return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: ChannelProvider.isModeratorMode
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.center,
             children: [
+              if (ChannelProvider.isModeratorMode) ...[
+                AutoSizeText.rich(
+                  TextSpan(children: [
+                    TextSpan(
+                      text: S.of(context).v3_participants_title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: context.tokens.color.vsdslColorOnSurface,
+                      ),
+                    ),
+                    TextSpan(
+                      text:
+                          ' (${HybridConnectionList().getRtcConnectorMap().length}/${HybridConnectionList.maxHybridConnection})',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: context.tokens.color.vsdslColorOnSurface,
+                      ),
+                    )
+                  ]),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 133),
+              ],
               SizedBox(
                 width: 126,
                 height: 110,
@@ -28,6 +57,11 @@ class V3ParticipantList extends StatelessWidget {
                       ? 'assets/images/ic_moderator_people.svg'
                       : 'assets/images/ic_moderator_screen.svg'),
                 ),
+              ),
+              SizedBox(
+                height: ChannelProvider.isModeratorMode
+                    ? context.tokens.spacing.vsdslSpacing2xl.top
+                    : context.tokens.spacing.vsdslSpacingXl.top,
               ),
               AutoSizeText(
                 S.of(context).v3_participants_desc,
@@ -65,12 +99,15 @@ class V3ParticipantList extends StatelessWidget {
                 ]),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
               Expanded(
                 child: ListView.separated(
                   itemCount: HybridConnectionList().getConnectionCount(),
                   itemBuilder: (BuildContext context, int index) {
-                    return V3ParticipantItem(index: index);
+                    return V3ParticipantItem(
+                      index: index,
+                      isForMenuUse: isForMenuUse,
+                    );
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return const Divider(height: 13, color: Colors.transparent);

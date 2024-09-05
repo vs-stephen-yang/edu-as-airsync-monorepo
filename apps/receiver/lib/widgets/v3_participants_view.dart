@@ -17,11 +17,13 @@ class V3ParticipantsView extends StatefulWidget {
 }
 
 class _V3ParticipantsView extends State<V3ParticipantsView> {
+  final GlobalKey _containerKey = GlobalKey();
   bool isShowLogOutMenu = false;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
+      key: _containerKey,
       alignment: Alignment.center,
       children: [
         const Positioned(
@@ -103,6 +105,11 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
   }
 
   void _callLogOutDialog(BuildContext context) async {
+    final RenderBox renderBox =
+        _containerKey.currentContext!.findRenderObject() as RenderBox;
+    final Offset containerOffset =
+        renderBox.localToGlobal(Offset.zero).translate(27, 0);
+
     setState(() {
       isShowLogOutMenu = true;
     });
@@ -112,6 +119,7 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
         return V3CustomDialog(
+          offset: containerOffset,
           alignmentGeometry: Alignment.centerRight,
           title: S.of(context).v3_exit_moderator_mode_title,
           content: S.of(context).v3_exit_moderator_mode_desc,

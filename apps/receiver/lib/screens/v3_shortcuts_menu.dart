@@ -15,11 +15,13 @@ class V3ShortcutsMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: context.tokens.radii.vsdslRadiusXl,
       ),
       alignment: Alignment.bottomLeft,
       backgroundColor: const Color(0xFF151C32),
       insetPadding: const EdgeInsets.only(left: 8, bottom: 8),
+      elevation: 16.0,
+      shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
       child: SizedBox(
         width: 226,
         height: 358,
@@ -28,6 +30,7 @@ class V3ShortcutsMenu extends StatelessWidget {
             Positioned(
               left: 13,
               top: 13,
+              right: 13,
               child: AutoSizeText(
                 S.of(context).v3_shortcuts_menu_title,
                 style: TextStyle(
@@ -44,56 +47,61 @@ class V3ShortcutsMenu extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      AutoSizeText(
-                        S.of(context).v3_shortcuts_cast_device,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color:
-                              context.tokens.color.vsdslColorOnSurfaceInverse,
+                  SizedBox(
+                    height: 27,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        AutoSizeText(
+                          S.of(context).v3_shortcuts_cast_device,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color:
+                                context.tokens.color.vsdslColorOnSurfaceInverse,
+                          ),
                         ),
-                      ),
-                      Consumer<ChannelProvider>(
-                          builder: (_, channelProvider, __) {
-                        return SizedBox(
-                              height: 21,
-                              child: IconButton(
-                                icon: Image(
-                                  image: Svg(ChannelProvider.isSenderMode
-                                      ? 'assets/images/ic_switch_on.svg'
-                                      : 'assets/images/ic_switch_off.svg'),
-                                ),
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                                onPressed: () {
-                                  ChannelProvider.isSenderMode =
-                                  !ChannelProvider.isSenderMode;
-                              if (!ChannelProvider.isSenderMode) {
-                                    channelProvider.removeSender();
-                                  } else {
-                                    channelProvider.startRemoteScreen();
-                                  }
-                                },
+                        Consumer<ChannelProvider>(
+                            builder: (_, channelProvider, __) {
+                          return SizedBox(
+                            height: 21,
+                            child: IconButton(
+                              icon: Image(
+                                image: Svg(ChannelProvider.isSenderMode
+                                    ? 'assets/images/ic_switch_on.svg'
+                                    : 'assets/images/ic_switch_off.svg'),
                               ),
-                            );
-                          }),
-                    ],
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              onPressed: () {
+                                ChannelProvider.isSenderMode =
+                                    !ChannelProvider.isSenderMode;
+                                if (!ChannelProvider.isSenderMode) {
+                                  channelProvider.removeSender();
+                                } else {
+                                  channelProvider.startRemoteScreen();
+                                }
+                              },
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
                   ),
+                  SizedBox(height: context.tokens.spacing.vsdslSpacingSm.top),
                   AutoSizeText(
                     S.of(context).v3_shortcuts_cast_device_desc,
                     style: TextStyle(
-                      fontSize: 9,
+                      fontSize: 10,
                       fontWeight: FontWeight.w400,
                       color: context.tokens.color.vsdslColorOnSurfaceVariant,
                     ),
+                    minFontSize: 8,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6),
                     child: Container(
-                      height: 2,
+                      height: 1,
                       color: context.tokens.color.vsdslColorOutlineVariant,
                     ),
                   ),
