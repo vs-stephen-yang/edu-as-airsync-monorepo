@@ -47,7 +47,6 @@ class _V3InstructionState extends State<V3Instruction> {
                 fontWeight: FontWeight.w500,
                 color: context.tokens.color.vsdslColorSurface600,
                 letterSpacing: -0.48,
-                height: 1.3,
               ),
             ),
           if (!widget.isQuickConnect)
@@ -74,7 +73,6 @@ class _V3InstructionState extends State<V3Instruction> {
                           fontWeight: FontWeight.w700,
                           color: context.tokens.color.vsdslColorSurface600,
                           letterSpacing: -0.48,
-                          height: 1.3,
                         ),
                       );
                     },
@@ -113,7 +111,6 @@ class _V3InstructionState extends State<V3Instruction> {
                           fontWeight: FontWeight.w700,
                           color: context.tokens.color.vsdslColorSurface600,
                           letterSpacing: -0.48,
-                          height: 1.3,
                         ),
                       ),
                       style: TextStyle(
@@ -121,7 +118,6 @@ class _V3InstructionState extends State<V3Instruction> {
                         fontWeight: FontWeight.w500,
                         color: context.tokens.color.vsdslColorSurface600,
                         letterSpacing: -0.48,
-                        height: 1.3,
                       ),
                     );
                   },
@@ -148,7 +144,6 @@ class _V3InstructionState extends State<V3Instruction> {
                     fontWeight: FontWeight.w500,
                     color: context.tokens.color.vsdslColorSurface600,
                     letterSpacing: -0.48,
-                    height: 1.3,
                   ),
                 ),
               ),
@@ -166,7 +161,6 @@ class _V3InstructionState extends State<V3Instruction> {
                 fontWeight: FontWeight.w700,
                 color: context.tokens.color.vsdslColorSurface700,
                 letterSpacing: 5.76,
-                height: 1.3,
               ),
             ),
           ),
@@ -189,7 +183,6 @@ class _V3InstructionState extends State<V3Instruction> {
                     fontWeight: FontWeight.w500,
                     color: context.tokens.color.vsdslColorSurface600,
                     letterSpacing: -0.48,
-                    height: 1.3,
                   ),
                 ),
               ),
@@ -234,7 +227,6 @@ class _V3InstructionState extends State<V3Instruction> {
                     fontWeight: FontWeight.w700,
                     color: context.tokens.color.vsdslColorSurface700,
                     letterSpacing: 5.76,
-                    height: 1.3,
                   ),
                 );
               },
