@@ -186,7 +186,15 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
               ),
           if (widget.rtcConnector.presentationState ==
                   PresentationState.streaming &&
-              widget.rtcConnector.senderNameWithEllipsis.isNotEmpty)
+              widget.rtcConnector.senderNameWithEllipsis.isNotEmpty) ...[
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 4,
+                  color: context.tokens.color.vsdslColorSurface900,
+                ),
+              ),
+            ),
             Align(
               alignment: Alignment.topCenter,
               child: Row(
@@ -216,6 +224,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                 ],
               ),
             ),
+          ],
           if (widget.rtcConnector.presentationState ==
               PresentationState.waitForStream)
             Transform.scale(

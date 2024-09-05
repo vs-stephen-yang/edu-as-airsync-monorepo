@@ -11,9 +11,11 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:motion_toast/motion_toast.dart';
 
 class V3ParticipantItem extends StatelessWidget {
-  const V3ParticipantItem({super.key, required this.index});
+  const V3ParticipantItem(
+      {super.key, required this.index, required this.isForMenuUse});
 
   final int index;
+  final bool isForMenuUse;
 
   @override
   Widget build(BuildContext context) {
@@ -22,38 +24,56 @@ class V3ParticipantItem extends StatelessWidget {
     String presenterId = rtcConnector.clientId ?? '';
     return SizedBox(
       width: 283,
-      height: 37,
+      height: 40,
       child: Row(
         children: [
           Column(
+            mainAxisAlignment: isForMenuUse
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: 160,
+                width: 162,
                 height: 18,
                 child: AutoSizeText(
-                  rtcConnector.senderNameWithEllipsis,
+                  rtcConnector.senderName ?? '',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: context.tokens.color.vsdslColorOnSurface,
                   ),
-                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              AutoSizeText(
-                (HybridConnectionList().isPresenterStreaming(presenterId))
-                    ? S.of(context).v3_participant_item_casting
-                    : S.of(context).v3_participant_item_connected,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  color:
-                      (HybridConnectionList().isPresenterStreaming(presenterId))
-                          ? context.tokens.color.vsdslColorSuccess
-                          : context.tokens.color.vsdslColorOnSurfaceVariant,
-                ),
-              ),
+              if (isForMenuUse) ...[
+                SizedBox(height: context.tokens.spacing.vsdslSpacingSm.top),
+                if ((HybridConnectionList().isPresenterStreaming(presenterId)))
+                  Container(
+                    width: 46,
+                    height: 17,
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: context.tokens.radii.vsdslRadiusSm,
+                        side: BorderSide(
+                          width: 1,
+                          color: context.tokens.color.vsdslColorSuccess,
+                        ),
+                      ),
+                    ),
+                    padding: context.tokens.spacing.vsdslSpacingXs,
+                    child: AutoSizeText(
+                      S.of(context).v3_participant_item_casting,
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w600,
+                        color: context.tokens.color.vsdslColorSuccess,
+                      ),
+                      textAlign: TextAlign.center,
+                      minFontSize: 8,
+                    ),
+                  ),
+              ],
             ],
           ),
           const Spacer(),
@@ -63,7 +83,8 @@ class V3ParticipantItem extends StatelessWidget {
               height: 27,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  elevation: 0,
+                  elevation: 5.0,
+                  shadowColor: context.tokens.color.vsdslColorSecondary,
                   backgroundColor: context.tokens.color.vsdslColorSecondary,
                   shape: RoundedRectangleBorder(
                     borderRadius: context.tokens.radii.vsdslRadiusFull,
@@ -91,6 +112,10 @@ class V3ParticipantItem extends StatelessWidget {
                 icon: const Image(
                   image: Svg('assets/images/ic_participant_stop.svg'),
                 ),
+                style: IconButton.styleFrom(
+                  elevation: 10.0,
+                  shadowColor: context.tokens.color.vsdslColorOpacityNeutralXs,
+                ),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
                 onPressed: () {
@@ -105,6 +130,10 @@ class V3ParticipantItem extends StatelessWidget {
             child: IconButton(
               icon: const Image(
                 image: Svg('assets/images/ic_participant_close.svg'),
+              ),
+              style: IconButton.styleFrom(
+                elevation: 10.0,
+                shadowColor: context.tokens.color.vsdslColorOpacityNeutralXs,
               ),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),

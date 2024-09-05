@@ -34,7 +34,7 @@ class V3MainInfo extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 762,
+            width: 752,
             child: Stack(
               alignment: Alignment.center,
               children: [
@@ -106,7 +106,7 @@ class V3MainInfo extends StatelessWidget {
             color: context.tokens.color.vsdslColorOutline,
           ),
           SizedBox(
-            width: 300,
+            width: 310,
             child: isCastToDevice
                 ? const V3CastDevicesView()
                 : const V3ParticipantsView(),

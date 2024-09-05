@@ -206,6 +206,7 @@ class _V3StreamingViewState extends State<V3StreamingView> {
           bottom: 8,
           child: SizedBox(
             width: 41,
+            height: 41,
             child: IconButton(
               icon: const Image(
                 image: Svg('assets/images/ic_streaming_shortcut.svg'),
@@ -237,7 +238,8 @@ class _V3StreamingViewState extends State<V3StreamingView> {
                 children: <Widget>[
                   if (isAnnotationImplement)
                     SizedBox(
-                      width: 27,
+                      width: 41,
+                      height: 41,
                       child: IconButton(
                         icon: const Image(
                           image: Svg('assets/images/ic_streaming_pen.svg'),
@@ -256,10 +258,11 @@ class _V3StreamingViewState extends State<V3StreamingView> {
                       color: context.tokens.color.vsdslColorOnSurfaceVariant,
                     ),
                   SizedBox(
-                    width: 27,
+                    width: 41,
+                    height: 41,
                     child: IconButton(
                       icon: const Image(
-                        image: Svg('assets/images/ic_qrcode.svg'),
+                        image: Svg('assets/images/ic_streaming_qrcode.svg'),
                       ),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),

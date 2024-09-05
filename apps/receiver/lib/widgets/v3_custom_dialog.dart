@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class V3CustomDialog extends StatelessWidget {
   const V3CustomDialog(
       {super.key,
+      this.offset,
       required this.alignmentGeometry,
       required this.title,
       required this.content,
@@ -13,6 +14,7 @@ class V3CustomDialog extends StatelessWidget {
       required this.onItem1,
       required this.onItem2});
 
+  final Offset? offset;
   final AlignmentGeometry alignmentGeometry;
   final String title, content;
   final String item1, item2;
@@ -24,13 +26,13 @@ class V3CustomDialog extends StatelessWidget {
       children: [
         Positioned(
           top: 258,
-          right: 134,
+          left: offset?.dx ?? 0,
           child: UnconstrainedBox(
             // Use UnconstrainedBox to override Dialog minimum size
             // https://blog.csdn.net/shving/article/details/114485776
             constrainedAxis: Axis.vertical,
             child: SizedBox(
-              width: 253,
+              width: 254,
               height: 192,
               child: Dialog(
                 shape: RoundedRectangleBorder(
@@ -104,6 +106,9 @@ class V3CustomDialog extends StatelessWidget {
                             height: 40,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
+                                elevation: 5.0,
+                                shadowColor:
+                                    context.tokens.color.vsdslColorSecondary,
                                 foregroundColor: context
                                     .tokens.color.vsdslColorOnSurfaceInverse,
                                 backgroundColor:

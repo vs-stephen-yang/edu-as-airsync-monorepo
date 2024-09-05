@@ -34,8 +34,8 @@ class V3FooterBar extends StatelessWidget {
             left: 8,
             bottom: 8,
             child: SizedBox(
-              width: 33,
-              height: 33,
+              width: 41,
+              height: 41,
               child: IconButton(
                 icon: const Image(
                   image: Svg('assets/images/ic_menu_settings.svg'),
