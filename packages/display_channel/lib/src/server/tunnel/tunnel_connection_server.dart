@@ -15,6 +15,8 @@ class TunnelConnectionServer extends TunnelMessageHandler {
   void Function()? onTunnelConnected;
   void Function()? onTunnelConnecting;
 
+  bool _isTunnelConnecting = false;
+
   final void Function(String clientId, Connection) _onNewClientConnection;
   final VerifyConnectRequest _verifyConnectRequest;
 
@@ -52,9 +54,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
     _tunnelConnection!.onConnectFailed = _onTunnelConnectFailed;
     _tunnelConnection!.onDisconnected = _onTunnelDisconnected;
 
-    _tunnelConnection!.onConnecting = () {
-      onTunnelConnecting?.call();
-    };
+    _tunnelConnection!.onConnecting = _onTunnelConnecting;
 
     _tunnelConnection!.onMessage = (Map<String, dynamic> message) {
       // parse the tunnel messages
@@ -132,7 +132,15 @@ class TunnelConnectionServer extends TunnelMessageHandler {
     //TODO:
   }
 
+  void _onTunnelConnecting() {
+    if (!_isTunnelConnecting) {
+      _isTunnelConnecting = true;
+      onTunnelConnecting?.call();
+    }
+  }
+
   void _onTunnelConnected() {
+    _isTunnelConnecting = false;
     onTunnelConnected?.call();
 
     _enableHeartbeat(true);
