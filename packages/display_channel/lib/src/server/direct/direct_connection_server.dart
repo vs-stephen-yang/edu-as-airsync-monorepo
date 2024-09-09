@@ -11,7 +11,7 @@ class DirectConnectionServer {
   final void Function(String clientId, Connection) _onNewConnection;
   final VerifyConnectRequest _verifyConnectRequest;
 
-  static const defaultPingInterval = Duration(seconds: 1);
+  static const defaultPingInterval = Duration(seconds: 2);
 
   final Duration idleConnectionTimeout;
   // websocket ping interval

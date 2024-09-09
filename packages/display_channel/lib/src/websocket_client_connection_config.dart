@@ -14,7 +14,7 @@ class RetryConfig {
 class WebSocketClientConnectionConfig {
   final void Function(String url, String message)? logger;
 
-  static const defaultPingInterval = Duration(seconds: 1);
+  static const defaultPingInterval = Duration(seconds: 2);
   static const defaultConnectionTimeout = Duration(seconds: 1);
   static const defaultRetryConfig = RetryConfig();
 
