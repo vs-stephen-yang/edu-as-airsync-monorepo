@@ -211,6 +211,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_broadcast_cast_boards_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Share your screen to all Interactive Flat Panels (IFPs) in the network."),
+        "v3_settings_broadcast_to_display_group":
+            MessageLookupByLibrary.simpleMessage(
+                "Broadcast to the display group"),
         "v3_settings_connectivity":
             MessageLookupByLibrary.simpleMessage("Connectivity"),
         "v3_settings_connectivity_both": MessageLookupByLibrary.simpleMessage(
@@ -240,6 +243,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_device_show_display_code_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Keep the code visible at the top of the screen, even when switching to other apps and screen sharing is active."),
+        "v3_settings_display_group":
+            MessageLookupByLibrary.simpleMessage("Display Group"),
+        "v3_settings_display_group_all_the_time":
+            MessageLookupByLibrary.simpleMessage("All the time"),
+        "v3_settings_display_group_cast":
+            MessageLookupByLibrary.simpleMessage("Cast"),
+        "v3_settings_display_group_only_casting":
+            MessageLookupByLibrary.simpleMessage("Only when casting"),
         "v3_settings_invite_group": MessageLookupByLibrary.simpleMessage(
             "If invited to a display group"),
         "v3_settings_invite_group_auto_accept":
