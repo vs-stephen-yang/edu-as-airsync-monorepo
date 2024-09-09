@@ -27,6 +27,7 @@ import 'package:display_flutter/widgets/app_ota_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -53,7 +54,7 @@ Future<void> commonEntry(ConfigSettings settings) async {
       appVersion: packageInfo.version,
       child: Tokens(
         tokens: DefaultTokens(),
-        child: const MyApp(),
+        child: const riverpod.ProviderScope(child: MyApp()),
       ),
     );
 
