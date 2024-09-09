@@ -49,6 +49,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
 
     _tunnelConnection!.onConnected = _onTunnelConnected;
 
+    _tunnelConnection!.onConnectFailed = _onTunnelConnectFailed;
     _tunnelConnection!.onDisconnected = _onTunnelDisconnected;
 
     _tunnelConnection!.onConnecting = () {
@@ -143,6 +144,13 @@ class TunnelConnectionServer extends TunnelMessageHandler {
         connection,
       );
     });
+  }
+
+  _onTunnelConnectFailed(ConnectError error) {
+    _closeTunnelConnection();
+
+    // Reconnect
+    _openTunnelConnection();
   }
 
   void _onTunnelDisconnected() {
