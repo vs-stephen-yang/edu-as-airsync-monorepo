@@ -1340,6 +1340,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Broadcast to the display group`
+  String get v3_settings_broadcast_to_display_group {
+    return Intl.message(
+      'Broadcast to the display group',
+      name: 'v3_settings_broadcast_to_display_group',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only when casting`
+  String get v3_settings_display_group_only_casting {
+    return Intl.message(
+      'Only when casting',
+      name: 'v3_settings_display_group_only_casting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All the time`
+  String get v3_settings_display_group_all_the_time {
+    return Intl.message(
+      'All the time',
+      name: 'v3_settings_display_group_all_the_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Display Group`
+  String get v3_settings_display_group {
+    return Intl.message(
+      'Display Group',
+      name: 'v3_settings_display_group',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cast`
+  String get v3_settings_display_group_cast {
+    return Intl.message(
+      'Cast',
+      name: 'v3_settings_display_group_cast',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
