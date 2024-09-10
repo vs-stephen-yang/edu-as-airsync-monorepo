@@ -1400,6 +1400,16 @@ class S {
       args: [],
     );
   }
+
+  /// `ON`
+  String get v3_broadcast_indicator {
+    return Intl.message(
+      'ON',
+      name: 'v3_broadcast_indicator',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/widgets/v3_broadcast_indicator.dart';
 import 'package:display_flutter/widgets/v3_text_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,6 +70,7 @@ class _V3StatusState extends State<V3Status> {
             },
           ),
         ),
+        const V3BroadcastIndicator(),
         Image(
           image: Svg('assets/images/$networkIconName'),
           height: 27,
