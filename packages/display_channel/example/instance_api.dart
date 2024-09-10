@@ -1,16 +1,17 @@
 import 'package:args/args.dart';
 import 'package:display_channel/src/util/api_util.dart';
 import 'package:display_channel/src/util/log.dart';
+import 'util.dart';
 
 void main(List<String> arguments) async {
   final parser = ArgParser()
     ..addOption(
-      'apiOrigin',
-      defaultsTo: 'https://api2.gateway.dev.airsync.net',
+      'stage',
+      defaultsTo: 'dev',
     )
     ..addOption(
       'instanceId',
-      defaultsTo: 'integration-test-001',
+      defaultsTo: 'test-d96b4693-19d4-4cdd-8882-b064174f483f',
     )
     ..addOption(
       'groupId',
@@ -19,12 +20,16 @@ void main(List<String> arguments) async {
 
   ArgResults argResults = parser.parse(arguments);
 
-  final apiOrigin = argResults['apiOrigin'];
-  String instanceId = argResults['instanceId'];
-  int groupId = int.parse(argResults['groupId']);
+  final stage = parseStage(argResults['stage']);
+  final instanceId = argResults['instanceId'];
+  final groupId = int.parse(argResults['groupId']);
 
-  log().info('instanceId: $instanceId');
-  log().info('groupId: $groupId');
+  final apiOrigin = getStageApiUrl(stage);
+
+  log().info('Stage: ${stage.name}');
+  log().info('API origin: $apiOrigin');
+  log().info('Instance Id: $instanceId');
+  log().info('Group Id: $groupId');
 
   final stopwatch = Stopwatch();
 

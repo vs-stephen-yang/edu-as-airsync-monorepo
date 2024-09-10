@@ -75,3 +75,38 @@ Future<String> fetchInstanceInfo(
 
   return data['tunnelUrl'];
 }
+
+class LogUploadUrlResult {
+  String url;
+  String key;
+
+  LogUploadUrlResult(this.url, this.key);
+}
+
+Future<LogUploadUrlResult> createLogUploadUrl(
+  String apiOrigin,
+  String instanceId,
+) async {
+  final request = buildApiRequest(
+    apiOrigin,
+    '/v1/instance/$instanceId/logs',
+    time: DateTime.now(),
+    signatureLocation: SignatureLocation.header,
+  );
+
+  final response = await http.post(
+    request.url,
+    headers: request.headers,
+  );
+
+  if (response.statusCode != HttpStatus.ok) {
+    throw Exception('${request.url} status ${response.statusCode}');
+  }
+
+  final data = jsonDecode(response.body);
+
+  return LogUploadUrlResult(
+    data['uploadURL'],
+    data['key'],
+  );
+}
