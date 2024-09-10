@@ -105,7 +105,7 @@ class V3SettingsMirroring extends StatelessWidget {
           width: 20,
           height: 20,
           child: Checkbox(
-              value: mirrorStateProvider.isMirrorConfirmation,
+              value: !mirrorStateProvider.isMirrorConfirmation,
               side: BorderSide(
                   color: context.tokens.color.vsdslColorOnPrimary, width: 2),
               activeColor: context.tokens.color.vsdslColorSecondary,
