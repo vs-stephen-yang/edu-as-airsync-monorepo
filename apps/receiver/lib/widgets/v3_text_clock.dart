@@ -41,6 +41,7 @@ class _V3TextClockState extends State<V3TextClock> {
             fontSize: 24,
             fontWeight: FontWeight.w700,
             color: context.tokens.color.vsdslColorOnSurface,
+            letterSpacing: -0.48,
           ),
         );
       },

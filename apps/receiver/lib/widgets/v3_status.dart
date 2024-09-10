@@ -56,7 +56,9 @@ class _V3StatusState extends State<V3Status> {
           color: context.tokens.color.vsdslColorOnSurface,
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.tokens.spacing.vsdslSpacingSm.left,
+          ),
           child: Consumer<InstanceInfoProvider>(
             builder: (_, provider, __) {
               return Text(
@@ -72,12 +74,14 @@ class _V3StatusState extends State<V3Status> {
         ),
         const V3BroadcastIndicator(),
         Image(
-          image: Svg('assets/images/$networkIconName'),
           height: 27,
           width: 27,
+          image: Svg('assets/images/$networkIconName'),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.tokens.spacing.vsdslSpacingLg.left,
+          ),
           child: Container(
             width: 1,
             height: 27,
