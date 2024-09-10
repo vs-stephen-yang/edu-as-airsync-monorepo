@@ -1,5 +1,6 @@
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,6 +21,7 @@ class DeviceFeatureAdapter {
   static bool enableWebRtcH264BaselineProfile = false;
   static bool enableWebRtcTracing = false;
   static bool verboseWebRtcLog = false;
+  static bool dumpSrtpPackets = false;
 
   static bool defaultShowDebugOverlay = false;
   static bool defaultUseSoftwareDecode = false;
@@ -27,6 +29,7 @@ class DeviceFeatureAdapter {
   static bool defaultUseQuickDecodeParams = true;
   static const defaultEnableWebRtcTracing = false;
   static const defaultVerboseWebRtcLog = false;
+  static bool defaultDumpSrtpPackets = false;
 
   static Map<String, int> quickDecodeParams = {
     "low-latency": 1, // RK3588
@@ -105,6 +108,7 @@ class DeviceFeatureAdapter {
         prefs.getBool("EnableWebRtcTracing") ?? defaultEnableWebRtcTracing;
     verboseWebRtcLog =
         prefs.getBool("VerboseWebRtcLog") ?? defaultVerboseWebRtcLog;
+    dumpSrtpPackets = prefs.getBool("DumpSrtpPackets") ?? defaultDumpSrtpPackets;
   }
 
   static save() async {
@@ -116,6 +120,7 @@ class DeviceFeatureAdapter {
     prefs.setBool("UseQuickDecodeParams", useQuickDecodeParams);
     prefs.setBool("EnableWebRtcTracing", enableWebRtcTracing);
     prefs.setBool("VerboseWebRtcLog", verboseWebRtcLog);
+    prefs.setBool("DumpSrtpPackets", dumpSrtpPackets);
   }
 
   static Map<String, int> getDecodeOptions(
@@ -157,6 +162,14 @@ class DeviceFeatureAdapter {
 
     if (useSoftwareDecode) {
       options['maxHardwareDecodeSession'] = 0;
+    }
+
+    if (dumpSrtpPackets) {
+      // enable rtp dump (for debugging)
+      options['fieldTrials'] = WebrtcFieldTrails.getRtpDump(true);
+      options['enableInjectableLogger'] = true; // must enable injectable logger
+      options['logSeverity'] = 'VERBOSE'; // must override log severity
+      print('since dumpSrtpPackets is enabled, logSeverity is set to VERBOSE, and webrtc native log is disabled');
     }
 
     log.info('Initialize webrtc. Options: ${options.toString()}');

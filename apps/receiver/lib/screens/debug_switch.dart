@@ -22,6 +22,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   bool _showDebugOverlay = false;
   bool _useSoftwareDecode = false;
   bool _useQuickDecodeParams = false;
+  bool _dumpSrtpPackets = false;
   bool _enableWebRtcTracing = false;
   bool _startWebRtcTracing = false;
   bool _verboseWebRtcLog = false;
@@ -58,6 +59,16 @@ class _DebugSwitchState extends State<DebugSwitch> {
 
     setState(() {
       _useQuickDecodeParams = value;
+      _notifyRestart();
+    });
+  }
+
+  void _enableDumpSrtpPackets(bool value) async {
+    DeviceFeatureAdapter.dumpSrtpPackets = value;
+    await DeviceFeatureAdapter.save();
+
+    setState(() {
+      _dumpSrtpPackets = value;
       _notifyRestart();
     });
   }
@@ -112,6 +123,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     _useQuickDecodeParams = DeviceFeatureAdapter.useQuickDecodeParams;
     _enableWebRtcTracing = DeviceFeatureAdapter.enableWebRtcTracing;
     _verboseWebRtcLog = DeviceFeatureAdapter.verboseWebRtcLog;
+    _dumpSrtpPackets = DeviceFeatureAdapter.dumpSrtpPackets;
   }
 
   @override
@@ -153,6 +165,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
                           title: const Text('Quick Decode'),
                           value: _useQuickDecodeParams,
                           onChanged: (value) => _enableQuickDecode(value),
+                        ),
+                        SwitchListTile(
+                          title: const Text('Dump SRTP Packets'),
+                          value: _dumpSrtpPackets,
+                          onChanged: (value) => _enableDumpSrtpPackets(value),
                         ),
                         SwitchListTile(
                           title: const Text('Enable WebRTC Tracing'),

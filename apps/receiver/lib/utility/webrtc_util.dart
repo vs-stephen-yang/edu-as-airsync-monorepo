@@ -1,7 +1,17 @@
+import 'dart:ui';
+
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
+
+class WebrtcFieldTrails {
+  static String RtpDump = 'WebRTC-Debugging-RtpDump';
+
+  static String getRtpDump(bool enabled) {
+    return RtpDump + (enabled ? '/Enabled/' : '/Disabled/');
+  }
+}
 
 Future<void> startWebRtcTracingCapture() async {
   final directory = await getApplicationDocumentsDirectory();
