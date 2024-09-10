@@ -63,7 +63,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                         ),
                       ),
                     ),
-                    if (showModerator)
+                    if (showModerator) ...[
                       Positioned(
                         top: 20,
                         right: 3,
@@ -84,7 +84,6 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           ),
                         ),
                       ),
-                    if (showModerator)
                       Positioned(
                         left: 0,
                         top: 9,
@@ -97,7 +96,9 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           ),
                           padding: EdgeInsets.zero,
                           child: AutoSizeText(
-                            '9',
+                            HybridConnectionList()
+                                .getConnectionCount()
+                                .toString(),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 10,
@@ -108,6 +109,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           ),
                         ),
                       ),
+                    ],
                     if (featureCount == 2)
                       Positioned(
                         top: 61,
