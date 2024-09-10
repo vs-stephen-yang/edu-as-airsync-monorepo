@@ -4,6 +4,7 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/util/log.dart';
 import 'package:display_channel/src/util/api_util.dart';
 import 'client.dart';
+import 'util.dart';
 
 main(List<String> arguments) async {
   final parser = ArgParser()
@@ -12,8 +13,8 @@ main(List<String> arguments) async {
       defaultsTo: '1111',
     )
     ..addOption(
-      'apiOrigin',
-      defaultsTo: 'https://api2.gateway.dev.airsync.net',
+      'stage',
+      defaultsTo: 'dev',
     )
     ..addOption(
       'code',
@@ -23,9 +24,12 @@ main(List<String> arguments) async {
   ArgResults argResults = parser.parse(arguments);
 
   final clientId = const Uuid().v4();
+  const directPort = 5100;
   final otp = argResults['otp'];
   final encodedDisplayCode = argResults['code'];
-  final apiOrigin = argResults['apiOrigin'];
+  final stage = parseStage(argResults['stage']);
+
+  final apiOrigin = getStageApiUrl(stage);
 
   final localIpAddresses = await fetchIPv4Addresses();
 
@@ -66,6 +70,8 @@ main(List<String> arguments) async {
     return tunnelUrl;
   }
 
+  log().info('Stage: ${stage.name}');
+  log().info('API origin: $apiOrigin');
   log().info('Display Code: $encodedDisplayCode');
   final displayCode = decodeDisplayCode(encodedDisplayCode);
 
@@ -91,5 +97,5 @@ main(List<String> arguments) async {
 
   log().info('Opening the channel');
 
-  client.open();
+  client.open(directPort: directPort);
 }

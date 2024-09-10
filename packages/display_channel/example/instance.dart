@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/util/log.dart';
-
+import 'util.dart';
 import 'package:display_channel/src/util/api_util.dart';
 
 class Client {
@@ -168,21 +168,26 @@ main(List<String> arguments) async {
     )
     ..addOption(
       'instanceId',
-      defaultsTo: '0001',
+      defaultsTo: 'test-f834455f-9569-4313-85d9-2b72a67e0b8b',
     )
     ..addOption(
-      'apiOrigin',
-      defaultsTo: 'https://api2.gateway.dev.airsync.net',
+      'stage',
+      defaultsTo: 'dev',
     );
 
   ArgResults argResults = parser.parse(arguments);
 
   final host = argResults['host'];
-  const localDirectPort = 5100;
-  final apiOrigin = argResults['apiOrigin'];
+  const localPort = 5100;
+  final stage = parseStage(argResults['stage']);
   final instanceId = argResults['instanceId'];
 
+  final apiOrigin = getStageApiUrl(stage);
+
+  log().info('Stage: ${stage.name}');
+  log().info('API origin: $apiOrigin');
   log().info('Host: $host');
+  log().info('Port: $localPort');
   log().info('Current directory: ${Directory.current.path}');
 
   final instanceGroupId = getInstanceGroupIdFromIp(host);
@@ -223,7 +228,7 @@ main(List<String> arguments) async {
     instanceId,
     instanceGroupId,
     Uri.parse(instanceInfo.tunnelApiUrl),
-    localDirectPort,
+    localPort,
     securityContext,
   );
 }

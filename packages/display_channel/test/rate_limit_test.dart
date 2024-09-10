@@ -148,7 +148,7 @@ void main() {
     skip: true,
     timeout: const Timeout(Duration(seconds: 10)),
     () async {
-      // arrange
+      // Arrange
       final uri = Uri(
         scheme: 'ws',
         host: "127.0.0.1",
@@ -156,20 +156,20 @@ void main() {
       );
       createClients(uri, 50);
 
-      // action
+      // Action
       await submitRequests(
         (client, index) => client.openDirectChannel(
           token: '0000',
           displayCode: 'AVA',
         ),
-        50, // 50 connection requests in 5 seconds
+        clients.length, // 50 connection requests in 5 seconds
         const Duration(seconds: 5),
       );
 
       // Wait until all clients are closed.
       await waitForClientsClosed();
 
-      // assert
+      // Assert
       final count = countByCloseCodes(
         clients,
         [ChannelCloseCode.authenticationError],
@@ -182,15 +182,15 @@ void main() {
   );
 
   test(
-    'The tunnel service should correctly enforce rate limiting',
+    'The tunnel service should correctly enforce rate limiting: 40 requests per minutes',
     skip: true,
-    timeout: const Timeout(Duration(seconds: 60)),
+    timeout: const Timeout(Duration(seconds: 130)),
     () async {
-      // arrange
+      // Arrange
       final uri = Uri.parse(tunnelServiceUrl);
-      createClients(uri, 50);
+      createClients(uri, 100);
 
-      // action
+      // Action
       await submitRequests(
         (client, index) => client.openTunnelChannel(
           instanceIndex,
@@ -198,22 +198,22 @@ void main() {
           '0000',
           displayCode: 'AVA',
         ),
-        50, // 50 connection requests in 5 seconds
-        const Duration(seconds: 5),
+        clients.length, // 100 connection requests in 2 minutes
+        const Duration(minutes: 2),
       );
 
       // Wait until all clients are closed.
       await waitForClientsClosed();
 
-      // assert
+      // Assert
       final count = countByCloseCodes(
         clients,
         [ChannelCloseCode.authenticationError],
       );
 
-      // Ensure about 25 requests are allowed
-      expect(count, lessThan(30));
-      expect(count, greaterThan(20));
+      // Ensure about 80 requests are allowed
+      expect(count, lessThan(85));
+      expect(count, greaterThan(75));
     },
   );
 }
