@@ -1,4 +1,5 @@
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
@@ -166,11 +167,12 @@ class _DebugSwitchState extends State<DebugSwitch> {
                           value: _useQuickDecodeParams,
                           onChanged: (value) => _enableQuickDecode(value),
                         ),
-                        SwitchListTile(
-                          title: const Text('Dump SRTP Packets'),
-                          value: _dumpSrtpPackets,
-                          onChanged: (value) => _enableDumpSrtpPackets(value),
-                        ),
+                        if (AppConfig.of(context)!.settings.isDevelopEnvironment)
+                          SwitchListTile(
+                            title: const Text('Dump SRTP Packets'),
+                            value: _dumpSrtpPackets,
+                            onChanged: (value) => _enableDumpSrtpPackets(value),
+                          ),
                         SwitchListTile(
                           title: const Text('Enable WebRTC Tracing'),
                           value: _enableWebRtcTracing,
