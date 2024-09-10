@@ -152,6 +152,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_message": MessageLookupByLibrary.simpleMessage(
             "A new version of software is available"),
         "update_title": MessageLookupByLibrary.simpleMessage("AirSync Update"),
+        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
         "v3_cast_to_device_title":
             MessageLookupByLibrary.simpleMessage("Device list"),
         "v3_cast_to_device_touch_back":
