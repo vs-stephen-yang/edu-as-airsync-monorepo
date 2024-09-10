@@ -181,6 +181,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enter display code"),
         "v3_instruction3":
             MessageLookupByLibrary.simpleMessage("Enter one-time password"),
+        "v3_instruction_receive_screen":
+            MessageLookupByLibrary.simpleMessage("Receive from screen"),
         "v3_instruction_share_screen":
             MessageLookupByLibrary.simpleMessage("Share your screen"),
         "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
