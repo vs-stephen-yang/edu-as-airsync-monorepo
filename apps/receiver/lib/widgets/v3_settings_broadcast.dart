@@ -70,7 +70,7 @@ class V3SettingsBroadcast extends StatelessWidget {
     return Row(
       children: [
         Text(
-          S.of(context).v3_shortcuts_cast_device,
+          S.of(context).v3_settings_broadcast_cast_boards,
           style: TextStyle(
             color: context.tokens.color.vsdslColorOnSurfaceInverse,
             fontSize: 12,
