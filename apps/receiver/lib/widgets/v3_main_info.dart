@@ -38,49 +38,53 @@ class V3MainInfo extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                const Positioned(
+                Positioned(
                   left: 53,
                   top: 53,
                   bottom: 118,
-                  child: V3Instruction(),
+                  child: V3Instruction(isCastToDevice: isCastToDevice),
                 ),
-                Positioned(
-                  left: 50,
-                  bottom: 44,
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 35),
-                        child: Image(
-                          image:
-                              const Svg('assets/images/ic_arrow_to_screen.svg'),
-                          width: 21,
-                          height: 21,
-                          color: context.tokens.color.vsdslColorSurface600,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: AutoSizeText.rich(
-                          _buildTextSpan(
-                              fullText: S.of(context).v3_instruction_support,
-                              formatTexts: ['AirPlay, Google Cast', 'Miracast'],
-                              formatStyle: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color:
-                                    context.tokens.color.vsdslColorSurface600,
-                              )),
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
+                if (!isCastToDevice)
+                  Positioned(
+                    left: 50,
+                    bottom: 44,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 35),
+                          child: Image(
+                            image: const Svg(
+                                'assets/images/ic_arrow_to_screen.svg'),
+                            width: 21,
+                            height: 21,
                             color: context.tokens.color.vsdslColorSurface600,
                           ),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5),
+                          child: AutoSizeText.rich(
+                            _buildTextSpan(
+                                fullText: S.of(context).v3_instruction_support,
+                                formatTexts: [
+                                  'AirPlay, Google Cast',
+                                  'Miracast'
+                                ],
+                                formatStyle: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      context.tokens.color.vsdslColorSurface600,
+                                )),
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: context.tokens.color.vsdslColorSurface600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
                 Positioned(
                   right: 8,
                   child: Container(

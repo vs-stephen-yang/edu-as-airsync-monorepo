@@ -1410,6 +1410,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Receive from screen`
+  String get v3_instruction_receive_screen {
+    return Intl.message(
+      'Receive from screen',
+      name: 'v3_instruction_receive_screen',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

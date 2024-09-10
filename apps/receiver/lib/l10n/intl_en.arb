@@ -134,5 +134,6 @@
   "v3_settings_display_group": "Display Group",
   "v3_settings_display_group_cast": "Cast",
   "v3_mirror_request_passcode": "Passcode",
-  "v3_broadcast_indicator": "ON"
+  "v3_broadcast_indicator": "ON",
+  "v3_instruction_receive_screen": "Receive from screen"
 }

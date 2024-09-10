@@ -12,9 +12,14 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
 class V3Instruction extends StatefulWidget {
-  const V3Instruction({super.key, this.isQuickConnect = false});
+  const V3Instruction({
+    super.key,
+    this.isQuickConnect = false,
+    this.isCastToDevice = false,
+  });
 
   final bool isQuickConnect;
+  final bool isCastToDevice;
 
   @override
   State<StatefulWidget> createState() => _V3InstructionState();
@@ -41,7 +46,9 @@ class _V3InstructionState extends State<V3Instruction> {
         children: [
           if (!widget.isQuickConnect)
             AutoSizeText(
-              S.of(context).v3_instruction_share_screen,
+              widget.isCastToDevice
+                  ? S.of(context).v3_instruction_receive_screen
+                  : S.of(context).v3_instruction_share_screen,
               style: TextStyle(
                 fontSize: 21,
                 fontWeight: FontWeight.w500,
@@ -102,7 +109,7 @@ class _V3InstructionState extends State<V3Instruction> {
                     }
                     return AutoSizeText.rich(
                       _buildTextSpan(
-                        fullText: isInternet
+                        fullText: isInternet && !widget.isCastToDevice
                             ? S.of(context).v3_instruction1a
                             : S.of(context).v3_instruction1b,
                         formatTexts: ['airsync.net'],
