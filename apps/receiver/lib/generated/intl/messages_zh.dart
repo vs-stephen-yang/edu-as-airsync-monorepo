@@ -48,7 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_content_one_time_password_get_fail":
             MessageLookupByLibrary.simpleMessage("無法取得一次性密碼\n30秒後將再次執行"),
         "main_feature_no_network_warning":
-            MessageLookupByLibrary.simpleMessage("控制網路異常，請重新連線"),
+            MessageLookupByLibrary.simpleMessage("控制連線異常，請重新連線"),
         "main_feature_reconnect_fail_toast":
             MessageLookupByLibrary.simpleMessage("網路(控制)重連失敗"),
         "main_feature_reconnect_success_toast":
@@ -113,7 +113,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_webrtc_reconnecting_toast":
             MessageLookupByLibrary.simpleMessage("網路(影像)重連中"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "[新功能]\n\n1. 自動接受螢幕鏡射請求\n\n2. 取消強制輸入AirPlay密碼\n\n3. 新增AirSync Sender應用程式更新功能\n\n[功能改善]\n\n1. 螢幕鏡射預設為開啟，並保留最後設定值\n\n2. 一次性密碼更新時間延長為二分鐘\n\n3. 改善影像畫質\n\n4. 問題修正"),
+            "[功能改善]\n\n1. 全數字投影辨識碼，以改善使用者體驗\n\n2. 改善連線穩定度\n\n3. 問題修正"),
         "main_whats_new_title": MessageLookupByLibrary.simpleMessage("最新消息"),
         "moderator_activate_split_screen":
             MessageLookupByLibrary.simpleMessage("確定啟用分割畫面功能嗎?最多可四人同時投影。"),
