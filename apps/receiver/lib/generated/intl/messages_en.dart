@@ -48,8 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_content_one_time_password_get_fail":
             MessageLookupByLibrary.simpleMessage(
                 "Failed to refresh password.\nPlease wait for 30 seconds before retrying."),
-        "main_feature_no_network_warning":
-            MessageLookupByLibrary.simpleMessage(""),
+        "main_feature_no_network_warning": MessageLookupByLibrary.simpleMessage(
+            "Control connection is disconnected. Please reconnect"),
         "main_feature_reconnect_fail_toast":
             MessageLookupByLibrary.simpleMessage(
                 "Network (Control) reconnect fail"),
@@ -126,7 +126,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_webrtc_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
             "Network (WebRTC) reconnecting"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "[New Feature]\n\n1. Auto - accept mirror request.\n\n2. Set AirPlay PIN code as optional.\n\n3. Provide AirSync Sender application upgrade mechanism.\n\n[Improvement]\n\n1. By default all mirror is ON and keep the latest mirror setting.\n\n2. Increase One Time Password interval to 2 minutes.\n\n3. Improve image quality.\n\n4. Bugs fixed."),
+            "[Improvement]\n\n1. All numeric display code for better experience.\n\n2. Improve connection stability.\n\n3. Bugs fixed.\n"),
         "main_whats_new_title":
             MessageLookupByLibrary.simpleMessage("What’s New on AirSync?"),
         "moderator_activate_split_screen": MessageLookupByLibrary.simpleMessage(
