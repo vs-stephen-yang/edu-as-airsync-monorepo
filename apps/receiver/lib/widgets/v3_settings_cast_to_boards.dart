@@ -46,169 +46,195 @@ class V3SettingsCastToBoardsState
             left: 13,
             top: 57,
             right: 13,
-            child: SizedBox(
-              height: 293,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 26,
-                    child: Row(
-                      children: [
-                        Text(
-                          S.of(context).v3_settings_broadcast_to_display_group,
-                          style: TextStyle(
-                            color:
-                                context.tokens.color.vsdslColorOnSurfaceInverse,
-                            fontSize: 12,
-                          ),
-                        ),
-                        const Spacer(),
-                        SizedBox(
-                          height: 21,
-                          child: IconButton(
-                            icon: Image(
-                              image: Svg(groupNotifier.broadcastToGroup
-                                  ? 'assets/images/ic_switch_on.svg'
-                                  : 'assets/images/ic_switch_off.svg'),
-                            ),
-                            padding: EdgeInsets.zero,
-                            // constraints: const BoxConstraints(),
-                            onPressed: () async {
-                              groupNotifier
-                                  .setBroadcastToGroup(!isBroadcastingToGroup);
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  if (isBroadcastingToGroup)
-                    _buildRadioGroupItem(
-                        S.of(context).v3_settings_display_group_only_casting,
-                        BroadcastGroupLaunchType.onlyWhenCasting,
-                        groupNotifier),
-                  if (isBroadcastingToGroup)
-                    _buildRadioGroupItem(
-                        S.of(context).v3_settings_display_group_all_the_time,
-                        BroadcastGroupLaunchType.allTheTime,
-                        groupNotifier),
-                  Container(
-                    height: 1,
-                    margin: EdgeInsets.only(
-                        bottom: context.tokens.spacing.vsdslSpacingMd.bottom),
-                    color: context.tokens.color.vsdslColorOutlineVariant,
-                  ),
-                  Container(
-                    height: 26,
-                    padding: const EdgeInsets.only(
-                      left: 8,
-                    ),
-                    child: Text(
-                      '${S.of(context).v3_settings_display_group} (${groupNotifier.selectedList.length}/10)',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                        fontSize: 12,
-                        // fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: groupNotifier.getListenListSize(),
-                      itemBuilder: (context, index) {
-                        return Container(
-                          height: 26,
-                          margin: EdgeInsets.only(
-                              right: 8,
-                              left: 8,
-                              bottom:
-                                  context.tokens.spacing.vsdslSpacingSm.bottom),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: Checkbox(
-                                    value: groupNotifier.selectedList.any(
-                                        (element) =>
-                                            element.id ==
-                                            groupNotifier
-                                                .getListenClient(index)
-                                                .id),
-                                    activeColor: context
-                                        .tokens.color.vsdslColorSecondary,
-                                    side: BorderSide(
-                                        color: context
-                                            .tokens.color.vsdslColorOnPrimary,
-                                        width: 2),
-                                    onChanged: (bool? value) {
-                                      if (value != null) {
-                                        if (value) {
-                                          groupNotifier.addToSelectedList(
-                                              groupNotifier
-                                                  .getListenClient(index));
-                                        } else {
-                                          groupNotifier.removeFromSelectedList(
-                                              groupNotifier
-                                                  .getListenClient(index));
-                                        }
-                                      }
-                                    }),
-                              ),
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      right: context.tokens.spacing
-                                          .vsdslSpacingSm.right)),
-                              Text(
-                                groupNotifier.getListenClient(index).name,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: context.tokens.color
-                                        .vsdslColorOnSurfaceInverse),
-                              ),
-                              const Spacer(),
-                              Text(
-                                groupNotifier
-                                    .getListenClient(index)
-                                    .displayCode,
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: context.tokens.color
-                                        .vsdslColorOnSurfaceInverse),
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            )),
+            child:
+                _buildContent(context, groupNotifier, isBroadcastingToGroup)),
         if (isBroadcastingToGroup)
           Positioned(
             right: 13,
             bottom: 13,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
-                  ? _saveButton(
-                      context, S.of(context).v3_settings_device_name_save,
-                      onClick: () {
-                      settingsProvider.setPage(SettingPageState.deviceSetting);
-                    })
-                  : _broadcastButton(
-                      context,
-                      S.of(context).v3_settings_display_group_cast,
-                      onClick: () {},
-                    ),
-            ),
+            child: _buildActionButton(context, broadcastType, settingsProvider),
           )
       ],
+    );
+  }
+
+  Align _buildActionButton(
+      BuildContext context,
+      BroadcastGroupLaunchType broadcastType,
+      SettingsProvider settingsProvider) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
+          ? _saveButton(context, S.of(context).v3_settings_device_name_save,
+              onClick: () {
+              settingsProvider.setPage(SettingPageState.deviceSetting);
+            })
+          : _broadcastButton(
+              context,
+              S.of(context).v3_settings_display_group_cast,
+              onClick: () {},
+            ),
+    );
+  }
+
+  SizedBox _buildContent(BuildContext context, GroupProvider groupNotifier,
+      bool isBroadcastingToGroup) {
+    return SizedBox(
+      height: 293,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildBroadcastGroupToggle(
+              context, groupNotifier, isBroadcastingToGroup),
+          if (isBroadcastingToGroup)
+            _buildRadioGroupItem(
+                S.of(context).v3_settings_display_group_only_casting,
+                BroadcastGroupLaunchType.onlyWhenCasting,
+                groupNotifier),
+          if (isBroadcastingToGroup)
+            _buildRadioGroupItem(
+                S.of(context).v3_settings_display_group_all_the_time,
+                BroadcastGroupLaunchType.allTheTime,
+                groupNotifier),
+          _buildDivider(context,
+              margin: EdgeInsets.only(
+                  top: isBroadcastingToGroup ? 0 : 8,
+                  bottom: context.tokens.spacing.vsdslSpacingMd.bottom)),
+          _buildListHeader(context, groupNotifier, isBroadcastingToGroup),
+          _buildListContent(groupNotifier, isBroadcastingToGroup),
+          _buildDivider(context),
+        ],
+      ),
+    );
+  }
+
+  Expanded _buildListContent(
+      GroupProvider groupNotifier, bool isBroadcastingToGroup) {
+    return Expanded(
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: groupNotifier.getListenListSize(),
+        itemBuilder: (context, index) {
+          return Opacity(
+            opacity: isBroadcastingToGroup ? 1.0 : 0.3,
+            child: Container(
+              height: 26,
+              margin: EdgeInsets.only(
+                  right: 8,
+                  left: 8,
+                  bottom: context.tokens.spacing.vsdslSpacingSm.bottom),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: Checkbox(
+                        value: groupNotifier.selectedList.any((element) =>
+                            element.id ==
+                            groupNotifier.getListenClient(index).id),
+                        activeColor: context.tokens.color.vsdslColorSecondary,
+                        side: BorderSide(
+                            color: context.tokens.color.vsdslColorOnPrimary,
+                            width: 2),
+                        onChanged: (bool? value) {
+                          if (value != null) {
+                            if (value) {
+                              groupNotifier.addToSelectedList(
+                                  groupNotifier.getListenClient(index));
+                            } else {
+                              groupNotifier.removeFromSelectedList(
+                                  groupNotifier.getListenClient(index));
+                            }
+                          }
+                        }),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(
+                          right: context.tokens.spacing.vsdslSpacingSm.right)),
+                  Text(
+                    groupNotifier.getListenClient(index).name,
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: context.tokens.color.vsdslColorOnSurfaceInverse),
+                  ),
+                  const Spacer(),
+                  Text(
+                    groupNotifier.getListenClient(index).displayCode,
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: context.tokens.color.vsdslColorOnSurfaceInverse),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Opacity _buildListHeader(BuildContext context, GroupProvider groupNotifier,
+      bool isBroadcastingToGroup) {
+    return Opacity(
+      opacity: isBroadcastingToGroup ? 1.0 : 0.3,
+      child: Container(
+        height: 26,
+        padding: const EdgeInsets.only(
+          left: 8,
+        ),
+        child: Text(
+          '${S.of(context).v3_settings_display_group} (${groupNotifier.selectedList.length}/10)',
+          textAlign: TextAlign.left,
+          style: TextStyle(
+            color: context.tokens.color.vsdslColorOnSurfaceInverse,
+            fontSize: 12,
+            // fontWeight: FontWeight.w400,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container _buildDivider(BuildContext context, {EdgeInsetsGeometry? margin}) {
+    return Container(
+      height: 1,
+      margin: margin,
+      color: context.tokens.color.vsdslColorOutlineVariant,
+    );
+  }
+
+  SizedBox _buildBroadcastGroupToggle(BuildContext context,
+      GroupProvider groupNotifier, bool isBroadcastingToGroup) {
+    return SizedBox(
+      height: 26,
+      child: Row(
+        children: [
+          Text(
+            S.of(context).v3_settings_broadcast_to_display_group,
+            style: TextStyle(
+              color: context.tokens.color.vsdslColorOnSurfaceInverse,
+              fontSize: 12,
+            ),
+          ),
+          const Spacer(),
+          SizedBox(
+            height: 21,
+            child: IconButton(
+              icon: Image(
+                image: Svg(groupNotifier.broadcastToGroup
+                    ? 'assets/images/ic_switch_on.svg'
+                    : 'assets/images/ic_switch_off.svg'),
+              ),
+              padding: EdgeInsets.zero,
+              // constraints: const BoxConstraints(),
+              onPressed: () async {
+                groupNotifier.setBroadcastToGroup(!isBroadcastingToGroup);
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -254,25 +280,26 @@ class V3SettingsCastToBoardsState
 
   Widget _saveButton(BuildContext context, String text,
       {required VoidCallback onClick}) {
-    return InkWell(
-      onTap: () {
-        onClick();
-      },
-      child: Container(
-        width: 80,
-        height: 26,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: context.tokens.color.vsdslColorSecondary,
-          borderRadius:
-              BorderRadius.circular(context.tokens.spacing.vsdslSpacing2xl.top),
+    return SizedBox(
+      width: 80,
+      height: 26,
+      child: ElevatedButton(
+        onPressed: () {
+          onClick();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: context.tokens.color.vsdslColorSecondary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                context.tokens.spacing.vsdslSpacing2xl.top),
+          ),
         ),
         child: Text(
           text,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.white,
-          ),
+          style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: context.tokens.color.vsdslColorOnSurfaceInverse),
           maxLines: 1,
         ),
       ),
@@ -281,21 +308,20 @@ class V3SettingsCastToBoardsState
 
   Widget _broadcastButton(BuildContext context, String text,
       {required VoidCallback onClick}) {
-    return InkWell(
-      onTap: () {
-        onClick();
-      },
-      child: Container(
-        width: 80,
-        height: 26,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: context.tokens.color.vsdslColorSecondary,
-          borderRadius:
-              BorderRadius.circular(context.tokens.spacing.vsdslSpacing2xl.top),
+    return SizedBox(
+      height: 26,
+      child: ElevatedButton(
+        onPressed: () {
+          onClick();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: context.tokens.color.vsdslColorSecondary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                context.tokens.spacing.vsdslSpacing2xl.top),
+          ),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Image(
                 width: 16,
