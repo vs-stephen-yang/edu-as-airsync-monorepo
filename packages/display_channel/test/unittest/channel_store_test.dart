@@ -9,6 +9,9 @@ class FakeConnection extends Connection {
 
   @override
   void send(Map<String, dynamic> message) {}
+
+  @override
+  Map<String, String>? get queryParameters => {};
 }
 
 void main() {
@@ -20,7 +23,7 @@ void main() {
     channels = <Channel>[];
 
     server = ChannelStore(
-      (channel) {
+      (channel, queryParameters) {
         channels.add(channel);
       },
       (connectRequest) => fakeConnectRequestStatus,

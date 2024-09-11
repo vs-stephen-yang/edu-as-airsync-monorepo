@@ -33,7 +33,7 @@ void main() {
             //logger: (url, message) => print('$url $message'),
             ),
       ),
-      (Channel channel) => {},
+      (Channel channel, queryParameters) => {},
       (ConnectionRequest connectRequest) {
         //print('Connect request ${connectRequest.clientId}');
         return ConnectRequestStatus.invalidOtp;
@@ -63,7 +63,7 @@ void main() {
       closedCompleters = [];
 
       directServer = DisplayDirectServer(
-        (Channel channel) {},
+        (Channel channel, queryParameters) {},
         (ConnectionRequest connectRequest) => ConnectRequestStatus.invalidOtp,
         maxBurstyRequests: 5,
         requestsPerSecond: 5,

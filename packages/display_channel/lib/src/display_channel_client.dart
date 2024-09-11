@@ -73,11 +73,12 @@ class DisplayChannelClient implements Channel {
   void openDirectChannel({
     String? token,
     String? displayCode,
+    Map<String, String>? queryParameters,
   }) {
     _openChannel(
       displayCode,
       token,
-      {},
+      queryParameters ?? {},
     );
   }
 

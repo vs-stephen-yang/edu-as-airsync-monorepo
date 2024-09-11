@@ -59,6 +59,7 @@ class DirectConnectionServer {
     final connection = DirectConnection(
       websocket,
       idleConnectionTimeout: idleConnectionTimeout,
+      uri: httpRequest.uri,
     );
 
     // authenticate the connectin request

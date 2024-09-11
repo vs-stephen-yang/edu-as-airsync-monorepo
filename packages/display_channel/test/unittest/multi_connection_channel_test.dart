@@ -18,6 +18,9 @@ class FakeConnection extends Connection {
 
   @override
   void close() {}
+
+  @override
+  Map<String, String>? get queryParameters => {};
 }
 
 void main() {

@@ -100,7 +100,7 @@ class MockServer {
   MockServer() {
     // create a direct server
     _directServer = DisplayDirectServer(
-      (Channel channel) => _onNewChannel(channel),
+      (Channel channel, queryParameters) => _onNewChannel(channel),
       _verifyConnectRequest,
     );
 
@@ -114,7 +114,7 @@ class MockServer {
           },
         ),
       ),
-      (Channel channel) => _onNewChannel(channel),
+      (Channel channel, queryParameters) => _onNewChannel(channel),
       _verifyConnectRequest,
     );
 
