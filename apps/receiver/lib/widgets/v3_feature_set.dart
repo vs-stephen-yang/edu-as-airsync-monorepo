@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
-import 'package:display_flutter/screens/v3_home.dart';
+import 'package:display_flutter/screens/v3_cast_devices_menu.dart';
 import 'package:display_flutter/screens/v3_participants_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -17,6 +17,7 @@ class V3FeatureSet extends StatefulWidget {
 
 class _V3FeatureSetState extends State<V3FeatureSet> {
   bool _isModeratorOnScreen = false;
+  bool _isCastDeviceOnScreen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +121,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           color: context.tokens.color.vsdslColorOutline,
                         ),
                       ),
-                    if (showCastDevice)
+                    if (showCastDevice) ...[
                       Positioned(
                         right: 3,
                         bottom: 20,
@@ -128,49 +129,46 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           width: 27,
                           height: 27,
                           child: IconButton(
-                            icon: ValueListenableBuilder(
-                              valueListenable: V3Home.isShowCastDevice,
-                              builder: (_, bool value, __) {
-                                return Image(
-                                  image: Svg(value
-                                      ? 'assets/images/ic_streaming_device_list_on.svg'
-                                      : 'assets/images/ic_streaming_device_list_off.svg'),
-                                );
-                              },
+                            icon: Image(
+                              image: Svg(_isCastDeviceOnScreen
+                                  ? 'assets/images/ic_streaming_device_list_on.svg'
+                                  : 'assets/images/ic_streaming_device_list_off.svg'),
                             ),
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                             onPressed: () {
-                              V3Home.isShowCastDevice.value =
-                                  !V3Home.isShowCastDevice.value;
+                              _showCastDeviceMenuDialog(context);
                             },
                           ),
                         ),
                       ),
-                    if (showCastDevice)
-                      Positioned(
-                        left: 0,
-                        top: featureCount == 2 ? 64 : 9,
-                        child: Container(
-                          width: 16,
-                          height: 16,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF5D80ED),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          padding: EdgeInsets.zero,
-                          child: AutoSizeText(
-                            '1',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: context
-                                  .tokens.color.vsdslColorOnSurfaceInverse,
+                      if (ChannelProvider.remoteScreenConnectors.isNotEmpty)
+                        Positioned(
+                          left: 0,
+                          top: featureCount == 2 ? 64 : 9,
+                          child: Container(
+                            width: 16,
+                            height: 16,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF5D80ED),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                            padding: EdgeInsets.zero,
+                            child: AutoSizeText(
+                              ChannelProvider.remoteScreenConnectors.length
+                                  .toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w500,
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                    ],
                   ],
                 ),
               ),
@@ -193,6 +191,24 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
     ).then((_) {
       setState(() {
         _isModeratorOnScreen = false;
+      });
+    });
+  }
+
+  _showCastDeviceMenuDialog(BuildContext context) async {
+    setState(() {
+      _isCastDeviceOnScreen = true;
+    });
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return const V3CastDevicesMenu();
+      },
+    ).then((_) {
+      setState(() {
+        _isCastDeviceOnScreen = false;
       });
     });
   }
