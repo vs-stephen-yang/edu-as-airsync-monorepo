@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -13,7 +12,6 @@ import 'package:display_flutter/widgets/v3_header_bar.dart';
 import 'package:display_flutter/widgets/v3_main_info.dart';
 import 'package:display_flutter/widgets/v3_mirror_prompt.dart';
 import 'package:display_flutter/widgets/v3_streaming_view.dart';
-import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -102,13 +100,6 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                             ),
                             const V3FooterBar(),
                             const V3HeaderBar(),
-                            if (AppInstanceCreate().isInstalledInVBS100 |
-                                AppInstanceCreate().isInstalledInVBS200)
-                              const Positioned(
-                                  left: 0,
-                                  right: 0,
-                                  bottom: 0,
-                                  child: VbsOTA()),
                           ],
                         )
                       : const SizedBox.shrink();

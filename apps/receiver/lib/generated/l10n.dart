@@ -1420,6 +1420,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Launch AirSync on startup`
+  String get v3_settings_device_launch_on_startup {
+    return Intl.message(
+      'Launch AirSync on startup',
+      name: 'v3_settings_device_launch_on_startup',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

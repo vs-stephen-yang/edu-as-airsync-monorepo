@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
@@ -8,6 +9,7 @@ import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +23,8 @@ class V3SettingsDevice extends StatefulWidget {
 class _V3SettingsDeviceState extends State<V3SettingsDevice> {
   final valueListenable =
       ValueNotifier<String>(AppPreferences().invitedToGroup);
+  static const _autoStartUp =
+      MethodChannel('com.mvbcast.crosswalk/auto_startup');
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +71,13 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             child: _buildTextDesc(
                 context, S.of(context).v3_settings_device_auto_fill_otp_desc),
           ),
+          if (AppInstanceCreate().isInstalledInVBS200) ...[
+            _buildDivider(context),
+            SizedBox(
+              height: 26,
+              child: _buildLaunchOnStartup(context),
+            ),
+          ]
         ],
       ),
     );
@@ -90,6 +101,54 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
           top: context.tokens.spacing.vsdslSpacingSm.top,
           bottom: context.tokens.spacing.vsdslSpacingSm.bottom),
       color: context.tokens.color.vsdslColorOutlineVariant,
+    );
+  }
+
+  Widget _buildLaunchOnStartup(BuildContext context) {
+    return FutureBuilder(
+      future: _getAutoStartUpSettings(),
+      builder: (context, snapshot) {
+        return Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: Checkbox(
+                value: (snapshot.hasData) ? snapshot.data as bool : null,
+                tristate: true,
+                activeColor: context.tokens.color.vsdslColorSecondary,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _setAutoStartUpSettings(value ?? false);
+                  });
+                },
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 4),
+            ),
+            InkWell(
+              onTap: () {
+                bool? startup =
+                    (snapshot.hasData) ? snapshot.data as bool : null;
+                if (startup != null) {
+                  setState(() {
+                    _setAutoStartUpSettings(!startup);
+                  });
+                }
+              },
+              child: AutoSizeText(
+                S.of(context).v3_settings_device_launch_on_startup,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                ),
+                maxLines: 1,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -333,6 +392,16 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
   _setVisibility(bool visible) async {
     await AppOverlayTab().setVisibility(visible);
     setState(() {});
+  }
+
+  Future<bool> _getAutoStartUpSettings() async {
+    return await _autoStartUp
+        .invokeMethod('getAutoStartupValue', <String, dynamic>{});
+  }
+
+  Future<void> _setAutoStartUpSettings(bool startup) async {
+    await _autoStartUp.invokeMethod(
+        'setAutoStartupValue', <String, dynamic>{'startup': startup});
   }
 }
 
