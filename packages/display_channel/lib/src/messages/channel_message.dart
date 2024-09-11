@@ -20,6 +20,8 @@ enum ChannelMessageType {
   remoteScreenInfo,
   joinDisplayRejected,
   remoteScreenSignal,
+  inviteDisplayGroup,
+  inviteDisplayGroupResult,
   unknown,
 }
 
@@ -59,6 +61,9 @@ final channelMessageActionNames = <int, String>{
   ChannelMessageType.remoteScreenStatus.index: 'remote-screen-status',
   ChannelMessageType.remoteScreenInfo.index: 'remote-screen-info',
   ChannelMessageType.remoteScreenSignal.index: 'remote-screen-signal',
+  ChannelMessageType.inviteDisplayGroup.index: 'invite-display-group',
+  ChannelMessageType.inviteDisplayGroupResult.index:
+      'invite-display-group-result',
 };
 
 final channelMessageParsers = {
@@ -86,6 +91,10 @@ final channelMessageParsers = {
       JoinDisplayRejectedMessage.fromJson,
   ChannelMessageType.remoteScreenSignal.index:
       RemoteScreenSignalMessage.fromJson,
+  ChannelMessageType.inviteDisplayGroup.index:
+      InviteDisplayGroupMessage.fromJson,
+  ChannelMessageType.inviteDisplayGroupResult.index:
+      InviteDisplayGroupResultMessage.fromJson,
 };
 
 ChannelMessageType actionNameToChannelMessageType(String actionName) {
@@ -885,6 +894,61 @@ class RemoteScreenSignalMessage extends ChannelMessage {
     return super._toJson({
       'sessionId': sessionId,
       'signal': signal,
+    });
+  }
+}
+
+class InviteDisplayGroupMessage extends ChannelMessage {
+  String? hostId;
+  String? hostName;
+  String? sessionId;
+  String? displayCode;
+
+  InviteDisplayGroupMessage({
+    this.sessionId,
+    this.displayCode,
+    this.hostName,
+  }) : super(ChannelMessageType.inviteDisplayGroup);
+
+  InviteDisplayGroupMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.inviteDisplayGroup, json) {
+    final data = super._fromJson(json);
+
+    hostId = data['hostId'] as String?;
+    hostName = data['hostName'] as String?;
+    displayCode = data['displayCode'] as String?;
+    sessionId = data['sessionId'] as String?;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'hostId': hostId,
+      'hostName': hostName,
+      'displayCode': displayCode,
+      'sessionId': sessionId,
+    });
+  }
+}
+
+class InviteDisplayGroupResultMessage extends ChannelMessage {
+  String? status;
+
+  InviteDisplayGroupResultMessage({
+    this.status,
+  }) : super(ChannelMessageType.inviteDisplayGroupResult);
+
+  InviteDisplayGroupResultMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.inviteDisplayGroupResult, json) {
+    final data = super._fromJson(json);
+
+    status = data['status'] as String?;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'status': status,
     });
   }
 }
