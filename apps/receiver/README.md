@@ -2,6 +2,9 @@
 
 AirSync for Flutter [Android(java), iOS(swift), MacOS, Web, Windows)]
 
+## __[Flutter SDK Version Requirements]__
+This project requires **Flutter SDK** version 3.24.2.
+
 ## __[Configurations description]__
 
 Android will using "productFlavors" to separate different deploy channel: EDLA, IFP, OPEN, STORE.
