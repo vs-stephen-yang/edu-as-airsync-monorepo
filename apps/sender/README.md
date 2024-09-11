@@ -2,6 +2,9 @@
 
 AirSync Sender for Flutter [Android(java), iOS(swift), MacOS, Web, Windows)]
 
+## Flutter SDK Version Requirements
+This project requires **Flutter SDK** version 3.24.2.
+
 ## Configurations description
 Android will using "productFlavors" to separate different deploy channel: IFP, OPEN, STORE.
 
