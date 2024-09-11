@@ -5,6 +5,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/screens/overlay_tab.dart';
 import 'package:display_flutter/screens/v3_overlay_tab.dart';
+import 'package:display_flutter/settings/theme_config.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/material.dart';
@@ -50,13 +51,8 @@ class OverlayTabApp extends StatelessWidget {
             locale: prefLanguageProvider.locale,
             title: 'AirSync Overlay Tab',
             debugShowCheckedModeBanner: false,
-            theme: DeviceFeatureAdapter.showUIRevamp
-                ? ThemeData(
-                    textTheme:
-                        Theme.of(context).textTheme.apply(fontFamily: 'Inter'),
-                  )
-                : null,
-            home: DeviceFeatureAdapter.showUIRevamp
+            theme: createThemeData(context),
+            home: !DeviceFeatureAdapter.showOldUI
                 ? const V3OverlayTab()
                 : const OverlayTab(),
           );
