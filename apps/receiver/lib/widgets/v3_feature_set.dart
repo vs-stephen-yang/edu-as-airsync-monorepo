@@ -3,7 +3,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/v3_home.dart';
-import 'package:display_flutter/widgets/v3_participants_menu.dart';
+import 'package:display_flutter/screens/v3_participants_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
