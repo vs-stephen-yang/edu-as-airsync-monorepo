@@ -1,16 +1,16 @@
 trigger: none
 
 schedules:
-  - cron: '0 0 * * *'
+  - cron: "0 0 * * *"
     displayName: Daily midnight build
     branches:
       include:
-      - main
-      - HotFix/*
+        - main
+        - HotFix/*
 
 variables:
   - name: Flutter.Version
-    value: "3.22.3"
+    value: "3.24.2"
   - name: Flutter.Bin
     value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
   - name: GRADLE_USER_HOME
@@ -29,23 +29,23 @@ jobs:
         #   buildCommand: 'macos'
         #   extraBuildOptions: ''
         windows:
-          imageName: 'windows-2022'
-          platform: 'windows'
-          sdkPlatform: 'windows'
-          buildCommand: 'windows'
-          extraBuildOptions: ''
+          imageName: "windows-2022"
+          platform: "windows"
+          sdkPlatform: "windows"
+          buildCommand: "windows"
+          extraBuildOptions: ""
         web:
-          imageName: 'windows-2022'
-          platform: 'web'
-          sdkPlatform: 'windows'
-          buildCommand: 'web'
-          extraBuildOptions: ''
+          imageName: "windows-2022"
+          platform: "web"
+          sdkPlatform: "windows"
+          buildCommand: "web"
+          extraBuildOptions: ""
         android:
-          imageName: 'macOS-latest'
-          platform: 'android'
-          sdkPlatform: 'macos'
-          buildCommand: 'apk'
-          extraBuildOptions: ''
+          imageName: "macOS-latest"
+          platform: "android"
+          sdkPlatform: "macos"
+          buildCommand: "apk"
+          extraBuildOptions: ""
         #ios:
         #  imageName: 'macOS-latest'
         #  sdkPlatform: 'macos'
@@ -62,16 +62,16 @@ jobs:
       - task: PowerShell@2
         displayName: Authenticates git repos
         inputs:
-          targetType: 'inline'
+          targetType: "inline"
           script: |
             $header = "AUTHORIZATION: bearer $(System.AccessToken)"
             git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
 
       - task: JavaToolInstaller@0
         inputs:
-          versionSpec: '17'
-          jdkArchitectureOption: 'x64'
-          jdkSourceOption: 'PreInstalled'
+          versionSpec: "17"
+          jdkArchitectureOption: "x64"
+          jdkSourceOption: "PreInstalled"
 
       - task: Cache@2
         displayName: Configure Gradle caching
