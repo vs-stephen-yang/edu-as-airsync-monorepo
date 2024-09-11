@@ -809,7 +809,7 @@ class ChannelProvider extends ChangeNotifier {
       displayCode: '18155228',
     );
 
-    _displayGroupHost!.addMember(member1);
+    _displayGroupHost!.addMember('1234', member1);
   }
 
   Future<RemoteScreenConnector> _createRemoteScreenConnector(
