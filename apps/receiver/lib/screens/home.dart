@@ -28,6 +28,7 @@ import 'package:display_flutter/widgets/vbs_ota.dart';
 import 'package:display_flutter/widgets/webrtc_view_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
@@ -80,6 +81,19 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       channelProvider.updateAllAudioEnableState(true);
       mirrorStateProvider.updateAllAudioEnableState(true);
     }
+  }
+
+  Widget _buildDisplayGroupVideoView(ChannelProvider channelProvider) {
+    final videoView = channelProvider.displayGroupVideoView;
+
+    if (!channelProvider.isDisplayGroupVideoAvailable || videoView == null) {
+      return const SizedBox.shrink();
+    }
+
+    return RTCVideoView(
+      videoView.renderer,
+      key: videoView.widgetKey,
+    );
   }
 
   @override
@@ -218,6 +232,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 bottom: 0,
                 child: StreamFunction(),
               ),
+              Consumer<ChannelProvider>(builder: (context, provider, child) {
+                return _buildDisplayGroupVideoView(provider);
+              }),
               Consumer<MirrorStateProvider>(
                   builder: (_, mirrorStateProvider, __) {
                 if (mirrorStateProvider.pinCode.isNotEmpty &&
