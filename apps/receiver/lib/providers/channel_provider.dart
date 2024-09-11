@@ -9,12 +9,16 @@ import 'package:display_flutter/api/ice_api.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/connect_timer.dart';
+import 'package:display_flutter/model/display_group_video_view.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
+import 'package:display_flutter/services/display_group_member_info.dart';
+import 'package:display_flutter/services/display_group_host.dart';
+import 'package:display_flutter/services/display_group_session.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/settings/channel_config.dart';
@@ -110,6 +114,16 @@ class ChannelProvider extends ChangeNotifier {
   ValueNotifier<List<String>> showNewSharingNameList =
       ValueNotifier<List<String>>([]);
 
+  DisplayGroupHost? _displayGroupHost;
+
+  DisplayGroupSession? _displayGroupSession;
+
+  bool get isDisplayGroupVideoAvailable =>
+      _displayGroupSession?.isVideoAvailable ?? false;
+
+  DisplayGroupVideoView? get displayGroupVideoView =>
+      _displayGroupSession?.videoView;
+
   ChannelProvider(
     this.appConfig,
     this._instanceInfo,
@@ -198,7 +212,7 @@ class ChannelProvider extends ChangeNotifier {
           },
         ),
       ),
-      (Channel channel) => _onNewChannel(channel, ChannelMode.tunnel),
+      (Channel channel, _) => _onNewChannel(channel, ChannelMode.tunnel),
       (ConnectionRequest connectionRequest) =>
           _verifyConnectRequest(connectionRequest, isDirectConnect: false),
     );
@@ -217,9 +231,42 @@ class ChannelProvider extends ChangeNotifier {
     // create a direct server
     _directServer = DisplayDirectServer(
       reconnectTimeout: channelReconnectTimeoutInStreaming,
-      (Channel channel) => _onNewChannel(channel, ChannelMode.direct),
+      _onNewDirectChanel,
       (ConnectionRequest connectionRequest) =>
           _verifyConnectRequest(connectionRequest, isDirectConnect: true),
+    );
+  }
+
+  // Is the channel from the host?
+  bool _isChannelFromHost(Map<String, String>? queryParameters) {
+    return queryParameters?['role'] == 'host';
+  }
+
+  void _onNewDirectChanel(
+    Channel channel,
+    Map<String, String>? queryParameters,
+  ) {
+    if (_isChannelFromHost(queryParameters)) {
+      _onNewChannelFromHost(channel);
+    } else {
+      _onNewChannel(channel, ChannelMode.direct);
+    }
+  }
+
+  void _onNewChannelFromHost(Channel channel) {
+    if (_displayGroupSession != null) {
+      // TODO: handle the existing display group session
+    }
+
+    _displayGroupSession = DisplayGroupSession(
+      channel,
+      onInvitation: (String hostNamem, String displayCode) {
+        // TODO:
+        _displayGroupSession?.accept();
+      },
+      onStateChange: () {
+        notifyListeners();
+      },
     );
   }
 
@@ -744,5 +791,50 @@ class ChannelProvider extends ChangeNotifier {
         RtcIceServer(['stun:$host'])
       ];
     }
+  }
+
+  void stopDisplayGroup() {
+    // TODO:
+  }
+
+  void startDisplayGroup() {
+    _displayGroupHost = DisplayGroupHost(
+      _createRemoteScreenConnector,
+    );
+
+    // TODO: remove
+    final member1 = DisplayGroupMemberInfo(
+      host: '172.21.6.220',
+      port: 5100,
+      displayCode: '18155228',
+    );
+
+    _displayGroupHost!.addMember(member1);
+  }
+
+  Future<RemoteScreenConnector> _createRemoteScreenConnector(
+    Channel channel,
+    StartRemoteScreenMessage message,
+  ) async {
+    final joinMessage = JoinDisplayMessage('123');
+
+    final connector = RemoteScreenConnector(
+      channel,
+      _remoteScreenServe.roomId,
+      host,
+      _remoteScreenServe.roomPort,
+      joinMessage,
+    );
+
+    final iceServers = await _getIceServers(ChannelMode.direct);
+
+    _remoteScreenServe.addConnector(connector);
+
+    await connector.onStartRemoteScreen(
+      message,
+      iceServers,
+    );
+
+    return connector;
   }
 }
