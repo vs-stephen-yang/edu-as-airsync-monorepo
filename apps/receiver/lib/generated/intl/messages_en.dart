@@ -237,6 +237,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_device_auto_fill_otp_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Enable one-touch connection when selecting a device from the device list."),
+        "v3_settings_device_launch_on_startup":
+            MessageLookupByLibrary.simpleMessage("Launch AirSync on startup"),
         "v3_settings_device_name":
             MessageLookupByLibrary.simpleMessage("Device Name"),
         "v3_settings_device_name_save":
