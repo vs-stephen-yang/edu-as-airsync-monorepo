@@ -22,7 +22,6 @@ class V3Home extends StatefulWidget {
   static ValueNotifier<bool> isShowHeaderFooterBar = ValueNotifier(true);
   static ValueNotifier<bool> isShowDisplayCode = ValueNotifier(true);
   static ValueNotifier<bool> isShowSettingsMenu = ValueNotifier(false);
-  static ValueNotifier<bool> isShowCastDevice = ValueNotifier(false);
 
   @override
   State<StatefulWidget> createState() => _V3HomeState();
@@ -109,17 +108,6 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                 valueListenable: V3Home.isShowDisplayCode,
                 builder: (_, bool value, __) {
                   return value ? const V3MainInfo() : const SizedBox();
-                },
-              ),
-              ValueListenableBuilder(
-                valueListenable: V3Home.isShowCastDevice,
-                builder: (_, bool value, __) {
-                  return value
-                      ? const Align(
-                          alignment: Alignment(0.2, -0.2),
-                          child: V3MainInfo(isCastToDevice: true),
-                        )
-                      : const SizedBox.shrink();
                 },
               ),
               const V3FeatureSet(),
