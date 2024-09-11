@@ -14,7 +14,7 @@ class DeviceFeatureAdapter {
   factory DeviceFeatureAdapter() => _instance;
 
   static String _deviceType = '';
-  static bool showUIRevamp = false;
+  static bool showOldUI = false;
   static bool showDebugOverlay = false;
   static bool useSoftwareDecode = false;
   static bool useQuickDecodeParams = false;
@@ -22,7 +22,7 @@ class DeviceFeatureAdapter {
   static bool enableWebRtcTracing = false;
   static bool verboseWebRtcLog = false;
 
-  static bool defaultUIRevamp = false;
+  static bool defaultShowOldUI = false;
   static bool defaultShowDebugOverlay = false;
   static bool defaultUseSoftwareDecode = false;
   static bool defaultEnableWebRtcH264BaselineProfile = false;
@@ -83,7 +83,7 @@ class DeviceFeatureAdapter {
     final Map<String, dynamic>? params = overrideDefaultParams[_deviceType];
 
     if (params != null) {
-      defaultUIRevamp = params["showUIRevamp"] ?? defaultUIRevamp;
+      defaultShowOldUI = params["showOldUI"] ?? defaultShowOldUI;
       defaultShowDebugOverlay =
           params["showDebugOverlay"] ?? defaultShowDebugOverlay;
       defaultUseSoftwareDecode =
@@ -95,7 +95,7 @@ class DeviceFeatureAdapter {
 
   static load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    showUIRevamp = prefs.getBool("ShowUIRevamp") ?? defaultUIRevamp;
+    showOldUI = prefs.getBool("showOldUI") ?? defaultShowOldUI;
     showDebugOverlay =
         prefs.getBool("ShowDebugOverlay") ?? defaultShowDebugOverlay;
     useSoftwareDecode =
@@ -113,7 +113,7 @@ class DeviceFeatureAdapter {
 
   static save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("ShowUIRevamp", showUIRevamp);
+    prefs.setBool("showOldUI", showOldUI);
     prefs.setBool("ShowDebugOverlay", showDebugOverlay);
     prefs.setBool("UseSoftwareDecode", useSoftwareDecode);
     prefs.setBool(

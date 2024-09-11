@@ -19,7 +19,7 @@ class DebugSwitch extends StatefulWidget {
 }
 
 class _DebugSwitchState extends State<DebugSwitch> {
-  bool _showUIRevamp = false;
+  bool _showOldUI = false;
   bool _showDebugOverlay = false;
   bool _useSoftwareDecode = false;
   bool _useQuickDecodeParams = false;
@@ -33,12 +33,12 @@ class _DebugSwitchState extends State<DebugSwitch> {
         content: Text("Restart the program to apply the changes.")));
   }
 
-  void _showUIRevampChanged(bool value) async {
-    DeviceFeatureAdapter.showUIRevamp = value;
+  void _showOldUIChanged(bool value) async {
+    DeviceFeatureAdapter.showOldUI = value;
     await DeviceFeatureAdapter.save();
 
     setState(() {
-      _showUIRevamp = value;
+      _showOldUI = value;
       _notifyRestart();
     });
   }
@@ -116,7 +116,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   }
 
   void _initialize() {
-    _showUIRevamp = DeviceFeatureAdapter.showUIRevamp;
+    _showOldUI = DeviceFeatureAdapter.showOldUI;
     _showDebugOverlay = DeviceFeatureAdapter.showDebugOverlay;
     _useSoftwareDecode = DeviceFeatureAdapter.useSoftwareDecode;
     _enableWebRtcH264BaselineProfile =
@@ -146,9 +146,9 @@ class _DebugSwitchState extends State<DebugSwitch> {
                     return Column(
                       children: [
                         SwitchListTile(
-                            title: const Text('Show UI Revamp'),
-                            value: _showUIRevamp,
-                            onChanged: _showUIRevampChanged),
+                            title: const Text('Show Old UI'),
+                            value: _showOldUI,
+                            onChanged: _showOldUIChanged),
                         SwitchListTile(
                           title: const Text('Show Debug Overlay'),
                           value: _showDebugOverlay,

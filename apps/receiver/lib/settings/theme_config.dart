@@ -1,6 +1,7 @@
+import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:flutter/material.dart';
 
-ThemeData createThemeData(BuildContext context, bool isUIRevamp) {
+ThemeData createThemeData(BuildContext context) {
   double textHeight = 1.3;
   Color textColor = Colors.white;
   return ThemeData(
@@ -59,7 +60,7 @@ ThemeData createThemeData(BuildContext context, bool isUIRevamp) {
           ),
         )
         .apply(
-          fontFamily: isUIRevamp ? 'Inter' : null,
+          fontFamily: !DeviceFeatureAdapter.showOldUI ? 'Inter' : null,
           bodyColor: textColor,
           displayColor: textColor,
         ),

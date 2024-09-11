@@ -116,7 +116,7 @@ class _EulaState extends State<Eula> {
                 onClick: () {
                   AppPreferences().set(showEULA: false);
                   navService.pushNamedAndRemoveUntil(
-                      DeviceFeatureAdapter.showUIRevamp ? '/v3Home' : '/home');
+                      !DeviceFeatureAdapter.showOldUI ? '/v3Home' : '/home');
                 },
                 child: AutoSizeText(
                   S.of(context).eula_agree,

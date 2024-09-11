@@ -177,11 +177,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             locale: prefLanguageProvider.locale,
             title: 'AirSync',
             debugShowCheckedModeBanner: false,
-            theme: createThemeData(context, DeviceFeatureAdapter.showUIRevamp),
+            theme: createThemeData(context),
             initialRoute: AppPreferences().showEULA &&
                     !AppInstanceCreate().isInstalledInVBS100
                 ? '/eula'
-                : DeviceFeatureAdapter.showUIRevamp
+                : !DeviceFeatureAdapter.showOldUI
                     ? '/v3Home'
                     : '/home',
             navigatorKey: NavigationService.navigationKey,
