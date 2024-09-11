@@ -50,7 +50,7 @@ void main() {
         connection.url = Uri.parse(url);
         return connection;
       },
-      (Channel c) {
+      (Channel c, queryParameters) {
         channel = c;
       },
       (ConnectionRequest connectionRequest) => ConnectRequestStatus.success,

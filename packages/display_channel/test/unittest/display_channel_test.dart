@@ -77,7 +77,7 @@ void main() {
 
     // create a channel server
     directServer = DisplayDirectServer(
-      (Channel channel) => handleNewChannel(channel),
+      (Channel channel, queryParameters) => handleNewChannel(channel),
       verifyConnectRequest,
     );
 
@@ -86,7 +86,7 @@ void main() {
         url,
         WebSocketClientConnectionConfig(),
       ),
-      (Channel channel) => handleNewChannel(channel),
+      (Channel channel, queryParameters) => handleNewChannel(channel),
       verifyConnectRequest,
     );
 

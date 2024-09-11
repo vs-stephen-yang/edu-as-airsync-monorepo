@@ -13,7 +13,11 @@ enum ConnectRequestStatus {
   authenticationRequired,
 }
 
-typedef OnNewChannel = void Function(Channel channel);
+typedef OnNewChannel = void Function(
+  Channel channel,
+  Map<String, String>? queryParameters,
+);
+
 typedef VerifyConnectRequest = ConnectRequestStatus Function(
     ConnectionRequest connectRequest);
 
@@ -64,7 +68,7 @@ class ChannelStore {
     channel.addConnection(connection);
 
     if (isNewChannelCreated) {
-      _onNewChannel(channel);
+      _onNewChannel(channel, connection.queryParameters);
     }
   }
 

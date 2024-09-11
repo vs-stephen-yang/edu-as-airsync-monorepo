@@ -277,4 +277,7 @@ class TunnelClientConnection implements Connection {
 
     onMessage?.call(this, message);
   }
+
+  @override
+  Map<String, String>? get queryParameters => {};
 }

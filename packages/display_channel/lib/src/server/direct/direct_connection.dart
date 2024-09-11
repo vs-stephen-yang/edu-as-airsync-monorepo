@@ -12,12 +12,15 @@ class DirectConnection implements Connection {
 
   late WebSocket _socket;
   late IdleConnectionTimer _idleTimer;
+  late Uri _uri;
 
   DirectConnection(
     WebSocket socket, {
     required Duration idleConnectionTimeout,
+    required Uri uri,
   }) {
     _socket = socket;
+    _uri = uri;
 
     _idleTimer = IdleConnectionTimer(
       _onIdleTimeout,
@@ -58,5 +61,10 @@ class DirectConnection implements Connection {
   _onIdleTimeout() {
     _idleTimer.stop();
     onClosed?.call(this);
+  }
+
+  @override
+  Map<String, String>? get queryParameters {
+    return _uri.queryParameters;
   }
 }
