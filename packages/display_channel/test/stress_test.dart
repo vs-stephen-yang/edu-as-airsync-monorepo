@@ -165,7 +165,7 @@ main(List<String> arguments) async {
         },
       ),
     ),
-    (Channel channel) => runner._onNewChannel(channel),
+    (Channel channel, _) => runner._onNewChannel(channel),
     (connectionRequest) => ConnectRequestStatus.success,
   );
 
