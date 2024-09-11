@@ -10,7 +10,7 @@ pool:
   vmImage: 'macos-latest'
 
 variables:
-  flutterVersion: '3.22.2'
+  flutterVersion: '3.24.2'
   group: "sender-apple-p12"
 
 stages:
@@ -32,30 +32,30 @@ stages:
         steps:
           - checkout: self
             persistCredentials: true
-          
+
           - script: |
               xcodebuild -version
               sw_vers
             displayName: 'Check Xcode Version'
-          
+
           - script: |
               curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
               source $HOME/.cargo/env
               rustup target add aarch64-apple-darwin
             displayName: 'Install Rust for arm64'
-          
+
             # chmod 0600 讓cocoapods可以下載
           - script: |
               echo "machine viewsonic-ssi.visualstudio.com login $(GIT_CREDENTIALS)" > ~/.netrc
               chmod 0600 ~/.netrc
             displayName: 'Get and configure credentials'
-          
+
           - task: JavaToolInstaller@0
             inputs:
               versionSpec: '17'
               jdkArchitectureOption: 'x64'
               jdkSourceOption: 'PreInstalled'
-          
+
           - task: InstallAppleCertificate@2
             inputs:
               certSecureFile: 'airsync_sender_ios.p12'
@@ -66,12 +66,12 @@ stages:
             inputs:
               provisioningProfileLocation: 'secureFiles'
               provProfileSecureFile: 'AirSync_Sender_iOS.mobileprovision'
-          
+
           - task: InstallAppleProvisioningProfile@1
             inputs:
               provisioningProfileLocation: 'secureFiles'
               provProfileSecureFile: 'AirSync_Sender_Broadcast_Extension_iOS.mobileprovision'
-      
+
           - task: FlutterInstall@0
             inputs:
               mode: 'auto'
@@ -90,7 +90,7 @@ stages:
             inputs:
               projectDirectory: '.'
               extraArgs: '--[no-]fatal-infos'
-          
+
           - task: FlutterBuild@0
             displayName: 'build ${flavor} version'
             inputs:
@@ -99,25 +99,25 @@ stages:
               projectDirectory: '$(Build.SourcesDirectory)'
               exportOptionsPlist: 'ios/$(exportOptionsPlist)'
               entryPoint: '${entryPoint}'
-              
+
           - task: CopyFiles@2
             inputs:
               SourceFolder: '$(Agent.BuildDirectory)'
               Contents: '**/ipa/*.ipa'
               TargetFolder: '$(Build.StagingDirectory)'
               flattenFolders: true
-          
+
           - task: PublishBuildArtifacts@1
             inputs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               ArtifactName: '${flavor}'
               publishLocation: 'Container'
               Parallel: true
-          
 
 
 
 
 
 
-  
+
+
