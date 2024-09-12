@@ -1430,6 +1430,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Broadcast Request from %s`
+  String get v3_group_dialog_title {
+    return Intl.message(
+      'Broadcast Request from %s',
+      name: 'v3_group_dialog_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `%s has sent a broadcast request to your device. This action will synchronize and display the current content, do you want to accept this request?`
+  String get v3_group_dialog_message {
+    return Intl.message(
+      '%s has sent a broadcast request to your device. This action will synchronize and display the current content, do you want to accept this request?',
+      name: 'v3_group_dialog_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accept`
+  String get v3_group_dialog_accept {
+    return Intl.message(
+      'Accept',
+      name: 'v3_group_dialog_accept',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Decline`
+  String get v3_group_dialog_decline {
+    return Intl.message(
+      'Decline',
+      name: 'v3_group_dialog_decline',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

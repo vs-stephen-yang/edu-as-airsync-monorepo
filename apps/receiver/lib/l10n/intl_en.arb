@@ -136,5 +136,9 @@
   "v3_mirror_request_passcode": "Passcode",
   "v3_broadcast_indicator": "ON",
   "v3_instruction_receive_screen": "Receive from screen",
-  "v3_settings_device_launch_on_startup": "Launch AirSync on startup"
+  "v3_settings_device_launch_on_startup": "Launch AirSync on startup",
+  "v3_group_dialog_title": "Broadcast Request from %s",
+  "v3_group_dialog_message": "%s has sent a broadcast request to your device. This action will synchronize and display the current content, do you want to accept this request?",
+  "v3_group_dialog_accept": "Accept",
+  "v3_group_dialog_decline": "Decline"
 }

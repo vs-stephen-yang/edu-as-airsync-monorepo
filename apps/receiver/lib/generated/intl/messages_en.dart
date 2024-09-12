@@ -173,6 +173,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Exit"),
         "v3_exit_moderator_mode_title":
             MessageLookupByLibrary.simpleMessage("Exit Moderator Mode"),
+        "v3_group_dialog_accept":
+            MessageLookupByLibrary.simpleMessage("Accept"),
+        "v3_group_dialog_decline":
+            MessageLookupByLibrary.simpleMessage("Decline"),
+        "v3_group_dialog_message": MessageLookupByLibrary.simpleMessage(
+            "%s has sent a broadcast request to your device. This action will synchronize and display the current content, do you want to accept this request?"),
+        "v3_group_dialog_title":
+            MessageLookupByLibrary.simpleMessage("Broadcast Request from %s"),
         "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
             "Visit airsync.net or open the sender app"),
         "v3_instruction1b":

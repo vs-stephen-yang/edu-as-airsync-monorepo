@@ -10,6 +10,7 @@ import 'package:display_flutter/widgets/v3_feature_set.dart';
 import 'package:display_flutter/widgets/v3_footer_bar.dart';
 import 'package:display_flutter/widgets/v3_header_bar.dart';
 import 'package:display_flutter/widgets/v3_main_info.dart';
+import 'package:display_flutter/widgets/v3_message_dialog.dart';
 import 'package:display_flutter/widgets/v3_mirror_prompt.dart';
 import 'package:display_flutter/widgets/v3_streaming_view.dart';
 import 'package:flutter/material.dart';
@@ -117,6 +118,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                     return value ? const V3SettingMenu() : const SizedBox();
                   }),
               const V3MirrorPrompt(),
+              const V3MessageDialog(),
             ],
           ),
         ),
