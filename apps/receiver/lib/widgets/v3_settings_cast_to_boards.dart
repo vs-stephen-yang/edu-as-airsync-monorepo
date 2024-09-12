@@ -1,7 +1,9 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/group_list_provider.dart';
 import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:display_flutter/widgets/v3_settings_radio_group_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,21 +25,25 @@ class V3SettingsCastToBoardsState
   }
 
   @override
+  void deactivate() {
+    GroupListModel discoveryModel = ref.watch(discoveryModelProvider);
+    discoveryModel.stop();
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    SettingsProvider settingsProvider =
-        provider.Provider.of<SettingsProvider>(context, listen: false);
-
+    final SettingsProvider settingsProvider = provider.Provider.of<SettingsProvider>(context, listen: false);
     final groupNotifier = ref.read(groupProvider.notifier);
-    final isBroadcastingToGroup =
-        ref.watch(groupProvider.select((state) => state.broadcastToGroup));
-    final broadcastType = ref
-        .watch(groupProvider.select((state) => state.broadcastGroupLaunchType));
-
+    final isBroadcastingToGroup = ref.watch(groupProvider.select((state) => state.broadcastToGroup));
+    final broadcastType = ref.watch(groupProvider.select((state) => state.broadcastGroupLaunchType));
+    final GroupListModel discoveryModel = ref.watch(discoveryModelProvider);
+    discoveryModel.start();
     return Stack(
       children: [
         Positioned(
@@ -110,12 +116,14 @@ class V3SettingsCastToBoardsState
 
   Expanded _buildListContent(
       GroupProvider groupNotifier, bool isBroadcastingToGroup) {
+    final broadcastSelectedList = ref.watch(groupProvider.select((state) => state.selectedList));
     return Expanded(
       child: ListView.builder(
         shrinkWrap: true,
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: groupNotifier.getListenListSize(),
         itemBuilder: (context, index) {
+          final client = groupNotifier.getListenClient(index);
           return Opacity(
             opacity: isBroadcastingToGroup ? 1.0 : 0.3,
             child: Container(
@@ -130,37 +138,34 @@ class V3SettingsCastToBoardsState
                     width: 20,
                     height: 20,
                     child: Checkbox(
-                        value: groupNotifier.selectedList.any((element) =>
-                            element.id ==
-                            groupNotifier.getListenClient(index).id),
-                        activeColor: context.tokens.color.vsdslColorSecondary,
-                        side: BorderSide(
-                            color: context.tokens.color.vsdslColorOnPrimary,
-                            width: 2),
-                        onChanged: (bool? value) {
-                          if (value != null) {
-                            if (value) {
-                              groupNotifier.addToSelectedList(
-                                  groupNotifier.getListenClient(index));
-                            } else {
-                              groupNotifier.removeFromSelectedList(
-                                  groupNotifier.getListenClient(index));
-                            }
+                      value: broadcastSelectedList.any((element) => element.id() == client.id()),
+                      activeColor: context.tokens.color.vsdslColorSecondary,
+                      side: BorderSide(
+                          color: context.tokens.color.vsdslColorOnPrimary,
+                          width: 2),
+                      onChanged: (bool? value) {
+                        if (value != null) {
+                          if (value) {
+                            groupNotifier.addToSelectedList(client);
+                          } else {
+                            groupNotifier.removeFromSelectedList(client);
                           }
-                        }),
+                        }
+                      },
+                    ),
                   ),
                   Padding(
                       padding: EdgeInsets.only(
                           right: context.tokens.spacing.vsdslSpacingSm.right)),
                   Text(
-                    groupNotifier.getListenClient(index).name,
+                    '${client.deviceName()} (${InvitedToGroupOption.getInvitedToGroupString(context, int.parse(client.invitedState()))})',
                     style: TextStyle(
                         fontSize: 12,
                         color: context.tokens.color.vsdslColorOnSurfaceInverse),
                   ),
                   const Spacer(),
                   Text(
-                    groupNotifier.getListenClient(index).displayCode,
+                    client.displayCode(),
                     style: TextStyle(
                         fontSize: 12,
                         color: context.tokens.color.vsdslColorOnSurfaceInverse),
@@ -229,6 +234,8 @@ class V3SettingsCastToBoardsState
               padding: EdgeInsets.zero,
               // constraints: const BoxConstraints(),
               onPressed: () async {
+                GroupListModel discoveryModel = ref.watch(discoveryModelProvider);
+                await discoveryModel.stop();
                 groupNotifier.setBroadcastToGroup(!isBroadcastingToGroup);
               },
             ),

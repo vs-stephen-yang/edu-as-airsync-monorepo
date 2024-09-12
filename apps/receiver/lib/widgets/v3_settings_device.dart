@@ -7,7 +7,10 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:encrypt/encrypt.dart';
+import 'package:figma2flutter/extensions/string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -193,17 +196,12 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
   }
 
   DropdownButtonHideUnderline _buildDropdownMenu(BuildContext context) {
-    final List<String> invitedToGroupItems = [
-      S.of(context).v3_settings_invite_group_notify_me,
-      S.of(context).v3_settings_invite_group_auto_accept,
-      S.of(context).v3_settings_invite_group_ignore,
-    ];
     return DropdownButtonHideUnderline(
         child: CustomDropDownMenu(
-            itemList: invitedToGroupItems,
-            defaultSelectedItem: AppPreferences().invitedToGroup,
+            itemList: InvitedToGroupOption.invitedToGroupItems(context),
+            defaultSelectedItem: InvitedToGroupOption.getInvitedToGroupString(context, int.parse(AppPreferences().invitedToGroup)),
             selectedItem: Text(
-              AppPreferences().invitedToGroup,
+              InvitedToGroupOption.getInvitedToGroupString(context, int.parse(AppPreferences().invitedToGroup)),
               style: const TextStyle(
                 fontSize: 9,
               ),
@@ -225,7 +223,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             selectedItemInMenu: Row(
               children: [
                 Text(
-                  AppPreferences().invitedToGroup,
+                  InvitedToGroupOption.getInvitedToGroupString(context, int.parse(AppPreferences().invitedToGroup)),
                   style: TextStyle(
                     fontSize: 9,
                     color: context.tokens.color.vsdslColorOnSurfaceInverse,
@@ -244,7 +242,9 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             ),
             onChange: (String? value) {
               setState(() {
-                AppPreferences().setInvitedToGroupSelectedItem(item: value);
+                final int optionValue = InvitedToGroupOption.invitedToGroupItems(context).indexOf(value??'');
+                AppPreferences().setInvitedToGroupSelectedItem(item: optionValue.toString());
+                DisplayServiceBroadcast.instance.updateInvitedToGroupOption(optionValue.toString());
               });
             }));
   }
@@ -487,5 +487,37 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
             );
           }),
     );
+  }
+}
+
+enum InvitedToGroupOption {
+  notifyMe(0),
+  autoAccept(1),
+  ignore(2);
+
+  final int value;
+  const InvitedToGroupOption(this.value);
+
+  static List<String> invitedToGroupItems(BuildContext context) {
+    return _groupMap(context).values.toList();
+  }
+
+  static Map<InvitedToGroupOption, String> _groupMap(BuildContext context) {
+    final invitedToGroupMap = {
+      InvitedToGroupOption.notifyMe: S.of(context).v3_settings_invite_group_notify_me,
+      InvitedToGroupOption.autoAccept: S.of(context).v3_settings_invite_group_auto_accept,
+      InvitedToGroupOption.ignore: S.of(context).v3_settings_invite_group_ignore,
+    };
+    return invitedToGroupMap;
+  }
+
+  static String getInvitedToGroupString(BuildContext context, int value) {
+    // 找出對應的 InvitedToGroupOption
+    final option = InvitedToGroupOption.values.firstWhere(
+          (element) => element.value == value,
+      orElse: () => InvitedToGroupOption.notifyMe, // 若找不到，預設使用 notifyMe
+    );
+    // 從 invitedToGroupMap 取得對應的 String
+    return InvitedToGroupOption._groupMap(context)[option]!;
   }
 }

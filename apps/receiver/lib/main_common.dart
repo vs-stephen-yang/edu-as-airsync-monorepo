@@ -63,6 +63,7 @@ Future<void> commonEntry(ConfigSettings settings) async {
       broadcastServiceType: '_vs-airsync._tcp',
       appVersion: configureApp.appVersion,
       instanceInfoProvider: InstanceInfoProvider(),
+      invitedToGroupOption: AppPreferences().invitedToGroup,
     );
 
     // Initialize the instance name

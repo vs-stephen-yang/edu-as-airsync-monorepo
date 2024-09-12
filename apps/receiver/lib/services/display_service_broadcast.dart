@@ -1,5 +1,7 @@
 import 'package:bonsoir/bonsoir.dart';
+import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:uuid/uuid.dart';
 
 class DisplayServiceBroadcast {
@@ -10,6 +12,7 @@ class DisplayServiceBroadcast {
   final InstanceInfoProvider _instanceInfo;
   final String _version;
   final String _uuid = const Uuid().v4();
+  String _invitedToGroupOption;
 
   int get directChannelPort => _directChannelPort;
 
@@ -20,6 +23,7 @@ class DisplayServiceBroadcast {
     this._directChannelPort,
     this._version,
     this._instanceInfo,
+    this._invitedToGroupOption,
   ) {
     _instanceInfo.addListener(_onInstanceInfoUpdated);
 
@@ -31,13 +35,20 @@ class DisplayServiceBroadcast {
     required int directChannelPort,
     required String appVersion,
     required InstanceInfoProvider instanceInfoProvider,
+    required String invitedToGroupOption,
   }) {
     instance = DisplayServiceBroadcast._internal(
       broadcastServiceType,
       directChannelPort,
       appVersion,
       instanceInfoProvider,
+      invitedToGroupOption,
     );
+  }
+
+  updateInvitedToGroupOption(String option) async {
+    _invitedToGroupOption = option;
+    _restart();
   }
 
   void _onInstanceInfoUpdated() {
@@ -65,6 +76,8 @@ class DisplayServiceBroadcast {
         'ver': _version,
         'dc': _instanceInfo.displayCode,
         'ip': _instanceInfo.ipAddress,
+        'igo': _invitedToGroupOption,
+        'id': AppInstanceCreate().groupID,
       },
     );
 

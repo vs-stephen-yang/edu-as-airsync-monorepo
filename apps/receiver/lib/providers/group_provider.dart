@@ -46,16 +46,15 @@ class GroupProvider extends StateNotifier<GroupState> {
         ));
 
   void addClient(GroupListItem client) {
+    state.clients.removeWhere((foundService) => foundService.id() == client.id());
     state = state.copyWith(clients: [...state.clients, client]);
   }
 
   void removeClient(GroupListItem client) {
+    state.clients.removeWhere((foundService) => foundService.id() == client.id());
     state = state.copyWith(
-      clients:
-          state.clients.where((element) => element.id != client.id).toList(),
-      selectedList: state.selectedList
-          .where((element) => element.id != client.id)
-          .toList(),
+      clients: state.clients.toList(),
+      selectedList: state.selectedList.toList(),
     );
   }
 
@@ -73,16 +72,33 @@ class GroupProvider extends StateNotifier<GroupState> {
 
   void addToSelectedList(GroupListItem client) {
     if (!state.selectedList.contains(client)) {
-      state = state.copyWith(selectedList: [...state.selectedList, client]);
+      final newSelectedList = [...state.selectedList, client];
+      clientsSort(newSelectedList);
+      state = state.copyWith(selectedList: newSelectedList, clients:state.clients.toList());
     }
   }
 
   void removeFromSelectedList(GroupListItem client) {
+    state.selectedList.removeWhere((foundService) => foundService.id() == client.id());
+    final newSelectedList = state.selectedList.toList();
+    clientsSort(newSelectedList);
     state = state.copyWith(
-      selectedList: state.selectedList
-          .where((element) => element.id != client.id)
-          .toList(),
+      selectedList: newSelectedList,
     );
+  }
+
+  void clientsSort(List<GroupListItem> selectedList) {
+    state.clients.sort((a, b){
+      bool aInListB = selectedList.any((item)=>item.id() == a.id());
+      bool bInListB = selectedList.any((item)=>item.id() == b.id());
+      if (aInListB && !bInListB) {
+        return -1;
+      } else if (!aInListB && bInListB) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
   }
 
   void clearSelectedList() {
