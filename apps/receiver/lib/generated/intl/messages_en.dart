@@ -283,6 +283,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Require passcode"),
         "v3_settings_whats_new":
             MessageLookupByLibrary.simpleMessage("What\'s new"),
+        "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
+            "AirSync v3.5.0 release note\n\n"),
         "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
         "v3_shortcuts_cast_device":
             MessageLookupByLibrary.simpleMessage("Cast to devices"),
