@@ -1470,6 +1470,16 @@ class S {
       args: [],
     );
   }
+
+  /// `AirSync v3.5.0 release note\n\n`
+  String get v3_settings_whats_new_content {
+    return Intl.message(
+      'AirSync v3.5.0 release note\n\n',
+      name: 'v3_settings_whats_new_content',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

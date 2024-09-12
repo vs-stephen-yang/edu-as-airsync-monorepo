@@ -1,0 +1,39 @@
+import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/widgets/v3_focus_single_child_scroll_view.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+
+class V3SettingsWhatsNew extends StatelessWidget {
+  const V3SettingsWhatsNew({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 57, left: 13, right: 13),
+      child: Column(
+        children: [
+          Expanded(
+            child: V3FocusSingleChildScrollView(
+              children: [
+                const Image(
+                  width: 53,
+                  height: 53,
+                  image: Svg('assets/images/ic_logo_airsync_icon.svg'),
+                ),
+                const SizedBox(height: 27),
+                Text(
+                  S.of(context).v3_settings_whats_new_content,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
