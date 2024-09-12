@@ -2,6 +2,7 @@ import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class DeviceFeatureAdapter {
   static final DeviceFeatureAdapter _instance =
@@ -14,6 +15,7 @@ class DeviceFeatureAdapter {
   factory DeviceFeatureAdapter() => _instance;
 
   static String _deviceType = '';
+  static String _sdkVersion = '';
   static bool showOldUI = false;
   static bool showDebugOverlay = false;
   static bool useSoftwareDecode = false;
@@ -143,6 +145,8 @@ class DeviceFeatureAdapter {
 
   static ensureInitialized() async {
     _deviceType = await DeviceInfoVs.deviceType ?? '';
+    _sdkVersion = (await DeviceInfoPlugin().androidInfo).version.release;
+    log.info('sdkVersion: $_sdkVersion');
 
     await initDefault();
     await load();
@@ -158,6 +162,11 @@ class DeviceFeatureAdapter {
     final opts = deviceOptions[_deviceType];
     if (opts != null) {
       options.addAll(opts);
+    }
+
+    // Workaround for [BUG 71148] 50-5 A13平台無法使用H264 Contraint-BaseLine Profile
+    if (_deviceType == 'IFP50_5' && _sdkVersion == '13') {
+      options['maxHardwareDecodeSession'] = 0; // disable hardware decode
     }
 
     if (useSoftwareDecode) {
