@@ -9,8 +9,6 @@ import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:encrypt/encrypt.dart';
-import 'package:figma2flutter/extensions/string.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';

@@ -1,7 +1,6 @@
 import 'package:bonsoir/bonsoir.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
-import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:uuid/uuid.dart';
 
 class DisplayServiceBroadcast {
@@ -11,7 +10,6 @@ class DisplayServiceBroadcast {
   final int _directChannelPort;
   final InstanceInfoProvider _instanceInfo;
   final String _version;
-  final String _uuid = const Uuid().v4();
   String _invitedToGroupOption;
 
   int get directChannelPort => _directChannelPort;
@@ -68,7 +66,7 @@ class DisplayServiceBroadcast {
     }
 
     final service = BonsoirService(
-      name: _uuid,
+      name: const Uuid().v4(), // 經實驗重啟broadcast，name需要更換，否則discovery狀態無法更新。
       type: _serviceType,
       port: _directChannelPort,
       attributes: {
