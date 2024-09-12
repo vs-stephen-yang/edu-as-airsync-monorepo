@@ -45,6 +45,10 @@ class AppInstanceCreate {
 
   String get modelName => _modelName;
 
+  String _groupID = '';
+
+  String get groupID => _groupID;
+
   bool get isInstalledInVBS100 => _modelName == 'VBS100';
 
   bool get isInstalledInVBS200 => _modelName.startsWith('VBS200');
@@ -60,6 +64,7 @@ class AppInstanceCreate {
     prefs.setString('app_instanceID', _instanceID);
     prefs.setString('app_serialNumber', _serialNumber);
     prefs.setString('app_modelName', _modelName);
+    prefs.setString('app_groupID', _groupID);
   }
 
   _load() async {
@@ -68,6 +73,7 @@ class AppInstanceCreate {
     _instanceID = prefs.getString('app_instanceID') ?? '';
     _serialNumber = prefs.getString('app_serialNumber') ?? '';
     _modelName = prefs.getString('app_modelName') ?? '';
+    _groupID = prefs.getString('app_groupID') ?? '';
   }
 
   _createInstanceId(ConfigSettings settings, PackageInfo packageInfo) async {
@@ -82,6 +88,10 @@ class AppInstanceCreate {
       log('serialId: $_serialNumber');
 
       _instanceID = await _generateInstanceID(_serialNumber);
+      _save();
+    }
+    if (_groupID.isEmpty) {
+      _groupID = const Uuid().v4();
       _save();
     }
     log('create instance: $_instanceID');

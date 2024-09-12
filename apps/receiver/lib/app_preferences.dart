@@ -1,3 +1,4 @@
+import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreferences {
@@ -67,8 +68,11 @@ class AppPreferences {
   }
 
   //TODO: MOVE TO GROUP FEATURE FILE
-  String _invitedToGroup = 'Notify me';
-  String get invitedToGroup => _invitedToGroup;
+  String _invitedToGroup = InvitedToGroupOption.notifyMe.value.toString();
+
+  String get invitedToGroup {
+    return int.tryParse(_invitedToGroup)?.toString() ?? InvitedToGroupOption.notifyMe.value.toString();
+  }
 
   void setInvitedToGroupSelectedItem({String? item}) async {
     if (item != null) {
