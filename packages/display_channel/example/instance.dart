@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/util/log.dart';
-import 'util.dart';
+import 'package:display_channel/src/util/stage_util.dart';
 import 'package:display_channel/src/util/api_util.dart';
 
 class Client {

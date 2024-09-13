@@ -39,7 +39,8 @@ void main() {
         'b': 2,
         'c': 3,
       };
-      expect(_compareMaps(actual, expected), true);
+
+      expect(_compareMaps(actual, expected), isTrue);
     },
   );
 

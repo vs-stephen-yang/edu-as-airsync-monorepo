@@ -4,7 +4,7 @@ import 'package:display_channel/src/util/log.dart';
 
 import 'package:http/http.dart' as http;
 
-import 'util.dart';
+import 'package:display_channel/src/util/stage_util.dart';
 
 Future<void> uploadFileFromStrings(
   String url,
@@ -19,9 +19,9 @@ Future<void> uploadFileFromStrings(
   );
 
   if (response.statusCode == 200) {
-    print('File uploaded successfully');
+    log().info('File uploaded successfully');
   } else {
-    print('File upload failed with status: ${response.statusCode}');
+    log().warning('File upload failed with status: ${response.statusCode}');
   }
 }
 

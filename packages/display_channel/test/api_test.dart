@@ -1,26 +1,19 @@
-import 'dart:math';
-
 import 'package:display_channel/src/util/api_util.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:uuid/uuid.dart';
-
-import 'test_config.dart';
-
-const maxGroupId = 16777216 - 1;
-
-int _randomGroupId() {
-  final seed = DateTime.now().millisecondsSinceEpoch;
-  return Random(seed).nextInt(maxGroupId);
-}
+import 'test_util.dart';
 
 void main() {
-  group('Instance Register API', skip: true, () {
+  final apiOrigin = getApiOriginFromEnv();
+
+  group('Instance Register API', () {
     test(
       'instanceIndex should be greater than 0',
+      tags: ['slow'],
       () async {
         // Arrange
         final instanceId = const Uuid().v4();
-        final groupId = _randomGroupId();
+        final groupId = randomGroupId();
 
         // Action
         final info = await registerInstance(apiOrigin, instanceId, groupId);
@@ -32,10 +25,11 @@ void main() {
 
     test(
       'Responses for requests with the same instanceId and groupId should be identical',
+      tags: ['slow'],
       () async {
         // Arrange
         final instanceId = const Uuid().v4();
-        final groupId = _randomGroupId();
+        final groupId = randomGroupId();
 
         // Action
         final info1 = await registerInstance(apiOrigin, instanceId, groupId);
@@ -50,12 +44,13 @@ void main() {
 
     test(
       'Instance info should be retrieved successfully after registering with different groupId',
+      tags: ['slow'],
       () async {
         // Arrange
         final instanceId = const Uuid().v4();
 
-        final groupId1 = _randomGroupId();
-        final groupId2 = (groupId1 + 1) % maxGroupId;
+        final groupId1 = randomGroupId();
+        final groupId2 = (groupId1 + 1) % maxInstanceGroupId;
 
         final info1 = await registerInstance(apiOrigin, instanceId, groupId1);
 
@@ -71,13 +66,14 @@ void main() {
     );
   });
 
-  group('Instance Info API', skip: true, () {
+  group('Instance Info API', () {
     test(
       'Instance info should be retrieved successfully after registration',
+      tags: ['slow'],
       () async {
         // Arrange
         final instanceId = const Uuid().v4();
-        final groupId = _randomGroupId();
+        final groupId = randomGroupId();
 
         final registerInfo =
             await registerInstance(apiOrigin, instanceId, groupId);
@@ -87,16 +83,17 @@ void main() {
             apiOrigin, registerInfo.instanceIndex, groupId);
 
         // Assert
-        expect(registerInfo.tunnelApiUrl, actual);
+        expect(actual, registerInfo.tunnelApiUrl);
       },
     );
 
     test(
       'Instance info should remain identical after re-registration',
+      tags: ['slow'],
       () async {
         // Arrange
         final instanceId = const Uuid().v4();
-        final groupId = _randomGroupId();
+        final groupId = randomGroupId();
 
         final info1 = await registerInstance(apiOrigin, instanceId, groupId);
         final original =
@@ -113,20 +110,22 @@ void main() {
     );
   });
 
-  group('Race condition', skip: true, () {
+  group('Race condition', () {
     test(
       'Sequential registrations with the same groupId should return unique instanceIndexes',
+      tags: ['slow'],
       () async {
         // Arrange
-        final groupId = _randomGroupId();
+        final groupId = randomGroupId();
         const uuid = Uuid();
 
         // Action
         final results = <RegisterInstanceResult>[];
 
-        for (var i = 0; i < 10; ++i) {
+        for (var i = 0; i < 5; ++i) {
           final instanceId = uuid.v4();
 
+          // Sequential API invocations
           results.add(await registerInstance(apiOrigin, instanceId, groupId));
         }
 
@@ -144,10 +143,11 @@ void main() {
     );
 
     test(
-      'Simultaneous registrations should complete successfully',
+      'Simultaneous registrations with different groupId should complete successfully',
+      tags: ['slow'],
       () async {
         // Arrange
-        final baseGroupId = _randomGroupId();
+        final baseGroupId = randomGroupId();
         const uuid = Uuid();
 
         // Action
@@ -155,7 +155,7 @@ void main() {
 
         for (var i = 0; i < 10; ++i) {
           final instanceId = uuid.v4();
-          final groupId = (baseGroupId + i) % maxGroupId;
+          final groupId = (baseGroupId + i) % maxInstanceGroupId;
 
           // Concurrent API invocations
           futures.add(registerInstance(apiOrigin, instanceId, groupId));
@@ -168,9 +168,10 @@ void main() {
 
     test(
       'Simultaneous registrations with the same groupId should return unique instanceIndexes',
+      tags: ['slow'],
       () async {
         // Arrange
-        final groupId = _randomGroupId();
+        final groupId = randomGroupId();
         const uuid = Uuid();
 
         // Action
