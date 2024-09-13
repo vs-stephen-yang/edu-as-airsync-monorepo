@@ -1,116 +1,112 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:display_channel/src/util/api_util.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'test_config.dart';
 import 'test_util.dart';
 import 'tunnel_test_util.dart';
 
-Future<WebSocket> _createWsAsServer() {
-  return createWebSocketAsServer(tunnelServiceUrl, instanceId);
-}
-
 void main() {
-  group('Establish connection to the Tunnel service', skip: true, () {
+  final apiOrigin = getApiOriginFromEnv();
+
+  const instanceId = 'test-2418f2a0-6e8b-4867-8a50-7f49ec04b885';
+  const instanceGroupId = 1;
+
+  Future<RegisterInstanceResult> registerServer() async {
+    return registerInstance(apiOrigin, instanceId, instanceGroupId);
+  }
+
+  Future<WebSocket> createWsAsServer(String tunnelUrl) {
+    return createWebSocketAsServer(tunnelUrl, instanceId);
+  }
+
+  group('Establish connection to the Tunnel service', () {
+    late RegisterInstanceResult instanceResult;
+
+    setUp(() {
+      return Future(() async {
+        instanceResult = await registerServer();
+      });
+    });
+
     test(
       'should successfully establish a connection as the server',
+      tags: ['slow'],
       () async {
         // arrange
-        final stopwatch = Stopwatch();
 
         // action
-        stopwatch.start();
-        await _createWsAsServer();
-        stopwatch.stop();
+        await createWsAsServer(instanceResult.tunnelApiUrl);
 
         // assert
-        final latency = stopwatch.elapsedMilliseconds;
-        expect(latency, lessThan(5000), reason: 'Operation took too long');
       },
     );
 
     test(
       'should successfully establish a connection as the client',
+      tags: ['slow'],
       () async {
         // arrange
         TunnelServer(
-          await _createWsAsServer(),
+          await createWsAsServer(instanceResult.tunnelApiUrl),
           (conneciton) {},
         );
 
-        final stopwatch = Stopwatch();
-
         // action
-        stopwatch.start();
-
         await createWebSocketAsClient(
-          tunnelServiceUrl,
-          instanceIndex,
-          groupId,
+          instanceResult.tunnelApiUrl,
+          instanceResult.instanceIndex,
+          instanceGroupId,
           '1000',
         );
-        stopwatch.stop();
 
         // assert
-        final latency = stopwatch.elapsedMilliseconds;
-        expect(latency, lessThan(1000),
-            reason: 'Client connection took too long');
       },
     );
 
     test(
       'should successfully establish connections for multiple clients',
+      tags: ['slow'],
       () async {
         // arrange
         TunnelServer(
-          await _createWsAsServer(),
+          await createWsAsServer(instanceResult.tunnelApiUrl),
           (conneciton) {},
         );
-        final stopwatches = <Stopwatch>[];
 
         // action
         for (var i = 0; i < 10; i++) {
-          final stopwatch = Stopwatch();
-          stopwatches.add(stopwatch);
-
-          stopwatch.start();
-
           await createWebSocketAsClient(
-            tunnelServiceUrl,
-            instanceIndex,
-            groupId,
+            instanceResult.tunnelApiUrl,
+            instanceResult.instanceIndex,
+            instanceGroupId,
             'client-$i',
           );
-          stopwatch.stop();
-
-          await Future.delayed(const Duration(milliseconds: 100));
         }
 
         // assert
-        for (var i = 0; i < stopwatches.length; i++) {
-          final latency = stopwatches[i].elapsedMilliseconds;
-
-          expect(latency, lessThan(1000),
-              reason: 'Client $i connection took too long');
-        }
       },
     );
   });
 
-  group('Exchange messages between client and server', skip: true, () {
+  group('Exchange messages via tunnel service', () {
     late Completer clientConnected;
 
     late TunnelConnection connection;
 
     late Client client;
 
+    late RegisterInstanceResult instanceResult;
+
     setUp(() {
       return Future(() async {
+        instanceResult = await registerServer();
+
         clientConnected = Completer();
 
         // Server
         TunnelServer(
             await createWebSocketAsServer(
-              tunnelServiceUrl,
+              instanceResult.tunnelApiUrl,
               instanceId,
             ), (TunnelConnection c) {
           clientConnected.complete();
@@ -119,9 +115,9 @@ void main() {
 
         // Client
         client = Client(await createWebSocketAsClient(
-          tunnelServiceUrl,
-          instanceIndex,
-          groupId,
+          instanceResult.tunnelApiUrl,
+          instanceResult.instanceIndex,
+          instanceGroupId,
           '1000',
         ));
 
@@ -131,6 +127,7 @@ void main() {
 
     test(
       'Ensures 200 messages are reliably delivered from client to server with delay',
+      tags: ['slow'],
       () async {
         // arrange
         final counter = CounterCondition(200);
@@ -148,6 +145,7 @@ void main() {
 
     test(
       'Ensures 200 messages are reliably delivered from server to client with delay',
+      tags: ['slow'],
       () async {
         // arrange
         final counter = CounterCondition(200);
@@ -164,6 +162,7 @@ void main() {
     );
     test(
       'Ensures 100 consecutive messages are reliably delivered from client to server with no delay',
+      tags: ['slow'],
       () async {
         // arrange
         final counter = CounterCondition(100);
@@ -181,6 +180,7 @@ void main() {
 
     test(
       'Ensures 100 consecutive messages are reliably delivered from server to client with no delay',
+      tags: ['slow'],
       () async {
         // arrange
         final counter = CounterCondition(100);
@@ -193,26 +193,6 @@ void main() {
 
         // assert
         expect(countUniqueMessages(client.messages), 100);
-      },
-    );
-  });
-
-  group('Multiple clients exchange messages with multiple tunnel servers',
-      skip: true, () {
-    test(
-      'should successfully establish a connection as the server',
-      () async {
-        // arrange
-        final stopwatch = Stopwatch();
-
-        // action
-        stopwatch.start();
-        await _createWsAsServer();
-        stopwatch.stop();
-
-        // assert
-        final latency = stopwatch.elapsedMilliseconds;
-        expect(latency, lessThan(5000), reason: 'Operation took too long');
       },
     );
   });

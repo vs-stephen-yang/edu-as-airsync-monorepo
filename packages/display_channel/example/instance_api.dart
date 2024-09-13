@@ -1,7 +1,7 @@
 import 'package:args/args.dart';
 import 'package:display_channel/src/util/api_util.dart';
 import 'package:display_channel/src/util/log.dart';
-import 'util.dart';
+import 'package:display_channel/src/util/stage_util.dart';
 
 void main(List<String> arguments) async {
   final parser = ArgParser()
