@@ -165,6 +165,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Download Sender App"),
         "v3_download_app_title":
             MessageLookupByLibrary.simpleMessage("Download Sender App"),
+        "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Agree"),
+        "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Disagree"),
+        "v3_eula_title":
+            MessageLookupByLibrary.simpleMessage("End-User License Agreement"),
         "v3_exit_moderator_mode_cancel":
             MessageLookupByLibrary.simpleMessage("Cancel"),
         "v3_exit_moderator_mode_desc": MessageLookupByLibrary.simpleMessage(

@@ -141,5 +141,8 @@
   "v3_group_dialog_message": "%s has sent a broadcast request to your device. This action will synchronize and display the current content, do you want to accept this request?",
   "v3_group_dialog_accept": "Accept",
   "v3_group_dialog_decline": "Decline",
-  "v3_settings_whats_new_content": "AirSync v3.5.0 release note\n\n"
+  "v3_settings_whats_new_content": "AirSync v3.5.0 release note\n\n",
+  "v3_eula_title": "End-User License Agreement",
+  "v3_eula_agree": "Agree",
+  "v3_eula_disagree": "Disagree"
 }

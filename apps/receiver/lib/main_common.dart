@@ -16,6 +16,7 @@ import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/eula.dart';
 import 'package:display_flutter/screens/home.dart';
+import 'package:display_flutter/screens/v3_eula.dart';
 import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -181,7 +182,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             theme: createThemeData(context),
             initialRoute: AppPreferences().showEULA &&
                     !AppInstanceCreate().isInstalledInVBS100
-                ? '/eula'
+                ? !DeviceFeatureAdapter.showOldUI
+                    ? '/v3Eula'
+                    : '/eula'
                 : !DeviceFeatureAdapter.showOldUI
                     ? '/v3Home'
                     : '/home',
@@ -192,6 +195,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               // for "navService.popUntil('/v3Home')"
               '/v3Home': (context) => const AppOTADialog(child: V3Home()),
               '/eula': (context) => const AppOTADialog(child: Eula()),
+              '/v3Eula': (context) => const AppOTADialog(child: V3Eula()),
             },
             builder: (context, child) {
               return MediaQuery(
