@@ -1,5 +1,6 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/group_list_provider.dart';
 import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
@@ -38,10 +39,15 @@ class V3SettingsCastToBoardsState
 
   @override
   Widget build(BuildContext context) {
-    final SettingsProvider settingsProvider = provider.Provider.of<SettingsProvider>(context, listen: false);
+    final SettingsProvider settingsProvider =
+        provider.Provider.of<SettingsProvider>(context, listen: false);
+    final ChannelProvider channelProvider =
+        provider.Provider.of<ChannelProvider>(context, listen: false);
     final groupNotifier = ref.read(groupProvider.notifier);
-    final isBroadcastingToGroup = ref.watch(groupProvider.select((state) => state.broadcastToGroup));
-    final broadcastType = ref.watch(groupProvider.select((state) => state.broadcastGroupLaunchType));
+    final isBroadcastingToGroup =
+        ref.watch(groupProvider.select((state) => state.broadcastToGroup));
+    final broadcastType = ref
+        .watch(groupProvider.select((state) => state.broadcastGroupLaunchType));
     final GroupListModel discoveryModel = ref.watch(discoveryModelProvider);
     discoveryModel.start();
     return Stack(
@@ -58,7 +64,8 @@ class V3SettingsCastToBoardsState
           Positioned(
             right: 13,
             bottom: 13,
-            child: _buildActionButton(context, broadcastType, settingsProvider),
+            child: _buildActionButton(context, broadcastType, settingsProvider,
+                channelProvider, groupNotifier),
           )
       ],
     );
@@ -67,7 +74,9 @@ class V3SettingsCastToBoardsState
   Align _buildActionButton(
       BuildContext context,
       BroadcastGroupLaunchType broadcastType,
-      SettingsProvider settingsProvider) {
+      SettingsProvider settingsProvider,
+      ChannelProvider channelProvider,
+      GroupProvider groupNotifier) {
     return Align(
       alignment: Alignment.centerRight,
       child: broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
@@ -78,7 +87,12 @@ class V3SettingsCastToBoardsState
           : _broadcastButton(
               context,
               S.of(context).v3_settings_display_group_cast,
-              onClick: () {},
+              onClick: () {
+                // TODO:save selected list
+
+                // start display group
+                channelProvider.startDisplayGroup(groupNotifier.selectedList);
+              },
             ),
     );
   }
@@ -116,7 +130,8 @@ class V3SettingsCastToBoardsState
 
   Expanded _buildListContent(
       GroupProvider groupNotifier, bool isBroadcastingToGroup) {
-    final broadcastSelectedList = ref.watch(groupProvider.select((state) => state.selectedList));
+    final broadcastSelectedList =
+        ref.watch(groupProvider.select((state) => state.selectedList));
     return Expanded(
       child: ListView.builder(
         shrinkWrap: true,
@@ -138,7 +153,8 @@ class V3SettingsCastToBoardsState
                     width: 20,
                     height: 20,
                     child: Checkbox(
-                      value: broadcastSelectedList.any((element) => element.id() == client.id()),
+                      value: broadcastSelectedList
+                          .any((element) => element.id() == client.id()),
                       activeColor: context.tokens.color.vsdslColorSecondary,
                       side: BorderSide(
                           color: context.tokens.color.vsdslColorOnPrimary,
@@ -234,7 +250,8 @@ class V3SettingsCastToBoardsState
               padding: EdgeInsets.zero,
               // constraints: const BoxConstraints(),
               onPressed: () async {
-                GroupListModel discoveryModel = ref.watch(discoveryModelProvider);
+                GroupListModel discoveryModel =
+                    ref.watch(discoveryModelProvider);
                 await discoveryModel.stop();
                 groupNotifier.setBroadcastToGroup(!isBroadcastingToGroup);
               },

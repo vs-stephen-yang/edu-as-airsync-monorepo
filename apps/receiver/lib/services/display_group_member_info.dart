@@ -6,7 +6,7 @@ class DisplayGroupMemberInfo {
 
   DisplayGroupMemberInfo({
     required this.host,
-    required this.port,
+    this.port = 5100,
     required this.displayCode,
   });
 }

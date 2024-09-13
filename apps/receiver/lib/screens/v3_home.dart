@@ -15,6 +15,7 @@ import 'package:display_flutter/widgets/v3_mirror_prompt.dart';
 import 'package:display_flutter/widgets/v3_streaming_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
 class V3Home extends StatefulWidget {
@@ -62,6 +63,18 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
       channelProvider.updateAllAudioEnableState(true);
       mirrorStateProvider.updateAllAudioEnableState(true);
     }
+  }
+
+  Widget _buildDisplayGroupVideoView(ChannelProvider channelProvider) {
+    final videoView = channelProvider.displayGroupVideoView;
+
+    if (!channelProvider.isDisplayGroupVideoAvailable || videoView == null) {
+      return const SizedBox.shrink();
+    }
+    return RTCVideoView(
+      videoView.renderer,
+      key: videoView.widgetKey,
+    );
   }
 
   @override
@@ -118,6 +131,9 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                     return value ? const V3SettingMenu() : const SizedBox();
                   }),
               const V3MirrorPrompt(),
+              Consumer<ChannelProvider>(builder: (context, provider, child) {
+                return _buildDisplayGroupVideoView(provider);
+              }),
               const V3MessageDialog(),
             ],
           ),

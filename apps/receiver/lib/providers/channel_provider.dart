@@ -10,6 +10,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/display_group_video_view.dart';
+import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
@@ -797,19 +798,18 @@ class ChannelProvider extends ChangeNotifier {
     // TODO:
   }
 
-  void startDisplayGroup() {
+  void startDisplayGroup(List<GroupListItem> displayGroupMembers) {
     _displayGroupHost = DisplayGroupHost(
       _createRemoteScreenConnector,
     );
 
-    // TODO: remove
-    final member1 = DisplayGroupMemberInfo(
-      host: '172.21.6.220',
-      port: 5100,
-      displayCode: '18155228',
-    );
-
-    _displayGroupHost!.addMember('1234', member1);
+    for (var member in displayGroupMembers) {
+      final memberInfo = DisplayGroupMemberInfo(
+        host: member.ip(),
+        displayCode: member.displayCode(),
+      );
+      _displayGroupHost!.addMember(member.id(), memberInfo);
+    }
   }
 
   Future<RemoteScreenConnector> _createRemoteScreenConnector(
