@@ -104,8 +104,7 @@ class V3SettingsCastToBoardsState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildBroadcastGroupToggle(
-              context, groupNotifier, isBroadcastingToGroup),
+          _buildBroadcastGroupToggle(context, groupNotifier),
           if (isBroadcastingToGroup)
             _buildRadioGroupItem(
                 S.of(context).v3_settings_display_group_only_casting,
@@ -225,8 +224,8 @@ class V3SettingsCastToBoardsState
     );
   }
 
-  SizedBox _buildBroadcastGroupToggle(BuildContext context,
-      GroupProvider groupNotifier, bool isBroadcastingToGroup) {
+  SizedBox _buildBroadcastGroupToggle(
+      BuildContext context, GroupProvider groupNotifier) {
     return SizedBox(
       height: 26,
       child: Row(
@@ -250,10 +249,15 @@ class V3SettingsCastToBoardsState
               padding: EdgeInsets.zero,
               // constraints: const BoxConstraints(),
               onPressed: () async {
-                GroupListModel discoveryModel =
-                    ref.watch(discoveryModelProvider);
-                await discoveryModel.stop();
-                groupNotifier.setBroadcastToGroup(!isBroadcastingToGroup);
+                bool state = !groupNotifier.broadcastToGroup;
+                if (!state) {
+                  groupNotifier.clearClients();
+                  GroupListModel discoveryModel =
+                      ref.watch(discoveryModelProvider);
+                  await discoveryModel.stop();
+                  // TODO: Stop display group
+                }
+                groupNotifier.setBroadcastToGroup(state);
               },
             ),
           )
