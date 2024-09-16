@@ -33,7 +33,7 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AutoSizeText(
-                remoteScreenConnector.senderNameWithEllipsis,
+                remoteScreenConnector.senderName ?? '',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,

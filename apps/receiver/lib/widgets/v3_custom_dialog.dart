@@ -25,7 +25,7 @@ class V3CustomDialog extends StatelessWidget {
     return Stack(
       children: [
         Positioned(
-          top: 258,
+          top: offset?.dy ?? 0,
           left: offset?.dx ?? 0,
           child: UnconstrainedBox(
             // Use UnconstrainedBox to override Dialog minimum size
