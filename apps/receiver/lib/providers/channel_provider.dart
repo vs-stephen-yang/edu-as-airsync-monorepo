@@ -17,8 +17,8 @@ import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
-import 'package:display_flutter/services/display_group_member_info.dart';
 import 'package:display_flutter/services/display_group_host.dart';
+import 'package:display_flutter/services/display_group_member_info.dart';
 import 'package:display_flutter/services/display_group_session.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -27,6 +27,7 @@ import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 ///
@@ -139,19 +140,37 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _setConnectivityListener() {
+    _initConnectivity();
     _connectivitySubscription ??=
-        Connectivity().onConnectivityChanged.listen((result) async {
-      log.info('Network connectivity has changed to $result');
+        Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+  }
 
-      AppAnalytics().trackEventNetworkConnectivity(result.name);
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> _initConnectivity() async {
+    late ConnectivityResult result;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      result = await Connectivity().checkConnectivity();
+    } on PlatformException catch (e) {
+      log.info('Could not check connectivity status: ${e.message}');
+      return;
+    }
 
-      if (result == ConnectivityResult.none) {
-        _handleNoConnectivity();
-      } else {
-        await _handleConnectivity(result);
-      }
-      _lastConnectivityResult = result;
-    });
+    return _updateConnectionStatus(result);
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    log.info('Network connectivity has changed to $result');
+
+    AppAnalytics().trackEventNetworkConnectivity(result.name);
+
+    if (result == ConnectivityResult.none) {
+      _handleNoConnectivity();
+    } else {
+      await _handleConnectivity(result);
+    }
+    _lastConnectivityResult = result;
   }
 
   void _handleNoConnectivity() {
