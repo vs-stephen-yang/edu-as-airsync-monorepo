@@ -22,135 +22,134 @@ class V3Instruction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ChannelProvider, InstanceInfoProvider>(
-        builder: (_, channelProvider, instanceInfoProvider, __) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: isQuickConnect
-            ? CrossAxisAlignment.center
-            : CrossAxisAlignment.start,
-        children: [
-          if (!isQuickConnect)
-            AutoSizeText(
-              isCastToDevice
-                  ? S.of(context).v3_instruction_receive_screen
-                  : S.of(context).v3_instruction_share_screen,
-              style: TextStyle(
-                fontSize: 21,
-                fontWeight: FontWeight.w500,
-                color: context.tokens.color.vsdslColorSurface600,
-                letterSpacing: -0.48,
-              ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment:
+          isQuickConnect ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      children: [
+        if (!isQuickConnect) ...[
+          AutoSizeText(
+            isCastToDevice
+                ? S.of(context).v3_instruction_receive_screen
+                : S.of(context).v3_instruction_share_screen,
+            style: TextStyle(
+              fontSize: 21,
+              fontWeight: FontWeight.w500,
+              color: context.tokens.color.vsdslColorSurface600,
+              letterSpacing: -0.48,
             ),
-          if (!isQuickConnect)
-            SizedBox(height: context.tokens.spacing.vsdslSpacing5xl.top),
-          if (isQuickConnect)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image(
-                  image: const Svg('assets/images/ic_screen.svg'),
-                  width: 27,
-                  height: 27,
-                  color: context.tokens.color.vsdslColorSurface600,
+          ),
+          SizedBox(height: context.tokens.spacing.vsdslSpacing5xl.top),
+        ],
+        if (isQuickConnect) ...[
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image(
+                image: const Svg('assets/images/ic_screen.svg'),
+                width: 27,
+                height: 27,
+                color: context.tokens.color.vsdslColorSurface600,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: context.tokens.spacing.vsdslSpacingSm.left),
+                child: Consumer<InstanceInfoProvider>(
+                  builder: (_, instanceInfoProvider, __) {
+                    return AutoSizeText(
+                      instanceInfoProvider.deviceName,
+                      style: TextStyle(
+                        fontSize: 19,
+                        fontWeight: FontWeight.w700,
+                        color: context.tokens.color.vsdslColorSurface600,
+                        letterSpacing: -0.48,
+                      ),
+                    );
+                  },
                 ),
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: context.tokens.spacing.vsdslSpacingSm.left),
-                  child: Consumer<InstanceInfoProvider>(
-                    builder: (_, provider, __) {
-                      return AutoSizeText(
-                        provider.deviceName,
-                        style: TextStyle(
-                          fontSize: 19,
+              ),
+            ],
+          ),
+          SizedBox(height: context.tokens.spacing.vsdslSpacing4xl.top),
+        ],
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Image(
+              image: Svg('assets/images/ic_item1.svg'),
+              height: 27,
+              width: 27,
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: context.tokens.spacing.vsdslSpacingMd.left),
+              child: Consumer<ConnectivityProvider>(
+                  builder: (_, connectivityProvider, __) {
+                return FutureBuilder(
+                  future: connectivityProvider.checkInternetConnection(),
+                  builder: (context, snapshot) {
+                    bool isInternet = false;
+                    if (snapshot.hasData) {
+                      isInternet = snapshot.data as bool;
+                    }
+                    return AutoSizeText.rich(
+                      _buildTextSpan(
+                        fullText: isInternet && !isCastToDevice
+                            ? S.of(context).v3_instruction1a
+                            : S.of(context).v3_instruction1b,
+                        formatTexts: ['airsync.net'],
+                        formatStyle: TextStyle(
+                          fontSize: 21,
                           fontWeight: FontWeight.w700,
                           color: context.tokens.color.vsdslColorSurface600,
                           letterSpacing: -0.48,
                         ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+                      ),
+                      style: TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.w500,
+                        color: context.tokens.color.vsdslColorSurface600,
+                        letterSpacing: -0.48,
+                      ),
+                    );
+                  },
+                );
+              }),
             ),
-          if (isQuickConnect)
-            SizedBox(height: context.tokens.spacing.vsdslSpacing4xl.top),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Image(
-                image: Svg('assets/images/ic_item1.svg'),
-                height: 27,
-                width: 27,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: context.tokens.spacing.vsdslSpacingMd.left),
-                child: Consumer<ConnectivityProvider>(
-                    builder: (_, connectivityProvider, __) {
-                  return FutureBuilder(
-                    future: connectivityProvider.checkInternetConnection(),
-                    builder: (context, snapshot) {
-                      bool isInternet = false;
-                      if (snapshot.hasData) {
-                        isInternet = snapshot.data as bool;
-                      }
-                      return AutoSizeText.rich(
-                        _buildTextSpan(
-                          fullText: isInternet && !isCastToDevice
-                              ? S.of(context).v3_instruction1a
-                              : S.of(context).v3_instruction1b,
-                          formatTexts: ['airsync.net'],
-                          formatStyle: TextStyle(
-                            fontSize: 21,
-                            fontWeight: FontWeight.w700,
-                            color: context.tokens.color.vsdslColorSurface600,
-                            letterSpacing: -0.48,
-                          ),
-                        ),
-                        style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.w500,
-                          color: context.tokens.color.vsdslColorSurface600,
-                          letterSpacing: -0.48,
-                        ),
-                      );
-                    },
-                  );
-                }),
-              ),
-            ],
-          ),
-          SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Image(
-                image: Svg('assets/images/ic_item2.svg'),
-                height: 27,
-                width: 27,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: context.tokens.spacing.vsdslSpacingMd.left),
-                child: AutoSizeText(
-                  S.of(context).v3_instruction2,
-                  style: TextStyle(
-                    fontSize: 21,
-                    fontWeight: FontWeight.w500,
-                    color: context.tokens.color.vsdslColorSurface600,
-                    letterSpacing: -0.48,
-                  ),
+          ],
+        ),
+        SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Image(
+              image: Svg('assets/images/ic_item2.svg'),
+              height: 27,
+              width: 27,
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: context.tokens.spacing.vsdslSpacingMd.left),
+              child: AutoSizeText(
+                S.of(context).v3_instruction2,
+                style: TextStyle(
+                  fontSize: 21,
+                  fontWeight: FontWeight.w500,
+                  color: context.tokens.color.vsdslColorSurface600,
+                  letterSpacing: -0.48,
                 ),
               ),
-            ],
-          ),
-          SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
-          Padding(
-            padding: isQuickConnect
-                ? EdgeInsets.zero
-                : const EdgeInsets.only(left: 35),
-            child: AutoSizeText(
+            ),
+          ],
+        ),
+        SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
+        Padding(
+          padding: isQuickConnect
+              ? EdgeInsets.zero
+              : const EdgeInsets.only(left: 35),
+          child: Consumer<InstanceInfoProvider>(
+              builder: (_, instanceInfoProvider, __) {
+            return AutoSizeText(
               _getDisplayCodeVisualIdentity(instanceInfoProvider.displayCode),
               style: TextStyle(
                 fontSize: 45,
@@ -158,34 +157,37 @@ class V3Instruction extends StatelessWidget {
                 color: context.tokens.color.vsdslColorSurface700,
                 letterSpacing: 5.76,
               ),
+            );
+          }),
+        ),
+        SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Image(
+              image: Svg('assets/images/ic_item3.svg'),
+              height: 27,
+              width: 27,
             ),
-          ),
-          SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Image(
-                image: Svg('assets/images/ic_item3.svg'),
-                height: 27,
-                width: 27,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: context.tokens.spacing.vsdslSpacingMd.left),
-                child: AutoSizeText(
-                  S.of(context).v3_instruction3,
-                  style: TextStyle(
-                    fontSize: 21,
-                    fontWeight: FontWeight.w500,
-                    color: context.tokens.color.vsdslColorSurface600,
-                    letterSpacing: -0.48,
-                  ),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: context.tokens.spacing.vsdslSpacingMd.left),
+              child: AutoSizeText(
+                S.of(context).v3_instruction3,
+                style: TextStyle(
+                  fontSize: 21,
+                  fontWeight: FontWeight.w500,
+                  color: context.tokens.color.vsdslColorSurface600,
+                  letterSpacing: -0.48,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: context.tokens.spacing.vsdslSpacingMd.left),
-                child: ValueListenableBuilder<int>(
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  left: context.tokens.spacing.vsdslSpacingMd.left),
+              child:
+                  Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
+                return ValueListenableBuilder<int>(
                   valueListenable: channelProvider.countDownProgress,
                   builder: (_, progress, __) {
                     return Transform(
@@ -204,16 +206,18 @@ class V3Instruction extends StatelessWidget {
                       ),
                     );
                   },
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
-          Padding(
-            padding: isQuickConnect
-                ? EdgeInsets.zero
-                : const EdgeInsets.only(left: 35),
-            child: ValueListenableBuilder<int>(
+                );
+              }),
+            ),
+          ],
+        ),
+        SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
+        Padding(
+          padding: isQuickConnect
+              ? EdgeInsets.zero
+              : const EdgeInsets.only(left: 35),
+          child: Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
+            return ValueListenableBuilder<int>(
               valueListenable: channelProvider.otp,
               builder: (_, otp, __) {
                 return AutoSizeText(
@@ -226,11 +230,11 @@ class V3Instruction extends StatelessWidget {
                   ),
                 );
               },
-            ),
-          ),
-        ],
-      );
-    });
+            );
+          }),
+        ),
+      ],
+    );
   }
 
   String _getDisplayCodeVisualIdentity(String displayCode) {
