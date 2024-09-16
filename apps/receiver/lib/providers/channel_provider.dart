@@ -276,6 +276,7 @@ class ChannelProvider extends ChangeNotifier {
   void _onNewChannelFromHost(Channel channel) {
     if (_displayGroupSession != null) {
       // TODO: handle the existing display group session
+      return;
     }
 
     _displayGroupSession = DisplayGroupSession(
@@ -283,6 +284,7 @@ class ChannelProvider extends ChangeNotifier {
       onInvitation: (String hostNamem, String displayCode) {
         // TODO:
         _displayGroupSession?.accept();
+        // _displayGroupSession?.reject('reject invitation');
       },
       onStateChange: () {
         notifyListeners();
@@ -814,7 +816,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void stopDisplayGroup() {
-    // TODO:
+    _displayGroupHost?.stop();
+    _displayGroupHost = null;
   }
 
   void startDisplayGroup(List<GroupListItem> displayGroupMembers) {

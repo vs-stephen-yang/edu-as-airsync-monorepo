@@ -40,8 +40,8 @@ class DisplayGroupSession {
     _startRemoteScreen();
   }
 
-  void reject() {
-    //TODO:
+  void reject(String reason) {
+    _closeRemoteScreen(reason);
   }
 
   void _onChannelMessage(ChannelMessage message) async {
@@ -94,5 +94,10 @@ class DisplayGroupSession {
       // onClose callback
       () {},
     );
+  }
+
+  void _closeRemoteScreen(String reason) {
+    _channel
+        .close(ChannelCloseReason(ChannelCloseCode.remoteClose, text: reason));
   }
 }
