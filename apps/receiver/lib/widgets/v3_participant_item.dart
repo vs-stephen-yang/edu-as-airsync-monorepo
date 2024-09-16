@@ -191,7 +191,8 @@ class V3ParticipantItem extends StatelessWidget {
       AppAnalytics().trackEventModeratorPresenterStop();
       rtcConnector.sendStopPresent();
     } else {
-      if (HybridConnectionList().getPresentingCount() >= 4) {
+      if (HybridConnectionList().getPresentingCount() >=
+          HybridConnectionList.maxHybridSplitScreen) {
         MotionToast(
           primaryColor: Colors.grey,
           description: AutoSizeText(
