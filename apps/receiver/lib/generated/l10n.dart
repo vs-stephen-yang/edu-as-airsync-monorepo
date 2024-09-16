@@ -1510,6 +1510,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Unable to detect an internet connection. Please connect to a Wi-Fi or intranet network, and try again.`
+  String get v3_main_status_no_network {
+    return Intl.message(
+      'Unable to detect an internet connection. Please connect to a Wi-Fi or intranet network, and try again.',
+      name: 'v3_main_status_no_network',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -199,6 +199,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Share your screen"),
         "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
             "Supports sharing via AirPlay, Google Cast or Miracast"),
+        "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
+            "Unable to detect an internet connection. Please connect to a Wi-Fi or intranet network, and try again."),
         "v3_mirror_request_passcode":
             MessageLookupByLibrary.simpleMessage("Passcode"),
         "v3_moderator_mode":
