@@ -108,7 +108,7 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
     final RenderBox renderBox =
         _containerKey.currentContext!.findRenderObject() as RenderBox;
     final Offset containerOffset =
-        renderBox.localToGlobal(Offset.zero).translate(27, 0);
+        renderBox.localToGlobal(Offset.zero).translate(27, 157);
 
     setState(() {
       isShowLogOutMenu = true;

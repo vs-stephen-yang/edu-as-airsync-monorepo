@@ -28,9 +28,7 @@ class V3ParticipantItem extends StatelessWidget {
       child: Row(
         children: [
           Column(
-            mainAxisAlignment: isForMenuUse
-                ? MainAxisAlignment.start
-                : MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
@@ -46,33 +44,34 @@ class V3ParticipantItem extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (isForMenuUse) ...[
+              if (isForMenuUse &&
+                  (HybridConnectionList()
+                      .isPresenterStreaming(presenterId))) ...[
                 SizedBox(height: context.tokens.spacing.vsdslSpacingSm.top),
-                if ((HybridConnectionList().isPresenterStreaming(presenterId)))
-                  Container(
-                    width: 46,
-                    height: 17,
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: context.tokens.radii.vsdslRadiusSm,
-                        side: BorderSide(
-                          width: 1,
-                          color: context.tokens.color.vsdslColorSuccess,
-                        ),
-                      ),
-                    ),
-                    padding: context.tokens.spacing.vsdslSpacingXs,
-                    child: AutoSizeText(
-                      S.of(context).v3_participant_item_casting,
-                      style: TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w600,
+                Container(
+                  width: 46,
+                  height: 17,
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: context.tokens.radii.vsdslRadiusSm,
+                      side: BorderSide(
+                        width: 1,
                         color: context.tokens.color.vsdslColorSuccess,
                       ),
-                      textAlign: TextAlign.center,
-                      minFontSize: 8,
                     ),
                   ),
+                  padding: context.tokens.spacing.vsdslSpacingXs,
+                  child: AutoSizeText(
+                    S.of(context).v3_participant_item_casting,
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w600,
+                      color: context.tokens.color.vsdslColorSuccess,
+                    ),
+                    textAlign: TextAlign.center,
+                    minFontSize: 8,
+                  ),
+                ),
               ],
             ],
           ),

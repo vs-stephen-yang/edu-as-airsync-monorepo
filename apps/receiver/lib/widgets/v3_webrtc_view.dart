@@ -186,7 +186,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
               ),
           if (widget.rtcConnector.presentationState ==
                   PresentationState.streaming &&
-              widget.rtcConnector.senderNameWithEllipsis.isNotEmpty) ...[
+              (widget.rtcConnector.senderName ?? '').isNotEmpty) ...[
             Container(
               decoration: BoxDecoration(
                 border: Border.all(
@@ -212,7 +212,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                       color: context.tokens.color.vsdslColorSurface900,
                     ),
                     child: AutoSizeText(
-                      widget.rtcConnector.senderNameWithEllipsis,
+                      widget.rtcConnector.senderName ?? '',
                       style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
@@ -252,7 +252,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                             height: 13,
                           ),
                           AutoSizeText(
-                            widget.rtcConnector.senderNameWithEllipsis,
+                            widget.rtcConnector.senderName ?? '',
                             style: TextStyle(
                               fontSize: 45,
                               fontWeight: FontWeight.w600,
