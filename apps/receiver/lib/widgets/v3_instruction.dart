@@ -1,17 +1,16 @@
-import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
-class V3Instruction extends StatefulWidget {
+class V3Instruction extends StatelessWidget {
   const V3Instruction({
     super.key,
     this.isQuickConnect = false,
@@ -22,31 +21,18 @@ class V3Instruction extends StatefulWidget {
   final bool isCastToDevice;
 
   @override
-  State<StatefulWidget> createState() => _V3InstructionState();
-}
-
-class _V3InstructionState extends State<V3Instruction> {
-  static ConnectivityResult _lastConnectivityResult = ConnectivityResult.none;
-
-  @override
-  void initState() {
-    super.initState();
-    _initConnectivity();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Consumer2<ChannelProvider, InstanceInfoProvider>(
         builder: (_, channelProvider, instanceInfoProvider, __) {
       return Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: widget.isQuickConnect
+        crossAxisAlignment: isQuickConnect
             ? CrossAxisAlignment.center
             : CrossAxisAlignment.start,
         children: [
-          if (!widget.isQuickConnect)
+          if (!isQuickConnect)
             AutoSizeText(
-              widget.isCastToDevice
+              isCastToDevice
                   ? S.of(context).v3_instruction_receive_screen
                   : S.of(context).v3_instruction_share_screen,
               style: TextStyle(
@@ -56,9 +42,9 @@ class _V3InstructionState extends State<V3Instruction> {
                 letterSpacing: -0.48,
               ),
             ),
-          if (!widget.isQuickConnect)
+          if (!isQuickConnect)
             SizedBox(height: context.tokens.spacing.vsdslSpacing5xl.top),
-          if (widget.isQuickConnect)
+          if (isQuickConnect)
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -87,7 +73,7 @@ class _V3InstructionState extends State<V3Instruction> {
                 ),
               ],
             ),
-          if (widget.isQuickConnect)
+          if (isQuickConnect)
             SizedBox(height: context.tokens.spacing.vsdslSpacing4xl.top),
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -100,35 +86,38 @@ class _V3InstructionState extends State<V3Instruction> {
               Padding(
                 padding: EdgeInsets.only(
                     left: context.tokens.spacing.vsdslSpacingMd.left),
-                child: FutureBuilder(
-                  future: checkInternetConnection(),
-                  builder: (context, snapshot) {
-                    bool isInternet = false;
-                    if (snapshot.hasData) {
-                      isInternet = snapshot.data as bool;
-                    }
-                    return AutoSizeText.rich(
-                      _buildTextSpan(
-                        fullText: isInternet && !widget.isCastToDevice
-                            ? S.of(context).v3_instruction1a
-                            : S.of(context).v3_instruction1b,
-                        formatTexts: ['airsync.net'],
-                        formatStyle: TextStyle(
+                child: Consumer<ConnectivityProvider>(
+                    builder: (_, connectivityProvider, __) {
+                  return FutureBuilder(
+                    future: connectivityProvider.checkInternetConnection(),
+                    builder: (context, snapshot) {
+                      bool isInternet = false;
+                      if (snapshot.hasData) {
+                        isInternet = snapshot.data as bool;
+                      }
+                      return AutoSizeText.rich(
+                        _buildTextSpan(
+                          fullText: isInternet && !isCastToDevice
+                              ? S.of(context).v3_instruction1a
+                              : S.of(context).v3_instruction1b,
+                          formatTexts: ['airsync.net'],
+                          formatStyle: TextStyle(
+                            fontSize: 21,
+                            fontWeight: FontWeight.w700,
+                            color: context.tokens.color.vsdslColorSurface600,
+                            letterSpacing: -0.48,
+                          ),
+                        ),
+                        style: TextStyle(
                           fontSize: 21,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w500,
                           color: context.tokens.color.vsdslColorSurface600,
                           letterSpacing: -0.48,
                         ),
-                      ),
-                      style: TextStyle(
-                        fontSize: 21,
-                        fontWeight: FontWeight.w500,
-                        color: context.tokens.color.vsdslColorSurface600,
-                        letterSpacing: -0.48,
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  );
+                }),
               ),
             ],
           ),
@@ -158,7 +147,7 @@ class _V3InstructionState extends State<V3Instruction> {
           ),
           SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
           Padding(
-            padding: widget.isQuickConnect
+            padding: isQuickConnect
                 ? EdgeInsets.zero
                 : const EdgeInsets.only(left: 35),
             child: AutoSizeText(
@@ -221,7 +210,7 @@ class _V3InstructionState extends State<V3Instruction> {
           ),
           SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
           Padding(
-            padding: widget.isQuickConnect
+            padding: isQuickConnect
                 ? EdgeInsets.zero
                 : const EdgeInsets.only(left: 35),
             child: ValueListenableBuilder<int>(
@@ -253,33 +242,6 @@ class _V3InstructionState extends State<V3Instruction> {
           .trimRight();
     }
     return result;
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> _initConnectivity() async {
-    Connectivity().onConnectivityChanged.listen((result) async {
-      setState(() {
-        _lastConnectivityResult = result;
-      });
-    });
-  }
-
-  Future<bool> checkInternetConnection() async {
-    if (_lastConnectivityResult == ConnectivityResult.none) {
-      return false;
-    }
-
-    // Try pinging a public internet address
-    try {
-      final result = await InternetAddress.lookup('www.google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        return true; // Connect to Internet
-      }
-    } on SocketException catch (_) {
-      return false; // Only connect to Intranet
-    }
-
-    return false;
   }
 
   TextSpan _buildTextSpan(
