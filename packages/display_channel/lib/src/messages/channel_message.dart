@@ -22,6 +22,8 @@ enum ChannelMessageType {
   remoteScreenSignal,
   inviteDisplayGroup,
   inviteDisplayGroupResult,
+  inviteRemoteScreen,
+  leaveDisplayGroup,
   unknown,
 }
 
@@ -64,6 +66,8 @@ final channelMessageActionNames = <int, String>{
   ChannelMessageType.inviteDisplayGroup.index: 'invite-display-group',
   ChannelMessageType.inviteDisplayGroupResult.index:
       'invite-display-group-result',
+  ChannelMessageType.inviteRemoteScreen.index: 'invite-remote-screen',
+  ChannelMessageType.leaveDisplayGroup.index: 'leave-display-group',
 };
 
 final channelMessageParsers = {
@@ -95,6 +99,9 @@ final channelMessageParsers = {
       InviteDisplayGroupMessage.fromJson,
   ChannelMessageType.inviteDisplayGroupResult.index:
       InviteDisplayGroupResultMessage.fromJson,
+  ChannelMessageType.inviteRemoteScreen.index:
+      InviteRemoteScreenMessage.fromJson,
+  ChannelMessageType.leaveDisplayGroup.index: LeaveDisplayGroupMessage.fromJson,
 };
 
 ChannelMessageType actionNameToChannelMessageType(String actionName) {
@@ -949,6 +956,50 @@ class InviteDisplayGroupResultMessage extends ChannelMessage {
   Map<String, dynamic> toJson() {
     return super._toJson({
       'status': status,
+    });
+  }
+}
+
+class InviteRemoteScreenMessage extends ChannelMessage {
+  String? sessionId;
+
+  InviteRemoteScreenMessage({
+    this.sessionId,
+  }) : super(ChannelMessageType.inviteRemoteScreen);
+
+  InviteRemoteScreenMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.inviteRemoteScreen, json) {
+    final data = super._fromJson(json);
+
+    sessionId = data['sessionId'] as String?;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'sessionId': sessionId,
+    });
+  }
+}
+
+class LeaveDisplayGroupMessage extends ChannelMessage {
+  String? sessionId;
+
+  LeaveDisplayGroupMessage({
+    this.sessionId,
+  }) : super(ChannelMessageType.leaveDisplayGroup);
+
+  LeaveDisplayGroupMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.leaveDisplayGroup, json) {
+    final data = super._fromJson(json);
+
+    sessionId = data['sessionId'] as String?;
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return super._toJson({
+      'sessionId': sessionId,
     });
   }
 }

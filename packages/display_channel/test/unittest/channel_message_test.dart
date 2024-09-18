@@ -441,6 +441,34 @@ void main() {
     expect(actual.signal, '{"method":"offer"}');
   });
 
+  test('invite-remote-screen message', () {
+    // Arrange
+    final msg = InviteRemoteScreenMessage(
+      sessionId: '2000',
+    );
+
+    // action
+    final json = msg.toJson();
+    final actual = ChannelMessage.parse(json) as InviteRemoteScreenMessage;
+
+    // assert
+    expect(actual.sessionId, '2000');
+  });
+
+  test('leave-display-group message', () {
+    // Arrange
+    final msg = LeaveDisplayGroupMessage(
+      sessionId: '2000',
+    );
+
+    // action
+    final json = msg.toJson();
+    final actual = ChannelMessage.parse(json) as LeaveDisplayGroupMessage;
+
+    // assert
+    expect(actual.sessionId, '2000');
+  });
+
   test('isControlMessage() should return false for non control messages', () {
     // arrange
     final messages = [
@@ -498,6 +526,10 @@ void main() {
       actionNameToChannelMessageType('remote-screen-status'),
       actionNameToChannelMessageType('remote-screen-info'),
       actionNameToChannelMessageType('remote-screen-signal'),
+      actionNameToChannelMessageType('invite-display-group'),
+      actionNameToChannelMessageType('invite-display-group-result'),
+      actionNameToChannelMessageType('invite-remote-screen'),
+      actionNameToChannelMessageType('leave-display-group'),
     ];
 
     //assert
@@ -521,6 +553,10 @@ void main() {
     expect(actual[17], ChannelMessageType.remoteScreenStatus);
     expect(actual[18], ChannelMessageType.remoteScreenInfo);
     expect(actual[19], ChannelMessageType.remoteScreenSignal);
+    expect(actual[20], ChannelMessageType.inviteDisplayGroup);
+    expect(actual[21], ChannelMessageType.inviteDisplayGroupResult);
+    expect(actual[22], ChannelMessageType.inviteRemoteScreen);
+    expect(actual[23], ChannelMessageType.leaveDisplayGroup);
   });
 
   test('actionNameToChannelMessageType() unknown', () {
