@@ -145,5 +145,6 @@
   "v3_eula_title": "End-User License Agreement",
   "v3_eula_agree": "Agree",
   "v3_eula_disagree": "Disagree",
-  "v3_main_status_no_network": "Unable to detect an internet connection. Please connect to a Wi-Fi or intranet network, and try again."
+  "v3_main_status_no_network": "Unable to detect an internet connection. Please connect to a Wi-Fi or intranet network, and try again.",
+  "v3_settings_device_unavailable": "Unavailable"
 }

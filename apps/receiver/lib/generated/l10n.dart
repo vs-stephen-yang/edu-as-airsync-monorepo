@@ -1520,6 +1520,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Unavailable`
+  String get v3_settings_device_unavailable {
+    return Intl.message(
+      'Unavailable',
+      name: 'v3_settings_device_unavailable',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

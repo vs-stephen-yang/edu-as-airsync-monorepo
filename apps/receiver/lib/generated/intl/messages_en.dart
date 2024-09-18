@@ -264,6 +264,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_device_show_display_code_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Keep the code visible at the top of the screen, even when switching to other apps and screen sharing is active."),
+        "v3_settings_device_unavailable":
+            MessageLookupByLibrary.simpleMessage("Unavailable"),
         "v3_settings_display_group":
             MessageLookupByLibrary.simpleMessage("Display Group"),
         "v3_settings_display_group_all_the_time":

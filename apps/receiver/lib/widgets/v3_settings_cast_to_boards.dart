@@ -1,5 +1,7 @@
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/group_list_provider.dart';
 import 'package:display_flutter/providers/group_provider.dart';
@@ -49,7 +51,11 @@ class V3SettingsCastToBoardsState
     final broadcastType = ref
         .watch(groupProvider.select((state) => state.broadcastGroupLaunchType));
     final GroupListModel discoveryModel = ref.watch(discoveryModelProvider);
-    discoveryModel.start();
+    if (isBroadcastingToGroup) {
+      discoveryModel.start();
+    } else {
+      discoveryModel.stop();
+    }
     return Stack(
       children: [
         Positioned(
@@ -82,14 +88,16 @@ class V3SettingsCastToBoardsState
       child: broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
           ? _saveButton(context, S.of(context).v3_settings_device_name_save,
               onClick: () {
+              AppPreferences()
+                  .setGroupSelectedList(groupNotifier.historySelectedList);
               settingsProvider.setPage(SettingPageState.deviceSetting);
             })
           : _broadcastButton(
               context,
               S.of(context).v3_settings_display_group_cast,
               onClick: () {
-                // TODO:save selected list
-
+                AppPreferences()
+                    .setGroupSelectedList(groupNotifier.historySelectedList);
                 // start display group
                 channelProvider.startDisplayGroup(groupNotifier.selectedList);
               },
@@ -173,24 +181,46 @@ class V3SettingsCastToBoardsState
                       padding: EdgeInsets.only(
                           right: context.tokens.spacing.vsdslSpacingSm.right)),
                   Text(
-                    '${client.deviceName()} (${InvitedToGroupOption.getInvitedToGroupString(context, int.parse(client.invitedState()))})',
+                    client.deviceName(),
                     style: TextStyle(
                         fontSize: 12,
                         color: context.tokens.color.vsdslColorOnSurfaceInverse),
                   ),
                   const Spacer(),
-                  Text(
-                    client.displayCode(),
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: context.tokens.color.vsdslColorOnSurfaceInverse),
-                  )
+                  displayCodeWidget(client, context)
                 ],
               ),
             ),
           );
         },
       ),
+    );
+  }
+
+  Widget displayCodeWidget(GroupListItem client, BuildContext context) {
+    final bool unavailable =
+        client.invitedState() == InvitedToGroupOption.ignore.value.toString();
+    return Row(
+      children: [
+        if (unavailable)
+          const SizedBox(
+            width: 20,
+            height: 20,
+            child: Image(
+              image: Svg('assets/images/ic_device_unavailable.svg'),
+            ),
+          ),
+        Text(
+          unavailable
+              ? S.current.v3_settings_device_unavailable
+              : client.displayCode(),
+          style: TextStyle(
+              fontSize: 12,
+              color: unavailable
+                  ? context.tokens.color.vsdslColorOnSurfaceVariant
+                  : context.tokens.color.vsdslColorOnSurfaceInverse),
+        ),
+      ],
     );
   }
 
