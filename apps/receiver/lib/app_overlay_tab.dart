@@ -85,7 +85,7 @@ class AppOverlayTab {
             OverlayTabHandler.keyDeviceName: instanceInfoProvider.deviceName,
             OverlayTabHandler.keyDisplayCode: instanceInfoProvider.displayCode,
             OverlayTabHandler.keyOtpCode: channelProvider.isEyeOpen.value
-                ? channelProvider.otp.value.toString()
+                ? channelProvider.otp.value
                 : 'XXXX',
             OverlayTabHandler.keyLanguage: languageProvider.language,
           });
@@ -99,13 +99,13 @@ class AppOverlayTab {
 
           channelProvider.otp.addListener(() async {
             await setOtpCode(channelProvider.isEyeOpen.value
-                ? channelProvider.otp.value.toString()
+                ? channelProvider.otp.value
                 : 'XXXX');
           });
 
           channelProvider.isEyeOpen.addListener(() async {
             await setOtpCode(channelProvider.isEyeOpen.value
-                ? channelProvider.otp.value.toString()
+                ? channelProvider.otp.value
                 : 'XXXX');
           });
 

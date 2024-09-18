@@ -72,11 +72,11 @@ class MainInfo extends StatelessWidget {
                                         WrapCrossAlignment.center,
                                     spacing: 16,
                                     children: <Widget>[
-                                      ValueListenableBuilder<int>(
+                                      ValueListenableBuilder<String>(
                                         valueListenable: channelProvider.otp,
                                         builder: (_, otp, __) {
                                           return Text(
-                                            eyeOpen ? otp.toString() : 'XXXX',
+                                            eyeOpen ? otp : 'XXXX',
                                             style: const TextStyle(
                                               fontFamily: 'Inconsolata',
                                               fontSize: 35,
