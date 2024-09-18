@@ -455,15 +455,15 @@ void main() {
     expect(actual.sessionId, '2000');
   });
 
-  test('leave-display-group message', () {
+  test('stop-display-group message', () {
     // Arrange
-    final msg = LeaveDisplayGroupMessage(
+    final msg = StopDisplayGroupMessage(
       sessionId: '2000',
     );
 
     // action
     final json = msg.toJson();
-    final actual = ChannelMessage.parse(json) as LeaveDisplayGroupMessage;
+    final actual = ChannelMessage.parse(json) as StopDisplayGroupMessage;
 
     // assert
     expect(actual.sessionId, '2000');
@@ -529,7 +529,7 @@ void main() {
       actionNameToChannelMessageType('invite-display-group'),
       actionNameToChannelMessageType('invite-display-group-result'),
       actionNameToChannelMessageType('invite-remote-screen'),
-      actionNameToChannelMessageType('leave-display-group'),
+      actionNameToChannelMessageType('stop-display-group'),
     ];
 
     //assert
@@ -556,7 +556,7 @@ void main() {
     expect(actual[20], ChannelMessageType.inviteDisplayGroup);
     expect(actual[21], ChannelMessageType.inviteDisplayGroupResult);
     expect(actual[22], ChannelMessageType.inviteRemoteScreen);
-    expect(actual[23], ChannelMessageType.leaveDisplayGroup);
+    expect(actual[23], ChannelMessageType.stopDisplayGroup);
   });
 
   test('actionNameToChannelMessageType() unknown', () {
