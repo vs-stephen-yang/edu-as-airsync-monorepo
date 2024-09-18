@@ -23,7 +23,7 @@ enum ChannelMessageType {
   inviteDisplayGroup,
   inviteDisplayGroupResult,
   inviteRemoteScreen,
-  leaveDisplayGroup,
+  stopDisplayGroup,
   unknown,
 }
 
@@ -67,7 +67,7 @@ final channelMessageActionNames = <int, String>{
   ChannelMessageType.inviteDisplayGroupResult.index:
       'invite-display-group-result',
   ChannelMessageType.inviteRemoteScreen.index: 'invite-remote-screen',
-  ChannelMessageType.leaveDisplayGroup.index: 'leave-display-group',
+  ChannelMessageType.stopDisplayGroup.index: 'stop-display-group',
 };
 
 final channelMessageParsers = {
@@ -101,7 +101,7 @@ final channelMessageParsers = {
       InviteDisplayGroupResultMessage.fromJson,
   ChannelMessageType.inviteRemoteScreen.index:
       InviteRemoteScreenMessage.fromJson,
-  ChannelMessageType.leaveDisplayGroup.index: LeaveDisplayGroupMessage.fromJson,
+  ChannelMessageType.stopDisplayGroup.index: StopDisplayGroupMessage.fromJson,
 };
 
 ChannelMessageType actionNameToChannelMessageType(String actionName) {
@@ -982,24 +982,27 @@ class InviteRemoteScreenMessage extends ChannelMessage {
   }
 }
 
-class LeaveDisplayGroupMessage extends ChannelMessage {
+class StopDisplayGroupMessage extends ChannelMessage {
   String? sessionId;
+  String? reason;
 
-  LeaveDisplayGroupMessage({
+  StopDisplayGroupMessage({
     this.sessionId,
-  }) : super(ChannelMessageType.leaveDisplayGroup);
+  }) : super(ChannelMessageType.stopDisplayGroup);
 
-  LeaveDisplayGroupMessage.fromJson(Map<String, dynamic> json)
-      : super.fromJson(ChannelMessageType.leaveDisplayGroup, json) {
+  StopDisplayGroupMessage.fromJson(Map<String, dynamic> json)
+      : super.fromJson(ChannelMessageType.stopDisplayGroup, json) {
     final data = super._fromJson(json);
 
     sessionId = data['sessionId'] as String?;
+    reason = data['reason'] as String?;
   }
 
   @override
   Map<String, dynamic> toJson() {
     return super._toJson({
       'sessionId': sessionId,
+      'reason': reason,
     });
   }
 }
