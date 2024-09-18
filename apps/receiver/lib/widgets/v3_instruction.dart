@@ -217,11 +217,11 @@ class V3Instruction extends StatelessWidget {
               ? EdgeInsets.zero
               : const EdgeInsets.only(left: 35),
           child: Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
-            return ValueListenableBuilder<int>(
+            return ValueListenableBuilder<String>(
               valueListenable: channelProvider.otp,
               builder: (_, otp, __) {
                 return AutoSizeText(
-                  otp.toString(),
+                  otp,
                   style: TextStyle(
                     fontSize: 45,
                     fontWeight: FontWeight.w700,

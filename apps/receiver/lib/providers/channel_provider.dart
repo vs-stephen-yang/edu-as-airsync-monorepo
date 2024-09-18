@@ -28,6 +28,7 @@ import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/misc_util.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -74,7 +75,7 @@ class ChannelProvider extends ChangeNotifier {
   final ValueNotifier<bool> isEyeOpen = ValueNotifier(true);
   late ValueNotifier<int> countDownProgress;
   final ValueNotifier<bool> isLanModeOnly = ValueNotifier(false);
-  final ValueNotifier<int> otp = ValueNotifier(0000);
+  final ValueNotifier<String> otp = ValueNotifier('0000');
   final List<String> _otpList = [];
 
   List<String> get otpList => _otpList;
@@ -808,7 +809,7 @@ class ChannelProvider extends ChangeNotifier {
       return;
     }
 
-    _generateOTP();
+    _updateOTP();
 
     _otpTickTimer = Timer.periodic(_otpTickInterval, (timer) {
       _onOTPTick();
@@ -820,16 +821,16 @@ class ChannelProvider extends ChangeNotifier {
     if (countDownProgress.value == 0) {
       countDownProgress.value = maxCountDown;
 
-      _generateOTP();
+      _updateOTP();
       _updateDisplayCode();
     }
   }
 
-  _generateOTP() {
-    otp.value = Random().nextInt(9000) + 1000;
+  _updateOTP() {
+    otp.value = generateOTP(Random());
 
-    if (!otpList.contains(otp.value.toString())) {
-      _otpList.add(otp.value.toString());
+    if (!otpList.contains(otp.value)) {
+      _otpList.add(otp.value);
 
       if (_otpList.length > 2) {
         _otpList.remove(_otpList.first);
