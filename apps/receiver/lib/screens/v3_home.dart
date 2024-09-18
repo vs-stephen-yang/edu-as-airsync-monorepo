@@ -15,6 +15,7 @@ import 'package:display_flutter/widgets/v3_mirror_prompt.dart';
 import 'package:display_flutter/widgets/v3_streaming_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +42,14 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
     Provider.of<ChannelProvider>(context, listen: false).startChannelProvider();
     Provider.of<MirrorStateProvider>(context, listen: false)
         .startMirrorStartProvider();
+    setProviderContainer();
+  }
+
+  void setProviderContainer() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ChannelProvider>(context, listen: false)
+          .setProviderContainer(riverpod.ProviderScope.containerOf(context));
+    });
   }
 
   @override
@@ -63,6 +72,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
       channelProvider.updateAllAudioEnableState(true);
       mirrorStateProvider.updateAllAudioEnableState(true);
     }
+    setProviderContainer();
   }
 
   Widget _buildDisplayGroupVideoView(ChannelProvider channelProvider) {

@@ -8,6 +8,8 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/api/ice_api.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/app_preferences.dart';
+import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/display_group_video_view.dart';
 import 'package:display_flutter/model/group_list_item.dart';
@@ -28,7 +30,11 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:sprintf/sprintf.dart';
+
+import 'message_dialog_provider.dart';
 
 ///
 /// ChannelProvider
@@ -126,6 +132,8 @@ class ChannelProvider extends ChangeNotifier {
   DisplayGroupVideoView? get displayGroupVideoView =>
       _displayGroupSession?.videoView;
 
+  ProviderContainer? providerContainer; //透過ProviderContainer來和Riverpod進行互動
+
   ChannelProvider(
     this.appConfig,
     this._instanceInfo,
@@ -137,6 +145,10 @@ class ChannelProvider extends ChangeNotifier {
   startChannelProvider() {
     _setConnectivityListener();
     _startNewOTPTimer();
+  }
+
+  setProviderContainer(ProviderContainer pc) {
+    providerContainer = pc;
   }
 
   void _setConnectivityListener() {
@@ -281,10 +293,31 @@ class ChannelProvider extends ChangeNotifier {
 
     _displayGroupSession = DisplayGroupSession(
       channel,
-      onInvitation: (String hostNamem, String displayCode) {
-        // TODO:
-        _displayGroupSession?.accept();
-        // _displayGroupSession?.reject('reject invitation');
+      onInvitation: (String hostName, String displayCode) {
+        final invitedToGroup = AppPreferences().invitedToGroup;
+        switch (invitedToGroup) {
+          case '0': // notifyMe
+            providerContainer?.read(dialogProvider.notifier).showDialog(
+                  title: sprintf(S.current.v3_group_dialog_title, [hostName]),
+                  content:
+                      sprintf(S.current.v3_group_dialog_message, [hostName]),
+                  confirmText: S.current.v3_group_dialog_accept,
+                  cancelText: S.current.v3_group_dialog_decline,
+                  onConfirm: () {
+                    _displayGroupSession?.accept();
+                  },
+                  onCancel: () {
+                    _displayGroupSession?.reject('reject invitation');
+                  },
+                );
+            break;
+          case '1': // autoAccept
+            _displayGroupSession?.accept();
+            break;
+          case '2': // ignore
+            _displayGroupSession?.reject('reject invitation');
+            break;
+        }
       },
       onStateChange: () {
         notifyListeners();
