@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,6 +16,7 @@ class AppPreferences {
     await _instance._load();
     await _instance._loadInvitedToGroupSelectedItem();
     await _instance._loadSelectedConnectivityType();
+    await _instance._loadGroupSelectedList();
   }
 
   bool _showEULA = true;
@@ -86,6 +89,27 @@ class AppPreferences {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _invitedToGroup =
         prefs.getString('app_setting_invited_to_group') ?? _invitedToGroup;
+  }
+
+  List<Map<String, String>> _groupSelectedList = [];
+
+  List<Map<String, String>> get groupSelectedList => _groupSelectedList;
+
+  void setGroupSelectedList(List<Map<String, String>> selectedList) async {
+    _groupSelectedList = selectedList;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonString = jsonEncode(selectedList);
+    await prefs.setString('app_setting_group_selected_list', jsonString);
+  }
+
+  _loadGroupSelectedList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString('app_setting_group_selected_list');
+    if (jsonString != null) {
+      List<dynamic> jsonList = jsonDecode(jsonString);
+      _groupSelectedList =
+          jsonList.map((item) => Map<String, String>.from(item)).toList();
+    }
   }
 
   String _connectivityType = ConnectivityType.both.toString();

@@ -32,7 +32,9 @@ class GroupListModel with ChangeNotifier {
   }
 
   stop() async {
-    await discovery?.stop();
+    if (!(discovery?.isStopped ?? false)) {
+      await discovery?.stop();
+    }
   }
 
   void onEventOccurred(BonsoirDiscoveryEvent event) {
