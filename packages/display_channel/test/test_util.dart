@@ -7,6 +7,8 @@ class CounterCondition {
   final _completer = Completer();
   int _counter = 0;
 
+  Future<void> get future => _completer.future;
+
   final int _expectedCount;
 
   CounterCondition(this._expectedCount);
@@ -48,26 +50,36 @@ Future waitForAllCompleted(List<Completer<void>> completers) async {
   await Future.wait(futures);
 }
 
-Future scheduleTasks<T>(
+Future<void> scheduleTasks<T>(
   List<T> items,
   Future<void> Function(T item, int index) task,
-  Duration totalDuration,
+  Duration duration,
 ) async {
   final startTime = DateTime.now();
+  final futures = <Future<void>>[];
 
-  for (int i = 0; i < items.length; i++) {
-    // Execute the task for the current item
-    await task(items[i], i);
+  for (var i = 0; i < items.length; i++) {
+    final item = items[i];
 
-    // Calculate the elapsed time
-    final elapsedTime = DateTime.now().difference(startTime);
-    final nextTaskTimeMs =
-        ((i + 1) * totalDuration.inMilliseconds) ~/ items.length;
+    // Start the task and add it to the futures list.
+    futures.add(task(item, i));
 
-    // Calculate the delay before executing the next task
-    final delayMs = nextTaskTimeMs - elapsedTime.inMilliseconds;
+    // Calculate elapsed time since the start.
+    final elapsed = DateTime.now().difference(startTime);
+
+    // Calculate the expected time for the next task to maintain evenly spaced execution.
+    final expectedNextTimeMs =
+        ((i + 1) * duration.inMilliseconds) ~/ items.length;
+
+    // Calculate the delay required to keep the tasks evenly spaced.
+    final delayMs = expectedNextTimeMs - elapsed.inMilliseconds;
+
+    // If delay is positive, wait for that duration to maintain interval.
     if (delayMs > 0) {
       await Future.delayed(Duration(milliseconds: delayMs));
     }
   }
+
+  // Wait for all tasks to complete.
+  await Future.wait(futures);
 }
