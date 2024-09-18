@@ -56,7 +56,9 @@ class GroupProvider extends StateNotifier<GroupState> {
     if (client.id() == AppInstanceCreate().groupID) {
       return;
     }
-    if (state.selectedList.any((item) => item.id() == client.id())) {
+    bool inHistory =
+        state.historySelectedList.any((map) => map.containsKey(client.id()));
+    if (inHistory) {
       state.selectedList.removeWhere((item) => item.id() == client.id());
       state = state.copyWith(selectedList: [...state.selectedList, client]);
     } else {
