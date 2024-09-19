@@ -935,4 +935,11 @@ class ChannelProvider extends ChangeNotifier {
 
     return connector;
   }
+
+  //region handle Display Group's client
+  void stopReceivedFromHost() {
+    _displayGroupSession?.stop();
+    notifyListeners();
+  }
+// endregion
 }

@@ -52,6 +52,16 @@ class DisplayGroupSession {
     });
   }
 
+  void stop() {
+    _isVideoAvailable = false;
+    videoView?.renderer.dispose();
+    _channel.send(StopDisplayGroupMessage());
+    Future.delayed(const Duration(seconds: 3), () {
+      _channel.close(ChannelCloseReason(ChannelCloseCode.remoteClose,
+          text: 'stop received'));
+    });
+  }
+
   void _onChannelMessage(ChannelMessage message) async {
     log.info('Display Group - Handling message: ${message.messageType}');
 
