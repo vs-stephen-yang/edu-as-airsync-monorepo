@@ -64,8 +64,8 @@ class V3SettingsCastToBoardsState
             left: 13,
             top: 57,
             right: 13,
-            child:
-                _buildContent(context, groupNotifier, isBroadcastingToGroup)),
+            child: _buildContent(context, groupNotifier, isBroadcastingToGroup,
+                channelProvider)),
         if (isBroadcastingToGroup)
           Positioned(
             right: 13,
@@ -106,13 +106,13 @@ class V3SettingsCastToBoardsState
   }
 
   SizedBox _buildContent(BuildContext context, GroupProvider groupNotifier,
-      bool isBroadcastingToGroup) {
+      bool isBroadcastingToGroup, ChannelProvider channelProvider) {
     return SizedBox(
       height: 293,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildBroadcastGroupToggle(context, groupNotifier),
+          _buildBroadcastGroupToggle(context, groupNotifier, channelProvider),
           if (isBroadcastingToGroup)
             _buildRadioGroupItem(
                 S.of(context).v3_settings_display_group_only_casting,
@@ -254,8 +254,8 @@ class V3SettingsCastToBoardsState
     );
   }
 
-  SizedBox _buildBroadcastGroupToggle(
-      BuildContext context, GroupProvider groupNotifier) {
+  SizedBox _buildBroadcastGroupToggle(BuildContext context,
+      GroupProvider groupNotifier, ChannelProvider channelProvider) {
     return SizedBox(
       height: 26,
       child: Row(
@@ -280,6 +280,9 @@ class V3SettingsCastToBoardsState
               // constraints: const BoxConstraints(),
               onPressed: () async {
                 bool state = !groupNotifier.broadcastToGroup;
+                if (state && !channelProvider.isSenderMode) {
+                  await channelProvider.startRemoteScreen();
+                }
                 if (!state) {
                   groupNotifier.clearClients();
                   GroupListModel discoveryModel =
