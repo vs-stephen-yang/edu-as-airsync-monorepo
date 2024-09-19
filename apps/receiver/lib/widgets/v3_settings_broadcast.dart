@@ -108,15 +108,14 @@ class V3SettingsBroadcast extends StatelessWidget {
             height: 21,
             child: IconButton(
               icon: Image(
-                image: Svg(ChannelProvider.isSenderMode
+                image: Svg(channelProvider.isSenderMode
                     ? 'assets/images/ic_switch_on.svg'
                     : 'assets/images/ic_switch_off.svg'),
               ),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               onPressed: () async {
-                ChannelProvider.isSenderMode = !ChannelProvider.isSenderMode;
-                if (!ChannelProvider.isSenderMode) {
+                if (channelProvider.isSenderMode) {
                   await channelProvider.removeSender();
                 } else {
                   await channelProvider.startRemoteScreen();

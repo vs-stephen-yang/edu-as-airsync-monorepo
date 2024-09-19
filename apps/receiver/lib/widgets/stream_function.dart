@@ -188,7 +188,9 @@ class _StreamFunctionStates extends State<StreamFunction> {
                       );
                     }),
 
-                  if (value == stateMenuOn && ChannelProvider.isSenderMode)
+                  if (value == stateMenuOn &&
+                      Provider.of<ChannelProvider>(context, listen: false)
+                          .isSenderMode)
                     FocusIconButton(
                       svgSource: const Svg('assets/images/ic_receiver.svg'),
                       iconForegroundColor: AppColors.iconPresentingForeground,

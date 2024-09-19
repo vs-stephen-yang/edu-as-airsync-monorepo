@@ -94,16 +94,18 @@ class ChannelProvider extends ChangeNotifier {
 
   bool blockRtcConnection = false;
 
-  final RemoteScreenServer _remoteScreenServe = RemoteScreenServer();
+  final int maxRemoteScreenConnection = 10;
 
   RemoteScreenServer get remoteScreenServe => _remoteScreenServe;
-  static const int maxRemoteScreenConnection = 10;
-  static final List<RemoteScreenConnector> _remoteScreenConnectors =
+  final RemoteScreenServer _remoteScreenServe = RemoteScreenServer();
+
+  List<RemoteScreenConnector> get remoteScreenConnectors =>
+      _remoteScreenConnectors;
+  final List<RemoteScreenConnector> _remoteScreenConnectors =
       <RemoteScreenConnector>[];
 
-  static List<RemoteScreenConnector> get remoteScreenConnectors =>
-      _remoteScreenConnectors;
-  static bool isSenderMode = false;
+  bool get isSenderMode => _isSenderMode;
+  bool _isSenderMode = false;
 
   final InstanceInfoProvider _instanceInfo;
 
@@ -328,13 +330,13 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future startRemoteScreen() async {
+    _isSenderMode = true;
     final iceServers = await _getIceServers(ChannelMode.tunnel);
 
     await _remoteScreenServe.startSfuServer(iceServers);
     await _remoteScreenServe.startRemoteScreenPublisher();
     ConnectionTimer.getInstance().startShareSenderTimer(() {
       removeSender();
-      ChannelProvider.isSenderMode = false;
     });
     notifyListeners();
   }
@@ -487,7 +489,7 @@ class ChannelProvider extends ChangeNotifier {
 
         /// remote
         case ChannelMessageType.startRemoteScreen:
-          if (isSenderMode) {
+          if (_isSenderMode) {
             final iceServers = await _getIceServers(mode);
 
             await remoteScreenConnector?.onStartRemoteScreen(
@@ -696,21 +698,22 @@ class ChannelProvider extends ChangeNotifier {
 
   removeSender(
       {RemoteScreenConnector? remoteScreenConnector, bool kick = true}) {
+    _isSenderMode = false;
     if (remoteScreenConnector != null) {
-      int index = remoteScreenConnectors.indexOf(remoteScreenConnector);
+      int index = _remoteScreenConnectors.indexOf(remoteScreenConnector);
       if (index != -1) {
         if (kick) {
           remoteScreenConnector
               .sendRemoteScreenState(RemoteScreenStatus.kicked);
         }
-        _remoteScreenServe.removeConnector(remoteScreenConnectors[index]);
-        remoteScreenConnectors.removeAt(index);
+        _remoteScreenServe.removeConnector(_remoteScreenConnectors[index]);
+        _remoteScreenConnectors.removeAt(index);
       }
     } else {
-      for (var element in remoteScreenConnectors) {
+      for (var element in _remoteScreenConnectors) {
         element.sendRemoteScreenState(RemoteScreenStatus.kicked);
       }
-      remoteScreenConnectors.clear();
+      _remoteScreenConnectors.clear();
       stopRemoteScreenPublisher();
       ConnectionTimer.getInstance().stopShareSenderTimer();
     }
