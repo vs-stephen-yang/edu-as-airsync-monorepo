@@ -67,16 +67,14 @@ class V3ShortcutsMenu extends StatelessWidget {
                             height: 21,
                             child: IconButton(
                               icon: Image(
-                                image: Svg(ChannelProvider.isSenderMode
+                                image: Svg(channelProvider.isSenderMode
                                     ? 'assets/images/ic_switch_on.svg'
                                     : 'assets/images/ic_switch_off.svg'),
                               ),
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(),
                               onPressed: () {
-                                ChannelProvider.isSenderMode =
-                                    !ChannelProvider.isSenderMode;
-                                if (!ChannelProvider.isSenderMode) {
+                                if (channelProvider.isSenderMode) {
                                   channelProvider.removeSender();
                                 } else {
                                   channelProvider.startRemoteScreen();

@@ -27,7 +27,7 @@ class V3CastDeviceList extends StatelessWidget {
                 ),
                 TextSpan(
                   text:
-                      ' (${ChannelProvider.remoteScreenConnectors.length}/${ChannelProvider.maxRemoteScreenConnection})',
+                      ' (${channelProvider.remoteScreenConnectors.length}/${channelProvider.maxRemoteScreenConnection})',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
@@ -40,7 +40,7 @@ class V3CastDeviceList extends StatelessWidget {
             SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
             Expanded(
               child: ListView.separated(
-                itemCount: ChannelProvider.remoteScreenConnectors.length,
+                itemCount: channelProvider.remoteScreenConnectors.length,
                 itemBuilder: (BuildContext context, int index) {
                   return V3CastDeviceItem(index: index);
                 },

@@ -18,9 +18,6 @@ class SenderItem extends StatefulWidget {
 
 class _SenderItemState extends State<SenderItem>
     with SingleTickerProviderStateMixin {
-  late ChannelProvider channelProvider;
-  late RemoteScreenConnector remoteScreenConnector;
-
   @override
   void initState() {
     super.initState();
@@ -28,9 +25,9 @@ class _SenderItemState extends State<SenderItem>
 
   @override
   Widget build(BuildContext context) {
-    channelProvider = Provider.of<ChannelProvider>(context);
-    remoteScreenConnector =
-        ChannelProvider.remoteScreenConnectors[widget.index];
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    RemoteScreenConnector remoteScreenConnector =
+        channelProvider.remoteScreenConnectors[widget.index];
     return SizedBox(
       child: Row(
         children: [

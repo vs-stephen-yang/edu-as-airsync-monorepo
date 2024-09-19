@@ -34,7 +34,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
           showModerator = false;
         }
       }
-      if (ChannelProvider.isSenderMode) {
+      if (channelProvider.isSenderMode) {
         featureCount++;
         showCastDevice = true;
       }
@@ -142,7 +142,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           ),
                         ),
                       ),
-                      if (ChannelProvider.remoteScreenConnectors.isNotEmpty)
+                      if (channelProvider.remoteScreenConnectors.isNotEmpty)
                         Positioned(
                           left: 0,
                           top: featureCount == 2 ? 64 : 9,
@@ -156,7 +156,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                             ),
                             padding: EdgeInsets.zero,
                             child: AutoSizeText(
-                              ChannelProvider.remoteScreenConnectors.length
+                              channelProvider.remoteScreenConnectors.length
                                   .toString(),
                               textAlign: TextAlign.center,
                               style: TextStyle(

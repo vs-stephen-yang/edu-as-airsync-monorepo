@@ -22,7 +22,7 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
     RemoteScreenConnector remoteScreenConnector =
-        ChannelProvider.remoteScreenConnectors[widget.index];
+        channelProvider.remoteScreenConnectors[widget.index];
     return SizedBox(
       width: 283,
       height: remoteScreenConnector.isTouchEnabled ? 40 : 33,

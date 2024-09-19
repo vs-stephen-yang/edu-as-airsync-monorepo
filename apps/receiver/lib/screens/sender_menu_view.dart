@@ -32,15 +32,14 @@ class _SenderMenuViewState extends State<SenderMenuView> {
           topTitleText: S.of(context).main_settings_share_to_sender,
           topTitleAction: FocusIconButton(
             childNotFocus: Image(
-              image: Svg(ChannelProvider.isSenderMode
+              image: Svg(channelProvider.isSenderMode
                   ? 'assets/images/ic_activate_on.svg'
                   : 'assets/images/ic_activate_off.svg'),
             ),
             splashRadius: 20,
             focusColor: Colors.grey,
             onClick: () async {
-              ChannelProvider.isSenderMode = !ChannelProvider.isSenderMode;
-              if (!ChannelProvider.isSenderMode) {
+              if (channelProvider.isSenderMode) {
                 channelProvider.removeSender();
               } else {
                 channelProvider.startRemoteScreen();

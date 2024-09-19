@@ -3,6 +3,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/sender_item.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SenderListView extends StatefulWidget {
   const SenderListView(this.editMode, {super.key});
@@ -16,13 +17,14 @@ class SenderListView extends StatefulWidget {
 class _SenderListViewState extends State<SenderListView> {
   @override
   Widget build(BuildContext context) {
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
         color: Colors.transparent,
       ),
-      child: !ChannelProvider.isSenderMode ||
-              ChannelProvider.remoteScreenConnectors.isEmpty
+      child: !channelProvider.isSenderMode ||
+              channelProvider.remoteScreenConnectors.isEmpty
           ? Container(
               alignment: Alignment.center,
               child: Text(
@@ -31,7 +33,7 @@ class _SenderListViewState extends State<SenderListView> {
               ),
             )
           : ListView.separated(
-              itemCount: ChannelProvider.remoteScreenConnectors.length,
+              itemCount: channelProvider.remoteScreenConnectors.length,
               itemBuilder: (BuildContext context, int index) {
                 if (index > 10) return const SizedBox();
                 return SenderItem(index: index, editMode: widget.editMode);
