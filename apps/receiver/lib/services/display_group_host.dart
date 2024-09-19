@@ -15,6 +15,8 @@ class DisplayGroupHost {
     this._createRemoteScreenConnector,
   );
 
+  get members => _members;
+
   // Remove a member by their ID
   void removeMember(String memberId) {
     _members[memberId]?.stop();

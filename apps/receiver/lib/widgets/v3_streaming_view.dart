@@ -5,6 +5,7 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/screens/v3_new_sharing_menu.dart';
 import 'package:display_flutter/screens/v3_quick_connect_menu.dart';
 import 'package:display_flutter/screens/v3_shortcuts_menu.dart';
@@ -13,17 +14,19 @@ import 'package:display_flutter/widgets/v3_header_bar.dart';
 import 'package:display_flutter/widgets/v3_streaming_function.dart';
 import 'package:display_flutter/widgets/v3_webrtc_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider;
 
-class V3StreamingView extends StatefulWidget {
+class V3StreamingView extends ConsumerStatefulWidget {
   const V3StreamingView({super.key});
 
   @override
-  State<StatefulWidget> createState() => _V3StreamingViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _V3StreamingViewState();
 }
 
-class _V3StreamingViewState extends State<V3StreamingView> {
+class _V3StreamingViewState extends ConsumerState {
   double _fullWidth = 0,
       _fullHeight = 0,
       _halfWidth = 0,
@@ -45,6 +48,16 @@ class _V3StreamingViewState extends State<V3StreamingView> {
         ValueListenableBuilder(
           valueListenable: HybridConnectionList.hybridSplitScreenCount,
           builder: (context, int splitScreenCount, child) {
+            if (splitScreenCount > 0) {
+              bool toggle = ref.read(groupProvider).broadcastToGroup;
+              if (toggle) {
+                if (ref.read(groupProvider).broadcastGroupLaunchType ==
+                    BroadcastGroupLaunchType.onlyWhenCasting) {
+                  provider.Provider.of<ChannelProvider>(context, listen: false)
+                      .startDisplayGroup(ref.read(groupProvider).selectedList);
+                }
+              }
+            }
             if (splitScreenCount == 3 || splitScreenCount == 5) {
               // add one more to show "Waiting for others to join".
               splitScreenCount++;
@@ -277,8 +290,9 @@ class _V3StreamingViewState extends State<V3StreamingView> {
           ),
         ),
         ValueListenableBuilder(
-          valueListenable: Provider.of<ChannelProvider>(context, listen: false)
-              .showNewSharingNameList,
+          valueListenable:
+              provider.Provider.of<ChannelProvider>(context, listen: false)
+                  .showNewSharingNameList,
           builder: (_, value, __) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (value.isNotEmpty &&
@@ -356,7 +370,7 @@ class _V3StreamingViewState extends State<V3StreamingView> {
       },
     ).then((_) {
       ChannelProvider channelProvider =
-          Provider.of<ChannelProvider>(context, listen: false);
+          provider.Provider.of<ChannelProvider>(context, listen: false);
       channelProvider.showNewSharingNameList.value.remove(name);
       channelProvider.showNewSharingNameList.value =
           List.from(channelProvider.showNewSharingNameList.value);
