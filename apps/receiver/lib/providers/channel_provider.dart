@@ -134,6 +134,8 @@ class ChannelProvider extends ChangeNotifier {
 
   ProviderContainer? providerContainer; //透過ProviderContainer來和Riverpod進行互動
 
+  String? get displayGroupHostName => _displayGroupSession?.hostName;
+
   ChannelProvider(
     this.appConfig,
     this._instanceInfo,
@@ -304,18 +306,18 @@ class ChannelProvider extends ChangeNotifier {
                   confirmText: S.current.v3_group_dialog_accept,
                   cancelText: S.current.v3_group_dialog_decline,
                   onConfirm: () {
-                    _displayGroupSession?.accept();
+                    _displayGroupSession?.accept(hostName);
                   },
                   onCancel: () {
-                    _displayGroupSession?.reject('reject invitation');
+                    _displayGroupSession?.reject();
                   },
                 );
             break;
           case '1': // autoAccept
-            _displayGroupSession?.accept();
+            _displayGroupSession?.accept(hostName);
             break;
           case '2': // ignore
-            _displayGroupSession?.reject('reject invitation');
+            _displayGroupSession?.reject();
             break;
         }
       },

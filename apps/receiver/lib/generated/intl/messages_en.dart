@@ -185,6 +185,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "%s has sent a broadcast request to your device. This action will synchronize and display the current content, do you want to accept this request?"),
         "v3_group_dialog_title":
             MessageLookupByLibrary.simpleMessage("Broadcast Request from %s"),
+        "v3_group_receive_view_status_from":
+            MessageLookupByLibrary.simpleMessage("Broadcasting from"),
+        "v3_group_receive_view_status_stop":
+            MessageLookupByLibrary.simpleMessage("Stop"),
         "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
             "Visit airsync.net or open the sender app"),
         "v3_instruction1b":

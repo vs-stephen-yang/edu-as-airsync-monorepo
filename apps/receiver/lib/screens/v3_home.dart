@@ -8,6 +8,7 @@ import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/v3_feature_set.dart';
 import 'package:display_flutter/widgets/v3_footer_bar.dart';
+import 'package:display_flutter/widgets/v3_group_host_view.dart';
 import 'package:display_flutter/widgets/v3_header_bar.dart';
 import 'package:display_flutter/widgets/v3_main_info.dart';
 import 'package:display_flutter/widgets/v3_message_dialog.dart';
@@ -16,7 +17,6 @@ import 'package:display_flutter/widgets/v3_streaming_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
-import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
 class V3Home extends StatefulWidget {
@@ -75,18 +75,6 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
     setProviderContainer();
   }
 
-  Widget _buildDisplayGroupVideoView(ChannelProvider channelProvider) {
-    final videoView = channelProvider.displayGroupVideoView;
-
-    if (!channelProvider.isDisplayGroupVideoAvailable || videoView == null) {
-      return const SizedBox.shrink();
-    }
-    return RTCVideoView(
-      videoView.renderer,
-      key: videoView.widgetKey,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -141,9 +129,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                     return value ? const V3SettingMenu() : const SizedBox();
                   }),
               const V3MirrorPrompt(),
-              Consumer<ChannelProvider>(builder: (context, provider, child) {
-                return _buildDisplayGroupVideoView(provider);
-              }),
+              const V3GroupHostView(),
               const V3MessageDialog(),
             ],
           ),

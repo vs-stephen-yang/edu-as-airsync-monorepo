@@ -1530,6 +1530,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Broadcasting from`
+  String get v3_group_receive_view_status_from {
+    return Intl.message(
+      'Broadcasting from',
+      name: 'v3_group_receive_view_status_from',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop`
+  String get v3_group_receive_view_status_stop {
+    return Intl.message(
+      'Stop',
+      name: 'v3_group_receive_view_status_stop',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
