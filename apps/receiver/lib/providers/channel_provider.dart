@@ -20,6 +20,7 @@ import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/services/display_group_host.dart';
+import 'package:display_flutter/services/display_group_member.dart';
 import 'package:display_flutter/services/display_group_member_info.dart';
 import 'package:display_flutter/services/display_group_session.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
@@ -858,17 +859,49 @@ class ChannelProvider extends ChangeNotifier {
     _displayGroupHost = null;
   }
 
-  void startDisplayGroup(List<GroupListItem> displayGroupMembers) {
-    _displayGroupHost = DisplayGroupHost(
+  void startDisplayGroup(List<GroupListItem> newList) {
+    _displayGroupHost ??= DisplayGroupHost(
       _createRemoteScreenConnector,
     );
 
-    for (var member in displayGroupMembers) {
-      final memberInfo = DisplayGroupMemberInfo(
-        host: member.ip(),
-        displayCode: member.displayCode(),
-      );
-      _displayGroupHost!.addMember(member.id(), memberInfo);
+    _handleGroupMembersChange(newList, _displayGroupHost!.members,
+        onItemsAdded: (addedItems) {
+      for (var member in addedItems) {
+        final memberInfo = DisplayGroupMemberInfo(
+          host: member.ip(),
+          displayCode: member.displayCode(),
+        );
+        _displayGroupHost!.addMember(member.id(), memberInfo);
+      }
+    }, onItemsRemoved: (removedItems) {
+      for (var memberId in removedItems) {
+        _displayGroupHost!.removeMember(memberId);
+      }
+    });
+  }
+
+  void _handleGroupMembersChange(
+    List<GroupListItem> newList,
+    Map<String, DisplayGroupMember> oldMap, {
+    required Function(List<GroupListItem>) onItemsAdded,
+    required Function(List<String>) onItemsRemoved,
+  }) {
+    Map<String, GroupListItem> newMap = {
+      for (var item in newList) item.id(): item
+    };
+
+    List<GroupListItem> addedItems =
+        newList.where((item) => !oldMap.containsKey(item.id())).toList();
+    List<String> removedItems = oldMap.entries
+        .where((entry) => !newMap.containsKey(entry.key))
+        .map((entry) => entry.key) // 只提取 id (键)
+        .toList();
+
+    if (addedItems.isNotEmpty) {
+      onItemsAdded(addedItems);
+    }
+    if (removedItems.isNotEmpty) {
+      onItemsRemoved(removedItems);
     }
   }
 
