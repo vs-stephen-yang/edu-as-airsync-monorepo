@@ -4,6 +4,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -102,6 +103,10 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                     decoration: const InputDecoration(
                       border: InputBorder.none, // 去掉底線
                     ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
+                      LengthLimitingTextInputFormatter(10),
+                    ],
                   ),
                 ),
                 Visibility(
