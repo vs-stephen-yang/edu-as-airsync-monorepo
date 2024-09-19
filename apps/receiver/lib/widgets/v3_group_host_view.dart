@@ -96,7 +96,9 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
                           height: 26,
                           // color: Colors.green,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              provider.stopReceivedFromHost();
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
