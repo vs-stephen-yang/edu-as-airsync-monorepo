@@ -281,7 +281,7 @@ class V3SettingsCastToBoardsState
               onPressed: () async {
                 bool state = !groupNotifier.broadcastToGroup;
                 if (state && !channelProvider.isSenderMode) {
-                  await channelProvider.startRemoteScreen();
+                  await channelProvider.startRemoteScreen(fromGroup: true);
                 }
                 if (!state) {
                   groupNotifier.clearClients();

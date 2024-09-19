@@ -107,7 +107,7 @@ class ChannelProvider extends ChangeNotifier {
 
   bool get isSenderMode => _isSenderMode;
   bool _isSenderMode = false;
-
+  bool _isSenderModeFromGroup = false;
   final InstanceInfoProvider _instanceInfo;
 
   bool _isDeviceListQuickConnect = false;
@@ -330,8 +330,12 @@ class ChannelProvider extends ChangeNotifier {
     );
   }
 
-  Future startRemoteScreen() async {
-    _isSenderMode = true;
+  Future startRemoteScreen({bool fromGroup = false}) async {
+    if (fromGroup) {
+      _isSenderModeFromGroup = true;
+    } else {
+      _isSenderMode = true;
+    }
     final iceServers = await _getIceServers(ChannelMode.tunnel);
 
     await _remoteScreenServe.startSfuServer(iceServers);
@@ -490,7 +494,7 @@ class ChannelProvider extends ChangeNotifier {
 
         /// remote
         case ChannelMessageType.startRemoteScreen:
-          if (_isSenderMode) {
+          if (_isSenderMode || _isSenderModeFromGroup) {
             final iceServers = await _getIceServers(mode);
 
             await remoteScreenConnector?.onStartRemoteScreen(
@@ -700,6 +704,7 @@ class ChannelProvider extends ChangeNotifier {
   removeSender(
       {RemoteScreenConnector? remoteScreenConnector, bool kick = true}) {
     _isSenderMode = false;
+    _isSenderModeFromGroup = false;
     if (remoteScreenConnector != null) {
       int index = _remoteScreenConnectors.indexOf(remoteScreenConnector);
       if (index != -1) {
