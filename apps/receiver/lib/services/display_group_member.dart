@@ -1,4 +1,5 @@
 import 'package:display_channel/display_channel.dart';
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/services/display_group_member_info.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -74,7 +75,21 @@ class DisplayGroupMember {
         _sendInviteDisplayGroup();
         break;
       case ChannelMessageType.inviteDisplayGroupResult:
-        // TODO
+        final inviteResult = message as InviteDisplayGroupResultMessage;
+        final status = inviteResult.status;
+
+        // 根據狀態進行相應處理
+        switch (status) {
+          case 'accepted':
+            break;
+          case 'rejected':
+            // TODO:
+            // 邀請被拒絕的處理邏輯
+            break;
+          default:
+            // 處理未知狀態
+            break;
+        }
         break;
       case ChannelMessageType.startRemoteScreen:
         final startRemoteScreenMessage = message as StartRemoteScreenMessage;
@@ -96,7 +111,7 @@ class DisplayGroupMember {
 
   void _sendInviteDisplayGroup() {
     final message = InviteDisplayGroupMessage(
-      hostName: '123',
+      hostName: AppPreferences().instanceName,
       displayCode: '',
     );
 

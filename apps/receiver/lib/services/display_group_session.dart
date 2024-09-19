@@ -21,6 +21,8 @@ class DisplayGroupSession {
 
   RemoteScreenClient? _remoteScreenClient;
 
+  String? hostName;
+
   DisplayGroupSession(
     this._channel, {
     this.onInvitation,
@@ -36,12 +38,18 @@ class DisplayGroupSession {
     _channel.send(displayStatusMessage);
   }
 
-  void accept() {
+  void accept(String hostName) {
+    this.hostName = hostName;
+    _channel.send(InviteDisplayGroupResultMessage(status: 'accept'));
     _startRemoteScreen();
   }
 
-  void reject(String reason) {
-    _closeRemoteScreen(reason);
+  void reject() {
+    _channel.send(InviteDisplayGroupResultMessage(status: 'reject'));
+    Future.delayed(const Duration(seconds: 3), () {
+      _channel.close(ChannelCloseReason(ChannelCloseCode.remoteClose,
+          text: 'invite rejected'));
+    });
   }
 
   void _onChannelMessage(ChannelMessage message) async {
@@ -94,10 +102,5 @@ class DisplayGroupSession {
       // onClose callback
       () {},
     );
-  }
-
-  void _closeRemoteScreen(String reason) {
-    _channel
-        .close(ChannelCloseReason(ChannelCloseCode.remoteClose, text: reason));
   }
 }
