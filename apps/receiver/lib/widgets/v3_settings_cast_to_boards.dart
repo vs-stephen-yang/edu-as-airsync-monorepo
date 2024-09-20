@@ -25,6 +25,9 @@ class V3SettingsCastToBoardsState
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(groupProvider.notifier).organizeGroupList();
+    });
   }
 
   @override

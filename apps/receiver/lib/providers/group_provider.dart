@@ -47,7 +47,7 @@ class GroupProvider extends StateNotifier<GroupState> {
       : super(GroupState(
           clients: [],
           selectedList: [],
-          historySelectedList: AppPreferences().groupSelectedList,
+          historySelectedList: AppPreferences().groupSelectedList.toList(),
           broadcastToGroup: false,
           broadcastGroupLaunchType: BroadcastGroupLaunchType.onlyWhenCasting,
         ));
@@ -96,6 +96,28 @@ class GroupProvider extends StateNotifier<GroupState> {
     return state.clients.length + state.selectedList.length;
   }
 
+  void organizeGroupList() {
+    final historyList = AppPreferences().groupSelectedList.toList();
+    final List<GroupListItem> selectedList = [];
+    final List<GroupListItem> client = [];
+    final List<GroupListItem> listenList = [
+      ...state.selectedList,
+      ...state.clients
+    ];
+    for (var element in listenList) {
+      bool inHistory = historyList.any((map) => map.containsKey(element.id()));
+      if (inHistory) {
+        selectedList.add(element);
+      } else {
+        client.add(element);
+      }
+    }
+    state = state.copyWith(
+        clients: client,
+        selectedList: selectedList,
+        historySelectedList: historyList);
+  }
+
   void addToSelectedList(GroupListItem client) {
     if (!state.selectedList.contains(client)) {
       if (state.selectedList.length >= 10) {
@@ -112,7 +134,6 @@ class GroupProvider extends StateNotifier<GroupState> {
   void removeFromSelectedList(GroupListItem client) {
     state.selectedList.removeWhere((foundService) => foundService.id() == client.id());
     final newSelectedList = state.selectedList.toList();
-    // clientsSort(newSelectedList);
     _removeFromHistorySelectedList(client.id());
     state = state.copyWith(
       selectedList: newSelectedList,
