@@ -860,6 +860,34 @@ class ChannelProvider extends ChangeNotifier {
     }
   }
 
+  bool checkGroupActivated(List<GroupListItem>? newList) {
+    if (_displayGroupHost == null) {
+      return false;
+    } else {
+      if (newList != null) {
+        _handleGroupMembersChange(
+          newList,
+          _displayGroupHost!.members,
+          onItemsAdded: (addedItems) {
+            for (var member in addedItems) {
+              final memberInfo = DisplayGroupMemberInfo(
+                host: member.ip(),
+                displayCode: member.displayCode(),
+              );
+              _displayGroupHost!.addMember(member.id(), memberInfo);
+            }
+          },
+          onItemsRemoved: (removedItems) {
+            for (var memberId in removedItems) {
+              _displayGroupHost!.removeMember(memberId);
+            }
+          },
+        );
+      }
+      return true;
+    }
+  }
+
   void stopDisplayGroup() {
     _displayGroupHost?.stop();
     _displayGroupHost = null;
