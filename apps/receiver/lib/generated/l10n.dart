@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -740,10 +741,10 @@ class S {
     );
   }
 
-  /// `Share your screen`
+  /// `Share Your Screens`
   String get v3_instruction_share_screen {
     return Intl.message(
-      'Share your screen',
+      'Share Your Screens',
       name: 'v3_instruction_share_screen',
       desc: '',
       args: [],
@@ -1060,10 +1061,10 @@ class S {
     );
   }
 
-  /// `Scan the QR code with your iOS or Android device for instant access`
+  /// `Scan the QR code with your iOS or Android device to download`
   String get v3_download_app_desc {
     return Intl.message(
-      'Scan the QR code with your iOS or Android device for instant access',
+      'Scan the QR code with your iOS or Android device to download',
       name: 'v3_download_app_desc',
       desc: '',
       args: [],
@@ -1380,10 +1381,10 @@ class S {
     );
   }
 
-  /// `Cast`
+  /// `Broadcast`
   String get v3_settings_display_group_cast {
     return Intl.message(
-      'Cast',
+      'Broadcast',
       name: 'v3_settings_display_group_cast',
       desc: '',
       args: [],

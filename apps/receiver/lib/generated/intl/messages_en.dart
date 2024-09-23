@@ -160,7 +160,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_cast_to_device_touch_back_enabled":
             MessageLookupByLibrary.simpleMessage("Remote controlling"),
         "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
-            "Scan the QR code with your iOS or Android device for instant access"),
+            "Scan the QR code with your iOS or Android device to download"),
         "v3_download_app_entry":
             MessageLookupByLibrary.simpleMessage("Download Sender App"),
         "v3_download_app_title":
@@ -200,7 +200,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_instruction_receive_screen":
             MessageLookupByLibrary.simpleMessage("Receive from screen"),
         "v3_instruction_share_screen":
-            MessageLookupByLibrary.simpleMessage("Share your screen"),
+            MessageLookupByLibrary.simpleMessage("Share Your Screens"),
         "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
             "Supports sharing via AirPlay, Google Cast or Miracast"),
         "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
@@ -275,7 +275,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_display_group_all_the_time":
             MessageLookupByLibrary.simpleMessage("All the time"),
         "v3_settings_display_group_cast":
-            MessageLookupByLibrary.simpleMessage("Cast"),
+            MessageLookupByLibrary.simpleMessage("Broadcast"),
         "v3_settings_display_group_only_casting":
             MessageLookupByLibrary.simpleMessage("Only when casting"),
         "v3_settings_invite_group": MessageLookupByLibrary.simpleMessage(
