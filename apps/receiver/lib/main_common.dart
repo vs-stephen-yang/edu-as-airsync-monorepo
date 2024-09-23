@@ -87,18 +87,30 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
     await AppUpdateHelper().ensureInitialized(settings);
 
+    // Catches all uncaught exceptions within the Flutter framework (e.g., UI errors).
     FlutterError.onError = (FlutterErrorDetails details) async {
       // Report errors to a service
       await AppExceptionReport().sendToServer(settings, packageInfo,
           details.exceptionAsString(), details.stack.toString());
+
+      // Report error to Azure App Insights
+      AppAnalytics().trackEventException(
+        details.exceptionAsString(),
+        details.stack.toString(),
+      );
     };
 
     runApp(configureApp);
   }, (error, stack) async {
+    // Catches uncaught errors in asynchronous code
+
     // Report errors to a service
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     await AppExceptionReport().sendToServer(
         settings, packageInfo, error.toString(), stack.toString());
+
+    // Report error to Azure App Insights
+    AppAnalytics().trackEventException(error.toString(), stack.toString());
   });
 }
 

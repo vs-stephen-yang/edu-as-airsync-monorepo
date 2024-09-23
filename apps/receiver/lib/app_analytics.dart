@@ -469,4 +469,12 @@ class AppAnalytics {
       ..._eventProperties,
     });
   }
+
+  trackEventException(String error, String stack) {
+    _trackEventWithProperties('exception', {
+      'target': error,
+      'stack': stack,
+      ..._eventProperties,
+    });
+  }
 }
