@@ -41,6 +41,8 @@ class V3CustomDialog extends StatelessWidget {
                 insetPadding: EdgeInsets.zero,
                 backgroundColor:
                     context.tokens.color.vsdslColorOnSurfaceInverse,
+                elevation: 16.0,
+                shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
                 child: Stack(
                   children: [
                     Positioned(

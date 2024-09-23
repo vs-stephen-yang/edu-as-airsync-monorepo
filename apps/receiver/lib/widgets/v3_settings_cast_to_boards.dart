@@ -384,6 +384,9 @@ class V3SettingsCastToBoardsState
             borderRadius: BorderRadius.circular(
                 context.tokens.spacing.vsdslSpacing2xl.top),
           ),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.tokens.spacing.vsdslSpacingLg.left,
+          ),
         ),
         child: Row(
           children: [
@@ -391,6 +394,7 @@ class V3SettingsCastToBoardsState
                 width: 16,
                 height: 16,
                 image: Svg('assets/images/ic_broadcast.svg')),
+            SizedBox(width: context.tokens.spacing.vsdslSpacingXs.left),
             Text(
               text,
               style: TextStyle(

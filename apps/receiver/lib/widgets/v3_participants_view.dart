@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -95,7 +96,7 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
                 bottomRight: Radius.circular(30),
               ),
               color: isShowLogOutMenu
-                  ? const Color(0x2B151C32)
+                  ? context.tokens.color.vsdslColorSurface1000.withOpacity(0.16)
                   : Colors.transparent,
             ),
           ),

@@ -32,7 +32,7 @@ class V3MainInfo extends StatelessWidget {
             color: context.tokens.color.vsdslColorOutline,
           ),
         ),
-        color: context.tokens.color.vsdslColorSurface100,
+        color: context.tokens.color.vsdslColorSurface100.withOpacity(0.64),
       ),
       child: Consumer<ConnectivityProvider>(
           builder: (_, connectivityProvider, __) {
