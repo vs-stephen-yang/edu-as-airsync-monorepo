@@ -707,7 +707,6 @@ class ChannelProvider extends ChangeNotifier {
 
   removeSender(
       {RemoteScreenConnector? remoteScreenConnector, bool kick = true}) {
-    _isSenderMode = false;
     _isSenderModeFromGroup = false;
     if (remoteScreenConnector != null) {
       int index = _remoteScreenConnectors.indexOf(remoteScreenConnector);
@@ -720,6 +719,7 @@ class ChannelProvider extends ChangeNotifier {
         _remoteScreenConnectors.removeAt(index);
       }
     } else {
+      _isSenderMode = false;
       for (var element in _remoteScreenConnectors) {
         element.sendRemoteScreenState(RemoteScreenStatus.kicked);
       }
