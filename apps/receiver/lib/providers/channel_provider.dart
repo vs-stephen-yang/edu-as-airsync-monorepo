@@ -203,6 +203,9 @@ class ChannelProvider extends ChangeNotifier {
         'Last Network Connectivity is: $_lastConnectivityResult, being changed to result: $result');
 
     final value = await _checkNetWorkInfo();
+    if (value == null || value.isEmpty) {
+      log.warning('_handleConnectivity: No IP address found');
+    }
     host = _instanceInfo.ipAddress = value;
     final instanceGroupId = getInstanceGroupIdFromIp(host!);
 
@@ -728,7 +731,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future<String?> _checkNetWorkInfo() async {
-    List<NetworkInterface> interfaces = await NetworkInterface.list();
+    List<NetworkInterface> interfaces =
+        await NetworkInterface.list(type: InternetAddressType.IPv4);
 
     List<NetworkInterface> ethernetInterfaces = [];
     List<NetworkInterface> wifiInterfaces = [];
@@ -841,6 +845,9 @@ class ChannelProvider extends ChangeNotifier {
   _updateDisplayCode() async {
     if (_isTunnelServerStart || !connectNet) return;
     final value = await _checkNetWorkInfo();
+    if (value == null || value.isEmpty) {
+      log.warning('_updateDisplayCode: No IP address found');
+    }
     host = _instanceInfo.ipAddress = value;
     final instanceGroupId = getInstanceGroupIdFromIp(host!);
 
