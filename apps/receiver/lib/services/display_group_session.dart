@@ -52,9 +52,9 @@ class DisplayGroupSession {
     });
   }
 
-  void stop() {
+  Future<void> stop() async {
     _isVideoAvailable = false;
-    videoView?.renderer.dispose();
+    _remoteScreenClient?.remove();
     _channel.send(StopDisplayGroupMessage());
     Future.delayed(const Duration(seconds: 3), () {
       _channel.close(ChannelCloseReason(ChannelCloseCode.remoteClose,
