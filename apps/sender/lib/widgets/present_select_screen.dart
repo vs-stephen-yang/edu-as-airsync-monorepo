@@ -92,7 +92,7 @@ class PresentSelectScreen extends StatelessWidget {
       const androidConfig = FlutterBackgroundAndroidConfig(
         notificationTitle: 'Screen Sharing',
         notificationText: 'AirSync is sharing the screen.',
-        notificationImportance: AndroidNotificationImportance.Default,
+        notificationImportance: AndroidNotificationImportance.normal,
         notificationIcon: AndroidResource(
           name: 'ic_launcher',
           defType: 'mipmap',
