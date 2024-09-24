@@ -170,7 +170,6 @@ class RTCConnector {
         // A state change to "closed" will only occur if there is an explicit close request from the peer.
         // Note: the case is the sender cancel the waiting state on moderator mode
 
-        await disconnectPeerConnection();
         await disconnectChannel(reason: 'Channel closed');
         break;
     }
