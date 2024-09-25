@@ -13,6 +13,7 @@ import 'package:display_cast_flutter/screens/home.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_instance_create.dart';
+import 'package:display_cast_flutter/utilities/app_unresponsive_detector.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
@@ -75,6 +76,14 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
       }
     });
   }
+  // Detect App suspension
+  AppUnresponsiveDetector.initialize();
+
+  AppUnresponsiveDetector.instance.addListener((suspensionDuration) {
+    AppAnalytics.instance.trackEvent('app_unresponsive', properties: {
+      'target': suspensionDuration.inSeconds,
+    });
+  });
 
   runApp(AppConfig(
     settings: settings,
