@@ -93,7 +93,6 @@ class V3SettingsCastToBoardsState
               onClick: () {
               AppPreferences()
                   .setGroupSelectedList(groupNotifier.historySelectedList);
-              channelProvider.checkGroupActivated(groupNotifier.selectedList);
               settingsProvider.setPage(SettingPageState.deviceSetting);
             })
           : _broadcastButton(
