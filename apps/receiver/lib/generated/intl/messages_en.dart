@@ -215,6 +215,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Casting"),
         "v3_participant_item_connected":
             MessageLookupByLibrary.simpleMessage("Connected"),
+        "v3_participant_item_controlling":
+            MessageLookupByLibrary.simpleMessage("Remote controlling"),
+        "v3_participant_item_receiving":
+            MessageLookupByLibrary.simpleMessage("Receiving"),
         "v3_participant_item_share":
             MessageLookupByLibrary.simpleMessage("Share"),
         "v3_participants_desc": MessageLookupByLibrary.simpleMessage(

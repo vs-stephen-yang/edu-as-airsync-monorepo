@@ -228,6 +228,17 @@ class HybridConnectionList {
     return false;
   }
 
+  bool isPresenterSharing(String clientId) {
+    for (var connection in _hybridConnectionList.nonNulls) {
+      if (connection is RTCConnector &&
+          connection.clientId == clientId &&
+          connection.isModeratorShare) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   removeAllPresenters() async {
     RTCConnector? rtcConnector;
     List<RTCConnector?> temp = List.from(getRtcConnectorMap().values);

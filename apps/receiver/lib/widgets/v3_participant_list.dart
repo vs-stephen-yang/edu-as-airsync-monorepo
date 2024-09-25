@@ -110,7 +110,10 @@ class V3ParticipantList extends StatelessWidget {
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {
-                    return const Divider(height: 13, color: Colors.transparent);
+                    return Divider(
+                      height: context.tokens.spacing.vsdslSpacingXl.top,
+                      color: Colors.transparent,
+                    );
                   },
                 ),
               ),

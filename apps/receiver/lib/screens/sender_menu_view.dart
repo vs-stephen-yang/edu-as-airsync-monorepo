@@ -40,9 +40,9 @@ class _SenderMenuViewState extends State<SenderMenuView> {
             focusColor: Colors.grey,
             onClick: () async {
               if (channelProvider.isSenderMode) {
-                channelProvider.removeSender();
+                channelProvider.removeSender(fromSender: true);
               } else {
-                channelProvider.startRemoteScreen();
+                channelProvider.startRemoteScreen(fromSender: true);
               }
               setState(() {});
             },

@@ -75,9 +75,11 @@ class V3ShortcutsMenu extends StatelessWidget {
                               constraints: const BoxConstraints(),
                               onPressed: () {
                                 if (channelProvider.isSenderMode) {
-                                  channelProvider.removeSender();
+                                  channelProvider.removeSender(
+                                      fromSender: true);
                                 } else {
-                                  channelProvider.startRemoteScreen();
+                                  channelProvider.startRemoteScreen(
+                                      fromSender: true);
                                 }
                               },
                             ),

@@ -148,5 +148,7 @@
   "v3_main_status_no_network": "Unable to detect an internet connection. Please connect to a Wi-Fi or intranet network, and try again.",
   "v3_settings_device_unavailable": "Unavailable",
   "v3_group_receive_view_status_from": "Broadcasting from",
-  "v3_group_receive_view_status_stop": "Stop"
+  "v3_group_receive_view_status_stop": "Stop",
+  "v3_participant_item_receiving": "Receiving",
+  "v3_participant_item_controlling": "Remote controlling"
 }

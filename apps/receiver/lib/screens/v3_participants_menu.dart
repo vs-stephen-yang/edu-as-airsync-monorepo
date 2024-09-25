@@ -23,7 +23,7 @@ class V3ParticipantsMenu extends StatelessWidget {
             elevation: 16.0,
             shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
             child: SizedBox(
-              width: 310,
+              width: 342,
               height: 507,
               child: Stack(
                 children: [

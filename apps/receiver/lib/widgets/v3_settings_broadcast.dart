@@ -116,9 +116,9 @@ class V3SettingsBroadcast extends StatelessWidget {
               constraints: const BoxConstraints(),
               onPressed: () async {
                 if (channelProvider.isSenderMode) {
-                  await channelProvider.removeSender();
+                  await channelProvider.removeSender(fromSender: true);
                 } else {
-                  await channelProvider.startRemoteScreen();
+                  await channelProvider.startRemoteScreen(fromSender: true);
                 }
               },
             ),
