@@ -108,7 +108,7 @@ class ChannelProvider extends ChangeNotifier {
 
   bool get isSenderMode => _isSenderMode;
   bool _isSenderMode = false;
-  bool _isSenderModeFromGroup = false;
+  bool _isGroupMode = false;
   final InstanceInfoProvider _instanceInfo;
 
   bool _isDeviceListQuickConnect = false;
@@ -335,17 +335,18 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future startRemoteScreen({bool fromGroup = false}) async {
-    if (fromGroup) {
-      _isSenderModeFromGroup = true;
-    } else {
-      _isSenderMode = true;
+    if (_isGroupMode || _isSenderMode) {
+      fromGroup ? _isGroupMode = true : _isSenderMode = true;
+      notifyListeners();
+      return;
     }
+    fromGroup ? _isGroupMode = true : _isSenderMode = true;
     final iceServers = await _getIceServers(ChannelMode.tunnel);
 
     await _remoteScreenServe.startSfuServer(iceServers);
     await _remoteScreenServe.startRemoteScreenPublisher();
     ConnectionTimer.getInstance().startShareSenderTimer(() {
-      removeSender();
+      removeSender(fromGroup: _isGroupMode);
     });
     notifyListeners();
   }
@@ -498,7 +499,7 @@ class ChannelProvider extends ChangeNotifier {
 
         /// remote
         case ChannelMessageType.startRemoteScreen:
-          if (_isSenderMode || _isSenderModeFromGroup) {
+          if (_isSenderMode) {
             final iceServers = await _getIceServers(mode);
 
             await remoteScreenConnector?.onStartRemoteScreen(
@@ -706,8 +707,9 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   removeSender(
-      {RemoteScreenConnector? remoteScreenConnector, bool kick = true}) {
-    _isSenderModeFromGroup = false;
+      {RemoteScreenConnector? remoteScreenConnector,
+      bool kick = true,
+      bool fromGroup = false}) {
     if (remoteScreenConnector != null) {
       int index = _remoteScreenConnectors.indexOf(remoteScreenConnector);
       if (index != -1) {
@@ -719,7 +721,11 @@ class ChannelProvider extends ChangeNotifier {
         _remoteScreenConnectors.removeAt(index);
       }
     } else {
-      _isSenderMode = false;
+      fromGroup ? _isGroupMode = false : _isSenderMode = false;
+      if (_isGroupMode || _isSenderMode) {
+        notifyListeners();
+        return;
+      }
       for (var element in _remoteScreenConnectors) {
         element.sendRemoteScreenState(RemoteScreenStatus.kicked);
       }
@@ -898,6 +904,7 @@ class ChannelProvider extends ChangeNotifier {
   void stopDisplayGroup() {
     _displayGroupHost?.stop();
     _displayGroupHost = null;
+    removeSender(fromGroup: true);
   }
 
   void startDisplayGroup(List<GroupListItem> newList) {
@@ -975,6 +982,7 @@ class ChannelProvider extends ChangeNotifier {
   //region handle Display Group's client
   void stopReceivedFromHost() {
     _displayGroupSession?.stop();
+    _displayGroupSession = null;
     notifyListeners();
   }
 // endregion

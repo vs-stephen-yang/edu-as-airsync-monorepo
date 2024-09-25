@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
@@ -48,14 +49,17 @@ class _V3StreamingViewState extends ConsumerState {
         ValueListenableBuilder(
           valueListenable: HybridConnectionList.hybridSplitScreenCount,
           builder: (context, int splitScreenCount, child) {
-            if (splitScreenCount > 0) {
-              bool toggle = ref.read(groupProvider).broadcastToGroup;
-              if (toggle) {
-                if (ref.read(groupProvider).broadcastGroupLaunchType ==
-                    BroadcastGroupLaunchType.onlyWhenCasting) {
-                  provider.Provider.of<ChannelProvider>(context, listen: false)
-                      .startDisplayGroup(ref.read(groupProvider).selectedList);
-                }
+            if (splitScreenCount >= 0) {
+              final toggle = ref.read(groupProvider).broadcastToGroup;
+              final launchType =
+                  ref.read(groupProvider).broadcastGroupLaunchType;
+              if (toggle &&
+                  launchType == BroadcastGroupLaunchType.onlyWhenCasting) {
+                final List<GroupListItem> selectedList = splitScreenCount > 0
+                    ? ref.read(groupProvider).selectedList
+                    : [];
+                provider.Provider.of<ChannelProvider>(context, listen: false)
+                    .startDisplayGroup(selectedList);
               }
             }
             if (splitScreenCount == 3 || splitScreenCount == 5) {
