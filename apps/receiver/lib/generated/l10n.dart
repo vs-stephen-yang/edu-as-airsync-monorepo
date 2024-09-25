@@ -1550,6 +1550,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Receiving`
+  String get v3_participant_item_receiving {
+    return Intl.message(
+      'Receiving',
+      name: 'v3_participant_item_receiving',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remote controlling`
+  String get v3_participant_item_controlling {
+    return Intl.message(
+      'Remote controlling',
+      name: 'v3_participant_item_controlling',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

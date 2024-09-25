@@ -49,7 +49,9 @@ class _SenderItemState extends State<SenderItem>
                 if (remoteScreenConnector.remotePresentationState ==
                     RemotePresentationState.streaming) {
                   channelProvider.removeSender(
-                      remoteScreenConnector: remoteScreenConnector);
+                    fromSender: true,
+                    remoteScreenConnector: remoteScreenConnector,
+                  );
                 }
               },
               child: Row(

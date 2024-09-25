@@ -125,7 +125,9 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
                       if (remoteScreenConnector.remotePresentationState ==
                           RemotePresentationState.streaming) {
                         channelProvider.removeSender(
-                            remoteScreenConnector: remoteScreenConnector);
+                          fromSender: true,
+                          remoteScreenConnector: remoteScreenConnector,
+                        );
                       }
                     },
                   ),

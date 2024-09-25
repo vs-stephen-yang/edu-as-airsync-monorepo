@@ -45,6 +45,7 @@ class RTCConnector {
   String? senderVersion;
   String? senderPlatform;
   bool isAudioEnabled = false;
+  bool isModeratorShare = false;
 
   ValueNotifier<ReconnectState> reconnectRtcStateNotifier =
       ValueNotifier<ReconnectState>(ReconnectState.idle);
@@ -432,21 +433,23 @@ class RTCConnector {
     int fullHeight = 1080;
 
     // 70703 Workaround to solve iOS WebRTC screen freeze on IFP52-1 issue
-    if (RTCConnector.isMtk9950Model(_deviceType)
-        && attenderCount > 1
-        && senderPlatform != null
-        && senderPlatform == "ios") {
+    if (RTCConnector.isMtk9950Model(_deviceType) &&
+        attenderCount > 1 &&
+        senderPlatform != null &&
+        senderPlatform == "ios") {
       fullHeight = 720;
     }
 
     return fullHeight;
   }
 
-  void sendChangeQuality(bool isFullHeight, bool isFullFrameRate, int attendeeCount) {
+  void sendChangeQuality(
+      bool isFullHeight, bool isFullFrameRate, int attendeeCount) {
     var message = ChangePresentQuality(sessionId);
 
     message.constraints = PresentQualityConstraints(
-        frameRate: isFullFrameRate ? 30 : 0, height: isFullHeight ? getFullHeight(attendeeCount) : 540);
+        frameRate: isFullFrameRate ? 30 : 0,
+        height: isFullHeight ? getFullHeight(attendeeCount) : 540);
 
     if (_controlDataChannel == null) {
       _changeQualityMessage = message;
@@ -481,6 +484,19 @@ class RTCConnector {
     _channel.send(message);
 
     _sendControlMessage(message);
+  }
+
+  void sendInviteRemoteScreen() {
+    var message = InviteRemoteScreenMessage();
+    message.sessionId = sessionId = const Uuid().v4();
+    _channel.send(message);
+    isModeratorShare = true;
+  }
+
+  void sendStopRemoteScreen() {
+    var message = StopRemoteScreenMessage(sessionId);
+    _channel.send(message);
+    isModeratorShare = false;
   }
 
   Future<void> disconnectPeerConnection({bool sendAnalytics = false}) async {
@@ -726,6 +742,7 @@ class RTCConnector {
         break;
     }
   }
+
   //endregion
 
   RTCSessionDescription _fixSdp(RTCSessionDescription s) {
