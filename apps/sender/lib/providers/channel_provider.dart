@@ -313,6 +313,12 @@ class ChannelProvider extends ChangeNotifier {
           _sessionId = (message as AllowPresentMessage).sessionId!;
           _startPresent();
           break;
+        case ChannelMessageType.inviteRemoteScreen:
+          await _handleInviteRemoteScreen(message as InviteRemoteScreenMessage);
+          break;
+        case ChannelMessageType.stopRemoteScreen:
+          await _handleStopRemoteScreen(message as StopRemoteScreenMessage);
+          break;
         case ChannelMessageType.remoteScreenStatus:
           _handleRemoteScreenState(message as RemoteScreenStatusMessage);
           break;
@@ -346,6 +352,15 @@ class ChannelProvider extends ChangeNotifier {
 
   void _onRemoteScreenTrack() {
     notifyListeners();
+  }
+
+  _handleInviteRemoteScreen(InviteRemoteScreenMessage message) async {
+    _presentStateProvider?.presentModeratorSharePage();
+    _requestRemoteScreen();
+  }
+
+  _handleStopRemoteScreen(StopRemoteScreenMessage message) async {
+    removeShareRemoteScreenClient();
   }
 
   Future<void> _handleRemoteScreenSignal(
@@ -589,6 +604,14 @@ class ChannelProvider extends ChangeNotifier {
     await closeChannel();
     _resetTimer();
     _presentStateProvider?.presentMainPage();
+  }
+
+  void removeShareRemoteScreenClient() async {
+    await _remoteScreenClient?.sendStopRemoteScreenMessage();
+    await remoteScreenClient?.remove();
+    if (moderatorStatus) {
+      _presentStateProvider?.presentModeratorWaitPage();
+    }
   }
 
   /// get IceServer list and send join-display, start-present

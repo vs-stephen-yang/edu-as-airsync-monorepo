@@ -8,7 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RemoteScreenTool extends StatefulWidget {
-  const RemoteScreenTool({super.key});
+  const RemoteScreenTool({
+    super.key,
+    this.isModeratorShare = false,
+  });
+
+  final bool isModeratorShare;
 
   @override
   State createState() => _RemoteScreenToolStates();
@@ -72,7 +77,11 @@ class _RemoteScreenToolStates extends State<RemoteScreenTool> {
               notFocusSize: AppConstants.iconNotFocusSize,
               rotateY: math.pi,
               onClick: () {
-                channelProvider.removeRemoteScreenClient();
+                if (widget.isModeratorShare) {
+                  channelProvider.removeShareRemoteScreenClient();
+                } else {
+                  channelProvider.removeRemoteScreenClient();
+                }
               },
             ),
           ],

@@ -14,6 +14,7 @@ enum ViewState {
   moderatorName,
   moderatorWait,
   moderatorStart,
+  moderatorShare,
 
   settings,
   language,
@@ -65,6 +66,10 @@ class PresentStateProvider extends ChangeNotifier {
 
   Future<void> presentModeratorStartPage() async {
     setViewState(ViewState.moderatorStart);
+  }
+
+  Future<void> presentModeratorSharePage() async {
+    setViewState(ViewState.moderatorShare);
   }
 
   Future<void> presentSettingPage() async {

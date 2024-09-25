@@ -132,6 +132,11 @@ class RemoteScreenClient {
     _channel?.send(msg);
   }
 
+  Future sendStopRemoteScreenMessage() async {
+    final msg = StopRemoteScreenMessage(_sessionId);
+    _channel?.send(msg);
+  }
+
   Future sendRemoteScreenState(RemoteScreenStatus status) async {
     final stateMessage = RemoteScreenStatusMessage(_sessionId, status);
     _channel?.send(stateMessage);
