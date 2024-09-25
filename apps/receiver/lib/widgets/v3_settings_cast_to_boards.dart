@@ -284,15 +284,14 @@ class V3SettingsCastToBoardsState
               // constraints: const BoxConstraints(),
               onPressed: () async {
                 bool state = !groupNotifier.broadcastToGroup;
-                if (state && !channelProvider.isSenderMode) {
+                if (state) {
                   await channelProvider.startRemoteScreen(fromGroup: true);
-                }
-                if (!state) {
+                } else {
                   groupNotifier.clearClients();
                   GroupListModel discoveryModel =
                       ref.watch(discoveryModelProvider);
                   await discoveryModel.stop();
-                  // TODO: Stop display group
+                  channelProvider.stopDisplayGroup();
                 }
                 groupNotifier.setBroadcastToGroup(state);
               },

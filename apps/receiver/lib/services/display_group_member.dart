@@ -3,6 +3,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/services/display_group_member_info.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:uuid/uuid.dart';
 
 class DisplayGroupMember {
   final DisplayGroupMemberInfo _info;
@@ -11,7 +12,7 @@ class DisplayGroupMember {
 
   RemoteScreenConnector? _connector;
 
-  final String _clientId = '1234';
+  final String _clientId = const Uuid().v4();
 
   final Future<RemoteScreenConnector> Function(
     Channel,
