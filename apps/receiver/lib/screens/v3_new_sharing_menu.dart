@@ -45,8 +45,8 @@ class _V3NewSharingMenuState extends State<V3NewSharingMenu> {
             // https://blog.csdn.net/shving/article/details/114485776
             constrainedAxis: Axis.vertical,
             child: SizedBox(
-              width: 207,
-              height: 87,
+              width: 242,
+              height: 95,
               child: Dialog(
                 shape: RoundedRectangleBorder(
                   borderRadius: context.tokens.radii.vsdslRadiusLg,
@@ -68,31 +68,35 @@ class _V3NewSharingMenuState extends State<V3NewSharingMenu> {
                       ),
                     ),
                     Positioned(
-                      left: 0,
+                      left: 13,
                       top: 51,
-                      right: 0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          AutoSizeText(
-                            widget.name,
-                            style: TextStyle(
-                              fontSize: 9,
-                              fontWeight: FontWeight.w600,
-                              color: context
-                                  .tokens.color.vsdslColorOnSurfaceInverse,
+                      right: 13,
+                      bottom: 20,
+                      child: AutoSizeText.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: widget.name,
+                              style: TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w600,
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                              ),
                             ),
-                          ),
-                          AutoSizeText(
-                            S.of(context).v3_new_sharing_join_session,
-                            style: TextStyle(
-                              fontSize: 9,
-                              fontWeight: FontWeight.w400,
-                              color: context
-                                  .tokens.color.vsdslColorOnSurfaceInverse,
+                            TextSpan(
+                              text: S.of(context).v3_new_sharing_join_session,
+                              style: TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w400,
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                              ),
                             ),
-                          )
-                        ],
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                        minFontSize: 8,
                       ),
                     ),
                     Positioned(
