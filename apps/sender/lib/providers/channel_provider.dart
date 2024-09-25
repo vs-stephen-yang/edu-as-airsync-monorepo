@@ -384,6 +384,10 @@ class ChannelProvider extends ChangeNotifier {
 
     log.info('Network connectivity has changed to $result');
     _connectivityResult = result;
+
+    // Track network connectivity
+    AppAnalytics.instance
+        .setGlobalProperty('network_connectivity', result.name);
   }
 
   // The channel failed to reconnect within the specified timeout period
@@ -828,9 +832,6 @@ class ChannelProvider extends ChangeNotifier {
 
     AppAnalytics.instance.trackEvent(
       eventName,
-      properties: {
-        'network_connectivity': _connectivityResult?.name ?? '',
-      },
     );
 
     _isPresentingErrorReported = true;
