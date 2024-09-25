@@ -21,6 +21,7 @@ import 'package:display_cast_flutter/widgets/device_list.dart';
 import 'package:display_cast_flutter/widgets/language.dart';
 import 'package:display_cast_flutter/widgets/moderator_idle.dart';
 import 'package:display_cast_flutter/widgets/moderator_present_start.dart';
+import 'package:display_cast_flutter/widgets/moderator_share.dart';
 import 'package:display_cast_flutter/widgets/moderator_wait.dart';
 import 'package:display_cast_flutter/widgets/present_idle.dart';
 import 'package:display_cast_flutter/widgets/present_present_start.dart';
@@ -206,6 +207,8 @@ class _HomeStates extends State<Home> {
                           return PresentPresentStart();
                         case ViewState.moderatorStart:
                           return ModeratorPresentStart();
+                        case ViewState.moderatorShare:
+                          return const ModeratorPresentShare();
                         case ViewState.remoteScreen:
                           return const RemoteScreenWidget();
                         case ViewState.settings:
