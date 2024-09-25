@@ -46,19 +46,14 @@ class DisplayGroupSession {
 
   void reject() {
     _channel.send(InviteDisplayGroupResultMessage(status: 'reject'));
-    Future.delayed(const Duration(seconds: 3), () {
-      _channel.close(ChannelCloseReason(ChannelCloseCode.remoteClose,
-          text: 'invite rejected'));
-    });
   }
 
-  Future<void> stop() async {
+  Future<void> stop({required String reason}) async {
     _isVideoAvailable = false;
     _remoteScreenClient?.remove();
     _channel.send(StopDisplayGroupMessage());
     Future.delayed(const Duration(seconds: 3), () {
-      _channel.close(ChannelCloseReason(ChannelCloseCode.remoteClose,
-          text: 'stop received'));
+      _channel.close(ChannelCloseReason(ChannelCloseCode.remoteClose, text: reason));
     });
   }
 

@@ -27,8 +27,9 @@ class DisplayGroupHost {
   void addMember(String memberId, DisplayGroupMemberInfo memberInfo) {
     final member = DisplayGroupMember(
       memberInfo,
-      _createRemoteScreenConnector,
-    );
+      _createRemoteScreenConnector, () {
+      removeMember(memberId);
+    });
 
     _members[memberId] = member;
   }
