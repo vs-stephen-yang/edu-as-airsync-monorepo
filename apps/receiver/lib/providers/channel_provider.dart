@@ -317,6 +317,7 @@ class ChannelProvider extends ChangeNotifier {
                   },
                   onCancel: () {
                     _displayGroupSession?.reject();
+                    stopReceivedFromHost(closeReason: 'invite rejected');
                   },
                 );
             break;
@@ -325,6 +326,7 @@ class ChannelProvider extends ChangeNotifier {
             break;
           case '2': // ignore
             _displayGroupSession?.reject();
+            stopReceivedFromHost(closeReason: 'invite ignore');
             break;
         }
       },
@@ -980,8 +982,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   //region handle Display Group's client
-  void stopReceivedFromHost() {
-    _displayGroupSession?.stop();
+  void stopReceivedFromHost({required String closeReason}) {
+    _displayGroupSession?.stop(reason: closeReason);
     _displayGroupSession = null;
     notifyListeners();
   }

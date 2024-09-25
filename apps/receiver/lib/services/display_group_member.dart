@@ -19,10 +19,10 @@ class DisplayGroupMember {
     StartRemoteScreenMessage,
   ) createRemoteScreenConnector;
 
+  final void Function() onStopped;
+
   DisplayGroupMember(
-    this._info,
-    this.createRemoteScreenConnector,
-  ) {
+      this._info, this.createRemoteScreenConnector, this.onStopped) {
     final uri = Uri(
       scheme: 'wss',
       host: _info.host,
@@ -101,6 +101,10 @@ class DisplayGroupMember {
 
         _connector?.processSignalFromPeer(signalMessage.signal!);
         break;
+      case ChannelMessageType.stopDisplayGroup:
+        stop();
+        onStopped();
+        break;
       default:
     }
   }
@@ -120,6 +124,8 @@ class DisplayGroupMember {
   }
 
   void stop() {
-    _channel.close(null);
+    if (_channel.state == ChannelState.connected) {
+      _channel.close(null);
+    }
   }
 }
