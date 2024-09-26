@@ -341,7 +341,18 @@ class ChannelProvider extends ChangeNotifier {
             break;
         }
       },
-      onStateChange: () {
+      onStateChange: (ChannelState? state) {
+        if (state != null) {
+          switch (state) {
+            case ChannelState.connected:
+              break;
+            case ChannelState.closed:
+              stopReceivedFromHost(closeReason: 'stop received from host');
+              break;
+            default:
+              break;
+          }
+        }
         notifyListeners();
       },
     );

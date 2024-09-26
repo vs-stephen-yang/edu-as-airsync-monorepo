@@ -14,7 +14,7 @@ class DisplayGroupSession {
           _remoteScreenClient!.rtcWidgetKey,
         );
 
-  void Function()? onStateChange;
+  void Function(ChannelState? state)? onStateChange;
   void Function(String hostName, String displayCode)? onInvitation;
 
   final Channel _channel;
@@ -29,7 +29,7 @@ class DisplayGroupSession {
     this.onStateChange,
   }) {
     _channel.onChannelMessage = _onChannelMessage;
-
+    _channel.onStateChange = onStateChange;
     _sendDisplayStatus();
   }
 
@@ -51,10 +51,13 @@ class DisplayGroupSession {
   Future<void> stop({required String reason}) async {
     _isVideoAvailable = false;
     _remoteScreenClient?.remove();
-    _channel.send(StopDisplayGroupMessage());
-    Future.delayed(const Duration(seconds: 3), () {
-      _channel.close(ChannelCloseReason(ChannelCloseCode.remoteClose, text: reason));
-    });
+    if (_channel.state != ChannelState.closed) {
+      _channel.send(StopDisplayGroupMessage());
+      Future.delayed(const Duration(seconds: 3), () {
+        _channel.close(
+            ChannelCloseReason(ChannelCloseCode.remoteClose, text: reason));
+      });
+    }
   }
 
   void _onChannelMessage(ChannelMessage message) async {
@@ -102,7 +105,7 @@ class DisplayGroupSession {
       infoMessage.ionSfuRoom!.iceServers,
       () {
         _isVideoAvailable = true;
-        onStateChange?.call();
+        onStateChange?.call(null);
       },
       // onClose callback
       () {},
