@@ -23,6 +23,9 @@ class DialogState {
   final String? cancelText;
   final VoidCallback? onConfirm;
   final VoidCallback? onCancel;
+  final double? width;
+  final double? height;
+  final bool? showIcon;
 
   DialogState({
     this.title,
@@ -31,6 +34,9 @@ class DialogState {
     this.cancelText,
     this.onConfirm,
     this.onCancel,
+    this.width,
+    this.height,
+    this.showIcon,
   });
 
   bool get isVisible => title != null || content != null;
@@ -44,6 +50,9 @@ class MessageDialogProvider extends StateNotifier<DialogState> {
     required String content,
     String? confirmText,
     String? cancelText,
+    double? width,
+    double? height,
+    bool? showIcon,
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
   }) {
@@ -54,6 +63,9 @@ class MessageDialogProvider extends StateNotifier<DialogState> {
       cancelText: cancelText,
       onConfirm: onConfirm,
       onCancel: onCancel,
+      width: width,
+      height: height,
+      showIcon: showIcon,
     );
   }
 

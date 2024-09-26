@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/message_dialog_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/widgets/v3_settings_broadcast.dart';
@@ -14,6 +15,7 @@ import 'package:display_flutter/widgets/v3_settings_license.dart';
 import 'package:display_flutter/widgets/v3_settings_mirroring.dart';
 import 'package:display_flutter/widgets/v3_settings_whats_new.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +27,14 @@ class V3SettingMenu extends StatelessWidget {
     SettingsProvider settingsProvider =
         Provider.of<SettingsProvider>(context, listen: false);
 
-    return Dialog(
+    return TapRegion(
+      onTapOutside: (event) {
+        if (riverpod.ProviderScope.containerOf(context)
+            .read(dialogProvider)
+            .isVisible) return;
+        dismissMenu(settingsProvider);
+      },
+      child: Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
@@ -33,151 +42,156 @@ class V3SettingMenu extends StatelessWidget {
         backgroundColor: context.tokens.color.vsdslColorSurface1000,
         insetPadding: const EdgeInsets.only(left: 8, bottom: 8),
         child: SizedBox(
-            width: 518,
-            height: 413,
-            child: Consumer<SettingsProvider>(
-              builder: (context, value, child) {
-                return Row(
-                  children: [
-                    SizedBox(
-                      width: 166,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 13,
-                            top: 13,
-                            child: AutoSizeText(
-                              S.of(context).main_settings_title,
-                              style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white),
-                            ),
+          width: 518,
+          height: 413,
+          child: Consumer<SettingsProvider>(
+            builder: (context, value, child) {
+              return Row(
+                children: [
+                  SizedBox(
+                    width: 166,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          left: 13,
+                          top: 13,
+                          child: AutoSizeText(
+                            S.of(context).main_settings_title,
+                            style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white),
                           ),
-                          Positioned(
-                            left: 13,
-                            top: 57,
-                            right: 13,
-                            child: Column(
-                              children: <Widget>[
-                                _subTittleButton(context,
-                                    state: SettingPageState.deviceSetting,
-                                    text: S
-                                        .of(context)
-                                        .v3_settings_device_setting,
-                                    onClick: () {
-                                  settingsProvider
-                                      .setPage(SettingPageState.deviceSetting);
-                                }),
-                                const Padding(
-                                    padding: EdgeInsets.only(bottom: 5)),
-                                _subTittleButton(context,
-                                    state: SettingPageState.broadcast,
-                                    text: S.of(context).v3_settings_broadcast,
-                                    onClick: () {
-                                  settingsProvider
-                                      .setPage(SettingPageState.broadcast);
-                                }),
-                                const Padding(
-                                    padding: EdgeInsets.only(bottom: 5)),
-                                _subTittleButton(context,
-                                    state: SettingPageState.mirroring,
-                                    text: S.of(context).v3_shortcuts_mirroring,
-                                    onClick: () {
-                                  settingsProvider
-                                      .setPage(SettingPageState.mirroring);
-                                }),
-                                const Padding(
-                                    padding: EdgeInsets.only(bottom: 5)),
-                                _subTittleButton(context,
-                                    state: SettingPageState.connectivity,
-                                    text: S
-                                        .of(context)
-                                        .v3_settings_connectivity, onClick: () {
-                                  settingsProvider
-                                      .setPage(SettingPageState.connectivity);
-                                }),
-                                const Padding(
-                                    padding: EdgeInsets.only(bottom: 5)),
-                                _subTittleButton(context,
-                                    state: SettingPageState.whatsNew,
-                                    text: S.of(context).v3_settings_whats_new,
-                                    onClick: () {
-                                  settingsProvider
-                                      .setPage(SettingPageState.whatsNew);
-                                }),
-                                const Padding(
-                                    padding: EdgeInsets.only(bottom: 5)),
-                                _subTittleButton(context,
-                                    state: SettingPageState.legalPolicy,
-                                    text: S
-                                        .of(context)
-                                        .v3_settings_legal_policy, onClick: () {
-                                  settingsProvider
-                                      .setPage(SettingPageState.legalPolicy);
-                                }),
-                              ],
-                            ),
+                        ),
+                        Positioned(
+                          left: 13,
+                          top: 57,
+                          right: 13,
+                          child: Column(
+                            children: <Widget>[
+                              _subTittleButton(context,
+                                  state: SettingPageState.deviceSetting,
+                                  text: S
+                                      .of(context)
+                                      .v3_settings_device_setting, onClick: () {
+                                settingsProvider
+                                    .setPage(SettingPageState.deviceSetting);
+                              }),
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 5)),
+                              _subTittleButton(context,
+                                  state: SettingPageState.broadcast,
+                                  text: S.of(context).v3_settings_broadcast,
+                                  onClick: () {
+                                settingsProvider
+                                    .setPage(SettingPageState.broadcast);
+                              }),
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 5)),
+                              _subTittleButton(context,
+                                  state: SettingPageState.mirroring,
+                                  text: S.of(context).v3_shortcuts_mirroring,
+                                  onClick: () {
+                                settingsProvider
+                                    .setPage(SettingPageState.mirroring);
+                              }),
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 5)),
+                              _subTittleButton(context,
+                                  state: SettingPageState.connectivity,
+                                  text: S.of(context).v3_settings_connectivity,
+                                  onClick: () {
+                                settingsProvider
+                                    .setPage(SettingPageState.connectivity);
+                              }),
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 5)),
+                              _subTittleButton(context,
+                                  state: SettingPageState.whatsNew,
+                                  text: S.of(context).v3_settings_whats_new,
+                                  onClick: () {
+                                settingsProvider
+                                    .setPage(SettingPageState.whatsNew);
+                              }),
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 5)),
+                              _subTittleButton(context,
+                                  state: SettingPageState.legalPolicy,
+                                  text: S.of(context).v3_settings_legal_policy,
+                                  onClick: () {
+                                settingsProvider
+                                    .setPage(SettingPageState.legalPolicy);
+                              }),
+                            ],
                           ),
-                          Positioned(
-                            left: 8,
-                            bottom: 8,
-                            child: SizedBox(
-                              width: 33,
-                              height: 33,
-                              child: IconButton(
-                                icon: const Image(
-                                  image: Svg('assets/images/ic_menu_close.svg'),
-                                ),
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                                onPressed: () {
-                                  V3Home.isShowSettingsMenu.value = false;
-                                  settingsProvider
-                                      .setPage(SettingPageState.deviceSetting);
-                                },
+                        ),
+                        Positioned(
+                          left: 8,
+                          bottom: 8,
+                          child: SizedBox(
+                            width: 33,
+                            height: 33,
+                            child: IconButton(
+                              icon: const Image(
+                                image: Svg('assets/images/ic_menu_close.svg'),
                               ),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              onPressed: () {
+                                V3Home.isShowSettingsMenu.value = false;
+                                settingsProvider
+                                    .setPage(SettingPageState.deviceSetting);
+                              },
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    Container(
-                      width: 1,
-                      color: context.tokens.color.vsdslColorOutlineVariant,
+                  ),
+                  Container(
+                    width: 1,
+                    color: context.tokens.color.vsdslColorOutlineVariant,
+                  ),
+                  Expanded(
+                    child: Builder(
+                      builder: (context) {
+                        switch (value.currentPage) {
+                          case SettingPageState.deviceSetting:
+                            return const V3SettingsDevice();
+                          case SettingPageState.deviceName:
+                            return const V3SettingsDeviceName();
+                          case SettingPageState.deviceLanguage:
+                            return const V3SettingsDeviceLanguage();
+                          case SettingPageState.broadcast:
+                            return const V3SettingsBroadcast();
+                          case SettingPageState.broadcastBoards:
+                            return const V3SettingsCastToBoards();
+                          case SettingPageState.mirroring:
+                            return const V3SettingsMirroring();
+                          case SettingPageState.connectivity:
+                            return const V3SettingsConnectivity();
+                          case SettingPageState.whatsNew:
+                            return const V3SettingsWhatsNew();
+                          case SettingPageState.legalPolicy:
+                            return const V3SettingsLegalPolicy();
+                          case SettingPageState.licenses:
+                            return const V3SettingsLicense();
+                        }
+                      },
                     ),
-                    Expanded(
-                      child: Builder(
-                        builder: (context) {
-                          switch (value.currentPage) {
-                            case SettingPageState.deviceSetting:
-                              return const V3SettingsDevice();
-                            case SettingPageState.deviceName:
-                              return const V3SettingsDeviceName();
-                            case SettingPageState.deviceLanguage:
-                              return const V3SettingsDeviceLanguage();
-                            case SettingPageState.broadcast:
-                              return const V3SettingsBroadcast();
-                            case SettingPageState.broadcastBoards:
-                              return const V3SettingsCastToBoards();
-                            case SettingPageState.mirroring:
-                              return const V3SettingsMirroring();
-                            case SettingPageState.connectivity:
-                              return const V3SettingsConnectivity();
-                            case SettingPageState.whatsNew:
-                              return const V3SettingsWhatsNew();
-                            case SettingPageState.legalPolicy:
-                              return const V3SettingsLegalPolicy();
-                            case SettingPageState.licenses:
-                              return const V3SettingsLicense();
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              },
-            )));
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  void dismissMenu(SettingsProvider settingsProvider) {
+    V3Home.isShowSettingsMenu.value = false;
+    settingsProvider.setPage(SettingPageState.deviceSetting);
   }
 
   _subTittleButton(BuildContext context,

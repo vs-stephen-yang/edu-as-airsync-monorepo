@@ -5,6 +5,7 @@ import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/group_list_provider.dart';
 import 'package:display_flutter/providers/group_provider.dart';
+import 'package:display_flutter/providers/message_dialog_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:display_flutter/widgets/v3_settings_radio_group_item.dart';
@@ -86,25 +87,69 @@ class V3SettingsCastToBoardsState
       SettingsProvider settingsProvider,
       ChannelProvider channelProvider,
       GroupProvider groupNotifier) {
+    final selectedListEmpty = groupNotifier.selectedList.isEmpty;
     return Align(
       alignment: Alignment.centerRight,
       child: broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
           ? _saveButton(context, S.of(context).v3_settings_device_name_save,
               onClick: () {
-              AppPreferences()
-                  .setGroupSelectedList(groupNotifier.historySelectedList);
-              settingsProvider.setPage(SettingPageState.deviceSetting);
+              if (selectedListEmpty) {
+                showDialog(
+                  groupNotifier: groupNotifier,
+                  onConfirm: () {
+                    AppPreferences().setGroupSelectedList(
+                        groupNotifier.historySelectedList);
+                    settingsProvider.setPage(SettingPageState.deviceSetting);
+                  },
+                );
+              } else {
+                AppPreferences()
+                    .setGroupSelectedList(groupNotifier.historySelectedList);
+                settingsProvider.setPage(SettingPageState.deviceSetting);
+              }
             })
           : _broadcastButton(
               context,
               S.of(context).v3_settings_display_group_cast,
               onClick: () {
-                AppPreferences()
-                    .setGroupSelectedList(groupNotifier.historySelectedList);
-                // start display group
-                channelProvider.startDisplayGroup(groupNotifier.selectedList);
+                if (selectedListEmpty) {
+                  showDialog(
+                    groupNotifier: groupNotifier,
+                    onConfirm: () {
+                      AppPreferences().setGroupSelectedList(
+                          groupNotifier.historySelectedList);
+                      // start display group
+                      channelProvider
+                          .startDisplayGroup(groupNotifier.selectedList);
+                    },
+                  );
+                } else {
+                  AppPreferences()
+                      .setGroupSelectedList(groupNotifier.historySelectedList);
+                  // start display group
+                  channelProvider.startDisplayGroup(groupNotifier.selectedList);
+                }
               },
             ),
+    );
+  }
+
+  void showDialog({
+    required GroupProvider groupNotifier,
+    VoidCallback? onConfirm,
+    VoidCallback? onCancel,
+  }) {
+    final dialog = ref.read(dialogProvider.notifier);
+    dialog.showDialog(
+      title: 'No device selected.',
+      content: 'No device selected.',
+      confirmText: S.current.moderator_confirm,
+      cancelText: S.current.main_mirror_prompt_cancel,
+      showIcon: false,
+      width: 400,
+      height: 192,
+      onConfirm: onConfirm,
+      onCancel: onCancel,
     );
   }
 
