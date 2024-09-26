@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:desktop_screenstate/desktop_screenstate.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
@@ -17,6 +18,7 @@ import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/model/profile.dart';
+import 'package:display_cast_flutter/utilities/screen_state_detector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,6 +55,26 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
   await DataDisplayCode.getInstance().initialize();
 
   final ProfileStore profileStore = await ProfileUtil.loadProfileStore(args);
+
+  // Due to macOS has few users, we are currently only adding the screen state detector for Windows.
+  if (!kIsWeb && Platform.isWindows) {
+    ScreenStateDetector.initialize();
+    ScreenStateDetector.instance.onState.listen((event) {
+      if (event == ScreenState.awaked) {
+        log.info('screen_awaked');
+        AppAnalytics.instance.trackEvent('screen_awaked');
+      } else if (event == ScreenState.sleep) {
+        log.info('screen_sleep');
+        AppAnalytics.instance.trackEvent('screen_sleep');
+      } else if (event == ScreenState.locked) {
+        log.info('screen_locked');
+        AppAnalytics.instance.trackEvent('screen_locked');
+      } else if (event == ScreenState.unlocked) {
+        log.info('screen_unlocked');
+        AppAnalytics.instance.trackEvent('screen_unlocked');
+      }
+    });
+  }
 
   runApp(AppConfig(
     settings: settings,
