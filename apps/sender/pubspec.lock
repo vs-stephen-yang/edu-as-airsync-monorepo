@@ -217,6 +217,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.10"
+  desktop_screenstate:
+    dependency: "direct main"
+    description:
+      name: desktop_screenstate
+      sha256: fda260c4d4bc993e5e9e04359add0d75cc2afb2eba72827e1832dc2200ee189b
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.5"
   desktop_window:
     dependency: "direct main"
     description:

@@ -1,13 +1,22 @@
 #include "flutter_window.h"
 
 #include <optional>
+#include <wtsapi32.h>
+#pragma comment(lib, "wtsapi32.lib")
 
 #include "flutter/generated_plugin_registrant.h"
 
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
     : project_(project) {}
 
-FlutterWindow::~FlutterWindow() {}
+FlutterWindow::~FlutterWindow() {
+    if (power_notification_handle_) {
+        // Unregister the power notification.
+        UnregisterPowerSettingNotification(power_notification_handle_);
+    }
+    // Unregister the session notification.
+    WTSUnRegisterSessionNotification(GetHandle());
+}
 
 bool FlutterWindow::OnCreate() {
   if (!Win32Window::OnCreate()) {
@@ -26,6 +35,12 @@ bool FlutterWindow::OnCreate() {
   }
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
+
+  // Register for power notifications and session notifications.
+  power_notification_handle_ = RegisterPowerSettingNotification(GetHandle(), &GUID_CONSOLE_DISPLAY_STATE, DEVICE_NOTIFY_WINDOW_HANDLE);
+
+  // Register for session notifications.
+  WTSRegisterSessionNotification(GetHandle(), NOTIFY_FOR_THIS_SESSION);
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
     this->Show();
