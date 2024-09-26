@@ -9,6 +9,7 @@ import 'package:display_flutter/widgets/v3_settings_connectivity.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:display_flutter/widgets/v3_settings_device_language.dart';
 import 'package:display_flutter/widgets/v3_settings_device_name.dart';
+import 'package:display_flutter/widgets/v3_settings_legal_policy.dart';
 import 'package:display_flutter/widgets/v3_settings_mirroring.dart';
 import 'package:display_flutter/widgets/v3_settings_whats_new.dart';
 import 'package:flutter/material.dart';
@@ -104,6 +105,16 @@ class V3SettingMenu extends StatelessWidget {
                                   settingsProvider
                                       .setPage(SettingPageState.whatsNew);
                                 }),
+                                const Padding(
+                                    padding: EdgeInsets.only(bottom: 5)),
+                                _subTittleButton(context,
+                                    state: SettingPageState.legalPolicy,
+                                    text: S
+                                        .of(context)
+                                        .v3_settings_legal_policy, onClick: () {
+                                  settingsProvider
+                                      .setPage(SettingPageState.legalPolicy);
+                                }),
                               ],
                             ),
                           ),
@@ -154,6 +165,11 @@ class V3SettingMenu extends StatelessWidget {
                               return const V3SettingsConnectivity();
                             case SettingPageState.whatsNew:
                               return const V3SettingsWhatsNew();
+                            case SettingPageState.legalPolicy:
+                              return const V3SettingsLegalPolicy();
+                            case SettingPageState.privacyPolicy:
+                              // TODO: Handle this case.
+                              return Container();
                           }
                         },
                       ),

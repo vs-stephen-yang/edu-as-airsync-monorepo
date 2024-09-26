@@ -1570,6 +1570,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Legal & Policy`
+  String get v3_settings_legal_policy {
+    return Intl.message(
+      'Legal & Policy',
+      name: 'v3_settings_legal_policy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy Policy`
+  String get v3_settings_policy_privacy {
+    return Intl.message(
+      'Privacy Policy',
+      name: 'v3_settings_policy_privacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Source Licenses`
+  String get v3_settings_open_source_license {
+    return Intl.message(
+      'Open Source Licenses',
+      name: 'v3_settings_open_source_license',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
