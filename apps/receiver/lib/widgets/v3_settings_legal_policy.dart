@@ -47,7 +47,7 @@ class _V3SettingsLegalPolicyState extends State<V3SettingsLegalPolicy> {
             height: 26,
             child: Row(children: [
               Text(
-                S.of(context).v3_settings_legal_policy,
+                S.of(context).v3_settings_privacy_policy,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 12,
@@ -63,7 +63,7 @@ class _V3SettingsLegalPolicyState extends State<V3SettingsLegalPolicy> {
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
                 onPressed: () {
-                  settingsProvider.setPage(SettingPageState.legalPolicy);
+                  settingsProvider.setPage(SettingPageState.licenses);
                 },
               )
             ]),
@@ -120,7 +120,8 @@ class _V3SettingsLegalPolicyState extends State<V3SettingsLegalPolicy> {
                                         constraints: const BoxConstraints(),
                                         onPressed: () {
                                           settingsProvider.setPage(
-                                              SettingPageState.privacyPolicy);
+                                              SettingPageState.licenses,
+                                              license: license);
                                         },
                                       )
                                     ],

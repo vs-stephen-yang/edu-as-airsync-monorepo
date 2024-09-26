@@ -1,3 +1,4 @@
+import 'package:display_flutter/widgets/v3_settings_legal_policy.dart';
 import 'package:flutter/cupertino.dart';
 
 enum SettingPageState {
@@ -10,7 +11,7 @@ enum SettingPageState {
   connectivity,
   whatsNew,
   legalPolicy,
-  privacyPolicy,
+  licenses,
 }
 
 class SettingsProvider with ChangeNotifier {
@@ -24,7 +25,11 @@ class SettingsProvider with ChangeNotifier {
 
   static SettingPageState get currentTittlePage => _currentTittlePage;
 
-  setPage(SettingPageState state) {
+  License? _license;
+
+  License? get license => _license;
+
+  setPage(SettingPageState state, {License? license}) {
     switch (state) {
       case SettingPageState.deviceSetting:
       case SettingPageState.broadcast:
@@ -37,6 +42,9 @@ class SettingsProvider with ChangeNotifier {
         break;
     }
     _currentPage = state;
+    if (license != null) {
+      _license = license;
+    }
     notifyListeners();
   }
 }

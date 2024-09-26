@@ -10,6 +10,7 @@ import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:display_flutter/widgets/v3_settings_device_language.dart';
 import 'package:display_flutter/widgets/v3_settings_device_name.dart';
 import 'package:display_flutter/widgets/v3_settings_legal_policy.dart';
+import 'package:display_flutter/widgets/v3_settings_license.dart';
 import 'package:display_flutter/widgets/v3_settings_mirroring.dart';
 import 'package:display_flutter/widgets/v3_settings_whats_new.dart';
 import 'package:flutter/material.dart';
@@ -167,9 +168,8 @@ class V3SettingMenu extends StatelessWidget {
                               return const V3SettingsWhatsNew();
                             case SettingPageState.legalPolicy:
                               return const V3SettingsLegalPolicy();
-                            case SettingPageState.privacyPolicy:
-                              // TODO: Handle this case.
-                              return Container();
+                            case SettingPageState.licenses:
+                              return const V3SettingsLicense();
                           }
                         },
                       ),
