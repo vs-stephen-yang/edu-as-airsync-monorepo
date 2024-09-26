@@ -3,14 +3,17 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
+import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:motion_toast/motion_toast.dart';
+import 'package:provider/provider.dart';
 
-class V3ParticipantItem extends StatelessWidget {
+class V3ParticipantItem extends StatefulWidget {
   const V3ParticipantItem(
       {super.key, required this.index, required this.isForMenuUse});
 
@@ -18,48 +21,67 @@ class V3ParticipantItem extends StatelessWidget {
   final bool isForMenuUse;
 
   @override
+  State createState() => _V3ParticipantItemState();
+}
+
+class _V3ParticipantItemState extends State<V3ParticipantItem> {
+  @override
   Widget build(BuildContext context) {
-    RTCConnector rtcConnector =
-        HybridConnectionList().getRtcConnectorMap().values.toList()[index];
+    RTCConnector rtcConnector = HybridConnectionList()
+        .getRtcConnectorMap()
+        .values
+        .toList()[widget.index];
     String presenterId = rtcConnector.clientId ?? '';
     Widget? itemParticipant;
     bool isCasting = ((rtcConnector.presentationState.index) >=
         PresentationState.streaming.index);
-    bool isControlling = false;
     bool isReceiving = rtcConnector.isModeratorShare;
+    bool isControlling = false;
+    if (rtcConnector.isModeratorShare) {
+      // find the remoteShareConnector with same clientId as rtcConnector.
+      ChannelProvider channelProvider =
+          Provider.of<ChannelProvider>(context, listen: false);
+      int index = channelProvider.remoteShareConnectors
+          .indexWhere((item) => item.clientId == rtcConnector.clientId);
+      if (index != -1) {
+        isControlling =
+            channelProvider.remoteShareConnectors[index].isTouchEnabled;
+      }
+    }
 
     String status = '';
     if (isControlling) {
       status = S.of(context).v3_participant_item_controlling;
       itemParticipant = ParticipantControllingFeature(
         rtcConnector: rtcConnector,
-        presenterId: presenterId,
-        isForMenuUse: isForMenuUse,
+        callback: () {
+          setState(() {});
+        },
       );
     } else if (isReceiving) {
       status = S.of(context).v3_participant_item_receiving;
       itemParticipant = ParticipantReceivingFeature(
         rtcConnector: rtcConnector,
-        presenterId: presenterId,
-        isForMenuUse: isForMenuUse,
+        callback: () {
+          setState(() {});
+        },
       );
     } else if (isCasting) {
       status = S.of(context).v3_participant_item_casting;
       itemParticipant = ParticipantStreamingFeature(
         rtcConnector: rtcConnector,
         presenterId: presenterId,
-        isForMenuUse: isForMenuUse,
       );
     } else {
       itemParticipant = ParticipantStandbyFeature(
         rtcConnector: rtcConnector,
         presenterId: presenterId,
-        isForMenuUse: isForMenuUse,
+        isForMenuUse: widget.isForMenuUse,
       );
     }
 
     return SizedBox(
-      width: isForMenuUse ? 315 : 283,
+      width: widget.isForMenuUse ? 315 : 283,
       height: isCasting ? 40 : 40,
       child: Row(
         children: [
@@ -80,7 +102,7 @@ class V3ParticipantItem extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (isForMenuUse && status.isNotEmpty) ...[
+              if (widget.isForMenuUse && status.isNotEmpty) ...[
                 SizedBox(height: context.tokens.spacing.vsdslSpacingSm.top),
                 Container(
                   height: 17,
@@ -333,12 +355,10 @@ class ParticipantStreamingFeature extends StatelessWidget {
     super.key,
     required this.rtcConnector,
     required this.presenterId,
-    required this.isForMenuUse,
   });
 
   final RTCConnector rtcConnector;
   final String presenterId;
-  final bool isForMenuUse;
 
   @override
   Widget build(BuildContext context) {
@@ -406,13 +426,11 @@ class ParticipantReceivingFeature extends StatelessWidget {
   const ParticipantReceivingFeature({
     super.key,
     required this.rtcConnector,
-    required this.presenterId,
-    required this.isForMenuUse,
+    this.callback,
   });
 
   final RTCConnector rtcConnector;
-  final String presenterId;
-  final bool isForMenuUse;
+  final VoidCallback? callback;
 
   @override
   Widget build(BuildContext context) {
@@ -422,7 +440,9 @@ class ParticipantReceivingFeature extends StatelessWidget {
           width: 104,
           height: 27,
           child: ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              _touchBackOn(context);
+            },
             icon: const SizedBox(
               width: 16,
               height: 16,
@@ -483,19 +503,34 @@ class ParticipantReceivingFeature extends StatelessWidget {
       ],
     );
   }
+
+  _touchBackOn(BuildContext context) {
+    // find the remoteShareConnector with same clientId as rtcConnector.
+    ChannelProvider channelProvider =
+        Provider.of<ChannelProvider>(context, listen: false);
+    int index = channelProvider.remoteShareConnectors
+        .indexWhere((item) => item.clientId == rtcConnector.clientId);
+    if (index != -1) {
+      RemoteScreenConnector remoteShareConnector =
+          channelProvider.remoteShareConnectors[index];
+
+      remoteShareConnector.isTouchEnabled = true;
+      channelProvider.remoteScreenServe.enableRemoteControlBySessionId(
+          remoteShareConnector.sessionId!, remoteShareConnector.isTouchEnabled);
+      callback?.call();
+    }
+  }
 }
 
 class ParticipantControllingFeature extends StatelessWidget {
   const ParticipantControllingFeature({
     super.key,
     required this.rtcConnector,
-    required this.presenterId,
-    required this.isForMenuUse,
+    this.callback,
   });
 
   final RTCConnector rtcConnector;
-  final String presenterId;
-  final bool isForMenuUse;
+  final VoidCallback? callback;
 
   @override
   Widget build(BuildContext context) {
@@ -514,10 +549,29 @@ class ParticipantControllingFeature extends StatelessWidget {
             ),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
-            onPressed: () {},
+            onPressed: () {
+              _touchBackOff(context);
+            },
           ),
         ),
       ],
     );
+  }
+
+  _touchBackOff(BuildContext context) {
+    // find the remoteShareConnector with same clientId as rtcConnector.
+    ChannelProvider channelProvider =
+        Provider.of<ChannelProvider>(context, listen: false);
+    int index = channelProvider.remoteShareConnectors
+        .indexWhere((item) => item.clientId == rtcConnector.clientId);
+    if (index != -1) {
+      RemoteScreenConnector remoteShareConnector =
+          channelProvider.remoteShareConnectors[index];
+
+      remoteShareConnector.isTouchEnabled = false;
+      channelProvider.remoteScreenServe.enableRemoteControlBySessionId(
+          remoteShareConnector.sessionId!, remoteShareConnector.isTouchEnabled);
+      callback?.call();
+    }
   }
 }
