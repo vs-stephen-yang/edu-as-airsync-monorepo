@@ -8,7 +8,9 @@ enum SettingPageState {
   broadcastBoards,
   mirroring,
   connectivity,
-  whatsNew
+  whatsNew,
+  legalPolicy,
+  privacyPolicy,
 }
 
 class SettingsProvider with ChangeNotifier {
@@ -29,6 +31,7 @@ class SettingsProvider with ChangeNotifier {
       case SettingPageState.mirroring:
       case SettingPageState.connectivity:
       case SettingPageState.whatsNew:
+      case SettingPageState.legalPolicy:
         _currentTittlePage = state;
       default:
         break;

@@ -150,5 +150,8 @@
   "v3_group_receive_view_status_from": "Broadcasting from",
   "v3_group_receive_view_status_stop": "Stop",
   "v3_participant_item_receiving": "Receiving",
-  "v3_participant_item_controlling": "Remote controlling"
+  "v3_participant_item_controlling": "Remote controlling",
+  "v3_settings_legal_policy": "Legal & Policy",
+  "v3_settings_policy_privacy": "Privacy Policy",
+  "v3_settings_open_source_license": "Open Source Licenses"
 }

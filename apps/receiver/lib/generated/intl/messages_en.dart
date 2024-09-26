@@ -290,6 +290,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ignore"),
         "v3_settings_invite_group_notify_me":
             MessageLookupByLibrary.simpleMessage("Notify me"),
+        "v3_settings_legal_policy":
+            MessageLookupByLibrary.simpleMessage("Legal & Policy"),
         "v3_settings_mirroring_auto_accept":
             MessageLookupByLibrary.simpleMessage("Auto Accept"),
         "v3_settings_mirroring_auto_accept_desc":
@@ -297,6 +299,10 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Instantly enable mirroring without requiring moderator approval."),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Require passcode"),
+        "v3_settings_open_source_license":
+            MessageLookupByLibrary.simpleMessage("Open Source Licenses"),
+        "v3_settings_policy_privacy":
+            MessageLookupByLibrary.simpleMessage("Privacy Policy"),
         "v3_settings_whats_new":
             MessageLookupByLibrary.simpleMessage("What\'s new"),
         "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
