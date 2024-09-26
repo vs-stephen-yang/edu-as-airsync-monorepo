@@ -323,6 +323,9 @@ class ChannelProvider extends ChangeNotifier {
                       sprintf(S.current.v3_group_dialog_message, [hostName]),
                   confirmText: S.current.v3_group_dialog_accept,
                   cancelText: S.current.v3_group_dialog_decline,
+                  showIcon: true,
+                  width: 400,
+                  height: 265,
                   onConfirm: () {
                     _displayGroupSession?.accept(hostName);
                   },

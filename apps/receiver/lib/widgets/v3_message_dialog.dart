@@ -14,13 +14,15 @@ class V3MessageDialog extends ConsumerWidget {
     if (!dialogState.isVisible) {
       return const SizedBox.shrink();
     }
-
-    return Dialog(
-      elevation: 4.0,
+    return Container(
+      alignment: Alignment.center,
+      width: double.infinity,
+      height: double.infinity,
+      color: context.tokens.color.vsdslColorOpacityNeutralXs,
       child: Container(
-        width: 400,
+        width: dialogState.width ?? 400,
         // 設置固定寬度
-        height: 265,
+        height: dialogState.height ?? 265,
         // 設置固定高度
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -35,12 +37,14 @@ class V3MessageDialog extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Image(
-              image: Svg('assets/images/ic_logo_airsync_icon.svg'),
-              width: 66,
-              height: 66,
-            ),
-            const SizedBox(height: 12),
+            if (dialogState.showIcon ?? false) ...[
+              const Image(
+                image: Svg('assets/images/ic_logo_airsync_icon.svg'),
+                width: 66,
+                height: 66,
+              ),
+              const SizedBox(height: 12),
+            ],
             if (dialogState.title != null)
               Text(
                 dialogState.title!,
