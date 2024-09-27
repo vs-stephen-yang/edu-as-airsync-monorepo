@@ -1,7 +1,10 @@
 import 'package:display_channel/display_channel.dart';
+import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
+import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/services/display_group_member.dart';
 import 'package:display_flutter/services/display_group_member_info.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DisplayGroupHost {
   final _members = <String, DisplayGroupMember>{};
@@ -24,14 +27,19 @@ class DisplayGroupHost {
   }
 
   // Add a member
-  void addMember(String memberId, DisplayGroupMemberInfo memberInfo) {
-    final member = DisplayGroupMember(
-      memberInfo,
-      _createRemoteScreenConnector, () {
-      removeMember(memberId);
+  void addMember(GroupListItem item, DisplayGroupMemberInfo memberInfo,
+      ProviderContainer? providerContainer) {
+    final member = DisplayGroupMember(memberInfo, _createRemoteScreenConnector,
+        onStopped: (bool stayOnList) {
+      removeMember(item.id());
+      if (!stayOnList) {
+        providerContainer
+            ?.read(groupProvider.notifier)
+            .removeFromSelectedList(item);
+      }
     });
 
-    _members[memberId] = member;
+    _members[item.id()] = member;
   }
 
   // Stop all members and clear the map

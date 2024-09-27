@@ -1002,7 +1002,8 @@ class ChannelProvider extends ChangeNotifier {
                 host: member.ip(),
                 displayCode: member.displayCode(),
               );
-              _displayGroupHost!.addMember(member.id(), memberInfo);
+              _displayGroupHost!
+                  .addMember(member, memberInfo, providerContainer);
             }
           },
           onItemsRemoved: (removedItems) {
@@ -1034,7 +1035,7 @@ class ChannelProvider extends ChangeNotifier {
           host: member.ip(),
           displayCode: member.displayCode(),
         );
-        _displayGroupHost!.addMember(member.id(), memberInfo);
+        _displayGroupHost!.addMember(member, memberInfo, providerContainer);
       }
     }, onItemsRemoved: (removedItems) {
       for (var memberId in removedItems) {
