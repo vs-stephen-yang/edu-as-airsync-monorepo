@@ -12,6 +12,7 @@ import 'package:display_cast_flutter/providers/device_list_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/screens/home.dart';
+import 'package:display_cast_flutter/screens/v3_eula.dart';
 import 'package:display_cast_flutter/screens/v3_home.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
@@ -141,13 +142,20 @@ class MyApp extends StatelessWidget {
               scaffoldBackgroundColor: const Color(0xFFF0F1F7),
               unselectedWidgetColor: Colors.white,
             ),
-            initialRoute: AppPreferences().showOldUI ? '/home' : '/v3home',
+            initialRoute: AppPreferences().showOldUI
+                ? '/home'
+                : kIsWeb
+                    ? '/v3home'
+                    : AppPreferences().showEULA
+                        ? '/v3eula'
+                        : '/v3home',
             navigatorKey: NavigationService.navigationKey,
             routes: {
               // for 'navService.popUntil('/home')'
               '/home': (context) => botToastBuilder(context, const Home()),
               // for 'navService.popUntil('/v3home')'
               '/v3home': (context) => botToastBuilder(context, const V3Home()),
+              '/v3eula': (context) => const V3Eula(),
             },
           );
         },

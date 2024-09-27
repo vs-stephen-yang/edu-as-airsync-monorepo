@@ -809,6 +809,36 @@ class S {
       args: [],
     );
   }
+
+  /// `End-User License Agreement`
+  String get v3_eula_title {
+    return Intl.message(
+      'End-User License Agreement',
+      name: 'v3_eula_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Agree`
+  String get v3_eula_agree {
+    return Intl.message(
+      'Agree',
+      name: 'v3_eula_agree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disagree`
+  String get v3_eula_disagree {
+    return Intl.message(
+      'Disagree',
+      name: 'v3_eula_disagree',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
