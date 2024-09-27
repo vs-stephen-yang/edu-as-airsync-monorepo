@@ -19,10 +19,12 @@ class DisplayGroupMember {
     StartRemoteScreenMessage,
   ) createRemoteScreenConnector;
 
-  final void Function() onStopped;
+  final void Function(bool stayOnList) onStopped;
 
-  DisplayGroupMember(
-      this._info, this.createRemoteScreenConnector, this.onStopped) {
+  bool stayOnList = false;
+
+  DisplayGroupMember(this._info, this.createRemoteScreenConnector,
+      {required this.onStopped}) {
     final uri = Uri(
       scheme: 'wss',
       host: _info.host,
@@ -81,11 +83,10 @@ class DisplayGroupMember {
 
         // 根據狀態進行相應處理
         switch (status) {
-          case 'accepted':
+          case 'accept':
             break;
-          case 'rejected':
-            // TODO:
-            // 邀請被拒絕的處理邏輯
+          case 'reject':
+            stayOnList = true;
             break;
           default:
             // 處理未知狀態
@@ -103,7 +104,7 @@ class DisplayGroupMember {
         break;
       case ChannelMessageType.stopDisplayGroup:
         stop();
-        onStopped();
+        onStopped(stayOnList);
         break;
       default:
     }
