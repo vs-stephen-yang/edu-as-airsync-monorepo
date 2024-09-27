@@ -71,7 +71,6 @@ dependencies:
   synchronized: ^3.3.0+2
   connectivity_plus: ^5.0.1
   bonsoir: ^5.1.10
-  desktop_screenstate: ^0.0.5
 
   # ViewSonic plug-in
   flutter_webrtc:
@@ -90,6 +89,10 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection
       ref: release-0.4.0
+  desktop_screenstate:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-desktop-screenstate
+      ref: release-0.0.5
   # ViewSonic plug-in
 
 dependency_overrides:
