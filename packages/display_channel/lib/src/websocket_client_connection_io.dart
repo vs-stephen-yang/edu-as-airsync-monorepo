@@ -137,6 +137,10 @@ class WebSocketClientConnection implements ClientConnection {
   }
 
   void _handleConnectFailed(ConnectErrorType error, String message) async {
+    if (_closed) {
+      return;
+    }
+
     onConnectFailed?.call(
       ConnectError(error, message),
     );
@@ -145,6 +149,10 @@ class WebSocketClientConnection implements ClientConnection {
   }
 
   void _handleDisconnected() async {
+    if (_closed) {
+      return;
+    }
+
     _config.logger?.call(_url, "disconnected");
     onDisconnected?.call();
 
