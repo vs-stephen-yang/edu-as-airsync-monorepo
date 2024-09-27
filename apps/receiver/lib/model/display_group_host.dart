@@ -1,10 +1,11 @@
 import 'package:display_channel/display_channel.dart';
+import 'package:display_flutter/model/display_group_member_info.dart';
 import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/providers/group_provider.dart';
-import 'package:display_flutter/services/display_group_member.dart';
-import 'package:display_flutter/services/display_group_member_info.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'display_group_member.dart';
 
 class DisplayGroupHost {
   final _members = <String, DisplayGroupMember>{};

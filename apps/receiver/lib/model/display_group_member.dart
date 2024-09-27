@@ -1,9 +1,10 @@
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
-import 'package:display_flutter/services/display_group_member_info.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:uuid/uuid.dart';
+
+import 'display_group_member_info.dart';
 
 class DisplayGroupMember {
   final DisplayGroupMemberInfo _info;
