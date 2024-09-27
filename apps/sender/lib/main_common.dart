@@ -5,21 +5,23 @@ import 'package:desktop_screenstate/desktop_screenstate.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/device_list_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/screens/home.dart';
+import 'package:display_cast_flutter/screens/v3_home.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_instance_create.dart';
+import 'package:display_cast_flutter/utilities/app_preferences.dart';
 import 'package:display_cast_flutter/utilities/app_unresponsive_detector.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
-import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
-import 'package:display_cast_flutter/model/profile.dart';
+import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/screen_state_detector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +37,7 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
   initLogger();
   enableLogToMemory(true);
 
+  await AppPreferences.ensureInitialized();
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   await AppInstanceCreate.ensureInitialized();
 
@@ -134,14 +137,17 @@ class MyApp extends StatelessWidget {
             locale: languageModel.locale,
             theme: ThemeData(
               primarySwatch: Colors.blue,
-              scaffoldBackgroundColor: Colors.black, // Set app background color
+              // Set app background color
+              scaffoldBackgroundColor: const Color(0xFFF0F1F7),
               unselectedWidgetColor: Colors.white,
             ),
-            initialRoute: '/home',
+            initialRoute: AppPreferences().showOldUI ? '/home' : '/v3home',
             navigatorKey: NavigationService.navigationKey,
             routes: {
               // for 'navService.popUntil('/home')'
               '/home': (context) => botToastBuilder(context, const Home()),
+              // for 'navService.popUntil('/v3home')'
+              '/v3home': (context) => botToastBuilder(context, const V3Home()),
             },
           );
         },

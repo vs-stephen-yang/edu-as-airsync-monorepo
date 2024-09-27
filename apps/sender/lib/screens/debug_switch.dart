@@ -1,10 +1,11 @@
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/app_colors.dart';
+import 'package:display_cast_flutter/utilities/app_preferences.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/share_log.dart';
 import 'package:display_cast_flutter/widgets/menu_dialog.dart';
-import 'package:display_cast_flutter/utilities/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class DebugSwitch extends StatefulWidget {
@@ -15,6 +16,7 @@ class DebugSwitch extends StatefulWidget {
 }
 
 class _DebugSwitchState extends State<DebugSwitch> {
+  bool _showOldUI = false;
   bool _initialized = false;
   bool _isLogVerbose = false;
   bool _isVideoQualityFirst = false;
@@ -27,6 +29,15 @@ class _DebugSwitchState extends State<DebugSwitch> {
             content: Text("Restart the program to apply the changes.")
         )
     );
+  }
+
+  void _showOldUIChanged(bool value) async {
+    await AppPreferences().setShowOldUI(value);
+
+    setState(() {
+      _showOldUI = value;
+      _notifyRestart();
+    });
   }
 
   void _changeLogVerbose(bool value) async {
@@ -53,6 +64,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   }
 
   void _initialize(BuildContext context) {
+    _showOldUI = AppPreferences().showOldUI;
     _isLogVerbose = isLogLevelVerbose();
     if (!_initialized) {
       final Profile profile = AppConfig.of(context)!.profileStore.getSelectedProfile();
@@ -98,6 +110,10 @@ class _DebugSwitchState extends State<DebugSwitch> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    SwitchListTile(
+                        title: const Text('show old UI'),
+                        value: _showOldUI,
+                        onChanged: _showOldUIChanged),
                     SwitchListTile(
                         title: const Text('video_quality_first'),
                         value: _isVideoQualityFirst,
