@@ -44,3 +44,11 @@ followed by an optional build number separated by a +.
     * Apple App Store: TestFlight
     * Google Play Store: Testing -> Closed testing
 
+
+# __Other Packages__
+
+## [figma2flutter](https://pub.dev/packages/figma2flutter)
+
+- Run the command in the root of your project to generate tokens:
+
+`figma2flutter --input ./design/airsync-token-v3.json --output ./lib/assets/tokens/`

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:desktop_screenstate/desktop_screenstate.dart';
 import 'package:desktop_window/desktop_window.dart';
+import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
@@ -90,7 +91,10 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     profileStore: profileStore,
     appName: packageInfo.appName,
     appVersion: packageInfo.version,
-    child: const MyApp(),
+    child: Tokens(
+      tokens: DefaultTokens(),
+      child: const MyApp(),
+    ),
   ));
 }
 
