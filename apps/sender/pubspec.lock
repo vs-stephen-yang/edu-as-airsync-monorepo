@@ -221,8 +221,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.0.5"
-      resolved-ref: f87f12a308bf3a7f7299bad6d7c991de01845694
+      ref: "release-0.0.5-1"
+      resolved-ref: d0dba5704ff3c615ce4ccade07c23d0c2cf5dfa3
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-desktop-screenstate"
     source: git
     version: "0.0.5"
