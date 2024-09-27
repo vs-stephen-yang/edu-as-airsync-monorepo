@@ -74,5 +74,8 @@
     "main_notice_positive_button": "Download AirSync sender app.",
     "present_select_screen_ios_restart_description": "Click \"Start broadcast\" to resume sharing before timeout or click \"Back\" to return to initial screen.",
     "present_select_screen_ios_restart": "Start broadcast",
-    "remote_screen_connect_error": "Remote screen connection error"
+    "remote_screen_connect_error": "Remote screen connection error",
+    "v3_eula_title": "End-User License Agreement",
+    "v3_eula_agree": "Agree",
+    "v3_eula_disagree": "Disagree"
 }

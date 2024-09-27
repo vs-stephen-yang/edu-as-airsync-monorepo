@@ -168,6 +168,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "toast_maximum_remote_screen": MessageLookupByLibrary.simpleMessage(
             "Has reached maximum shared screen amount."),
         "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
-            "Has reached maximum split screen amount.")
+            "Has reached maximum split screen amount."),
+        "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Agree"),
+        "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Disagree"),
+        "v3_eula_title":
+            MessageLookupByLibrary.simpleMessage("End-User License Agreement")
       };
 }
