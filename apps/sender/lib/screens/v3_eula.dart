@@ -112,12 +112,15 @@ class V3Eula extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                               ),
                               onPressed: () {
-                                if (Platform.isAndroid) {
-                                  SystemNavigator.pop();
-                                } else if (Platform.isIOS) {
+                                // return to home screen.
+                                if (Platform.isIOS) {
+                                  // todo: may not pass Apple review, need add some dialog to let user known?
                                   exit(0);
                                 } else {
-                                  // todo: support other platform.
+                                  // Android : workable.
+                                  // macOS: workable.
+                                  // Windows: todo: waiting verify
+                                  SystemNavigator.pop();
                                 }
                               },
                               child:
