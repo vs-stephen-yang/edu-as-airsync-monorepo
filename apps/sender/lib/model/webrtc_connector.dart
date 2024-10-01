@@ -102,7 +102,7 @@ class WebRTCConnector {
       required List<RtcIceServer>? iceServerList}) async {
     _deviceId = deviceId;
     _isScreenType = isScreenType;
-    final configuration = buildWebRtcConfiguration(iceServerList);
+    final configuration = WebRTCUtil.buildWebRtcConfiguration(iceServerList);
 
     _pc = await createPeerConnection(configuration);
 
