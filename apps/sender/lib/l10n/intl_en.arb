@@ -77,5 +77,20 @@
     "remote_screen_connect_error": "Remote screen connection error",
     "v3_eula_title": "End-User License Agreement",
     "v3_eula_agree": "Agree",
-    "v3_eula_disagree": "Disagree"
+    "v3_eula_disagree": "Disagree",
+    "v3_main_download": "Download",
+    "v3_main_download_title": "Get your AirSync sender app",
+    "v3_main_download_desc": "Effortless screen sharing with one-click connect.",
+    "v3_main_download_win_title": "Windows",
+    "v3_main_download_win_subtitle": "Win 10 (1709+)/ Win 11",
+    "v3_main_download_mac_title": "Mac",
+    "v3_main_download_mac_subtitle": "macOS 10.15+",
+    "v3_main_download_app_title": "AirSync App",
+    "v3_main_download_app_subtitle": "iOS and Android",
+    "v3_main_download_action_download": "Download",
+    "v3_main_download_action_get": "Get",
+    "v3_main_privacy": "Privacy Policy",
+    "v3_main_terms": "Terms of use",
+    "v3_main_accessibility": "Accessibility",
+    "v3_main_copy_rights": "Copyright © ViewSonic Corporation 2024. All rights reserved."
 }

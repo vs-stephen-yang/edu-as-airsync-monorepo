@@ -839,6 +839,156 @@ class S {
       args: [],
     );
   }
+
+  /// `Download`
+  String get v3_main_download {
+    return Intl.message(
+      'Download',
+      name: 'v3_main_download',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get your AirSync sender app`
+  String get v3_main_download_title {
+    return Intl.message(
+      'Get your AirSync sender app',
+      name: 'v3_main_download_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Effortless screen sharing with one-click connect.`
+  String get v3_main_download_desc {
+    return Intl.message(
+      'Effortless screen sharing with one-click connect.',
+      name: 'v3_main_download_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Windows`
+  String get v3_main_download_win_title {
+    return Intl.message(
+      'Windows',
+      name: 'v3_main_download_win_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Win 10 (1709+)/ Win 11`
+  String get v3_main_download_win_subtitle {
+    return Intl.message(
+      'Win 10 (1709+)/ Win 11',
+      name: 'v3_main_download_win_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mac`
+  String get v3_main_download_mac_title {
+    return Intl.message(
+      'Mac',
+      name: 'v3_main_download_mac_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `macOS 10.15+`
+  String get v3_main_download_mac_subtitle {
+    return Intl.message(
+      'macOS 10.15+',
+      name: 'v3_main_download_mac_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AirSync App`
+  String get v3_main_download_app_title {
+    return Intl.message(
+      'AirSync App',
+      name: 'v3_main_download_app_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `iOS and Android`
+  String get v3_main_download_app_subtitle {
+    return Intl.message(
+      'iOS and Android',
+      name: 'v3_main_download_app_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download`
+  String get v3_main_download_action_download {
+    return Intl.message(
+      'Download',
+      name: 'v3_main_download_action_download',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get`
+  String get v3_main_download_action_get {
+    return Intl.message(
+      'Get',
+      name: 'v3_main_download_action_get',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy Policy`
+  String get v3_main_privacy {
+    return Intl.message(
+      'Privacy Policy',
+      name: 'v3_main_privacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terms of use`
+  String get v3_main_terms {
+    return Intl.message(
+      'Terms of use',
+      name: 'v3_main_terms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accessibility`
+  String get v3_main_accessibility {
+    return Intl.message(
+      'Accessibility',
+      name: 'v3_main_accessibility',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copyright © ViewSonic Corporation 2024. All rights reserved.`
+  String get v3_main_copy_rights {
+    return Intl.message(
+      'Copyright © ViewSonic Corporation 2024. All rights reserved.',
+      name: 'v3_main_copy_rights',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
