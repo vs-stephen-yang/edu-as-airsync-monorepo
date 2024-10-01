@@ -73,5 +73,6 @@
     "main_notice_not_support_description": "行動設備端不支援透過瀏覽器分享畫面。請下載並使用AirSync傳送端app以分享畫面。",
     "main_notice_positive_button": "下載AirSync傳送端app",
     "present_select_screen_ios_restart_description": "請在連線逾時前點擊\"開始直播\"以分享畫面，或點擊\"返回\"回到初始畫面。",
-    "present_select_screen_ios_restart": "開始直播"
+    "present_select_screen_ios_restart": "開始直播",
+    "v3_main_download": "下載"
 }
