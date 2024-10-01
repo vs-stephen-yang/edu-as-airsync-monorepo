@@ -42,17 +42,23 @@ class V3QrcodeQuickConnect extends StatelessWidget {
               : 'assets/images/ic_qrcode_background1.svg'),
         ),
         Consumer2<InstanceInfoProvider, ChannelProvider>(
-            builder: (_, instanceProvider, channelProvider, __) {
-          // todo: design deep link to implement quick connect
-          String quickConnectData =
-              'Quick Connect: display code=${instanceProvider.displayCode}, otp=${channelProvider.otp.value}';
-          return QrImageView(
-            data: 'Not implement yet!!. $quickConnectData',
-            version: QrVersions.auto,
-            padding: EdgeInsets.zero,
-            size: isStringOnTop ? size - 35 : size - 32,
-          );
-        }),
+          builder: (_, instanceProvider, channelProvider, __) {
+            return ValueListenableBuilder<String>(
+              valueListenable: channelProvider.otp,
+              builder: (_, otp, __) {
+                // todo: design deep link to implement quick connect
+                String quickConnectData =
+                    'http://airsync/Quick_Connect?display_code=${instanceProvider.displayCode}&otp=${channelProvider.otp.value}';
+                return QrImageView(
+                  data: 'Not implement yet!!. $quickConnectData',
+                  version: QrVersions.auto,
+                  padding: EdgeInsets.zero,
+                  size: isStringOnTop ? size - 35 : size - 32,
+                );
+              },
+            );
+          },
+        ),
       ],
     );
 
