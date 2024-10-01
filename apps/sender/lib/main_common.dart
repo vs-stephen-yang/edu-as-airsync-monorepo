@@ -23,6 +23,7 @@ import 'package:display_cast_flutter/utilities/client_device_info.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
+import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/utilities/screen_state_detector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +59,8 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     await DesktopWindow.setMinWindowSize(const Size(1280, 720));
   }
 
+  // load ice gathering continually setting
+  WebRTCUtil.iceGatheringContinually = await WebRTCUtil.loadIceGatheringContinually();
   await DataDisplayCode.getInstance().initialize();
 
   final ProfileStore profileStore = await ProfileUtil.loadProfileStore(args);
