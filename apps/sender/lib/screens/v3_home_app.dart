@@ -67,7 +67,7 @@ class V3HomeApp extends StatelessWidget {
         return Stack(
           alignment: Alignment.center,
           children: <Widget>[
-            const V3Background(),
+            V3Background(),
             _mainContent,
             _settingMenu(),
           ],
