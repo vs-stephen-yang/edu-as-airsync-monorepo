@@ -141,6 +141,12 @@ class MyApp extends StatelessWidget {
               // Set app background color
               scaffoldBackgroundColor: const Color(0xFFF0F1F7),
               unselectedWidgetColor: Colors.white,
+              textTheme: Theme.of(context).textTheme.apply(
+                    fontFamily: AppPreferences().showOldUI ? null : 'Inter',
+                    bodyColor: AppPreferences().showOldUI
+                        ? null
+                        : context.tokens.color.vsdslColorOnSurface,
+                  ),
             ),
             initialRoute: AppPreferences().showOldUI
                 ? '/home'
