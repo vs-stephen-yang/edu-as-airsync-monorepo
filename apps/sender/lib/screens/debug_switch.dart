@@ -5,6 +5,7 @@ import 'package:display_cast_flutter/utilities/app_preferences.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/share_log.dart';
+import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   bool _showOldUI = false;
   bool _initialized = false;
   bool _isLogVerbose = false;
+  bool _iceGatheringContinually = false;
   bool _isVideoQualityFirst = false;
   int _maxBitrateKbps = 0;
   int _minBitrateKbps = 0;
@@ -63,6 +65,15 @@ class _DebugSwitchState extends State<DebugSwitch> {
     });
   }
 
+  void _changeGatheringPolicy(bool value) async {
+    await WebRTCUtil.saveIceGatheringContinually(value);
+
+    setState(() {
+      _iceGatheringContinually = value;
+      _notifyRestart();
+    });
+  }
+
   void _initialize(BuildContext context) {
     _showOldUI = AppPreferences().showOldUI;
     _isLogVerbose = isLogLevelVerbose();
@@ -72,6 +83,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
       _isVideoQualityFirst = profile.name == ProfileStore.videoQualityFirstProfile;
       _maxBitrateKbps = preset.parameters.maxBitrateKbps;
       _minBitrateKbps = preset.parameters.minBitrateKbps;
+      _iceGatheringContinually = WebRTCUtil.iceGatheringContinually;
     }
     _initialized = true;
   }
@@ -122,6 +134,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
                         fontSize: 14, color: Colors.red),),
                     Text("maxBitrateKbps: $_maxBitrateKbps", style: const TextStyle(
                         fontSize: 14, color: Colors.red)),
+                    SwitchListTile(
+                        title: const Text('ICE Gathering Continually'),
+                        value: _iceGatheringContinually,
+                        onChanged: _changeGatheringPolicy
+                    ),
                     SwitchListTile(
                         title: const Text('Verbose Log'),
                         value: _isLogVerbose,
