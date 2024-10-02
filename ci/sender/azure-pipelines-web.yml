@@ -24,13 +24,13 @@ jobs:
       matrix:
         dev:
           flavor: 'dev'
-          buildOptions: '-t ./lib/main_dev.dart'
+          buildOptions: '-t ./lib/main_dev.dart --source-maps'
         stage:
           flavor: 'stage'
-          buildOptions: '--release -t ./lib/main_stage.dart'
+          buildOptions: '--release -t ./lib/main_stage.dart --source-maps'
         prod:
           flavor: 'prod'
-          buildOptions: '--release -t ./lib/main_production.dart'
+          buildOptions: '--release -t ./lib/main_production.dart --source-maps'
 
     pool:
       vmImage: macOS-latest

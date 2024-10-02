@@ -32,9 +32,22 @@ class AppConfig extends InheritedWidget {
   bool updateShouldNotify(InheritedWidget oldWidget) => false;
 }
 
+class SentryConfig {
+  String environment;
+  String dsn;
+
+  SentryConfig({
+    required this.dsn,
+    required this.environment,
+  });
+}
+
 abstract class ConfigSettings {
   late final String envName;
   late final String versionPostfix;
+
+  // Sentry
+  late SentryConfig sentry;
 
   late String baseApiUrl;
 

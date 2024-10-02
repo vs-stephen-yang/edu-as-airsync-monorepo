@@ -2,6 +2,7 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    id "io.sentry.android.gradle" version "4.11.0"
 }
 
 def localProperties = new Properties()
@@ -94,4 +95,22 @@ android {
 
 flutter {
     source '../..'
+}
+
+// https://docs.sentry.io/platforms/android/configuration/gradle/#configure
+sentry {
+    // Disables or enables debug log output
+    debug = true
+
+    org = System.getenv("SENTRY_ORG")
+    projectName = System.getenv("SENTRY_PROJECT")
+    authToken = System.getenv("SENTRY_AUTH_TOKEN")
+
+    includeProguardMapping = System.getenv('SENTRY_AUTH_TOKEN') != null
+
+    uploadNativeSymbols = System.getenv('SENTRY_AUTH_TOKEN') != null
+
+    includeNativeSources = System.getenv('SENTRY_AUTH_TOKEN') != null
+
+    includeSourceContext = System.getenv('SENTRY_AUTH_TOKEN') != null
 }
