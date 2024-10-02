@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/demo/present_present_start_demo.dart';
 import 'package:display_cast_flutter/demo/present_select_role_demo.dart';
 import 'package:display_cast_flutter/demo/remote_screen_widget_demo.dart';
@@ -69,20 +72,34 @@ class V3HomeApp extends StatelessWidget {
           children: <Widget>[
             V3Background(),
             _mainContent,
-            _settingMenu(),
+            _settingMenu(context),
           ],
         );
       }),
     );
   }
 
-  Positioned _settingMenu() {
+  Widget _settingMenu(BuildContext context) {
+    bool isMobile = Platform.isAndroid || Platform.isIOS;
     return Positioned(
-        top: 24,
-        right: 8,
-        child: SizedBox(
+        left: isMobile ? null : 24,
+        top: isMobile ? 24 : null,
+        right: isMobile ? 8 : null,
+        bottom: isMobile ? null : 24,
+        child: Container(
           width: 48,
           height: 48,
+          decoration: ShapeDecoration(
+            color: context.tokens.color.vsdslColorSurface900,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 1,
+                color: context.tokens.color.vsdslColorNeutral,
+              ),
+              borderRadius: context.tokens.radii.vsdslRadiusFull,
+            ),
+            shadows: context.tokens.shadow.vsdslShadowNeutralSm,
+          ),
           child: IconButton(
             color: Colors.black,
             icon: SvgPicture.asset('assets/images/v3_ic_setting.svg'),
