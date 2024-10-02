@@ -5,7 +5,7 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class V3PresentIdle extends StatelessWidget {
@@ -102,10 +102,8 @@ class V3PresentIdle extends StatelessWidget {
     );
   }
 
-  Image _logo() {
-    return const Image(
-      image: Svg('assets/images/v3_ic_airsync.svg'),
-    );
+  Widget _logo() {
+    return SvgPicture.asset('assets/images/v3_ic_airsync.svg');
   }
 
   SizedBox _qrCode() {
@@ -113,9 +111,7 @@ class V3PresentIdle extends StatelessWidget {
       width: 48,
       height: 48,
       child: IconButton(
-        icon: const Image(
-          image: Svg('assets/images/v3_ic_qrcode.svg'),
-        ),
+        icon: SvgPicture.asset('assets/images/v3_ic_qrcode.svg'),
         onPressed: () {},
       ),
     );

@@ -4,7 +4,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class V3WebMain extends StatelessWidget {
@@ -75,12 +75,10 @@ class V3WebMain extends StatelessWidget {
               ),
             ],
           ),
-          const Positioned(
+          Positioned(
             left: 40,
             top: 16,
-            child: Image(
-              image: Svg('assets/images/ic_logo_airsync.svg'),
-            ),
+            child: SvgPicture.asset('assets/images/ic_logo_airsync.svg'),
           ),
         ],
       ),

@@ -8,7 +8,7 @@ import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/widgets/v3_background.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
 
@@ -85,9 +85,7 @@ class V3HomeApp extends StatelessWidget {
           height: 48,
           child: IconButton(
             color: Colors.black,
-            icon: const Image(
-              image: Svg('assets/images/v3_ic_setting.svg'),
-            ),
+            icon: SvgPicture.asset('assets/images/v3_ic_setting.svg'),
             onPressed: () {},
           ),
         ));
