@@ -50,8 +50,8 @@ class V3WebMain extends StatelessWidget {
                                 elevation: 5.0,
                                 shadowColor:
                                     context.tokens.color.vsdslColorSecondary,
-                                foregroundColor: context
-                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                                foregroundColor:
+                                    context.tokens.color.vsdslColorOnSecondary,
                                 backgroundColor:
                                     context.tokens.color.vsdslColorSecondary,
                                 textStyle: const TextStyle(
@@ -88,11 +88,22 @@ class V3WebMain extends StatelessWidget {
   }
 }
 
-class LanguageShowMenu extends StatelessWidget {
+class LanguageShowMenu extends StatefulWidget {
   const LanguageShowMenu({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _LanguageShowMenuState();
+}
+
+class _LanguageShowMenuState extends State<LanguageShowMenu> {
+  bool _menuOn = false;
 
   // This method shows a custom dropdown (using showMenu)
   void _showCustomDropdown(BuildContext context) async {
+    setState(() {
+      _menuOn = true;
+    });
+
     PrefLanguageProvider prefLanguageProvider =
         Provider.of<PrefLanguageProvider>(context, listen: false);
 
@@ -115,31 +126,61 @@ class LanguageShowMenu extends StatelessWidget {
     // Show the menu below the button
     String? newValue = await showMenu<String>(
       context: context,
-      position: position,
+      position: position.shift(const Offset(0, 5)),
       color: context.tokens.color.vsdslColorSurface100,
-      items: prefLanguageProvider.localeMap.entries.map((entry) {
-        return PopupMenuItem<String>(
-          value: entry.key,
-          child: Container(
-            width: 116,
-            height: 40,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: (entry.key == prefLanguageProvider.language)
-                  ? context.tokens.color.vsdslColorTertiary
-                  : context.tokens.color.vsdslColorSurface100,
+      items: [
+        PopupMenuItem(
+          padding: EdgeInsets.zero,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 120),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: prefLanguageProvider.localeMap.entries.map((entry) {
+                  return PopupMenuItem<String>(
+                    value: entry.key,
+                    height: 40,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Container(
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: (entry.key == prefLanguageProvider.language)
+                            ? context.tokens.color.vsdslColorTertiary
+                            : context.tokens.color.vsdslColorSurface100,
+                      ),
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
+                      ),
+                      child: Text(
+                        entry.key,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: (entry.key == prefLanguageProvider.language)
+                              ? context.tokens.color.vsdslColorOnSurfaceInverse
+                              : context.tokens.color.vsdslColorOnSurface,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
-            alignment: Alignment.centerLeft,
-            child: Text(entry.key),
           ),
-        );
-      }).toList(),
+        )
+      ],
     );
 
     // If a new language was selected, update the state
     if (newValue != null) {
       prefLanguageProvider.setLanguage(newValue);
     }
+    setState(() {
+      _menuOn = false;
+    });
   }
 
   @override
@@ -148,14 +189,53 @@ class LanguageShowMenu extends StatelessWidget {
         Provider.of<PrefLanguageProvider>(context, listen: false);
     return GestureDetector(
       onTap: () => _showCustomDropdown(context),
-      child: Row(
-        children: [
-          const Icon(Icons.language, size: 16),
-          const SizedBox(width: 8),
-          AutoSizeText(prefLanguageProvider.language),
-          const SizedBox(width: 8),
-          const Icon(Icons.keyboard_arrow_down_sharp),
-        ],
+      child: Container(
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: _menuOn
+            ? ShapeDecoration(
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  side: const BorderSide(
+                    width: 1,
+                    color: Color(0xFFD3D6E1),
+                  ),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                shadows: const [
+                  BoxShadow(
+                    color: Color(0xFFE9EAF0),
+                    blurRadius: 0,
+                    offset: Offset(0, 0),
+                    spreadRadius: 4,
+                  )
+                ],
+              )
+            : null,
+        child: Row(
+          children: [
+            Icon(
+              Icons.language,
+              size: 16,
+              color: context.tokens.color.vsdslColorOnSurface,
+            ),
+            const SizedBox(width: 8),
+            AutoSizeText(
+              prefLanguageProvider.language,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: context.tokens.color.vsdslColorOnSurface,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              Icons.keyboard_arrow_down_sharp,
+              size: 16,
+              color: context.tokens.color.vsdslColorOnSurface,
+            ),
+          ],
+        ),
       ),
     );
   }
