@@ -180,7 +180,7 @@ class DeviceFeatureAdapter {
 
     if (dumpSrtpPackets) {
       // enable rtp dump (for debugging)
-      options['fieldTrials'] = WebrtcFieldTrails.getRtpDump(true);
+      options['fieldTrials'] = WebRTCUtil.getRtpDumpFieldTrails(true);
       options['enableInjectableLogger'] = true; // must enable injectable logger
       options['logSeverity'] = 'VERBOSE'; // must override log severity
       log.info('since dumpSrtpPackets is enabled, logSeverity is set to VERBOSE, and webrtc native log is disabled');

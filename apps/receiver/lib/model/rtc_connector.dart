@@ -258,7 +258,7 @@ class RTCConnector {
 
     _deviceType = await DeviceInfoVs.deviceType;
 
-    final configuration = createPcConfiguration(iceServers);
+    final configuration = WebRTCUtil.createPcConfiguration(iceServers);
 
     if (_prerendererSmoothingExcludedDevices.contains(_deviceType)) {
       configuration['enablePrerendererSmoothing'] = false;

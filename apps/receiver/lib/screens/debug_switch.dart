@@ -107,9 +107,9 @@ class _DebugSwitchState extends State<DebugSwitch> {
 
   void _changeStartWebRtcTracing(bool value) async {
     if (value) {
-      startWebRtcTracingCapture();
+      WebRTCUtil.startWebRtcTracingCapture();
     } else {
-      stopWebRtcTracingCapture();
+      WebRTCUtil.stopWebRtcTracingCapture();
     }
 
     setState(() {
