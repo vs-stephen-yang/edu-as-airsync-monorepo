@@ -95,6 +95,7 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-desktop-screenstate
       ref: release-0.0.5-1
+  qr_flutter: ^4.1.0
   # ViewSonic plug-in
 
 dependency_overrides:

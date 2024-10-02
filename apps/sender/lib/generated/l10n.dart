@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -945,6 +946,26 @@ class S {
     return Intl.message(
       'Get',
       name: 'v3_main_download_action_get',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download Sender App`
+  String get v3_main_download_app_dialog_title {
+    return Intl.message(
+      'Download Sender App',
+      name: 'v3_main_download_app_dialog_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan the QR code with your iOS or Android device to download`
+  String get v3_main_download_app_dialog_desc {
+    return Intl.message(
+      'Scan the QR code with your iOS or Android device to download',
+      name: 'v3_main_download_app_dialog_desc',
       desc: '',
       args: [],
     );

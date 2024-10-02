@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:display_cast_flutter/model/profile.dart';
+import 'package:flutter/material.dart';
 
 class AppConfig extends InheritedWidget {
   const AppConfig(
@@ -44,4 +44,5 @@ abstract class ConfigSettings {
   late String appInsightsIngestionEndpoint;
 
   late String appUpdateVersionEndpoint;
+  late String appStoreUrl;
 }
