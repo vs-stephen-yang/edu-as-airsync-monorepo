@@ -172,6 +172,34 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Agree"),
         "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Disagree"),
         "v3_eula_title":
-            MessageLookupByLibrary.simpleMessage("End-User License Agreement")
+            MessageLookupByLibrary.simpleMessage("End-User License Agreement"),
+        "v3_main_accessibility":
+            MessageLookupByLibrary.simpleMessage("Accessibility"),
+        "v3_main_copy_rights": MessageLookupByLibrary.simpleMessage(
+            "Copyright © ViewSonic Corporation 2024. All rights reserved."),
+        "v3_main_download": MessageLookupByLibrary.simpleMessage("Download"),
+        "v3_main_download_action_download":
+            MessageLookupByLibrary.simpleMessage("Download"),
+        "v3_main_download_action_get":
+            MessageLookupByLibrary.simpleMessage("Get"),
+        "v3_main_download_app_subtitle":
+            MessageLookupByLibrary.simpleMessage("iOS and Android"),
+        "v3_main_download_app_title":
+            MessageLookupByLibrary.simpleMessage("AirSync App"),
+        "v3_main_download_desc": MessageLookupByLibrary.simpleMessage(
+            "Effortless screen sharing with one-click connect."),
+        "v3_main_download_mac_subtitle":
+            MessageLookupByLibrary.simpleMessage("macOS 10.15+"),
+        "v3_main_download_mac_title":
+            MessageLookupByLibrary.simpleMessage("Mac"),
+        "v3_main_download_title":
+            MessageLookupByLibrary.simpleMessage("Get your AirSync sender app"),
+        "v3_main_download_win_subtitle":
+            MessageLookupByLibrary.simpleMessage("Win 10 (1709+)/ Win 11"),
+        "v3_main_download_win_title":
+            MessageLookupByLibrary.simpleMessage("Windows"),
+        "v3_main_privacy":
+            MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+        "v3_main_terms": MessageLookupByLibrary.simpleMessage("Terms of use")
       };
 }
