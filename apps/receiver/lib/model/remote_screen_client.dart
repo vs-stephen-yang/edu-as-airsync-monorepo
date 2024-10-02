@@ -78,7 +78,7 @@ class RemoteScreenClient {
       sid: roomId,
       uid: const Uuid().v4(),
       signal: signal,
-      config: createPcConfiguration(iceServers),
+      config: WebRTCUtil.createPcConfiguration(iceServers),
     );
 
     _dataChannel = await _client!.createDataChannel(_sessionId);
