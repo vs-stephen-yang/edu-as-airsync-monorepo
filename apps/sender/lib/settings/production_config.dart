@@ -5,6 +5,13 @@ class ProductionConfig implements ConfigSettings {
   String envName = 'production';
 
   @override
+  SentryConfig sentry = SentryConfig(
+    dsn:
+        'https://ce8aec8185b5609f1103556fb9a4afe3@o4508005887442944.ingest.us.sentry.io/4508159112380416',
+    environment: 'prod',
+  );
+
+  @override
   String versionPostfix = '';
 
   @override

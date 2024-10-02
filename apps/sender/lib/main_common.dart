@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
@@ -39,102 +40,116 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:sentry_logging/sentry_logging.dart';
 import 'annotation/annotation_model.dart';
 import 'annotation/canvas_widget.dart';
 
 void commonEntry(List<String> args, ConfigSettings settings) async {
-  WidgetsFlutterBinding.ensureInitialized();
+  runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
-    if (args.firstOrNull == 'multi_window') {
-      final windowId = int.parse(args[1]);
-      final argument = args[2].isEmpty
-          ? const {}
-          : jsonDecode(args[2]) as Map<String, dynamic>;
-      if (argument['mode'] == 'desktop_canvas') {
-        WidgetsFlutterBinding.ensureInitialized();
-        runApp(CanvasWidget(
-          windowController: WindowController.fromWindowId(windowId),
-          args: argument,
-        ));
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = settings.sentry.dsn;
+        options.environment = settings.sentry.environment;
+        options.addIntegration(LoggingIntegration());
+      },
+    );
+
+    if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
+      if (args.firstOrNull == 'multi_window') {
+        final windowId = int.parse(args[1]);
+        final argument = args[2].isEmpty
+            ? const {}
+            : jsonDecode(args[2]) as Map<String, dynamic>;
+        if (argument['mode'] == 'desktop_canvas') {
+          WidgetsFlutterBinding.ensureInitialized();
+          runApp(CanvasWidget(
+            windowController: WindowController.fromWindowId(windowId),
+            args: argument,
+          ));
+        }
+        return;
       }
-      return;
     }
-  }
 
-  initLogger();
-  enableLogToMemory(true);
+    initLogger();
+    enableLogToMemory(true);
 
-  await AppPreferences.ensureInitialized();
-  PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  await AppInstanceCreate.ensureInitialized();
+    await AppPreferences.ensureInitialized();
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    await AppInstanceCreate.ensureInitialized();
 
-  if (WebRTC.platformIsWindows) {
-    await FlutterVirtualDisplay.instance.initialize();
-  }
+    if (WebRTC.platformIsWindows) {
+      await FlutterVirtualDisplay.instance.initialize();
+    }
 
-  AppAnalytics.initializeApp(
-    instrumentationKey: settings.appInsightsInstrumentationKey,
-    ingestionEndpoint: settings.appInsightsIngestionEndpoint,
-    applicationVersion: packageInfo.version,
-    userId: AppInstanceCreate().instanceId,
-    sessionId: const Uuid().v4(),
-    deviceInfo: await ClientDeviceInfo.fetch(),
-  );
-  AppAnalytics.instance.trackEvent('launch');
+    AppAnalytics.initializeApp(
+      instrumentationKey: settings.appInsightsInstrumentationKey,
+      ingestionEndpoint: settings.appInsightsIngestionEndpoint,
+      applicationVersion: packageInfo.version,
+      userId: AppInstanceCreate().instanceId,
+      sessionId: const Uuid().v4(),
+      deviceInfo: await ClientDeviceInfo.fetch(),
+    );
+    AppAnalytics.instance.trackEvent('launch');
 
-  if (!kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
-    // DesktopWindow only support above platform.
-    await DesktopWindow.setWindowSize(const Size(1280, 720));
-    await DesktopWindow.setMinWindowSize(const Size(1280, 720));
-  }
+    if (!kIsWeb &&
+        (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
+      // DesktopWindow only support above platform.
+      await DesktopWindow.setWindowSize(const Size(1280, 720));
+      await DesktopWindow.setMinWindowSize(const Size(1280, 720));
+    }
 
-  // load ice gathering continually setting
-  WebRTCUtil.iceGatheringContinually =
-      await WebRTCUtil.loadIceGatheringContinually();
-  await DataDisplayCode.getInstance().initialize();
+    // load ice gathering continually setting
+    WebRTCUtil.iceGatheringContinually =
+        await WebRTCUtil.loadIceGatheringContinually();
+    await DataDisplayCode.getInstance().initialize();
 
-  final ProfileStore profileStore = await ProfileUtil.loadProfileStore(args);
+    final ProfileStore profileStore = await ProfileUtil.loadProfileStore(args);
 
-  // Due to macOS has few users, we are currently only adding the screen state detector for Windows.
-  if (!kIsWeb && Platform.isWindows) {
-    ScreenStateDetector.initialize();
-    ScreenStateDetector.instance.onState.listen((event) {
-      if (event == ScreenState.awaked) {
-        log.info('screen_awaked');
-        AppAnalytics.instance.trackEvent('screen_awaked');
-      } else if (event == ScreenState.sleep) {
-        log.info('screen_sleep');
-        AppAnalytics.instance.trackEvent('screen_sleep');
-      } else if (event == ScreenState.locked) {
-        log.info('screen_locked');
-        AppAnalytics.instance.trackEvent('screen_locked');
-      } else if (event == ScreenState.unlocked) {
-        log.info('screen_unlocked');
-        AppAnalytics.instance.trackEvent('screen_unlocked');
-      }
+    // Due to macOS has few users, we are currently only adding the screen state detector for Windows.
+    if (!kIsWeb && Platform.isWindows) {
+      ScreenStateDetector.initialize();
+      ScreenStateDetector.instance.onState.listen((event) {
+        if (event == ScreenState.awaked) {
+          log.info('screen_awaked');
+          AppAnalytics.instance.trackEvent('screen_awaked');
+        } else if (event == ScreenState.sleep) {
+          log.info('screen_sleep');
+          AppAnalytics.instance.trackEvent('screen_sleep');
+        } else if (event == ScreenState.locked) {
+          log.info('screen_locked');
+          AppAnalytics.instance.trackEvent('screen_locked');
+        } else if (event == ScreenState.unlocked) {
+          log.info('screen_unlocked');
+          AppAnalytics.instance.trackEvent('screen_unlocked');
+        }
+      });
+    }
+    // Detect App suspension
+    AppUnresponsiveDetector.initialize();
+
+    AppUnresponsiveDetector.instance.addListener((suspensionDuration) {
+      AppAnalytics.instance.trackEvent('app_unresponsive', properties: {
+        'target': suspensionDuration.inSeconds,
+      });
     });
-  }
-  // Detect App suspension
-  AppUnresponsiveDetector.initialize();
 
-  AppUnresponsiveDetector.instance.addListener((suspensionDuration) {
-    AppAnalytics.instance.trackEvent('app_unresponsive', properties: {
-      'target': suspensionDuration.inSeconds,
-    });
+    runApp(AppConfig(
+      settings: settings,
+      profileStore: profileStore,
+      appName: packageInfo.appName,
+      appVersion: packageInfo.version,
+      child: Tokens(
+        tokens: DefaultTokens(),
+        child: const MyApp(),
+      ),
+    ));
+  }, (error, stackTrace) async {
+    await Sentry.captureException(error, stackTrace: stackTrace);
   });
-
-  runApp(AppConfig(
-    settings: settings,
-    profileStore: profileStore,
-    appName: packageInfo.appName,
-    appVersion: packageInfo.version,
-    child: Tokens(
-      tokens: DefaultTokens(),
-      child: const MyApp(),
-    ),
-  ));
 }
 
 class MyApp extends StatelessWidget {
