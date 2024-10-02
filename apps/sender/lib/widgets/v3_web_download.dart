@@ -4,7 +4,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class V3WebDownload extends StatelessWidget {
@@ -30,11 +30,7 @@ class V3WebDownload extends StatelessWidget {
                     ? 184
                     : 131,
             right: 0,
-            child: const Image(
-              width: 1022,
-              height: 215,
-              image: Svg('assets/images/ic_web_planetary_rings.svg'),
-            ),
+            child: SvgPicture.asset('assets/images/ic_web_planetary_rings.svg'),
           ),
           Positioned(
             top: isBigThan1536(context)
@@ -153,11 +149,7 @@ class V3WebDownloadItem extends StatelessWidget {
         color: context.tokens.color.vsdslColorSurface100,
         child: Center(
           child: ListTile(
-            leading: Image(
-              width: 60,
-              height: 60,
-              image: Svg(leadingSvg),
-            ),
+            leading: SvgPicture.asset(leadingSvg),
             title: AutoSizeText(
               title,
               style: TextStyle(
