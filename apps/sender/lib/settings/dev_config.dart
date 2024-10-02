@@ -20,4 +20,7 @@ class DevConfig implements ConfigSettings {
   @override
   String appUpdateVersionEndpoint =
       'https://appconfig.dev.airsync.net/airsync-sender/supported-versions.json';
+
+  @override
+  String appStoreUrl = 'https://www.dev.airsync.net/download';
 }

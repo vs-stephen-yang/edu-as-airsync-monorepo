@@ -20,4 +20,7 @@ class ProductionConfig implements ConfigSettings {
   @override
   String appUpdateVersionEndpoint =
       'https://appconfig.airsync.net/airsync-sender/supported-versions.json';
+
+  @override
+  String appStoreUrl = 'https://www.airsync.net/download';
 }

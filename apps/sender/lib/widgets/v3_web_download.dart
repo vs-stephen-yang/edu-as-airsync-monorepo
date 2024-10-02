@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
-import 'package:flutter/foundation.dart';
+import 'package:display_cast_flutter/widgets/v3_web_download_app_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -94,13 +94,7 @@ class V3WebDownload extends StatelessWidget {
                   subtitle: S.of(context).v3_main_download_app_subtitle,
                   action: S.of(context).v3_main_download_action_get,
                   onClick: () {
-                    if (defaultTargetPlatform == TargetPlatform.android) {
-                      launchUrl(Uri.parse(
-                          'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast&pcampaignid=web_share'));
-                    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-                      launchUrl(Uri.parse(
-                          'https://apps.apple.com/tw/app/airsync-sender/id6453759985'));
-                    }
+                    _showDownloadAppMenuDialog(context);
                   },
                 ),
               ],
@@ -108,6 +102,17 @@ class V3WebDownload extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  _showDownloadAppMenuDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return const V3DownloadAppMenu();
+      },
     );
   }
 }

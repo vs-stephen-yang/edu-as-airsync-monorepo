@@ -182,6 +182,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Download"),
         "v3_main_download_action_get":
             MessageLookupByLibrary.simpleMessage("Get"),
+        "v3_main_download_app_dialog_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "Scan the QR code with your iOS or Android device to download"),
+        "v3_main_download_app_dialog_title":
+            MessageLookupByLibrary.simpleMessage("Download Sender App"),
         "v3_main_download_app_subtitle":
             MessageLookupByLibrary.simpleMessage("iOS and Android"),
         "v3_main_download_app_title":

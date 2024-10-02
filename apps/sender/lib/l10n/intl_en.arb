@@ -89,6 +89,8 @@
     "v3_main_download_app_subtitle": "iOS and Android",
     "v3_main_download_action_download": "Download",
     "v3_main_download_action_get": "Get",
+    "v3_main_download_app_dialog_title": "Download Sender App",
+    "v3_main_download_app_dialog_desc": "Scan the QR code with your iOS or Android device to download",
     "v3_main_privacy": "Privacy Policy",
     "v3_main_terms": "Terms of use",
     "v3_main_accessibility": "Accessibility",

@@ -20,4 +20,7 @@ class StageConfig implements ConfigSettings {
   @override
   String appUpdateVersionEndpoint =
       'https://appconfig.stage.airsync.net/airsync-sender/supported-versions.json';
+
+  @override
+  String appStoreUrl = 'https://www.stage.airsync.net/download';
 }
