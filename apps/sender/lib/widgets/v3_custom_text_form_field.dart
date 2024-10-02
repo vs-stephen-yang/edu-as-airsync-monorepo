@@ -1,18 +1,20 @@
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class V3CustomTextFormField extends StatefulWidget {
-  const V3CustomTextFormField(
-      {super.key,
-      required this.controller,
-      required this.focusNode,
-      this.hintText,
-      required this.maxTextLength,
-      this.inputFormatter,
-      required this.onFieldChanged,
-      this.onTap,
-      required this.onFieldSubmitted});
+  const V3CustomTextFormField({
+    super.key,
+    required this.controller,
+    required this.focusNode,
+    required this.hintText,
+    required this.maxTextLength,
+    required this.inputFormatter,
+    required this.onFieldChanged,
+    required this.onFieldSubmitted,
+    this.onTap,
+  });
 
   final TextEditingController controller;
   final FocusNode focusNode;
@@ -28,6 +30,8 @@ class V3CustomTextFormField extends StatefulWidget {
 }
 
 class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
+  String? _errorText;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -39,14 +43,18 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
         hintText: widget.hintText,
         hintStyle: TextStyle(
             fontSize: 12, color: context.tokens.color.vsdslColorOnDisabled),
+        counterText: '',
         enabledBorder: OutlineInputBorder(
           borderRadius: context.tokens.radii.vsdslRadiusFull,
           borderSide: BorderSide(
               color: context.tokens.color.vsdslColorOutline, width: 2),
         ),
         focusedBorder: _focusedBorder(),
+        error: _errorWidget(context),
         errorBorder: _errorBorder(),
       ),
+      maxLength: widget.maxTextLength,
+      inputFormatters: widget.inputFormatter,
       onChanged: (_) {
         widget.onFieldChanged(_);
       },
@@ -57,6 +65,28 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
         widget.onFieldSubmitted(value);
       },
     );
+  }
+
+  Row? _errorWidget(BuildContext context) {
+    if (_errorText != null && _errorText!.isNotEmpty) {
+      return Row(children: [
+        const SizedBox(
+            width: 16,
+            height: 16,
+            child: Image(
+                image: Svg('assets/images/v3_ic_display_code_error.svg'))),
+        const Padding(
+          padding: EdgeInsets.only(right: 8),
+        ),
+        Text(
+          _errorText!,
+          style: TextStyle(
+              fontSize: 12, color: context.tokens.color.vsdslColorError),
+        )
+      ]);
+    }
+
+    return null;
   }
 
   OutlineInputBorder _focusedBorder() {
@@ -73,5 +103,11 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
       borderSide:
           BorderSide(color: context.tokens.color.vsdslColorError, width: 2),
     );
+  }
+
+  void setErrorMsg(String text) {
+    setState(() {
+      _errorText = text;
+    });
   }
 }

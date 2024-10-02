@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:display_cast_flutter/widgets/present_idle_text_field.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_text_form_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
+import 'package:provider/provider.dart';
 
 class V3PresentIdleTextField extends StatefulWidget {
   const V3PresentIdleTextField(
@@ -14,7 +17,7 @@ class V3PresentIdleTextField extends StatefulWidget {
       required this.onPasswordEnterEvent});
 
   final double widthTextField;
-  final ValueChanged<FieldResult> onFieldChanged;
+  final ValueChanged<V3FieldResult> onFieldChanged;
   final ValueChanged<String> onPasswordEnterEvent;
 
   @override
@@ -30,8 +33,8 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
   final TextEditingController _otpController = TextEditingController();
   final FocusNode _codeFocusNode = FocusNode();
   final FocusNode _otpFocusNode = FocusNode();
-  final GlobalKey codeKey = GlobalKey();
-  final GlobalKey otpKey = GlobalKey();
+  final GlobalKey<V3CustomTextFormFieldState> codeKey = GlobalKey();
+  final GlobalKey<V3CustomTextFormFieldState> otpKey = GlobalKey();
 
   OverlayEntry? _overlayEntry;
   final LayerLink _layerLink = LayerLink();
@@ -75,6 +78,13 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
 
   @override
   Widget build(BuildContext context) {
+    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
+    WidgetsBinding.instance.addPostFrameCallback((callback) {
+      if (channelProvider.channelConnectError != null) {
+        _showConnectErrorMessage(channelProvider.channelConnectError!);
+      }
+    });
+
     return SizedBox(
       width: widget.widthTextField,
       child: Column(
@@ -84,8 +94,6 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             controller: _codeController,
             focusNode: _codeFocusNode,
             hintText: S.of(context).main_display_code,
-            // TODO:
-            // errorText: S.of(context).main_display_code_description,
             maxTextLength: displayCodeMaxLength,
             inputFormatter: [
               if (!Platform.isWindows) UpperCaseTextFormatter(),
@@ -98,8 +106,8 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             onFieldChanged: (text) {
               if (Platform.isWindows) {
                 if (text.contains(RegExp(r'[^a-zA-Z0-9]'))) {
+                  _setErrorMsg(codeKey, S.of(context).main_display_code_error);
                   // TODO:
-                  // setCodeErrorMsg(S.of(context).main_display_code_error);
                   // _isOverlayVisible = false;
                   // if (_overlayEntry != null && _overlayEntry!.mounted) _overlayEntry?.remove();
                   // return;
@@ -112,14 +120,12 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
               }
 
               _isCodeSelectedFromHistory = false;
-              // TODO:
-              // setCodeDescriptionMsg(S.of(context).main_display_code_description);
               bool presentBtnEnable = false;
               if (text.length >= displayCodeMinLength &&
                   _otpController.text.length == otpLength) {
                 presentBtnEnable = true;
               }
-              widget.onFieldChanged(FieldResult(
+              widget.onFieldChanged(V3FieldResult(
                   enable: presentBtnEnable,
                   isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
                   displayCode: text,
@@ -143,8 +149,6 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             controller: _otpController,
             focusNode: _otpFocusNode,
             hintText: S.of(context).main_password,
-            // TODO:
-            // errorText: S.of(context).main_password_description,
             maxTextLength: otpLength,
             inputFormatter: [
               if (!Platform.isWindows)
@@ -156,19 +160,16 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             onFieldChanged: (text) {
               if (Platform.isWindows) {
                 if (text.contains(RegExp(r'[^0-9]'))) {
-                  // TODO:
-                  // setOtpErrorMsg(S.of(context).main_otp_error);
-                  // return;
+                  _setErrorMsg(otpKey, S.of(context).main_otp_error);
+                  return;
                 }
               }
-              // TODO:
-              // setOtpDescriptionMsg(S.of(context).main_password_description);
               bool presentBtnEnable = false;
               if (_codeController.text.length >= displayCodeMinLength &&
                   text.length == otpLength) {
                 presentBtnEnable = true;
               }
-              widget.onFieldChanged(FieldResult(
+              widget.onFieldChanged(V3FieldResult(
                   enable: presentBtnEnable,
                   isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
                   displayCode: _codeController.text,
@@ -181,6 +182,91 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
           const SizedBox(height: 20),
         ],
       ),
+    );
+  }
+
+  _setErrorMsg(
+    GlobalKey<V3CustomTextFormFieldState> key,
+    String text,
+  ) {
+    key.currentState?.setErrorMsg(text);
+  }
+
+  _showConnectErrorMessage(ChannelConnectError error) {
+    switch (error) {
+      case ChannelConnectError.instanceNotFound:
+        _setErrorMsg(
+          codeKey,
+          S.of(context).main_instance_not_found_or_offline,
+        );
+        break;
+
+      case ChannelConnectError.invalidDisplayCode:
+        _setErrorMsg(
+          codeKey,
+          S.of(context).main_display_code_invalid,
+        );
+        break;
+
+      case ChannelConnectError.networkError:
+        _setErrorMsg(
+          codeKey,
+          S.of(context).main_connect_network_error,
+        );
+        break;
+
+      case ChannelConnectError.invalidOtp:
+      case ChannelConnectError.authenticationRequired:
+        _setErrorMsg(
+          otpKey,
+          S.of(context).main_password_invalid,
+        );
+        break;
+
+      case ChannelConnectError.rateLimitExceeded:
+        _setErrorMsg(
+          codeKey,
+          S.of(context).main_connect_rate_limited,
+        );
+        break;
+
+      case ChannelConnectError.connectionModeUnsupported:
+        _setErrorMsg(
+          codeKey,
+          S.of(context).main_connection_mode_unsupported,
+        );
+        break;
+
+      case ChannelConnectError.unknownError:
+        _setErrorMsg(
+          otpKey,
+          S.of(context).main_connect_unknown_error,
+        );
+        break;
+    }
+  }
+}
+
+class V3FieldResult {
+  bool enable = false;
+  bool isDisplayCodeSelectedFromHistory;
+  String displayCode;
+  String password;
+
+  V3FieldResult(
+      {required this.enable,
+      required this.displayCode,
+      required this.isDisplayCodeSelectedFromHistory,
+      required this.password});
+}
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    return TextEditingValue(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
     );
   }
 }
