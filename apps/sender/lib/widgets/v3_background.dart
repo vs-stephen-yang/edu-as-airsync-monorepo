@@ -15,42 +15,51 @@ class V3Background extends StatelessWidget {
       left: 0,
       right: 0,
       bottom: 0,
-      child: InkWell(
-        onTap: () {
-          debugCounter++;
-          if (debugCounter == openDebugCounter) {
-            _showMenuDialog(context, const DebugSwitch());
-            debugCounter = 0;
-          }
-        },
-        child: (Platform.isAndroid || Platform.isIOS)
-            ? Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
+      child: (Platform.isAndroid || Platform.isIOS)
+          ? Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 24),
+              child: GestureDetector(
+                onTap: () {
+                  debugCounter++;
+                  if (debugCounter == openDebugCounter) {
+                    _showMenuDialog(context, const DebugSwitch());
+                    debugCounter = 0;
+                  }
+                },
                 child: Image.asset(
                   'assets/images/ic_logo_viewsonic_mobile.png',
                   width: 170,
                   height: 50,
                 ),
-              )
-            : Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  Image.asset(
-                    'assets/images/ic_wallpaper.png',
-                    width: 1280,
-                  ),
-                  Positioned(
-                    right: 24,
-                    bottom: 16,
+              ),
+            )
+          : Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                Image.asset(
+                  'assets/images/ic_wallpaper.png',
+                  width: 1280,
+                ),
+                Positioned(
+                  right: 24,
+                  bottom: 16,
+                  child: GestureDetector(
+                    onTap: () {
+                      debugCounter++;
+                      if (debugCounter == openDebugCounter) {
+                        _showMenuDialog(context, const DebugSwitch());
+                        debugCounter = 0;
+                      }
+                    },
                     child: Image.asset(
                       'assets/images/ic_logo_viewsonic.png',
                       width: 225,
                       height: 70,
                     ),
                   ),
-                ],
-              ),
-      ),
+                ),
+              ],
+            ),
     );
   }
 

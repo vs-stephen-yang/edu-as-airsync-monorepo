@@ -144,6 +144,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "toast_maximum_remote_screen":
             MessageLookupByLibrary.simpleMessage("已達到分享畫面上限"),
         "toast_maximum_split_screen":
-            MessageLookupByLibrary.simpleMessage("已達到投影人員上限")
+            MessageLookupByLibrary.simpleMessage("已達到投影人員上限"),
+        "v3_main_download": MessageLookupByLibrary.simpleMessage("下載")
       };
 }
