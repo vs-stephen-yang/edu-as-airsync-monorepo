@@ -29,6 +29,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   bool _startWebRtcTracing = false;
   bool _verboseWebRtcLog = false;
   bool _enableWebRtcH264BaselineProfile = false;
+  bool _iceGatheringContinually = false;
 
   void _notifyRestart() {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -71,6 +72,16 @@ class _DebugSwitchState extends State<DebugSwitch> {
 
     setState(() {
       _useQuickDecodeParams = value;
+      _notifyRestart();
+    });
+  }
+
+  void _changeGatheringPolicy(bool value) async {
+    DeviceFeatureAdapter.iceGatheringContinually = value;
+    await DeviceFeatureAdapter.save();
+
+    setState(() {
+      _iceGatheringContinually = value;
       _notifyRestart();
     });
   }
@@ -137,6 +148,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
     _enableWebRtcTracing = DeviceFeatureAdapter.enableWebRtcTracing;
     _verboseWebRtcLog = DeviceFeatureAdapter.verboseWebRtcLog;
     _dumpSrtpPackets = DeviceFeatureAdapter.dumpSrtpPackets;
+    _iceGatheringContinually = DeviceFeatureAdapter.iceGatheringContinually;
   }
 
   @override
@@ -182,6 +194,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
                           title: const Text('Quick Decode'),
                           value: _useQuickDecodeParams,
                           onChanged: (value) => _enableQuickDecode(value),
+                        ),
+                        SwitchListTile(
+                          title: const Text('ICE Gathering Continually'),
+                          value: _iceGatheringContinually,
+                          onChanged: (value) => _changeGatheringPolicy(value),
                         ),
                         if (AppConfig.of(context)!.settings.isDevelopEnvironment)
                           SwitchListTile(

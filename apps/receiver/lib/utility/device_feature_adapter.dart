@@ -25,6 +25,7 @@ class DeviceFeatureAdapter {
   static bool enableWebRtcTracing = false;
   static bool verboseWebRtcLog = false;
   static bool dumpSrtpPackets = false;
+  static bool iceGatheringContinually = false;
 
   static bool defaultShowOldUI = false;
   static bool defaultShowDebugOverlay = false;
@@ -34,6 +35,7 @@ class DeviceFeatureAdapter {
   static const defaultEnableWebRtcTracing = false;
   static const defaultVerboseWebRtcLog = false;
   static bool defaultDumpSrtpPackets = false;
+  static bool defaultIceGatheringContinually = true; // gather_continually by default
 
   static Map<String, int> quickDecodeParams = {
     "low-latency": 1, // RK3588
@@ -115,6 +117,7 @@ class DeviceFeatureAdapter {
     verboseWebRtcLog =
         prefs.getBool("VerboseWebRtcLog") ?? defaultVerboseWebRtcLog;
     dumpSrtpPackets = prefs.getBool("DumpSrtpPackets") ?? defaultDumpSrtpPackets;
+    iceGatheringContinually = prefs.getBool("IceGatheringContinually") ?? defaultIceGatheringContinually;
   }
 
   static save() async {
@@ -128,6 +131,7 @@ class DeviceFeatureAdapter {
     prefs.setBool("EnableWebRtcTracing", enableWebRtcTracing);
     prefs.setBool("VerboseWebRtcLog", verboseWebRtcLog);
     prefs.setBool("DumpSrtpPackets", dumpSrtpPackets);
+    prefs.setBool("IceGatheringContinually", iceGatheringContinually);
   }
 
   static Map<String, int> getDecodeOptions(
