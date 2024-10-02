@@ -1,4 +1,5 @@
 import 'package:display_channel/display_channel.dart';
+import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
@@ -43,6 +44,9 @@ class WebRTCUtil {
               },
             )
             .toList(),
+      'continualGatheringPolicy': DeviceFeatureAdapter.iceGatheringContinually
+          ? 'gather_continually'
+          : 'gather_once',
     };
   }
 
