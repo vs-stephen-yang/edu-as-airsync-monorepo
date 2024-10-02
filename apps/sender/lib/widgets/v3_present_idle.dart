@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
@@ -29,7 +32,7 @@ class V3PresentIdle extends StatelessWidget {
 
     return Stack(
       children: [
-        Positioned(top: 24, left: 8, child: _qrCode()),
+        if (Platform.isAndroid || Platform.isIOS) _qrCode(context),
         Positioned(
             top: 0,
             bottom: 0,
@@ -106,14 +109,28 @@ class V3PresentIdle extends StatelessWidget {
     return SvgPicture.asset('assets/images/v3_ic_airsync.svg');
   }
 
-  SizedBox _qrCode() {
-    return SizedBox(
-      width: 48,
-      height: 48,
-      child: IconButton(
-        icon: SvgPicture.asset('assets/images/v3_ic_qrcode.svg'),
-        onPressed: () {},
-      ),
-    );
+  Widget _qrCode(BuildContext context) {
+    return Positioned(
+        top: 24,
+        left: 8,
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: ShapeDecoration(
+            color: context.tokens.color.vsdslColorSurface200,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 1,
+                color: context.tokens.color.vsdslColorSurface200,
+              ),
+              borderRadius: context.tokens.radii.vsdslRadiusFull,
+            ),
+            shadows: context.tokens.shadow.vsdslShadowNeutralSm,
+          ),
+          child: IconButton(
+            icon: SvgPicture.asset('assets/images/v3_ic_qrcode.svg'),
+            onPressed: () {},
+          ),
+        ));
   }
 }
