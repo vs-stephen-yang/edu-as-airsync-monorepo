@@ -60,7 +60,9 @@ class _V3HomeState extends State<V3Home> {
         _checkUpdateVersion(context).then((value) {
           if (value != CompareVersionResult.none) {
             // show update dialog
-            _showUpdateDialog(context, value);
+            if (context.mounted) {
+              _showUpdateDialog(context, value);
+            }
           }
         });
       }
@@ -77,7 +79,9 @@ class _V3HomeState extends State<V3Home> {
     if (_shouldCheckUpdate()) {
       _checkUpdateVersion(context).then((value) {
         if (value != CompareVersionResult.none) {
-          _showUpdateDialog(context, value);
+          if (context.mounted) {
+            _showUpdateDialog(context, value);
+          }
         }
       });
     }
@@ -196,7 +200,9 @@ class _V3HomeState extends State<V3Home> {
                     await installUpdates();
                     exit(0);
                   } on UpdateErrorExecption catch (e) {
-                    _showUpdateErrorDialog(context, e);
+                    if (context.mounted) {
+                      _showUpdateErrorDialog(context, e);
+                    }
                   }
                 }
               },
