@@ -4,13 +4,14 @@ import 'package:display_cast_flutter/screens/debug_switch.dart';
 import 'package:flutter/material.dart';
 
 class V3Background extends StatelessWidget {
-  V3Background({super.key});
+  const V3Background({super.key});
 
-  int debugCounter = 0;
   final int openDebugCounter = 5;
 
   @override
   Widget build(BuildContext context) {
+    int debugCounter = 0;
+
     return Positioned(
       left: 0,
       right: 0,

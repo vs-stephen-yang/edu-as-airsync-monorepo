@@ -1,6 +1,5 @@
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:provider/provider.dart';
 
 class V3PresentIdleTextField extends StatefulWidget {
   const V3PresentIdleTextField(
@@ -80,12 +78,6 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
 
   @override
   Widget build(BuildContext context) {
-    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    WidgetsBinding.instance.addPostFrameCallback((callback) {
-      if (channelProvider.channelConnectError != null) {
-        _showConnectErrorMessage(channelProvider.channelConnectError!);
-      }
-    });
 
     return SizedBox(
       width: widget.widthTextField,
@@ -124,8 +116,9 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             _setTextFormFieldErrorMsg(
                 codeKey, S.of(context).main_display_code_error);
             _isDropDownMenuVisible = false;
-            if (_dropDownMenuEntry != null && _dropDownMenuEntry!.mounted)
+            if (_dropDownMenuEntry != null && _dropDownMenuEntry!.mounted) {
               _dropDownMenuEntry?.remove();
+            }
             return;
           }
           _codeController.value = _codeController.value.copyWith(
@@ -280,7 +273,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
     key.currentState?.setErrorMsg(text);
   }
 
-  _showConnectErrorMessage(ChannelConnectError error) {
+  handleConnectErrorMessage(ChannelConnectError error) {
     switch (error) {
       case ChannelConnectError.instanceNotFound:
         _setTextFormFieldErrorMsg(
