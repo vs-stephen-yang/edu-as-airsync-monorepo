@@ -156,7 +156,7 @@ class ChannelProvider extends ChangeNotifier {
     }
 
     final localIpAddresses = await fetchIPv4Addresses();
-
+    print('zz localIpAddresses: $localIpAddresses');
     _channelConnector = DisplayChannelConnector(
       clientId: _clientId!,
       otp: otp,
@@ -526,7 +526,7 @@ class ChannelProvider extends ChangeNotifier {
 
     if (goIdleState) {
       resetMessage();
-      navService.popUntil('/home');
+      navService.popUntil('/v3home');
       _presentStateProvider?.presentMainPage();
     }
   }
