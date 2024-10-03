@@ -46,7 +46,7 @@ class V3WebDownload extends StatelessWidget {
                   S.of(context).v3_main_download_title,
                   style: TextStyle(
                     fontSize: 32,
-                    color: context.tokens.color.vsdslColorOnSurface,
+                    color: context.tokens.color.vsdswColorOnSurface,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -55,7 +55,7 @@ class V3WebDownload extends StatelessWidget {
                   S.of(context).v3_main_download_desc,
                   style: TextStyle(
                     fontSize: 20,
-                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                    color: context.tokens.color.vsdswColorOnSurfaceVariant,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -151,7 +151,7 @@ class V3WebDownloadItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
-        color: context.tokens.color.vsdslColorSurface100,
+        color: context.tokens.color.vsdswColorSurface100,
         child: Center(
           child: ListTile(
             leading: SvgPicture.asset(leadingSvg),
@@ -160,7 +160,7 @@ class V3WebDownloadItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
-                color: context.tokens.color.vsdslColorOnSurface,
+                color: context.tokens.color.vsdswColorOnSurface,
               ),
             ),
             subtitle: AutoSizeText(
@@ -168,16 +168,16 @@ class V3WebDownloadItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
-                color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                color: context.tokens.color.vsdswColorOnSurfaceVariant,
               ),
             ),
             trailing: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 elevation: 5.0,
-                foregroundColor: context.tokens.color.vsdslColorOnSurface,
-                backgroundColor: context.tokens.color.vsdslColorSurface100,
+                foregroundColor: context.tokens.color.vsdswColorOnSurface,
+                backgroundColor: context.tokens.color.vsdswColorSurface100,
                 side: BorderSide(
-                  color: context.tokens.color.vsdslColorSurface300,
+                  color: context.tokens.color.vsdswColorSurface300,
                   width: 1,
                 ),
                 textStyle: const TextStyle(

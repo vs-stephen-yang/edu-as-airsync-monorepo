@@ -39,20 +39,20 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
       focusNode: widget.focusNode,
       decoration: InputDecoration(
         filled: true,
-        fillColor: context.tokens.color.vsdslColorSurface100,
+        fillColor: context.tokens.color.vsdswColorSurface100,
         hintText: widget.hintText,
         hintStyle: TextStyle(
-            fontSize: 12, color: context.tokens.color.vsdslColorOnDisabled),
+            fontSize: 12, color: context.tokens.color.vsdswColorOnDisabled),
         counterText: '',
         border: OutlineInputBorder(
-          borderRadius: context.tokens.radii.vsdslRadiusFull,
+          borderRadius: context.tokens.radii.vsdswRadiusFull,
           borderSide: BorderSide(
-              color: context.tokens.color.vsdslColorOutline, width: 2),
+              color: context.tokens.color.vsdswColorOutline, width: 2),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: context.tokens.radii.vsdslRadiusFull,
+          borderRadius: context.tokens.radii.vsdswRadiusFull,
           borderSide: BorderSide(
-              color: context.tokens.color.vsdslColorOutline, width: 2),
+              color: context.tokens.color.vsdswColorOutline, width: 2),
         ),
         focusedBorder: _focusedBorder(),
         error: _errorWidget(context),
@@ -86,7 +86,7 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
         Text(
           _errorText!,
           style: TextStyle(
-              fontSize: 12, color: context.tokens.color.vsdslColorError),
+              fontSize: 12, color: context.tokens.color.vsdswColorError),
         )
       ]);
     }
@@ -96,17 +96,17 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
 
   OutlineInputBorder _focusedBorder() {
     return OutlineInputBorder(
-      borderRadius: context.tokens.radii.vsdslRadiusFull,
+      borderRadius: context.tokens.radii.vsdswRadiusFull,
       borderSide: BorderSide(
-          color: context.tokens.color.vsdslColorSecondaryVariant, width: 2),
+          color: context.tokens.color.vsdswColorPrimaryVariant, width: 2),
     );
   }
 
   OutlineInputBorder _errorBorder() {
     return OutlineInputBorder(
-      borderRadius: context.tokens.radii.vsdslRadiusFull,
+      borderRadius: context.tokens.radii.vsdswRadiusFull,
       borderSide:
-          BorderSide(color: context.tokens.color.vsdslColorError, width: 2),
+          BorderSide(color: context.tokens.color.vsdswColorError, width: 2),
     );
   }
 

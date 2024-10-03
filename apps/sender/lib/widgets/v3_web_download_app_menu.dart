@@ -14,10 +14,10 @@ class V3DownloadAppMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       alignment: Alignment.center,
-      backgroundColor: context.tokens.color.vsdslColorSurface100,
+      backgroundColor: context.tokens.color.vsdswColorSurface100,
       insetPadding: EdgeInsets.zero,
       elevation: 16.0,
-      shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
+      shadowColor: context.tokens.color.vsdswColorOpacityNeutralSm,
       child: SizedBox(
         width: 512,
         height: 507,
@@ -31,7 +31,7 @@ class V3DownloadAppMenu extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 21,
                   fontWeight: FontWeight.w600,
-                  color: context.tokens.color.vsdslColorOnSurface,
+                  color: context.tokens.color.vsdswColorOnSurface,
                 ),
               ),
             ),
@@ -69,7 +69,7 @@ class V3DownloadAppMenu extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
-                      color: context.tokens.color.vsdslColorSurface400),
+                      color: context.tokens.color.vsdswColorSurface400),
                 )),
             Positioned(
               right: 13,

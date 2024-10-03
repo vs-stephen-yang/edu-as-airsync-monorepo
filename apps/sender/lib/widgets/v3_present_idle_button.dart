@@ -69,11 +69,11 @@ class V3PresentIdleButtonState extends State<V3PresentIdleButton>
     return ElevatedButton(
       onPressed: isButtonEnabled ? onButtonPressed : null,
       style: ElevatedButton.styleFrom(
-        disabledBackgroundColor: context.tokens.color.vsdslColorDisabled,
-        backgroundColor: context.tokens.color.vsdslColorPrimary,
+        disabledBackgroundColor: context.tokens.color.vsdswColorDisabled,
+        backgroundColor: context.tokens.color.vsdswColorPrimary,
         fixedSize: widget.fixedSize,
         shape: RoundedRectangleBorder(
-          borderRadius: context.tokens.radii.vsdslRadiusFull,
+          borderRadius: context.tokens.radii.vsdswRadiusFull,
         ),
         shadowColor: Colors.grey,
         elevation: 8,
@@ -89,7 +89,7 @@ class V3PresentIdleButtonState extends State<V3PresentIdleButton>
           : Text(
               S.of(context).main_present,
               style: TextStyle(
-                color: context.tokens.color.vsdslColorOnDisabled,
+                color: context.tokens.color.vsdswColorOnDisabled,
                 fontSize: AppConstants.fontSizeNormal,
               ),
             ),
