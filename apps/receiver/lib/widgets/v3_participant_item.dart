@@ -193,7 +193,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               elevation: 5.0,
               shadowColor: context.tokens.color.vsdslColorOpacitySecondaryLg,
-              backgroundColor: context.tokens.color.vsdslColorSecondary,
+              backgroundColor: context.tokens.color.vsdslColorPrimary,
               shape: RoundedRectangleBorder(
                 borderRadius: context.tokens.radii.vsdslRadiusFull,
               ),
@@ -245,7 +245,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
                       elevation: 10.0,
                       shadowColor:
                           context.tokens.color.vsdslColorOpacitySecondaryLg,
-                      backgroundColor: context.tokens.color.vsdslColorSecondary,
+                      backgroundColor: context.tokens.color.vsdslColorPrimary,
                       disabledBackgroundColor:
                           context.tokens.color.vsdslColorSurface500,
                     ),
@@ -460,12 +460,12 @@ class ParticipantReceivingFeature extends StatelessWidget {
             ),
             style: ElevatedButton.styleFrom(
               elevation: 5,
-              backgroundColor: context.tokens.color.vsdslColorSecondary,
+              backgroundColor: context.tokens.color.vsdslColorPrimary,
               shape: RoundedRectangleBorder(
                 borderRadius: context.tokens.radii.vsdslRadiusFull,
               ),
               padding: EdgeInsets.zero,
-              shadowColor: context.tokens.color.vsdslColorSecondary,
+              shadowColor: context.tokens.color.vsdslColorPrimary,
             ),
           ),
         ),

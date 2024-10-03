@@ -108,7 +108,7 @@ class V3SettingsMirroring extends StatelessWidget {
               value: !mirrorStateProvider.isMirrorConfirmation,
               side: BorderSide(
                   color: context.tokens.color.vsdslColorOnPrimary, width: 2),
-              activeColor: context.tokens.color.vsdslColorSecondary,
+              activeColor: context.tokens.color.vsdslColorPrimary,
               onChanged: (bool? value) {
                 mirrorStateProvider.isMirrorConfirmation =
                     !mirrorStateProvider.isMirrorConfirmation;
@@ -145,7 +145,7 @@ class V3SettingsMirroring extends StatelessWidget {
           height: 20,
           child: Checkbox(
               value: mirrorStateProvider.airPlayCodeEnable,
-              activeColor: context.tokens.color.vsdslColorSecondary,
+              activeColor: context.tokens.color.vsdslColorPrimary,
               side: BorderSide(
                   color: context.tokens.color.vsdslColorOnPrimary, width: 2),
               onChanged: (bool? value) {

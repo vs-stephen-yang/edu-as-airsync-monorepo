@@ -77,7 +77,7 @@ class V3MessageDialog extends ConsumerWidget {
                       foregroundColor: WidgetStateProperty.resolveWith<Color>(
                         (Set<WidgetState> states) {
                           return context.tokens.color
-                              .vsdslColorSecondaryVariant; // 默认前景颜色
+                              .vsdslColorPrimaryVariant; // 默认前景颜色
                         },
                       ),
                       backgroundColor: WidgetStateProperty.resolveWith<Color>(
@@ -95,7 +95,7 @@ class V3MessageDialog extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(9999),
                           side: BorderSide(
                               color: context
-                                  .tokens.color.vsdslColorSecondaryVariant,
+                                  .tokens.color.vsdslColorPrimaryVariant,
                               width: 1.0),
                         ),
                       ),
@@ -124,9 +124,9 @@ class V3MessageDialog extends ConsumerWidget {
                         (Set<WidgetState> states) {
                           if (states.contains(WidgetState.pressed)) {
                             return context
-                                .tokens.color.vsdslColorSecondaryVariant;
+                                .tokens.color.vsdslColorPrimaryVariant;
                           }
-                          return context.tokens.color.vsdslColorSecondary;
+                          return context.tokens.color.vsdslColorPrimary;
                         },
                       ),
                       shape: WidgetStateProperty.all<RoundedRectangleBorder>(

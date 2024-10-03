@@ -210,7 +210,7 @@ class V3SettingMenu extends StatelessWidget {
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
           color: SettingsProvider.currentTittlePage == state
-              ? context.tokens.color.vsdslColorSecondary
+              ? context.tokens.color.vsdslColorPrimary
               : context.tokens.color.vsdslColorSurface1000,
           borderRadius: BorderRadius.circular(15),
         ),

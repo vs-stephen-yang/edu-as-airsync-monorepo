@@ -12,6 +12,7 @@ part 'tokens_extra.g.dart';
 abstract class ITokens {
   ColorTokens get color;
   SpacingTokens get spacing;
+  TextStyleTokens get textStyle;
   RadiiTokens get radii;
   ShadowTokens get shadow;
   MaterialColorTokens get materialColor;
@@ -75,6 +76,17 @@ abstract class SpacingTokens {
   EdgeInsets get vsdslSpacing5xl;
 }
 
+abstract class TextStyleTokens {
+  TextStyle get airsyncFontDisplay;
+  TextStyle get airsyncFontTitle;
+  TextStyle get airsyncFontNumber;
+  TextStyle get airsyncFontDesc;
+  TextStyle get airsyncFontInfo;
+  TextStyle get airsyncFontSubtitle600;
+  TextStyle get airsyncFontSubtitle400;
+  TextStyle get airsyncFontUsername;
+}
+
 abstract class RadiiTokens {
   BorderRadius get vsdslRadiusXs;
   BorderRadius get vsdslRadiusSm;
@@ -110,6 +122,8 @@ class DefaultTokens extends ITokens {
   @override
   SpacingTokens get spacing => DefaultSpacingTokens();
   @override
+  TextStyleTokens get textStyle => DefaultTextStyleTokens();
+  @override
   RadiiTokens get radii => DefaultRadiiTokens();
   @override
   ShadowTokens get shadow => DefaultShadowTokens();
@@ -119,15 +133,15 @@ class DefaultTokens extends ITokens {
 
 class DefaultColorTokens extends ColorTokens {
   @override
-  Color get vsdslColorPrimary => const Color(0xFFDB0025);
+  Color get vsdslColorPrimary => const Color(0xFF3C5AAA);
   @override
-  Color get vsdslColorPrimaryVariant => const Color(0xFFBD0020);
+  Color get vsdslColorPrimaryVariant => const Color(0xFF2F3E6D);
   @override
   Color get vsdslColorOnPrimary => const Color(0xFFFFFFFF);
   @override
-  Color get vsdslColorSecondary => const Color(0xFF3C5AAA);
+  Color get vsdslColorSecondary => const Color(0xFF5D80ED);
   @override
-  Color get vsdslColorSecondaryVariant => const Color(0xFF2F3E6D);
+  Color get vsdslColorSecondaryVariant => const Color(0xFF4C71D2);
   @override
   Color get vsdslColorOnSecondary => const Color(0xFFFFFFFF);
   @override
@@ -229,6 +243,74 @@ class DefaultSpacingTokens extends SpacingTokens {
 }
 
 
+class DefaultTextStyleTokens extends TextStyleTokens {
+  @override
+  TextStyle get airsyncFontDisplay => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 45.0,
+  fontWeight: FontWeight.w700,
+  height: 1.3,
+  letterSpacing: 5.76,
+);
+  @override
+  TextStyle get airsyncFontTitle => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 21.0,
+  fontWeight: FontWeight.w500,
+  height: 1.3,
+  letterSpacing: -0.48,
+);
+  @override
+  TextStyle get airsyncFontNumber => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 16.0,
+  fontWeight: FontWeight.w700,
+  height: 1.3,
+  letterSpacing: 0.0,
+);
+  @override
+  TextStyle get airsyncFontDesc => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 12.0,
+  fontWeight: FontWeight.w400,
+  height: 1.3,
+  letterSpacing: 0.0,
+);
+  @override
+  TextStyle get airsyncFontInfo => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 12.0,
+  fontWeight: FontWeight.w400,
+  height: 1.3,
+  letterSpacing: 0.0,
+);
+  @override
+  TextStyle get airsyncFontSubtitle600 => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 14.0,
+  fontWeight: FontWeight.w600,
+  height: 1.3,
+  letterSpacing: 0.0,
+);
+  @override
+  TextStyle get airsyncFontSubtitle400 => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 14.0,
+  fontWeight: FontWeight.w400,
+  height: 1.3,
+  letterSpacing: 0.0,
+);
+  @override
+  TextStyle get airsyncFontUsername => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 13.0,
+  fontWeight: FontWeight.w600,
+  height: 1.3,
+  letterSpacing: 0.0,
+);
+}
+
+
 class DefaultRadiiTokens extends RadiiTokens {
   @override
   BorderRadius get vsdslRadiusXs => BorderRadius.circular(2.0);
@@ -271,29 +353,17 @@ class DefaultShadowTokens extends ShadowTokens {
   BoxShadow(
     offset: Offset(0.0, 8.0),
     blurRadius: 16.0,
-    spreadRadius: -8.0,
-    color: Color(0x3D151C32),
-  ),
-  BoxShadow(
-    offset: Offset(0.0, 16.0),
-    blurRadius: 24.0,
-    spreadRadius: -2.0,
+    spreadRadius: 0.0,
     color: Color(0x3D151C32),
   ),
 ];
   @override
   List<BoxShadow> get vsdslShadowNeutralXl => const [
   BoxShadow(
-    offset: Offset(0.0, 8.0),
+    offset: Offset(0.0, 16.0),
     blurRadius: 24.0,
-    spreadRadius: -24.0,
-    color: Color(0x29151C32),
-  ),
-  BoxShadow(
-    offset: Offset(0.0, 60.0),
-    blurRadius: 60.0,
-    spreadRadius: -16.0,
-    color: Color(0x29151C32),
+    spreadRadius: 0.0,
+    color: Color(0x3D151C32),
   ),
 ];
   @override
@@ -319,28 +389,16 @@ class DefaultShadowTokens extends ShadowTokens {
   BoxShadow(
     offset: Offset(0.0, 8.0),
     blurRadius: 16.0,
-    spreadRadius: -8.0,
-    color: Color(0x7ADB0025),
-  ),
-  BoxShadow(
-    offset: Offset(0.0, 16.0),
-    blurRadius: 24.0,
-    spreadRadius: -2.0,
+    spreadRadius: 0.0,
     color: Color(0x7ADB0025),
   ),
 ];
   @override
   List<BoxShadow> get vsdslShadowPrimaryXl => const [
   BoxShadow(
-    offset: Offset(0.0, 8.0),
+    offset: Offset(0.0, 16.0),
     blurRadius: 24.0,
-    spreadRadius: -24.0,
-    color: Color(0x7ADB0025),
-  ),
-  BoxShadow(
-    offset: Offset(0.0, 60.0),
-    blurRadius: 60.0,
-    spreadRadius: -16.0,
+    spreadRadius: 0.0,
     color: Color(0x7ADB0025),
   ),
 ];
@@ -367,29 +425,17 @@ class DefaultShadowTokens extends ShadowTokens {
   BoxShadow(
     offset: Offset(0.0, 8.0),
     blurRadius: 16.0,
-    spreadRadius: -8.0,
-    color: Color(0x7A3C5AAA),
-  ),
-  BoxShadow(
-    offset: Offset(0.0, 16.0),
-    blurRadius: 24.0,
-    spreadRadius: -2.0,
+    spreadRadius: 0.0,
     color: Color(0x7A3C5AAA),
   ),
 ];
   @override
   List<BoxShadow> get vsdslShadowSecondaryXl => const [
   BoxShadow(
-    offset: Offset(0.0, 8.0),
+    offset: Offset(0.0, 16.0),
     blurRadius: 24.0,
-    spreadRadius: -24.0,
-    color: Color(0x7A3C5AAA),
-  ),
-  BoxShadow(
-    offset: Offset(0.0, 60.0),
-    blurRadius: 60.0,
-    spreadRadius: -16.0,
-    color: Color(0x7A3C5AAA),
+    spreadRadius: 0.0,
+    color: Color(0xA33C5AAA),
   ),
 ];
 }

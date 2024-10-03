@@ -245,7 +245,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                             style: TextStyle(
                               fontSize: 21,
                               fontWeight: FontWeight.w600,
-                              color: context.tokens.color.vsdslColorSecondary,
+                              color: context.tokens.color.vsdslColorPrimary,
                             ),
                           ),
                           const SizedBox(

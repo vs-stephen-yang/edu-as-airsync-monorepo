@@ -32,11 +32,8 @@ class V3Instruction extends StatelessWidget {
             isCastToDevice
                 ? S.of(context).v3_instruction_receive_screen
                 : S.of(context).v3_instruction_share_screen,
-            style: TextStyle(
-              fontSize: 21,
-              fontWeight: FontWeight.w500,
+            style: context.tokens.textStyle.airsyncFontTitle.apply(
               color: context.tokens.color.vsdslColorSurface600,
-              letterSpacing: -0.48,
             ),
           ),
           SizedBox(height: context.tokens.spacing.vsdslSpacing5xl.top),
@@ -105,11 +102,8 @@ class V3Instruction extends StatelessWidget {
                           letterSpacing: -0.48,
                         ),
                       ),
-                      style: TextStyle(
-                        fontSize: 21,
-                        fontWeight: FontWeight.w500,
+                      style: context.tokens.textStyle.airsyncFontTitle.apply(
                         color: context.tokens.color.vsdslColorSurface600,
-                        letterSpacing: -0.48,
                       ),
                     );
                   },
@@ -132,11 +126,8 @@ class V3Instruction extends StatelessWidget {
                   left: context.tokens.spacing.vsdslSpacingMd.left),
               child: AutoSizeText(
                 S.of(context).v3_instruction2,
-                style: TextStyle(
-                  fontSize: 21,
-                  fontWeight: FontWeight.w500,
+                style: context.tokens.textStyle.airsyncFontTitle.apply(
                   color: context.tokens.color.vsdslColorSurface600,
-                  letterSpacing: -0.48,
                 ),
               ),
             ),
@@ -151,11 +142,8 @@ class V3Instruction extends StatelessWidget {
               builder: (_, instanceInfoProvider, __) {
             return AutoSizeText(
               _getDisplayCodeVisualIdentity(instanceInfoProvider.displayCode),
-              style: TextStyle(
-                fontSize: 45,
-                fontWeight: FontWeight.w700,
+              style: context.tokens.textStyle.airsyncFontDisplay.apply(
                 color: context.tokens.color.vsdslColorSurface700,
-                letterSpacing: 5.76,
               ),
             );
           }),
@@ -174,11 +162,8 @@ class V3Instruction extends StatelessWidget {
                   left: context.tokens.spacing.vsdslSpacingMd.left),
               child: AutoSizeText(
                 S.of(context).v3_instruction3,
-                style: TextStyle(
-                  fontSize: 21,
-                  fontWeight: FontWeight.w500,
+                style: context.tokens.textStyle.airsyncFontTitle.apply(
                   color: context.tokens.color.vsdslColorSurface600,
-                  letterSpacing: -0.48,
                 ),
               ),
             ),
@@ -222,11 +207,8 @@ class V3Instruction extends StatelessWidget {
               builder: (_, otp, __) {
                 return AutoSizeText(
                   otp,
-                  style: TextStyle(
-                    fontSize: 45,
-                    fontWeight: FontWeight.w700,
+                  style: context.tokens.textStyle.airsyncFontDisplay.apply(
                     color: context.tokens.color.vsdslColorSurface700,
-                    letterSpacing: 5.76,
                   ),
                 );
               },

@@ -69,4 +69,4 @@ followed by an optional build number separated by a +.
 
 - Run the command in the root of your project to generate tokens:
 
-`figma2flutter --input ./design/airsync-token-v2.json --output ./lib/assets/tokens/`
+`figma2flutter --input ./design/airsync-token-v3-2.json --output ./lib/assets/tokens/`
