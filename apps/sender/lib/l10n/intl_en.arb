@@ -94,5 +94,19 @@
     "v3_main_privacy": "Privacy Policy",
     "v3_main_terms": "Terms of use",
     "v3_main_accessibility": "Accessibility",
-    "v3_main_copy_rights": "Copyright © ViewSonic Corporation 2024. All rights reserved."
+    "v3_main_copy_rights": "Copyright © ViewSonic Corporation 2024. All rights reserved.",
+    "v3_main_present_title": "Share your screen",
+    "v3_main_present_subtitle": "Follow the steps to get started.",
+    "v3_main_display_code": "Display code",
+    "v3_main_display_code_error": "Only accept numbers.",
+    "v3_main_password": "Password",
+    "v3_main_otp_error": "Only accept numbers.",
+    "v3_main_present_action": "Next",
+    "v3_main_instance_not_found_or_offline": "Display code not found or instance is offline.",
+    "v3_main_display_code_invalid": "Invalid Display code",
+    "v3_main_connect_network_error": "Network error. Please check network connectivity and try again.",
+    "v3_main_password_invalid": "Password invalid.",
+    "v3_main_connect_rate_limited": "AirSync instance is busy. Please try it later.",
+    "v3_main_connection_mode_unsupported": "AirSync does not connect to Internet.",
+    "v3_main_connect_unknown_error": "Unknown error."
 }

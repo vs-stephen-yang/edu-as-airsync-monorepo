@@ -87,7 +87,7 @@ class V3PresentIdleButtonState extends State<V3PresentIdleButton>
               ),
             )
           : Text(
-              S.of(context).main_present,
+              S.of(context).v3_main_present_action,
               style: TextStyle(
                 color: context.tokens.color.vsdswColorOnDisabled,
                 fontSize: AppConstants.fontSizeNormal,

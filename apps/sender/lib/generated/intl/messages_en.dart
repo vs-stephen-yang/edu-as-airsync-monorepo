@@ -175,8 +175,23 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("End-User License Agreement"),
         "v3_main_accessibility":
             MessageLookupByLibrary.simpleMessage("Accessibility"),
+        "v3_main_connect_network_error": MessageLookupByLibrary.simpleMessage(
+            "Network error. Please check network connectivity and try again."),
+        "v3_main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
+            "AirSync instance is busy. Please try it later."),
+        "v3_main_connect_unknown_error":
+            MessageLookupByLibrary.simpleMessage("Unknown error."),
+        "v3_main_connection_mode_unsupported":
+            MessageLookupByLibrary.simpleMessage(
+                "AirSync does not connect to Internet."),
         "v3_main_copy_rights": MessageLookupByLibrary.simpleMessage(
             "Copyright © ViewSonic Corporation 2024. All rights reserved."),
+        "v3_main_display_code":
+            MessageLookupByLibrary.simpleMessage("Display code"),
+        "v3_main_display_code_error":
+            MessageLookupByLibrary.simpleMessage("Only accept numbers."),
+        "v3_main_display_code_invalid":
+            MessageLookupByLibrary.simpleMessage("Invalid Display code"),
         "v3_main_download": MessageLookupByLibrary.simpleMessage("Download"),
         "v3_main_download_action_download":
             MessageLookupByLibrary.simpleMessage("Download"),
@@ -203,6 +218,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Win 10 (1709+)/ Win 11"),
         "v3_main_download_win_title":
             MessageLookupByLibrary.simpleMessage("Windows"),
+        "v3_main_instance_not_found_or_offline":
+            MessageLookupByLibrary.simpleMessage(
+                "Display code not found or instance is offline."),
+        "v3_main_otp_error":
+            MessageLookupByLibrary.simpleMessage("Only accept numbers."),
+        "v3_main_password": MessageLookupByLibrary.simpleMessage("Password"),
+        "v3_main_password_invalid":
+            MessageLookupByLibrary.simpleMessage("Password invalid."),
+        "v3_main_present_action": MessageLookupByLibrary.simpleMessage("Next"),
+        "v3_main_present_subtitle": MessageLookupByLibrary.simpleMessage(
+            "Follow the steps to get started."),
+        "v3_main_present_title":
+            MessageLookupByLibrary.simpleMessage("Share your screen"),
         "v3_main_privacy":
             MessageLookupByLibrary.simpleMessage("Privacy Policy"),
         "v3_main_terms": MessageLookupByLibrary.simpleMessage("Terms of use")
