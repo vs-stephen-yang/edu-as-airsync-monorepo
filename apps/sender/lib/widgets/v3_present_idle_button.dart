@@ -71,11 +71,12 @@ class V3PresentIdleButtonState extends State<V3PresentIdleButton>
       style: ElevatedButton.styleFrom(
         disabledBackgroundColor: context.tokens.color.vsdslColorDisabled,
         backgroundColor: context.tokens.color.vsdslColorPrimary,
-        // isButtonEnabled?
         fixedSize: widget.fixedSize,
         shape: RoundedRectangleBorder(
           borderRadius: context.tokens.radii.vsdslRadiusFull,
         ),
+        shadowColor: Colors.grey,
+        elevation: 8,
       ),
       child: isButtonLoading
           ? RotationTransition(
@@ -89,7 +90,6 @@ class V3PresentIdleButtonState extends State<V3PresentIdleButton>
               S.of(context).main_present,
               style: TextStyle(
                 color: context.tokens.color.vsdslColorOnDisabled,
-                //isButtonEnabled? Colors.white : const Color.fromARGB(255, 153, 153, 153),
                 fontSize: AppConstants.fontSizeNormal,
               ),
             ),
