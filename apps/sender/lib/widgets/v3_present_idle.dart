@@ -40,15 +40,15 @@ class V3PresentIdle extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: ShapeDecoration(
-            color: context.tokens.color.vsdslColorSurface200,
+            color: context.tokens.color.vsdswColorSurface200,
             shape: RoundedRectangleBorder(
               side: BorderSide(
                 width: 1,
-                color: context.tokens.color.vsdslColorSurface200,
+                color: context.tokens.color.vsdswColorSurface200,
               ),
-              borderRadius: context.tokens.radii.vsdslRadiusFull,
+              borderRadius: context.tokens.radii.vsdswRadiusFull,
             ),
-            shadows: context.tokens.shadow.vsdslShadowNeutralSm,
+            shadows: context.tokens.shadow.vsdswShadowNeutralLg,
           ),
           child: IconButton(
             icon: SvgPicture.asset('assets/images/v3_ic_qrcode.svg'),

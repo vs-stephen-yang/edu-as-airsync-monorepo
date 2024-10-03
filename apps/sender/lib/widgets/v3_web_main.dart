@@ -36,7 +36,7 @@ class V3WebMain extends StatelessWidget {
                 ),
               Expanded(
                 child: Container(
-                  color: context.tokens.color.vsdslColorSurface100,
+                  color: context.tokens.color.vsdswColorSurface100,
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
@@ -51,11 +51,11 @@ class V3WebMain extends StatelessWidget {
                               style: ElevatedButton.styleFrom(
                                 elevation: 5.0,
                                 shadowColor:
-                                    context.tokens.color.vsdslColorSecondary,
+                                    context.tokens.color.vsdswColorPrimary,
                                 foregroundColor:
-                                    context.tokens.color.vsdslColorOnSecondary,
+                                    context.tokens.color.vsdswColorOnPrimary,
                                 backgroundColor:
-                                    context.tokens.color.vsdslColorSecondary,
+                                    context.tokens.color.vsdswColorPrimary,
                                 textStyle: const TextStyle(
                                   fontSize: 14,
                                 ),
@@ -106,7 +106,7 @@ class V3WebMain extends StatelessWidget {
       'Follow the steps to get started.',
       style: TextStyle(
         fontSize: 18,
-        color: context.tokens.color.vsdslColorOnSurfaceVariant,
+        color: context.tokens.color.vsdswColorOnSurfaceVariant,
         fontWeight: FontWeight.w400,
         // height: 0.10,
         letterSpacing: -0.18,
@@ -119,7 +119,7 @@ class V3WebMain extends StatelessWidget {
       'Share your screen',
       style: TextStyle(
         fontSize: 32,
-        color: context.tokens.color.vsdslColorOnSurface,
+        color: context.tokens.color.vsdswColorOnSurface,
         fontWeight: FontWeight.w700,
         // height: 0.04,
         letterSpacing: -0.32,
@@ -167,7 +167,7 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
     String? newValue = await showMenu<String>(
       context: context,
       position: position.shift(const Offset(0, 5)),
-      color: context.tokens.color.vsdslColorSurface100,
+      color: context.tokens.color.vsdswColorSurface100,
       items: [
         PopupMenuItem(
           padding: EdgeInsets.zero,
@@ -186,8 +186,8 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: (entry.key == prefLanguageProvider.language)
-                            ? context.tokens.color.vsdslColorTertiary
-                            : context.tokens.color.vsdslColorSurface100,
+                            ? context.tokens.color.vsdswColorTertiary
+                            : context.tokens.color.vsdswColorSurface100,
                       ),
                       alignment: Alignment.centerLeft,
                       padding: const EdgeInsets.symmetric(
@@ -200,8 +200,8 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: (entry.key == prefLanguageProvider.language)
-                              ? context.tokens.color.vsdslColorOnSurfaceInverse
-                              : context.tokens.color.vsdslColorOnSurface,
+                              ? context.tokens.color.vsdswColorOnSurfaceInverse
+                              : context.tokens.color.vsdswColorOnSurface,
                         ),
                       ),
                     ),
@@ -236,17 +236,17 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
             ? ShapeDecoration(
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
-                  side: const BorderSide(
+                  side: BorderSide(
                     width: 1,
-                    color: Color(0xFFD3D6E1),
+                    color: context.tokens.color.vsdswColorSurface300,
                   ),
                   borderRadius: BorderRadius.circular(4),
                 ),
-                shadows: const [
+                shadows: [
                   BoxShadow(
-                    color: Color(0xFFE9EAF0),
+                    color: context.tokens.color.vsdswColorOutline,
                     blurRadius: 0,
-                    offset: Offset(0, 0),
+                    offset: const Offset(0, 0),
                     spreadRadius: 4,
                   )
                 ],
@@ -257,7 +257,7 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
             Icon(
               Icons.language,
               size: 16,
-              color: context.tokens.color.vsdslColorOnSurface,
+              color: context.tokens.color.vsdswColorOnSurface,
             ),
             const SizedBox(width: 8),
             AutoSizeText(
@@ -265,14 +265,14 @@ class _LanguageShowMenuState extends State<LanguageShowMenu> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
-                color: context.tokens.color.vsdslColorOnSurface,
+                color: context.tokens.color.vsdswColorOnSurface,
               ),
             ),
             const SizedBox(width: 8),
             Icon(
               Icons.keyboard_arrow_down_sharp,
               size: 16,
-              color: context.tokens.color.vsdslColorOnSurface,
+              color: context.tokens.color.vsdswColorOnSurface,
             ),
           ],
         ),

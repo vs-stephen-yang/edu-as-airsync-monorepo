@@ -130,18 +130,18 @@ class V3HomeApp extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: ShapeDecoration(
-            color: context.tokens.color.vsdslColorSurface900,
+            color: context.tokens.color.vsdswColorSurface900,
             shape: RoundedRectangleBorder(
               side: BorderSide(
                 width: 1,
-                color: context.tokens.color.vsdslColorNeutral,
+                color: context.tokens.color.vsdswColorNeutral,
               ),
-              borderRadius: context.tokens.radii.vsdslRadiusFull,
+              borderRadius: context.tokens.radii.vsdswRadiusFull,
             ),
-            shadows: context.tokens.shadow.vsdslShadowNeutralSm,
+            shadows: context.tokens.shadow.vsdswShadowNeutralLg,
           ),
           child: IconButton(
-            color: Colors.black,
+            color: context.tokens.color.vsdswColorNeutral,
             icon: SvgPicture.asset('assets/images/v3_ic_setting.svg'),
             onPressed: () {},
           ),

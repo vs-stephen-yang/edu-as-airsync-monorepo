@@ -54,7 +54,7 @@ class V3WebFooter extends StatelessWidget {
                         S.of(context).v3_main_privacy,
                         style: TextStyle(
                           fontSize: 16,
-                          color: context.tokens.color.vsdslColorOnSurface,
+                          color: context.tokens.color.vsdswColorOnSurface,
                         ),
                       ),
                     ),
@@ -65,7 +65,7 @@ class V3WebFooter extends StatelessWidget {
                         S.of(context).v3_main_terms,
                         style: TextStyle(
                           fontSize: 16,
-                          color: context.tokens.color.vsdslColorOnSurface,
+                          color: context.tokens.color.vsdswColorOnSurface,
                         ),
                       ),
                     ),
@@ -76,7 +76,7 @@ class V3WebFooter extends StatelessWidget {
                   S.of(context).v3_main_copy_rights,
                   style: TextStyle(
                     fontSize: 14,
-                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                    color: context.tokens.color.vsdswColorOnSurfaceVariant,
                   ),
                 ),
               ],

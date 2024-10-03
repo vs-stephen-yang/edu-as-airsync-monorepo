@@ -29,10 +29,10 @@ class V3Eula extends StatelessWidget {
                 height: 504,
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
-                    borderRadius: context.tokens.radii.vsdslRadiusXl,
+                    borderRadius: context.tokens.radii.vsdswRadiusXl,
                   ),
-                  color: context.tokens.color.vsdslColorSurface100,
-                  shadows: context.tokens.shadow.vsdslShadowNeutralXl,
+                  color: context.tokens.color.vsdswColorSurface100,
+                  shadows: context.tokens.shadow.vsdswShadowNeutralXl,
                 ),
                 child: Column(
                   children: [
@@ -41,7 +41,7 @@ class V3Eula extends StatelessWidget {
                       child: AutoSizeText(
                         S.of(context).v3_eula_title,
                         style: TextStyle(
-                          color: context.tokens.color.vsdslColorOnSurface,
+                          color: context.tokens.color.vsdswColorOnSurface,
                           fontWeight: FontWeight.w600,
                           fontSize: 21,
                         ),
@@ -50,7 +50,7 @@ class V3Eula extends StatelessWidget {
                     ),
                     Container(
                       height: 1,
-                      color: context.tokens.color.vsdslColorOutline,
+                      color: context.tokens.color.vsdswColorOutline,
                     ),
                     const SizedBox(height: 8),
                     Expanded(
@@ -76,7 +76,7 @@ class V3Eula extends StatelessWidget {
                                     content,
                                     style: TextStyle(
                                       color: context
-                                          .tokens.color.vsdslColorNeutral,
+                                          .tokens.color.vsdswColorNeutral,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12,
                                     ),
@@ -90,7 +90,7 @@ class V3Eula extends StatelessWidget {
                     ),
                     Container(
                       height: 1,
-                      color: context.tokens.color.vsdslColorOutline,
+                      color: context.tokens.color.vsdswColorOutline,
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(30, 16, 30, 40),
@@ -103,7 +103,7 @@ class V3Eula extends StatelessWidget {
                             child: TextButton(
                               style: ElevatedButton.styleFrom(
                                 foregroundColor:
-                                    context.tokens.color.vsdslColorSecondary,
+                                    context.tokens.color.vsdswColorPrimary,
                                 backgroundColor: Colors.white,
                                 textStyle: const TextStyle(
                                   fontSize: 12,
@@ -135,11 +135,11 @@ class V3Eula extends StatelessWidget {
                               style: ElevatedButton.styleFrom(
                                 elevation: 5.0,
                                 shadowColor:
-                                    context.tokens.color.vsdslColorSecondary,
+                                    context.tokens.color.vsdswColorPrimary,
                                 foregroundColor: context
-                                    .tokens.color.vsdslColorOnSurfaceInverse,
+                                    .tokens.color.vsdswColorOnSurfaceInverse,
                                 backgroundColor:
-                                    context.tokens.color.vsdslColorSecondary,
+                                    context.tokens.color.vsdswColorPrimary,
                                 textStyle: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,

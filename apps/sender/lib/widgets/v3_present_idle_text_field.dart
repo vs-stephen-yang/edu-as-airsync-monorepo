@@ -234,7 +234,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
                         title: Text(displayList[index]),
-                        hoverColor: context.tokens.color.vsdslColorTertiary,
+                        hoverColor: context.tokens.color.vsdswColorTertiary,
                         trailing: IconButton(
                           icon: const Icon(Icons.highlight_remove),
                           onPressed: () {

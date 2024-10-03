@@ -24,8 +24,8 @@ import 'package:display_cast_flutter/utilities/client_device_info.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
-import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/utilities/screen_state_detector.dart';
+import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -149,7 +149,7 @@ class MyApp extends StatelessWidget {
                     fontFamily: AppPreferences().showOldUI ? null : 'Inter',
                     bodyColor: AppPreferences().showOldUI
                         ? null
-                        : context.tokens.color.vsdslColorOnSurface,
+                        : context.tokens.color.vsdswColorOnSurface,
                   ),
             ),
             initialRoute: AppPreferences().showOldUI
