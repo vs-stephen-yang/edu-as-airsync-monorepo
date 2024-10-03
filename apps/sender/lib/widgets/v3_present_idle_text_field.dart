@@ -100,21 +100,21 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       key: codeKey,
       controller: _codeController,
       focusNode: _codeFocusNode,
-      hintText: S.of(context).main_display_code,
+      hintText: S.of(context).v3_main_display_code,
       maxTextLength: displayCodeMaxLength,
       inputFormatter: [
         if (!WebRTC.platformIsWindows && !kIsWeb) UpperCaseTextFormatter(),
         if (!WebRTC.platformIsWindows && !kIsWeb)
           MaskedInputFormatter(
-            '###########',
-            allowedCharMatcher: RegExp('[A-Za-z0-9]'),
+            List.generate(displayCodeMaxLength, (index) => '0').join(''),
+            allowedCharMatcher: RegExp('[0-9]'),
           ),
       ],
       onFieldChanged: (text) {
         if (WebRTC.platformIsWindows || kIsWeb) {
-          if (text.contains(RegExp(r'[^a-zA-Z0-9]'))) {
+          if (text.contains(RegExp(r'[^0-9]'))) {
             _setTextFormFieldErrorMsg(
-                codeKey, S.of(context).main_display_code_error);
+                codeKey, S.of(context).v3_main_display_code_error);
             _isDropDownMenuVisible = false;
             if (_dropDownMenuEntry != null && _dropDownMenuEntry!.mounted) {
               _dropDownMenuEntry?.remove();
@@ -129,6 +129,8 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
         }
 
         _isCodeSelectedFromHistory = false;
+        // clear error message since pass the validation.
+        codeKey.currentState?.setErrorMsg('');
         bool presentBtnEnable = false;
         if (text.length >= displayCodeMinLength &&
             _otpController.text.length == otpLength) {
@@ -160,7 +162,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       key: otpKey,
       controller: _otpController,
       focusNode: _otpFocusNode,
-      hintText: S.of(context).main_password,
+      hintText: S.of(context).v3_main_password,
       maxTextLength: otpLength,
       inputFormatter: [
         if (!WebRTC.platformIsWindows && !kIsWeb)
@@ -172,10 +174,12 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       onFieldChanged: (text) {
         if (WebRTC.platformIsWindows || kIsWeb) {
           if (text.contains(RegExp(r'[^0-9]'))) {
-            _setTextFormFieldErrorMsg(otpKey, S.of(context).main_otp_error);
+            _setTextFormFieldErrorMsg(otpKey, S.of(context).v3_main_otp_error);
             return;
           }
         }
+        // clear error message since pass the validation.
+        otpKey.currentState?.setErrorMsg('');
         bool presentBtnEnable = false;
         if (_codeController.text.length >= displayCodeMinLength &&
             text.length == otpLength) {
@@ -278,21 +282,21 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       case ChannelConnectError.instanceNotFound:
         _setTextFormFieldErrorMsg(
           codeKey,
-          S.of(context).main_instance_not_found_or_offline,
+          S.of(context).v3_main_instance_not_found_or_offline,
         );
         break;
 
       case ChannelConnectError.invalidDisplayCode:
         _setTextFormFieldErrorMsg(
           codeKey,
-          S.of(context).main_display_code_invalid,
+          S.of(context).v3_main_display_code_invalid,
         );
         break;
 
       case ChannelConnectError.networkError:
         _setTextFormFieldErrorMsg(
           codeKey,
-          S.of(context).main_connect_network_error,
+          S.of(context).v3_main_connect_network_error,
         );
         break;
 
@@ -300,28 +304,28 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       case ChannelConnectError.authenticationRequired:
         _setTextFormFieldErrorMsg(
           otpKey,
-          S.of(context).main_password_invalid,
+          S.of(context).v3_main_password_invalid,
         );
         break;
 
       case ChannelConnectError.rateLimitExceeded:
         _setTextFormFieldErrorMsg(
           codeKey,
-          S.of(context).main_connect_rate_limited,
+          S.of(context).v3_main_connect_rate_limited,
         );
         break;
 
       case ChannelConnectError.connectionModeUnsupported:
         _setTextFormFieldErrorMsg(
           codeKey,
-          S.of(context).main_connection_mode_unsupported,
+          S.of(context).v3_main_connection_mode_unsupported,
         );
         break;
 
       case ChannelConnectError.unknownError:
         _setTextFormFieldErrorMsg(
           otpKey,
-          S.of(context).main_connect_unknown_error,
+          S.of(context).v3_main_connect_unknown_error,
         );
         break;
     }

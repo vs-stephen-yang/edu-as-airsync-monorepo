@@ -1010,6 +1010,146 @@ class S {
       args: [],
     );
   }
+
+  /// `Share your screen`
+  String get v3_main_present_title {
+    return Intl.message(
+      'Share your screen',
+      name: 'v3_main_present_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Follow the steps to get started.`
+  String get v3_main_present_subtitle {
+    return Intl.message(
+      'Follow the steps to get started.',
+      name: 'v3_main_present_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Display code`
+  String get v3_main_display_code {
+    return Intl.message(
+      'Display code',
+      name: 'v3_main_display_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only accept numbers.`
+  String get v3_main_display_code_error {
+    return Intl.message(
+      'Only accept numbers.',
+      name: 'v3_main_display_code_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password`
+  String get v3_main_password {
+    return Intl.message(
+      'Password',
+      name: 'v3_main_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only accept numbers.`
+  String get v3_main_otp_error {
+    return Intl.message(
+      'Only accept numbers.',
+      name: 'v3_main_otp_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next`
+  String get v3_main_present_action {
+    return Intl.message(
+      'Next',
+      name: 'v3_main_present_action',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Display code not found or instance is offline.`
+  String get v3_main_instance_not_found_or_offline {
+    return Intl.message(
+      'Display code not found or instance is offline.',
+      name: 'v3_main_instance_not_found_or_offline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid Display code`
+  String get v3_main_display_code_invalid {
+    return Intl.message(
+      'Invalid Display code',
+      name: 'v3_main_display_code_invalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network error. Please check network connectivity and try again.`
+  String get v3_main_connect_network_error {
+    return Intl.message(
+      'Network error. Please check network connectivity and try again.',
+      name: 'v3_main_connect_network_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password invalid.`
+  String get v3_main_password_invalid {
+    return Intl.message(
+      'Password invalid.',
+      name: 'v3_main_password_invalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AirSync instance is busy. Please try it later.`
+  String get v3_main_connect_rate_limited {
+    return Intl.message(
+      'AirSync instance is busy. Please try it later.',
+      name: 'v3_main_connect_rate_limited',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AirSync does not connect to Internet.`
+  String get v3_main_connection_mode_unsupported {
+    return Intl.message(
+      'AirSync does not connect to Internet.',
+      name: 'v3_main_connection_mode_unsupported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unknown error.`
+  String get v3_main_connect_unknown_error {
+    return Intl.message(
+      'Unknown error.',
+      name: 'v3_main_connect_unknown_error',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

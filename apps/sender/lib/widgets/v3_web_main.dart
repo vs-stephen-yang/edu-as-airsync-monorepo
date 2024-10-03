@@ -15,7 +15,6 @@ class V3WebMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return SizedBox(
       height: 700,
       child: Stack(
@@ -77,9 +76,28 @@ class V3WebMain extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _title(context),
+                            AutoSizeText(
+                              S.of(context).v3_main_present_title,
+                              style: TextStyle(
+                                fontSize: 32,
+                                color: context.tokens.color.vsdswColorOnSurface,
+                                fontWeight: FontWeight.w700,
+                                // height: 0.04,
+                                letterSpacing: -0.32,
+                              ),
+                            ),
                             const Padding(padding: EdgeInsets.only(bottom: 8)),
-                            _subTitle(context),
+                            AutoSizeText(
+                              S.of(context).v3_main_present_subtitle,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: context
+                                    .tokens.color.vsdswColorOnSurfaceVariant,
+                                fontWeight: FontWeight.w400,
+                                // height: 0.10,
+                                letterSpacing: -0.18,
+                              ),
+                            ),
                             const Padding(padding: EdgeInsets.only(top: 40)),
                             const V3PresentIdleMain()
                           ],
@@ -97,32 +115,6 @@ class V3WebMain extends StatelessWidget {
             child: SvgPicture.asset('assets/images/ic_logo_airsync.svg'),
           ),
         ],
-      ),
-    );
-  }
-
-  Text _subTitle(BuildContext context) {
-    return Text(
-      'Follow the steps to get started.',
-      style: TextStyle(
-        fontSize: 18,
-        color: context.tokens.color.vsdswColorOnSurfaceVariant,
-        fontWeight: FontWeight.w400,
-        // height: 0.10,
-        letterSpacing: -0.18,
-      ),
-    );
-  }
-
-  Text _title(BuildContext context) {
-    return Text(
-      'Share your screen',
-      style: TextStyle(
-        fontSize: 32,
-        color: context.tokens.color.vsdswColorOnSurface,
-        fontWeight: FontWeight.w700,
-        // height: 0.04,
-        letterSpacing: -0.32,
       ),
     );
   }
