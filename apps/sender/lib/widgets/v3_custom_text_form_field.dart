@@ -44,6 +44,11 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
         hintStyle: TextStyle(
             fontSize: 12, color: context.tokens.color.vsdslColorOnDisabled),
         counterText: '',
+        border: OutlineInputBorder(
+          borderRadius: context.tokens.radii.vsdslRadiusFull,
+          borderSide: BorderSide(
+              color: context.tokens.color.vsdslColorOutline, width: 2),
+        ),
         enabledBorder: OutlineInputBorder(
           borderRadius: context.tokens.radii.vsdslRadiusFull,
           borderSide: BorderSide(

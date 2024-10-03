@@ -1,19 +1,38 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
+import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
+import 'package:display_cast_flutter/widgets/v3_present_idle_button.dart';
+import 'package:display_cast_flutter/widgets/v3_present_idle_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class V3WebMain extends StatelessWidget {
-  const V3WebMain({super.key, this.scrollTo});
+  V3WebMain({super.key, this.scrollTo});
 
   final Function()? scrollTo;
+  final GlobalKey<V3PresentIdleTextFieldState> fieldKey = GlobalKey();
+  final GlobalKey<V3PresentIdleButtonState> presentBtnKey = GlobalKey();
+
+  bool nextBtnEnable = false;
+  String displayCode = '';
+  String password = '';
+  bool isDisplayCodeSelectedFromHistory = false;
 
   @override
   Widget build(BuildContext context) {
+    PresentStateProvider presentStateProvider =
+        Provider.of<PresentStateProvider>(context, listen: false);
+    ChannelProvider channelProvider =
+        Provider.of<ChannelProvider>(context, listen: false);
+    DemoProvider demoProvider = Provider.of<DemoProvider>(context);
+
     return SizedBox(
       height: 700,
       child: Stack(
@@ -69,6 +88,22 @@ class V3WebMain extends StatelessWidget {
                           ],
                         ),
                       ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _title(context),
+                            const Padding(padding: EdgeInsets.only(bottom: 8)),
+                            _subTitle(context),
+                            const Padding(padding: EdgeInsets.only(top: 40)),
+                            _inputTextFields(),
+                            _nextButton(channelProvider, demoProvider,
+                                presentStateProvider),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -81,6 +116,83 @@ class V3WebMain extends StatelessWidget {
             child: SvgPicture.asset('assets/images/ic_logo_airsync.svg'),
           ),
         ],
+      ),
+    );
+  }
+
+  V3PresentIdleButton _nextButton(ChannelProvider channelProvider,
+      DemoProvider demoProvider, PresentStateProvider presentStateProvider) {
+    return V3PresentIdleButton(
+      key: presentBtnKey,
+      fixedSize: const Size(300, 48),
+      onPressed: () async {
+        AppAnalytics.instance.trackEvent('enter_display_code', properties: {
+          'target': isDisplayCodeSelectedFromHistory ? 'select' : 'type',
+        });
+
+        AppAnalytics.instance.setGlobalProperty('display_code', displayCode);
+
+        AppAnalytics.instance.trackEvent('click_connect');
+
+        if (!nextBtnEnable) return;
+        await channelProvider.presentEnd(goIdleState: false);
+        if (displayCode == "00000000000" && password == "0000") {
+          demoProvider.isDemoMode = true;
+          demoProvider.presentSelectRoleDemoPage();
+        } else {
+          channelProvider.startConnect(
+              formattedDisplayCode: displayCode,
+              otp: password,
+              presentStateProvider: presentStateProvider);
+        }
+      },
+    );
+  }
+
+  V3PresentIdleTextField _inputTextFields() {
+    return V3PresentIdleTextField(
+      key: fieldKey,
+      widthTextField: 400,
+      onFieldChanged: (result) {
+        isDisplayCodeSelectedFromHistory =
+            result.isDisplayCodeSelectedFromHistory;
+
+        nextBtnEnable = result.enable;
+        displayCode = result.displayCode;
+        password = result.password;
+        presentBtnKey.currentState?.setEnable(result.enable,
+            displayCode: result.displayCode, password: result.password);
+      },
+      onPasswordEnterEvent: (text) {
+        if (nextBtnEnable) {
+          presentBtnKey.currentState?.onButtonPressed();
+        }
+      },
+    );
+  }
+
+  Text _subTitle(BuildContext context) {
+    return Text(
+      'Follow the steps to get started.',
+      style: TextStyle(
+        fontSize: 18,
+        color: context.tokens.color.vsdslColorOnSurfaceVariant,
+        fontWeight: FontWeight.w400,
+        // height: 0.10,
+        letterSpacing: -0.18,
+      ),
+    );
+  }
+
+  Text _title(BuildContext context) {
+    return Text(
+      'Share your screen',
+      style: TextStyle(
+        fontSize: 32,
+        color: context.tokens.color.vsdslColorOnSurface,
+        fontWeight: FontWeight.w700,
+        // height: 0.04,
+        letterSpacing: -0.32,
       ),
     );
   }

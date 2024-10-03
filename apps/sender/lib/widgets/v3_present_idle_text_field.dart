@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
@@ -7,9 +5,11 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_text_form_field.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
 class V3PresentIdleTextField extends StatefulWidget {
@@ -111,15 +111,15 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       hintText: S.of(context).main_display_code,
       maxTextLength: displayCodeMaxLength,
       inputFormatter: [
-        if (!Platform.isWindows) UpperCaseTextFormatter(),
-        if (!Platform.isWindows)
+        if (!WebRTC.platformIsWindows && !kIsWeb) UpperCaseTextFormatter(),
+        if (!WebRTC.platformIsWindows && !kIsWeb)
           MaskedInputFormatter(
             '###########',
             allowedCharMatcher: RegExp('[A-Za-z0-9]'),
           ),
       ],
       onFieldChanged: (text) {
-        if (Platform.isWindows) {
+        if (WebRTC.platformIsWindows || kIsWeb) {
           if (text.contains(RegExp(r'[^a-zA-Z0-9]'))) {
             _setTextFormFieldErrorMsg(
                 codeKey, S.of(context).main_display_code_error);
@@ -149,7 +149,9 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       },
       onTap: () async {
         List? displayList = await DataDisplayCode.getInstance().load();
-        if (!_isDropDownMenuVisible && displayList != null) {
+        if (!_isDropDownMenuVisible &&
+            displayList != null &&
+            displayList.isNotEmpty) {
           _isDropDownMenuVisible = true;
           _dropDownMenu(displayList.reversed.toList());
         }
@@ -168,14 +170,14 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       hintText: S.of(context).main_password,
       maxTextLength: otpLength,
       inputFormatter: [
-        if (!Platform.isWindows)
+        if (!WebRTC.platformIsWindows && !kIsWeb)
           MaskedInputFormatter(
             '0000',
             allowedCharMatcher: RegExp('[0-9]'),
           ),
       ],
       onFieldChanged: (text) {
-        if (Platform.isWindows) {
+        if (WebRTC.platformIsWindows || kIsWeb) {
           if (text.contains(RegExp(r'[^0-9]'))) {
             _setTextFormFieldErrorMsg(otpKey, S.of(context).main_otp_error);
             return;
@@ -218,7 +220,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             ),
           ),
           Positioned(
-            width: 300,
+            width: widget.widthTextField,
             height: displayList.length > 4 ? 208 : displayList.length * 48,
             child: CompositedTransformFollower(
               offset: const Offset(0, 55),
