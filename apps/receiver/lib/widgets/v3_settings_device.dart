@@ -117,7 +117,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
               child: Checkbox(
                 value: (snapshot.hasData) ? snapshot.data as bool : null,
                 tristate: true,
-                activeColor: context.tokens.color.vsdslColorSecondary,
+                activeColor: context.tokens.color.vsdslColorPrimary,
                 onChanged: (bool? value) {
                   setState(() {
                     _setAutoStartUpSettings(value ?? false);
@@ -161,7 +161,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
           height: 20,
           child: Checkbox(
               value: channelProvider.isDeviceListQuickConnect,
-              activeColor: context.tokens.color.vsdslColorSecondary,
+              activeColor: context.tokens.color.vsdslColorPrimary,
               onChanged: (bool? value) {
                 if (channelProvider.isDeviceListQuickConnect) {
                   channelProvider.isDeviceListQuickConnect = false;
@@ -480,7 +480,7 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
             return Container(
               height: 26,
               padding: const EdgeInsets.only(left: 16),
-              color: context.tokens.color.vsdslColorSecondary,
+              color: context.tokens.color.vsdslColorPrimary,
               child: widget.selectedItemInMenu,
             );
           }),

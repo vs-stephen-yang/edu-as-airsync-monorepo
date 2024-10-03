@@ -42,14 +42,14 @@ class V3QuickConnectMenu extends StatelessWidget {
                         ),
                         child: TabBar(
                           indicator: BoxDecoration(
-                            color: context.tokens.color.vsdslColorSecondary,
+                            color: context.tokens.color.vsdslColorPrimary,
                             borderRadius: context.tokens.radii.vsdslRadiusLg,
                           ),
                           indicatorSize: TabBarIndicatorSize.tab,
                           labelColor:
                               context.tokens.color.vsdslColorOnSurfaceInverse,
                           unselectedLabelColor:
-                              context.tokens.color.vsdslColorSecondary,
+                              context.tokens.color.vsdslColorPrimary,
                           dividerHeight: 0,
                           tabs: [
                             Tab(

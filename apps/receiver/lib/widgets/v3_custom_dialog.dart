@@ -86,11 +86,11 @@ class V3CustomDialog extends StatelessWidget {
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 foregroundColor:
-                                    context.tokens.color.vsdslColorSecondary,
+                                    context.tokens.color.vsdslColorPrimary,
                                 backgroundColor: Colors.white,
                                 side: BorderSide(
                                   color:
-                                      context.tokens.color.vsdslColorSecondary,
+                                      context.tokens.color.vsdslColorPrimary,
                                   width: 1.5,
                                 ),
                                 textStyle: const TextStyle(
@@ -110,11 +110,11 @@ class V3CustomDialog extends StatelessWidget {
                               style: ElevatedButton.styleFrom(
                                 elevation: 5.0,
                                 shadowColor:
-                                    context.tokens.color.vsdslColorSecondary,
+                                    context.tokens.color.vsdslColorPrimary,
                                 foregroundColor: context
                                     .tokens.color.vsdslColorOnSurfaceInverse,
                                 backgroundColor:
-                                    context.tokens.color.vsdslColorSecondary,
+                                    context.tokens.color.vsdslColorPrimary,
                                 textStyle: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,

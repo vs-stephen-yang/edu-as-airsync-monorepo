@@ -102,12 +102,12 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
                     ),
                     style: ElevatedButton.styleFrom(
                       elevation: 5,
-                      backgroundColor: context.tokens.color.vsdslColorSecondary,
+                      backgroundColor: context.tokens.color.vsdslColorPrimary,
                       shape: RoundedRectangleBorder(
                         borderRadius: context.tokens.radii.vsdslRadiusFull,
                       ),
                       padding: EdgeInsets.zero,
-                      shadowColor: context.tokens.color.vsdslColorSecondary,
+                      shadowColor: context.tokens.color.vsdslColorPrimary,
                     ),
                   ),
                 ),

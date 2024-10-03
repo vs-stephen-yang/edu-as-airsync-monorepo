@@ -210,7 +210,7 @@ class V3SettingsCastToBoardsState
                     child: Checkbox(
                       value: broadcastSelectedList
                           .any((element) => element.id() == client.id()),
-                      activeColor: context.tokens.color.vsdslColorSecondary,
+                      activeColor: context.tokens.color.vsdslColorPrimary,
                       side: BorderSide(
                           color: context.tokens.color.vsdslColorOnPrimary,
                           width: 2),
@@ -396,7 +396,7 @@ class V3SettingsCastToBoardsState
           onClick();
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: context.tokens.color.vsdslColorSecondary,
+          backgroundColor: context.tokens.color.vsdslColorPrimary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
                 context.tokens.spacing.vsdslSpacing2xl.top),
@@ -423,7 +423,7 @@ class V3SettingsCastToBoardsState
           onClick();
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: context.tokens.color.vsdslColorSecondary,
+          backgroundColor: context.tokens.color.vsdslColorPrimary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
                 context.tokens.spacing.vsdslSpacing2xl.top),

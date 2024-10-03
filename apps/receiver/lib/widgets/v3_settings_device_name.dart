@@ -153,7 +153,7 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
         height: 26,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: context.tokens.color.vsdslColorSecondary,
+          color: context.tokens.color.vsdslColorPrimary,
           borderRadius:
               BorderRadius.circular(context.tokens.spacing.vsdslSpacing2xl.top),
         ),
