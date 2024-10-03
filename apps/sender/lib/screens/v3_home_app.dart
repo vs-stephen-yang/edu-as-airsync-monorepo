@@ -24,7 +24,7 @@ class V3HomeApp extends StatelessWidget {
       constraints: const BoxConstraints.expand(),
       child: Consumer3<PresentStateProvider, ChannelProvider, DemoProvider>(
           builder: (context, present, channel, demo, child) {
-        Widget _mainContent;
+        Widget mainContent;
 
         if (!demo.isDemoMode) {
           log.info('PresentState: ${present.currentState}');
@@ -36,7 +36,7 @@ class V3HomeApp extends StatelessWidget {
 
           switch (present.currentState) {
             case ViewState.idle:
-              _mainContent = V3PresentIdle();
+              mainContent = const V3PresentIdle();
             case ViewState.selectRole:
             // _mainContent = const PresentSelectRole();
             case ViewState.moderatorName:
@@ -51,18 +51,18 @@ class V3HomeApp extends StatelessWidget {
             case ViewState.language:
             case ViewState.deviceList:
             default:
-              _mainContent = const SizedBox();
+              mainContent = const SizedBox();
           }
         } else {
           switch (demo.state) {
             case DemoViewState.off:
-              _mainContent = const SizedBox();
+              mainContent = const SizedBox();
             case DemoViewState.selectRole:
-              _mainContent = const PresentSelectRoleDemo();
+              mainContent = const PresentSelectRoleDemo();
             case DemoViewState.presentStart:
-              _mainContent = PresentPresentStartDemo();
+              mainContent = PresentPresentStartDemo();
             case DemoViewState.remoteScreen:
-              _mainContent = const RemoteScreenDemo();
+              mainContent = const RemoteScreenDemo();
           }
         }
         // _mainContent =  const SizedBox();
@@ -70,8 +70,8 @@ class V3HomeApp extends StatelessWidget {
         return Stack(
           alignment: Alignment.center,
           children: <Widget>[
-            V3Background(),
-            _mainContent,
+            const V3Background(),
+            mainContent,
             _settingMenu(context),
           ],
         );
