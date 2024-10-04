@@ -18,7 +18,8 @@ enum ViewState {
 
   settings,
   language,
-  deviceList
+  deviceList,
+  qrScanner,
 }
 
 class PresentStateProvider extends ChangeNotifier {
@@ -82,6 +83,10 @@ class PresentStateProvider extends ChangeNotifier {
 
   Future<void> presentDeviceListPage() async {
     setViewState(ViewState.deviceList);
+  }
+
+  Future<void> presentQrScannerPage() async {
+    setViewState(ViewState.qrScanner);
   }
 
 }

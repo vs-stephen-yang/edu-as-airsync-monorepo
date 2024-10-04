@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class V3PresentIdle extends StatelessWidget {
   const V3PresentIdle({super.key});
@@ -52,7 +54,10 @@ class V3PresentIdle extends StatelessWidget {
           ),
           child: IconButton(
             icon: SvgPicture.asset('assets/images/v3_ic_qrcode.svg'),
-            onPressed: () {},
+            onPressed: () {
+              Provider.of<PresentStateProvider>(context, listen: false)
+                  .presentQrScannerPage();
+            },
           ),
         ));
   }
