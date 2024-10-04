@@ -28,6 +28,7 @@ class V3PresentIdleTextField extends StatefulWidget {
 class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
   int displayCodeMinLength = 8;
   int displayCodeMaxLength = 11;
+  int displayCodeMaxLengthW = 13; // windows & web
   int otpLength = 4;
 
   final TextEditingController _codeController = TextEditingController();
@@ -52,6 +53,14 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
         _codeController.selection = TextSelection(
             baseOffset: 0, extentOffset: _codeController.text.length);
       }
+    });
+    _codeController.addListener(() {
+      String dc = _codeController.text.replaceAll(' ', ''); // 移除已有的空格
+      String text = _getDisplayCodeVisualIdentity(dc);
+      _codeController.value = TextEditingValue(
+        text: text,
+        selection: TextSelection.collapsed(offset: _codeController.text.length),
+      );
     });
     _otpFocusNode.addListener(() {
       if (_otpFocusNode.hasFocus) {
@@ -101,18 +110,21 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       controller: _codeController,
       focusNode: _codeFocusNode,
       hintText: S.of(context).v3_main_display_code,
-      maxTextLength: displayCodeMaxLength,
+      maxTextLength: (!WebRTC.platformIsWindows && !kIsWeb)
+          ? displayCodeMaxLength
+          : displayCodeMaxLengthW,
       inputFormatter: [
-        if (!WebRTC.platformIsWindows && !kIsWeb) UpperCaseTextFormatter(),
+        if (!WebRTC.platformIsWindows && !kIsWeb)
+          FilteringTextInputFormatter.digitsOnly,
         if (!WebRTC.platformIsWindows && !kIsWeb)
           MaskedInputFormatter(
             List.generate(displayCodeMaxLength, (index) => '0').join(''),
-            allowedCharMatcher: RegExp('[0-9]'),
+            allowedCharMatcher: RegExp('[0-9\\s]'),
           ),
       ],
       onFieldChanged: (text) {
         if (WebRTC.platformIsWindows || kIsWeb) {
-          if (text.contains(RegExp(r'[^0-9]'))) {
+          if (text.contains(RegExp(r'[^0-9\s]'))) {
             _setTextFormFieldErrorMsg(
                 codeKey, S.of(context).v3_main_display_code_error);
             _isDropDownMenuVisible = false;
@@ -139,7 +151,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
         widget.onFieldChanged(V3FieldResult(
             enable: presentBtnEnable,
             isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
-            displayCode: text,
+            displayCode: text.replaceAll(' ', ''),
             password: _otpController.text));
       },
       onTap: () async {
@@ -188,7 +200,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
         widget.onFieldChanged(V3FieldResult(
             enable: presentBtnEnable,
             isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
-            displayCode: _codeController.text,
+            displayCode: _codeController.text.replaceAll(' ', ''),
             password: text));
       },
       onFieldSubmitted: (text) {
@@ -237,7 +249,8 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
-                        title: Text(displayList[index]),
+                        title: Text(
+                            _getDisplayCodeVisualIdentity(displayList[index])),
                         hoverColor: context.tokens.color.vsdswColorTertiary,
                         trailing: IconButton(
                           icon: const Icon(Icons.highlight_remove),
@@ -268,6 +281,17 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       );
     });
     Overlay.of(context).insert(_dropDownMenuEntry!);
+  }
+
+  String _getDisplayCodeVisualIdentity(String displayCode) {
+    String result = displayCode;
+    if (displayCode.length > 4) {
+      // https://stackoverflow.com/a/56845471/13160681
+      result = displayCode
+          .replaceAllMapped(RegExp(r".{4}"), (match) => "${match.group(0)} ")
+          .trimRight();
+    }
+    return result;
   }
 
   _setTextFormFieldErrorMsg(
