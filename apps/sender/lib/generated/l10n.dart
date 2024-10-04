@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -1146,6 +1145,16 @@ class S {
     return Intl.message(
       'Unknown error.',
       name: 'v3_main_connect_unknown_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Quick connect by scan the QR code`
+  String get v3_scan_qr_reminder {
+    return Intl.message(
+      'Quick connect by scan the QR code',
+      name: 'v3_scan_qr_reminder',
       desc: '',
       args: [],
     );

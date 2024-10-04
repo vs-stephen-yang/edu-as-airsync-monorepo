@@ -17,6 +17,7 @@ import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/platform_util.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
+import 'package:display_cast_flutter/widgets/v3_qrcode_scan.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -140,6 +141,7 @@ class ChannelProvider extends ChangeNotifier {
     required String formattedDisplayCode,
     required String otp,
     required PresentStateProvider presentStateProvider,
+    QRcodeConnectResult? qrCallback,
   }) async {
     AppAnalytics.instance.trackEvent('connect');
     // Generate a new client Id
@@ -196,9 +198,11 @@ class ChannelProvider extends ChangeNotifier {
           formattedDisplayCode,
           isDirectChannel: isDirectChannel,
         );
+        qrCallback?.call(true);
       },
       onOpenError: (error) {
         _onChannelOpenFailed(error);
+        qrCallback?.call(false);
       },
     );
 

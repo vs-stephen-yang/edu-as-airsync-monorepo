@@ -20,6 +20,7 @@ import 'package:display_cast_flutter/widgets/present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/remote_screen_widget.dart';
 import 'package:display_cast_flutter/widgets/settings.dart';
+import 'package:display_cast_flutter/widgets/v3_qrcode_scan.dart';
 import 'package:display_cast_flutter/widgets/v3_background.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
 import 'package:flutter/material.dart';
@@ -86,6 +87,8 @@ class V3HomeApp extends StatelessWidget {
             case ViewState.deviceList:
               mainContent = const DeviceList();
               break;
+            case ViewState.qrScanner:
+              return const V3QRcodeScan();
             default:
               mainContent = const SizedBox();
               break;

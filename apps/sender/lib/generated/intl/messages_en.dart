@@ -233,6 +233,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Share your screen"),
         "v3_main_privacy":
             MessageLookupByLibrary.simpleMessage("Privacy Policy"),
-        "v3_main_terms": MessageLookupByLibrary.simpleMessage("Terms of use")
+        "v3_main_terms": MessageLookupByLibrary.simpleMessage("Terms of use"),
+        "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
+            "Quick connect by scan the QR code")
       };
 }
