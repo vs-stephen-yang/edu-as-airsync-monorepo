@@ -1,15 +1,31 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
+import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
+import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
-import 'package:display_cast_flutter/widgets/v3_present_idle_main.dart';
+import 'package:display_cast_flutter/widgets/moderator_idle.dart';
+import 'package:display_cast_flutter/widgets/moderator_present_start.dart';
+import 'package:display_cast_flutter/widgets/moderator_share.dart';
+import 'package:display_cast_flutter/widgets/moderator_wait.dart';
+import 'package:display_cast_flutter/widgets/present_present_start.dart';
+import 'package:display_cast_flutter/widgets/present_select_screen.dart';
+import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
+import 'package:display_cast_flutter/widgets/toast.dart';
+import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
+import 'package:display_channel/display_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class V3WebMain extends StatelessWidget {
-  const V3WebMain({super.key, this.scrollTo});
+  const V3WebMain(
+      {super.key, required this.presentStateProvider, this.scrollTo});
+
+  final PresentStateProvider presentStateProvider;
 
   final Function()? scrollTo;
 
@@ -20,103 +36,132 @@ class V3WebMain extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Row(
-            children: [
-              if (isBigThan1024(context))
-                Container(
-                  width: 460,
-                  color: const Color(0xFFEDEEF3),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.asset('assets/images/ic_web_connection.png'),
-                    ],
+          if (presentStateProvider.currentState != ViewState.idle)
+            V3PresentStateMachine(
+              presentStateProvider: presentStateProvider,
+            ),
+          if (presentStateProvider.currentState == ViewState.idle) ...[
+            Row(
+              children: [
+                if (isBigThan1024(context))
+                  Container(
+                    width: 460,
+                    color: const Color(0xFFEDEEF3),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.asset('assets/images/ic_web_connection.png'),
+                      ],
+                    ),
                   ),
-                ),
-              Expanded(
-                child: Container(
-                  color: context.tokens.color.vsdswColorSurface100,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Positioned(
-                        top: 21,
-                        right: 40,
-                        child: Row(
-                          children: [
-                            const LanguageShowMenu(),
-                            const SizedBox(width: 16),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                elevation: 5.0,
-                                shadowColor:
-                                    context.tokens.color.vsdswColorPrimary,
-                                foregroundColor:
-                                    context.tokens.color.vsdswColorOnPrimary,
-                                backgroundColor:
-                                    context.tokens.color.vsdswColorPrimary,
-                                textStyle: const TextStyle(
-                                  fontSize: 14,
+                Expanded(
+                  child: Container(
+                    color: context.tokens.color.vsdswColorSurface100,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      alignment: AlignmentDirectional.center,
+                      children: [
+                        Positioned(
+                          top: 21,
+                          right: 40,
+                          child: Row(
+                            children: [
+                              const LanguageShowMenu(),
+                              const SizedBox(width: 16),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 5.0,
+                                  shadowColor:
+                                      context.tokens.color.vsdswColorPrimary,
+                                  foregroundColor:
+                                      context.tokens.color.vsdswColorOnPrimary,
+                                  backgroundColor:
+                                      context.tokens.color.vsdswColorPrimary,
+                                  textStyle: const TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
                                 ),
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
+                                onPressed: () {
+                                  scrollTo?.call();
+                                },
+                                child: AutoSizeText(
+                                    S.of(context).v3_main_download),
                               ),
-                              onPressed: () {
-                                scrollTo?.call();
-                              },
-                              child:
-                                  AutoSizeText(S.of(context).v3_main_download),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AutoSizeText(
-                              S.of(context).v3_main_present_title,
-                              style: TextStyle(
-                                fontSize: 32,
-                                color: context.tokens.color.vsdswColorOnSurface,
-                                fontWeight: FontWeight.w700,
-                                // height: 0.04,
-                                letterSpacing: -0.32,
-                              ),
-                            ),
-                            const Padding(padding: EdgeInsets.only(bottom: 8)),
-                            AutoSizeText(
-                              S.of(context).v3_main_present_subtitle,
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: context
-                                    .tokens.color.vsdswColorOnSurfaceVariant,
-                                fontWeight: FontWeight.w400,
-                                // height: 0.10,
-                                letterSpacing: -0.18,
-                              ),
-                            ),
-                            const Padding(padding: EdgeInsets.only(top: 40)),
-                            const V3PresentIdleMain()
-                          ],
+                        V3PresentStateMachine(
+                          presentStateProvider: presentStateProvider,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          Positioned(
-            left: 40,
-            top: 16,
-            child: SvgPicture.asset('assets/images/ic_logo_airsync.svg'),
-          ),
+              ],
+            ),
+            Positioned(
+              left: 40,
+              top: 16,
+              child: SvgPicture.asset('assets/images/ic_logo_airsync.svg'),
+            ),
+          ],
         ],
       ),
     );
+  }
+}
+
+class V3PresentStateMachine extends StatelessWidget {
+  const V3PresentStateMachine({super.key, required this.presentStateProvider});
+
+  final PresentStateProvider presentStateProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    log.info('PresentState: ${presentStateProvider.currentState}');
+    switch (presentStateProvider.currentState) {
+      case ViewState.idle:
+        return const V3PresentIdle();
+      case ViewState.selectRole:
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ChannelProvider channelProvider =
+              Provider.of<ChannelProvider>(context, listen: false);
+          channelProvider.currentRole = JoinIntentType.present;
+          if (channelProvider.moderatorStatus) {
+            presentStateProvider.presentModeratorNamePage();
+          } else {
+            if (channelProvider.isConnectAvailable()) {
+              channelProvider.beginBasicMode();
+            } else {
+              Toast.makeFeatureReconnectToast(
+                  channelProvider.reconnectState,
+                  channelProvider.reconnectState ==
+                          ChannelReconnectState.reconnecting
+                      ? S.of(context).main_feature_reconnecting_toast
+                      : S.of(context).main_feature_reconnect_fail_toast);
+            }
+          }
+        });
+        return const SizedBox();
+      case ViewState.moderatorName:
+        return const ModeratorIdle();
+      case ViewState.moderatorWait:
+        return const ModeratorWait();
+      case ViewState.waitReady:
+        return const PresentWaitReady();
+      case ViewState.selectScreen:
+        return const PresentSelectScreen();
+      case ViewState.presentStart:
+        return PresentPresentStart();
+      case ViewState.moderatorStart:
+        return ModeratorPresentStart();
+      case ViewState.moderatorShare:
+        return const ModeratorPresentShare();
+      default:
+        return const SizedBox();
+    }
   }
 }
 
