@@ -1,16 +1,20 @@
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
-import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:flutter/material.dart';
 
 import 'custom_icons_icons.dart';
 
 class V3PresentIdleButton extends StatefulWidget {
-  const V3PresentIdleButton(
-      {super.key, required this.onPressed, this.fixedSize});
+  const V3PresentIdleButton({
+    super.key,
+    this.fixedSize,
+    required this.buttonText,
+    required this.onPressed,
+  });
 
   final VoidCallback? onPressed;
   final Size? fixedSize;
+  final String buttonText;
 
   @override
   State<V3PresentIdleButton> createState() => V3PresentIdleButtonState();
@@ -87,7 +91,7 @@ class V3PresentIdleButtonState extends State<V3PresentIdleButton>
               ),
             )
           : Text(
-              S.of(context).v3_main_present_action,
+              widget.buttonText,
               style: TextStyle(
                 color: context.tokens.color.vsdswColorOnDisabled,
                 fontSize: AppConstants.fontSizeNormal,

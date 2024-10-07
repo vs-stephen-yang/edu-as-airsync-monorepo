@@ -128,6 +128,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
     return V3PresentIdleButton(
       key: presentBtnKey,
       fixedSize: const Size(300, 48),
+      buttonText: S.of(context).v3_main_present_action,
       onPressed: () async {
         AppAnalytics.instance.trackEvent('enter_display_code', properties: {
           'target': isDisplayCodeSelectedFromHistory ? 'select' : 'type',
