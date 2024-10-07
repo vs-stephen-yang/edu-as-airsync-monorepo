@@ -3,6 +3,7 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class V3WebFooter extends StatelessWidget {
   const V3WebFooter({super.key});
@@ -49,7 +50,10 @@ class V3WebFooter extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        launchUrl(Uri.parse(
+                            '${Uri.base.scheme}://${Uri.base.authority}/legal/privacy_policy.html'));
+                      },
                       child: AutoSizeText(
                         S.of(context).v3_main_privacy,
                         style: TextStyle(
@@ -60,7 +64,10 @@ class V3WebFooter extends StatelessWidget {
                     ),
                     const SizedBox(width: 80),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        launchUrl(Uri.parse(
+                            '${Uri.base.scheme}://${Uri.base.authority}/legal/terms_of_use.html'));
+                      },
                       child: AutoSizeText(
                         S.of(context).v3_main_terms,
                         style: TextStyle(
