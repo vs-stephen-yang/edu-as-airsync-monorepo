@@ -93,7 +93,9 @@ class V3PresentIdleButtonState extends State<V3PresentIdleButton>
           : Text(
               widget.buttonText,
               style: TextStyle(
-                color: context.tokens.color.vsdswColorOnDisabled,
+                color: isButtonEnabled
+                    ? context.tokens.color.vsdswColorOnPrimary
+                    : context.tokens.color.vsdswColorOnDisabled,
                 fontSize: AppConstants.fontSizeNormal,
               ),
             ),
