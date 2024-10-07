@@ -7,7 +7,6 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
-import 'package:display_cast_flutter/widgets/moderator_idle.dart';
 import 'package:display_cast_flutter/widgets/moderator_present_start.dart';
 import 'package:display_cast_flutter/widgets/moderator_share.dart';
 import 'package:display_cast_flutter/widgets/moderator_wait.dart';
@@ -15,6 +14,7 @@ import 'package:display_cast_flutter/widgets/present_present_start.dart';
 import 'package:display_cast_flutter/widgets/present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
+import 'package:display_cast_flutter/widgets/v3_moderator_idle_name.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/material.dart';
@@ -36,11 +36,11 @@ class V3WebMain extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          if (presentStateProvider.currentState != ViewState.idle)
+          if (presentStateProvider.currentState == ViewState.presentStart)
             V3PresentStateMachine(
               presentStateProvider: presentStateProvider,
             ),
-          if (presentStateProvider.currentState == ViewState.idle) ...[
+          if (presentStateProvider.currentState != ViewState.presentStart) ...[
             Row(
               children: [
                 if (isBigThan1024(context))
@@ -146,7 +146,7 @@ class V3PresentStateMachine extends StatelessWidget {
         });
         return const SizedBox();
       case ViewState.moderatorName:
-        return const ModeratorIdle();
+        return const V3ModeratorIdleName();
       case ViewState.moderatorWait:
         return const ModeratorWait();
       case ViewState.waitReady:

@@ -1151,6 +1151,76 @@ class S {
     );
   }
 
+  /// `Share your screen`
+  String get v3_main_moderator_title {
+    return Intl.message(
+      'Share your screen',
+      name: 'v3_main_moderator_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your presentation title`
+  String get v3_main_moderator_subtitle {
+    return Intl.message(
+      'Enter your presentation title',
+      name: 'v3_main_moderator_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share`
+  String get v3_main_moderator_app_title {
+    return Intl.message(
+      'Share',
+      name: 'v3_main_moderator_app_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your name before share your screen`
+  String get v3_main_moderator_app_subtitle {
+    return Intl.message(
+      'Enter your name before share your screen',
+      name: 'v3_main_moderator_app_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share`
+  String get v3_main_moderator_action {
+    return Intl.message(
+      'Share',
+      name: 'v3_main_moderator_action',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type your name`
+  String get v3_main_moderator_input_hint {
+    return Intl.message(
+      'Type your name',
+      name: 'v3_main_moderator_input_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please limit the name to 20 characters.`
+  String get v3_main_moderator_input_limit {
+    return Intl.message(
+      'Please limit the name to 20 characters.',
+      name: 'v3_main_moderator_input_limit',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Quick connect by scan the QR code`
   String get v3_scan_qr_reminder {
     return Intl.message(

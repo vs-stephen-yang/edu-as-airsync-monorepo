@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
@@ -9,182 +10,226 @@ import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_text_form_field.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
-class V3ModeratorIdleName extends StatefulWidget {
+class V3ModeratorIdleName extends StatelessWidget {
   const V3ModeratorIdleName({super.key});
 
   @override
-  State<V3ModeratorIdleName> createState() => _V3ModeratorIdleNameState();
+  Widget build(BuildContext context) {
+    final bool isMobile = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
+    Widget backButton;
+    if (!kIsWeb && !isMobile) {
+      backButton = Transform.translate(
+        offset: const Offset(-278, 0), // (475+48)/2+16~=278
+        // Move Button B 16 pixels to the right from Container A
+        child: const BackButton(),
+      );
+    } else {
+      backButton = const Positioned(
+        left: kIsWeb ? 24 : 8,
+        top: kIsWeb ? 193 : 24,
+        child: BackButton(),
+      );
+    }
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: Container(
+            width: kIsWeb
+                ? 400
+                : isMobile
+                    ? 359
+                    : 475,
+            height: kIsWeb
+                ? 316
+                : isMobile
+                    ? 495
+                    : 504,
+            decoration: (kIsWeb)
+                ? null
+                : BoxDecoration(
+                    color: context.tokens.color.vsdswColorSurface100,
+                    border: Border.all(color: Colors.white),
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: context.tokens.shadow.vsdswShadowNeutralLg,
+                  ),
+            child: const V3ModeratorInputName(),
+          ),
+        ),
+        backButton,
+      ],
+    );
+  }
 }
 
-class _V3ModeratorIdleNameState extends State<V3ModeratorIdleName> {
+class V3ModeratorInputName extends StatefulWidget {
+  const V3ModeratorInputName({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _V3ModeratorInputNameState();
+}
+
+class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
   final TextEditingController _nameController = TextEditingController();
   final FocusNode _nameFocusNode = FocusNode();
   final GlobalKey<V3CustomTextFormFieldState> nameKey = GlobalKey();
   final GlobalKey<V3PresentIdleButtonState> buttonKey = GlobalKey();
-  final bool isMobile = Platform.isAndroid || Platform.isIOS;
 
   @override
   Widget build(BuildContext context) {
-    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    PresentStateProvider presentStateProvider =
-        Provider.of<PresentStateProvider>(context, listen: false);
-
-    Future<void> clickPresent() async {
-      if (presentStateProvider.currentState == ViewState.moderatorName) {
-        if (_nameController.text.isEmpty) {
-          _showOverlayMessage(context, nameKey);
-        } else if (channelProvider.displayCode != null) {
-          if (channelProvider.isConnectAvailable()) {
-            channelProvider.setSenderName(_nameController.text);
-          } else {
-            Toast.makeFeatureReconnectToast(
-                channelProvider.reconnectState,
-                channelProvider.reconnectState ==
-                        ChannelReconnectState.reconnecting
-                    ? S.of(context).main_feature_reconnecting_toast
-                    : S.of(context).main_feature_reconnect_fail_toast);
-          }
-        }
-      }
-    }
-
-    return Stack(
-      alignment: Alignment.center,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment:
+          kIsWeb ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
-        if (isMobile)
-          Positioned(
-            left: 8,
-            top: 24,
-            child: BackButton(
-                channelProvider: channelProvider,
-                presentStateProvider: presentStateProvider),
+        if (kIsWeb) ...[
+          AutoSizeText(
+            S.of(context).v3_main_moderator_title,
+            style: TextStyle(
+              fontSize: 32,
+              color: context.tokens.color.vsdswColorOnSurface,
+              fontWeight: FontWeight.w700,
+              // height: 0.04,
+              letterSpacing: -0.32,
+            ),
           ),
-        Align(
-          alignment: Alignment.center,
-          child: Container(
-              width: 359,
-              height: 495,
-              decoration: BoxDecoration(
-                color: context.tokens.color.vsdswColorSurface100,
-                border: Border.all(color: Colors.white),
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: context.tokens.shadow.vsdswShadowNeutralLg,
+          const Padding(padding: EdgeInsets.only(bottom: 8)),
+          AutoSizeText(
+            S.of(context).v3_main_moderator_subtitle,
+            style: TextStyle(
+              fontSize: 18,
+              color: context.tokens.color.vsdswColorOnSurfaceVariant,
+              fontWeight: FontWeight.w400,
+              // height: 0.10,
+              letterSpacing: -0.18,
+            ),
+          ),
+          const Padding(padding: EdgeInsets.only(top: 40)),
+        ],
+        if (!kIsWeb) ...[
+          SizedBox(
+              width: 138,
+              height: 120,
+              child: SvgPicture.asset('assets/images/v3_ic_select_share.svg')),
+          const Padding(padding: EdgeInsets.only(bottom: 24)),
+          AutoSizeText(
+            S.of(context).v3_main_moderator_app_title,
+            style: TextStyle(
+              color: context.tokens.color.vsdswColorOnSurface,
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const Padding(padding: EdgeInsets.only(bottom: 8)),
+          AutoSizeText(
+            S.of(context).v3_main_moderator_app_subtitle,
+            style: TextStyle(
+              color: context.tokens.color.vsdswColorOnSurface,
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              letterSpacing: -0.16,
+            ),
+          ),
+          const Padding(padding: EdgeInsets.only(bottom: 40)),
+        ],
+        SizedBox(
+          width: kIsWeb ? 400 : 300,
+          height: 84,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 56,
+                child: V3CustomTextFormField(
+                  key: nameKey,
+                  controller: _nameController,
+                  focusNode: _nameFocusNode,
+                  hintText: S.of(context).v3_main_moderator_input_hint,
+                  maxTextLength: 20,
+                  inputFormatter: const [],
+                  onFieldChanged: (text) {
+                    if (text.isNotEmpty) {
+                      buttonKey.currentState!.setEnable(true);
+                    } else {
+                      buttonKey.currentState!.setEnable(false);
+                    }
+                    setState(() {});
+                  },
+                  onFieldSubmitted: (String value) async {
+                    if (buttonKey.currentState!.isButtonEnabled) {
+                      await _clickPresent();
+                    }
+                  },
+                ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              const Padding(padding: EdgeInsets.only(bottom: 10)),
+              Row(
                 children: [
                   SizedBox(
-                      width: 138,
-                      height: 120,
+                      width: 16,
+                      height: 16,
                       child: SvgPicture.asset(
-                          'assets/images/v3_ic_select_share.svg')),
-                  const Padding(padding: EdgeInsets.only(bottom: 24)),
-                  Text(
-                    'Share',
-                    style: TextStyle(
-                      color: context.tokens.color.vsdswColorOnSurface,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const Padding(padding: EdgeInsets.only(bottom: 8)),
-                  Text(
-                    'Enter your name before share your screen',
-                    style: TextStyle(
-                      color: context.tokens.color.vsdswColorOnSurface,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: -0.16,
-                    ),
-                  ),
-                  const Padding(padding: EdgeInsets.only(bottom: 40)),
-                  _inputName(context, clickPresent),
+                          'assets/images/v3_ic_error_black.svg')),
                   Padding(
                       padding: EdgeInsets.only(
-                          bottom:
-                              context.tokens.spacing.vsdswSpacingSm.bottom)),
-                  V3PresentIdleButton(
-                      key: buttonKey,
-                      fixedSize: const Size(300, 48),
-                      buttonText: 'Share',
-                      onPressed: () async {
-                        await clickPresent();
-                      })
+                          left: context.tokens.spacing.vsdswSpacing2xs.left)),
+                  AutoSizeText(
+                    S.of(context).v3_main_moderator_input_limit,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdswColorOnSurface,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
                 ],
-              )),
-        ),
-        if (!isMobile)
-          Transform.translate(
-            offset: const Offset(-220, 0),
-            // Move Button B 16 pixels to the right from Container A
-            child: BackButton(
-                channelProvider: channelProvider,
-                presentStateProvider: presentStateProvider),
+              ),
+            ],
           ),
+        ),
+        Padding(
+            padding: EdgeInsets.only(
+                bottom: kIsWeb
+                    ? context.tokens.spacing.vsdswSpacing5xl.bottom
+                    : context.tokens.spacing.vsdswSpacingSm.bottom)),
+        V3PresentIdleButton(
+          key: buttonKey,
+          fixedSize: const Size(kIsWeb ? 240 : 300, 48),
+          buttonText: S.of(context).v3_main_moderator_action,
+          onPressed: () async {
+            await _clickPresent();
+          },
+        )
       ],
     );
   }
 
-  SizedBox _inputName(
-      BuildContext context, Future<void> Function() clickPresent) {
-    return SizedBox(
-      width: 300,
-      height: 84,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 56,
-            child: V3CustomTextFormField(
-              key: nameKey,
-              controller: _nameController,
-              focusNode: _nameFocusNode,
-              hintText: 'Type your name',
-              maxTextLength: 20,
-              inputFormatter: const [],
-              onFieldChanged: (text) {
-                if (text.isNotEmpty) {
-                  buttonKey.currentState!.setEnable(true);
-                } else {
-                  buttonKey.currentState!.setEnable(false);
-                }
-                setState(() {});
-              },
-              onFieldSubmitted: (String value) async {
-                if (buttonKey.currentState!.isButtonEnabled) {
-                  await clickPresent();
-                }
-              },
-            ),
-          ),
-          const Padding(padding: EdgeInsets.only(bottom: 10)),
-          Row(
-            children: [
-              SizedBox(
-                  width: 16,
-                  height: 16,
-                  child:
-                      SvgPicture.asset('assets/images/v3_ic_error_black.svg')),
-              Padding(
-                  padding: EdgeInsets.only(
-                      left: context.tokens.spacing.vsdswSpacing2xs.left)),
-              Text(
-                'Please limit the name to 20 characters.',
-                style: TextStyle(
-                  color: context.tokens.color.vsdswColorOnSurface,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+  Future<void> _clickPresent() async {
+    ChannelProvider channelProvider =
+        Provider.of<ChannelProvider>(context, listen: false);
+    PresentStateProvider presentStateProvider =
+        Provider.of<PresentStateProvider>(context, listen: false);
+    if (presentStateProvider.currentState == ViewState.moderatorName) {
+      if (_nameController.text.isEmpty) {
+        _showOverlayMessage(context, nameKey);
+      } else if (channelProvider.displayCode != null) {
+        if (channelProvider.isConnectAvailable()) {
+          channelProvider.setSenderName(_nameController.text);
+        } else {
+          Toast.makeFeatureReconnectToast(
+              channelProvider.reconnectState,
+              channelProvider.reconnectState ==
+                      ChannelReconnectState.reconnecting
+                  ? S.of(context).main_feature_reconnecting_toast
+                  : S.of(context).main_feature_reconnect_fail_toast);
+        }
+      }
+    }
   }
 
   void _showOverlayMessage(BuildContext context, GlobalKey widgetKey) {
@@ -212,7 +257,7 @@ class _V3ModeratorIdleNameState extends State<V3ModeratorIdleName> {
                     Icons.info,
                     color: Colors.amber,
                   ),
-                  Text(
+                  AutoSizeText(
                     S.of(context).moderator_fill_out,
                     style: const TextStyle(color: Colors.black),
                   ),
@@ -233,14 +278,7 @@ class _V3ModeratorIdleNameState extends State<V3ModeratorIdleName> {
 }
 
 class BackButton extends StatelessWidget {
-  const BackButton({
-    super.key,
-    required this.channelProvider,
-    required this.presentStateProvider,
-  });
-
-  final ChannelProvider channelProvider;
-  final PresentStateProvider presentStateProvider;
+  const BackButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -261,6 +299,10 @@ class BackButton extends StatelessWidget {
       child: IconButton(
         icon: SvgPicture.asset('assets/images/v3_ic_arrow_back.svg'),
         onPressed: () {
+          ChannelProvider channelProvider =
+              Provider.of<ChannelProvider>(context, listen: false);
+          PresentStateProvider presentStateProvider =
+              Provider.of<PresentStateProvider>(context, listen: false);
           channelProvider.resetMessage();
           presentStateProvider.presentMainPage();
         },
