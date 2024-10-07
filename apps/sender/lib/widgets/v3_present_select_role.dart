@@ -1,0 +1,157 @@
+import 'dart:io';
+
+import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/channel_util.dart';
+import 'package:display_cast_flutter/widgets/toast.dart';
+import 'package:display_channel/display_channel.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+
+class V3PresentSelectRole extends StatelessWidget {
+  const V3PresentSelectRole({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    PresentStateProvider presentStateProvider =
+        Provider.of<PresentStateProvider>(context, listen: false);
+    ChannelProvider channelProvider =
+        Provider.of<ChannelProvider>(context, listen: false);
+
+    return Stack(
+      children: [
+        Platform.isAndroid || Platform.isIOS
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: _buildButtons(context, presentStateProvider,
+                    channelProvider, const Size(343, 194), const Size(108, 94)),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: _buildButtons(
+                    context,
+                    presentStateProvider,
+                    channelProvider,
+                    const Size(360, 320),
+                    const Size(138, 120))),
+      ],
+    );
+  }
+
+  List<Widget> _buildButtons(
+      BuildContext context,
+      PresentStateProvider presentStateProvider,
+      ChannelProvider channelProvider,
+      Size buttonSize,
+      Size iconSize) {
+    return [
+      RoleButton(
+        buttonSize: buttonSize,
+        iconSize: iconSize,
+        name: 'Share',
+        iconPath: 'assets/images/v3_ic_select_share.svg',
+        onTap: () {
+          AppAnalytics.instance.trackEvent('select_cast');
+
+          channelProvider.currentRole = JoinIntentType.present;
+          if (channelProvider.moderatorStatus) {
+            presentStateProvider.presentModeratorNamePage();
+          } else {
+            if (channelProvider.isConnectAvailable()) {
+              channelProvider.beginBasicMode();
+            } else {
+              Toast.makeFeatureReconnectToast(
+                  channelProvider.reconnectState,
+                  channelProvider.reconnectState ==
+                          ChannelReconnectState.reconnecting
+                      ? S.of(context).main_feature_reconnecting_toast
+                      : S.of(context).main_feature_reconnect_fail_toast);
+            }
+          }
+        },
+      ),
+      const Padding(padding: EdgeInsets.all(8)),
+      RoleButton(
+        buttonSize: buttonSize,
+        iconSize: iconSize,
+        name: 'Receive',
+        iconPath: 'assets/images/v3_ic_select_receive.svg',
+        onTap: () {
+          AppAnalytics.instance.trackEvent('select_remote_screen');
+
+          channelProvider.currentRole = JoinIntentType.remoteScreen;
+          if (channelProvider.isConnectAvailable()) {
+            presentStateProvider.presentModeratorNamePage();
+          } else {
+            Toast.makeFeatureReconnectToast(
+                channelProvider.reconnectState,
+                channelProvider.reconnectState ==
+                        ChannelReconnectState.reconnecting
+                    ? S.of(context).main_feature_reconnecting_toast
+                    : S.of(context).main_feature_reconnect_fail_toast);
+          }
+        },
+      ),
+    ];
+  }
+}
+
+class RoleButton extends StatelessWidget {
+  const RoleButton({
+    super.key,
+    required this.buttonSize,
+    required this.iconSize,
+    required this.name,
+    required this.iconPath,
+    required this.onTap,
+  });
+
+  final Size buttonSize;
+  final Size iconSize;
+
+  final String name;
+  final String iconPath;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: buttonSize.width,
+        height: buttonSize.height,
+        decoration: BoxDecoration(
+          color: context.tokens.color.vsdswColorSurface100,
+          border: Border.all(color: Colors.white),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: context.tokens.shadow.vsdswShadowNeutralLg,
+          // color: Colors.transparent,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+                width: iconSize.width,
+                height: iconSize.height,
+                child: SvgPicture.asset(iconPath)),
+            const Padding(padding: EdgeInsets.only(top: 16)),
+            Text(
+              name,
+              style: TextStyle(
+                color: context.tokens.color.vsdswColorOnSurface,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                // fontSize: AppConstants.fontSizeTitle,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
