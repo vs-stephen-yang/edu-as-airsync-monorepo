@@ -7,6 +7,7 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/widgets/v3_present_device_list_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_text_field.dart';
 import 'package:flutter/foundation.dart';
@@ -176,77 +177,11 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
   }
 
   Widget buildDeviceListButton(PresentStateProvider presentStateProvider) {
-    return SizedBox(
-      height: 32,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'Quick connect by',
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              color: Color(0xFF2A2A2A),
-              fontSize: 16,
-              fontFamily: 'Inter',
-            ),
-          ),
-          const SizedBox(width: 8),
-          InkWell(
-            child: Container(
-              height: 32,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              clipBehavior: Clip.antiAlias,
-              decoration: ShapeDecoration(
-                color: context.tokens.color.vsdswColorSurface600,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(9999),
-                ),
-                shadows: [
-                  BoxShadow(
-                    color: context.tokens.color.vsdswColorOpacityNeutralSm,
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                    spreadRadius: 0,
-                  )
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                      width: 16,
-                      height: 16,
-                      colorFilter: ColorFilter.mode(
-                          context.tokens.color.vsdswColorOnPrimary,
-                          BlendMode.srcIn),
-                      'assets/images/ic_device_list_screen.svg'),
-                  const SizedBox(width: 4),
-                  Text(
-                    'Device List',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: context.tokens.color.vsdswColorOnPrimary,
-                      fontSize: 14,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w500,
-                      height: 0.09,
-                      letterSpacing: 0.28,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            onTap: () {
-              AppAnalytics.instance.trackEvent('click_device_list');
-              presentStateProvider.presentDeviceListPage();
-            },
-          ),
-        ],
-      ),
+    return V3PresentDeviceListButton(
+      onTap: () {
+        AppAnalytics.instance.trackEvent('click_device_list');
+        presentStateProvider.presentDeviceListPage();
+      },
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
@@ -40,6 +42,8 @@ class _V3DeviceListState extends State<V3DeviceList> {
         Provider.of<PresentStateProvider>(context, listen: false);
   }
 
+  bool isMobile() => (Platform.isAndroid || Platform.isIOS);
+
   @override
   Widget build(BuildContext context) {
     _channelProvider = Provider.of<ChannelProvider>(context);
@@ -53,9 +57,9 @@ class _V3DeviceListState extends State<V3DeviceList> {
     });
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(
-        maxWidth: 541,
-        maxHeight: 614,
+      constraints: BoxConstraints(
+        maxWidth: isMobile() ? 641 : 504,
+        maxHeight: isMobile() ? 541 : 538,
       ),
       child: Container(
         padding: const EdgeInsets.only(top: 22, left: 22, right: 22),
@@ -126,7 +130,9 @@ class _V3DeviceListState extends State<V3DeviceList> {
                     itemBuilder: (context, index) {
                       final airSyncBonsoirService = value.devices[index];
                       return InkWell(
-                        child: buildMobileItem(airSyncBonsoirService, context),
+                        child: isMobile()
+                            ? buildMobileItem(airSyncBonsoirService, context)
+                            : buildDeskTopItem(airSyncBonsoirService, context),
                         onTap: () {
                           setState(() {
                             _connectService = airSyncBonsoirService;
@@ -173,6 +179,11 @@ class _V3DeviceListState extends State<V3DeviceList> {
         alignment: Alignment.center,
         height: 48,
         clipBehavior: Clip.antiAlias,
+        constraints: isMobile()
+            ? null
+            : const BoxConstraints(
+                maxWidth: 240,
+              ),
         decoration: ShapeDecoration(
           color: enable
               ? buildContext.tokens.color.vsdswColorPrimary
@@ -207,15 +218,17 @@ class _V3DeviceListState extends State<V3DeviceList> {
 
   Widget buildDeskTopItem(
       AirSyncBonsoirService airSyncBonsoirService, BuildContext context) {
+    final onSelected = _connectService == airSyncBonsoirService;
     final style = TextStyle(
-      color: context.tokens.color.vsdswColorOnSurface,
+      color: onSelected
+          ? context.tokens.color.vsdswColorOnSurfaceInverse
+          : context.tokens.color.vsdswColorOnSurface,
       fontSize: 16,
       fontFamily: 'Inter',
-      fontWeight: FontWeight.w500,
-      height: 0.11,
-      letterSpacing: -0.16,
+      fontWeight: FontWeight.bold,
     );
     return Container(
+      alignment: Alignment.center,
       height: 44,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: ShapeDecoration(
@@ -223,7 +236,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
             ? context.tokens.color.vsdswColorSecondary
             : null,
         shape: RoundedRectangleBorder(
-          borderRadius: context.tokens.radii.vsdswRadiusXl,
+          borderRadius: context.tokens.radii.vsdswRadiusLg,
         ),
       ),
       child: Row(
@@ -239,6 +252,11 @@ class _V3DeviceListState extends State<V3DeviceList> {
               SvgPicture.asset(
                   width: 24,
                   height: 24,
+                  colorFilter: onSelected
+                      ? ColorFilter.mode(
+                          context.tokens.color.vsdswColorOnSurfaceInverse,
+                          BlendMode.srcIn)
+                      : null,
                   'assets/images/ic_device_list_screen.svg'),
               const Gap(8),
               Text(
@@ -247,22 +265,23 @@ class _V3DeviceListState extends State<V3DeviceList> {
               ),
             ],
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                  width: 24,
-                  height: 24,
-                  'assets/images/ic_device_list_qrcode.svg'),
-              const Gap(8),
-              Text(
-                airSyncBonsoirService.displayCode,
-                textAlign: TextAlign.right,
-                style: style,
-              ),
-            ],
+          const Spacer(),
+          SizedBox(
+            width: 110,
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                    width: 24,
+                    height: 24,
+                    'assets/images/ic_device_list_qrcode.svg'),
+                const Gap(8),
+                Text(
+                  airSyncBonsoirService.displayCode,
+                  textAlign: TextAlign.left,
+                  style: style,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -424,9 +443,9 @@ class DialogView extends Dialog {
       child: Container(
         padding: context.tokens.spacing.vsdswSpacingLg,
         margin: const EdgeInsets.symmetric(horizontal: 8),
-        constraints: const BoxConstraints(
-          maxWidth: 359,
-          maxHeight: 284,
+        constraints: BoxConstraints(
+          maxWidth: isMobile() ? 359 : 504,
+          maxHeight: isMobile() ? 284 : 296,
         ),
         decoration: ShapeDecoration(
           color: context.tokens.color.vsdswColorSurface100,
@@ -449,14 +468,15 @@ class DialogView extends Dialog {
               children: [
                 Row(
                   children: [
+                    const Gap(20),
                     const Spacer(),
                     AutoSizeText(
                       title,
-                      maxFontSize: 20,
-                      style: const TextStyle(
-                        color: Color(0xFF2A2A2A),
+                      minFontSize: 20,
+                      style: TextStyle(
+                        color: context.tokens.color.vsdswColorOnSurface,
                         fontFamily: 'Inter',
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     const Spacer(),
@@ -476,9 +496,13 @@ class DialogView extends Dialog {
                   ],
                 ),
                 const Gap(24),
-                OTPInputWidget(
-                  errorMessage: errorMessage,
-                  onTap: onConnect,
+                Container(
+                  constraints:
+                      isMobile() ? null : const BoxConstraints(maxWidth: 300),
+                  child: OTPInputWidget(
+                    errorMessage: errorMessage,
+                    onTap: onConnect,
+                  ),
                 ),
               ],
             ),
@@ -487,6 +511,8 @@ class DialogView extends Dialog {
       ),
     );
   }
+
+  bool isMobile() => (Platform.isAndroid || Platform.isIOS);
 }
 
 class OTPInputWidget extends StatefulWidget {
@@ -496,10 +522,10 @@ class OTPInputWidget extends StatefulWidget {
   final String? errorMessage;
 
   @override
-  _OTPInputWidgetState createState() => _OTPInputWidgetState();
+  OTPInputWidgetState createState() => OTPInputWidgetState();
 }
 
-class _OTPInputWidgetState extends State<OTPInputWidget> {
+class OTPInputWidgetState extends State<OTPInputWidget> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode focusNode = FocusNode();
   bool buttonEnable = false;
@@ -533,7 +559,10 @@ class _OTPInputWidgetState extends State<OTPInputWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              margin: context.tokens.spacing.vsdswSpacingSm,
+              margin: isMobile()
+                  ? context.tokens.spacing.vsdswSpacingSm
+                  : const EdgeInsets.only(
+                      top: 32, bottom: 16, left: 32, right: 32),
               height: 56,
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.only(left: 16),
@@ -640,8 +669,9 @@ class _OTPInputWidgetState extends State<OTPInputWidget> {
         child: InkWell(
           onTap: onTap,
           child: Container(
-            margin:
-                const EdgeInsets.only(top: 16, bottom: 32, left: 6, right: 6),
+            margin: isMobile()
+                ? const EdgeInsets.only(top: 16, bottom: 32, left: 6, right: 6)
+                : const EdgeInsets.only(top: 22, left: 32, right: 32),
             alignment: Alignment.center,
             height: 48,
             clipBehavior: Clip.antiAlias,
@@ -680,4 +710,6 @@ class _OTPInputWidgetState extends State<OTPInputWidget> {
       ),
     );
   }
+
+  bool isMobile() => (Platform.isAndroid || Platform.isIOS);
 }

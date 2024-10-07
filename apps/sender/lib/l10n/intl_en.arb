@@ -112,5 +112,7 @@
     "v3_scan_qr_reminder": "Quick connect by scan the QR code",
     "v3_device_list_dialog_title": "Enter one-time password",
     "v3_device_list_dialog_connect": "Connect",
-    "v3_device_list_dialog_invalid_otp": "Incorrect one-time password"
+    "v3_device_list_dialog_invalid_otp": "Incorrect one-time password",
+    "v3_device_list_button_text": "Quick connect by",
+    "v3_device_list_button_device_list": "Device List"
 }

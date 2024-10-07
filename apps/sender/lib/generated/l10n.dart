@@ -1190,6 +1190,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Quick connect by`
+  String get v3_device_list_button_text {
+    return Intl.message(
+      'Quick connect by',
+      name: 'v3_device_list_button_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device List`
+  String get v3_device_list_button_device_list {
+    return Intl.message(
+      'Device List',
+      name: 'v3_device_list_button_device_list',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
