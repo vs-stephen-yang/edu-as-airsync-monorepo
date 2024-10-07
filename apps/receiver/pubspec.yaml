@@ -101,7 +101,7 @@ dependencies:
   flutter_input_injection:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection
-      ref: release-0.6.0
+      ref: release-0.7.0
   flutter_ion_sfu:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-ion-sfu
