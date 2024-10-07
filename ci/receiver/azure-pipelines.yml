@@ -71,7 +71,7 @@ jobs:
             Write-Host "##vso[task.setvariable variable=artifacts.password;issecret=true]$password"
 
       - task: Cache@2
-        enabled: "true"
+        enabled: "false"
         displayName: Configure Gradle caching
         inputs:
           key: 'gradle | "$(Agent.OS)" | **/build.gradle'
