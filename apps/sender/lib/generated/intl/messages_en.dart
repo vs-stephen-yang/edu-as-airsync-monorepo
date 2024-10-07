@@ -169,6 +169,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Has reached maximum shared screen amount."),
         "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
             "Has reached maximum split screen amount."),
+        "v3_device_list_button_device_list":
+            MessageLookupByLibrary.simpleMessage("Device List"),
+        "v3_device_list_button_text":
+            MessageLookupByLibrary.simpleMessage("Quick connect by"),
         "v3_device_list_dialog_connect":
             MessageLookupByLibrary.simpleMessage("Connect"),
         "v3_device_list_dialog_invalid_otp":
