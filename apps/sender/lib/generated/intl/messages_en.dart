@@ -169,6 +169,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "Has reached maximum shared screen amount."),
         "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
             "Has reached maximum split screen amount."),
+        "v3_device_list_dialog_connect":
+            MessageLookupByLibrary.simpleMessage("Connect"),
+        "v3_device_list_dialog_invalid_otp":
+            MessageLookupByLibrary.simpleMessage("Incorrect one-time password"),
+        "v3_device_list_dialog_title":
+            MessageLookupByLibrary.simpleMessage("Enter one-time password"),
         "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Agree"),
         "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Disagree"),
         "v3_eula_title":

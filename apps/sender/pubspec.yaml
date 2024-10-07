@@ -74,6 +74,7 @@ dependencies:
   auto_size_text: ^3.0.0
   flutter_svg: ^2.0.10+1
   qr_code_scanner: ^1.0.1
+  gap: ^3.0.1
 
   # ViewSonic plug-in
   flutter_webrtc:
