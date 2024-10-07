@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -1155,6 +1156,36 @@ class S {
     return Intl.message(
       'Quick connect by scan the QR code',
       name: 'v3_scan_qr_reminder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter one-time password`
+  String get v3_device_list_dialog_title {
+    return Intl.message(
+      'Enter one-time password',
+      name: 'v3_device_list_dialog_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect`
+  String get v3_device_list_dialog_connect {
+    return Intl.message(
+      'Connect',
+      name: 'v3_device_list_dialog_connect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Incorrect one-time password`
+  String get v3_device_list_dialog_invalid_otp {
+    return Intl.message(
+      'Incorrect one-time password',
+      name: 'v3_device_list_dialog_invalid_otp',
       desc: '',
       args: [],
     );

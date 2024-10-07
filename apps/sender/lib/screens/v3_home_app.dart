@@ -8,7 +8,6 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
-import 'package:display_cast_flutter/widgets/device_list.dart';
 import 'package:display_cast_flutter/widgets/moderator_idle.dart';
 import 'package:display_cast_flutter/widgets/moderator_present_start.dart';
 import 'package:display_cast_flutter/widgets/moderator_share.dart';
@@ -18,6 +17,7 @@ import 'package:display_cast_flutter/widgets/present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/remote_screen_widget.dart';
 import 'package:display_cast_flutter/widgets/v3_background.dart';
+import 'package:display_cast_flutter/widgets/v3_device_list.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
 import 'package:display_cast_flutter/widgets/v3_present_select_role.dart';
 import 'package:display_cast_flutter/widgets/v3_qrcode_scan.dart';
@@ -96,7 +96,7 @@ class V3PresentStateMachine extends StatelessWidget {
         case ViewState.remoteScreen:
           return const RemoteScreenWidget();
         case ViewState.deviceList:
-          return const DeviceList();
+          return const V3DeviceList();
         case ViewState.qrScanner:
           return const V3QRcodeScan();
         default:
