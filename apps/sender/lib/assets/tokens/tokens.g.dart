@@ -12,6 +12,7 @@ part 'tokens_extra.g.dart';
 abstract class ITokens {
   ColorTokens get color;
   SpacingTokens get spacing;
+  TextStyleTokens get textStyle;
   RadiiTokens get radii;
   ShadowTokens get shadow;
   MaterialColorTokens get materialColor;
@@ -87,6 +88,19 @@ abstract class SpacingTokens {
   EdgeInsets get vsdswSpacing5xl;
 }
 
+abstract class TextStyleTokens {
+  TextStyle get vsdswDisplaySm;
+  TextStyle get vsdswHeadingLg;
+  TextStyle get vsdswHeadingMd;
+  TextStyle get vsdswTitleMd;
+  TextStyle get vsdswBodyLg;
+  TextStyle get vsdswBodyMd;
+  TextStyle get vsdswBodySm;
+  TextStyle get vsdswLabelMd;
+  TextStyle get vsdswLabelSm;
+  TextStyle get vsdswLabelXs;
+}
+
 abstract class RadiiTokens {
   BorderRadius get vsdswRadiusSm;
   BorderRadius get vsdswRadiusmd;
@@ -122,6 +136,8 @@ class DefaultTokens extends ITokens {
   @override
   SpacingTokens get spacing => DefaultSpacingTokens();
   @override
+  TextStyleTokens get textStyle => DefaultTextStyleTokens();
+  @override
   RadiiTokens get radii => DefaultRadiiTokens();
   @override
   ShadowTokens get shadow => DefaultShadowTokens();
@@ -143,9 +159,9 @@ class DefaultColorTokens extends ColorTokens {
   @override
   Color get vsdswColorOnSecondary => const Color(0xFFFFFFFF);
   @override
-  Color get vsdswColorTertiary => const Color(0xFFA7ADC0);
+  Color get vsdswColorTertiary => const Color(0xFF838CA6);
   @override
-  Color get vsdswColorTertiaryVariant => const Color(0xFF3C5AAA);
+  Color get vsdswColorTertiaryVariant => const Color(0xFF636D8A);
   @override
   Color get vsdswColorOnTertiary => const Color(0xFFFFFFFF);
   @override
@@ -207,11 +223,11 @@ class DefaultColorTokens extends ColorTokens {
   @override
   Color get vsdswColorDisabled => const Color(0xFFEBEBEB);
   @override
-  Color get vsdswColorOnDisabled => const Color(0xFFCFCFCF);
+  Color get vsdswColorOnDisabled => const Color(0xFFB2B2B2);
   @override
   Color get vsdswColorLink => const Color(0xFF3C5AAA);
   @override
-  Color get vsdswColorOutline => const Color(0xFFE9EAF0);
+  Color get vsdswColorOutline => const Color(0xFFD3D6E1);
   @override
   Color get vsdswColorOutlineVariant => const Color(0xFF3C455D);
   @override
@@ -231,9 +247,9 @@ class DefaultColorTokens extends ColorTokens {
   @override
   Color get vsdswColorOpacitySecondaryXl => const Color(0xA35D80ED);
   @override
-  Color get vsdswColorOpacityNeutralSm => const Color(0x14151C32);
+  Color get vsdswColorOpacityNeutralSm => const Color(0x29151C32);
   @override
-  Color get vsdswColorOpacityNeutralMd => const Color(0x29151C32);
+  Color get vsdswColorOpacityNeutralMd => const Color(0x52151C32);
   @override
   Color get vsdswColorOpacityNeutralLg => const Color(0xA3151C32);
   @override
@@ -262,6 +278,90 @@ class DefaultSpacingTokens extends SpacingTokens {
   EdgeInsets get vsdswSpacing4xl => const EdgeInsets.all(56.0);
   @override
   EdgeInsets get vsdswSpacing5xl => const EdgeInsets.all(64.0);
+}
+
+
+class DefaultTextStyleTokens extends TextStyleTokens {
+  @override
+  TextStyle get vsdswDisplaySm => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 48.0,
+  fontWeight: FontWeight.w700,
+  height: 1.2,
+  letterSpacing: -0.16,
+);
+  @override
+  TextStyle get vsdswHeadingLg => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 32.0,
+  fontWeight: FontWeight.w700,
+  height: 1.2,
+  letterSpacing: -0.16,
+);
+  @override
+  TextStyle get vsdswHeadingMd => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 24.0,
+  fontWeight: FontWeight.w700,
+  height: 1.2,
+  letterSpacing: -0.16,
+);
+  @override
+  TextStyle get vsdswTitleMd => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 20.0,
+  fontWeight: FontWeight.w700,
+  height: 1.4,
+  letterSpacing: -0.16,
+);
+  @override
+  TextStyle get vsdswBodyLg => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 18.0,
+  fontWeight: FontWeight.w400,
+  height: 1.4,
+  letterSpacing: -0.16,
+);
+  @override
+  TextStyle get vsdswBodyMd => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 16.0,
+  fontWeight: FontWeight.w400,
+  height: 1.7,
+  letterSpacing: 0.0,
+);
+  @override
+  TextStyle get vsdswBodySm => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 14.0,
+  fontWeight: FontWeight.w400,
+  height: 1.7,
+  letterSpacing: 0.0,
+);
+  @override
+  TextStyle get vsdswLabelMd => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 16.0,
+  fontWeight: FontWeight.w400,
+  height: 1.7,
+  letterSpacing: 0.0,
+);
+  @override
+  TextStyle get vsdswLabelSm => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 14.0,
+  fontWeight: FontWeight.w400,
+  height: 1.7,
+  letterSpacing: 0.0,
+);
+  @override
+  TextStyle get vsdswLabelXs => const TextStyle(
+  fontFamily: 'Inter',
+  fontSize: 12.0,
+  fontWeight: FontWeight.w400,
+  height: 1.2,
+  letterSpacing: 0.0,
+);
 }
 
 
@@ -308,7 +408,7 @@ class DefaultShadowTokens extends ShadowTokens {
     offset: Offset(0.0, 8.0),
     blurRadius: 16.0,
     spreadRadius: 0.0,
-    color: Color(0x29151C32),
+    color: Color(0x52151C32),
   ),
 ];
   @override
