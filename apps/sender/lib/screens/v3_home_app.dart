@@ -11,7 +11,6 @@ import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/widgets/moderator_present_start.dart';
 import 'package:display_cast_flutter/widgets/moderator_share.dart';
 import 'package:display_cast_flutter/widgets/present_present_start.dart';
-import 'package:display_cast_flutter/widgets/present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/remote_screen_widget.dart';
 import 'package:display_cast_flutter/widgets/v3_background.dart';
@@ -20,6 +19,7 @@ import 'package:display_cast_flutter/widgets/v3_moderator_idle_name.dart';
 import 'package:display_cast_flutter/widgets/v3_moderator_wait.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
 import 'package:display_cast_flutter/widgets/v3_present_select_role.dart';
+import 'package:display_cast_flutter/widgets/v3_present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/v3_qrcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -86,7 +86,7 @@ class V3PresentStateMachine extends StatelessWidget {
         case ViewState.waitReady:
           return const PresentWaitReady(); //deprecated
         case ViewState.selectScreen:
-          return const PresentSelectScreen();
+          return const V3PresentSelectScreen();
         case ViewState.presentStart:
           return PresentPresentStart();
         case ViewState.moderatorStart:
