@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/model/remote_screen_channel_signal.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/remote_screen_util.dart';
+import 'package:display_cast_flutter/utilities/wakelock_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
@@ -90,6 +91,7 @@ class RemoteScreenClient {
 
       await _remoteScreenRenderer.initialize();
       _remoteScreenRenderer.srcObject = remoteStream.stream;
+      await WakelockManager().manageWakelock(AppScene.rtcRemoteScreenDisplaying);
     };
     _client!.onConnectionState = (RTCPeerConnectionState state) {
       log.info('Remote screen: Connection state ${state.name}');
@@ -152,6 +154,8 @@ class RemoteScreenClient {
     log.info('Remote screen: Closing client');
     _client?.close();
     _client = null;
+
+    await WakelockManager().manageWakelock(AppScene.rtcRemoteScreenHangUp);
   }
 
   onVideoSizeChanged() {

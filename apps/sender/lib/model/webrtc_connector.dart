@@ -11,6 +11,7 @@ import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
+import 'package:display_cast_flutter/utilities/wakelock_manager.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
@@ -288,6 +289,8 @@ class WebRTCConnector {
       sendSignalMessage(message);
 
       startStatsTimer();
+      await WakelockManager().manageWakelock(AppScene.rtcPublishing);
+
       return true;
     } catch (e, stackTrace) {
       log.severe('setLocalDescription', e, stackTrace);
@@ -612,6 +615,7 @@ class WebRTCConnector {
 
   Future<void> hangUp() async {
     stopStatsTimer();
+    await WakelockManager().manageWakelock(AppScene.rtcHangUp);
 
     await _disposeStream();
     await _peerConnectionDisconnect();
