@@ -18,7 +18,7 @@ class WakelockManager {
 
   WakelockManager._internal();
 
-  Future<void> enableWakelock(String message) async {
+  Future<void> _enableWakelock(String message) async {
     if (Platform.isAndroid || Platform.isIOS) {
       return; // TODO: Implement wakelock for Android and iOS
     }
@@ -26,7 +26,7 @@ class WakelockManager {
     log.info('Wakelock enabled: $message');
   }
 
-  Future<void> disableWakelock(String message) async {
+  Future<void> _disableWakelock(String message) async {
     if (Platform.isAndroid || Platform.isIOS) {
       return; // TODO: Implement wakelock for Android and iOS
     }
@@ -38,11 +38,11 @@ class WakelockManager {
     switch (appScene) {
       case AppScene.rtcHangUp:
       case AppScene.rtcRemoteScreenHangUp:
-        await disableWakelock(appScene.toString());
+        await _disableWakelock(appScene.toString());
         break;
       case AppScene.rtcPublishing:
       case AppScene.rtcRemoteScreenDisplaying:
-        await enableWakelock(appScene.toString());
+        await _enableWakelock(appScene.toString());
         break;
     }
   }
