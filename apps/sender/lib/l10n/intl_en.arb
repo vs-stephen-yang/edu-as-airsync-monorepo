@@ -116,6 +116,8 @@
     "v3_main_moderator_action": "Share",
     "v3_main_moderator_input_hint": "Type your name",
     "v3_main_moderator_input_limit": "Please limit the name to 20 characters.",
+    "v3_main_moderator_wait": "Wait for moderator to invite you to share",
+    "v3_main_moderator_disconnect": "Disconnect",
     "v3_scan_qr_reminder": "Quick connect by scan the QR code",
     "v3_device_list_dialog_title": "Enter one-time password",
     "v3_device_list_dialog_connect": "Connect",
