@@ -16,6 +16,10 @@ abstract class FlutterVirtualDisplayPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  Future<bool?> isSupported() {
+    throw UnimplementedError('isSupported() has not been implemented.');
+  }
+
   Future<bool?> initialize({Map<String, dynamic>? options}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
