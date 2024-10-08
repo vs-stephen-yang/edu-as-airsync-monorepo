@@ -1151,6 +1151,36 @@ class S {
     );
   }
 
+  /// `Choose your presentation mode`
+  String get v3_main_select_role_title {
+    return Intl.message(
+      'Choose your presentation mode',
+      name: 'v3_main_select_role_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share`
+  String get v3_main_select_role_share {
+    return Intl.message(
+      'Share',
+      name: 'v3_main_select_role_share',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive`
+  String get v3_main_select_role_receive {
+    return Intl.message(
+      'Receive',
+      name: 'v3_main_select_role_receive',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Share your screen`
   String get v3_main_moderator_title {
     return Intl.message(
