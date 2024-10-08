@@ -6,19 +6,36 @@ import 'package:flutter_virtual_display/flutter_virtual_display.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  FlutterVirtualDisplay.instance.onVirtualDisplayError.stream.listen((msg) {
+    // get 'errorMessage' from msg
+    var dict = msg as Map<dynamic, dynamic>;
+    print('Error: ${dict['errorMessage']}');
+  });
+
+  bool? isSupported = await FlutterVirtualDisplay.instance.isSupported();
   await FlutterVirtualDisplay.instance.initialize();
-  runApp(const MyApp());
+
+  print('Virtual Display is supported: $isSupported');
+  runApp(MyApp(enableVirtualDisplayButton: isSupported!));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final bool enableVirtualDisplayButton;
+
+  const MyApp({super.key, this.enableVirtualDisplayButton = true});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState(enableVirtualDisplayButton);
 }
 
 class _MyAppState extends State<MyApp> {
+  bool _enableVirtualDisplayButton = false;
   bool _isVirtualDisplayStarted = false;
+
+  _MyAppState(bool enableVirtualDisplayButton) {
+    _enableVirtualDisplayButton = enableVirtualDisplayButton;
+  }
 
   @override
   void initState() {
@@ -56,11 +73,16 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              ElevatedButton(
-                  onPressed: _isVirtualDisplayStarted ?
+              if (_enableVirtualDisplayButton)
+                ElevatedButton(
+                    onPressed: _isVirtualDisplayStarted ?
                     _stopVirtualDisplay : _startVirtualDisplay,
-                  child: _isVirtualDisplayStarted ?
-                    const Text('Stop Virtual Display') : const Text('Start Virtual Display'))
+                    child: _isVirtualDisplayStarted ?
+                    const Text('Stop Virtual Display') : const Text(
+                        'Start Virtual Display'))
+              else
+                const Text('Virtual Display is not supported')
+
             ],
           )
         ),

@@ -8,6 +8,11 @@ class MockFlutterVirtualDisplayPlatform
     implements FlutterVirtualDisplayPlatform {
 
   @override
+  Future<bool?> isSupported() {
+    return Future.value(true);
+  }
+
+  @override
   Future<bool?> initialize({Map<String, dynamic>? options}) {
     return Future.value(true);
   }

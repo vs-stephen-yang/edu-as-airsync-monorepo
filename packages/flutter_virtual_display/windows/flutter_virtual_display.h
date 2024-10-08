@@ -22,6 +22,7 @@ class FlutterVirtualDisplay {
   FlutterVirtualDisplay(flutter::BinaryMessenger* messenger);
   virtual ~FlutterVirtualDisplay();
 
+  bool IsSupported();
   bool Initialize(const char* ip = DEFAULT_IP, int port = DEFAULT_PORT, bool from_registry = false);
   bool StartVirtualDisplay();
   void StopVirtualDisplay();
@@ -30,6 +31,7 @@ class FlutterVirtualDisplay {
   void NotifyVirtualDisplayInitialized(bool success, const char* error_message);
   void NotifyVirtualDisplayStarted(bool success, const char* error_message);
   void NotifyVirtualDisplayStopped(bool success, const char* error_message);
+  void NotifyVirtualDisplayError(const char* error_message);
 
  private:
   BinaryMessenger* messenger_;

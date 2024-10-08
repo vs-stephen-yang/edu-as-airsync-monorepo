@@ -59,6 +59,8 @@ void FlutterVirtualDisplayPlugin::HandleMethodCall(
       const bool from_registry = true; // read registry by default
       result->Success(_flutter_virtual_display->Initialize(DEFAULT_IP, DEFAULT_PORT, from_registry));
     }
+  } else if (method_name.compare("isSupported") == 0) {
+    result->Success(_flutter_virtual_display->IsSupported());
   } else if (method_name.compare("startVirtualDisplay") == 0) {
     result->Success(_flutter_virtual_display->StartVirtualDisplay());
   } else if (method_name.compare("stopVirtualDisplay") == 0) {

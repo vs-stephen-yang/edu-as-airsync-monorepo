@@ -26,6 +26,14 @@ class FlutterVirtualDisplay {
   final StreamController<Map<dynamic, dynamic>> _onVirtualDisplayStopped =
     StreamController.broadcast(sync: true);
 
+  StreamController<Map<dynamic, dynamic>> get onVirtualDisplayError => _onVirtualDisplayError;
+  final StreamController<Map<dynamic, dynamic>> _onVirtualDisplayError =
+    StreamController.broadcast(sync: true);
+
+  Future<bool?> isSupported() {
+    return FlutterVirtualDisplayPlatform.instance.isSupported();
+  }
+
   Future<bool?> initialize() {
     return FlutterVirtualDisplayPlatform.instance.initialize();
   }
@@ -52,6 +60,10 @@ class FlutterVirtualDisplay {
 
       case 'virtualDisplayStopped':
         _onVirtualDisplayStopped.add(map);
+        break;
+
+      case 'virtualDisplayError':
+        _onVirtualDisplayError.add(map);
         break;
 
       default:

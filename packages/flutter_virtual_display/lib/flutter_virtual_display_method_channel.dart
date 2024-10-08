@@ -10,6 +10,11 @@ class MethodChannelFlutterVirtualDisplay extends FlutterVirtualDisplayPlatform {
   final methodChannel = const MethodChannel('flutter_virtual_display');
 
   @override
+  Future<bool?> isSupported() async {
+    return await methodChannel.invokeMethod<bool>('isSupported');
+  }
+
+  @override
   Future<bool?> initialize({Map<String, dynamic>? options}) async {
     if (!_initialized) {
       _initialized =
