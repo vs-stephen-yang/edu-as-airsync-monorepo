@@ -237,6 +237,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Enter your name before share your screen"),
         "v3_main_moderator_app_title":
             MessageLookupByLibrary.simpleMessage("Share"),
+        "v3_main_moderator_disconnect":
+            MessageLookupByLibrary.simpleMessage("Disconnect"),
         "v3_main_moderator_input_hint":
             MessageLookupByLibrary.simpleMessage("Type your name"),
         "v3_main_moderator_input_limit": MessageLookupByLibrary.simpleMessage(
@@ -245,6 +247,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Enter your presentation title"),
         "v3_main_moderator_title":
             MessageLookupByLibrary.simpleMessage("Share your screen"),
+        "v3_main_moderator_wait": MessageLookupByLibrary.simpleMessage(
+            "Wait for moderator to invite you to share"),
         "v3_main_otp_error":
             MessageLookupByLibrary.simpleMessage("Only accept numbers."),
         "v3_main_password": MessageLookupByLibrary.simpleMessage("Password"),

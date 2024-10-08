@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -63,7 +64,7 @@ class V3ModeratorWait extends StatelessWidget {
                       ]),
                   child: Center(
                     child: Text(
-                      'Disconnect',
+                      S.of(context).v3_main_moderator_disconnect,
                       style: TextStyle(
                         color: context.tokens.color.vsdswColorSecondary, // 文字顏色
                         fontSize: 16.0,
@@ -79,7 +80,7 @@ class V3ModeratorWait extends StatelessWidget {
 
   Text _waitingText(BuildContext context) {
     return Text(
-      'Wait for moderator to invite you to share',
+      S.of(context).v3_main_moderator_wait,
       style: TextStyle(
         color: context.tokens.color.vsdswColorOnSurface,
         fontSize: 16,

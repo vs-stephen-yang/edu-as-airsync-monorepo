@@ -1221,6 +1221,26 @@ class S {
     );
   }
 
+  /// `Wait for moderator to invite you to share`
+  String get v3_main_moderator_wait {
+    return Intl.message(
+      'Wait for moderator to invite you to share',
+      name: 'v3_main_moderator_wait',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disconnect`
+  String get v3_main_moderator_disconnect {
+    return Intl.message(
+      'Disconnect',
+      name: 'v3_main_moderator_disconnect',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Quick connect by scan the QR code`
   String get v3_scan_qr_reminder {
     return Intl.message(
