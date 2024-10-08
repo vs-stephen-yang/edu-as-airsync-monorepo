@@ -261,6 +261,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Share your screen"),
         "v3_main_privacy":
             MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+        "v3_main_select_role_receive":
+            MessageLookupByLibrary.simpleMessage("Receive"),
+        "v3_main_select_role_share":
+            MessageLookupByLibrary.simpleMessage("Share"),
+        "v3_main_select_role_title": MessageLookupByLibrary.simpleMessage(
+            "Choose your presentation mode"),
         "v3_main_terms": MessageLookupByLibrary.simpleMessage("Terms of use"),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Quick connect by scan the QR code")

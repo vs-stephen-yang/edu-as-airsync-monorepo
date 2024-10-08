@@ -22,14 +22,45 @@ class V3PresentSelectRole extends StatelessWidget {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
 
-    return Stack(
+    bool isMobile = Platform.isAndroid || Platform.isIOS;
+    MediaQueryData mediaQuery = MediaQuery.of(context);
+    bool useColumn =
+        Platform.isIOS || (Platform.isAndroid && mediaQuery.size.width < 768);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Platform.isAndroid || Platform.isIOS
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: _buildButtons(context, presentStateProvider,
-                    channelProvider, const Size(343, 194), const Size(108, 94)),
-              )
+        Text(
+          S.of(context).v3_main_select_role_title,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: context.tokens.color.vsdswColorOnSurface,
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.24,
+          ),
+        ),
+        Padding(padding: EdgeInsets.only(top: isMobile ? 32 : 60)),
+        isMobile
+            ? useColumn
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _buildButtons(
+                        context,
+                        presentStateProvider,
+                        channelProvider,
+                        const Size(343, 194),
+                        const Size(108, 94)),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _buildButtons(
+                        context,
+                        presentStateProvider,
+                        channelProvider,
+                        const Size(343, 194),
+                        const Size(108, 94)),
+                  )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: _buildButtons(
@@ -52,7 +83,7 @@ class V3PresentSelectRole extends StatelessWidget {
       RoleButton(
         buttonSize: buttonSize,
         iconSize: iconSize,
-        name: 'Share',
+        name: S.of(context).v3_main_select_role_share,
         iconPath: 'assets/images/v3_ic_select_share.svg',
         onTap: () {
           AppAnalytics.instance.trackEvent('select_cast');
@@ -78,7 +109,7 @@ class V3PresentSelectRole extends StatelessWidget {
       RoleButton(
         buttonSize: buttonSize,
         iconSize: iconSize,
-        name: 'Receive',
+        name: S.of(context).v3_main_select_role_receive,
         iconPath: 'assets/images/v3_ic_select_receive.svg',
         onTap: () {
           AppAnalytics.instance.trackEvent('select_remote_screen');
@@ -129,7 +160,6 @@ class RoleButton extends StatelessWidget {
           border: Border.all(color: Colors.white),
           borderRadius: BorderRadius.circular(24),
           boxShadow: context.tokens.shadow.vsdswShadowNeutralLg,
-          // color: Colors.transparent,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -139,14 +169,13 @@ class RoleButton extends StatelessWidget {
                 width: iconSize.width,
                 height: iconSize.height,
                 child: SvgPicture.asset(iconPath)),
-            const Padding(padding: EdgeInsets.only(top: 16)),
+            const SizedBox(height: 16),
             Text(
               name,
               style: TextStyle(
                 color: context.tokens.color.vsdswColorOnSurface,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
-                // fontSize: AppConstants.fontSizeTitle,
               ),
             )
           ],
