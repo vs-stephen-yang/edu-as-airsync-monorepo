@@ -105,6 +105,8 @@ class ChannelProvider extends ChangeNotifier {
   ChannelConnectError? get channelConnectError => _channelConnectError;
   RemoteScreenClient? get remoteScreenClient => _remoteScreenClient;
 
+  String? deviceName;
+
   void setChannelConnectError(ChannelConnectError error) {
     AppAnalytics.instance.trackEvent(
       'connect_error',
@@ -630,7 +632,7 @@ class ChannelProvider extends ChangeNotifier {
   /// get IceServer list and send join-display, start-present
   void _onDisplayStatus(DisplayStatusMessage message) async {
     _moderatorStatus = message.status!.moderator!;
-
+    deviceName = message.name;
     _presentStateProvider?.presentSelectRolePage();
   }
 
