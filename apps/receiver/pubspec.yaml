@@ -76,6 +76,9 @@ dependencies:
   motion_toast: ^2.11.0
   dropdown_button2: ^2.3.8
   flutter_riverpod: ^2.0.0
+  lottie: ^3.1.2
+  figma2flutter: ^0.3.0-alpha
+  flutter_oss_licenses: ^3.0.2
 
   # ViewSonic plug-in
   app_ota_flutter:
@@ -114,8 +117,6 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-android-window
       ref: v0.4.0-8
-  lottie: ^3.1.2
-  figma2flutter: ^0.3.0-alpha
   # ViewSonic plug-in
 
 dev_dependencies:

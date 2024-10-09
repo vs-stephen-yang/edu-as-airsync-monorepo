@@ -46,12 +46,15 @@ class V3SettingsLicense extends StatelessWidget {
           top: 46,
           left: 13,
           right: 13,
-          child: Text(
-            settingsProvider.license?.description ??
-                S.of(context).v3_settings_privacy_policy_description,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
+          bottom: 13,
+          child: SingleChildScrollView(
+            child: Text(
+              settingsProvider.license?.license ??
+                  S.of(context).v3_settings_privacy_policy_description,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+              ),
             ),
           ),
         ),

@@ -1,4 +1,4 @@
-import 'package:display_flutter/widgets/v3_settings_legal_policy.dart';
+import 'package:display_flutter/oss_licenses.dart';
 import 'package:flutter/cupertino.dart';
 
 enum SettingPageState {
@@ -25,11 +25,11 @@ class SettingsProvider with ChangeNotifier {
 
   static SettingPageState get currentTittlePage => _currentTittlePage;
 
-  License? _license;
+  Package? _license;
 
-  License? get license => _license;
+  Package? get license => _license;
 
-  setPage(SettingPageState state, {License? license}) {
+  setPage(SettingPageState state, {Package? license}) {
     switch (state) {
       case SettingPageState.deviceSetting:
       case SettingPageState.broadcast:
