@@ -670,6 +670,7 @@ class ChannelProvider extends ChangeNotifier {
 
   void sendDisplayStatus(Channel channel) {
     final displayStatusMessage = DisplayStatusMessage();
+    displayStatusMessage.name = _instanceInfo.deviceName;
     displayStatusMessage.platform = _getPlatform();
     displayStatusMessage.status =
         DisplayStatus.fromJson({'moderator': isModeratorMode});
