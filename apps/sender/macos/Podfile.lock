@@ -32,6 +32,8 @@ PODS:
     - FlutterMacOS
   - url_launcher_macos (0.0.1):
     - FlutterMacOS
+  - wakelock_plus (0.0.1):
+    - FlutterMacOS
   - window_size (0.0.2):
     - FlutterMacOS
 
@@ -49,6 +51,7 @@ DEPENDENCIES:
   - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
+  - wakelock_plus (from `Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos`)
   - window_size (from `Flutter/ephemeral/.symlinks/plugins/window_size/macos`)
 
 SPEC REPOS:
@@ -82,6 +85,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
   url_launcher_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
+  wakelock_plus:
+    :path: Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos
   window_size:
     :path: Flutter/ephemeral/.symlinks/plugins/window_size/macos
 
@@ -94,12 +99,13 @@ SPEC CHECKSUMS:
   flutter_webrtc: 3593bbff2741516f34f270bbf473b27d601d14e4
   flutter_window_close: ee4a6b81ca6fafe93b7cba48b0a18976e3f48e39
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
-  package_info_plus: 02d7a575e80f194102bef286361c6c326e4c29ce
+  package_info_plus: fa739dd842b393193c5ca93c26798dff6e3d0e0c
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   ReachabilitySwift: 7f151ff156cea1481a8411701195ac6a984f4979
   share_plus: 36537c04ce0c3e3f5bd297ce4318b6d5ee5fd6cf
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   url_launcher_macos: c82c93949963e55b228a30115bd219499a6fe404
+  wakelock_plus: 4783562c9a43d209c458cb9b30692134af456269
   window_size: 339dafa0b27a95a62a843042038fa6c3c48de195
 
 PODFILE CHECKSUM: 0d3963a09fc94f580682bd88480486da345dc3f0
