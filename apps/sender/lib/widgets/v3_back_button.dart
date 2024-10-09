@@ -23,7 +23,7 @@ class V3BackButton extends StatelessWidget {
             width: 1,
             color: isDarkTheme
                 ? context.tokens.color.vsdswColorSurface900
-                : context.tokens.color.vsdswColorNeutral,
+                : context.tokens.color.vsdswColorNeutralInverse,
           ),
           borderRadius: context.tokens.radii.vsdswRadiusFull,
         ),
