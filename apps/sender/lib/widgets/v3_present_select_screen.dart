@@ -411,7 +411,9 @@ class SelectScreenDialog extends Dialog {
                                 padding: const EdgeInsets.symmetric(horizontal: 33),
                                 child: Row(
                                   children: <Widget>[
-                                    if (WebRTC.platformIsWindows && tabController.index == SourceType.Screen.index)
+                                    if (WebRTC.platformIsDesktop &&
+                                        tabController.index ==
+                                            SourceType.Screen.index)
                                       SizedBox(
                                         height:48,
                                         child: Row(
