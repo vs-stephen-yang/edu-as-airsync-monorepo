@@ -7,14 +7,13 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
-import 'package:display_cast_flutter/widgets/moderator_present_start.dart';
 import 'package:display_cast_flutter/widgets/moderator_share.dart';
 import 'package:display_cast_flutter/widgets/moderator_wait.dart';
-import 'package:display_cast_flutter/widgets/present_present_start.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/v3_moderator_idle_name.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
+import 'package:display_cast_flutter/widgets/v3_present_present_start.dart';
 import 'package:display_cast_flutter/widgets/v3_present_select_screen.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/material.dart';
@@ -31,16 +30,19 @@ class V3WebMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isPresenting =
+        (presentStateProvider.currentState == ViewState.presentStart ||
+            presentStateProvider.currentState == ViewState.moderatorStart);
     return SizedBox(
-      height: 700,
+      height: isPresenting ? MediaQuery.of(context).size.height : 700,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          if (presentStateProvider.currentState == ViewState.presentStart)
+          if (isPresenting)
             V3PresentStateMachine(
               presentStateProvider: presentStateProvider,
             ),
-          if (presentStateProvider.currentState != ViewState.presentStart) ...[
+          if (!isPresenting) ...[
             Row(
               children: [
                 if (isBigThan1024(context))
@@ -154,9 +156,9 @@ class V3PresentStateMachine extends StatelessWidget {
       case ViewState.selectScreen:
         return const V3PresentSelectScreen();
       case ViewState.presentStart:
-        return PresentPresentStart();
+        return V3PresentPresentStart(isModeratorMode: false);
       case ViewState.moderatorStart:
-        return ModeratorPresentStart();
+        return V3PresentPresentStart(isModeratorMode: true);
       case ViewState.moderatorShare:
         return const ModeratorPresentShare();
       default:

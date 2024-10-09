@@ -1321,6 +1321,16 @@ class S {
     );
   }
 
+  /// `airsync.net is sharing your screen.`
+  String get v3_main_presenting_message {
+    return Intl.message(
+      'airsync.net is sharing your screen.',
+      name: 'v3_main_presenting_message',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Quick connect by scan the QR code`
   String get v3_scan_qr_reminder {
     return Intl.message(
