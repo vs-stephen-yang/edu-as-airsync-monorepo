@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +15,7 @@ class V3ModeratorWait extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    bool isMobile = Platform.isAndroid || Platform.isIOS;
+    bool isMobile = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
 
     return Container(
       width: isMobile ? 359 : 504,
@@ -28,16 +30,14 @@ class V3ModeratorWait extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (!isMobile) _waitingText(context),
-          if (!isMobile) const Padding(padding: EdgeInsets.only(top: 32)),
+          if (!isMobile) const WaitingText(),
           SizedBox(
             width: 115,
             height: 115,
             child: Lottie.asset('assets/lottie_files/vsdsl-spinner-sty1.json'),
           ),
           const Padding(padding: EdgeInsets.only(top: 40)),
-          if (isMobile) _waitingText(context),
-          if (isMobile) const Padding(padding: EdgeInsets.only(top: 32)),
+          if (isMobile) const WaitingText(),
           SizedBox(
               width: isMobile ? 300 : 240,
               height: 48,
@@ -77,14 +77,24 @@ class V3ModeratorWait extends StatelessWidget {
       ),
     );
   }
+}
 
-  Text _waitingText(BuildContext context) {
-    return Text(
-      S.of(context).v3_main_moderator_wait,
-      style: TextStyle(
-        color: context.tokens.color.vsdswColorOnSurface,
-        fontSize: 16,
-      ),
+class WaitingText extends StatelessWidget {
+  const WaitingText({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        AutoSizeText(
+          S.of(context).v3_main_moderator_wait,
+          style: TextStyle(
+            color: context.tokens.color.vsdswColorOnSurface,
+            fontSize: 16,
+          ),
+        ),
+        const Padding(padding: EdgeInsets.only(top: 32)),
+      ],
     );
   }
 }

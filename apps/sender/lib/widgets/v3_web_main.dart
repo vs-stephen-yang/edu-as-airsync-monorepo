@@ -8,10 +8,10 @@ import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:display_cast_flutter/widgets/moderator_share.dart';
-import 'package:display_cast_flutter/widgets/moderator_wait.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/v3_moderator_idle_name.dart';
+import 'package:display_cast_flutter/widgets/v3_moderator_wait.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
 import 'package:display_cast_flutter/widgets/v3_present_present_start.dart';
 import 'package:display_cast_flutter/widgets/v3_present_select_screen.dart';
@@ -33,8 +33,12 @@ class V3WebMain extends StatelessWidget {
     bool isPresenting =
         (presentStateProvider.currentState == ViewState.presentStart ||
             presentStateProvider.currentState == ViewState.moderatorStart);
+    bool isWaiting =
+        presentStateProvider.currentState == ViewState.moderatorWait;
     return SizedBox(
-      height: isPresenting ? MediaQuery.of(context).size.height : 700,
+      height: (isPresenting || isWaiting)
+          ? MediaQuery.of(context).size.height
+          : 700,
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -109,6 +113,13 @@ class V3WebMain extends StatelessWidget {
               child: SvgPicture.asset('assets/images/ic_logo_airsync.svg'),
             ),
           ],
+          if (isWaiting) ...[
+            Container(color: context.tokens.color.vsdswColorOpacityNeutralMd),
+            const Align(
+              alignment: Alignment.center,
+              child: V3ModeratorWait(),
+            ),
+          ],
         ],
       ),
     );
@@ -150,9 +161,10 @@ class V3PresentStateMachine extends StatelessWidget {
       case ViewState.moderatorName:
         return const V3ModeratorIdleName();
       case ViewState.moderatorWait:
-        return const ModeratorWait();
+      // move to V3WebMain for center in whole browser view.
+        return const SizedBox();
       case ViewState.waitReady:
-        return const PresentWaitReady();
+        return const PresentWaitReady(); //deprecated
       case ViewState.selectScreen:
         return const V3PresentSelectScreen();
       case ViewState.presentStart:
