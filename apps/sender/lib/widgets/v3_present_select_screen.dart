@@ -4,13 +4,15 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
-import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
+import 'package:display_cast_flutter/widgets/v3_back_button.dart';
+import 'package:display_cast_flutter/widgets/v3_custom_white_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:gap/gap.dart';
 import 'package:lottie/lottie.dart';
@@ -126,65 +128,110 @@ class V3PresentSelectScreen extends StatelessWidget {
   }
 
   Widget _buildIosView(BuildContext context, ChannelProvider provider) {
-    return Stack(
-      children: [
-        Positioned(
-          left: 30,
-          top: 100,
-          child: InkWell(
-            onTap: () {
-              provider.presentStop();
-              provider.presentEnd();
-            },
-            child: Row(
+    MediaQueryData mediaQuery = MediaQuery.of(context);
+
+    return Container(
+      width: mediaQuery.size.width,
+      height: mediaQuery.size.height,
+      color: context.tokens.color.vsdswColorSurfaceInverse,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 8,
+            top: 24,
+            child: V3BackButton(
+                isDarkTheme: true,
+                onPressed: () {
+                  provider.presentStop();
+                  provider.presentEnd();
+                }),
+          ),
+          ConstrainedBox(
+            constraints: const BoxConstraints.expand(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.arrow_back_ios_new_outlined,
-                  color: Colors.white,
-                  size: 14,
+                SizedBox(
+                  width: 138,
+                  height: 120,
+                  child: SvgPicture.asset(
+                      'assets/images/v3_ic_ios_start_sharing.svg'),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8),
+                Padding(padding: context.tokens.spacing.vsdswSpacingLg),
+                SizedBox(
+                  width: 327,
                   child: Text(
-                    S.of(context).moderator_back,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: AppConstants.fontSizeNormal),
+                    S.of(context).present_select_screen_ios_restart_description,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdswColorOnSurfaceVariant,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
+                ),
+                Padding(padding: context.tokens.spacing.vsdswSpacingXs),
+                const CountDownText(),
+                Padding(padding: context.tokens.spacing.vsdswSpacingLg),
+                V3CustomWhiteButton(
+                  buttonSize: const Size(300, 48),
+                  text: S.of(context).v3_select_screen_ios_start_sharing,
+                  onPressed: () {
+                    // WebRTC already connected,
+                    // just call "makeCall" to restart broadcast extension.
+                    provider.makeCall(selectedSource: null);
+                  },
                 ),
               ],
             ),
           ),
-        ),
-        ConstrainedBox(
-          constraints: const BoxConstraints.expand(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: AppConstants.viewStateMenuWidth,
-                child: Text(
-                  S.of(context).present_select_screen_ios_restart_description,
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  // WebRTC already connected,
-                  // just call "makeCall" to restart broadcast extension.
-                  provider.makeCall(selectedSource: null);
-                },
-                child: Text(
-                  S.of(context).present_select_screen_ios_restart,
-                  style: const TextStyle(color: Colors.white, fontSize: 20),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
+    );
+  }
+}
+
+class CountDownText extends StatefulWidget {
+  const CountDownText({super.key});
+
+  @override
+  State<CountDownText> createState() => _CountDownTextState();
+}
+
+class _CountDownTextState extends State<CountDownText> {
+  int countdown = 30;
+
+  @override
+  initState() {
+    super.initState();
+    // start timeout timer (30 sec)
+    ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
+      // onFinish
+    }, onTick: (tick) {
+      setState(() {
+        countdown = 30 - tick;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      '${S.of(context).v3_select_screen_ios_countdown} 0:$countdown',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        color: context.tokens.color.vsdswColorWarning,
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+      ),
     );
   }
 }
