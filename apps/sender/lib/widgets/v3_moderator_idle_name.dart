@@ -8,6 +8,7 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
+import 'package:display_cast_flutter/widgets/v3_back_button.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_text_form_field.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_button.dart';
 import 'package:display_channel/display_channel.dart';
@@ -27,13 +28,13 @@ class V3ModeratorIdleName extends StatelessWidget {
       backButton = Transform.translate(
         offset: const Offset(-278, 0), // (475+48)/2+16~=278
         // Move Button B 16 pixels to the right from Container A
-        child: const BackButton(),
+        child: _backButton(context),
       );
     } else {
-      backButton = const Positioned(
+      backButton = Positioned(
         left: kIsWeb ? 24 : 8,
         top: kIsWeb ? 193 : 24,
-        child: BackButton(),
+        child: _backButton(context),
       );
     }
     return Stack(
@@ -65,6 +66,20 @@ class V3ModeratorIdleName extends StatelessWidget {
         ),
         backButton,
       ],
+    );
+  }
+
+  V3BackButton _backButton(BuildContext context) {
+    return V3BackButton(
+      onPressed: () {
+        ChannelProvider channelProvider =
+            Provider.of<ChannelProvider>(context, listen: false);
+        PresentStateProvider presentStateProvider =
+            Provider.of<PresentStateProvider>(context, listen: false);
+        channelProvider.presentEnd();
+        channelProvider.resetMessage();
+        presentStateProvider.presentMainPage();
+      },
     );
   }
 }
@@ -288,39 +303,5 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
     Timer(const Duration(seconds: 5), () {
       overlayEntry.remove();
     });
-  }
-}
-
-class BackButton extends StatelessWidget {
-  const BackButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 48,
-      height: 48,
-      decoration: ShapeDecoration(
-        color: context.tokens.color.vsdswColorSurface100,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(
-            width: 1,
-            color: context.tokens.color.vsdswColorSurface100,
-          ),
-          borderRadius: context.tokens.radii.vsdswRadiusFull,
-        ),
-        shadows: context.tokens.shadow.vsdswShadowNeutralLg,
-      ),
-      child: IconButton(
-        icon: SvgPicture.asset('assets/images/v3_ic_arrow_back.svg'),
-        onPressed: () {
-          ChannelProvider channelProvider =
-              Provider.of<ChannelProvider>(context, listen: false);
-          PresentStateProvider presentStateProvider =
-              Provider.of<PresentStateProvider>(context, listen: false);
-          channelProvider.resetMessage();
-          presentStateProvider.presentMainPage();
-        },
-      ),
-    );
   }
 }

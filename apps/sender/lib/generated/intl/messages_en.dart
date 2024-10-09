@@ -293,6 +293,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "%s wants to share your screen. Choose what to share."),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
-            "Quick connect by scan the QR code")
+            "Quick connect by scan the QR code"),
+        "v3_select_screen_ios_countdown":
+            MessageLookupByLibrary.simpleMessage("Time remain"),
+        "v3_select_screen_ios_start_sharing":
+            MessageLookupByLibrary.simpleMessage("Start sharing")
       };
 }

@@ -13,14 +13,16 @@ class ConnectionTimer {
 
   ConnectionTimer.internal();
 
-  void startConnectionTimeoutTimer(ConnectionTimerCallback onFinish) {
+  void startConnectionTimeoutTimer(ConnectionTimerCallback onFinish,
+      {void Function(int tick)? onTick}) {
     if (mConnectionTimeoutTimer != null) stopConnectionTimeoutTimer();
 
     mConnectionTimeoutTimer =
         Timer.periodic(const Duration(seconds: 1), (timer) {
       if (timer.tick < 30) {
-        // onTick
-
+        if (onTick != null) {
+          onTick(timer.tick);
+        }
       } else if (timer.tick == 30) {
         // onFinish
         timer.cancel();

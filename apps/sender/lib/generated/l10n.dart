@@ -1440,6 +1440,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Time remain`
+  String get v3_select_screen_ios_countdown {
+    return Intl.message(
+      'Time remain',
+      name: 'v3_select_screen_ios_countdown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start sharing`
+  String get v3_select_screen_ios_start_sharing {
+    return Intl.message(
+      'Start sharing',
+      name: 'v3_select_screen_ios_start_sharing',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
