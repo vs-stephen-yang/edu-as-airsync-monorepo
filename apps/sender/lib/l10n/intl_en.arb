@@ -126,6 +126,7 @@
     "v3_main_receive_app_action": "Connect",
     "v3_main_receive_app_receive_from": "Receive from %s",
     "v3_main_receive_app_stop": "Stop",
+    "v3_main_presenting_message": "airsync.net is sharing your screen.",
     "v3_scan_qr_reminder": "Quick connect by scan the QR code",
     "v3_device_list_dialog_title": "Enter one-time password",
     "v3_device_list_dialog_connect": "Connect",

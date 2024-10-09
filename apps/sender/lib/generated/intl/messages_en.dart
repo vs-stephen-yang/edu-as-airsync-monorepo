@@ -259,6 +259,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Follow the steps to get started."),
         "v3_main_present_title":
             MessageLookupByLibrary.simpleMessage("Share your screen"),
+        "v3_main_presenting_message": MessageLookupByLibrary.simpleMessage(
+            "airsync.net is sharing your screen."),
         "v3_main_privacy":
             MessageLookupByLibrary.simpleMessage("Privacy Policy"),
         "v3_main_receive_app_action":
