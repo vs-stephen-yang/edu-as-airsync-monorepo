@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:flutter/foundation.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 enum AppScene {
@@ -19,7 +20,9 @@ class WakelockManager {
   WakelockManager._internal();
 
   Future<void> _enableWakelock(String message) async {
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (kIsWeb) {
+      return; // Web not support
+    } else if (Platform.isAndroid || Platform.isIOS) {
       return; // TODO: Implement wakelock for Android and iOS
     }
     await WakelockPlus.enable();
@@ -27,7 +30,9 @@ class WakelockManager {
   }
 
   Future<void> _disableWakelock(String message) async {
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (kIsWeb) {
+      return; // Web not support
+    } else if (Platform.isAndroid || Platform.isIOS) {
       return; // TODO: Implement wakelock for Android and iOS
     }
     await WakelockPlus.disable();
