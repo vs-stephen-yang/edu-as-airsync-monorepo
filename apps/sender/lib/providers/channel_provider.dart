@@ -285,6 +285,8 @@ class ChannelProvider extends ChangeNotifier {
           } else {
             if (reason?.code ==
                 JoinDisplayRejectedReasonCode.maxClientsReached.code) {
+              removeRemoteScreenClient();
+              // todo: implement session full UI UX
               Toast.makeToast(S.current.toast_maximum_remote_screen);
             }
           }

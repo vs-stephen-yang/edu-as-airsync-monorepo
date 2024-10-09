@@ -1271,6 +1271,56 @@ class S {
     );
   }
 
+  /// `Receive`
+  String get v3_main_receive_app_title {
+    return Intl.message(
+      'Receive',
+      name: 'v3_main_receive_app_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share screen to my device`
+  String get v3_main_receive_app_subtitle {
+    return Intl.message(
+      'Share screen to my device',
+      name: 'v3_main_receive_app_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect`
+  String get v3_main_receive_app_action {
+    return Intl.message(
+      'Connect',
+      name: 'v3_main_receive_app_action',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receive from %s`
+  String get v3_main_receive_app_receive_from {
+    return Intl.message(
+      'Receive from %s',
+      name: 'v3_main_receive_app_receive_from',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop`
+  String get v3_main_receive_app_stop {
+    return Intl.message(
+      'Stop',
+      name: 'v3_main_receive_app_stop',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Quick connect by scan the QR code`
   String get v3_scan_qr_reminder {
     return Intl.message(
