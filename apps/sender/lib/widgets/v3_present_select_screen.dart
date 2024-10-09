@@ -13,7 +13,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:gap/gap.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:sprintf/sprintf.dart';
 
 class V3PresentSelectScreen extends StatelessWidget {
   const V3PresentSelectScreen({super.key});
@@ -59,7 +61,13 @@ class V3PresentSelectScreen extends StatelessWidget {
 
     await showDialog<CustomDesktopCapturerSource>(
       context: context,
-      builder: (context) => selectScreenDialog = SelectScreenDialog(),
+      builder: (context) {
+        selectScreenDialog = SelectScreenDialog(
+          hostName: provider.deviceName ?? '',
+          isExtensionEnable: WebRTC.platformIsWindows,
+        );
+        return selectScreenDialog!;
+      },
     ).then((value) {
       log.info('selectedSource: ${value?.selectedSource?.type})');
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
@@ -183,7 +191,7 @@ class V3PresentSelectScreen extends StatelessWidget {
 
 //ignore: must_be_immutable
 class SelectScreenDialog extends Dialog {
-  SelectScreenDialog({super.key}) {
+  SelectScreenDialog({super.key, required this.hostName, required this.isExtensionEnable}) {
     Future.delayed(const Duration(milliseconds: 100), () {
       _getSources(SourceType.Screen);
     });
@@ -206,14 +214,17 @@ class SelectScreenDialog extends Dialog {
 
   final List<StreamSubscription<DesktopCapturerSource>> _subscriptions = [];
   final Map<String, DesktopCapturerSource> _sources = {};
+  final bool isExtensionEnable;
   static DesktopCapturerSource? _selectedSource;
   static StateSetter? _stateSetter;
   static Timer? _timer;
   late BuildContext ctx;
   bool _systemAudio = false;
+  String hostName;
 
   @override
   Widget build(BuildContext context) {
+    hostName = hostName.length > 20 ? '${hostName.substring(0, 20)}...' : hostName;
     ctx = context;
     return Material(
       type: MaterialType.transparency,
@@ -254,7 +265,7 @@ class SelectScreenDialog extends Dialog {
                           ),
                           const Gap(8),
                           Text(
-                            'Cast-4782 wants to share your screen. Choose what to share. ',
+                            sprintf(S.current.v3_present_select_screen_subtitle, [hostName]),
                             style: TextStyle(
                               color: context.tokens.color.vsdswColorOnSurface,
                               fontSize: 18,
@@ -292,8 +303,7 @@ class SelectScreenDialog extends Dialog {
                       return DefaultTabController(
                         length: 3,
                         child: Builder(builder: (context) {
-                          TabController tabController =
-                              DefaultTabController.of(context);
+                          TabController tabController = DefaultTabController.of(context);
                           return Column(
                             children: <Widget>[
                               Container(
@@ -302,167 +312,122 @@ class SelectScreenDialog extends Dialog {
                                 constraints:
                                     const BoxConstraints.expand(height: 48),
                                 child: TabBar(
-                                  onTap: (value) {
-                                    Future.delayed(
-                                        const Duration(milliseconds: 300), () {
-                                      _getSources(value == 0
-                                          ? SourceType.Screen
-                                          : SourceType.Window);
-                                    });
+                                  onTap: (index) {
+                                    if (index == 2 && !isExtensionEnable) {
+                                      tabController.animateTo(tabController.previousIndex);
+                                    } else {
+                                      Future.delayed(
+                                          const Duration(milliseconds: 300), () {
+                                        _getSources(index == 0
+                                            ? SourceType.Screen
+                                            : SourceType.Window);
+                                      });
+                                    }
                                   },
                                   tabs: [
                                     Tab(
-                                      child: buildTabWidget(S.current
-                                          .present_select_screen_entire),
+                                      child: buildTabWidget(context, S.current.present_select_screen_entire),
                                     ),
                                     Tab(
-                                      child: buildTabWidget(S.current
-                                          .present_select_screen_window),
+                                      child: buildTabWidget(context, S.current.present_select_screen_window),
                                     ),
                                     Tab(
-                                      child: buildTabWidget('Screen extension'),
+                                      child: buildTabWidget(context, S.current.v3_present_select_screen_extension, enable: isExtensionEnable),
                                     ),
                                   ],
-                                  labelColor:
-                                      context.tokens.color.vsdswColorSecondary,
-                                  unselectedLabelColor:
-                                      context.tokens.color.vsdswColorOnSurface,
-                                  indicatorColor:
-                                      context.tokens.color.vsdswColorSecondary,
+                                  labelColor: context.tokens.color.vsdswColorSecondary,
+                                  unselectedLabelColor: context.tokens.color.vsdswColorOnSurface,
+                                  indicatorColor: context.tokens.color.vsdswColorSecondary,
                                 ),
                               ),
                               const Gap(8),
                               Expanded(
                                 child: Container(
                                   color: const Color(0x14151C32),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 64),
+                                  padding: const EdgeInsets.symmetric(horizontal: 64),
                                   child: TabBarView(
                                     children: [
-                                      Align(
-                                          alignment: Alignment.topCenter,
-                                          child: GridView.count(
-                                            crossAxisCount: 3,
-                                            childAspectRatio: 1.39,
-                                            children: _sources.entries
-                                                .where((element) =>
-                                                    element.value.type ==
-                                                    SourceType.Screen)
-                                                .map((e) => ThumbnailWidget(
-                                                      onTap: (source) {
-                                                        setState(() {
-                                                          _selectedSource =
-                                                              source;
-                                                        });
-                                                      },
-                                                      source: e.value,
-                                                      selected:
-                                                          _selectedSource?.id ==
-                                                              e.value.id,
-                                                    ))
-                                                .toList(),
-                                          )),
-                                      Align(
-                                          alignment: Alignment.center,
-                                          child: GridView.count(
-                                            crossAxisCount: 3,
-                                            childAspectRatio: 1.39,
-                                            children: _sources.entries
-                                                .where((element) =>
-                                                    element.value.type ==
-                                                    SourceType.Window)
-                                                .map((e) => ThumbnailWidget(
-                                                      onTap: (source) {
-                                                        setState(() {
-                                                          _selectedSource =
-                                                              source;
-                                                        });
-                                                      },
-                                                      source: e.value,
-                                                      selected:
-                                                          _selectedSource?.id ==
-                                                              e.value.id,
-                                                    ))
-                                                .toList(),
-                                          )),
-                                      SizedBox(), // todo
+                                      _buildGridView(SourceType.Screen, setState),
+                                      _buildGridView(SourceType.Window, setState),
+                                      const Align(
+                                        alignment: Alignment.center,
+                                        child: ScreenExtensionPage(),
+                                      ),
                                     ],
                                   ),
                                 ),
                               ),
-                              if (WebRTC.platformIsWindows && tabController.index == SourceType.Screen.index)
-                                Container(
-                                  margin:
-                                      const EdgeInsets.only(top: 28, left: 32),
-                                  child: Row(
-                                    children: [
-                                      Checkbox(
-                                        value: _systemAudio,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(2.0),
+                              Container(
+                                width: double.infinity,
+                                height: 96,
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.symmetric(horizontal: 33),
+                                child: Row(
+                                  children: <Widget>[
+                                    if (WebRTC.platformIsWindows && tabController.index == SourceType.Screen.index)
+                                      SizedBox(
+                                        height:48,
+                                        child: Row(
+                                          children: [
+                                            Checkbox(
+                                              value: _systemAudio,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(2.0),
+                                              ),
+                                              side: WidgetStateBorderSide.resolveWith(
+                                                    (states) => BorderSide(width: 1.0, color: context.tokens.color.vsdswColorPrimary),
+                                              ),
+                                              onChanged: (bool? value) {
+                                                setState(() {
+                                                  _systemAudio = value!;
+                                                });
+                                              },
+                                            ),
+                                            const Gap(8),
+                                            Text(
+                                              S.current.v3_present_select_screen_share_audio,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontFamily: 'Inter',
+                                                  color: context.tokens.color.vsdswColorOnSurface),
+                                            ),
+                                          ],
                                         ),
-                                        side: WidgetStateBorderSide.resolveWith(
-                                              (states) => BorderSide(width: 1.0, color: context.tokens.color.vsdswColorPrimary),
-                                        ),
-                                        onChanged: (bool? value) {
-                                          setState(() {
-                                            _systemAudio = value!;
-                                          });
-                                        },
                                       ),
-                                      const Gap(8),
-                                      Text(
-                                        'Share computer audio.',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontFamily: 'Inter',
-                                            color: context.tokens.color.vsdswColorOnSurface),
-                                      ),
-                                    ],
-                                  ),
+                                    const Spacer(),
+                                    createButton(
+                                        text: S.of(context).present_select_screen_cancel,
+                                        textColor: context.tokens.color.vsdswColorOnSurface,
+                                        backgroundColor: Colors.transparent,
+                                        onPressed: () {
+                                          cancel();
+                                        }),
+                                    createButton(
+                                      text: S.current.v3_main_select_role_share,
+                                      textColor: context.tokens.color.vsdswColorOnPrimary,
+                                      backgroundColor: context.tokens.color.vsdswColorPrimary,
+                                      onPressed: () {
+                                        ChannelProvider channelProvider = Provider.of<ChannelProvider>(context, listen: false);
+                                        if (channelProvider.isConnectAvailable()) {
+                                          _ok(_selectedSource, _systemAudio);
+                                        } else {
+                                          Toast.makeFeatureReconnectToast(
+                                              channelProvider.reconnectState,
+                                              channelProvider.reconnectState == ChannelReconnectState.reconnecting
+                                                  ? S.current.main_feature_reconnecting_toast
+                                                  : S.current.main_feature_reconnect_fail_toast);
+                                        }
+                                      },
+                                    ),
+                                  ],
                                 ),
+                              ),
                             ],
                           );
                         }),
                       );
                     },
                   ),
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                height: 96,
-                alignment: Alignment.topRight,
-                padding: const EdgeInsets.only(top: 16,right: 33),
-                child: Row(
-                  children: <Widget>[
-                    const Spacer(),
-                    createButton(
-                        text: S.of(context).present_select_screen_cancel,
-                        textColor: context.tokens.color.vsdswColorOnSurface,
-                        backgroundColor: Colors.transparent,
-                        onPressed: () {
-                          cancel();
-                        }),
-
-                    createButton(
-                      text: 'Share',
-                      textColor: context.tokens.color.vsdswColorOnPrimary,
-                      backgroundColor: context.tokens.color.vsdswColorPrimary,
-                      onPressed: () {
-                        ChannelProvider channelProvider = Provider.of<ChannelProvider>(context, listen: false);
-                        if (channelProvider.isConnectAvailable()) {
-                          _ok(_selectedSource, _systemAudio);
-                        } else {
-                          Toast.makeFeatureReconnectToast(
-                              channelProvider.reconnectState,
-                              channelProvider.reconnectState == ChannelReconnectState.reconnecting
-                                  ? S.current.main_feature_reconnecting_toast
-                                  : S.current.main_feature_reconnect_fail_toast);
-                        }
-                      },
-                    ),
-                  ],
                 ),
               ),
             ],
@@ -472,16 +437,17 @@ class SelectScreenDialog extends Dialog {
     );
   }
 
-  Widget buildTabWidget(String text) {
+  Widget buildTabWidget(BuildContext context, String text, {bool enable = true}) {
     return Container(
       alignment: Alignment.center,
       width: 338.67,
       height: 48,
       child: Text(
         text,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 16,
           fontFamily: 'Inter',
+          color: enable? null: context.tokens.color.vsdswColorOnDisabled,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -555,6 +521,73 @@ class SelectScreenDialog extends Dialog {
     } catch (e, stackTrace) {
       log.severe('Failed to capture desktop', e, stackTrace);
     }
+  }
+
+  Widget _buildGridView(SourceType type, StateSetter setState) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: GridView.count(
+        crossAxisCount: 3,
+        childAspectRatio: 1.39,
+        children: _sources.entries
+            .where((element) => element.value.type == type)
+            .map((e) => ThumbnailWidget(
+          onTap: (source) {
+            setState(() {
+              _selectedSource = source;
+            });
+          },
+          source: e.value,
+          selected: _selectedSource?.id == e.value.id,
+        ))
+            .toList(),
+      ),
+    );
+  }
+}
+
+class ScreenExtensionPage extends StatelessWidget {
+  const ScreenExtensionPage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: 286,
+          height: 185,
+          child: Lottie.asset('assets/lottie_files/screen_extension.json'),
+        ),
+        const Gap(32),
+        Text(
+          S.current.v3_present_select_screen_extension_desc,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: context.tokens.color.vsdswColorTertiary.withOpacity(0.64),
+            fontSize: 20,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const Gap(8),
+        SizedBox(
+          width: 600,
+          child: Text(
+            S.current.v3_present_select_screen_extension_desc2,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: context.tokens.color.vsdswColorTertiary.withOpacity(0.64),
+              fontSize: 16,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 

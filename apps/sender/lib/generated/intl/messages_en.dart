@@ -280,6 +280,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_select_role_title": MessageLookupByLibrary.simpleMessage(
             "Choose your presentation mode"),
         "v3_main_terms": MessageLookupByLibrary.simpleMessage("Terms of use"),
+        "v3_present_select_screen_extension":
+            MessageLookupByLibrary.simpleMessage("Screen extension"),
+        "v3_present_select_screen_extension_desc":
+            MessageLookupByLibrary.simpleMessage("Expand Your Workspace"),
+        "v3_present_select_screen_extension_desc2":
+            MessageLookupByLibrary.simpleMessage(
+                "This allows you to drag content between your personal device and the IFP, enhancing real-time interaction and control."),
+        "v3_present_select_screen_share_audio":
+            MessageLookupByLibrary.simpleMessage("Share computer audio."),
+        "v3_present_select_screen_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "%s wants to share your screen. Choose what to share."),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Quick connect by scan the QR code")
       };

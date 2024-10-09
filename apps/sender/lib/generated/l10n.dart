@@ -1390,6 +1390,56 @@ class S {
       args: [],
     );
   }
+
+  /// `%s wants to share your screen. Choose what to share.`
+  String get v3_present_select_screen_subtitle {
+    return Intl.message(
+      '%s wants to share your screen. Choose what to share.',
+      name: 'v3_present_select_screen_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share computer audio.`
+  String get v3_present_select_screen_share_audio {
+    return Intl.message(
+      'Share computer audio.',
+      name: 'v3_present_select_screen_share_audio',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Screen extension`
+  String get v3_present_select_screen_extension {
+    return Intl.message(
+      'Screen extension',
+      name: 'v3_present_select_screen_extension',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expand Your Workspace`
+  String get v3_present_select_screen_extension_desc {
+    return Intl.message(
+      'Expand Your Workspace',
+      name: 'v3_present_select_screen_extension_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This allows you to drag content between your personal device and the IFP, enhancing real-time interaction and control.`
+  String get v3_present_select_screen_extension_desc2 {
+    return Intl.message(
+      'This allows you to drag content between your personal device and the IFP, enhancing real-time interaction and control.',
+      name: 'v3_present_select_screen_extension_desc2',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
