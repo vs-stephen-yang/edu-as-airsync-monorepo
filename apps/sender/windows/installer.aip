@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="18.5" version="18.5" Modules="professional" RootPath="." Language="en" Id="{CA8BCCFC-0D00-4251-8B2A-C4C856EBCDB6}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="18.5" version="21.2.2" PreviousModules="professional" Modules="enterprise" RootPath="." Language="en" Id="{CA8BCCFC-0D00-4251-8B2A-C4C856EBCDB6}">
+  <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
+    <ROW Name="HiddenItems" Value="ActSyncAppComponent;CPLAppletComponent;AppXAppDetailsComponent;FixupComponent;AppXCapabilitiesComponent;AppXDependenciesComponent;AppXProductDetailsComponent;AppXVisualAssetsComponent;AppXAppDeclarationsComponent;AppXUriRulesComponent;MsiXDiffComponent;MsixManifestEditorComponent;ActSyncAppComponent;CPLAppletComponent;AutorunComponent;GameUxComponent;SilverlightSlnComponent;SharePointSlnComponent"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
-    <ROW Property="AI_CURRENT_YEAR" Value="2024" ValueLocId="-"/>
     <ROW Property="ALLUSERS" Value="1"/>
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName][|EnvSuffix]." ValueLocId="*"/>
     <ROW Property="EnvSuffix" Value=" " MultiBuildValue="DefaultBuild:#DefaultBuild_1:-stage#ReleaseBuild_1:-dev"/>
     <ROW Property="Manufacturer" Value="ViewSonic"/>
-    <ROW Property="ProductCode" Value="1033:{6BF46333-6620-4FB7-99E4-9BB4679C3410} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{3181EAD9-8861-4F71-B2CE-032A8F031C62} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="AirSync Sender"/>
-    <ROW Property="ProductVersion" Value="2.0.0.1" Type="32" TargetFile="AirSync_Sender.exe"/>
+    <ROW Property="ProductVersion" Value="3.4.7.41871" Options="20"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{08FD1E6A-15AB-4AB9-882F-E0AD81C4D601}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME#DefaultBuild_1:Windows 9x/ME#ReleaseBuild_1:Windows 9x/ME" ValueLocId="-"/>
@@ -33,6 +35,7 @@
     <ROW Directory="assets_Dir" Directory_Parent="flutter_assets_Dir" DefaultDir="assets"/>
     <ROW Directory="cupertino_icons_Dir" Directory_Parent="packages_Dir" DefaultDir="CUPERT~1|cupertino_icons"/>
     <ROW Directory="data_Dir" Directory_Parent="APPDIR" DefaultDir="data"/>
+    <ROW Directory="drivers_Dir" Directory_Parent="APPDIR" DefaultDir="drivers"/>
     <ROW Directory="flags_Dir" Directory_Parent="flutter_multi_formatter_Dir" DefaultDir="flags"/>
     <ROW Directory="flutter_assets_Dir" Directory_Parent="data_Dir" DefaultDir="FLUTTE~1|flutter_assets"/>
     <ROW Directory="flutter_multi_formatter_Dir" Directory_Parent="packages_Dir" DefaultDir="FLUTTE~1|flutter_multi_formatter"/>
@@ -53,23 +56,31 @@
     <ROW Component="ad.png" ComponentId="{036315A3-5B40-4BBC-BF08-9E625ACA8BA1}" Directory_="png_Dir" Attributes="0" KeyPath="ad.png" Type="0"/>
     <ROW Component="app.so" ComponentId="{6EEEA41B-FDDF-48CE-A357-D7CD30EB66D3}" Directory_="data_Dir" Attributes="0" KeyPath="app.so" Type="0"/>
     <ROW Component="bonsoir_windows_plugin.dll" ComponentId="{A8F31CDE-2EAA-4157-94BA-93BD80AA25F9}" Directory_="APPDIR" Attributes="256" KeyPath="bonsoir_windows_plugin.dll"/>
+    <ROW Component="connectivity_plus_plugin.dll" ComponentId="{CC521518-7BE0-4389-BCFC-B225BC864ABE}" Directory_="APPDIR" Attributes="256" KeyPath="connectivity_plus_plugin.dll"/>
     <ROW Component="desktop_window_plugin.dll" ComponentId="{5C80C07D-A9D1-4482-AF19-C271D2711E9F}" Directory_="APPDIR" Attributes="256" KeyPath="desktop_window_plugin.dll"/>
     <ROW Component="flutter_input_injection_plugin.dll" ComponentId="{12BBAEAE-F47D-409E-97E5-783BF339FBC4}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_input_injection_plugin.dll"/>
+    <ROW Component="flutter_virtual_display_plugin.dll" ComponentId="{A80DDE0B-1AD6-4FAC-B463-2DB273CB292B}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_virtual_display_plugin.dll"/>
     <ROW Component="flutter_webrtc_plugin.dll" ComponentId="{7BE6E933-AD6E-4E4D-AAFC-D915EA00FC30}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_webrtc_plugin.dll"/>
     <ROW Component="flutter_window_close_plugin.dll" ComponentId="{A0866AE4-9E83-4D98-AF3E-849B9683F6F4}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_window_close_plugin.dll"/>
     <ROW Component="flutter_windows.dll" ComponentId="{7AC28546-FBA8-4C3B-99C0-239D5D2EFCFE}" Directory_="APPDIR" Attributes="256" KeyPath="flutter_windows.dll"/>
     <ROW Component="ic_activate_off.svg" ComponentId="{C10313F1-3545-444F-B4C0-04B59AED08EF}" Directory_="images_Dir" Attributes="0" KeyPath="ic_activate_off.svg" Type="0"/>
+    <ROW Component="indirect_display_1_2.inf" ComponentId="{71656C35-BB4B-4B29-8D8B-96D35A0AF1C6}" Directory_="drivers_Dir" Attributes="256" Condition="VersionNT64" KeyPath="indirect_display_1_2.dll"/>
     <ROW Component="ink_sparkle.frag" ComponentId="{BFD6B9B3-D751-428D-9D8C-C02A880823C1}" Directory_="shaders_Dir" Attributes="0" KeyPath="ink_sparkle.frag" Type="0"/>
+    <ROW Component="launcher.exe" ComponentId="{9E513C78-8C39-475A-90EA-13D36B4D57B1}" Directory_="APPDIR" Attributes="256" KeyPath="launcher.exe"/>
     <ROW Component="libwebrtc.dll" ComponentId="{1D51C5E6-5F93-44D1-B646-A305D8D05B30}" Directory_="APPDIR" Attributes="256" KeyPath="libwebrtc.dll"/>
     <ROW Component="msvcp140.dll" ComponentId="{23249871-6713-42B8-9882-26ACF4BD7D2B}" Directory_="APPDIR" Attributes="256" KeyPath="msvcp140.dll"/>
+    <ROW Component="profiles.json" ComponentId="{1970CE3B-6233-499E-AB6B-8FB3BA9DDE82}" Directory_="assets_Dir" Attributes="0" KeyPath="profiles.json" Type="0"/>
+    <ROW Component="share_plus_plugin.dll" ComponentId="{D6C731BB-8FEE-493E-A5A7-4497C6FD455E}" Directory_="APPDIR" Attributes="256" KeyPath="share_plus_plugin.dll"/>
     <ROW Component="updater.exe" ComponentId="{79C846D7-470C-49C0-854C-DCBFAD4170CC}" Directory_="APPDIR" Attributes="0" KeyPath="updater.exe"/>
     <ROW Component="url_launcher_windows_plugin.dll" ComponentId="{37C8813E-2619-4851-BA70-0F781E67D1CE}" Directory_="APPDIR" Attributes="256" KeyPath="url_launcher_windows_plugin.dll"/>
     <ROW Component="vcruntime140.dll" ComponentId="{7D964E36-BAEF-4697-9748-6D927C4B8E2E}" Directory_="APPDIR" Attributes="256" KeyPath="vcruntime140.dll"/>
     <ROW Component="vcruntime140_1.dll" ComponentId="{E175E220-6237-43EF-B4E3-F43F53F3CC58}" Directory_="APPDIR" Attributes="256" KeyPath="vcruntime140_1.dll"/>
+    <ROW Component="virtualdisplayservice.exe" ComponentId="{D5C5A453-89C4-4A0B-91DB-78978786B1D6}" Directory_="APPDIR" Attributes="256" KeyPath="virtualdisplayservice.exe"/>
     <ROW Component="window_size_plugin.dll" ComponentId="{705B5D9F-82C3-4E27-9D8F-3F312ACD610E}" Directory_="APPDIR" Attributes="256" KeyPath="window_size_plugin.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0"/>
+    <ROW Feature="indirect_display_1_2" Feature_Parent="MainFeature" Title="indirect_display_1_2" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
@@ -360,13 +371,20 @@
     <ROW File="url_launcher_windows_plugin.dll" Component_="url_launcher_windows_plugin.dll" FileName="URL_LA~1.DLL|url_launcher_windows_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\url_launcher_windows_plugin.dll" SelfReg="false"/>
     <ROW File="window_size_plugin.dll" Component_="window_size_plugin.dll" FileName="WINDOW~1.DLL|window_size_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\window_size_plugin.dll" SelfReg="false"/>
     <ROW File="bonsoir_windows_plugin.dll" Component_="bonsoir_windows_plugin.dll" FileName="BONSOI~1.DLL|bonsoir_windows_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\bonsoir_windows_plugin.dll" SelfReg="false"/>
-    <ROW File="AssetManifest.bin.json" Component_="AssetManifest.bin" FileName="ASSETM~2.JSO|AssetManifest.bin.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\AssetManifest.bin.json" SelfReg="false"/>
     <ROW File="demo_remote.png" Component_="ic_activate_off.svg" FileName="DEMO_R~1.PNG|demo_remote.png" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\demo_remote.png" SelfReg="false"/>
     <ROW File="ic_cast_screen.svg" Component_="ic_activate_off.svg" FileName="IC_CAS~1.SVG|ic_cast_screen.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_cast_screen.svg" SelfReg="false"/>
     <ROW File="ic_quick_connect.svg" Component_="ic_activate_off.svg" FileName="IC_QUI~1.SVG|ic_quick_connect.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_quick_connect.svg" SelfReg="false"/>
     <ROW File="ic_receiver.svg" Component_="ic_activate_off.svg" FileName="IC_REC~1.SVG|ic_receiver.svg" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\images\ic_receiver.svg" SelfReg="false"/>
     <ROW File="RobotoRegular.ttf" Component_="CustomIcons.ttf" FileName="ROBOTO~1.TTF|Roboto-Regular.ttf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\fonts\Roboto-Regular.ttf" SelfReg="false"/>
-    <ROW File="NOTICES" Component_="AssetManifest.bin" FileName="NOTICES" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\NOTICES" SelfReg="false"/>
+    <ROW File="connectivity_plus_plugin.dll" Component_="connectivity_plus_plugin.dll" FileName="CONNEC~1.DLL|connectivity_plus_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\connectivity_plus_plugin.dll" SelfReg="false"/>
+    <ROW File="profiles.json" Component_="profiles.json" FileName="PROFIL~1.JSO|profiles.json" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\data\flutter_assets\assets\profiles.json" SelfReg="false"/>
+    <ROW File="indirect_display_1_2.cat" Component_="indirect_display_1_2.inf" FileName="INDIRE~1.CAT|indirect_display_1_2.cat" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display_1_2.cat" SelfReg="false"/>
+    <ROW File="indirect_display_1_2.dll" Component_="indirect_display_1_2.inf" FileName="INDIRE~1.DLL|indirect_display_1_2.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display_1_2.dll" SelfReg="false"/>
+    <ROW File="indirect_display_1_2.inf" Component_="indirect_display_1_2.inf" FileName="INDIRE~1.INF|indirect_display_1_2.inf" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\drivers\indirect_display_1_2.inf" SelfReg="false"/>
+    <ROW File="flutter_virtual_display_plugin.dll" Component_="flutter_virtual_display_plugin.dll" FileName="FLUTTE~5.DLL|flutter_virtual_display_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\flutter_virtual_display_plugin.dll" SelfReg="false"/>
+    <ROW File="launcher.exe" Component_="launcher.exe" FileName="launcher.exe" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\launcher.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="share_plus_plugin.dll" Component_="share_plus_plugin.dll" FileName="SHARE_~1.DLL|share_plus_plugin.dll" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\share_plus_plugin.dll" SelfReg="false"/>
+    <ROW File="virtualdisplayservice.exe" Component_="virtualdisplayservice.exe" FileName="VIRTUA~1.EXE|virtual-display-service.exe" Attributes="0" SourcePath="..\build\windows\x64\runner\Release\virtual-display-service.exe" SelfReg="false" DigSign="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
@@ -381,7 +399,10 @@
     <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DigCertStoreComponent">
-    <ROW TimeStampUrl="http://timestamp.digicert.com" SignerDescription="[|ProductName]" SignOptions="7" SignTool="0" UseSha256="1" Thumbprint="c46624e8d674e5e491047d8b831599c6d96ee77f Subject: ViewSonic International Corporation&#10;Issuer: DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1&#10;Valid from 10/25/2021 to 01/03/2025&#10;User\MY" Subject="CN=ViewSonic International Corporation, O=ViewSonic International Corporation, S=New Taipei City, C=TW, SERIALNUMBER=23553019, OID.1.3.6.1.4.1.311.60.2.1.3=TW, OID.2.5.4.15=Private Organization"/>
+    <ROW TimeStampUrl="http://timestamp.digicert.com" SignerDescription="[|ProductName]" SignOptions="7" SignTool="0" UseSha256="1" Thumbprint="c46624e8d674e5e491047d8b831599c6d96ee77f Subject: ViewSonic International Corporation&#10;Issuer: DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1&#10;Valid from 10/25/2021 to 01/03/2025" Subject="CN=ViewSonic International Corporation, O=ViewSonic International Corporation, S=New Taipei City, C=TW, SERIALNUMBER=23553019, OID.1.3.6.1.4.1.311.60.2.1.3=TW, OID.2.5.4.15=Private Organization" Store="User\MY"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DynamicPropertyComponent">
+    <ROW Property="ProductVersion" Type="2" SourcePath="AirSync_Sender.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
     <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
@@ -391,6 +412,7 @@
     <ROW Fragment="SequenceDialogs.aip" Path="&lt;AI_THEMES&gt;classic\fragments\SequenceDialogs.aip"/>
     <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
     <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+    <ROW Fragment="Themes.aip" Path="&lt;AI_FRAGS&gt;Themes.aip"/>
     <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;classic\fragments\UI.aip"/>
     <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
     <ROW Fragment="VerifyRemoveDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\VerifyRemoveDlg.aip"/>
@@ -399,6 +421,9 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiConditionComponent">
+    <ROW Feature_="indirect_display_1_2" Level="0" Condition="((VersionNT &lt; 500) OR (NOT VersionNT))"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
     <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
@@ -434,6 +459,7 @@
     <ROW Action="AI_EnableDebugLog" Type="321" Source="aicustact.dll" Target="EnableDebugLog"/>
     <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
     <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
+    <ROW Action="AI_PRESERVE_INSTALL_TYPE" Type="65" Source="aicustact.dll" Target="PreserveInstallType"/>
     <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
     <ROW Action="AI_ResolveKnownFolders" Type="1" Source="aicustact.dll" Target="AI_ResolveKnownFolders"/>
     <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
@@ -443,6 +469,9 @@
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFiles64Folder][Manufacturer]\[ProductName]#DefaultBuild_1:[ProgramFiles64Folder][Manufacturer]\[ProductName]#ReleaseBuild_1:[ProgramFiles64Folder][Manufacturer]\[ProductName]"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDriverPackagesComponent">
+    <ROW InfFileName="indirect_display_1_2.inf" Flags="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatCompsComponent">
     <ROW Feature_="MainFeature" Component_="APPDIR"/>
@@ -469,6 +498,13 @@
     <ROW Feature_="MainFeature" Component_="url_launcher_windows_plugin.dll"/>
     <ROW Feature_="MainFeature" Component_="window_size_plugin.dll"/>
     <ROW Feature_="MainFeature" Component_="bonsoir_windows_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="connectivity_plus_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="profiles.json"/>
+    <ROW Feature_="MainFeature" Component_="flutter_virtual_display_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="launcher.exe"/>
+    <ROW Feature_="MainFeature" Component_="share_plus_plugin.dll"/>
+    <ROW Feature_="MainFeature" Component_="virtualdisplayservice.exe"/>
+    <ROW Feature_="indirect_display_1_2" Component_="indirect_display_1_2.inf"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="AirSync_Sender.exe" SourcePath="..\build\windows\x64\runner\Release\AirSync_Sender.exe" Index="0"/>
@@ -501,6 +537,7 @@
     <ROW Action="AI_ResolveKnownFolders" Sequence="53"/>
     <ROW Action="AI_DpiContentScale" Sequence="52"/>
     <ROW Action="AI_EnableDebugLog" Sequence="51"/>
+    <ROW Action="AI_PRESERVE_INSTALL_TYPE" Sequence="199"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
     <ROW Condition="( Version9X OR VersionNT64 )" Description="[ProductName] cannot be installed on [WindowsTypeNTDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT" IsPredefined="true" Builds="DefaultBuild;DefaultBuild_1;ReleaseBuild_1"/>
@@ -510,14 +547,19 @@
     <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild;DefaultBuild_1;ReleaseBuild_1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
+    <ROW Registry="Manufacturer" Root="-1" Key="Software\[Manufacturer]" Name="\"/>
     <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
+    <ROW Registry="ProductName" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="\"/>
+    <ROW Registry="Software" Root="-1" Key="Software" Name="\"/>
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
     <ROW ServiceControl="updater" Name="AirSyncSenderUpdater" Event="160" Wait="1" Component_="updater.exe"/>
+    <ROW ServiceControl="virtualdisplayservice.exe" Name="Viewsonic AirSync Virtual Display Service" Event="161" Wait="1" Component_="virtualdisplayservice.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServInstComponent">
     <ROW ServiceInstall="updater" Name="AirSyncSenderUpdater" DisplayName="AirSync Sender Updater" ServiceType="16" StartType="3" ErrorControl="1" Arguments="/runservice" Component_="updater.exe" Description="Updater Support Service"/>
+    <ROW ServiceInstall="virtualdisplayservice.exe" Name="Viewsonic AirSync Virtual Display Service" DisplayName="Viewsonic AirSync Virtual Display Service" ServiceType="16" StartType="2" ErrorControl="1" Component_="virtualdisplayservice.exe" Description="Viewsonic AirSync Virtual Display Service"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
     <ROW Shortcut="AirSyncSender" Directory_="SHORTCUTDIR" Name="DISPLA~1|AirSync Sender" Component_="AirSync_Sender.exe" Target="[#AirSync_Sender.exe]" Hotkey="0" Icon_="AirSync_Sender.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR" Advertised="true"/>

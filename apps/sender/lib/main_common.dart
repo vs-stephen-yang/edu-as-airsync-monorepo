@@ -30,6 +30,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_virtual_display/flutter_virtual_display.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -43,6 +44,10 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
   await AppPreferences.ensureInitialized();
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   await AppInstanceCreate.ensureInitialized();
+  bool? isSupported = await FlutterVirtualDisplay.instance.isSupported();
+  print('isSupported: $isSupported'); // TODO
+
+  await FlutterVirtualDisplay.instance.initialize();
 
   AppAnalytics.initializeApp(
     instrumentationKey: settings.appInsightsInstrumentationKey,

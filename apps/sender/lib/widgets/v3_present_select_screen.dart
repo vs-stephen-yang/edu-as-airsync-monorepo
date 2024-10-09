@@ -13,6 +13,7 @@ import 'package:display_cast_flutter/widgets/v3_custom_white_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_virtual_display/flutter_virtual_display.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:gap/gap.dart';
 import 'package:lottie/lottie.dart';
@@ -54,6 +55,7 @@ class V3PresentSelectScreen extends StatelessWidget {
 
   Future<void> _handleDesktopPlatform(
       BuildContext context, ChannelProvider provider) async {
+    await FlutterVirtualDisplay.instance.startVirtualDisplay();
     // start timeout timer (30 sec)
     ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
       log.info('timeout');
@@ -70,7 +72,7 @@ class V3PresentSelectScreen extends StatelessWidget {
         );
         return selectScreenDialog!;
       },
-    ).then((value) {
+    ).then((value) async{
       log.info('selectedSource: ${value?.selectedSource?.type})');
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       if (value != null && value.selectedSource != null) {
@@ -83,6 +85,7 @@ class V3PresentSelectScreen extends StatelessWidget {
           provider.presentStart(selectedSource: value.selectedSource);
         }
       } else {
+        await FlutterVirtualDisplay.instance.stopVirtualDisplay();
         SelectScreenDialog._timer?.cancel();
         for (var element in selectScreenDialog!._subscriptions) {
           element.cancel();

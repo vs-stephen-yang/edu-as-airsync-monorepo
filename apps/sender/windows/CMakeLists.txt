@@ -87,6 +87,23 @@ if(PLUGIN_BUNDLED_LIBRARIES)
     COMPONENT Runtime)
 endif()
 
+# Install Additional Files
+
+# Install the bundled drivers and services.
+set(INSTALL_BUNDLE_DRIVERS_DIR "${CMAKE_INSTALL_PREFIX}/drivers")
+
+if(flutter_virtual_display_bundled_drivers)
+  install(FILES "${flutter_virtual_display_bundled_drivers}"
+          DESTINATION "${INSTALL_BUNDLE_DRIVERS_DIR}"
+          COMPONENT Runtime)
+endif()
+
+if(flutter_virtual_display_bundled_services)
+  install(FILES "${flutter_virtual_display_bundled_services}"
+      DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+      COMPONENT Runtime)
+endif()
+
 # Fully re-copy the assets directory on each build to avoid having stale files
 # from a previous install.
 install(TARGETS launcher RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}"

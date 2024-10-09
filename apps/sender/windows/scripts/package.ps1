@@ -2,7 +2,7 @@ $windows_kit_bin_base = "C:\Program Files (x86)\Windows Kits\10\bin\"
 
 $windows_kit_bin_dir = Get-ChildItem ${windows_kit_bin_base} | where{$_.Name -like "10.0.*"} | Select-Object -last 1
 
-$ai_bin = "C:\Program Files (x86)\Caphyon\Advanced Installer 18.5\bin\x86\AdvancedInstaller.com"
+$ai_bin = "C:\Program Files (x86)\Caphyon\Advanced Installer 21.2.2\bin\x86\AdvancedInstaller.com"
 $mt_bin = "${windows_kit_bin_dir}\x86\mt.exe"
 
 $manifest_path = "${pwd}\windows\runner\runner.exe-uipi.manifest"
