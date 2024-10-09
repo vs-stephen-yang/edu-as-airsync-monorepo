@@ -432,6 +432,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_virtual_display:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "release-1.0.1"
+      resolved-ref: d569d50cb2c527e7c4677e37a96cf50d5afda168
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-virtual-display"
+    source: git
+    version: "0.0.1"
   flutter_web_plugins:
     dependency: transitive
     description: flutter

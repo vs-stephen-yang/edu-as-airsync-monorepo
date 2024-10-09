@@ -11,7 +11,7 @@ variables:
   - name: Flutter.Bin
     value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
   - name: AdvancedInstaller.Bin
-    value: 'C:\Program Files (x86)\Caphyon\Advanced Installer 18.5\bin\x86\AdvancedInstaller.com'
+    value: 'C:\Program Files (x86)\Caphyon\Advanced Installer 21.2.2\bin\x86\AdvancedInstaller.com'
   - name: Installer.Dir
     value: "$(Build.SourcesDirectory)/windows/package/"
   - name: Build.Dir

@@ -10,11 +10,12 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
-import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/utilities/wakelock_manager.dart';
+import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
+import 'package:flutter_virtual_display/flutter_virtual_display.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:ion_sdk_flutter/src/utils.dart' as sdp_format_utils;
 import 'package:window_size/window_size.dart';
@@ -306,6 +307,7 @@ class WebRTCConnector {
             ? true
             : {
                 'deviceId': _deviceId,
+                'autoSelectVirtualDisplay': false, // TODO
                 'mandatory': {
                   'frameRate': _trackFrameRate,
                 },
@@ -619,6 +621,7 @@ class WebRTCConnector {
 
     await _disposeStream();
     await _peerConnectionDisconnect();
+    await FlutterVirtualDisplay.instance.stopVirtualDisplay();
   }
 
   Future<void> _disposeStream() async {
