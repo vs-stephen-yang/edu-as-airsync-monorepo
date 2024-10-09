@@ -261,6 +261,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Share your screen"),
         "v3_main_privacy":
             MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+        "v3_main_receive_app_action":
+            MessageLookupByLibrary.simpleMessage("Connect"),
+        "v3_main_receive_app_receive_from":
+            MessageLookupByLibrary.simpleMessage("Receive from %s"),
+        "v3_main_receive_app_stop":
+            MessageLookupByLibrary.simpleMessage("Stop"),
+        "v3_main_receive_app_subtitle":
+            MessageLookupByLibrary.simpleMessage("Share screen to my device"),
+        "v3_main_receive_app_title":
+            MessageLookupByLibrary.simpleMessage("Receive"),
         "v3_main_select_role_receive":
             MessageLookupByLibrary.simpleMessage("Receive"),
         "v3_main_select_role_share":

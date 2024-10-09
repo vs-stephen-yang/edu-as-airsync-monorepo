@@ -10,6 +10,7 @@ import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_text_form_field.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_button.dart';
+import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -83,6 +84,8 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
 
   @override
   Widget build(BuildContext context) {
+    ChannelProvider channelProvider =
+        Provider.of<ChannelProvider>(context, listen: false);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment:
@@ -114,12 +117,19 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
         ],
         if (!kIsWeb) ...[
           SizedBox(
-              width: 138,
-              height: 120,
-              child: SvgPicture.asset('assets/images/v3_ic_select_share.svg')),
+            width: 138,
+            height: 120,
+            child: SvgPicture.asset(
+              channelProvider.currentRole == JoinIntentType.remoteScreen
+                  ? 'assets/images/v3_ic_select_receive.svg'
+                  : 'assets/images/v3_ic_select_share.svg',
+            ),
+          ),
           const Padding(padding: EdgeInsets.only(bottom: 24)),
           AutoSizeText(
-            S.of(context).v3_main_moderator_app_title,
+            channelProvider.currentRole == JoinIntentType.remoteScreen
+                ? S.of(context).v3_main_receive_app_title
+                : S.of(context).v3_main_moderator_app_title,
             style: TextStyle(
               color: context.tokens.color.vsdswColorOnSurface,
               fontSize: 20,
@@ -128,7 +138,9 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
           ),
           const Padding(padding: EdgeInsets.only(bottom: 8)),
           AutoSizeText(
-            S.of(context).v3_main_moderator_app_subtitle,
+            channelProvider.currentRole == JoinIntentType.remoteScreen
+                ? S.of(context).v3_main_receive_app_subtitle
+                : S.of(context).v3_main_moderator_app_subtitle,
             style: TextStyle(
               color: context.tokens.color.vsdswColorOnSurface,
               fontSize: 16,
@@ -200,7 +212,9 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
         V3PresentIdleButton(
           key: buttonKey,
           fixedSize: const Size(kIsWeb ? 240 : 300, 48),
-          buttonText: S.of(context).v3_main_moderator_action,
+          buttonText: channelProvider.currentRole == JoinIntentType.remoteScreen
+              ? S.of(context).v3_main_receive_app_action
+              : S.of(context).v3_main_moderator_action,
           onPressed: () async {
             await _clickPresent();
           },
