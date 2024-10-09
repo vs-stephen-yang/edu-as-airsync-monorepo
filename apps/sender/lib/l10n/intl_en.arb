@@ -132,5 +132,10 @@
     "v3_device_list_dialog_connect": "Connect",
     "v3_device_list_dialog_invalid_otp": "Incorrect one-time password",
     "v3_device_list_button_text": "Quick connect by",
-    "v3_device_list_button_device_list": "Device List"
+    "v3_device_list_button_device_list": "Device List",
+    "v3_present_select_screen_subtitle": "%s wants to share your screen. Choose what to share.",
+    "v3_present_select_screen_share_audio": "Share computer audio.",
+    "v3_present_select_screen_extension": "Screen extension",
+    "v3_present_select_screen_extension_desc": "Expand Your Workspace",
+    "v3_present_select_screen_extension_desc2": "This allows you to drag content between your personal device and the IFP, enhancing real-time interaction and control."
 }
