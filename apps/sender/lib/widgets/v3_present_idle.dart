@@ -7,6 +7,7 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/widgets/v3_message_dialog.dart';
 import 'package:display_cast_flutter/widgets/v3_present_device_list_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_text_field.dart';
@@ -31,6 +32,8 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
   String displayCode = '';
   String password = '';
   bool isDisplayCodeSelectedFromHistory = false;
+  bool isSessionFullDialogOnScreen = false;
+  bool isScreenFullDialogOnScreen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +49,15 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
         presentBtnKey.currentState?.setEnable(false);
         presentBtnKey.currentState?.setLoadingState(false);
         channelProvider.resetMessage();
+      }
+      if (channelProvider.isJoinDisplayRejected &&
+          !isSessionFullDialogOnScreen) {
+        channelProvider.isJoinDisplayRejected = false;
+        _showSessionFullDialog();
+      }
+      if (channelProvider.isPresentRejected && !isScreenFullDialogOnScreen) {
+        channelProvider.isPresentRejected = false;
+        _showScreenFullDialog();
       }
     });
 
@@ -183,5 +195,43 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
         presentStateProvider.presentDeviceListPage();
       },
     );
+  }
+
+  _showSessionFullDialog() async {
+    isSessionFullDialogOnScreen = true;
+    FocusScope.of(context).unfocus();
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return V3MessageDialog(
+          stringTitle: S.of(context).v3_present_session_full,
+          stringContent: S.of(context).v3_present_session_full_description,
+          stringAction: S.of(context).v3_present_session_full_action,
+        );
+      },
+    ).then((_) {
+      isSessionFullDialogOnScreen = false;
+      setState(() {});
+    });
+  }
+
+  _showScreenFullDialog() async {
+    isScreenFullDialogOnScreen = true;
+    FocusScope.of(context).unfocus();
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return V3MessageDialog(
+          stringTitle: S.of(context).v3_present_screen_full,
+          stringContent: S.of(context).v3_present_screen_full_description,
+          stringAction: S.of(context).v3_present_screen_full_action,
+        );
+      },
+    ).then((_) {
+      isScreenFullDialogOnScreen = false;
+      setState(() {});
+    });
   }
 }

@@ -280,6 +280,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_select_role_title": MessageLookupByLibrary.simpleMessage(
             "Choose your presentation mode"),
         "v3_main_terms": MessageLookupByLibrary.simpleMessage("Terms of use"),
+        "v3_present_screen_full":
+            MessageLookupByLibrary.simpleMessage("Screen Full"),
+        "v3_present_screen_full_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_present_screen_full_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Has reached maximum split screen amount."),
         "v3_present_select_screen_extension":
             MessageLookupByLibrary.simpleMessage("Screen extension"),
         "v3_present_select_screen_extension_desc":
@@ -292,6 +299,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_present_select_screen_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "%s wants to share your screen. Choose what to share."),
+        "v3_present_session_full":
+            MessageLookupByLibrary.simpleMessage("Session Full"),
+        "v3_present_session_full_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_present_session_full_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Unable to join, The session is react to its maximum."),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Quick connect by scan the QR code"),
         "v3_select_screen_ios_countdown":

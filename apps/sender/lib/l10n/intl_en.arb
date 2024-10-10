@@ -138,6 +138,12 @@
   "v3_present_select_screen_extension": "Screen extension",
   "v3_present_select_screen_extension_desc": "Expand Your Workspace",
   "v3_present_select_screen_extension_desc2": "This allows you to drag content between your personal device and the IFP, enhancing real-time interaction and control.",
+  "v3_present_session_full": "Session Full",
+  "v3_present_session_full_description": "Unable to join, The session is react to its maximum.",
+  "v3_present_session_full_action": "OK",
+  "v3_present_screen_full": "Screen Full",
+  "v3_present_screen_full_description": "Has reached maximum split screen amount.",
+  "v3_present_screen_full_action": "OK",
   "v3_select_screen_ios_countdown": "Time remain",
   "v3_select_screen_ios_start_sharing": "Start sharing"
 }
