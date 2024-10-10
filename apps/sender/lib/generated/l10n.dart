@@ -1441,6 +1441,66 @@ class S {
     );
   }
 
+  /// `Session Full`
+  String get v3_present_session_full {
+    return Intl.message(
+      'Session Full',
+      name: 'v3_present_session_full',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to join, The session is react to its maximum.`
+  String get v3_present_session_full_description {
+    return Intl.message(
+      'Unable to join, The session is react to its maximum.',
+      name: 'v3_present_session_full_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get v3_present_session_full_action {
+    return Intl.message(
+      'OK',
+      name: 'v3_present_session_full_action',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Screen Full`
+  String get v3_present_screen_full {
+    return Intl.message(
+      'Screen Full',
+      name: 'v3_present_screen_full',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Has reached maximum split screen amount.`
+  String get v3_present_screen_full_description {
+    return Intl.message(
+      'Has reached maximum split screen amount.',
+      name: 'v3_present_screen_full_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get v3_present_screen_full_action {
+    return Intl.message(
+      'OK',
+      name: 'v3_present_screen_full_action',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Time remain`
   String get v3_select_screen_ios_countdown {
     return Intl.message(

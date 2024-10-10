@@ -107,6 +107,9 @@ class ChannelProvider extends ChangeNotifier {
 
   String? deviceName;
 
+  bool isJoinDisplayRejected = false;
+  bool isPresentRejected = false;
+
   void setChannelConnectError(ChannelConnectError error) {
     AppAnalytics.instance.trackEvent(
       'connect_error',
@@ -279,15 +282,16 @@ class ChannelProvider extends ChangeNotifier {
           if (currentRole == JoinIntentType.present) {
             if (reason?.code ==
                 JoinDisplayRejectedReasonCode.maxClientsReached.code) {
-              Toast.makeToast(S.current.toast_maximum_moderated);
+              // Toast.makeToast(S.current.toast_maximum_moderated);
+              isJoinDisplayRejected = true;
             }
             presentEnd();
           } else {
             if (reason?.code ==
                 JoinDisplayRejectedReasonCode.maxClientsReached.code) {
               removeRemoteScreenClient();
-              // todo: implement session full UI UX
-              Toast.makeToast(S.current.toast_maximum_remote_screen);
+              // Toast.makeToast(S.current.toast_maximum_remote_screen);
+              isJoinDisplayRejected = true;
             }
           }
           break;
@@ -297,7 +301,8 @@ class ChannelProvider extends ChangeNotifier {
           if (currentRole == JoinIntentType.present) {
             if (reason?.code ==
                 PresentRejectedReasonCode.maxPresentReached.code) {
-              Toast.makeToast(S.current.toast_maximum_split_screen);
+              // Toast.makeToast(S.current.toast_maximum_split_screen);
+              isPresentRejected = true;
             }
             if (moderatorStatus) {
               // moderator mode need keep sender in moderator list,
