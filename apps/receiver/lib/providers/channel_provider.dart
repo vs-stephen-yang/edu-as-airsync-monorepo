@@ -455,7 +455,7 @@ class ChannelProvider extends ChangeNotifier {
             if (isModeratorMode) {
               if (HybridConnectionList().getConnectionCount() >=
                   HybridConnectionList.maxHybridConnection) {
-                sendPresentRejectMessage(channel);
+                sendJoinDisplayRejectMessage(channel);
                 return;
               }
               if (msg.name != null && HybridConnectionList().isPresenting()) {
@@ -466,19 +466,14 @@ class ChannelProvider extends ChangeNotifier {
             } else {
               if (HybridConnectionList.hybridSplitScreenCount.value >=
                   HybridConnectionList.maxHybridSplitScreen) {
-                sendPresentRejectMessage(channel);
+                sendJoinDisplayRejectMessage(channel);
                 return;
               }
             }
             rtcConnector = _onJoinDisplay(rtcConnector, mode, msg);
           } else {
             if (_remoteScreenConnectors.length >= maxRemoteScreenConnection) {
-              final message = JoinDisplayRejectedMessage();
-              message.reason = Reason(
-                JoinDisplayRejectedReasonCode.maxClientsReached.code,
-                text: 'Max number of clients reached',
-              );
-              channel.send(message);
+              sendJoinDisplayRejectMessage(channel);
               return;
             }
             remoteScreenConnector = RemoteScreenConnector(
@@ -736,6 +731,15 @@ class ChannelProvider extends ChangeNotifier {
     HybridConnectionList().addConnection(rtcConnector);
 
     return rtcConnector;
+  }
+
+  void sendJoinDisplayRejectMessage(Channel channel) {
+    final message = JoinDisplayRejectedMessage();
+    message.reason = Reason(
+      JoinDisplayRejectedReasonCode.maxClientsReached.code,
+      text: 'Max number of clients reached',
+    );
+    channel.send(message);
   }
 
   Future<int?> registerInstanceIndexById(
