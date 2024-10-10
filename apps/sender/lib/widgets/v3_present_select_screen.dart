@@ -40,7 +40,7 @@ class V3PresentSelectScreen extends StatelessWidget {
           await Helper.requestCapturePermission();
           await _requestBackgroundPermission();
         }
-        var value = CustomDesktopCapturerSource(null, true, false);
+        var value = CustomDesktopCaptureSource(null, true, false);
         channelProvider.presentStart(
             selectedSource: value.selectedSource,
             systemAudio: value.systemAudio);
@@ -66,7 +66,7 @@ class V3PresentSelectScreen extends StatelessWidget {
       selectScreenDialog?.cancel();
     });
 
-    await showDialog<CustomDesktopCapturerSource>(
+    await showDialog<CustomDesktopCaptureSource>(
       context: context,
       builder: (context) {
         selectScreenDialog = SelectScreenDialog(
@@ -560,7 +560,7 @@ class SelectScreenDialog extends Dialog {
     for (var element in _subscriptions) {
       element.cancel();
     }
-    Navigator.pop<CustomDesktopCapturerSource>(ctx, null);
+    Navigator.pop<CustomDesktopCaptureSource>(ctx, null);
   }
 
   void _ok(DesktopCapturerSource? selectedSource, bool systemAudio, bool isExtensionSelected) async {
@@ -568,8 +568,8 @@ class SelectScreenDialog extends Dialog {
     for (var element in _subscriptions) {
       element.cancel();
     }
-    Navigator.pop<CustomDesktopCapturerSource>(
-        ctx, CustomDesktopCapturerSource(selectedSource, systemAudio, isExtensionSelected));
+    Navigator.pop<CustomDesktopCaptureSource>(
+        ctx, CustomDesktopCaptureSource(selectedSource, systemAudio, isExtensionSelected));
   }
 
   Future<void> _getSources(SourceType sourceType) async {
@@ -658,11 +658,11 @@ class ScreenExtensionPage extends StatelessWidget {
   }
 }
 
-class CustomDesktopCapturerSource {
+class CustomDesktopCaptureSource {
   DesktopCapturerSource? selectedSource;
   bool systemAudio = false;
   bool isExtensionSelected = false;
-  CustomDesktopCapturerSource(this.selectedSource, this.systemAudio, this.isExtensionSelected);
+  CustomDesktopCaptureSource(this.selectedSource, this.systemAudio, this.isExtensionSelected);
 }
 
 class ThumbnailWidget extends StatefulWidget {
@@ -704,14 +704,16 @@ class _ThumbnailWidgetState extends State<ThumbnailWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final source = widget.source;
+    final sourceName = source.name.length > 20 ? '${source.name.substring(0, 20)}...' : source.name;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
           child: InkWell(
             onTap: () {
-              log.info('Selected source id => ${widget.source.id}');
-              widget.onTap(widget.source);
+              log.info('Selected source id => ${source.id}');
+              widget.onTap(source);
             },
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -724,10 +726,10 @@ class _ThumbnailWidgetState extends State<ThumbnailWidget> {
                       borderRadius: context.tokens.radii.vsdswRadiusLg,
                     )
                   : null,
-              child: widget.source.thumbnail != null
+              child: source.thumbnail != null
                   ? Image.memory(
                       fit: BoxFit.fill,
-                      widget.source.thumbnail!,
+                source.thumbnail!,
                       gaplessPlayback: true,
                       // alignment: Alignment.center,
                     )
@@ -737,7 +739,7 @@ class _ThumbnailWidgetState extends State<ThumbnailWidget> {
         ),
         const Gap(8),
         Text(
-          widget.source.name,
+          sourceName,
           style: TextStyle(
               fontSize: 16,
               color: context.tokens.color.vsdswColorOnSurface,
