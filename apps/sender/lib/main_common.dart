@@ -44,8 +44,6 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
   await AppPreferences.ensureInitialized();
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   await AppInstanceCreate.ensureInitialized();
-  bool? isSupported = await FlutterVirtualDisplay.instance.isSupported();
-  print('isSupported: $isSupported'); // TODO
 
   await FlutterVirtualDisplay.instance.initialize();
 

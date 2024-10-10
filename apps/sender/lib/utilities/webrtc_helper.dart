@@ -30,6 +30,7 @@ class WebRTCHelper {
     required String sessionId,
     required ProfileStore profileStore,
     required bool systemAudio,
+    required bool autoVirtualDisplay,
     required Function(PresentSignalMessage message) sendPresentSignalMessage,
     required Function(RTCPeerConnectionState state) onRTCPeerConnectionState,
     required Function() onStopPresent,
@@ -39,6 +40,7 @@ class WebRTCHelper {
     webRTCConnector = WebRTCConnector(
       preset: profileStore.getSelectedProfile().presets.first,
       systemAudio: systemAudio,
+      autoVirtualDisplay: autoVirtualDisplay,
       sendSignalMessage: sendPresentSignalMessage,
       onConnectionState: onRTCPeerConnectionState,
       onStopPresent: onStopPresent,

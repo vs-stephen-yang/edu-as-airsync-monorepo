@@ -24,6 +24,7 @@ class WebRTCConnector {
   WebRTCConnector({
     required this.preset,
     required this.systemAudio,
+    required this.autoVirtualDisplay,
     required this.sendSignalMessage,
     required this.onConnectionState,
     required this.onStopPresent,
@@ -74,6 +75,7 @@ class WebRTCConnector {
   Preset preset;
   bool touchBack = false;
   bool systemAudio = false;
+  bool autoVirtualDisplay = false;
   final List<String> _codecPreferences = ['h264', 'vp8', 'vp9'];
   bool _isScreenType = false;
 
@@ -307,7 +309,7 @@ class WebRTCConnector {
             ? true
             : {
                 'deviceId': _deviceId,
-                'autoSelectVirtualDisplay': false, // TODO
+                'autoSelectVirtualDisplay': autoVirtualDisplay,
                 'mandatory': {
                   'frameRate': _trackFrameRate,
                 },

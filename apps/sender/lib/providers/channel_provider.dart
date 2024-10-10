@@ -467,6 +467,7 @@ class ChannelProvider extends ChangeNotifier {
   Future<void> presentStart({
     required dynamic selectedSource,
     bool systemAudio = false,
+    bool autoVirtualDisplay = false,
   }) async {
     // reset states
     _isRtcFirstConnected = false;
@@ -477,6 +478,7 @@ class ChannelProvider extends ChangeNotifier {
       sessionId: _sessionId,
       profileStore: profileStore,
       systemAudio: systemAudio,
+      autoVirtualDisplay: autoVirtualDisplay,
       sendPresentSignalMessage: (PresentSignalMessage message) {
         // offer, answer, candidate
         message.sessionId = _sessionId;

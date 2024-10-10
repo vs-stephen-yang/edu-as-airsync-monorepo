@@ -40,7 +40,7 @@ class V3PresentSelectScreen extends StatelessWidget {
           await Helper.requestCapturePermission();
           await _requestBackgroundPermission();
         }
-        var value = CustomDesktopCapturerSource(null, true);
+        var value = CustomDesktopCapturerSource(null, true, false);
         channelProvider.presentStart(
             selectedSource: value.selectedSource,
             systemAudio: value.systemAudio);
@@ -55,7 +55,10 @@ class V3PresentSelectScreen extends StatelessWidget {
 
   Future<void> _handleDesktopPlatform(
       BuildContext context, ChannelProvider provider) async {
-    await FlutterVirtualDisplay.instance.startVirtualDisplay();
+    bool? isSupported = await FlutterVirtualDisplay.instance.isSupported() ?? false;
+    if (isSupported) {
+      await FlutterVirtualDisplay.instance.startVirtualDisplay();
+    }
     // start timeout timer (30 sec)
     ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
       log.info('timeout');
@@ -68,7 +71,7 @@ class V3PresentSelectScreen extends StatelessWidget {
       builder: (context) {
         selectScreenDialog = SelectScreenDialog(
           hostName: provider.deviceName ?? '',
-          isExtensionEnable: WebRTC.platformIsWindows,
+          isExtensionEnable: WebRTC.platformIsWindows && isSupported,
         );
         return selectScreenDialog!;
       },
@@ -80,7 +83,8 @@ class V3PresentSelectScreen extends StatelessWidget {
             value.selectedSource?.type != SourceType.Window) {
           provider.presentStart(
               selectedSource: value.selectedSource,
-              systemAudio: value.systemAudio);
+              systemAudio: value.systemAudio,
+              autoVirtualDisplay: value.isExtensionSelected);
         } else {
           provider.presentStart(selectedSource: value.selectedSource);
         }
@@ -270,6 +274,7 @@ class SelectScreenDialog extends Dialog {
   static Timer? _timer;
   late BuildContext ctx;
   bool _systemAudio = false;
+  bool _isExtensionSelected = false;
   String hostName;
 
   @override
@@ -363,9 +368,19 @@ class SelectScreenDialog extends Dialog {
                                     const BoxConstraints.expand(height: 48),
                                 child: TabBar(
                                   onTap: (index) {
-                                    if (index == 2 && !isExtensionEnable) {
-                                      tabController.animateTo(tabController.previousIndex);
+                                    _selectedSource = null;
+                                    if (index == 2) {
+                                      if (isExtensionEnable) {
+                                        _isExtensionSelected = true;
+                                        desktopCapturer.getSources(types: [ SourceType.Screen ]).then((list) {
+                                          _selectedSource = list.last;
+                                        });
+                                      } else {
+                                        tabController.animateTo(
+                                            tabController.previousIndex);
+                                      }
                                     } else {
+                                      _isExtensionSelected = false;
                                       Future.delayed(
                                           const Duration(milliseconds: 300), () {
                                         _getSources(index == 0
@@ -449,7 +464,7 @@ class SelectScreenDialog extends Dialog {
                                     const Spacer(),
                                     createButton(
                                         text: S.of(context).present_select_screen_cancel,
-                                        textColor: context.tokens.color.vsdswColorOnSurface,
+                                        textColor: context.tokens.color.vsdswColorSecondary,
                                         backgroundColor: Colors.transparent,
                                         onPressed: () {
                                           cancel();
@@ -461,7 +476,7 @@ class SelectScreenDialog extends Dialog {
                                       onPressed: () {
                                         ChannelProvider channelProvider = Provider.of<ChannelProvider>(context, listen: false);
                                         if (channelProvider.isConnectAvailable()) {
-                                          _ok(_selectedSource, _systemAudio);
+                                          _ok(_selectedSource, _systemAudio, _isExtensionSelected);
                                         } else {
                                           Toast.makeFeatureReconnectToast(
                                               channelProvider.reconnectState,
@@ -548,13 +563,13 @@ class SelectScreenDialog extends Dialog {
     Navigator.pop<CustomDesktopCapturerSource>(ctx, null);
   }
 
-  void _ok(DesktopCapturerSource? selectedSource, bool systemAudio) async {
+  void _ok(DesktopCapturerSource? selectedSource, bool systemAudio, bool isExtensionSelected) async {
     _timer?.cancel();
     for (var element in _subscriptions) {
       element.cancel();
     }
     Navigator.pop<CustomDesktopCapturerSource>(
-        ctx, CustomDesktopCapturerSource(selectedSource, systemAudio));
+        ctx, CustomDesktopCapturerSource(selectedSource, systemAudio, isExtensionSelected));
   }
 
   Future<void> _getSources(SourceType sourceType) async {
@@ -646,8 +661,8 @@ class ScreenExtensionPage extends StatelessWidget {
 class CustomDesktopCapturerSource {
   DesktopCapturerSource? selectedSource;
   bool systemAudio = false;
-
-  CustomDesktopCapturerSource(this.selectedSource, this.systemAudio);
+  bool isExtensionSelected = false;
+  CustomDesktopCapturerSource(this.selectedSource, this.systemAudio, this.isExtensionSelected);
 }
 
 class ThumbnailWidget extends StatefulWidget {
