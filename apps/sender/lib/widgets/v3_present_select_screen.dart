@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
@@ -24,18 +25,19 @@ class V3PresentSelectScreen extends StatelessWidget {
   const V3PresentSelectScreen({super.key});
 
   static SelectScreenDialog? selectScreenDialog;
+  bool get platformIsDesktop => Platform.isWindows || Platform.isMacOS || Platform.isLinux;
 
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (WebRTC.platformIsDesktop) {
+      if (platformIsDesktop) {
         // MacOS and Windows
         await _handleDesktopPlatform(context, channelProvider);
       } else {
         // Android and iOS and Web
-        if (WebRTC.platformIsAndroid) {
+        if (Platform.isAndroid) {
           // Android specific
           await Helper.requestCapturePermission();
           await _requestBackgroundPermission();
@@ -47,7 +49,7 @@ class V3PresentSelectScreen extends StatelessWidget {
       }
     });
 
-    if (WebRTC.platformIsIOS) {
+    if (Platform.isIOS) {
       return _buildIosView(context, channelProvider);
     }
     return const SizedBox();
@@ -55,7 +57,7 @@ class V3PresentSelectScreen extends StatelessWidget {
 
   Future<void> _handleDesktopPlatform(
       BuildContext context, ChannelProvider provider) async {
-    bool isSupported = !WebRTC.platformIsWindows
+    bool isSupported = !Platform.isWindows
         ? false
         : (await FlutterVirtualDisplay.instance.isSupported() ?? false);
     if (isSupported) {
@@ -73,7 +75,7 @@ class V3PresentSelectScreen extends StatelessWidget {
       builder: (context) {
         selectScreenDialog = SelectScreenDialog(
           hostName: provider.deviceName ?? '',
-          isExtensionEnable: WebRTC.platformIsWindows && isSupported,
+          isExtensionEnable: Platform.isWindows && isSupported,
         );
         return selectScreenDialog!;
       },
@@ -81,7 +83,7 @@ class V3PresentSelectScreen extends StatelessWidget {
       log.info('selectedSource: ${value?.selectedSource?.type})');
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       if (value != null && value.selectedSource != null) {
-        if (WebRTC.platformIsWindows &&
+        if (Platform.isWindows &&
             value.selectedSource?.type != SourceType.Window) {
           provider.presentStart(
               selectedSource: value.selectedSource,
@@ -91,7 +93,7 @@ class V3PresentSelectScreen extends StatelessWidget {
           provider.presentStart(selectedSource: value.selectedSource);
         }
       } else {
-        if (WebRTC.platformIsWindows) {
+        if (Platform.isWindows) {
           await FlutterVirtualDisplay.instance.stopVirtualDisplay();
         }
         SelectScreenDialog._timer?.cancel();
@@ -279,6 +281,7 @@ class SelectScreenDialog extends Dialog {
   late BuildContext ctx;
   bool _systemAudio = false;
   bool _isExtensionSelected = false;
+  bool get platformIsDesktop => Platform.isWindows || Platform.isMacOS || Platform.isLinux;
   String hostName;
 
   @override
@@ -305,42 +308,40 @@ class SelectScreenDialog extends Dialog {
           child: Column(
             children: <Widget>[
               Container(
-                padding: const EdgeInsets.only(top: 24, left: 33),
+                padding: const EdgeInsets.only(left: 32, top: 24),
                 child: Stack(
                   children: <Widget>[
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            S.of(context).present_role_cast_screen,
-                            style: TextStyle(
-                              color: context.tokens.color.vsdswColorOnSurface,
-                              fontSize: 24,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w700,
-                            ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          S.of(context).present_role_cast_screen,
+                          style: TextStyle(
+                            color: context.tokens.color.vsdswColorOnSurface,
+                            fontSize: 24,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w700,
                           ),
-                          const Gap(8),
-                          Text(
-                            sprintf(S.current.v3_present_select_screen_subtitle, [hostName]),
-                            style: TextStyle(
-                              color: context.tokens.color.vsdswColorOnSurface,
-                              fontSize: 18,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,
-                            ),
+                        ),
+                        const Gap(8),
+                        Text(
+                          sprintf(S.current.v3_present_select_screen_subtitle, [hostName]),
+                          style: TextStyle(
+                            color: context.tokens.color.vsdswColorOnSurface,
+                            fontSize: 18,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     Align(
                       alignment: Alignment.topRight,
                       child: InkWell(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 14, right: 14, bottom: 14),
+                        child: Container(
+                          margin: const EdgeInsets.all(8),
+                          width: 48,
+                          height: 48,
                           child: Icon(Icons.close,
                               size: 20,
                               color: context.tokens.color.vsdswColorOnSurface),
@@ -371,17 +372,14 @@ class SelectScreenDialog extends Dialog {
                                 constraints:
                                     const BoxConstraints.expand(height: 48),
                                 child: TabBar(
-                                  onTap: (index) {
+                                  onTap: (index) async {
                                     _selectedSource = null;
                                     if (index == 2) {
                                       if (isExtensionEnable) {
                                         _isExtensionSelected = true;
-                                        desktopCapturer.getSources(types: [ SourceType.Screen ]).then((list) {
-                                          _selectedSource = list.last;
-                                        });
+                                        _selectedSource = (await desktopCapturer.getSources(types: [ SourceType.Screen ])).last;
                                       } else {
-                                        tabController.animateTo(
-                                            tabController.previousIndex);
+                                        tabController.animateTo(tabController.previousIndex);
                                       }
                                     } else {
                                       _isExtensionSelected = false;
@@ -416,8 +414,8 @@ class SelectScreenDialog extends Dialog {
                                   padding: const EdgeInsets.symmetric(horizontal: 64),
                                   child: TabBarView(
                                     children: [
-                                      _buildGridView(SourceType.Screen, setState),
-                                      _buildGridView(SourceType.Window, setState),
+                                      _buildGridView(SourceType.Screen),
+                                      _buildGridView(SourceType.Window),
                                       const Align(
                                         alignment: Alignment.center,
                                         child: ScreenExtensionPage(),
@@ -433,9 +431,7 @@ class SelectScreenDialog extends Dialog {
                                 padding: const EdgeInsets.symmetric(horizontal: 33),
                                 child: Row(
                                   children: <Widget>[
-                                    if (WebRTC.platformIsDesktop &&
-                                        tabController.index ==
-                                            SourceType.Screen.index)
+                                    if (platformIsDesktop && tabController.index == SourceType.Screen.index)
                                       SizedBox(
                                         height:48,
                                         child: Row(
@@ -467,12 +463,13 @@ class SelectScreenDialog extends Dialog {
                                       ),
                                     const Spacer(),
                                     createButton(
-                                        text: S.of(context).present_select_screen_cancel,
-                                        textColor: context.tokens.color.vsdswColorSecondary,
-                                        backgroundColor: Colors.transparent,
-                                        onPressed: () {
-                                          cancel();
-                                        }),
+                                      text: S.of(context).present_select_screen_cancel,
+                                      textColor: context.tokens.color.vsdswColorSecondary,
+                                      backgroundColor: Colors.transparent,
+                                      onPressed: () {
+                                        cancel();
+                                      },
+                                    ),
                                     createButton(
                                       text: S.current.v3_main_select_role_share,
                                       textColor: context.tokens.color.vsdswColorOnPrimary,
@@ -594,24 +591,24 @@ class SelectScreenDialog extends Dialog {
     }
   }
 
-  Widget _buildGridView(SourceType type, StateSetter setState) {
+  Widget _buildGridView(SourceType type) {
     return Align(
       alignment: Alignment.topCenter,
       child: GridView.count(
         crossAxisCount: 3,
         childAspectRatio: 1.39,
-        children: _sources.entries
-            .where((element) => element.value.type == type)
-            .map((e) => ThumbnailWidget(
-          onTap: (source) {
-            setState(() {
-              _selectedSource = source;
-            });
+        children: _sources.entries.where((element) => element.value.type == type).map(
+          (map) {
+            return ThumbnailWidget(
+              onTap: (source) {
+                _selectedSource = source;
+                _stateSetter?.call(() {});
+              },
+              source: map.value,
+              selected: _selectedSource?.id == map.value.id,
+            );
           },
-          source: e.value,
-          selected: _selectedSource?.id == e.value.id,
-        ))
-            .toList(),
+        ).toList(),
       ),
     );
   }
