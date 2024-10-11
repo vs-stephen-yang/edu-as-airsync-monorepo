@@ -11,6 +11,8 @@ PODS:
     - FlutterMacOS
   - flutter_input_injection (0.0.1):
     - FlutterMacOS
+  - flutter_virtual_display (0.0.1):
+    - FlutterMacOS
   - flutter_webrtc (0.9.36):
     - flutter_webrtc/WebRTC-SDK (= 0.9.36)
     - FlutterMacOS
@@ -43,6 +45,7 @@ DEPENDENCIES:
   - desktop_window (from `Flutter/ephemeral/.symlinks/plugins/desktop_window/macos`)
   - device_info_plus (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos`)
   - flutter_input_injection (from `Flutter/ephemeral/.symlinks/plugins/flutter_input_injection/macos`)
+  - flutter_virtual_display (from `Flutter/ephemeral/.symlinks/plugins/flutter_virtual_display/macos`)
   - flutter_webrtc (from `Flutter/ephemeral/.symlinks/plugins/flutter_webrtc/macos`)
   - flutter_window_close (from `Flutter/ephemeral/.symlinks/plugins/flutter_window_close/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
@@ -69,6 +72,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos
   flutter_input_injection:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_input_injection/macos
+  flutter_virtual_display:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_virtual_display/macos
   flutter_webrtc:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_webrtc/macos
   flutter_window_close:
@@ -96,6 +101,7 @@ SPEC CHECKSUMS:
   desktop_window: fb7c4f12c1129f947ac482296b6f14059d57a3c3
   device_info_plus: 5401765fde0b8d062a2f8eb65510fb17e77cf07f
   flutter_input_injection: 0103e805a95614dabd37a068a73e04b3a5b04e39
+  flutter_virtual_display: d56e2bc72e0944e2c800426134312844d5da0df5
   flutter_webrtc: 3593bbff2741516f34f270bbf473b27d601d14e4
   flutter_window_close: ee4a6b81ca6fafe93b7cba48b0a18976e3f48e39
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
