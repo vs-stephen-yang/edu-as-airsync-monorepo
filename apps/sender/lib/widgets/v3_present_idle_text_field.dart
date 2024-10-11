@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
@@ -87,7 +89,6 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
 
   @override
   Widget build(BuildContext context) {
-
     return SizedBox(
       width: widget.widthTextField,
       child: Column(
@@ -210,8 +211,8 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
   }
 
   /// the height of every item is 48
-  /// the scroll bar should show up when over 5 items
-  /// the max height of the overlay area is 200
+  /// the scroll bar should show up when over 4 items
+  /// the max height of the overlay area is 208 (4 * 48 + 8 * 2)
   _dropDownMenu(List displayList) {
     _dropDownMenuEntry = OverlayEntry(builder: (builder) {
       return Stack(
@@ -230,27 +231,33 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
           ),
           Positioned(
             width: widget.widthTextField,
-            height: displayList.length > 4 ? 208 : displayList.length * 48,
+            height: min(displayList.length, 4) * 48 +
+                context.tokens.spacing.vsdswSpacingXs.vertical,
             child: CompositedTransformFollower(
               offset: const Offset(0, 55),
               link: _dropDownLayerLink,
               child: Material(
-                color: Colors.white,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
+                color: Colors.transparent,
                 child: Container(
-                  color: Colors.transparent,
                   margin: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    color: Colors.white,
+                    boxShadow: context.tokens.shadow.vsdswShadowNeutralLg,
+                  ),
                   child: ListView.builder(
                     itemCount: displayList.length,
                     itemBuilder: (BuildContext context, int index) {
                       return ListTile(
+                        dense: true,
+                        // set this to using smaller height (48).
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                         ),
                         title: Text(
-                            _getDisplayCodeVisualIdentity(displayList[index])),
+                          _getDisplayCodeVisualIdentity(displayList[index]),
+                          style: const TextStyle(fontSize: 16),
+                        ),
                         hoverColor: context.tokens.color.vsdswColorTertiary,
                         trailing: IconButton(
                           icon: const Icon(Icons.highlight_remove),
