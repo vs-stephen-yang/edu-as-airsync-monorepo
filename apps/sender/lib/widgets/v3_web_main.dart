@@ -14,7 +14,6 @@ import 'package:display_cast_flutter/widgets/v3_moderator_idle_name.dart';
 import 'package:display_cast_flutter/widgets/v3_moderator_wait.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
 import 'package:display_cast_flutter/widgets/v3_present_present_start.dart';
-import 'package:display_cast_flutter/widgets/v3_present_select_screen.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -161,12 +160,17 @@ class V3PresentStateMachine extends StatelessWidget {
       case ViewState.moderatorName:
         return const V3ModeratorIdleName();
       case ViewState.moderatorWait:
-      // move to V3WebMain for center in whole browser view.
+        // move to V3WebMain for center in whole browser view.
         return const SizedBox();
       case ViewState.waitReady:
         return const PresentWaitReady(); //deprecated
       case ViewState.selectScreen:
-        return const V3PresentSelectScreen();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ChannelProvider channelProvider =
+              Provider.of<ChannelProvider>(context, listen: false);
+          channelProvider.presentStart(selectedSource: null, systemAudio: true);
+        });
+        return const SizedBox();
       case ViewState.presentStart:
         return V3PresentPresentStart(isModeratorMode: false);
       case ViewState.moderatorStart:

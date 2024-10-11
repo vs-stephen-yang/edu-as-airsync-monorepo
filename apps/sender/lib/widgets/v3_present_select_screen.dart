@@ -36,7 +36,7 @@ class V3PresentSelectScreen extends StatelessWidget {
         // MacOS and Windows
         await _handleDesktopPlatform(context, channelProvider);
       } else {
-        // Android and iOS and Web
+        // Android and iOS
         if (Platform.isAndroid) {
           // Android specific
           await Helper.requestCapturePermission();
