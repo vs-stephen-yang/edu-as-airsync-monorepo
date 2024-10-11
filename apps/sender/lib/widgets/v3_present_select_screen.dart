@@ -55,7 +55,9 @@ class V3PresentSelectScreen extends StatelessWidget {
 
   Future<void> _handleDesktopPlatform(
       BuildContext context, ChannelProvider provider) async {
-    bool? isSupported = await FlutterVirtualDisplay.instance.isSupported() ?? false;
+    bool isSupported = !WebRTC.platformIsWindows
+        ? false
+        : (await FlutterVirtualDisplay.instance.isSupported() ?? false);
     if (isSupported) {
       await FlutterVirtualDisplay.instance.startVirtualDisplay();
     }
@@ -89,7 +91,9 @@ class V3PresentSelectScreen extends StatelessWidget {
           provider.presentStart(selectedSource: value.selectedSource);
         }
       } else {
-        await FlutterVirtualDisplay.instance.stopVirtualDisplay();
+        if (WebRTC.platformIsWindows) {
+          await FlutterVirtualDisplay.instance.stopVirtualDisplay();
+        }
         SelectScreenDialog._timer?.cancel();
         for (var element in selectScreenDialog!._subscriptions) {
           element.cancel();

@@ -47,7 +47,9 @@ class PresentSelectScreen extends StatelessWidget {
   }
 
   Future<void> _handleDesktopPlatform(BuildContext context, ChannelProvider provider) async {
-    await FlutterVirtualDisplay.instance.startVirtualDisplay();
+    if (WebRTC.platformIsWindows) {
+      await FlutterVirtualDisplay.instance.startVirtualDisplay();
+    }
 
     // start timeout timer (30 sec)
     ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
@@ -72,7 +74,9 @@ class PresentSelectScreen extends StatelessWidget {
           provider.presentStart(selectedSource: value.selectedSource);
         }
       } else {
-        await FlutterVirtualDisplay.instance.stopVirtualDisplay();
+        if (WebRTC.platformIsWindows) {
+          await FlutterVirtualDisplay.instance.stopVirtualDisplay();
+        }
         SelectScreenDialog._timer?.cancel();
         for (var element in selectScreenDialog!._subscriptions) {
           element.cancel();

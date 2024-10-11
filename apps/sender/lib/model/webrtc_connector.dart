@@ -623,7 +623,9 @@ class WebRTCConnector {
 
     await _disposeStream();
     await _peerConnectionDisconnect();
-    await FlutterVirtualDisplay.instance.stopVirtualDisplay();
+    if (WebRTC.platformIsWindows) {
+      await FlutterVirtualDisplay.instance.stopVirtualDisplay();
+    }
   }
 
   Future<void> _disposeStream() async {
