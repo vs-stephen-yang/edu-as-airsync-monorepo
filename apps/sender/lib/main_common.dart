@@ -31,6 +31,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +46,9 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   await AppInstanceCreate.ensureInitialized();
 
-  await FlutterVirtualDisplay.instance.initialize();
+  if (WebRTC.platformIsWindows) {
+    await FlutterVirtualDisplay.instance.initialize();
+  }
 
   AppAnalytics.initializeApp(
     instrumentationKey: settings.appInsightsInstrumentationKey,
