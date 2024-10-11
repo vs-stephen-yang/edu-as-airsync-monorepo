@@ -4,7 +4,6 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/demo/present_present_start_demo.dart';
 import 'package:display_cast_flutter/demo/present_select_role_demo.dart';
 import 'package:display_cast_flutter/demo/remote_screen_widget_demo.dart';
-import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -21,7 +20,6 @@ import 'package:display_cast_flutter/widgets/v3_qrcode_scan.dart';
 import 'package:display_cast_flutter/widgets/v3_remote_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
 
 class V3HomeApp extends StatelessWidget {
@@ -64,13 +62,6 @@ class V3PresentStateMachine extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!demoProvider.isDemoMode) {
       log.info('PresentState: ${presentStateProvider.currentState}');
-      FlutterWindowClose.setWindowShouldCloseHandler(() async {
-        ChannelProvider channelProvider =
-            Provider.of<ChannelProvider>(context, listen: false);
-        await channelProvider.presentStop();
-        await channelProvider.presentEnd(goIdleState: false);
-        return true;
-      });
 
       switch (presentStateProvider.currentState) {
         case ViewState.idle:

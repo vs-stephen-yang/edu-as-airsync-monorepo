@@ -13,6 +13,7 @@ import 'package:display_cast_flutter/utilities/version_update.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
 import "package:universal_html/html.dart" as html;
 import 'package:url_launcher/url_launcher.dart';
@@ -36,8 +37,15 @@ class _V3HomeState extends State<V3Home> {
       onExitRequested: _handleExitRequest,
     );
 
+    if (!kIsWeb) {
+      FlutterWindowClose.setWindowShouldCloseHandler(() async {
+        await _handleExitRequest();
+        return true;
+      });
+    }
+
     html.window.onBeforeUnload.listen((event) async {
-      await _presentEndOnExit();
+      await _handleExitRequest();
     });
   }
 
