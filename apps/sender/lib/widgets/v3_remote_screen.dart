@@ -3,13 +3,39 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
-class V3RemoteScreen extends StatelessWidget {
+class V3RemoteScreen extends StatefulWidget {
   const V3RemoteScreen({super.key, this.isModeratorShare = false});
 
   final bool isModeratorShare;
+
+  @override
+  State<StatefulWidget> createState() => _V3RemoteScreenState();
+}
+
+class _V3RemoteScreenState extends State<V3RemoteScreen> {
+  @override
+  void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +111,7 @@ class V3RemoteScreen extends StatelessWidget {
                                   context.tokens.spacing.vsdswSpacingMd.right),
                           ElevatedButton.icon(
                             onPressed: () {
-                              if (isModeratorShare) {
+                              if (widget.isModeratorShare) {
                                 channelProvider.removeShareRemoteScreenClient();
                               } else {
                                 channelProvider.removeRemoteScreenClient();
