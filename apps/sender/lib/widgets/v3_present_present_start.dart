@@ -16,6 +16,7 @@ import 'package:display_cast_flutter/widgets/high_quality_button.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_timer.dart';
+import 'package:display_cast_flutter/widgets/v3_touch_back_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -47,6 +48,7 @@ class V3PresentPresentStart extends StatelessWidget {
       color: Colors.black,
       child: Stack(
         fit: StackFit.expand,
+        alignment: Alignment.center,
         children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -170,6 +172,8 @@ class V3PresentPresentStart extends StatelessWidget {
                 }),
           ),
           // todo: move quality to setting menu and touch back to below item!!
+          if (WebRTCHelper().showTouchBack())
+            const Positioned(bottom: 8, child: V3TouchBackButton()),
           Positioned(
             left: 30,
             bottom: 100,
@@ -187,15 +191,6 @@ class V3PresentPresentStart extends StatelessWidget {
                       initialValue:
                           channelProvider.profileStore.selectedProfile ==
                               ProfileStore.videoQualityFirstProfile),
-                if (WebRTCHelper().showTouchBack())
-                  TouchBackButton(
-                    key: touchBtnKey,
-                    initialValue: WebRTCHelper().getTouchBack(),
-                    onPressed: (state) {
-                      AppAnalytics.instance.trackEvent('click_touchback');
-                      WebRTCHelper().setTouchBack(state);
-                    },
-                  ),
               ],
             ),
           ),

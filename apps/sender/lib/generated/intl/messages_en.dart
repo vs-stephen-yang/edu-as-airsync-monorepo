@@ -306,6 +306,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_present_session_full_description":
             MessageLookupByLibrary.simpleMessage(
                 "Unable to join, The session is react to its maximum."),
+        "v3_present_touch_back_allow":
+            MessageLookupByLibrary.simpleMessage("Touchback allow"),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Quick connect by scan the QR code"),
         "v3_select_screen_ios_countdown":

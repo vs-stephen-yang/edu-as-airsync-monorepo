@@ -1501,6 +1501,16 @@ class S {
     );
   }
 
+  /// `Touchback allow`
+  String get v3_present_touch_back_allow {
+    return Intl.message(
+      'Touchback allow',
+      name: 'v3_present_touch_back_allow',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Time remain`
   String get v3_select_screen_ios_countdown {
     return Intl.message(
