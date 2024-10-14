@@ -19,21 +19,20 @@ import 'package:display_cast_flutter/widgets/v3_present_timer.dart';
 import 'package:display_cast_flutter/widgets/v3_touch_back_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
 class V3PresentPresentStart extends StatefulWidget {
   const V3PresentPresentStart({super.key, required this.isModeratorMode});
-
   final bool isModeratorMode;
 
   @override
-  State<V3PresentPresentStart> createState() => _V3PresentPresentStartState();
+  State<StatefulWidget> createState() => _V3PresentPresentStartState();
 }
 
 class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
-
   final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
 
   bool isAnnotationImplemented = false;
@@ -45,6 +44,37 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
         state == ChannelReconnectState.reconnecting
             ? S.of(context).main_feature_reconnecting_toast
             : S.of(context).main_feature_reconnect_fail_toast);
+  }
+
+  @override
+  void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    if (Platform.isWindows || Platform.isMacOS) {
+      DesktopMultiWindow.getAllSubWindowIds().then(
+        (subWindowIds) {
+          for (final windowId in subWindowIds) {
+            WindowController.fromWindowId(windowId).close();
+          }
+        },
+      );
+    } else if (Platform.isAndroid) {
+      android_window.close();
+    }
+    super.dispose();
   }
 
   @override
@@ -205,22 +235,6 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    if (Platform.isWindows || Platform.isMacOS) {
-      DesktopMultiWindow.getAllSubWindowIds().then(
-        (subWindowIds) {
-          for (final windowId in subWindowIds) {
-            WindowController.fromWindowId(windowId).close();
-          }
-        },
-      );
-    } else if (Platform.isAndroid) {
-      android_window.close();
-    }
-    super.dispose();
   }
 
   void _startAnnotation(AnnotationModel annotationModel) async {

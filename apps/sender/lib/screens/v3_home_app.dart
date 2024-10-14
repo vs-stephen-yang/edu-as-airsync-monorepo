@@ -78,9 +78,9 @@ class V3PresentStateMachine extends StatelessWidget {
         case ViewState.selectScreen:
           return const V3PresentSelectScreen();
         case ViewState.presentStart:
-          return V3PresentPresentStart(isModeratorMode: false);
+          return const V3PresentPresentStart(isModeratorMode: false);
         case ViewState.moderatorStart:
-          return V3PresentPresentStart(isModeratorMode: true);
+          return const V3PresentPresentStart(isModeratorMode: true);
         case ViewState.moderatorShare:
           return const V3RemoteScreen(isModeratorShare: true);
         case ViewState.remoteScreen:
