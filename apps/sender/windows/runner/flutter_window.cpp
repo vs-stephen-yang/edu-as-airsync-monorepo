@@ -5,6 +5,8 @@
 #pragma comment(lib, "wtsapi32.lib")
 
 #include "flutter/generated_plugin_registrant.h"
+#include "desktop_multi_window/desktop_multi_window_plugin.h"
+#include "system_tray/system_tray_plugin.h"
 
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
     : project_(project) {}
@@ -34,6 +36,13 @@ bool FlutterWindow::OnCreate() {
     return false;
   }
   RegisterPlugins(flutter_controller_->engine());
+  DesktopMultiWindowSetWindowCreatedCallback([](void *controller) {
+      auto *flutter_view_controller =
+              reinterpret_cast<flutter::FlutterViewController *>(controller);
+      auto *registry = flutter_view_controller->engine();
+      SystemTrayPluginRegisterWithRegistrar(
+              registry->GetRegistrarForPlugin("SystemTrayPlugin"));
+  });
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   // Register for power notifications and session notifications.
