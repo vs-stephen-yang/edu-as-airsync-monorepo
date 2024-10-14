@@ -78,6 +78,10 @@ dependencies:
   gap: ^3.0.1
   lottie: ^3.1.2
   sprintf: ^7.0.0
+  bitsdojo_window: 0.1.6
+  system_tray: 2.0.3
+  android_window:
+    path: packages/android_window
 
   # ViewSonic plug-in
   flutter_webrtc:
@@ -105,11 +109,17 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-virtual-display
       ref: release-1.0.1
+  desktop_multi_window:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/mixin-network-flutter-plugins
+      path: packages/desktop_multi_window
+      ref: release-0.20-2
   # ViewSonic plug-in
 
 dependency_overrides:
   dart_webrtc: 1.1.1 # need follow flutter_webrtc version
   webrtc_interface: 1.1.0 # need follow flutter_webrtc version
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:

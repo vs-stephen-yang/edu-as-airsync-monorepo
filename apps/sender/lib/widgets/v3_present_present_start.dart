@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:android_window/main.dart' as android_window;
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/profile.dart';
@@ -67,7 +72,9 @@ class V3PresentPresentStart extends StatelessWidget {
                           context.tokens.color.vsdswColorSurface900,
                       radius: kIsWeb ? 24 : 28,
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _startAnnotation();
+                        },
                         icon: SvgPicture.asset(
                             'assets/images/v3_ic_sharing_pen.svg'),
                       ),
@@ -195,5 +202,27 @@ class V3PresentPresentStart extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _startAnnotation() async {
+    if (Platform.isWindows || Platform.isMacOS) {
+      int screenIndex = -1;
+      // try {
+      //   screenIndex = int.parse(input);
+      // }
+      // catch (e) {
+      //   print('Invalid input: $input');
+      // }
+      final window = await DesktopMultiWindow.createFullscreenWindow(
+          jsonEncode({'mode': 'desktop_canvas'}),
+          screenIndex
+      );
+      window.show();
+    } else if (Platform.isAndroid) {
+      android_window.open(
+        size: const Size(1920, 1080), // TODO: Set the size of the window
+        position: const Offset(0, 0),
+      );
+    }
   }
 }

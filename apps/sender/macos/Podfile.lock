@@ -1,10 +1,14 @@
 PODS:
+  - bitsdojo_window_macos (0.0.1):
+    - FlutterMacOS
   - bonsoir_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
   - connectivity_plus (0.0.1):
     - FlutterMacOS
     - ReachabilitySwift
+  - desktop_multi_window (0.0.1):
+    - FlutterMacOS
   - desktop_window (0.0.1):
     - FlutterMacOS
   - device_info_plus (0.0.1):
@@ -32,6 +36,8 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - system_tray (0.0.1):
+    - FlutterMacOS
   - url_launcher_macos (0.0.1):
     - FlutterMacOS
   - wakelock_plus (0.0.1):
@@ -40,8 +46,10 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
+  - bitsdojo_window_macos (from `Flutter/ephemeral/.symlinks/plugins/bitsdojo_window_macos/macos`)
   - bonsoir_darwin (from `Flutter/ephemeral/.symlinks/plugins/bonsoir_darwin/darwin`)
   - connectivity_plus (from `Flutter/ephemeral/.symlinks/plugins/connectivity_plus/macos`)
+  - desktop_multi_window (from `Flutter/ephemeral/.symlinks/plugins/desktop_multi_window/macos`)
   - desktop_window (from `Flutter/ephemeral/.symlinks/plugins/desktop_window/macos`)
   - device_info_plus (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos`)
   - flutter_input_injection (from `Flutter/ephemeral/.symlinks/plugins/flutter_input_injection/macos`)
@@ -53,6 +61,7 @@ DEPENDENCIES:
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
   - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - system_tray (from `Flutter/ephemeral/.symlinks/plugins/system_tray/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
   - wakelock_plus (from `Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos`)
   - window_size (from `Flutter/ephemeral/.symlinks/plugins/window_size/macos`)
@@ -62,10 +71,14 @@ SPEC REPOS:
     - ReachabilitySwift
 
 EXTERNAL SOURCES:
+  bitsdojo_window_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/bitsdojo_window_macos/macos
   bonsoir_darwin:
     :path: Flutter/ephemeral/.symlinks/plugins/bonsoir_darwin/darwin
   connectivity_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/connectivity_plus/macos
+  desktop_multi_window:
+    :path: Flutter/ephemeral/.symlinks/plugins/desktop_multi_window/macos
   desktop_window:
     :path: Flutter/ephemeral/.symlinks/plugins/desktop_window/macos
   device_info_plus:
@@ -88,6 +101,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/share_plus/macos
   shared_preferences_foundation:
     :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
+  system_tray:
+    :path: Flutter/ephemeral/.symlinks/plugins/system_tray/macos
   url_launcher_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
   wakelock_plus:
@@ -96,8 +111,10 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/window_size/macos
 
 SPEC CHECKSUMS:
+  bitsdojo_window_macos: 44e3b8fe3dd463820e0321f6256c5b1c16bb6a00
   bonsoir_darwin: e3b8526c42ca46a885142df84229131dfabea842
   connectivity_plus: 18d3c32514c886e046de60e9c13895109866c747
+  desktop_multi_window: 566489c048b501134f9d7fb6a2354c60a9126486
   desktop_window: fb7c4f12c1129f947ac482296b6f14059d57a3c3
   device_info_plus: 5401765fde0b8d062a2f8eb65510fb17e77cf07f
   flutter_input_injection: 0103e805a95614dabd37a068a73e04b3a5b04e39
@@ -110,6 +127,7 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 7f151ff156cea1481a8411701195ac6a984f4979
   share_plus: 36537c04ce0c3e3f5bd297ce4318b6d5ee5fd6cf
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
+  system_tray: e53c972838c69589ff2e77d6d3abfd71332f9e5d
   url_launcher_macos: c82c93949963e55b228a30115bd219499a6fe404
   wakelock_plus: 4783562c9a43d209c458cb9b30692134af456269
   window_size: 339dafa0b27a95a62a843042038fa6c3c48de195

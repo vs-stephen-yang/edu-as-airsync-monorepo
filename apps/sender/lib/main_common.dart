@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:desktop_screenstate/desktop_screenstate.dart';
 import 'package:desktop_window/desktop_window.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
@@ -37,8 +39,26 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
+import 'annotation/canvas_widget.dart';
+
 void commonEntry(List<String> args, ConfigSettings settings) async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
+    if (args.firstOrNull == 'multi_window') {
+      final windowId = int.parse(args[1]);
+      final argument = args[2].isEmpty ? const {} : jsonDecode(args[2]) as Map<String, dynamic>;
+      if (argument['mode'] == 'desktop_canvas') {
+        WidgetsFlutterBinding.ensureInitialized();
+        runApp(CanvasWidget(
+          windowController: WindowController.fromWindowId(windowId),
+          args: argument,
+        ));
+      }
+      return;
+    }
+  }
+
   initLogger();
   enableLogToMemory(true);
 
