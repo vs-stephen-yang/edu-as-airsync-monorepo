@@ -60,9 +60,6 @@ class V3PresentSelectScreen extends StatelessWidget {
     bool isSupported = !Platform.isWindows
         ? false
         : (await FlutterVirtualDisplay.instance.isSupported() ?? false);
-    if (isSupported) {
-      await FlutterVirtualDisplay.instance.startVirtualDisplay();
-    }
     // start timeout timer (30 sec)
     ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
       log.info('timeout');
@@ -377,7 +374,6 @@ class SelectScreenDialog extends Dialog {
                                     if (index == 2) {
                                       if (isExtensionEnable) {
                                         _isExtensionSelected = true;
-                                        _selectedSource = (await desktopCapturer.getSources(types: [ SourceType.Screen ])).last;
                                       } else {
                                         tabController.animateTo(tabController.previousIndex);
                                       }
@@ -569,8 +565,15 @@ class SelectScreenDialog extends Dialog {
     for (var element in _subscriptions) {
       element.cancel();
     }
-    Navigator.pop<CustomDesktopCaptureSource>(
-        ctx, CustomDesktopCaptureSource(selectedSource, systemAudio, isExtensionSelected));
+    if (isExtensionSelected) {
+      await FlutterVirtualDisplay.instance.startVirtualDisplay();
+      _selectedSource = (await desktopCapturer.getSources(types: [ SourceType.Screen ])).last;
+      Navigator.pop<CustomDesktopCaptureSource>(
+          ctx, CustomDesktopCaptureSource(_selectedSource, false, isExtensionSelected));
+    } else {
+      Navigator.pop<CustomDesktopCaptureSource>(
+          ctx, CustomDesktopCaptureSource(selectedSource, systemAudio, isExtensionSelected));
+    }
   }
 
   Future<void> _getSources(SourceType sourceType) async {
