@@ -7,6 +7,7 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/v3_toast.dart';
 import 'package:display_cast_flutter/widgets/v3_message_dialog.dart';
 import 'package:display_cast_flutter/widgets/v3_present_device_list_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_button.dart';
@@ -58,6 +59,13 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       if (channelProvider.isPresentRejected && !isScreenFullDialogOnScreen) {
         channelProvider.isPresentRejected = false;
         _showScreenFullDialog();
+      }
+      if (channelProvider.totalSharingTime.isNotEmpty) {
+        V3Toast().makeSharingTimeToast(
+            context,
+            S.of(context).v3_present_end_information,
+            channelProvider.totalSharingTime);
+        channelProvider.totalSharingTime = '';
       }
     });
 

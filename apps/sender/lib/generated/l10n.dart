@@ -1511,6 +1511,16 @@ class S {
     );
   }
 
+  /// `Screen sharing has stopped.\nTotal sharing time %s.`
+  String get v3_present_end_information {
+    return Intl.message(
+      'Screen sharing has stopped.\nTotal sharing time %s.',
+      name: 'v3_present_end_information',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Time remain`
   String get v3_select_screen_ios_countdown {
     return Intl.message(

@@ -82,6 +82,7 @@ dependencies:
   system_tray: 2.0.3
   android_window:
     path: packages/android_window
+  motion_toast: ^2.11.0
 
   # ViewSonic plug-in
   flutter_webrtc:

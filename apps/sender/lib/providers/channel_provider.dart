@@ -89,6 +89,7 @@ class ChannelProvider extends ChangeNotifier {
   DisplayCode? displayCode;
   String? otp;
   Timer? _presentTimer;
+  String totalSharingTime = '';
 
   bool _isRtcFirstConnected = false;
   bool _isPresentingErrorReported = false;
@@ -861,6 +862,8 @@ class ChannelProvider extends ChangeNotifier {
     if (_presentTimer != null) {
       _presentTimer!.cancel();
       _presentTimer = null;
+      totalSharingTime =
+          '${countHoursValue.value.toString().padLeft(2, '0')}:${countMinutesValue.value.toString().padLeft(2, '0')}:${countSecondsValue.value.toString().padLeft(2, '0')}';
     }
     countSecondsValue.value = 0;
     countMinutesValue.value = 0;
