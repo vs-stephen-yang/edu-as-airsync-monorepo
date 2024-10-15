@@ -280,6 +280,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_select_role_title": MessageLookupByLibrary.simpleMessage(
             "Choose your presentation mode"),
         "v3_main_terms": MessageLookupByLibrary.simpleMessage("Terms of use"),
+        "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
+            "Screen sharing has stopped.\nTotal sharing time %s."),
         "v3_present_screen_full":
             MessageLookupByLibrary.simpleMessage("Screen Full"),
         "v3_present_screen_full_action":

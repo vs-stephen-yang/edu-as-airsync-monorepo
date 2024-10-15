@@ -145,6 +145,7 @@
   "v3_present_screen_full_description": "Has reached maximum split screen amount.",
   "v3_present_screen_full_action": "OK",
   "v3_present_touch_back_allow": "Touchback allow",
+  "v3_present_end_information": "Screen sharing has stopped.\nTotal sharing time %s.",
   "v3_select_screen_ios_countdown": "Time remain",
   "v3_select_screen_ios_start_sharing": "Start sharing"
 }
