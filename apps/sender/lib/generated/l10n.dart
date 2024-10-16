@@ -1501,6 +1501,46 @@ class S {
     );
   }
 
+  /// `High Quality`
+  String get v3_present_options_menu_hq_title {
+    return Intl.message(
+      'High Quality',
+      name: 'v3_present_options_menu_hq_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use higher bitrate to transmit streaming.`
+  String get v3_present_options_menu_hq_subtitle {
+    return Intl.message(
+      'Use higher bitrate to transmit streaming.',
+      name: 'v3_present_options_menu_hq_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hardware Encoding`
+  String get v3_present_options_menu_he_title {
+    return Intl.message(
+      'Hardware Encoding',
+      name: 'v3_present_options_menu_he_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Suggest to use device graphic card to encode streaming.`
+  String get v3_present_options_menu_he_subtitle {
+    return Intl.message(
+      'Suggest to use device graphic card to encode streaming.',
+      name: 'v3_present_options_menu_he_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Touchback allow`
   String get v3_present_touch_back_allow {
     return Intl.message(

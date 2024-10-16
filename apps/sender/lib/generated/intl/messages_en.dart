@@ -282,6 +282,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_terms": MessageLookupByLibrary.simpleMessage("Terms of use"),
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
             "Screen sharing has stopped.\nTotal sharing time %s."),
+        "v3_present_options_menu_he_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "Suggest to use device graphic card to encode streaming."),
+        "v3_present_options_menu_he_title":
+            MessageLookupByLibrary.simpleMessage("Hardware Encoding"),
+        "v3_present_options_menu_hq_subtitle":
+            MessageLookupByLibrary.simpleMessage(
+                "Use higher bitrate to transmit streaming."),
+        "v3_present_options_menu_hq_title":
+            MessageLookupByLibrary.simpleMessage("High Quality"),
         "v3_present_screen_full":
             MessageLookupByLibrary.simpleMessage("Screen Full"),
         "v3_present_screen_full_action":

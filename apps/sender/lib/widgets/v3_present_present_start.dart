@@ -6,15 +6,14 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
-import 'package:display_cast_flutter/widgets/high_quality_button.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
+import 'package:display_cast_flutter/widgets/v3_options_menu.dart';
 import 'package:display_cast_flutter/widgets/v3_present_timer.dart';
 import 'package:display_cast_flutter/widgets/v3_touch_back_button.dart';
 import 'package:flutter/foundation.dart';
@@ -171,29 +170,24 @@ class V3PresentPresentStart extends StatelessWidget {
                   return Container();
                 }),
           ),
+          if (!kIsWeb)
+            Positioned(
+              left: 24,
+              bottom: 24,
+              child: CircleAvatar(
+                backgroundColor: context.tokens.color.vsdswColorSurface900,
+                radius: 24,
+                child: IconButton(
+                  icon: SvgPicture.asset('assets/images/v3_ic_options.svg'),
+                  onPressed: () {
+                    _showOptionsMenuDialog(context);
+                  },
+                ),
+              ),
+            ),
           // todo: move quality to setting menu and touch back to below item!!
           if (WebRTCHelper().showTouchBack())
             const Positioned(bottom: 8, child: V3TouchBackButton()),
-          Positioned(
-            left: 30,
-            bottom: 100,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 20),
-                if (!kIsWeb)
-                  HighQualityButton(
-                      onPressed: (state) {
-                        channelProvider.presentChangeHighQuality(
-                            isHighQuality: state);
-                      },
-                      initialValue:
-                          channelProvider.profileStore.selectedProfile ==
-                              ProfileStore.videoQualityFirstProfile),
-              ],
-            ),
-          ),
         ],
       ),
     );
@@ -219,5 +213,16 @@ class V3PresentPresentStart extends StatelessWidget {
         position: const Offset(0, 0),
       );
     }
+  }
+
+  _showOptionsMenuDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return const V3OptionsMenu();
+      },
+    );
   }
 }
