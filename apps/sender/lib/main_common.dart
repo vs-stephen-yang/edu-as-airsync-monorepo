@@ -13,6 +13,7 @@ import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/device_list_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/screens/home.dart';
 import 'package:display_cast_flutter/screens/v3_eula.dart';
 import 'package:display_cast_flutter/screens/v3_home.dart';
@@ -47,7 +48,9 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
   if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
     if (args.firstOrNull == 'multi_window') {
       final windowId = int.parse(args[1]);
-      final argument = args[2].isEmpty ? const {} : jsonDecode(args[2]) as Map<String, dynamic>;
+      final argument = args[2].isEmpty
+          ? const {}
+          : jsonDecode(args[2]) as Map<String, dynamic>;
       if (argument['mode'] == 'desktop_canvas') {
         WidgetsFlutterBinding.ensureInitialized();
         runApp(CanvasWidget(
@@ -87,7 +90,8 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
   }
 
   // load ice gathering continually setting
-  WebRTCUtil.iceGatheringContinually = await WebRTCUtil.loadIceGatheringContinually();
+  WebRTCUtil.iceGatheringContinually =
+      await WebRTCUtil.loadIceGatheringContinually();
   await DataDisplayCode.getInstance().initialize();
 
   final ProfileStore profileStore = await ProfileUtil.loadProfileStore(args);
@@ -151,6 +155,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: DemoProvider()),
         ChangeNotifierProvider.value(value: ChannelProvider(context)),
         ChangeNotifierProvider.value(value: DeviceListProvider()),
+        ChangeNotifierProvider.value(value: SettingsProvider()),
       ],
       child: Consumer<PrefLanguageProvider>(
         builder: (context, languageModel, child) {

@@ -1580,6 +1580,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Language`
+  String get v3_setting_language {
+    return Intl.message(
+      'Language',
+      name: 'v3_setting_language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Legal and Privacy`
+  String get v3_setting_legal_policy {
+    return Intl.message(
+      'Legal and Privacy',
+      name: 'v3_setting_legal_policy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Knowledge Base`
+  String get v3_setting_knowledge_base {
+    return Intl.message(
+      'Knowledge Base',
+      name: 'v3_setting_knowledge_base',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check for Updates`
+  String get v3_setting_check_update {
+    return Intl.message(
+      'Check for Updates',
+      name: 'v3_setting_check_update',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
