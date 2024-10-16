@@ -151,5 +151,9 @@
   "v3_present_touch_back_allow": "Touchback allow",
   "v3_present_end_information": "Screen sharing has stopped.\nTotal sharing time %s.",
   "v3_select_screen_ios_countdown": "Time remain",
-  "v3_select_screen_ios_start_sharing": "Start sharing"
+  "v3_select_screen_ios_start_sharing": "Start sharing",
+  "v3_setting_language": "Language",
+  "v3_setting_legal_policy": "Legal and Privacy",
+  "v3_setting_knowledge_base": "Knowledge Base",
+  "v3_setting_check_update": "Check for Updates"
 }

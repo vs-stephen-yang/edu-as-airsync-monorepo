@@ -6,6 +6,7 @@ import 'package:display_cast_flutter/demo/present_select_role_demo.dart';
 import 'package:display_cast_flutter/demo/remote_screen_widget_demo.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/screens/v3_setting_menu.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/v3_background.dart';
@@ -134,8 +135,21 @@ class SettingMenu extends StatelessWidget {
           child: IconButton(
             color: context.tokens.color.vsdswColorNeutral,
             icon: SvgPicture.asset('assets/images/v3_ic_setting.svg'),
-            onPressed: () {},
+            onPressed: () {
+              _showOptionsMenuDialog(context);
+            },
           ),
         ));
+  }
+
+  _showOptionsMenuDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      // barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return const V3SettingMenu();
+      },
+    );
   }
 }

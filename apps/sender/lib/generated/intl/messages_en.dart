@@ -325,6 +325,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_select_screen_ios_countdown":
             MessageLookupByLibrary.simpleMessage("Time remain"),
         "v3_select_screen_ios_start_sharing":
-            MessageLookupByLibrary.simpleMessage("Start sharing")
+            MessageLookupByLibrary.simpleMessage("Start sharing"),
+        "v3_setting_check_update":
+            MessageLookupByLibrary.simpleMessage("Check for Updates"),
+        "v3_setting_knowledge_base":
+            MessageLookupByLibrary.simpleMessage("Knowledge Base"),
+        "v3_setting_language": MessageLookupByLibrary.simpleMessage("Language"),
+        "v3_setting_legal_policy":
+            MessageLookupByLibrary.simpleMessage("Legal and Privacy")
       };
 }
