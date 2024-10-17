@@ -145,6 +145,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("已達到分享畫面上限"),
         "toast_maximum_split_screen":
             MessageLookupByLibrary.simpleMessage("已達到投影人員上限"),
-        "v3_main_download": MessageLookupByLibrary.simpleMessage("下載")
+        "v3_device_list_button_device_list":
+            MessageLookupByLibrary.simpleMessage("裝置清單"),
+        "v3_main_download": MessageLookupByLibrary.simpleMessage("下載"),
+        "v3_setting_check_update": MessageLookupByLibrary.simpleMessage("檢查更新"),
+        "v3_setting_knowledge_base":
+            MessageLookupByLibrary.simpleMessage("知識庫"),
+        "v3_setting_language": MessageLookupByLibrary.simpleMessage("語言"),
+        "v3_setting_legal_policy": MessageLookupByLibrary.simpleMessage("法律和隱私")
       };
 }
