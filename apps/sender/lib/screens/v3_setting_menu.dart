@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class V3SettingMenu extends StatefulWidget {
   const V3SettingMenu({super.key});
@@ -27,7 +28,6 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
         SettingsProvider settingsProvider =
             Provider.of<SettingsProvider>(context, listen: false);
         settingsProvider.setPage(SettingPageState.language);
-        _addSettingsToList(context, settingsProvider);
       });
     });
   }
@@ -46,6 +46,7 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
         height: 455,
         child: Consumer<SettingsProvider>(
           builder: (context, settingsProvider, _) {
+            _addSettingsToList(context, settingsProvider);
             return Row(
               children: [
                 SizedBox(
@@ -175,7 +176,7 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
     _listSettings.add(
       SettingsItems(
         S.of(context).v3_setting_language,
-        const Icon(Icons.arrow_forward_ios_outlined),
+        SvgPicture.asset('assets/images/v3_ic_arrow_right.svg'),
         () {
           settingsProvider.setPage(SettingPageState.language);
         },
@@ -184,7 +185,7 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
     _listSettings.add(
       SettingsItems(
         S.of(context).v3_setting_legal_policy,
-        const Icon(Icons.arrow_forward_ios_outlined),
+        SvgPicture.asset('assets/images/v3_ic_arrow_right.svg'),
         () {
           settingsProvider.setPage(SettingPageState.legalPolicy);
         },
@@ -193,15 +194,20 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
     _listSettings.add(
       SettingsItems(
         S.of(context).v3_setting_knowledge_base,
-        null,
-        () {},
+        SvgPicture.asset('assets/images/v3_ic_setting_external.svg'),
+        () async {
+          var url = Uri.parse('https://myviewboard.com/kb/t_CN');
+          await launchUrl(url);
+        },
       ),
     );
     _listSettings.add(
       SettingsItems(
         S.of(context).v3_setting_check_update,
         null,
-        () {},
+        () {
+          //todo: implement ota mechanism.
+        },
       ),
     );
   }
