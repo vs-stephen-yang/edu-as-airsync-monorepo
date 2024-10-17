@@ -337,8 +337,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/desktop_multi_window"
-      ref: "release-0.20-2"
-      resolved-ref: cde60601bed68a0afed2caebb9811d41421ada92
+      ref: "release-0.20-3"
+      resolved-ref: "34d65d8980262ed3ab6dee0b2066312ad7f4971c"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/mixin-network-flutter-plugins"
     source: git
     version: "0.2.0"
