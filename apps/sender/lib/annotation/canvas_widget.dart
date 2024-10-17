@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:android_window/android_window.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
-import 'package:display_cast_flutter/annotation/annotation_model.dart';
 import 'package:display_cast_flutter/annotation/draggable_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -53,13 +52,11 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
       title: "",
       iconPath: Platform.isWindows ? 'assets/images/ic_logo_airsync_icon.ico' : 'assets/images/ic_logo_airsync_icon.png'
     );
-    AnnotationModel().systemTray = _systemTray;
     _systemTray.registerSystemTrayEventHandler((eventName) {
       if (eventName == kSystemTrayEventClick) {
         widget.windowController!.show();
         _systemTray.destroy();
         _systemTray = SystemTray();
-        AnnotationModel().systemTray = _systemTray;
       }
     });
   }
@@ -102,7 +99,6 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
   }
 
   void _collapse() async {
-    AnnotationModel().show = false;
     if (Platform.isWindows || Platform.isMacOS) {
       await showSystemTray();
       widget.windowController!.hide();
@@ -135,33 +131,33 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        GestureDetector(
-          onPanUpdate: (details) {
-            _addPoint(details.localPosition);
-          },
-          onPanEnd: (details) {
-            _endDrawing();
-          },
-          child: CustomPaint(
-            painter: DrawingPainter(_points),
-            size: Size.infinite,
+    return SizedBox(
+      width: double.infinity,
+      height: double.infinity,
+      child: Stack(
+        children: [
+          GestureDetector(
+            onPanUpdate: (details) {
+              _addPoint(details.localPosition);
+            },
+            onPanEnd: (details) {
+              _endDrawing();
+            },
+            child: CustomPaint(
+              painter: DrawingPainter(_points),
+              size: Size.infinite,
+            ),
           ),
-        ),
-        DraggableWidget(onChanged: () {
-          setState(() {
-
-          });
-        }, child: _buildPanel()),
-      ],
+          DraggableWidget(child: _buildPanel()),
+        ],
+      ),
     );
   }
 
   Widget _buildPanel() {
     return Container(
       width: 52,
-      padding: const EdgeInsets.symmetric(vertical: 42, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: ShapeDecoration(
         color: const Color(0xFF20273E),
         shape: RoundedRectangleBorder(
@@ -171,6 +167,8 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          SvgPicture.asset('assets/images/ic_annotation_drag.svg',width: 20, height: 10,),
+          const Gap(16),
           if (!_isCollapsed) ...[
             IconButton(
               icon: 'assets/images/ic_annotation_pen.svg',
@@ -238,7 +236,13 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
                 });
               },
             ),
-            const Gap(8),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Divider(
+                color: Color(0xFF3C455D),
+                height: 1,
+              ),
+            ),
             IconButton(
               icon: 'assets/images/ic_annotation_minimize.svg',
               selected: false,
@@ -261,6 +265,8 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
             selected: false,
             onPressed: _exit,
           ),
+          const Gap(16),
+          SvgPicture.asset('assets/images/ic_annotation_drag.svg',width: 20, height: 10,),
         ],
       ),
     );
