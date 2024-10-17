@@ -155,5 +155,8 @@
   "v3_setting_language": "Language",
   "v3_setting_legal_policy": "Legal and Privacy",
   "v3_setting_knowledge_base": "Knowledge Base",
-  "v3_setting_check_update": "Check for Updates"
+  "v3_setting_check_update": "Check for Updates",
+  "v3_setting_privacy_policy": "Privacy policy",
+  "v3_setting_privacy_policy_description": "ViewSonic is committed to protecting your privacy and treats the handling of personal data seriously. The Privacy Policy below details how ViewSonic will treat your personal data after it has been collected by ViewSonic through your use of the Website. ViewSonic maintains the privacy of your information using security technologies and adhere to policies that prevent unauthorized use of your personal information. By using this Website, you consent to the collection and use of your information.\\n\\nWebsites you link to from ViewSonic.com may have their own privacy policy that may differ from ViewSonic’s. Please review those websites’ privacy policies for detailed information on how they may use information gathered while you are visiting them.\n\nPlease click the following links to learn more about our Privacy Policy.",
+  "v3_setting_open_source_license": "Open source licenses"
 }

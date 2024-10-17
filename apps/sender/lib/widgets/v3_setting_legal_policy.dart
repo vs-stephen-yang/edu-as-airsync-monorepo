@@ -1,12 +1,134 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/oss_licenses.dart';
+import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class V3SettingsLegalPolicy extends StatelessWidget {
   const V3SettingsLegalPolicy({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.cyan,
+    SettingsProvider settingsProvider =
+        Provider.of<SettingsProvider>(context, listen: false);
+    return Padding(
+      padding: const EdgeInsets.only(left: 24, top: 40, right: 24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 376,
+            height: 40,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: context.tokens.spacing.vsdswSpacingXs.top,
+                horizontal: context.tokens.spacing.vsdswSpacingSm.left,
+              ),
+              child: Row(
+                children: [
+                  AutoSizeText(
+                    S.of(context).v3_setting_privacy_policy,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon:
+                        SvgPicture.asset('assets/images/v3_ic_arrow_right.svg'),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: () {
+                      settingsProvider.setPage(SettingPageState.licenses);
+                    },
+                  )
+                ],
+              ),
+            ),
+          ),
+          Container(
+            height: 1,
+            margin: EdgeInsets.symmetric(
+              vertical: context.tokens.spacing.vsdswSpacingSm.top,
+            ),
+            color: context.tokens.color.vsdswColorOutlineVariant,
+          ),
+          SizedBox(
+            width: 376,
+            height: 40,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: context.tokens.spacing.vsdswSpacingXs.top,
+                horizontal: context.tokens.spacing.vsdswSpacingSm.left,
+              ),
+              child: AutoSizeText(
+                S.of(context).v3_setting_open_source_license,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 24),
+              child: ListView.separated(
+                itemCount: dependencies.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final license = dependencies[index];
+                  return SizedBox(
+                    width: 352,
+                    height: 40,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: context.tokens.spacing.vsdswSpacingXs.top,
+                          horizontal:
+                              context.tokens.spacing.vsdswSpacingSm.left),
+                      child: Row(
+                        children: [
+                          AutoSizeText(
+                            license.name,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            icon: SvgPicture.asset(
+                                'assets/images/v3_ic_arrow_right.svg'),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            onPressed: () {
+                              settingsProvider.setPage(
+                                  SettingPageState.licenses,
+                                  license: license);
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return Divider(
+                    thickness: 1,
+                    height: context.tokens.spacing.vsdswSpacingSm.vertical,
+                    color: context.tokens.color.vsdswColorOutlineVariant,
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

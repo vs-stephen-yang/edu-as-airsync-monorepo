@@ -332,6 +332,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Knowledge Base"),
         "v3_setting_language": MessageLookupByLibrary.simpleMessage("Language"),
         "v3_setting_legal_policy":
-            MessageLookupByLibrary.simpleMessage("Legal and Privacy")
+            MessageLookupByLibrary.simpleMessage("Legal and Privacy"),
+        "v3_setting_open_source_license":
+            MessageLookupByLibrary.simpleMessage("Open source licenses"),
+        "v3_setting_privacy_policy":
+            MessageLookupByLibrary.simpleMessage("Privacy policy"),
+        "v3_setting_privacy_policy_description":
+            MessageLookupByLibrary.simpleMessage(
+                "ViewSonic is committed to protecting your privacy and treats the handling of personal data seriously. The Privacy Policy below details how ViewSonic will treat your personal data after it has been collected by ViewSonic through your use of the Website. ViewSonic maintains the privacy of your information using security technologies and adhere to policies that prevent unauthorized use of your personal information. By using this Website, you consent to the collection and use of your information.\\n\\nWebsites you link to from ViewSonic.com may have their own privacy policy that may differ from ViewSonic’s. Please review those websites’ privacy policies for detailed information on how they may use information gathered while you are visiting them.\n\nPlease click the following links to learn more about our Privacy Policy.")
       };
 }

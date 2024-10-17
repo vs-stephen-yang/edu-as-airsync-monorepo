@@ -1,10 +1,16 @@
+import 'package:display_cast_flutter/oss_licenses.dart';
 import 'package:flutter/material.dart';
 
 enum SettingPageState {
+  // DO NOT change below order.
+  // Due to selection highlight mechanism.
+  // This enum sequence need match _addSettingsToList() sequence.
   language,
   legalPolicy,
   knowledgeBase,
   checkForUpdates,
+  // add sub page below
+  licenses,
 }
 
 class SettingsProvider with ChangeNotifier {
@@ -18,7 +24,11 @@ class SettingsProvider with ChangeNotifier {
 
   static SettingPageState get currentTittlePage => _currentTittlePage;
 
-  setPage(SettingPageState state) {
+  Package? _license;
+
+  Package? get license => _license;
+
+  setPage(SettingPageState state, {Package? license}) {
     switch (state) {
       case SettingPageState.language:
       case SettingPageState.legalPolicy:
@@ -29,6 +39,7 @@ class SettingsProvider with ChangeNotifier {
         break;
     }
     _currentPage = state;
+    _license = license;
     notifyListeners();
   }
 }
