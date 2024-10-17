@@ -51,6 +51,12 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
   Widget build(BuildContext context) {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
+    AnnotationModel annotationModel = context.read<AnnotationModel>();
+    if (annotationModel.presentSourceType == SourceType.Screen) {
+      isAnnotationImplemented = true;
+    } else if (Platform.isAndroid) {
+      isAnnotationImplemented = true;
+    }
     return Container(
       color: Colors.black,
       child: Stack(
@@ -82,7 +88,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
                       radius: kIsWeb ? 24 : 28,
                       child: IconButton(
                         onPressed: () {
-                          _startAnnotation();
+                          _startAnnotation(annotationModel);
                         },
                         icon: SvgPicture.asset(
                             'assets/images/v3_ic_sharing_pen.svg'),
@@ -207,10 +213,6 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
       DesktopMultiWindow.getAllSubWindowIds().then(
         (subWindowIds) {
           for (final windowId in subWindowIds) {
-            if (!AnnotationModel().show) {
-              WindowController.fromWindowId(windowId).show();
-              AnnotationModel().systemTray?.destroy();
-            }
             WindowController.fromWindowId(windowId).close();
           }
         },
@@ -221,35 +223,15 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    final type = AnnotationModel().presentSourceType;
-    if (type == SourceType.Screen) {
-      isAnnotationImplemented = true;
-    } else if (type == SourceType.Window) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        desktopCapturer.getSources(types: [SourceType.Screen]).then((list) {
-          if (list.length == 1) {
-            setState(() {
-              isAnnotationImplemented = true;
-            });
-          }
-        });
-      });
-    } else if (Platform.isAndroid) {
-      isAnnotationImplemented = true;
-    }
-    super.initState();
-  }
-
-  void _startAnnotation() async {
-    AnnotationModel().show = true;
+  void _startAnnotation(AnnotationModel annotationModel) async {
     if (Platform.isWindows || Platform.isMacOS) {
-      final window = await DesktopMultiWindow.createFullscreenWindow(
-          jsonEncode({'mode': 'desktop_canvas'}),
-          AnnotationModel().screenIndex
-      );
-      window.show();
+      final list = await DesktopMultiWindow.getAllSubWindowIds();
+      if (list.isEmpty) {
+        final window = await DesktopMultiWindow.createFullscreenWindow(
+            jsonEncode({'mode': 'desktop_canvas'}),
+            annotationModel.screenIndex);
+        window.show();
+      }
     } else if (Platform.isAndroid) {
       android_window.open(
         size: const Size(1920, 1080), // TODO: Set the size of the window

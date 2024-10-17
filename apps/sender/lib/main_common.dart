@@ -40,6 +40,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
+import 'annotation/annotation_model.dart';
 import 'annotation/canvas_widget.dart';
 
 void commonEntry(List<String> args, ConfigSettings settings) async {
@@ -156,6 +157,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: ChannelProvider(context)),
         ChangeNotifierProvider.value(value: DeviceListProvider()),
         ChangeNotifierProvider.value(value: SettingsProvider()),
+        ChangeNotifierProvider.value(value: AnnotationModel()),
       ],
       child: Consumer<PrefLanguageProvider>(
         builder: (context, languageModel, child) {

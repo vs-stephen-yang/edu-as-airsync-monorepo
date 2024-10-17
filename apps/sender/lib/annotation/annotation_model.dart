@@ -1,16 +1,7 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:system_tray/system_tray.dart';
 
-/// 因為在main common還沒有context，無法用provider
-
-class AnnotationModel {
-  static final AnnotationModel _instance = AnnotationModel._internal();
-
-  AnnotationModel._internal();
-
-  factory AnnotationModel() => _instance;
-
-  SystemTray? systemTray;
+class AnnotationModel extends ChangeNotifier{
 
   SourceType? presentSourceType;
 
@@ -19,8 +10,6 @@ class AnnotationModel {
   int _screenIndex = 0;
 
   int get screenIndex => _screenIndex;
-
-  bool show = true;
 
   // 設定annotation顯示於哪個螢幕
   void setScreenIndex(String name) {

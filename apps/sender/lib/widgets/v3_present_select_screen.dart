@@ -74,6 +74,7 @@ class V3PresentSelectScreen extends StatelessWidget {
         selectScreenDialog = SelectScreenDialog(
           hostName: provider.deviceName ?? '',
           isExtensionEnable: Platform.isWindows && isSupported,
+          annotationModel: context.read<AnnotationModel>(),
         );
         return selectScreenDialog!;
       },
@@ -249,7 +250,7 @@ class _CountDownTextState extends State<CountDownText> {
 
 //ignore: must_be_immutable
 class SelectScreenDialog extends Dialog {
-  SelectScreenDialog({super.key, required this.hostName, required this.isExtensionEnable}) {
+  SelectScreenDialog({super.key, required this.hostName, required this.isExtensionEnable, required this.annotationModel,}) {
     Future.delayed(const Duration(milliseconds: 100), () {
       _getSources(SourceType.Screen);
     });
@@ -268,12 +269,13 @@ class SelectScreenDialog extends Dialog {
         .add(desktopCapturer.onThumbnailChanged.stream.listen((source) {
       _stateSetter?.call(() {});
     }));
-    AnnotationModel().presentSourceType = SourceType.Screen;
+    annotationModel.presentSourceType = SourceType.Screen;
   }
 
   final List<StreamSubscription<DesktopCapturerSource>> _subscriptions = [];
   final Map<String, DesktopCapturerSource> _sources = {};
   final bool isExtensionEnable;
+  final AnnotationModel annotationModel;
   static DesktopCapturerSource? _selectedSource;
   static StateSetter? _stateSetter;
   static Timer? _timer;
@@ -390,13 +392,13 @@ class SelectScreenDialog extends Dialog {
                                     }
                                     switch (index) {
                                       case 0:
-                                        AnnotationModel().presentSourceType = SourceType.Screen;
+                                        annotationModel.presentSourceType = SourceType.Screen;
                                         break;
                                       case 1:
-                                        AnnotationModel().presentSourceType = SourceType.Window;
+                                        annotationModel.presentSourceType = SourceType.Window;
                                         break;
                                       case 2:
-                                        AnnotationModel().presentSourceType = null;
+                                        annotationModel.presentSourceType = null;
                                         break;
                                     }
                                   },
@@ -583,10 +585,10 @@ class SelectScreenDialog extends Dialog {
       _selectedSource = (await desktopCapturer.getSources(types: [ SourceType.Screen ])).last;
       Navigator.pop<CustomDesktopCaptureSource>(
           ctx, CustomDesktopCaptureSource(_selectedSource, false, isExtensionSelected));
-      AnnotationModel().selectedSource = null;
+      annotationModel.selectedSource = null;
     } else {
-      AnnotationModel().selectedSource = selectedSource;
-      AnnotationModel().setScreenIndex(selectedSource?.name ?? '');
+      annotationModel.selectedSource = selectedSource;
+      annotationModel.setScreenIndex(selectedSource?.name ?? '');
       Navigator.pop<CustomDesktopCaptureSource>(
           ctx, CustomDesktopCaptureSource(selectedSource, systemAudio, isExtensionSelected));
     }
