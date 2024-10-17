@@ -2,9 +2,14 @@ import 'dart:io';
 
 import 'package:android_window/android_window.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
+import 'package:display_cast_flutter/annotation/annotation_model.dart';
+import 'package:display_cast_flutter/annotation/draggable_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:gap/gap.dart';
 import 'package:system_tray/system_tray.dart';
 
+import 'color_box.dart';
 import 'drawing_painter.dart';
 
 class CanvasWidget extends StatelessWidget {
@@ -12,10 +17,10 @@ class CanvasWidget extends StatelessWidget {
   final Map? args;
 
   const CanvasWidget({
-    Key? key,
+    super.key,
     this.windowController,
     this.args,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +34,7 @@ class CanvasWidget extends StatelessWidget {
 
 class _DesktopCanvasPage extends StatefulWidget {
   final WindowController? windowController;
-  const _DesktopCanvasPage({Key? key, this.windowController}) : super(key: key);
+  const _DesktopCanvasPage({this.windowController});
 
   @override
   State<_DesktopCanvasPage> createState() => _DesktopCanvasPageState();
@@ -40,23 +45,21 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
   bool _isEraser = false;
   bool _isCollapsed = false;
   SystemTray _systemTray = SystemTray();
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  Color penColor = Colors.red;
+  double strokeWidth = 2.0;
 
   Future<void> showSystemTray() async {
     await _systemTray.initSystemTray(
       title: "",
-      iconPath: 'assets/images/ic_logo_airsync_icon.png'
+      iconPath: Platform.isWindows ? 'assets/images/ic_logo_airsync_icon.ico' : 'assets/images/ic_logo_airsync_icon.png'
     );
-
+    AnnotationModel().systemTray = _systemTray;
     _systemTray.registerSystemTrayEventHandler((eventName) {
       if (eventName == kSystemTrayEventClick) {
         widget.windowController!.show();
         _systemTray.destroy();
         _systemTray = SystemTray();
+        AnnotationModel().systemTray = _systemTray;
       }
     });
   }
@@ -81,8 +84,8 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
 
   void _addPoint(Offset offset) {
     Paint paint = Paint()
-      ..color = _isEraser ? Colors.transparent : Colors.black
-      ..strokeWidth = _isEraser ? 20.0 : 5.0
+      ..color = _isEraser ? Colors.transparent : penColor
+      ..strokeWidth = _isEraser ? 20.0 : strokeWidth
       ..strokeCap = StrokeCap.round;
     if (_isEraser) {
       paint.blendMode = BlendMode.clear;
@@ -99,7 +102,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
   }
 
   void _collapse() async {
-
+    AnnotationModel().show = false;
     if (Platform.isWindows || Platform.isMacOS) {
       await showSystemTray();
       widget.windowController!.hide();
@@ -132,85 +135,114 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Stack(
-        children: [
-          GestureDetector(
-            onPanUpdate: (details) {
-              _addPoint(details.localPosition);
-            },
-            onPanEnd: (details) {
-              _endDrawing();
-            },
-            child: CustomPaint(
-              painter: DrawingPainter(_points),
-              size: Size.infinite,
-            ),
+    return Stack(
+      children: [
+        GestureDetector(
+          onPanUpdate: (details) {
+            _addPoint(details.localPosition);
+          },
+          onPanEnd: (details) {
+            _endDrawing();
+          },
+          child: CustomPaint(
+            painter: DrawingPainter(_points),
+            size: Size.infinite,
           ),
-          _buildFixedPanel(),
-        ],
-      ),
-    );
-  }
+        ),
+        DraggableWidget(onChanged: () {
+          setState(() {
 
-  Widget _buildFixedPanel() {
-    return Positioned(
-      left: 0,
-      top: 0,
-      child: _buildPanel(),
+          });
+        }, child: _buildPanel()),
+      ],
     );
   }
 
   Widget _buildPanel() {
     return Container(
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 5,
-            offset: Offset(2, 2),
-          ),
-        ],
+      width: 52,
+      padding: const EdgeInsets.symmetric(vertical: 42, horizontal: 8),
+      decoration: ShapeDecoration(
+        color: const Color(0xFF20273E),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(40),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (!_isCollapsed) ...[
-            ElevatedButton(
+            IconButton(
+              icon: 'assets/images/ic_annotation_pen.svg',
+              selected: _isEraser == false,
               onPressed: _setDrawMode,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
-              ),
-              child: const Text('Draw'),
             ),
-            ElevatedButton(
+            const Gap(8),
+            IconButton(
+              icon: 'assets/images/ic_annotation_eraser.svg',
+              selected: _isEraser,
               onPressed: _setEraserMode,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
-              ),
-              child: const Text('Eraser'),
             ),
-            ElevatedButton(
+            const Gap(8),
+            IconButton(
+              icon: 'assets/images/ic_annotation_trash.svg',
+              selected: false,
               onPressed: _clearAll,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
-              ),
-              child: const Text('Clear'),
             ),
-            ElevatedButton(
-              onPressed: _collapse,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
+            const Gap(8),
+            ColorBar(
+              callback: (Color color) {
+                _isEraser = false;
+                penColor = color;
+              },
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Divider(
+                color: Color(0xFF3C455D),
+                height: 1,
               ),
-              child: const Text('Collapse'),
+            ),
+            IconButton(
+              icon: 'assets/images/ic_annotation_stroke_thin.svg',
+              selected: strokeWidth == 2.0,
+              enable: _isEraser == false,
+              onPressed: () {
+                setState(() {
+                  _isEraser = false;
+                  strokeWidth = 2.0;
+                });
+              },
+            ),
+            const Gap(8),
+            IconButton(
+              icon: 'assets/images/ic_annotation_stroke_medium.svg',
+              selected: strokeWidth == 8.0,
+              enable: _isEraser == false,
+              onPressed: () {
+                setState(() {
+                  _isEraser = false;
+                  strokeWidth = 8.0;
+                });
+              },
+            ),
+            const Gap(8),
+            IconButton(
+              icon: 'assets/images/ic_annotation_stroke_thick.svg',
+              selected: strokeWidth == 15.0,
+              enable: _isEraser == false,
+              onPressed: () {
+                setState(() {
+                  _isEraser = false;
+                  strokeWidth = 15.0;
+                });
+              },
+            ),
+            const Gap(8),
+            IconButton(
+              icon: 'assets/images/ic_annotation_minimize.svg',
+              selected: false,
+              onPressed: _collapse,
             ),
           ] else
             ...[
@@ -223,16 +255,98 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
                 child: const Text('Expand'),
               ),
             ],
-          ElevatedButton(
+          const Gap(8),
+          IconButton(
+            icon: 'assets/images/ic_annotation_close.svg',
+            selected: false,
             onPressed: _exit,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-            ),
-            child: const Text('Exit'),
           ),
         ],
       ),
     );
   }
 }
+
+
+class IconButton extends StatelessWidget {
+  const IconButton(
+      {super.key, this.onPressed, required this.selected, required this.icon, this.enable = true});
+
+  final String icon;
+  final VoidCallback? onPressed;
+  final bool selected;
+  final bool enable;
+
+  @override
+  Widget build(BuildContext context) {
+    bool tapDown = false;
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return GestureDetector(
+          onTapDown: (_) {
+            setState(() {
+              tapDown = true;
+            });
+          },
+          onTapUp: (_) {
+            setState(() {
+              tapDown = false;
+            });
+          },
+          onTap: onPressed,
+          child: Opacity(
+            opacity: enable ? 1 : 0.32,
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: ShapeDecoration(
+                color: (tapDown || selected) ? const Color(0xFF5D80ED) : null,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
+              ),
+              child: SvgPicture.asset(icon),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ColorBar extends StatefulWidget {
+  const ColorBar({super.key, required this.callback});
+  final ColorSelectCallback callback;
+
+  @override
+  State<ColorBar> createState() => _ColorBarState();
+}
+
+class _ColorBarState extends State<ColorBar> {
+  Color penColor = Colors.red;
+
+  @override
+  Widget build(BuildContext context) {
+    return ColorBoxGroup(
+      width: 30,
+      height: 30,
+      spacing: 10,
+      selectedBorderWidth: 2,
+      selectedBorderColor: Colors.white,
+      groupValue: penColor,
+      colors: const [
+        Colors.red,
+        Colors.blue,
+        Colors.yellow,
+        Colors.black,
+        Colors.white,
+      ],
+      onTap: (color){
+        setState(() {
+          penColor = color;
+          widget.callback.call(color);
+        });
+      },
+    );
+  }
+}
+

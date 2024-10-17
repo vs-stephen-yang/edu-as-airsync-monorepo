@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:android_window/main.dart' as android_window;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
+import 'package:display_cast_flutter/annotation/annotation_model.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
@@ -19,16 +20,23 @@ import 'package:display_cast_flutter/widgets/v3_touch_back_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:provider/provider.dart';
 
-class V3PresentPresentStart extends StatelessWidget {
-  V3PresentPresentStart({super.key, required this.isModeratorMode});
+class V3PresentPresentStart extends StatefulWidget {
+  const V3PresentPresentStart({super.key, required this.isModeratorMode});
 
   final bool isModeratorMode;
+
+  @override
+  State<V3PresentPresentStart> createState() => _V3PresentPresentStartState();
+}
+
+class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
+
   final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
 
-  // todo: Implement annotation
-  final bool isAnnotationImplemented = true;
+  bool isAnnotationImplemented = false;
 
   void sendReconnectStateToast(
       BuildContext context, ChannelReconnectState state) {
@@ -127,7 +135,7 @@ class V3PresentPresentStart extends StatelessWidget {
                         AppAnalytics.instance.trackEvent('click_stop');
 
                         channelProvider.presentStop();
-                        if (isModeratorMode) {
+                        if (widget.isModeratorMode) {
                           Provider.of<PresentStateProvider>(context,
                                   listen: false)
                               .presentModeratorWaitPage();
@@ -193,18 +201,53 @@ class V3PresentPresentStart extends StatelessWidget {
     );
   }
 
-  void _startAnnotation() async {
+  @override
+  void dispose() {
     if (Platform.isWindows || Platform.isMacOS) {
-      int screenIndex = -1;
-      // try {
-      //   screenIndex = int.parse(input);
-      // }
-      // catch (e) {
-      //   print('Invalid input: $input');
-      // }
+      DesktopMultiWindow.getAllSubWindowIds().then(
+        (subWindowIds) {
+          for (final windowId in subWindowIds) {
+            if (!AnnotationModel().show) {
+              WindowController.fromWindowId(windowId).show();
+              AnnotationModel().systemTray?.destroy();
+            }
+            WindowController.fromWindowId(windowId).close();
+          }
+        },
+      );
+    } else if (Platform.isAndroid) {
+      android_window.close();
+    }
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    final type = AnnotationModel().presentSourceType;
+    if (type == SourceType.Screen) {
+      isAnnotationImplemented = true;
+    } else if (type == SourceType.Window) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        desktopCapturer.getSources(types: [SourceType.Screen]).then((list) {
+          if (list.length == 1) {
+            setState(() {
+              isAnnotationImplemented = true;
+            });
+          }
+        });
+      });
+    } else if (Platform.isAndroid) {
+      isAnnotationImplemented = true;
+    }
+    super.initState();
+  }
+
+  void _startAnnotation() async {
+    AnnotationModel().show = true;
+    if (Platform.isWindows || Platform.isMacOS) {
       final window = await DesktopMultiWindow.createFullscreenWindow(
           jsonEncode({'mode': 'desktop_canvas'}),
-          screenIndex
+          AnnotationModel().screenIndex
       );
       window.show();
     } else if (Platform.isAndroid) {
