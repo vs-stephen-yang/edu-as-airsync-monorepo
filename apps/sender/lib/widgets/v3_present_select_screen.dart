@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:display_cast_flutter/annotation/annotation_model.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
@@ -267,6 +268,7 @@ class SelectScreenDialog extends Dialog {
         .add(desktopCapturer.onThumbnailChanged.stream.listen((source) {
       _stateSetter?.call(() {});
     }));
+    AnnotationModel().presentSourceType = SourceType.Screen;
   }
 
   final List<StreamSubscription<DesktopCapturerSource>> _subscriptions = [];
@@ -385,6 +387,17 @@ class SelectScreenDialog extends Dialog {
                                             ? SourceType.Screen
                                             : SourceType.Window);
                                       });
+                                    }
+                                    switch (index) {
+                                      case 0:
+                                        AnnotationModel().presentSourceType = SourceType.Screen;
+                                        break;
+                                      case 1:
+                                        AnnotationModel().presentSourceType = SourceType.Window;
+                                        break;
+                                      case 2:
+                                        AnnotationModel().presentSourceType = null;
+                                        break;
                                     }
                                   },
                                   tabs: [
@@ -570,7 +583,10 @@ class SelectScreenDialog extends Dialog {
       _selectedSource = (await desktopCapturer.getSources(types: [ SourceType.Screen ])).last;
       Navigator.pop<CustomDesktopCaptureSource>(
           ctx, CustomDesktopCaptureSource(_selectedSource, false, isExtensionSelected));
+      AnnotationModel().selectedSource = null;
     } else {
+      AnnotationModel().selectedSource = selectedSource;
+      AnnotationModel().setScreenIndex(selectedSource?.name ?? '');
       Navigator.pop<CustomDesktopCaptureSource>(
           ctx, CustomDesktopCaptureSource(selectedSource, systemAudio, isExtensionSelected));
     }
