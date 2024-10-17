@@ -4,6 +4,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/widgets/v3_setting_language.dart';
 import 'package:display_cast_flutter/widgets/v3_setting_legal_policy.dart';
+import 'package:display_cast_flutter/widgets/v3_setting_license.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -157,6 +158,8 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                           return const V3SettingLanguage();
                         case SettingPageState.legalPolicy:
                           return const V3SettingsLegalPolicy();
+                        case SettingPageState.licenses:
+                          return const V3SettingLicense();
                         default:
                           return const SizedBox.shrink();
                       }
