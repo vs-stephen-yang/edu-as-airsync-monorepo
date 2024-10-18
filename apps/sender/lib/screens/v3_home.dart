@@ -13,7 +13,6 @@ import 'package:display_cast_flutter/utilities/version_update.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:provider/provider.dart';
 import "package:universal_html/html.dart" as html;
@@ -32,10 +31,6 @@ class _V3HomeState extends State<V3Home> {
 
   @override
   void initState() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
     super.initState();
     _lifecycleListener = AppLifecycleListener(
       onResume: _handleResume,
