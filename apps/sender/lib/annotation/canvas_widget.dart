@@ -41,6 +41,7 @@ class _DesktopCanvasPage extends StatefulWidget {
 
 class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
   final List<DrawingPoint?> _points = [];
+  final List<DrawingPoint?> _pointSave = [];
   bool _isEraser = false;
   bool _isCollapsed = false;
   SystemTray _systemTray = SystemTray();
@@ -52,11 +53,16 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
       title: "",
       iconPath: Platform.isWindows ? 'assets/images/ic_logo_airsync_icon.ico' : 'assets/images/ic_logo_airsync_icon.png'
     );
-    _systemTray.registerSystemTrayEventHandler((eventName) {
+    _systemTray.registerSystemTrayEventHandler((eventName) async {
       if (eventName == kSystemTrayEventClick) {
         widget.windowController!.show();
         _systemTray.destroy();
         _systemTray = SystemTray();
+        await Future.delayed(const Duration(milliseconds: 200));
+        setState(() {
+          _points.addAll(_pointSave);
+          _pointSave.clear();
+        });
       }
     });
   }
@@ -101,6 +107,11 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
   void _collapse() async {
     if (Platform.isWindows || Platform.isMacOS) {
       await showSystemTray();
+      setState(() {
+        _pointSave.addAll(_points.toList());
+        _points.clear();
+      });
+      await Future.delayed(const Duration(milliseconds: 200));
       widget.windowController!.hide();
     } else if (Platform.isAndroid) {
       setState(() {
