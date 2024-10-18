@@ -140,6 +140,17 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  static const platform =
+      MethodChannel('com.viewsonic.display.cast/supportedOrientation');
+
+  static Future<void> setSupportedOrientationAll() async {
+    try {
+      await platform.invokeMethod('setSupportedOrientationAll', null);
+    } on PlatformException catch (e) {
+      log.info("Failed to set supported orientation: '${e.message}'.");
+    }
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -148,7 +159,13 @@ class MyApp extends StatelessWidget {
       SystemUiMode.manual,
       overlays: [SystemUiOverlay.bottom],
     );
-
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    if (!kIsWeb && Platform.isIOS) {
+      setSupportedOrientationAll();
+    }
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: PresentStateProvider()),
