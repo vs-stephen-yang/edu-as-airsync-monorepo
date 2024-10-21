@@ -34,6 +34,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprintf/sprintf.dart';
 
 import 'message_dialog_provider.dart';
@@ -148,12 +149,36 @@ class ChannelProvider extends ChangeNotifier {
 
   String? get displayGroupHostName => _displayGroupSession?.hostName;
 
+  bool get isAuthorizeMode => _isAuthorizeMode;
+  bool _isAuthorizeMode = defaultAuthorizeModeEnable;
+  static const defaultAuthorizeModeEnable = true;
+
+  final List<Map<String, RTCConnector>> authorizeRequestList = [];
+
+  set isAuthorizeMode(bool value) {
+    _isAuthorizeMode = value;
+    _save();
+    notifyListeners();
+  }
+
+  _save() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('app_AuthorizeModeEnable', _isAuthorizeMode);
+  }
+
+  _load() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _isAuthorizeMode =
+        prefs.getBool('app_AuthorizeModeEnable') ?? defaultAuthorizeModeEnable;
+  }
+
   ChannelProvider(
     this.appConfig,
     this._instanceInfo,
   ) : maxCountDown =
             _otpDuration.inMilliseconds ~/ _otpTickInterval.inMilliseconds {
     countDownProgress = ValueNotifier(maxCountDown);
+    _load();
   }
 
   startChannelProvider() {
@@ -468,6 +493,23 @@ class ChannelProvider extends ChangeNotifier {
               }
             }
             rtcConnector = _onJoinDisplay(rtcConnector, mode, msg);
+            if (isAuthorizeMode && !isModeratorMode) {
+              if (msg.name != null) {
+                Map<String, RTCConnector> requestAuthorize = {
+                  msg.name!: rtcConnector,
+                };
+                authorizeRequestList.add(requestAuthorize);
+                Timer.periodic(const Duration(seconds: 10), (_) {
+                  if (authorizeRequestList.contains(requestAuthorize)) {
+                    requestAuthorize[msg.name]?.sendRejectPresent(
+                        PresentRejectedReasonCode.authorizeTimeout.code,
+                        'authorize timeout');
+                    authorizeRequestList.remove(requestAuthorize);
+                    notifyListeners();
+                  }
+                });
+              }
+            }
           } else {
             if (_remoteScreenConnectors.length >= maxRemoteScreenConnection) {
               sendJoinDisplayRejectMessage(channel);
@@ -664,8 +706,8 @@ class ChannelProvider extends ChangeNotifier {
     final displayStatusMessage = DisplayStatusMessage();
     displayStatusMessage.name = _instanceInfo.deviceName;
     displayStatusMessage.platform = _getPlatform();
-    displayStatusMessage.status =
-        DisplayStatus.fromJson({'moderator': isModeratorMode});
+    displayStatusMessage.status = DisplayStatus.fromJson(
+        {'moderator': isModeratorMode, 'authorize': isAuthorizeMode});
     channel.send(displayStatusMessage);
   }
 

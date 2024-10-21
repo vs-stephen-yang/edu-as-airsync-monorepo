@@ -1211,6 +1211,16 @@ class S {
     );
   }
 
+  /// `Allow screen sharing only with approval requests.`
+  String get v3_settings_device_authorize_mode {
+    return Intl.message(
+      'Allow screen sharing only with approval requests.',
+      name: 'v3_settings_device_authorize_mode',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Cast to boards`
   String get v3_settings_broadcast_cast_boards {
     return Intl.message(
@@ -1606,6 +1616,26 @@ class S {
     return Intl.message(
       'Open Source Licenses',
       name: 'v3_settings_open_source_license',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Decline`
+  String get v3_authorize_prompt_decline {
+    return Intl.message(
+      'Decline',
+      name: 'v3_authorize_prompt_decline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accept`
+  String get v3_authorize_prompt_accept {
+    return Intl.message(
+      'Accept',
+      name: 'v3_authorize_prompt_accept',
       desc: '',
       args: [],
     );

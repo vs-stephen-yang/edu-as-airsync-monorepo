@@ -305,10 +305,10 @@ class RTCConnector {
 
   void _onJoinDisplay(JoinDisplayMessage msg, bool isModeratorMode) {
     clientId = msg.clientId;
-    senderName = msg.name;
     senderVersion = msg.version;
     senderPlatform = msg.platform;
     if (isModeratorMode) {
+      senderName = msg.name;
       onRefresh?.call();
     }
   }
@@ -321,7 +321,7 @@ class RTCConnector {
     // Timer
     startConnectionTimer(() async {
       if (!isModeratorMode) {
-        sendRejectPresent(400, 'timeout');
+        sendRejectPresent(PresentRejectedReasonCode.timeout.code, 'timeout');
         await disconnectPeerConnection(sendAnalytics: true);
         await disconnectChannel(reason: 'Timeout: present rejected');
       } else {

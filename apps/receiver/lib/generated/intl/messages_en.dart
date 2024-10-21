@@ -152,6 +152,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_message": MessageLookupByLibrary.simpleMessage(
             "A new version of software is available"),
         "update_title": MessageLookupByLibrary.simpleMessage("AirSync Update"),
+        "v3_authorize_prompt_accept":
+            MessageLookupByLibrary.simpleMessage("Accept"),
+        "v3_authorize_prompt_decline":
+            MessageLookupByLibrary.simpleMessage("Decline"),
         "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
         "v3_cast_to_device_title":
             MessageLookupByLibrary.simpleMessage("Device list"),
@@ -254,6 +258,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Local connection"),
         "v3_settings_connectivity_local_desc": MessageLookupByLibrary.simpleMessage(
             "Local connections operate within a private network, offering more security and stability."),
+        "v3_settings_device_authorize_mode":
+            MessageLookupByLibrary.simpleMessage(
+                "Allow screen sharing only with approval requests."),
         "v3_settings_device_auto_fill_otp":
             MessageLookupByLibrary.simpleMessage("Auto-fill one-time password"),
         "v3_settings_device_auto_fill_otp_desc":
