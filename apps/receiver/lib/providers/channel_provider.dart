@@ -66,7 +66,7 @@ class ChannelProvider extends ChangeNotifier {
 
   final int maxCountDown;
 
-  static const _otpTickInterval = Duration(milliseconds: 100);
+  static const _otpTickInterval = Duration(seconds: 1);
   static const _otpDuration = Duration(minutes: 2);
 
   Timer? _otpTickTimer;
