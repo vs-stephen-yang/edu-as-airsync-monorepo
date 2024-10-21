@@ -308,14 +308,17 @@ class DisplayConfiguration {
 
 class DisplayStatus {
   bool? moderator;
+  bool? authorize;
 
   DisplayStatus();
 
   DisplayStatus.fromJson(Map<String, dynamic> json)
-      : moderator = json['moderator'] as bool?;
+      : moderator = json['moderator'] as bool?,
+        authorize = json['authorize'] as bool?;
 
   Map<String, dynamic> toJson() => {
         'moderator': moderator,
+        'authorize': authorize,
       };
 }
 
