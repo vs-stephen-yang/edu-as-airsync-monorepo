@@ -27,7 +27,6 @@ import 'package:display_cast_flutter/widgets/present_idle.dart';
 import 'package:display_cast_flutter/widgets/present_present_start.dart';
 import 'package:display_cast_flutter/widgets/present_select_role.dart';
 import 'package:display_cast_flutter/widgets/present_select_screen.dart';
-import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/remote_screen_widget.dart';
 import 'package:display_cast_flutter/widgets/settings.dart';
 import 'package:display_cast_flutter/widgets/title_bar.dart';
@@ -199,8 +198,6 @@ class _HomeStates extends State<Home> {
                           return const ModeratorIdle();
                         case ViewState.moderatorWait:
                           return const ModeratorWait();
-                        case ViewState.waitReady:
-                          return const PresentWaitReady();
                         case ViewState.selectScreen:
                           return const PresentSelectScreen();
                         case ViewState.presentStart:

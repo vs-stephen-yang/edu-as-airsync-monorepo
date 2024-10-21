@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 
 enum ViewState {
   idle,
-  waitReady,
   selectScreen,
   presentStart,
 
