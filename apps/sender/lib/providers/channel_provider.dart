@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/model/direct_connector.dart';
 import 'package:display_cast_flutter/model/profile.dart';
@@ -18,6 +19,7 @@ import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/platform_util.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
+import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/v3_qrcode_scan.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,9 +30,6 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:http/http.dart' as http;
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:uuid/uuid.dart';
-
-import '../generated/l10n.dart';
-import '../widgets/toast.dart';
 
 // convert ChannelConnectorError to ChannelConnectError
 ChannelConnectError mapChannelConnectError(ChannelConnectorError error) {
@@ -305,7 +304,7 @@ class ChannelProvider extends ChangeNotifier {
               // Toast.makeToast(S.current.toast_maximum_split_screen);
               isPresentRejected = true;
             }
-            if (moderatorStatus) {
+            if (_moderatorStatus) {
               // moderator mode need keep sender in moderator list,
               // do not send present end event.
             } else {
@@ -318,7 +317,7 @@ class ChannelProvider extends ChangeNotifier {
           break;
         case ChannelMessageType.stopPresent:
           // split-screen / moderator mode
-          if (moderatorStatus) {
+          if (_moderatorStatus) {
             presentStop();
             _presentStateProvider?.presentModeratorWaitPage();
           }
@@ -493,7 +492,7 @@ class ChannelProvider extends ChangeNotifier {
       onRTCPeerConnectionState: _onRtcConnectionState,
       onStreamInterrupted: () async {
         presentStop();
-        if (moderatorStatus) {
+        if (_moderatorStatus) {
           _presentStateProvider?.presentModeratorWaitPage();
         } else {
           presentEnd();
@@ -514,7 +513,7 @@ class ChannelProvider extends ChangeNotifier {
         onResult: (result) {
           log.info('makeCall: ${result ? 'success' : 'failure'}');
           if (result) {
-            if (moderatorStatus) {
+            if (_moderatorStatus) {
               _presentStateProvider?.presentModeratorStartPage();
             } else {
               _presentStateProvider?.presentBasicStartPage();
@@ -523,7 +522,7 @@ class ChannelProvider extends ChangeNotifier {
             _startPresentTimer();
           } else {
             presentStop();
-            if (moderatorStatus) {
+            if (_moderatorStatus) {
               _presentStateProvider?.presentModeratorWaitPage();
             } else {
               presentEnd();
@@ -634,7 +633,7 @@ class ChannelProvider extends ChangeNotifier {
   void removeShareRemoteScreenClient() async {
     await _remoteScreenClient?.sendStopRemoteScreenMessage();
     await remoteScreenClient?.remove();
-    if (moderatorStatus) {
+    if (_moderatorStatus) {
       _presentStateProvider?.presentModeratorWaitPage();
     }
   }
