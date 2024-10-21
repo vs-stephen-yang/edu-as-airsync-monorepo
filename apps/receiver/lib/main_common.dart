@@ -33,11 +33,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:sentry_logging/sentry_logging.dart';
 import 'package:uuid/uuid.dart';
 
 Future<void> commonEntry(ConfigSettings settings) async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = settings.sentry.dsn;
+        options.environment = settings.sentry.environment;
+        options.addIntegration(LoggingIntegration());
+      },
+    );
 
     await AppOverlayTab().ensureInitialized();
 
@@ -86,31 +96,9 @@ Future<void> commonEntry(ConfigSettings settings) async {
         instanceId: AppInstanceCreate().displayInstanceID);
 
     await AppUpdateHelper().ensureInitialized(settings);
-
-    // Catches all uncaught exceptions within the Flutter framework (e.g., UI errors).
-    FlutterError.onError = (FlutterErrorDetails details) async {
-      // Report errors to a service
-      await AppExceptionReport().sendToServer(settings, packageInfo,
-          details.exceptionAsString(), details.stack.toString());
-
-      // Report error to Azure App Insights
-      AppAnalytics().trackEventException(
-        details.exceptionAsString(),
-        details.stack.toString(),
-      );
-    };
-
     runApp(configureApp);
-  }, (error, stack) async {
-    // Catches uncaught errors in asynchronous code
-
-    // Report errors to a service
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    await AppExceptionReport().sendToServer(
-        settings, packageInfo, error.toString(), stack.toString());
-
-    // Report error to Azure App Insights
-    AppAnalytics().trackEventException(error.toString(), stack.toString());
+  }, (error, stackTrace) async {
+    await Sentry.captureException(error, stackTrace: stackTrace);
   });
 }
 
