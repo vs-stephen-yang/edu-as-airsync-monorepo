@@ -94,6 +94,9 @@ class V3PresentSelectRole extends StatelessWidget {
           } else {
             if (channelProvider.isConnectAvailable()) {
               channelProvider.beginBasicMode();
+              if (channelProvider.authorizeStatus) {
+                presentStateProvider.presentAuthorizeWaitPage();
+              }
             } else {
               Toast.makeFeatureReconnectToast(
                   channelProvider.reconnectState,

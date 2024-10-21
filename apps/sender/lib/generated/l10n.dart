@@ -1151,6 +1151,16 @@ class S {
     );
   }
 
+  /// `Please wait for the host to approve your request.`
+  String get v3_main_authorize_wait {
+    return Intl.message(
+      'Please wait for the host to approve your request.',
+      name: 'v3_main_authorize_wait',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Choose your presentation mode`
   String get v3_main_select_role_title {
     return Intl.message(

@@ -109,6 +109,7 @@
   "v3_main_connect_rate_limited": "AirSync instance is busy. Please try it later.",
   "v3_main_connection_mode_unsupported": "AirSync does not connect to Internet.",
   "v3_main_connect_unknown_error": "Unknown error.",
+  "v3_main_authorize_wait": "Please wait for the host to approve your request.",
   "v3_main_select_role_title": "Choose your presentation mode",
   "v3_main_select_role_share": "Share",
   "v3_main_select_role_receive": "Receive",

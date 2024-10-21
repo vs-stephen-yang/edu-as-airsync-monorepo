@@ -10,9 +10,9 @@ import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:display_cast_flutter/widgets/moderator_share.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/v3_moderator_idle_name.dart';
-import 'package:display_cast_flutter/widgets/v3_moderator_wait.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
 import 'package:display_cast_flutter/widgets/v3_present_present_start.dart';
+import 'package:display_cast_flutter/widgets/v3_present_wait_prompt.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -32,7 +32,8 @@ class V3WebMain extends StatelessWidget {
         (presentStateProvider.currentState == ViewState.presentStart ||
             presentStateProvider.currentState == ViewState.moderatorStart);
     bool isWaiting =
-        presentStateProvider.currentState == ViewState.moderatorWait;
+        (presentStateProvider.currentState == ViewState.authorizeWait ||
+            presentStateProvider.currentState == ViewState.moderatorWait);
     return SizedBox(
       height: (isPresenting || isWaiting)
           ? MediaQuery.of(context).size.height
@@ -115,7 +116,7 @@ class V3WebMain extends StatelessWidget {
             Container(color: context.tokens.color.vsdswColorOpacityNeutralMd),
             const Align(
               alignment: Alignment.center,
-              child: V3ModeratorWait(),
+              child: V3PresentWaitPrompt(),
             ),
           ],
         ],
@@ -145,6 +146,9 @@ class V3PresentStateMachine extends StatelessWidget {
           } else {
             if (channelProvider.isConnectAvailable()) {
               channelProvider.beginBasicMode();
+              if (channelProvider.authorizeStatus) {
+                presentStateProvider.presentAuthorizeWaitPage();
+              }
             } else {
               Toast.makeFeatureReconnectToast(
                   channelProvider.reconnectState,
@@ -155,6 +159,9 @@ class V3PresentStateMachine extends StatelessWidget {
             }
           }
         });
+        return const SizedBox();
+      case ViewState.authorizeWait:
+        // move to V3WebMain for center in whole browser view.
         return const SizedBox();
       case ViewState.moderatorName:
         return const V3ModeratorIdleName();
