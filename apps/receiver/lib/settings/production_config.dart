@@ -5,6 +5,13 @@ class ProductionConfig implements ConfigSettings {
   bool isDevelopEnvironment = false;
 
   @override
+  SentryConfig sentry = SentryConfig(
+    dsn:
+        'https://ba656caa9f9170e1edc009cd46a54421@o4508005887442944.ingest.us.sentry.io/4508159114346496',
+    environment: 'prod',
+  );
+
+  @override
   String baseApiUrl = 'https://api2.gateway.airsync.net/';
 
   @override
