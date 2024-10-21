@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 
 class DraggableWidget extends StatefulWidget {
-  const DraggableWidget({super.key, required this.child, this.onChanged});
+  const DraggableWidget({super.key, required this.child, this.onMoveEnd});
   final Widget child;
-  final VoidCallback? onChanged;
+  final VoidCallback? onMoveEnd;
 
   @override
   DraggableWidgetState createState() => DraggableWidgetState();
@@ -37,7 +37,9 @@ class DraggableWidgetState extends State<DraggableWidget> {
             _xPosition = _initialImageX + (details.globalPosition.dx - _initialX);
             _yPosition = _initialImageY + (details.globalPosition.dy - _initialY);
           });
-          widget.onChanged?.call();
+        },
+        onPanEnd: (details){
+          widget.onMoveEnd?.call();
         },
         child: widget.child,
       ),
