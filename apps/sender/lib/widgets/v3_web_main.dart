@@ -8,7 +8,6 @@ import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:display_cast_flutter/widgets/moderator_share.dart';
-import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/v3_moderator_idle_name.dart';
 import 'package:display_cast_flutter/widgets/v3_moderator_wait.dart';
@@ -162,8 +161,6 @@ class V3PresentStateMachine extends StatelessWidget {
       case ViewState.moderatorWait:
         // move to V3WebMain for center in whole browser view.
         return const SizedBox();
-      case ViewState.waitReady:
-        return const PresentWaitReady(); //deprecated
       case ViewState.selectScreen:
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ChannelProvider channelProvider =

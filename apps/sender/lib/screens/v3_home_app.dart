@@ -8,7 +8,6 @@ import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/screens/v3_setting_menu.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
-import 'package:display_cast_flutter/widgets/present_wait_ready.dart';
 import 'package:display_cast_flutter/widgets/v3_background.dart';
 import 'package:display_cast_flutter/widgets/v3_device_list.dart';
 import 'package:display_cast_flutter/widgets/v3_moderator_idle_name.dart';
@@ -73,8 +72,6 @@ class V3PresentStateMachine extends StatelessWidget {
           return const V3ModeratorIdleName();
         case ViewState.moderatorWait:
           return const V3ModeratorWait();
-        case ViewState.waitReady:
-          return const PresentWaitReady(); //deprecated
         case ViewState.selectScreen:
           return const V3PresentSelectScreen();
         case ViewState.presentStart:
