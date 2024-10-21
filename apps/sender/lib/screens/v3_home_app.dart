@@ -11,11 +11,11 @@ import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/widgets/v3_background.dart';
 import 'package:display_cast_flutter/widgets/v3_device_list.dart';
 import 'package:display_cast_flutter/widgets/v3_moderator_idle_name.dart';
-import 'package:display_cast_flutter/widgets/v3_moderator_wait.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
 import 'package:display_cast_flutter/widgets/v3_present_present_start.dart';
 import 'package:display_cast_flutter/widgets/v3_present_select_role.dart';
 import 'package:display_cast_flutter/widgets/v3_present_select_screen.dart';
+import 'package:display_cast_flutter/widgets/v3_present_wait_prompt.dart';
 import 'package:display_cast_flutter/widgets/v3_qrcode_scan.dart';
 import 'package:display_cast_flutter/widgets/v3_remote_screen.dart';
 import 'package:flutter/material.dart';
@@ -68,10 +68,12 @@ class V3PresentStateMachine extends StatelessWidget {
           return const V3PresentIdle();
         case ViewState.selectRole:
           return const V3PresentSelectRole();
+        case ViewState.authorizeWait:
+          return const V3PresentWaitPrompt();
         case ViewState.moderatorName:
           return const V3ModeratorIdleName();
         case ViewState.moderatorWait:
-          return const V3ModeratorWait();
+          return const V3PresentWaitPrompt();
         case ViewState.selectScreen:
           return const V3PresentSelectScreen();
         case ViewState.presentStart:

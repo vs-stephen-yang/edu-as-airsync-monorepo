@@ -8,6 +8,7 @@ enum ViewState {
   presentStart,
 
   selectRole,
+  authorizeWait,
   remoteScreen,
   //moderator
   moderatorName,
@@ -50,6 +51,10 @@ class PresentStateProvider extends ChangeNotifier {
 
   Future<void> presentBasicStartPage() async {
     setViewState(ViewState.presentStart);
+  }
+
+  Future<void> presentAuthorizeWaitPage() async {
+    setViewState(ViewState.authorizeWait);
   }
 
   Future<void> presentRemoteScreenPage() async {

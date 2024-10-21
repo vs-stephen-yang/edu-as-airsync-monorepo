@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_cast_flutter/annotation/annotation_model.dart';
@@ -17,6 +18,7 @@ import 'package:display_cast_flutter/utilities/app_preferences.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:display_cast_flutter/utilities/misc_util.dart';
 import 'package:display_cast_flutter/utilities/platform_util.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
@@ -110,6 +112,12 @@ class ChannelProvider extends ChangeNotifier {
 
   bool isJoinDisplayRejected = false;
   bool isPresentRejected = false;
+
+  bool get authorizeStatus => _authorizeStatus;
+  bool _authorizeStatus = false;
+
+  String get randomName => _randomName;
+  String _randomName = '';
 
   void setChannelConnectError(ChannelConnectError error) {
     AppAnalytics.instance.trackEvent(
@@ -605,6 +613,11 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   Future beginBasicMode() async {
+    if (_authorizeStatus) {
+      _randomName = generateRandomId(Random());
+      _joinDisplay(name: _randomName);
+      return;
+    }
     _joinDisplay();
     _startPresent();
   }
@@ -644,6 +657,7 @@ class ChannelProvider extends ChangeNotifier {
   /// get IceServer list and send join-display, start-present
   void _onDisplayStatus(DisplayStatusMessage message) async {
     _moderatorStatus = message.status!.moderator!;
+    _authorizeStatus = message.status!.authorize!;
     deviceName = message.name;
     _presentStateProvider?.presentSelectRolePage();
   }

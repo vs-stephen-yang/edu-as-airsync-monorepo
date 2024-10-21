@@ -185,6 +185,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("End-User License Agreement"),
         "v3_main_accessibility":
             MessageLookupByLibrary.simpleMessage("Accessibility"),
+        "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
+            "Please wait for the host to approve your request."),
         "v3_main_connect_network_error": MessageLookupByLibrary.simpleMessage(
             "Network error. Please check network connectivity and try again."),
         "v3_main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
