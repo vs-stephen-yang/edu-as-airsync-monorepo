@@ -76,9 +76,6 @@ class ChannelProvider extends ChangeNotifier {
   late ValueNotifier<int> countDownProgress;
   final ValueNotifier<bool> isLanModeOnly = ValueNotifier(false);
   final ValueNotifier<String> otp = ValueNotifier('0000');
-  final List<String> _otpList = [];
-
-  List<String> get otpList => _otpList;
 
   String? host;
   bool _isTunnelServerStart = false;
@@ -660,7 +657,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   bool _isValidOtp(String token) {
-    return appConfig.settings.defaultOtp == token || otpList.contains(token);
+    return appConfig.settings.defaultOtp == token || otp.value == token;
   }
 
   void sendDisplayStatus(Channel channel) {
@@ -958,14 +955,6 @@ class ChannelProvider extends ChangeNotifier {
 
   _updateOTP() {
     otp.value = generateOTP(Random());
-
-    if (!otpList.contains(otp.value)) {
-      _otpList.add(otp.value);
-
-      if (_otpList.length > 2) {
-        _otpList.remove(_otpList.first);
-      }
-    }
   }
 
   _updateDisplayCode() async {
