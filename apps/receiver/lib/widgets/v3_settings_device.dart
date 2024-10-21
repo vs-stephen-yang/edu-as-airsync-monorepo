@@ -78,7 +78,16 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
               height: 26,
               child: _buildLaunchOnStartup(context),
             ),
-          ]
+          ],
+          _buildDivider(context),
+          Consumer<ChannelProvider>(
+            builder: (_, channelProvider, __) {
+              return SizedBox(
+                height: 26,
+                child: _buildAuthorizeMode(context, channelProvider),
+              );
+            },
+          ),
         ],
       ),
     );
@@ -102,6 +111,44 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
           top: context.tokens.spacing.vsdslSpacingSm.top,
           bottom: context.tokens.spacing.vsdslSpacingSm.bottom),
       color: context.tokens.color.vsdslColorOutlineVariant,
+    );
+  }
+
+  Widget _buildAuthorizeMode(
+      BuildContext context, ChannelProvider channelProvider) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 20,
+          height: 20,
+          child: Checkbox(
+            value: channelProvider.isAuthorizeMode,
+            activeColor: context.tokens.color.vsdslColorPrimary,
+            onChanged: (bool? value) {
+              channelProvider.isAuthorizeMode = value ?? true;
+            },
+          ),
+        ),
+        const Padding(padding: EdgeInsets.only(left: 4)),
+        InkWell(
+          onTap: () {
+            if (channelProvider.isAuthorizeMode) {
+              channelProvider.isAuthorizeMode = false;
+            } else {
+              channelProvider.isAuthorizeMode = true;
+            }
+          },
+          child: AutoSizeText(
+            S.of(context).v3_settings_device_authorize_mode,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: Colors.white,
+            ),
+            maxLines: 1,
+          ),
+        ),
+      ],
     );
   }
 

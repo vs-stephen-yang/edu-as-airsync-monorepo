@@ -1,62 +1,34 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
-import 'package:display_flutter/model/mirror_request.dart';
-import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
 
-class V3MirrorPrompt extends StatefulWidget {
-  const V3MirrorPrompt({super.key});
+class V3AuthorizePrompt extends StatefulWidget {
+  const V3AuthorizePrompt({super.key});
 
   @override
-  State<StatefulWidget> createState() => _V3MirrorPromptState();
+  State<StatefulWidget> createState() => _V3AuthorizePromptState();
 }
 
-class _V3MirrorPromptState extends State<V3MirrorPrompt> {
+class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
   List<BuildContext> dialogContextList = [];
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MirrorStateProvider>(builder: (_, mirrorStateProvider, __) {
-      var mirrorRequestIdles = HybridConnectionList()
-          .getMirrorMap()
-          .values
-          .where((request) => request.mirrorState == MirrorState.idle);
+    return Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
+      var authRequestIdles = channelProvider.authorizeRequestList;
 
-      if (mirrorRequestIdles.isNotEmpty && dialogContextList.isEmpty) {
-        for (MirrorRequest request
-            in HybridConnectionList().getMirrorMap().values) {
-          if (request.mirrorState == MirrorState.idle) {
-            if (HybridConnectionList.hybridSplitScreenCount.value <
-                HybridConnectionList.maxHybridSplitScreen) {
-              Future.delayed(Duration.zero, () {
-                if (mirrorStateProvider.isMirrorConfirmation) {
-                  _showAuthDialog(context);
-                } else {
-                  mirrorStateProvider.setAcceptMirrorId(request.mirrorId);
-                }
-              });
-            } else {
-              mirrorStateProvider.stopAcceptedMirror(request.mirrorId);
-              Future.delayed(Duration.zero, () {
-                _showMaxAmountToast();
-              });
-            }
-          }
-        }
-      } else if (mirrorStateProvider.pinCode.isNotEmpty &&
-          dialogContextList.isEmpty) {
+      if (authRequestIdles.isNotEmpty && dialogContextList.isEmpty) {
         Future.delayed(Duration.zero, () {
           _showAuthDialog(context);
         });
-      } else if (dialogContextList.isNotEmpty &&
-          mirrorRequestIdles.isEmpty &&
-          mirrorStateProvider.pinCode.isEmpty) {
+      } else if (dialogContextList.isNotEmpty && authRequestIdles.isEmpty) {
         if (dialogContextList.isNotEmpty) {
           for (var context in dialogContextList) {
             if (Navigator.canPop(context)) {
@@ -68,20 +40,6 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
       }
       return const SizedBox.shrink();
     });
-  }
-
-  _showMaxAmountToast() {
-    MotionToast(
-      primaryColor: Colors.grey,
-      description: Center(
-        child: AutoSizeText(
-          S.of(context).toast_maximum_split_screen,
-          maxLines: 1,
-        ),
-      ),
-      displaySideBar: false,
-      position: MotionToastPosition.center,
-    ).show(context);
   }
 
   _showAuthDialog(BuildContext context) {
@@ -100,24 +58,17 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
             backgroundColor: context.tokens.color.vsdslColorOpacityNeutralXl,
             alignment: Alignment.bottomCenter,
             insetPadding: const EdgeInsets.only(bottom: 27),
-            child: Consumer<MirrorStateProvider>(
-              builder: (_, mirrorStateProvider, __) {
-                var mirrorRequestIdles = HybridConnectionList()
-                    .getMirrorMap()
-                    .values
-                    .where(
-                        (request) => request.mirrorState == MirrorState.idle);
+            child: Consumer<ChannelProvider>(
+              builder: (_, channelProvider, __) {
+                var authRequestIdles = channelProvider.authorizeRequestList;
 
                 // Calculate Dialog height.
                 var totalHeight = 0.0;
                 // container padding height
                 var containerPaddingHeight =
                     context.tokens.spacing.vsdslSpacing4xl.vertical;
-                // pin code height
-                var pinCodeHeight = 0.0;
-                if (mirrorStateProvider.pinCode.isNotEmpty) {
-                  pinCodeHeight += 70;
-                }
+                // title bar height
+                var titleBarHeight = 53.0;
                 // Divider height
                 var requestDividerHeight = 2.0;
                 // mirror request height and spacing height
@@ -125,19 +76,16 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                 var requestContainerHeight = 27.0;
                 var requestPaddingHeight =
                     context.tokens.spacing.vsdslSpacingLg.vertical;
-                if (mirrorRequestIdles.isNotEmpty) {
-                  if (mirrorStateProvider.pinCode.isNotEmpty) {
-                    requestTotalHeight +=
-                        (requestPaddingHeight + requestDividerHeight);
-                  }
+                if (authRequestIdles.isNotEmpty) {
                   requestTotalHeight +=
                       (requestPaddingHeight + requestDividerHeight) *
-                          (mirrorRequestIdles.length - 1);
+                          authRequestIdles.length;
                   requestTotalHeight +=
-                      mirrorRequestIdles.length * requestContainerHeight;
+                      authRequestIdles.length * requestContainerHeight;
                 }
-                totalHeight =
-                    containerPaddingHeight + pinCodeHeight + requestTotalHeight;
+                totalHeight = containerPaddingHeight +
+                    titleBarHeight +
+                    requestTotalHeight;
                 return Container(
                   width: 548,
                   height: totalHeight,
@@ -147,45 +95,26 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                   ),
                   child: Column(
                     children: [
-                      if (mirrorStateProvider.pinCode.isNotEmpty) ...[
-                        SizedBox(
-                          height: pinCodeHeight,
-                          child: Column(
-                            children: [
-                              AutoSizeText(
-                                S.of(context).v3_mirror_request_passcode,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              AutoSizeText(
-                                mirrorStateProvider.pinCode,
-                                style: const TextStyle(
-                                  fontSize: 41,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 19.2,
-                                ),
-                              ),
-                            ],
+                      Image(
+                        height: titleBarHeight,
+                        image:
+                            const Svg('assets/images/ic_prompt_in_mirror.svg'),
+                      ),
+                      if (authRequestIdles.isNotEmpty)
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: requestPaddingHeight / 2,
+                          ),
+                          child: Container(
+                            color:
+                                context.tokens.color.vsdslColorOnSurfaceVariant,
+                            height: requestDividerHeight,
                           ),
                         ),
-                        if (mirrorRequestIdles.isNotEmpty)
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: requestPaddingHeight / 2,
-                            ),
-                            child: Container(
-                              color: context
-                                  .tokens.color.vsdslColorOnSurfaceVariant,
-                              height: requestDividerHeight,
-                            ),
-                          ),
-                      ],
                       Expanded(
                         child: ListView.separated(
                           reverse: HybridConnectionList().isMirroring(),
-                          itemCount: mirrorRequestIdles.length,
+                          itemCount: authRequestIdles.length,
                           itemBuilder: (BuildContext buildContext, int index) {
                             return SizedBox(
                               width: 508,
@@ -196,16 +125,14 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                                 children: [
                                   const Image(
                                     image: Svg(
-                                        'assets/images/ic_prompt_in_mirror.svg'),
+                                        'assets/images/ic_prompt_in_webrtc.svg'),
                                   ),
                                   SizedBox(
                                       width: context
                                           .tokens.spacing.vsdslSpacingSm.left),
                                   AutoSizeText(
                                     sprintf(S.current.main_mirror_from_client, [
-                                      mirrorRequestIdles
-                                          .toList()[index]
-                                          .mirrorId
+                                      authRequestIdles[index].entries.first.key
                                     ]),
                                     style: TextStyle(
                                       fontSize: 12,
@@ -235,11 +162,16 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                                         padding: EdgeInsets.zero,
                                       ),
                                       onPressed: () {
-                                        var mirrorId = mirrorRequestIdles
-                                            .toList()[index]
-                                            .mirrorId;
-                                        mirrorStateProvider
-                                            .clearRequestMirrorId(mirrorId);
+                                        authRequestIdles[index]
+                                            .entries
+                                            .first
+                                            .value
+                                            .sendRejectPresent(
+                                                PresentRejectedReasonCode
+                                                    .authorizeDecline.code,
+                                                'authorize decline');
+                                        channelProvider.authorizeRequestList
+                                            .removeAt(index);
                                       },
                                       child: AutoSizeText(S
                                           .of(context)
@@ -265,11 +197,13 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                                         padding: EdgeInsets.zero,
                                       ),
                                       onPressed: () async {
-                                        String? mirrorId = mirrorRequestIdles
-                                            .toList()[index]
-                                            .mirrorId;
-                                        mirrorStateProvider
-                                            .setAcceptMirrorId(mirrorId);
+                                        authRequestIdles[index]
+                                            .entries
+                                            .first
+                                            .value
+                                            .sendAllowPresent();
+                                        channelProvider.authorizeRequestList
+                                            .removeAt(index);
                                       },
                                       child: AutoSizeText(S
                                           .of(context)
