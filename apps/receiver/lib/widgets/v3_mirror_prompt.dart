@@ -118,18 +118,23 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                 if (mirrorStateProvider.pinCode.isNotEmpty) {
                   pinCodeHeight += 70;
                 }
+                // Divider height
+                var requestDividerHeight = 2.0;
                 // mirror request height and spacing height
                 var requestTotalHeight = 0.0;
                 var requestContainerHeight = 27.0;
                 var requestPaddingHeight =
                     context.tokens.spacing.vsdslSpacingLg.vertical;
                 if (mirrorRequestIdles.isNotEmpty) {
+                  if (mirrorStateProvider.pinCode.isNotEmpty) {
+                    requestTotalHeight +=
+                        (requestPaddingHeight + requestDividerHeight);
+                  }
+                  requestTotalHeight +=
+                      (requestPaddingHeight + requestDividerHeight) *
+                          (mirrorRequestIdles.length - 1);
                   requestTotalHeight +=
                       mirrorRequestIdles.length * requestContainerHeight;
-                  if (mirrorRequestIdles.length > 1) {
-                    requestTotalHeight +=
-                        requestPaddingHeight * (mirrorRequestIdles.length - 1);
-                  }
                 }
                 totalHeight =
                     containerPaddingHeight + pinCodeHeight + requestTotalHeight;
@@ -142,7 +147,7 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                   ),
                   child: Column(
                     children: [
-                      if (mirrorStateProvider.pinCode.isNotEmpty)
+                      if (mirrorStateProvider.pinCode.isNotEmpty) ...[
                         SizedBox(
                           height: pinCodeHeight,
                           child: Column(
@@ -165,6 +170,18 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                             ],
                           ),
                         ),
+                        if (mirrorRequestIdles.isNotEmpty)
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: requestPaddingHeight / 2,
+                            ),
+                            child: Container(
+                              color: context
+                                  .tokens.color.vsdslColorOnSurfaceVariant,
+                              height: requestDividerHeight,
+                            ),
+                          ),
+                      ],
                       Expanded(
                         child: ListView.separated(
                           reverse: HybridConnectionList().isMirroring(),
@@ -179,7 +196,7 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                                 children: [
                                   const Image(
                                     image: Svg(
-                                        'assets/images/ic_mirror_prompt_in.svg'),
+                                        'assets/images/ic_prompt_in_mirror.svg'),
                                   ),
                                   SizedBox(
                                       width: context
@@ -272,7 +289,7 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                               child: Container(
                                 color: context
                                     .tokens.color.vsdslColorOnSurfaceVariant,
-                                height: 2,
+                                height: requestDividerHeight,
                               ),
                             );
                           },
