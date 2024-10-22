@@ -63,16 +63,18 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    if (Platform.isWindows || Platform.isMacOS) {
-      DesktopMultiWindow.getAllSubWindowIds().then(
-        (subWindowIds) {
-          for (final windowId in subWindowIds) {
-            WindowController.fromWindowId(windowId).close();
-          }
-        },
-      );
-    } else if (Platform.isAndroid) {
-      android_window.close();
+    if (!kIsWeb) {
+      if (Platform.isWindows || Platform.isMacOS) {
+        DesktopMultiWindow.getAllSubWindowIds().then(
+          (subWindowIds) {
+            for (final windowId in subWindowIds) {
+              WindowController.fromWindowId(windowId).close();
+            }
+          },
+        );
+      } else if (Platform.isAndroid) {
+        android_window.close();
+      }
     }
     super.dispose();
   }
@@ -82,7 +84,9 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
     AnnotationModel annotationModel = context.read<AnnotationModel>();
-    if (annotationModel.presentSourceType == SourceType.Screen) {
+    if (kIsWeb) {
+      isAnnotationImplemented = false;
+    } else if (annotationModel.presentSourceType == SourceType.Screen) {
       isAnnotationImplemented = true;
     } else if (Platform.isAndroid) {
       isAnnotationImplemented = true;
