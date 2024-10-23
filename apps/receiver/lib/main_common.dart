@@ -25,8 +25,8 @@ import 'package:display_flutter/settings/theme_config.dart';
 import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/sentry_util.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -35,21 +35,14 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:sentry_logging/sentry_logging.dart';
 import 'package:uuid/uuid.dart';
 
 Future<void> commonEntry(ConfigSettings settings) async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    if (kReleaseMode) {
-      await SentryFlutter.init(
-        (options) {
-          options.dsn = settings.sentry.dsn;
-          options.environment = settings.sentry.environment;
-          options.addIntegration(LoggingIntegration());
-        },
-      );
+    if (settings.sentry != null) {
+      initSentry(settings.sentry!);
     }
 
     await AppOverlayTab().ensureInitialized();
