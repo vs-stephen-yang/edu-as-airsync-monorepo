@@ -5,7 +5,7 @@ class StageConfig implements ConfigSettings {
   String envName = 'stage';
 
   @override
-  SentryConfig sentry = SentryConfig(
+  SentryConfig? sentry = SentryConfig(
     dsn:
         'https://ce8aec8185b5609f1103556fb9a4afe3@o4508005887442944.ingest.us.sentry.io/4508159112380416',
     environment: 'stage',
