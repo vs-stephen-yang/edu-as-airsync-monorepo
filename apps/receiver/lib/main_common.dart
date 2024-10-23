@@ -26,6 +26,7 @@ import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -41,13 +42,15 @@ Future<void> commonEntry(ConfigSettings settings) async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    await SentryFlutter.init(
-      (options) {
-        options.dsn = settings.sentry.dsn;
-        options.environment = settings.sentry.environment;
-        options.addIntegration(LoggingIntegration());
-      },
-    );
+    if (kReleaseMode) {
+      await SentryFlutter.init(
+        (options) {
+          options.dsn = settings.sentry.dsn;
+          options.environment = settings.sentry.environment;
+          options.addIntegration(LoggingIntegration());
+        },
+      );
+    }
 
     await AppOverlayTab().ensureInitialized();
 
