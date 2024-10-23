@@ -49,7 +49,9 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    initSentry(settings.sentry);
+    if (settings.sentry != null) {
+      initSentry(settings.sentry!);
+    }
 
     if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
       if (args.firstOrNull == 'multi_window') {

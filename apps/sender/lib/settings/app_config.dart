@@ -47,7 +47,7 @@ abstract class ConfigSettings {
   late final String versionPostfix;
 
   // Sentry
-  late SentryConfig sentry;
+  late SentryConfig? sentry;
 
   late String baseApiUrl;
 
