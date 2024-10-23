@@ -35,7 +35,10 @@ enum JoinDisplayRejectedReasonCode {
 }
 
 enum PresentRejectedReasonCode {
-  maxPresentReached(401);
+  timeout(400),
+  maxPresentReached(401),
+  authorizeTimeout(402),
+  authorizeDecline(403);
 
   const PresentRejectedReasonCode(this.code);
   final int code;
