@@ -34,7 +34,7 @@ abstract class ConfigSettings {
   late bool isDevelopEnvironment;
 
   // Sentry
-  late SentryConfig sentry;
+  late SentryConfig? sentry;
 
   late String baseApiUrl;
   late String getIceServer;

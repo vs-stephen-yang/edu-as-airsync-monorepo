@@ -5,7 +5,7 @@ class DevConfig implements ConfigSettings {
   bool isDevelopEnvironment = true;
 
   @override
-  SentryConfig sentry = SentryConfig(
+  SentryConfig? sentry = SentryConfig(
     dsn:
         'https://ba656caa9f9170e1edc009cd46a54421@o4508005887442944.ingest.us.sentry.io/4508159114346496',
     environment: 'dev',
