@@ -30,6 +30,7 @@ import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/screen_state_detector.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
+import 'package:display_cast_flutter/utilities/sentry_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,7 +42,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:sentry_logging/sentry_logging.dart';
 import 'annotation/annotation_model.dart';
 import 'annotation/canvas_widget.dart';
 
@@ -49,15 +49,7 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    if (kReleaseMode) {
-      await SentryFlutter.init(
-        (options) {
-          options.dsn = settings.sentry.dsn;
-          options.environment = settings.sentry.environment;
-          options.addIntegration(LoggingIntegration());
-        },
-      );
-    }
+    initSentry(settings.sentry);
 
     if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
       if (args.firstOrNull == 'multi_window') {
