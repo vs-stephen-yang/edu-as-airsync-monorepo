@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 
 class DraggableWidget extends StatefulWidget {
-  const DraggableWidget({super.key, required this.child, this.onMoveEnd});
+  const DraggableWidget({super.key, required this.child, this.onMoveEnd, this.position = Offset.zero});
   final Widget child;
+  final Offset position;
   final VoidCallback? onMoveEnd;
 
   @override
@@ -17,8 +18,15 @@ class DraggableWidgetState extends State<DraggableWidget> {
   double _initialX = 0.0;
   double _initialY = 0.0;
 
-  double _initialImageX = 0.0;
-  double _initialImageY = 0.0;
+  double _initialChildX = 0.0;
+  double _initialChildY = 0.0;
+
+  @override
+  void initState() {
+    _xPosition = widget.position.dx;
+    _yPosition = widget.position.dy;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +37,13 @@ class DraggableWidgetState extends State<DraggableWidget> {
         onPanStart: (details) {
           _initialX = details.globalPosition.dx;
           _initialY = details.globalPosition.dy;
-          _initialImageX = _xPosition;
-          _initialImageY = _yPosition;
+          _initialChildX = _xPosition;
+          _initialChildY = _yPosition;
         },
         onPanUpdate: (details) {
           setState(() {
-            _xPosition = _initialImageX + (details.globalPosition.dx - _initialX);
-            _yPosition = _initialImageY + (details.globalPosition.dy - _initialY);
+            _xPosition = _initialChildX + (details.globalPosition.dx - _initialX);
+            _yPosition = _initialChildY + (details.globalPosition.dy - _initialY);
           });
         },
         onPanEnd: (details){

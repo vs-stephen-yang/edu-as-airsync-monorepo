@@ -21,5 +21,16 @@ public class MainActivity extends FlutterActivity {
                 result.notImplemented();
             }
         });
+        new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), "com.viewsonic.display.cast/window_manager")
+                .setMethodCallHandler(
+                        (call, result) -> {
+                            if (call.method.equals("minimizeWindow")) {
+                                moveTaskToBack(true);
+                                result.success(null);
+                            } else {
+                                result.notImplemented();
+                            }
+                        }
+                );
     }
 }

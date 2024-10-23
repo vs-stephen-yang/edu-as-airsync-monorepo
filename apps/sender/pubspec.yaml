@@ -86,6 +86,7 @@ dependencies:
     path: packages/android_window
   motion_toast: ^2.11.0
   flutter_oss_licenses: ^3.0.2
+  permission_handler: ^11.3.1
 
   # ViewSonic plug-in
   flutter_webrtc:
