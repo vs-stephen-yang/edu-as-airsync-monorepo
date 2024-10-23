@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:display_cast_flutter/annotation/annotation_model.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/model/direct_connector.dart';
@@ -549,6 +550,8 @@ class ChannelProvider extends ChangeNotifier {
       }
       _presentStateProvider?.presentMainPage();
     }
+
+    AnnotationModel.closeAnnotation();
   }
 
   Future<void> presentStop() async {

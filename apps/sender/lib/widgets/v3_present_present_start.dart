@@ -5,6 +5,7 @@ import 'package:android_window/main.dart' as android_window;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:display_cast_flutter/annotation/annotation_model.dart';
+import 'package:display_cast_flutter/annotation/window_utility.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
@@ -22,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class V3PresentPresentStart extends StatefulWidget {
@@ -64,17 +66,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
       DeviceOrientation.portraitDown,
     ]);
     if (!kIsWeb) {
-      if (Platform.isWindows || Platform.isMacOS) {
-        DesktopMultiWindow.getAllSubWindowIds().then(
-          (subWindowIds) {
-            for (final windowId in subWindowIds) {
-              WindowController.fromWindowId(windowId).close();
-            }
-          },
-        );
-      } else if (Platform.isAndroid) {
-        android_window.close();
-      }
+      AnnotationModel.closeAnnotation();
     }
     super.dispose();
   }
@@ -251,10 +243,22 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
         window.show();
       }
     } else if (Platform.isAndroid) {
-      android_window.open(
-        size: const Size(1920, 1080), // TODO: Set the size of the window
-        position: const Offset(0, 0),
-      );
+      if (!await android_window.isRunning()) {
+        if (await Permission.systemAlertWindow.isGranted) {
+          final Size physicalSize = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
+          android_window.open(
+            size: Size(physicalSize.width, physicalSize.height),
+            position: const Offset(0, 0),
+          );
+          await Future.delayed(const Duration(milliseconds: 100));
+        } else {
+          Permission.systemAlertWindow.request();
+          return;
+        }
+      }
+    }
+    if (!Platform.isWindows) { // TODO windows
+      WindowUtility.minimizeWindow();
     }
   }
 
