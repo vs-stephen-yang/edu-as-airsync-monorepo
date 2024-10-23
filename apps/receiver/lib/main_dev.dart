@@ -8,5 +8,5 @@ void main() {
 
 @pragma('vm:entry-point')
 void androidWindow() {
-  commonOverlayTabEntry();
+  commonOverlayTabEntry(DevConfig());
 }
