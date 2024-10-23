@@ -49,13 +49,15 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
   runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    await SentryFlutter.init(
-      (options) {
-        options.dsn = settings.sentry.dsn;
-        options.environment = settings.sentry.environment;
-        options.addIntegration(LoggingIntegration());
-      },
-    );
+    if (kReleaseMode) {
+      await SentryFlutter.init(
+        (options) {
+          options.dsn = settings.sentry.dsn;
+          options.environment = settings.sentry.environment;
+          options.addIntegration(LoggingIntegration());
+        },
+      );
+    }
 
     if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
       if (args.firstOrNull == 'multi_window') {
