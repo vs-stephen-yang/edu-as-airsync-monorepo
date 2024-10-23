@@ -11,6 +11,7 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 commonOverlayTabEntry() {
   runZonedGuarded<Future<void>>(() async {
@@ -23,8 +24,8 @@ commonOverlayTabEntry() {
     };
 
     runApp(Tokens(tokens: DefaultTokens(), child: const OverlayTabApp()));
-  }, (error, stack) {
-    log.severe('overlay tab error', error, stack);
+  }, (error, stack) async {
+    await Sentry.captureException(error, stackTrace: stack);
   });
 }
 
