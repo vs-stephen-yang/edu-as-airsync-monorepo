@@ -66,7 +66,6 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
             ? const {}
             : jsonDecode(args[2]) as Map<String, dynamic>;
         if (argument['mode'] == 'desktop_canvas') {
-          WidgetsFlutterBinding.ensureInitialized();
           runApp(CanvasWidget(
             windowController: WindowController.fromWindowId(windowId),
             args: argument,
