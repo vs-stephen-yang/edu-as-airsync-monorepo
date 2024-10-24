@@ -8,11 +8,11 @@ class AnnotationIconButton extends StatelessWidget {
   const AnnotationIconButton(
       {super.key,
         this.onPressed,
-        required this.selected,
         required this.icon,
-        this.enable = true,
         this.size = 36,
+        this.enable = true,
         this.circleStyle = false,
+        this.selected = false,
         this.iconSize,});
 
   final String icon;
@@ -55,7 +55,7 @@ class AnnotationIconButton extends StatelessWidget {
                 color: (tapDown || selected) ? const Color(0xFF5D80ED) : null,
                 shape: RoundedRectangleBorder(
                     borderRadius: circleStyle
-                        ? BorderRadius.circular(99)
+                        ? BorderRadius.circular(16)
                         : BorderRadius.circular(8)),
               ),
               child: SvgPicture.asset(

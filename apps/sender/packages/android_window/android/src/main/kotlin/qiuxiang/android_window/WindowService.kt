@@ -11,6 +11,7 @@ import io.flutter.FlutterInjector
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
+import android.util.Log
 
 const val engineId = "flutter-android-window"
 
@@ -27,6 +28,7 @@ class WindowService : android.app.Service() {
   override fun onConfigurationChanged(newConfig: Configuration) {
     super.onConfigurationChanged(newConfig)
     androidWindow.updateLayout()
+    androidWindow.onOrientationChange(newConfig)
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

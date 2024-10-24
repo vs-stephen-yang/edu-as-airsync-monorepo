@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 
 class DraggableWidget extends StatefulWidget {
-  const DraggableWidget({super.key, required this.child, this.onMoveEnd, this.position = Offset.zero});
+  const DraggableWidget({super.key, required this.child, this.onMoveEnd, this.position = Offset.zero, this.onMoveStart});
   final Widget child;
+  final Function(Offset offset)? onMoveEnd;
+  final VoidCallback? onMoveStart;
   final Offset position;
-  final VoidCallback? onMoveEnd;
 
   @override
   DraggableWidgetState createState() => DraggableWidgetState();
@@ -29,9 +30,18 @@ class DraggableWidgetState extends State<DraggableWidget> {
   }
 
   @override
+  void didUpdateWidget(covariant DraggableWidget oldWidget) {
+    if (widget.position.dy != _yPosition) {
+      _xPosition = widget.position.dx;
+      _yPosition = widget.position.dy;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: _xPosition,
+      left: 0,
       top: _yPosition,
       child: GestureDetector(
         onPanStart: (details) {
@@ -39,6 +49,7 @@ class DraggableWidgetState extends State<DraggableWidget> {
           _initialY = details.globalPosition.dy;
           _initialChildX = _xPosition;
           _initialChildY = _yPosition;
+          widget.onMoveStart?.call();
         },
         onPanUpdate: (details) {
           setState(() {
@@ -47,7 +58,7 @@ class DraggableWidgetState extends State<DraggableWidget> {
           });
         },
         onPanEnd: (details){
-          widget.onMoveEnd?.call();
+          widget.onMoveEnd?.call(Offset(_xPosition, _yPosition));
         },
         child: widget.child,
       ),

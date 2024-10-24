@@ -12,6 +12,8 @@ import io.flutter.embedding.engine.FlutterEngine
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import android.content.res.Configuration
+import android.util.Log
 
 class AndroidWindow(
   val service: Service,
@@ -121,8 +123,22 @@ class AndroidWindow(
   }
 
   fun setPosition(x: Int, y: Int) {
-    layoutParams.x = min(max(0, x), metrics.widthPixels - layoutParams.width)
+//    layoutParams.x = min(max(0, x), metrics.widthPixels - layoutParams.width)
+    layoutParams.x = 0
     layoutParams.y = min(max(0, y), metrics.heightPixels - layoutParams.height)
     windowManager.updateViewLayout(rootView, layoutParams)
+  }
+
+  fun onOrientationChange(newConfig: Configuration) {
+    var newWidth = 0
+    var newHeight = 0
+    if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+      newWidth = max(layoutParams.width, layoutParams.height)
+      newHeight = min(layoutParams.width, layoutParams.height)
+    } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+      newWidth = min(layoutParams.width, layoutParams.height)
+      newHeight = max(layoutParams.width, layoutParams.height)
+    }
+    setLayout(newWidth, newHeight)
   }
 }

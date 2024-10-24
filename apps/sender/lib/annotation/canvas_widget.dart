@@ -140,7 +140,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
           ),
           DraggableWidget(
             onMoveEnd: Platform.isMacOS
-                ? () async {
+                ? (detail) async {
                     // mac如果設定透明背景會有殘影，需要刷新整個視窗殘影才能消失(刷新flutter層Widget無效)。
                     setState(() {
                       _pointSave.addAll(_points.toList());
