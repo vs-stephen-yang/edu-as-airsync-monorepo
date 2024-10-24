@@ -116,7 +116,6 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
     });
     await showDialog(
       context: context,
-      barrierDismissible: false,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
         return V3CustomDialog(

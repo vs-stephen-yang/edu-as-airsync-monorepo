@@ -343,7 +343,6 @@ class _V3StreamingViewState extends ConsumerState {
   _showShortcutsMenuDialog() {
     showDialog(
       context: context,
-      barrierDismissible: false,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
         return const V3ShortcutsMenu();
@@ -354,7 +353,6 @@ class _V3StreamingViewState extends ConsumerState {
   _showQuickConnectMenuDialog() {
     showDialog(
       context: context,
-      barrierDismissible: false,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
         return const V3QuickConnectMenu();
@@ -366,7 +364,6 @@ class _V3StreamingViewState extends ConsumerState {
     String name = names.first;
     await showDialog(
       context: context,
-      barrierDismissible: false,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
         _isNewSharingOnScreen = true;
