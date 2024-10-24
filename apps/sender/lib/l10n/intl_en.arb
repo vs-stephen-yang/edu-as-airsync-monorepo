@@ -167,5 +167,6 @@
   "v3_setting_software_update_positive_action": "Update",
   "v3_setting_software_update_deny_action": "Later",
   "v3_setting_software_update_no_available": "No Update Available",
-  "v3_setting_software_update_no_available_description": "AirSync is already up to date with the latest version."
+  "v3_setting_software_update_no_available_description": "AirSync is already up to date with the latest version.",
+  "v3_setting_software_update_no_available_action": "Ok"
 }
