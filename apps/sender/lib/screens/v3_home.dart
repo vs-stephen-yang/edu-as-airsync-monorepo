@@ -7,8 +7,7 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/screens/v3_home_app.dart';
 import 'package:display_cast_flutter/screens/v3_home_web.dart';
-import 'package:display_cast_flutter/settings/app_config.dart';
-import 'package:display_cast_flutter/utilities/version_update.dart';
+import 'package:display_cast_flutter/utilities/v3_update_manager.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +25,6 @@ class V3Home extends StatefulWidget {
 
 class _V3HomeState extends State<V3Home> {
   late final AppLifecycleListener _lifecycleListener;
-  bool _isDialogShowing = false;
 
   @override
   void initState() {
@@ -64,11 +62,10 @@ class _V3HomeState extends State<V3Home> {
       }
 
       if (!kIsWeb) {
-        _checkUpdateVersion(context).then((value) {
+        V3UpdateManager().checkUpdateVersion(context, (value) {
           if (value != CompareVersionResult.none) {
-            // show update dialog
             if (context.mounted) {
-              _showUpdateDialog(context, value);
+              V3UpdateManager().showUpdateDialog(context, value);
             }
           }
         });
@@ -84,10 +81,10 @@ class _V3HomeState extends State<V3Home> {
 
   void _handleResume() {
     if (_shouldCheckUpdate()) {
-      _checkUpdateVersion(context).then((value) {
+      V3UpdateManager().checkUpdateVersion(context, (value) {
         if (value != CompareVersionResult.none) {
           if (context.mounted) {
-            _showUpdateDialog(context, value);
+            V3UpdateManager().showUpdateDialog(context, value);
           }
         }
       });
@@ -126,36 +123,6 @@ class _V3HomeState extends State<V3Home> {
     // Workaround:
     // adding a short delay to give the receiver sufficient time to receive the close message.
     await Future.delayed(const Duration(milliseconds: 100));
-  }
-
-  void _showUpdateDialog(BuildContext context, CompareVersionResult status) {
-    // check dialog
-    if (_isDialogShowing) {
-      return;
-    }
-    _isDialogShowing = true;
-
-    if (Platform.isIOS) {
-      showUpdateDialogIos(context, status).then((_) {
-        _isDialogShowing = false;
-      });
-    } else if (Platform.isAndroid) {
-      showUpdateDialogAndroid(context, status).then((_) {
-        _isDialogShowing = false;
-      });
-    } else {
-      showUpdateDialogDesktop(context, status).then((_) {
-        _isDialogShowing = false;
-      });
-    }
-  }
-
-  Future<CompareVersionResult> _checkUpdateVersion(BuildContext context) async {
-    String version = AppConfig.of(context)?.appVersion;
-    String? api = AppConfig.of(context)?.settings.appUpdateVersionEndpoint;
-    if (api == null) return CompareVersionResult.none;
-
-    return getVersion(api, version);
   }
 
   bool _isWebSupportPlatform() {
