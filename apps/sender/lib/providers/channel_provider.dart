@@ -173,7 +173,6 @@ class ChannelProvider extends ChangeNotifier {
     }
 
     final localIpAddresses = await fetchIPv4Addresses();
-    print('zz localIpAddresses: $localIpAddresses');
     _channelConnector = DisplayChannelConnector(
       clientId: _clientId!,
       otp: otp,
