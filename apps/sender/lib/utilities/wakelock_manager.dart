@@ -20,21 +20,15 @@ class WakelockManager {
   WakelockManager._internal();
 
   Future<void> _enableWakelock(String message) async {
-    if (kIsWeb) {
-      return; // Web not support
-    } else if (Platform.isAndroid || Platform.isIOS) {
-      return; // TODO: Implement wakelock for Android and iOS
-    }
+    // Wakelock works well on macOS, Windows, and Web, but on Android and iOS,
+    // it only functions when the app is in the foreground.
     await WakelockPlus.enable();
     log.info('Wakelock enabled: $message');
   }
 
   Future<void> _disableWakelock(String message) async {
-    if (kIsWeb) {
-      return; // Web not support
-    } else if (Platform.isAndroid || Platform.isIOS) {
-      return; // TODO: Implement wakelock for Android and iOS
-    }
+    // Wakelock works well on macOS, Windows, and Web, but on Android and iOS,
+    // it only functions when the app is in the foreground.
     await WakelockPlus.disable();
     log.info('Wakelock disabled: $message');
   }
