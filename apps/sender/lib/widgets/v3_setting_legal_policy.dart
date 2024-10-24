@@ -8,14 +8,20 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsLegalPolicy extends StatelessWidget {
-  const V3SettingsLegalPolicy({super.key});
+  const V3SettingsLegalPolicy({super.key, this.isAppMode = false});
+
+  final bool isAppMode;
 
   @override
   Widget build(BuildContext context) {
     SettingsProvider settingsProvider =
         Provider.of<SettingsProvider>(context, listen: false);
     return Padding(
-      padding: const EdgeInsets.only(left: 24, top: 40, right: 24),
+      padding: EdgeInsets.only(
+        left: isAppMode ? 16 : 24,
+        top: isAppMode ? 0 : 40,
+        right: isAppMode ? 16 : 24,
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,

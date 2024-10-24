@@ -6,7 +6,9 @@ import 'package:display_cast_flutter/demo/present_select_role_demo.dart';
 import 'package:display_cast_flutter/demo/remote_screen_widget_demo.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
-import 'package:display_cast_flutter/screens/v3_setting_menu.dart';
+import 'package:display_cast_flutter/providers/settings_provider.dart';
+import 'package:display_cast_flutter/screens/v3_setting_menu_app.dart';
+import 'package:display_cast_flutter/screens/v3_setting_menu_desktop.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/widgets/v3_background.dart';
 import 'package:display_cast_flutter/widgets/v3_device_list.dart';
@@ -18,6 +20,7 @@ import 'package:display_cast_flutter/widgets/v3_present_select_screen.dart';
 import 'package:display_cast_flutter/widgets/v3_present_wait_prompt.dart';
 import 'package:display_cast_flutter/widgets/v3_qrcode_scan.dart';
 import 'package:display_cast_flutter/widgets/v3_remote_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -142,13 +145,25 @@ class SettingMenu extends StatelessWidget {
   }
 
   _showOptionsMenuDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      // barrierDismissible: false,
-      barrierColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return const V3SettingMenu();
-      },
-    );
+    SettingsProvider settingsProvider =
+        Provider.of<SettingsProvider>(context, listen: false);
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+      settingsProvider.setPage(SettingPageState.appHome);
+      showGeneralDialog(
+        context: context,
+        pageBuilder: (_, __, ___) {
+          return const V3SettingMenuApp();
+        },
+      );
+    } else {
+      settingsProvider.setPage(SettingPageState.language);
+      showDialog(
+        context: context,
+        barrierColor: Colors.transparent,
+        builder: (_) {
+          return const V3SettingMenuDesktop();
+        },
+      );
+    }
   }
 }
