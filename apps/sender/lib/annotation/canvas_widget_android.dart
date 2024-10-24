@@ -1,10 +1,12 @@
-import 'dart:io';
 
 import 'package:android_window/android_window.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:display_cast_flutter/annotation/draggable_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:gap/gap.dart';
 
+import 'arrow_shape_painter.dart';
 import 'color_bar.dart';
 import 'drawing_painter.dart';
 import 'icon_button.dart';
@@ -21,13 +23,13 @@ class CanvasWidgetAndroid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Size physicalSize = WidgetsBinding.instance.platformDispatcher.views.last.physicalSize;
+    final Size physicalSize = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
     return MaterialApp(
       title: 'Annotation App',
       debugShowCheckedModeBanner: false,
       home: _CanvasPage(
         windowController: windowController,
-        physicalSize: physicalSize,
+        initPhysicalSize: physicalSize,
       ),
     );
   }
@@ -35,27 +37,34 @@ class CanvasWidgetAndroid extends StatelessWidget {
 
 class _CanvasPage extends StatefulWidget {
   final WindowController? windowController;
-  final Size physicalSize;
+  final Size initPhysicalSize;
 
-  const _CanvasPage({this.windowController, required this.physicalSize});
+  const _CanvasPage({this.windowController, required this.initPhysicalSize});
 
   @override
   State<_CanvasPage> createState() => _CanvasPageState();
 }
 
-class _CanvasPageState extends State<_CanvasPage> {
+class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
   final List<DrawingPoint?> _points = [];
   bool _isEraser = false;
   bool _isCollapsed = false;
-  bool _selectingColor = false;
-  bool _selectingStrokeWidth = false;
   Color _penColor = Colors.red;
   double _strokeWidth = 2.0;
   Offset panelOffset = Offset.zero;
+  GlobalKey colorKey = GlobalKey();
+  GlobalKey strokeKey = GlobalKey();
+  OverlayEntry? _overlayEntry;
 
   void _setEraserMode() {
     setState(() {
       _isEraser = true;
+    });
+  }
+
+  void _setPenMode() {
+    setState(() {
+      _isEraser = false;
     });
   }
 
@@ -85,7 +94,11 @@ class _CanvasPageState extends State<_CanvasPage> {
   }
 
   void _collapse() async {
-    AndroidWindow.resize(76, 76);
+    final pixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
+    final int width = (78 * pixelRatio).toInt();
+    final int height = (104 * pixelRatio).toInt();
+    AndroidWindow.resize(width, height);
+    _removeOverlay();
     await Future.delayed(const Duration(milliseconds: 150));
     setState(() {
       _isCollapsed = true;
@@ -98,13 +111,24 @@ class _CanvasPageState extends State<_CanvasPage> {
 
   @override
   void initState() {
-    if (Platform.isAndroid) {
-      // final dpSize = widget.physicalSize /
-      //     WidgetsBinding
-      //         .instance.platformDispatcher.views.first.devicePixelRatio;
-      // panelOffset = Offset((dpSize.width - 316) / 2, dpSize.height - 100);
-    }
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+
+  @override
+  void didChangeMetrics() {
+    setState(() {
+      panelOffset = Offset.zero;
+      _removeOverlay();
+    });
+    super.didChangeMetrics();
+  }
+
+  @override
+  void dispose() {
+    _removeOverlay();
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override
@@ -131,33 +155,46 @@ class _CanvasPageState extends State<_CanvasPage> {
               DraggableWidget(
                 position: panelOffset,
                 child: _buildAndroidPanel(),
+                onMoveEnd: (offset){
+                  panelOffset = offset;
+                  _removeOverlay();
+                },
               ),
             ] else ...[
               Container(
                 width: 76,
-                height: 76,
                 alignment: Alignment.center,
-                decoration: ShapeDecoration(
-                  color: const Color(0xff20273E),
+                decoration: const ShapeDecoration(
+                  color: Color(0xFF20273E),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(99),
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(40), bottomRight: Radius.circular(40)),
                   ),
                 ),
-                child: AnnotationIconButton(
-                  selected: false,
-                  size: 32,
-                  icon: 'assets/images/ic_annotation_pen.svg',
-                  onPressed: () async {
-                    if (_isCollapsed) {
-                      AndroidWindow.resize(3000, 3000);
-                    } else {
-                      AndroidWindow.resize(76, 76);
-                    }
-                    await Future.delayed(const Duration(milliseconds: 150));
-                    setState(() {
-                      _isCollapsed = !_isCollapsed;
-                    });
-                  },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SvgPicture.asset('assets/images/v3_ic_annotation_arrow_top.svg'),
+                    const Gap(14),
+                    AnnotationIconButton(
+                      selected: false,
+                      size: 32,
+                      icon: 'assets/images/ic_annotation_pen.svg',
+                      onPressed: () async {
+                        if (_isCollapsed) {
+                          AndroidWindow.resize(3000, 3000);
+                        } else {
+                          AndroidWindow.resize(76, 76);
+                        }
+                        _removeOverlay();
+                        await Future.delayed(const Duration(milliseconds: 150));
+                        setState(() {
+                          _isCollapsed = !_isCollapsed;
+                        });
+                      },
+                    ),
+                    const Gap(14),
+                    SvgPicture.asset('assets/images/v3_ic_annotation_arrow_bottom.svg'),
+                  ],
                 ),
               ),
             ],
@@ -168,112 +205,33 @@ class _CanvasPageState extends State<_CanvasPage> {
   }
 
   Widget _buildAndroidPanel() {
-    if (_selectingColor) {
-      return Container(
-        height: 76,
-        padding: const EdgeInsets.symmetric(horizontal: 26),
-        decoration: ShapeDecoration(
-          color: const Color(0xFF20273E),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40),
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ColorBar(
-              penColor: _penColor,
-              size: 32,
-              spacing: 28,
-              callback: (Color color) {
-                setState(() {
-                  _selectingColor = false;
-                  _penColor = color;
-                });
-              },
-            ),
-          ],
-        ),
-      );
-    }
-    if (_selectingStrokeWidth) {
-      return Container(
-        height: 76,
-        padding: const EdgeInsets.symmetric(horizontal: 68),
-        decoration: ShapeDecoration(
-          color: const Color(0xFF20273E),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40),
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AnnotationIconButton(
-              icon: 'assets/images/ic_annotation_stroke_thin.svg',
-              size: 60,
-              selected: _strokeWidth == 2.0,
-              enable: _isEraser == false,
-              circleStyle: true,
-              onPressed: () {
-                setState(() {
-                  _isEraser = false;
-                  _selectingStrokeWidth = false;
-                  _strokeWidth = 2.0;
-                });
-              },
-            ),
-            AnnotationIconButton(
-              icon: 'assets/images/ic_annotation_stroke_medium.svg',
-              size: 60,
-              selected: _strokeWidth == 8.0,
-              enable: _isEraser == false,
-              circleStyle: true,
-              onPressed: () {
-                setState(() {
-                  _isEraser = false;
-                  _selectingStrokeWidth = false;
-                  _strokeWidth = 8.0;
-                });
-              },
-            ),
-            AnnotationIconButton(
-              icon: 'assets/images/ic_annotation_stroke_thick.svg',
-              size: 60,
-              selected: _strokeWidth == 15.0,
-              enable: _isEraser == false,
-              circleStyle: true,
-              onPressed: () {
-                setState(() {
-                  _isEraser = false;
-                  _selectingStrokeWidth = false;
-                  _strokeWidth = 15.0;
-                });
-              },
-            ),
-          ],
-        ),
-      );
-    }
     return Container(
-      height: 76,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: ShapeDecoration(
-        color: const Color(0xFF20273E),
+      width: 78,
+      padding: const EdgeInsets.symmetric(vertical: 28),
+      decoration: const ShapeDecoration(
+        color: Color(0xFF20273E),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(40),
+          borderRadius: BorderRadius.only(topRight: Radius.circular(40), bottomRight: Radius.circular(40)),
         ),
       ),
-      child: Row(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          AnnotationIconButton(
+            icon: 'assets/images/v3_ic_annotation_shrink.svg',
+            size: 60,
+            iconSize: 32,
+            circleStyle: true,
+            selected: false,
+            onPressed: _collapse,
+          ),
           AnnotationIconButton(
             icon: 'assets/images/ic_annotation_pen.svg',
             size: 60,
             iconSize: 32,
             circleStyle: true,
             selected: _isEraser == false,
-            onPressed: _collapse,
+            onPressed: _setPenMode,
           ),
           AnnotationIconButton(
             icon: 'assets/images/ic_annotation_eraser.svg',
@@ -292,6 +250,7 @@ class _CanvasPageState extends State<_CanvasPage> {
             onPressed: _clearAll,
           ),
           GestureDetector(
+            key: colorKey,
             child: Padding(
               padding: const EdgeInsets.all(18),
               child: Container(
@@ -305,21 +264,23 @@ class _CanvasPageState extends State<_CanvasPage> {
               ),
             ),
             onTap: () {
+              _createOverlayEntry(colorKey, createSelectColor(), 150);
               setState(() {
                 _isEraser = false;
-                _selectingColor = true;
               });
             },
           ),
           AnnotationIconButton(
+            key: strokeKey,
             icon:
                 'assets/images/ic_annotation_stroke_${_strokeWidth == 2.0 ? 'thin' : _strokeWidth == 8.0 ? 'medium' : 'thick'}.svg',
             selected: false,
+            size: 60,
             circleStyle: true,
             onPressed: () {
+              _createOverlayEntry(strokeKey, createSelectStrokeWidth(), 110);
               setState(() {
                 _isEraser = false;
-                _selectingStrokeWidth = true;
               });
             },
           ),
@@ -334,5 +295,111 @@ class _CanvasPageState extends State<_CanvasPage> {
         ],
       ),
     );
+  }
+
+  Widget createSelectStrokeWidth() {
+    return ArrowShape(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        width: 64,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnnotationIconButton(
+                  icon: 'assets/images/ic_annotation_stroke_thin.svg',
+                  size: 42,
+                  selected: _strokeWidth == 2.0,
+                  enable: _isEraser == false,
+                  circleStyle: true,
+                  onPressed: () {
+                    setState(() {
+                      _removeOverlay();
+                      _isEraser = false;
+                      _strokeWidth = 2.0;
+                    });
+                  },
+                ),
+                AnnotationIconButton(
+                  icon: 'assets/images/ic_annotation_stroke_medium.svg',
+                  size: 42,
+                  selected: _strokeWidth == 8.0,
+                  enable: _isEraser == false,
+                  circleStyle: true,
+                  onPressed: () {
+                    setState(() {
+                      _removeOverlay();
+                      _isEraser = false;
+                      _strokeWidth = 8.0;
+                    });
+                  },
+                ),
+                AnnotationIconButton(
+                  icon: 'assets/images/ic_annotation_stroke_thick.svg',
+                  size: 42,
+                  selected: _strokeWidth == 15.0,
+                  enable: _isEraser == false,
+                  circleStyle: true,
+                  onPressed: () {
+                    setState(() {
+                      _removeOverlay();
+                      _isEraser = false;
+                      _strokeWidth = 15.0;
+                    });
+                  },
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget createSelectColor() {
+    return ArrowShape(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        width: 64,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ColorBar(
+              penColor: _penColor,
+              size: 36,
+              spacing: 28,
+              callback: (Color color) {
+                setState(() {
+                  _removeOverlay();
+                  _penColor = color;
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  void _createOverlayEntry(GlobalKey key, Widget child, double childHeight) {
+    _removeOverlay();
+    RenderBox renderBox = key.currentContext?.findRenderObject() as RenderBox;
+    var offset = renderBox.localToGlobal(Offset.zero);
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        left: offset.dx + renderBox.size.width + 10,
+        top: offset.dy - childHeight / 2,
+        child: child,
+      ),
+    );
+    Overlay.of(context).insert(_overlayEntry!);
   }
 }
