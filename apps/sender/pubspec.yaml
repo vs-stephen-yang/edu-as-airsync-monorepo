@@ -119,6 +119,7 @@ dependencies:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/mixin-network-flutter-plugins
       path: packages/desktop_multi_window
       ref: release-0.20-3
+  flutter_launcher_icons: ^0.14.1
   # ViewSonic plug-in
 
 dependency_overrides:
@@ -206,3 +207,32 @@ sentry:
   upload_source_maps: true
   upload_sources: true
   ignore_missing: true
+
+# https://pub.dev/packages/flutter_launcher_icons
+# 1. flutter pub run flutter_launcher_icons
+# 2. need remove android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml to prevent android icon become black!
+# 3. using ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png to resize web/192 and 512 files
+flutter_launcher_icons:
+  image_path: "assets/icon/AirSync.png"
+
+  android: "ic_launcher"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+
+  ios: true
+  remove_alpha_channel_ios: true
+  remove_alpha_ios: true
+
+  web:
+    generate: true
+    image_path: "assets/icon/AirSync.png"
+  #    background_color: "#FFFFFF"
+  #    theme_color: "#FFFFFF"
+
+  windows:
+    generate: true
+    image_path: "assets/icon/AirSync.png"
+    icon_size: 256 # min:48, max:256, default: 48
+
+  macos:
+    generate: true
+    image_path: "assets/icon/AirSync.png"
