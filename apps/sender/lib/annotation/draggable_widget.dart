@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 
 class DraggableWidget extends StatefulWidget {
@@ -31,7 +33,7 @@ class DraggableWidgetState extends State<DraggableWidget> {
 
   @override
   void didUpdateWidget(covariant DraggableWidget oldWidget) {
-    if (widget.position.dy != _yPosition) {
+    if (Platform.isAndroid && widget.position.dy != _yPosition) {
       _xPosition = widget.position.dx;
       _yPosition = widget.position.dy;
     }
@@ -41,7 +43,7 @@ class DraggableWidgetState extends State<DraggableWidget> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: 0,
+      left: Platform.isAndroid ? 0 : _xPosition,
       top: _yPosition,
       child: GestureDetector(
         onPanStart: (details) {
