@@ -108,7 +108,6 @@ class V3WebDownload extends StatelessWidget {
   _showDownloadAppMenuDialog(BuildContext context) {
     showDialog(
       context: context,
-      barrierDismissible: false,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
         return const V3DownloadAppMenu();
