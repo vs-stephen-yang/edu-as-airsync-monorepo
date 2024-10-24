@@ -210,7 +210,6 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
     FocusScope.of(context).unfocus();
     await showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (context) {
         return V3MessageDialog(
           stringTitle: S.of(context).v3_present_session_full,
@@ -229,7 +228,6 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
     FocusScope.of(context).unfocus();
     await showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (context) {
         return V3MessageDialog(
           stringTitle: S.of(context).v3_present_screen_full,
