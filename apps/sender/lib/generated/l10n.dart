@@ -1740,6 +1740,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Ok`
+  String get v3_setting_software_update_no_available_action {
+    return Intl.message(
+      'Ok',
+      name: 'v3_setting_software_update_no_available_action',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

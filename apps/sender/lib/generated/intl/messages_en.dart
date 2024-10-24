@@ -353,6 +353,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "A new version is now available, would you like to update now?"),
         "v3_setting_software_update_no_available":
             MessageLookupByLibrary.simpleMessage("No Update Available"),
+        "v3_setting_software_update_no_available_action":
+            MessageLookupByLibrary.simpleMessage("Ok"),
         "v3_setting_software_update_no_available_description":
             MessageLookupByLibrary.simpleMessage(
                 "AirSync is already up to date with the latest version."),
