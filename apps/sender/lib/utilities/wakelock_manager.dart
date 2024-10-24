@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:flutter/foundation.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 enum AppScene {
@@ -17,16 +20,26 @@ class WakelockManager {
 
   WakelockManager._internal();
 
+  bool _isSupported() {
+    // see https://viewsonic-ssi.visualstudio.com/Display%20App/_workitems/edit/72687/
+    // Currently, we only apply wakelock on macOS, Windows, and Web.
+    return kIsWeb || Platform.isMacOS || Platform.isWindows;
+  }
+
   Future<void> _enableWakelock(String message) async {
-    // Wakelock works well on macOS, Windows, and Web, but on Android and iOS,
-    // it only functions when the app is in the foreground.
+    if (!_isSupported()) {
+      log.info('Wakelock is not supported on this platform: $message');
+      return;
+    }
     await WakelockPlus.enable();
     log.info('Wakelock enabled: $message');
   }
 
   Future<void> _disableWakelock(String message) async {
-    // Wakelock works well on macOS, Windows, and Web, but on Android and iOS,
-    // it only functions when the app is in the foreground.
+    if (!_isSupported()) {
+      log.info('Wakelock is not supported on this platform: $message');
+      return;
+    }
     await WakelockPlus.disable();
     log.info('Wakelock disabled: $message');
   }
