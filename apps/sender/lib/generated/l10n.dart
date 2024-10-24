@@ -1660,6 +1660,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Software update`
+  String get v3_setting_software_update {
+    return Intl.message(
+      'Software update',
+      name: 'v3_setting_software_update',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A new version is now available, would you like to update now?`
+  String get v3_setting_software_update_description {
+    return Intl.message(
+      'A new version is now available, would you like to update now?',
+      name: 'v3_setting_software_update_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update`
+  String get v3_setting_software_update_positive_action {
+    return Intl.message(
+      'Update',
+      name: 'v3_setting_software_update_positive_action',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Later`
+  String get v3_setting_software_update_deny_action {
+    return Intl.message(
+      'Later',
+      name: 'v3_setting_software_update_deny_action',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Update Available`
+  String get v3_setting_software_update_no_available {
+    return Intl.message(
+      'No Update Available',
+      name: 'v3_setting_software_update_no_available',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AirSync is already up to date with the latest version.`
+  String get v3_setting_software_update_no_available_description {
+    return Intl.message(
+      'AirSync is already up to date with the latest version.',
+      name: 'v3_setting_software_update_no_available_description',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
