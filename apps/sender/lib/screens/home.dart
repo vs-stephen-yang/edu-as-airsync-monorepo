@@ -14,7 +14,7 @@ import 'package:display_cast_flutter/utilities/app_colors.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/updater_windows.dart';
-import 'package:display_cast_flutter/utilities/version_update.dart';
+import 'package:display_cast_flutter/utilities/v3_update_manager.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
 import 'package:display_cast_flutter/widgets/bottom_bar.dart';
 import 'package:display_cast_flutter/widgets/device_list.dart';
@@ -367,7 +367,7 @@ class _HomeStates extends State<Home> {
     String? api = AppConfig.of(context)?.settings.appUpdateVersionEndpoint;
     if (api == null) return CompareVersionResult.none;
 
-    return getVersion(api, version);
+    return V3UpdateManager().getVersion(api, version);
   }
 
   bool isSupportPlatform() {

@@ -3,6 +3,7 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/v3_update_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -135,7 +136,11 @@ class V3SettingMainList extends StatelessWidget {
         S.of(context).v3_setting_check_update,
         null,
         () {
-          //todo: implement ota mechanism.
+          V3UpdateManager().checkUpdateVersion(context, (value) {
+            if (context.mounted) {
+              V3UpdateManager().showUpdateDialog(context, value);
+            }
+          });
         },
       ),
     );
