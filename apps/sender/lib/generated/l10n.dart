@@ -1591,6 +1591,26 @@ class S {
     );
   }
 
+  /// `Settings`
+  String get v3_setting_title {
+    return Intl.message(
+      'Settings',
+      name: 'v3_setting_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AirSync ©2024. version %s`
+  String get v3_setting_app_version {
+    return Intl.message(
+      'AirSync ©2024. version %s',
+      name: 'v3_setting_app_version',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Language`
   String get v3_setting_language {
     return Intl.message(

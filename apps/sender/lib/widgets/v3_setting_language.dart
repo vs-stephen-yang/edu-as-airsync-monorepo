@@ -6,12 +6,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingLanguage extends StatelessWidget {
-  const V3SettingLanguage({super.key});
+  const V3SettingLanguage({super.key, this.isAppMode = false});
+
+  final bool isAppMode;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+      padding:
+          EdgeInsets.symmetric(horizontal: 24, vertical: isAppMode ? 8 : 40),
       child: Consumer<PrefLanguageProvider>(builder: (_, languageProvider, __) {
         String selectedLanguage = languageProvider.language;
         Map<String, Locale> languageList = languageProvider.localeMap;

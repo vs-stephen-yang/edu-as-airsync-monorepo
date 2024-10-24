@@ -328,6 +328,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Time remain"),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("Start sharing"),
+        "v3_setting_app_version":
+            MessageLookupByLibrary.simpleMessage("AirSync ©2024. version %s"),
         "v3_setting_check_update":
             MessageLookupByLibrary.simpleMessage("Check for Updates"),
         "v3_setting_knowledge_base":
@@ -355,6 +357,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "AirSync is already up to date with the latest version."),
         "v3_setting_software_update_positive_action":
-            MessageLookupByLibrary.simpleMessage("Update")
+            MessageLookupByLibrary.simpleMessage("Update"),
+        "v3_setting_title": MessageLookupByLibrary.simpleMessage("Settings")
       };
 }

@@ -5,12 +5,20 @@ enum SettingPageState {
   // DO NOT change below order.
   // Due to selection highlight mechanism.
   // This enum sequence need match _addSettingsToList() sequence.
-  language,
-  legalPolicy,
-  knowledgeBase,
-  checkForUpdates,
+  language(0),
+  legalPolicy(1),
+  knowledgeBase(2),
+  checkForUpdates(3),
+  // add main page above
   // add sub page below
-  licenses,
+  licenses(4),
+  // add new item above.
+  appHome(9999); // last item
+  // DO NOT add item below.
+
+  final int value;
+
+  const SettingPageState(this.value);
 }
 
 class SettingsProvider with ChangeNotifier {
