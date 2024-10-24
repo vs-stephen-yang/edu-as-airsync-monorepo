@@ -8,7 +8,6 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/screens/v3_home_app.dart';
 import 'package:display_cast_flutter/screens/v3_home_web.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
-import 'package:display_cast_flutter/utilities/updater_windows.dart';
 import 'package:display_cast_flutter/utilities/version_update.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
 import 'package:flutter/foundation.dart';
@@ -136,133 +135,19 @@ class _V3HomeState extends State<V3Home> {
     }
     _isDialogShowing = true;
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Text(S.of(context).main_update_title),
-          content: SizedBox(
-            width: 100,
-            height: 100,
-            child: Column(
-              children: [
-                if (Platform.isIOS || Platform.isMacOS)
-                  Text(S.of(context).main_update_description_apple),
-                if (Platform.isAndroid)
-                  Text(S.of(context).main_update_description_android),
-                if (Platform.isWindows)
-                  Text(S.of(context).main_update_description_windows),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            if (status == CompareVersionResult.userChoose)
-              TextButton(
-                style: ButtonStyle(
-                  backgroundColor:
-                      WidgetStateProperty.all<Color>(Colors.white), // 设置按钮背景颜色
-                  foregroundColor:
-                      WidgetStateProperty.all<Color>(Colors.grey), // 设置按钮文字颜色
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // 设置按钮圆角
-                      side: const BorderSide(color: Colors.grey), // 设置按钮边框
-                    ),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text(S.of(context).main_update_deny_button),
-              ),
-            TextButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
-                // 设置按钮背景颜色
-                foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
-                // 设置按钮文字颜色
-                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // 设置按钮圆角
-                    side: const BorderSide(color: Colors.blue), // 设置按钮边框
-                  ),
-                ),
-              ),
-              onPressed: () async {
-                if (status == CompareVersionResult.userChoose) {
-                  Navigator.of(context).pop();
-                }
-                if (Platform.isAndroid) {
-                  launchUrl(Uri.parse(
-                      'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast'));
-                } else if (Platform.isIOS) {
-                  launchUrl(Uri.parse(
-                      'https://apps.apple.com/us/app/airsync-sender/id6453759985'));
-                } else if (Platform.isMacOS) {
-                  launchUrl(Uri.parse(
-                      'macappstore://apps.apple.com/app/airsync-sender/id6453759985'));
-                } else if (Platform.isWindows) {
-                  try {
-                    await installUpdates();
-                    exit(0);
-                  } on UpdateErrorExecption catch (e) {
-                    if (context.mounted) {
-                      _showUpdateErrorDialog(context, e);
-                    }
-                  }
-                }
-              },
-              child: Text(S.of(context).main_update_positive_button),
-            ),
-          ],
-        );
-      },
-    ).then((_) {
-      _isDialogShowing = false;
-    });
-  }
-
-  void _showUpdateErrorDialog(BuildContext context, UpdateErrorExecption e) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            title: Text(S.of(context).main_update_error_title),
-            content: SizedBox(
-              width: 100,
-              height: 100,
-              child: Column(
-                children: [
-                  Text(
-                      '${S.of(context).main_update_error_type}: ${e.error.name} \n${S.of(context).main_update_error_detail}: ${e.details.toString()}'),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
-                  // 设置按钮背景颜色
-                  foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
-                  // 设置按钮文字颜色
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // 设置按钮圆角
-                      side: const BorderSide(color: Colors.blue), // 设置按钮边框
-                    ),
-                  ),
-                ),
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                },
-                child: Text(S.of(context).device_list_enter_pin_ok),
-              ),
-            ],
-          );
-        });
+    if (Platform.isIOS) {
+      showUpdateDialogIos(context, status).then((_) {
+        _isDialogShowing = false;
+      });
+    } else if (Platform.isAndroid) {
+      showUpdateDialogAndroid(context, status).then((_) {
+        _isDialogShowing = false;
+      });
+    } else {
+      showUpdateDialogDesktop(context, status).then((_) {
+        _isDialogShowing = false;
+      });
+    }
   }
 
   Future<CompareVersionResult> _checkUpdateVersion(BuildContext context) async {

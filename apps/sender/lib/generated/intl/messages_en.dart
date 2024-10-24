@@ -341,6 +341,20 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Privacy policy"),
         "v3_setting_privacy_policy_description":
             MessageLookupByLibrary.simpleMessage(
-                "ViewSonic is committed to protecting your privacy and treats the handling of personal data seriously. The Privacy Policy below details how ViewSonic will treat your personal data after it has been collected by ViewSonic through your use of the Website. ViewSonic maintains the privacy of your information using security technologies and adhere to policies that prevent unauthorized use of your personal information. By using this Website, you consent to the collection and use of your information.\\n\\nWebsites you link to from ViewSonic.com may have their own privacy policy that may differ from ViewSonic’s. Please review those websites’ privacy policies for detailed information on how they may use information gathered while you are visiting them.\n\nPlease click the following links to learn more about our Privacy Policy.")
+                "ViewSonic is committed to protecting your privacy and treats the handling of personal data seriously. The Privacy Policy below details how ViewSonic will treat your personal data after it has been collected by ViewSonic through your use of the Website. ViewSonic maintains the privacy of your information using security technologies and adhere to policies that prevent unauthorized use of your personal information. By using this Website, you consent to the collection and use of your information.\\n\\nWebsites you link to from ViewSonic.com may have their own privacy policy that may differ from ViewSonic’s. Please review those websites’ privacy policies for detailed information on how they may use information gathered while you are visiting them.\n\nPlease click the following links to learn more about our Privacy Policy."),
+        "v3_setting_software_update":
+            MessageLookupByLibrary.simpleMessage("Software update"),
+        "v3_setting_software_update_deny_action":
+            MessageLookupByLibrary.simpleMessage("Later"),
+        "v3_setting_software_update_description":
+            MessageLookupByLibrary.simpleMessage(
+                "A new version is now available, would you like to update now?"),
+        "v3_setting_software_update_no_available":
+            MessageLookupByLibrary.simpleMessage("No Update Available"),
+        "v3_setting_software_update_no_available_description":
+            MessageLookupByLibrary.simpleMessage(
+                "AirSync is already up to date with the latest version."),
+        "v3_setting_software_update_positive_action":
+            MessageLookupByLibrary.simpleMessage("Update")
       };
 }
