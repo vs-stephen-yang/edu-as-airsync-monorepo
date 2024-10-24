@@ -183,7 +183,6 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
     });
     await showDialog(
       context: context,
-      barrierDismissible: false,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
         return const V3ParticipantsMenu();
@@ -201,7 +200,6 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
     });
     await showDialog(
       context: context,
-      barrierDismissible: false,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
         return const V3CastDevicesMenu();
