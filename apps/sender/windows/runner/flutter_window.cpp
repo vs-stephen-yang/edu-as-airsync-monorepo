@@ -7,6 +7,7 @@
 #include "flutter/generated_plugin_registrant.h"
 #include "desktop_multi_window/desktop_multi_window_plugin.h"
 #include "system_tray/system_tray_plugin.h"
+#include "custom_channel.cpp"
 
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
     : project_(project) {}
@@ -43,6 +44,10 @@ bool FlutterWindow::OnCreate() {
       SystemTrayPluginRegisterWithRegistrar(
               registry->GetRegistrarForPlugin("SystemTrayPlugin"));
   });
+
+  flutter::FlutterEngine *newEngine  = flutter_controller_->engine();
+  custom_channels::minimizeWindow x = custom_channels::minimizeWindow(newEngine);
+
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   // Register for power notifications and session notifications.

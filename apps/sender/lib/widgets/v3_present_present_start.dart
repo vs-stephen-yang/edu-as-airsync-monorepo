@@ -235,6 +235,8 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
 
   void _startAnnotation(AnnotationModel annotationModel) async {
     if (Platform.isWindows || Platform.isMacOS) {
+      WindowUtility.minimizeWindow();
+      await Future.delayed(const Duration(milliseconds: 50));
       final list = await DesktopMultiWindow.getAllSubWindowIds();
       if (list.isEmpty) {
         final window = await DesktopMultiWindow.createFullscreenWindow(
@@ -256,8 +258,6 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
           return;
         }
       }
-    }
-    if (!Platform.isWindows) { // TODO windows
       WindowUtility.minimizeWindow();
     }
   }
