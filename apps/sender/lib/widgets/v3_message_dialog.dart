@@ -45,6 +45,7 @@ class V3MessageDialog extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
+                    fontWeight: FontWeight.w700,
                     color: context.tokens.color.vsdswColorOnSurface,
                   ),
                 ),
@@ -54,6 +55,7 @@ class V3MessageDialog extends StatelessWidget {
                   textAlign: TextAlign.start,
                   style: TextStyle(
                     fontSize: 14,
+                    fontWeight: FontWeight.w400,
                     color: context.tokens.color.vsdswColorOnSurfaceVariant,
                   ),
                 ),
@@ -80,7 +82,7 @@ class V3MessageDialog extends StatelessWidget {
                       foregroundColor: context.tokens.color.vsdswColorOnPrimary,
                       backgroundColor: context.tokens.color.vsdswColorPrimary,
                       textStyle: const TextStyle(
-                        fontSize: 14,
+                        fontSize: 16,
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                     ),
