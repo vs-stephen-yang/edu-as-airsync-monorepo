@@ -8,8 +8,8 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class V3QRcodeImage extends StatelessWidget {
-  const V3QRcodeImage({
+class V3QrCodeImage extends StatelessWidget {
+  const V3QrCodeImage({
     super.key,
     this.isShowBackground = false,
     this.isStringOnTop = false,
