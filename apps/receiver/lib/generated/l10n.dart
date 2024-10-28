@@ -1321,6 +1321,46 @@ class S {
     );
   }
 
+  /// `Join to Receive This Screen`
+  String get v3_cast_to_device_menu_title {
+    return Intl.message(
+      'Join to Receive This Screen',
+      name: 'v3_cast_to_device_menu_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Or`
+  String get v3_cast_to_device_menu_or {
+    return Intl.message(
+      'Or',
+      name: 'v3_cast_to_device_menu_or',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Quick Connect`
+  String get v3_cast_to_device_menu_quick_connect1 {
+    return Intl.message(
+      'Quick Connect',
+      name: 'v3_cast_to_device_menu_quick_connect1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `by scan the QR code`
+  String get v3_cast_to_device_menu_quick_connect2 {
+    return Intl.message(
+      'by scan the QR code',
+      name: 'v3_cast_to_device_menu_quick_connect2',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Device list`
   String get v3_cast_to_device_title {
     return Intl.message(
@@ -1416,16 +1456,6 @@ class S {
     return Intl.message(
       'ON',
       name: 'v3_broadcast_indicator',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Receive from screen`
-  String get v3_instruction_receive_screen {
-    return Intl.message(
-      'Receive from screen',
-      name: 'v3_instruction_receive_screen',
       desc: '',
       args: [],
     );

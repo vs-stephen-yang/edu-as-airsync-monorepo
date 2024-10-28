@@ -27,11 +27,9 @@ class V3Instruction extends StatelessWidget {
       crossAxisAlignment:
           isQuickConnect ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
-        if (!isQuickConnect) ...[
+        if (!isQuickConnect && !isCastToDevice) ...[
           AutoSizeText(
-            isCastToDevice
-                ? S.of(context).v3_instruction_receive_screen
-                : S.of(context).v3_instruction_share_screen,
+            S.of(context).v3_instruction_share_screen,
             style: context.tokens.textStyle.airsyncFontTitle.apply(
               color: context.tokens.color.vsdslColorSurface600,
             ),

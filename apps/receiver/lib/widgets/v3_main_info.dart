@@ -3,8 +3,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
-import 'package:display_flutter/widgets/v3_cast_devices_view.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
+import 'package:display_flutter/widgets/v3_no_network_status.dart';
 import 'package:display_flutter/widgets/v3_participants_view.dart';
 import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,9 +14,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
 class V3MainInfo extends StatelessWidget {
-  const V3MainInfo({super.key, this.isCastToDevice = false});
-
-  final bool isCastToDevice;
+  const V3MainInfo({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,34 +35,7 @@ class V3MainInfo extends StatelessWidget {
       child: Consumer<ConnectivityProvider>(
           builder: (_, connectivityProvider, __) {
         return connectivityProvider.connectionStatus == ConnectivityResult.none
-            ? SizedBox(
-                width: 540,
-                height: 174,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Image(
-                      width: 126,
-                      height: 110,
-                      image: Svg(
-                        'assets/images/ic_status_no_network.svg',
-                      ),
-                    ),
-                    SizedBox(
-                      height: context.tokens.spacing.vsdslSpacing4xl.top,
-                    ),
-                    AutoSizeText(
-                      S.of(context).v3_main_status_no_network,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: context.tokens.color.vsdslColorSurface600,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              )
+            ? const V3NoNetworkStatus()
             : Row(
                 children: [
                   SizedBox(
@@ -72,57 +43,55 @@ class V3MainInfo extends StatelessWidget {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        Positioned(
+                        const Positioned(
                           left: 53,
                           top: 53,
                           bottom: 118,
-                          child: V3Instruction(isCastToDevice: isCastToDevice),
+                          child: V3Instruction(isCastToDevice: false),
                         ),
-                        if (!isCastToDevice)
-                          Positioned(
-                            left: 50,
-                            bottom: 44,
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 35),
-                                  child: Image(
-                                    image: const Svg(
-                                        'assets/images/ic_arrow_to_screen.svg'),
-                                    width: 21,
-                                    height: 21,
+                        Positioned(
+                          left: 50,
+                          bottom: 44,
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 35),
+                                child: Image(
+                                  image: const Svg(
+                                      'assets/images/ic_arrow_to_screen.svg'),
+                                  width: 21,
+                                  height: 21,
+                                  color:
+                                      context.tokens.color.vsdslColorSurface600,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5),
+                                child: AutoSizeText.rich(
+                                  _buildTextSpan(
+                                      fullText:
+                                          S.of(context).v3_instruction_support,
+                                      formatTexts: [
+                                        'AirPlay, Google Cast',
+                                        'Miracast'
+                                      ],
+                                      formatStyle: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: context
+                                            .tokens.color.vsdslColorSurface600,
+                                      )),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
                                     color: context
                                         .tokens.color.vsdslColorSurface600,
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 5),
-                                  child: AutoSizeText.rich(
-                                    _buildTextSpan(
-                                        fullText: S
-                                            .of(context)
-                                            .v3_instruction_support,
-                                        formatTexts: [
-                                          'AirPlay, Google Cast',
-                                          'Miracast'
-                                        ],
-                                        formatStyle: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                          color: context.tokens.color
-                                              .vsdslColorSurface600,
-                                        )),
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: context
-                                          .tokens.color.vsdslColorSurface600,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
+                        ),
                         Positioned(
                           right: 8,
                           child: Container(
@@ -148,11 +117,9 @@ class V3MainInfo extends StatelessWidget {
                     width: 1,
                     color: context.tokens.color.vsdslColorOutline,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 310,
-                    child: isCastToDevice
-                        ? const V3CastDevicesView()
-                        : const V3ParticipantsView(),
+                    child: V3ParticipantsView(),
                   ),
                 ],
               );

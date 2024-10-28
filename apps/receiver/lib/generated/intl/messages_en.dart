@@ -157,6 +157,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_authorize_prompt_decline":
             MessageLookupByLibrary.simpleMessage("Decline"),
         "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
+        "v3_cast_to_device_menu_or": MessageLookupByLibrary.simpleMessage("Or"),
+        "v3_cast_to_device_menu_quick_connect1":
+            MessageLookupByLibrary.simpleMessage("Quick Connect"),
+        "v3_cast_to_device_menu_quick_connect2":
+            MessageLookupByLibrary.simpleMessage("by scan the QR code"),
+        "v3_cast_to_device_menu_title":
+            MessageLookupByLibrary.simpleMessage("Join to Receive This Screen"),
         "v3_cast_to_device_title":
             MessageLookupByLibrary.simpleMessage("Device list"),
         "v3_cast_to_device_touch_back":
@@ -201,8 +208,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enter display code"),
         "v3_instruction3":
             MessageLookupByLibrary.simpleMessage("Enter one-time password"),
-        "v3_instruction_receive_screen":
-            MessageLookupByLibrary.simpleMessage("Receive from screen"),
         "v3_instruction_share_screen":
             MessageLookupByLibrary.simpleMessage("Share Your Screens"),
         "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
