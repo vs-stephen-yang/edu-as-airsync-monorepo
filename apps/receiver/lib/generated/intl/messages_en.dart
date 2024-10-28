@@ -164,6 +164,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("by scan the QR code"),
         "v3_cast_to_device_menu_title":
             MessageLookupByLibrary.simpleMessage("Join to Receive This Screen"),
+        "v3_cast_to_device_reached_maximum":
+            MessageLookupByLibrary.simpleMessage(
+                "You’ve reached the maximum limit."),
         "v3_cast_to_device_title":
             MessageLookupByLibrary.simpleMessage("Device list"),
         "v3_cast_to_device_touch_back":

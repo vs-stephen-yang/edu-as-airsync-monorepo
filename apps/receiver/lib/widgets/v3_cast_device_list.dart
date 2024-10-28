@@ -37,7 +37,18 @@ class V3CastDeviceList extends StatelessWidget {
               ]),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: context.tokens.spacing.vsdslSpacing3xl.top),
+            SizedBox(height: context.tokens.spacing.vsdslSpacingXs.top),
+            AutoSizeText(
+              S.of(context).v3_cast_to_device_reached_maximum,
+              style: TextStyle(
+                fontSize: 12,
+                color: channelProvider.remoteScreenConnectors.length ==
+                        channelProvider.maxRemoteScreenConnection
+                    ? context.tokens.color.vsdslColorWarning
+                    : Colors.transparent,
+              ),
+            ),
+            SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
             Expanded(
               child: ListView.separated(
                 itemCount: channelProvider.remoteScreenConnectors.length,
