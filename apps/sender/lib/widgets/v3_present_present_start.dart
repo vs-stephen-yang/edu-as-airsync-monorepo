@@ -38,6 +38,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
   final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
 
   bool isAnnotationImplemented = false;
+  bool annotationOn = false;
 
   void sendReconnectStateToast(
       BuildContext context, ChannelReconnectState state) {
@@ -108,18 +109,18 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (isAnnotationImplemented) ...[
-                    CircleAvatar(
-                      backgroundColor:
-                          context.tokens.color.vsdswColorSurface900,
-                      radius: kIsWeb ? 24 : 28,
-                      child: IconButton(
-                        onPressed: () {
+                    StatefulBuilder(builder: (context, setState) {
+                      return AnnotationButton(
+                        isOn: annotationOn,
+                        onClick: () async {
+                          setState(() {
+                            annotationOn = !annotationOn;
+                          });
+                          await Future.delayed(const Duration(milliseconds: 100));
                           _startAnnotation(annotationModel);
                         },
-                        icon: SvgPicture.asset(
-                            'assets/images/v3_ic_sharing_pen.svg'),
-                      ),
-                    ),
+                      );
+                    }),
                     Padding(
                       padding: EdgeInsets.only(
                         right: context.tokens.spacing.vsdswSpacingMd.left,
@@ -233,16 +234,18 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
     );
   }
 
-  void _startAnnotation(AnnotationModel annotationModel) async {
+  Future<void> _startAnnotation(AnnotationModel annotationModel) async {
     if (Platform.isWindows || Platform.isMacOS) {
-      WindowUtility.minimizeWindow();
-      await Future.delayed(const Duration(milliseconds: 50));
       final list = await DesktopMultiWindow.getAllSubWindowIds();
       if (list.isEmpty) {
+        WindowUtility.minimizeWindow();
+        await Future.delayed(const Duration(milliseconds: 50));
         final window = await DesktopMultiWindow.createFullscreenWindow(
             jsonEncode({'mode': 'desktop_canvas'}),
             annotationModel.screenIndex);
         window.show();
+      } else {
+        AnnotationModel.closeAnnotation();
       }
     } else if (Platform.isAndroid) {
       if (!await android_window.isRunning()) {
@@ -253,12 +256,14 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
             position: const Offset(0, 0),
           );
           await Future.delayed(const Duration(milliseconds: 100));
+          WindowUtility.minimizeWindow();
         } else {
           Permission.systemAlertWindow.request();
           return;
         }
+      } else {
+        AnnotationModel.closeAnnotation();
       }
-      WindowUtility.minimizeWindow();
     }
   }
 
@@ -269,6 +274,31 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
       builder: (BuildContext context) {
         return const V3OptionsMenu();
       },
+    );
+  }
+}
+
+class AnnotationButton extends StatelessWidget {
+  const AnnotationButton(
+      {super.key, required this.onClick, required this.isOn});
+
+  final VoidCallback onClick;
+  final bool isOn;
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      backgroundColor:
+      isOn ? context.tokens
+          .color.vsdswColorOnSurfaceInverse : context.tokens.color.vsdswColorSurface900 ,
+      radius: kIsWeb ? 24 : 28,
+      child: IconButton(
+        onPressed: onClick,
+        icon: SvgPicture.asset(
+          isOn
+              ? 'assets/images/v3_ic_annotation_on.svg'
+              : 'assets/images/v3_ic_sharing_pen.svg',),
+      ),
     );
   }
 }

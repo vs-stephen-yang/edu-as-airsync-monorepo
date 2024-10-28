@@ -115,10 +115,6 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
     widget.windowController!.hide();
   }
 
-  void _exit() async {
-    widget.windowController!.close();
-  }
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -176,22 +172,22 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SvgPicture.asset('assets/images/ic_annotation_drag.svg',width: 20, height: 10,),
+          SvgPicture.asset('assets/images/v3_ic_annotation_drag.svg',width: 20, height: 10,),
           const Gap(16),
           AnnotationIconButton(
-            icon: 'assets/images/ic_annotation_pen.svg',
+            icon: 'assets/images/v3_ic_annotation_pen.svg',
             selected: _isEraser == false,
             onPressed: _setDrawMode,
           ),
           const Gap(8),
           AnnotationIconButton(
-            icon: 'assets/images/ic_annotation_eraser.svg',
+            icon: 'assets/images/v3_ic_annotation_eraser.svg',
             selected: _isEraser,
             onPressed: _setEraserMode,
           ),
           const Gap(8),
           AnnotationIconButton(
-            icon: 'assets/images/ic_annotation_trash.svg',
+            icon: 'assets/images/v3_ic_annotation_trash.svg',
             selected: false,
             onPressed: _clearAll,
           ),
@@ -211,7 +207,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
             ),
           ),
           AnnotationIconButton(
-            icon: 'assets/images/ic_annotation_stroke_thin.svg',
+            icon: 'assets/images/v3_ic_annotation_stroke_thin.svg',
             selected: _strokeWidth == 2.0,
             enable: _isEraser == false,
             onPressed: () {
@@ -223,7 +219,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
           ),
           const Gap(8),
           AnnotationIconButton(
-            icon: 'assets/images/ic_annotation_stroke_medium.svg',
+            icon: 'assets/images/v3_ic_annotation_stroke_medium.svg',
             selected: _strokeWidth == 8.0,
             enable: _isEraser == false,
             onPressed: () {
@@ -235,7 +231,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
           ),
           const Gap(8),
           AnnotationIconButton(
-            icon: 'assets/images/ic_annotation_stroke_thick.svg',
+            icon: 'assets/images/v3_ic_annotation_stroke_thick.svg',
             selected: _strokeWidth == 15.0,
             enable: _isEraser == false,
             onPressed: () {
@@ -253,18 +249,12 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
             ),
           ),
           AnnotationIconButton(
-            icon: 'assets/images/ic_annotation_minimize.svg',
+            icon: 'assets/images/v3_ic_annotation_minimize.svg',
             selected: false,
             onPressed: _collapse,
           ),
-          const Gap(8),
-          AnnotationIconButton(
-            icon: 'assets/images/ic_annotation_close.svg',
-            selected: false,
-            onPressed: _exit,
-          ),
           const Gap(16),
-          SvgPicture.asset('assets/images/ic_annotation_drag.svg',width: 20, height: 10,),
+          SvgPicture.asset('assets/images/v3_ic_annotation_drag.svg',width: 20, height: 10,),
         ],
       ),
     );
