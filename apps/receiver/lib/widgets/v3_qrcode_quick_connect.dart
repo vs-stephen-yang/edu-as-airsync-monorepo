@@ -4,8 +4,8 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/widgets/v3_qrcode_image.dart';
 import 'package:flutter/material.dart';
 
-class V3QrcodeQuickConnect extends StatelessWidget {
-  const V3QrcodeQuickConnect(
+class V3QrCodeQuickConnect extends StatelessWidget {
+  const V3QrCodeQuickConnect(
       {super.key, this.isStringOnTop = false, this.size = 139});
 
   final bool isStringOnTop;
@@ -30,7 +30,7 @@ class V3QrcodeQuickConnect extends StatelessWidget {
     List<Widget> children = [];
     children.add(title);
     children.add(space);
-    children.add(const V3QRcodeImage(isShowBackground: true));
+    children.add(const V3QrCodeImage(isShowBackground: true));
 
     return Container(
       padding: EdgeInsets.symmetric(

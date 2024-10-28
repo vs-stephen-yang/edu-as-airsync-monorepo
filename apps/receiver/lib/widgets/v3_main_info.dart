@@ -138,7 +138,7 @@ class V3MainInfo extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            child: const V3QrcodeQuickConnect(),
+                            child: const V3QrCodeQuickConnect(),
                           ),
                         ),
                       ],

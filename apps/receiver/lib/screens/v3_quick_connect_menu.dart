@@ -71,7 +71,7 @@ class V3QuickConnectMenu extends StatelessWidget {
                       child: TabBarView(
                         children: [
                           V3Instruction(isQuickConnect: true),
-                          V3QrcodeQuickConnect(isStringOnTop: true, size: 195),
+                          V3QrCodeQuickConnect(isStringOnTop: true, size: 195),
                         ],
                       ),
                     ),
