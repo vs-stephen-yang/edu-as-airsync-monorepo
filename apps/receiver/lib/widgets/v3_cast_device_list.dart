@@ -57,7 +57,7 @@ class V3CastDeviceList extends StatelessWidget {
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return Divider(
-                    height: context.tokens.spacing.vsdslSpacingXl.top,
+                    height: context.tokens.spacing.vsdslSpacingMd.top,
                     color: Colors.transparent,
                   );
                 },
