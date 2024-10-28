@@ -157,6 +157,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_authorize_prompt_decline":
             MessageLookupByLibrary.simpleMessage("Decline"),
         "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
+        "v3_cast_to_device_Receiving":
+            MessageLookupByLibrary.simpleMessage("Receiving"),
         "v3_cast_to_device_menu_or": MessageLookupByLibrary.simpleMessage("Or"),
         "v3_cast_to_device_menu_quick_connect1":
             MessageLookupByLibrary.simpleMessage("Quick Connect"),
@@ -171,8 +173,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Device list"),
         "v3_cast_to_device_touch_back":
             MessageLookupByLibrary.simpleMessage("Touchback"),
-        "v3_cast_to_device_touch_back_enabled":
-            MessageLookupByLibrary.simpleMessage("Remote controlling"),
+        "v3_cast_to_device_touch_back_disable":
+            MessageLookupByLibrary.simpleMessage("Disable"),
+        "v3_cast_to_device_touch_enabled":
+            MessageLookupByLibrary.simpleMessage("Touchback"),
         "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
             "Scan the QR code with your iOS or Android device to download"),
         "v3_download_app_entry":

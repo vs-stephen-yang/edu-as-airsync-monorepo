@@ -1381,11 +1381,31 @@ class S {
     );
   }
 
-  /// `Remote controlling`
-  String get v3_cast_to_device_touch_back_enabled {
+  /// `Disable`
+  String get v3_cast_to_device_touch_back_disable {
     return Intl.message(
-      'Remote controlling',
-      name: 'v3_cast_to_device_touch_back_enabled',
+      'Disable',
+      name: 'v3_cast_to_device_touch_back_disable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Receiving`
+  String get v3_cast_to_device_Receiving {
+    return Intl.message(
+      'Receiving',
+      name: 'v3_cast_to_device_Receiving',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Touchback`
+  String get v3_cast_to_device_touch_enabled {
+    return Intl.message(
+      'Touchback',
+      name: 'v3_cast_to_device_touch_enabled',
       desc: '',
       args: [],
     );
