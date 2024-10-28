@@ -138,8 +138,12 @@ class WebRTCConnector {
         _screenHeight = screen.frame.height;
       }
     } else {
-      _screenWidth = PlatformDispatcher.instance.displays.first.size.width;
-      _screenHeight = PlatformDispatcher.instance.displays.first.size.height;
+      double devicePixelRatio =
+          PlatformDispatcher.instance.displays.first.devicePixelRatio;
+      _screenWidth = PlatformDispatcher.instance.displays.first.size.width /
+          devicePixelRatio;
+      _screenHeight = PlatformDispatcher.instance.displays.first.size.height /
+          devicePixelRatio;
     }
   }
 
