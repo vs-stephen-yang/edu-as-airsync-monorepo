@@ -133,6 +133,7 @@
   "v3_cast_to_device_title": "Device list",
   "v3_cast_to_device_touch_back": "Touchback",
   "v3_cast_to_device_touch_back_enabled": "Remote controlling",
+  "v3_cast_to_device_reached_maximum": "You’ve reached the maximum limit.",
   "v3_settings_broadcast_to_display_group": "Broadcast to the display group",
   "v3_settings_display_group_only_casting": "Only when casting",
   "v3_settings_display_group_all_the_time": "All the time",

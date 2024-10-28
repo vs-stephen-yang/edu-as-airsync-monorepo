@@ -1391,6 +1391,16 @@ class S {
     );
   }
 
+  /// `You’ve reached the maximum limit.`
+  String get v3_cast_to_device_reached_maximum {
+    return Intl.message(
+      'You’ve reached the maximum limit.',
+      name: 'v3_cast_to_device_reached_maximum',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Broadcast to the display group`
   String get v3_settings_broadcast_to_display_group {
     return Intl.message(
