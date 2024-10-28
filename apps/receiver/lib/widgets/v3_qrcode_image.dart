@@ -50,7 +50,11 @@ class V3QrCodeImage extends StatelessWidget {
                   data: quickConnectData,
                   version: QrVersions.auto,
                   padding: EdgeInsets.zero,
-                  size: isStringOnTop ? size - 35 : size - 32,
+                  size: isShowBackground
+                      ? isStringOnTop
+                          ? size - 35
+                          : size - 32
+                      : size,
                 );
               },
             );
