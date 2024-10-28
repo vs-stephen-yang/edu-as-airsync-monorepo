@@ -66,9 +66,11 @@ class WebRTCHelper {
     } else if (WebRTC.platformIsDesktop) {
       deviceId = {'exact': selectedSource.id};
       _isScreenType = (selectedSource.type == SourceType.Screen);
+      RegExp regExp = RegExp(r'\d+');
       _isMainScreen = _isScreenType &&
           (Platform.isMacOS
-              ? selectedSource.id == _macMainScreenOrder
+              ? ((regExp.firstMatch(selectedSource.name)?.group(0)) ?? '') ==
+                  _macMainScreenOrder
               : selectedSource.id == _windowsMainScreenOrder);
 
       DesktopCapturerSource s = selectedSource;
