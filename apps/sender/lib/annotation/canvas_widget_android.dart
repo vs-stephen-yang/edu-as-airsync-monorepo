@@ -3,8 +3,6 @@ import 'package:android_window/android_window.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:display_cast_flutter/annotation/draggable_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:gap/gap.dart';
 
 import 'arrow_shape_painter.dart';
 import 'color_bar.dart';
@@ -105,10 +103,6 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
     });
   }
 
-  void _exit() async {
-    AndroidWindow.close();
-  }
-
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -173,12 +167,10 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SvgPicture.asset('assets/images/v3_ic_annotation_arrow_top.svg'),
-                    const Gap(14),
                     AnnotationIconButton(
                       selected: false,
                       size: 32,
-                      icon: 'assets/images/ic_annotation_pen.svg',
+                      icon: 'assets/images/v3_ic_annotation_pen.svg',
                       onPressed: () async {
                         if (_isCollapsed) {
                           AndroidWindow.resize(3000, 3000);
@@ -192,8 +184,6 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
                         });
                       },
                     ),
-                    const Gap(14),
-                    SvgPicture.asset('assets/images/v3_ic_annotation_arrow_bottom.svg'),
                   ],
                 ),
               ),
@@ -226,7 +216,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
             onPressed: _collapse,
           ),
           AnnotationIconButton(
-            icon: 'assets/images/ic_annotation_pen.svg',
+            icon: 'assets/images/v3_ic_annotation_pen.svg',
             size: 60,
             iconSize: 32,
             circleStyle: true,
@@ -234,7 +224,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
             onPressed: _setPenMode,
           ),
           AnnotationIconButton(
-            icon: 'assets/images/ic_annotation_eraser.svg',
+            icon: 'assets/images/v3_ic_annotation_eraser.svg',
             size: 60,
             iconSize: 32,
             circleStyle: true,
@@ -242,7 +232,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
             onPressed: _setEraserMode,
           ),
           AnnotationIconButton(
-            icon: 'assets/images/ic_annotation_trash.svg',
+            icon: 'assets/images/v3_ic_annotation_trash.svg',
             size: 60,
             iconSize: 32,
             circleStyle: true,
@@ -273,7 +263,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
           AnnotationIconButton(
             key: strokeKey,
             icon:
-                'assets/images/ic_annotation_stroke_${_strokeWidth == 2.0 ? 'thin' : _strokeWidth == 8.0 ? 'medium' : 'thick'}.svg',
+                'assets/images/v3_ic_annotation_stroke_${_strokeWidth == 2.0 ? 'thin' : _strokeWidth == 8.0 ? 'medium' : 'thick'}.svg',
             selected: false,
             size: 60,
             circleStyle: true,
@@ -283,14 +273,6 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
                 _isEraser = false;
               });
             },
-          ),
-          AnnotationIconButton(
-            icon: 'assets/images/ic_annotation_close.svg',
-            circleStyle: true,
-            iconSize: 32,
-            size: 60,
-            selected: false,
-            onPressed: _exit,
           ),
         ],
       ),
@@ -309,7 +291,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
               mainAxisSize: MainAxisSize.min,
               children: [
                 AnnotationIconButton(
-                  icon: 'assets/images/ic_annotation_stroke_thin.svg',
+                  icon: 'assets/images/v3_ic_annotation_stroke_thin.svg',
                   size: 42,
                   selected: _strokeWidth == 2.0,
                   enable: _isEraser == false,
@@ -323,7 +305,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
                   },
                 ),
                 AnnotationIconButton(
-                  icon: 'assets/images/ic_annotation_stroke_medium.svg',
+                  icon: 'assets/images/v3_ic_annotation_stroke_medium.svg',
                   size: 42,
                   selected: _strokeWidth == 8.0,
                   enable: _isEraser == false,
@@ -337,7 +319,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
                   },
                 ),
                 AnnotationIconButton(
-                  icon: 'assets/images/ic_annotation_stroke_thick.svg',
+                  icon: 'assets/images/v3_ic_annotation_stroke_thick.svg',
                   size: 42,
                   selected: _strokeWidth == 15.0,
                   enable: _isEraser == false,
