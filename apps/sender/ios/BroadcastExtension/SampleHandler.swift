@@ -132,16 +132,16 @@ private extension SampleHandler {
 
     func setupConnection(_ connection: SocketConnection?) {
       connection?.didClose = { [weak self] error in
-            os_log(.debug, log: broadcastLogger, "client connection did close \(String(describing: error))")
+        os_log(.debug, log: broadcastLogger, "client connection did close \(String(describing: error))")
 
-            if let error = error {
-                self?.finishBroadcastWithError(error)
-            } else {
-                // the displayed failure message is more user friendly when using NSError instead of Error
-                let JMScreenSharingStopped = 10001
-                let customError = NSError(domain: RPRecordingErrorDomain, code: JMScreenSharingStopped, userInfo: [NSLocalizedDescriptionKey: "Screen sharing stopped"])
-                self?.finishBroadcastWithError(customError)
+        if let error = error {
+            self?.finishBroadcastWithError(error)
+        } else {
+            // Gracefully finish the broadcast when the connection is closed
+            if let strongSelf = self {
+              finishBroadcastGracefully(strongSelf)
             }
+        }
       }
     }
 
