@@ -9,6 +9,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
@@ -55,6 +56,7 @@ Future<void> commonEntry(ConfigSettings settings) async {
     await AppPreferences.ensureInitialized();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     await AppInstanceCreate.ensureInitialized(settings, packageInfo);
+    await HybridConnectionList.ensureInitialized();
 
     var configureApp = AppConfig(
       settings: settings,
