@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/v3_network_status_detector.dart';
 import 'package:display_cast_flutter/utilities/v3_update_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -136,6 +138,13 @@ class V3SettingMainList extends StatelessWidget {
         S.of(context).v3_setting_check_update,
         null,
         () {
+          if (V3NetworkStatusDetector().status == ConnectivityResult.none) {
+            if (context.mounted) {
+              V3UpdateManager()
+                  .showUpdateDialog(context, CompareVersionResult.noNetwork);
+            }
+            return;
+          }
           V3UpdateManager().checkUpdateVersion(context, (value) {
             if (context.mounted) {
               V3UpdateManager().showUpdateDialog(context, value);

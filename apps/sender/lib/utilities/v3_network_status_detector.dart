@@ -42,4 +42,8 @@ class V3NetworkStatusDetector {
     AppAnalytics.instance
         .setGlobalProperty('network_connectivity', result.name);
   }
+
+  bool isConnected() {
+    return _connectivityResult != ConnectivityResult.none;
+  }
 }
