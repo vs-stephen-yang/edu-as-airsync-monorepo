@@ -351,6 +351,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_setting_software_update_description":
             MessageLookupByLibrary.simpleMessage(
                 "A new version is now available, would you like to update now?"),
+        "v3_setting_software_update_force_action":
+            MessageLookupByLibrary.simpleMessage("Update Now"),
+        "v3_setting_software_update_force_description":
+            MessageLookupByLibrary.simpleMessage(
+                "A new version is now available."),
         "v3_setting_software_update_no_available":
             MessageLookupByLibrary.simpleMessage("No Update Available"),
         "v3_setting_software_update_no_available_action":
@@ -358,6 +363,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_setting_software_update_no_available_description":
             MessageLookupByLibrary.simpleMessage(
                 "AirSync is already up to date with the latest version."),
+        "v3_setting_software_update_no_internet_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Please check your internet connection and try again."),
+        "v3_setting_software_update_no_internet_tittle":
+            MessageLookupByLibrary.simpleMessage("No Internet Connection"),
         "v3_setting_software_update_positive_action":
             MessageLookupByLibrary.simpleMessage("Update"),
         "v3_setting_title": MessageLookupByLibrary.simpleMessage("Settings")
