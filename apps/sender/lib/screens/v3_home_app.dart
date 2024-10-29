@@ -30,23 +30,25 @@ class V3HomeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints.expand(),
-      child: Consumer2<PresentStateProvider, DemoProvider>(
-          builder: (context, presentStateProvider, demoProvider, child) {
-        return Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            const V3Background(),
-            V3PresentStateMachine(
-              presentStateProvider: presentStateProvider,
-              demoProvider: demoProvider,
-            ),
-            if (presentStateProvider.currentState == ViewState.idle)
-              const SettingMenu(),
-          ],
-        );
-      }),
+    return SafeArea(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints.expand(),
+        child: Consumer2<PresentStateProvider, DemoProvider>(
+            builder: (context, presentStateProvider, demoProvider, child) {
+          return Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              const V3Background(),
+              V3PresentStateMachine(
+                presentStateProvider: presentStateProvider,
+                demoProvider: demoProvider,
+              ),
+              if (presentStateProvider.currentState == ViewState.idle)
+                const SettingMenu(),
+            ],
+          );
+        }),
+      ),
     );
   }
 }
