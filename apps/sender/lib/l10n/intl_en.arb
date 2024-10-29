@@ -163,10 +163,14 @@
   "v3_setting_privacy_policy_description": "ViewSonic is committed to protecting your privacy and treats the handling of personal data seriously. The Privacy Policy below details how ViewSonic will treat your personal data after it has been collected by ViewSonic through your use of the Website. ViewSonic maintains the privacy of your information using security technologies and adhere to policies that prevent unauthorized use of your personal information. By using this Website, you consent to the collection and use of your information.\\n\\nWebsites you link to from ViewSonic.com may have their own privacy policy that may differ from ViewSonic’s. Please review those websites’ privacy policies for detailed information on how they may use information gathered while you are visiting them.\n\nPlease click the following links to learn more about our Privacy Policy.",
   "v3_setting_open_source_license": "Open source licenses",
   "v3_setting_software_update": "Software update",
+  "v3_setting_software_update_force_description": "A new version is now available.",
+  "v3_setting_software_update_force_action": "Update Now",
   "v3_setting_software_update_description": "A new version is now available, would you like to update now?",
   "v3_setting_software_update_positive_action": "Update",
   "v3_setting_software_update_deny_action": "Later",
   "v3_setting_software_update_no_available": "No Update Available",
   "v3_setting_software_update_no_available_description": "AirSync is already up to date with the latest version.",
-  "v3_setting_software_update_no_available_action": "Ok"
+  "v3_setting_software_update_no_available_action": "Ok",
+  "v3_setting_software_update_no_internet_tittle": "No Internet Connection",
+  "v3_setting_software_update_no_internet_description": "Please check your internet connection and try again."
 }

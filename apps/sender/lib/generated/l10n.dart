@@ -1691,6 +1691,26 @@ class S {
     );
   }
 
+  /// `A new version is now available.`
+  String get v3_setting_software_update_force_description {
+    return Intl.message(
+      'A new version is now available.',
+      name: 'v3_setting_software_update_force_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update Now`
+  String get v3_setting_software_update_force_action {
+    return Intl.message(
+      'Update Now',
+      name: 'v3_setting_software_update_force_action',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `A new version is now available, would you like to update now?`
   String get v3_setting_software_update_description {
     return Intl.message(
@@ -1746,6 +1766,26 @@ class S {
     return Intl.message(
       'Ok',
       name: 'v3_setting_software_update_no_available_action',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Internet Connection`
+  String get v3_setting_software_update_no_internet_tittle {
+    return Intl.message(
+      'No Internet Connection',
+      name: 'v3_setting_software_update_no_internet_tittle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please check your internet connection and try again.`
+  String get v3_setting_software_update_no_internet_description {
+    return Intl.message(
+      'Please check your internet connection and try again.',
+      name: 'v3_setting_software_update_no_internet_description',
       desc: '',
       args: [],
     );
