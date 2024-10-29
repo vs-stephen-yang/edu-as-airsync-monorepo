@@ -14,6 +14,7 @@ import 'package:display_cast_flutter/utilities/app_colors.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/updater_windows.dart';
+import 'package:display_cast_flutter/utilities/v3_network_status_detector.dart';
 import 'package:display_cast_flutter/utilities/v3_update_manager.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
 import 'package:display_cast_flutter/widgets/bottom_bar.dart';
@@ -72,7 +73,7 @@ class _HomeStates extends State<Home> {
   void _handleResume() {
     if (_shouldCheckUpdate()) {
       _checkUpdateVersion(context).then((value) {
-        if (value != CompareVersionResult.none) {
+        if (value != CompareVersionResult.noUpdate) {
           _showUpdateDialog(context, value);
         }
       });
@@ -85,7 +86,8 @@ class _HomeStates extends State<Home> {
     return !kIsWeb &&
         !Platform.isWindows &&
         !Platform.isMacOS &&
-        presentStateProvider.currentState == ViewState.idle;
+        presentStateProvider.currentState == ViewState.idle &&
+        V3NetworkStatusDetector().isConnected();
   }
 
   Future<AppExitResponse> _handleExitRequest() {
@@ -121,9 +123,9 @@ class _HomeStates extends State<Home> {
         return;
       }
 
-      if (!kIsWeb) {
+      if (!kIsWeb && V3NetworkStatusDetector().isConnected()) {
         _checkUpdateVersion(context).then((value) {
-          if (value != CompareVersionResult.none) {
+          if (value != CompareVersionResult.noUpdate) {
             // show update dialog
             _showUpdateDialog(context, value);
           }
@@ -365,7 +367,7 @@ class _HomeStates extends State<Home> {
   Future<CompareVersionResult> _checkUpdateVersion(BuildContext context) async {
     String version = AppConfig.of(context)?.appVersion;
     String? api = AppConfig.of(context)?.settings.appUpdateVersionEndpoint;
-    if (api == null) return CompareVersionResult.none;
+    if (api == null) return CompareVersionResult.noUpdate;
 
     return V3UpdateManager().getVersion(api, version);
   }

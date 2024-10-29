@@ -7,6 +7,7 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/screens/v3_home_app.dart';
 import 'package:display_cast_flutter/screens/v3_home_web.dart';
+import 'package:display_cast_flutter/utilities/v3_network_status_detector.dart';
 import 'package:display_cast_flutter/utilities/v3_update_manager.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
 import 'package:flutter/foundation.dart';
@@ -61,9 +62,9 @@ class _V3HomeState extends State<V3Home> {
         return;
       }
 
-      if (!kIsWeb) {
+      if (!kIsWeb && V3NetworkStatusDetector().isConnected()) {
         V3UpdateManager().checkUpdateVersion(context, (value) {
-          if (value != CompareVersionResult.none) {
+          if (value != CompareVersionResult.noUpdate) {
             if (context.mounted) {
               V3UpdateManager().showUpdateDialog(context, value);
             }
@@ -82,7 +83,7 @@ class _V3HomeState extends State<V3Home> {
   void _handleResume() {
     if (_shouldCheckUpdate()) {
       V3UpdateManager().checkUpdateVersion(context, (value) {
-        if (value != CompareVersionResult.none) {
+        if (value != CompareVersionResult.noUpdate) {
           if (context.mounted) {
             V3UpdateManager().showUpdateDialog(context, value);
           }
@@ -97,7 +98,8 @@ class _V3HomeState extends State<V3Home> {
     return !kIsWeb &&
         !Platform.isWindows &&
         !Platform.isMacOS &&
-        presentStateProvider.currentState == ViewState.idle;
+        presentStateProvider.currentState == ViewState.idle &&
+        V3NetworkStatusDetector().isConnected();
   }
 
   Future<AppExitResponse> _handleExitRequest() {

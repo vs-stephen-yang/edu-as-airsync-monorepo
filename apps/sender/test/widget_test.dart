@@ -35,26 +35,26 @@ void main() {
     test('returns none when current version is equal to target version', () {
       final result =
           V3UpdateManager().compareVersion('3.3.10-s', '3.3.10', '3.3.8');
-      expect(result, CompareVersionResult.none);
+      expect(result, CompareVersionResult.noUpdate);
     });
 
     test('returns none when current version is greater than target version',
         () {
       final result =
           V3UpdateManager().compareVersion('3.4.5', '3.4.4', '3.3.11');
-      expect(result, CompareVersionResult.none);
+      expect(result, CompareVersionResult.noUpdate);
     });
 
     test('returns none when current version is equal with target version', () {
       final result =
           V3UpdateManager().compareVersion('3.4.5', '3.4.5', '3.3.11');
-      expect(result, CompareVersionResult.none);
+      expect(result, CompareVersionResult.noUpdate);
     });
 
     test('handles versions with multiple digits', () {
       final result =
           V3UpdateManager().compareVersion('10.0.0', '2.0.0', '1.0.0');
-      expect(result, CompareVersionResult.none);
+      expect(result, CompareVersionResult.noUpdate);
     });
 
     test('handles versions with multiple sections', () {

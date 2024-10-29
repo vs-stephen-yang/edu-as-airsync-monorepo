@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
-enum CompareVersionResult { forceUpgrade, userChoose, none }
+enum CompareVersionResult { forceUpgrade, userChoose, noUpdate, noNetwork }
 
 class V3UpdateManager {
   static final V3UpdateManager _instance = V3UpdateManager._internal();
@@ -50,7 +50,7 @@ class V3UpdateManager {
       Function(CompareVersionResult) onUpdateResult) async {
     String version = AppConfig.of(context)?.appVersion;
     String? api = AppConfig.of(context)?.settings.appUpdateVersionEndpoint;
-    if (api == null) return onUpdateResult(CompareVersionResult.none);
+    if (api == null) return onUpdateResult(CompareVersionResult.noUpdate);
 
     final result = await getVersion(api, version);
     onUpdateResult(result);
@@ -62,7 +62,7 @@ class V3UpdateManager {
         currentVersion.split('-').first.split('.').map(int.parse).toList();
     List<int> target = targetVersion.split('.').map(int.parse).toList();
     List<int> min = minVersion.split('.').map(int.parse).toList();
-    CompareVersionResult result = CompareVersionResult.none;
+    CompareVersionResult result = CompareVersionResult.noUpdate;
 
     for (int i = 0; i < min.length; i++) {
       if (min[i] > current[i]) {
@@ -116,24 +116,20 @@ class V3UpdateManager {
       debugPrint('Error getting version: $e');
     }
 
-    return CompareVersionResult.none;
+    return CompareVersionResult.noUpdate;
   }
 
   Future<void> _showUpdateDialogIos(
       BuildContext context, CompareVersionResult status) async {
-    bool isUpdate = status != CompareVersionResult.none;
+    bool isUpdate = (status == CompareVersionResult.forceUpgrade ||
+        status == CompareVersionResult.userChoose);
+
     await showCupertinoDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => CupertinoAlertDialog(
-              title: Text(isUpdate
-                  ? S.of(context).v3_setting_software_update
-                  : S.of(context).v3_setting_software_update_no_available),
-              content: Text(isUpdate
-                  ? S.of(context).v3_setting_software_update_description
-                  : S
-                      .of(context)
-                      .v3_setting_software_update_no_available_description),
+              title: Text(_dialogTittle(context, status)),
+              content: Text(_dialogDescription(context, status)),
               actions: [
                 if (status == CompareVersionResult.userChoose)
                   CupertinoDialogAction(
@@ -155,9 +151,13 @@ class V3UpdateManager {
                           'https://apps.apple.com/us/app/airsync-sender/id6453759985'));
                     },
                     child: Text(
-                        S
-                            .of(context)
-                            .v3_setting_software_update_positive_action,
+                        status == CompareVersionResult.forceUpgrade
+                            ? S
+                                .of(context)
+                                .v3_setting_software_update_force_action
+                            : S
+                                .of(context)
+                                .v3_setting_software_update_positive_action,
                         style: const TextStyle(
                             color: Color(0xFF007AFF), fontSize: 17)),
                   ),
@@ -179,19 +179,14 @@ class V3UpdateManager {
 
   Future<void> _showUpdateDialogAndroid(
       BuildContext context, CompareVersionResult status) async {
-    bool isUpdate = status != CompareVersionResult.none;
+    bool isUpdate = (status == CompareVersionResult.forceUpgrade ||
+        status == CompareVersionResult.userChoose);
     await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => AlertDialog(
-              title: Text(isUpdate
-                  ? S.of(context).v3_setting_software_update
-                  : S.of(context).v3_setting_software_update_no_available),
-              content: Text(isUpdate
-                  ? S.of(context).v3_setting_software_update_description
-                  : S
-                      .of(context)
-                      .v3_setting_software_update_no_available_description),
+              title: Text(_dialogTittle(context, status)),
+              content: Text(_dialogDescription(context, status)),
               actions: [
                 if (status == CompareVersionResult.userChoose)
                   TextButton(
@@ -229,7 +224,8 @@ class V3UpdateManager {
 
   Future<void> _showUpdateDialogDesktop(
       BuildContext context, CompareVersionResult status) async {
-    bool isUpdate = status != CompareVersionResult.none;
+    bool isUpdate = (status == CompareVersionResult.forceUpgrade ||
+        status == CompareVersionResult.userChoose);
     await showDialog(
         context: context,
         barrierDismissible: false,
@@ -252,11 +248,7 @@ class V3UpdateManager {
                         top: context.tokens.spacing.vsdswSpacingMd.top),
                     child: Center(
                       child: Text(
-                        isUpdate
-                            ? S.of(context).v3_setting_software_update
-                            : S
-                                .of(context)
-                                .v3_setting_software_update_no_available,
+                        _dialogTittle(context, status),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -270,11 +262,7 @@ class V3UpdateManager {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(isUpdate
-                        ? S.of(context).v3_setting_software_update_description
-                        : S
-                            .of(context)
-                            .v3_setting_software_update_no_available_description),
+                    Text(_dialogDescription(context, status)),
                     const Spacer(),
                     const Divider(),
                   ],
@@ -330,6 +318,28 @@ class V3UpdateManager {
                   ),
               ],
             ));
+  }
+
+  String _dialogTittle(BuildContext context, CompareVersionResult status) {
+    return status == CompareVersionResult.noNetwork
+        ? S.of(context).v3_setting_software_update_no_available
+        : status == CompareVersionResult.noUpdate
+            ? S.of(context).v3_setting_software_update_no_available
+            : S.of(context).v3_setting_software_update;
+  }
+
+  String _dialogDescription(BuildContext context, CompareVersionResult status) {
+    return status == CompareVersionResult.forceUpgrade
+        ? S.of(context).v3_setting_software_update_force_description
+        : status == CompareVersionResult.userChoose
+            ? S.of(context).v3_setting_software_update_description
+            : status == CompareVersionResult.noUpdate
+                ? S
+                    .of(context)
+                    .v3_setting_software_update_no_available_description
+                : S
+                    .of(context)
+                    .v3_setting_software_update_no_internet_description;
   }
 
   Widget _updateDialogButton(
