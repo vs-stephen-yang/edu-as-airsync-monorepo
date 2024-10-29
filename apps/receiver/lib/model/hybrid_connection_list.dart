@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
@@ -21,9 +22,29 @@ class HybridConnectionList {
   // passes the instantiation to the _instance object
   factory HybridConnectionList() => _instance;
 
+  static ensureInitialized() async {
+    _deviceType = await DeviceInfoVs.deviceType ?? '';
+    if (_support6SplitScreenDevices.contains(_deviceType)) {
+      maxHybridSplitScreen = 6;
+    } else {
+      maxHybridSplitScreen = 4;
+    }
+  }
+
   static const int maxHybridConnection = 6;
 
-  static const int maxHybridSplitScreen = 6;
+  static String _deviceType = '';
+
+  // the following device support 6 split screen
+  static final List<String> _support6SplitScreenDevices = [
+    'IFP105S',
+    'IFP105UW',
+    'IFP110',
+    'IFP92UW',
+    'CDE105UW',
+    'CDE92UW',
+  ];
+  static int maxHybridSplitScreen = 4;
 
   ValueNotifier<int?> enlargedScreenIndex = ValueNotifier(null);
 
