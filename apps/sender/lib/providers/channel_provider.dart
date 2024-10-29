@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_cast_flutter/annotation/annotation_model.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
@@ -69,16 +68,11 @@ class ChannelProvider extends ChangeNotifier {
   ChannelProvider(BuildContext context) {
     _baseApiUrl = AppConfig.of(context)!.settings.baseApiUrl;
     _profileStore = AppConfig.of(context)!.profileStore;
-
-    Connectivity().onConnectivityChanged.listen(_onConnectivityChange);
   }
 
   Channel? _channel;
   DisplayChannelConnector? _channelConnector;
   RemoteScreenClient? _remoteScreenClient;
-
-  // Current network connectivity
-  ConnectivityResult? _connectivityResult;
 
   String? _clientId;
   var _sessionId = const Uuid().v4();
@@ -397,19 +391,6 @@ class ChannelProvider extends ChangeNotifier {
 
     // select screen
     _presentStateProvider?.presentSelectScreenPage();
-  }
-
-  void _onConnectivityChange(ConnectivityResult result) {
-    if (_connectivityResult == result) {
-      return;
-    }
-
-    log.info('Network connectivity has changed to $result');
-    _connectivityResult = result;
-
-    // Track network connectivity
-    AppAnalytics.instance
-        .setGlobalProperty('network_connectivity', result.name);
   }
 
   // The channel failed to reconnect within the specified timeout period
