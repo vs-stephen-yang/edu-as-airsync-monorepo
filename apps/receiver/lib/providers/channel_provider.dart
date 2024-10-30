@@ -8,6 +8,7 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/api/ice_api.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
@@ -768,6 +769,7 @@ class ChannelProvider extends ChangeNotifier {
     });
 
     HybridConnectionList().addConnection(rtcConnector);
+    AppOverlayTab().launchApp();
 
     return rtcConnector;
   }
