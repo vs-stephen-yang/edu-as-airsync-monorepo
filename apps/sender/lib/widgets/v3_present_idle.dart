@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:app_links/app_links.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
@@ -35,6 +37,59 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
   bool isDisplayCodeSelectedFromHistory = false;
   bool isSessionFullDialogOnScreen = false;
   bool isScreenFullDialogOnScreen = false;
+
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    initDeepLinks();
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> initDeepLinks() async {
+    _appLinks = AppLinks();
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) async {
+      String? quickConnectValue = uri.queryParameters['quick_connect'];
+      if (quickConnectValue != null) {
+        List<String> parts = quickConnectValue.split('@');
+        if (parts.length == 3) {
+          String code = parts[0];
+          String otp = parts[1];
+          // String ver = parts[2];
+          await startConnect(displayCode: code, otp: otp);
+        }
+      }
+    });
+  }
+
+  Future<void> startConnect(
+      {required String displayCode, required String otp}) async {
+    ChannelProvider channelProvider =
+    Provider.of<ChannelProvider>(context, listen: false);
+    PresentStateProvider presentStateProvider =
+    Provider.of<PresentStateProvider>(context, listen: false);
+    AppAnalytics.instance.trackEvent('enter_display_code', properties: {
+      'target': 'type',
+    });
+    AppAnalytics.instance.setGlobalProperty('display_code', displayCode);
+    AppAnalytics.instance.trackEvent('click_connect');
+    await channelProvider.presentEnd(goIdleState: false);
+    await channelProvider.startConnect(
+      formattedDisplayCode: displayCode,
+      otp: otp,
+      presentStateProvider: presentStateProvider,
+      qrCallback: (success) {
+
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

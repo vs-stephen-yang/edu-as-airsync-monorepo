@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
@@ -111,12 +112,16 @@ class _V3QRcodeScanState extends State<V3QRcodeScan> {
         String? inputString = scanData.code;
         if (inputString != null) {
           Uri uri = Uri.parse(inputString);
-          String? displayCode = uri.queryParameters['display_code'];
-          String? otp = uri.queryParameters['otp'];
-          // String? version = uri.queryParameters['ver'];// 預留版號
-          if (otp != null && displayCode != null) {
-            connecting = true;
-            await startConnect(displayCode: displayCode, otp: otp);
+          String? quickConnectValue = uri.queryParameters['quick_connect'];
+          if (quickConnectValue != null) {
+            List<String> parts = quickConnectValue.split('@');
+            if (parts.length == 3) {
+              String code = parts[0];
+              String otp = parts[1];
+              // String ver = parts[2];
+              connecting = true;
+              await startConnect(displayCode: code, otp: otp);
+            }
           }
         }
       },
