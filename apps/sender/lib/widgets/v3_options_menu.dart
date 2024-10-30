@@ -145,6 +145,7 @@ class _V3OptionsMenuState extends State<V3OptionsMenu> {
         S.of(context).v3_present_options_menu_hq_subtitle,
         isHQButtonEnabled,
         () {
+          isHQButtonEnabled = !isHQButtonEnabled;
           channelProvider.presentChangeHighQuality(
               isHighQuality: isHQButtonEnabled);
         },
