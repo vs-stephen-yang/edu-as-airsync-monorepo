@@ -4,8 +4,6 @@ import 'package:android_window/main.dart' as android_window;
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
-import 'package:display_flutter/screens/home.dart';
-import 'package:display_flutter/screens/v3_home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -112,18 +110,18 @@ class AppOverlayTab {
           languageProvider.addListener(() async {
             setLanguage(languageProvider.language);
           });
-
-          Home.showTitleBottomBar.addListener(() {
-            if (!Home.showTitleBottomBar.value) {
-              launchApp();
-            }
-          });
-
-          V3Home.isShowHeaderFooterBar.addListener(() {
-            if (!V3Home.isShowHeaderFooterBar.value) {
-              launchApp();
-            }
-          });
+          //
+          // Home.showTitleBottomBar.addListener(() {
+          //   if (!Home.showTitleBottomBar.value) {
+          //     launchApp();
+          //   }
+          // });
+          //
+          // V3Home.isShowHeaderFooterBar.addListener(() {
+          //   if (!V3Home.isShowHeaderFooterBar.value) {
+          //     launchApp();
+          //   }
+          // });
 
           return OverlayTabHandler.resultEmptyString;
       }
