@@ -44,7 +44,7 @@ class V3QrCodeImage extends StatelessWidget {
                 final dc = instanceProvider.displayCode;
                 final otp = channelProvider.otp.value;
                 String quickConnectData =
-                    'https://airsync/Quick_Connect?display_code=$dc&otp=$otp&ver=$ver';
+                    "${AppConfig.of(context)!.settings.appStoreUrl}?quick_connect=$dc@$otp@$ver";
                 log('quickConnectData: $quickConnectData');
                 return QrImageView(
                   data: quickConnectData,
