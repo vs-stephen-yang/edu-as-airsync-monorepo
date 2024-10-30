@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.viewsonic.display.cast",
+      "sha256_cert_fingerprints": [
+        "90:15:3B:02:09:55:DD:0A:BD:03:3A:B1:D5:3E:5D:92:02:5F:8D:CB:77:72:FD:E6:72:71:ED:D1:AF:B5:F1:77"
+      ]
+    }
+  }
+]
