@@ -43,6 +43,17 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.dev.airsync.net"
+                    android:pathPattern="/download"
+                    android:scheme="https" />
+            </intent-filter>
         </activity>
         <service
             android:name="de.julianassmann.flutter_background.IsolateHolderService"
@@ -55,5 +66,6 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data android:name="flutter_deeplinking_enabled" android:value="true" />
     </application>
 </manifest>
