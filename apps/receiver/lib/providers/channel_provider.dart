@@ -391,6 +391,8 @@ class ChannelProvider extends ChangeNotifier {
     bool? fromShare,
     bool? fromSender,
   }) async {
+    log.info('Starting remote screen');
+
     if (_isGroupMode || _isShareMode || _isSenderMode) {
       _isGroupMode = fromGroup ?? _isGroupMode;
       _isShareMode = fromShare ?? _isShareMode;
@@ -470,7 +472,8 @@ class ChannelProvider extends ChangeNotifier {
     RemoteScreenConnector? remoteScreenConnector;
 
     channel.onChannelMessage = (ChannelMessage message) async {
-      log.info('Received channel message ${message.messageType}');
+      log.info(
+          'Received channel message ${message.messageType} ${message.toJson()}');
 
       switch (message.messageType) {
         /// basic
@@ -790,7 +793,8 @@ class ChannelProvider extends ChangeNotifier {
     int instanceGroupId,
   ) async {
     try {
-      log.info('Registering the instance ${appConfig.settings.baseApiUrl}');
+      log.info(
+          'Registering the instance ${appConfig.settings.baseApiUrl} groupId:$instanceGroupId');
 
       final request = buildApiRequest(
         appConfig.settings.baseApiUrl,
@@ -820,6 +824,8 @@ class ChannelProvider extends ChangeNotifier {
 
         return instanceIndex;
       } else {
+        log.warning(
+            'Instance Register API failed. Status code: ${response.statusCode}');
         return null;
       }
     } catch (e) {
@@ -1061,12 +1067,16 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void stopDisplayGroup() {
+    log.info('Stopping display group');
+
     _displayGroupHost?.stop();
     _displayGroupHost = null;
     removeSender(fromGroup: true);
   }
 
   void startDisplayGroup(List<GroupListItem> newList) {
+    log.info('Starting display group');
+
     _displayGroupHost ??= DisplayGroupHost(
       _createRemoteScreenConnector,
     );
