@@ -259,6 +259,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
               context, int.parse(AppPreferences().invitedToGroup)),
           style: const TextStyle(
             fontSize: 9,
+            color: Colors.black,
           ),
         ),
         unselectedItemsInMenu: (String item) => SizedBox(
@@ -495,6 +496,8 @@ class CustomDropDownMenu extends StatefulWidget {
 }
 
 class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
+  bool isDropDownMenuOpen = false;
+
   @override
   Widget build(BuildContext context) {
     return DropdownButton2<String>(
@@ -513,6 +516,16 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
           widget.onChange(value);
         }
       },
+      onMenuStateChange: (bool isOpen) {
+        setState(() {
+          isDropDownMenuOpen = isOpen;
+        });
+      },
+      iconStyleData: IconStyleData(
+        icon: Icon(isDropDownMenuOpen
+            ? Icons.keyboard_arrow_up
+            : Icons.keyboard_arrow_down),
+      ),
       selectedItemBuilder: (context) {
         return widget.itemList.map(
           (item) {
@@ -529,7 +542,9 @@ class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
           height: 26,
           width: 105,
           decoration: BoxDecoration(
-            color: context.tokens.color.vsdslColorSurface300,
+            color: isDropDownMenuOpen
+                ? context.tokens.color.vsdslColorSurface300
+                : context.tokens.color.vsdslColorOnSurfaceInverse,
             borderRadius: BorderRadius.circular(6),
           )),
       dropdownStyleData: DropdownStyleData(
