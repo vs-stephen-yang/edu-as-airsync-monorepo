@@ -50,10 +50,13 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
           _buildDivider(context),
           SizedBox(height: 26, child: _buildShowDisplayCode(context)),
           Padding(
-            padding:
-                EdgeInsets.only(top: context.tokens.spacing.vsdslSpacingSm.top),
-            child: _buildTextDesc(context,
-                S.of(context).v3_settings_device_show_display_code_desc),
+            padding: EdgeInsets.only(
+              top: context.tokens.spacing.vsdslSpacingSm.top,
+            ),
+            child: _buildTextDesc(
+              context,
+              S.of(context).v3_settings_device_show_display_code_desc,
+            ),
           ),
           _buildDivider(context),
           SizedBox(
@@ -68,9 +71,13 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
           ),
           Padding(
             padding: EdgeInsets.only(
-                top: context.tokens.spacing.vsdslSpacingSm.top, left: 24),
+              top: context.tokens.spacing.vsdslSpacingSm.top,
+              left: 24,
+            ),
             child: _buildTextDesc(
-                context, S.of(context).v3_settings_device_auto_fill_otp_desc),
+              context,
+              S.of(context).v3_settings_device_auto_fill_otp_desc,
+            ),
           ),
           if (AppInstanceCreate().isInstalledInVBS200) ...[
             _buildDivider(context),
@@ -221,77 +228,89 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
           padding: EdgeInsets.only(left: 4),
         ),
         InkWell(
-            onTap: () {
-              if (channelProvider.isDeviceListQuickConnect) {
-                channelProvider.isDeviceListQuickConnect = false;
-              } else {
-                channelProvider.isDeviceListQuickConnect = true;
-              }
-            },
-            child: AutoSizeText(
-              S.of(context).v3_settings_device_auto_fill_otp,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.white,
-              ),
-              maxLines: 1,
-            )),
+          onTap: () {
+            if (channelProvider.isDeviceListQuickConnect) {
+              channelProvider.isDeviceListQuickConnect = false;
+            } else {
+              channelProvider.isDeviceListQuickConnect = true;
+            }
+          },
+          child: AutoSizeText(
+            S.of(context).v3_settings_device_auto_fill_otp,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.white,
+            ),
+            maxLines: 1,
+          ),
+        ),
       ],
     );
   }
 
   DropdownButtonHideUnderline _buildDropdownMenu(BuildContext context) {
     return DropdownButtonHideUnderline(
-        child: CustomDropDownMenu(
-            itemList: InvitedToGroupOption.invitedToGroupItems(context),
-            defaultSelectedItem: InvitedToGroupOption.getInvitedToGroupString(context, int.parse(AppPreferences().invitedToGroup)),
-            selectedItem: Text(
-              InvitedToGroupOption.getInvitedToGroupString(context, int.parse(AppPreferences().invitedToGroup)),
-              style: const TextStyle(
+      child: CustomDropDownMenu(
+        itemList: InvitedToGroupOption.invitedToGroupItems(context),
+        defaultSelectedItem: InvitedToGroupOption.getInvitedToGroupString(
+            context, int.parse(AppPreferences().invitedToGroup)),
+        selectedItem: Text(
+          InvitedToGroupOption.getInvitedToGroupString(
+              context, int.parse(AppPreferences().invitedToGroup)),
+          style: const TextStyle(
+            fontSize: 9,
+          ),
+        ),
+        unselectedItemsInMenu: (String item) => SizedBox(
+          height: 26,
+          child: Row(
+            children: [
+              Text(
+                item,
+                style: const TextStyle(
+                  fontSize: 9,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+        selectedItemInMenu: Row(
+          children: [
+            Text(
+              InvitedToGroupOption.getInvitedToGroupString(
+                  context, int.parse(AppPreferences().invitedToGroup)),
+              style: TextStyle(
                 fontSize: 9,
+                color: context.tokens.color.vsdslColorOnSurfaceInverse,
               ),
             ),
-            unselectedItemsInMenu: (String item) => SizedBox(
-                  height: 26,
-                  child: Row(
-                    children: [
-                      Text(
-                        item,
-                        style: const TextStyle(
-                          fontSize: 9,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-            selectedItemInMenu: Row(
-              children: [
-                Text(
-                  InvitedToGroupOption.getInvitedToGroupString(context, int.parse(AppPreferences().invitedToGroup)),
-                  style: TextStyle(
-                    fontSize: 9,
-                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                  ),
-                ),
-                const Spacer(),
-                const Padding(
-                  padding: EdgeInsets.only(right: 8),
-                  child: Image(
-                    image: Svg('assets/images/ic_checkmark.svg'),
-                    width: 16,
-                    height: 16,
-                  ),
-                ),
-              ],
+            const Spacer(),
+            const Padding(
+              padding: EdgeInsets.only(right: 8),
+              child: Image(
+                image: Svg('assets/images/ic_checkmark.svg'),
+                width: 16,
+                height: 16,
+              ),
             ),
-            onChange: (String? value) {
-              setState(() {
-                final int optionValue = InvitedToGroupOption.invitedToGroupItems(context).indexOf(value??'');
-                AppPreferences().setInvitedToGroupSelectedItem(item: optionValue.toString());
-                DisplayServiceBroadcast.instance.updateInvitedToGroupOption(optionValue.toString());
-              });
-            }));
+          ],
+        ),
+        onChange: (String? value) {
+          setState(
+            () {
+              final int optionValue =
+                  InvitedToGroupOption.invitedToGroupItems(context)
+                      .indexOf(value ?? '');
+              AppPreferences()
+                  .setInvitedToGroupSelectedItem(item: optionValue.toString());
+              DisplayServiceBroadcast.instance
+                  .updateInvitedToGroupOption(optionValue.toString());
+            },
+          );
+        },
+      ),
+    );
   }
 
   Row _buildInviteGroup(BuildContext context) {
@@ -541,6 +560,7 @@ enum InvitedToGroupOption {
   ignore(2);
 
   final int value;
+
   const InvitedToGroupOption(this.value);
 
   static List<String> invitedToGroupItems(BuildContext context) {
@@ -549,9 +569,12 @@ enum InvitedToGroupOption {
 
   static Map<InvitedToGroupOption, String> _groupMap(BuildContext context) {
     final invitedToGroupMap = {
-      InvitedToGroupOption.notifyMe: S.of(context).v3_settings_invite_group_notify_me,
-      InvitedToGroupOption.autoAccept: S.of(context).v3_settings_invite_group_auto_accept,
-      InvitedToGroupOption.ignore: S.of(context).v3_settings_invite_group_ignore,
+      InvitedToGroupOption.notifyMe:
+          S.of(context).v3_settings_invite_group_notify_me,
+      InvitedToGroupOption.autoAccept:
+          S.of(context).v3_settings_invite_group_auto_accept,
+      InvitedToGroupOption.ignore:
+          S.of(context).v3_settings_invite_group_ignore,
     };
     return invitedToGroupMap;
   }
@@ -559,7 +582,7 @@ enum InvitedToGroupOption {
   static String getInvitedToGroupString(BuildContext context, int value) {
     // 找出對應的 InvitedToGroupOption
     final option = InvitedToGroupOption.values.firstWhere(
-          (element) => element.value == value,
+      (element) => element.value == value,
       orElse: () => InvitedToGroupOption.notifyMe, // 若找不到，預設使用 notifyMe
     );
     // 從 invitedToGroupMap 取得對應的 String
