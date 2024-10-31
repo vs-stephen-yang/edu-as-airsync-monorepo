@@ -48,6 +48,14 @@ void enableLogToMemory(bool enable) {
   }
 }
 
+String getLogs() {
+  if (_logStorage == null) {
+    return "";
+  }
+
+  return _logStorage!.getLogs().join(Platform.lineTerminator);
+}
+
 Future<void> writeLogToFile(File file) async {
   if (_logStorage == null) {
     return;

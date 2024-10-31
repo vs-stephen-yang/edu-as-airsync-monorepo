@@ -89,6 +89,8 @@ Future<void> commonEntry(ConfigSettings settings) async {
       deviceInfo: await ClientDeviceInfo.fetch(),
     );
 
+    setSentryUser(AppInstanceCreate().displayInstanceID);
+
     AppAnalytics().setEventProperties(
         entityId: AppPreferences().entityId,
         instanceId: AppInstanceCreate().displayInstanceID);
