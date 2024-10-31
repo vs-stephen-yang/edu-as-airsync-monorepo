@@ -1,6 +1,7 @@
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/model/group_list_item.dart';
+import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,6 +13,7 @@ enum BroadcastGroupLaunchType {
 class GroupState {
   final List<GroupListItem> clients;
   final List<GroupListItem> selectedList;
+  final List<GroupListItem> rejectedList;
   final List<Map<String, String>> historySelectedList;
   final bool broadcastToGroup;
   final BroadcastGroupLaunchType broadcastGroupLaunchType;
@@ -19,6 +21,7 @@ class GroupState {
   const GroupState({
     required this.clients,
     required this.selectedList,
+    required this.rejectedList,
     required this.broadcastToGroup,
     required this.broadcastGroupLaunchType,
     required this.historySelectedList,
@@ -27,6 +30,7 @@ class GroupState {
   GroupState copyWith({
     List<GroupListItem>? clients,
     List<GroupListItem>? selectedList,
+    List<GroupListItem>? rejectedList,
     List<Map<String, String>>? historySelectedList,
     bool? broadcastToGroup,
     BroadcastGroupLaunchType? broadcastGroupLaunchType,
@@ -34,6 +38,7 @@ class GroupState {
     return GroupState(
       clients: clients ?? this.clients,
       selectedList: selectedList ?? this.selectedList,
+      rejectedList: rejectedList ?? this.rejectedList,
       historySelectedList: historySelectedList ?? this.historySelectedList,
       broadcastToGroup: broadcastToGroup ?? this.broadcastToGroup,
       broadcastGroupLaunchType:
@@ -47,6 +52,7 @@ class GroupProvider extends StateNotifier<GroupState> {
       : super(GroupState(
           clients: [],
           selectedList: [],
+          rejectedList: [],
           historySelectedList: AppPreferences().groupSelectedList.toList(),
           broadcastToGroup: false,
           broadcastGroupLaunchType: BroadcastGroupLaunchType.onlyWhenCasting,
@@ -162,6 +168,24 @@ class GroupProvider extends StateNotifier<GroupState> {
   }
 
   List<GroupListItem> get selectedList => state.selectedList;
+
+  List<GroupListItem> get rejectedList => state.rejectedList;
+
+  void addToRejectedList(GroupListItem client) {
+    if (!state.rejectedList.any((item) => item.id() == client.id())) {
+      if (client.invitedState() ==
+          InvitedToGroupOption.notifyMe.value.toString()) {
+        final newList = [...state.rejectedList, client];
+        state = state.copyWith(rejectedList: newList);
+      }
+    }
+  }
+
+  void removeFormRejectedList(GroupListItem client) {
+    state.rejectedList.removeWhere((item) => item.id() == client.id());
+    final newList = state.rejectedList.toList();
+    state = state.copyWith(rejectedList: newList);
+  }
 
   void setBroadcastToGroup(bool value) {
     state = state.copyWith(broadcastToGroup: value);

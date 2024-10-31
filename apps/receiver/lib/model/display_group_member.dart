@@ -20,12 +20,14 @@ class DisplayGroupMember {
     StartRemoteScreenMessage,
   ) createRemoteScreenConnector;
 
+  final void Function() onRejected;
+
   final void Function(bool stayOnList) onStopped;
 
   bool stayOnList = false;
 
   DisplayGroupMember(this._info, this.createRemoteScreenConnector,
-      {required this.onStopped}) {
+      {required this.onRejected, required this.onStopped}) {
     final uri = Uri(
       scheme: 'wss',
       host: _info.host,
