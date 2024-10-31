@@ -6,6 +6,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -87,12 +88,17 @@ class V3Instruction extends StatelessWidget {
                     if (snapshot.hasData) {
                       isInternet = snapshot.data as bool;
                     }
+                    String airsync =
+                        AppConfig.of(context)?.settings.airSyncUrl ?? '';
                     return AutoSizeText.rich(
                       _buildTextSpan(
                         fullText: isInternet && !isCastToDevice
-                            ? S.of(context).v3_instruction1a
+                            ? S
+                                .of(context)
+                                .v3_instruction1a
+                                .replaceAll('airsync.net', airsync)
                             : S.of(context).v3_instruction1b,
-                        formatTexts: ['airsync.net'],
+                        formatTexts: [airsync],
                         formatStyle: TextStyle(
                           fontSize: 21,
                           fontWeight: FontWeight.w700,
