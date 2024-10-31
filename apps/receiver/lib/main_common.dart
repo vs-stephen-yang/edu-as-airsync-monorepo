@@ -99,6 +99,8 @@ Future<void> commonEntry(ConfigSettings settings) async {
     runApp(configureApp);
   }, (error, stackTrace) async {
     await Sentry.captureException(error, stackTrace: stackTrace);
+
+    log.severe('Unhandled exception', error, stackTrace);
   });
 }
 
