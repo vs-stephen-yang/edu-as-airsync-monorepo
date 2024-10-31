@@ -30,6 +30,7 @@ import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/misc_util.dart';
+import 'package:display_flutter/utility/sentry_util.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -265,6 +266,7 @@ class ChannelProvider extends ChangeNotifier {
 
     _instanceInfo.displayCode = displayCode;
     AppAnalytics().setEventProperties(displayCode: displayCode);
+    setSentryTag('display.code', displayCode);
 
     if (instanceIndex != null) {
       startServer(AppInstanceCreate().displayInstanceID, instanceGroupId);

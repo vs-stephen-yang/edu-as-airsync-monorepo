@@ -16,3 +16,15 @@ initSentry(SentryConfig config) async {
     },
   );
 }
+
+setSentryUser(String id) {
+  final user = SentryUser(
+    id: id,
+  );
+
+  Sentry.configureScope((scope) => scope.setUser(user));
+}
+
+setSentryTag(String key, String value) {
+  Sentry.configureScope((scope) => scope.setTag(key, value));
+}
