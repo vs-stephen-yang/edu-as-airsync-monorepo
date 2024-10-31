@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/status_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +26,7 @@ class ConnectionTimer {
     stopRemainingTimeTimer();
 
     _remainingTimeTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      log('RemainingTimeTimeout tick: ${timer.tick} // $threeHourTimeLimit');
+      //log('RemainingTimeTimeout tick: ${timer.tick} // $threeHourTimeLimit');
 
       if (threeHourTimeLimit - timer.tick == 300) {
         int count = threeHourTimeLimit - timer.tick;
@@ -47,7 +47,7 @@ class ConnectionTimer {
         _remainingTimeTimer?.cancel();
         _remainingTimeTimer = null;
         remainingTimeTimeout.sink.add(0);
-        log('RemainingTimeTimeout onFinish');
+        log.info('RemainingTimeTimeout onFinish');
         // onFinish
         onFinish();
       }
@@ -90,7 +90,7 @@ class ConnectionTimer {
         _shareSenderTimer?.cancel();
         _shareSenderTimer = null;
         shareSenderTimeout.sink.add(0);
-        log('ShareSenderTimeout onFinish');
+        log.info('ShareSenderTimeout onFinish');
         // onFinish
         onFinish();
       }

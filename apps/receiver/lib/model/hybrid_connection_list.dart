@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/v3_home.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -186,13 +185,15 @@ class HybridConnectionList {
       for (var connection in _hybridConnectionList.nonNulls) {
         if (connection is RTCConnector &&
             connection.presentationState == PresentationState.streaming) {
-          connection.sendChangeQuality(true, true, hybridSplitScreenCount.value);
+          connection.sendChangeQuality(
+              true, true, hybridSplitScreenCount.value);
         }
       }
     } else {
       for (var connection in _hybridConnectionList.nonNulls) {
         if (connection is RTCConnector && connection.clientId != null) {
-          connection.sendChangeQuality(false, true, hybridSplitScreenCount.value);
+          connection.sendChangeQuality(
+              false, true, hybridSplitScreenCount.value);
         }
       }
     }
@@ -201,13 +202,15 @@ class HybridConnectionList {
   void setSpecifiedSplitScreenWindowQuality(int selection, bool hasSelected) {
     var rtcConnectorMap = getRtcConnectorMap();
     if (selection == -1) {
-      rtcConnectorMap.values.first.sendChangeQuality(true, true, hybridSplitScreenCount.value);
+      rtcConnectorMap.values.first
+          .sendChangeQuality(true, true, hybridSplitScreenCount.value);
     } else {
       for (RTCConnector rtcConnector in rtcConnectorMap.values) {
         if (rtcConnector.clientId != null) {
           rtcConnector.sendChangeQuality(
               (rtcConnector == rtcConnectorMap[selection] && hasSelected),
-              (rtcConnector == rtcConnectorMap[selection] || !hasSelected), hybridSplitScreenCount.value);
+              (rtcConnector == rtcConnectorMap[selection] || !hasSelected),
+              hybridSplitScreenCount.value);
         }
       }
     }
@@ -273,8 +276,8 @@ class HybridConnectionList {
           // need some delay to prevent exception:
           // 'package:flutter/src/rendering/object.dart': Failed assertion: line 2250 pos 12: '!_debugDisposed': is not true.
           await Future.delayed(const Duration(milliseconds: 300));
-        } on PlatformException catch (e) {
-          log(e.toString());
+        } on PlatformException catch (e, stack) {
+          log.severe('removeAllPresenters', e, stack);
         }
       }
     }
@@ -329,8 +332,8 @@ class HybridConnectionList {
       if (connection.sessionId != null) {
         try {
           connection.sendStopPresent();
-        } on PlatformException catch (e) {
-          log(e.toString());
+        } on PlatformException catch (e, stack) {
+          log.severe("stopPresenterBy", e, stack);
         }
       }
     } else if (connection != null && connection is MirrorRequest) {
@@ -346,8 +349,8 @@ class HybridConnectionList {
           await connection.disconnectPeerConnection(sendAnalytics: true);
           await connection.disconnectChannel(
               reason: 'User removed the presenter');
-        } on PlatformException catch (e) {
-          log(e.toString());
+        } on PlatformException catch (e, stack) {
+          log.severe('removePresenterBy', e, stack);
         }
       }
     } else if (connection != null && connection is MirrorRequest) {
