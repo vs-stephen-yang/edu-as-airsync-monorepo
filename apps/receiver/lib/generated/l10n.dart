@@ -1710,6 +1710,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Cast to`
+  String get v3_settings_broadcast_cast_to {
+    return Intl.message(
+      'Cast to',
+      name: 'v3_settings_broadcast_cast_to',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Devices`
+  String get v3_settings_broadcast_devices {
+    return Intl.message(
+      'Devices',
+      name: 'v3_settings_broadcast_devices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Boards`
+  String get v3_settings_broadcast_boards {
+    return Intl.message(
+      'Boards',
+      name: 'v3_settings_broadcast_boards',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

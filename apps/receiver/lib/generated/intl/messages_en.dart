@@ -251,11 +251,17 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("QR Code"),
         "v3_settings_broadcast":
             MessageLookupByLibrary.simpleMessage("Broadcast"),
+        "v3_settings_broadcast_boards":
+            MessageLookupByLibrary.simpleMessage("Boards"),
         "v3_settings_broadcast_cast_boards":
             MessageLookupByLibrary.simpleMessage("Cast to boards"),
         "v3_settings_broadcast_cast_boards_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Share your screen to all Interactive Flat Panels (IFPs) in the network."),
+        "v3_settings_broadcast_cast_to":
+            MessageLookupByLibrary.simpleMessage("Cast to"),
+        "v3_settings_broadcast_devices":
+            MessageLookupByLibrary.simpleMessage("Devices"),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage(
                 "Broadcast to the display group"),
