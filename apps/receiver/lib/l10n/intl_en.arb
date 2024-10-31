@@ -164,5 +164,8 @@
   "v3_settings_open_source_license": "Open Source Licenses",
   "v3_authorize_prompt_decline": "Decline",
   "v3_authorize_prompt_accept": "Accept",
-  "v3_group_reject_invited": "declined your broadcast request, please check the Broads setting."
+  "v3_group_reject_invited": "declined your broadcast request, please check the Broads setting.",
+  "v3_settings_broadcast_cast_to": "Cast to",
+  "v3_settings_broadcast_devices": "Devices",
+  "v3_settings_broadcast_boards": "Boards"
 }
