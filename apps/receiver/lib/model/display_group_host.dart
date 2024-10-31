@@ -31,7 +31,9 @@ class DisplayGroupHost {
   void addMember(GroupListItem item, DisplayGroupMemberInfo memberInfo,
       ProviderContainer? providerContainer) {
     final member = DisplayGroupMember(memberInfo, _createRemoteScreenConnector,
-        onStopped: (bool stayOnList) {
+        onRejected: () {
+      providerContainer?.read(groupProvider.notifier).addToRejectedList(item);
+    }, onStopped: (bool stayOnList) {
       removeMember(item.id());
       if (!stayOnList) {
         providerContainer
