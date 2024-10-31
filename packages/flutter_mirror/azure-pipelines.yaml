@@ -23,6 +23,7 @@ variables:
     value: /Users/runner/.m2/settings.xml
     #value: $env:USERPROFILE\.m2\settings.xml
   - group: shiftleft-token
+  - group: "ifp-keystore-secrets"
 
 jobs:
   - job: build
@@ -97,9 +98,9 @@ jobs:
           apkFiles: "**/*.apk"
           apksign: true
           apksignerKeystoreFile: "ifp.keystore"
-          apksignerKeystorePassword: "$(keystore.password)"
-          apksignerKeystoreAlias: "$(keystore.alias)"
-          apksignerKeyPassword: "$(key.password)"
+          apksignerKeystorePassword: "$(ifp.keystore.password)"
+          apksignerKeystoreAlias: "$(ifp.keystore.alias)"
+          apksignerKeyPassword: "$(ifp.key.password)"
           zipalign: true
 
       - task: CopyFiles@2
