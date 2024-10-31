@@ -1,9 +1,11 @@
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
+import 'package:display_flutter/utility/log_upload.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:motion_toast/motion_toast.dart';
 
 class DebugSwitch extends StatefulWidget {
   static ValueNotifier<String> debugPanelLog = ValueNotifier('');
@@ -200,7 +202,9 @@ class _DebugSwitchState extends State<DebugSwitch> {
                           value: _iceGatheringContinually,
                           onChanged: (value) => _changeGatheringPolicy(value),
                         ),
-                        if (AppConfig.of(context)!.settings.isDevelopEnvironment)
+                        if (AppConfig.of(context)!
+                            .settings
+                            .isDevelopEnvironment)
                           SwitchListTile(
                             title: const Text('Dump SRTP Packets'),
                             value: _dumpSrtpPackets,
@@ -222,6 +226,25 @@ class _DebugSwitchState extends State<DebugSwitch> {
                           title: const Text('WebRTC Verbose log'),
                           value: _verboseWebRtcLog,
                           onChanged: (value) => _changeWebRtcLogVerbose(value),
+                        ),
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Upload log
+                              uploadLog('log');
+
+                              MotionToast.success(
+                                description:
+                                    const Text("Logs uploaded successfully"),
+                              ).show(context);
+                            },
+                            child: const Text(
+                              'Upload log',
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     );
