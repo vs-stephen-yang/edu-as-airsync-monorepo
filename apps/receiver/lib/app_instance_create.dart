@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:developer';
+
 import 'dart:io' show Platform;
 
 import 'package:crypto/crypto.dart';
@@ -7,6 +7,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/aes_cipher.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -85,7 +86,7 @@ class AppInstanceCreate {
       } on PlatformException {
         _serialNumber = '1234567890';
       }
-      log('serialId: $_serialNumber');
+      log.info('serialId: $_serialNumber');
 
       _instanceID = await _generateInstanceID(_serialNumber);
       _save();
@@ -94,7 +95,7 @@ class AppInstanceCreate {
       _groupID = const Uuid().v4();
       _save();
     }
-    log('create instance: $_instanceID');
+    log.info('create instance: $_instanceID');
     if (!_isRegistered) {
       bool success;
       success = await _registerInstanceId(settings.icarHostName,
@@ -146,14 +147,14 @@ class AppInstanceCreate {
       String content = await _buildAppRegisterString(instanceID, packageInfo);
       var response =
           await client.post(Uri.parse(url), headers: headers, body: content);
-      log('registerInstanceId ${response.statusCode}');
+      log.info('registerInstanceId ${response.statusCode}');
       if (response.statusCode == 200) {
         return true;
       } else {
         return false;
       }
     } catch (e) {
-      log(e.toString());
+      log.severe('_registerInstanceId', e);
     } finally {
       client.close();
     }

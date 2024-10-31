@@ -1,7 +1,7 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -46,8 +46,8 @@ class ConnectivityProvider extends ChangeNotifier {
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       result = await _connectivity.checkConnectivity();
-    } on PlatformException catch (e) {
-      log('Could not check connectivity status', error: e);
+    } on PlatformException catch (e, stack) {
+      log.severe('Could not check connectivity status', e, stack);
       return;
     }
 
@@ -68,10 +68,10 @@ class ConnectivityProvider extends ChangeNotifier {
   Future<void> _getWifiSignalStrength() async {
     try {
       _signalStrength = await platform.invokeMethod('getWifiSignalStrength');
-      log('Wifi signalStrength: $_signalStrength');
+      log.info('Wifi signalStrength: $_signalStrength');
     } on PlatformException catch (e) {
       _signalStrength = -1;
-      log("Failed to get Wi-Fi signal strength: '${e.message}'.");
+      log.severe("Failed to get Wi-Fi signal strength", e);
     }
   }
 }

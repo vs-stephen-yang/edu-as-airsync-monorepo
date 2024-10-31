@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:azure_application_insights/azure_application_insights.dart';
@@ -7,6 +6,7 @@ import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/app_analytics_util.dart';
 import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/list_util.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_appcenter_bundle/flutter_appcenter_bundle.dart';
 import 'package:http/http.dart';
@@ -157,7 +157,7 @@ class AppAnalytics {
 
   _trackEventWithProperties(String event, Map<String, String> properties) {
     if (_isInitialized) {
-      log('event: $event, properties: $properties');
+      log.info('event: $event, properties: $properties');
 
       _client?.trackEvent(
         name: event,
