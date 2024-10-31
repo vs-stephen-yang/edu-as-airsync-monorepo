@@ -207,6 +207,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Broadcasting from"),
         "v3_group_receive_view_status_stop":
             MessageLookupByLibrary.simpleMessage("Stop"),
+        "v3_group_reject_invited": MessageLookupByLibrary.simpleMessage(
+            "declined your broadcast request, please check the Broads setting."),
         "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
             "Visit airsync.net or open the sender app"),
         "v3_instruction1b":

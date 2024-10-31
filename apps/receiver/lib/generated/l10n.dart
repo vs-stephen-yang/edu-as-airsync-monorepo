@@ -1700,6 +1700,16 @@ class S {
       args: [],
     );
   }
+
+  /// `declined your broadcast request, please check the Broads setting.`
+  String get v3_group_reject_invited {
+    return Intl.message(
+      'declined your broadcast request, please check the Broads setting.',
+      name: 'v3_group_reject_invited',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
