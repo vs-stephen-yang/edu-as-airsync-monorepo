@@ -451,7 +451,13 @@ class RTCConnector {
         frameRate: isFullFrameRate ? 30 : 0,
         height: isFullHeight ? getFullHeight(attendeeCount) : 540);
 
+    log.info(
+        '[$clientId] Changing present quality. height:${message.constraints?.height}');
+
     if (_controlDataChannel == null) {
+      log.info(
+          '[$clientId] Delay present quality change since data channel is not available now');
+
       _changeQualityMessage = message;
     } else {
       _sendControlMessage(message);
@@ -459,6 +465,9 @@ class RTCConnector {
   }
 
   void _sendControlMessage(ChannelMessage message) {
+    log.info(
+        '[$clientId] Sending control message via data channel ${message.toJson()}');
+
     _controlDataChannel?.send(
       RTCDataChannelMessage(jsonEncode(message.toJson())),
     );
