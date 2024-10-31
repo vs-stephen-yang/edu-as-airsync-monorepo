@@ -15,9 +15,6 @@ class ProductionConfig implements ConfigSettings {
   String baseApiUrl = 'https://api2.gateway.airsync.net/';
 
   @override
-  String getIceServer = 'https://getice.myviewboard.cloud';
-
-  @override
   String? defaultOtp; // For development only. Keep null
 
   @override

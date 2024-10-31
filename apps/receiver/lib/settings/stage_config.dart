@@ -15,9 +15,6 @@ class StageConfig implements ConfigSettings {
   String baseApiUrl = 'https://api2.gateway.stage.airsync.net/';
 
   @override
-  String getIceServer = 'https://getice.stage.myviewboard.cloud';
-
-  @override
   String? defaultOtp; // For development only. Keep null
 
   @override
