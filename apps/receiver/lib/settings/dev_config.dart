@@ -11,9 +11,6 @@ class DevConfig implements ConfigSettings {
   String baseApiUrl = 'https://api2.gateway.dev.airsync.net/';
 
   @override
-  String getIceServer = 'https://getice.stage.myviewboard.cloud';
-
-  @override
   String? defaultOtp = '0000';
 
   @override

@@ -18,14 +18,19 @@ Future<SecurityContext> loadSecurityContextForChannel() async {
     ..usePrivateKeyBytes(privateKey);
 }
 
-List<RtcIceServer>? parseIceServersFromApi(List list) {
+List<RtcIceServer>? parseIceServersFromApi(Map<String, dynamic> body) {
   try {
-    return list
+    String username = body['username'];
+    String credential = body['credential'];
+
+    List urls = body['urls'];
+
+    return urls
         .map(
-          (e) => RtcIceServer(
-            [e['url']],
-            credential: e['credential'],
-            username: e['username'],
+          (url) => RtcIceServer(
+            [url],
+            credential: credential,
+            username: username,
           ),
         )
         .toList();

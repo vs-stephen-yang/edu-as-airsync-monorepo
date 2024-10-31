@@ -1018,7 +1018,10 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<List<RtcIceServer>?> _getIceServers(ChannelMode mode) async {
     if (mode == ChannelMode.tunnel) {
-      return await getIceServers(appConfig.settings.getIceServer);
+      return await getIceServers(
+        appConfig.settings.baseApiUrl,
+        AppInstanceCreate().displayInstanceID,
+      );
     } else {
       return [
         RtcIceServer(['stun:$host'])

@@ -37,7 +37,6 @@ abstract class ConfigSettings {
   late SentryConfig? sentry;
 
   late String baseApiUrl;
-  late String getIceServer;
 
   late String appSecretAndroid;
   late String appSecretIOS;
