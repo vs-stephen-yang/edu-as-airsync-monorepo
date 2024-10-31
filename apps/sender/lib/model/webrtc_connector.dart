@@ -307,19 +307,25 @@ class WebRTCConnector {
 
   Future<MediaStream?> getDisplayMedia() async {
     try {
+      final videoConstraints = kIsWeb
+          ? {
+            // note: TypeError - Failed to execute 'getDisplayMedia' on 'MediaDevices':
+            // Malformed constraint: Cannot use both optional/mandatory and specific constraints.
+            'frameRate': _trackFrameRate,
+            'width': _trackWidth,
+            'height': _trackHeight,
+          } : {
+            'deviceId': _deviceId,
+            'autoSelectVirtualDisplay': autoVirtualDisplay,
+            'mandatory': {
+              'frameRate': _trackFrameRate,
+            },
+            'width': _trackWidth,
+            'height': _trackHeight,
+          };
       final constraints = <String, dynamic>{
         'audio': _isAudioCaptureAllowed() ? _audioConstraints : false,
-        'video': !WebRTC.platformIsDesktop && !WebRTC.platformIsMobile
-            ? true
-            : {
-                'deviceId': _deviceId,
-                'autoSelectVirtualDisplay': autoVirtualDisplay,
-                'mandatory': {
-                  'frameRate': _trackFrameRate,
-                },
-                'width': _trackWidth,
-                'height': _trackHeight,
-              }
+        'video': videoConstraints
       };
 
       return await navigator.mediaDevices.getDisplayMedia(constraints);
