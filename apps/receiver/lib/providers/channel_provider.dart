@@ -711,7 +711,7 @@ class ChannelProvider extends ChangeNotifier {
   void sendDisplayStatus(Channel channel) {
     final displayStatusMessage = DisplayStatusMessage();
     displayStatusMessage.name = _instanceInfo.deviceName;
-    displayStatusMessage.platform = _getPlatform();
+    displayStatusMessage.platform = getPlatformName();
     displayStatusMessage.status = DisplayStatus.fromJson(
         {'moderator': isModeratorMode, 'authorize': isAuthorizeMode});
     channel.send(displayStatusMessage);
@@ -965,22 +965,6 @@ class ChannelProvider extends ChangeNotifier {
       }
     }
     return null;
-  }
-
-  String _getPlatform() {
-    String platform;
-    if (kIsWeb) {
-      platform = 'Web';
-    } else {
-      if (Platform.isIOS) {
-        platform = 'iOS';
-      } else if (Platform.isAndroid) {
-        platform = 'Android';
-      } else {
-        platform = '';
-      }
-    }
-    return platform;
   }
 
   _startNewOTPTimer() {
