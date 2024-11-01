@@ -78,7 +78,7 @@ class _VbsOTAState extends State<VbsOTA> {
                             width: 25,
                             height: 25,
                             child: Checkbox(
-                              side: MaterialStateBorderSide.resolveWith(
+                              side: WidgetStateBorderSide.resolveWith(
                                   (states) =>
                                       const BorderSide(color: Colors.white)),
                               value: (snapshot.hasData)
