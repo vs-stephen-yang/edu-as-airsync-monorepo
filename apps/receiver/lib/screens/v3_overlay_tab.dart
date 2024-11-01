@@ -144,7 +144,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
   }
 
   _setUpAndroidWindow() {
-    var _this = this;
+    var self = this;
     AndroidWindow.setHandler((String name, Object? data) async {
       switch (name) {
         case OverlayTabHandler.nameOverlayTabCheck:
@@ -201,7 +201,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
 
         case OverlayTabHandler.nameSetOtp:
           if (data is Map<Object?, Object?>) {
-            _this.setState(() {
+            self.setState(() {
               var info = Map<String, String>.from(data);
               _otp = info[OverlayTabHandler.keyOtpCode] ?? '';
             });
