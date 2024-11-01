@@ -54,10 +54,9 @@ class RtcStatsParser {
     final candidatePairs = reports
         .where((StatsReport report) => report.type == 'candidate-pair')
         .toList();
-    final candidatePairMap = Map<String, StatsReport>.fromIterable(
-        candidatePairs,
-        key: (report) => report.id,
-        value: (report) => report);
+    final candidatePairMap = {
+      for (var report in candidatePairs) report.id: report
+    };
 
     // get active transport
     final transports = reports

@@ -15,7 +15,7 @@ class V3BroadcastIndicator extends ConsumerStatefulWidget {
 
 class _V3BroadcastIndicatorState extends ConsumerState {
   final Color _highlightColor = const Color.fromRGBO(0xFE, 0xD1, 0x41, 1);
-  bool _isBroadcastOnScreen = false;
+  final _isBroadcastOnScreen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -77,35 +77,5 @@ class _V3BroadcastIndicatorState extends ConsumerState {
         ],
       ],
     );
-  }
-
-  _showBroadcastMenuDialog(BuildContext context) async {
-    setState(() {
-      _isBroadcastOnScreen = true;
-    });
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return Stack(
-          children: [
-            Positioned(
-              top: 68,
-              right: 20,
-              child: Container(
-                width: 220,
-                height: 424,
-                color: context.tokens.color.vsdslColorOpacityNeutralXl,
-              ),
-            ),
-          ],
-        );
-      },
-    ).then((_) {
-      setState(() {
-        _isBroadcastOnScreen = false;
-      });
-    });
   }
 }
