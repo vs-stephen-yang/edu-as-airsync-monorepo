@@ -44,7 +44,7 @@ class _SplashScreenState extends State<V3SplashScreen> {
             SvgPicture.asset('assets/images/v3_ic_airsync.svg'),
             Positioned(
               bottom: (Platform.isAndroid || Platform.isIOS) ? 24 : 32,
-              child: Image.asset('assets/images/ic_logo_viewsonic.png'),
+              child: Image.asset('assets/images/ic_logo_viewsonic_mobile.png'),
             ),
           ],
         ),

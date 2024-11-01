@@ -53,9 +53,9 @@ class V3Background extends StatelessWidget {
                       }
                     },
                     child: Image.asset(
-                      'assets/images/ic_logo_viewsonic.png',
-                      width: 225,
-                      height: 70,
+                      'assets/images/ic_logo_viewsonic_desktop.png',
+                      width: 193,
+                      height: 60,
                     ),
                   ),
                 ),
