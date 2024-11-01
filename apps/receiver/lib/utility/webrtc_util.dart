@@ -5,10 +5,10 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 class WebRTCUtil {
-  static String RtpDump = 'WebRTC-Debugging-RtpDump';
+  static String rtpDump = 'WebRTC-Debugging-RtpDump';
 
   static String getRtpDumpFieldTrails(bool enabled) {
-    return RtpDump + (enabled ? '/Enabled/' : '/Disabled/');
+    return rtpDump + (enabled ? '/Enabled/' : '/Disabled/');
   }
 
   static Future<void> startWebRtcTracingCapture() async {
@@ -49,5 +49,4 @@ class WebRTCUtil {
           : 'gather_once',
     };
   }
-
 }
