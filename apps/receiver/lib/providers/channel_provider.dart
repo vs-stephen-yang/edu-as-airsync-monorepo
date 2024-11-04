@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -22,6 +21,7 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
+import 'package:display_flutter/providers/instance_api.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
@@ -84,7 +84,7 @@ class ChannelProvider extends ChangeNotifier {
   bool _isDirectServerStart = false;
   DisplayDirectServer? _directServer;
   DisplayTunnelServer? _tunnelServer;
-  String _tunnelApiUrl = '';
+  String? _tunnelApiUrl;
 
   static bool isModeratorMode = false;
 
@@ -249,10 +249,14 @@ class ChannelProvider extends ChangeNotifier {
     _instanceInfo.ipAddress = ipAddress;
     final instanceGroupId = getInstanceGroupIdFromIp(_instanceInfo.ipAddress);
 
-    registerInstanceIndexById(
+    final result = await registerInstanceIndexById(
+      appConfig.settings.baseApiUrl,
       AppInstanceCreate().displayInstanceID,
       instanceGroupId,
-    ).then((value) => _handleInstanceIndex(value, instanceGroupId));
+    );
+    _tunnelApiUrl = result?.tunnelApiUrl;
+
+    _handleInstanceIndex(result?.instanceIndex, instanceGroupId);
   }
 
   void _handleInstanceIndex(int? instanceIndex, int instanceGroupId) {
@@ -430,13 +434,13 @@ class ChannelProvider extends ChangeNotifier {
 
     // start the tunnel server
     log.info('Starting the tunnel channel server $_tunnelApiUrl');
-    if (_tunnelApiUrl.isNotEmpty && _tunnelServer == null) {
+    if (_tunnelApiUrl != null && _tunnelServer == null) {
       // fix when _tunnelApiUrl is empty, will cause App UI not response.
       _setTunnelServer();
       _tunnelServer?.start(
         instanceId,
         instanceGroupId,
-        Uri.parse(_tunnelApiUrl),
+        Uri.parse(_tunnelApiUrl!),
       );
     }
     _isTunnelServerStart = true;
@@ -820,53 +824,6 @@ class ChannelProvider extends ChangeNotifier {
     channel.send(message);
   }
 
-  Future<int?> registerInstanceIndexById(
-    String instanceId,
-    int instanceGroupId,
-  ) async {
-    try {
-      log.info(
-          'Registering the instance ${appConfig.settings.baseApiUrl} groupId:$instanceGroupId');
-
-      final request = buildApiRequest(
-        appConfig.settings.baseApiUrl,
-        '/v1/instance/$instanceId',
-        queryParameters: {
-          'groupId': '$instanceGroupId',
-        },
-        time: DateTime.now(),
-        signatureLocation: SignatureLocation.header,
-      );
-
-      http.Response response = await http
-          .put(
-            request.url,
-            headers: request.headers,
-            body: request.body,
-          )
-          .timeout(const Duration(seconds: 6));
-      log.info('Status of Instance Register API: ${response.statusCode}');
-
-      if (response.statusCode >= HttpStatus.ok &&
-          response.statusCode < HttpStatus.multiStatus) {
-        Map json = jsonDecode(response.body);
-
-        _tunnelApiUrl = json['tunnelUrl'] ?? '';
-        final instanceIndex = json['instanceIndex'];
-
-        return instanceIndex;
-      } else {
-        log.warning(
-            'Instance Register API failed. Status code: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      log.warning('Instance Register API failed with $e');
-      // http.get maybe no network connection.
-      return null;
-    }
-  }
-
   updateAllAudioEnableState(bool enable) {
     for (RTCConnector rtcConnector
         in HybridConnectionList().getRtcConnectorMap().values) {
@@ -1034,10 +991,14 @@ class ChannelProvider extends ChangeNotifier {
     _instanceInfo.ipAddress = ipAddress;
     final instanceGroupId = getInstanceGroupIdFromIp(_instanceInfo.ipAddress);
 
-    registerInstanceIndexById(
+    final result = await registerInstanceIndexById(
+      appConfig.settings.baseApiUrl,
       AppInstanceCreate().displayInstanceID,
       instanceGroupId,
-    ).then((value) => _handleInstanceIndex(value, instanceGroupId));
+    );
+    _tunnelApiUrl = result?.tunnelApiUrl;
+
+    _handleInstanceIndex(result?.instanceIndex, instanceGroupId);
   }
 
   Future<List<RtcIceServer>?> _getIceServers(ChannelMode mode) async {
