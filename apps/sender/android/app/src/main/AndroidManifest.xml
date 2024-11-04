@@ -53,6 +53,16 @@
                     android:host="www.dev.airsync.net"
                     android:pathPattern="/download"
                     android:scheme="https" />
+
+                <data
+                    android:host="www.stage.airsync.net"
+                    android:pathPattern="/download"
+                    android:scheme="https" />
+
+                <data
+                    android:host="www.airsync.net"
+                    android:pathPattern="/download"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <service
