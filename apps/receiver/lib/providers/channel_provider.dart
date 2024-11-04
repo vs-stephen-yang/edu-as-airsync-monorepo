@@ -79,11 +79,8 @@ class ChannelProvider extends ChangeNotifier {
   final ValueNotifier<bool> isLanModeOnly = ValueNotifier(false);
   final ValueNotifier<String> otp = ValueNotifier('0000');
 
-  bool _isTunnelServerStart = false;
-  bool _isDirectServerStart = false;
   DisplayDirectServer? _directServer;
   DisplayTunnelServer? _tunnelServer;
-  String? _tunnelApiUrl;
 
   static bool isModeratorMode = false;
 
@@ -184,6 +181,8 @@ class ChannelProvider extends ChangeNotifier {
   startChannelProvider() {
     _setConnectivityListener();
     _startNewOTPTimer();
+
+    startDirectServer();
   }
 
   setProviderContainer(ProviderContainer pc) {
@@ -228,41 +227,57 @@ class ChannelProvider extends ChangeNotifier {
     if (result == ConnectivityResult.none) {
       _handleNoConnectivity();
     } else {
-      await _handleConnectivity(result);
+      await _handleNetworkConnected();
     }
   }
 
   void _handleNoConnectivity() {
     isNetworkConnected = false;
-    stopServer();
     _instanceInfo.displayCode = '';
   }
 
-  Future<void> _handleConnectivity(ConnectivityResult result) async {
+  Future<void> _handleNetworkConnected() async {
     isNetworkConnected = true;
 
+    // Get local IP address
     final ipAddress = await getPreferredNetworkIpAddress();
     if (ipAddress == null || ipAddress.isEmpty) {
-      log.warning('_handleConnectivity: No IP address found');
+      log.severe('No IP address found');
+      return;
     }
     _instanceInfo.ipAddress = ipAddress;
+
+    // Get the instance group Id from IP address
     final instanceGroupId = getInstanceGroupIdFromIp(_instanceInfo.ipAddress);
 
-    final result = await registerInstanceIndexById(
+    final registerResult = await registerInstanceIndexById(
       appConfig.settings.baseApiUrl,
       AppInstanceCreate().displayInstanceID,
       instanceGroupId,
     );
-    _tunnelApiUrl = result?.tunnelApiUrl;
 
-    _handleInstanceIndex(result?.instanceIndex, instanceGroupId);
+    // If the API call fails, switch to LAN-only mode.
+    isLanModeOnly.value = registerResult == null;
+
+    // Update display code
+    _updateDisplayCode(
+      instanceGroupId: instanceGroupId,
+      instanceIndex: registerResult?.instanceIndex,
+    );
+
+    if (registerResult != null) {
+      // The API call succeeds. Start the tunnel server.
+      final tunnelApiUrl = registerResult.tunnelApiUrl;
+
+      restartTunnelServer(
+        tunnelApiUrl,
+        AppInstanceCreate().displayInstanceID,
+        instanceGroupId,
+      );
+    }
   }
 
-  void _handleInstanceIndex(int? instanceIndex, int instanceGroupId) {
-    if (_instanceInfo.ipAddress.isEmpty) {
-      return;
-    }
-
+  void _updateDisplayCode({required int instanceGroupId, int? instanceIndex}) {
     final displayCode = encodeDisplayCode(
       DisplayCode(
         instanceGroupId: instanceGroupId,
@@ -274,14 +289,6 @@ class ChannelProvider extends ChangeNotifier {
     AppAnalytics.instance.setGlobalProperty('display_code', displayCode);
 
     setSentryTag('display.code', displayCode);
-
-    if (instanceIndex != null) {
-      startServer(AppInstanceCreate().displayInstanceID, instanceGroupId);
-      isLanModeOnly.value = false;
-    } else {
-      startDirectServer();
-      isLanModeOnly.value = true;
-    }
   }
 
   void _setTunnelServer() {
@@ -309,16 +316,6 @@ class ChannelProvider extends ChangeNotifier {
       log.info('Tunnel is connecting');
       trackTrace('tunnel_connecting');
     };
-  }
-
-  void _setDirectServer() {
-    // create a direct server
-    _directServer = DisplayDirectServer(
-      reconnectTimeout: channelReconnectTimeoutInStreaming,
-      _onNewDirectChanel,
-      (ConnectionRequest connectionRequest) =>
-          _verifyConnectRequest(connectionRequest, isDirectConnect: true),
-    );
   }
 
   // Is the channel from the host?
@@ -428,49 +425,46 @@ class ChannelProvider extends ChangeNotifier {
     _remoteScreenServe.stopRemoteScreenPublisher();
   }
 
-  Future<void> startTunnelServer(String instanceId, int instanceGroupId) async {
-    if (_isTunnelServerStart) return;
-
+  Future<void> restartTunnelServer(
+      String tunnelApiUrl, String instanceId, int instanceGroupId) async {
     // start the tunnel server
-    log.info('Starting the tunnel channel server $_tunnelApiUrl');
-    if (_tunnelApiUrl != null && _tunnelServer == null) {
-      // fix when _tunnelApiUrl is empty, will cause App UI not response.
-      _setTunnelServer();
-      _tunnelServer?.start(
-        instanceId,
-        instanceGroupId,
-        Uri.parse(_tunnelApiUrl!),
-      );
-    }
-    _isTunnelServerStart = true;
+    log.info('Starting the tunnel channel server $tunnelApiUrl');
+
+    // fix when _tunnelApiUrl is empty, will cause App UI not response.
+    _setTunnelServer();
+    _tunnelServer?.start(
+      instanceId,
+      instanceGroupId,
+      Uri.parse(tunnelApiUrl),
+    );
   }
 
   Future<void> startDirectServer() async {
-    if (_isDirectServerStart) return;
+    if (_directServer != null) {
+      log.warning('Direct channel server is already running');
+      return;
+    }
 
     // start the direct server
     try {
       final securityContext = await loadSecurityContextForChannel();
 
       log.info('Starting the direct channel server');
-      if (_directServer == null) {
-        _setDirectServer();
-        await _directServer?.start(
-          DisplayServiceBroadcast.instance.directChannelPort,
-          securityContext: securityContext,
-        );
-      }
-      _isDirectServerStart = true;
-    } on Exception catch (e) {
-      log.severe(
-          'Failed to load certificate or private key for secure direct connections. $e');
-      _isDirectServerStart = false;
-    }
-  }
 
-  Future<void> startServer(String instanceId, int instanceGroupId) async {
-    if (!_isTunnelServerStart) startTunnelServer(instanceId, instanceGroupId);
-    if (!_isDirectServerStart) startDirectServer();
+      _directServer = DisplayDirectServer(
+        reconnectTimeout: channelReconnectTimeoutInStreaming,
+        _onNewDirectChanel,
+        (ConnectionRequest connectionRequest) =>
+            _verifyConnectRequest(connectionRequest, isDirectConnect: true),
+      );
+      await _directServer?.start(
+        DisplayServiceBroadcast.instance.directChannelPort,
+        securityContext: securityContext,
+      );
+      log.info('Direct channel server has started');
+    } on Exception catch (e) {
+      log.severe('Failed to start direct channel server', e);
+    }
   }
 
   void _onNewChannel(Channel channel, ChannelMode mode) {
@@ -683,17 +677,6 @@ class ChannelProvider extends ChangeNotifier {
     };
 
     sendDisplayStatus(channel);
-  }
-
-  void stopServer() {
-    log.info('Stopping the channel server');
-
-    _tunnelServer?.stop();
-    _tunnelServer = null;
-    _directServer?.stop();
-    _directServer = null;
-    _isTunnelServerStart = false;
-    _isDirectServerStart = false;
   }
 
   ConnectRequestStatus _verifyConnectRequest(
@@ -911,31 +894,11 @@ class ChannelProvider extends ChangeNotifier {
       countDownProgress.value = maxCountDown;
 
       _updateOTP();
-      _updateDisplayCode();
     }
   }
 
   _updateOTP() {
     otp.value = generateOTP(Random());
-  }
-
-  _updateDisplayCode() async {
-    if (_isTunnelServerStart || !isNetworkConnected) return;
-    final ipAddress = await getPreferredNetworkIpAddress();
-    if (ipAddress == null || ipAddress.isEmpty) {
-      log.warning('_updateDisplayCode: No IP address found');
-    }
-    _instanceInfo.ipAddress = ipAddress;
-    final instanceGroupId = getInstanceGroupIdFromIp(_instanceInfo.ipAddress);
-
-    final result = await registerInstanceIndexById(
-      appConfig.settings.baseApiUrl,
-      AppInstanceCreate().displayInstanceID,
-      instanceGroupId,
-    );
-    _tunnelApiUrl = result?.tunnelApiUrl;
-
-    _handleInstanceIndex(result?.instanceIndex, instanceGroupId);
   }
 
   Future<List<RtcIceServer>?> _getIceServers(ChannelMode mode) async {
