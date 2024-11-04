@@ -80,7 +80,6 @@ class ChannelProvider extends ChangeNotifier {
   final ValueNotifier<bool> isLanModeOnly = ValueNotifier(false);
   final ValueNotifier<String> otp = ValueNotifier('0000');
 
-  String? host;
   bool _isTunnelServerStart = false;
   bool _isDirectServerStart = false;
   DisplayDirectServer? _directServer;
@@ -247,8 +246,8 @@ class ChannelProvider extends ChangeNotifier {
     if (ipAddress == null || ipAddress.isEmpty) {
       log.warning('_handleConnectivity: No IP address found');
     }
-    host = _instanceInfo.ipAddress = ipAddress;
-    final instanceGroupId = getInstanceGroupIdFromIp(host!);
+    _instanceInfo.ipAddress = ipAddress;
+    final instanceGroupId = getInstanceGroupIdFromIp(_instanceInfo.ipAddress);
 
     registerInstanceIndexById(
       AppInstanceCreate().displayInstanceID,
@@ -257,7 +256,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _handleInstanceIndex(int? instanceIndex, int instanceGroupId) {
-    if (host == null) {
+    if (_instanceInfo.ipAddress.isEmpty) {
       return;
     }
 
@@ -558,7 +557,7 @@ class ChannelProvider extends ChangeNotifier {
             remoteScreenConnector = RemoteScreenConnector(
                 channel,
                 _remoteScreenServe.roomId,
-                host,
+                _instanceInfo.ipAddress,
                 _remoteScreenServe.roomPort,
                 msg);
             remoteScreenConnector?.onChannelDisconnect = (() async {
@@ -620,7 +619,7 @@ class ChannelProvider extends ChangeNotifier {
             remoteScreenConnector = RemoteScreenConnector(
                 channel,
                 _remoteScreenServe.roomId,
-                host,
+                _instanceInfo.ipAddress,
                 _remoteScreenServe.roomPort,
                 joinMessage);
             remoteScreenConnector?.onChannelDisconnect = (() async {
@@ -1032,8 +1031,8 @@ class ChannelProvider extends ChangeNotifier {
     if (ipAddress == null || ipAddress.isEmpty) {
       log.warning('_updateDisplayCode: No IP address found');
     }
-    host = _instanceInfo.ipAddress = ipAddress;
-    final instanceGroupId = getInstanceGroupIdFromIp(host!);
+    _instanceInfo.ipAddress = ipAddress;
+    final instanceGroupId = getInstanceGroupIdFromIp(_instanceInfo.ipAddress);
 
     registerInstanceIndexById(
       AppInstanceCreate().displayInstanceID,
@@ -1049,7 +1048,7 @@ class ChannelProvider extends ChangeNotifier {
       );
     } else {
       return [
-        RtcIceServer(['stun:$host'])
+        RtcIceServer(['stun:${_instanceInfo.ipAddress}'])
       ];
     }
   }
@@ -1132,7 +1131,7 @@ class ChannelProvider extends ChangeNotifier {
     final connector = RemoteScreenConnector(
       channel,
       _remoteScreenServe.roomId,
-      host,
+      _instanceInfo.ipAddress,
       _remoteScreenServe.roomPort,
       joinMessage,
     );
