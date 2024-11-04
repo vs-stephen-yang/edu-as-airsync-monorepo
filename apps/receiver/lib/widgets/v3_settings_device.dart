@@ -7,8 +7,8 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -248,69 +248,18 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
     );
   }
 
-  DropdownButtonHideUnderline _buildDropdownMenu(BuildContext context) {
-    return DropdownButtonHideUnderline(
-      child: CustomDropDownMenu(
-        itemList: InvitedToGroupOption.invitedToGroupItems(context),
-        defaultSelectedItem: InvitedToGroupOption.getInvitedToGroupString(
-            context, int.parse(AppPreferences().invitedToGroup)),
-        selectedItem: Text(
-          InvitedToGroupOption.getInvitedToGroupString(
-              context, int.parse(AppPreferences().invitedToGroup)),
-          style: const TextStyle(
-            fontSize: 9,
-            color: Colors.black,
-          ),
-        ),
-        unselectedItemsInMenu: (String item) => SizedBox(
-          height: 26,
-          child: Row(
-            children: [
-              Text(
-                item,
-                style: const TextStyle(
-                  fontSize: 9,
-                  color: Colors.black,
-                ),
-              ),
-            ],
-          ),
-        ),
-        selectedItemInMenu: Row(
-          children: [
-            Text(
-              InvitedToGroupOption.getInvitedToGroupString(
-                  context, int.parse(AppPreferences().invitedToGroup)),
-              style: TextStyle(
-                fontSize: 9,
-                color: context.tokens.color.vsdslColorOnSurfaceInverse,
-              ),
-            ),
-            const Spacer(),
-            const Padding(
-              padding: EdgeInsets.only(right: 8),
-              child: Image(
-                image: Svg('assets/images/ic_checkmark.svg'),
-                width: 16,
-                height: 16,
-              ),
-            ),
-          ],
-        ),
-        onChange: (String? value) {
-          setState(
-            () {
-              final int optionValue =
-                  InvitedToGroupOption.invitedToGroupItems(context)
-                      .indexOf(value ?? '');
-              AppPreferences()
-                  .setInvitedToGroupSelectedItem(item: optionValue.toString());
-              DisplayServiceBroadcast.instance
-                  .updateInvitedToGroupOption(optionValue.toString());
-            },
-          );
-        },
-      ),
+  Widget _buildDropdownMenu(BuildContext context) {
+    return CustomDropdown(
+      options: InvitedToGroupOption.invitedToGroupItems(context),
+      selectedValue: InvitedToGroupOption.getInvitedToGroupString(
+          context, int.parse(AppPreferences().invitedToGroup)),
+      onChange: (String? value) {
+        setState(() {
+          final int optionValue = InvitedToGroupOption.invitedToGroupItems(context).indexOf(value ?? '');
+          AppPreferences().setInvitedToGroupSelectedItem(item: optionValue.toString());
+          DisplayServiceBroadcast.instance.updateInvitedToGroupOption(optionValue.toString());
+        });
+      },
     );
   }
 
@@ -470,105 +419,6 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
   }
 }
 
-class CustomDropDownMenu extends StatefulWidget {
-  CustomDropDownMenu({
-    super.key,
-    required this.itemList,
-    required this.defaultSelectedItem,
-    required this.selectedItem,
-    required this.unselectedItemsInMenu,
-    required this.selectedItemInMenu,
-    required this.onChange,
-  }) {
-    valueListenable.value = defaultSelectedItem;
-  }
-
-  final List<String> itemList;
-  final String defaultSelectedItem;
-  final Widget selectedItem;
-  final Widget Function(String) unselectedItemsInMenu;
-  final Widget selectedItemInMenu;
-  final Function(String?) onChange;
-  final ValueNotifier<String> valueListenable = ValueNotifier("");
-
-  @override
-  State<CustomDropDownMenu> createState() => _CustomDropDownMenuState();
-}
-
-class _CustomDropDownMenuState extends State<CustomDropDownMenu> {
-  bool isDropDownMenuOpen = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButton2<String>(
-      isDense: true,
-      isExpanded: true,
-      value: widget.defaultSelectedItem,
-      items: widget.itemList
-          .map((String item) => DropdownMenuItem<String>(
-                value: item,
-                child: widget.unselectedItemsInMenu(item),
-              ))
-          .toList(),
-      onChanged: (String? value) {
-        if (value != null) {
-          widget.valueListenable.value = value;
-          widget.onChange(value);
-        }
-      },
-      onMenuStateChange: (bool isOpen) {
-        setState(() {
-          isDropDownMenuOpen = isOpen;
-        });
-      },
-      iconStyleData: IconStyleData(
-        icon: Icon(isDropDownMenuOpen
-            ? Icons.keyboard_arrow_up
-            : Icons.keyboard_arrow_down),
-      ),
-      selectedItemBuilder: (context) {
-        return widget.itemList.map(
-          (item) {
-            return ValueListenableBuilder<String>(
-                valueListenable: widget.valueListenable,
-                builder: (context, multiValue, _) {
-                  return widget.selectedItem;
-                });
-          },
-        ).toList();
-      },
-      buttonStyleData: ButtonStyleData(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          height: 26,
-          width: 105,
-          decoration: BoxDecoration(
-            color: isDropDownMenuOpen
-                ? context.tokens.color.vsdslColorSurface300
-                : context.tokens.color.vsdslColorOnSurfaceInverse,
-            borderRadius: BorderRadius.circular(6),
-          )),
-      dropdownStyleData: DropdownStyleData(
-        width: 105,
-        padding: const EdgeInsets.only(top: 0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
-          // color: Colors.black,
-        ),
-      ),
-      menuItemStyleData: MenuItemStyleData(
-          height: 26,
-          selectedMenuItemBuilder: (context, child) {
-            return Container(
-              height: 26,
-              padding: const EdgeInsets.only(left: 16),
-              color: context.tokens.color.vsdslColorPrimary,
-              child: widget.selectedItemInMenu,
-            );
-          }),
-    );
-  }
-}
-
 enum InvitedToGroupOption {
   notifyMe(0),
   autoAccept(1),
@@ -604,3 +454,158 @@ enum InvitedToGroupOption {
     return InvitedToGroupOption._groupMap(context)[option]!;
   }
 }
+
+class CustomDropdown extends StatefulWidget {
+  const CustomDropdown(
+      {super.key,
+      required this.options,
+      required this.selectedValue,
+      required this.onChange});
+
+  final String selectedValue;
+  final List<String> options;
+  final Function(String?) onChange;
+
+  @override
+  CustomDropdownState createState() => CustomDropdownState();
+}
+
+class CustomDropdownState extends State<CustomDropdown> {
+  final LayerLink _layerLink = LayerLink();
+  OverlayEntry? _overlayEntry;
+
+  void _showDropdownMenu() {
+    _overlayEntry = _createOverlayEntry();
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  void _hideDropdownMenu() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  OverlayEntry _createOverlayEntry() {
+    RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    final offset = renderBox.localToGlobal(Offset.zero);
+
+    return OverlayEntry(
+      builder: (context) => Positioned(
+        width: size.width,
+        left: offset.dx,
+        top: offset.dy + size.height,
+        child: CompositedTransformFollower(
+          link: _layerLink,
+          showWhenUnlinked: false,
+          offset: Offset(0, size.height),
+          child: TapRegion(
+            groupId: V3SettingMenu.settingMenuGroupId,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                  borderRadius: context.tokens.radii.vsdslRadiusSm,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: widget.options.map((option) {
+                    bool isSelected = option == widget.selectedValue;
+                    return GestureDetector(
+                      onTap: () {
+                        _hideDropdownMenu();
+                        widget.onChange.call(option);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? context.tokens.color.vsdslColorPrimary
+                              : Colors.transparent,
+                          borderRadius: context.tokens.radii.vsdslRadiusSm,
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                option,
+                                style: TextStyle(
+                                    fontSize: 9,
+                                    color: isSelected? context.tokens.color.vsdslColorOnPrimary : context.tokens.color.vsdslColorOnSurface,
+                                ),
+                              ),
+                            ),
+                            if (isSelected)
+                              Icon(
+                                size: 16,
+                                Icons.check,
+                                color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = TextStyle(
+        fontSize: 9,
+        color: context.tokens.color.vsdslColorOnSurface,
+        fontWeight: FontWeight.w600
+    );
+    return CompositedTransformTarget(
+      link: _layerLink,
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            if (_overlayEntry == null) {
+              _showDropdownMenu();
+            } else {
+              _hideDropdownMenu();
+            }
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          decoration: BoxDecoration(
+            color: _overlayEntry != null
+                ? context.tokens.color.vsdslColorSurface300
+                : context.tokens.color.vsdslColorOnSurfaceInverse,
+            borderRadius: context.tokens.radii.vsdslRadiusSm,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                widget.selectedValue,
+                style: textStyle,
+              ),
+              const Spacer(),
+              Icon(_overlayEntry != null
+              ? Icons.keyboard_arrow_up
+              : Icons.keyboard_arrow_down,
+              size: 16,
+              color: context.tokens.color.vsdslColorOnSurface),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _hideDropdownMenu();
+    super.dispose();
+  }
+}
+

@@ -22,12 +22,15 @@ import 'package:provider/provider.dart';
 class V3SettingMenu extends StatelessWidget {
   const V3SettingMenu({super.key});
 
+  static const String settingMenuGroupId = 'V3SettingMenu';
+
   @override
   Widget build(BuildContext context) {
     SettingsProvider settingsProvider =
         Provider.of<SettingsProvider>(context, listen: false);
 
     return TapRegion(
+      groupId: settingMenuGroupId,
       onTapOutside: (event) {
         if (riverpod.ProviderScope.containerOf(context)
             .read(dialogProvider)
