@@ -58,12 +58,12 @@ class ChannelProvider extends ChangeNotifier {
 
   ConnectivityResult _lastConnectivityResult = ConnectivityResult.none;
 
-  bool _connectNet = false;
+  bool _isNetworkConnected = false;
 
-  bool get connectNet => _connectNet;
+  bool get isNetworkConnected => _isNetworkConnected;
 
-  set connectNet(bool value) {
-    _connectNet = value;
+  set isNetworkConnected(bool value) {
+    _isNetworkConnected = value;
     notifyListeners();
   }
 
@@ -235,19 +235,19 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _handleNoConnectivity() {
-    connectNet = false;
+    isNetworkConnected = false;
     stopServer();
     _instanceInfo.displayCode = '';
   }
 
   Future<void> _handleConnectivity(ConnectivityResult result) async {
-    connectNet = true;
+    isNetworkConnected = true;
 
-    final value = await _checkNetWorkInfo();
-    if (value == null || value.isEmpty) {
+    final ipAddress = await _getPreferredNetworkIpAddress();
+    if (ipAddress == null || ipAddress.isEmpty) {
       log.warning('_handleConnectivity: No IP address found');
     }
-    host = _instanceInfo.ipAddress = value;
+    host = _instanceInfo.ipAddress = ipAddress;
     final instanceGroupId = getInstanceGroupIdFromIp(host!);
 
     registerInstanceIndexById(
@@ -938,7 +938,7 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String?> _checkNetWorkInfo() async {
+  Future<String?> _getPreferredNetworkIpAddress() async {
     List<NetworkInterface> interfaces =
         await NetworkInterface.list(type: InternetAddressType.IPv4);
 
@@ -1027,12 +1027,12 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   _updateDisplayCode() async {
-    if (_isTunnelServerStart || !connectNet) return;
-    final value = await _checkNetWorkInfo();
-    if (value == null || value.isEmpty) {
+    if (_isTunnelServerStart || !isNetworkConnected) return;
+    final ipAddress = await _getPreferredNetworkIpAddress();
+    if (ipAddress == null || ipAddress.isEmpty) {
       log.warning('_updateDisplayCode: No IP address found');
     }
-    host = _instanceInfo.ipAddress = value;
+    host = _instanceInfo.ipAddress = ipAddress;
     final instanceGroupId = getInstanceGroupIdFromIp(host!);
 
     registerInstanceIndexById(
