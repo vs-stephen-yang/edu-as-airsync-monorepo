@@ -28,6 +28,7 @@ import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/channel_util.dart';
+import 'package:display_flutter/utility/ip_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/misc_util.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
@@ -35,7 +36,6 @@ import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -242,7 +242,7 @@ class ChannelProvider extends ChangeNotifier {
   Future<void> _handleConnectivity(ConnectivityResult result) async {
     isNetworkConnected = true;
 
-    final ipAddress = await _getPreferredNetworkIpAddress();
+    final ipAddress = await getPreferredNetworkIpAddress();
     if (ipAddress == null || ipAddress.isEmpty) {
       log.warning('_handleConnectivity: No IP address found');
     }
@@ -894,68 +894,6 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String?> _getPreferredNetworkIpAddress() async {
-    List<NetworkInterface> interfaces =
-        await NetworkInterface.list(type: InternetAddressType.IPv4);
-
-    List<NetworkInterface> ethernetInterfaces = [];
-    List<NetworkInterface> wifiInterfaces = [];
-    List<NetworkInterface> mobileInterfaces = [];
-    for (NetworkInterface interface in interfaces) {
-      if (interface.name.toLowerCase().startsWith("eth")) {
-        ethernetInterfaces.add(interface);
-      } else if (interface.name.toLowerCase().startsWith("wi") ||
-          interface.name.toLowerCase().startsWith("wlan")) {
-        wifiInterfaces.add(interface);
-      } else if (interface.name.toLowerCase().startsWith("rmnet") ||
-          interface.name.toLowerCase().startsWith("wwan")) {
-        mobileInterfaces.add(interface);
-      }
-    }
-
-    // by order
-    ethernetInterfaces.sort((a, b) => a.name.compareTo(b.name));
-    wifiInterfaces.sort((a, b) => a.name.compareTo(b.name));
-    mobileInterfaces.sort((a, b) => a.name.compareTo(b.name));
-
-    if (ethernetInterfaces.isNotEmpty) {
-      for (NetworkInterface interface in ethernetInterfaces) {
-        String? ethernetIp = interface.addresses.isNotEmpty
-            ? interface.addresses[0].address
-            : null;
-        if (ethernetIp != null) {
-          return ethernetIp;
-        }
-        break;
-      }
-    }
-
-    if (wifiInterfaces.isNotEmpty) {
-      for (NetworkInterface interface in wifiInterfaces) {
-        String? wifiIp = interface.addresses.isNotEmpty
-            ? interface.addresses[0].address
-            : null;
-        if (wifiIp != null) {
-          return wifiIp;
-        }
-        break;
-      }
-    }
-
-    if (mobileInterfaces.isNotEmpty) {
-      for (NetworkInterface interface in mobileInterfaces) {
-        String? mobileIp = interface.addresses.isNotEmpty
-            ? interface.addresses[0].address
-            : null;
-        if (mobileIp != null) {
-          return mobileIp;
-        }
-        break;
-      }
-    }
-    return null;
-  }
-
   _startNewOTPTimer() {
     if (_otpTickTimer != null) {
       return;
@@ -984,7 +922,7 @@ class ChannelProvider extends ChangeNotifier {
 
   _updateDisplayCode() async {
     if (_isTunnelServerStart || !isNetworkConnected) return;
-    final ipAddress = await _getPreferredNetworkIpAddress();
+    final ipAddress = await getPreferredNetworkIpAddress();
     if (ipAddress == null || ipAddress.isEmpty) {
       log.warning('_updateDisplayCode: No IP address found');
     }
