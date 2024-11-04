@@ -29,7 +29,7 @@ class MainInfo extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: AppColors.primaryGrey,
                   ),
-                  child: (channelProvider.connectNet)
+                  child: (channelProvider.isNetworkConnected)
                       ? Wrap(
                           direction: Axis.vertical,
                           alignment: WrapAlignment.center,
