@@ -216,6 +216,15 @@ class ChannelProvider extends ChangeNotifier {
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     log.info('Network connectivity has changed to $result');
 
+    if (result == _lastConnectivityResult) {
+      // Ignore duplicate notifications
+      return;
+    }
+
+    log.info(
+        'Network connectivity has changed to $result from $_lastConnectivityResult');
+    _lastConnectivityResult = result;
+
     trackTrace('network_connectivity', target: result.name);
 
     if (result == ConnectivityResult.none) {
@@ -223,7 +232,6 @@ class ChannelProvider extends ChangeNotifier {
     } else {
       await _handleConnectivity(result);
     }
-    _lastConnectivityResult = result;
   }
 
   void _handleNoConnectivity() {
@@ -234,8 +242,6 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<void> _handleConnectivity(ConnectivityResult result) async {
     connectNet = true;
-    log.info(
-        'Last Network Connectivity is: $_lastConnectivityResult, being changed to result: $result');
 
     final value = await _checkNetWorkInfo();
     if (value == null || value.isEmpty) {
@@ -244,12 +250,10 @@ class ChannelProvider extends ChangeNotifier {
     host = _instanceInfo.ipAddress = value;
     final instanceGroupId = getInstanceGroupIdFromIp(host!);
 
-    if (_lastConnectivityResult != result) {
-      registerInstanceIndexById(
-        AppInstanceCreate().displayInstanceID,
-        instanceGroupId,
-      ).then((value) => _handleInstanceIndex(value, instanceGroupId));
-    }
+    registerInstanceIndexById(
+      AppInstanceCreate().displayInstanceID,
+      instanceGroupId,
+    ).then((value) => _handleInstanceIndex(value, instanceGroupId));
   }
 
   void _handleInstanceIndex(int? instanceIndex, int instanceGroupId) {
