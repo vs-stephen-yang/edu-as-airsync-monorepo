@@ -90,6 +90,7 @@ class DisplayGroupMember {
             break;
           case 'reject':
             stayOnList = true;
+            onRejected();
             break;
           default:
             // 處理未知狀態

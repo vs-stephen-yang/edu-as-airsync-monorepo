@@ -10,6 +10,7 @@ import 'package:display_flutter/widgets/v3_authorize_prompt.dart';
 import 'package:display_flutter/widgets/v3_feature_set.dart';
 import 'package:display_flutter/widgets/v3_footer_bar.dart';
 import 'package:display_flutter/widgets/v3_group_host_view.dart';
+import 'package:display_flutter/widgets/v3_group_reject_prompt.dart';
 import 'package:display_flutter/widgets/v3_header_bar.dart';
 import 'package:display_flutter/widgets/v3_main_info.dart';
 import 'package:display_flutter/widgets/v3_message_dialog.dart';
@@ -131,6 +132,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                   }),
               const V3MirrorPrompt(),
               const V3AuthorizePrompt(),
+              const V3GroupRejectPrompt(),
               const V3GroupHostView(),
               const V3MessageDialog(),
             ],
