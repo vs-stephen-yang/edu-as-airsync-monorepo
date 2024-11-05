@@ -1,50 +1,63 @@
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/providers/instance_api.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 
+enum TunnelStatus {
+  unavailable,
+  connecting,
+  connected,
+}
+
 class ChannelServer {
   DisplayDirectServer? _directServer;
   DisplayTunnelServer? _tunnelServer;
 
+  final String baseApiUrl;
+  final String instanceId;
+
+  TunnelStatus get tunnelStatus => _tunnelStatus;
+  TunnelStatus _tunnelStatus = TunnelStatus.unavailable;
+
+  String? get displayCode => _displayCode;
+  String? _displayCode;
+
   // Callback for handling new direct channel connections
   final Function(Channel channel, Map<String, String>? queryParameters)
-      _onNewDirectChannel;
+      onNewDirectChannel;
 
   // Callback for handling new tunnel channel connections
-  final Function(Channel channel) _onNewTunnelChannel;
+  final Function(Channel channel) onNewTunnelChannel;
 
   // Callback for verifying connection requests
   final ConnectRequestStatus Function(
     ConnectionRequest connectionRequest, {
     required bool isDirectConnect,
-  }) _verifyConnectRequest;
+  }) verifyConnectRequest;
 
-  ChannelServer(
-    this._onNewDirectChannel,
-    this._onNewTunnelChannel,
-    this._verifyConnectRequest,
-  );
+  // Callback for tunnel status change
+  final Function(TunnelStatus status) onTunnelStatusChange;
+
+  // Callback for display code change
+  final Function(String displayCode) onDisplayCodeChange;
+
+  ChannelServer({
+    required this.onNewDirectChannel,
+    required this.onNewTunnelChannel,
+    required this.verifyConnectRequest,
+    required this.onTunnelStatusChange,
+    required this.onDisplayCodeChange,
+    required this.baseApiUrl,
+    required this.instanceId,
+  });
 
   Future<void> startTunnel(
-    String tunnelApiUrl,
-    String instanceId,
-    int instanceGroupId,
+    String ipAddress,
   ) async {
-    stopTunnel();
-
-    // Start the tunnel server
-    log.info(
-        'Starting the tunnel channel server $tunnelApiUrl $instanceGroupId');
-
-    _setTunnelServer();
-    _tunnelServer?.start(
-      instanceId,
-      instanceGroupId,
-      Uri.parse(tunnelApiUrl),
-    );
+    await _setupTunnel(ipAddress);
   }
 
   void stopTunnel() {
@@ -66,9 +79,9 @@ class ChannelServer {
 
       _directServer = DisplayDirectServer(
         reconnectTimeout: channelReconnectTimeoutInStreaming,
-        _onNewDirectChannel,
+        onNewDirectChannel,
         (ConnectionRequest connectionRequest) =>
-            _verifyConnectRequest(connectionRequest, isDirectConnect: true),
+            verifyConnectRequest(connectionRequest, isDirectConnect: true),
       );
       await _directServer?.start(
         DisplayServiceBroadcast.instance.directChannelPort,
@@ -89,6 +102,8 @@ class ChannelServer {
   }
 
   void _setTunnelServer() {
+    stopTunnel();
+
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
       reconnectTimeout: channelReconnectTimeoutInStreaming,
@@ -100,18 +115,81 @@ class ChannelServer {
           },
         ),
       ),
-      (Channel channel, _) => _onNewTunnelChannel(channel),
+      (Channel channel, _) => onNewTunnelChannel(channel),
       (ConnectionRequest connectionRequest) =>
-          _verifyConnectRequest(connectionRequest, isDirectConnect: false),
+          verifyConnectRequest(connectionRequest, isDirectConnect: false),
     );
 
     _tunnelServer?.onTunnelConnected = () {
       log.info('Tunnel connected');
+
       trackTrace('tunnel_connected');
     };
+
     _tunnelServer?.onTunnelConnecting = () {
-      log.info('Tunnel is connecting');
-      trackTrace('tunnel_connected');
+      log.info('Tunnel connecting');
+
+      trackTrace('tunnel_connecting');
     };
+  }
+
+  _setupTunnel(String ipAddress) async {
+    log.info('Setting up the tunnel channel');
+
+    // Get the instance group Id from IP address
+    final instanceGroupId = getInstanceGroupIdFromIp(ipAddress);
+
+    // Register
+    final registerResult = await registerInstanceIndexById(
+      baseApiUrl,
+      instanceId,
+      instanceGroupId,
+    );
+
+    if (registerResult == null) {
+      // The API call fails.
+      _updateDisplayCode(instanceGroupId, null);
+
+      _changeTunnelStatus(TunnelStatus.unavailable);
+      return;
+    }
+
+    // The API call succeeds.
+    _updateDisplayCode(instanceGroupId, registerResult.instanceIndex);
+
+    // Start the tunnel server.
+    log.info('Starting the tunnel channel server');
+
+    _setTunnelServer();
+    _tunnelServer!.start(
+      instanceId,
+      instanceGroupId,
+      Uri.parse(registerResult.tunnelApiUrl),
+    );
+
+    _changeTunnelStatus(TunnelStatus.connecting);
+  }
+
+  void _updateDisplayCode(int instanceGroupId, int? instanceIndex) {
+    log.info(
+        'Updating display code. instanceGroupId:$instanceGroupId instanceIndex:$instanceIndex');
+
+    final displayCode = encodeDisplayCode(
+      DisplayCode(
+        instanceGroupId: instanceGroupId,
+        instanceIndex: instanceIndex,
+      ),
+    );
+
+    _displayCode = displayCode;
+    onDisplayCodeChange(displayCode);
+  }
+
+  void _changeTunnelStatus(TunnelStatus status) {
+    if (_tunnelStatus != status) {
+      log.info('Tunnel status has changed to $status');
+      _tunnelStatus = status;
+      onTunnelStatusChange(_tunnelStatus);
+    }
   }
 }
