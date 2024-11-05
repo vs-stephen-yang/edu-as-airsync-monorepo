@@ -4,6 +4,17 @@ import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/websocket_client_connection_config.dart';
 import 'package:retry/retry.dart';
 
+class ConnectionClosedException implements Exception {
+  final String message;
+
+  ConnectionClosedException(
+      [this.message =
+          'Connection was aborted because the WebSocketClientConnection is already closed.']);
+
+  @override
+  String toString() => 'ConnectionClosedException: $message';
+}
+
 class WebSocketClientConnection implements ClientConnection {
   @override
   void Function()? onConnected;
@@ -60,6 +71,10 @@ class WebSocketClientConnection implements ClientConnection {
         maxDelay: _config.retry.maxRetryDelay,
         maxAttempts: _config.retry.maxRetryAttempts,
         () {
+          if (_closed) {
+            throw ConnectionClosedException();
+          }
+
           _httpClient = HttpClient();
           _httpClient!.connectionTimeout = _config.connectionTimeout;
 
@@ -92,7 +107,10 @@ class WebSocketClientConnection implements ClientConnection {
     } on SocketException catch (e) {
       _handleConnectFailed(ConnectErrorType.socket, e.toString());
       return;
+    } on ConnectionClosedException catch (_) {
+      return;
     }
+
     if (_closed) {
       await socket!.close();
       return;
