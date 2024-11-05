@@ -122,7 +122,7 @@ class ChannelProvider extends ChangeNotifier {
   bool _isShareMode = false;
   final InstanceInfoProvider _instanceInfo;
 
-  bool _isDeviceListQuickConnect = false;
+  bool _isDeviceListQuickConnect = true;
 
   bool get isDeviceListQuickConnect => _isDeviceListQuickConnect;
 
@@ -701,7 +701,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   bool isAuthRequiredForDirectConnection() {
-    return _isDeviceListQuickConnect;
+    return !_isDeviceListQuickConnect;
   }
 
   bool _isValidOtp(String token) {
