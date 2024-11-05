@@ -21,7 +21,6 @@ import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_server.dart';
-import 'package:display_flutter/providers/instance_api.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -175,13 +174,17 @@ class ChannelProvider extends ChangeNotifier {
 
     _channelServer = ChannelServer(
       // A new direct channel is created
-      _onNewDirectChannel,
+      onNewDirectChannel: _onNewDirectChannel,
       // A new tunnel channel is created
-      (channel) {
+      onNewTunnelChannel: (channel) {
         _onNewChannel(channel, ChannelMode.tunnel);
       },
       // Verify the connect request
-      _verifyConnectRequest,
+      verifyConnectRequest: _verifyConnectRequest,
+      onTunnelStatusChange: _onTunnelStatusChange,
+      onDisplayCodeChange: _onDisplayCodeChange,
+      baseApiUrl: appConfig.settings.baseApiUrl,
+      instanceId: AppInstanceCreate().displayInstanceID,
     );
 
     _load();
@@ -256,44 +259,14 @@ class ChannelProvider extends ChangeNotifier {
     }
     _instanceInfo.ipAddress = ipAddress;
 
-    // Get the instance group Id from IP address
-    final instanceGroupId = getInstanceGroupIdFromIp(_instanceInfo.ipAddress);
-
-    final registerResult = await registerInstanceIndexById(
-      appConfig.settings.baseApiUrl,
-      AppInstanceCreate().displayInstanceID,
-      instanceGroupId,
-    );
-
-    // If the API call fails, switch to LAN-only mode.
-    isLanModeOnly.value = registerResult == null;
-
-    // Update display code
-    _updateDisplayCode(
-      instanceGroupId: instanceGroupId,
-      instanceIndex: registerResult?.instanceIndex,
-    );
-
-    if (registerResult != null) {
-      // The API call succeeds. Start the tunnel server.
-      final tunnelApiUrl = registerResult.tunnelApiUrl;
-
-      _channelServer.startTunnel(
-        tunnelApiUrl,
-        AppInstanceCreate().displayInstanceID,
-        instanceGroupId,
-      );
-    }
+    _channelServer.startTunnel(ipAddress);
   }
 
-  void _updateDisplayCode({required int instanceGroupId, int? instanceIndex}) {
-    final displayCode = encodeDisplayCode(
-      DisplayCode(
-        instanceGroupId: instanceGroupId,
-        instanceIndex: instanceIndex,
-      ),
-    );
+  _onTunnelStatusChange(TunnelStatus status) {
+    isLanModeOnly.value = status == TunnelStatus.unavailable;
+  }
 
+  void _onDisplayCodeChange(String displayCode) {
     _instanceInfo.displayCode = displayCode;
     AppAnalytics.instance.setGlobalProperty('display_code', displayCode);
 
