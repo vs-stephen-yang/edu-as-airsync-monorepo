@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_white_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -75,6 +76,8 @@ class V3PresentWaitPrompt extends StatelessWidget {
               buttonSize: Size(isMobile ? 300 : 240, 48),
               text: S.of(context).v3_main_moderator_disconnect,
               onPressed: () {
+                AppAnalytics.instance
+                    .trackEvent('click_disconnect', EventCategory.session);
                 channelProvider.presentEnd();
               },
             ),
