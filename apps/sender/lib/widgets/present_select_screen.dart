@@ -21,7 +21,8 @@ class PresentSelectScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ChannelProvider channelProvider = Provider.of<ChannelProvider>(context, listen: false);
+    ChannelProvider channelProvider =
+        Provider.of<ChannelProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (WebRTC.platformIsDesktop) {
         // MacOS and Windows
@@ -46,7 +47,8 @@ class PresentSelectScreen extends StatelessWidget {
     return const SizedBox();
   }
 
-  Future<void> _handleDesktopPlatform(BuildContext context, ChannelProvider provider) async {
+  Future<void> _handleDesktopPlatform(
+      BuildContext context, ChannelProvider provider) async {
     if (WebRTC.platformIsWindows) {
       await FlutterVirtualDisplay.instance.startVirtualDisplay();
     }
@@ -84,7 +86,8 @@ class PresentSelectScreen extends StatelessWidget {
         // moderator mode
         if (provider.moderatorStatus) {
           provider.presentStop();
-          Provider.of<PresentStateProvider>(context, listen: false).presentModeratorWaitPage();
+          Provider.of<PresentStateProvider>(context, listen: false)
+              .presentModeratorWaitPage();
         } else {
           provider.presentStop();
           provider.presentEnd();
@@ -109,11 +112,10 @@ class PresentSelectScreen extends StatelessWidget {
         shouldRequestBatteryOptimizationsOff: false,
       );
 
-      hasPermissions = await FlutterBackground.initialize(
-          androidConfig: androidConfig);
+      hasPermissions =
+          await FlutterBackground.initialize(androidConfig: androidConfig);
 
-      if (hasPermissions &&
-          !FlutterBackground.isBackgroundExecutionEnabled) {
+      if (hasPermissions && !FlutterBackground.isBackgroundExecutionEnabled) {
         await FlutterBackground.enableBackgroundExecution();
       }
     } catch (e, stackTrace) {
@@ -236,7 +238,9 @@ class SelectScreenDialog extends Dialog {
                       alignment: Alignment.topLeft,
                       child: Text(
                         S.of(context).present_select_screen_description,
-                        style: const TextStyle(fontSize: AppConstants.fontSizeTitle, color: Colors.white),
+                        style: const TextStyle(
+                            fontSize: AppConstants.fontSizeTitle,
+                            color: Colors.white),
                       ),
                     ),
                     Align(
@@ -259,91 +263,101 @@ class SelectScreenDialog extends Dialog {
                       _stateSetter = setState;
                       return DefaultTabController(
                         length: 2,
-                        child: Builder(
-                          builder: (context) {
-                            TabController tabController = DefaultTabController.of(context);
-                            return Column(
-                              children: <Widget>[
-                                Container(
-                                  constraints:
-                                      const BoxConstraints.expand(height: 24),
-                                  child: TabBar(
-                                      onTap: (value) {
-                                        Future.delayed(
-                                            const Duration(milliseconds: 300), () {
-                                          _getSources(value == 0
-                                              ? SourceType.Screen
-                                              : SourceType.Window);
-                                        });
-                                      },
-                                      tabs: [
-                                        Tab(
-                                            child: Text(
-                                          S.of(context).present_select_screen_entire,
-                                          // style: const TextStyle(color: Colors.white60),
-                                        )),
-                                        Tab(
-                                            child: Text(
-                                              S.of(context).present_select_screen_window,
-                                          // style: const TextStyle(color: Colors.white60),
-                                        )),
-                                      ],
-                                    labelColor: const Color.fromARGB(255, 147, 179, 242),
-                                    unselectedLabelColor: Colors.white60,
-                                    indicatorColor: const Color.fromARGB(255, 147, 179, 242),
-                                  ),
+                        child: Builder(builder: (context) {
+                          TabController tabController =
+                              DefaultTabController.of(context);
+                          return Column(
+                            children: <Widget>[
+                              Container(
+                                constraints:
+                                    const BoxConstraints.expand(height: 24),
+                                child: TabBar(
+                                  onTap: (value) {
+                                    Future.delayed(
+                                        const Duration(milliseconds: 300), () {
+                                      _getSources(value == 0
+                                          ? SourceType.Screen
+                                          : SourceType.Window);
+                                    });
+                                  },
+                                  tabs: [
+                                    Tab(
+                                        child: Text(
+                                      S
+                                          .of(context)
+                                          .present_select_screen_entire,
+                                      // style: const TextStyle(color: Colors.white60),
+                                    )),
+                                    Tab(
+                                        child: Text(
+                                      S
+                                          .of(context)
+                                          .present_select_screen_window,
+                                      // style: const TextStyle(color: Colors.white60),
+                                    )),
+                                  ],
+                                  labelColor:
+                                      const Color.fromARGB(255, 147, 179, 242),
+                                  unselectedLabelColor: Colors.white60,
+                                  indicatorColor:
+                                      const Color.fromARGB(255, 147, 179, 242),
                                 ),
-                                const SizedBox(
-                                  height: 2,
-                                ),
-                                Expanded(
-                                  child: TabBarView(children: [
-                                    Align(
-                                        alignment: Alignment.center,
-                                        child: GridView.count(
-                                          crossAxisSpacing: 8,
-                                          crossAxisCount: 2,
-                                          children: _sources.entries
-                                              .where((element) =>
-                                                  element.value.type ==
-                                                  SourceType.Screen)
-                                              .map((e) => ThumbnailWidget(
-                                                    onTap: (source) {
-                                                      setState(() {
-                                                        _selectedSource = source;
-                                                      });
-                                                    },
-                                                    source: e.value,
-                                                    selected: _selectedSource?.id ==
-                                                        e.value.id,
-                                                  ))
-                                              .toList(),
-                                        )),
-                                    Align(
-                                        alignment: Alignment.center,
-                                        child: GridView.count(
-                                          crossAxisSpacing: 8,
-                                          crossAxisCount: 3,
-                                          children: _sources.entries
-                                              .where((element) =>
-                                                  element.value.type ==
-                                                  SourceType.Window)
-                                              .map((e) => ThumbnailWidget(
-                                                    onTap: (source) {
-                                                      setState(() {
-                                                        _selectedSource = source;
-                                                      });
-                                                    },
-                                                    source: e.value,
-                                                    selected: _selectedSource?.id ==
-                                                        e.value.id,
-                                                  ))
-                                              .toList(),
-                                        )),
-                                  ]),
-                                ),
-                                if (WebRTC.platformIsWindows && tabController.index == SourceType.Screen.index)
-                                  Row(
+                              ),
+                              const SizedBox(
+                                height: 2,
+                              ),
+                              Expanded(
+                                child: TabBarView(children: [
+                                  Align(
+                                      alignment: Alignment.center,
+                                      child: GridView.count(
+                                        crossAxisSpacing: 8,
+                                        crossAxisCount: 2,
+                                        children: _sources.entries
+                                            .where((element) =>
+                                                element.value.type ==
+                                                SourceType.Screen)
+                                            .map((e) => ThumbnailWidget(
+                                                  onTap: (source) {
+                                                    setState(() {
+                                                      _selectedSource = source;
+                                                    });
+                                                  },
+                                                  source: e.value,
+                                                  selected:
+                                                      _selectedSource?.id ==
+                                                          e.value.id,
+                                                ))
+                                            .toList(),
+                                      )),
+                                  Align(
+                                      alignment: Alignment.center,
+                                      child: GridView.count(
+                                        crossAxisSpacing: 8,
+                                        crossAxisCount: 3,
+                                        children: _sources.entries
+                                            .where((element) =>
+                                                element.value.type ==
+                                                SourceType.Window)
+                                            .map((e) => ThumbnailWidget(
+                                                  onTap: (source) {
+                                                    setState(() {
+                                                      _selectedSource = source;
+                                                    });
+                                                  },
+                                                  source: e.value,
+                                                  selected:
+                                                      _selectedSource?.id ==
+                                                          e.value.id,
+                                                ))
+                                            .toList(),
+                                      )),
+                                ]),
+                              ),
+                              if (WebRTC.platformIsWindows &&
+                                  tabController.index ==
+                                      SourceType.Screen.index)
+                                Row(
                                   children: [
                                     Checkbox(
                                         value: _systemAudio,
@@ -352,14 +366,17 @@ class SelectScreenDialog extends Dialog {
                                             _systemAudio = value!;
                                           });
                                         }),
-                                    Text(S.of(context).present_select_screen_share_audio,
-                                        style: const TextStyle(color: Colors.white)),
+                                    Text(
+                                        S
+                                            .of(context)
+                                            .present_select_screen_share_audio,
+                                        style: const TextStyle(
+                                            color: Colors.white)),
                                   ],
                                 ),
                             ],
                           );
-                          }
-                        ),
+                        }),
                       );
                     },
                   ),
@@ -373,7 +390,8 @@ class SelectScreenDialog extends Dialog {
                     OutlinedButton(
                       child: Text(
                         S.of(context).present_select_screen_cancel,
-                        style: const TextStyle(color: Color.fromARGB(255, 147, 179, 242)),
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 147, 179, 242)),
                       ),
                       onPressed: () {
                         cancel();
@@ -381,24 +399,32 @@ class SelectScreenDialog extends Dialog {
                     ),
                     ElevatedButton(
                       style: const ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll<Color>(Color.fromARGB(255, 147, 179, 242)),
+                        backgroundColor: MaterialStatePropertyAll<Color>(
+                            Color.fromARGB(255, 147, 179, 242)),
                       ),
                       onPressed: () {
-                        ChannelProvider channelProvider = Provider.of<ChannelProvider>(context, listen: false);
+                        ChannelProvider channelProvider =
+                            Provider.of<ChannelProvider>(context,
+                                listen: false);
                         if (channelProvider.isConnectAvailable()) {
                           _ok(_selectedSource, _systemAudio);
                         } else {
                           Toast.makeFeatureReconnectToast(
                               channelProvider.reconnectState,
-                              channelProvider.reconnectState == ChannelReconnectState.reconnecting
-                                  ? S.of(context).main_feature_reconnecting_toast
-                                  : S.of(context).main_feature_reconnect_fail_toast
-                          );
+                              channelProvider.reconnectState ==
+                                      ChannelReconnectState.reconnecting
+                                  ? S
+                                      .of(context)
+                                      .main_feature_reconnecting_toast
+                                  : S
+                                      .of(context)
+                                      .main_feature_reconnect_fail_toast);
                         }
                       },
                       child: Text(
                         S.of(context).present_select_screen_share,
-                        style: const TextStyle(color: Color.fromARGB(255, 63, 63, 63)),
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 63, 63, 63)),
                       ),
                     ),
                   ],
@@ -424,7 +450,8 @@ class SelectScreenDialog extends Dialog {
     for (var element in _subscriptions) {
       element.cancel();
     }
-    Navigator.pop<CustomDesktopCapturerSource>(ctx, CustomDesktopCapturerSource(selectedSource, systemAudio));
+    Navigator.pop<CustomDesktopCapturerSource>(
+        ctx, CustomDesktopCapturerSource(selectedSource, systemAudio));
   }
 
   Future<void> _getSources(SourceType sourceType) async {
