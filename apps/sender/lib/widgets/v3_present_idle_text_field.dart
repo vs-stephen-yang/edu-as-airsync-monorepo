@@ -56,14 +56,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             baseOffset: 0, extentOffset: _codeController.text.length);
       }
     });
-    _codeController.addListener(() {
-      String dc = _codeController.text.replaceAll(' ', ''); // 移除已有的空格
-      String text = _getDisplayCodeVisualIdentity(dc);
-      _codeController.value = TextEditingValue(
-        text: text,
-        selection: TextSelection.collapsed(offset: _codeController.text.length),
-      );
-    });
+
     _otpFocusNode.addListener(() {
       if (_otpFocusNode.hasFocus) {
         _otpController.selection = TextSelection(
@@ -154,6 +147,12 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
             displayCode: text.replaceAll(' ', ''),
             password: _otpController.text));
+
+        String dc = _getDisplayCodeVisualIdentity(text.replaceAll(' ', '')); // 移除已有的空格
+        _codeController.value = TextEditingValue(
+          text: dc,
+          selection: TextSelection.collapsed(offset: dc.length),
+        );
       },
       onTap: () async {
         List? displayList = await DataDisplayCode.getInstance().load();
@@ -246,6 +245,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
                     boxShadow: context.tokens.shadow.vsdswShadowNeutralLg,
                   ),
                   child: ListView.builder(
+                    padding: EdgeInsets.zero,
                     itemCount: displayList.length,
                     itemBuilder: (BuildContext context, int index) {
                       return ListTile(
