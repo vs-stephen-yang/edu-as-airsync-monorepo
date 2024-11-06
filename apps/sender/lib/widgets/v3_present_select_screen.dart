@@ -26,7 +26,8 @@ class V3PresentSelectScreen extends StatelessWidget {
   const V3PresentSelectScreen({super.key});
 
   static SelectScreenDialog? selectScreenDialog;
-  bool get platformIsDesktop => Platform.isWindows || Platform.isMacOS || Platform.isLinux;
+  bool get platformIsDesktop =>
+      Platform.isWindows || Platform.isMacOS || Platform.isLinux;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +79,7 @@ class V3PresentSelectScreen extends StatelessWidget {
         );
         return selectScreenDialog!;
       },
-    ).then((value) async{
+    ).then((value) async {
       log.info('selectedSource: ${value?.selectedSource?.type})');
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       if (value != null && value.selectedSource != null) {
@@ -250,7 +251,12 @@ class _CountDownTextState extends State<CountDownText> {
 
 //ignore: must_be_immutable
 class SelectScreenDialog extends Dialog {
-  SelectScreenDialog({super.key, required this.hostName, required this.isExtensionEnable, required this.annotationModel,}) {
+  SelectScreenDialog({
+    super.key,
+    required this.hostName,
+    required this.isExtensionEnable,
+    required this.annotationModel,
+  }) {
     Future.delayed(const Duration(milliseconds: 100), () {
       _getSources(SourceType.Screen);
     });
@@ -282,12 +288,14 @@ class SelectScreenDialog extends Dialog {
   late BuildContext ctx;
   bool _systemAudio = false;
   bool _isExtensionSelected = false;
-  bool get platformIsDesktop => Platform.isWindows || Platform.isMacOS || Platform.isLinux;
+  bool get platformIsDesktop =>
+      Platform.isWindows || Platform.isMacOS || Platform.isLinux;
   String hostName;
 
   @override
   Widget build(BuildContext context) {
-    hostName = hostName.length > 20 ? '${hostName.substring(0, 20)}...' : hostName;
+    hostName =
+        hostName.length > 20 ? '${hostName.substring(0, 20)}...' : hostName;
     ctx = context;
     return Material(
       type: MaterialType.transparency,
@@ -326,7 +334,8 @@ class SelectScreenDialog extends Dialog {
                         ),
                         const Gap(8),
                         Text(
-                          sprintf(S.current.v3_present_select_screen_subtitle, [hostName]),
+                          sprintf(S.current.v3_present_select_screen_subtitle,
+                              [hostName]),
                           style: TextStyle(
                             color: context.tokens.color.vsdswColorOnSurface,
                             fontSize: 18,
@@ -364,7 +373,8 @@ class SelectScreenDialog extends Dialog {
                       return DefaultTabController(
                         length: 3,
                         child: Builder(builder: (context) {
-                          TabController tabController = DefaultTabController.of(context);
+                          TabController tabController =
+                              DefaultTabController.of(context);
                           return Column(
                             children: <Widget>[
                               Container(
@@ -379,12 +389,14 @@ class SelectScreenDialog extends Dialog {
                                       if (isExtensionEnable) {
                                         _isExtensionSelected = true;
                                       } else {
-                                        tabController.animateTo(tabController.previousIndex);
+                                        tabController.animateTo(
+                                            tabController.previousIndex);
                                       }
                                     } else {
                                       _isExtensionSelected = false;
                                       Future.delayed(
-                                          const Duration(milliseconds: 300), () {
+                                          const Duration(milliseconds: 300),
+                                          () {
                                         _getSources(index == 0
                                             ? SourceType.Screen
                                             : SourceType.Window);
@@ -392,37 +404,54 @@ class SelectScreenDialog extends Dialog {
                                     }
                                     switch (index) {
                                       case 0:
-                                        annotationModel.presentSourceType = SourceType.Screen;
+                                        annotationModel.presentSourceType =
+                                            SourceType.Screen;
                                         break;
                                       case 1:
-                                        annotationModel.presentSourceType = SourceType.Window;
+                                        annotationModel.presentSourceType =
+                                            SourceType.Window;
                                         break;
                                       case 2:
-                                        annotationModel.presentSourceType = null;
+                                        annotationModel.presentSourceType =
+                                            null;
                                         break;
                                     }
                                   },
                                   tabs: [
                                     Tab(
-                                      child: buildTabWidget(context, S.current.present_select_screen_entire),
+                                      child: buildTabWidget(
+                                          context,
+                                          S.current
+                                              .present_select_screen_entire),
                                     ),
                                     Tab(
-                                      child: buildTabWidget(context, S.current.present_select_screen_window),
+                                      child: buildTabWidget(
+                                          context,
+                                          S.current
+                                              .present_select_screen_window),
                                     ),
                                     Tab(
-                                      child: buildTabWidget(context, S.current.v3_present_select_screen_extension, enable: isExtensionEnable),
+                                      child: buildTabWidget(
+                                          context,
+                                          S.current
+                                              .v3_present_select_screen_extension,
+                                          enable: isExtensionEnable),
                                     ),
                                   ],
-                                  labelColor: context.tokens.color.vsdswColorSecondary,
-                                  unselectedLabelColor: context.tokens.color.vsdswColorOnSurface,
-                                  indicatorColor: context.tokens.color.vsdswColorSecondary,
+                                  labelColor:
+                                      context.tokens.color.vsdswColorSecondary,
+                                  unselectedLabelColor:
+                                      context.tokens.color.vsdswColorOnSurface,
+                                  indicatorColor:
+                                      context.tokens.color.vsdswColorSecondary,
                                 ),
                               ),
                               const Gap(8),
                               Expanded(
                                 child: Container(
                                   color: const Color(0x14151C32),
-                                  padding: const EdgeInsets.symmetric(horizontal: 64),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 64),
                                   child: TabBarView(
                                     children: [
                                       _buildGridView(SourceType.Screen),
@@ -439,21 +468,29 @@ class SelectScreenDialog extends Dialog {
                                 width: double.infinity,
                                 height: 96,
                                 alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.symmetric(horizontal: 33),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 33),
                                 child: Row(
                                   children: <Widget>[
-                                    if (platformIsDesktop && tabController.index == SourceType.Screen.index)
+                                    if (platformIsDesktop &&
+                                        tabController.index ==
+                                            SourceType.Screen.index)
                                       SizedBox(
-                                        height:48,
+                                        height: 48,
                                         child: Row(
                                           children: [
                                             Checkbox(
                                               value: _systemAudio,
                                               shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(2.0),
+                                                borderRadius:
+                                                    BorderRadius.circular(2.0),
                                               ),
-                                              side: WidgetStateBorderSide.resolveWith(
-                                                    (states) => BorderSide(width: 1.0, color: context.tokens.color.vsdswColorPrimary),
+                                              side: WidgetStateBorderSide
+                                                  .resolveWith(
+                                                (states) => BorderSide(
+                                                    width: 1.0,
+                                                    color: context.tokens.color
+                                                        .vsdswColorPrimary),
                                               ),
                                               onChanged: (bool? value) {
                                                 setState(() {
@@ -463,19 +500,24 @@ class SelectScreenDialog extends Dialog {
                                             ),
                                             const Gap(8),
                                             Text(
-                                              S.current.v3_present_select_screen_share_audio,
+                                              S.current
+                                                  .v3_present_select_screen_share_audio,
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontFamily: 'Inter',
-                                                  color: context.tokens.color.vsdswColorOnSurface),
+                                                  color: context.tokens.color
+                                                      .vsdswColorOnSurface),
                                             ),
                                           ],
                                         ),
                                       ),
                                     const Spacer(),
                                     createButton(
-                                      text: S.of(context).present_select_screen_cancel,
-                                      textColor: context.tokens.color.vsdswColorSecondary,
+                                      text: S
+                                          .of(context)
+                                          .present_select_screen_cancel,
+                                      textColor: context
+                                          .tokens.color.vsdswColorSecondary,
                                       backgroundColor: Colors.transparent,
                                       onPressed: () {
                                         cancel();
@@ -483,18 +525,29 @@ class SelectScreenDialog extends Dialog {
                                     ),
                                     createButton(
                                       text: S.current.v3_main_select_role_share,
-                                      textColor: context.tokens.color.vsdswColorOnPrimary,
-                                      backgroundColor: context.tokens.color.vsdswColorPrimary,
+                                      textColor: context
+                                          .tokens.color.vsdswColorOnPrimary,
+                                      backgroundColor: context
+                                          .tokens.color.vsdswColorPrimary,
                                       onPressed: () {
-                                        ChannelProvider channelProvider = Provider.of<ChannelProvider>(context, listen: false);
-                                        if (channelProvider.isConnectAvailable()) {
-                                          _ok(_selectedSource, _systemAudio, _isExtensionSelected);
+                                        ChannelProvider channelProvider =
+                                            Provider.of<ChannelProvider>(
+                                                context,
+                                                listen: false);
+                                        if (channelProvider
+                                            .isConnectAvailable()) {
+                                          _ok(_selectedSource, _systemAudio,
+                                              _isExtensionSelected);
                                         } else {
                                           Toast.makeFeatureReconnectToast(
                                               channelProvider.reconnectState,
-                                              channelProvider.reconnectState == ChannelReconnectState.reconnecting
-                                                  ? S.current.main_feature_reconnecting_toast
-                                                  : S.current.main_feature_reconnect_fail_toast);
+                                              channelProvider.reconnectState ==
+                                                      ChannelReconnectState
+                                                          .reconnecting
+                                                  ? S.current
+                                                      .main_feature_reconnecting_toast
+                                                  : S.current
+                                                      .main_feature_reconnect_fail_toast);
                                         }
                                       },
                                     ),
@@ -516,7 +569,8 @@ class SelectScreenDialog extends Dialog {
     );
   }
 
-  Widget buildTabWidget(BuildContext context, String text, {bool enable = true}) {
+  Widget buildTabWidget(BuildContext context, String text,
+      {bool enable = true}) {
     return Container(
       alignment: Alignment.center,
       width: 338.67,
@@ -526,7 +580,7 @@ class SelectScreenDialog extends Dialog {
         style: TextStyle(
           fontSize: 16,
           fontFamily: 'Inter',
-          color: enable? null: context.tokens.color.vsdswColorOnDisabled,
+          color: enable ? null : context.tokens.color.vsdswColorOnDisabled,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -550,14 +604,16 @@ class SelectScreenDialog extends Dialog {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(9999),
           ),
-          shadows: backgroundColor != Colors.transparent?[
-            BoxShadow(
-              color: backgroundColor.withOpacity(0.31),
-              blurRadius: 24,
-              offset: const Offset(0, 16),
-              spreadRadius: 0,
-            )
-          ]:null,
+          shadows: backgroundColor != Colors.transparent
+              ? [
+                  BoxShadow(
+                    color: backgroundColor.withOpacity(0.31),
+                    blurRadius: 24,
+                    offset: const Offset(0, 16),
+                    spreadRadius: 0,
+                  )
+                ]
+              : null,
         ),
         child: Text(
           text,
@@ -575,22 +631,28 @@ class SelectScreenDialog extends Dialog {
     Navigator.pop<CustomDesktopCaptureSource>(ctx, null);
   }
 
-  void _ok(DesktopCapturerSource? selectedSource, bool systemAudio, bool isExtensionSelected) async {
+  void _ok(DesktopCapturerSource? selectedSource, bool systemAudio,
+      bool isExtensionSelected) async {
     _timer?.cancel();
     for (var element in _subscriptions) {
       element.cancel();
     }
     if (isExtensionSelected) {
       await FlutterVirtualDisplay.instance.startVirtualDisplay();
-      _selectedSource = (await desktopCapturer.getSources(types: [ SourceType.Screen ])).last;
+      _selectedSource =
+          (await desktopCapturer.getSources(types: [SourceType.Screen])).last;
       Navigator.pop<CustomDesktopCaptureSource>(
-          ctx, CustomDesktopCaptureSource(_selectedSource, false, isExtensionSelected));
+          ctx,
+          CustomDesktopCaptureSource(
+              _selectedSource, false, isExtensionSelected));
       annotationModel.selectedSource = null;
     } else {
       annotationModel.selectedSource = selectedSource;
       annotationModel.setScreenIndex(selectedSource?.name ?? '');
       Navigator.pop<CustomDesktopCaptureSource>(
-          ctx, CustomDesktopCaptureSource(selectedSource, systemAudio, isExtensionSelected));
+          ctx,
+          CustomDesktopCaptureSource(
+              selectedSource, systemAudio, isExtensionSelected));
     }
   }
 
@@ -618,7 +680,8 @@ class SelectScreenDialog extends Dialog {
       child: GridView.count(
         crossAxisCount: 3,
         childAspectRatio: 1.39,
-        children: _sources.entries.where((element) => element.value.type == type).map(
+        children:
+            _sources.entries.where((element) => element.value.type == type).map(
           (map) {
             return ThumbnailWidget(
               onTap: (source) {
@@ -684,7 +747,8 @@ class CustomDesktopCaptureSource {
   DesktopCapturerSource? selectedSource;
   bool systemAudio = false;
   bool isExtensionSelected = false;
-  CustomDesktopCaptureSource(this.selectedSource, this.systemAudio, this.isExtensionSelected);
+  CustomDesktopCaptureSource(
+      this.selectedSource, this.systemAudio, this.isExtensionSelected);
 }
 
 class ThumbnailWidget extends StatefulWidget {
@@ -727,7 +791,9 @@ class _ThumbnailWidgetState extends State<ThumbnailWidget> {
   @override
   Widget build(BuildContext context) {
     final source = widget.source;
-    final sourceName = source.name.length > 20 ? '${source.name.substring(0, 20)}...' : source.name;
+    final sourceName = source.name.length > 20
+        ? '${source.name.substring(0, 20)}...'
+        : source.name;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -751,7 +817,7 @@ class _ThumbnailWidgetState extends State<ThumbnailWidget> {
               child: source.thumbnail != null
                   ? Image.memory(
                       fit: BoxFit.fill,
-                source.thumbnail!,
+                      source.thumbnail!,
                       gaplessPlayback: true,
                       // alignment: Alignment.center,
                     )
