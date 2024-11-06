@@ -117,14 +117,26 @@ class AndroidWindow(
   }
 
   fun setLayout(width: Int, height: Int) {
-    layoutParams.width = width
-    layoutParams.height = height
+    val orientation = service.resources.configuration.orientation
+    var newWidth = 0
+    var newHeight = 0
+    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+      newWidth = max(width, height)
+      newHeight = min(width, height)
+    } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+      newWidth = min(width, height)
+      newHeight = max(width, height)
+    } else {
+      newWidth = width
+      newHeight = height
+    }
+    layoutParams.width = newWidth
+    layoutParams.height = newHeight
     windowManager.updateViewLayout(rootView, layoutParams)
   }
 
   fun setPosition(x: Int, y: Int) {
-//    layoutParams.x = min(max(0, x), metrics.widthPixels - layoutParams.width)
-    layoutParams.x = 0
+    layoutParams.x = min(max(0, x), metrics.widthPixels - layoutParams.width)
     layoutParams.y = min(max(0, y), metrics.heightPixels - layoutParams.height)
     windowManager.updateViewLayout(rootView, layoutParams)
   }
@@ -135,7 +147,7 @@ class AndroidWindow(
     if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
       newWidth = max(layoutParams.width, layoutParams.height)
       newHeight = min(layoutParams.width, layoutParams.height)
-    } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+    } else {
       newWidth = min(layoutParams.width, layoutParams.height)
       newHeight = max(layoutParams.width, layoutParams.height)
     }
