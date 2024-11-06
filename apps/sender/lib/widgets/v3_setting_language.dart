@@ -29,8 +29,7 @@ class V3SettingLanguage extends StatelessWidget {
               ),
               child: InkWell(
                 onTap: () {
-                  AppAnalytics.instance
-                      .trackEvent('click_language', EventCategory.setting);
+                  trackEvent('click_language', EventCategory.setting);
 
                   selectedLanguage = key;
                   languageProvider.setLanguage(selectedLanguage);

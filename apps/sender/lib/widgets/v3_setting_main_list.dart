@@ -129,7 +129,7 @@ class V3SettingMainList extends StatelessWidget {
         S.of(context).v3_setting_knowledge_base,
         SvgPicture.asset('assets/images/v3_ic_setting_external.svg'),
         () async {
-          AppAnalytics.instance.trackEvent('click_news', EventCategory.setting);
+          trackEvent('click_news', EventCategory.setting);
           var url = Uri.parse('https://myviewboard.com/kb/t_CN');
           await launchUrl(url);
         },
@@ -140,8 +140,7 @@ class V3SettingMainList extends StatelessWidget {
         S.of(context).v3_setting_check_update,
         null,
         () {
-          AppAnalytics.instance
-              .trackEvent('click_check_update', EventCategory.setting);
+          trackEvent('click_check_update', EventCategory.setting);
 
           if (V3NetworkStatusDetector().status == ConnectivityResult.none) {
             if (context.mounted) {

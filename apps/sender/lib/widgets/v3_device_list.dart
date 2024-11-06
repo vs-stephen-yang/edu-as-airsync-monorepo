@@ -154,8 +154,8 @@ class _V3DeviceListState extends State<V3DeviceList> {
               onTap: () {
                 AppAnalytics.instance.setGlobalProperty(
                     'display_code', _connectService!.displayCode);
-                AppAnalytics.instance
-                    .trackEvent('click_quick_connect', EventCategory.session);
+
+                trackEvent('click_quick_connect', EventCategory.session);
                 _channelProvider.startDirectConnect(
                     otp: null,
                     service: _connectService!,
@@ -376,8 +376,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
       case ChannelConnectError.connectionModeUnsupported:
         break;
       case ChannelConnectError.invalidOtp:
-        AppAnalytics.instance
-            .trackEvent('invalid_pin_code', EventCategory.session);
+        trackEvent('invalid_pin_code', EventCategory.session);
         _showNewEnterPinDialog(
             errorMsg: S.current.v3_device_list_dialog_invalid_otp);
         break;
@@ -417,8 +416,8 @@ class _V3DeviceListState extends State<V3DeviceList> {
           },
           onConnect: (opt) {
             _channelProvider.resetMessage();
-            AppAnalytics.instance
-                .trackEvent('enter_pin_code', EventCategory.session);
+
+            trackEvent('enter_pin_code', EventCategory.session);
             _onConnect(opt);
             Navigator.of(context).pop();
             isPinDialogShown = false;

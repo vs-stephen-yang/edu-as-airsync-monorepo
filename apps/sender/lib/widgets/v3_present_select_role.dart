@@ -86,8 +86,7 @@ class V3PresentSelectRole extends StatelessWidget {
         name: S.of(context).v3_main_select_role_share,
         iconPath: 'assets/images/v3_ic_select_share.svg',
         onTap: () {
-          AppAnalytics.instance
-              .trackEvent('click_share', EventCategory.session);
+          trackEvent('click_share', EventCategory.session);
 
           channelProvider.currentRole = JoinIntentType.present;
           if (channelProvider.moderatorStatus) {
@@ -116,8 +115,7 @@ class V3PresentSelectRole extends StatelessWidget {
         name: S.of(context).v3_main_select_role_receive,
         iconPath: 'assets/images/v3_ic_select_receive.svg',
         onTap: () {
-          AppAnalytics.instance
-              .trackEvent('click_receive', EventCategory.session);
+          trackEvent('click_receive', EventCategory.session);
 
           channelProvider.currentRole = JoinIntentType.remoteScreen;
           if (channelProvider.isConnectAvailable()) {

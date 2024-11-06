@@ -112,8 +112,7 @@ class _V3RemoteScreenState extends State<V3RemoteScreen> {
                                   context.tokens.spacing.vsdswSpacingMd.right),
                           ElevatedButton.icon(
                             onPressed: () {
-                              AppAnalytics.instance.trackEvent(
-                                  'click_exit', EventCategory.session);
+                              trackEvent('click_exit', EventCategory.session);
 
                               if (widget.isModeratorShare) {
                                 channelProvider.removeShareRemoteScreenClient();

@@ -114,7 +114,7 @@ class _DeviceListState extends State<DeviceList> {
 
                             AppAnalytics.instance.setGlobalProperty(
                                 'display_code', _connectService.displayCode);
-                            AppAnalytics.instance.trackEvent(
+                            trackEvent(
                               'click_quick_connect',
                               EventCategory.session,
                               target: _connectService.displayCode,

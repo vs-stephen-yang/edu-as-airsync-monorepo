@@ -140,7 +140,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
                           onPressed: () {
                             // Toggle current state
                             bool tempState = !presentingState.value;
-                            AppAnalytics.instance.trackEvent(
+                            trackEvent(
                                 tempState ? 'click_resume' : 'click_pause',
                                 EventCategory.session);
 
@@ -167,8 +167,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
                     radius: kIsWeb ? 24 : 28,
                     child: IconButton(
                       onPressed: () {
-                        AppAnalytics.instance
-                            .trackEvent('click_stop', EventCategory.session);
+                        trackEvent('click_stop', EventCategory.session);
 
                         channelProvider.presentStop();
                         if (widget.isModeratorMode) {
