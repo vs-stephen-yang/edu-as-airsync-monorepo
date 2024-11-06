@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -111,6 +112,9 @@ class _V3RemoteScreenState extends State<V3RemoteScreen> {
                                   context.tokens.spacing.vsdswSpacingMd.right),
                           ElevatedButton.icon(
                             onPressed: () {
+                              AppAnalytics.instance.trackEvent(
+                                  'click_exit', EventCategory.session);
+
                               if (widget.isModeratorShare) {
                                 channelProvider.removeShareRemoteScreenClient();
                               } else {

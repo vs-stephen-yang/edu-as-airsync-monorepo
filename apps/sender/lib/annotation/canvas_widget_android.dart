@@ -1,7 +1,7 @@
-
 import 'package:android_window/android_window.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:display_cast_flutter/annotation/draggable_widget.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:flutter/material.dart';
 
 import 'arrow_shape_painter.dart';
@@ -21,7 +21,8 @@ class CanvasWidgetAndroid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Size physicalSize = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
+    final Size physicalSize =
+        WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
     return MaterialApp(
       title: 'Annotation App',
       debugShowCheckedModeBanner: false,
@@ -43,7 +44,7 @@ class _CanvasPage extends StatefulWidget {
   State<_CanvasPage> createState() => _CanvasPageState();
 }
 
-class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
+class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
   final List<DrawingPoint?> _points = [];
   bool _isEraser = false;
   bool _isCollapsed = false;
@@ -55,18 +56,24 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
   OverlayEntry? _overlayEntry;
 
   void _setEraserMode() {
+    AppAnalytics.instance.trackEvent('click_eraser', EventCategory.annotation);
+
     setState(() {
       _isEraser = true;
     });
   }
 
   void _setPenMode() {
+    AppAnalytics.instance.trackEvent('click_pen', EventCategory.annotation);
+
     setState(() {
       _isEraser = false;
     });
   }
 
   void _clearAll() {
+    AppAnalytics.instance.trackEvent('click_clean', EventCategory.annotation);
+
     setState(() {
       _points.clear();
     });
@@ -92,7 +99,8 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
   }
 
   void _collapse() async {
-    final pixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
+    final pixelRatio =
+        WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
     final int width = (78 * pixelRatio).toInt();
     final int height = (104 * pixelRatio).toInt();
     AndroidWindow.resize(width, height);
@@ -149,7 +157,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
               DraggableWidget(
                 position: panelOffset,
                 child: _buildAndroidPanel(),
-                onMoveEnd: (offset){
+                onMoveEnd: (offset) {
                   panelOffset = offset;
                   _removeOverlay();
                 },
@@ -161,7 +169,9 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
                 decoration: const ShapeDecoration(
                   color: Color(0xFF20273E),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(topRight: Radius.circular(40), bottomRight: Radius.circular(40)),
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(40),
+                        bottomRight: Radius.circular(40)),
                   ),
                 ),
                 child: Column(
@@ -201,7 +211,8 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver{
       decoration: const ShapeDecoration(
         color: Color(0xFF20273E),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topRight: Radius.circular(40), bottomRight: Radius.circular(40)),
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(40), bottomRight: Radius.circular(40)),
         ),
       ),
       child: Column(

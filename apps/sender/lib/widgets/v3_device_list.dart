@@ -154,7 +154,8 @@ class _V3DeviceListState extends State<V3DeviceList> {
               onTap: () {
                 AppAnalytics.instance.setGlobalProperty(
                     'display_code', _connectService!.displayCode);
-                AppAnalytics.instance.trackEvent('click_connect_device');
+                AppAnalytics.instance
+                    .trackEvent('click_quick_connect', EventCategory.session);
                 _channelProvider.startDirectConnect(
                     otp: null,
                     service: _connectService!,

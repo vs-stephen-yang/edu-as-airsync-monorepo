@@ -64,11 +64,15 @@ class PresentPresentStart extends StatelessWidget {
                     onTap: () {
                       // Toggle current state
                       bool tempState = !presentingState.value;
-                      AppAnalytics.instance.trackEvent(tempState ? 'click_resume' : 'click_pause');
+                      AppAnalytics.instance.trackEvent(
+                          tempState ? 'click_resume' : 'click_pause',
+                          EventCategory.session);
 
                       // Update state
                       presentingState.value = tempState;
-                      tempState ? channelProvider.presentResume() : channelProvider.presentPause();
+                      tempState
+                          ? channelProvider.presentResume()
+                          : channelProvider.presentPause();
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -94,7 +98,8 @@ class PresentPresentStart extends StatelessWidget {
               const SizedBox(height: 20),
               InkWell(
                 onTap: () {
-                  AppAnalytics.instance.trackEvent('click_stop');
+                  AppAnalytics.instance
+                      .trackEvent('click_stop', EventCategory.session);
 
                   channelProvider.presentStop();
                   channelProvider.presentEnd();
@@ -128,7 +133,8 @@ class PresentPresentStart extends StatelessWidget {
                   key: touchBtnKey,
                   initialValue: WebRTCHelper().getTouchBack(),
                   onPressed: (state) {
-                    AppAnalytics.instance.trackEvent('click_touchback');
+                    AppAnalytics.instance
+                        .trackEvent('click_touchback', EventCategory.session);
                     WebRTCHelper().setTouchBack(state);
                   },
                 ),

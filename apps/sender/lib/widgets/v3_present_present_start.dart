@@ -116,7 +116,8 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
                           setState(() {
                             annotationOn = !annotationOn;
                           });
-                          await Future.delayed(const Duration(milliseconds: 100));
+                          await Future.delayed(
+                              const Duration(milliseconds: 100));
                           _startAnnotation(annotationModel);
                         },
                       );
@@ -140,7 +141,8 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
                             // Toggle current state
                             bool tempState = !presentingState.value;
                             AppAnalytics.instance.trackEvent(
-                                tempState ? 'click_resume' : 'click_pause');
+                                tempState ? 'click_resume' : 'click_pause',
+                                EventCategory.session);
 
                             // Update state
                             presentingState.value = tempState;
@@ -165,7 +167,8 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
                     radius: kIsWeb ? 24 : 28,
                     child: IconButton(
                       onPressed: () {
-                        AppAnalytics.instance.trackEvent('click_stop');
+                        AppAnalytics.instance
+                            .trackEvent('click_stop', EventCategory.session);
 
                         channelProvider.presentStop();
                         if (widget.isModeratorMode) {
@@ -250,7 +253,8 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
     } else if (Platform.isAndroid) {
       if (!await android_window.isRunning()) {
         if (await Permission.systemAlertWindow.isGranted) {
-          final Size physicalSize = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize;
+          final Size physicalSize = WidgetsBinding
+              .instance.platformDispatcher.views.first.physicalSize;
           android_window.open(
             size: Size(physicalSize.width, physicalSize.height),
             position: const Offset(0, 0),
@@ -288,16 +292,17 @@ class AnnotationButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-      backgroundColor:
-      isOn ? context.tokens
-          .color.vsdswColorOnSurfaceInverse : context.tokens.color.vsdswColorSurface900 ,
+      backgroundColor: isOn
+          ? context.tokens.color.vsdswColorOnSurfaceInverse
+          : context.tokens.color.vsdswColorSurface900,
       radius: kIsWeb ? 24 : 28,
       child: IconButton(
         onPressed: onClick,
         icon: SvgPicture.asset(
           isOn
               ? 'assets/images/v3_ic_annotation_on.svg'
-              : 'assets/images/v3_ic_sharing_pen.svg',),
+              : 'assets/images/v3_ic_sharing_pen.svg',
+        ),
       ),
     );
   }

@@ -209,7 +209,7 @@ class WebRTCConnector {
     _controlDataChannel!.onDataChannelState = (state) {
       log.info('Data channel state of control: ${state.name}');
 
-      AppAnalytics.instance.trackEvent('control_dc_state', properties: {
+      AppAnalytics.instance.trackTrace('control_dc_state', properties: {
         'target': state.name,
       });
     };
@@ -227,7 +227,7 @@ class WebRTCConnector {
     _touchbackDataChannel!.onDataChannelState = (state) {
       log.info('Data channel state of touchback: ${state.name}');
 
-      AppAnalytics.instance.trackEvent('dc_state', properties: {
+      AppAnalytics.instance.trackTrace('dc_state', properties: {
         'target': state.name,
       });
     };
@@ -309,20 +309,21 @@ class WebRTCConnector {
     try {
       final videoConstraints = kIsWeb
           ? {
-            // note: TypeError - Failed to execute 'getDisplayMedia' on 'MediaDevices':
-            // Malformed constraint: Cannot use both optional/mandatory and specific constraints.
-            'frameRate': _trackFrameRate,
-            'width': _trackWidth,
-            'height': _trackHeight,
-          } : {
-            'deviceId': _deviceId,
-            'autoSelectVirtualDisplay': autoVirtualDisplay,
-            'mandatory': {
+              // note: TypeError - Failed to execute 'getDisplayMedia' on 'MediaDevices':
+              // Malformed constraint: Cannot use both optional/mandatory and specific constraints.
               'frameRate': _trackFrameRate,
-            },
-            'width': _trackWidth,
-            'height': _trackHeight,
-          };
+              'width': _trackWidth,
+              'height': _trackHeight,
+            }
+          : {
+              'deviceId': _deviceId,
+              'autoSelectVirtualDisplay': autoVirtualDisplay,
+              'mandatory': {
+                'frameRate': _trackFrameRate,
+              },
+              'width': _trackWidth,
+              'height': _trackHeight,
+            };
       final constraints = <String, dynamic>{
         'audio': _isAudioCaptureAllowed() ? _audioConstraints : false,
         'video': videoConstraints
@@ -503,7 +504,7 @@ class WebRTCConnector {
 
   void _onPeerConnectionState(RTCPeerConnectionState state) async {
     log.info('Peer connection state: ${state.name}');
-    AppAnalytics.instance.trackEvent('pc_state', properties: {
+    AppAnalytics.instance.trackTrace('pc_state', properties: {
       'target': state.name,
     });
     onConnectionState(state);

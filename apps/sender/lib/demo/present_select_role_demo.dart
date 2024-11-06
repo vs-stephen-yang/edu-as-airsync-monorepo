@@ -1,6 +1,5 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
-import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -43,9 +42,6 @@ class PresentSelectRoleDemo extends StatelessWidget {
                       ],
                     ),
                     onTap: () {
-                      AppAnalytics.instance
-                          .trackEvent('remote_screen_selected_demo');
-
                       demoProvider.presentRemoteScreenDemoPage();
                     },
                   ),
@@ -76,8 +72,6 @@ class PresentSelectRoleDemo extends StatelessWidget {
                     ],
                   ),
                   onTap: () async {
-                    AppAnalytics.instance.trackEvent('present_selected_demo');
-
                     demoProvider.presentBasicStartDemoPage();
                   },
                 ),

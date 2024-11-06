@@ -1,7 +1,6 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
-import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/widgets/present_timer.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:flutter/material.dart';
@@ -42,13 +41,6 @@ class PresentPresentStartDemo extends StatelessWidget {
                       return InkWell(
                         onTap: () {
                           presentingState.value = !presentingState.value;
-                          if (presentingState.value) {
-                            AppAnalytics.instance
-                                .trackEvent('resume_clicked_demo');
-                          } else {
-                            AppAnalytics.instance
-                                .trackEvent('pause_clicked_demo');
-                          }
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -82,8 +74,6 @@ class PresentPresentStartDemo extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 38.0, top: 20.0),
                   child: InkWell(
                     onTap: () {
-                      AppAnalytics.instance
-                          .trackEvent('stop_present_clicked_demo');
                       demoProvider.isDemoMode = false;
                       demoProvider.presentDemoOff();
                     },

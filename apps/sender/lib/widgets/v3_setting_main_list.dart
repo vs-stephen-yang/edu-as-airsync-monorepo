@@ -4,6 +4,7 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/v3_network_status_detector.dart';
 import 'package:display_cast_flutter/utilities/v3_update_manager.dart';
 import 'package:flutter/material.dart';
@@ -128,6 +129,7 @@ class V3SettingMainList extends StatelessWidget {
         S.of(context).v3_setting_knowledge_base,
         SvgPicture.asset('assets/images/v3_ic_setting_external.svg'),
         () async {
+          AppAnalytics.instance.trackEvent('click_news', EventCategory.setting);
           var url = Uri.parse('https://myviewboard.com/kb/t_CN');
           await launchUrl(url);
         },
@@ -138,6 +140,9 @@ class V3SettingMainList extends StatelessWidget {
         S.of(context).v3_setting_check_update,
         null,
         () {
+          AppAnalytics.instance
+              .trackEvent('click_check_update', EventCategory.setting);
+
           if (V3NetworkStatusDetector().status == ConnectivityResult.none) {
             if (context.mounted) {
               V3UpdateManager()

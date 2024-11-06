@@ -1,6 +1,5 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
-import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:flutter/foundation.dart';
@@ -103,7 +102,8 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                   child: ListView.builder(
                     itemCount: displayList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      String displayCode = displayList[index].replaceAll('-', '');
+                      String displayCode =
+                          displayList[index].replaceAll('-', '');
                       return Dismissible(
                         key: Key(displayList[index]),
                         background: Container(color: Colors.red),
@@ -119,9 +119,6 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                         child: ListTile(
                           title: Text(displayCode),
                           onTap: () {
-                            AppAnalytics.instance
-                                .trackEvent('select_display_code');
-
                             _isCodeSelectedFromHistory = true;
                             _codeController.text = displayCode;
                             _isOverlayVisible = false;
@@ -225,18 +222,21 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
               errorText: S.of(context).main_display_code_description,
               maxLength: 11,
               inputFormatter: [
-                if (!WebRTC.platformIsWindows && !kIsWeb) UpperCaseTextFormatter(),
-                if (!WebRTC.platformIsWindows && !kIsWeb) MaskedInputFormatter(
+                if (!WebRTC.platformIsWindows && !kIsWeb)
+                  UpperCaseTextFormatter(),
+                if (!WebRTC.platformIsWindows && !kIsWeb)
+                  MaskedInputFormatter(
                     '###########',
                     allowedCharMatcher: RegExp('[A-Za-z0-9]'),
                   ),
               ],
               onChanged: (text) {
                 if (WebRTC.platformIsWindows || kIsWeb) {
-                  if(text.contains(RegExp(r'[^a-zA-Z0-9]'))) {
+                  if (text.contains(RegExp(r'[^a-zA-Z0-9]'))) {
                     setCodeErrorMsg(S.of(context).main_display_code_error);
                     _isOverlayVisible = false;
-                    if (_overlayEntry != null && _overlayEntry!.mounted) _overlayEntry?.remove();
+                    if (_overlayEntry != null && _overlayEntry!.mounted)
+                      _overlayEntry?.remove();
                     return;
                   }
                   _codeController.value = _codeController.value.copyWith(
@@ -248,7 +248,8 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
 
                 _isCodeSelectedFromHistory = false;
 
-                setCodeDescriptionMsg(S.of(context).main_display_code_description);
+                setCodeDescriptionMsg(
+                    S.of(context).main_display_code_description);
                 bool presentBtnEnable = false;
                 if (text.length >= limitDisplayCodeLength &&
                     _otpController.text.length == limitOtpLength) {
@@ -256,7 +257,8 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
                 }
                 widget.onFieldChanged(FieldResult(
                     enable: presentBtnEnable,
-                    isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
+                    isDisplayCodeSelectedFromHistory:
+                        _isCodeSelectedFromHistory,
                     displayCode: text,
                     password: _otpController.text));
               },
@@ -281,7 +283,8 @@ class PresentIdleTextFieldState extends State<PresentIdleTextField> {
             errorText: S.of(context).main_password_description,
             maxLength: 4,
             inputFormatter: [
-              if (!WebRTC.platformIsWindows && !kIsWeb) MaskedInputFormatter(
+              if (!WebRTC.platformIsWindows && !kIsWeb)
+                MaskedInputFormatter(
                   '0000',
                   allowedCharMatcher: RegExp('[0-9]'),
                 ),

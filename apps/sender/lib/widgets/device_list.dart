@@ -1,5 +1,3 @@
-
-
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
@@ -21,8 +19,7 @@ class DeviceList extends StatefulWidget {
   State<DeviceList> createState() => _DeviceListState();
 }
 
-class _DeviceListState extends State<DeviceList>{
-
+class _DeviceListState extends State<DeviceList> {
   late DeviceListProvider _deviceListProvider;
   late ChannelProvider _channelProvider;
   late AirSyncBonsoirService _connectService;
@@ -34,15 +31,18 @@ class _DeviceListState extends State<DeviceList>{
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((callback) {
-      _deviceListProvider.startDiscovery(AppConfig.of(context)?.settings.versionPostfix ?? '');
+      _deviceListProvider
+          .startDiscovery(AppConfig.of(context)?.settings.versionPostfix ?? '');
     });
-    _presentStateProvider = Provider.of<PresentStateProvider>(context, listen: false);
+    _presentStateProvider =
+        Provider.of<PresentStateProvider>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
     _channelProvider = Provider.of<ChannelProvider>(context);
-    _deviceListProvider = Provider.of<DeviceListProvider>(context, listen: false);
+    _deviceListProvider =
+        Provider.of<DeviceListProvider>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       if (_channelProvider.channelConnectError != null && !isPinDialogShown) {
@@ -112,8 +112,13 @@ class _DeviceListState extends State<DeviceList>{
                           onTap: () {
                             _connectService = value.devices[index];
 
-                            AppAnalytics.instance.setGlobalProperty('display_code', _connectService.displayCode);
-                            AppAnalytics.instance.trackEvent('click_connect_device');
+                            AppAnalytics.instance.setGlobalProperty(
+                                'display_code', _connectService.displayCode);
+                            AppAnalytics.instance.trackEvent(
+                              'click_quick_connect',
+                              EventCategory.session,
+                              target: _connectService.displayCode,
+                            );
 
                             _channelProvider.startDirectConnect(
                                 otp: null,
@@ -218,13 +223,17 @@ class _DeviceListState extends State<DeviceList>{
     for (var element in controllers) {
       otp += _convertFullWidthToHalfWidth(element.text);
     }
-    _channelProvider.startDirectConnect(otp: otp, service: _connectService, presentStateProvider: _presentStateProvider);
+    _channelProvider.startDirectConnect(
+        otp: otp,
+        service: _connectService,
+        presentStateProvider: _presentStateProvider);
   }
 
   void _showEnterPinDialog() {
     isPinDialogShown = true;
 
-    List<TextEditingController> controllers = List.generate(4, (index) => TextEditingController());
+    List<TextEditingController> controllers =
+        List.generate(4, (index) => TextEditingController());
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -234,43 +243,49 @@ class _DeviceListState extends State<DeviceList>{
           title: Text(S.of(context).device_list_enter_pin),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(4, (index) => Container(
-              width: 50,
-              decoration: BoxDecoration(
-                color: AppColors.iconPinCodeBackground,
-                borderRadius: BorderRadius.circular(6), // 设置圆角半径为10
-              ),
-              child: TextFormField(
-                controller: controllers[index],
-                autofocus: index == 0, // set the initial focus to the first digit of OTP
-                keyboardType: TextInputType.number,
-                maxLength: 1,
-                decoration: const InputDecoration(
-                  counterText: '',
-                  border: InputBorder.none,
-                ),
-                textAlign: TextAlign.center,
-                onChanged: (String value) {
-                  if (value.length == 1 && index < controllers.length - 1) {
-                    FocusScope.of(context).nextFocus();
-                  }
-                },
-                onFieldSubmitted: (String value) {
-                  if (value.length == 1 && index == 3) {
-                    _channelProvider.resetMessage();
-                    _onOkPressed(controllers);
-                    Navigator.of(context).pop();
-                    isPinDialogShown = false;
-                  }
-                },
-              ),
-            )),
+            children: List.generate(
+                4,
+                (index) => Container(
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: AppColors.iconPinCodeBackground,
+                        borderRadius: BorderRadius.circular(6), // 设置圆角半径为10
+                      ),
+                      child: TextFormField(
+                        controller: controllers[index],
+                        autofocus: index ==
+                            0, // set the initial focus to the first digit of OTP
+                        keyboardType: TextInputType.number,
+                        maxLength: 1,
+                        decoration: const InputDecoration(
+                          counterText: '',
+                          border: InputBorder.none,
+                        ),
+                        textAlign: TextAlign.center,
+                        onChanged: (String value) {
+                          if (value.length == 1 &&
+                              index < controllers.length - 1) {
+                            FocusScope.of(context).nextFocus();
+                          }
+                        },
+                        onFieldSubmitted: (String value) {
+                          if (value.length == 1 && index == 3) {
+                            _channelProvider.resetMessage();
+                            _onOkPressed(controllers);
+                            Navigator.of(context).pop();
+                            isPinDialogShown = false;
+                          }
+                        },
+                      ),
+                    )),
           ),
           actions: <Widget>[
             TextButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮背景颜色
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.grey), // 设置按钮文字颜色
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.white), // 设置按钮背景颜色
+                foregroundColor:
+                    MaterialStateProperty.all<Color>(Colors.grey), // 设置按钮文字颜色
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10), // 设置按钮圆角
@@ -287,8 +302,10 @@ class _DeviceListState extends State<DeviceList>{
             ),
             TextButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // 设置按钮背景颜色
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮文字颜色
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.blue), // 设置按钮背景颜色
+                foregroundColor:
+                    MaterialStateProperty.all<Color>(Colors.white), // 设置按钮文字颜色
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10), // 设置按钮圆角
@@ -313,7 +330,8 @@ class _DeviceListState extends State<DeviceList>{
   String _convertFullWidthToHalfWidth(String input) {
     return input.replaceAllMapped(
       RegExp(r'[０-９]'),
-          (Match match) => String.fromCharCode(match.group(0)!.codeUnitAt(0) - 0xFEE0),
+      (Match match) =>
+          String.fromCharCode(match.group(0)!.codeUnitAt(0) - 0xFEE0),
     );
   }
 }

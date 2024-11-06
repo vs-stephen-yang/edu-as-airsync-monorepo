@@ -134,11 +134,17 @@ class _V3QRcodeScanState extends State<V3QRcodeScan> {
         Provider.of<ChannelProvider>(context, listen: false);
     PresentStateProvider presentStateProvider =
         Provider.of<PresentStateProvider>(context, listen: false);
-    AppAnalytics.instance.trackEvent('enter_display_code', properties: {
-      'target': 'type',
-    });
+    AppAnalytics.instance.trackEvent(
+      'enter_display_code',
+      EventCategory.menu,
+      properties: {
+        'target': 'type',
+      },
+    );
+
     AppAnalytics.instance.setGlobalProperty('display_code', displayCode);
-    AppAnalytics.instance.trackEvent('click_connect');
+    AppAnalytics.instance.trackEvent('click_connect', EventCategory.session);
+
     await channelProvider.presentEnd(goIdleState: false);
     await channelProvider.startConnect(
       formattedDisplayCode: displayCode,
