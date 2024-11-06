@@ -157,7 +157,7 @@ class ChannelProvider extends ChangeNotifier {
     AppAnalytics.instance.trackTrace('connect');
     // Generate a new client Id
     _clientId = const Uuid().v4();
-    AppAnalytics.instance.setGlobalProperty('client_id', _clientId!);
+    AppAnalytics.instance.setGlobalProperty('participator_id', _clientId!);
 
     _presentStateProvider = presentStateProvider;
     displayCode = decodeDisplayCode(formattedDisplayCode);
@@ -231,7 +231,7 @@ class ChannelProvider extends ChangeNotifier {
 
     // Generate a new client Id
     _clientId = const Uuid().v4();
-    AppAnalytics.instance.setGlobalProperty('client_id', _clientId!);
+    AppAnalytics.instance.setGlobalProperty('participator_id', _clientId!);
     _presentStateProvider = presentStateProvider;
     displayCode = decodeDisplayCode(service.displayCode);
     this.otp = otp;
@@ -623,7 +623,7 @@ class ChannelProvider extends ChangeNotifier {
     reconnectState = ChannelReconnectState.idle;
     // clear client_id
     _clientId = null;
-    AppAnalytics.instance.setGlobalProperty('client_id', '');
+    AppAnalytics.instance.setGlobalProperty('participator_id', '');
   }
 
   void removeRemoteScreenClient() async {
