@@ -55,8 +55,8 @@ class AnnotationIconButton extends StatelessWidget {
                 color: (tapDown || selected) ? const Color(0xFF5D80ED) : null,
                 shape: RoundedRectangleBorder(
                     borderRadius: circleStyle
-                        ? BorderRadius.circular(16)
-                        : BorderRadius.circular(8)),
+                        ? BorderRadius.circular(24)
+                        : BorderRadius.circular(16)),
               ),
               child: SvgPicture.asset(
                 icon,

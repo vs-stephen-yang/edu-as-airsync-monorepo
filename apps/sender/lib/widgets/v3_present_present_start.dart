@@ -261,6 +261,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
           await Future.delayed(const Duration(milliseconds: 100));
           WindowUtility.minimizeWindow();
         } else {
+          annotationOn = false;
           Permission.systemAlertWindow.request();
           return;
         }

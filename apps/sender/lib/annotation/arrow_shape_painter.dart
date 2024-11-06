@@ -6,12 +6,9 @@ class ArrowShape extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 15),
-      child: CustomPaint(
-        painter: ArrowShapePainter(),
-        child: child,
-      ),
+    return CustomPaint(
+      painter: ArrowShapePainter(),
+      child: child,
     );
   }
 }
@@ -29,24 +26,33 @@ class ArrowShapePainter extends CustomPainter {
       ..color = const Color(0xFF20273E) // 填充顏色
       ..style = PaintingStyle.fill;
 
-    final path = Path();
+    const double radius = 20.0; // 圓角半徑
+    const double arrowWidth = 20.0; // 小三角的寬度
+    const double arrowHeight = 10.0; // 小三角的高度
+    final double arrowOffset = 0.5 * (size.width - arrowWidth); // 三角形在底部中心
 
-    // 開始繪製路徑
-    path.moveTo(size.width * 0.3, 0); // 起點（左上角帶有偏移）
-
-    path.lineTo(size.width * 0.7, 0); // 繪製到右上角
-    path.quadraticBezierTo(size.width, 0, size.width, size.height * 0.1); // 繪製右上角圓角
-    path.lineTo(size.width, size.height * 0.9); // 繪製到右下角
-    path.quadraticBezierTo(size.width, size.height, size.width * 0.7, size.height); // 繪製右下角圓角
-    path.lineTo(size.width * 0.3, size.height); // 繪製到底部左側
-    path.quadraticBezierTo(0, size.height, 0, size.height * 0.9); // 繪製左下角圓角
-    path.lineTo(0, size.height * 0.5 + 10); // 繪製到箭頭下半部分
-    path.lineTo(-10, size.height * 0.5); // 繪製箭頭的尖端
-    path.lineTo(0, size.height * 0.5 - 10); // 繪製箭頭的上半部分
-    path.lineTo(0, size.height * 0.1); // 繼續向上繪製到左上角
-    path.quadraticBezierTo(0, 0, size.width * 0.3, 0); // 繪製左上角圓角
-
-    path.close(); // 完成路徑
+    // Path 用於繪製形狀
+    final path = Path()
+      ..moveTo(radius, 0) // 起始於左上角，略過圓角半徑部分
+      ..lineTo(size.width - radius, 0) // 畫上邊（略過右上角圓角半徑）
+      ..arcToPoint(Offset(size.width, radius),
+          radius: const Radius.circular(radius)) // 右上圓角
+      ..lineTo(size.width, size.height - radius - arrowHeight) // 右邊直線
+      ..arcToPoint(
+        Offset(size.width - radius, size.height - arrowHeight),
+        radius: const Radius.circular(radius),
+      ) // 右下圓角
+      ..lineTo(arrowOffset + arrowWidth, size.height - arrowHeight) // 底部直線，右邊
+      ..lineTo(arrowOffset + arrowWidth / 2, size.height) // 畫出箭頭的右邊
+      ..lineTo(arrowOffset, size.height - arrowHeight) // 畫出箭頭的左邊
+      ..lineTo(radius, size.height - arrowHeight) // 底部直線，左邊
+      ..arcToPoint(
+        Offset(0, size.height - radius - arrowHeight),
+        radius: const Radius.circular(radius),
+      ) // 左下圓角
+      ..lineTo(0, radius) // 左邊直線
+      ..arcToPoint(const Offset(radius, 0),
+          radius: const Radius.circular(radius)); // 左上圓角
 
     // 畫邊框
     canvas.drawPath(path, borderPaint);
