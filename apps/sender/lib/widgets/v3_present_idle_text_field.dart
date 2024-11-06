@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_text_form_field.dart';
@@ -270,8 +269,6 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
                           },
                         ),
                         onTap: () {
-                          AppAnalytics.instance
-                              .trackEvent('select_display_code');
                           _isCodeSelectedFromHistory = true;
                           _codeController.text = displayList[index];
                           _isDropDownMenuVisible = false;

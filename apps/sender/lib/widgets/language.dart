@@ -1,6 +1,7 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,8 @@ class Language extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         Provider.of<PresentStateProvider>(context,
-                                listen: false).presentSettingPage();
+                                listen: false)
+                            .presentSettingPage();
                       },
                       child: const Icon(
                         Icons.arrow_back_ios_new_outlined,
@@ -66,6 +68,9 @@ class Language extends StatelessWidget {
                 return Center(
                   child: InkWell(
                     onTap: () {
+                      AppAnalytics.instance
+                          .trackEvent('click_language', EventCategory.setting);
+                          
                       provider.setLanguage(
                           provider.localeMap.keys.elementAt(index));
                     },

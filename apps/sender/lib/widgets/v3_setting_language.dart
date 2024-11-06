@@ -4,6 +4,7 @@ import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 
 class V3SettingLanguage extends StatelessWidget {
   const V3SettingLanguage({super.key, this.isAppMode = false});
@@ -28,6 +29,9 @@ class V3SettingLanguage extends StatelessWidget {
               ),
               child: InkWell(
                 onTap: () {
+                  AppAnalytics.instance
+                      .trackEvent('click_language', EventCategory.setting);
+
                   selectedLanguage = key;
                   languageProvider.setLanguage(selectedLanguage);
                 },

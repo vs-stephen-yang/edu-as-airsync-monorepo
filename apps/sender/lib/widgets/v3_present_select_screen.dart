@@ -6,6 +6,7 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -631,8 +632,26 @@ class SelectScreenDialog extends Dialog {
     Navigator.pop<CustomDesktopCaptureSource>(ctx, null);
   }
 
+  String _getShareName(
+      DesktopCapturerSource? selectedSource, bool isExtensionSelected) {
+    if (isExtensionSelected) {
+      return 'extension';
+    }
+    if (selectedSource == null) {
+      return 'screen';
+    }
+
+    return selectedSource.type == SourceType.Screen ? 'screen' : 'application';
+  }
+
   void _ok(DesktopCapturerSource? selectedSource, bool systemAudio,
       bool isExtensionSelected) async {
+    AppAnalytics.instance.trackEvent(
+      'click_share_type',
+      EventCategory.session,
+      target: _getShareName(selectedSource, isExtensionSelected),
+    );
+
     _timer?.cancel();
     for (var element in _subscriptions) {
       element.cancel();

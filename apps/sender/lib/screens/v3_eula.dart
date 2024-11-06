@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_preferences.dart';
 import 'package:display_cast_flutter/widgets/v3_background.dart';
 import 'package:display_cast_flutter/widgets/v3_focus_single_child_scroll_view.dart';
@@ -112,6 +113,9 @@ class V3Eula extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                               ),
                               onPressed: () {
+                                AppAnalytics.instance.trackEvent(
+                                    'click_eula', EventCategory.system,
+                                    target: 'decline');
                                 // return to home screen.
                                 if (Platform.isIOS) {
                                   // todo: may not pass Apple review, need add some dialog to let user known?
@@ -147,6 +151,10 @@ class V3Eula extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                               ),
                               onPressed: () {
+                                AppAnalytics.instance.trackEvent(
+                                    'click_eula', EventCategory.system,
+                                    target: 'accept');
+
                                 AppPreferences().setShowEULA(false);
                                 navService.pushNamedAndRemoveUntil('/v3home');
                               },

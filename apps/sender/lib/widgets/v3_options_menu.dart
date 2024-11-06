@@ -3,6 +3,7 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -146,6 +147,13 @@ class _V3OptionsMenuState extends State<V3OptionsMenu> {
         isHQButtonEnabled,
         () {
           isHQButtonEnabled = !isHQButtonEnabled;
+
+          AppAnalytics.instance.trackEvent(
+            'click_HQ',
+            EventCategory.session,
+            target: isHQButtonEnabled ? 'on' : 'off',
+          );
+
           channelProvider.presentChangeHighQuality(
               isHighQuality: isHQButtonEnabled);
         },

@@ -54,14 +54,19 @@ class PresentIdle extends StatelessWidget {
         PresentIdleButton(
           key: presentBtnKey,
           onPressed: () async {
-            AppAnalytics.instance.trackEvent('enter_display_code', properties: {
-              'target': isDisplayCodeSelectedFromHistory ? 'select' : 'type',
-            });
+            AppAnalytics.instance.trackEvent(
+              'enter_display_code',
+              EventCategory.menu,
+              properties: {
+                'target': isDisplayCodeSelectedFromHistory ? 'select' : 'type',
+              },
+            );
 
             AppAnalytics.instance
                 .setGlobalProperty('display_code', displayCode);
 
-            AppAnalytics.instance.trackEvent('click_connect');
+            AppAnalytics.instance
+                .trackEvent('click_connect', EventCategory.session);
 
             if (!presentBtnEnable) return;
             await channelProvider.presentEnd(goIdleState: false);
@@ -70,10 +75,9 @@ class PresentIdle extends StatelessWidget {
               demoProvider.presentSelectRoleDemoPage();
             } else {
               channelProvider.startConnect(
-                formattedDisplayCode: displayCode,
-                otp: password,
-                presentStateProvider: presentStateProvider
-              );
+                  formattedDisplayCode: displayCode,
+                  otp: password,
+                  presentStateProvider: presentStateProvider);
             }
           },
         ),
@@ -100,7 +104,8 @@ class PresentIdle extends StatelessWidget {
                   image: Svg('assets/images/ic_quick_connect.svg'),
                 ),
                 onTap: () {
-                  AppAnalytics.instance.trackEvent('click_device_list');
+                  AppAnalytics.instance
+                      .trackEvent('click_device_list', EventCategory.menu);
                   presentStateProvider.presentDeviceListPage();
                 },
               ),

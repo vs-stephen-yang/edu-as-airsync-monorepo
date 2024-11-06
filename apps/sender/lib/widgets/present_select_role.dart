@@ -26,7 +26,8 @@ class PresentSelectRole extends StatelessWidget {
           name: S.of(context).present_role_receive,
           iconWidget: const Image(image: Svg('assets/images/ic_receiver.svg')),
           onTap: () {
-            AppAnalytics.instance.trackEvent('select_remote_screen');
+            AppAnalytics.instance
+                .trackEvent('click_receive', EventCategory.session);
 
             channelProvider.currentRole = JoinIntentType.remoteScreen;
             if (channelProvider.isConnectAvailable()) {
@@ -35,11 +36,9 @@ class PresentSelectRole extends StatelessWidget {
               Toast.makeFeatureReconnectToast(
                   channelProvider.reconnectState,
                   channelProvider.reconnectState ==
-                      ChannelReconnectState.reconnecting
-                      ? S.of(context)
-                      .main_feature_reconnecting_toast
-                      : S.of(context)
-                      .main_feature_reconnect_fail_toast);
+                          ChannelReconnectState.reconnecting
+                      ? S.of(context).main_feature_reconnecting_toast
+                      : S.of(context).main_feature_reconnect_fail_toast);
             }
           },
         ),
@@ -49,7 +48,8 @@ class PresentSelectRole extends StatelessWidget {
           iconWidget:
               const Image(image: Svg('assets/images/ic_cast_screen.svg')),
           onTap: () async {
-            AppAnalytics.instance.trackEvent('select_cast');
+            AppAnalytics.instance
+                .trackEvent('click_share', EventCategory.session);
 
             channelProvider.currentRole = JoinIntentType.present;
             if (channelProvider.moderatorStatus) {
@@ -61,11 +61,9 @@ class PresentSelectRole extends StatelessWidget {
                 Toast.makeFeatureReconnectToast(
                     channelProvider.reconnectState,
                     channelProvider.reconnectState ==
-                        ChannelReconnectState.reconnecting
-                        ? S.of(context)
-                        .main_feature_reconnecting_toast
-                        : S.of(context)
-                        .main_feature_reconnect_fail_toast);
+                            ChannelReconnectState.reconnecting
+                        ? S.of(context).main_feature_reconnecting_toast
+                        : S.of(context).main_feature_reconnect_fail_toast);
               }
             }
           },

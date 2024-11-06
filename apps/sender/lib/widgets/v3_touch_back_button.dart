@@ -57,7 +57,12 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton> {
                   : SvgPicture.asset('assets/images/v3_ic_switch_off.svg'),
               padding: EdgeInsets.zero,
               onPressed: () {
-                AppAnalytics.instance.trackEvent('click_touchback');
+                AppAnalytics.instance.trackEvent(
+                  'click_touchback',
+                  EventCategory.session,
+                  target: isButtonEnabled ? 'on' : 'off',
+                );
+
                 isButtonEnabled = !isButtonEnabled;
                 WebRTCHelper().setTouchBack(isButtonEnabled);
                 setState(() {});

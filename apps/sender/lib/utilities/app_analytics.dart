@@ -4,6 +4,14 @@ import 'package:http/http.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 
 // https://medium.com/bina-nusantara-it-division/how-to-integrate-flutter-app-with-azure-application-insights-447fcc3bdacf
+enum EventCategory {
+  system,
+  setting,
+  session,
+  menu,
+  annotation,
+}
+
 class AppAnalytics {
   TelemetryClient? _client;
   final _globalProperties = <String, String>{};
@@ -70,7 +78,9 @@ class AppAnalytics {
   // Typically it is a user interaction such as button click or order checkout.
   // It can also be an application life cycle event like initialization or configuration update.
   void trackEvent(
-    String name, {
+    String name,
+    EventCategory category, {
+    String? target,
     Map<String, Object> properties = const <String, Object>{},
   }) {
     log.info('Track event: $name');
@@ -80,14 +90,21 @@ class AppAnalytics {
       additionalProperties: {
         ...properties,
         ..._globalProperties,
+        'category': category.name,
+        if (target != null) 'target': target,
       },
     );
   }
 
-  void trackTrace(String message, Severity severity) {
+  void trackTrace(
+    String message, {
+    Severity severity = Severity.information,
+    Map<String, Object> properties = const <String, Object>{},
+  }) {
     instance._client?.trackTrace(
       severity: severity,
       message: message,
+      additionalProperties: properties,
     );
   }
 

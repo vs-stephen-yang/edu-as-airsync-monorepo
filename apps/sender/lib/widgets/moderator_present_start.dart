@@ -65,11 +65,15 @@ class ModeratorPresentStart extends StatelessWidget {
                     onTap: () {
                       // Toggle current state
                       bool tempState = !presentingState.value;
-                      AppAnalytics.instance.trackEvent(tempState ? 'click_resume' : 'click_pause');
+                      AppAnalytics.instance.trackEvent(
+                          tempState ? 'click_resume' : 'click_pause',
+                          EventCategory.session);
 
                       // Update state
                       presentingState.value = tempState;
-                      tempState ? channelProvider.presentResume() : channelProvider.presentPause();
+                      tempState
+                          ? channelProvider.presentResume()
+                          : channelProvider.presentPause();
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -101,13 +105,13 @@ class ModeratorPresentStart extends StatelessWidget {
                       Toast.makeFeatureReconnectToast(
                           state, S.of(context).main_webrtc_reconnecting_toast);
                     } else if (state == ChannelReconnectState.success) {
-                      Toast.makeFeatureReconnectToast(
-                          state, S.of(context).main_webrtc_reconnect_success_toast);
+                      Toast.makeFeatureReconnectToast(state,
+                          S.of(context).main_webrtc_reconnect_success_toast);
                       WebRTCHelper()
                           .setReconnectState(ChannelReconnectState.idle);
                     } else if (state == ChannelReconnectState.fail) {
-                      Toast.makeFeatureReconnectToast(
-                          state, S.of(context).main_webrtc_reconnect_fail_toast);
+                      Toast.makeFeatureReconnectToast(state,
+                          S.of(context).main_webrtc_reconnect_fail_toast);
                       WebRTCHelper()
                           .setReconnectState(ChannelReconnectState.idle);
                     }
@@ -116,7 +120,8 @@ class ModeratorPresentStart extends StatelessWidget {
               const SizedBox(height: 20),
               InkWell(
                 onTap: () {
-                  AppAnalytics.instance.trackEvent('click_stop');
+                  AppAnalytics.instance
+                      .trackEvent('click_stop', EventCategory.session);
 
                   channelProvider.presentStop();
                   Provider.of<PresentStateProvider>(context, listen: false)
@@ -151,7 +156,8 @@ class ModeratorPresentStart extends StatelessWidget {
                   key: touchBtnKey,
                   initialValue: WebRTCHelper().getTouchBack(),
                   onPressed: (state) {
-                    AppAnalytics.instance.trackEvent('click_touchback');
+                    AppAnalytics.instance
+                        .trackEvent('click_touchback', EventCategory.session);
                     WebRTCHelper().setTouchBack(state);
                   },
                 ),
