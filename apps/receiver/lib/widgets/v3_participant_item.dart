@@ -434,6 +434,8 @@ class ParticipantReceivingFeature extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ChannelProvider channelProvider =
+        Provider.of<ChannelProvider>(context, listen: false);
     return Row(
       children: [
         SizedBox(
@@ -497,6 +499,18 @@ class ParticipantReceivingFeature extends StatelessWidget {
                 return;
               }
               rtcConnector.sendStopRemoteScreen();
+              int index = channelProvider.remoteShareConnectors
+                  .indexWhere((item) => item.clientId == rtcConnector.clientId);
+              if (index != -1) {
+                RemoteScreenConnector remoteShareConnector =
+                    channelProvider.remoteShareConnectors[index];
+
+                channelProvider.removeSender(
+                  fromShare: true,
+                  remoteScreenConnector: remoteShareConnector,
+                  kick: false,
+                );
+              }
             },
           ),
         ),
