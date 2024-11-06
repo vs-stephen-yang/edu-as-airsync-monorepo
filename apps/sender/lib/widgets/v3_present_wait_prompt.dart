@@ -76,8 +76,7 @@ class V3PresentWaitPrompt extends StatelessWidget {
               buttonSize: Size(isMobile ? 300 : 240, 48),
               text: S.of(context).v3_main_moderator_disconnect,
               onPressed: () {
-                AppAnalytics.instance
-                    .trackEvent('click_disconnect', EventCategory.session);
+                trackEvent('click_disconnect', EventCategory.session);
                 channelProvider.presentEnd();
               },
             ),

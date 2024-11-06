@@ -75,8 +75,8 @@ class AppAnalytics {
   }
 
   // Log business events
-  // Typically it is a user interaction such as button click or order checkout.
-  // It can also be an application life cycle event like initialization or configuration update.
+// Typically it is a user interaction such as button click or order checkout.
+// It can also be an application life cycle event like initialization or configuration update.
   void trackEvent(
     String name,
     EventCategory category, {
@@ -85,7 +85,7 @@ class AppAnalytics {
   }) {
     log.info('Track event: $name');
 
-    instance._client?.trackEvent(
+    _client?.trackEvent(
       name: name,
       additionalProperties: {
         ...properties,
@@ -101,14 +101,43 @@ class AppAnalytics {
     Severity severity = Severity.information,
     Map<String, Object> properties = const <String, Object>{},
   }) {
-    instance._client?.trackTrace(
+    _client?.trackTrace(
       severity: severity,
       message: message,
-      additionalProperties: properties,
+      additionalProperties: {
+        ...properties,
+        ..._globalProperties,
+      },
     );
   }
 
   void trackPageView(String name) {
     instance._client?.trackPageView(name: name);
   }
+}
+
+void trackEvent(
+  String name,
+  EventCategory category, {
+  String? target,
+  Map<String, Object> properties = const <String, Object>{},
+}) {
+  AppAnalytics.instance.trackEvent(
+    name,
+    category,
+    target: target,
+    properties: properties,
+  );
+}
+
+void trackTrace(
+  String message, {
+  Severity severity = Severity.information,
+  Map<String, Object> properties = const <String, Object>{},
+}) {
+  AppAnalytics.instance.trackTrace(
+    message,
+    severity: severity,
+    properties: properties,
+  );
 }

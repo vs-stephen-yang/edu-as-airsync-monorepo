@@ -68,9 +68,8 @@ class Language extends StatelessWidget {
                 return Center(
                   child: InkWell(
                     onTap: () {
-                      AppAnalytics.instance
-                          .trackEvent('click_language', EventCategory.setting);
-                          
+                      trackEvent('click_language', EventCategory.setting);
+
                       provider.setLanguage(
                           provider.localeMap.keys.elementAt(index));
                     },

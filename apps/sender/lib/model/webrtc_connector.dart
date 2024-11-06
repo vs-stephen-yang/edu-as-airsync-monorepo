@@ -209,7 +209,7 @@ class WebRTCConnector {
     _controlDataChannel!.onDataChannelState = (state) {
       log.info('Data channel state of control: ${state.name}');
 
-      AppAnalytics.instance.trackTrace('control_dc_state', properties: {
+      trackTrace('control_dc_state', properties: {
         'target': state.name,
       });
     };
@@ -227,7 +227,7 @@ class WebRTCConnector {
     _touchbackDataChannel!.onDataChannelState = (state) {
       log.info('Data channel state of touchback: ${state.name}');
 
-      AppAnalytics.instance.trackTrace('dc_state', properties: {
+      trackTrace('dc_state', properties: {
         'target': state.name,
       });
     };
@@ -504,7 +504,7 @@ class WebRTCConnector {
 
   void _onPeerConnectionState(RTCPeerConnectionState state) async {
     log.info('Peer connection state: ${state.name}');
-    AppAnalytics.instance.trackTrace('pc_state', properties: {
+    trackTrace('pc_state', properties: {
       'target': state.name,
     });
     onConnectionState(state);

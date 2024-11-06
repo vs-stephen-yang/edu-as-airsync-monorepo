@@ -56,7 +56,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
   OverlayEntry? _overlayEntry;
 
   void _setEraserMode() {
-    AppAnalytics.instance.trackEvent('click_eraser', EventCategory.annotation);
+    trackEvent('click_eraser', EventCategory.annotation);
 
     setState(() {
       _isEraser = true;
@@ -64,7 +64,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
   }
 
   void _setPenMode() {
-    AppAnalytics.instance.trackEvent('click_pen', EventCategory.annotation);
+    trackEvent('click_pen', EventCategory.annotation);
 
     setState(() {
       _isEraser = false;
@@ -72,7 +72,7 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
   }
 
   void _clearAll() {
-    AppAnalytics.instance.trackEvent('click_clean', EventCategory.annotation);
+    trackEvent('click_clean', EventCategory.annotation);
 
     setState(() {
       _points.clear();

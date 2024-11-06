@@ -90,7 +90,7 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
       sessionId: const Uuid().v4(),
       deviceInfo: await ClientDeviceInfo.fetch(),
     );
-    AppAnalytics.instance.trackEvent('launch', EventCategory.system);
+    trackEvent('launch', EventCategory.system);
 
     if (!kIsWeb &&
         (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
@@ -112,16 +112,16 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
       ScreenStateDetector.instance.onState.listen((event) {
         if (event == ScreenState.awaked) {
           log.info('screen_awaked');
-          AppAnalytics.instance.trackTrace('screen_awaked');
+          trackTrace('screen_awaked');
         } else if (event == ScreenState.sleep) {
           log.info('screen_sleep');
-          AppAnalytics.instance.trackTrace('screen_sleep');
+          trackTrace('screen_sleep');
         } else if (event == ScreenState.locked) {
           log.info('screen_locked');
-          AppAnalytics.instance.trackTrace('screen_locked');
+          trackTrace('screen_locked');
         } else if (event == ScreenState.unlocked) {
           log.info('screen_unlocked');
-          AppAnalytics.instance.trackTrace('screen_unlocked');
+          trackTrace('screen_unlocked');
         }
       });
     }
@@ -129,7 +129,7 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     AppUnresponsiveDetector.initialize();
 
     AppUnresponsiveDetector.instance.addListener((suspensionDuration) {
-      AppAnalytics.instance.trackTrace('app_unresponsive', properties: {
+      trackTrace('app_unresponsive', properties: {
         'target': suspensionDuration.inSeconds,
       });
     });

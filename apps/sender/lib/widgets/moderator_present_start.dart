@@ -65,8 +65,7 @@ class ModeratorPresentStart extends StatelessWidget {
                     onTap: () {
                       // Toggle current state
                       bool tempState = !presentingState.value;
-                      AppAnalytics.instance.trackEvent(
-                          tempState ? 'click_resume' : 'click_pause',
+                      trackEvent(tempState ? 'click_resume' : 'click_pause',
                           EventCategory.session);
 
                       // Update state
@@ -120,8 +119,7 @@ class ModeratorPresentStart extends StatelessWidget {
               const SizedBox(height: 20),
               InkWell(
                 onTap: () {
-                  AppAnalytics.instance
-                      .trackEvent('click_stop', EventCategory.session);
+                  trackEvent('click_stop', EventCategory.session);
 
                   channelProvider.presentStop();
                   Provider.of<PresentStateProvider>(context, listen: false)
@@ -156,8 +154,7 @@ class ModeratorPresentStart extends StatelessWidget {
                   key: touchBtnKey,
                   initialValue: WebRTCHelper().getTouchBack(),
                   onPressed: (state) {
-                    AppAnalytics.instance
-                        .trackEvent('click_touchback', EventCategory.session);
+                    trackEvent('click_touchback', EventCategory.session);
                     WebRTCHelper().setTouchBack(state);
                   },
                 ),

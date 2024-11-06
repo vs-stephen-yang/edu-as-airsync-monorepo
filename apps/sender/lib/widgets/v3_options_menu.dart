@@ -148,7 +148,7 @@ class _V3OptionsMenuState extends State<V3OptionsMenu> {
         () {
           isHQButtonEnabled = !isHQButtonEnabled;
 
-          AppAnalytics.instance.trackEvent(
+          trackEvent(
             'click_HQ',
             EventCategory.session,
             target: isHQButtonEnabled ? 'on' : 'off',

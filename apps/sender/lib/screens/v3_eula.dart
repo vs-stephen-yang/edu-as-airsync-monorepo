@@ -113,8 +113,7 @@ class V3Eula extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                               ),
                               onPressed: () {
-                                AppAnalytics.instance.trackEvent(
-                                    'click_eula', EventCategory.system,
+                                trackEvent('click_eula', EventCategory.system,
                                     target: 'decline');
                                 // return to home screen.
                                 if (Platform.isIOS) {
@@ -151,8 +150,7 @@ class V3Eula extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                               ),
                               onPressed: () {
-                                AppAnalytics.instance.trackEvent(
-                                    'click_eula', EventCategory.system,
+                                trackEvent('click_eula', EventCategory.system,
                                     target: 'accept');
 
                                 AppPreferences().setShowEULA(false);

@@ -64,8 +64,7 @@ class PresentPresentStart extends StatelessWidget {
                     onTap: () {
                       // Toggle current state
                       bool tempState = !presentingState.value;
-                      AppAnalytics.instance.trackEvent(
-                          tempState ? 'click_resume' : 'click_pause',
+                      trackEvent(tempState ? 'click_resume' : 'click_pause',
                           EventCategory.session);
 
                       // Update state
@@ -98,8 +97,7 @@ class PresentPresentStart extends StatelessWidget {
               const SizedBox(height: 20),
               InkWell(
                 onTap: () {
-                  AppAnalytics.instance
-                      .trackEvent('click_stop', EventCategory.session);
+                  trackEvent('click_stop', EventCategory.session);
 
                   channelProvider.presentStop();
                   channelProvider.presentEnd();

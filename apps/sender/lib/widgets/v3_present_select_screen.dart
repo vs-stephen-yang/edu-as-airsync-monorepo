@@ -646,7 +646,7 @@ class SelectScreenDialog extends Dialog {
 
   void _ok(DesktopCapturerSource? selectedSource, bool systemAudio,
       bool isExtensionSelected) async {
-    AppAnalytics.instance.trackEvent(
+    trackEvent(
       'click_share_type',
       EventCategory.session,
       target: _getShareName(selectedSource, isExtensionSelected),

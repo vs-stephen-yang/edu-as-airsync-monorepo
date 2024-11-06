@@ -114,7 +114,7 @@ class ChannelProvider extends ChangeNotifier {
   String _randomName = '';
 
   void setChannelConnectError(ChannelConnectError error) {
-    AppAnalytics.instance.trackEvent(
+    trackEvent(
       'connect_fail',
       EventCategory.session,
       target: error.name,
@@ -122,13 +122,11 @@ class ChannelProvider extends ChangeNotifier {
 
     switch (error) {
       case ChannelConnectError.invalidOtp:
-        AppAnalytics.instance
-            .trackEvent('invalid_password', EventCategory.menu);
+        trackEvent('invalid_password', EventCategory.menu);
         break;
       case ChannelConnectError.invalidDisplayCode:
       case ChannelConnectError.instanceNotFound:
-        AppAnalytics.instance
-            .trackEvent('invalid_display_code', EventCategory.menu);
+        trackEvent('invalid_display_code', EventCategory.menu);
         break;
       default:
         break;
@@ -154,7 +152,7 @@ class ChannelProvider extends ChangeNotifier {
     required PresentStateProvider presentStateProvider,
     QRcodeConnectResult? qrCallback,
   }) async {
-    AppAnalytics.instance.trackTrace('connect');
+    trackTrace('connect');
     // Generate a new client Id
     _clientId = const Uuid().v4();
     AppAnalytics.instance.setGlobalProperty('participator_id', _clientId!);
@@ -227,7 +225,7 @@ class ChannelProvider extends ChangeNotifier {
     required AirSyncBonsoirService service,
     required PresentStateProvider presentStateProvider,
   }) {
-    AppAnalytics.instance.trackTrace('quick_connect');
+    trackTrace('quick_connect');
 
     // Generate a new client Id
     _clientId = const Uuid().v4();
@@ -258,7 +256,7 @@ class ChannelProvider extends ChangeNotifier {
     AppAnalytics.instance.setGlobalProperty(
         'connectivity', isDirectChannel ? 'intranet' : 'internet');
 
-    AppAnalytics.instance.trackEvent(
+    trackEvent(
       'connect_successfully',
       EventCategory.session,
       target: isDirectChannel ? 'direct' : 'tunnel',
@@ -405,7 +403,7 @@ class ChannelProvider extends ChangeNotifier {
     log.info('The channel failed to reconnect within the timeout period');
 
     _channelReconnectTimer = null;
-    AppAnalytics.instance.trackTrace('channel_reconnect_timeout');
+    trackTrace('channel_reconnect_timeout');
 
     reconnectState = ChannelReconnectState.fail;
 
@@ -431,7 +429,7 @@ class ChannelProvider extends ChangeNotifier {
 
   void onChannelStateChange(ChannelState state) {
     log.info('Channel state: ${state.name}');
-    AppAnalytics.instance.trackTrace('channel_state', properties: {
+    trackTrace('channel_state', properties: {
       'target': state.name,
     });
 
@@ -719,7 +717,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void _handleChannelCloseState(ChannelCloseReason? closeReason) {
-    AppAnalytics.instance.trackTrace('channel_closed', properties: {
+    trackTrace('channel_closed', properties: {
       'target': closeReason?.code.toString() ?? '',
       'details': closeReason?.text ?? '',
     });
@@ -734,7 +732,7 @@ class ChannelProvider extends ChangeNotifier {
   _trackFetchError(String errorType, String details) {
     log.warning('Failed to fetch the instance info. $errorType $details');
 
-    AppAnalytics.instance.trackTrace('request_get_instance_error', properties: {
+    trackTrace('request_get_instance_error', properties: {
       'target': errorType,
       'details': details,
     });
@@ -832,7 +830,7 @@ class ChannelProvider extends ChangeNotifier {
 
   void _onRtcConnectionConnected() {
     if (!_isRtcFirstConnected) {
-      AppAnalytics.instance.trackTrace('cast_successfully');
+      trackTrace('cast_successfully');
       _isRtcFirstConnected = true;
     }
 
@@ -854,7 +852,7 @@ class ChannelProvider extends ChangeNotifier {
     // cast_error: when users fail to cast their screen on the first attempt
     final eventName = _isRtcFirstConnected ? 'cast_fail' : 'cast_error';
 
-    AppAnalytics.instance.trackEvent(eventName, EventCategory.session);
+    trackEvent(eventName, EventCategory.session);
 
     _isPresentingErrorReported = true;
   }

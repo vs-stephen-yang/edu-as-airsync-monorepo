@@ -75,10 +75,10 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
         Provider.of<ChannelProvider>(context, listen: false);
     PresentStateProvider presentStateProvider =
         Provider.of<PresentStateProvider>(context, listen: false);
-    AppAnalytics.instance
-        .trackEvent('enter_display_code', EventCategory.menu, target: 'type');
+
+    trackEvent('enter_display_code', EventCategory.menu, target: 'type');
     AppAnalytics.instance.setGlobalProperty('display_code', displayCode);
-    AppAnalytics.instance.trackEvent('click_connect', EventCategory.menu);
+    trackEvent('click_connect', EventCategory.menu);
 
     await channelProvider.presentEnd(goIdleState: false);
     await channelProvider.startConnect(
@@ -204,7 +204,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       fixedSize: const Size(300, 48),
       buttonText: S.of(context).v3_main_present_action,
       onPressed: () async {
-        AppAnalytics.instance.trackEvent(
+        trackEvent(
           'enter_display_code',
           EventCategory.menu,
           target: isDisplayCodeSelectedFromHistory ? 'select' : 'type',
@@ -212,7 +212,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
 
         AppAnalytics.instance.setGlobalProperty('display_code', displayCode);
 
-        AppAnalytics.instance.trackEvent('click_connect', EventCategory.menu);
+        trackEvent('click_connect', EventCategory.menu);
 
         if (!nextBtnEnable) return;
         await channelProvider.presentEnd(goIdleState: false);
@@ -254,8 +254,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
   Widget buildDeviceListButton(PresentStateProvider presentStateProvider) {
     return V3PresentDeviceListButton(
       onTap: () {
-        AppAnalytics.instance
-            .trackEvent('click_device_list', EventCategory.menu);
+        trackEvent('click_device_list', EventCategory.menu);
         presentStateProvider.presentDeviceListPage();
       },
     );
