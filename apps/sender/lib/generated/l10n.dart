@@ -371,30 +371,30 @@ class S {
     );
   }
 
-  /// `Has reached maximum moderated session amount.`
+  /// `The max number of moderated sessions has been reached.`
   String get toast_maximum_moderated {
     return Intl.message(
-      'Has reached maximum moderated session amount.',
+      'The max number of moderated sessions has been reached.',
       name: 'toast_maximum_moderated',
       desc: '',
       args: [],
     );
   }
 
-  /// `Has reached maximum split screen amount.`
+  /// `The max number of split screens has been reached.`
   String get toast_maximum_split_screen {
     return Intl.message(
-      'Has reached maximum split screen amount.',
+      'The max number of split screens has been reached.',
       name: 'toast_maximum_split_screen',
       desc: '',
       args: [],
     );
   }
 
-  /// `Sharing is in processing, please wait.`
+  /// `Sharing is being processed. Please wait.`
   String get remote_screen_wait {
     return Intl.message(
-      'Sharing is in processing, please wait.',
+      'Sharing is being processed. Please wait.',
       name: 'remote_screen_wait',
       desc: '',
       args: [],
@@ -421,10 +421,10 @@ class S {
     );
   }
 
-  /// `Has reached maximum shared screen amount.`
+  /// `The max number of shared screens has been reached.`
   String get toast_maximum_remote_screen {
     return Intl.message(
-      'Has reached maximum shared screen amount.',
+      'The max number of shared screens has been reached.',
       name: 'toast_maximum_remote_screen',
       desc: '',
       args: [],
@@ -491,10 +491,10 @@ class S {
     );
   }
 
-  /// `AirSync instance is busy. Please try it later.`
+  /// `The AirSync instance is busy. Please try again later.`
   String get main_connect_rate_limited {
     return Intl.message(
-      'AirSync instance is busy. Please try it later.',
+      'The AirSync instance is busy. Please try again later.',
       name: 'main_connect_rate_limited',
       desc: '',
       args: [],
@@ -511,10 +511,10 @@ class S {
     );
   }
 
-  /// `AirSync does not connect to Internet.`
+  /// `AirSync cannot connect to the Internet.`
   String get main_connection_mode_unsupported {
     return Intl.message(
-      'AirSync does not connect to Internet.',
+      'AirSync cannot connect to the Internet.',
       name: 'main_connection_mode_unsupported',
       desc: '',
       args: [],
@@ -531,20 +531,20 @@ class S {
     );
   }
 
-  /// `Only accept letters and numbers.`
+  /// `Accepts only letters and numbers.`
   String get main_display_code_error {
     return Intl.message(
-      'Only accept letters and numbers.',
+      'Accepts only letters and numbers.',
       name: 'main_display_code_error',
       desc: '',
       args: [],
     );
   }
 
-  /// `Only accept numbers.`
+  /// `Accepts only numbers.`
   String get main_otp_error {
     return Intl.message(
-      'Only accept numbers.',
+      'Accepts only numbers.',
       name: 'main_otp_error',
       desc: '',
       args: [],
@@ -741,10 +741,10 @@ class S {
     );
   }
 
-  /// `Enable High Quality in good network condition.`
+  /// `Enable High Quality in good network conditions.`
   String get present_state_high_quality_description {
     return Intl.message(
-      'Enable High Quality in good network condition.',
+      'Enable High Quality in good network conditions.',
       name: 'present_state_high_quality_description',
       desc: '',
       args: [],
@@ -761,10 +761,10 @@ class S {
     );
   }
 
-  /// `Sharing through browser is not supported on mobile device. Please download and use AirSync sender app for better experience.`
+  /// `Sharing through the browser is not supported on mobile devices. Please download and use the AirSync sender app for a better experience.`
   String get main_notice_not_support_description {
     return Intl.message(
-      'Sharing through browser is not supported on mobile device. Please download and use AirSync sender app for better experience.',
+      'Sharing through the browser is not supported on mobile devices. Please download and use the AirSync sender app for a better experience.',
       name: 'main_notice_not_support_description',
       desc: '',
       args: [],
@@ -1461,10 +1461,10 @@ class S {
     );
   }
 
-  /// `Unable to join, The session is react to its maximum.`
+  /// `Unable to join. The session has reached its max limit.`
   String get v3_present_session_full_description {
     return Intl.message(
-      'Unable to join, The session is react to its maximum.',
+      'Unable to join. The session has reached its max limit.',
       name: 'v3_present_session_full_description',
       desc: '',
       args: [],
@@ -1491,10 +1491,10 @@ class S {
     );
   }
 
-  /// `Has reached maximum split screen amount.`
+  /// `The max number of split screens  has been reached.`
   String get v3_present_screen_full_description {
     return Intl.message(
-      'Has reached maximum split screen amount.',
+      'The max number of split screens  has been reached.',
       name: 'v3_present_screen_full_description',
       desc: '',
       args: [],
@@ -1521,10 +1521,10 @@ class S {
     );
   }
 
-  /// `Use higher bitrate to transmit streaming.`
+  /// `Use a higher bitrate to transmit the stream.`
   String get v3_present_options_menu_hq_subtitle {
     return Intl.message(
-      'Use higher bitrate to transmit streaming.',
+      'Use a higher bitrate to transmit the stream.',
       name: 'v3_present_options_menu_hq_subtitle',
       desc: '',
       args: [],
@@ -1541,20 +1541,20 @@ class S {
     );
   }
 
-  /// `Suggest to use device graphic card to encode streaming.`
+  /// `Use device's graphic card to encode the stream.`
   String get v3_present_options_menu_he_subtitle {
     return Intl.message(
-      'Suggest to use device graphic card to encode streaming.',
+      'Use device\'s graphic card to encode the stream.',
       name: 'v3_present_options_menu_he_subtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Touchback allow`
+  /// `Allow touchback`
   String get v3_present_touch_back_allow {
     return Intl.message(
-      'Touchback allow',
+      'Allow touchback',
       name: 'v3_present_touch_back_allow',
       desc: '',
       args: [],
@@ -1571,10 +1571,10 @@ class S {
     );
   }
 
-  /// `Time remain`
+  /// `Time remaining`
   String get v3_select_screen_ios_countdown {
     return Intl.message(
-      'Time remain',
+      'Time remaining',
       name: 'v3_select_screen_ios_countdown',
       desc: '',
       args: [],
@@ -1711,10 +1711,10 @@ class S {
     );
   }
 
-  /// `A new version is now available, would you like to update now?`
+  /// `A new version is now available. Would you like to update now?`
   String get v3_setting_software_update_description {
     return Intl.message(
-      'A new version is now available, would you like to update now?',
+      'A new version is now available. Would you like to update now?',
       name: 'v3_setting_software_update_description',
       desc: '',
       args: [],

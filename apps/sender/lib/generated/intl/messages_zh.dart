@@ -152,6 +152,35 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_setting_knowledge_base":
             MessageLookupByLibrary.simpleMessage("知識庫"),
         "v3_setting_language": MessageLookupByLibrary.simpleMessage("語言"),
-        "v3_setting_legal_policy": MessageLookupByLibrary.simpleMessage("法律和隱私")
+        "v3_setting_legal_policy":
+            MessageLookupByLibrary.simpleMessage("法律和隱私"),
+        "v3_setting_open_source_license":
+            MessageLookupByLibrary.simpleMessage("開源許可證"),
+        "v3_setting_privacy_policy":
+            MessageLookupByLibrary.simpleMessage("隱私政策"),
+        "v3_setting_privacy_policy_description":
+            MessageLookupByLibrary.simpleMessage(""),
+        "v3_setting_software_update":
+            MessageLookupByLibrary.simpleMessage("軟體更新"),
+        "v3_setting_software_update_deny_action":
+            MessageLookupByLibrary.simpleMessage("稍後更新"),
+        "v3_setting_software_update_description":
+            MessageLookupByLibrary.simpleMessage("有新版本軟體可供更新，請問現在更新嗎?"),
+        "v3_setting_software_update_force_action":
+            MessageLookupByLibrary.simpleMessage("立即更新"),
+        "v3_setting_software_update_force_description":
+            MessageLookupByLibrary.simpleMessage("有新版本軟體可供更新，請立即更新"),
+        "v3_setting_software_update_no_available":
+            MessageLookupByLibrary.simpleMessage("無可用的更新"),
+        "v3_setting_software_update_no_available_action":
+            MessageLookupByLibrary.simpleMessage("好"),
+        "v3_setting_software_update_no_available_description":
+            MessageLookupByLibrary.simpleMessage("目前已是最新版本"),
+        "v3_setting_software_update_no_internet_description":
+            MessageLookupByLibrary.simpleMessage("請確認網際網路連線恢復後再進行更新"),
+        "v3_setting_software_update_no_internet_tittle":
+            MessageLookupByLibrary.simpleMessage("無網際網路連線"),
+        "v3_setting_software_update_positive_action":
+            MessageLookupByLibrary.simpleMessage("立即更新")
       };
 }

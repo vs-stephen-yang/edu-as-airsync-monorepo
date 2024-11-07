@@ -31,12 +31,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_connect_network_error": MessageLookupByLibrary.simpleMessage(
             "Network error. Please check network connectivity and try again."),
         "main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
-            "AirSync instance is busy. Please try it later."),
+            "The AirSync instance is busy. Please try again later."),
         "main_connect_unknown_error":
             MessageLookupByLibrary.simpleMessage("Unknown error."),
         "main_connection_mode_unsupported":
             MessageLookupByLibrary.simpleMessage(
-                "AirSync does not connect to Internet."),
+                "AirSync cannot connect to the Internet."),
         "main_device_list":
             MessageLookupByLibrary.simpleMessage("Quick Connect"),
         "main_display_code":
@@ -44,7 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_display_code_description":
             MessageLookupByLibrary.simpleMessage("Please input display code"),
         "main_display_code_error": MessageLookupByLibrary.simpleMessage(
-            "Only accept letters and numbers."),
+            "Accepts only letters and numbers."),
         "main_display_code_exceed": MessageLookupByLibrary.simpleMessage(
             "Maximum participants (6) reached."),
         "main_display_code_exceed_split_screen":
@@ -66,12 +66,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_language": MessageLookupByLibrary.simpleMessage("Language"),
         "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
         "main_notice_not_support_description": MessageLookupByLibrary.simpleMessage(
-            "Sharing through browser is not supported on mobile device. Please download and use AirSync sender app for better experience."),
+            "Sharing through the browser is not supported on mobile devices. Please download and use the AirSync sender app for a better experience."),
         "main_notice_positive_button": MessageLookupByLibrary.simpleMessage(
             "Download AirSync sender app."),
         "main_notice_title": MessageLookupByLibrary.simpleMessage("Notice"),
         "main_otp_error":
-            MessageLookupByLibrary.simpleMessage("Only accept numbers."),
+            MessageLookupByLibrary.simpleMessage("Accepts only numbers."),
         "main_password": MessageLookupByLibrary.simpleMessage("Password"),
         "main_password_description": MessageLookupByLibrary.simpleMessage(
             "Please enter one-time password"),
@@ -139,7 +139,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Window"),
         "present_state_high_quality_description":
             MessageLookupByLibrary.simpleMessage(
-                "Enable High Quality in good network condition."),
+                "Enable High Quality in good network conditions."),
         "present_state_high_quality_title":
             MessageLookupByLibrary.simpleMessage("High Quality"),
         "present_state_pause": MessageLookupByLibrary.simpleMessage("Pause"),
@@ -154,7 +154,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "remote_screen_connect_error": MessageLookupByLibrary.simpleMessage(
             "Remote screen connection error"),
         "remote_screen_wait": MessageLookupByLibrary.simpleMessage(
-            "Sharing is in processing, please wait."),
+            "Sharing is being processed. Please wait."),
         "settings_audio_configuration":
             MessageLookupByLibrary.simpleMessage("Audio configuration"),
         "settings_knowledge_base":
@@ -164,11 +164,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "toast_install_audio_driver": MessageLookupByLibrary.simpleMessage(
             "Please install virtual audio driver."),
         "toast_maximum_moderated": MessageLookupByLibrary.simpleMessage(
-            "Has reached maximum moderated session amount."),
+            "The max number of moderated sessions has been reached."),
         "toast_maximum_remote_screen": MessageLookupByLibrary.simpleMessage(
-            "Has reached maximum shared screen amount."),
+            "The max number of shared screens has been reached."),
         "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
-            "Has reached maximum split screen amount."),
+            "The max number of split screens has been reached."),
         "v3_device_list_button_device_list":
             MessageLookupByLibrary.simpleMessage("Device List"),
         "v3_device_list_button_text":
@@ -286,12 +286,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "Screen sharing has stopped.\nTotal sharing time %s."),
         "v3_present_options_menu_he_subtitle":
             MessageLookupByLibrary.simpleMessage(
-                "Suggest to use device graphic card to encode streaming."),
+                "Use device\'s graphic card to encode the stream."),
         "v3_present_options_menu_he_title":
             MessageLookupByLibrary.simpleMessage("Hardware Encoding"),
         "v3_present_options_menu_hq_subtitle":
             MessageLookupByLibrary.simpleMessage(
-                "Use higher bitrate to transmit streaming."),
+                "Use a higher bitrate to transmit the stream."),
         "v3_present_options_menu_hq_title":
             MessageLookupByLibrary.simpleMessage("High Quality"),
         "v3_present_screen_full":
@@ -300,7 +300,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("OK"),
         "v3_present_screen_full_description":
             MessageLookupByLibrary.simpleMessage(
-                "Has reached maximum split screen amount."),
+                "The max number of split screens  has been reached."),
         "v3_present_select_screen_extension":
             MessageLookupByLibrary.simpleMessage("Screen extension"),
         "v3_present_select_screen_extension_desc":
@@ -319,13 +319,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("OK"),
         "v3_present_session_full_description":
             MessageLookupByLibrary.simpleMessage(
-                "Unable to join, The session is react to its maximum."),
+                "Unable to join. The session has reached its max limit."),
         "v3_present_touch_back_allow":
-            MessageLookupByLibrary.simpleMessage("Touchback allow"),
+            MessageLookupByLibrary.simpleMessage("Allow touchback"),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Quick connect by scan the QR code"),
         "v3_select_screen_ios_countdown":
-            MessageLookupByLibrary.simpleMessage("Time remain"),
+            MessageLookupByLibrary.simpleMessage("Time remaining"),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("Start sharing"),
         "v3_setting_app_version":
@@ -350,7 +350,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Later"),
         "v3_setting_software_update_description":
             MessageLookupByLibrary.simpleMessage(
-                "A new version is now available, would you like to update now?"),
+                "A new version is now available. Would you like to update now?"),
         "v3_setting_software_update_force_action":
             MessageLookupByLibrary.simpleMessage("Update Now"),
         "v3_setting_software_update_force_description":
