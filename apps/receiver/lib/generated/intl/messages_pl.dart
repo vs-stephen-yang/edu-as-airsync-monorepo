@@ -1,5 +1,5 @@
 // DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a en locale. All the
+// This is a library that provides messages for a pl locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
 
@@ -18,140 +18,144 @@ final messages = new MessageLookup();
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'en';
+  String get localeName => 'pl';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
+
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "eula_agree": MessageLookupByLibrary.simpleMessage("I Agree"),
-        "eula_disagree": MessageLookupByLibrary.simpleMessage("I Disagree"),
-        "eula_title": MessageLookupByLibrary.simpleMessage("AirSync EULA"),
+        "eula_agree": MessageLookupByLibrary.simpleMessage("Zgadzam się"),
+        "eula_disagree":
+            MessageLookupByLibrary.simpleMessage("Nie zgadzam się"),
+        "eula_title": MessageLookupByLibrary.simpleMessage(
+            "Umowa licencyjna użytkownika końcowego AirSync"),
         "main_airplay_pin_code":
-            MessageLookupByLibrary.simpleMessage("AirPlay Code"),
-        "main_auto_startup":
-            MessageLookupByLibrary.simpleMessage("Launch AirSync on startup"),
+            MessageLookupByLibrary.simpleMessage("Kod AirPlay"),
+        "main_auto_startup": MessageLookupByLibrary.simpleMessage(
+            "Uruchom AirSync przy starcie"),
         "main_cast_settings_airplay":
             MessageLookupByLibrary.simpleMessage("AirPlay"),
         "main_cast_settings_device_name":
-            MessageLookupByLibrary.simpleMessage("Name"),
+            MessageLookupByLibrary.simpleMessage("Imię"),
         "main_cast_settings_google_cast":
             MessageLookupByLibrary.simpleMessage("Google Cast"),
         "main_cast_settings_miracast":
             MessageLookupByLibrary.simpleMessage("Miracast"),
         "main_cast_settings_title":
-            MessageLookupByLibrary.simpleMessage("Cast Settings"),
+            MessageLookupByLibrary.simpleMessage("Ustawienia obsady"),
         "main_content_display_code":
-            MessageLookupByLibrary.simpleMessage("Display Code"),
+            MessageLookupByLibrary.simpleMessage("Wyświetl kod"),
         "main_content_lan_only":
-            MessageLookupByLibrary.simpleMessage("Only LAN connection"),
+            MessageLookupByLibrary.simpleMessage("Tylko połączenie LAN"),
         "main_content_one_time_password":
-            MessageLookupByLibrary.simpleMessage("One Time Password"),
+            MessageLookupByLibrary.simpleMessage("Jednorazowe hasło"),
         "main_content_one_time_password_get_fail":
             MessageLookupByLibrary.simpleMessage(
-                "Failed to refresh password.\nPlease wait for 30 seconds before retrying."),
+                "Nie udało się odświeżyć hasła.\nProszę odczekać 30 sekund przed ponowieniem próby."),
         "main_feature_no_network_warning": MessageLookupByLibrary.simpleMessage(
-            "Control connection is disconnected. Please reconnect"),
+            "Kontroluj nieprawidłowości w sieci, połącz się ponownie"),
         "main_feature_reconnect_fail_toast":
             MessageLookupByLibrary.simpleMessage(
-                "Network (Control) reconnect fail"),
+                "Nie udało się ponownie połączyć z siecią"),
         "main_feature_reconnect_success_toast":
             MessageLookupByLibrary.simpleMessage(
-                "Network (Control) reconnect success"),
-        "main_feature_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
-            "Network (Control) reconnecting"),
+                "Ponowne połączenie z siecią powiodło się"),
+        "main_feature_reconnecting_toast":
+            MessageLookupByLibrary.simpleMessage("Ponowne łączenie z siecią"),
         "main_get_display_code_failure": MessageLookupByLibrary.simpleMessage(
-            "Failed to get display code. Wait for network connectivity to resume, or restart the app."),
-        "main_language_name": MessageLookupByLibrary.simpleMessage("English"),
-        "main_language_title": MessageLookupByLibrary.simpleMessage("Language"),
+            "Nie udało się uzyskać kodu wyświetlania. Poczekaj na wznowienie połączenia sieciowego lub uruchom ponownie aplikację."),
+        "main_language_name": MessageLookupByLibrary.simpleMessage("Angielski"),
+        "main_language_title": MessageLookupByLibrary.simpleMessage("Język"),
         "main_limit_time_message":
-            MessageLookupByLibrary.simpleMessage("5 minutes left"),
+            MessageLookupByLibrary.simpleMessage("Pozostało 5 minut"),
         "main_mirror_from_client": MessageLookupByLibrary.simpleMessage(
-            "%s would like to share their screen."),
+            "%s chciałby udostępnić swój ekran."),
         "main_mirror_prompt_accept":
-            MessageLookupByLibrary.simpleMessage("Accept"),
+            MessageLookupByLibrary.simpleMessage("Akceptuj"),
         "main_mirror_prompt_cancel":
-            MessageLookupByLibrary.simpleMessage("Cancel"),
+            MessageLookupByLibrary.simpleMessage("Anuluj"),
         "main_register_display_code_failure": MessageLookupByLibrary.simpleMessage(
-            "Failure to get Display Code and One Time Password. This may be due to a network or server issue. Please try again later when connection is restored."),
+            "Nie udało się uzyskać kodu wyświetlacza i jednorazowego hasła. Może to być spowodowane problemem z siecią lub serwerem. Spróbuj ponownie później, gdy połączenie zostanie przywrócone."),
         "main_settings_airplay_code":
-            MessageLookupByLibrary.simpleMessage("AirPlay code"),
+            MessageLookupByLibrary.simpleMessage("Kod AirPlay"),
         "main_settings_device_list":
-            MessageLookupByLibrary.simpleMessage("Quick Connect Password"),
+            MessageLookupByLibrary.simpleMessage("Szybkie hasło połączenia"),
         "main_settings_device_name":
-            MessageLookupByLibrary.simpleMessage("Name"),
+            MessageLookupByLibrary.simpleMessage("Nazwa"),
         "main_settings_device_name_cancel":
-            MessageLookupByLibrary.simpleMessage("CANCEL"),
+            MessageLookupByLibrary.simpleMessage("ANULUJ"),
         "main_settings_device_name_hint":
-            MessageLookupByLibrary.simpleMessage("Name"),
+            MessageLookupByLibrary.simpleMessage("Imię"),
         "main_settings_device_name_save":
-            MessageLookupByLibrary.simpleMessage("SAVE"),
+            MessageLookupByLibrary.simpleMessage("ZAPISZ"),
         "main_settings_device_name_title":
-            MessageLookupByLibrary.simpleMessage("Rename device"),
-        "main_settings_language":
-            MessageLookupByLibrary.simpleMessage("Language"),
+            MessageLookupByLibrary.simpleMessage("Zmień nazwę urządzenia"),
+        "main_settings_language": MessageLookupByLibrary.simpleMessage("Język"),
         "main_settings_mirror_confirmation":
-            MessageLookupByLibrary.simpleMessage("Mirror confirmation"),
+            MessageLookupByLibrary.simpleMessage("Potwierdzenie lustrzane"),
         "main_settings_pin_visible":
-            MessageLookupByLibrary.simpleMessage("Connect information"),
+            MessageLookupByLibrary.simpleMessage("Połącz informacje"),
         "main_settings_share_to_sender":
-            MessageLookupByLibrary.simpleMessage("Share screen to device"),
+            MessageLookupByLibrary.simpleMessage("Udostępnij ekran urządzeniu"),
         "main_settings_share_to_sender_limit_desc":
             MessageLookupByLibrary.simpleMessage(
-                "Share screen up to 10 senders."),
-        "main_settings_title": MessageLookupByLibrary.simpleMessage("Settings"),
+                "Udostępnij ekran maksymalnie 10 nadawcom."),
+        "main_settings_title":
+            MessageLookupByLibrary.simpleMessage("Ustawienia"),
         "main_settings_whats_new":
-            MessageLookupByLibrary.simpleMessage("What\'s New?"),
+            MessageLookupByLibrary.simpleMessage("Co nowego?"),
         "main_split_screen_question": MessageLookupByLibrary.simpleMessage(
-            "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once."),
+            "Kliknij powyższy przełącznik, aby przejść do trybu podzielonego ekranu. Jednocześnie może prezentować do 4 uczestników."),
         "main_split_screen_title":
-            MessageLookupByLibrary.simpleMessage("Split Screen"),
+            MessageLookupByLibrary.simpleMessage("Podziel ekran"),
         "main_split_screen_waiting": MessageLookupByLibrary.simpleMessage(
-            "Split screen enabled. Waiting for presenter to share screen..."),
+            "Włączono podział ekranu. Oczekiwanie na udostępnienie ekranu przez prezentera..."),
         "main_status_go_background": MessageLookupByLibrary.simpleMessage(
-            "AirSync app is running in the background."),
+            "Aplikacja AirSync działa w tle."),
         "main_status_no_network": MessageLookupByLibrary.simpleMessage(
             "Poor network connection detected.\nPlease check your connectivity."),
         "main_status_remaining_time":
-            MessageLookupByLibrary.simpleMessage("%02d min : %02d sec"),
+            MessageLookupByLibrary.simpleMessage("%02d min : %02d sek"),
         "main_thanks_content": MessageLookupByLibrary.simpleMessage(
-            "Thank you for using AirSync."),
+            "Dziękujemy za korzystanie z AirSync."),
         "main_wait_title": MessageLookupByLibrary.simpleMessage(
-            "Waiting for presenter to share screen..."),
-        "main_wait_up_next": MessageLookupByLibrary.simpleMessage("UP NEXT"),
+            "Oczekiwanie na udostępnienie ekranu przez prezentera..."),
+        "main_wait_up_next": MessageLookupByLibrary.simpleMessage("DALEJ"),
         "main_webrtc_reconnect_fail_toast":
             MessageLookupByLibrary.simpleMessage(
-                "Network (WebRTC) reconnect fail"),
+                "Nie udało się ponownie połączyć z siecią (WebRTC)"),
         "main_webrtc_reconnect_success_toast":
             MessageLookupByLibrary.simpleMessage(
-                "Network (WebRTC) reconnect success"),
+                "Ponowne połączenie z siecią (WebRTC) powiodło się"),
         "main_webrtc_reconnecting_toast": MessageLookupByLibrary.simpleMessage(
-            "Network (WebRTC) reconnecting"),
+            "Ponowne łączenie z siecią (WebRTC)"),
         "main_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "[Improvement]\n\n1. All numeric display code for better experience.\n\n2. Improve connection stability.\n\n3. Bugs fixed.\n"),
+            "[Nowa funkcja]\n\n1. Automatyczne akceptowanie żądania kopii lustrzanej.\n\n2. Ustawienie kodu PIN AirPlay jako opcjonalnego.\n\n3. Zapewnienie mechanizmu aktualizacji aplikacji AirSync Sender.\n\n[Ulepszenie]\n\n1. Domyślnie wszystkie kopie lustrzane są włączone i zachowują najnowsze ustawienia kopii lustrzanej.\n\n2. Zwiększenie interwału hasła jednorazowego do 2 minut.\n\n3. Poprawa jakości obrazu.\n\n4. Naprawiono błędy."),
         "main_whats_new_title":
-            MessageLookupByLibrary.simpleMessage("What’s New on AirSync?"),
+            MessageLookupByLibrary.simpleMessage("Co nowego w AirSync?"),
         "moderator_activate_split_screen": MessageLookupByLibrary.simpleMessage(
-            "Click the above toggle for Split Screen Mode. Up to 4 participants can present at once."),
-        "moderator_cancel": MessageLookupByLibrary.simpleMessage("CANCEL"),
-        "moderator_confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+            "Kliknij powyższy przełącznik, aby przejść do trybu podzielonego ekranu. Jednocześnie może prezentować do 4 uczestników."),
+        "moderator_cancel": MessageLookupByLibrary.simpleMessage("ANULUJ"),
+        "moderator_confirm": MessageLookupByLibrary.simpleMessage("Potwierdź"),
         "moderator_deactivate_split_screen": MessageLookupByLibrary.simpleMessage(
-            "Are you sure you want to end this split screen session? All screens currently shared will be terminated."),
-        "moderator_exit": MessageLookupByLibrary.simpleMessage("EXIT"),
+            "Czy na pewno chcesz zakończyć tę sesję podzielonego ekranu? Wszystkie obecnie udostępniane ekrany zostaną zakończone."),
+        "moderator_exit": MessageLookupByLibrary.simpleMessage("WYJDŹ"),
         "moderator_exit_dialog": MessageLookupByLibrary.simpleMessage(
-            "Are you sure you want to end this moderator session? All presenters will be removed."),
+            "Czy na pewno chcesz zakończyć tę sesję moderatora? Wszyscy prezenterzy zostaną usunięci."),
         "moderator_presentersLimit": MessageLookupByLibrary.simpleMessage(
-            "Click the above toggle for Moderator Mode. Up to 6 presenters can join."),
+            "Kliknij powyższy przełącznik, aby przejść do trybu moderatora. Może dołączyć maksymalnie 6 prezenterów."),
         "moderator_presentersList":
-            MessageLookupByLibrary.simpleMessage("Presenters"),
-        "moderator_remove": MessageLookupByLibrary.simpleMessage("REMOVE"),
+            MessageLookupByLibrary.simpleMessage("Prezenterzy"),
+        "moderator_remove": MessageLookupByLibrary.simpleMessage("USUŃ"),
         "moderator_verifyCode_fail": MessageLookupByLibrary.simpleMessage(
-            "Something went wrong. Please try again."),
+            "Coś poszło nie tak. Spróbuj ponownie."),
         "toast_maximum_split_screen": MessageLookupByLibrary.simpleMessage(
-            "Has reached maximum split screen amount."),
+            "Osiągnięto maksymalny poziom podziału ekranu."),
         "update_install_now":
-            MessageLookupByLibrary.simpleMessage("INSTALL NOW"),
+            MessageLookupByLibrary.simpleMessage("ZAINSTALUJ TERAZ"),
         "update_message": MessageLookupByLibrary.simpleMessage(
-            "A new version of software is available"),
-        "update_title": MessageLookupByLibrary.simpleMessage("AirSync Update"),
+            "Dostępna jest nowa wersja oprogramowania"),
+        "update_title":
+            MessageLookupByLibrary.simpleMessage("Aktualizacja AirSync"),
         "v3_authorize_prompt_accept":
             MessageLookupByLibrary.simpleMessage("Accept"),
         "v3_authorize_prompt_decline":
@@ -209,18 +213,18 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Stop"),
         "v3_group_reject_invited": MessageLookupByLibrary.simpleMessage(
             "declined your broadcast request, please check the Broads setting."),
-        "v3_instruction1a": MessageLookupByLibrary.simpleMessage(
-            "Visit airsync.net or open the sender app"),
+        "v3_instruction1a":
+            MessageLookupByLibrary.simpleMessage("Instrukcja 1a"),
         "v3_instruction1b":
-            MessageLookupByLibrary.simpleMessage("Open the sender app"),
+            MessageLookupByLibrary.simpleMessage("Otwórz aplikację AisSync"),
         "v3_instruction2":
-            MessageLookupByLibrary.simpleMessage("Enter display code"),
+            MessageLookupByLibrary.simpleMessage("Wprowadź kod wyświetlacza"),
         "v3_instruction3":
-            MessageLookupByLibrary.simpleMessage("Enter one-time password"),
+            MessageLookupByLibrary.simpleMessage("Wprowadź jednorazowe hasło"),
         "v3_instruction_share_screen":
-            MessageLookupByLibrary.simpleMessage("Share Your Screens"),
-        "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
-            "Supports sharing via AirPlay, Google Cast or Miracast"),
+            MessageLookupByLibrary.simpleMessage("Udostępnij swój ekran"),
+        "v3_instruction_support":
+            MessageLookupByLibrary.simpleMessage("Wsparcie dla instrukcji"),
         "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
             "Unable to detect an internet connection. Please connect to a Wi-Fi or intranet network, and try again."),
         "v3_mirror_request_passcode":
@@ -243,25 +247,20 @@ class MessageLookup extends MessageLookupByLibrary {
             "Maximum up to 6 participants."),
         "v3_participants_title":
             MessageLookupByLibrary.simpleMessage("Participants"),
-        "v3_qrcode_quick_connect":
-            MessageLookupByLibrary.simpleMessage("Quick Connect"),
+        "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
+            "Kod QR do szybkiego połączenia"),
         "v3_quick_connect_menu_display_code":
-            MessageLookupByLibrary.simpleMessage("Display Code"),
-        "v3_quick_connect_menu_qrcode":
-            MessageLookupByLibrary.simpleMessage("QR Code"),
+            MessageLookupByLibrary.simpleMessage(
+                "Kod wyświetlacza menu szybkiego połączenia"),
+        "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
+            "Szybkie menu połączenia kod QR"),
         "v3_settings_broadcast":
             MessageLookupByLibrary.simpleMessage("Broadcast"),
-        "v3_settings_broadcast_boards":
-            MessageLookupByLibrary.simpleMessage("Boards"),
         "v3_settings_broadcast_cast_boards":
             MessageLookupByLibrary.simpleMessage("Cast to boards"),
         "v3_settings_broadcast_cast_boards_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Share your screen to all Interactive Flat Panels (IFPs) in the network."),
-        "v3_settings_broadcast_cast_to":
-            MessageLookupByLibrary.simpleMessage("Cast to"),
-        "v3_settings_broadcast_devices":
-            MessageLookupByLibrary.simpleMessage("Devices"),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage(
                 "Broadcast to the display group"),
@@ -337,25 +336,27 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("What\'s new"),
         "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
             "AirSync %s\n\nAirSync is a ViewSonic proprietary wireless screen-sharing solution. When used with the AirSync sender, it enables seamless screen sharing from a user\'s device to ViewSonic interactive displays.\n\nKey features: \n\n1. Wireless screensharing.\n\n2. Automatic split screens for multiple presenters.\n\n3. Moderator mode to enable more control during presentation.\n\n4. Screen mirror to support AirPlay, Google Cast and Miracast.\n\n5. Cast to device with remote control.\n\n6. Cast to board to broadcast screens to multiple large screens.\n\n7. Annotation.\n\n8. Interact with Windows, macOS, iOS, Android and web version AirSync sender.\n\n9. Touchback is supported in Windows and macOS sender.\n\n"),
-        "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
+        "v3_shortcuts_airplay":
+            MessageLookupByLibrary.simpleMessage("Skróty airplay"),
         "v3_shortcuts_cast_device":
-            MessageLookupByLibrary.simpleMessage("Cast to devices"),
+            MessageLookupByLibrary.simpleMessage("Przesyłaj na urządzenia"),
         "v3_shortcuts_cast_device_desc": MessageLookupByLibrary.simpleMessage(
-            "Cast your screen to multiple devices, including laptops, tablets and mobile devices simultaneously."),
+            "Przesyłaj zawartość ekranu jednocześnie na wiele urządzeń, w tym laptopy, tablety i urządzenia mobilne."),
         "v3_shortcuts_google_cast":
-            MessageLookupByLibrary.simpleMessage("Google Cast"),
+            MessageLookupByLibrary.simpleMessage("Skróty Google Cast"),
         "v3_shortcuts_menu_title":
-            MessageLookupByLibrary.simpleMessage("Shortcuts"),
+            MessageLookupByLibrary.simpleMessage("Tytuł menu skrótów"),
         "v3_shortcuts_miracast":
-            MessageLookupByLibrary.simpleMessage("Miracast"),
+            MessageLookupByLibrary.simpleMessage("Skróty Miracast"),
         "v3_shortcuts_mirroring":
-            MessageLookupByLibrary.simpleMessage("Mirroring"),
+            MessageLookupByLibrary.simpleMessage("Skróty lustrzane"),
         "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
-            "Waiting for this participant to share their screen"),
+            "Oczekiwanie na udostępnienie ekranu przez tego uczestnika"),
         "v3_waiting_join":
             MessageLookupByLibrary.simpleMessage("Waiting for others to join"),
-        "v3_waiting_up_next": MessageLookupByLibrary.simpleMessage("Up next"),
-        "vbs_ota_progress_msg":
-            MessageLookupByLibrary.simpleMessage("Downloading system updates")
+        "v3_waiting_up_next":
+            MessageLookupByLibrary.simpleMessage("Oczekiwanie na kolejny"),
+        "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(
+            "Pobieranie aktualizacji systemu")
       };
 }
