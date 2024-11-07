@@ -79,5 +79,19 @@
     "v3_setting_language": "語言",
     "v3_setting_legal_policy": "法律和隱私",
     "v3_setting_knowledge_base": "知識庫",
-    "v3_setting_check_update": "檢查更新"
+    "v3_setting_check_update": "檢查更新",
+    "v3_setting_privacy_policy": "隱私政策",
+    "v3_setting_privacy_policy_description": "",
+    "v3_setting_open_source_license": "開源許可證",
+    "v3_setting_software_update": "軟體更新",
+    "v3_setting_software_update_force_description": "有新版本軟體可供更新，請立即更新",
+    "v3_setting_software_update_force_action": "立即更新",
+    "v3_setting_software_update_description": "有新版本軟體可供更新，請問現在更新嗎?",
+    "v3_setting_software_update_positive_action": "立即更新",
+    "v3_setting_software_update_deny_action": "稍後更新",
+    "v3_setting_software_update_no_available": "無可用的更新",
+    "v3_setting_software_update_no_available_description": "目前已是最新版本",
+    "v3_setting_software_update_no_available_action": "好",
+    "v3_setting_software_update_no_internet_tittle": "無網際網路連線",
+    "v3_setting_software_update_no_internet_description": "請確認網際網路連線恢復後再進行更新"
 }
