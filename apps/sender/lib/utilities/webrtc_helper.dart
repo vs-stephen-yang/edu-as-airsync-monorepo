@@ -155,4 +155,8 @@ class WebRTCHelper {
   bool isStreaming() {
     return webRTCConnector?.isFirstConnected ?? false;
   }
+
+  Future<void> launchBroadcastUploadExtension() async {
+    await WebRTC.invokeMethod('launchBroadcastUploadExtension');
+  }
 }

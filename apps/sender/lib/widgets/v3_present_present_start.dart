@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -28,6 +29,7 @@ import 'package:provider/provider.dart';
 
 class V3PresentPresentStart extends StatefulWidget {
   const V3PresentPresentStart({super.key, required this.isModeratorMode});
+
   final bool isModeratorMode;
 
   @override
@@ -39,6 +41,10 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
 
   bool isAnnotationImplemented = false;
   bool annotationOn = false;
+  bool needRelaunchBroadcastUploadExtension = false;
+
+  StreamSubscription? _broadcastUploadExtensionResumedSubscription;
+  StreamSubscription? _broadcastUploadExtensionClosedSubscription;
 
   void sendReconnectStateToast(
       BuildContext context, ChannelReconnectState state) {
@@ -58,6 +64,25 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
       DeviceOrientation.portraitDown,
     ]);
     super.initState();
+    if (WebRTC.platformIsIOS) _initializeBroadcastUploadExtensionObserver();
+  }
+
+  void _initializeBroadcastUploadExtensionObserver() {
+    _broadcastUploadExtensionResumedSubscription =
+        BroadcastUploadExtensionObserver
+            .instance.onBroadcastUploadExtensionResumed.stream
+            .listen((message) {
+      needRelaunchBroadcastUploadExtension = false;
+      // Update state
+      presentingState.value = !presentingState.value;
+    });
+    _broadcastUploadExtensionClosedSubscription =
+        BroadcastUploadExtensionObserver
+            .instance.onBroadcastUploadExtensionClosed.stream
+            .listen((message) {
+      presentingState.value = false;
+      needRelaunchBroadcastUploadExtension = true;
+    });
   }
 
   @override
@@ -69,6 +94,8 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
     if (!kIsWeb) {
       AnnotationModel.closeAnnotation();
     }
+    _broadcastUploadExtensionResumedSubscription?.cancel();
+    _broadcastUploadExtensionClosedSubscription?.cancel();
     super.dispose();
   }
 
@@ -138,17 +165,21 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
                         radius: kIsWeb ? 24 : 28,
                         child: IconButton(
                           onPressed: () {
-                            // Toggle current state
-                            bool tempState = !presentingState.value;
-                            trackEvent(
-                                tempState ? 'click_resume' : 'click_pause',
-                                EventCategory.session);
+                            if (needRelaunchBroadcastUploadExtension) {
+                              WebRTCHelper().launchBroadcastUploadExtension();
+                            } else {
+                              // Toggle current state
+                              bool tempState = !presentingState.value;
+                              trackEvent(
+                                  tempState ? 'click_resume' : 'click_pause',
+                                  EventCategory.session);
 
-                            // Update state
-                            presentingState.value = tempState;
-                            tempState
-                                ? channelProvider.presentResume()
-                                : channelProvider.presentPause();
+                              // Update state
+                              presentingState.value = tempState;
+                              tempState
+                                  ? channelProvider.presentResume()
+                                  : channelProvider.presentPause();
+                            }
                           },
                           icon: SvgPicture.asset(!value
                               ? 'assets/images/v3_ic_sharing_pause_on.svg'
