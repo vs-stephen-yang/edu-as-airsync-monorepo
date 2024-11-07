@@ -247,7 +247,9 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
             annotationModel.screenIndex);
         window.show();
       } else {
-        AnnotationModel.closeAnnotation();
+        WindowUtility.minimizeWindow();
+        await Future.delayed(const Duration(milliseconds: 50));
+        WindowController.fromWindowId(list.first).show();
       }
     } else if (Platform.isAndroid) {
       if (!await android_window.isRunning()) {
