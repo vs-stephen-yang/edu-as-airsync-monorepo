@@ -120,15 +120,23 @@ class AndroidWindow(
     val orientation = service.resources.configuration.orientation
     var newWidth = 0
     var newHeight = 0
+    var chkWidth = width
+    var chkHeight = height
+    if (width > metrics.widthPixels) {
+      chkWidth = metrics.widthPixels
+    }
+    if (height > metrics.heightPixels) {
+      chkHeight = metrics.heightPixels
+    }
     if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-      newWidth = max(width, height)
-      newHeight = min(width, height)
+      newWidth = max(chkWidth, chkHeight)
+      newHeight = min(chkWidth, chkHeight)
     } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-      newWidth = min(width, height)
-      newHeight = max(width, height)
+      newWidth = min(chkWidth, chkHeight)
+      newHeight = max(chkWidth, chkHeight)
     } else {
-      newWidth = width
-      newHeight = height
+      newWidth = chkWidth
+      newHeight = chkHeight
     }
     layoutParams.width = newWidth
     layoutParams.height = newHeight

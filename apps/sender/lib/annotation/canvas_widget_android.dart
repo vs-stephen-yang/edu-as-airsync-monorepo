@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:android_window/android_window.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
@@ -55,7 +53,6 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
   final List<DrawingPoint?> _points = [];
   bool _isEraser = false;
   bool _isCollapsed = false;
-  bool _isHorizontal = false;
   Color _penColor = Colors.red;
   double _strokeWidth = 2.0;
   OverlayEntry? _overlayEntry;
@@ -112,24 +109,12 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    final double ratio =
-        WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
-    final double screenWidth = widget.initPhysicalSize.width / ratio;
-    final double screenHeight = widget.initPhysicalSize.height / ratio;
-    if (screenWidth > screenHeight) {
-      _isHorizontal = true;
-    }
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
   @override
   void didChangeMetrics() {
-    final double height = WidgetsBinding
-        .instance.platformDispatcher.views.first.physicalSize.height;
-    final double width = WidgetsBinding
-        .instance.platformDispatcher.views.first.physicalSize.width;
-    _isHorizontal = width > height;
     setState(() {
       _removeOverlay();
     });
@@ -182,38 +167,20 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     AnnotationIconButton(
-                      selected: false,
-                      size: 32,
-                      icon: 'assets/images/v3_ic_annotation_pen_disable.svg',
-                      onPressed: () async {
-                        if (_isCollapsed) {
-                          if (_isHorizontal) {
-                            AndroidWindow.resize(
-                                max(widget.sizeList.first.toInt(),
-                                    widget.sizeList.last.toInt()),
-                                min(widget.sizeList.first.toInt(),
-                                    widget.sizeList.last.toInt()));
-                          } else {
-                            AndroidWindow.resize(
-                                min(widget.sizeList.first.toInt(),
-                                    widget.sizeList.last.toInt()),
-                                max(widget.sizeList.first.toInt(),
-                                    widget.sizeList.last.toInt()));
-                          }
-                        } else {
-                          if (_isHorizontal) {
-                            AndroidWindow.resize(85, 70);
-                          } else {
-                            AndroidWindow.resize(70, 85);
-                          }
-                        }
-                        _removeOverlay();
-                        await Future.delayed(const Duration(milliseconds: 150));
-                        setState(() {
-                          _isCollapsed = !_isCollapsed;
-                        });
-                      },
-                    ),
+                        selected: false,
+                        size: 32,
+                        icon: 'assets/images/v3_ic_annotation_pen_disable.svg',
+                        onPressed: () async {
+                          _removeOverlay();
+                          await Future.delayed(
+                              const Duration(milliseconds: 150));
+                          setState(() {
+                            _isCollapsed = false;
+                          });
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            AndroidWindow.resize(5000, 3000);
+                          });
+                        }),
                   ],
                 ),
               ),
