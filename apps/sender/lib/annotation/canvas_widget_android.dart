@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:android_window/android_window.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -62,12 +63,16 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
   GlobalKey strokeKey = GlobalKey();
 
   void _setEraserMode() {
+    trackEvent('click_eraser', EventCategory.annotation);
+
     setState(() {
       _isEraser = true;
     });
   }
 
   void _clearAll() {
+    trackEvent('click_clean', EventCategory.annotation);
+
     setState(() {
       _points.clear();
     });
@@ -274,6 +279,8 @@ class _CanvasPageState extends State<_CanvasPage> with WidgetsBindingObserver {
             ),
             onTap: () {
               _createOverlayEntry(colorKey, createSelectColor(), 170);
+              trackEvent('click_pen', EventCategory.annotation);
+
               setState(() {
                 _isEraser = false;
               });

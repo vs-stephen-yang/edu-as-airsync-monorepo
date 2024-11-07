@@ -45,7 +45,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import 'annotation/annotation_model.dart';
-import 'annotation/canvas_widget.dart';
+import 'annotation/canvas_widget_desktop.dart';
 
 void commonEntry(List<String> args, ConfigSettings settings) async {
   runZonedGuarded<Future<void>>(() async {
@@ -62,7 +62,7 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
             ? const {}
             : jsonDecode(args[2]) as Map<String, dynamic>;
         if (argument['mode'] == 'desktop_canvas') {
-          runApp(CanvasWidget(
+          runApp(CanvasWidgetDesktop(
             windowController: WindowController.fromWindowId(windowId),
             args: argument,
           ));
