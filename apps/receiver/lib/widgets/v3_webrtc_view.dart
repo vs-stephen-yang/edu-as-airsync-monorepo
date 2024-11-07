@@ -187,41 +187,45 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
           if (widget.rtcConnector.presentationState ==
                   PresentationState.streaming &&
               (widget.rtcConnector.senderName ?? '').isNotEmpty) ...[
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 4,
-                  color: context.tokens.color.vsdslColorSurface900,
+            IgnorePointer(
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 4,
+                    color: context.tokens.color.vsdslColorSurface900,
+                  ),
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    height: 24,
-                    padding: const EdgeInsets.only(
-                        left: 8, top: 1, right: 8, bottom: 5),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10)),
-                      color: context.tokens.color.vsdslColorSurface900,
-                    ),
-                    child: AutoSizeText(
-                      widget.rtcConnector.senderName ?? '',
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color:
-                              context.tokens.color.vsdslColorOnSurfaceInverse),
-                      maxLines: 1,
-                    ),
-                  )
-                ],
+            IgnorePointer(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      height: 24,
+                      padding: const EdgeInsets.only(
+                          left: 8, top: 1, right: 8, bottom: 5),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10)),
+                        color: context.tokens.color.vsdslColorSurface900,
+                      ),
+                      child: AutoSizeText(
+                        widget.rtcConnector.senderName ?? '',
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: context
+                                .tokens.color.vsdslColorOnSurfaceInverse),
+                        maxLines: 1,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ],
