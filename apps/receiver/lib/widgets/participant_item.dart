@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
@@ -132,17 +131,14 @@ class ParticipantItem extends StatelessWidget {
   }
 
   _sendPresenterPlay(RTCConnector rtcConnector) {
-    AppAnalytics().trackEventModeratorPresenterPresent();
     rtcConnector.sendAllowPresent();
   }
 
   _sendPresenterStop(RTCConnector rtcConnector) {
-    AppAnalytics().trackEventModeratorPresenterStop();
     rtcConnector.sendStopPresent();
   }
 
   _sendPresenterRemove(RTCConnector rtcConnector) async {
-    AppAnalytics().trackEventModeratorPresentersRemove();
     await rtcConnector.disconnectPeerConnection();
     await rtcConnector.disconnectChannel(reason: 'User removed the presenter');
   }

@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -279,7 +278,6 @@ class _SettingsState extends State<Settings> {
         const Icon(Icons.language, size: 32.0),
         S.of(context).main_settings_language,
         () {
-          AppAnalytics().trackEventAppLanguageClick();
           _showMenuDialog(const LanguageSelection());
         },
       ),
@@ -289,7 +287,6 @@ class _SettingsState extends State<Settings> {
         const Icon(Icons.campaign, size: 32.0),
         S.of(context).main_settings_whats_new,
         () {
-          AppAnalytics().trackEventAppWhatsNewsClick();
           _showMenuDialog(const WhatsNew());
         },
       ),

@@ -1,3 +1,4 @@
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
@@ -53,6 +54,8 @@ class V3SettingsDeviceLanguage extends StatelessWidget {
               defaultLanguage: languageProvider.language,
               languageList: languageProvider.localeMap,
               onChange: (String language) {
+                trackEvent('click_language', EventCategory.setting);
+
                 languageProvider.setLanguage(language);
               }),
         ),
@@ -60,4 +63,3 @@ class V3SettingsDeviceLanguage extends StatelessWidget {
     );
   }
 }
-

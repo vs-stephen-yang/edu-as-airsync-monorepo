@@ -1,3 +1,4 @@
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -94,6 +95,12 @@ class V3SettingsConnectivity extends StatelessWidget {
             AppPreferences().connectivityType == type.toString(),
         onChange: (bool selected) {
           if (selected) {
+            trackEvent(
+              'click_connectivity',
+              EventCategory.setting,
+              target: type.name,
+            );
+
             AppPreferences().setSelectedConnectivityType(type);
           }
         });

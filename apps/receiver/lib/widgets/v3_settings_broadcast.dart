@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -103,6 +104,14 @@ class CastToDevices extends StatelessWidget {
                                   await channelProvider.startRemoteScreen(
                                       fromSender: true);
                                 }
+
+                                trackEvent(
+                                  'click_cast_to_device',
+                                  EventCategory.setting,
+                                  target: channelProvider.isSenderMode
+                                      ? 'on'
+                                      : 'off',
+                                );
                               },
                             ),
                           );

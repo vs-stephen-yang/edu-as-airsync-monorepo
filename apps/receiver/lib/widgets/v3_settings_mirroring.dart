@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -32,6 +33,12 @@ class V3SettingsMirroring extends StatelessWidget {
                       mirrorStateProvider.startAirPlay();
                       channelProvider.blockRtcConnection = true;
                     }
+
+                    trackEvent(
+                      'click_airplay',
+                      EventCategory.setting,
+                      target: mirrorStateProvider.airplayEnabled ? 'on' : 'off',
+                    );
                   }),
               Visibility(
                   visible: mirrorStateProvider.airplayEnabled,
@@ -51,6 +58,13 @@ class V3SettingsMirroring extends StatelessWidget {
                       mirrorStateProvider.startGoogleCast();
                       channelProvider.blockRtcConnection = true;
                     }
+
+                    trackEvent(
+                      'click_google_cast',
+                      EventCategory.setting,
+                      target:
+                          mirrorStateProvider.googleCastEnabled ? 'on' : 'off',
+                    );
                   }),
               _buildSpacing(context),
               MirroringItem(
@@ -64,6 +78,13 @@ class V3SettingsMirroring extends StatelessWidget {
                       mirrorStateProvider.startMiracast();
                       channelProvider.blockRtcConnection = true;
                     }
+
+                    trackEvent(
+                      'click_miracast',
+                      EventCategory.setting,
+                      target:
+                          mirrorStateProvider.miracastEnabled ? 'on' : 'off',
+                    );
                   }),
               Container(
                 height: 1,
@@ -112,6 +133,13 @@ class V3SettingsMirroring extends StatelessWidget {
               onChanged: (bool? value) {
                 mirrorStateProvider.isMirrorConfirmation =
                     !mirrorStateProvider.isMirrorConfirmation;
+
+                trackEvent(
+                  'click_auto_accept',
+                  EventCategory.setting,
+                  target:
+                      mirrorStateProvider.isMirrorConfirmation ? 'on' : 'off',
+                );
               }),
         ),
         Padding(
@@ -150,6 +178,12 @@ class V3SettingsMirroring extends StatelessWidget {
                   color: context.tokens.color.vsdslColorOnPrimary, width: 2),
               onChanged: (bool? value) {
                 if (value != null) {
+                  trackEvent(
+                    'click_airplay_pincode',
+                    EventCategory.setting,
+                    target: value ? 'on' : 'off',
+                  );
+
                   mirrorStateProvider.setAirPlayCodeEnable(value);
                 }
               }),

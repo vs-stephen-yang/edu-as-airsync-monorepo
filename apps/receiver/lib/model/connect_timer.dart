@@ -32,7 +32,8 @@ class ConnectionTimer {
         int count = threeHourTimeLimit - timer.tick;
         remainingTimeTimeout.sink.add(count);
         StatusBar.showReamingTime.value = true;
-        AppAnalytics().trackEventSessionTimeoutNotification();
+        trackTrace('meeting_timeout_notification');
+
         StatusBar.showReamingTimeAlert.value = true;
       } else if (threeHourTimeLimit - timer.tick < 300 &&
           timer.tick != threeHourTimeLimit) {
@@ -42,7 +43,8 @@ class ConnectionTimer {
           StatusBar.showReamingTimeAlert.value = false;
         }
       } else if (timer.tick == threeHourTimeLimit) {
-        AppAnalytics().trackEventSessionTimeout();
+        trackTrace('meeting_timeout');
+
         StatusBar.showReamingTime.value = false;
         _remainingTimeTimer?.cancel();
         _remainingTimeTimer = null;

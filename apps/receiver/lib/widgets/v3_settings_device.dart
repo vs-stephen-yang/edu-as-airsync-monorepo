@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/app_preferences.dart';
@@ -123,6 +124,14 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
 
   Widget _buildAuthorizeMode(
       BuildContext context, ChannelProvider channelProvider) {
+    trackClickApprove() {
+      trackEvent(
+        'clcik_approve_webrtc',
+        EventCategory.setting,
+        target: channelProvider.isAuthorizeMode ? 'on' : 'off',
+      );
+    }
+
     return Row(
       children: [
         SizedBox(
@@ -133,6 +142,8 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             activeColor: context.tokens.color.vsdslColorPrimary,
             onChanged: (bool? value) {
               channelProvider.isAuthorizeMode = value ?? true;
+
+              trackClickApprove();
             },
           ),
         ),
@@ -144,6 +155,8 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             } else {
               channelProvider.isAuthorizeMode = true;
             }
+
+            trackClickApprove();
           },
           child: AutoSizeText(
             S.of(context).v3_settings_device_authorize_mode,
@@ -222,6 +235,13 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
                 } else {
                   channelProvider.isDeviceListQuickConnect = true;
                 }
+
+                trackEvent(
+                  'click_auto_fill_otp',
+                  EventCategory.setting,
+                  target:
+                      channelProvider.isDeviceListQuickConnect ? 'on' : 'off',
+                );
               }),
         ),
         const Padding(
@@ -234,6 +254,12 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             } else {
               channelProvider.isDeviceListQuickConnect = true;
             }
+
+            trackEvent(
+              'click_auto_fill_otp',
+              EventCategory.setting,
+              target: channelProvider.isDeviceListQuickConnect ? 'on' : 'off',
+            );
           },
           child: AutoSizeText(
             S.of(context).v3_settings_device_auto_fill_otp,
@@ -255,9 +281,20 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
           context, int.parse(AppPreferences().invitedToGroup)),
       onChange: (String? value) {
         setState(() {
-          final int optionValue = InvitedToGroupOption.invitedToGroupItems(context).indexOf(value ?? '');
-          AppPreferences().setInvitedToGroupSelectedItem(item: optionValue.toString());
-          DisplayServiceBroadcast.instance.updateInvitedToGroupOption(optionValue.toString());
+          final int optionValue =
+              InvitedToGroupOption.invitedToGroupItems(context)
+                  .indexOf(value ?? '');
+
+          trackEvent(
+            'click_broadcast_request',
+            EventCategory.setting,
+            target: InvitedToGroupOption.fromValue(optionValue).name,
+          );
+
+          AppPreferences()
+              .setInvitedToGroupSelectedItem(item: optionValue.toString());
+          DisplayServiceBroadcast.instance
+              .updateInvitedToGroupOption(optionValue.toString());
         });
       },
     );
@@ -404,6 +441,12 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
   }
 
   _setVisibility(bool visible) async {
+    trackEvent(
+      'click_show_code',
+      EventCategory.setting,
+      target: visible ? 'on' : 'off',
+    );
+
     await AppOverlayTab().setVisibility(visible);
     setState(() {});
   }
@@ -430,6 +473,13 @@ enum InvitedToGroupOption {
 
   static List<String> invitedToGroupItems(BuildContext context) {
     return _groupMap(context).values.toList();
+  }
+
+  static InvitedToGroupOption fromValue(int value) {
+    return InvitedToGroupOption.values.firstWhere(
+      (option) => option.value == value,
+      orElse: () => InvitedToGroupOption.notifyMe, // Return a default value
+    );
   }
 
   static Map<InvitedToGroupOption, String> _groupMap(BuildContext context) {
@@ -530,8 +580,11 @@ class CustomDropdownState extends State<CustomDropdown> {
                               child: Text(
                                 option,
                                 style: TextStyle(
-                                    fontSize: 9,
-                                    color: isSelected? context.tokens.color.vsdslColorOnPrimary : context.tokens.color.vsdslColorOnSurface,
+                                  fontSize: 9,
+                                  color: isSelected
+                                      ? context.tokens.color.vsdslColorOnPrimary
+                                      : context
+                                          .tokens.color.vsdslColorOnSurface,
                                 ),
                               ),
                             ),
@@ -539,7 +592,8 @@ class CustomDropdownState extends State<CustomDropdown> {
                               Icon(
                                 size: 16,
                                 Icons.check,
-                                color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceInverse,
                               ),
                           ],
                         ),
@@ -560,8 +614,7 @@ class CustomDropdownState extends State<CustomDropdown> {
     final textStyle = TextStyle(
         fontSize: 9,
         color: context.tokens.color.vsdslColorOnSurface,
-        fontWeight: FontWeight.w600
-    );
+        fontWeight: FontWeight.w600);
     return CompositedTransformTarget(
       link: _layerLink,
       child: GestureDetector(
@@ -590,11 +643,12 @@ class CustomDropdownState extends State<CustomDropdown> {
                 style: textStyle,
               ),
               const Spacer(),
-              Icon(_overlayEntry != null
-              ? Icons.keyboard_arrow_up
-              : Icons.keyboard_arrow_down,
-              size: 16,
-              color: context.tokens.color.vsdslColorOnSurface),
+              Icon(
+                  _overlayEntry != null
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                  size: 16,
+                  color: context.tokens.color.vsdslColorOnSurface),
             ],
           ),
         ),
@@ -608,4 +662,3 @@ class CustomDropdownState extends State<CustomDropdown> {
     super.dispose();
   }
 }
-

@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -81,6 +82,14 @@ class V3ShortcutsMenu extends StatelessWidget {
                                   channelProvider.startRemoteScreen(
                                       fromSender: true);
                                 }
+
+                                trackEvent(
+                                  'click_cast_to_device',
+                                  EventCategory.quickMenu,
+                                  target: channelProvider.isSenderMode
+                                      ? 'on'
+                                      : 'off',
+                                );
                               },
                             ),
                           );
@@ -158,6 +167,14 @@ class V3ShortcutsMenu extends StatelessWidget {
                                     mirrorStateProvider.startAirPlay();
                                     channelProvider.blockRtcConnection = true;
                                   }
+
+                                  trackEvent(
+                                    'click_airplay',
+                                    EventCategory.quickMenu,
+                                    target: mirrorStateProvider.airplayEnabled
+                                        ? 'on'
+                                        : 'off',
+                                  );
                                 },
                               ),
                             );
@@ -206,6 +223,15 @@ class V3ShortcutsMenu extends StatelessWidget {
                                     mirrorStateProvider.startGoogleCast();
                                     channelProvider.blockRtcConnection = true;
                                   }
+
+                                  trackEvent(
+                                    'click_google_cast',
+                                    EventCategory.quickMenu,
+                                    target:
+                                        mirrorStateProvider.googleCastEnabled
+                                            ? 'on'
+                                            : 'off',
+                                  );
                                 },
                               ),
                             );
@@ -253,6 +279,14 @@ class V3ShortcutsMenu extends StatelessWidget {
                                     mirrorStateProvider.startMiracast();
                                     channelProvider.blockRtcConnection = true;
                                   }
+
+                                  trackEvent(
+                                    'click_miracast',
+                                    EventCategory.quickMenu,
+                                    target: mirrorStateProvider.miracastEnabled
+                                        ? 'on'
+                                        : 'off',
+                                  );
                                 },
                               ),
                             );

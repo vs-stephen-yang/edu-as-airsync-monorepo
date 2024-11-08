@@ -1,4 +1,3 @@
-import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
@@ -60,7 +59,7 @@ class _ModeratorMenuViewState extends State<ModeratorMenuView> {
           onPositive: () {
             Provider.of<ChannelProvider>(context, listen: false)
                 .setModeratorMode(false);
-            AppAnalytics().trackEventModeratorOff();
+
             _switchModeratorOff();
             setState(() {});
           },

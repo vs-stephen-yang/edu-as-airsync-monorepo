@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
@@ -78,6 +79,12 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
                         if (ChannelProvider.isModeratorMode) {
                           _callLogOutDialog(context);
                         } else {
+                          trackEvent(
+                            'click_moderator',
+                            EventCategory.menu,
+                            target: 'on',
+                          );
+
                           channelProvider.setModeratorMode(true);
                         }
                       },
@@ -131,6 +138,8 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
           },
           item2: S.of(context).v3_exit_moderator_mode_exit,
           onItem2: () {
+            trackEvent('click_moderator', EventCategory.menu, target: 'off');
+
             Provider.of<ChannelProvider>(context, listen: false)
                 .setModeratorMode(false);
             HybridConnectionList().removeAllPresenters();

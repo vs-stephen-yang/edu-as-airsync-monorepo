@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -198,6 +199,8 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
     setState(() {
       _isCastDeviceOnScreen = true;
     });
+    trackEvent('click_cast_to_device_icon', EventCategory.setting);
+
     await showDialog(
       context: context,
       barrierColor: Colors.transparent,

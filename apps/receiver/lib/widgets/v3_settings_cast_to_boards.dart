@@ -1,3 +1,4 @@
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -81,6 +82,21 @@ class V3SettingsCastToBoardsState
     );
   }
 
+  void _trackEvent(
+    String name,
+    List<GroupListItem> members,
+  ) {
+    // Assuming GroupListItem has a property called 'name' that you want to concatenate
+    final membersString =
+        members.map((member) => member.displayCode()).join(',');
+
+    trackEvent(
+      name,
+      EventCategory.setting,
+      target: membersString,
+    );
+  }
+
   Align _buildActionButton(
       BuildContext context,
       BroadcastGroupLaunchType broadcastType,
@@ -93,6 +109,8 @@ class V3SettingsCastToBoardsState
       child: broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
           ? _saveButton(context, S.of(context).v3_settings_device_name_save,
               onClick: () {
+              _trackEvent('click_save_target', groupNotifier.selectedList);
+
               if (selectedListEmpty) {
                 showDialog(
                   groupNotifier: groupNotifier,
@@ -126,6 +144,9 @@ class V3SettingsCastToBoardsState
                 } else {
                   AppPreferences()
                       .setGroupSelectedList(groupNotifier.historySelectedList);
+
+                  _trackEvent('click_broadcast', groupNotifier.selectedList);
+
                   // start display group
                   channelProvider.startDisplayGroup(groupNotifier.selectedList);
                 }
@@ -328,6 +349,13 @@ class V3SettingsCastToBoardsState
               // constraints: const BoxConstraints(),
               onPressed: () async {
                 bool state = !groupNotifier.broadcastToGroup;
+
+                trackEvent(
+                  'click_cast_to_board',
+                  EventCategory.setting,
+                  target: state ? 'on' : 'off',
+                );
+
                 if (state) {
                   await channelProvider.startRemoteScreen(fromGroup: true);
                 } else {
@@ -353,6 +381,12 @@ class V3SettingsCastToBoardsState
         defaultSelectedState: groupNotifier.broadcastGroupLaunchType == type,
         onChange: (bool selected) {
           if (selected) {
+            trackEvent(
+              'click_cast_to_board_setting',
+              EventCategory.setting,
+              target: type.name,
+            );
+
             groupNotifier.setBroadcastGroupLaunchType(type);
           }
         });

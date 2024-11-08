@@ -1,4 +1,3 @@
-import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
@@ -49,8 +48,6 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                   onPressed: () {
-                    AppAnalytics().trackEventSplitScreenFullScreenClick();
-
                     if (HybridConnectionList().isMirrorRequest(widget.index)) {
                       var connection = HybridConnectionList()
                           .getConnection<MirrorRequest>(widget.index);
@@ -62,6 +59,8 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                     var webrtcConnector = HybridConnectionList()
                         .getConnection<RTCConnector>(widget.index);
                     if (webrtcConnector.isChannelConnectAvailable()) {
+                      webrtcConnector.trackSessionEvent('click_screen_size');
+
                       _updateSizeForSelected(widget.index);
                     } else if (webrtcConnector.isChannelReconnect()) {
                       webrtcConnector.clickButtonWhenReconnect = true;
@@ -117,8 +116,6 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
                 onPressed: () {
-                  AppAnalytics().trackEventSplitScreenDisconnectClick();
-
                   if (HybridConnectionList().isMirrorRequest(widget.index)) {
                     var connection = HybridConnectionList()
                         .getConnection<MirrorRequest>(widget.index);
@@ -138,6 +135,8 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                         isWebRTC: false,
                         state: webrtcConnector.reconnectChannelState);
                   } else {
+                    webrtcConnector.trackSessionEvent('stop_cast');
+
                     if (ChannelProvider.isModeratorMode) {
                       HybridConnectionList().stopPresenterBy(widget.index);
                     } else {
