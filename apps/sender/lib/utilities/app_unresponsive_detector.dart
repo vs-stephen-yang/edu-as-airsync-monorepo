@@ -4,6 +4,7 @@ import 'dart:async';
 // whether due to a suspension (when the OS pauses the app) or a freeze (due to internal app issues).
 class AppUnresponsiveDetector {
   static AppUnresponsiveDetector? _instance;
+
   static AppUnresponsiveDetector get instance => _instance!;
 
   Timer? _timer;

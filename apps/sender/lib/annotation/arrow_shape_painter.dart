@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class ArrowShape extends StatelessWidget {
   const ArrowShape({super.key, required this.child});
+
   final Widget child;
 
   @override
@@ -12,7 +13,6 @@ class ArrowShape extends StatelessWidget {
     );
   }
 }
-
 
 class ArrowShapePainter extends CustomPainter {
   @override

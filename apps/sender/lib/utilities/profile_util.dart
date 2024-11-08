@@ -7,16 +7,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'command_line_arguments.dart';
 
 class ProfileUtil {
-
   static Future<List<Profile>> fetchProfiles(String content) async {
     final data = await json.decode(content);
-    List<Profile> profiles = (data['profiles'] as List).map((i) => Profile.fromJson(i)).toList();
+    List<Profile> profiles =
+        (data['profiles'] as List).map((i) => Profile.fromJson(i)).toList();
     return profiles;
   }
 
   static Future<List<Profile>> fetchProfilesFromBundle() async {
     try {
-      final String content = await rootBundle.loadString('assets/profiles.json');
+      final String content =
+          await rootBundle.loadString('assets/profiles.json');
       return await fetchProfiles(content);
     } catch (e) {
       return [];
@@ -41,7 +42,8 @@ class ProfileUtil {
   static Future<ProfileStore> loadProfileStore(List<String> args) async {
     // load selected profile from shared preferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String selectedProfile = prefs.getString("SelectedProfile") ?? ProfileStore.defaultSelectedProfile;
+    String selectedProfile = prefs.getString("SelectedProfile") ??
+        ProfileStore.defaultSelectedProfile;
 
     // load profile from command line arguments
     // if not found, load bundle profile
@@ -53,7 +55,8 @@ class ProfileUtil {
 
     List<Profile> profiles;
     if (arguments.profilesPath.isNotEmpty) {
-      profiles = await ProfileUtil.fetchProfilesFromFile(arguments.profilesPath);
+      profiles =
+          await ProfileUtil.fetchProfilesFromFile(arguments.profilesPath);
     } else {
       profiles = await ProfileUtil.fetchProfilesFromBundle();
     }

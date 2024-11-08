@@ -46,7 +46,8 @@ class PrefLanguageProvider extends ChangeNotifier {
 
   String _getDefaultSupportedLanguage() {
     //System locale
-    String currentSystemLanguageCode = (!kIsWeb) ? Platform.localeName.split('_')[0] : 'en';
+    String currentSystemLanguageCode =
+        (!kIsWeb) ? Platform.localeName.split('_')[0] : 'en';
 
     //default is English
     String name = 'English';

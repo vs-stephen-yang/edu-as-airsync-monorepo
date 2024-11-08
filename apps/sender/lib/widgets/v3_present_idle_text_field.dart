@@ -147,7 +147,8 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             displayCode: text.replaceAll(' ', ''),
             password: _otpController.text));
 
-        String dc = _getDisplayCodeVisualIdentity(text.replaceAll(' ', '')); // 移除已有的空格
+        String dc =
+            _getDisplayCodeVisualIdentity(text.replaceAll(' ', '')); // 移除已有的空格
         _codeController.value = TextEditingValue(
           text: dc,
           selection: TextSelection.collapsed(offset: dc.length),

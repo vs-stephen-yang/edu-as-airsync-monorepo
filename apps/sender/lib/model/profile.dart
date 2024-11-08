@@ -6,7 +6,8 @@ class Profile {
 
   factory Profile.fromJson(Map<String, dynamic> json) {
     var presetsJson = json['presets'] as List;
-    List<Preset> presetsList = presetsJson.map((i) => Preset.fromJson(i)).toList();
+    List<Preset> presetsList =
+        presetsJson.map((i) => Preset.fromJson(i)).toList();
 
     return Profile(
       name: json['name'],
@@ -21,7 +22,11 @@ class Preset {
   final String description;
   final Parameters parameters;
 
-  Preset({required this.codec, required this.platform, required this.description, required this.parameters});
+  Preset(
+      {required this.codec,
+      required this.platform,
+      required this.description,
+      required this.parameters});
 
   factory Preset.fromJson(Map<String, dynamic> json) {
     return Preset(
@@ -51,7 +56,8 @@ class ProfileStore {
   // must match the profile name in the profiles.json
   static const String videoQualityFirstProfile = 'video_quality_first';
   static const String videoSmoothnessFirstProfile = 'video_smoothness_first';
-  static const String defaultSelectedProfile = videoQualityFirstProfile; // by default
+  static const String defaultSelectedProfile =
+      videoQualityFirstProfile; // by default
 
   final List<Profile> profiles;
   String selectedProfile = '';
@@ -64,8 +70,9 @@ class ProfileStore {
 
   Profile getSelectedProfile() {
     return profiles.firstWhere(
-          (element) => element.name == selectedProfile,
-      orElse: () => profiles.firstWhere((element) => element.name == defaultSelectedProfile),
+      (element) => element.name == selectedProfile,
+      orElse: () => profiles
+          .firstWhere((element) => element.name == defaultSelectedProfile),
     );
   }
 }

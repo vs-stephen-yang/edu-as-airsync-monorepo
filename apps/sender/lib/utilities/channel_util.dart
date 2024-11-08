@@ -2,7 +2,7 @@ enum ChannelReconnectState {
   idle,
   reconnecting,
   success,
-  fail
+  fail,
 }
 
 enum ChannelConnectError {

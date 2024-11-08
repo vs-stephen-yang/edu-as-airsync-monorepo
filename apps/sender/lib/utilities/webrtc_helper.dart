@@ -12,6 +12,7 @@ import 'log.dart';
 
 class WebRTCHelper {
   static WebRTCHelper? _instance;
+
   WebRTCHelper._internal();
 
   factory WebRTCHelper() {

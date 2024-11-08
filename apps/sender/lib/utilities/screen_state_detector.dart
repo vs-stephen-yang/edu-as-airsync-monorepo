@@ -3,9 +3,12 @@ import 'package:desktop_screenstate/desktop_screenstate.dart';
 
 class ScreenStateDetector {
   static ScreenStateDetector? _instance;
+
   static ScreenStateDetector get instance => _instance!;
 
-  final StreamController<ScreenState> _onState = StreamController<ScreenState>.broadcast();
+  final StreamController<ScreenState> _onState =
+      StreamController<ScreenState>.broadcast();
+
   Stream<ScreenState> get onState => _onState.stream;
 
   ScreenStateDetector._internal() {

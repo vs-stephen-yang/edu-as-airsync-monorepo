@@ -98,8 +98,11 @@ class ChannelProvider extends ChangeNotifier {
   ChannelReconnectState reconnectState = ChannelReconnectState.idle;
 
   ProfileStore get profileStore => _profileStore;
+
   bool get moderatorStatus => _moderatorStatus;
+
   ChannelConnectError? get channelConnectError => _channelConnectError;
+
   RemoteScreenClient? get remoteScreenClient => _remoteScreenClient;
 
   String? deviceName;

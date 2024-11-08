@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:bonsoir/bonsoir.dart';
@@ -8,11 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class DeviceListProvider with ChangeNotifier {
-
   DiscoverServices discoverServices = DiscoverServices();
 
-   void startDiscovery(String versionPostfix) {
-
+  void startDiscovery(String versionPostfix) {
     discoverServices.startDiscovery((BonsoirDiscoveryEvent event) {
       if (event.type == BonsoirDiscoveryEventType.discoveryServiceFound) {
         if (WebRTC.platformIsAndroid) {
@@ -22,7 +19,8 @@ class DeviceListProvider with ChangeNotifier {
           return;
         }
         if (event.service!.attributes['ver'] != null) {
-          String serviceVersionPostfix = getVersionSuffix(event.service!.attributes['ver']!);
+          String serviceVersionPostfix =
+              getVersionSuffix(event.service!.attributes['ver']!);
           if (versionPostfix == serviceVersionPostfix) {
             checkIP(event).then((value) {
               if (value != null && checkDisplayCode(event)) {
@@ -37,10 +35,12 @@ class DeviceListProvider with ChangeNotifier {
             });
           }
         }
-      } else if (event.type == BonsoirDiscoveryEventType.discoveryServiceResolved) {
+      } else if (event.type ==
+          BonsoirDiscoveryEventType.discoveryServiceResolved) {
         if (WebRTC.platformIsAndroid) {
           if (event.service!.attributes['ver'] != null) {
-            String serviceVersionPostfix = getVersionSuffix(event.service!.attributes['ver']!);
+            String serviceVersionPostfix =
+                getVersionSuffix(event.service!.attributes['ver']!);
             if (versionPostfix == serviceVersionPostfix) {
               checkIP(event).then((value) {
                 if (value != null) {
@@ -75,7 +75,8 @@ class DeviceListProvider with ChangeNotifier {
     }
 
     if (event.service is ResolvedBonsoirService) {
-      String? ip = await discoverServices.lookupIpAddress((event.service as ResolvedBonsoirService).host!);
+      String? ip = await discoverServices
+          .lookupIpAddress((event.service as ResolvedBonsoirService).host!);
       return ip;
     }
 
@@ -87,12 +88,15 @@ class DeviceListProvider with ChangeNotifier {
   }
 
   final List<AirSyncBonsoirService> _devices = [];
+
   List<AirSyncBonsoirService> get devices => _devices;
 
   bool checkDevice(String uuid) {
     bool result = false;
     for (var element in _devices) {
-      if (element.uuid == uuid && element.displayCode.isNotEmpty && element.ip.isNotEmpty) {
+      if (element.uuid == uuid &&
+          element.displayCode.isNotEmpty &&
+          element.ip.isNotEmpty) {
         result = true;
       }
     }
@@ -122,5 +126,4 @@ class DeviceListProvider with ChangeNotifier {
       return "";
     }
   }
-
 }

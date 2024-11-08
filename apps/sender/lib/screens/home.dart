@@ -155,7 +155,8 @@ class _HomeStates extends State<Home> {
                 children: [
                   const TitleBar(),
                   const BottomBar(),
-                  Consumer3<PresentStateProvider, ChannelProvider, DemoProvider>(
+                  Consumer3<PresentStateProvider, ChannelProvider,
+                          DemoProvider>(
                       builder: (context, present, channel, demo, child) {
                     if (!demo.isDemoMode) {
                       log.info('PresentState: ${present.currentState}');
@@ -184,11 +185,13 @@ class _HomeStates extends State<Home> {
                                   Toast.makeFeatureReconnectToast(
                                       channel.reconnectState,
                                       channel.reconnectState ==
-                                          ChannelReconnectState.reconnecting
-                                          ? S.of(context)
-                                          .main_feature_reconnecting_toast
-                                          : S.of(context)
-                                          .main_feature_reconnect_fail_toast);
+                                              ChannelReconnectState.reconnecting
+                                          ? S
+                                              .of(context)
+                                              .main_feature_reconnecting_toast
+                                          : S
+                                              .of(context)
+                                              .main_feature_reconnect_fail_toast);
                                 }
                               }
                             });
@@ -262,9 +265,12 @@ class _HomeStates extends State<Home> {
             height: 100,
             child: Column(
               children: [
-                if (Platform.isIOS || Platform.isMacOS) Text(S.of(context).main_update_description_apple),
-                if (Platform.isAndroid) Text(S.of(context).main_update_description_android),
-                if (Platform.isWindows) Text(S.of(context).main_update_description_windows),
+                if (Platform.isIOS || Platform.isMacOS)
+                  Text(S.of(context).main_update_description_apple),
+                if (Platform.isAndroid)
+                  Text(S.of(context).main_update_description_android),
+                if (Platform.isWindows)
+                  Text(S.of(context).main_update_description_windows),
               ],
             ),
           ),
@@ -290,8 +296,10 @@ class _HomeStates extends State<Home> {
               ),
             TextButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // 设置按钮背景颜色
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮文字颜色
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                // 设置按钮背景颜色
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                // 设置按钮文字颜色
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10), // 设置按钮圆角
@@ -304,11 +312,14 @@ class _HomeStates extends State<Home> {
                   Navigator.of(context).pop();
                 }
                 if (Platform.isAndroid) {
-                  launchUrl( Uri.parse('https://play.google.com/store/apps/details?id=com.viewsonic.display.cast'));
+                  launchUrl(Uri.parse(
+                      'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast'));
                 } else if (Platform.isIOS) {
-                  launchUrl( Uri.parse('https://apps.apple.com/us/app/airsync-sender/id6453759985'));
+                  launchUrl(Uri.parse(
+                      'https://apps.apple.com/us/app/airsync-sender/id6453759985'));
                 } else if (Platform.isMacOS) {
-                  launchUrl( Uri.parse('macappstore://apps.apple.com/app/airsync-sender/id6453759985'));
+                  launchUrl(Uri.parse(
+                      'macappstore://apps.apple.com/app/airsync-sender/id6453759985'));
                 } else if (Platform.isWindows) {
                   try {
                     await installUpdates();
@@ -329,7 +340,9 @@ class _HomeStates extends State<Home> {
   }
 
   void _showUpdateErrorDialog(BuildContext context, UpdateErrorExecption e) {
-    showDialog(context: context, builder: (BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.white,
             title: Text(S.of(context).main_update_error_title),
@@ -338,15 +351,20 @@ class _HomeStates extends State<Home> {
               height: 100,
               child: Column(
                 children: [
-              Text('${S.of(context).main_update_error_type}: ${e.error.name} \n${S.of(context).main_update_error_detail}: ${e.details.toString()}'),
+                  Text(
+                      '${S.of(context).main_update_error_type}: ${e.error.name} \n${S.of(context).main_update_error_detail}: ${e.details.toString()}'),
                 ],
               ),
             ),
             actions: <Widget>[
               TextButton(
                 style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // 设置按钮背景颜色
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮文字颜色
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue),
+                  // 设置按钮背景颜色
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.white),
+                  // 设置按钮文字颜色
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10), // 设置按钮圆角
@@ -373,8 +391,9 @@ class _HomeStates extends State<Home> {
   }
 
   bool isSupportPlatform() {
-    if(kIsWeb) {
-      return defaultTargetPlatform != TargetPlatform.android && defaultTargetPlatform != TargetPlatform.iOS;
+    if (kIsWeb) {
+      return defaultTargetPlatform != TargetPlatform.android &&
+          defaultTargetPlatform != TargetPlatform.iOS;
     } else {
       return true;
     }
@@ -400,8 +419,10 @@ class _HomeStates extends State<Home> {
           actions: <Widget>[
             TextButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue), // 设置按钮背景颜色
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // 设置按钮文字颜色
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                // 设置按钮背景颜色
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                // 设置按钮文字颜色
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10), // 设置按钮圆角
@@ -411,9 +432,11 @@ class _HomeStates extends State<Home> {
               ),
               onPressed: () async {
                 if (defaultTargetPlatform == TargetPlatform.android) {
-                  launchUrl( Uri.parse('https://play.google.com/store/apps/details?id=com.viewsonic.display.cast&pcampaignid=web_share'));
+                  launchUrl(Uri.parse(
+                      'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast&pcampaignid=web_share'));
                 } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-                  launchUrl( Uri.parse('https://apps.apple.com/tw/app/airsync-sender/id6453759985'));
+                  launchUrl(Uri.parse(
+                      'https://apps.apple.com/tw/app/airsync-sender/id6453759985'));
                 }
               },
               child: Text(S.of(context).main_notice_positive_button),

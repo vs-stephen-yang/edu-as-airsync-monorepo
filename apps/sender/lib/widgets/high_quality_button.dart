@@ -58,25 +58,27 @@ class HighQualityButtonState extends State<HighQualityButton> {
             ),
           ],
         ),
-        IntrinsicHeight(child: Row(
-          children: [
-            Container(
-              margin: const EdgeInsets.fromLTRB(8, 0, 11, 0),
-              width: 5,
-              color: Colors.grey,
-            ),
-            const SizedBox(width: 8),
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 2,
-              child: Text(
-                S.of(context).present_state_high_quality_description,
-                style: textStyle14,
-                maxLines: 4,
-                overflow: TextOverflow.ellipsis,
+        IntrinsicHeight(
+          child: Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.fromLTRB(8, 0, 11, 0),
+                width: 5,
+                color: Colors.grey,
               ),
-            ),
-          ],
-        ),),
+              const SizedBox(width: 8),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 2,
+                child: Text(
+                  S.of(context).present_state_high_quality_description,
+                  style: textStyle14,
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
