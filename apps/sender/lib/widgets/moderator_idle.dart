@@ -27,7 +27,8 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
   @override
   Widget build(BuildContext context) {
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context, listen: false);
+    PresentStateProvider presentStateProvider =
+        Provider.of<PresentStateProvider>(context, listen: false);
 
     Future<void> clickPresent() async {
       if (presentStateProvider.currentState == ViewState.moderatorName) {
@@ -36,11 +37,11 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
         } else if (channelProvider.displayCode != null) {
           if (channelProvider.isConnectAvailable()) {
             channelProvider.setSenderName(_nameController.text);
-          }  else {
+          } else {
             Toast.makeFeatureReconnectToast(
                 channelProvider.reconnectState,
                 channelProvider.reconnectState ==
-                    ChannelReconnectState.reconnecting
+                        ChannelReconnectState.reconnecting
                     ? S.of(context).main_feature_reconnecting_toast
                     : S.of(context).main_feature_reconnect_fail_toast);
           }
@@ -67,7 +68,12 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 8),
-                    child: Text(S.of(context).moderator_back, style: const TextStyle(color: Colors.white, fontSize: AppConstants.fontSizeNormal),),
+                    child: Text(
+                      S.of(context).moderator_back,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: AppConstants.fontSizeNormal),
+                    ),
                   ),
                 ],
               )),
@@ -199,4 +205,3 @@ class _ModeratorIdleState extends State<ModeratorIdle> {
     });
   }
 }
-

@@ -6,6 +6,7 @@ import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+
 // import 'package:ion_sdk_flutter/flutter_ion.dart' as ion;
 import 'package:ion_sdk_flutter/flutter_ion.dart';
 import 'package:uuid/uuid.dart';
@@ -18,9 +19,11 @@ class RemoteScreenClient {
   final Channel? _channel;
   final String _sessionId = const Uuid().v4();
   Client? _client;
+
   RTCVideoRenderer get remoteScreenRenderer => _remoteScreenRenderer;
   RTCVideoRenderer _remoteScreenRenderer = RTCVideoRenderer();
   RTCDataChannel? _dataChannel;
+
   GlobalKey get rtcWidgetKey => _rtcWidgetKey;
   final GlobalKey _rtcWidgetKey = GlobalKey();
   bool _textureSizeChanged = false;
@@ -91,7 +94,8 @@ class RemoteScreenClient {
 
       await _remoteScreenRenderer.initialize();
       _remoteScreenRenderer.srcObject = remoteStream.stream;
-      await WakelockManager().manageWakelock(AppScene.rtcRemoteScreenDisplaying);
+      await WakelockManager()
+          .manageWakelock(AppScene.rtcRemoteScreenDisplaying);
     };
     _client!.onConnectionState = (RTCPeerConnectionState state) {
       log.info('Remote screen: Connection state ${state.name}');

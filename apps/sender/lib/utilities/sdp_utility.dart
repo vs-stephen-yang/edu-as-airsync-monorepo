@@ -1,4 +1,3 @@
-
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class SdpUtil {
@@ -6,7 +5,10 @@ class SdpUtil {
     //a=rtpmap:35 H264/90000
     final parts = line.split(' ');
 
-    return parts[0].contains(payloadType) && (parts[0].contains('rtpmap') || parts[0].contains('rtcp') || parts[0].contains('fmtp'));
+    return parts[0].contains(payloadType) &&
+        (parts[0].contains('rtpmap') ||
+            parts[0].contains('rtcp') ||
+            parts[0].contains('fmtp'));
   }
 
   static String? removeCodec(String sdp, String encodingName) {
@@ -21,14 +23,14 @@ class SdpUtil {
     for (var payloadType in payloadTypes) {
       //a=rtpmap:35 H264/90000
       lines.removeWhere((line) =>
-      line.startsWith('a=') && isAttributeOfPayloadType(line, payloadType));
+          line.startsWith('a=') && isAttributeOfPayloadType(line, payloadType));
     }
 
     sdp = lines.join('\r\n');
 
     // remove payload types from m= line
     final videoLine =
-    lines.where((line) => line.startsWith("m=video")).toList()[0];
+        lines.where((line) => line.startsWith("m=video")).toList()[0];
 
     final newVideoLine = removePayloadTypesFromM(videoLine, payloadTypes);
 
@@ -57,9 +59,9 @@ class SdpUtil {
 
   // find payload type numbers that matche encodingName
   static List<String> findPayloadTypes(
-      List<String> sdpLines,
-      String encodingName,
-      ) {
+    List<String> sdpLines,
+    String encodingName,
+  ) {
     final payloadTypes = sdpLines
         .where((line) => line.startsWith("a=rtpmap:"))
         .where((line) => line.contains(encodingName))
@@ -67,7 +69,7 @@ class SdpUtil {
         .map((parts) => parts[0]) //a=rtpmap:41
         .map(
           (part) => part.substring("a=rtpmap:".length), //41
-    )
+        )
         .toList();
 
     // find apt (associated payload type)
@@ -82,7 +84,7 @@ class SdpUtil {
           .map((parts) => parts[0]) //a=fmtp:97
           .map(
             (part) => part.substring("a=fmtp:".length), //97
-      )
+          )
           .toList();
     }
 

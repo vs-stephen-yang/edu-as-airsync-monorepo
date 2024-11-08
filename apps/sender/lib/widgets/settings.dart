@@ -24,7 +24,8 @@ class _Settings extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    PresentStateProvider presentStateProvider = Provider.of<PresentStateProvider>(context, listen: false);
+    PresentStateProvider presentStateProvider =
+        Provider.of<PresentStateProvider>(context, listen: false);
     AppConfig? appConfig = AppConfig.of(context);
     return SizedBox(
       width: AppConstants.viewStateMenuWidth,
@@ -97,7 +98,8 @@ class _Settings extends State<Settings> {
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
               child: InkWell(
                 onTap: () async {
-                  var url = Uri.parse('https://myviewboard.com/kb/t_CN/airsync/what-is-airsync');
+                  var url = Uri.parse(
+                      'https://myviewboard.com/kb/t_CN/airsync/what-is-airsync');
                   await launchUrl(url);
                 },
                 child: Text(

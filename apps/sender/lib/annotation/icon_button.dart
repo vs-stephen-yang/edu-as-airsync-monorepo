@@ -1,19 +1,17 @@
-
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AnnotationIconButton extends StatelessWidget {
-  const AnnotationIconButton(
-      {super.key,
-        this.onPressed,
-        required this.icon,
-        this.size = 36,
-        this.enable = true,
-        this.circleStyle = false,
-        this.selected = false,
-        this.iconSize,});
+  const AnnotationIconButton({
+    super.key,
+    this.onPressed,
+    required this.icon,
+    this.size = 36,
+    this.enable = true,
+    this.circleStyle = false,
+    this.selected = false,
+    this.iconSize,
+  });
 
   final String icon;
   final VoidCallback? onPressed;

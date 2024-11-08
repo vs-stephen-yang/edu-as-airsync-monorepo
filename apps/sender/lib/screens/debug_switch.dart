@@ -26,11 +26,8 @@ class _DebugSwitchState extends State<DebugSwitch> {
   int _minBitrateKbps = 0;
 
   void _notifyRestart() {
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Restart the program to apply the changes.")
-        )
-    );
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Restart the program to apply the changes.")));
   }
 
   void _showOldUIChanged(bool value) async {
@@ -78,9 +75,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
     _showOldUI = AppPreferences().showOldUI;
     _isLogVerbose = isLogLevelVerbose();
     if (!_initialized) {
-      final Profile profile = AppConfig.of(context)!.profileStore.getSelectedProfile();
+      final Profile profile =
+          AppConfig.of(context)!.profileStore.getSelectedProfile();
       final Preset preset = profile.presets.first;
-      _isVideoQualityFirst = profile.name == ProfileStore.videoQualityFirstProfile;
+      _isVideoQualityFirst =
+          profile.name == ProfileStore.videoQualityFirstProfile;
       _maxBitrateKbps = preset.parameters.maxBitrateKbps;
       _minBitrateKbps = preset.parameters.minBitrateKbps;
       _iceGatheringContinually = WebRTCUtil.iceGatheringContinually;
@@ -130,15 +129,17 @@ class _DebugSwitchState extends State<DebugSwitch> {
                         title: const Text('video_quality_first'),
                         value: _isVideoQualityFirst,
                         onChanged: _changeVideoProfile),
-                    Text("minBitrateKbps: $_minBitrateKbps", style: const TextStyle(
-                        fontSize: 14, color: Colors.red),),
-                    Text("maxBitrateKbps: $_maxBitrateKbps", style: const TextStyle(
-                        fontSize: 14, color: Colors.red)),
+                    Text(
+                      "minBitrateKbps: $_minBitrateKbps",
+                      style: const TextStyle(fontSize: 14, color: Colors.red),
+                    ),
+                    Text("maxBitrateKbps: $_maxBitrateKbps",
+                        style:
+                            const TextStyle(fontSize: 14, color: Colors.red)),
                     SwitchListTile(
                         title: const Text('ICE Gathering Continually'),
                         value: _iceGatheringContinually,
-                        onChanged: _changeGatheringPolicy
-                    ),
+                        onChanged: _changeGatheringPolicy),
                     SwitchListTile(
                         title: const Text('Verbose Log'),
                         value: _isLogVerbose,

@@ -12,12 +12,12 @@ class PresentIdleButton extends StatefulWidget {
   State<PresentIdleButton> createState() => PresentIdleButtonState();
 }
 
-class PresentIdleButtonState extends State<PresentIdleButton> with TickerProviderStateMixin {
+class PresentIdleButtonState extends State<PresentIdleButton>
+    with TickerProviderStateMixin {
   bool isButtonEnabled = false;
   bool isButtonLoading = false;
   late final AnimationController _controller;
   late final Animation<double> _animation;
-
 
   @override
   void initState() {
@@ -39,7 +39,8 @@ class PresentIdleButtonState extends State<PresentIdleButton> with TickerProvide
     super.dispose();
   }
 
-  void setEnable(bool presentBtnEnable, {String? displayCode, String? password}) {
+  void setEnable(bool presentBtnEnable,
+      {String? displayCode, String? password}) {
     setState(() {
       // update the button state
       isButtonEnabled = presentBtnEnable;
@@ -65,25 +66,29 @@ class PresentIdleButtonState extends State<PresentIdleButton> with TickerProvide
       onPressed: isButtonEnabled ? onButtonPressed : null,
       style: ElevatedButton.styleFrom(
         disabledBackgroundColor: const Color.fromARGB(255, 215, 229, 253),
-        backgroundColor: const Color.fromARGB(255, 41, 121, 255), // isButtonEnabled?
+        backgroundColor: const Color.fromARGB(255, 41, 121, 255),
+        // isButtonEnabled?
         fixedSize: const Size(300, 30),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
       ),
-      child: isButtonLoading? RotationTransition(
-        turns: _animation,
-        child: const Icon(
-          CustomIcons.loading,
-          color: Colors.white,
-        ),
-      ): Text(
-        S.of(context).main_present,
-        style: const TextStyle(
-          color: Colors.white, //isButtonEnabled? Colors.white : const Color.fromARGB(255, 153, 153, 153),
-          fontSize: AppConstants.fontSizeNormal,
-        ),
-      ),
+      child: isButtonLoading
+          ? RotationTransition(
+              turns: _animation,
+              child: const Icon(
+                CustomIcons.loading,
+                color: Colors.white,
+              ),
+            )
+          : Text(
+              S.of(context).main_present,
+              style: const TextStyle(
+                color: Colors.white,
+                //isButtonEnabled? Colors.white : const Color.fromARGB(255, 153, 153, 153),
+                fontSize: AppConstants.fontSizeNormal,
+              ),
+            ),
     );
   }
 }

@@ -486,6 +486,7 @@ class ThumbnailWidget extends StatefulWidget {
       required this.source,
       required this.selected,
       required this.onTap});
+
   final DesktopCapturerSource source;
   final bool selected;
   final Function(DesktopCapturerSource) onTap;

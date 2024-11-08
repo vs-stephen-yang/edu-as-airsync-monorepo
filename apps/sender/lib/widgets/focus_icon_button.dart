@@ -1,4 +1,3 @@
-
 import 'package:display_cast_flutter/utilities/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

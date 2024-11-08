@@ -1,12 +1,9 @@
-
-
 import 'package:flutter/cupertino.dart';
 
 enum ViewState {
   idle,
   selectScreen,
   presentStart,
-
   selectRole,
   authorizeWait,
   remoteScreen,
@@ -15,7 +12,6 @@ enum ViewState {
   moderatorWait,
   moderatorStart,
   moderatorShare,
-
   settings,
   language,
   deviceList,
@@ -23,7 +19,6 @@ enum ViewState {
 }
 
 class PresentStateProvider extends ChangeNotifier {
-
   ViewState _currentState = ViewState.idle;
 
   ViewState get currentState => _currentState;
@@ -92,5 +87,4 @@ class PresentStateProvider extends ChangeNotifier {
   Future<void> presentQrScannerPage() async {
     setViewState(ViewState.qrScanner);
   }
-
 }

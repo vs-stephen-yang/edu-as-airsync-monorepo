@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'color_box.dart';
@@ -46,7 +45,7 @@ class _ColorBarState extends State<ColorBar> {
         Colors.black,
         Colors.white,
       ],
-      onTap: (color){
+      onTap: (color) {
         setState(() {
           penColor = color;
           widget.callback.call(color);

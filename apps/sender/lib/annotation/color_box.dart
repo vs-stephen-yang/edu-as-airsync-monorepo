@@ -44,17 +44,17 @@ class ColorBoxGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> colorWidgets = List.from(colors.map((color) => ColorBox(
-      key: Key("color-$color"),
-      width: width,
-      height: height,
-      color: color,
-      selectedBorderColor: selectedBorderColor,
-      selectedBorderWidth: selectedBorderWidth,
-      isSelected: color.value == groupValue?.value,
-      onTap: () => {
-        if (onTap != null) {onTap!(color)}
-      },
-    )));
+          key: Key("color-$color"),
+          width: width,
+          height: height,
+          color: color,
+          selectedBorderColor: selectedBorderColor,
+          selectedBorderWidth: selectedBorderWidth,
+          isSelected: color.value == groupValue?.value,
+          onTap: () => {
+            if (onTap != null) {onTap!(color)}
+          },
+        )));
 
     if (usingWrapLayout) {
       return Wrap(
@@ -115,7 +115,8 @@ class ColorBox extends StatelessWidget {
   Widget build(BuildContext context) {
     BoxBorder border = const Border();
     if (isSelected) {
-      border = Border.all(color: selectedBorderColor, width: selectedBorderWidth);
+      border =
+          Border.all(color: selectedBorderColor, width: selectedBorderWidth);
     }
 
     return GestureDetector(

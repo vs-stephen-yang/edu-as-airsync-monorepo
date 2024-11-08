@@ -1,8 +1,8 @@
-
 import 'package:flutter/services.dart';
 
 class WindowUtility {
-  static const platform = MethodChannel('com.viewsonic.display.cast/window_manager');
+  static const platform =
+      MethodChannel('com.viewsonic.display.cast/window_manager');
 
   static Future<void> minimizeWindow() async {
     try {

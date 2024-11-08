@@ -27,6 +27,7 @@ class V3PresentSelectScreen extends StatelessWidget {
   const V3PresentSelectScreen({super.key});
 
   static SelectScreenDialog? selectScreenDialog;
+
   bool get platformIsDesktop =>
       Platform.isWindows || Platform.isMacOS || Platform.isLinux;
 
@@ -289,6 +290,7 @@ class SelectScreenDialog extends Dialog {
   late BuildContext ctx;
   bool _systemAudio = false;
   bool _isExtensionSelected = false;
+
   bool get platformIsDesktop =>
       Platform.isWindows || Platform.isMacOS || Platform.isLinux;
   String hostName;
@@ -766,6 +768,7 @@ class CustomDesktopCaptureSource {
   DesktopCapturerSource? selectedSource;
   bool systemAudio = false;
   bool isExtensionSelected = false;
+
   CustomDesktopCaptureSource(
       this.selectedSource, this.systemAudio, this.isExtensionSelected);
 }
