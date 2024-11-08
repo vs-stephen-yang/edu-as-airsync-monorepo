@@ -270,7 +270,8 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
                         ),
                         onTap: () {
                           _isCodeSelectedFromHistory = true;
-                          _codeController.text = displayList[index];
+                          _codeController.text = _getDisplayCodeVisualIdentity(
+                              displayList[index].replaceAll(' ', ''));
                           _isDropDownMenuVisible = false;
                           _dropDownMenuEntry?.remove();
                         },
