@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -146,6 +147,7 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
       {required VoidCallback onClick}) {
     return InkWell(
       onTap: () {
+        trackEvent('edit_name', EventCategory.session);
         onClick();
       },
       child: Container(

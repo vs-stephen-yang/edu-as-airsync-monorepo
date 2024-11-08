@@ -1,4 +1,3 @@
-import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_ui_constant.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
@@ -81,7 +80,6 @@ class _SplitScreenFunctionState extends State<SplitScreenFunction> {
                     hasFocusSize: AppUIConstant.iconHasFocusSize,
                     notFocusSize: AppUIConstant.iconNotFocusSize,
                     onClick: () {
-                      AppAnalytics().trackEventSplitScreenDisconnectClick();
                       widget.onClose?.call();
                     },
                   ),
@@ -123,7 +121,6 @@ class _SplitScreenFunctionState extends State<SplitScreenFunction> {
                     hasFocusSize: AppUIConstant.iconHasFocusSize,
                     notFocusSize: AppUIConstant.iconNotFocusSize,
                     onClick: () {
-                      AppAnalytics().trackEventSplitScreenFullScreenClick();
                       SplitScreenFunction.isMenuOnList.value.fillRange(0,
                           SplitScreenFunction.isMenuOnList.value.length, false);
                       widget.updateSize?.call();

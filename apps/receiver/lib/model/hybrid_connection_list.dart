@@ -310,6 +310,8 @@ class HybridConnectionList {
       int index, bool enable, bool setIsAudioEnabled) {
     var connection = _hybridConnectionList[index];
     if (connection != null && connection is RTCConnector) {
+      connection.trackSessionEvent('click_sound');
+
       connection.controlAudio(enable, setIsAudioEnabled: setIsAudioEnabled);
     } else if (connection != null && connection is MirrorRequest) {
       connection.controlAudio(enable, setIsAudioEnabled: setIsAudioEnabled);

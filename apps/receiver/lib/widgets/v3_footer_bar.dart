@@ -1,3 +1,4 @@
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/screens/v3_download_app_menu.dart';
@@ -65,6 +66,7 @@ class V3FooterBar extends StatelessWidget {
                 elevation: 0,
               ),
               onPressed: () {
+                trackEvent('click_dl_qrcode_icon', EventCategory.quickMenu);
                 _showDownloadAppMenuDialog(context);
               },
               icon: const SizedBox(

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_channel/display_channel.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
@@ -162,6 +163,9 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                         padding: EdgeInsets.zero,
                                       ),
                                       onPressed: () {
+                                        trackEvent('click_decline_device',
+                                            EventCategory.session);
+
                                         authRequestIdles[index]
                                             .entries
                                             .first
@@ -197,6 +201,9 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                         padding: EdgeInsets.zero,
                                       ),
                                       onPressed: () async {
+                                        trackEvent('click_accept_device',
+                                            EventCategory.session);
+
                                         authRequestIdles[index]
                                             .entries
                                             .first

@@ -312,7 +312,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
     }
     if (HybridConnectionList().isPresenterNotStopStreaming(presenterId)) {
       // waitForStream and streaming
-      AppAnalytics().trackEventModeratorPresenterStop();
+
       rtcConnector.sendStopPresent();
     } else {
       if (HybridConnectionList().getPresentingCount() >=
@@ -327,12 +327,16 @@ class ParticipantStandbyFeature extends StatelessWidget {
         ).show(context);
         return;
       }
-      AppAnalytics().trackEventModeratorPresenterPresent();
+
+      rtcConnector.trackSessionEvent('click_share_to_device');
+
       rtcConnector.sendAllowPresent();
     }
   }
 
   _sendPresenterRemove(BuildContext context, RTCConnector rtcConnector) async {
+    rtcConnector.trackSessionEvent('click_remove_device');
+
     if (!rtcConnector.isChannelConnectAvailable()) {
       rtcConnector.clickButtonWhenReconnect = true;
       V3Toast()
@@ -344,7 +348,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
           ?.show(context);
       return;
     }
-    AppAnalytics().trackEventModeratorPresentersRemove();
+
     await rtcConnector.disconnectPeerConnection();
     await rtcConnector.disconnectChannel(reason: 'User removed the presenter');
   }
@@ -401,7 +405,7 @@ class ParticipantStreamingFeature extends StatelessWidget {
     }
     if (HybridConnectionList().isPresenterNotStopStreaming(presenterId)) {
       // waitForStream and streaming
-      AppAnalytics().trackEventModeratorPresenterStop();
+
       rtcConnector.sendStopPresent();
     } else {
       if (HybridConnectionList().getPresentingCount() >=
@@ -416,7 +420,7 @@ class ParticipantStreamingFeature extends StatelessWidget {
         ).show(context);
         return;
       }
-      AppAnalytics().trackEventModeratorPresenterPresent();
+
       rtcConnector.sendAllowPresent();
     }
   }
@@ -486,6 +490,8 @@ class ParticipantReceivingFeature extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             onPressed: () {
+              trackEvent('click_disconnect', EventCategory.castToBoards);
+
               if (!rtcConnector.isChannelConnectAvailable()) {
                 rtcConnector.clickButtonWhenReconnect = true;
                 V3Toast()
@@ -519,6 +525,8 @@ class ParticipantReceivingFeature extends StatelessWidget {
   }
 
   _touchBackOn(BuildContext context) {
+    trackEvent('click_touchback', EventCategory.castToBoards, target: 'on');
+
     // find the remoteShareConnector with same clientId as rtcConnector.
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
@@ -573,6 +581,8 @@ class ParticipantControllingFeature extends StatelessWidget {
   }
 
   _touchBackOff(BuildContext context) {
+    trackEvent('click_touchback', EventCategory.castToBoards, target: 'off');
+
     // find the remoteShareConnector with same clientId as rtcConnector.
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);

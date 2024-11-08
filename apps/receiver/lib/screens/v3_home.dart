@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -128,6 +129,10 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
               ValueListenableBuilder(
                   valueListenable: V3Home.isShowSettingsMenu,
                   builder: (_, bool value, __) {
+                    if (value) {
+                      trackEvent('click_setting', EventCategory.setting);
+                    }
+
                     return value ? const V3SettingMenu() : const SizedBox();
                   }),
               const V3MirrorPrompt(),

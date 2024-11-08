@@ -81,8 +81,9 @@ Future<void> commonEntry(ConfigSettings settings) async {
 
     await AppExceptionReport().ensureInitialized(settings, packageInfo);
 
-    await AppAnalytics().ensureInitialized(
-      settings,
+    await AppAnalytics.initializeApp(
+      instrumentationKey: settings.instrumentationKey,
+      ingestionEndpoint: settings.ingestionEndpoint,
       applicationVersion: packageInfo.version,
       userId: AppInstanceCreate().instanceID,
       sessionId: const Uuid().v4(),
@@ -90,10 +91,6 @@ Future<void> commonEntry(ConfigSettings settings) async {
     );
 
     setSentryUser(AppInstanceCreate().displayInstanceID);
-
-    AppAnalytics().setEventProperties(
-        entityId: AppPreferences().entityId,
-        instanceId: AppInstanceCreate().displayInstanceID);
 
     await AppUpdateHelper().ensureInitialized(settings);
     runApp(configureApp);
@@ -116,7 +113,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    AppAnalytics().trackEventAppStarted();
+    trackEvent('launch', EventCategory.system);
+
     super.initState();
   }
 
@@ -132,7 +130,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       NavigatorState? navigatorState =
           NavigationService.navigationKey.currentState;
       if (navigatorState != null && !navigatorState.canPop()) {
-        AppAnalytics().trackEventAppTerminated();
         // wait one second for handle above process.
         await Future.delayed(const Duration(seconds: 1));
       }

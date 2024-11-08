@@ -216,7 +216,7 @@ class ChannelProvider extends ChangeNotifier {
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     log.info('Network connectivity has changed to $result');
 
-    AppAnalytics().trackEventNetworkConnectivity(result.name);
+    trackTrace('network_connectivity', target: result.name);
 
     if (result == ConnectivityResult.none) {
       _handleNoConnectivity();
@@ -265,7 +265,8 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     _instanceInfo.displayCode = displayCode;
-    AppAnalytics().setEventProperties(displayCode: displayCode);
+    AppAnalytics.instance.setGlobalProperty('display_code', displayCode);
+
     setSentryTag('display.code', displayCode);
 
     if (instanceIndex != null) {
@@ -296,11 +297,11 @@ class ChannelProvider extends ChangeNotifier {
 
     _tunnelServer?.onTunnelConnected = () {
       log.info('Tunnel connected');
-      AppAnalytics().trackEventTunnelConnected();
+      trackTrace('tunnel_connected');
     };
     _tunnelServer?.onTunnelConnecting = () {
       log.info('Tunnel is connecting');
-      AppAnalytics().trackEventTunnelConnecting();
+      trackTrace('tunnel_connecting');
     };
   }
 
@@ -479,10 +480,25 @@ class ChannelProvider extends ChangeNotifier {
         /// basic
         case ChannelMessageType.joinDisplay:
           JoinDisplayMessage msg = message as JoinDisplayMessage;
+
+          trackEvent(
+            'connect_successfully',
+            EventCategory.session,
+            participatorId: msg.clientId,
+            mode: 'webrtc',
+          );
+
           if (msg.intent == JoinIntentType.present) {
             if (isModeratorMode) {
               if (HybridConnectionList().getConnectionCount() >=
                   HybridConnectionList.maxHybridConnection) {
+                trackEvent(
+                  'device_full',
+                  EventCategory.session,
+                  participatorId: msg.clientId,
+                  mode: 'webrtc',
+                );
+
                 sendJoinDisplayRejectMessage(channel);
                 return;
               }
@@ -494,6 +510,13 @@ class ChannelProvider extends ChangeNotifier {
             } else {
               if (HybridConnectionList.hybridSplitScreenCount.value >=
                   HybridConnectionList.maxHybridSplitScreen) {
+                trackEvent(
+                  'device_full',
+                  EventCategory.session,
+                  participatorId: msg.clientId,
+                  mode: 'webrtc',
+                );
+
                 sendJoinDisplayRejectMessage(channel);
                 return;
               }
@@ -518,6 +541,13 @@ class ChannelProvider extends ChangeNotifier {
             }
           } else {
             if (_remoteScreenConnectors.length >= maxRemoteScreenConnection) {
+              trackEvent(
+                'device_full',
+                EventCategory.session,
+                participatorId: msg.clientId,
+                mode: 'cast_to_device',
+              );
+
               sendJoinDisplayRejectMessage(channel);
               return;
             }
@@ -554,7 +584,6 @@ class ChannelProvider extends ChangeNotifier {
           );
           break;
         case ChannelMessageType.presentAccepted:
-          rtcConnector.onPresentAccepted();
           break;
         case ChannelMessageType.presentRejected:
           rtcConnector.onPresentRejected(message as PresentRejectedMessage);

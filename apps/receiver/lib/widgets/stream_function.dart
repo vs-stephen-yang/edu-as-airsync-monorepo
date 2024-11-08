@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_colors.dart';
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/app_ui_constant.dart';
@@ -282,7 +281,6 @@ class _StreamFunctionStates extends State<StreamFunction> {
   }
 
   _showModerator(bool leavePresentFunction) {
-    AppAnalytics().trackEventAppModeratorClick();
     _showMenuDialog(const ModeratorMenuView());
     if (leavePresentFunction) {
       StreamFunction.streamFunctionState.value = stateMenuOff;

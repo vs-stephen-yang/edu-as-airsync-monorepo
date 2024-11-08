@@ -13,9 +13,7 @@ import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/bounded_list.dart';
 import 'package:display_flutter/utility/channel_util.dart';
-import 'package:display_flutter/utility/list_util.dart';
 import 'package:display_flutter/utility/log.dart';
-import 'package:display_flutter/utility/rtc_metrics.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
@@ -145,7 +143,7 @@ class RTCConnector {
   Future<void> _onChannelState(ChannelState state) async {
     log.info('[$clientId] Channel has changed state to $state');
 
-    AppAnalytics().trackEventChannelState(clientId, state.name);
+    _trackTrace('channel_state', target: state.name);
 
     switch (state) {
       case ChannelState.initialized:
@@ -189,8 +187,8 @@ class RTCConnector {
 
         if (_localCandidateType != localCandidateType &&
             _remoteCandidateType != remoteCandidateType) {
-          AppAnalytics().trackEventRtcCandidateTypes(
-              clientId!, localCandidateType, remoteCandidateType);
+          _trackTrace('pc_candidates',
+              target: '$localCandidateType,$remoteCandidateType');
 
           _localCandidateType = localCandidateType;
           _remoteCandidateType = remoteCandidateType;
@@ -343,29 +341,18 @@ class RTCConnector {
     onConnect?.call();
   }
 
-  void onPresentAccepted() {
-    AppAnalytics().trackEventPresentReadySent(clientId!, sessionId!);
-  }
-
   void onPresentRejected(PresentRejectedMessage msg) {
     if (msg.reason?.text == 'timeout') {
-      AppAnalytics().trackEventPresentRejectTimeOutSent(clientId!, sessionId!);
-    } else if (msg.reason?.text == 'blocked') {
-      AppAnalytics().trackEventPresentRejectBlockedSent(clientId!, sessionId!);
-    }
+    } else if (msg.reason?.text == 'blocked') {}
   }
 
   Future<void> onPausePresent() async {
-    AppAnalytics().trackEventPresentPauseReceived(clientId!, sessionId!);
-
     presentationState = PresentationState.pauseStreaming;
     controlAudio(false, setIsAudioEnabled: false);
     onRefresh?.call();
   }
 
   Future<void> onResumePresent() async {
-    AppAnalytics().trackEventPresentResumeReceived(clientId!, sessionId!);
-
     presentationState = PresentationState.resumeStreaming;
     controlAudio(isAudioEnabled & true, setIsAudioEnabled: false);
     onRefresh?.call();
@@ -373,8 +360,6 @@ class RTCConnector {
 
   Future<void> onStopPresent(
       StopPresentMessage msg, bool isModeratorMode) async {
-    AppAnalytics().trackEventPresentStopReceived(clientId!, sessionId!);
-
     if (isModeratorMode) {
       StreamFunction.streamFunctionState.value = stateMenuOff;
       await disconnectPeerConnection(sendAnalytics: false);
@@ -510,9 +495,6 @@ class RTCConnector {
 
   Future<void> disconnectPeerConnection({bool sendAnalytics = false}) async {
     _printPeerConnectionLog('disconnectPeerConnection', sendAnalytics);
-    if (sendAnalytics) {
-      AppAnalytics().trackEventPresentStopped(sessionId ?? '', clientId!);
-    }
 
     // clear renderer
     if (_remoteRenderer != null) {
@@ -550,33 +532,13 @@ class RTCConnector {
     await onChannelDisconnect?.call(reason: reason);
   }
 
-  _trackMetrics() {
-    try {
-      final videoBitrateEvent = aggregateRtcMetricHistory(_videoBitrateHistory);
-
-      AppAnalytics().trackEventRtcMetric(
-        'video_bitrate',
-        videoBitrateEvent.toJson(),
-      );
-
-      AppAnalytics().trackEventRtcVideoInboundStats(
-        clientId,
-        // track every second videoInboundStats over last 10 seconds
-        filterEverySecond(_videoInboundStatsHistory.elements),
-      );
-    } catch (e, stackTrace) {
-      log.severe('_trackMetrics', e, stackTrace);
-    }
-  }
+  _trackMetrics() {}
 
   Future<void> close(ChannelCloseCode code, {String? reason}) async {
     log.info('[$clientId] Close channel $reason');
 
     _stopChannelReconnectTimer();
 
-    if (_channel.state != ChannelState.closed) {
-      AppAnalytics().trackEventCloseChannel(clientId, reason);
-    }
     _channel.close(ChannelCloseReason(code, text: reason));
     _resetSetting();
   }
@@ -611,12 +573,13 @@ class RTCConnector {
 
   Future<void> _onPeerConnectionState(RTCPeerConnectionState state) async {
     _printPeerConnectionLog('_onPeerConnectionState', state);
-
-    AppAnalytics().trackEventPcConnectionState(clientId, state.name);
+    _trackTrace('pc_state', target: state.name);
 
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
       if (!_isRtcFirstConnected) {
         _isRtcFirstConnected = true;
+
+        trackSessionEvent('start_cast');
       }
 
       // Ensure streaming remains uninterrupted even if the channel disconnects
@@ -667,7 +630,6 @@ class RTCConnector {
     presentationState = PresentationState.streaming;
     controlAudio(true, setIsAudioEnabled: true);
     onAddRemoteStream?.call(_remoteRenderer?.srcObject);
-    AppAnalytics().trackEventPresentStarted(sessionId!, clientId!);
   }
 
   void _onTrack(RTCTrackEvent event) async {
@@ -792,5 +754,29 @@ class RTCConnector {
   bool isChannelReconnect() {
     if (reconnectChannelState == ReconnectState.reconnecting) return true;
     return false;
+  }
+
+  _trackTrace(
+    String name, {
+    String? target,
+    Map<String, Object> properties = const <String, Object>{},
+  }) {
+    trackTrace(
+      name,
+      target: target,
+      properties: {
+        'participator_id': clientId ?? '',
+        ...properties,
+      },
+    );
+  }
+
+  trackSessionEvent(String name) {
+    trackEvent(
+      name,
+      EventCategory.session,
+      mode: 'webrtc',
+      participatorId: clientId ?? '',
+    );
   }
 }
