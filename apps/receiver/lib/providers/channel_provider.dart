@@ -20,13 +20,11 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
+import 'package:display_flutter/providers/channel_server.dart';
 import 'package:display_flutter/providers/instance_api.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/home.dart';
-import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
-import 'package:display_flutter/settings/channel_config.dart';
-import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/ip_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/misc_util.dart';
@@ -78,9 +76,6 @@ class ChannelProvider extends ChangeNotifier {
   late ValueNotifier<int> countDownProgress;
   final ValueNotifier<bool> isLanModeOnly = ValueNotifier(false);
   final ValueNotifier<String> otp = ValueNotifier('0000');
-
-  DisplayDirectServer? _directServer;
-  DisplayTunnelServer? _tunnelServer;
 
   static bool isModeratorMode = false;
 
@@ -152,6 +147,8 @@ class ChannelProvider extends ChangeNotifier {
 
   final List<Map<String, RTCConnector>> authorizeRequestList = [];
 
+  late ChannelServer _channelServer;
+
   set isAuthorizeMode(bool value) {
     _isAuthorizeMode = value;
     _save();
@@ -175,6 +172,18 @@ class ChannelProvider extends ChangeNotifier {
   ) : maxCountDown =
             _otpDuration.inMilliseconds ~/ _otpTickInterval.inMilliseconds {
     countDownProgress = ValueNotifier(maxCountDown);
+
+    _channelServer = ChannelServer(
+      // A new direct channel is created
+      _onNewDirectChannel,
+      // A new tunnel channel is created
+      (channel) {
+        _onNewChannel(channel, ChannelMode.tunnel);
+      },
+      // Verify the connect request
+      _verifyConnectRequest,
+    );
+
     _load();
   }
 
@@ -182,7 +191,7 @@ class ChannelProvider extends ChangeNotifier {
     _setConnectivityListener();
     _startNewOTPTimer();
 
-    startDirectServer();
+    _channelServer.startDirect();
   }
 
   setProviderContainer(ProviderContainer pc) {
@@ -269,7 +278,7 @@ class ChannelProvider extends ChangeNotifier {
       // The API call succeeds. Start the tunnel server.
       final tunnelApiUrl = registerResult.tunnelApiUrl;
 
-      restartTunnelServer(
+      _channelServer.startTunnel(
         tunnelApiUrl,
         AppInstanceCreate().displayInstanceID,
         instanceGroupId,
@@ -291,39 +300,12 @@ class ChannelProvider extends ChangeNotifier {
     setSentryTag('display.code', displayCode);
   }
 
-  void _setTunnelServer() {
-    // create a tunnel server
-    _tunnelServer = DisplayTunnelServer(
-      reconnectTimeout: channelReconnectTimeoutInStreaming,
-      (String url, bool isReconnect) => WebSocketClientConnection(
-        url,
-        WebSocketClientConnectionConfig(
-          logger: (url, message) {
-            log.finest('Tunnel $message');
-          },
-        ),
-      ),
-      (Channel channel, _) => _onNewChannel(channel, ChannelMode.tunnel),
-      (ConnectionRequest connectionRequest) =>
-          _verifyConnectRequest(connectionRequest, isDirectConnect: false),
-    );
-
-    _tunnelServer?.onTunnelConnected = () {
-      log.info('Tunnel connected');
-      trackTrace('tunnel_connected');
-    };
-    _tunnelServer?.onTunnelConnecting = () {
-      log.info('Tunnel is connecting');
-      trackTrace('tunnel_connecting');
-    };
-  }
-
   // Is the channel from the host?
   bool _isChannelFromHost(Map<String, String>? queryParameters) {
     return queryParameters?['role'] == 'host';
   }
 
-  void _onNewDirectChanel(
+  void _onNewDirectChannel(
     Channel channel,
     Map<String, String>? queryParameters,
   ) {
@@ -423,48 +405,6 @@ class ChannelProvider extends ChangeNotifier {
 
   void stopRemoteScreenPublisher() {
     _remoteScreenServe.stopRemoteScreenPublisher();
-  }
-
-  Future<void> restartTunnelServer(
-      String tunnelApiUrl, String instanceId, int instanceGroupId) async {
-    // start the tunnel server
-    log.info('Starting the tunnel channel server $tunnelApiUrl');
-
-    // fix when _tunnelApiUrl is empty, will cause App UI not response.
-    _setTunnelServer();
-    _tunnelServer?.start(
-      instanceId,
-      instanceGroupId,
-      Uri.parse(tunnelApiUrl),
-    );
-  }
-
-  Future<void> startDirectServer() async {
-    if (_directServer != null) {
-      log.warning('Direct channel server is already running');
-      return;
-    }
-
-    // start the direct server
-    try {
-      final securityContext = await loadSecurityContextForChannel();
-
-      log.info('Starting the direct channel server');
-
-      _directServer = DisplayDirectServer(
-        reconnectTimeout: channelReconnectTimeoutInStreaming,
-        _onNewDirectChanel,
-        (ConnectionRequest connectionRequest) =>
-            _verifyConnectRequest(connectionRequest, isDirectConnect: true),
-      );
-      await _directServer?.start(
-        DisplayServiceBroadcast.instance.directChannelPort,
-        securityContext: securityContext,
-      );
-      log.info('Direct channel server has started');
-    } on Exception catch (e) {
-      log.severe('Failed to start direct channel server', e);
-    }
   }
 
   void _onNewChannel(Channel channel, ChannelMode mode) {
