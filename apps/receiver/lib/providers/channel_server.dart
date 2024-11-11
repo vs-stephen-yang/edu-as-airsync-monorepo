@@ -154,16 +154,19 @@ class ChannelServer {
       final instanceGroupId = getInstanceGroupIdFromIp(ipAddress);
 
       // Call API to register the tunnel
-      final registerResult = await registerInstanceIndexById(
-        baseApiUrl,
-        instanceId,
-        instanceGroupId,
-      );
-      if (self.isCanceled) {
-        return;
+      try {
+        final registerResult = await registerInstanceIndexById(
+          baseApiUrl,
+          instanceId,
+          instanceGroupId,
+        );
+        if (self.isCanceled) {
+          return;
+        }
+        _updateRegisterResult(registerResult, instanceGroupId);
+      } catch (e) {
+        _updateRegisterResult(null, instanceGroupId);
       }
-
-      _updateRegisterResult(registerResult, instanceGroupId);
     });
 
     _tunnelSetupTask?.run();
@@ -189,7 +192,7 @@ class ChannelServer {
     // Start the tunnel server.
     log.info('Starting the tunnel channel server');
 
-    _startTunnelServer(instanceGroupId, registerResult.tunnelApiUrl);
+    _startTunnelServer(instanceGroupId, registerResult.tunnelUrl);
 
     _changeTunnelStatus(TunnelStatus.connecting);
   }
