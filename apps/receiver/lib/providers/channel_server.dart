@@ -1,6 +1,6 @@
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_analytics.dart';
-import 'package:display_flutter/providers/instance_api.dart';
+import 'package:display_flutter/api/instance_api.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/cancelable_task.dart';
 import 'package:display_flutter/utility/channel_util.dart';
