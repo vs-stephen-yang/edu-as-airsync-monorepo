@@ -2,11 +2,14 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/providers/instance_api.dart';
 import 'package:display_flutter/settings/channel_config.dart';
+import 'package:display_flutter/utility/cancelable_task.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 
 enum TunnelStatus {
+  disabled,
+  checking,
   unavailable,
   connecting,
   connected,
@@ -19,11 +22,19 @@ class ChannelServer {
   final String baseApiUrl;
   final String instanceId;
 
+  bool get isTunnelAvailable =>
+      _tunnelStatus == TunnelStatus.connected ||
+      _tunnelStatus == TunnelStatus.connecting;
+
   TunnelStatus get tunnelStatus => _tunnelStatus;
-  TunnelStatus _tunnelStatus = TunnelStatus.unavailable;
+  TunnelStatus _tunnelStatus = TunnelStatus.disabled;
 
   String? get displayCode => _displayCode;
   String? _displayCode;
+
+  CancelableTask? _tunnelSetupTask;
+
+  String? _ipAddress;
 
   // Callback for handling new direct channel connections
   final Function(Channel channel, Map<String, String>? queryParameters)
@@ -54,13 +65,7 @@ class ChannelServer {
     required this.instanceId,
   });
 
-  Future<void> startTunnel(
-    String ipAddress,
-  ) async {
-    await _setupTunnel(ipAddress);
-  }
-
-  void stopTunnel() {
+  void _stopTunnel() {
     if (_tunnelServer != null) {
       log.info('Stopping the tunnel channel server');
       _tunnelServer?.stop();
@@ -68,9 +73,7 @@ class ChannelServer {
     }
   }
 
-  Future<void> startDirect() async {
-    stopDirect();
-
+  Future<void> _startDirectServer() async {
     // start the direct server
     try {
       final securityContext = await loadSecurityContextForChannel();
@@ -93,7 +96,7 @@ class ChannelServer {
     }
   }
 
-  void stopDirect() {
+  void _stopDirectServer() {
     if (_directServer != null) {
       log.info('Stopping direct channel server');
       _directServer?.stop();
@@ -101,9 +104,7 @@ class ChannelServer {
     }
   }
 
-  void _setTunnelServer() {
-    stopTunnel();
-
+  void _startTunnelServer(int instanceGroupId, String tunnelApiUrl) {
     // create a tunnel server
     _tunnelServer = DisplayTunnelServer(
       reconnectTimeout: channelReconnectTimeoutInStreaming,
@@ -121,33 +122,61 @@ class ChannelServer {
     );
 
     _tunnelServer?.onTunnelConnected = () {
-      log.info('Tunnel connected');
+      _changeTunnelStatus(TunnelStatus.connected);
 
       trackTrace('tunnel_connected');
     };
 
     _tunnelServer?.onTunnelConnecting = () {
-      log.info('Tunnel connecting');
+      _changeTunnelStatus(TunnelStatus.connecting);
 
       trackTrace('tunnel_connecting');
     };
-  }
 
-  _setupTunnel(String ipAddress) async {
-    log.info('Setting up the tunnel channel');
-
-    // Get the instance group Id from IP address
-    final instanceGroupId = getInstanceGroupIdFromIp(ipAddress);
-
-    // Register
-    final registerResult = await registerInstanceIndexById(
-      baseApiUrl,
+    _tunnelServer?.start(
       instanceId,
       instanceGroupId,
+      Uri.parse(tunnelApiUrl),
     );
+  }
 
+  _trySetupTunnel(String ipAddress) {
+    log.info('Setting up the tunnel channel');
+
+    if (_tunnelSetupTask != null && !_tunnelSetupTask!.isCanceled) {
+      log.info('Cancel the ongoing setup of the tunnel');
+      _tunnelSetupTask?.cancel();
+    }
+
+    // Run a cancelable task
+    _tunnelSetupTask = CancelableTask((self) async {
+      // Get the instance group Id from IP address
+      final instanceGroupId = getInstanceGroupIdFromIp(ipAddress);
+
+      // Call API to register the tunnel
+      final registerResult = await registerInstanceIndexById(
+        baseApiUrl,
+        instanceId,
+        instanceGroupId,
+      );
+      if (self.isCanceled) {
+        return;
+      }
+
+      _updateRegisterResult(registerResult, instanceGroupId);
+    });
+
+    _tunnelSetupTask?.run();
+  }
+
+  void _updateRegisterResult(
+    RegisterInstanceResult? registerResult,
+    int instanceGroupId,
+  ) {
     if (registerResult == null) {
       // The API call fails.
+      log.info('The tunnel channel is unavailable');
+
       _updateDisplayCode(instanceGroupId, null);
 
       _changeTunnelStatus(TunnelStatus.unavailable);
@@ -160,12 +189,7 @@ class ChannelServer {
     // Start the tunnel server.
     log.info('Starting the tunnel channel server');
 
-    _setTunnelServer();
-    _tunnelServer!.start(
-      instanceId,
-      instanceGroupId,
-      Uri.parse(registerResult.tunnelApiUrl),
-    );
+    _startTunnelServer(instanceGroupId, registerResult.tunnelApiUrl);
 
     _changeTunnelStatus(TunnelStatus.connecting);
   }
@@ -187,9 +211,45 @@ class ChannelServer {
 
   void _changeTunnelStatus(TunnelStatus status) {
     if (_tunnelStatus != status) {
-      log.info('Tunnel status has changed to $status');
+      log.info('Tunnel status has changed to ${status.name}');
       _tunnelStatus = status;
       onTunnelStatusChange(_tunnelStatus);
+    }
+  }
+
+  void onIpAddressChange(String ipAddress) {
+    log.info('Local IP address has changed to $ipAddress');
+
+    _ipAddress = ipAddress;
+
+    _trySetupTunnel(ipAddress);
+  }
+
+  void enableTunnel(bool enable) {
+    log.info('Enable tunnel channel: $enable');
+
+    if (enable) {
+      _stopTunnel();
+      _changeTunnelStatus(TunnelStatus.checking);
+
+      if (_ipAddress != null) {
+        _trySetupTunnel(_ipAddress!);
+      }
+    } else {
+      _stopTunnel();
+      _changeTunnelStatus(TunnelStatus.disabled);
+    }
+  }
+
+  Future<void> enableDirect(bool enable) async {
+    log.info('Enable direct channel: $enable');
+
+    if (enable) {
+      _stopDirectServer();
+
+      await _startDirectServer();
+    } else {
+      _stopDirectServer();
     }
   }
 }

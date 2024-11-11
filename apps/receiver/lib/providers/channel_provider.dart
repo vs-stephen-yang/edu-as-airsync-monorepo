@@ -194,7 +194,9 @@ class ChannelProvider extends ChangeNotifier {
     _setConnectivityListener();
     _startNewOTPTimer();
 
-    _channelServer.startDirect();
+    // TODO: Implement conditional enabling based on settings.
+    _channelServer.enableDirect(true);
+    _channelServer.enableTunnel(true);
   }
 
   setProviderContainer(ProviderContainer pc) {
@@ -259,11 +261,11 @@ class ChannelProvider extends ChangeNotifier {
     }
     _instanceInfo.ipAddress = ipAddress;
 
-    _channelServer.startTunnel(ipAddress);
+    _channelServer.onIpAddressChange(ipAddress);
   }
 
   _onTunnelStatusChange(TunnelStatus status) {
-    isLanModeOnly.value = status == TunnelStatus.unavailable;
+    isLanModeOnly.value = !_channelServer.isTunnelAvailable;
   }
 
   void _onDisplayCodeChange(String displayCode) {
