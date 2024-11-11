@@ -57,7 +57,7 @@ class V3SettingsCastToBoardsState
         .watch(groupProvider.select((state) => state.broadcastGroupLaunchType));
     final GroupListModel discoveryModel = ref.watch(discoveryModelProvider);
     if (isBroadcastingToGroup) {
-      discoveryModel.start();
+      discoveryModel.start(context: context);
     } else {
       discoveryModel.stop();
     }
@@ -134,25 +134,22 @@ class V3SettingsCastToBoardsState
                   showDialog(
                     groupNotifier: groupNotifier,
                     onConfirm: () {
-                      AppPreferences().setGroupSelectedList(
-                          groupNotifier.historySelectedList);
-                      // start display group
-                      channelProvider
-                          .startDisplayGroup(groupNotifier.selectedList);
+                      startDisplayGroup(groupNotifier, channelProvider);
                     },
                   );
                 } else {
-                  AppPreferences()
-                      .setGroupSelectedList(groupNotifier.historySelectedList);
-
+                  startDisplayGroup(groupNotifier, channelProvider);
                   _trackEvent('click_broadcast', groupNotifier.selectedList);
-
-                  // start display group
-                  channelProvider.startDisplayGroup(groupNotifier.selectedList);
                 }
               },
             ),
     );
+  }
+
+  void startDisplayGroup(
+      GroupProvider groupNotifier, ChannelProvider channelProvider) {
+    AppPreferences().setGroupSelectedList(groupNotifier.historySelectedList);
+    channelProvider.startDisplayGroup(groupNotifier.selectedList);
   }
 
   void showDialog({
@@ -197,15 +194,16 @@ class V3SettingsCastToBoardsState
                   top: isBroadcastingToGroup ? 0 : 8,
                   bottom: context.tokens.spacing.vsdslSpacingMd.bottom)),
           _buildListHeader(context, groupNotifier, isBroadcastingToGroup),
-          _buildListContent(groupNotifier, isBroadcastingToGroup),
+          _buildListContent(
+              groupNotifier, isBroadcastingToGroup, channelProvider),
           _buildDivider(context),
         ],
       ),
     );
   }
 
-  Expanded _buildListContent(
-      GroupProvider groupNotifier, bool isBroadcastingToGroup) {
+  Expanded _buildListContent(GroupProvider groupNotifier,
+      bool isBroadcastingToGroup, ChannelProvider channelProvider) {
     final broadcastSelectedList =
         ref.watch(groupProvider.select((state) => state.selectedList));
     return Expanded(
@@ -241,6 +239,9 @@ class V3SettingsCastToBoardsState
                             groupNotifier.addToSelectedList(client);
                           } else {
                             groupNotifier.removeFromSelectedList(client);
+                          }
+                          if (channelProvider.groupActivated()) {
+                            startDisplayGroup(groupNotifier, channelProvider);
                           }
                         }
                       },

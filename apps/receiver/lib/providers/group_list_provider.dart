@@ -1,8 +1,10 @@
 import 'package:bonsoir/bonsoir.dart';
 import 'package:display_flutter/model/group_list_item.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart' as provider;
 
+import 'channel_provider.dart';
 import 'group_provider.dart';
 
 final discoveryModelProvider = ChangeNotifierProvider<GroupListModel>((ref) {
@@ -18,8 +20,10 @@ class GroupListModel with ChangeNotifier {
   String discoveryType = '_vs-airsync._tcp';
   BonsoirDiscovery? discovery;
   final GroupProvider _groupProvider;
+  BuildContext? context;
 
-  start() async {
+  start({BuildContext? context}) async {
+    this.context = context;
     if (discovery?.isStopped == false) {
       return;
     }
@@ -50,7 +54,18 @@ class GroupListModel with ChangeNotifier {
       _groupProvider.addClient(bean);
     } else if (event.type == BonsoirDiscoveryEventType.discoveryServiceLost) {
       GroupBean bean = GroupBean.fromJson(service.toJson());
-      _groupProvider.removeClient(bean);
+      // 若是host member正在播放中，bonsoir lost也不從清單刪除
+      bool onGrouping = false;
+      if (context != null && context!.mounted) {
+        ChannelProvider channelProvider =
+            provider.Provider.of<ChannelProvider>(context!, listen: false);
+        if (channelProvider.groupActivated()) {
+          onGrouping = channelProvider.isGroupHostMember(bean.id());
+        }
+      }
+      if (!onGrouping) {
+        _groupProvider.removeClient(bean);
+      }
     }
     notifyListeners();
   }
