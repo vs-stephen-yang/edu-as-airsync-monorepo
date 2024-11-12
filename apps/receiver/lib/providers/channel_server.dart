@@ -253,6 +253,7 @@ class ChannelServer {
   void onIpAddressChange(String ipAddress) {
     if (_ipAddress == ipAddress) {
       log.info('IP address remains unchanged');
+      // Notify the current display code
       onDisplayCodeChange();
       return;
     }
@@ -298,8 +299,8 @@ class ChannelServer {
       await _startDirectServer();
 
       if (_ipAddress != null) {
-        final instanceGroupId = getInstanceGroupIdFromIp(_ipAddress!);
-        _updateDisplayCode(instanceGroupId, null);
+        // Notify the current display code
+        onDisplayCodeChange();
       }
     } else {
       _stopDirectServer();
