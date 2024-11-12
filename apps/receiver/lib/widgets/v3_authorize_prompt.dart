@@ -163,19 +163,21 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                         padding: EdgeInsets.zero,
                                       ),
                                       onPressed: () {
-                                        trackEvent('click_decline_device',
-                                            EventCategory.session);
+                                        if (authRequestIdles.isNotEmpty) {
+                                          trackEvent('click_decline_device',
+                                              EventCategory.session);
 
-                                        authRequestIdles[index]
-                                            .entries
-                                            .first
-                                            .value
-                                            .sendRejectPresent(
-                                                PresentRejectedReasonCode
-                                                    .authorizeDecline.code,
-                                                'authorize decline');
-                                        channelProvider.authorizeRequestList
-                                            .removeAt(index);
+                                          authRequestIdles[index]
+                                              .entries
+                                              .first
+                                              .value
+                                              .sendRejectPresent(
+                                                  PresentRejectedReasonCode
+                                                      .authorizeDecline.code,
+                                                  'authorize decline');
+                                          channelProvider.authorizeRequestList
+                                              .removeAt(index);
+                                        }
                                       },
                                       child: AutoSizeText(S
                                           .of(context)
@@ -200,17 +202,19 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                         ),
                                         padding: EdgeInsets.zero,
                                       ),
-                                      onPressed: () async {
-                                        trackEvent('click_accept_device',
-                                            EventCategory.session);
+                                      onPressed: () {
+                                        if (authRequestIdles.isNotEmpty) {
+                                          trackEvent('click_accept_device',
+                                              EventCategory.session);
 
-                                        authRequestIdles[index]
-                                            .entries
-                                            .first
-                                            .value
-                                            .sendAllowPresent();
-                                        channelProvider.authorizeRequestList
-                                            .removeAt(index);
+                                          authRequestIdles[index]
+                                              .entries
+                                              .first
+                                              .value
+                                              .sendAllowPresent();
+                                          channelProvider.authorizeRequestList
+                                              .removeAt(index);
+                                        }
                                       },
                                       child: AutoSizeText(S
                                           .of(context)
