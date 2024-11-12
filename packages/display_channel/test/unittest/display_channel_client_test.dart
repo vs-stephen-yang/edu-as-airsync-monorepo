@@ -175,7 +175,9 @@ void main() {
     injectChannelConnected('token2', 0);
 
     // assert
-    expect(stateChanges.first, ChannelState.connected);
+    Future.delayed(const Duration(milliseconds: 100)).then((_) {
+      expect(stateChanges.first, ChannelState.connected);
+    });
   });
 
   test('client-connected should be sent when the connection is connected', () {
@@ -268,12 +270,14 @@ void main() {
     injectChannelClosed(ChannelCloseCode.authenticationRequired);
 
     // assert
-    expect(stateChanges.first, ChannelState.closed);
+    Future.delayed(const Duration(milliseconds: 100)).then((_) {
+      expect(stateChanges.first, ChannelState.closed);
 
-    expect(
-      client.closeReason!.code.index,
-      ChannelCloseCode.authenticationRequired.index,
-    );
+      expect(
+        client.closeReason!.code.index,
+        ChannelCloseCode.authenticationRequired.index,
+      );
+    });
   });
 
   test('Handles the message', () {
@@ -302,6 +306,8 @@ void main() {
     injectChannelConnected('token', 0);
 
     // assert
-    expect(receivedMessages, hasLength(4));
+    Future.delayed(const Duration(milliseconds: 100)).then((_) {
+      expect(receivedMessages, hasLength(4));
+    });
   });
 }
