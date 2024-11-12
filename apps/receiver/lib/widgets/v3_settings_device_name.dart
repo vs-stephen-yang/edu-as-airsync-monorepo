@@ -3,6 +3,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -136,6 +137,9 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
           child: _saveButton(
               context, S.of(context).v3_settings_device_name_save, onClick: () {
             AppPreferences().set(instanceName: _controller.text);
+            InstanceInfoProvider instanceInfoProvider =
+                Provider.of<InstanceInfoProvider>(context, listen: false);
+            instanceInfoProvider.instanceName = _controller.text;
             settingsProvider.setPage(SettingPageState.deviceSetting);
           }),
         )
