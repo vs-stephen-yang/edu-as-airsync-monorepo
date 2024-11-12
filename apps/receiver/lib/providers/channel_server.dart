@@ -253,6 +253,7 @@ class ChannelServer {
   void onIpAddressChange(String ipAddress) {
     if (_ipAddress == ipAddress) {
       log.info('IP address remains unchanged');
+      onDisplayCodeChange();
       return;
     }
 
