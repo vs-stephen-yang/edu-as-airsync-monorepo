@@ -425,6 +425,11 @@ class ChannelProvider extends ChangeNotifier {
                     List.from(showNewSharingNameList.value);
               }
             } else {
+              if (msg.isConnectedViaModeratorMode ?? false) {
+                // was ModeratorMode, quit when inputting name.
+                sendJoinModeChangedRejectMessage(channel);
+                return;
+              }
               if (HybridConnectionList.hybridSplitScreenCount.value >=
                   HybridConnectionList.maxHybridSplitScreen) {
                 trackEvent(
@@ -719,6 +724,15 @@ class ChannelProvider extends ChangeNotifier {
     message.reason = Reason(
       JoinDisplayRejectedReasonCode.maxClientsReached.code,
       text: 'Max number of clients reached',
+    );
+    channel.send(message);
+  }
+
+  void sendJoinModeChangedRejectMessage(Channel channel) {
+    final message = JoinDisplayRejectedMessage();
+    message.reason = Reason(
+      JoinDisplayRejectedReasonCode.moderatorExited.code,
+      text: 'Moderator mode exited.',
     );
     channel.send(message);
   }
