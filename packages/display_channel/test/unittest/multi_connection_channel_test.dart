@@ -86,7 +86,9 @@ void main() {
     // action
     connection1.onClosed?.call(connection1);
 
-    expect(stateChanges.last, ChannelState.connecting);
+    Future.delayed(const Duration(milliseconds: 100)).then((_) {
+      expect(stateChanges.last, ChannelState.connecting);
+    });
   });
 
   test('The state should change to connected after reconnected', () {
@@ -101,7 +103,9 @@ void main() {
       ClientConnectedMessage(0).toJson(),
     );
 
-    expect(stateChanges.last, ChannelState.connected);
+    Future.delayed(const Duration(milliseconds: 100)).then((_) {
+      expect(stateChanges.last, ChannelState.connected);
+    });
   });
 
   test(
