@@ -82,7 +82,7 @@ class ChannelServer {
   }
 
   Future<void> _startDirectServer() async {
-    // start the direct server
+    // Start the direct server
     try {
       final securityContext = await loadSecurityContextForChannel();
 
@@ -113,7 +113,8 @@ class ChannelServer {
   }
 
   void _startTunnelServer(int instanceGroupId, String tunnelApiUrl) {
-    // create a tunnel server
+    // Create and start the tunnel server
+    log.info('Creating the tunnel channel server');
     _tunnelServer = DisplayTunnelServer(
       reconnectTimeout: channelReconnectTimeoutInStreaming,
       (String url, bool isReconnect) => WebSocketClientConnection(
@@ -130,14 +131,14 @@ class ChannelServer {
     );
 
     _tunnelServer?.onTunnelConnected = () {
+      log.info('Tunnel channel connected');
       _changeTunnelStatus(TunnelStatus.connected);
-
       trackTrace('tunnel_connected');
     };
 
     _tunnelServer?.onTunnelConnecting = () {
+      log.info('Tunnel channel connecting');
       _changeTunnelStatus(TunnelStatus.connecting);
-
       trackTrace('tunnel_connecting');
     };
 
@@ -152,7 +153,7 @@ class ChannelServer {
     log.info('Setting up the tunnel with local IP address: $ipAddress');
 
     if (_tunnelSetupTask != null && !_tunnelSetupTask!.isCanceled) {
-      log.info('Cancel the ongoing setup of the tunnel');
+      log.info('Canceling the ongoing setup of the tunnel');
       _tunnelSetupTask?.cancel();
     }
 
@@ -171,12 +172,14 @@ class ChannelServer {
     for (var retry = 0; retry < tunnelMaxRetry; retry += 1) {
       try {
         // Call API to register the tunnel
+        log.info('Attempting to register instance with ID: $instanceId');
         final registerResult = await registerInstanceIndexById(
           baseApiUrl,
           instanceId,
           instanceGroupId,
         );
         if (task.isCanceled) {
+          log.info('Tunnel setup task has been canceled');
           return; // The task has been canceled
         }
 
@@ -185,19 +188,23 @@ class ChannelServer {
         return;
       } on HttpRequestException catch (e) {
         // API call fails
+        log.warning('Failed to register instance. Attempt ${retry + 1}');
         _handleRegisterResult(null, instanceGroupId);
 
         if (!_shouldRetrySetupTunnel(e)) {
+          log.warning('Abandoning further retry attempts');
           return; // Cannot recover from error. Should not retry.
         }
       }
       // Delay for the next retry
       await Future.delayed(tunnelRetryInterval);
       if (task.isCanceled) {
+        log.info('Tunnel setup task has been canceled during delay');
         return; // The task has been canceled
       }
     }
     // Retry fails
+    log.severe('All retry attempts for tunnel setup have failed');
     _handleRegisterResult(null, instanceGroupId);
   }
 
@@ -216,11 +223,10 @@ class ChannelServer {
     }
 
     // The API call succeeds.
+    log.info('Successfully registered instance. Starting tunnel server');
     _updateDisplayCode(instanceGroupId, registerResult.instanceIndex);
 
     // Start the tunnel server.
-    log.info('Starting the tunnel channel server');
-
     _startTunnelServer(instanceGroupId, registerResult.tunnelUrl);
 
     _changeTunnelStatus(TunnelStatus.connecting);
@@ -246,6 +252,7 @@ class ChannelServer {
 
   void onIpAddressChange(String ipAddress) {
     if (_ipAddress == ipAddress) {
+      log.info('IP address remains unchanged');
       return;
     }
 
@@ -298,7 +305,7 @@ class ChannelServer {
     }
   }
 
-  // Return true if the retry
+  // Return true if retry is possible
   bool _shouldRetrySetupTunnel(HttpRequestException e) {
     if (e.statusCode != null) {
       log.warning(
