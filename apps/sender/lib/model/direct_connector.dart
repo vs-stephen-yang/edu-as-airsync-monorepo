@@ -1,6 +1,6 @@
+import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/settings/channel_config.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
-import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_channel/display_channel.dart';
 
 class DirectConnector {
@@ -52,7 +52,7 @@ class DirectConnector {
     );
 
     _directClient?.openDirectChannel(token: _otp, displayCode: _displayCode);
-    _directClient?.onStateChange = (ChannelState state) {
+    _directClient?.stateController.stream.listen((ChannelState state) {
       if (state == ChannelState.connected) {
         _onOpened(_directClient!);
       } else if (state == ChannelState.closed) {
@@ -61,6 +61,6 @@ class DirectConnector {
         );
         _onOpenError(error);
       }
-    };
+    });
   }
 }

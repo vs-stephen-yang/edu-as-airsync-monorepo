@@ -267,9 +267,9 @@ class ChannelProvider extends ChangeNotifier {
 
     _channel = channel;
 
-    _channel?.onStateChange = (ChannelState state) {
+    _channel?.stateController.stream.listen((ChannelState state) {
       onChannelStateChange(state);
-    };
+    });
     _channel?.onChannelMessage = (message) async {
       switch (message.messageType) {
         case ChannelMessageType.channelConnected:
