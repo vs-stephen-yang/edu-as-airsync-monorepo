@@ -47,7 +47,7 @@ class V3PresentSelectScreen extends StatelessWidget {
           await _requestBackgroundPermission();
         }
         var value = CustomDesktopCaptureSource(null, true, false);
-        channelProvider.presentStart(
+        await channelProvider.presentStart(
             selectedSource: value.selectedSource,
             systemAudio: value.systemAudio);
       }
@@ -87,12 +87,12 @@ class V3PresentSelectScreen extends StatelessWidget {
       if (value != null && value.selectedSource != null) {
         if (Platform.isWindows &&
             value.selectedSource?.type != SourceType.Window) {
-          provider.presentStart(
+          await provider.presentStart(
               selectedSource: value.selectedSource,
               systemAudio: value.systemAudio,
               autoVirtualDisplay: value.isExtensionSelected);
         } else {
-          provider.presentStart(selectedSource: value.selectedSource);
+          await provider.presentStart(selectedSource: value.selectedSource);
         }
       } else {
         if (Platform.isWindows) {
@@ -100,16 +100,16 @@ class V3PresentSelectScreen extends StatelessWidget {
         }
         SelectScreenDialog._timer?.cancel();
         for (var element in selectScreenDialog!._subscriptions) {
-          element.cancel();
+          await element.cancel();
         }
         // moderator mode
         if (provider.moderatorStatus) {
-          provider.presentStop();
-          Provider.of<PresentStateProvider>(context, listen: false)
+          await provider.presentStop();
+          await Provider.of<PresentStateProvider>(context, listen: false)
               .presentModeratorWaitPage();
         } else {
-          provider.presentStop();
-          provider.presentEnd();
+          await provider.presentStop();
+          await provider.presentEnd();
         }
       }
     });
@@ -373,6 +373,8 @@ class SelectScreenDialog extends Dialog {
                   child: StatefulBuilder(
                     builder: (context, setState) {
                       _stateSetter = setState;
+                      final sourceSelected =
+                          _selectedSource != null || _isExtensionSelected;
                       return DefaultTabController(
                         length: 3,
                         child: Builder(builder: (context) {
@@ -528,11 +530,20 @@ class SelectScreenDialog extends Dialog {
                                     ),
                                     createButton(
                                       text: S.current.v3_main_select_role_share,
-                                      textColor: context
-                                          .tokens.color.vsdswColorOnPrimary,
-                                      backgroundColor: context
-                                          .tokens.color.vsdswColorPrimary,
+                                      textColor: sourceSelected
+                                          ? context
+                                              .tokens.color.vsdswColorOnPrimary
+                                          : context.tokens.color
+                                              .vsdswColorOnDisabled,
+                                      backgroundColor: sourceSelected
+                                          ? context
+                                              .tokens.color.vsdswColorPrimary
+                                          : context
+                                              .tokens.color.vsdswColorDisabled,
                                       onPressed: () {
+                                        if (!sourceSelected) {
+                                          return;
+                                        }
                                         ChannelProvider channelProvider =
                                             Provider.of<ChannelProvider>(
                                                 context,
@@ -629,7 +640,7 @@ class SelectScreenDialog extends Dialog {
   void cancel() async {
     _timer?.cancel();
     for (var element in _subscriptions) {
-      element.cancel();
+      await element.cancel();
     }
     Navigator.pop<CustomDesktopCaptureSource>(ctx, null);
   }
@@ -656,7 +667,7 @@ class SelectScreenDialog extends Dialog {
 
     _timer?.cancel();
     for (var element in _subscriptions) {
-      element.cancel();
+      await element.cancel();
     }
     if (isExtensionSelected) {
       await FlutterVirtualDisplay.instance.startVirtualDisplay();
