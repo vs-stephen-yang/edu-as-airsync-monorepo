@@ -1,4 +1,5 @@
 import 'package:display_channel/display_channel.dart';
+import 'package:display_flutter/api/http_request.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/api/instance_api.dart';
 import 'package:display_flutter/settings/channel_config.dart';
@@ -19,6 +20,11 @@ class ChannelServer {
   DisplayDirectServer? _directServer;
   DisplayTunnelServer? _tunnelServer;
 
+  bool _tunnelEnabled = false;
+
+  final int tunnelMaxRetry;
+  final Duration tunnelRetryInterval;
+
   final String baseApiUrl;
   final String instanceId;
 
@@ -29,8 +35,8 @@ class ChannelServer {
   TunnelStatus get tunnelStatus => _tunnelStatus;
   TunnelStatus _tunnelStatus = TunnelStatus.disabled;
 
-  String? get displayCode => _displayCode;
-  String? _displayCode;
+  String get displayCode => encodeDisplayCode(_displayCode);
+  final _displayCode = DisplayCode(instanceGroupId: 0);
 
   CancelableTask? _tunnelSetupTask;
 
@@ -53,7 +59,7 @@ class ChannelServer {
   final Function(TunnelStatus status) onTunnelStatusChange;
 
   // Callback for display code change
-  final Function(String displayCode) onDisplayCodeChange;
+  final Function() onDisplayCodeChange;
 
   ChannelServer({
     required this.onNewDirectChannel,
@@ -63,6 +69,8 @@ class ChannelServer {
     required this.onDisplayCodeChange,
     required this.baseApiUrl,
     required this.instanceId,
+    this.tunnelMaxRetry = 30,
+    this.tunnelRetryInterval = const Duration(minutes: 2),
   });
 
   void _stopTunnel() {
@@ -141,7 +149,7 @@ class ChannelServer {
   }
 
   _trySetupTunnel(String ipAddress) {
-    log.info('Setting up the tunnel channel');
+    log.info('Setting up the tunnel with local IP address: $ipAddress');
 
     if (_tunnelSetupTask != null && !_tunnelSetupTask!.isCanceled) {
       log.info('Cancel the ongoing setup of the tunnel');
@@ -149,30 +157,51 @@ class ChannelServer {
     }
 
     // Run a cancelable task
-    _tunnelSetupTask = CancelableTask((self) async {
-      // Get the instance group Id from IP address
-      final instanceGroupId = getInstanceGroupIdFromIp(ipAddress);
-
-      // Call API to register the tunnel
-      try {
-        final registerResult = await registerInstanceIndexById(
-          baseApiUrl,
-          instanceId,
-          instanceGroupId,
-        );
-        if (self.isCanceled) {
-          return;
-        }
-        _updateRegisterResult(registerResult, instanceGroupId);
-      } catch (e) {
-        _updateRegisterResult(null, instanceGroupId);
-      }
+    _tunnelSetupTask = CancelableTask((task) async {
+      await _runTunnelSetupTask(task, ipAddress);
     });
 
     _tunnelSetupTask?.run();
   }
 
-  void _updateRegisterResult(
+  _runTunnelSetupTask(CancelableTask task, String ipAddress) async {
+    // Get the instance group Id from IP address
+    final instanceGroupId = getInstanceGroupIdFromIp(ipAddress);
+
+    for (var retry = 0; retry < tunnelMaxRetry; retry += 1) {
+      try {
+        // Call API to register the tunnel
+        final registerResult = await registerInstanceIndexById(
+          baseApiUrl,
+          instanceId,
+          instanceGroupId,
+        );
+        if (task.isCanceled) {
+          return; // The task has been canceled
+        }
+
+        // API call succeeds
+        _handleRegisterResult(registerResult, instanceGroupId);
+        return;
+      } on HttpRequestException catch (e) {
+        // API call fails
+        _handleRegisterResult(null, instanceGroupId);
+
+        if (!_shouldRetrySetupTunnel(e)) {
+          return; // Cannot recover from error. Should not retry.
+        }
+      }
+      // Delay for the next retry
+      await Future.delayed(tunnelRetryInterval);
+      if (task.isCanceled) {
+        return; // The task has been canceled
+      }
+    }
+    // Retry fails
+    _handleRegisterResult(null, instanceGroupId);
+  }
+
+  void _handleRegisterResult(
     RegisterInstanceResult? registerResult,
     int instanceGroupId,
   ) {
@@ -201,15 +230,10 @@ class ChannelServer {
     log.info(
         'Updating display code. instanceGroupId:$instanceGroupId instanceIndex:$instanceIndex');
 
-    final displayCode = encodeDisplayCode(
-      DisplayCode(
-        instanceGroupId: instanceGroupId,
-        instanceIndex: instanceIndex,
-      ),
-    );
+    _displayCode.instanceGroupId = instanceGroupId;
+    _displayCode.instanceIndex = instanceIndex;
 
-    _displayCode = displayCode;
-    onDisplayCodeChange(displayCode);
+    onDisplayCodeChange();
   }
 
   void _changeTunnelStatus(TunnelStatus status) {
@@ -221,15 +245,26 @@ class ChannelServer {
   }
 
   void onIpAddressChange(String ipAddress) {
+    if (_ipAddress == ipAddress) {
+      return;
+    }
+
     log.info('Local IP address has changed to $ipAddress');
 
     _ipAddress = ipAddress;
 
-    _trySetupTunnel(ipAddress);
+    if (_tunnelEnabled) {
+      _trySetupTunnel(ipAddress);
+    } else {
+      final instanceGroupId = getInstanceGroupIdFromIp(_ipAddress!);
+      _updateDisplayCode(instanceGroupId, null);
+    }
   }
 
   void enableTunnel(bool enable) {
     log.info('Enable tunnel channel: $enable');
+
+    _tunnelEnabled = enable;
 
     if (enable) {
       _stopTunnel();
@@ -239,6 +274,9 @@ class ChannelServer {
         _trySetupTunnel(_ipAddress!);
       }
     } else {
+      _tunnelSetupTask?.cancel();
+      _tunnelSetupTask = null;
+
       _stopTunnel();
       _changeTunnelStatus(TunnelStatus.disabled);
     }
@@ -249,10 +287,24 @@ class ChannelServer {
 
     if (enable) {
       _stopDirectServer();
-
       await _startDirectServer();
+
+      if (_ipAddress != null) {
+        final instanceGroupId = getInstanceGroupIdFromIp(_ipAddress!);
+        _updateDisplayCode(instanceGroupId, null);
+      }
     } else {
       _stopDirectServer();
     }
+  }
+
+  // Return true if the retry
+  bool _shouldRetrySetupTunnel(HttpRequestException e) {
+    if (e.statusCode != null) {
+      log.warning(
+          'Abandoning retry attempts. API request failed with status code: ${e.statusCode}');
+      return false;
+    }
+    return true;
   }
 }
