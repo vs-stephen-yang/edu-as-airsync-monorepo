@@ -108,6 +108,7 @@ class ChannelProvider extends ChangeNotifier {
   String? deviceName;
 
   bool isJoinDisplayRejected = false;
+  bool isModeratorExitedRejected = false;
   bool isPresentRejected = false;
 
   bool get authorizeStatus => _authorizeStatus;
@@ -294,6 +295,9 @@ class ChannelProvider extends ChangeNotifier {
                 JoinDisplayRejectedReasonCode.maxClientsReached.code) {
               // Toast.makeToast(S.current.toast_maximum_moderated);
               isJoinDisplayRejected = true;
+            } else if (reason?.code ==
+                JoinDisplayRejectedReasonCode.moderatorExited.code) {
+              isModeratorExitedRejected = true;
             }
             presentEnd();
           } else {
@@ -689,6 +693,7 @@ class ChannelProvider extends ChangeNotifier {
       msg.name = name;
     }
     msg.platform = getPlatformName();
+    msg.isConnectedViaModeratorMode = _moderatorStatus;
 
     _channel?.send(msg);
   }
