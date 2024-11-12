@@ -42,7 +42,9 @@ class DisplayGroupMember {
 
     _channel.onChannelMessage = _onChannelMessage;
 
-    _channel.onStateChange = _onChannelStateChange;
+    _channel.stateController.stream.listen((ChannelState state) {
+      _onChannelStateChange(state);
+    });
 
     // Open a direct connection with the display group member
     _channel.openDirectChannel(

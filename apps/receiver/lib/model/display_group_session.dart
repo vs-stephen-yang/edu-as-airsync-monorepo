@@ -29,7 +29,9 @@ class DisplayGroupSession {
     this.onStateChange,
   }) {
     _channel.onChannelMessage = _onChannelMessage;
-    _channel.onStateChange = onStateChange;
+    _channel.stateController.stream.listen((ChannelState state) {
+      onStateChange?.call(state);
+    });
     _sendDisplayStatus();
   }
 
