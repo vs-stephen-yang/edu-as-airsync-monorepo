@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'package:logging/logging.dart';
+
 import 'package:args/args.dart';
-import 'package:uuid/uuid.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/util/log.dart';
+import 'package:logging/logging.dart';
+import 'package:uuid/uuid.dart';
 
 class TestRunner {
   final DisplayChannelClient _client;
@@ -25,7 +26,7 @@ class TestRunner {
       },
     );
 
-    _client.onStateChange = (state) {
+    _client.stateController.stream.listen((ChannelState state) {
       switch (state) {
         case ChannelState.connecting:
           log().info('The client is connecting');
@@ -56,7 +57,7 @@ class TestRunner {
         default:
           break;
       }
-    };
+    });
 
     _client.onChannelMessage = (message) {
       switch (message.messageType) {
@@ -71,7 +72,7 @@ class TestRunner {
   }
 
   _onNewChannel(Channel channel) {
-    channel.onStateChange = (state) {
+    channel.stateController.stream.listen((ChannelState state) {
       switch (state) {
         case ChannelState.connecting:
           log().warning(
@@ -85,7 +86,7 @@ class TestRunner {
         default:
           break;
       }
-    };
+    });
 
     channel.onChannelMessage = (message) {
       switch (message.messageType) {

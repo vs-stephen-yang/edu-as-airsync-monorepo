@@ -3,6 +3,7 @@ import 'package:display_channel/src/util/api_util.dart';
 import 'package:display_channel/src/util/log.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:uuid/uuid.dart';
+
 import 'test_util.dart';
 
 /// Creates and returns a DisplayTunnelServer instance.
@@ -199,7 +200,7 @@ void main() {
         };
 
         // Handle state changes for the client.
-        client.onStateChange = (state) {
+        client.stateController.stream.listen((ChannelState state) {
           if (state == ChannelState.connected) {
             log().fine('client $clientIndex connected');
 
@@ -215,7 +216,7 @@ void main() {
           } else if (state == ChannelState.closed) {
             log().fine('client $clientIndex closed');
           }
-        };
+        });
       }
 
       // Schedule the client tasks to run with a 2-minute interval.

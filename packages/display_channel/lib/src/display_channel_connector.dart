@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:display_channel/src/channel.dart';
 import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/display_channel_client.dart';
@@ -45,6 +47,9 @@ class DisplayChannelConnector {
 
   DisplayChannelClient? _tunnelClient;
   DisplayChannelClient? _directClient;
+
+  StreamSubscription? _tunnelSubscription;
+  StreamSubscription? _directSubscription;
 
   bool _connected = false;
 
@@ -148,14 +153,15 @@ class DisplayChannelConnector {
       displayCode: _encodedDisplayCode,
     );
 
-    _tunnelClient!.onStateChange = (state) {
+    _tunnelSubscription =
+        _tunnelClient!.stateController.stream.listen((ChannelState state) {
       if (state == ChannelState.connected) {
         _onTunnelConnected();
       } else if (state == ChannelState.closed) {
         _tunnelFailed = true;
         _onConnectFailed();
       }
-    };
+    });
   }
 
   // open direct channel
@@ -182,23 +188,25 @@ class DisplayChannelConnector {
       displayCode: _encodedDisplayCode,
     );
 
-    _directClient!.onStateChange = (ChannelState state) {
+    _directSubscription =
+        _directClient!.stateController.stream.listen((ChannelState state) {
       if (state == ChannelState.connected) {
         _onDirectConnected();
       } else if (state == ChannelState.closed) {
         _directFailed = true;
         _onConnectFailed();
       }
-    };
+    });
   }
 
   // direct channel is connected
   _onDirectConnected() {
     if (_connected) {
-      // Too late. The tunnel channel is alread connected.
+      // Too late. The tunnel channel is already connected.
       // Close the direct channel
-      _directClient?.onStateChange = null;
       _directClient?.close(null);
+      _directSubscription?.cancel();
+      _directClient?.stateController.close();
       return;
     }
 
@@ -209,10 +217,11 @@ class DisplayChannelConnector {
   // tunnel channel is connected
   _onTunnelConnected() {
     if (_connected) {
-      // Too late. The direct channel is alread connected.
+      // Too late. The direct channel is already connected.
       // Close the tunnel channel
-      _tunnelClient?.onStateChange = null;
       _tunnelClient?.close(null);
+      _tunnelSubscription?.cancel();
+      _tunnelClient?.stateController.close();
       return;
     }
 

@@ -1,9 +1,9 @@
-import 'package:display_channel/src/util/fake_tunnel_service.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'dart:async';
+import 'dart:io';
 
 import 'package:display_channel/display_channel.dart';
-import 'dart:io';
-import 'dart:async';
+import 'package:display_channel/src/util/fake_tunnel_service.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 import 'utils.dart';
 
@@ -42,11 +42,11 @@ void main() {
       numberOfMessagesReached.updateValue(serverMessages.length);
     };
 
-    channel.onStateChange = (state) {
+    channel.stateController.stream.listen((ChannelState state) {
       if (state == ChannelState.closed) {
         serverChannelClosed.complete();
       }
-    };
+    });
   }
 
   Future<void> setupServer() async {
@@ -108,13 +108,13 @@ void main() {
       clientMessages.add(message);
     };
 
-    client.onStateChange = (state) {
+    client.stateController.stream.listen((ChannelState state) {
       if (state == ChannelState.connected) {
         clientConnected.complete();
       } else if (state == ChannelState.closed) {
         clientClosed.complete();
       }
-    };
+    });
   }
 
   void openDirectChannel({

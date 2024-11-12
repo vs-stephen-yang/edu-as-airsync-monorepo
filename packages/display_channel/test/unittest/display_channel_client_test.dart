@@ -102,7 +102,9 @@ void main() {
     );
 
     client.onChannelMessage = (message) => receivedMessages.add(message);
-    client.onStateChange = (state) => stateChanges.add(state);
+    client.stateController.stream.listen((ChannelState state) {
+      stateChanges.add(state);
+    });
   });
 
   test('The direct connection should be opened with a correct URL', () {
