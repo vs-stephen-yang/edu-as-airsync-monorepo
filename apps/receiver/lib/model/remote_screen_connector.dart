@@ -47,7 +47,9 @@ class RemoteScreenConnector {
     senderVersion = message.version;
     senderPlatform = message.platform;
 
-    channel.onStateChange = (state) => _onChannelState(state);
+    channel.stateController.stream.listen((ChannelState state) async {
+      await _onChannelState(state);
+    });
   }
 
   Future<void> _onChannelState(ChannelState state) async {
