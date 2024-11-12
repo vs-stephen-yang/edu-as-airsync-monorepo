@@ -28,7 +28,8 @@ enum ChannelMessageType {
 }
 
 enum JoinDisplayRejectedReasonCode {
-  maxClientsReached(401);
+  maxClientsReached(401),
+  moderatorExited(402);
 
   const JoinDisplayRejectedReasonCode(this.code);
   final int code;
@@ -217,6 +218,7 @@ class JoinDisplayMessage extends ChannelMessage {
   String? version;
   String? platform;
   JoinIntentType? intent;
+  bool? isConnectedViaModeratorMode;
 
   JoinDisplayMessage(this.clientId) : super(ChannelMessageType.joinDisplay);
 
@@ -232,6 +234,8 @@ class JoinDisplayMessage extends ChannelMessage {
     if (data['intent'] != null) {
       intent = stringToJoinIntentType(data['intent'] as String);
     }
+
+    isConnectedViaModeratorMode = data['isConnectedViaModeratorMode'] as bool?;
   }
 
   @override
@@ -242,6 +246,7 @@ class JoinDisplayMessage extends ChannelMessage {
       'version': version,
       'platform': platform,
       'intent': intent?.name,
+      'isConnectedViaModeratorMode': isConnectedViaModeratorMode,
     });
   }
 }
