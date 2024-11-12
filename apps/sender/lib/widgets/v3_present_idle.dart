@@ -37,6 +37,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
   bool isDisplayCodeSelectedFromHistory = false;
   bool isSessionFullDialogOnScreen = false;
   bool isScreenFullDialogOnScreen = false;
+  bool isModeratorExitedDialogOnScreen = false;
 
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
@@ -112,6 +113,11 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       if (channelProvider.isPresentRejected && !isScreenFullDialogOnScreen) {
         channelProvider.isPresentRejected = false;
         _showScreenFullDialog();
+      }
+      if (channelProvider.isModeratorExitedRejected &&
+          !isModeratorExitedDialogOnScreen) {
+        channelProvider.isModeratorExitedRejected = false;
+        _showModeratorExitedDialog();
       }
       if (channelProvider.totalSharingTime.isNotEmpty) {
         V3Toast().makeSharingTimeToast(
@@ -292,6 +298,24 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       },
     ).then((_) {
       isScreenFullDialogOnScreen = false;
+      setState(() {});
+    });
+  }
+
+  _showModeratorExitedDialog() async {
+    isModeratorExitedDialogOnScreen = true;
+    FocusScope.of(context).unfocus();
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return V3MessageDialog(
+          stringTitle: S.of(context).v3_present_moderator_exited,
+          stringContent: S.of(context).v3_present_moderator_exited_description,
+          stringAction: S.of(context).v3_present_moderator_exited_action,
+        );
+      },
+    ).then((_) {
+      isModeratorExitedDialogOnScreen = false;
       setState(() {});
     });
   }

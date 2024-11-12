@@ -1790,6 +1790,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Moderator exited`
+  String get v3_present_moderator_exited {
+    return Intl.message(
+      'Moderator exited',
+      name: 'v3_present_moderator_exited',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exited moderator mode`
+  String get v3_present_moderator_exited_description {
+    return Intl.message(
+      'Exited moderator mode',
+      name: 'v3_present_moderator_exited_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get v3_present_moderator_exited_action {
+    return Intl.message(
+      'OK',
+      name: 'v3_present_moderator_exited_action',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

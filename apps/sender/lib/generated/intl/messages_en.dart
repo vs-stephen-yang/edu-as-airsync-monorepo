@@ -284,6 +284,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_terms": MessageLookupByLibrary.simpleMessage("Terms of use"),
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
             "Screen sharing has stopped.\nTotal sharing time %s."),
+        "v3_present_moderator_exited":
+            MessageLookupByLibrary.simpleMessage("Moderator exited"),
+        "v3_present_moderator_exited_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_present_moderator_exited_description":
+            MessageLookupByLibrary.simpleMessage("Exited moderator mode"),
         "v3_present_options_menu_he_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "Use device\'s graphic card to encode the stream."),

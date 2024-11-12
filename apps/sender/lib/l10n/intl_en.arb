@@ -172,5 +172,8 @@
   "v3_setting_software_update_no_available_description": "AirSync is already up to date with the latest version.",
   "v3_setting_software_update_no_available_action": "Ok",
   "v3_setting_software_update_no_internet_tittle": "No Internet Connection",
-  "v3_setting_software_update_no_internet_description": "Please check your internet connection and try again."
+  "v3_setting_software_update_no_internet_description": "Please check your internet connection and try again.",
+  "v3_present_moderator_exited": "Moderator exited",
+  "v3_present_moderator_exited_description": "Exited moderator mode",
+  "v3_present_moderator_exited_action": "OK"
 }
