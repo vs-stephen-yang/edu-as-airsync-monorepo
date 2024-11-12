@@ -35,7 +35,16 @@ class ChannelServer {
   TunnelStatus get tunnelStatus => _tunnelStatus;
   TunnelStatus _tunnelStatus = TunnelStatus.disabled;
 
-  String get displayCode => encodeDisplayCode(_displayCode);
+  // Provide a displayCode only if it is available (i.e., instanceGroupId is not zero).
+  // If the instanceGroupId is 0, which means the code is not available,
+  // the getter returns an empty string to indicate the absence of a valid code
+  String get displayCode {
+    if (_displayCode.instanceGroupId == 0) {
+      return "";
+    }
+    return encodeDisplayCode(_displayCode);
+  }
+
   final _displayCode = DisplayCode(instanceGroupId: 0);
 
   CancelableTask? _tunnelSetupTask;
