@@ -268,7 +268,9 @@ class ChannelProvider extends ChangeNotifier {
     isLanModeOnly.value = !_channelServer.isTunnelAvailable;
   }
 
-  void _onDisplayCodeChange(String displayCode) {
+  void _onDisplayCodeChange() {
+    final displayCode = _channelServer.displayCode;
+
     _instanceInfo.displayCode = displayCode;
     AppAnalytics.instance.setGlobalProperty('display_code', displayCode);
 
