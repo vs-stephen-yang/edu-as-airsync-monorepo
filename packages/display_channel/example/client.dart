@@ -1,6 +1,6 @@
 import 'package:display_channel/display_channel.dart';
-import 'package:uuid/uuid.dart';
 import 'package:display_channel/src/util/log.dart';
+import 'package:uuid/uuid.dart';
 
 class Client {
   final Channel _channel;
@@ -9,7 +9,7 @@ class Client {
   final _sessionId = const Uuid().v4();
 
   Client(this._clientId, this._channel) {
-    _channel.onStateChange = (ChannelState state) {
+    _channel.stateController.stream.listen((ChannelState state) {
       switch (state) {
         case ChannelState.connecting:
           log().info('The client is connecting to the display');
@@ -25,7 +25,7 @@ class Client {
         default:
           break;
       }
-    };
+    });
 
     _channel.onChannelMessage = (message) {
       log().info('Received ${message.messageType}');

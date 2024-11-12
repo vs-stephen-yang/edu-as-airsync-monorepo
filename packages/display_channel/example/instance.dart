@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:display_channel/display_channel.dart';
+import 'package:display_channel/src/util/api_util.dart';
 import 'package:display_channel/src/util/log.dart';
 import 'package:display_channel/src/util/stage_util.dart';
-import 'package:display_channel/src/util/api_util.dart';
 
 class Client {
   final Channel _channel;
@@ -14,13 +14,13 @@ class Client {
     _channel.send(message);
 
     _channel.onChannelMessage = (message) => _onMessages(message);
-    _channel.onStateChange = (state) {
+    _channel.stateController.stream.listen((ChannelState state) {
       log().info('Channel state has changed to $state');
       if (state == ChannelState.closed) {
         log().info(
             'Close reason: ${_channel.closeReason?.code} ${_channel.closeReason?.text}');
       }
-    };
+    });
   }
 
   void _onMessages(ChannelMessage message) {

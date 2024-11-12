@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:display_channel/display_channel.dart';
 import 'package:display_channel/src/util/api_util.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -41,11 +42,11 @@ List<DisplayChannelClient> createClients(
     final closedCompleter = Completer();
     closedCompleters.add(closedCompleter);
 
-    client.onStateChange = (state) {
+    client.stateController.stream.listen((ChannelState state) {
       if (state == ChannelState.closed) {
         closedCompleter.complete();
       }
-    };
+    });
     clients.add(client);
   }
   return clients;

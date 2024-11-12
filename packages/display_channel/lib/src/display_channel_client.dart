@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:display_channel/src/api/api_request.dart';
 import 'package:display_channel/src/channel.dart';
 import 'package:display_channel/src/client_connection.dart';
-import 'package:display_channel/src/messages/message_continuity.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
+import 'package:display_channel/src/messages/message_continuity.dart';
 import 'package:display_channel/src/util/channel_message_util.dart';
 import 'package:display_channel/src/util/channel_util.dart';
 import 'package:display_channel/src/util/uri_util.dart';
@@ -12,7 +14,7 @@ class DisplayChannelClient implements Channel {
   void Function(ChannelMessage message)? onChannelMessage;
 
   @override
-  void Function(ChannelState state)? onStateChange;
+  StreamController<ChannelState> get stateController => _stateController;
 
   @override
   ChannelState get state => _state;
@@ -29,6 +31,8 @@ class DisplayChannelClient implements Channel {
 
   late MessageContinuity _continuity;
   ChannelState _state = ChannelState.initialized;
+  final StreamController<ChannelState> _stateController =
+      StreamController<ChannelState>.broadcast();
   ChannelCloseReason? _closeReason;
 
   // Stores messages received before the channel is connected.
@@ -97,7 +101,7 @@ class DisplayChannelClient implements Channel {
 
     if (_state != newState) {
       _state = newState;
-      onStateChange?.call(_state);
+      _stateController.sink.add(_state);
     }
   }
 
@@ -186,8 +190,12 @@ class DisplayChannelClient implements Channel {
 
     // state changes to "connected" after receiving channel-connected
     _changeState(ChannelState.connected);
-
-    _drainPendingMessages();
+    // Workaround: When switching the onStateChange function to use a stream
+    // listener, the process becomes asynchronous, so onChannelMessage may
+    // not be set up yet. Adding a 100ms delay here to wait it initialized.
+    Future.delayed(const Duration(milliseconds: 100)).then((_) {
+      _drainPendingMessages();
+    });
   }
 
   // Process messages received before the channel is connected.

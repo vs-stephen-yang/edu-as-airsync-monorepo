@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:display_channel/src/messages/channel_message.dart';
 
 enum ChannelState {
@@ -31,11 +33,12 @@ class ChannelCloseReason {
 }
 
 abstract class Channel {
-  void Function(ChannelState state)? onStateChange;
+  StreamController<ChannelState> get stateController;
 
   void Function(ChannelMessage message)? onChannelMessage;
 
   ChannelState get state;
+
   ChannelCloseReason? get closeReason;
 
   Future<void> close(ChannelCloseReason? reason);

@@ -1,15 +1,14 @@
 import 'dart:async';
 
-import 'package:display_channel/src/messages/message_continuity.dart';
 import 'package:display_channel/src/channel.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
-
+import 'package:display_channel/src/messages/message_continuity.dart';
 import 'package:display_channel/src/server/connection.dart';
 import 'package:display_channel/src/util/channel_message_util.dart';
 
 class MultiConnectionChannel implements Channel {
   @override
-  void Function(ChannelState state)? onStateChange;
+  StreamController<ChannelState> get stateController => _stateController;
 
   @override
   ChannelState get state => _state;
@@ -24,6 +23,8 @@ class MultiConnectionChannel implements Channel {
   final String _channelId;
   final String _reconnectionToken;
   ChannelState _state = ChannelState.connected;
+  final StreamController<ChannelState> _stateController =
+      StreamController<ChannelState>.broadcast();
   ChannelCloseReason? _closeReason;
 
   late MessageContinuity _messageContinuity;
@@ -33,6 +34,7 @@ class MultiConnectionChannel implements Channel {
   final Duration heartbeatTimeout;
 
   Timer? _reconnectTimer;
+
   // The amount of time during which a client can reconnect before closing the channel.
   final Duration reconnectTimeout;
 
@@ -255,7 +257,7 @@ class MultiConnectionChannel implements Channel {
 
     if (_state != newState) {
       _state = newState;
-      onStateChange?.call(_state);
+      _stateController.sink.add(_state);
     }
   }
 
