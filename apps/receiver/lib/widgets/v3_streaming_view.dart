@@ -18,6 +18,7 @@ import 'package:display_flutter/widgets/v3_webrtc_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart' as provider;
 
 class V3StreamingView extends ConsumerStatefulWidget {
@@ -67,10 +68,8 @@ class _V3StreamingViewState extends ConsumerState {
               // add one more to show "Waiting for others to join".
               splitScreenCount++;
             }
-            if (V3Home.isShowSettingsMenu.value) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                V3Home.isShowSettingsMenu.value = false;
-              });
+            if (navService.canPop()) {
+              navService.goBack();
             }
             return Stack(
               children: [

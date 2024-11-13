@@ -1,10 +1,12 @@
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_download_app_menu.dart';
-import 'package:display_flutter/screens/v3_home.dart';
+import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:provider/provider.dart';
 
 class V3FooterBar extends StatelessWidget {
   const V3FooterBar({super.key});
@@ -44,8 +46,8 @@ class V3FooterBar extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
                 onPressed: () {
-                  V3Home.isShowSettingsMenu.value =
-                      !V3Home.isShowSettingsMenu.value;
+                  trackEvent('click_setting', EventCategory.setting);
+                  _showSettingsMenuDialog(context);
                 },
               ),
             ),
@@ -101,6 +103,19 @@ class V3FooterBar extends StatelessWidget {
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
         return const V3DownloadAppMenu();
+      },
+    );
+  }
+
+  _showSettingsMenuDialog(BuildContext context) {
+    SettingsProvider settingsProvider =
+        Provider.of<SettingsProvider>(context, listen: false);
+    settingsProvider.setPage(SettingPageState.deviceSetting);
+    showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return const V3SettingMenu();
       },
     );
   }

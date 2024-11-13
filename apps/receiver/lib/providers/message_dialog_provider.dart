@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:display_flutter/screens/v3_home.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:no_context_navigation/no_context_navigation.dart';
 
 /// Use this provider to show a dialog.
 /// ref.read(dialogProvider.notifier).showDialog(
@@ -57,7 +57,9 @@ class MessageDialogProvider extends StateNotifier<DialogState> {
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
   }) {
-    V3Home.isShowSettingsMenu.value = false;
+    if (navService.canPop()) {
+      navService.goBack();
+    }
     state = DialogState(
       title: title,
       content: content,
