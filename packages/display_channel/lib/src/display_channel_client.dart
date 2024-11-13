@@ -43,6 +43,16 @@ class DisplayChannelClient implements Channel {
 
   ChannelCloseReason? _closeReason;
 
+  // how often to run the check
+  final _heartbeatTimerInterval = const Duration(seconds: 2);
+  Timer? _heartbeatTimer;
+
+  // Timestamp of when the last message or heartbeat was received.
+  late DateTime _lastMessageReceivedTime;
+
+  // Maximum allowed duration to wait for a message before considering the connection as lost.
+  Duration _heartbeatTimeout = const Duration(seconds: 20);
+
   final CreateWebsocketClientConnection _createConnection;
 
   DisplayChannelClient(
@@ -57,6 +67,8 @@ class DisplayChannelClient implements Channel {
       // Send message requiring retransmission
       (message) => _connection?.send(message.toJson()),
     );
+
+    _lastMessageReceivedTime = DateTime.now();
   }
 
   void openTunnelChannel(
@@ -176,6 +188,8 @@ class DisplayChannelClient implements Channel {
       return;
     }
 
+    _lastMessageReceivedTime = DateTime.now();
+
     ChannelMessage? parsedMessage = ChannelMessage.parse(message);
 
     if (parsedMessage == null) {
@@ -210,6 +224,15 @@ class DisplayChannelClient implements Channel {
 
     // state changes to "connected" after receiving channel-connected
     _changeState(ChannelState.connected);
+
+    _heartbeatTimeout = _getHeartbeatTimeout(message);
+  }
+
+  Duration _getHeartbeatTimeout(ChannelConnectedMessage message) {
+    int timeoutMs =
+        (message.heartbeatTimeout ?? 10) + (message.heartbeatInterval ?? 10);
+
+    return Duration(milliseconds: timeoutMs);
   }
 
   // Process messages received before the channel is connected.
@@ -269,6 +292,8 @@ class DisplayChannelClient implements Channel {
         _continuity.nextIncomingSequenceNumber,
       ).toJson(),
     );
+
+    _startHeartbeatTimer();
   }
 
   void _onDisconnected() {
@@ -297,6 +322,8 @@ class DisplayChannelClient implements Channel {
   void _closeConnection() {
     _connection?.close();
     _connection = null;
+
+    _stopHeartbeatTimer();
   }
 
   // when the client receives the heartbeat, it should response with a heartbeat
@@ -315,11 +342,37 @@ class DisplayChannelClient implements Channel {
     _closeReason = reason;
     _changeState(ChannelState.closed);
 
+    _stopHeartbeatTimer();
+
     _dispose();
   }
 
   _dispose() async {
     await _stateController.close();
     await _messageController.close();
+  }
+
+  void _startHeartbeatTimer() {
+    _stopHeartbeatTimer();
+
+    _lastMessageReceivedTime = DateTime.now();
+
+    _heartbeatTimer = Timer.periodic(_heartbeatTimerInterval, (timer) {
+      // Check if we have received a message recently.
+      final now = DateTime.now();
+
+      if (now.difference(_lastMessageReceivedTime) > _heartbeatTimeout) {
+        _stopHeartbeatTimer();
+
+        _internalClose(
+          ChannelCloseReason(ChannelCloseCode.heartbeatTimeout),
+        );
+      }
+    });
+  }
+
+  void _stopHeartbeatTimer() {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
   }
 }
