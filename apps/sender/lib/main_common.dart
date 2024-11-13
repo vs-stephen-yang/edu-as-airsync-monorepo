@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:desktop_screenstate/desktop_screenstate.dart';
-import 'package:desktop_window/desktop_window.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/profile.dart';
@@ -48,7 +48,7 @@ import 'annotation/annotation_model.dart';
 import 'annotation/canvas_widget_desktop.dart';
 
 void commonEntry(List<String> args, ConfigSettings settings) async {
-  runZonedGuarded<Future<void>>(() async {
+  await runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
     if (settings.sentry != null) {
@@ -91,13 +91,6 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
       deviceInfo: await ClientDeviceInfo.fetch(),
     );
     trackEvent('launch', EventCategory.system);
-
-    if (!kIsWeb &&
-        (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
-      // DesktopWindow only support above platform.
-      await DesktopWindow.setWindowSize(const Size(1280, 720));
-      await DesktopWindow.setMinWindowSize(const Size(1280, 720));
-    }
 
     // load ice gathering continually setting
     WebRTCUtil.iceGatheringContinually =
@@ -146,6 +139,19 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
         child: const MyApp(),
       ),
     ));
+
+    if (!kIsWeb &&
+        (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
+      doWhenWindowReady(() {
+        const Size initialSize = Size(1280, 720);
+        appWindow
+          ..alignment = Alignment.center
+          ..minSize = initialSize
+          ..size = initialSize
+          ..position = Offset.zero
+          ..show();
+      });
+    }
   }, (error, stackTrace) async {
     await Sentry.captureException(error, stackTrace: stackTrace);
   });
