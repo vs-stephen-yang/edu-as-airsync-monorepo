@@ -3,7 +3,6 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/message_dialog_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
-import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/v3_settings_broadcast.dart';
 import 'package:display_flutter/widgets/v3_settings_cast_to_boards.dart';
@@ -18,6 +17,7 @@ import 'package:display_flutter/widgets/v3_settings_whats_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingMenu extends StatelessWidget {
@@ -159,7 +159,9 @@ class V3SettingMenu extends StatelessWidget {
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(),
                                   onPressed: () {
-                                    V3Home.isShowSettingsMenu.value = false;
+                                    if (navService.canPop()) {
+                                      navService.goBack();
+                                    }
                                   },
                                 ),
                               ),
@@ -216,7 +218,9 @@ class V3SettingMenu extends StatelessWidget {
     if (_childFocusNode.hasFocus) {
       return;
     }
-    V3Home.isShowSettingsMenu.value = false;
+    if (navService.canPop()) {
+      navService.goBack();
+    }
   }
 
   _subTittleButton(BuildContext context,

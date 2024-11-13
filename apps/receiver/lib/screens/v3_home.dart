@@ -1,12 +1,9 @@
 import 'dart:io';
 
-import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
-import 'package:display_flutter/providers/settings_provider.dart';
-import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/v3_authorize_prompt.dart';
 import 'package:display_flutter/widgets/v3_feature_set.dart';
@@ -28,7 +25,6 @@ class V3Home extends StatefulWidget {
 
   static ValueNotifier<bool> isShowHeaderFooterBar = ValueNotifier(true);
   static ValueNotifier<bool> isShowDisplayCode = ValueNotifier(true);
-  static ValueNotifier<bool> isShowSettingsMenu = ValueNotifier(false);
 
   @override
   State<StatefulWidget> createState() => _V3HomeState();
@@ -47,17 +43,6 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
     Provider.of<MirrorStateProvider>(context, listen: false)
         .startMirrorStartProvider();
     setProviderContainer();
-    onSettingMenuDismiss();
-  }
-
-  void onSettingMenuDismiss() {
-    // 當SettingsMenu關閉後，一率從這邊設定預設頁面，避免遺漏
-    V3Home.isShowSettingsMenu.addListener(() {
-      if (V3Home.isShowSettingsMenu.value == false) {
-        Provider.of<SettingsProvider>(context, listen: false)
-            .setPage(SettingPageState.deviceSetting);
-      }
-    });
   }
 
   void setProviderContainer() {
@@ -138,15 +123,6 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                 },
               ),
               const V3FeatureSet(),
-              ValueListenableBuilder(
-                  valueListenable: V3Home.isShowSettingsMenu,
-                  builder: (_, bool value, __) {
-                    if (value) {
-                      trackEvent('click_setting', EventCategory.setting);
-                    }
-
-                    return value ? const V3SettingMenu() : const SizedBox();
-                  }),
               const V3MirrorPrompt(),
               const V3AuthorizePrompt(),
               const V3GroupRejectPrompt(),
