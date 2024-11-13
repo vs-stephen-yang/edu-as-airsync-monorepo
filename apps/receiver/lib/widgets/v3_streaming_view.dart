@@ -224,80 +224,97 @@ class _V3StreamingViewState extends ConsumerState {
             );
           },
         ),
-        Positioned(
-          left: 13,
-          bottom: 8,
-          child: SizedBox(
-            width: 41,
-            height: 41,
-            child: IconButton(
-              icon: const Image(
-                image: Svg('assets/images/ic_streaming_shortcut.svg'),
-              ),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-              onPressed: () {
-                _showShortcutsMenuDialog();
-              },
-            ),
-          ),
-        ),
-        Positioned(
-          right: 8,
-          bottom: 8,
-          child: ConstrainedBox(
-            constraints: BoxConstraints.tightFor(
-              width: isAnnotationImplement ? 96 : 41,
-              height: 41,
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: context.tokens.color.vsdslColorSurface800,
-                borderRadius: context.tokens.radii.vsdslRadiusFull,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  if (isAnnotationImplement)
-                    SizedBox(
+        ValueListenableBuilder(
+          valueListenable: V3Home.isShowHeaderFooterBar,
+          builder: (context, value, child) {
+            return value
+                ? const SizedBox.shrink()
+                : Positioned(
+                    left: 13,
+                    bottom: 8,
+                    child: SizedBox(
                       width: 41,
                       height: 41,
                       child: IconButton(
                         icon: const Image(
-                          image: Svg('assets/images/ic_streaming_pen.svg'),
+                          image: Svg('assets/images/ic_streaming_shortcut.svg'),
                         ),
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                         onPressed: () {
-                          // todo: annotation
+                          _showShortcutsMenuDialog();
                         },
                       ),
                     ),
-                  if (isAnnotationImplement)
-                    Container(
-                      width: 1,
-                      height: 21,
-                      color: context.tokens.color.vsdslColorOnSurfaceVariant,
-                    ),
-                  SizedBox(
-                    width: 41,
-                    height: 41,
-                    child: IconButton(
-                      icon: const Image(
-                        image: Svg('assets/images/ic_streaming_qrcode.svg'),
+                  );
+          },
+        ),
+        ValueListenableBuilder(
+          valueListenable: V3Home.isShowHeaderFooterBar,
+          builder: (context, value, child) {
+            return value
+                ? const SizedBox.shrink()
+                : Positioned(
+                    right: 8,
+                    bottom: 8,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints.tightFor(
+                        width: isAnnotationImplement ? 96 : 41,
+                        height: 41,
                       ),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      onPressed: () {
-                        _showQuickConnectMenuDialog();
-                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: context.tokens.color.vsdslColorSurface800,
+                          borderRadius: context.tokens.radii.vsdslRadiusFull,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            if (isAnnotationImplement)
+                              SizedBox(
+                                width: 41,
+                                height: 41,
+                                child: IconButton(
+                                  icon: const Image(
+                                    image: Svg(
+                                        'assets/images/ic_streaming_pen.svg'),
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                  onPressed: () {
+                                    // todo: annotation
+                                  },
+                                ),
+                              ),
+                            if (isAnnotationImplement)
+                              Container(
+                                width: 1,
+                                height: 21,
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceVariant,
+                              ),
+                            SizedBox(
+                              width: 41,
+                              height: 41,
+                              child: IconButton(
+                                icon: const Image(
+                                  image: Svg(
+                                      'assets/images/ic_streaming_qrcode.svg'),
+                                ),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                onPressed: () {
+                                  _showQuickConnectMenuDialog();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+                  );
+          },
         ),
         ValueListenableBuilder(
           valueListenable:
