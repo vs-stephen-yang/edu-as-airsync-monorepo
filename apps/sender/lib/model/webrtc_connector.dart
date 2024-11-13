@@ -570,6 +570,9 @@ class WebRTCConnector {
   }
 
   Future changePresentQuality(ChangePresentQuality msg) async {
+    log.info(
+        "Received quality change request. height:${msg.constraints?.height}");
+
     if (!_streamPublished) {
       _pendingChangePresentQuality = msg;
       return;
@@ -598,6 +601,8 @@ class WebRTCConnector {
         'width': _trackWidth,
         'height': _trackHeight,
       };
+      log.info(
+          "Apply video constraints. width:$_trackWidth height:$_trackHeight");
 
       final videoTrack = _localStream?.getVideoTracks().first;
       await videoTrack?.applyConstraints(constraints);
