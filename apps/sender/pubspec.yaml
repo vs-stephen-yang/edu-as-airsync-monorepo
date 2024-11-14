@@ -92,7 +92,7 @@ dependencies:
   flutter_webrtc:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc
-      ref: release-0.9.36-43
+      ref: release-0.9.36-44
   display_channel:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
@@ -100,7 +100,7 @@ dependencies:
   ion_sdk_flutter:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter
-      ref: release-0.0.36
+      ref: release-0.0.37
   flutter_input_injection:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection
@@ -123,8 +123,6 @@ dependencies:
   # ViewSonic plug-in
 
 dependency_overrides:
-  dart_webrtc: 1.1.1 # need follow flutter_webrtc version
-  webrtc_interface: 1.1.0 # need follow flutter_webrtc version
   uuid: ^4.5.1
 
 dev_dependencies:

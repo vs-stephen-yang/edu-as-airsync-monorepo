@@ -382,13 +382,14 @@ packages:
     source: hosted
     version: "2.3.7"
   dart_webrtc:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      name: dart_webrtc
-      sha256: "3f581ea799829fabd6e0b99bd2210146e4d107c7b3ac8495af3510737a5c5c1a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.1"
+      path: "."
+      ref: "release-1.0.17-1"
+      resolved-ref: "934e9563c7342bab1c0c533cede5837ff8898c73"
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/dart-webrtc"
+    source: git
+    version: "1.0.17"
   dbus:
     dependency: transitive
     description:
@@ -578,8 +579,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.9.36-43"
-      resolved-ref: "3d0c0ff52bffb827cb18e97e70670233799fd38d"
+      ref: "release-0.9.36-44"
+      resolved-ref: a8fb3e918b43eba8bfd464898086daef496a2407
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc"
     source: git
     version: "0.9.36"
@@ -723,8 +724,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.0.36"
-      resolved-ref: a7d1289149235ec07d3b494667a9bd8f7f79bcd3
+      ref: "release-0.0.37"
+      resolved-ref: fd8d91d159c7b70e637adc48e952652225154256
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter"
     source: git
     version: "1.0.0"
@@ -1510,12 +1511,13 @@ packages:
     source: hosted
     version: "2.4.5"
   webrtc_interface:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      name: webrtc_interface
-      sha256: "0dd96f4d7fb6ba9895930644cebd3f1adb5179caa83cb1760061b2fe9cba5aad"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "release-1.1.0-1"
+      resolved-ref: f5c9022bee78cf24a55c3abd9206d49e45a3d991
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/webrtc-interface"
+    source: git
     version: "1.1.0"
   win32:
     dependency: transitive
