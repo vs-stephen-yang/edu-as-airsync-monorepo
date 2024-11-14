@@ -268,10 +268,10 @@ class ChannelProvider extends ChangeNotifier {
 
     _channel = channel;
 
-    _channel?.stateController.stream.listen((ChannelState state) {
+    _channel?.stateStream.listen((ChannelState state) {
       onChannelStateChange(state);
     });
-    _channel?.onChannelMessage = (message) async {
+    _channel?.messageStream.listen((message) async {
       switch (message.messageType) {
         case ChannelMessageType.channelConnected:
           // heartbeatInterval
@@ -359,7 +359,7 @@ class ChannelProvider extends ChangeNotifier {
         default:
           break;
       }
-    };
+    });
   }
 
   Future<void> _handleRemoteScreenInfo(
@@ -435,7 +435,7 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   void onChannelStateChange(ChannelState state) {
-    log.info('Channel state: ${state.name}');
+    log.info('Channel state: ${state.name} ${_channel?.closeReason?.code}');
     trackTrace('channel_state', properties: {
       'target': state.name,
     });
