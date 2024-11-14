@@ -5,6 +5,7 @@ import 'package:display_channel/src/messages/channel_message.dart';
 import 'package:display_channel/src/messages/message_continuity.dart';
 import 'package:display_channel/src/server/connection.dart';
 import 'package:display_channel/src/util/channel_message_util.dart';
+import 'package:rxdart/rxdart.dart';
 
 class MultiConnectionChannel implements Channel {
   @override
@@ -24,11 +25,12 @@ class MultiConnectionChannel implements Channel {
   final String _reconnectionToken;
   ChannelState _state = ChannelState.connected;
 
-  final StreamController<ChannelState> _stateController =
-      StreamController<ChannelState>.broadcast();
+  static const int _replayMaxSize = 10;
 
-  final StreamController<ChannelMessage> _messageController =
-      StreamController<ChannelMessage>.broadcast();
+  final _stateController = ReplaySubject<ChannelState>(maxSize: _replayMaxSize);
+
+  final _messageController =
+      ReplaySubject<ChannelMessage>(maxSize: _replayMaxSize);
 
   ChannelCloseReason? _closeReason;
 

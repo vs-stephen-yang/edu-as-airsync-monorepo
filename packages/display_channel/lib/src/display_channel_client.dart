@@ -8,6 +8,7 @@ import 'package:display_channel/src/messages/message_continuity.dart';
 import 'package:display_channel/src/util/channel_message_util.dart';
 import 'package:display_channel/src/util/channel_util.dart';
 import 'package:display_channel/src/util/uri_util.dart';
+import 'package:rxdart/rxdart.dart';
 
 class DisplayChannelClient implements Channel {
   @override
@@ -33,16 +34,14 @@ class DisplayChannelClient implements Channel {
 
   ChannelState _state = ChannelState.initialized;
 
-  final StreamController<ChannelState> _stateController =
-      StreamController<ChannelState>.broadcast();
+  static const int _replayMaxSize = 10;
 
-  final StreamController<ChannelMessage> _messageController =
-      StreamController<ChannelMessage>.broadcast();
+  final _stateController = ReplaySubject<ChannelState>(maxSize: _replayMaxSize);
+
+  final _messageController =
+      ReplaySubject<ChannelMessage>(maxSize: _replayMaxSize);
 
   ChannelCloseReason? _closeReason;
-
-  // Stores messages received before the channel is connected.
-  final _pendingMessages = <ChannelMessage>[];
 
   final CreateWebsocketClientConnection _createConnection;
 
@@ -211,28 +210,12 @@ class DisplayChannelClient implements Channel {
 
     // state changes to "connected" after receiving channel-connected
     _changeState(ChannelState.connected);
-    // Workaround: When switching the onStateChange function to use a stream
-    // listener, the process becomes asynchronous, so onChannelMessage may
-    // not be set up yet. Adding a 100ms delay here to wait it initialized.
-    Future.delayed(const Duration(milliseconds: 100)).then((_) {
-      _drainPendingMessages();
-    });
   }
 
   // Process messages received before the channel is connected.
-  void _drainPendingMessages() {
-    for (var message in _pendingMessages) {
-      _deliverMessage(message);
-    }
-    _pendingMessages.clear();
-  }
 
   void _onChannelMessage(ChannelMessage message) {
-    if (_isConnected()) {
-      _deliverMessage(message);
-    } else {
-      _pendingMessages.add(message);
-    }
+    _deliverMessage(message);
   }
 
   @override
