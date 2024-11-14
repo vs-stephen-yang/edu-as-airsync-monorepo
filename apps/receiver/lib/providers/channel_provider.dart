@@ -404,7 +404,7 @@ class ChannelProvider extends ChangeNotifier {
     log.info('Received a new channel');
     RemoteScreenConnector? remoteScreenConnector;
 
-    channel.onChannelMessage = (ChannelMessage message) async {
+    channel.messageStream.listen((ChannelMessage message) async {
       log.info(
           'Received channel message ${message.messageType} ${message.toJson()}');
 
@@ -611,7 +611,7 @@ class ChannelProvider extends ChangeNotifier {
         default:
           break;
       }
-    };
+    });
 
     sendDisplayStatus(channel);
   }

@@ -28,8 +28,8 @@ class DisplayGroupSession {
     this.onInvitation,
     this.onStateChange,
   }) {
-    _channel.onChannelMessage = _onChannelMessage;
-    _channel.stateController.stream.listen((ChannelState state) {
+    _channel.messageStream.listen(_onChannelMessage);
+    _channel.stateStream.listen((ChannelState state) {
       onStateChange?.call(state);
     });
     _sendDisplayStatus();

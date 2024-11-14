@@ -40,9 +40,9 @@ class DisplayGroupMember {
       _createConnection,
     );
 
-    _channel.onChannelMessage = _onChannelMessage;
+    _channel.messageStream.listen(_onChannelMessage);
 
-    _channel.stateController.stream.listen((ChannelState state) {
+    _channel.stateStream.listen((ChannelState state) {
       _onChannelStateChange(state);
     });
 
