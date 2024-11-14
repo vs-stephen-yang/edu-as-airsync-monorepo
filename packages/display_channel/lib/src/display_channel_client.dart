@@ -269,17 +269,14 @@ class DisplayChannelClient implements Channel {
   }
 
   Future _onConnectFailed(ConnectError error) async {
-    _closeConnection();
-
     if (_isClosed()) {
       return;
     }
 
-    _closeReason = ChannelCloseReason(
+    _internalClose(ChannelCloseReason(
       connectErrorToChannelCloseCode(error.error),
       text: error.message,
-    );
-    _changeState(ChannelState.closed);
+    ));
   }
 
   void _onConnected() {
@@ -303,17 +300,15 @@ class DisplayChannelClient implements Channel {
   }
 
   void _onChannelClosedMessage(ChannelClosedMessage message) {
-    _closeConnection();
-
     if (_isClosed()) {
       return;
     }
 
-    _closeReason = message.reason != null
-        ? convertRemoteReasonToChannelCloseReason(message.reason!)
-        : ChannelCloseReason(ChannelCloseCode.remoteClose);
-
-    _changeState(ChannelState.closed);
+    _internalClose(
+      message.reason != null
+          ? convertRemoteReasonToChannelCloseReason(message.reason!)
+          : ChannelCloseReason(ChannelCloseCode.remoteClose),
+    );
   }
 
   void _closeConnection() {
@@ -321,7 +316,7 @@ class DisplayChannelClient implements Channel {
     _connection = null;
   }
 
-// when the client receives the heartbeat, it should response with a heartbeat
+  // when the client receives the heartbeat, it should response with a heartbeat
   _onHeartbeat(HeartbeatMessage message) {
     // response a heartbeat message to the server
     _connection?.send(
@@ -329,5 +324,19 @@ class DisplayChannelClient implements Channel {
         _continuity.nextIncomingSequenceNumber,
       ).toJson(),
     );
+  }
+
+  void _internalClose(ChannelCloseReason reason) {
+    _closeConnection();
+
+    _closeReason = reason;
+    _changeState(ChannelState.closed);
+
+    _dispose();
+  }
+
+  _dispose() async {
+    await _stateController.close();
+    await _messageController.close();
   }
 }

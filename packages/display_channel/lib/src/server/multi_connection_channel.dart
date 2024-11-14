@@ -277,5 +277,8 @@ class MultiConnectionChannel implements Channel {
 
     _closeReason = reason;
     _changeState(ChannelState.closed);
+
+    _stateController.close();
+    _messageController.close();
   }
 }
