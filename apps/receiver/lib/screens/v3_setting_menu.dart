@@ -4,6 +4,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/message_dialog_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_home.dart';
+import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/v3_settings_broadcast.dart';
 import 'package:display_flutter/widgets/v3_settings_cast_to_boards.dart';
 import 'package:display_flutter/widgets/v3_settings_connectivity.dart';
@@ -131,21 +132,39 @@ class V3SettingMenu extends StatelessWidget {
                         Positioned(
                           left: 8,
                           bottom: 8,
-                          child: SizedBox(
-                            width: 33,
-                            height: 33,
-                            child: IconButton(
-                              icon: const Image(
-                                image: Svg('assets/images/ic_menu_close.svg'),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 13, bottom: 10),
+                                child: Text(
+                                  'v${AppConfig.of(context)?.appVersion ?? ''}',
+                                  style: TextStyle(
+                                    color: context
+                                        .tokens.color.vsdslColorSurface700,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
                               ),
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                              onPressed: () {
-                                V3Home.isShowSettingsMenu.value = false;
-                                settingsProvider
-                                    .setPage(SettingPageState.deviceSetting);
-                              },
-                            ),
+                              SizedBox(
+                                width: 33,
+                                height: 33,
+                                child: IconButton(
+                                  icon: const Image(
+                                    image:
+                                        Svg('assets/images/ic_menu_close.svg'),
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                  onPressed: () {
+                                    V3Home.isShowSettingsMenu.value = false;
+                                    settingsProvider.setPage(
+                                        SettingPageState.deviceSetting);
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
