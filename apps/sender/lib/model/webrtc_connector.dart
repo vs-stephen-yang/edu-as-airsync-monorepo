@@ -235,6 +235,20 @@ class WebRTCConnector {
     _touchbackDataChannel!.onMessage = _onTouchbackMessage;
   }
 
+  void _applyVideoContentHint(MediaStreamTrack track) {
+    // see https://www.w3.org/TR/mst-content-hint/#dom-mediastreamtrack-contenthint
+    //
+    // The track should be treated as if video details are extra important. This
+    // is generally applicable to presentations or web pages with text content,
+    // painting or line art. This setting would normally optimize for detail in
+    // the resulting individual frames rather than smooth playback. Artifacts
+    // from quantization or downscaling that make small text or line art unintelligible
+    // should be avoided.
+    //
+    track.contentHint = "detail";
+    log.info('Applied content hint "details" to video track');
+  }
+
   Future<bool> _publish() async {
     await _createTouchbackDataChannel();
     await _createControlDataChannel();
@@ -264,6 +278,9 @@ class WebRTCConnector {
     });
     for (MediaStreamTrack track in _localStream!.getTracks()) {
       log.info('Adding track: ${track.kind}');
+      if (track.kind == 'video') {
+        _applyVideoContentHint(track);
+      }
       await _pc!.addTrack(track, _localStream!);
     }
 
@@ -551,12 +568,29 @@ class WebRTCConnector {
     if (sender == null) {
       return false;
     }
+
+    // Note:
+    //  Since `degradationPreference` is considered a "feature at risk," we will use
+    //  `contentHint` instead of `degradationPreference` to determine the video adaptation strategy.
+    //  Currently, we are setting the content hint to "detailed" (see `_applyVideoContentHint`),
+    //  which means WebRTC’s internal video adaptation will prioritize maintaining resolution.
+
     var params = sender.parameters;
-    params.degradationPreference = RTCDegradationPreference.DISABLED;
     if (params.encodings != null) {
       for (var encoding in params.encodings!) {
         encoding.maxBitrate = preset.parameters.maxBitrateKbps * 1000;
-        encoding.minBitrate = preset.parameters.minBitrateKbps * 1000;
+
+        // Note:
+        //  We are using `contentHint` to set the minimum bitrate. If the content hint is set to "detail",
+        //  WebRTC will use 100 kbps as the minimum bitrate. However, this adjustment may cause the original
+        //  profile (video-quality-first/video-smoothness-first) design to become ineffective.
+        //
+        //  In the future, we plan to use programmatic logic to manage this (e.g., based on AV1 SCC tools).
+        //  The previous "high quality" UI/UX will instead set `maxBitrate`.
+        //  For details, see https://viewsonic-ssi.visualstudio.com/Display%20App/_workitems/edit/73944/
+
+        // Reference:
+        //  https://chromium.googlesource.com/external/webrtc/+/refs/heads/master/pc/sdp_offer_answer.cc#1424
       }
     }
     return await sender.setParameters(params);
@@ -610,6 +644,9 @@ class WebRTCConnector {
       _localStream = await getDisplayMedia();
 
       for (MediaStreamTrack track in _localStream!.getTracks()) {
+        if (track.kind == 'video') {
+          _applyVideoContentHint(track);
+        }
         _pc?.getSenders().then((value) async {
           await value.first.replaceTrack(track);
         });
