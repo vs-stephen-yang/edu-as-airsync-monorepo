@@ -91,6 +91,10 @@ android {
             // End of Region of Signing the app for release. Do NOT EDIT.
         }
     }
+
+    packagingOptions {
+        pickFirst '**/liblog.so'
+    }
 }
 
 flutter {
