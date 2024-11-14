@@ -18,14 +18,14 @@ DisplayTunnelServer createTunnelServer() {
       ),
     ),
     (channel, queryParameters) {
-      channel.onChannelMessage = (message) {
+      channel.messageStream.listen((message) {
         // Echo the received message back to the client.
         final request = message as JoinDisplayMessage;
         final reply = JoinDisplayMessage(request.clientId);
         reply.name = request.name;
 
         channel.send(reply);
-      };
+      });
     },
     (connectRequest) => ConnectRequestStatus.success,
   );
@@ -191,16 +191,16 @@ void main() {
         }
 
         // Handle incoming messages from the server.
-        client.onChannelMessage = (message) {
+        client.messageStream.listen((message) {
           final joinDisplayMessage = message as JoinDisplayMessage;
           log().fine('client $clientIndex ${joinDisplayMessage.name}');
 
           clientItem.messageReceivedCounter();
           clientItem.messagesReceived.add(int.parse(joinDisplayMessage.name!));
-        };
+        });
 
         // Handle state changes for the client.
-        client.stateController.stream.listen((ChannelState state) {
+        client.stateStream.listen((ChannelState state) {
           if (state == ChannelState.connected) {
             log().fine('client $clientIndex connected');
 

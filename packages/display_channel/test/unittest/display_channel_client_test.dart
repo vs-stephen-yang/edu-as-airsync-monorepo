@@ -101,8 +101,8 @@ void main() {
       },
     );
 
-    client.onChannelMessage = (message) => receivedMessages.add(message);
-    client.stateController.stream.listen((ChannelState state) {
+    client.messageStream.listen((message) => receivedMessages.add(message));
+    client.stateStream.listen((ChannelState state) {
       stateChanges.add(state);
     });
   });

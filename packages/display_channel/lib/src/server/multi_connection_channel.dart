@@ -8,13 +8,13 @@ import 'package:display_channel/src/util/channel_message_util.dart';
 
 class MultiConnectionChannel implements Channel {
   @override
-  StreamController<ChannelState> get stateController => _stateController;
+  Stream<ChannelState> get stateStream => _stateController.stream;
 
   @override
   ChannelState get state => _state;
 
   @override
-  void Function(ChannelMessage message)? onChannelMessage;
+  Stream<ChannelMessage> get messageStream => _messageController.stream;
 
   @override
   ChannelCloseReason? get closeReason => _closeReason;
@@ -23,8 +23,13 @@ class MultiConnectionChannel implements Channel {
   final String _channelId;
   final String _reconnectionToken;
   ChannelState _state = ChannelState.connected;
+
   final StreamController<ChannelState> _stateController =
       StreamController<ChannelState>.broadcast();
+
+  final StreamController<ChannelMessage> _messageController =
+      StreamController<ChannelMessage>.broadcast();
+
   ChannelCloseReason? _closeReason;
 
   late MessageContinuity _messageContinuity;
@@ -53,7 +58,7 @@ class MultiConnectionChannel implements Channel {
     _messageContinuity = MessageContinuity(
       MessageContinuityRole.server,
       // Process messages received from the client
-      (message) => onChannelMessage?.call(message),
+      (message) => _messageController.add(message),
       // Send messages requiring retransmission
       (message) => _sendToAll(message),
     );
@@ -257,6 +262,11 @@ class MultiConnectionChannel implements Channel {
 
     if (_state != newState) {
       _state = newState;
+      // Note that add() is not a synchronous operation. It will
+      // enqueue the event to be processed later by listeners of the stream.
+      // This means the message is not immediately delivered, and
+      // the code execution will continue without waiting for listeners
+      // to handle the message.
       _stateController.sink.add(_state);
     }
   }

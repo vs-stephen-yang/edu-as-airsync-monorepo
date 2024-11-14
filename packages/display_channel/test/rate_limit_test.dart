@@ -42,7 +42,7 @@ List<DisplayChannelClient> createClients(
     final closedCompleter = Completer();
     closedCompleters.add(closedCompleter);
 
-    client.stateController.stream.listen((ChannelState state) {
+    client.stateStream.listen((ChannelState state) {
       if (state == ChannelState.closed) {
         closedCompleter.complete();
       }

@@ -26,7 +26,7 @@ class TestRunner {
       },
     );
 
-    _client.stateController.stream.listen((ChannelState state) {
+    _client.stateStream.listen((ChannelState state) {
       switch (state) {
         case ChannelState.connecting:
           log().info('The client is connecting');
@@ -59,7 +59,7 @@ class TestRunner {
       }
     });
 
-    _client.onChannelMessage = (message) {
+    _client.messageStream.listen((message) {
       switch (message.messageType) {
         case ChannelMessageType.displayStatus:
           log().info('C R ${(message as DisplayStatusMessage).name}');
@@ -68,11 +68,11 @@ class TestRunner {
         default:
           break;
       }
-    };
+    });
   }
 
   _onNewChannel(Channel channel) {
-    channel.stateController.stream.listen((ChannelState state) {
+    channel.stateStream.listen((ChannelState state) {
       switch (state) {
         case ChannelState.connecting:
           log().warning(
@@ -88,7 +88,7 @@ class TestRunner {
       }
     });
 
-    channel.onChannelMessage = (message) {
+    channel.messageStream.listen((message) {
       switch (message.messageType) {
         case ChannelMessageType.displayStatus:
           log().info('S R ${(message as DisplayStatusMessage).name}');
@@ -105,7 +105,7 @@ class TestRunner {
         default:
           break;
       }
-    };
+    });
   }
 }
 

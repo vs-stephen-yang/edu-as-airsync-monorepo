@@ -37,12 +37,12 @@ void main() {
     serverChannelOpened.complete();
     serverChannel = channel;
 
-    channel.onChannelMessage = (message) {
+    channel.messageStream.listen((message) {
       serverMessages.add(message);
       numberOfMessagesReached.updateValue(serverMessages.length);
-    };
+    });
 
-    channel.stateController.stream.listen((ChannelState state) {
+    channel.stateStream.listen((ChannelState state) {
       if (state == ChannelState.closed) {
         serverChannelClosed.complete();
       }
@@ -104,11 +104,11 @@ void main() {
   }
 
   void setupClient() {
-    client.onChannelMessage = (message) {
+    client.messageStream.listen((message) {
       clientMessages.add(message);
-    };
+    });
 
-    client.stateController.stream.listen((ChannelState state) {
+    client.stateStream.listen((ChannelState state) {
       if (state == ChannelState.connected) {
         clientConnected.complete();
       } else if (state == ChannelState.closed) {

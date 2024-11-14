@@ -9,7 +9,7 @@ class Client {
   final _sessionId = const Uuid().v4();
 
   Client(this._clientId, this._channel) {
-    _channel.stateController.stream.listen((ChannelState state) {
+    _channel.stateStream.listen((ChannelState state) {
       switch (state) {
         case ChannelState.connecting:
           log().info('The client is connecting to the display');
@@ -27,7 +27,7 @@ class Client {
       }
     });
 
-    _channel.onChannelMessage = (message) {
+    _channel.messageStream.listen((message) {
       log().info('Received ${message.messageType}');
 
       switch (message.messageType) {
@@ -37,7 +37,7 @@ class Client {
         default:
           break;
       }
-    };
+    });
   }
 
   void _onDisplayStatus(DisplayStatusMessage message) {

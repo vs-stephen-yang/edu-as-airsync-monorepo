@@ -13,8 +13,8 @@ class Client {
     final message = DisplayStatusMessage();
     _channel.send(message);
 
-    _channel.onChannelMessage = (message) => _onMessages(message);
-    _channel.stateController.stream.listen((ChannelState state) {
+    _channel.messageStream.listen((message) => _onMessages(message));
+    _channel.stateStream.listen((ChannelState state) {
       log().info('Channel state has changed to $state');
       if (state == ChannelState.closed) {
         log().info(

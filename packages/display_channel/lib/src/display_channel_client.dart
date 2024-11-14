@@ -11,10 +11,10 @@ import 'package:display_channel/src/util/uri_util.dart';
 
 class DisplayChannelClient implements Channel {
   @override
-  void Function(ChannelMessage message)? onChannelMessage;
+  Stream<ChannelMessage> get messageStream => _messageController.stream;
 
   @override
-  StreamController<ChannelState> get stateController => _stateController;
+  Stream<ChannelState> get stateStream => _stateController.stream;
 
   @override
   ChannelState get state => _state;
@@ -30,9 +30,15 @@ class DisplayChannelClient implements Channel {
   var _queryParameters = <String, String>{};
 
   late MessageContinuity _continuity;
+
   ChannelState _state = ChannelState.initialized;
+
   final StreamController<ChannelState> _stateController =
       StreamController<ChannelState>.broadcast();
+
+  final StreamController<ChannelMessage> _messageController =
+      StreamController<ChannelMessage>.broadcast();
+
   ChannelCloseReason? _closeReason;
 
   // Stores messages received before the channel is connected.
@@ -94,6 +100,15 @@ class DisplayChannelClient implements Channel {
     return _state == ChannelState.connected;
   }
 
+  void _deliverMessage(ChannelMessage message) {
+    // Note that add() is not a synchronous operation. It will
+    // enqueue the event to be processed later by listeners of the stream.
+    // This means the message is not immediately delivered, and
+    // the code execution will continue without waiting for listeners
+    // to handle the message.
+    _messageController.sink.add(message);
+  }
+
   void _changeState(ChannelState newState) {
     if (_isClosed()) {
       return;
@@ -101,6 +116,12 @@ class DisplayChannelClient implements Channel {
 
     if (_state != newState) {
       _state = newState;
+
+      // Note that add() is not a synchronous operation. It will
+      // enqueue the event to be processed later by listeners of the stream.
+      // This means the message is not immediately delivered, and
+      // the code execution will continue without waiting for listeners
+      // to handle the message.
       _stateController.sink.add(_state);
     }
   }
@@ -201,14 +222,14 @@ class DisplayChannelClient implements Channel {
   // Process messages received before the channel is connected.
   void _drainPendingMessages() {
     for (var message in _pendingMessages) {
-      onChannelMessage?.call(message);
+      _deliverMessage(message);
     }
     _pendingMessages.clear();
   }
 
   void _onChannelMessage(ChannelMessage message) {
     if (_isConnected()) {
-      onChannelMessage?.call(message);
+      _deliverMessage(message);
     } else {
       _pendingMessages.add(message);
     }
