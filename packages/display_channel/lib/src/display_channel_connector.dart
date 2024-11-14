@@ -154,7 +154,7 @@ class DisplayChannelConnector {
     );
 
     _tunnelSubscription =
-        _tunnelClient!.stateController.stream.listen((ChannelState state) {
+        _tunnelClient!.stateStream.listen((ChannelState state) {
       if (state == ChannelState.connected) {
         _onTunnelConnected();
       } else if (state == ChannelState.closed) {
@@ -189,7 +189,7 @@ class DisplayChannelConnector {
     );
 
     _directSubscription =
-        _directClient!.stateController.stream.listen((ChannelState state) {
+        _directClient!.stateStream.listen((ChannelState state) {
       if (state == ChannelState.connected) {
         _onDirectConnected();
       } else if (state == ChannelState.closed) {
@@ -206,7 +206,6 @@ class DisplayChannelConnector {
       // Close the direct channel
       _directClient?.close(null);
       _directSubscription?.cancel();
-      _directClient?.stateController.close();
       return;
     }
 
@@ -221,7 +220,6 @@ class DisplayChannelConnector {
       // Close the tunnel channel
       _tunnelClient?.close(null);
       _tunnelSubscription?.cancel();
-      _tunnelClient?.stateController.close();
       return;
     }
 

@@ -42,10 +42,10 @@ void main() {
     stateChanges = <ChannelState>[];
     receivedMessages = <ChannelMessage>[];
 
-    channel.stateController.stream.listen((ChannelState state) {
+    channel.stateStream.listen((ChannelState state) {
       stateChanges.add(state);
     });
-    channel.onChannelMessage = (message) => receivedMessages.add(message);
+    channel.messageStream.listen((message) => receivedMessages.add(message));
 
     connection1 = FakeConnection();
     connection2 = FakeConnection();

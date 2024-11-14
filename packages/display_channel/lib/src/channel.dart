@@ -33,9 +33,8 @@ class ChannelCloseReason {
 }
 
 abstract class Channel {
-  StreamController<ChannelState> get stateController;
-
-  void Function(ChannelMessage message)? onChannelMessage;
+  Stream<ChannelState> get stateStream;
+  Stream<ChannelMessage> get messageStream;
 
   ChannelState get state;
 
