@@ -135,7 +135,7 @@ class RTCConnector {
     isModeratorMode,
   ) async {
     _printPeerConnectionLog('init', null);
-    _channel.stateController.stream.listen((ChannelState state) async {
+    _channel.stateStream.listen((ChannelState state) async {
       await _onChannelState(state);
     });
 
