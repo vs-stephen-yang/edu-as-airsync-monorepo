@@ -199,18 +199,25 @@ class DisplayChannelConnector {
     });
   }
 
+  // One of channels is connected
+  _handleChannelOpened(Channel channel, bool isDirectChannel) {
+    _tunnelSubscription?.cancel();
+    _directSubscription?.cancel();
+
+    _connected = true;
+    _onOpened(channel, isDirectChannel);
+  }
+
   // direct channel is connected
   _onDirectConnected() {
     if (_connected) {
       // Too late. The tunnel channel is already connected.
       // Close the direct channel
       _directClient?.close(null);
-      _directSubscription?.cancel();
       return;
     }
 
-    _connected = true;
-    _onOpened(_directClient!, true);
+    _handleChannelOpened(_directClient!, true);
   }
 
   // tunnel channel is connected
@@ -219,12 +226,10 @@ class DisplayChannelConnector {
       // Too late. The direct channel is already connected.
       // Close the tunnel channel
       _tunnelClient?.close(null);
-      _tunnelSubscription?.cancel();
       return;
     }
 
-    _connected = true;
-    _onOpened(_tunnelClient!, false);
+    _handleChannelOpened(_tunnelClient!, false);
   }
 
   _mapDualConnectError() {
