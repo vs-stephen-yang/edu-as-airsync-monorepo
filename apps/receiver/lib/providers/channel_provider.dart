@@ -194,9 +194,24 @@ class ChannelProvider extends ChangeNotifier {
     _setConnectivityListener();
     _startNewOTPTimer();
 
-    // TODO: Implement conditional enabling based on settings.
-    _channelServer.enableDirect(true);
-    _channelServer.enableTunnel(true);
+    launchChannelServer();
+  }
+
+  void launchChannelServer() {
+    final connectivityType = AppPreferences().connectivityType;
+    if (connectivityType == ConnectivityType.internet.toString()) {
+      _configureChannelServer(isDirect: false, isTunnel: true);
+    } else if (connectivityType == ConnectivityType.local.toString()) {
+      _configureChannelServer(isDirect: true, isTunnel: false);
+    } else {
+      _configureChannelServer(isDirect: true, isTunnel: true);
+    }
+  }
+
+  void _configureChannelServer(
+      {required bool isDirect, required bool isTunnel}) {
+    _channelServer.enableDirect(isDirect);
+    _channelServer.enableTunnel(isTunnel);
   }
 
   setProviderContainer(ProviderContainer pc) {

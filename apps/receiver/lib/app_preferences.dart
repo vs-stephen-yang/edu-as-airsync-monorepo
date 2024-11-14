@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:display_flutter/widgets/v3_settings_device.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreferences {
@@ -70,7 +71,6 @@ class AppPreferences {
     _moderatorId = prefs.getString('app_moderatorId') ?? '';
   }
 
-  //TODO: MOVE TO GROUP FEATURE FILE
   String _invitedToGroup = InvitedToGroupOption.notifyMe.value.toString();
 
   String get invitedToGroup {
@@ -112,21 +112,23 @@ class AppPreferences {
     }
   }
 
-  String _connectivityType = ConnectivityType.both.toString();
+  String get connectivityType => connectivityTypeNotifier.value;
 
-  String get connectivityType => _connectivityType;
+  ValueNotifier<String> connectivityTypeNotifier =
+      ValueNotifier<String>(ConnectivityType.both.toString());
 
   Future<void> setSelectedConnectivityType(ConnectivityType type) async {
-    _connectivityType = type.toString();
+    connectivityTypeNotifier.value = type.toString();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('app_setting_connectivity_type', _connectivityType);
+    await prefs.setString(
+        'app_setting_connectivity_type', connectivityTypeNotifier.value);
   }
 
   _loadSelectedConnectivityType() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String type = prefs.getString('app_setting_connectivity_type') ??
         ConnectivityType.both.toString();
-    _connectivityType = type;
+    connectivityTypeNotifier.value = type;
   }
 }
 

@@ -641,10 +641,10 @@ class S {
     );
   }
 
-  /// `Mirror Confirmation`
+  /// `Mirror confirmation`
   String get main_settings_mirror_confirmation {
     return Intl.message(
-      'Mirror Confirmation',
+      'Mirror confirmation',
       name: 'main_settings_mirror_confirmation',
       desc: '',
       args: [],
@@ -901,10 +901,10 @@ class S {
     );
   }
 
-  /// `Up Next`
+  /// `Up next`
   String get v3_waiting_up_next {
     return Intl.message(
-      'Up Next',
+      'Up next',
       name: 'v3_waiting_up_next',
       desc: '',
       args: [],
@@ -1541,10 +1541,10 @@ class S {
     );
   }
 
-  /// `AirSync v3.5.0 release note\n\n`
+  /// `AirSync %s\n\nAirSync is a ViewSonic proprietary wireless screen-sharing solution. When used with the AirSync sender, it enables seamless screen sharing from a user's device to ViewSonic interactive displays.\n\nKey features: \n\n1. Wireless screensharing.\n\n2. Automatic split screens for multiple presenters.\n\n3. Moderator mode to enable more control during presentation.\n\n4. Screen mirror to support AirPlay, Google Cast and Miracast.\n\n5. Cast to device with remote control.\n\n6. Cast to board to broadcast screens to multiple large screens.\n\n7. Annotation.\n\n8. Interact with Windows, macOS, iOS, Android and web version AirSync sender.\n\n9. Touchback is supported in Windows and macOS sender.\n\n`
   String get v3_settings_whats_new_content {
     return Intl.message(
-      'AirSync v3.5.0 release note\n\n',
+      'AirSync %s\n\nAirSync is a ViewSonic proprietary wireless screen-sharing solution. When used with the AirSync sender, it enables seamless screen sharing from a user\'s device to ViewSonic interactive displays.\n\nKey features: \n\n1. Wireless screensharing.\n\n2. Automatic split screens for multiple presenters.\n\n3. Moderator mode to enable more control during presentation.\n\n4. Screen mirror to support AirPlay, Google Cast and Miracast.\n\n5. Cast to device with remote control.\n\n6. Cast to board to broadcast screens to multiple large screens.\n\n7. Annotation.\n\n8. Interact with Windows, macOS, iOS, Android and web version AirSync sender.\n\n9. Touchback is supported in Windows and macOS sender.\n\n',
       name: 'v3_settings_whats_new_content',
       desc: '',
       args: [],
@@ -1740,6 +1740,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Local connection only`
+  String get v3_settings_local_connection_only {
+    return Intl.message(
+      'Local connection only',
+      name: 'v3_settings_local_connection_only',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -1748,6 +1758,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'pl'),
       Locale.fromSubtags(languageCode: 'zh'),
     ];
   }
