@@ -17,6 +17,7 @@ dependencies:
   clock: ^1.1.1
   crypto: ^3.0.3
   http: ^1.2.2
+  rxdart: ^0.28.0
 
 dev_dependencies:
   flutter_test:
