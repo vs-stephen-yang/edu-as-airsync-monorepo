@@ -17,7 +17,10 @@ class PrefLanguageProvider extends ChangeNotifier {
   Locale? get locale => localeMap[language];
 
   Map<String, Locale> localeMap = {
+    'Deutsch': const Locale('de', ''),
     'English': const Locale('en', ''),
+    'Español': const Locale('es', ''),
+    'Français': const Locale('fr', ''),
     '繁體中文': const Locale.fromSubtags(
         languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),
   };
@@ -30,7 +33,7 @@ class PrefLanguageProvider extends ChangeNotifier {
 
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('app_language', _language);
+    await prefs.setString('app_language', _language);
   }
 
   _load() async {
