@@ -52,7 +52,7 @@ class DirectConnector {
     );
 
     _directClient?.openDirectChannel(token: _otp, displayCode: _displayCode);
-    _directClient?.stateController.stream.listen((ChannelState state) {
+    _directClient?.stateStream.listen((ChannelState state) {
       if (state == ChannelState.connected) {
         _onOpened(_directClient!);
       } else if (state == ChannelState.closed) {

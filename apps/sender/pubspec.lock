@@ -436,8 +436,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-3.5.7"
-      resolved-ref: "152e99a0e8fbf93d6b8aee579a9ef3315837f349"
+      ref: "release-3.5.8"
+      resolved-ref: "46cde03677f3fe374050be7fa76717e8b452a13e"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel"
     source: git
     version: "0.0.1"
@@ -1113,6 +1113,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      sha256: "5c3004a4a8dbb94bd4bf5412a4def4acdaa12e12f269737a5751369e12d1a962"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.28.0"
   sdp_transform:
     dependency: transitive
     description:
