@@ -24,6 +24,7 @@ class V3SettingMenu extends StatelessWidget {
   const V3SettingMenu({super.key});
 
   static const String settingMenuGroupId = 'V3SettingMenu';
+  static final FocusNode _childFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +182,8 @@ class V3SettingMenu extends StatelessWidget {
                           case SettingPageState.deviceSetting:
                             return const V3SettingsDevice();
                           case SettingPageState.deviceName:
-                            return const V3SettingsDeviceName();
+                            return V3SettingsDeviceName(
+                                focusNode: _childFocusNode);
                           case SettingPageState.deviceLanguage:
                             return const V3SettingsDeviceLanguage();
                           case SettingPageState.broadcast:
@@ -212,6 +214,10 @@ class V3SettingMenu extends StatelessWidget {
   }
 
   void dismissMenu(SettingsProvider settingsProvider) {
+    // 點擊text cursor做操作會被TapRegion判定為onTapOutside
+    if (_childFocusNode.hasFocus) {
+      return;
+    }
     V3Home.isShowSettingsMenu.value = false;
     settingsProvider.setPage(SettingPageState.deviceSetting);
   }

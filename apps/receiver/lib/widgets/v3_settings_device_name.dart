@@ -11,8 +11,9 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsDeviceName extends StatefulWidget {
-  const V3SettingsDeviceName({super.key});
+  const V3SettingsDeviceName({super.key, required this.focusNode});
 
+  final FocusNode focusNode;
   @override
   State<V3SettingsDeviceName> createState() => _V3SettingsDeviceNameState();
 }
@@ -20,19 +21,18 @@ class V3SettingsDeviceName extends StatefulWidget {
 class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
   final TextEditingController _controller =
       TextEditingController(text: AppPreferences().instanceName);
-  final FocusNode _focusNode = FocusNode();
   bool _isEditing = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      FocusScope.of(context).requestFocus(_focusNode);
+      FocusScope.of(context).requestFocus(widget.focusNode);
     });
-    // 监听焦点变化
-    _focusNode.addListener(() {
+    // 監聽焦點變化
+    widget.focusNode.addListener(() {
       setState(() {
-        _isEditing = _focusNode.hasFocus;
+        _isEditing = widget.focusNode.hasFocus;
       });
     });
   }
@@ -40,7 +40,6 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
   @override
   void dispose() {
     _controller.dispose();
-    _focusNode.dispose();
     super.dispose();
   }
 
@@ -97,7 +96,7 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                   child: TextField(
                     textAlign: TextAlign.right,
                     controller: _controller,
-                    focusNode: _focusNode,
+                    focusNode: widget.focusNode,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,
@@ -125,7 +124,7 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                     padding: const EdgeInsets.only(left: 0, right: 13),
                     onPressed: () {
                       _isEditing = false;
-                      _focusNode.unfocus();
+                      widget.focusNode.unfocus();
                     },
                   ),
                 )
