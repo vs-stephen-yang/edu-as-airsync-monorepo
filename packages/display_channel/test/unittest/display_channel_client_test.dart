@@ -52,6 +52,9 @@ class FakeClientConnection extends ClientConnection {
 void main() {
   late List<ChannelMessage> incomingMessages1;
 
+  ExpectValueCompleter? numberOfReceivedMessagesReached;
+  ExpectValueCompleter? numberOfStateChangesReached;
+
   late List<ChannelMessage> receivedMessages;
   late List<ChannelState> stateChanges;
 
@@ -101,10 +104,26 @@ void main() {
       },
     );
 
-    client.messageStream.listen((message) => receivedMessages.add(message));
+    client.messageStream.listen((message) {
+      receivedMessages.add(message);
+
+      numberOfReceivedMessagesReached?.updateValue(
+        receivedMessages.length,
+      );
+    });
+
     client.stateStream.listen((ChannelState state) {
       stateChanges.add(state);
+
+      numberOfStateChangesReached?.updateValue(
+        stateChanges.length,
+      );
     });
+  });
+
+  tearDown(() {
+    numberOfStateChangesReached = null;
+    numberOfReceivedMessagesReached = null;
   });
 
   test('The direct connection should be opened with a correct URL', () {
@@ -166,8 +185,10 @@ void main() {
   });
 
   test('The state should switch to connected after receiving channel-connected',
-      () {
+      () async {
     // arrange
+    numberOfStateChangesReached = ExpectValueCompleter(1);
+
     client.openDirectChannel(token: 'token', displayCode: 'ABC');
 
     // action
@@ -175,9 +196,8 @@ void main() {
     injectChannelConnected('token2', 0);
 
     // assert
-    Future.delayed(const Duration(milliseconds: 100)).then((_) {
-      expect(stateChanges.first, ChannelState.connected);
-    });
+    await numberOfStateChangesReached?.completer.future;
+    expect(stateChanges.first, ChannelState.connected);
   });
 
   test('client-connected should be sent when the connection is connected', () {
@@ -262,26 +282,30 @@ void main() {
   });
 
   test('Correctly handles channel-closed with authenticationRequired reason',
-      () {
+      () async {
     // arrange
+    numberOfStateChangesReached = ExpectValueCompleter(1);
+
     client.openDirectChannel(displayCode: 'ABC');
     connection.onConnected?.call();
 
     injectChannelClosed(ChannelCloseCode.authenticationRequired);
 
     // assert
-    Future.delayed(const Duration(milliseconds: 100)).then((_) {
-      expect(stateChanges.first, ChannelState.closed);
+    await numberOfStateChangesReached?.completer.future;
 
-      expect(
-        client.closeReason!.code.index,
-        ChannelCloseCode.authenticationRequired.index,
-      );
-    });
+    expect(stateChanges.first, ChannelState.closed);
+
+    expect(
+      client.closeReason!.code.index,
+      ChannelCloseCode.authenticationRequired.index,
+    );
   });
 
-  test('Handles the message', () {
+  test('Handles the message', () async {
     // arrange
+    numberOfReceivedMessagesReached = ExpectValueCompleter(4);
+
     client.openDirectChannel(displayCode: 'ABC');
     connection.onConnected?.call();
     injectChannelConnected('token', 0);
@@ -290,12 +314,15 @@ void main() {
     injectIncomingMessages(incomingMessages1);
 
     // assert
+    await numberOfReceivedMessagesReached?.completer.future;
     expect(receivedMessages, hasLength(4));
   });
 
   test('Handles the message received before the channel-connected is received',
-      () {
+      () async {
     // arrange
+    numberOfReceivedMessagesReached = ExpectValueCompleter(4);
+
     client.openDirectChannel(displayCode: 'ABC');
     connection.onConnected?.call();
 
@@ -306,8 +333,7 @@ void main() {
     injectChannelConnected('token', 0);
 
     // assert
-    Future.delayed(const Duration(milliseconds: 100)).then((_) {
-      expect(receivedMessages, hasLength(4));
-    });
+    await numberOfReceivedMessagesReached?.completer.future;
+    expect(receivedMessages, hasLength(4));
   });
 }

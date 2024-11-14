@@ -30,6 +30,8 @@ void main() {
   late List<ChannelState> stateChanges;
   late List<ChannelMessage> receivedMessages;
 
+  ExpectValueCompleter? numberOfReceivedMessagesReached;
+
   setUp(() {
     channel = MultiConnectionChannel(
       '0001',
@@ -45,7 +47,13 @@ void main() {
     channel.stateStream.listen((ChannelState state) {
       stateChanges.add(state);
     });
-    channel.messageStream.listen((message) => receivedMessages.add(message));
+    channel.messageStream.listen((message) {
+      receivedMessages.add(message);
+
+      numberOfReceivedMessagesReached?.updateValue(
+        receivedMessages.length,
+      );
+    });
 
     connection1 = FakeConnection();
     connection2 = FakeConnection();
@@ -139,8 +147,10 @@ void main() {
     expect(connection2.sentMessages.last, isA<AllowPresentMessage>());
   });
 
-  test('Channel correctly receives messages from a connection', () {
+  test('Channel correctly receives messages from a connection', () async {
     // arrange
+    numberOfReceivedMessagesReached = ExpectValueCompleter(4);
+
     channel.addConnection(connection1);
 
     // action
@@ -155,6 +165,7 @@ void main() {
     }
 
     // assert
+    await numberOfReceivedMessagesReached?.completer.future;
     expect(receivedMessages.length, 4);
   });
 
