@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -28,6 +29,51 @@ class V3Instruction extends StatelessWidget {
       crossAxisAlignment:
           isQuickConnect ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
+        ValueListenableBuilder(
+            valueListenable: AppPreferences().connectivityTypeNotifier,
+            builder: (context, connectivityType, child) {
+              if (AppPreferences().connectivityType ==
+                  ConnectivityType.local.toString()) {
+                return Container(
+                  decoration: ShapeDecoration(
+                    color: context.tokens.color.vsdslColorSurface200,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(9999),
+                    ),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: context.tokens.spacing.vsdslSpacingXl.left,
+                      vertical: context.tokens.spacing.vsdslSpacingSm.top),
+                  margin: const EdgeInsets.only(bottom: 38),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Image(
+                        image:
+                            Svg('assets/images/ic_local_connection_only.svg'),
+                        width: 21,
+                        height: 21,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: context.tokens.spacing.vsdslSpacingSm.left),
+                        child: AutoSizeText(
+                          S.of(context).v3_settings_local_connection_only,
+                          style: context.tokens.textStyle.airsyncFontSubtitle600
+                              .apply(
+                            color: context.tokens.color.vsdslColorSurface600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return const SizedBox(
+                  height: 27,
+                );
+              }
+            }),
         if (!isQuickConnect && !isCastToDevice) ...[
           AutoSizeText(
             S.of(context).v3_instruction_share_screen,

@@ -167,5 +167,6 @@
   "v3_group_reject_invited": "declined your broadcast request, please check the Broads setting.",
   "v3_settings_broadcast_cast_to": "Cast to",
   "v3_settings_broadcast_devices": "Devices",
-  "v3_settings_broadcast_boards": "Boards"
+  "v3_settings_broadcast_boards": "Boards",
+  "v3_settings_local_connection_only": "Local connection only"
 }

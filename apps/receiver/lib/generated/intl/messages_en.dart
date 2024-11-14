@@ -319,6 +319,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Notify me"),
         "v3_settings_legal_policy":
             MessageLookupByLibrary.simpleMessage("Legal & Policy"),
+        "v3_settings_local_connection_only":
+            MessageLookupByLibrary.simpleMessage("Local connection only"),
         "v3_settings_mirroring_auto_accept":
             MessageLookupByLibrary.simpleMessage("Auto Accept"),
         "v3_settings_mirroring_auto_accept_desc":

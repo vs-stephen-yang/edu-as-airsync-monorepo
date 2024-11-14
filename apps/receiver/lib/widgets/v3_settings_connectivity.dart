@@ -2,9 +2,11 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/v3_settings_radio_group_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:provider/provider.dart';
 
 class V3SettingsConnectivity extends StatelessWidget {
   const V3SettingsConnectivity({super.key});
@@ -102,6 +104,8 @@ class V3SettingsConnectivity extends StatelessWidget {
             );
 
             AppPreferences().setSelectedConnectivityType(type);
+            Provider.of<ChannelProvider>(context, listen: false)
+                .launchChannelServer();
           }
         });
   }

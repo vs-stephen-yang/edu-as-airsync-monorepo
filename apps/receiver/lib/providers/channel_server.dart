@@ -1,12 +1,12 @@
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/api/http_request.dart';
-import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/api/instance_api.dart';
+import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/cancelable_task.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
-import 'package:display_flutter/services/display_service_broadcast.dart';
 
 enum TunnelStatus {
   disabled,
@@ -21,6 +21,7 @@ class ChannelServer {
   DisplayTunnelServer? _tunnelServer;
 
   bool _tunnelEnabled = false;
+  bool _directEnabled = false;
 
   final int tunnelMaxRetry;
   final Duration tunnelRetryInterval;
@@ -282,6 +283,10 @@ class ChannelServer {
   void enableTunnel(bool enable) {
     log.info('Enable tunnel channel: $enable');
 
+    if (_tunnelEnabled == enable) {
+      log.info('Tunnel channel remains unchanged');
+      return;
+    }
     _tunnelEnabled = enable;
 
     if (enable) {
@@ -297,11 +302,21 @@ class ChannelServer {
 
       _stopTunnel();
       _changeTunnelStatus(TunnelStatus.disabled);
+
+      final instanceGroupId = getInstanceGroupIdFromIp(_ipAddress!);
+      _updateDisplayCode(instanceGroupId, null);
     }
   }
 
   Future<void> enableDirect(bool enable) async {
     log.info('Enable direct channel: $enable');
+
+    if (_directEnabled == enable) {
+      log.info('direct channel remains unchanged');
+      return;
+    }
+
+    _directEnabled = enable;
 
     if (enable) {
       _stopDirectServer();

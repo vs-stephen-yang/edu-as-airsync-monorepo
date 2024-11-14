@@ -45,8 +45,8 @@ class V3MainInfo extends StatelessWidget {
                       children: [
                         const Positioned(
                           left: 53,
-                          top: 53,
-                          bottom: 118,
+                          top: 26,
+                          bottom: 76,
                           child: V3Instruction(isCastToDevice: false),
                         ),
                         Positioned(
