@@ -40,11 +40,6 @@
   <title>AirSync Sender</title>
   <link rel="manifest" href="manifest.json">
 
-
-  <script nonce="flutter-init">
-    // The value below is injected by flutter build, do not touch.
-    var serviceWorkerVersion = null;
-  </script>
   <!-- This script adds the flutter initialization JS code -->
   <script nonce="flutter-init" src="flutter.js" defer></script>
 
@@ -76,21 +71,20 @@
   </div>
 
   <script nonce="flutter-init">
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        entrypointUrl: "main.dart.js?v=" + serviceWorkerVersion,
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine({
-            canvasKitBaseUrl: '/canvaskit/',
-          }).then(function(appRunner) {
-            appRunner.runApp();
-          });
-        }
-      });
+    {{flutter_js}}
+    {{flutter_build_config}}
+    _flutter.loader.load({
+      config: {
+        'entryPointBaseUrl': 'main.dart.js?v=' + {{flutter_service_worker_version}},
+        'canvasKitBaseUrl': '/canvaskit/',
+      },
+      onEntrypointLoaded: async function(engineInitializer) {
+        const appRunner = await engineInitializer.initializeEngine();
+        await appRunner.runApp();
+      },
+      serviceWorkerSettings: {
+        serviceWorkerVersion: {{flutter_service_worker_version}},
+      },
     });
   </script>
 </body>
