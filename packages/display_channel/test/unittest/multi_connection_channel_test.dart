@@ -30,6 +30,7 @@ void main() {
   late List<ChannelState> stateChanges;
   late List<ChannelMessage> receivedMessages;
 
+  ExpectValueCompleter? numberOfStateChangesReached;
   ExpectValueCompleter? numberOfReceivedMessagesReached;
 
   setUp(() {
@@ -46,6 +47,8 @@ void main() {
 
     channel.stateStream.listen((ChannelState state) {
       stateChanges.add(state);
+
+      numberOfStateChangesReached?.updateValue(stateChanges.length);
     });
     channel.messageStream.listen((message) {
       receivedMessages.add(message);
@@ -57,6 +60,11 @@ void main() {
 
     connection1 = FakeConnection();
     connection2 = FakeConnection();
+  });
+
+  tearDown(() {
+    numberOfStateChangesReached = null;
+    numberOfReceivedMessagesReached = null;
   });
 
   test('channel should send heartbeat periodically', () {
@@ -87,20 +95,22 @@ void main() {
     expect(channel.state, ChannelState.connected);
   });
 
-  test('The state should change to connecting after disconnected', () {
+  test('The state should change to connecting after disconnected', () async {
     // arrange
+    numberOfStateChangesReached = ExpectValueCompleter(1);
     channel.addConnection(connection1);
 
     // action
     connection1.onClosed?.call(connection1);
 
-    Future.delayed(const Duration(milliseconds: 100)).then((_) {
-      expect(stateChanges.last, ChannelState.connecting);
-    });
+    // assert
+    await numberOfStateChangesReached?.completer.future;
+    expect(stateChanges.last, ChannelState.connecting);
   });
 
-  test('The state should change to connected after reconnected', () {
+  test('The state should change to connected after reconnected', () async {
     // arrange
+    numberOfStateChangesReached = ExpectValueCompleter(2);
     channel.addConnection(connection1);
     connection1.onClosed?.call(connection1);
 
@@ -111,9 +121,8 @@ void main() {
       ClientConnectedMessage(0).toJson(),
     );
 
-    Future.delayed(const Duration(milliseconds: 100)).then((_) {
-      expect(stateChanges.last, ChannelState.connected);
-    });
+    await numberOfStateChangesReached?.completer.future;
+    expect(stateChanges.last, ChannelState.connected);
   });
 
   test(
