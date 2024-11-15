@@ -38,14 +38,18 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AutoSizeText(
-                remoteScreenConnector.senderName ?? '',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: context.tokens.color.vsdslColorOnSurface,
+              SizedBox(
+                width: 179,
+                height: 18,
+                child: AutoSizeText(
+                  remoteScreenConnector.senderName ?? '',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: context.tokens.color.vsdslColorOnSurface,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
               ),
               SizedBox(width: context.tokens.spacing.vsdslSpacingXs.top),
               Container(
