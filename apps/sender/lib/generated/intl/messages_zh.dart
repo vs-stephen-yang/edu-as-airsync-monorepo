@@ -146,20 +146,163 @@ class MessageLookup extends MessageLookupByLibrary {
         "toast_maximum_split_screen":
             MessageLookupByLibrary.simpleMessage("已達到投影人員上限"),
         "v3_device_list_button_device_list":
-            MessageLookupByLibrary.simpleMessage("裝置清單"),
+            MessageLookupByLibrary.simpleMessage("設備清單"),
+        "v3_device_list_button_text":
+            MessageLookupByLibrary.simpleMessage("透過設備清單快速連線"),
+        "v3_device_list_dialog_connect":
+            MessageLookupByLibrary.simpleMessage("連線"),
+        "v3_device_list_dialog_invalid_otp":
+            MessageLookupByLibrary.simpleMessage("一次性密碼錯誤"),
+        "v3_device_list_dialog_title":
+            MessageLookupByLibrary.simpleMessage("快速連線"),
+        "v3_eula_agree": MessageLookupByLibrary.simpleMessage("同意"),
+        "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("不同意"),
+        "v3_eula_title": MessageLookupByLibrary.simpleMessage("最終用戶許可協議"),
+        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage("可訪問性"),
+        "v3_main_authorize_wait":
+            MessageLookupByLibrary.simpleMessage("接收端同意後即可開始分享畫面"),
+        "v3_main_connect_network_error":
+            MessageLookupByLibrary.simpleMessage("網路連線錯誤"),
+        "v3_main_connect_rate_limited":
+            MessageLookupByLibrary.simpleMessage("已超過最大請求數量，請稍後再試"),
+        "v3_main_connect_unknown_error":
+            MessageLookupByLibrary.simpleMessage("未知的錯誤"),
+        "v3_main_connection_mode_unsupported":
+            MessageLookupByLibrary.simpleMessage("不支援的連線類型"),
+        "v3_main_copy_rights": MessageLookupByLibrary.simpleMessage("版權"),
+        "v3_main_display_code": MessageLookupByLibrary.simpleMessage("投影辨識碼"),
+        "v3_main_display_code_error":
+            MessageLookupByLibrary.simpleMessage("投影辨識碼錯誤"),
+        "v3_main_display_code_invalid":
+            MessageLookupByLibrary.simpleMessage("無效的投影辨識碼"),
         "v3_main_download": MessageLookupByLibrary.simpleMessage("下載"),
+        "v3_main_download_action_download":
+            MessageLookupByLibrary.simpleMessage("下載"),
+        "v3_main_download_action_get":
+            MessageLookupByLibrary.simpleMessage("取得"),
+        "v3_main_download_app_dialog_desc":
+            MessageLookupByLibrary.simpleMessage("使用iOS或Android設備掃描二維條碼並下載"),
+        "v3_main_download_app_dialog_title":
+            MessageLookupByLibrary.simpleMessage("下載AirSync傳送端App"),
+        "v3_main_download_app_subtitle":
+            MessageLookupByLibrary.simpleMessage("iOS及Android裝置"),
+        "v3_main_download_app_title":
+            MessageLookupByLibrary.simpleMessage("行動裝置"),
+        "v3_main_download_desc":
+            MessageLookupByLibrary.simpleMessage("快速分享您的設備畫面"),
+        "v3_main_download_mac_subtitle":
+            MessageLookupByLibrary.simpleMessage("macOS版本10.15以上"),
+        "v3_main_download_mac_title":
+            MessageLookupByLibrary.simpleMessage("Mac裝置"),
+        "v3_main_download_title":
+            MessageLookupByLibrary.simpleMessage("取得AirSync傳送端軟體"),
+        "v3_main_download_win_subtitle":
+            MessageLookupByLibrary.simpleMessage("Windows 10 (版本1709)以上"),
+        "v3_main_download_win_title":
+            MessageLookupByLibrary.simpleMessage("Windows裝置"),
+        "v3_main_instance_not_found_or_offline":
+            MessageLookupByLibrary.simpleMessage("找不到接收端或不在線上"),
+        "v3_main_moderator_action": MessageLookupByLibrary.simpleMessage("分享"),
+        "v3_main_moderator_app_subtitle":
+            MessageLookupByLibrary.simpleMessage("分享前請輸入名稱"),
+        "v3_main_moderator_app_title":
+            MessageLookupByLibrary.simpleMessage("分享畫面"),
+        "v3_main_moderator_disconnect":
+            MessageLookupByLibrary.simpleMessage("中斷連線"),
+        "v3_main_moderator_input_hint":
+            MessageLookupByLibrary.simpleMessage("請輸入名稱"),
+        "v3_main_moderator_input_limit":
+            MessageLookupByLibrary.simpleMessage("最長不超過20個字"),
+        "v3_main_moderator_subtitle":
+            MessageLookupByLibrary.simpleMessage("分享前請輸入名稱"),
+        "v3_main_moderator_title":
+            MessageLookupByLibrary.simpleMessage("分享您的畫面"),
+        "v3_main_moderator_wait":
+            MessageLookupByLibrary.simpleMessage("請等候主持人邀請分享"),
+        "v3_main_otp_error": MessageLookupByLibrary.simpleMessage("密碼錯誤"),
+        "v3_main_password": MessageLookupByLibrary.simpleMessage("一次性密碼"),
+        "v3_main_password_invalid":
+            MessageLookupByLibrary.simpleMessage("密碼錯誤"),
+        "v3_main_present_action":
+            MessageLookupByLibrary.simpleMessage("請選擇分享方式"),
+        "v3_main_present_subtitle":
+            MessageLookupByLibrary.simpleMessage("只需幾個步驟即可快速分享"),
+        "v3_main_present_title":
+            MessageLookupByLibrary.simpleMessage("無線分享您的畫面"),
+        "v3_main_presenting_message":
+            MessageLookupByLibrary.simpleMessage("畫面分享中"),
+        "v3_main_privacy": MessageLookupByLibrary.simpleMessage("隱私政策"),
+        "v3_main_receive_app_action":
+            MessageLookupByLibrary.simpleMessage("接收"),
+        "v3_main_receive_app_receive_from":
+            MessageLookupByLibrary.simpleMessage("畫面接收自"),
+        "v3_main_receive_app_stop": MessageLookupByLibrary.simpleMessage("停止"),
+        "v3_main_receive_app_subtitle":
+            MessageLookupByLibrary.simpleMessage("接收畫面到我的裝置"),
+        "v3_main_receive_app_title":
+            MessageLookupByLibrary.simpleMessage("接收畫面"),
+        "v3_main_select_role_receive":
+            MessageLookupByLibrary.simpleMessage("接收畫面"),
+        "v3_main_select_role_share":
+            MessageLookupByLibrary.simpleMessage("分享畫面"),
+        "v3_main_select_role_title":
+            MessageLookupByLibrary.simpleMessage("選擇分享或接收畫面"),
+        "v3_main_terms": MessageLookupByLibrary.simpleMessage("使用條款"),
+        "v3_present_end_information":
+            MessageLookupByLibrary.simpleMessage("已停止分享，共計使用 %s 分鐘"),
+        "v3_present_moderator_exited":
+            MessageLookupByLibrary.simpleMessage("結束主持人模式"),
+        "v3_present_moderator_exited_action":
+            MessageLookupByLibrary.simpleMessage("確定"),
+        "v3_present_moderator_exited_description":
+            MessageLookupByLibrary.simpleMessage("主持人模式已結束，請重新連線"),
+        "v3_present_options_menu_he_subtitle":
+            MessageLookupByLibrary.simpleMessage("使用影像處理單元進行編碼"),
+        "v3_present_options_menu_he_title":
+            MessageLookupByLibrary.simpleMessage("硬體編碼"),
+        "v3_present_options_menu_hq_subtitle":
+            MessageLookupByLibrary.simpleMessage("使用較高的位元率處理影像，需要較好的網路品質"),
+        "v3_present_options_menu_hq_title":
+            MessageLookupByLibrary.simpleMessage("高畫質模式"),
+        "v3_present_screen_full": MessageLookupByLibrary.simpleMessage("連線數已滿"),
+        "v3_present_screen_full_action":
+            MessageLookupByLibrary.simpleMessage("好"),
+        "v3_present_screen_full_description":
+            MessageLookupByLibrary.simpleMessage("已達到最大分享畫面數量，請稍後再試"),
+        "v3_present_select_screen_extension":
+            MessageLookupByLibrary.simpleMessage("延伸螢幕"),
+        "v3_present_select_screen_extension_desc":
+            MessageLookupByLibrary.simpleMessage("擴展您的顯示範圍"),
+        "v3_present_select_screen_extension_desc2":
+            MessageLookupByLibrary.simpleMessage("將要分享的應用程式從電腦顯示器拖拉至外部顯示器"),
+        "v3_present_select_screen_share_audio":
+            MessageLookupByLibrary.simpleMessage("勾選以分享音訊"),
+        "v3_present_select_screen_subtitle":
+            MessageLookupByLibrary.simpleMessage("請選擇螢幕分享的方式"),
+        "v3_present_session_full":
+            MessageLookupByLibrary.simpleMessage("連線數已滿"),
+        "v3_present_session_full_action":
+            MessageLookupByLibrary.simpleMessage("好"),
+        "v3_present_session_full_description":
+            MessageLookupByLibrary.simpleMessage("已達到最大分享畫面數量，請稍後再試"),
+        "v3_present_touch_back_allow":
+            MessageLookupByLibrary.simpleMessage("允許反控設備端"),
+        "v3_scan_qr_reminder":
+            MessageLookupByLibrary.simpleMessage("掃描二維條碼快速連線"),
+        "v3_select_screen_ios_countdown":
+            MessageLookupByLibrary.simpleMessage("請在連線逾時前點擊開始分享。剩餘時間: %s"),
+        "v3_select_screen_ios_start_sharing":
+            MessageLookupByLibrary.simpleMessage("開始分享"),
+        "v3_setting_app_version": MessageLookupByLibrary.simpleMessage("版本"),
         "v3_setting_check_update": MessageLookupByLibrary.simpleMessage("檢查更新"),
         "v3_setting_knowledge_base":
             MessageLookupByLibrary.simpleMessage("知識庫"),
         "v3_setting_language": MessageLookupByLibrary.simpleMessage("語言"),
-        "v3_setting_legal_policy":
-            MessageLookupByLibrary.simpleMessage("法律和隱私"),
+        "v3_setting_legal_policy": MessageLookupByLibrary.simpleMessage("法律政策"),
         "v3_setting_open_source_license":
             MessageLookupByLibrary.simpleMessage("開源許可證"),
         "v3_setting_privacy_policy":
             MessageLookupByLibrary.simpleMessage("隱私政策"),
-        "v3_setting_privacy_policy_description":
-            MessageLookupByLibrary.simpleMessage(""),
         "v3_setting_software_update":
             MessageLookupByLibrary.simpleMessage("軟體更新"),
         "v3_setting_software_update_deny_action":
@@ -181,6 +324,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_setting_software_update_no_internet_tittle":
             MessageLookupByLibrary.simpleMessage("無網際網路連線"),
         "v3_setting_software_update_positive_action":
-            MessageLookupByLibrary.simpleMessage("立即更新")
+            MessageLookupByLibrary.simpleMessage("立即更新"),
+        "v3_setting_title": MessageLookupByLibrary.simpleMessage("設定")
       };
 }

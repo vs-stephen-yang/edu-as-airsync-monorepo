@@ -187,8 +187,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Accessibility"),
         "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(
             "Please wait for the host to approve your request."),
-        "v3_main_connect_network_error": MessageLookupByLibrary.simpleMessage(
-            "Network error. Please check network connectivity and try again."),
+        "v3_main_connect_network_error":
+            MessageLookupByLibrary.simpleMessage("Network connectivity error."),
         "v3_main_connect_rate_limited": MessageLookupByLibrary.simpleMessage(
             "AirSync instance is busy. Please try it later."),
         "v3_main_connect_unknown_error":
@@ -285,11 +285,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
             "Screen sharing has stopped.\nTotal sharing time %s."),
         "v3_present_moderator_exited":
-            MessageLookupByLibrary.simpleMessage("Moderator exited"),
+            MessageLookupByLibrary.simpleMessage("Moderator is closed"),
         "v3_present_moderator_exited_action":
             MessageLookupByLibrary.simpleMessage("OK"),
         "v3_present_moderator_exited_description":
-            MessageLookupByLibrary.simpleMessage("Exited moderator mode"),
+            MessageLookupByLibrary.simpleMessage(
+                "Moderator is closed，please reconnect."),
         "v3_present_options_menu_he_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "Use device\'s graphic card to encode the stream."),

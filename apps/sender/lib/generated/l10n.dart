@@ -1101,10 +1101,10 @@ class S {
     );
   }
 
-  /// `Network error. Please check network connectivity and try again.`
+  /// `Network connectivity error.`
   String get v3_main_connect_network_error {
     return Intl.message(
-      'Network error. Please check network connectivity and try again.',
+      'Network connectivity error.',
       name: 'v3_main_connect_network_error',
       desc: '',
       args: [],
@@ -1791,20 +1791,20 @@ class S {
     );
   }
 
-  /// `Moderator exited`
+  /// `Moderator is closed`
   String get v3_present_moderator_exited {
     return Intl.message(
-      'Moderator exited',
+      'Moderator is closed',
       name: 'v3_present_moderator_exited',
       desc: '',
       args: [],
     );
   }
 
-  /// `Exited moderator mode`
+  /// `Moderator is closed，please reconnect.`
   String get v3_present_moderator_exited_description {
     return Intl.message(
-      'Exited moderator mode',
+      'Moderator is closed，please reconnect.',
       name: 'v3_present_moderator_exited_description',
       desc: '',
       args: [],
