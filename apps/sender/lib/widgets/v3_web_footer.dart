@@ -46,37 +46,18 @@ class V3WebFooter extends StatelessWidget {
                   height: 31,
                 ),
                 const SizedBox(height: 30),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        launchUrl(Uri.parse(
-                            '${Uri.base.scheme}://${Uri.base.authority}/legal/privacy_policy.html'));
-                      },
-                      child: AutoSizeText(
-                        S.of(context).v3_main_privacy,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: context.tokens.color.vsdswColorOnSurface,
-                        ),
-                      ),
+                TextButton(
+                  onPressed: () {
+                    launchUrl(Uri.parse(
+                        '${Uri.base.scheme}://${Uri.base.authority}/legal/privacy_policy.html'));
+                  },
+                  child: AutoSizeText(
+                    S.of(context).v3_main_privacy,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: context.tokens.color.vsdswColorOnSurface,
                     ),
-                    const SizedBox(width: 80),
-                    TextButton(
-                      onPressed: () {
-                        launchUrl(Uri.parse(
-                            '${Uri.base.scheme}://${Uri.base.authority}/legal/terms_of_use.html'));
-                      },
-                      child: AutoSizeText(
-                        S.of(context).v3_main_terms,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: context.tokens.color.vsdswColorOnSurface,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
                 const SizedBox(height: 40),
                 AutoSizeText(

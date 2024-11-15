@@ -174,6 +174,6 @@ class V3Eula extends StatelessWidget {
 
   Future<String> _loadEulaFromAssets() async {
     return await rootBundle
-        .loadString('assets/ViewSonic-MVB-EULA-20230508.txt');
+        .loadString('assets/ViewSonic-AirSync-EULA-20241115.txt');
   }
 }
