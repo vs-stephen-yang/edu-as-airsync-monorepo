@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
-import 'package:display_cast_flutter/demo/present_present_start_demo.dart';
-import 'package:display_cast_flutter/demo/present_select_role_demo.dart';
-import 'package:display_cast_flutter/demo/remote_screen_widget_demo.dart';
-import 'package:display_cast_flutter/providers/demo_provider.dart';
+import 'package:display_cast_flutter/demo/v3_present_present_start_demo.dart';
+import 'package:display_cast_flutter/demo/v3_present_select_role_demo.dart';
+import 'package:display_cast_flutter/demo/v3_remote_screen_widget_demo.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
+import 'package:display_cast_flutter/providers/v3_demo_provider.dart';
 import 'package:display_cast_flutter/screens/v3_setting_menu_app.dart';
 import 'package:display_cast_flutter/screens/v3_setting_menu_desktop.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -33,7 +33,7 @@ class V3HomeApp extends StatelessWidget {
     return SafeArea(
       child: ConstrainedBox(
         constraints: const BoxConstraints.expand(),
-        child: Consumer2<PresentStateProvider, DemoProvider>(
+        child: Consumer2<PresentStateProvider, V3DemoProvider>(
             builder: (context, presentStateProvider, demoProvider, child) {
           return Stack(
             alignment: Alignment.center,
@@ -43,7 +43,9 @@ class V3HomeApp extends StatelessWidget {
                 presentStateProvider: presentStateProvider,
                 demoProvider: demoProvider,
               ),
-              if (presentStateProvider.currentState == ViewState.idle)
+              if (presentStateProvider.currentState == ViewState.idle &&
+                  (demoProvider.state == V3DemoViewState.idle ||
+                      demoProvider.state == V3DemoViewState.off))
                 const SettingMenu(),
             ],
           );
@@ -61,7 +63,7 @@ class V3PresentStateMachine extends StatelessWidget {
   });
 
   final PresentStateProvider presentStateProvider;
-  final DemoProvider demoProvider;
+  final V3DemoProvider demoProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -98,14 +100,16 @@ class V3PresentStateMachine extends StatelessWidget {
       }
     } else {
       switch (demoProvider.state) {
-        case DemoViewState.off:
+        case V3DemoViewState.off:
           return const SizedBox();
-        case DemoViewState.selectRole:
-          return const PresentSelectRoleDemo();
-        case DemoViewState.presentStart:
-          return PresentPresentStartDemo();
-        case DemoViewState.remoteScreen:
-          return const RemoteScreenDemo();
+        case V3DemoViewState.selectRole:
+          return const V3PresentSelectRoleDemo();
+        case V3DemoViewState.presentStart:
+          return const V3PresentPresentStartDemo();
+        case V3DemoViewState.remoteScreen:
+          return const V3RemoteScreenDemo();
+        case V3DemoViewState.idle:
+          return const V3PresentIdle();
       }
     }
   }
