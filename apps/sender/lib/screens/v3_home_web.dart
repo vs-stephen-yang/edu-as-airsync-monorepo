@@ -25,7 +25,9 @@ class _V3HomeWebState extends State<V3HomeWeb> {
       PrefLanguageProvider prefLanguageProvider =
           Provider.of<PrefLanguageProvider>(context, listen: false);
       if (!prefLanguageProvider.language.contains('繁體中文')) {
-        chineseFontLoaded = true;
+        setState(() {
+          chineseFontLoaded = true;
+        });
       } else {
         () async {
           await Future<void>.delayed(const Duration(milliseconds: 500));
