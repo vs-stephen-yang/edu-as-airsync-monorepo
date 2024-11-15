@@ -140,7 +140,7 @@ class V3WebDownloadItem extends StatelessWidget {
           : isBigThan1536(context)
               ? 396
               : isBigThan1280(context)
-                  ? 325
+                  ? 350
                   : isBigThan1024(context)
                       ? 643
                       : 472,
