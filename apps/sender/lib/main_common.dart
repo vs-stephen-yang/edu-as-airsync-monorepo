@@ -15,6 +15,7 @@ import 'package:display_cast_flutter/providers/device_list_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
+import 'package:display_cast_flutter/providers/v3_demo_provider.dart';
 import 'package:display_cast_flutter/screens/home.dart';
 import 'package:display_cast_flutter/screens/v3_eula.dart';
 import 'package:display_cast_flutter/screens/v3_home.dart';
@@ -191,6 +192,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: PresentStateProvider()),
         ChangeNotifierProvider.value(value: PrefLanguageProvider()),
         ChangeNotifierProvider.value(value: DemoProvider()),
+        ChangeNotifierProvider.value(value: V3DemoProvider()),
         ChangeNotifierProvider.value(value: ChannelProvider(context)),
         ChangeNotifierProvider.value(value: DeviceListProvider()),
         ChangeNotifierProvider.value(value: SettingsProvider()),

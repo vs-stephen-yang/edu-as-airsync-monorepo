@@ -6,8 +6,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
-import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/providers/v3_demo_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/v3_toast.dart';
 import 'package:display_cast_flutter/widgets/v3_message_dialog.dart';
@@ -95,7 +95,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
     PresentStateProvider presentStateProvider =
         Provider.of<PresentStateProvider>(context, listen: false);
     ChannelProvider channelProvider = Provider.of<ChannelProvider>(context);
-    DemoProvider demoProvider = Provider.of<DemoProvider>(context);
+    V3DemoProvider demoProvider = Provider.of<V3DemoProvider>(context);
 
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       if (channelProvider.channelConnectError != null) {
@@ -204,7 +204,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
   }
 
   V3PresentIdleButton _nextButton(ChannelProvider channelProvider,
-      DemoProvider demoProvider, PresentStateProvider presentStateProvider) {
+      V3DemoProvider demoProvider, PresentStateProvider presentStateProvider) {
     return V3PresentIdleButton(
       key: presentBtnKey,
       fixedSize: const Size(300, 48),
