@@ -123,8 +123,7 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                     ),
                     padding: const EdgeInsets.only(left: 0, right: 13),
                     onPressed: () {
-                      _isEditing = false;
-                      widget.focusNode.unfocus();
+                      _controller.text = '';
                     },
                   ),
                 )
