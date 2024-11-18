@@ -148,7 +148,7 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
     AndroidWindow.setHandler((String name, Object? data) async {
       switch (name) {
         case OverlayTabHandler.nameOverlayTabCheck:
-          AndroidWindow.post(OverlayTabHandler.nameOverlayTabReady);
+          await AndroidWindow.post(OverlayTabHandler.nameOverlayTabReady);
           return OverlayTabHandler.resultEmptyString;
 
         case OverlayTabHandler.nameInitValue:

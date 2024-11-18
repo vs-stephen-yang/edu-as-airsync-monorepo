@@ -81,7 +81,8 @@ class MirrorStateProvider extends ChangeNotifier
   Future<void> setAirPlayCodeEnable(bool value) async {
     await _set(airplayCodeEnable: _airplayCodeEnabled = value);
     if (_airplayEnabled) {
-      stopAirPlay(updatePreference: false).whenComplete(() => startAirPlay());
+      await stopAirPlay(updatePreference: false)
+          .whenComplete(() => startAirPlay());
     }
     notifyListeners();
   }
@@ -408,11 +409,11 @@ class MirrorStateProvider extends ChangeNotifier
 
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('app_AirPlayEnable', _airplayEnabled);
-    prefs.setBool('app_GoogleCastEnable', _googleCastEnabled);
-    prefs.setBool('app_MiracastEnable', _miracastEnabled);
-    prefs.setBool('app_AirPlayCodeEnable', _airplayCodeEnabled);
-    prefs.setBool('app_autoAcceptRequired', _isMirrorConfirmation);
+    await prefs.setBool('app_AirPlayEnable', _airplayEnabled);
+    await prefs.setBool('app_GoogleCastEnable', _googleCastEnabled);
+    await prefs.setBool('app_MiracastEnable', _miracastEnabled);
+    await prefs.setBool('app_AirPlayCodeEnable', _airplayCodeEnabled);
+    await prefs.setBool('app_autoAcceptRequired', _isMirrorConfirmation);
   }
 
   _load() async {

@@ -35,7 +35,8 @@ class DeviceFeatureAdapter {
   static const defaultEnableWebRtcTracing = false;
   static const defaultVerboseWebRtcLog = false;
   static bool defaultDumpSrtpPackets = false;
-  static bool defaultIceGatheringContinually = true; // gather_continually by default
+  // gather_continually by default
+  static bool defaultIceGatheringContinually = true;
 
   static Map<String, int> quickDecodeParams = {
     "low-latency": 1, // RK3588
@@ -116,22 +117,24 @@ class DeviceFeatureAdapter {
         prefs.getBool("EnableWebRtcTracing") ?? defaultEnableWebRtcTracing;
     verboseWebRtcLog =
         prefs.getBool("VerboseWebRtcLog") ?? defaultVerboseWebRtcLog;
-    dumpSrtpPackets = prefs.getBool("DumpSrtpPackets") ?? defaultDumpSrtpPackets;
-    iceGatheringContinually = prefs.getBool("IceGatheringContinually") ?? defaultIceGatheringContinually;
+    dumpSrtpPackets =
+        prefs.getBool("DumpSrtpPackets") ?? defaultDumpSrtpPackets;
+    iceGatheringContinually = prefs.getBool("IceGatheringContinually") ??
+        defaultIceGatheringContinually;
   }
 
   static save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("showOldUI", showOldUI);
-    prefs.setBool("ShowDebugOverlay", showDebugOverlay);
-    prefs.setBool("UseSoftwareDecode", useSoftwareDecode);
-    prefs.setBool(
+    await prefs.setBool("showOldUI", showOldUI);
+    await prefs.setBool("ShowDebugOverlay", showDebugOverlay);
+    await prefs.setBool("UseSoftwareDecode", useSoftwareDecode);
+    await prefs.setBool(
         "EnableWebRtcH264BaselineProfile", enableWebRtcH264BaselineProfile);
-    prefs.setBool("UseQuickDecodeParams", useQuickDecodeParams);
-    prefs.setBool("EnableWebRtcTracing", enableWebRtcTracing);
-    prefs.setBool("VerboseWebRtcLog", verboseWebRtcLog);
-    prefs.setBool("DumpSrtpPackets", dumpSrtpPackets);
-    prefs.setBool("IceGatheringContinually", iceGatheringContinually);
+    await prefs.setBool("UseQuickDecodeParams", useQuickDecodeParams);
+    await prefs.setBool("EnableWebRtcTracing", enableWebRtcTracing);
+    await prefs.setBool("VerboseWebRtcLog", verboseWebRtcLog);
+    await prefs.setBool("DumpSrtpPackets", dumpSrtpPackets);
+    await prefs.setBool("IceGatheringContinually", iceGatheringContinually);
   }
 
   static Map<String, int> getDecodeOptions(
@@ -187,7 +190,8 @@ class DeviceFeatureAdapter {
       options['fieldTrials'] = WebRTCUtil.getRtpDumpFieldTrails(true);
       options['enableInjectableLogger'] = true; // must enable injectable logger
       options['logSeverity'] = 'VERBOSE'; // must override log severity
-      log.info('since dumpSrtpPackets is enabled, logSeverity is set to VERBOSE, and webrtc native log is disabled');
+      log.info(
+          'since dumpSrtpPackets is enabled, logSeverity is set to VERBOSE, and webrtc native log is disabled');
     }
 
     log.info('Initialize webrtc. Options: ${options.toString()}');

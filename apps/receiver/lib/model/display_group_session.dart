@@ -52,7 +52,7 @@ class DisplayGroupSession {
 
   Future<void> stop({required String reason}) async {
     _isVideoAvailable = false;
-    _remoteScreenClient?.remove();
+    await _remoteScreenClient?.remove();
     if (_channel.state != ChannelState.closed) {
       _channel.send(StopDisplayGroupMessage());
       Future.delayed(const Duration(seconds: 3), () {

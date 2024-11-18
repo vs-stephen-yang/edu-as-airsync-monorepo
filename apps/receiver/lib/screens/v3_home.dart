@@ -90,7 +90,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
         try {
           _showSnackBarMessage(S.of(context).main_status_go_background);
           await Future.delayed(const Duration(seconds: 1));
-          _androidAppRetain.invokeMethod('sendToBackground');
+          await _androidAppRetain.invokeMethod('sendToBackground');
         } catch (e, stackTrace) {
           log.severe('sendTiBackground', e, stackTrace);
         }

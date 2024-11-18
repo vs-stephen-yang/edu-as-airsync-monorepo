@@ -57,10 +57,10 @@ class AppPreferences {
 
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('app_showEULA', _showEULA);
-    prefs.setString('app_instanceName', _instanceName);
-    prefs.setString('app_entityId', _entityId);
-    prefs.setString('app_moderatorId', _moderatorId);
+    await prefs.setBool('app_showEULA', _showEULA);
+    await prefs.setString('app_instanceName', _instanceName);
+    await prefs.setString('app_entityId', _entityId);
+    await prefs.setString('app_moderatorId', _moderatorId);
   }
 
   _load() async {
@@ -74,7 +74,8 @@ class AppPreferences {
   String _invitedToGroup = InvitedToGroupOption.notifyMe.value.toString();
 
   String get invitedToGroup {
-    return int.tryParse(_invitedToGroup)?.toString() ?? InvitedToGroupOption.notifyMe.value.toString();
+    return int.tryParse(_invitedToGroup)?.toString() ??
+        InvitedToGroupOption.notifyMe.value.toString();
   }
 
   void setInvitedToGroupSelectedItem({String? item}) async {

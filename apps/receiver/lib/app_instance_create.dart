@@ -61,11 +61,11 @@ class AppInstanceCreate {
 
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('app_isRegistered', _isRegistered);
-    prefs.setString('app_instanceID', _instanceID);
-    prefs.setString('app_serialNumber', _serialNumber);
-    prefs.setString('app_modelName', _modelName);
-    prefs.setString('app_groupID', _groupID);
+    await prefs.setBool('app_isRegistered', _isRegistered);
+    await prefs.setString('app_instanceID', _instanceID);
+    await prefs.setString('app_serialNumber', _serialNumber);
+    await prefs.setString('app_modelName', _modelName);
+    await prefs.setString('app_groupID', _groupID);
   }
 
   _load() async {
