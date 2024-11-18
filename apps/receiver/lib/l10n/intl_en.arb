@@ -168,5 +168,10 @@
   "v3_settings_broadcast_cast_to": "Cast to",
   "v3_settings_broadcast_devices": "Devices",
   "v3_settings_broadcast_boards": "Boards",
-  "v3_settings_local_connection_only": "Local connection only"
+  "v3_settings_local_connection_only": "Local connection only",
+  "v3_download_app_for_desktop": "For Desktop",
+  "v3_download_app_for_mobile": "For iOS & Android",
+  "v3_download_app_for_desktop_desc": "Enter the following URL to download.",
+  "v3_download_app_for_mobile_desc": "Scan the QR code for instant access.",
+  "v3_download_app_or": "OR"
 }
