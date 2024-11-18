@@ -181,6 +181,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "Scan the QR code with your iOS or Android device to download"),
         "v3_download_app_entry":
             MessageLookupByLibrary.simpleMessage("Download Sender App"),
+        "v3_download_app_for_desktop":
+            MessageLookupByLibrary.simpleMessage("For Desktop"),
+        "v3_download_app_for_desktop_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "Enter the following URL to download."),
+        "v3_download_app_for_mobile":
+            MessageLookupByLibrary.simpleMessage("For iOS & Android"),
+        "v3_download_app_for_mobile_desc": MessageLookupByLibrary.simpleMessage(
+            "Scan the QR code for instant access."),
+        "v3_download_app_or": MessageLookupByLibrary.simpleMessage("OR"),
         "v3_download_app_title":
             MessageLookupByLibrary.simpleMessage("Download Sender App"),
         "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Agree"),

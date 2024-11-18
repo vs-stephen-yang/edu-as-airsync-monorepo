@@ -1750,6 +1750,56 @@ class S {
       args: [],
     );
   }
+
+  /// `For Desktop`
+  String get v3_download_app_for_desktop {
+    return Intl.message(
+      'For Desktop',
+      name: 'v3_download_app_for_desktop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `For iOS & Android`
+  String get v3_download_app_for_mobile {
+    return Intl.message(
+      'For iOS & Android',
+      name: 'v3_download_app_for_mobile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the following URL to download.`
+  String get v3_download_app_for_desktop_desc {
+    return Intl.message(
+      'Enter the following URL to download.',
+      name: 'v3_download_app_for_desktop_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Scan the QR code for instant access.`
+  String get v3_download_app_for_mobile_desc {
+    return Intl.message(
+      'Scan the QR code for instant access.',
+      name: 'v3_download_app_for_mobile_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OR`
+  String get v3_download_app_or {
+    return Intl.message(
+      'OR',
+      name: 'v3_download_app_or',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
