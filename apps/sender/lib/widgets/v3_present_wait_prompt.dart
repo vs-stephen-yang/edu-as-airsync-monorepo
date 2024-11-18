@@ -93,19 +93,22 @@ class WaitingText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        AutoSizeText(
-          isModerator
-              ? S.of(context).v3_main_moderator_wait
-              : S.of(context).v3_main_authorize_wait,
-          style: TextStyle(
-            color: context.tokens.color.vsdswColorOnSurface,
-            fontSize: 16,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        children: [
+          AutoSizeText(
+            isModerator
+                ? S.of(context).v3_main_moderator_wait
+                : S.of(context).v3_main_authorize_wait,
+            style: TextStyle(
+              color: context.tokens.color.vsdswColorOnSurface,
+              fontSize: 16,
+            ),
           ),
-        ),
-        const Padding(padding: EdgeInsets.only(top: 32)),
-      ],
+          const Padding(padding: EdgeInsets.only(top: 32)),
+        ],
+      ),
     );
   }
 }
