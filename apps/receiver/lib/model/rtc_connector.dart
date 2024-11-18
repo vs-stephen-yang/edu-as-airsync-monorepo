@@ -541,7 +541,7 @@ class RTCConnector {
 
     _stopChannelReconnectTimer();
 
-    _channel.close(ChannelCloseReason(code, text: reason));
+    await _channel.close(ChannelCloseReason(code, text: reason));
     _resetSetting();
   }
 

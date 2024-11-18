@@ -156,7 +156,7 @@ class ChannelProvider extends ChangeNotifier {
 
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('app_AuthorizeModeEnable', _isAuthorizeMode);
+    await prefs.setBool('app_AuthorizeModeEnable', _isAuthorizeMode);
   }
 
   _load() async {
@@ -514,7 +514,7 @@ class ChannelProvider extends ChangeNotifier {
             break;
           }
           final iceServers = await _getIceServers(mode);
-          rtcConnector.onStartPresent(
+          await rtcConnector.onStartPresent(
             message as StartPresentMessage,
             isModeratorMode,
             iceServers,
@@ -529,20 +529,20 @@ class ChannelProvider extends ChangeNotifier {
           // ignore
           break;
         case ChannelMessageType.pausePresent:
-          rtcConnector.onPausePresent();
+          await rtcConnector.onPausePresent();
           break;
         case ChannelMessageType.resumePresent:
-          rtcConnector.onResumePresent();
+          await rtcConnector.onResumePresent();
           break;
         case ChannelMessageType.stopPresent:
-          rtcConnector.onStopPresent(
+          await rtcConnector.onStopPresent(
               message as StopPresentMessage, isModeratorMode);
           break;
         case ChannelMessageType.presentSignal:
-          rtcConnector.onPresentSignal(message as PresentSignalMessage);
+          await rtcConnector.onPresentSignal(message as PresentSignalMessage);
           break;
         case ChannelMessageType.channelClosed:
-          rtcConnector.onChannelClose(message as ChannelClosedMessage);
+          await rtcConnector.onChannelClose(message as ChannelClosedMessage);
           break;
 
         /// remote

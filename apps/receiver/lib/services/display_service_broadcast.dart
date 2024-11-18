@@ -46,7 +46,7 @@ class DisplayServiceBroadcast {
 
   updateInvitedToGroupOption(String option) async {
     _invitedToGroupOption = option;
-    _restart();
+    await _restart();
   }
 
   void _onInstanceInfoUpdated() {

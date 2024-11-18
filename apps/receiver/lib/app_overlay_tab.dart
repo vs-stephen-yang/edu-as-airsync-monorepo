@@ -108,7 +108,7 @@ class AppOverlayTab {
           });
 
           languageProvider.addListener(() async {
-            setLanguage(languageProvider.language);
+            await setLanguage(languageProvider.language);
           });
           //
           // Home.showTitleBottomBar.addListener(() {

@@ -42,7 +42,7 @@ class _SenderMenuViewState extends State<SenderMenuView> {
               if (channelProvider.isSenderMode) {
                 channelProvider.removeSender(fromSender: true);
               } else {
-                channelProvider.startRemoteScreen(fromSender: true);
+                await channelProvider.startRemoteScreen(fromSender: true);
               }
               setState(() {});
             },
