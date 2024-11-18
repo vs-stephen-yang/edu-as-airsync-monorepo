@@ -11,8 +11,12 @@ initSentry(SentryConfig config) async {
   await SentryFlutter.init(
     (options) {
       options.dsn = config.dsn;
+      //options.debug = true;
       options.environment = config.environment;
       options.addIntegration(LoggingIntegration());
+
+      // TODO: reduce the trace sample rate before global launch
+      options.tracesSampleRate = 1.0;
     },
   );
 }

@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:display_channel/display_channel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class HttpRequestException implements Exception {
   int? statusCode;
@@ -47,26 +50,39 @@ class HttpRequest<T> {
   ) async {
     http.Response response;
 
+    final transaction = Sentry.startTransaction(
+      'webrequest',
+      'request',
+      bindToScope: true,
+    );
+
+    final client = SentryHttpClient(
+      failedRequestStatusCodes: [
+        SentryStatusCode.range(400, 499),
+        SentryStatusCode.range(500, 599),
+      ],
+    );
+
     try {
       switch (method) {
         case HttpMethod.get:
-          response = await http
+          response = await client
               .get(_request.url, headers: _request.headers)
               .timeout(_timeout);
           break;
         case HttpMethod.post:
-          response = await http
+          response = await client
               .post(_request.url,
                   headers: _request.headers, body: _request.body)
               .timeout(_timeout);
           break;
         case HttpMethod.put:
-          response = await http
+          response = await client
               .put(_request.url, headers: _request.headers, body: _request.body)
               .timeout(_timeout);
           break;
         case HttpMethod.delete:
-          response = await http
+          response = await client
               .delete(_request.url, headers: _request.headers)
               .timeout(_timeout);
           break;
@@ -75,6 +91,9 @@ class HttpRequest<T> {
       }
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        await transaction.finish(
+            status: SpanStatus.fromHttpStatusCode(response.statusCode));
+
         if (response.body.isNotEmpty) {
           Map<String, dynamic> json = jsonDecode(response.body);
           return fromJson(json);
@@ -82,6 +101,9 @@ class HttpRequest<T> {
           return fromJson({});
         }
       } else {
+        await transaction.finish(
+            status: SpanStatus.fromHttpStatusCode(response.statusCode));
+
         throw HttpRequestException(
           statusCode: response.statusCode,
           message: response.reasonPhrase,
@@ -91,13 +113,24 @@ class HttpRequest<T> {
       if (e is http.ClientException) {
         throw HttpRequestException(message: 'HTTP client error: ${e.message}');
       } else if (e is FormatException) {
+        // Invalid response format
+        await transaction.finish(status: const SpanStatus.internalError());
         throw HttpRequestException(
             message: 'Invalid response format: ${e.message}');
+      } else if (e is SocketException) {
+        // Network unavailable case
+        await transaction.finish(status: const SpanStatus.unavailable());
+        throw HttpRequestException(message: 'Network error: ${e.message}');
       } else if (e is TimeoutException) {
+        // Timeout case
+        await transaction.finish(status: const SpanStatus.deadlineExceeded());
         throw HttpRequestException(message: 'Request timed out');
       } else {
+        await transaction.finish(status: const SpanStatus.internalError());
         throw HttpRequestException(message: e.toString());
       }
+    } finally {
+      client.close();
     }
   }
 }
