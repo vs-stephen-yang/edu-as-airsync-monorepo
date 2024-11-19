@@ -180,21 +180,22 @@ class _V3PresentPresentStartDemoState extends State<V3PresentPresentStartDemo> {
               ),
             ],
           ),
-          if (!kIsWeb)
-            Positioned(
-              left: 24,
-              bottom: 24,
-              child: CircleAvatar(
-                backgroundColor: context.tokens.color.vsdswColorSurface900,
-                radius: 24,
-                child: IconButton(
-                  icon: SvgPicture.asset('assets/images/v3_ic_options.svg'),
-                  onPressed: () {
-                    _showOptionsMenuDialog(context);
-                  },
-                ),
-              ),
-            ),
+          // [USER STORY 74502] Due to Web RTC QoS Setting issue, this feature is disabled temporarily.
+          // if (!kIsWeb)
+          //   Positioned(
+          //     left: 24,
+          //     bottom: 24,
+          //     child: CircleAvatar(
+          //       backgroundColor: context.tokens.color.vsdswColorSurface900,
+          //       radius: 24,
+          //       child: IconButton(
+          //         icon: SvgPicture.asset('assets/images/v3_ic_options.svg'),
+          //         onPressed: () {
+          //           _showOptionsMenuDialog(context);
+          //         },
+          //       ),
+          //     ),
+          //   ),
         ],
       ),
     );
