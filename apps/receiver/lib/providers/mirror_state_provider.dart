@@ -43,6 +43,9 @@ class MirrorStateProvider extends ChangeNotifier
 
   get miracastEnabled => _miracastEnabled;
 
+  get isAnyMirrorEnabled =>
+      _airplayCodeEnabled | _googleCastEnabled | _miracastEnabled;
+
   String get pinCode => _pinCode;
 
   final InstanceInfoProvider _instanceInfoProvider;
@@ -100,7 +103,7 @@ class MirrorStateProvider extends ChangeNotifier
       _deviceName = _instanceInfoProvider.deviceName;
 
       // restart when device name changed.
-      await _restartMirror();
+      await restartMirror();
     }
   }
 
@@ -327,7 +330,7 @@ class MirrorStateProvider extends ChangeNotifier
     notifyListeners();
   }
 
-  Future<void> _restartMirror() async {
+  Future<void> restartMirror() async {
     log.info('restartMirror');
     if (!HybridConnectionList().isMirroring()) {
       if (_airplayEnabled) {
@@ -345,6 +348,15 @@ class MirrorStateProvider extends ChangeNotifier
         await startMiracast(updatePreference: false);
       }
     }
+  }
+
+  Future<void> stopAllMirror() async {
+    log.info('stopMirror');
+    await stopAirPlay(updatePreference: false);
+
+    await stopGoogleCast(updatePreference: false);
+
+    await stopMiracast(updatePreference: false);
   }
 
   // endregion

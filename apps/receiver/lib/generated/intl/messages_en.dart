@@ -235,6 +235,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "Unable to detect an internet connection. Please connect to a Wi-Fi or intranet network, and try again."),
         "v3_mirror_request_passcode":
             MessageLookupByLibrary.simpleMessage("Passcode"),
+        "v3_moderator_disable_mirror_cancel":
+            MessageLookupByLibrary.simpleMessage("Cancel"),
+        "v3_moderator_disable_mirror_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "Mirroring will be disabled in moderator mode."),
+        "v3_moderator_disable_mirror_ok":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_moderator_disable_mirror_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Disable Mirroring for Moderator Mode"),
         "v3_moderator_mode":
             MessageLookupByLibrary.simpleMessage("Moderator mode"),
         "v3_new_sharing_join_session":

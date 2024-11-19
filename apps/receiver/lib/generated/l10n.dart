@@ -1800,6 +1800,46 @@ class S {
       args: [],
     );
   }
+
+  /// `Disable Mirroring for Moderator Mode`
+  String get v3_moderator_disable_mirror_title {
+    return Intl.message(
+      'Disable Mirroring for Moderator Mode',
+      name: 'v3_moderator_disable_mirror_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mirroring will be disabled in moderator mode.`
+  String get v3_moderator_disable_mirror_desc {
+    return Intl.message(
+      'Mirroring will be disabled in moderator mode.',
+      name: 'v3_moderator_disable_mirror_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get v3_moderator_disable_mirror_ok {
+    return Intl.message(
+      'OK',
+      name: 'v3_moderator_disable_mirror_ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get v3_moderator_disable_mirror_cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'v3_moderator_disable_mirror_cancel',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
