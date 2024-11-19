@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:android_window/main.dart' as android_window;
 import 'package:desktop_multi_window/desktop_multi_window.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class AnnotationModel extends ChangeNotifier {
@@ -28,8 +28,9 @@ class AnnotationModel extends ChangeNotifier {
   }
 
   static closeAnnotation() async {
+    if (kIsWeb || Platform.isIOS) return;
     if (Platform.isWindows || Platform.isMacOS) {
-      DesktopMultiWindow.getAllSubWindowIds().then(
+      await DesktopMultiWindow.getAllSubWindowIds().then(
         (subWindowIds) {
           for (final windowId in subWindowIds) {
             WindowController.fromWindowId(windowId).close();
