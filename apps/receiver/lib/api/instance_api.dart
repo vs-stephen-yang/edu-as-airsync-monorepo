@@ -12,7 +12,7 @@ class RegisterInstanceResult {
         instanceIndex = json['instanceIndex'];
 }
 
-Future<RegisterInstanceResult?> registerInstanceIndexById(
+Future<RegisterInstanceResult> registerInstanceIndexById(
   String baseApiUrl,
   String instanceId,
   int instanceGroupId,
