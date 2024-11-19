@@ -1,6 +1,8 @@
-import 'package:bonsoir/bonsoir.dart';
+import 'dart:convert';
+
 import 'package:display_flutter/app_instance_create.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:nsd/nsd.dart';
 import 'package:uuid/uuid.dart';
 
 class DisplayServiceBroadcast {
@@ -10,11 +12,12 @@ class DisplayServiceBroadcast {
   final int _directChannelPort;
   final InstanceInfoProvider _instanceInfo;
   final String _version;
+  static const utf8encoder = Utf8Encoder();
   String _invitedToGroupOption;
 
   int get directChannelPort => _directChannelPort;
 
-  BonsoirBroadcast? _broadcast;
+  Registration? _broadcast;
 
   DisplayServiceBroadcast._internal(
     this._serviceType,
@@ -65,29 +68,28 @@ class DisplayServiceBroadcast {
       return;
     }
 
-    final service = BonsoirService(
+    final service = Service(
       name: const Uuid().v4(), // 經實驗重啟broadcast，name需要更換，否則discovery狀態無法更新。
       type: _serviceType,
       port: _directChannelPort,
-      attributes: {
-        'fn': _instanceInfo.deviceName,
-        'ver': _version,
-        'dc': _instanceInfo.displayCode,
-        'ip': _instanceInfo.ipAddress,
-        'igo': _invitedToGroupOption,
-        'id': AppInstanceCreate().groupID,
+      txt: {
+        'fn': utf8encoder.convert(_instanceInfo.deviceName),
+        'ver': utf8encoder.convert(_version),
+        'dc': utf8encoder.convert(_instanceInfo.displayCode),
+        'ip': utf8encoder.convert(_instanceInfo.ipAddress),
+        'igo': utf8encoder.convert(_invitedToGroupOption),
+        'id': utf8encoder.convert(AppInstanceCreate().groupID),
       },
     );
 
-    _broadcast = BonsoirBroadcast(service: service);
-
-    await _broadcast!.ready;
-    await _broadcast!.start();
+    _broadcast = await register(service);
   }
 
   Future<void> _stop() async {
-    await _broadcast?.stop();
-    _broadcast = null;
+    if (_broadcast != null) {
+      await unregister(_broadcast!);
+      _broadcast = null;
+    }
   }
 
   Future<void> _restart() async {
