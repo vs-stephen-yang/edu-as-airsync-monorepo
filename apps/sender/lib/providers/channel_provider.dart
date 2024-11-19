@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:display_cast_flutter/annotation/annotation_model.dart';
+import 'package:display_cast_flutter/api/fetch_tunnel_info.dart';
+import 'package:display_cast_flutter/api/http_request.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/model/direct_connector.dart';
@@ -29,7 +30,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:http/http.dart' as http;
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:uuid/uuid.dart';
 
@@ -222,6 +222,46 @@ class ChannelProvider extends ChangeNotifier {
       // Web does not support direct channel connection
       directPort: kIsWeb ? null : port,
     );
+  }
+
+  mapHttpRequestErrorToFetchException(HttpRequestException exception) {
+    switch (exception.error) {
+      // 4xx or 5xx
+      case HttpRequestError.httpError:
+        if (exception.statusCode == 404) {
+          return FetchChannelTunnelUrlException(
+              FetchChannelTunnelUrlError.instanceNotFound);
+        } else {
+          return FetchChannelTunnelUrlException(
+              FetchChannelTunnelUrlError.unknownError);
+        }
+
+      // Network error or request timeout
+      case HttpRequestError.networkError:
+        return FetchChannelTunnelUrlException(
+            FetchChannelTunnelUrlError.networkError);
+
+      // Other errors
+      default:
+        return FetchChannelTunnelUrlError.unknownError;
+    }
+  }
+
+  Future<String> _fetchTunnelUrl(instanceIndex, instanceGroupId) async {
+    try {
+      final result = await fetchTunnelInfo(
+        _baseApiUrl,
+        instanceIndex,
+        instanceGroupId,
+      );
+      return result.tunnelUrl;
+    } catch (e) {
+      if (e is HttpRequestException) {
+        throw mapHttpRequestErrorToFetchException(e);
+      }
+
+      throw FetchChannelTunnelUrlError.unknownError;
+    }
   }
 
   startDirectConnect({
@@ -735,92 +775,6 @@ class ChannelProvider extends ChangeNotifier {
     }
 
     presentEnd();
-  }
-
-  _trackFetchError(String errorType, String details) {
-    log.warning('Failed to fetch the instance info. $errorType $details');
-
-    trackTrace('request_get_instance_error', properties: {
-      'target': errorType,
-      'details': details,
-    });
-  }
-
-  Future<String> _fetchTunnelUrl(int instanceIndex, int instanceGroupId) async {
-    late http.Response response;
-
-    final request = buildApiRequest(
-      _baseApiUrl,
-      '/v1/instance',
-      queryParameters: {
-        'instanceIndex': instanceIndex.toString(),
-        'groupId': '$instanceGroupId',
-      },
-      time: DateTime.now(),
-      signatureLocation: SignatureLocation.header,
-    );
-
-    try {
-      response = await http.get(
-        request.url,
-        headers: request.headers,
-      );
-    } on SocketException catch (e) {
-      _trackFetchError('SocketException', e.toString());
-
-      throw FetchChannelTunnelUrlException(
-        FetchChannelTunnelUrlError.networkError,
-      );
-    } on http.ClientException catch (e) {
-      _trackFetchError('http.ClientException', e.toString());
-
-      throw FetchChannelTunnelUrlException(
-        FetchChannelTunnelUrlError.networkError,
-      );
-    } catch (e) {
-      _trackFetchError('Exception', e.toString());
-
-      throw FetchChannelTunnelUrlException(
-        FetchChannelTunnelUrlError.unknownError,
-      );
-    }
-
-    if (response.statusCode != HttpStatus.ok) {
-      _trackFetchError('StatusCode', response.statusCode.toString());
-
-      if (response.statusCode == HttpStatus.notFound) {
-        throw FetchChannelTunnelUrlException(
-          FetchChannelTunnelUrlError.instanceNotFound,
-        );
-      } else {
-        throw FetchChannelTunnelUrlException(
-          FetchChannelTunnelUrlError.unknownError,
-        );
-      }
-    }
-
-    late Map<String, dynamic> json;
-
-    try {
-      json = jsonDecode(response.body);
-    } on FormatException catch (e) {
-      _trackFetchError('FormatException', e.toString());
-
-      throw FetchChannelTunnelUrlException(
-        FetchChannelTunnelUrlError.unknownError,
-      );
-    }
-
-    final url = json['tunnelUrl'];
-    if (url == null) {
-      _trackFetchError('InvalidResponse', 'tunnelUrl is empty');
-
-      throw FetchChannelTunnelUrlException(
-        FetchChannelTunnelUrlError.instanceNotFound,
-      );
-    }
-
-    return url as String;
   }
 
   void _onRtcConnectionState(RTCPeerConnectionState state) {
