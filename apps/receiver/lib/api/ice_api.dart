@@ -31,6 +31,7 @@ Future<List<RtcIceServer>?> getIceServers(
     );
 
     return await request.sendRequest(
+      'getIceServers',
       HttpMethod.post,
       parseIceServersFromApi,
     );

@@ -28,6 +28,7 @@ Future<RegisterInstanceResult?> registerInstanceIndexById(
   );
 
   return await request.sendRequest(
+    'registerInstance',
     HttpMethod.put,
     RegisterInstanceResult.fromJson,
   );
