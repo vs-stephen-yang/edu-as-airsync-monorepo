@@ -13,6 +13,7 @@ import 'package:display_flutter/widgets/v3_settings_radio_group_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:nsd/nsd.dart';
 import 'package:provider/provider.dart' as provider;
 
 class V3SettingsCastToBoards extends ConsumerStatefulWidget {
@@ -27,6 +28,7 @@ class V3SettingsCastToBoardsState
   @override
   void initState() {
     super.initState();
+    enableLogging(LogTopic.calls);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(groupProvider.notifier).organizeGroupList();
     });
