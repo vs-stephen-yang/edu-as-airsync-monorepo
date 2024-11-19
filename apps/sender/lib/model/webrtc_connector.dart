@@ -580,6 +580,15 @@ class WebRTCConnector {
       for (var encoding in params.encodings!) {
         encoding.maxBitrate = preset.parameters.maxBitrateKbps * 1000;
 
+        // On Android, because ScreenCapture cannot specify the capture frame rate,
+        // WebRTC internally controls the frame rate fed to the encoder through the encoding settings.
+        // In the future, we could consider applying this approach to other platforms like
+        // Windows, macOS, iOS, and Web as well.
+        if (!kIsWeb && Platform.isAndroid) {
+          encoding.maxFramerate = _trackFrameRate.toInt();
+          log.info('Set maxFramerate: ${encoding.maxFramerate}');
+        }
+
         // Note:
         //  We are using `contentHint` to set the minimum bitrate. If the content hint is set to "detail",
         //  WebRTC will use 100 kbps as the minimum bitrate. However, this adjustment may cause the original
