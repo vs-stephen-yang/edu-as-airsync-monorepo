@@ -173,5 +173,9 @@
   "v3_download_app_for_mobile": "For iOS & Android",
   "v3_download_app_for_desktop_desc": "Enter the following URL to download.",
   "v3_download_app_for_mobile_desc": "Scan the QR code for instant access.",
-  "v3_download_app_or": "OR"
+  "v3_download_app_or": "OR",
+  "v3_moderator_disable_mirror_title": "Disable Mirroring for Moderator Mode",
+  "v3_moderator_disable_mirror_desc": "Mirroring will be disabled in moderator mode.",
+  "v3_moderator_disable_mirror_ok": "OK",
+  "v3_moderator_disable_mirror_cancel": "Cancel"
 }

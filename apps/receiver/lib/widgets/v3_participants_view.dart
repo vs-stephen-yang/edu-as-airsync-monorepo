@@ -4,6 +4,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_custom_dialog.dart';
 import 'package:display_flutter/widgets/v3_participant_list.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class V3ParticipantsView extends StatefulWidget {
 
 class _V3ParticipantsView extends State<V3ParticipantsView> {
   final GlobalKey _containerKey = GlobalKey();
-  bool isShowLogOutMenu = false;
+  bool isShowDialogMenu = false;
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +76,27 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
                       ),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
-                      onPressed: () {
+                      onPressed: () async {
                         if (ChannelProvider.isModeratorMode) {
                           _callLogOutDialog(context);
+                        } else if (Provider.of<MirrorStateProvider>(context,
+                                listen: false)
+                            .isAnyMirrorEnabled) {
+                          final result = await _callCloseMirrorDialog(context);
+                          if (result && context.mounted) {
+                            MirrorStateProvider mirrorStateProvider =
+                                Provider.of<MirrorStateProvider>(context,
+                                    listen: false);
+                            await mirrorStateProvider.stopAllMirror();
+
+                            trackEvent(
+                              'click_moderator',
+                              EventCategory.menu,
+                              target: 'on',
+                            );
+
+                            channelProvider.setModeratorMode(true);
+                          }
                         } else {
                           trackEvent(
                             'click_moderator',
@@ -102,7 +121,7 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
                 topRight: Radius.circular(30),
                 bottomRight: Radius.circular(30),
               ),
-              color: isShowLogOutMenu
+              color: isShowDialogMenu
                   ? context.tokens.color.vsdslColorSurface1000.withOpacity(0.16)
                   : Colors.transparent,
             ),
@@ -112,6 +131,48 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
     );
   }
 
+  Future<bool> _callCloseMirrorDialog(BuildContext context) async {
+    final RenderBox renderBox =
+        _containerKey.currentContext!.findRenderObject() as RenderBox;
+    final Offset containerOffset =
+        renderBox.localToGlobal(Offset.zero).translate(27, 157);
+
+    setState(() {
+      isShowDialogMenu = true;
+    });
+
+    final result = await showDialog<bool>(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return V3CustomDialog(
+          offset: containerOffset,
+          alignmentGeometry: Alignment.centerRight,
+          title: S.of(context).v3_moderator_disable_mirror_title,
+          content: S.of(context).v3_moderator_disable_mirror_desc,
+          item1: S.of(context).v3_moderator_disable_mirror_cancel,
+          onItem1: () {
+            if (navService.canPop()) {
+              navService.goBack(result: false);
+            }
+          },
+          item2: S.of(context).v3_moderator_disable_mirror_ok,
+          onItem2: () async {
+            if (navService.canPop()) {
+              navService.goBack(result: true);
+            }
+          },
+        );
+      },
+    );
+
+    setState(() {
+      isShowDialogMenu = false;
+    });
+
+    return result ?? false;
+  }
+
   void _callLogOutDialog(BuildContext context) async {
     final RenderBox renderBox =
         _containerKey.currentContext!.findRenderObject() as RenderBox;
@@ -119,7 +180,7 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
         renderBox.localToGlobal(Offset.zero).translate(27, 157);
 
     setState(() {
-      isShowLogOutMenu = true;
+      isShowDialogMenu = true;
     });
     await showDialog(
       context: context,
@@ -137,12 +198,17 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
             }
           },
           item2: S.of(context).v3_exit_moderator_mode_exit,
-          onItem2: () {
+          onItem2: () async {
             trackEvent('click_moderator', EventCategory.menu, target: 'off');
 
             Provider.of<ChannelProvider>(context, listen: false)
                 .setModeratorMode(false);
-            HybridConnectionList().removeAllPresenters();
+            await HybridConnectionList().removeAllPresenters();
+            if (context.mounted) {
+              MirrorStateProvider mirrorStateProvider =
+                  Provider.of<MirrorStateProvider>(context, listen: false);
+              await mirrorStateProvider.restartMirror();
+            }
             if (navService.canPop()) {
               navService.goBack();
             }
@@ -151,7 +217,7 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
       },
     ).then((_) {
       setState(() {
-        isShowLogOutMenu = false;
+        isShowDialogMenu = false;
       });
     });
   }

@@ -43,12 +43,11 @@ class V3CustomDialog extends StatelessWidget {
                     context.tokens.color.vsdslColorOnSurfaceInverse,
                 elevation: 16.0,
                 shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
-                child: Stack(
+                child: Column(
                   children: [
-                    Positioned(
-                      left: 13,
-                      top: 27,
-                      right: 13,
+                    const SizedBox(height: 27),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: AutoSizeText(
                         title,
                         textAlign: TextAlign.center,
@@ -59,10 +58,9 @@ class V3CustomDialog extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Positioned(
-                      left: 13,
-                      top: 61,
-                      right: 13,
+                    const SizedBox(height: 13),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 13),
                       child: AutoSizeText(
                         content,
                         textAlign: TextAlign.center,
@@ -73,10 +71,10 @@ class V3CustomDialog extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Positioned(
-                      left: 15,
-                      top: 132,
-                      right: 15,
+                    const Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 13, right: 13, bottom: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -89,8 +87,7 @@ class V3CustomDialog extends StatelessWidget {
                                     context.tokens.color.vsdslColorPrimary,
                                 backgroundColor: Colors.white,
                                 side: BorderSide(
-                                  color:
-                                      context.tokens.color.vsdslColorPrimary,
+                                  color: context.tokens.color.vsdslColorPrimary,
                                   width: 1.5,
                                 ),
                                 textStyle: const TextStyle(
