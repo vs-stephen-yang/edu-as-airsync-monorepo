@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:app_ota_flutter/app_ota_flutter.dart';
 import 'package:app_ota_flutter/model/ota_info.dart';
 import 'package:display_flutter/app_update_helper.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:gap/gap.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AppOTADialog extends StatefulWidget {
@@ -73,26 +74,27 @@ class AppOTADialogState extends State<AppOTADialog>
           // False will prevent and true will allow to dismiss
           onWillPop: () async => false,
           child: AlertDialog(
-            title: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                const SizedBox(
-                  width: 48,
-                  height: 48,
-                  child: Image(
-                    image: Svg('assets/images/ic_logo_my.svg'),
-                  ),
-                ),
-                const SizedBox(width: 20),
-                Text(S.of(context).update_title),
-              ],
+            title: Text(
+              S.of(context).update_title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: context.tokens.color.vsdslColorOnSurface,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(S.of(context).update_message),
-                const SizedBox(height: 40),
+                Text(
+                  S.of(context).update_message,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdslColorInfo,
+                    fontSize: 14,
+                  ),
+                ),
+                const Gap(40),
                 if (status == UpdateStatus.updateDownloading)
                   ValueListenableBuilder<double>(
                     valueListenable: progress,
@@ -100,11 +102,13 @@ class AppOTADialogState extends State<AppOTADialog>
                         (BuildContext context, double value, Widget? child) {
                       return LinearProgressIndicator(
                         value: value,
-                        backgroundColor: Colors.grey,
-                        color: const Color(0xFFB1E26E),
+                        backgroundColor:
+                            context.tokens.color.vsdslColorSurface300,
+                        color: context.tokens.color.vsdslColorSecondary,
                       );
                     },
                   ),
+                const Gap(10),
                 if (status == UpdateStatus.updateDownloading)
                   ValueListenableBuilder<double>(
                     valueListenable: progress,
@@ -112,7 +116,13 @@ class AppOTADialogState extends State<AppOTADialog>
                         (BuildContext context, double value, Widget? child) {
                       return Align(
                         alignment: Alignment.bottomRight,
-                        child: Text('${(value * 100).toInt()}%'),
+                        child: Text(
+                          '${(value * 100).toInt()}%',
+                          style: TextStyle(
+                            color: context.tokens.color.vsdslColorInfo,
+                            fontSize: 14,
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -120,12 +130,14 @@ class AppOTADialogState extends State<AppOTADialog>
             ),
             actions: [
               if (status == UpdateStatus.updateDownloaded)
-                TextButton(
+                _updateDialogButton(
+                  text: S.current.update_install_now,
+                  textColor: Colors.white,
+                  backgroundColor: context.tokens.color.vsdslColorPrimary,
                   onPressed: () {
                     _installNow(info);
                   },
-                  child: Text(S.of(context).update_install_now),
-                )
+                ),
             ],
           ),
         );
@@ -137,5 +149,41 @@ class AppOTADialogState extends State<AppOTADialog>
     var folder = await getExternalStorageDirectory();
     var otaFile = File("${folder?.path}/${info?.fileName}");
     AppUpdateHelper().startAppUpdate(otaFile.path);
+  }
+
+  Widget _updateDialogButton(
+      {required String text,
+      required Color textColor,
+      required Color backgroundColor,
+      required GestureTapCallback onPressed}) {
+    return InkWell(
+      onTap: onPressed,
+      child: Container(
+        alignment: Alignment.center,
+        width: 105,
+        height: 40,
+        clipBehavior: Clip.antiAlias,
+        decoration: ShapeDecoration(
+          color: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(9999),
+          ),
+          shadows: backgroundColor != Colors.transparent
+              ? [
+                  BoxShadow(
+                    color: backgroundColor.withOpacity(0.31),
+                    blurRadius: 24,
+                    offset: const Offset(0, 16),
+                    spreadRadius: 0,
+                  )
+                ]
+              : null,
+        ),
+        child: Text(
+          text,
+          style: TextStyle(color: textColor),
+        ),
+      ),
+    );
   }
 }
