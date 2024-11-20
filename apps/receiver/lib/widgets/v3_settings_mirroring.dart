@@ -6,6 +6,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsMirroring extends StatelessWidget {
@@ -16,10 +17,27 @@ class V3SettingsMirroring extends StatelessWidget {
     ChannelProvider channelProvider =
         Provider.of<ChannelProvider>(context, listen: false);
     return Padding(
-      padding: const EdgeInsets.only(left: 13, top: 57, right: 13),
+      padding: const EdgeInsets.only(left: 13, top: 57, right: 13, bottom: 13),
       child: Consumer<MirrorStateProvider>(
         builder: (BuildContext context, MirrorStateProvider mirrorStateProvider,
             Widget? child) {
+          var disable = ChannelProvider.isModeratorMode;
+          var colorPrimary = context.tokens.color.vsdslColorPrimary
+              .withOpacity(disable ? 0.32 : 1);
+          var colorOnPrimary = context.tokens.color.vsdslColorOnPrimary
+              .withOpacity(disable ? 0.32 : 1);
+          var colorFill = WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.disabled)) {
+              if (states.contains(WidgetState.selected)) {
+                return context.tokens.color.vsdslColorPrimary.withOpacity(0.32);
+              }
+              return Colors.transparent;
+            }
+            if (states.contains(WidgetState.selected)) {
+              return context.tokens.color.vsdslColorPrimary;
+            }
+            return Colors.transparent;
+          });
           return Column(
             children: [
               MirroringItem(
@@ -40,13 +58,49 @@ class V3SettingsMirroring extends StatelessWidget {
                       target: mirrorStateProvider.airplayEnabled ? 'on' : 'off',
                     );
                   }),
-              Visibility(
-                  visible: mirrorStateProvider.airplayEnabled,
-                  child: SizedBox(
-                    height: 26,
-                    child: _buildAirPlayPasscode(mirrorStateProvider, context),
-                  )),
-              _buildSpacing(context),
+              if (mirrorStateProvider.airplayEnabled)
+                SizedBox(
+                  height: 26,
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: Checkbox(
+                          value: mirrorStateProvider.airPlayCodeEnable,
+                          side: BorderSide(color: colorOnPrimary, width: 2),
+                          activeColor: colorPrimary,
+                          checkColor: colorOnPrimary,
+                          fillColor: colorFill,
+                          onChanged: disable
+                              ? null
+                              : (bool? value) {
+                                  if (value != null) {
+                                    trackEvent(
+                                      'click_airplay_pincode',
+                                      EventCategory.setting,
+                                      target: value ? 'on' : 'off',
+                                    );
+
+                                    mirrorStateProvider
+                                        .setAirPlayCodeEnable(value);
+                                  }
+                                },
+                        ),
+                      ),
+                      Gap(context.tokens.spacing.vsdslSpacingSm.right),
+                      AutoSizeText(
+                        S.of(context).v3_settings_mirroring_require_passcode,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: context.tokens.color.vsdslColorOnPrimary,
+                        ),
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+              Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
               MirroringItem(
                   name: S.of(context).v3_shortcuts_google_cast,
                   enabled: mirrorStateProvider.googleCastEnabled,
@@ -66,7 +120,7 @@ class V3SettingsMirroring extends StatelessWidget {
                           mirrorStateProvider.googleCastEnabled ? 'on' : 'off',
                     );
                   }),
-              _buildSpacing(context),
+              Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
               MirroringItem(
                   name: S.of(context).v3_shortcuts_miracast,
                   enabled: mirrorStateProvider.miracastEnabled,
@@ -93,114 +147,103 @@ class V3SettingsMirroring extends StatelessWidget {
                     bottom: context.tokens.spacing.vsdslSpacingSm.bottom),
                 color: context.tokens.color.vsdslColorOutlineVariant,
               ),
-              _buildAutoAccept(mirrorStateProvider, context),
-              _buildAutoAcceptDesc(context),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: Checkbox(
+                        value: !mirrorStateProvider.isMirrorConfirmation,
+                        side: BorderSide(color: colorOnPrimary, width: 2),
+                        activeColor: colorPrimary,
+                        checkColor: colorOnPrimary,
+                        fillColor: colorFill,
+                        onChanged: disable
+                            ? null
+                            : (bool? value) {
+                                mirrorStateProvider.isMirrorConfirmation =
+                                    !mirrorStateProvider.isMirrorConfirmation;
+
+                                trackEvent(
+                            'click_auto_accept',
+                            EventCategory.setting,
+                            target:
+                            mirrorStateProvider.isMirrorConfirmation
+                                ? 'on'
+                                : 'off',
+                          );
+                        }),
+                  ),
+                  Gap(context.tokens.spacing.vsdslSpacingSm.right),
+                  AutoSizeText(
+                    S
+                        .of(context)
+                        .v3_settings_mirroring_auto_accept,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: context.tokens.color.vsdslColorOnPrimary,
+                    ),
+                    maxLines: 1,
+                  ),
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    bottom: context.tokens.spacing.vsdslSpacingSm.bottom,
+                    left: 20 + context.tokens.spacing.vsdslSpacingSm.right),
+                child: AutoSizeText(
+                  S
+                      .of(context)
+                      .v3_settings_mirroring_auto_accept_desc,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                  ),
+                  maxLines: 1,
+                ),
+              ),
+              if (disable) ...[
+                const Spacer(),
+                Container(
+                  width: 325,
+                  height: 51,
+                  decoration: BoxDecoration(
+                    color: context.tokens.color.vsdslColorSurface900,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: context.tokens.spacing.vsdslSpacingXl,
+                  child: Row(
+                    children: [
+                      const SizedBox(
+                        width: 16,
+                        child: Image(
+                          image: Svg('assets/images/ic_toast_alert.svg'),
+                        ),
+                      ),
+                      Gap(context.tokens.spacing.vsdslSpacingLg.right),
+                      SizedBox(
+                        width: 270,
+                        child: AutoSizeText(
+                          S
+                              .of(context)
+                              .v3_settings_mirroring_blocked,
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w400,
+                            color: context.tokens.color.vsdslColorWarning,
+                          ),
+                          minFontSize: 8,
+                          maxLines: 2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ],
           );
         },
       ),
-    );
-  }
-
-  Padding _buildAutoAcceptDesc(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-          bottom: context.tokens.spacing.vsdslSpacingSm.bottom,
-          left: 20 + context.tokens.spacing.vsdslSpacingSm.right),
-      child: AutoSizeText(
-        S.of(context).v3_settings_mirroring_auto_accept_desc,
-        style: TextStyle(
-          fontSize: 12,
-          color: context.tokens.color.vsdslColorOnSurfaceVariant,
-        ),
-        maxLines: 1,
-      ),
-    );
-  }
-
-  Row _buildAutoAccept(
-      MirrorStateProvider mirrorStateProvider, BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 20,
-          height: 20,
-          child: Checkbox(
-              value: !mirrorStateProvider.isMirrorConfirmation,
-              side: BorderSide(
-                  color: context.tokens.color.vsdslColorOnPrimary, width: 2),
-              activeColor: context.tokens.color.vsdslColorPrimary,
-              onChanged: (bool? value) {
-                mirrorStateProvider.isMirrorConfirmation =
-                    !mirrorStateProvider.isMirrorConfirmation;
-
-                trackEvent(
-                  'click_auto_accept',
-                  EventCategory.setting,
-                  target:
-                      mirrorStateProvider.isMirrorConfirmation ? 'on' : 'off',
-                );
-              }),
-        ),
-        Padding(
-          padding: EdgeInsets.only(
-              right: context.tokens.spacing.vsdslSpacingSm.right),
-        ),
-        AutoSizeText(
-          S.of(context).v3_settings_mirroring_auto_accept,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.white,
-          ),
-          maxLines: 1,
-        ),
-      ],
-    );
-  }
-
-  Padding _buildSpacing(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.only(
-            bottom: context.tokens.spacing.vsdslSpacingSm.bottom));
-  }
-
-  Row _buildAirPlayPasscode(
-      MirrorStateProvider mirrorStateProvider, BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 20,
-          height: 20,
-          child: Checkbox(
-              value: mirrorStateProvider.airPlayCodeEnable,
-              activeColor: context.tokens.color.vsdslColorPrimary,
-              side: BorderSide(
-                  color: context.tokens.color.vsdslColorOnPrimary, width: 2),
-              onChanged: (bool? value) {
-                if (value != null) {
-                  trackEvent(
-                    'click_airplay_pincode',
-                    EventCategory.setting,
-                    target: value ? 'on' : 'off',
-                  );
-
-                  mirrorStateProvider.setAirPlayCodeEnable(value);
-                }
-              }),
-        ),
-        Padding(
-          padding: EdgeInsets.only(
-              right: context.tokens.spacing.vsdslSpacingSm.right),
-        ),
-        AutoSizeText(
-          S.of(context).v3_settings_mirroring_require_passcode,
-          style: TextStyle(
-            fontSize: 12,
-            color: context.tokens.color.vsdslColorOnPrimary,
-          ),
-          maxLines: 1,
-        ),
-      ],
     );
   }
 }
@@ -231,13 +274,16 @@ class MirroringItem extends StatelessWidget {
           ),
           const Spacer(),
           InkWell(
-            onTap: callback,
-            child: Image(
-              width: 36,
-              height: 21,
-              image: Svg(enabled
-                  ? 'assets/images/ic_switch_on.svg'
-                  : 'assets/images/ic_switch_off.svg'),
+            onTap: ChannelProvider.isModeratorMode ? null : callback,
+            child: Opacity(
+              opacity: ChannelProvider.isModeratorMode ? 0.32 : 1,
+              child: Image(
+                width: 36,
+                height: 21,
+                image: Svg(enabled
+                    ? 'assets/images/ic_switch_on.svg'
+                    : 'assets/images/ic_switch_off.svg'),
+              ),
             ),
           ),
         ],

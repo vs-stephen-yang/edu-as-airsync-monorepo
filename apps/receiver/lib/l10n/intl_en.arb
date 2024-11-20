@@ -177,5 +177,6 @@
   "v3_moderator_disable_mirror_title": "Disable Mirroring for Moderator Mode",
   "v3_moderator_disable_mirror_desc": "Mirroring will be disabled in moderator mode.",
   "v3_moderator_disable_mirror_ok": "OK",
-  "v3_moderator_disable_mirror_cancel": "Cancel"
+  "v3_moderator_disable_mirror_cancel": "Cancel",
+  "v3_settings_mirroring_blocked": "To enable mirroring please switch the moderator mode to OFF."
 }
