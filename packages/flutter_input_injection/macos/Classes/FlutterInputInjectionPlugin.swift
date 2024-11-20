@@ -3,10 +3,8 @@ import CoreGraphics
 import FlutterMacOS
 
 public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
-  private var eventQueue: [(action: Int, id: Int, x: Int, y: Int)] = []
-  private var queueLock = NSLock()
-  private var isConsuming = false
-  private var lastMouseDownEvent: (action: Int, id: Int, x: Int, y: Int)? = nil
+  private var lastMouseDownEvent: (action: Int, id: Int, x: Int, y: Int, timestamp: TimeInterval)? =
+    nil
   private var skipEventsUntilMouseUp: Bool = false
   private var mouseDown: Bool = false
   private let distanceThreshold: CGFloat = 25
@@ -35,16 +33,7 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
         return
       }
 
-      queueLock.lock()
-      eventQueue.append((action: action, id: id, x: x, y: y))
-      queueLock.unlock()
-
-      if !isConsuming {
-        isConsuming = true
-        DispatchQueue.global(qos: .default).async { [weak self] in
-          self!.consumeEvents()
-        }
-      }
+      processEvent((action: action, id: id, x: x, y: y))
       result(true)
 
     case "getPlatformVersion":
@@ -55,84 +44,85 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
     }
   }
 
-  private func consumeEvents() {
-    while true {
-      queueLock.lock()
-      guard !eventQueue.isEmpty else {
-        isConsuming = false
-        queueLock.unlock()
-        break
-      }
+  private func processEvent(_ event: (action: Int, id: Int, x: Int, y: Int)) {
+    switch event.action {
+    case 0:  // touch down
+      handleMouseDown(event)  // convert touch down to mouse down
+      break
 
-      let eventsToProcess = eventQueue
-      eventQueue.removeAll()
-      queueLock.unlock()
+    case 1:  // touch move
+      handleMouseMove(event)  // convert touch move to mouse move
+      break
 
-      processEventBatch(events: eventsToProcess)
-    }
-  }
+    case 2:  // touch up
+      handleMouseUp(event)  // convert touch up to mouse up
+      break
 
-  private func processEventBatch(events: [(action: Int, id: Int, x: Int, y: Int)]) {
-    for i in 0..<events.count {
-      let event = events[i]
-      switch event.action {
-      case 0:  // mouse left down
-        handleMouseDown(event)
-        break
-
-      case 1:  // mouse move
-        handleMouseMove(event)
-        break
-
-      case 2:  // mouse left up
-        handleMouseUp(event)
-        break
-
-      default:
-        break
-      }
+    default:
+      break
     }
   }
 
   private func handleMouseDown(_ event: (action: Int, id: Int, x: Int, y: Int)) {
+    // If events are being skipped until a mouse-up event, ignore this event.
     if skipEventsUntilMouseUp {
       return
     }
 
+    // Check for a potential double-click by comparing the time and distance between
+    // this mouse down event and the last one.
     if lastMouseDownEvent != nil {
-      if isWithinDistanceThreshold(toCGPoint(lastMouseDownEvent!), toCGPoint(event)) {
+      if isWithinSystemDoubleClickTimeInterval(lastMouseDownEvent!.timestamp) {
+        if isWithinDistanceThreshold(
+          CGPoint(x: lastMouseDownEvent!.x, y: lastMouseDownEvent!.y), toCGPoint(event))
+        {
+          // If the event qualifies as a double-click, reset tracking variables,
+          // skip further events until a mouse-up occurs, and simulate a double-click.
+          lastMouseDownEvent = nil
+          skipEventsUntilMouseUp = true
+          mouseDown = true
 
-        lastMouseDownEvent = nil
-        skipEventsUntilMouseUp = true
-        mouseDown = true
-
-        simulateMouseLeftDoubleClickEvent(CGPoint(x: event.x, y: event.y))
-        return
+          simulateMouseLeftDoubleClickEvent(CGPoint(x: event.x, y: event.y))
+          return
+        }
       }
     }
 
-    lastMouseDownEvent = event
+    // Otherwise, update the last mouse down event timestamp and simulate a mouse down.
+    let now = Date().timeIntervalSince1970
+    lastMouseDownEvent = (
+      action: event.action, id: event.id, x: event.x, y: event.y,
+      timestamp: now
+    )
     mouseDown = true
 
     simulateMouseEvent(.leftMouseDown, at: CGPoint(x: event.x, y: event.y))
   }
 
   private func handleMouseMove(_ event: (action: Int, id: Int, x: Int, y: Int)) {
+    // Ignore move events if the mouse is not currently presse or if events are being
+    // skipped until a mouse-up occurs.
     if !mouseDown || skipEventsUntilMouseUp {
       return
     }
+
     simulateMouseEvent(.mouseMoved, at: CGPoint(x: event.x, y: event.y))
   }
 
   private func handleMouseUp(_ event: (action: Int, id: Int, x: Int, y: Int)) {
+    // Ignore mouse-up events if the mouse is not currently pressed.
     if !mouseDown {
       return
     }
+
+    // Reset skipping events until mouse-up if it was a previous yet.
     if skipEventsUntilMouseUp {
       skipEventsUntilMouseUp = false
     } else {
       simulateMouseEvent(.leftMouseUp, at: CGPoint(x: event.x, y: event.y))
     }
+
+    // Reset the mouse down state.
     mouseDown = false
   }
 
@@ -160,6 +150,22 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
 
   private func toCGPoint(_ event: (action: Int, id: Int, x: Int, y: Int)) -> CGPoint {
     return CGPoint(x: event.x, y: event.y)
+  }
+
+  private func getSystemDoubleClickInterval() -> Double {
+    // Retrieves the system-defined double-click interval, which is the maximum
+    // time allowed between two consecutive mouse down events for them to be
+    // recognized as a double-click.
+    // The interval is adjustable by the user in system preferences, typically
+    // ranging from 0.15 seconds (faster double-click) to 5 seconds (slower double-click).
+    // The default or average value is 1.4 seconds.
+    return NSEvent.doubleClickInterval
+  }
+
+  private func isWithinSystemDoubleClickTimeInterval(_ time: TimeInterval) -> Bool {
+    let now = Date().timeIntervalSince1970
+    let systemDoubleClickInterval = getSystemDoubleClickInterval()
+    return (now - time) < systemDoubleClickInterval
   }
 
   private func isWithinDistanceThreshold(_ point1: CGPoint, _ point2: CGPoint) -> Bool {
