@@ -6,6 +6,7 @@ import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:gap/gap.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -74,18 +75,30 @@ class AppOTADialogState extends State<AppOTADialog>
           // False will prevent and true will allow to dismiss
           onWillPop: () async => false,
           child: AlertDialog(
-            title: Text(
-              S.of(context).update_title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: context.tokens.color.vsdslColorOnSurface,
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-              ),
+            title: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                const SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: Image(
+                    image: Svg('assets/images/ic_logo_airsync_icon.svg'),
+                  ),
+                ),
+                const Gap(20),
+                Text(
+                  S.of(context).update_title,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdslColorOnSurface,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   S.of(context).update_message,
