@@ -1840,6 +1840,16 @@ class S {
       args: [],
     );
   }
+
+  /// `To enable mirroring please switch the moderator mode to OFF.`
+  String get v3_settings_mirroring_blocked {
+    return Intl.message(
+      'To enable mirroring please switch the moderator mode to OFF.',
+      name: 'v3_settings_mirroring_blocked',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

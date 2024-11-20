@@ -346,6 +346,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_mirroring_auto_accept_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Instantly enable mirroring without requiring moderator approval."),
+        "v3_settings_mirroring_blocked": MessageLookupByLibrary.simpleMessage(
+            "To enable mirroring please switch the moderator mode to OFF."),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Require passcode"),
         "v3_settings_open_source_license":
