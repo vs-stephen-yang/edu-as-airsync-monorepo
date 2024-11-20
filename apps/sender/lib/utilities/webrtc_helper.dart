@@ -68,11 +68,13 @@ class WebRTCHelper {
       deviceId = {'exact': selectedSource.id};
       _isScreenType = (selectedSource.type == SourceType.Screen);
       RegExp regExp = RegExp(r'\d+');
+      final onScreenExtension = webRTCConnector?.autoVirtualDisplay ?? false;
       _isMainScreen = _isScreenType &&
           (Platform.isMacOS
               ? ((regExp.firstMatch(selectedSource.name)?.group(0)) ?? '') ==
                   _macMainScreenOrder
-              : selectedSource.id == _windowsMainScreenOrder);
+              : selectedSource.id == _windowsMainScreenOrder &&
+                  !onScreenExtension);
 
       DesktopCapturerSource s = selectedSource;
       webRTCConnector?.subscriptions
