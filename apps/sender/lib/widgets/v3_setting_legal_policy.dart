@@ -27,7 +27,6 @@ class V3SettingsLegalPolicy extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 376,
             height: 40,
             child: Padding(
               padding: EdgeInsets.symmetric(
