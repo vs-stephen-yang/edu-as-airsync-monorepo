@@ -5,6 +5,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/screens/v3_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -44,6 +45,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
   }
 
   _showAuthDialog(BuildContext context) {
+    V3Home.isShowSettingsMenu.value = false;
     FocusScope.of(context).unfocus();
     showDialog(
       context: context,

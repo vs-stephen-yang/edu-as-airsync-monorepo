@@ -5,6 +5,7 @@ import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/widgets/v3_authorize_prompt.dart';
@@ -46,6 +47,17 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
     Provider.of<MirrorStateProvider>(context, listen: false)
         .startMirrorStartProvider();
     setProviderContainer();
+    onSettingMenuDismiss();
+  }
+
+  void onSettingMenuDismiss() {
+    // 當SettingsMenu關閉後，一率從這邊設定預設頁面，避免遺漏
+    V3Home.isShowSettingsMenu.addListener(() {
+      if (V3Home.isShowSettingsMenu.value == false) {
+        Provider.of<SettingsProvider>(context, listen: false)
+            .setPage(SettingPageState.deviceSetting);
+      }
+    });
   }
 
   void setProviderContainer() {

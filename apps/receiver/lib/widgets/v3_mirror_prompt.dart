@@ -4,6 +4,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/screens/v3_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:motion_toast/motion_toast.dart';
@@ -85,6 +86,7 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
   }
 
   _showAuthDialog(BuildContext context) {
+    V3Home.isShowSettingsMenu.value = false;
     FocusScope.of(context).unfocus();
     showDialog(
       context: context,

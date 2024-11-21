@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:display_flutter/screens/v3_home.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Use this provider to show a dialog.
@@ -56,6 +57,7 @@ class MessageDialogProvider extends StateNotifier<DialogState> {
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
   }) {
+    V3Home.isShowSettingsMenu.value = false;
     state = DialogState(
       title: title,
       content: content,
