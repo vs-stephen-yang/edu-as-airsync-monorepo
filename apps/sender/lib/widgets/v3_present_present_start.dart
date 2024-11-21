@@ -95,9 +95,11 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     DesktopMultiWindow.getAllSubWindowIds().then((list) {
       if (annotationOn != list.isNotEmpty) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          setState(() {
-            annotationOn = list.isNotEmpty;
-          });
+          if (mounted) {
+            setState(() {
+              annotationOn = list.isNotEmpty;
+            });
+          }
         });
       }
     });
