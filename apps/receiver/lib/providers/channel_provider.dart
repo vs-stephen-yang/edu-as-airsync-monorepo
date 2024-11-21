@@ -458,6 +458,7 @@ class ChannelProvider extends ChangeNotifier {
                 return;
               }
             }
+
             rtcConnector = _onJoinDisplay(rtcConnector, mode, msg);
             if (isAuthorizeMode && !isModeratorMode) {
               if (msg.name != null) {
@@ -475,6 +476,18 @@ class ChannelProvider extends ChangeNotifier {
                   }
                 });
               }
+            }
+
+            // After joining the display, a "Present Allow" message
+            // should be sent to the sender to initiate the presentation.
+            //
+            // Moderator Mode: The message will be sent through the
+            // participant item list.
+            // Accept/Decline Mode: The message will be sent via an
+            // authorization dialog.
+            // Normal Mode: The message will be sent directly
+            if (!isAuthorizeMode && !isModeratorMode) {
+              rtcConnector.sendAllowPresent();
             }
           } else {
             if (_remoteScreenConnectors.length >= maxRemoteScreenConnection) {
