@@ -289,6 +289,14 @@ class ParticipantStandbyFeature extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             onPressed: () {
+              if (isForMenuUse) {
+                trackEvent(
+                  'click_exit',
+                  EventCategory.session,
+                  participatorId: rtcConnector.clientId,
+                  mode: 'webrtc',
+                );
+              }
               _sendPresenterRemove(context, rtcConnector);
             },
           ),

@@ -81,6 +81,11 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                             onPressed: () {
+                              trackEvent(
+                                'click_connection_info',
+                                EventCategory.session,
+                                mode: 'webrtc',
+                              );
                               _showParticipantsMenuDialog(context);
                             },
                           ),
