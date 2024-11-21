@@ -1,4 +1,5 @@
 import 'package:app_ota_flutter/app_ota_flutter.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/services.dart';
@@ -94,8 +95,14 @@ class AppUpdateHelper {
   startInAppUpdate() {
     InAppUpdate.performImmediateUpdate().then((result) {
       log.info('InApp result: ${result.toString()}');
+      if (result == AppUpdateResult.success) {
+        trackEvent('ota_success', EventCategory.system);
+      } else {
+        trackEvent('ota_fail', EventCategory.system);
+      }
     }).catchError((e) {
       log.severe('InApp error', e);
+      trackEvent('ota_fail', EventCategory.system);
     });
   }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:app_ota_flutter/app_ota_flutter.dart';
 import 'package:app_ota_flutter/model/ota_info.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_update_helper.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -148,6 +149,7 @@ class AppOTADialogState extends State<AppOTADialog>
                   textColor: Colors.white,
                   backgroundColor: context.tokens.color.vsdslColorPrimary,
                   onPressed: () {
+                    trackEvent('start_ota', EventCategory.system);
                     _installNow(info);
                   },
                 ),
