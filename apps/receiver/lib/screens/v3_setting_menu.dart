@@ -160,8 +160,6 @@ class V3SettingMenu extends StatelessWidget {
                                   constraints: const BoxConstraints(),
                                   onPressed: () {
                                     V3Home.isShowSettingsMenu.value = false;
-                                    settingsProvider.setPage(
-                                        SettingPageState.deviceSetting);
                                   },
                                 ),
                               ),
@@ -219,7 +217,6 @@ class V3SettingMenu extends StatelessWidget {
       return;
     }
     V3Home.isShowSettingsMenu.value = false;
-    settingsProvider.setPage(SettingPageState.deviceSetting);
   }
 
   _subTittleButton(BuildContext context,

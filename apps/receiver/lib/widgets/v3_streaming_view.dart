@@ -7,6 +7,7 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/group_provider.dart';
+import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/screens/v3_new_sharing_menu.dart';
 import 'package:display_flutter/screens/v3_quick_connect_menu.dart';
 import 'package:display_flutter/screens/v3_shortcuts_menu.dart';
@@ -65,6 +66,11 @@ class _V3StreamingViewState extends ConsumerState {
             if (splitScreenCount == 3 || splitScreenCount == 5) {
               // add one more to show "Waiting for others to join".
               splitScreenCount++;
+            }
+            if (V3Home.isShowSettingsMenu.value) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                V3Home.isShowSettingsMenu.value = false;
+              });
             }
             return Stack(
               children: [
