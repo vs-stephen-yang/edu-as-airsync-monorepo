@@ -63,7 +63,7 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
             : 'assets/images/ic_logo_airsync_icon.png');
     _systemTray.registerSystemTrayEventHandler((eventName) async {
       if (eventName == kSystemTrayEventClick) {
-        widget.windowController!.show();
+        await widget.windowController!.show();
         await Future.delayed(const Duration(milliseconds: 100));
         setState(() {
           _points.addAll(_pointSave);
@@ -94,6 +94,12 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
     setState(() {
       _points.clear();
     });
+    if (Platform.isMacOS && _onMinimize) {
+      _onMinimize = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await refreshScreen();
+      });
+    }
   }
 
   void _addPoint(Offset offset) {
@@ -127,12 +133,12 @@ class _DesktopCanvasPageState extends State<_DesktopCanvasPage> {
     await showSystemTray();
     await Future.delayed(const Duration(milliseconds: 200));
     _onMinimize = true;
-    widget.windowController!.hide();
+    await widget.windowController!.hide();
   }
 
   void _exit() async {
     await _systemTray.destroy();
-    widget.windowController!.close();
+    await widget.windowController!.close();
   }
 
   @override
