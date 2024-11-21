@@ -36,7 +36,8 @@ class V3PresentPresentStart extends StatefulWidget {
   State<StatefulWidget> createState() => _V3PresentPresentStartState();
 }
 
-class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
+class _V3PresentPresentStartState extends State<V3PresentPresentStart>
+    with WidgetsBindingObserver {
   final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
 
   bool isAnnotationImplemented = false;
@@ -63,6 +64,10 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
+      // 用來判斷視窗被縮小或放大
+      WidgetsBinding.instance.addObserver(this);
+    }
     super.initState();
     if (WebRTC.platformIsIOS) _initializeBroadcastUploadExtensionObserver();
   }
@@ -86,16 +91,31 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
   }
 
   @override
+  didChangeAppLifecycleState(AppLifecycleState state) {
+    DesktopMultiWindow.getAllSubWindowIds().then((list) {
+      if (annotationOn != list.isNotEmpty) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          setState(() {
+            annotationOn = list.isNotEmpty;
+          });
+        });
+      }
+    });
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
   void dispose() {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    if (!kIsWeb) {
-      AnnotationModel.closeAnnotation();
-    }
+    AnnotationModel.closeAnnotation();
     _broadcastUploadExtensionResumedSubscription?.cancel();
     _broadcastUploadExtensionClosedSubscription?.cancel();
+    if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
+      WidgetsBinding.instance.removeObserver(this);
+    }
     super.dispose();
   }
 
@@ -140,12 +160,15 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
                       return AnnotationButton(
                         isOn: annotationOn,
                         onClick: () async {
-                          setState(() {
-                            annotationOn = !annotationOn;
-                          });
+                          // desktop annotation在didChangeAppLifecycleState去檢查是否開啟
+                          if (Platform.isAndroid) {
+                            setState(() {
+                              annotationOn = !annotationOn;
+                            });
+                          }
                           await Future.delayed(
                               const Duration(milliseconds: 100));
-                          _startAnnotation(annotationModel);
+                          await _startAnnotation(annotationModel);
                         },
                       );
                     }),
@@ -272,16 +295,16 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
     if (Platform.isWindows || Platform.isMacOS) {
       final list = await DesktopMultiWindow.getAllSubWindowIds();
       if (list.isEmpty) {
-        WindowUtility.minimizeWindow();
+        await WindowUtility.minimizeWindow();
         await Future.delayed(const Duration(milliseconds: 50));
         final window = await DesktopMultiWindow.createFullscreenWindow(
             jsonEncode({'mode': 'desktop_canvas'}),
             annotationModel.screenIndex);
-        window.show();
+        await window.show();
       } else {
-        WindowUtility.minimizeWindow();
+        await WindowUtility.minimizeWindow();
         await Future.delayed(const Duration(milliseconds: 50));
-        WindowController.fromWindowId(list.first).show();
+        await WindowController.fromWindowId(list.first).show();
       }
     } else if (Platform.isAndroid) {
       if (!await android_window.isRunning()) {
@@ -293,10 +316,10 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart> {
             position: const Offset(0, 0),
           );
           await Future.delayed(const Duration(milliseconds: 100));
-          WindowUtility.minimizeWindow();
+          await WindowUtility.minimizeWindow();
         } else {
           annotationOn = false;
-          Permission.systemAlertWindow.request();
+          await Permission.systemAlertWindow.request();
           return;
         }
       } else {
@@ -325,18 +348,21 @@ class AnnotationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = !Platform.isAndroid
+        ? context.tokens.color.vsdswColorSurface900
+        : isOn
+            ? context.tokens.color.vsdswColorOnSurfaceInverse
+            : context.tokens.color.vsdswColorSurface900;
+
+    final iconPath = isOn
+        ? 'assets/images/${Platform.isAndroid ? 'v3_ic_annotation_on' : 'v3_ic_annotation_expand'}.svg'
+        : 'assets/images/v3_ic_sharing_pen.svg';
     return CircleAvatar(
-      backgroundColor: isOn
-          ? context.tokens.color.vsdswColorOnSurfaceInverse
-          : context.tokens.color.vsdswColorSurface900,
-      radius: kIsWeb ? 24 : 28,
+      backgroundColor: backgroundColor,
+      radius: 28,
       child: IconButton(
         onPressed: onClick,
-        icon: SvgPicture.asset(
-          isOn
-              ? 'assets/images/v3_ic_annotation_on.svg'
-              : 'assets/images/v3_ic_sharing_pen.svg',
-        ),
+        icon: SvgPicture.asset(iconPath),
       ),
     );
   }
