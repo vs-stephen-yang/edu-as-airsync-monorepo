@@ -651,7 +651,6 @@ class ChannelProvider extends ChangeNotifier {
       return;
     }
     _joinDisplay();
-    _startPresent();
   }
 
   void resetMessage() {
