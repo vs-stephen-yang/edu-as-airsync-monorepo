@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
@@ -9,7 +11,7 @@ import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/providers/message_dialog_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
-import 'package:display_flutter/widgets/v3_settings_radio_group_item.dart';
+import 'package:display_flutter/widgets/v3_settings_radio_group.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -175,6 +177,18 @@ class V3SettingsCastToBoardsState
 
   SizedBox _buildContent(BuildContext context, GroupProvider groupNotifier,
       bool isBroadcastingToGroup, ChannelProvider channelProvider) {
+    List<V3SettingsRadioGroupItem> radioItems = [
+      V3SettingsRadioGroupItem(
+        value: BroadcastGroupLaunchType.onlyWhenCasting.name,
+        title: S.of(context).v3_settings_display_group_only_casting,
+        divider: false,
+      ),
+      V3SettingsRadioGroupItem(
+        value: BroadcastGroupLaunchType.allTheTime.name,
+        title: S.of(context).v3_settings_display_group_all_the_time,
+        divider: false,
+      ),
+    ];
     return SizedBox(
       height: 293,
       child: Column(
@@ -182,15 +196,27 @@ class V3SettingsCastToBoardsState
         children: [
           _buildBroadcastGroupToggle(context, groupNotifier, channelProvider),
           if (isBroadcastingToGroup)
-            _buildRadioGroupItem(
-                S.of(context).v3_settings_display_group_only_casting,
-                BroadcastGroupLaunchType.onlyWhenCasting,
-                groupNotifier),
-          if (isBroadcastingToGroup)
-            _buildRadioGroupItem(
-                S.of(context).v3_settings_display_group_all_the_time,
-                BroadcastGroupLaunchType.allTheTime,
-                groupNotifier),
+            V3SettingsRadioGroup(
+              initSelectedValue: groupNotifier.broadcastGroupLaunchType.name,
+              radioList: radioItems,
+              onChanged: (value) {
+                int index =
+                    radioItems.indexWhere((item) => item.value == value);
+                if (index != -1) {
+                  BroadcastGroupLaunchType type =
+                      BroadcastGroupLaunchType.values[index];
+                  trackEvent(
+                    'click_cast_to_board_setting',
+                    EventCategory.setting,
+                    target: type.name,
+                  );
+
+                  groupNotifier.setBroadcastGroupLaunchType(type);
+                } else {
+                  log('BroadcastGroupLaunchType not found');
+                }
+              },
+            ),
           _buildDivider(context,
               margin: EdgeInsets.only(
                   top: isBroadcastingToGroup ? 0 : 8,
@@ -377,24 +403,6 @@ class V3SettingsCastToBoardsState
         ],
       ),
     );
-  }
-
-  V3SettingsRadioGroupItem _buildRadioGroupItem(
-      String text, BroadcastGroupLaunchType type, GroupProvider groupNotifier) {
-    return V3SettingsRadioGroupItem(
-        value: text,
-        defaultSelectedState: groupNotifier.broadcastGroupLaunchType == type,
-        onChange: (bool selected) {
-          if (selected) {
-            trackEvent(
-              'click_cast_to_board_setting',
-              EventCategory.setting,
-              target: type.name,
-            );
-
-            groupNotifier.setBroadcastGroupLaunchType(type);
-          }
-        });
   }
 
   Row _buildTittle(SettingsProvider settingsProvider, BuildContext context) {

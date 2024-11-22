@@ -116,19 +116,19 @@ class AppPreferences {
   String get connectivityType => connectivityTypeNotifier.value;
 
   ValueNotifier<String> connectivityTypeNotifier =
-      ValueNotifier<String>(ConnectivityType.both.toString());
+      ValueNotifier<String>(ConnectivityType.both.name);
 
   Future<void> setSelectedConnectivityType(ConnectivityType type) async {
-    connectivityTypeNotifier.value = type.toString();
+    connectivityTypeNotifier.value = type.name;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(
-        'app_setting_connectivity_type', connectivityTypeNotifier.value);
+        'app_settings_connectivity_type', connectivityTypeNotifier.value);
   }
 
   _loadSelectedConnectivityType() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String type = prefs.getString('app_setting_connectivity_type') ??
-        ConnectivityType.both.toString();
+    String type = prefs.getString('app_settings_connectivity_type') ??
+        ConnectivityType.both.name;
     connectivityTypeNotifier.value = type;
   }
 }
