@@ -293,7 +293,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("請在連線逾時前點擊開始分享。剩餘時間: %s"),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("開始分享"),
-        "v3_setting_app_version": MessageLookupByLibrary.simpleMessage("版本"),
+        "v3_setting_app_version": MessageLookupByLibrary.simpleMessage("版本 %s"),
         "v3_setting_check_update": MessageLookupByLibrary.simpleMessage("檢查更新"),
         "v3_setting_knowledge_base":
             MessageLookupByLibrary.simpleMessage("知識庫"),
