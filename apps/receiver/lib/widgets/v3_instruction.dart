@@ -33,7 +33,7 @@ class V3Instruction extends StatelessWidget {
             valueListenable: AppPreferences().connectivityTypeNotifier,
             builder: (context, connectivityType, child) {
               if (AppPreferences().connectivityType ==
-                  ConnectivityType.local.toString()) {
+                  ConnectivityType.local.name) {
                 return Container(
                   decoration: ShapeDecoration(
                     color: context.tokens.color.vsdslColorSurface200,

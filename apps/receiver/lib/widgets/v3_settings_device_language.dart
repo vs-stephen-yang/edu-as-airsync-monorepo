@@ -49,15 +49,22 @@ class V3SettingsDeviceLanguage extends StatelessWidget {
         Positioned(
           top: 57,
           left: 13,
-          width: 352,
+          right: 13,
           child: V3SettingsRadioGroup(
-              defaultLanguage: languageProvider.language,
-              languageList: languageProvider.localeMap,
-              onChange: (String language) {
-                trackEvent('click_language', EventCategory.setting);
+            initSelectedValue: languageProvider.language,
+            radioList: languageProvider.localeMap.keys.map((key) {
+              return V3SettingsRadioGroupItem(
+                value: key, // use key as value to set newValue
+                title: key, // use key as title
+                divider: false,
+              );
+            }).toList(),
+            onChanged: (value) {
+              trackEvent('click_language', EventCategory.setting);
 
-                languageProvider.setLanguage(language);
-              }),
+              languageProvider.setLanguage(value);
+            },
+          ),
         ),
       ],
     );

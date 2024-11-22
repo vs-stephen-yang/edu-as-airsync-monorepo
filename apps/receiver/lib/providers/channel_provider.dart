@@ -198,9 +198,9 @@ class ChannelProvider extends ChangeNotifier {
 
   void launchChannelServer() {
     final connectivityType = AppPreferences().connectivityType;
-    if (connectivityType == ConnectivityType.internet.toString()) {
+    if (connectivityType == ConnectivityType.internet.name) {
       _configureChannelServer(isDirect: false, isTunnel: true);
-    } else if (connectivityType == ConnectivityType.local.toString()) {
+    } else if (connectivityType == ConnectivityType.local.name) {
       _configureChannelServer(isDirect: true, isTunnel: false);
     } else {
       _configureChannelServer(isDirect: true, isTunnel: true);
