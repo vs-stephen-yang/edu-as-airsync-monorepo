@@ -42,9 +42,7 @@ class SettingsProvider with ChangeNotifier {
         break;
     }
     _currentPage = state;
-    if (license != null) {
-      _license = license;
-    }
+    _license = license;
     notifyListeners();
   }
 }
