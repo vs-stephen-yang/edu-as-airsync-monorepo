@@ -9,8 +9,12 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
+import 'debug_switch.dart';
+
 class V3ShortcutsMenu extends StatelessWidget {
   const V3ShortcutsMenu({super.key});
+
+  static int _debugCounter = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +36,24 @@ class V3ShortcutsMenu extends StatelessWidget {
               left: 13,
               top: 13,
               right: 13,
-              child: AutoSizeText(
-                S.of(context).v3_shortcuts_menu_title,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
+              child: GestureDetector(
+                onTap: () {
+                  _debugCounter++;
+                  if (_debugCounter >= 5) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => const DebugSwitch(),
+                    );
+                    _debugCounter = 0;
+                  }
+                },
+                child: AutoSizeText(
+                  S.of(context).v3_shortcuts_menu_title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                  ),
                 ),
               ),
             ),
