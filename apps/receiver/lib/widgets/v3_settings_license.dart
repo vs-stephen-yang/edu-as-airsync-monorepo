@@ -1,6 +1,7 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_focus_single_child_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -47,15 +48,18 @@ class V3SettingsLicense extends StatelessWidget {
           left: 13,
           right: 13,
           bottom: 13,
-          child: SingleChildScrollView(
-            child: Text(
-              settingsProvider.license?.license ??
-                  S.of(context).v3_settings_privacy_policy_description,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
+          child: V3FocusSingleChildScrollView(
+            thumbColor: Colors.transparent,
+            children: [
+              Text(
+                settingsProvider.license?.license ??
+                    S.of(context).v3_settings_privacy_policy_description,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ],
