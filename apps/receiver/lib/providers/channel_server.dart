@@ -303,8 +303,10 @@ class ChannelServer {
       _stopTunnel();
       _changeTunnelStatus(TunnelStatus.disabled);
 
-      final instanceGroupId = getInstanceGroupIdFromIp(_ipAddress!);
-      _updateDisplayCode(instanceGroupId, null);
+      if (_ipAddress != null) {
+        final instanceGroupId = getInstanceGroupIdFromIp(_ipAddress!);
+        _updateDisplayCode(instanceGroupId, null);
+      }
     }
   }
 
