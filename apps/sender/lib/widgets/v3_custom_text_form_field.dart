@@ -9,7 +9,7 @@ class V3CustomTextFormField extends StatefulWidget {
     required this.controller,
     required this.focusNode,
     required this.hintText,
-    required this.maxTextLength,
+    this.maxTextLength,
     required this.inputFormatter,
     required this.onFieldChanged,
     required this.onFieldSubmitted,
@@ -19,7 +19,7 @@ class V3CustomTextFormField extends StatefulWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final String? hintText;
-  final int maxTextLength;
+  final int? maxTextLength;
   final List<TextInputFormatter>? inputFormatter;
   final ValueChanged<String> onFieldChanged;
   final GestureTapCallback? onTap;

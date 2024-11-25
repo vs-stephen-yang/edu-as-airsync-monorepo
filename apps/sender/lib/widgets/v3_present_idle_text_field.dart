@@ -27,10 +27,10 @@ class V3PresentIdleTextField extends StatefulWidget {
 }
 
 class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
-  int displayCodeMinLength = 8;
-  int displayCodeMaxLength = 11;
-  int displayCodeMaxLengthW = 13; // windows & web
-  int otpLength = 4;
+  static const int displayCodeMinLength = 8;
+  static const int displayCodeMaxLength = 11;
+  static const int displayCodeMaxLengthW = 13; // windows & web
+  static const int otpLength = 4;
 
   final TextEditingController _codeController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
@@ -42,6 +42,8 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
   OverlayEntry? _dropDownMenuEntry;
   final LayerLink _dropDownLayerLink = LayerLink();
   bool _isDropDownMenuVisible = false;
+
+  bool userDeleteSpace = false;
 
   bool _isCodeSelectedFromHistory = false;
 
@@ -103,9 +105,6 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       controller: _codeController,
       focusNode: _codeFocusNode,
       hintText: S.of(context).v3_main_display_code,
-      maxTextLength: (!WebRTC.platformIsWindows && !kIsWeb)
-          ? displayCodeMaxLength
-          : displayCodeMaxLengthW,
       inputFormatter: [
         if (!WebRTC.platformIsWindows && !kIsWeb)
           FilteringTextInputFormatter.digitsOnly,
@@ -114,6 +113,25 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             List.generate(displayCodeMaxLength, (index) => '0').join(''),
             allowedCharMatcher: RegExp('[0-9\\s]'),
           ),
+        TextInputFormatter.withFunction((oldValue, newValue) {
+          final max = (!WebRTC.platformIsWindows && !kIsWeb)
+              ? displayCodeMaxLength
+              : displayCodeMaxLengthW;
+          //old is  1234 5678 |9012 new is  1234 5678|9012 then result is1234 5678| 9012
+          final newOffset = newValue.selection.baseOffset;
+          if ((newOffset == 4 && newValue.text.length > 5) ||
+              (newOffset == 8 && newValue.text.length > 9) ||
+              (newOffset == 13 && newValue.text.length > 14)) {
+            userDeleteSpace = true;
+            return newValue.copyWith();
+          }
+
+          final digitsOnly = oldValue.text.replaceAll(RegExp(r'\s'), '');
+          if (digitsOnly.length >= max && newValue.text.length >= max) {
+            return oldValue;
+          }
+          return newValue;
+        }),
       ],
       onFieldChanged: (text) {
         if (WebRTC.platformIsWindows || kIsWeb) {
@@ -133,25 +151,42 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
           );
         }
 
+        int cursorPosition = _codeController.selection.baseOffset;
+        String currentText = _codeController.text;
+
+        String rawText = currentText.replaceAll(' ', '');
+
         _isCodeSelectedFromHistory = false;
-        // clear error message since pass the validation.
         codeKey.currentState?.setErrorMsg('');
         bool presentBtnEnable = false;
-        if (text.length >= displayCodeMinLength &&
+        if (rawText.length >= displayCodeMinLength &&
             _otpController.text.length == otpLength) {
           presentBtnEnable = true;
         }
         widget.onFieldChanged(V3FieldResult(
             enable: presentBtnEnable,
             isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
-            displayCode: text.replaceAll(' ', ''),
+            displayCode: rawText,
             password: _otpController.text));
 
-        String dc =
-            _getDisplayCodeVisualIdentity(text.replaceAll(' ', '')); // 移除已有的空格
+        int rawCursorPosition =
+            currentText.substring(0, cursorPosition).replaceAll(' ', '').length;
+
+        String formattedText = _getDisplayCodeVisualIdentity(rawText);
+
+        int newPosition = rawCursorPosition;
+        newPosition += (rawCursorPosition / 4).floor();
+
+        newPosition = min(newPosition, formattedText.length);
+
+        if (userDeleteSpace) {
+          newPosition = newPosition - 1;
+          userDeleteSpace = false; // reset
+        }
+
         _codeController.value = TextEditingValue(
-          text: dc,
-          selection: TextSelection.collapsed(offset: dc.length),
+          text: formattedText,
+          selection: TextSelection.collapsed(offset: newPosition),
         );
       },
       onTap: () async {
