@@ -204,7 +204,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Only accept numbers."),
         "v3_main_display_code_invalid":
             MessageLookupByLibrary.simpleMessage("Invalid Display code"),
-        "v3_main_download": MessageLookupByLibrary.simpleMessage("Download"),
+        "v3_main_download":
+            MessageLookupByLibrary.simpleMessage("Download Sender App"),
         "v3_main_download_action_download":
             MessageLookupByLibrary.simpleMessage("Download"),
         "v3_main_download_action_get":
