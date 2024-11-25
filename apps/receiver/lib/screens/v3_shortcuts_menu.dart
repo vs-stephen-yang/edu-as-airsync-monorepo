@@ -10,8 +10,6 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
-import 'debug_switch.dart';
-
 class V3ShortcutsMenu extends StatelessWidget {
   const V3ShortcutsMenu({super.key});
 
