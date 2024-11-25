@@ -91,8 +91,26 @@ class V3WebMain extends StatelessWidget {
                                 onPressed: () {
                                   scrollTo?.call();
                                 },
-                                child: AutoSizeText(
-                                    S.of(context).v3_main_download),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/images/v3_ic_web_main_download.svg',
+                                      width: 16,
+                                      height: 16,
+                                      colorFilter: ColorFilter.mode(
+                                        context
+                                            .tokens.color.vsdswColorOnPrimary,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                        width: context.tokens.spacing
+                                            .vsdswSpacing2xs.left),
+                                    AutoSizeText(
+                                        S.of(context).v3_main_download),
+                                  ],
+                                ),
                               ),
                             ],
                           ),

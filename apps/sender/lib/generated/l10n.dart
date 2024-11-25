@@ -841,10 +841,10 @@ class S {
     );
   }
 
-  /// `Download`
+  /// `Download Sender App`
   String get v3_main_download {
     return Intl.message(
-      'Download',
+      'Download Sender App',
       name: 'v3_main_download',
       desc: '',
       args: [],
