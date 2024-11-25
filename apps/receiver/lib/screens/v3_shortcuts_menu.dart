@@ -4,6 +4,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -40,10 +41,7 @@ class V3ShortcutsMenu extends StatelessWidget {
                 onTap: () {
                   _debugCounter++;
                   if (_debugCounter >= 5) {
-                    showDialog(
-                      context: context,
-                      builder: (context) => const DebugSwitch(),
-                    );
+                    DeviceFeatureAdapter.showDebugOverlay = !DeviceFeatureAdapter.showDebugOverlay;
                     _debugCounter = 0;
                   }
                 },

@@ -60,6 +60,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
     widget.rtcConnector.onPairCandidateType =
         (localCandidateType, remoteCandidateType) {
       if (!DeviceFeatureAdapter.showDebugOverlay) {
+        _clearDebugOverlay();
         return;
       }
 
@@ -72,6 +73,7 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
 
     widget.rtcConnector.onVideoStatsReport = (stats) {
       if (!DeviceFeatureAdapter.showDebugOverlay) {
+        _clearDebugOverlay();
         return;
       }
 
@@ -363,6 +365,14 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
         ],
       );
     });
+  }
+
+  void _clearDebugOverlay() {
+    if (debugOverlayText != '') {
+      setState(() {
+        debugOverlayText = '';
+      });
+    }
   }
 
   void _getTextureInfo() {
