@@ -88,6 +88,7 @@ class WebRTCViewState extends State<WebRTCView> {
     widget.rtcConnector.onPairCandidateType =
         (localCandidateType, remoteCandidateType) {
       if (!DeviceFeatureAdapter.showDebugOverlay) {
+        _clearDebugOverlay();
         return;
       }
 
@@ -100,6 +101,7 @@ class WebRTCViewState extends State<WebRTCView> {
 
     widget.rtcConnector.onVideoStatsReport = (stats) {
       if (!DeviceFeatureAdapter.showDebugOverlay) {
+        _clearDebugOverlay();
         return;
       }
 
@@ -366,6 +368,14 @@ class WebRTCViewState extends State<WebRTCView> {
         ],
       );
     });
+  }
+
+  void _clearDebugOverlay() {
+    if (debugOverlayText != '') {
+      setState(() {
+        debugOverlayText = '';
+      });
+    }
   }
 
   Future<void> _pauseVideo() async {
