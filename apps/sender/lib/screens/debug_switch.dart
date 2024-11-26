@@ -24,6 +24,9 @@ class _DebugSwitchState extends State<DebugSwitch> {
   bool _isVideoQualityFirst = false;
   int _maxBitrateKbps = 0;
   int _minBitrateKbps = 0;
+  bool _showDebugOverlay = false;
+  final ScrollController _scrollController =
+      ScrollController(); // 新增 ScrollController
 
   void _notifyRestart() {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -35,6 +38,13 @@ class _DebugSwitchState extends State<DebugSwitch> {
 
     setState(() {
       _showOldUI = value;
+      _notifyRestart();
+    });
+  }
+
+  void _showDebugOverlayChanged(bool value) async {
+    setState(() {
+      _showDebugOverlay = value;
       _notifyRestart();
     });
   }
@@ -88,6 +98,12 @@ class _DebugSwitchState extends State<DebugSwitch> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose(); // 記得在dispose時釋放
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _initialize(context);
 
@@ -117,14 +133,21 @@ class _DebugSwitchState extends State<DebugSwitch> {
         children: [
           Expanded(
             child: Scrollbar(
+              controller: _scrollController, // 使用 ScrollController
               thumbVisibility: true,
               child: SingleChildScrollView(
+                controller: _scrollController, // 這裡也要使用相同的 ScrollController
                 child: Column(
                   children: [
                     SwitchListTile(
                         title: const Text('show old UI'),
                         value: _showOldUI,
                         onChanged: _showOldUIChanged),
+                    SwitchListTile(
+                      title: const Text('Show Debug Overlay'),
+                      value: _showDebugOverlay,
+                      onChanged: _showDebugOverlayChanged,
+                    ),
                     SwitchListTile(
                         title: const Text('video_quality_first'),
                         value: _isVideoQualityFirst,
