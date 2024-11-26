@@ -242,7 +242,9 @@ class V3SettingsCastToBoardsState
                           } else {
                             groupNotifier.removeFromSelectedList(client);
                           }
-                          if (channelProvider.groupActivated()) {
+                          // 斷線裝置不用按下方按鈕生效，連線還是需要按。
+                          if (value == false &&
+                              channelProvider.groupActivated()) {
                             startDisplayGroup(groupNotifier, channelProvider);
                           }
                         }
