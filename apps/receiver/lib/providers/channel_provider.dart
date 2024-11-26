@@ -22,7 +22,6 @@ import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_server.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
-import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/ip_util.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -723,12 +722,10 @@ class ChannelProvider extends ChangeNotifier {
           in HybridConnectionList().getRtcConnectorMap().values) {
         if (rtcConnector.presentationState != PresentationState.stopStreaming) {
           presenting = true;
+          break;
         }
       }
-      if (presenting) {
-        Home.enlargedScreenPositionIndex.value = null;
-        HybridConnectionList().enlargedScreenIndex.value = null;
-      } else {
+      if (!presenting) {
         if (reason == 'Channel reconnect timeout') {
           showReconnectWarnToast.value = true;
           await Future.delayed(const Duration(seconds: 1));
