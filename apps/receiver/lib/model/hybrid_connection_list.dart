@@ -69,6 +69,12 @@ class HybridConnectionList {
   void removeConnection(connection) {
     int index = _hybridConnectionList.indexOf(connection);
     if (index != -1) {
+      // If the removing connector's index matches the enlarged index, reset it
+      if (index == enlargedScreenIndex.value) {
+        Home.enlargedScreenPositionIndex.value = null;
+        enlargedScreenIndex.value = null;
+      }
+
       _hybridConnectionList[_hybridConnectionList.indexOf(connection)] = null;
       for (index; index < _hybridConnectionList.length - 1; index++) {
         if (_hybridConnectionList[index + 1] != null) {
