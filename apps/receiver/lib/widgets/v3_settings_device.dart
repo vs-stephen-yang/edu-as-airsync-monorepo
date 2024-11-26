@@ -523,13 +523,22 @@ class CustomDropdown extends StatefulWidget {
 class CustomDropdownState extends State<CustomDropdown> {
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
+  late List<FocusNode> overlayFocusNodes;
 
   void _showDropdownMenu() {
     _overlayEntry = _createOverlayEntry();
     Overlay.of(context).insert(_overlayEntry!);
+    widget.options.asMap().entries.map((option) {
+      if (option.value == widget.selectedValue) {
+        overlayFocusNodes[option.key].requestFocus();
+      }
+    }).toList();
   }
 
   void _hideDropdownMenu() {
+    for (var focusNode in overlayFocusNodes) {
+      focusNode.unfocus(); // Reset focus to other widgets
+    }
     _overlayEntry?.remove();
     _overlayEntry = null;
   }
@@ -557,49 +566,77 @@ class CustomDropdownState extends State<CustomDropdown> {
                   color: context.tokens.color.vsdslColorOnSurfaceInverse,
                   borderRadius: context.tokens.radii.vsdslRadiusSm,
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: widget.options.map((option) {
-                    bool isSelected = option == widget.selectedValue;
-                    return GestureDetector(
-                      onTap: () {
-                        _hideDropdownMenu();
-                        widget.onChange.call(option);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? context.tokens.color.vsdslColorPrimary
-                              : Colors.transparent,
-                          borderRadius: context.tokens.radii.vsdslRadiusSm,
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                option,
-                                style: TextStyle(
-                                  fontSize: 9,
-                                  color: isSelected
-                                      ? context.tokens.color.vsdslColorOnPrimary
-                                      : context
-                                          .tokens.color.vsdslColorOnSurface,
-                                ),
+                child: FocusScope(
+                  autofocus: true,
+                  node: FocusScopeNode(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: widget.options.asMap().entries.map((option) {
+                      bool isSelected = option.value == widget.selectedValue;
+                      return Focus(
+                        child: Builder(builder: (context) {
+                          final FocusNode focusNode = Focus.of(context);
+                          final bool hasFocus = focusNode.hasFocus;
+                          return InkWell(
+                            focusNode: overlayFocusNodes[option.key],
+                            onTap: () {
+                              _hideDropdownMenu();
+                              widget.onChange.call(option.value);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: hasFocus
+                                    ? context.tokens.color.vsdslColorPrimary
+                                    : Colors.transparent,
+                                borderRadius:
+                                    context.tokens.radii.vsdslRadiusSm,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      option.value,
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        color: hasFocus
+                                            ? context.tokens.color
+                                                .vsdslColorOnPrimary
+                                            : context.tokens.color
+                                                .vsdslColorOnSurface,
+                                      ),
+                                    ),
+                                  ),
+                                  if (isSelected)
+                                    Icon(
+                                      size: 16,
+                                      Icons.check,
+                                      color: hasFocus
+                                          ? context.tokens.color
+                                              .vsdslColorOnSurfaceInverse
+                                          : context
+                                              .tokens.color.vsdslColorOnSurface,
+                                    ),
+                                ],
                               ),
                             ),
-                            if (isSelected)
-                              Icon(
-                                size: 16,
-                                Icons.check,
-                                color: context
-                                    .tokens.color.vsdslColorOnSurfaceInverse,
-                              ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                          );
+                        }),
+                        onKeyEvent: (FocusNode node, KeyEvent event) {
+                          if (event.logicalKey == LogicalKeyboardKey.select ||
+                              event.logicalKey == LogicalKeyboardKey.space ||
+                              event.logicalKey == LogicalKeyboardKey.enter) {
+                            if (event is KeyDownEvent) {
+                              _hideDropdownMenu();
+                              widget.onChange.call(option.value);
+                            }
+                            return KeyEventResult.handled;
+                          }
+                          return KeyEventResult.ignored;
+                        },
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
             ),
@@ -610,6 +647,13 @@ class CustomDropdownState extends State<CustomDropdown> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    overlayFocusNodes =
+        List.generate(widget.options.length, (_) => FocusNode());
+  }
+
+  @override
   Widget build(BuildContext context) {
     final textStyle = TextStyle(
         fontSize: 9,
@@ -617,7 +661,7 @@ class CustomDropdownState extends State<CustomDropdown> {
         fontWeight: FontWeight.w600);
     return CompositedTransformTarget(
       link: _layerLink,
-      child: GestureDetector(
+      child: InkWell(
         onTap: () {
           setState(() {
             if (_overlayEntry == null) {
@@ -659,6 +703,9 @@ class CustomDropdownState extends State<CustomDropdown> {
   @override
   void dispose() {
     _hideDropdownMenu();
+    for (var focusNode in overlayFocusNodes) {
+      focusNode.dispose();
+    }
     super.dispose();
   }
 }
