@@ -179,6 +179,5 @@
   "v3_moderator_disable_mirror_ok": "OK",
   "v3_moderator_disable_mirror_cancel": "Cancel",
   "v3_settings_mirroring_blocked": "To enable mirroring please switch the moderator mode to OFF.",
-  "v3_group_dialog_no_device_title": "No device",
   "v3_group_dialog_no_device_message": "No device selected."
 }

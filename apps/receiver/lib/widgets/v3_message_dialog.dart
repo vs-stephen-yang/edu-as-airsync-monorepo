@@ -63,10 +63,11 @@ class V3MessageDialog extends ConsumerWidget {
                   child: SingleChildScrollView(
                     child: Text(
                       dialogState.content!,
-                      style: TextStyle(
-                        color: context.tokens.color.vsdslColorNeutral,
-                        fontSize: 12,
-                      ),
+                      style: dialogState.contentStyle ??
+                          TextStyle(
+                            color: context.tokens.color.vsdslColorNeutral,
+                            fontSize: 12,
+                          ),
                     ),
                   ),
                 ),

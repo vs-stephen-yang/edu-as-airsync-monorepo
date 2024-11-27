@@ -1851,16 +1851,6 @@ class S {
     );
   }
 
-  /// `No device`
-  String get v3_group_dialog_no_device_title {
-    return Intl.message(
-      'No device',
-      name: 'v3_group_dialog_no_device_title',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `No device selected.`
   String get v3_group_dialog_no_device_message {
     return Intl.message(
