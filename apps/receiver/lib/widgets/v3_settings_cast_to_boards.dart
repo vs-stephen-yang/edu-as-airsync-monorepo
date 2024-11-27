@@ -161,8 +161,8 @@ class V3SettingsCastToBoardsState
   }) {
     final dialog = ref.read(dialogProvider.notifier);
     dialog.showDialog(
-      title: 'No device selected.',
-      content: 'No device selected.',
+      title: S.current.v3_group_dialog_no_device_title,
+      content: S.current.v3_group_dialog_no_device_message,
       confirmText: S.current.moderator_confirm,
       cancelText: S.current.main_mirror_prompt_cancel,
       showIcon: false,

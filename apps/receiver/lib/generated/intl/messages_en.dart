@@ -211,6 +211,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Decline"),
         "v3_group_dialog_message": MessageLookupByLibrary.simpleMessage(
             "%s has sent a broadcast request to your device. This action will synchronize and display the current content, do you want to accept this request?"),
+        "v3_group_dialog_no_device_message":
+            MessageLookupByLibrary.simpleMessage("No device selected."),
+        "v3_group_dialog_no_device_title":
+            MessageLookupByLibrary.simpleMessage("No device"),
         "v3_group_dialog_title":
             MessageLookupByLibrary.simpleMessage("Broadcast Request from %s"),
         "v3_group_receive_view_status_from":
