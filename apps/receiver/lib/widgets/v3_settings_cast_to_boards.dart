@@ -119,9 +119,6 @@ class V3SettingsCastToBoardsState
                 showDialog(
                   groupNotifier: groupNotifier,
                   onConfirm: () {
-                    AppPreferences().setGroupSelectedList(
-                        groupNotifier.historySelectedList);
-                    settingsProvider.setPage(SettingPageState.deviceSetting);
                   },
                 );
               } else {
@@ -138,7 +135,6 @@ class V3SettingsCastToBoardsState
                   showDialog(
                     groupNotifier: groupNotifier,
                     onConfirm: () {
-                      startDisplayGroup(groupNotifier, channelProvider);
                     },
                   );
                 } else {
@@ -159,20 +155,21 @@ class V3SettingsCastToBoardsState
   void showDialog({
     required GroupProvider groupNotifier,
     VoidCallback? onConfirm,
-    VoidCallback? onCancel,
   }) {
     final dialog = ref.read(dialogProvider.notifier);
     dialog.showDialog(
-      title: S.current.v3_group_dialog_no_device_title,
-      content: S.current.v3_group_dialog_no_device_message,
-      confirmText: S.current.moderator_confirm,
-      cancelText: S.current.main_mirror_prompt_cancel,
-      showIcon: false,
-      width: 400,
-      height: 192,
-      onConfirm: onConfirm,
-      onCancel: onCancel,
-    );
+        title: '',
+        content: S.current.v3_group_dialog_no_device_message,
+        confirmText: S.current.v3_moderator_disable_mirror_ok,
+        showIcon: false,
+        width: 350,
+        height: 192,
+        onConfirm: onConfirm,
+        contentStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: context.tokens.color.vsdslColorNeutral,
+            ));
   }
 
   SizedBox _buildContent(BuildContext context, GroupProvider groupNotifier,

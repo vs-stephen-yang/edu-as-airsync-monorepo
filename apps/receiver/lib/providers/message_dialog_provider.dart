@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
@@ -19,7 +18,9 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 
 class DialogState {
   final String? title;
+  final TextStyle? titleStyle;
   final String? content;
+  final TextStyle? contentStyle;
   final String? confirmText;
   final String? cancelText;
   final VoidCallback? onConfirm;
@@ -30,7 +31,9 @@ class DialogState {
 
   DialogState({
     this.title,
+    this.titleStyle,
     this.content,
+    this.contentStyle,
     this.confirmText,
     this.cancelText,
     this.onConfirm,
@@ -47,8 +50,10 @@ class MessageDialogProvider extends StateNotifier<DialogState> {
   MessageDialogProvider() : super(DialogState());
 
   void showDialog({
-    required String title,
-    required String content,
+    String? title,
+    TextStyle? titleStyle,
+    String? content,
+    TextStyle? contentStyle,
     String? confirmText,
     String? cancelText,
     double? width,
@@ -62,7 +67,9 @@ class MessageDialogProvider extends StateNotifier<DialogState> {
     }
     state = DialogState(
       title: title,
+      titleStyle: titleStyle,
       content: content,
+      contentStyle: contentStyle,
       confirmText: confirmText,
       cancelText: cancelText,
       onConfirm: onConfirm,
