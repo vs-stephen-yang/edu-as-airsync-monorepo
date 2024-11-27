@@ -178,7 +178,7 @@ class _V3StreamingViewState extends ConsumerState {
                                 if (HybridConnectionList()
                                     .isPresenting(index: index))
                                   Positioned(
-                                    bottom: 8,
+                                    bottom: 0,
                                     child: V3StreamingFunction(index: index),
                                   ),
                                 if (HybridConnectionList()
