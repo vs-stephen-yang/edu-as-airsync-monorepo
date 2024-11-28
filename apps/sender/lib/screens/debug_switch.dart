@@ -90,8 +90,8 @@ class _DebugSwitchState extends State<DebugSwitch> {
         _RTCEventLogsDir = '';
         WebRTCEventlogManager().clearEventLogDir();
       } else if (dir != null) {
-        _RTCEventLogsDir = dir!;
-        WebRTCEventlogManager().setEventLogDir(dir!);
+        _RTCEventLogsDir = dir;
+        WebRTCEventlogManager().setEventLogDir(dir);
       }
     });
   }
