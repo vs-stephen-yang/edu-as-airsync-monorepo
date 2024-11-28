@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_colors.dart';
@@ -5,9 +7,13 @@ import 'package:display_cast_flutter/utilities/app_preferences.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/share_log.dart';
+import 'package:display_cast_flutter/utilities/webrtc_eventlog_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/widgets/menu_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DebugSwitch extends StatefulWidget {
   const DebugSwitch({super.key});
@@ -22,9 +28,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
   bool _isLogVerbose = false;
   bool _iceGatheringContinually = false;
   bool _isVideoQualityFirst = false;
+  bool _enableRTCEventLogs = false;
   int _maxBitrateKbps = 0;
   int _minBitrateKbps = 0;
   bool _showDebugOverlay = false;
+  String _RTCEventLogsDir = '';
   final ScrollController _scrollController =
       ScrollController(); // 新增 ScrollController
 
@@ -54,6 +62,37 @@ class _DebugSwitchState extends State<DebugSwitch> {
 
     setState(() {
       _isLogVerbose = value;
+    });
+  }
+
+  void _changeRTCEventLogs(bool value) async {
+    if (kIsWeb) {
+      return; // not supported
+    }
+    String? dir;
+    if (value) {
+      if (Platform.isIOS) {
+        final Directory documentsDirectory =
+            await getApplicationDocumentsDirectory();
+        dir = documentsDirectory.path;
+      } else {
+        dir = await FilePicker.platform.getDirectoryPath();
+      }
+      if (dir == null) {
+        // cancel
+        value = false;
+      }
+    }
+
+    setState(() {
+      _enableRTCEventLogs = value;
+      if (!value) {
+        _RTCEventLogsDir = '';
+        WebRTCEventlogManager().clearEventLogDir();
+      } else if (dir != null) {
+        _RTCEventLogsDir = dir!;
+        WebRTCEventlogManager().setEventLogDir(dir!);
+      }
     });
   }
 
@@ -167,6 +206,15 @@ class _DebugSwitchState extends State<DebugSwitch> {
                         title: const Text('Verbose Log'),
                         value: _isLogVerbose,
                         onChanged: _changeLogVerbose),
+                    SwitchListTile(
+                        title: const Text('Enable RTC Event Logs'),
+                        value: _enableRTCEventLogs,
+                        onChanged: _changeRTCEventLogs),
+                    if (_RTCEventLogsDir != '')
+                      Text(
+                        "$_RTCEventLogsDir",
+                        style: const TextStyle(fontSize: 14, color: Colors.red),
+                      ),
                     shareLogsButton,
                   ],
                 ),

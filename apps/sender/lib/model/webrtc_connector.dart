@@ -11,6 +11,7 @@ import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_cast_flutter/utilities/wakelock_manager.dart';
+import 'package:display_cast_flutter/utilities/webrtc_eventlog_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
@@ -116,6 +117,12 @@ class WebRTCConnector {
     _pc!.onIceConnectionState = _onIceConnectionState;
     _pc!.onConnectionState = _onPeerConnectionState;
     _pc!.onIceCandidate = _onIceCandidate;
+
+    // start the event log
+    if (await WebRTCEventlogManager().startEventLog(_pc)) {
+      final logFilePath = WebRTCEventlogManager().logFilePath;
+      log.info('Start RTC event log: $logFilePath');
+    }
 
     _streamPublished = await _publish();
     if (_streamPublished && _pendingChangePresentQuality != null) {
@@ -671,6 +678,8 @@ class WebRTCConnector {
       reconnectState = ChannelReconnectState.fail;
     }
     try {
+      // stop the event log
+      await WebRTCEventlogManager().stopEventLog(_pc);
       await _pc?.close();
       await _pc?.dispose();
       _pc = null;
