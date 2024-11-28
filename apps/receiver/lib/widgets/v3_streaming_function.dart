@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
@@ -22,26 +24,51 @@ class V3StreamingFunction extends StatefulWidget {
 }
 
 class _V3StreamingFunctionState extends State<V3StreamingFunction> {
-  bool hide = false;
+  bool isCollapsed = false;
+  Timer? autoCollapseTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startAutoCollapseTimer();
+  }
+
+  @override
+  void dispose() {
+    autoCollapseTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return hide
-        ? _CollapsedView(
-            onExpand: () {
-              setState(() {
-                hide = false;
-              });
-            },
-          )
+    return isCollapsed
+        ? _CollapsedView(onExpand: () {
+            _toggleCollapse();
+            _startAutoCollapseTimer();
+          })
         : _ExpandedView(
             index: widget.index,
+            onUserInteraction: _startAutoCollapseTimer,
             onCollapse: () {
-              setState(() {
-                hide = true;
-              });
+              _toggleCollapse();
+              autoCollapseTimer?.cancel();
             },
           );
+  }
+
+  void _startAutoCollapseTimer() {
+    autoCollapseTimer?.cancel();
+    autoCollapseTimer = Timer(const Duration(seconds: 10), () {
+      setState(() {
+        isCollapsed = true;
+      });
+    });
+  }
+
+  void _toggleCollapse() {
+    setState(() {
+      isCollapsed = !isCollapsed;
+    });
   }
 }
 
@@ -81,8 +108,13 @@ class _CollapsedView extends StatelessWidget {
 class _ExpandedView extends StatefulWidget {
   final int index;
   final VoidCallback onCollapse;
+  final VoidCallback onUserInteraction;
 
-  const _ExpandedView({required this.index, required this.onCollapse});
+  const _ExpandedView({
+    required this.index,
+    required this.onCollapse,
+    required this.onUserInteraction,
+  });
 
   @override
   State<StatefulWidget> createState() => _ExpandedViewState();
@@ -112,12 +144,16 @@ class _ExpandedViewState extends State<_ExpandedView> {
                 SizedBox(
                   width: 27,
                   child: IconButton(
-                    icon: const Image(
-                      image: Svg('assets/images/ic_streaming_resize.svg'),
+                    icon: Image(
+                      image: HybridConnectionList().enlargedScreenIndex.value ==
+                              widget.index
+                          ? const Svg('assets/images/ic_streaming_collapse.svg')
+                          : const Svg('assets/images/ic_streaming_expand.svg'),
                     ),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
                     onPressed: () {
+                      widget.onUserInteraction();
                       if (HybridConnectionList()
                           .isMirrorRequest(widget.index)) {
                         var connection = HybridConnectionList()
@@ -168,6 +204,8 @@ class _ExpandedViewState extends State<_ExpandedView> {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                       onPressed: () {
+                        widget.onUserInteraction();
+
                         setState(() {
                           HybridConnectionList().updateAudioEnableStateByIndex(
                               widget.index, isMute, true);
