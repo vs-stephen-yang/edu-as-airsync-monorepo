@@ -142,12 +142,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("拒絕"),
         "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
         "v3_cast_to_device_Receiving":
-            MessageLookupByLibrary.simpleMessage("接收中"),
+            MessageLookupByLibrary.simpleMessage("接收畫面中"),
         "v3_cast_to_device_menu_or": MessageLookupByLibrary.simpleMessage("或"),
         "v3_cast_to_device_menu_quick_connect1":
             MessageLookupByLibrary.simpleMessage("快速連線"),
         "v3_cast_to_device_menu_quick_connect2":
-            MessageLookupByLibrary.simpleMessage("請掃描二維條碼"),
+            MessageLookupByLibrary.simpleMessage("請掃描QR code"),
         "v3_cast_to_device_menu_title":
             MessageLookupByLibrary.simpleMessage("連線以分享顯示器畫面"),
         "v3_cast_to_device_reached_maximum":
@@ -160,9 +160,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_cast_to_device_touch_enabled":
             MessageLookupByLibrary.simpleMessage("反控中"),
         "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
-            "以iOS或是Android設備掃描二維條碼後，即可下載傳送端App"),
+            "以iOS或是Android設備掃描QR code後，即可下載傳送端App"),
         "v3_download_app_entry":
             MessageLookupByLibrary.simpleMessage("下載傳送端App"),
+        "v3_download_app_for_desktop":
+            MessageLookupByLibrary.simpleMessage("桌上型裝置"),
+        "v3_download_app_for_desktop_desc":
+            MessageLookupByLibrary.simpleMessage("請輸入下載網址"),
+        "v3_download_app_for_mobile":
+            MessageLookupByLibrary.simpleMessage("移動式裝置"),
+        "v3_download_app_for_mobile_desc":
+            MessageLookupByLibrary.simpleMessage("請掃描QR code"),
+        "v3_download_app_or": MessageLookupByLibrary.simpleMessage("或"),
         "v3_download_app_title":
             MessageLookupByLibrary.simpleMessage("下載傳送端App"),
         "v3_eula_agree": MessageLookupByLibrary.simpleMessage("同意"),
@@ -180,6 +189,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_group_dialog_decline": MessageLookupByLibrary.simpleMessage("拒絕"),
         "v3_group_dialog_message": MessageLookupByLibrary.simpleMessage(
             "%s 已向您的設備發送了螢幕廣播請求。這將同步並顯示當前請求端的畫面內容，您想接受此請求嗎？"),
+        "v3_group_dialog_no_device_message":
+            MessageLookupByLibrary.simpleMessage("未選擇任何裝置"),
         "v3_group_dialog_title":
             MessageLookupByLibrary.simpleMessage("來自 %s 的螢幕廣播請求"),
         "v3_group_receive_view_status_from":
@@ -191,7 +202,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_instruction1a":
             MessageLookupByLibrary.simpleMessage("連線到 airsync.net "),
         "v3_instruction1b":
-            MessageLookupByLibrary.simpleMessage("或啟動AirSync sender app"),
+            MessageLookupByLibrary.simpleMessage("或啟動AirSync傳送端app"),
         "v3_instruction2": MessageLookupByLibrary.simpleMessage("輸入投影辨識碼"),
         "v3_instruction3": MessageLookupByLibrary.simpleMessage("輸入一次性密碼"),
         "v3_instruction_share_screen":
@@ -202,6 +213,14 @@ class MessageLookup extends MessageLookupByLibrary {
             "無網路連接。請連接到Wi-Fi或Intranet網絡，然後重試。"),
         "v3_mirror_request_passcode":
             MessageLookupByLibrary.simpleMessage("密碼"),
+        "v3_moderator_disable_mirror_cancel":
+            MessageLookupByLibrary.simpleMessage("取消"),
+        "v3_moderator_disable_mirror_desc":
+            MessageLookupByLibrary.simpleMessage("主持人模式下將關閉螢幕鏡射"),
+        "v3_moderator_disable_mirror_ok":
+            MessageLookupByLibrary.simpleMessage("確定"),
+        "v3_moderator_disable_mirror_title":
+            MessageLookupByLibrary.simpleMessage("即將關閉螢幕鏡射"),
         "v3_moderator_mode": MessageLookupByLibrary.simpleMessage("主持人模式"),
         "v3_new_sharing_join_session":
             MessageLookupByLibrary.simpleMessage("加入"),
@@ -222,12 +241,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_quick_connect_menu_display_code":
             MessageLookupByLibrary.simpleMessage("投影辨識碼"),
         "v3_quick_connect_menu_qrcode":
-            MessageLookupByLibrary.simpleMessage("二維條碼"),
+            MessageLookupByLibrary.simpleMessage("QR code"),
         "v3_settings_broadcast": MessageLookupByLibrary.simpleMessage("螢幕廣播"),
+        "v3_settings_broadcast_boards":
+            MessageLookupByLibrary.simpleMessage("其他AirSync裝置"),
         "v3_settings_broadcast_cast_boards":
             MessageLookupByLibrary.simpleMessage("螢幕廣播"),
         "v3_settings_broadcast_cast_boards_desc":
             MessageLookupByLibrary.simpleMessage("將此大屏的畫面分享到同一網路內的其他大屏"),
+        "v3_settings_broadcast_cast_to":
+            MessageLookupByLibrary.simpleMessage("廣播到"),
+        "v3_settings_broadcast_devices":
+            MessageLookupByLibrary.simpleMessage("傳送端裝置"),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage("螢幕群組廣播"),
         "v3_settings_connectivity":
@@ -280,10 +305,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("通知我接受或拒絕"),
         "v3_settings_legal_policy":
             MessageLookupByLibrary.simpleMessage("法律和政策"),
+        "v3_settings_local_connection_only":
+            MessageLookupByLibrary.simpleMessage("僅限區域網路連線"),
         "v3_settings_mirroring_auto_accept":
             MessageLookupByLibrary.simpleMessage("自動接受螢幕鏡射"),
         "v3_settings_mirroring_auto_accept_desc":
             MessageLookupByLibrary.simpleMessage("不須同意，一律接受螢幕鏡射請求"),
+        "v3_settings_mirroring_blocked":
+            MessageLookupByLibrary.simpleMessage("請先關閉主持人模式"),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("需輸入AirPlay密碼"),
         "v3_settings_open_source_license":
