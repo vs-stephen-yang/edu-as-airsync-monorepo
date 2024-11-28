@@ -169,21 +169,22 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("未知的錯誤"),
         "v3_main_connection_mode_unsupported":
             MessageLookupByLibrary.simpleMessage("不支援的連線類型"),
-        "v3_main_copy_rights": MessageLookupByLibrary.simpleMessage("版權"),
+        "v3_main_copy_rights": MessageLookupByLibrary.simpleMessage(
+            "Copyright © ViewSonic Corporation 2024. All rights reserved."),
         "v3_main_display_code": MessageLookupByLibrary.simpleMessage("投影辨識碼"),
         "v3_main_display_code_error":
             MessageLookupByLibrary.simpleMessage("投影辨識碼錯誤"),
         "v3_main_display_code_invalid":
             MessageLookupByLibrary.simpleMessage("無效的投影辨識碼"),
-        "v3_main_download": MessageLookupByLibrary.simpleMessage("下載"),
+        "v3_main_download": MessageLookupByLibrary.simpleMessage("下載傳送端軟體"),
         "v3_main_download_action_download":
             MessageLookupByLibrary.simpleMessage("下載"),
         "v3_main_download_action_get":
             MessageLookupByLibrary.simpleMessage("取得"),
         "v3_main_download_app_dialog_desc":
-            MessageLookupByLibrary.simpleMessage("使用iOS或Android設備掃描二維條碼並下載"),
+            MessageLookupByLibrary.simpleMessage("使用iOS或Android設備掃描QR code並下載"),
         "v3_main_download_app_dialog_title":
-            MessageLookupByLibrary.simpleMessage("下載AirSync傳送端App"),
+            MessageLookupByLibrary.simpleMessage("下載AirSync傳送端軟體"),
         "v3_main_download_app_subtitle":
             MessageLookupByLibrary.simpleMessage("iOS及Android裝置"),
         "v3_main_download_app_title":
@@ -235,7 +236,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_receive_app_action":
             MessageLookupByLibrary.simpleMessage("接收"),
         "v3_main_receive_app_receive_from":
-            MessageLookupByLibrary.simpleMessage("畫面接收自"),
+            MessageLookupByLibrary.simpleMessage("畫面接收自 %s"),
         "v3_main_receive_app_stop": MessageLookupByLibrary.simpleMessage("停止"),
         "v3_main_receive_app_subtitle":
             MessageLookupByLibrary.simpleMessage("接收畫面到我的裝置"),
@@ -288,7 +289,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_present_touch_back_allow":
             MessageLookupByLibrary.simpleMessage("允許反控設備端"),
         "v3_scan_qr_reminder":
-            MessageLookupByLibrary.simpleMessage("掃描二維條碼快速連線"),
+            MessageLookupByLibrary.simpleMessage("掃描QR code快速連線"),
         "v3_select_screen_ios_countdown":
             MessageLookupByLibrary.simpleMessage("請在連線逾時前點擊開始分享。剩餘時間: %s"),
         "v3_select_screen_ios_start_sharing":
