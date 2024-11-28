@@ -87,12 +87,13 @@ dependencies:
   flutter_oss_licenses: ^3.0.2
   permission_handler: ^11.3.1
   app_links: ^6.3.2
+  file_picker: ^8.0.7
 
   # ViewSonic plug-in
   flutter_webrtc:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc
-      ref: release-0.9.36-44
+      ref: release-0.9.36-45
   display_channel:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
@@ -100,7 +101,7 @@ dependencies:
   ion_sdk_flutter:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter
-      ref: release-0.0.37
+      ref: release-0.0.38
   flutter_input_injection:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection
