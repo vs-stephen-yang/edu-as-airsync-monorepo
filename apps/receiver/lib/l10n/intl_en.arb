@@ -166,8 +166,8 @@
   "v3_authorize_prompt_accept": "Accept",
   "v3_group_reject_invited": "declined your broadcast request, please check the Broads setting.",
   "v3_settings_broadcast_cast_to": "Cast to",
-  "v3_settings_broadcast_devices": "Devices",
-  "v3_settings_broadcast_boards": "Boards",
+  "v3_settings_broadcast_devices": "Sender devices",
+  "v3_settings_broadcast_boards": "Other AirSync devices",
   "v3_settings_local_connection_only": "Local connection only",
   "v3_download_app_for_desktop": "For Desktop",
   "v3_download_app_for_mobile": "For iOS & Android",
@@ -175,9 +175,9 @@
   "v3_download_app_for_mobile_desc": "Scan the QR code for instant access.",
   "v3_download_app_or": "OR",
   "v3_moderator_disable_mirror_title": "Disable Mirroring for Moderator Mode",
-  "v3_moderator_disable_mirror_desc": "Mirroring will be disabled in moderator mode.",
+  "v3_moderator_disable_mirror_desc": "Mirroring will be disabled in moderator mode",
   "v3_moderator_disable_mirror_ok": "OK",
   "v3_moderator_disable_mirror_cancel": "Cancel",
-  "v3_settings_mirroring_blocked": "To enable mirroring please switch the moderator mode to OFF.",
+  "v3_settings_mirroring_blocked": "Turn off moderator mode first.",
   "v3_group_dialog_no_device_message": "No device selected."
 }

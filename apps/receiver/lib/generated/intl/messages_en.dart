@@ -241,7 +241,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cancel"),
         "v3_moderator_disable_mirror_desc":
             MessageLookupByLibrary.simpleMessage(
-                "Mirroring will be disabled in moderator mode."),
+                "Mirroring will be disabled in moderator mode"),
         "v3_moderator_disable_mirror_ok":
             MessageLookupByLibrary.simpleMessage("OK"),
         "v3_moderator_disable_mirror_title":
@@ -274,7 +274,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_broadcast":
             MessageLookupByLibrary.simpleMessage("Broadcast"),
         "v3_settings_broadcast_boards":
-            MessageLookupByLibrary.simpleMessage("Boards"),
+            MessageLookupByLibrary.simpleMessage("Other AirSync devices"),
         "v3_settings_broadcast_cast_boards":
             MessageLookupByLibrary.simpleMessage("Cast to boards"),
         "v3_settings_broadcast_cast_boards_desc":
@@ -283,7 +283,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_broadcast_cast_to":
             MessageLookupByLibrary.simpleMessage("Cast to"),
         "v3_settings_broadcast_devices":
-            MessageLookupByLibrary.simpleMessage("Devices"),
+            MessageLookupByLibrary.simpleMessage("Sender devices"),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage(
                 "Broadcast to the display group"),
@@ -349,7 +349,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Instantly enable mirroring without requiring moderator approval."),
         "v3_settings_mirroring_blocked": MessageLookupByLibrary.simpleMessage(
-            "To enable mirroring please switch the moderator mode to OFF."),
+            "Turn off moderator mode first."),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Require passcode"),
         "v3_settings_open_source_license":

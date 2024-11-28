@@ -1721,20 +1721,20 @@ class S {
     );
   }
 
-  /// `Devices`
+  /// `Sender devices`
   String get v3_settings_broadcast_devices {
     return Intl.message(
-      'Devices',
+      'Sender devices',
       name: 'v3_settings_broadcast_devices',
       desc: '',
       args: [],
     );
   }
 
-  /// `Boards`
+  /// `Other AirSync devices`
   String get v3_settings_broadcast_boards {
     return Intl.message(
-      'Boards',
+      'Other AirSync devices',
       name: 'v3_settings_broadcast_boards',
       desc: '',
       args: [],
@@ -1811,10 +1811,10 @@ class S {
     );
   }
 
-  /// `Mirroring will be disabled in moderator mode.`
+  /// `Mirroring will be disabled in moderator mode`
   String get v3_moderator_disable_mirror_desc {
     return Intl.message(
-      'Mirroring will be disabled in moderator mode.',
+      'Mirroring will be disabled in moderator mode',
       name: 'v3_moderator_disable_mirror_desc',
       desc: '',
       args: [],
@@ -1841,10 +1841,10 @@ class S {
     );
   }
 
-  /// `To enable mirroring please switch the moderator mode to OFF.`
+  /// `Turn off moderator mode first.`
   String get v3_settings_mirroring_blocked {
     return Intl.message(
-      'To enable mirroring please switch the moderator mode to OFF.',
+      'Turn off moderator mode first.',
       name: 'v3_settings_mirroring_blocked',
       desc: '',
       args: [],
