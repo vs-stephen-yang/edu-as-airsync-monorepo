@@ -155,6 +155,8 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     }
   }, (error, stackTrace) async {
     await Sentry.captureException(error, stackTrace: stackTrace);
+
+    log.warning('Unhandled exception', error, stackTrace);
   });
 }
 
