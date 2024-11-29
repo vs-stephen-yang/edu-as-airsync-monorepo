@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:display_flutter/model/group_list_item.dart';
+import 'package:display_flutter/utility/log.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nsd/nsd.dart';
@@ -18,8 +19,8 @@ final discoveryModelProvider = ChangeNotifierProvider<GroupListModel>((ref) {
 class GroupListModel with ChangeNotifier {
   GroupListModel(this._groupProvider);
 
-  String discoveryType = '_vs-airsync._tcp';
-  Discovery? discovery;
+  static const String discoveryType = '_vs-airsync._tcp';
+  static Discovery? discovery;
   final GroupProvider _groupProvider;
   BuildContext? context;
 
@@ -35,8 +36,13 @@ class GroupListModel with ChangeNotifier {
 
   stop() async {
     if (discovery != null) {
-      await stopDiscovery(discovery!);
-      discovery = null;
+      try {
+        await stopDiscovery(discovery!);
+      } catch (e) {
+        log.severe('Failed to stop Bonjour Discovery', e);
+      } finally {
+        discovery = null;
+      }
     }
   }
 
