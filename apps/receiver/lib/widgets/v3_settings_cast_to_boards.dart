@@ -8,13 +8,14 @@ import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/group_list_provider.dart';
 import 'package:display_flutter/providers/group_provider.dart';
-import 'package:display_flutter/providers/message_dialog_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:display_flutter/widgets/v3_settings_radio_group.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:gap/gap.dart';
 import 'package:nsd/nsd.dart';
 import 'package:provider/provider.dart' as provider;
 
@@ -27,6 +28,8 @@ class V3SettingsCastToBoards extends ConsumerStatefulWidget {
 
 class V3SettingsCastToBoardsState
     extends ConsumerState<V3SettingsCastToBoards> {
+  OverlayEntry? _overlayEntry;
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +48,7 @@ class V3SettingsCastToBoardsState
 
   @override
   void dispose() {
+    removeOverlay();
     super.dispose();
   }
 
@@ -111,15 +115,13 @@ class V3SettingsCastToBoardsState
     return Align(
       alignment: Alignment.centerRight,
       child: broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
-          ? _saveButton(context, S.of(context).v3_settings_device_name_save,
+          ? _customButton(context, S.of(context).v3_settings_device_name_save,
               onClick: () {
               _trackEvent('click_save_target', groupNotifier.selectedList);
 
               if (selectedListEmpty) {
-                showDialog(
-                  groupNotifier: groupNotifier,
-                  onConfirm: () {
-                  },
+                showDialogOverlay(
+                  onConfirm: () {},
                 );
               } else {
                 AppPreferences()
@@ -127,15 +129,14 @@ class V3SettingsCastToBoardsState
                 settingsProvider.setPage(SettingPageState.deviceSetting);
               }
             })
-          : _broadcastButton(
+          : _customButton(
               context,
               S.of(context).v3_settings_display_group_cast,
+              isBroadcast: true,
               onClick: () {
                 if (selectedListEmpty) {
-                  showDialog(
-                    groupNotifier: groupNotifier,
-                    onConfirm: () {
-                    },
+                  showDialogOverlay(
+                    onConfirm: () {},
                   );
                 } else {
                   startDisplayGroup(groupNotifier, channelProvider);
@@ -152,24 +153,97 @@ class V3SettingsCastToBoardsState
     channelProvider.startDisplayGroup(groupNotifier.selectedList);
   }
 
-  void showDialog({
-    required GroupProvider groupNotifier,
-    VoidCallback? onConfirm,
-  }) {
-    final dialog = ref.read(dialogProvider.notifier);
-    dialog.showDialog(
-        title: '',
-        content: S.current.v3_group_dialog_no_device_message,
-        confirmText: S.current.v3_moderator_disable_mirror_ok,
-        showIcon: false,
-        width: 350,
-        height: 192,
-        onConfirm: onConfirm,
-        contentStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: context.tokens.color.vsdslColorNeutral,
-            ));
+  void removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry?.dispose();
+    _overlayEntry = null;
+  }
+
+  void showDialogOverlay({VoidCallback? onConfirm}) {
+    removeOverlay();
+
+    assert(_overlayEntry == null);
+    _overlayEntry = OverlayEntry(
+      builder: (BuildContext context) {
+        return TapRegion(
+          groupId: V3SettingMenu.settingMenuGroupId,
+          child: Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.black.withOpacity(0.3),
+            alignment: Alignment.center,
+            child: Container(
+              width: 350,
+              height: 192,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: context.tokens.color.vsdslColorSurface100,
+                borderRadius: BorderRadius.circular(
+                    context.tokens.radii.vsdslRadiusXl.topLeft.x),
+                border: Border.all(
+                    color: context.tokens.color.vsdslColorSurface100,
+                    width: 1.0),
+                boxShadow: context.tokens.shadow.vsdslShadowNeutralXl,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Gap(24),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Text(
+                        S.current.v3_group_dialog_no_device_message,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: context.tokens.color.vsdslColorNeutral,
+                            ),
+                      ),
+                    ),
+                  ),
+                  const Gap(24),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      foregroundColor: WidgetStateProperty.resolveWith<Color>(
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.pressed)) {
+                            return context.tokens.color.vsdslColorSurface300;
+                          }
+                          return context
+                              .tokens.color.vsdslColorOnSurfaceInverse;
+                        },
+                      ),
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.pressed)) {
+                            return context
+                                .tokens.color.vsdslColorPrimaryVariant;
+                          }
+                          return context.tokens.color.vsdslColorPrimary;
+                        },
+                      ),
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9999),
+                        ),
+                      ),
+                      elevation: WidgetStateProperty.all(4.0),
+                    ),
+                    onPressed: () {
+                      removeOverlay();
+                      onConfirm?.call();
+                    },
+                    child: Text(S.current.v3_moderator_disable_mirror_ok),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+    Overlay.of(context, debugRequiredFor: widget).insert(_overlayEntry!);
   }
 
   SizedBox _buildContent(BuildContext context, GroupProvider groupNotifier,
@@ -430,68 +504,56 @@ class V3SettingsCastToBoardsState
     );
   }
 
-  Widget _saveButton(BuildContext context, String text,
-      {required VoidCallback onClick}) {
+  Widget _customButton(
+    BuildContext context,
+    String text, {
+    required VoidCallback onClick,
+    bool isBroadcast = false,
+  }) {
     return SizedBox(
-      width: 80,
       height: 26,
       child: ElevatedButton(
-        onPressed: () {
-          onClick();
-        },
+        onPressed: onClick,
         style: ElevatedButton.styleFrom(
           backgroundColor: context.tokens.color.vsdslColorPrimary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
                 context.tokens.spacing.vsdslSpacing2xl.top),
           ),
+          padding: isBroadcast
+              ? EdgeInsets.symmetric(
+                  horizontal: context.tokens.spacing.vsdslSpacingLg.left,
+                )
+              : null,
         ),
-        child: Text(
-          text,
-          style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: context.tokens.color.vsdslColorOnSurfaceInverse),
-          maxLines: 1,
-        ),
-      ),
-    );
-  }
-
-  Widget _broadcastButton(BuildContext context, String text,
-      {required VoidCallback onClick}) {
-    return SizedBox(
-      height: 26,
-      child: ElevatedButton(
-        onPressed: () {
-          onClick();
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: context.tokens.color.vsdslColorPrimary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-                context.tokens.spacing.vsdslSpacing2xl.top),
-          ),
-          padding: EdgeInsets.symmetric(
-            horizontal: context.tokens.spacing.vsdslSpacingLg.left,
-          ),
-        ),
-        child: Row(
-          children: [
-            const Image(
-                width: 16,
-                height: 16,
-                image: Svg('assets/images/ic_broadcast.svg')),
-            SizedBox(width: context.tokens.spacing.vsdslSpacingXs.left),
-            Text(
-              text,
-              style: TextStyle(
+        child: isBroadcast
+            ? Row(
+                children: [
+                  const Image(
+                    width: 16,
+                    height: 16,
+                    image: Svg('assets/images/ic_broadcast.svg'),
+                  ),
+                  SizedBox(width: context.tokens.spacing.vsdslSpacingXs.left),
+                  Text(
+                    text,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                    ),
+                  ),
+                ],
+              )
+            : Text(
+                text,
+                style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: context.tokens.color.vsdslColorOnSurfaceInverse),
-            ),
-          ],
-        ),
+                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                ),
+                maxLines: 1,
+              ),
       ),
     );
   }
