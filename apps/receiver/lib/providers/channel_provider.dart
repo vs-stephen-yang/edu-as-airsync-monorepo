@@ -91,6 +91,9 @@ class ChannelProvider extends ChangeNotifier {
 
   final int maxRemoteScreenConnection = 10;
 
+  bool get remoteScreenConnectionFull =>
+      _remoteScreenConnectors.length >= maxRemoteScreenConnection;
+
   RemoteScreenServer get remoteScreenServe => _remoteScreenServe;
   final RemoteScreenServer _remoteScreenServe = RemoteScreenServer();
 
