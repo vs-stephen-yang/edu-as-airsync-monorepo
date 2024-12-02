@@ -155,10 +155,13 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           child: Container(
                             width: 16,
                             height: 16,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF5D80ED),
+                            decoration: BoxDecoration(
+                              color:
+                                  (channelProvider.remoteScreenConnectionFull)
+                                      ? context.tokens.color.vsdslColorError
+                                      : const Color(0xFF5D80ED),
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
+                                  const BorderRadius.all(Radius.circular(10)),
                             ),
                             padding: EdgeInsets.zero,
                             child: AutoSizeText(
