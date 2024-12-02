@@ -90,7 +90,7 @@ class DisplayChannelConnector {
     int? directPort,
   }) {
     // open direct channel
-    if (directPort != null && _localIpAddresses != null) {
+    if (directPort != null && _localIpAddresses?.isNotEmpty == true) {
       _useDirect = true;
 
       final remoteIpAddress = createRemoteIp(
