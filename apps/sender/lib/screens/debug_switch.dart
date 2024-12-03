@@ -32,7 +32,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
   int _maxBitrateKbps = 0;
   int _minBitrateKbps = 0;
   bool _showDebugOverlay = false;
-  String _RTCEventLogsDir = '';
+  String _rtcEventLogsDir = '';
   final ScrollController _scrollController =
       ScrollController(); // 新增 ScrollController
 
@@ -87,10 +87,10 @@ class _DebugSwitchState extends State<DebugSwitch> {
     setState(() {
       _enableRTCEventLogs = value;
       if (!value) {
-        _RTCEventLogsDir = '';
+        _rtcEventLogsDir = '';
         WebRTCEventlogManager().clearEventLogDir();
       } else if (dir != null) {
-        _RTCEventLogsDir = dir;
+        _rtcEventLogsDir = dir;
         WebRTCEventlogManager().setEventLogDir(dir);
       }
     });
@@ -210,9 +210,9 @@ class _DebugSwitchState extends State<DebugSwitch> {
                         title: const Text('Enable RTC Event Logs'),
                         value: _enableRTCEventLogs,
                         onChanged: _changeRTCEventLogs),
-                    if (_RTCEventLogsDir != '')
+                    if (_rtcEventLogsDir != '')
                       Text(
-                        "$_RTCEventLogsDir",
+                        _rtcEventLogsDir,
                         style: const TextStyle(fontSize: 14, color: Colors.red),
                       ),
                     shareLogsButton,
