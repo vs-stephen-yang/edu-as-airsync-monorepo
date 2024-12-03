@@ -36,11 +36,7 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
             if (HybridConnectionList.hybridSplitScreenCount.value <
                 HybridConnectionList.maxHybridSplitScreen) {
               Future.delayed(Duration.zero, () {
-                if (mirrorStateProvider.isMirrorConfirmation) {
-                  _showAuthDialog(context);
-                } else {
-                  mirrorStateProvider.setAcceptMirrorId(request.mirrorId);
-                }
+                _showAuthDialog(context);
               });
             } else {
               mirrorStateProvider.stopAcceptedMirror(request.mirrorId);
@@ -142,151 +138,43 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                 }
                 totalHeight =
                     containerPaddingHeight + pinCodeHeight + requestTotalHeight;
-                return Container(
-                  width: 548,
-                  height: totalHeight,
-                  padding: EdgeInsets.symmetric(
-                    vertical: containerPaddingHeight / 2,
-                    horizontal: context.tokens.spacing.vsdslSpacing3xl.left,
-                  ),
-                  child: Column(
-                    children: [
-                      if (mirrorStateProvider.pinCode.isNotEmpty) ...[
-                        SizedBox(
-                          height: pinCodeHeight,
-                          child: Column(
-                            children: [
-                              AutoSizeText(
-                                S.of(context).v3_mirror_request_passcode,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
+
+                if (mirrorStateProvider.pinCode.isNotEmpty) {
+                  // PIN 碼模式 UI
+                  return Container(
+                    width: 548,
+                    height: totalHeight,
+                    padding: EdgeInsets.symmetric(
+                      vertical: containerPaddingHeight / 2,
+                      horizontal: context.tokens.spacing.vsdslSpacing3xl.left,
+                    ),
+                    child: Column(
+                      children: [
+                        if (mirrorStateProvider.pinCode.isNotEmpty) ...[
+                          SizedBox(
+                            height: pinCodeHeight,
+                            child: Column(
+                              children: [
+                                AutoSizeText(
+                                  S.of(context).v3_mirror_request_passcode,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
-                              ),
-                              AutoSizeText(
-                                mirrorStateProvider.pinCode,
-                                style: const TextStyle(
-                                  fontSize: 41,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: 19.2,
+                                AutoSizeText(
+                                  mirrorStateProvider.pinCode,
+                                  style: const TextStyle(
+                                    fontSize: 41,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 19.2,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (mirrorRequestIdles.isNotEmpty)
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: requestPaddingHeight / 2,
-                            ),
-                            child: Container(
-                              color: context
-                                  .tokens.color.vsdslColorOnSurfaceVariant,
-                              height: requestDividerHeight,
+                              ],
                             ),
                           ),
-                      ],
-                      Expanded(
-                        child: ListView.separated(
-                          reverse: HybridConnectionList().isMirroring(),
-                          itemCount: mirrorRequestIdles.length,
-                          itemBuilder: (BuildContext buildContext, int index) {
-                            return SizedBox(
-                              width: 508,
-                              height: requestContainerHeight,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Image(
-                                    image: Svg(
-                                        'assets/images/ic_prompt_in_mirror.svg'),
-                                  ),
-                                  SizedBox(
-                                      width: context
-                                          .tokens.spacing.vsdslSpacingSm.left),
-                                  AutoSizeText(
-                                    sprintf(S.current.main_mirror_from_client, [
-                                      mirrorRequestIdles
-                                          .toList()[index]
-                                          .mirrorId
-                                    ]),
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: context.tokens.color
-                                          .vsdslColorOnSurfaceInverse,
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  SizedBox(
-                                    width: 80,
-                                    height: requestContainerHeight,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        foregroundColor: context.tokens.color
-                                            .vsdslColorOnSurfaceInverse,
-                                        backgroundColor: context.tokens.color
-                                            .vsdslColorOpacityNeutralSm,
-                                        side: BorderSide(
-                                          color: context.tokens.color
-                                              .vsdslColorOnSurfaceInverse,
-                                          width: 1.5,
-                                        ),
-                                        textStyle: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        padding: EdgeInsets.zero,
-                                      ),
-                                      onPressed: () {
-                                        var mirrorId = mirrorRequestIdles
-                                            .toList()[index]
-                                            .mirrorId;
-                                        mirrorStateProvider
-                                            .clearRequestMirrorId(mirrorId);
-                                      },
-                                      child: AutoSizeText(S
-                                          .of(context)
-                                          .v3_authorize_prompt_decline),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                      width: context
-                                          .tokens.spacing.vsdslSpacingSm.left),
-                                  SizedBox(
-                                    width: 80,
-                                    height: 27,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        foregroundColor: context
-                                            .tokens.color.vsdslColorNeutral,
-                                        backgroundColor: context.tokens.color
-                                            .vsdslColorOnSurfaceInverse,
-                                        textStyle: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        padding: EdgeInsets.zero,
-                                      ),
-                                      onPressed: () async {
-                                        String? mirrorId = mirrorRequestIdles
-                                            .toList()[index]
-                                            .mirrorId;
-                                        mirrorStateProvider
-                                            .setAcceptMirrorId(mirrorId);
-                                      },
-                                      child: AutoSizeText(S
-                                          .of(context)
-                                          .v3_authorize_prompt_accept),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                          separatorBuilder:
-                              (BuildContext buildContext, int index) {
-                            return Padding(
+                          if (mirrorRequestIdles.isNotEmpty)
+                            Padding(
                               padding: EdgeInsets.symmetric(
                                 vertical: requestPaddingHeight / 2,
                               ),
@@ -295,13 +183,161 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                                     .tokens.color.vsdslColorOnSurfaceVariant,
                                 height: requestDividerHeight,
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                        ],
+                      ],
+                    ),
+                  );
+                } else if (mirrorRequestIdles.isNotEmpty) {
+                  // 鏡像確認模式 UI
+                  if (mirrorStateProvider.isMirrorConfirmation) {
+                    return Container(
+                      width: 548,
+                      height: totalHeight,
+                      padding: EdgeInsets.symmetric(
+                        vertical: containerPaddingHeight / 2,
+                        horizontal: context.tokens.spacing.vsdslSpacing3xl.left,
                       ),
-                    ],
-                  ),
-                );
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: ListView.separated(
+                              reverse: HybridConnectionList().isMirroring(),
+                              itemCount: mirrorRequestIdles.length,
+                              itemBuilder:
+                                  (BuildContext buildContext, int index) {
+                                return SizedBox(
+                                  width: 508,
+                                  height: requestContainerHeight,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Image(
+                                        image: Svg(
+                                            'assets/images/ic_prompt_in_mirror.svg'),
+                                      ),
+                                      SizedBox(
+                                          width: context.tokens.spacing
+                                              .vsdslSpacingSm.left),
+                                      AutoSizeText(
+                                        sprintf(
+                                            S.current.main_mirror_from_client, [
+                                          mirrorRequestIdles
+                                              .toList()[index]
+                                              .mirrorId
+                                        ]),
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: context.tokens.color
+                                              .vsdslColorOnSurfaceInverse,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      SizedBox(
+                                        width: 80,
+                                        height: requestContainerHeight,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: context
+                                                .tokens
+                                                .color
+                                                .vsdslColorOnSurfaceInverse,
+                                            backgroundColor: context
+                                                .tokens
+                                                .color
+                                                .vsdslColorOpacityNeutralSm,
+                                            side: BorderSide(
+                                              color: context.tokens.color
+                                                  .vsdslColorOnSurfaceInverse,
+                                              width: 1.5,
+                                            ),
+                                            textStyle: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                            padding: EdgeInsets.zero,
+                                          ),
+                                          onPressed: () {
+                                            var mirrorId = mirrorRequestIdles
+                                                .toList()[index]
+                                                .mirrorId;
+                                            mirrorStateProvider
+                                                .clearRequestMirrorId(mirrorId);
+                                          },
+                                          child: AutoSizeText(S
+                                              .of(context)
+                                              .v3_authorize_prompt_decline),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                          width: context.tokens.spacing
+                                              .vsdslSpacingSm.left),
+                                      SizedBox(
+                                        width: 80,
+                                        height: 27,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: context
+                                                .tokens.color.vsdslColorNeutral,
+                                            backgroundColor: context
+                                                .tokens
+                                                .color
+                                                .vsdslColorOnSurfaceInverse,
+                                            textStyle: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                            padding: EdgeInsets.zero,
+                                          ),
+                                          onPressed: () async {
+                                            String? mirrorId =
+                                                mirrorRequestIdles
+                                                    .toList()[index]
+                                                    .mirrorId;
+                                            mirrorStateProvider
+                                                .setAcceptMirrorId(mirrorId);
+                                          },
+                                          child: AutoSizeText(S
+                                              .of(context)
+                                              .v3_authorize_prompt_accept),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext buildContext, int index) {
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: requestPaddingHeight / 2,
+                                  ),
+                                  child: Container(
+                                    color: context.tokens.color
+                                        .vsdslColorOnSurfaceVariant,
+                                    height: requestDividerHeight,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    Future.delayed(Duration.zero, () {
+                      for (MirrorRequest request
+                          in HybridConnectionList().getMirrorMap().values) {
+                        if (request.mirrorState == MirrorState.idle) {
+                          mirrorStateProvider
+                              .setAcceptMirrorId(request.mirrorId);
+                        }
+                      }
+                    });
+                  }
+                }
+                return const SizedBox.shrink();
               },
             ),
           ),
