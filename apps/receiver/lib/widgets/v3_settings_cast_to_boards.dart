@@ -13,6 +13,7 @@ import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:display_flutter/widgets/v3_settings_radio_group.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:gap/gap.dart';
@@ -163,6 +164,20 @@ class V3SettingsCastToBoardsState
     removeOverlay();
 
     assert(_overlayEntry == null);
+    final FocusNode focusNode = FocusNode(
+      onKeyEvent: (node, event) {
+        final enterPressedWithShift = event is KeyDownEvent &&
+            (event.logicalKey == LogicalKeyboardKey.arrowUp ||
+                event.logicalKey == LogicalKeyboardKey.arrowDown ||
+                event.logicalKey == LogicalKeyboardKey.arrowLeft ||
+                event.logicalKey == LogicalKeyboardKey.arrowRight);
+        if (enterPressedWithShift) {
+          return KeyEventResult.handled;
+        } else {
+          return KeyEventResult.ignored;
+        }
+      },
+    );
     _overlayEntry = OverlayEntry(
       builder: (BuildContext context) {
         return TapRegion(
@@ -204,6 +219,7 @@ class V3SettingsCastToBoardsState
                   ),
                   const Gap(24),
                   ElevatedButton(
+                    focusNode: focusNode,
                     style: ButtonStyle(
                       foregroundColor: WidgetStateProperty.resolveWith<Color>(
                         (Set<WidgetState> states) {
@@ -244,6 +260,9 @@ class V3SettingsCastToBoardsState
       },
     );
     Overlay.of(context, debugRequiredFor: widget).insert(_overlayEntry!);
+    Future.delayed(Duration.zero, () {
+      focusNode.requestFocus();
+    });
   }
 
   SizedBox _buildContent(BuildContext context, GroupProvider groupNotifier,
