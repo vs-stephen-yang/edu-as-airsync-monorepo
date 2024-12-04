@@ -229,7 +229,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_participant_item_connected":
             MessageLookupByLibrary.simpleMessage("已連線"),
         "v3_participant_item_controlling":
-            MessageLookupByLibrary.simpleMessage("遠端控制中"),
+            MessageLookupByLibrary.simpleMessage("接收畫面並控制中"),
         "v3_participant_item_receiving":
             MessageLookupByLibrary.simpleMessage("接收畫面中"),
         "v3_participant_item_share":

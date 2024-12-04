@@ -23,15 +23,15 @@ class V3ParticipantsMenu extends StatelessWidget {
             elevation: 16.0,
             shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
             child: SizedBox(
-              width: 342,
-              height: 507,
+              width: 384,
+              height: 442,
               child: Stack(
                 children: [
                   const Positioned(
                     left: 13,
-                    top: 20,
+                    top: 27,
                     right: 13,
-                    bottom: 100,
+                    bottom: 66,
                     child: V3ParticipantList(isForMenuUse: true),
                   ),
                   Positioned(
@@ -42,7 +42,7 @@ class V3ParticipantsMenu extends StatelessWidget {
                       height: 33,
                       child: IconButton(
                         icon: const Image(
-                          image: Svg('assets/images/ic_menu_minimal.svg'),
+                          image: Svg('assets/images/ic_menu_close_gray.svg'),
                         ),
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),

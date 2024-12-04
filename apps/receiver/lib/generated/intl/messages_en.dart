@@ -256,11 +256,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_participant_item_connected":
             MessageLookupByLibrary.simpleMessage("Connected"),
         "v3_participant_item_controlling":
-            MessageLookupByLibrary.simpleMessage("Remote controlling"),
+            MessageLookupByLibrary.simpleMessage("Receiving + Touchback"),
         "v3_participant_item_receiving":
             MessageLookupByLibrary.simpleMessage("Receiving"),
         "v3_participant_item_share":
             MessageLookupByLibrary.simpleMessage("Share"),
+        "v3_participant_item_waiting":
+            MessageLookupByLibrary.simpleMessage("Waiting..."),
         "v3_participants_desc": MessageLookupByLibrary.simpleMessage(
             "Maximum up to 6 participants."),
         "v3_participants_title":
