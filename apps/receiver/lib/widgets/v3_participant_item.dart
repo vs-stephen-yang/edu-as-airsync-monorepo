@@ -10,6 +10,7 @@ import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:gap/gap.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +34,8 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
         .toList()[widget.index];
     String presenterId = rtcConnector.clientId ?? '';
     Widget? itemParticipant;
+    bool isWaiting = ((rtcConnector.presentationState.index) ==
+        PresentationState.waitForStream.index);
     bool isCasting = ((rtcConnector.presentationState.index) >=
         PresentationState.streaming.index);
     bool isReceiving = rtcConnector.isModeratorShare;
@@ -72,6 +75,9 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
         rtcConnector: rtcConnector,
         presenterId: presenterId,
       );
+    } else if (isWaiting) {
+      status = S.of(context).v3_participant_item_waiting;
+      itemParticipant = const SizedBox.shrink();
     } else {
       itemParticipant = ParticipantStandbyFeature(
         rtcConnector: rtcConnector,
@@ -81,16 +87,28 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
     }
 
     return SizedBox(
-      width: widget.isForMenuUse ? 315 : 283,
-      height: isCasting ? 40 : 40,
+      width: widget.isForMenuUse ? 358 : 283,
+      height: 34,
       child: Row(
         children: [
+          if (widget.isForMenuUse) ...[
+            Image(
+              width: 32,
+              height: 32,
+              image: Svg(isCasting
+                  ? 'assets/images/ic_participant_avatar_cast.svg'
+                  : isReceiving
+                      ? 'assets/images/ic_participant_avatar_receive.svg'
+                      : 'assets/images/ic_participant_avatar_wait.svg'),
+            ),
+          ],
+          Gap(context.tokens.spacing.vsdslSpacingSm.left),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: 162,
+                width: (!widget.isForMenuUse && isReceiving) ? 140 : 165,
                 height: 18,
                 child: AutoSizeText(
                   rtcConnector.senderName ?? '',
@@ -103,35 +121,20 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
                 ),
               ),
               if (widget.isForMenuUse && status.isNotEmpty) ...[
-                SizedBox(height: context.tokens.spacing.vsdslSpacingSm.top),
-                Container(
-                  height: 17,
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: context.tokens.radii.vsdslRadiusSm,
-                      side: BorderSide(
-                        width: 1,
-                        color: (isCasting || isControlling)
-                            ? context.tokens.color.vsdslColorSuccess
-                            : context.tokens.color.vsdslColorSurface500,
-                      ),
-                    ),
+                Gap(context.tokens.spacing.vsdslSpacingXs.top),
+                AutoSizeText(
+                  status,
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w600,
+                    color: (isWaiting)
+                        ? context.tokens.color.vsdslColorSurface400
+                        : (isCasting)
+                            ? context.tokens.color.vsdslColorSecondary
+                            : context.tokens.color.vsdslColorSuccess,
                   ),
-                  padding: EdgeInsets.symmetric(
-                      vertical: context.tokens.spacing.vsdslSpacingXs.top,
-                      horizontal: context.tokens.spacing.vsdslSpacingSm.left),
-                  child: AutoSizeText(
-                    status,
-                    style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w600,
-                      color: (isCasting || isControlling)
-                          ? context.tokens.color.vsdslColorSuccess
-                          : context.tokens.color.vsdslColorSurface500,
-                    ),
-                    textAlign: TextAlign.center,
-                    minFontSize: 8,
-                  ),
+                  textAlign: TextAlign.center,
+                  minFontSize: 8,
                 ),
               ],
             ],
@@ -187,7 +190,11 @@ class ParticipantStandbyFeature extends StatelessWidget {
     return Row(
       children: [
         SizedBox(
-          width: 80,
+          width: isForMenuUse
+              ? rtcConnector.senderPlatform == 'web'
+                  ? 105
+                  : 74
+              : 66,
           height: 27,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -214,7 +221,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
                       color: context.tokens.color.vsdslColorOnSurfaceInverse,
                     ),
                   ),
-                  SizedBox(width: context.tokens.spacing.vsdslSpacingXs.left),
+                  Gap(context.tokens.spacing.vsdslSpacingXs.left),
                 ],
                 AutoSizeText(
                   S.of(context).v3_participant_item_share,
@@ -228,50 +235,42 @@ class ParticipantStandbyFeature extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(width: context.tokens.spacing.vsdslSpacingSm.left),
-        if (isForMenuUse) ...[
+        Gap(context.tokens.spacing.vsdslSpacingSm.left),
+        if (isForMenuUse && rtcConnector.senderPlatform != 'web') ...[
           SizedBox(
             width: 27,
             height: 27,
-            child: rtcConnector.senderPlatform != 'web'
-                ? IconButton(
-                    icon: const Image(
-                      width: 16,
-                      height: 16,
-                      image:
-                          Svg('assets/images/ic_participant_cast_device.svg'),
-                    ),
-                    style: IconButton.styleFrom(
-                      elevation: 10.0,
-                      shadowColor:
-                          context.tokens.color.vsdslColorOpacitySecondaryLg,
-                      backgroundColor: context.tokens.color.vsdslColorPrimary,
-                      disabledBackgroundColor:
-                          context.tokens.color.vsdslColorSurface500,
-                    ),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    onPressed: () {
-                      if (!rtcConnector.isChannelConnectAvailable()) {
-                        rtcConnector.clickButtonWhenReconnect = true;
-                        V3Toast()
-                            .makeReconnectToast(
-                                rtcConnector.reconnectChannelState,
-                                rtcConnector.reconnectChannelState ==
-                                        ReconnectState.reconnecting
-                                    ? S
-                                        .of(context)
-                                        .main_feature_reconnecting_toast
-                                    : S
-                                        .of(context)
-                                        .main_feature_reconnect_fail_toast)
-                            ?.show(context);
-                        return;
-                      }
-                      rtcConnector.sendInviteRemoteScreen();
-                    },
-                  )
-                : null,
+            child: IconButton(
+              icon: const Image(
+                width: 16,
+                height: 16,
+                image: Svg('assets/images/ic_participant_cast_device.svg'),
+              ),
+              style: IconButton.styleFrom(
+                elevation: 10.0,
+                shadowColor: context.tokens.color.vsdslColorOpacitySecondaryLg,
+                backgroundColor: context.tokens.color.vsdslColorPrimary,
+                disabledBackgroundColor:
+                    context.tokens.color.vsdslColorSurface500,
+              ),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              onPressed: () {
+                if (!rtcConnector.isChannelConnectAvailable()) {
+                  rtcConnector.clickButtonWhenReconnect = true;
+                  V3Toast()
+                      .makeReconnectToast(
+                          rtcConnector.reconnectChannelState,
+                          rtcConnector.reconnectChannelState ==
+                                  ReconnectState.reconnecting
+                              ? S.of(context).main_feature_reconnecting_toast
+                              : S.of(context).main_feature_reconnect_fail_toast)
+                      ?.show(context);
+                  return;
+                }
+                rtcConnector.sendInviteRemoteScreen();
+              },
+            ),
           ),
           SizedBox(width: context.tokens.spacing.vsdslSpacingSm.left),
         ],
@@ -453,37 +452,43 @@ class ParticipantReceivingFeature extends StatelessWidget {
         SizedBox(
           width: 104,
           height: 27,
-          child: ElevatedButton.icon(
+          child: ElevatedButton(
             onPressed: () {
               _touchBackOn(context);
             },
-            icon: const SizedBox(
-              width: 16,
-              height: 16,
-              child: Image(
-                image: Svg('assets/images/ic_cast_device_touch_back.svg'),
-              ),
-            ),
-            label: Text(
-              S.of(context).v3_cast_to_device_touch_back,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: context.tokens.color.vsdslColorOnSurfaceInverse,
-              ),
-            ),
             style: ElevatedButton.styleFrom(
               elevation: 5,
-              backgroundColor: context.tokens.color.vsdslColorPrimary,
+              backgroundColor: context.tokens.color.vsdslColorOnSurfaceInverse,
               shape: RoundedRectangleBorder(
                 borderRadius: context.tokens.radii.vsdslRadiusFull,
               ),
               padding: EdgeInsets.zero,
-              shadowColor: context.tokens.color.vsdslColorPrimary,
+              shadowColor: context.tokens.color.vsdslColorOnSurfaceInverse,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: Image(
+                    image: Svg('assets/images/ic_finger_touch.svg'),
+                  ),
+                ),
+                Gap(context.tokens.spacing.vsdslSpacingXs.left),
+                AutoSizeText(
+                  S.of(context).v3_cast_to_device_touch_back,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: context.tokens.color.vsdslColorOnSurface,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-        SizedBox(width: context.tokens.spacing.vsdslSpacingSm.top),
+        Gap(context.tokens.spacing.vsdslSpacingSm.top),
         SizedBox(
           width: 27,
           height: 27,
@@ -564,8 +569,50 @@ class ParticipantControllingFeature extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ChannelProvider channelProvider =
+        Provider.of<ChannelProvider>(context, listen: false);
     return Row(
       children: [
+        SizedBox(
+          width: 104,
+          height: 27,
+          child: ElevatedButton(
+            onPressed: () {
+              _touchBackOff(context);
+            },
+            style: ElevatedButton.styleFrom(
+              elevation: 5,
+              backgroundColor: context.tokens.color.vsdslColorOnSurfaceInverse,
+              shape: RoundedRectangleBorder(
+                borderRadius: context.tokens.radii.vsdslRadiusFull,
+              ),
+              padding: EdgeInsets.zero,
+              shadowColor: context.tokens.color.vsdslColorOnSurfaceInverse,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: Image(
+                    image: Svg('assets/images/ic_finger_disable.svg'),
+                  ),
+                ),
+                Gap(context.tokens.spacing.vsdslSpacingXs.left),
+                Text(
+                  S.of(context).v3_cast_to_device_touch_back_disable,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: context.tokens.color.vsdslColorError,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Gap(context.tokens.spacing.vsdslSpacingSm.top),
         SizedBox(
           width: 27,
           height: 27,
@@ -580,7 +627,33 @@ class ParticipantControllingFeature extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             onPressed: () {
-              _touchBackOff(context);
+              trackEvent('click_disconnect', EventCategory.castToBoards);
+
+              if (!rtcConnector.isChannelConnectAvailable()) {
+                rtcConnector.clickButtonWhenReconnect = true;
+                V3Toast()
+                    .makeReconnectToast(
+                        rtcConnector.reconnectChannelState,
+                        rtcConnector.reconnectChannelState ==
+                                ReconnectState.reconnecting
+                            ? S.of(context).main_feature_reconnecting_toast
+                            : S.of(context).main_feature_reconnect_fail_toast)
+                    ?.show(context);
+                return;
+              }
+              rtcConnector.sendStopRemoteScreen();
+              int index = channelProvider.remoteShareConnectors
+                  .indexWhere((item) => item.clientId == rtcConnector.clientId);
+              if (index != -1) {
+                RemoteScreenConnector remoteShareConnector =
+                    channelProvider.remoteShareConnectors[index];
+
+                channelProvider.removeSender(
+                  fromShare: true,
+                  remoteScreenConnector: remoteShareConnector,
+                  kick: false,
+                );
+              }
             },
           ),
         ),

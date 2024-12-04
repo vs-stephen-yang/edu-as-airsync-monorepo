@@ -1631,10 +1631,10 @@ class S {
     );
   }
 
-  /// `Remote controlling`
+  /// `Receiving + Touchback`
   String get v3_participant_item_controlling {
     return Intl.message(
-      'Remote controlling',
+      'Receiving + Touchback',
       name: 'v3_participant_item_controlling',
       desc: '',
       args: [],
@@ -1856,6 +1856,16 @@ class S {
     return Intl.message(
       'No device selected.',
       name: 'v3_group_dialog_no_device_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting...`
+  String get v3_participant_item_waiting {
+    return Intl.message(
+      'Waiting...',
+      name: 'v3_participant_item_waiting',
       desc: '',
       args: [],
     );
