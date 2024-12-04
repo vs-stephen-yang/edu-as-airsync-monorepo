@@ -7,6 +7,7 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:gap/gap.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
@@ -134,8 +135,9 @@ class V3ShortcutsMenu extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
-                          color:
-                              context.tokens.color.vsdslColorOnSurfaceInverse,
+                          color: ChannelProvider.isModeratorMode
+                              ? context.tokens.color.vsdslColorOnSurfaceVariant
+                              : context.tokens.color.vsdslColorOnSurfaceInverse,
                         ),
                       ),
                       Row(
@@ -161,15 +163,23 @@ class V3ShortcutsMenu extends StatelessWidget {
                             return SizedBox(
                               height: 21,
                               child: IconButton(
-                                icon: Image(
-                                  image: Svg(mirrorStateProvider.airplayEnabled
-                                      ? 'assets/images/ic_switch_on.svg'
-                                      : 'assets/images/ic_switch_off.svg'),
+                                icon: Opacity(
+                                  opacity: ChannelProvider.isModeratorMode
+                                      ? 0.32
+                                      : 1,
+                                  child: Image(
+                                    image: Svg(mirrorStateProvider
+                                            .airplayEnabled
+                                        ? 'assets/images/ic_switch_on.svg'
+                                        : 'assets/images/ic_switch_off.svg'),
+                                  ),
                                 ),
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(),
-                                onPressed: () {
-                                  ChannelProvider channelProvider =
+                                onPressed: ChannelProvider.isModeratorMode
+                                    ? null
+                                    : () {
+                                        ChannelProvider channelProvider =
                                       Provider.of<ChannelProvider>(context,
                                           listen: false);
                                   if (mirrorStateProvider.airplayEnabled) {
@@ -216,16 +226,23 @@ class V3ShortcutsMenu extends StatelessWidget {
                             return SizedBox(
                               height: 21,
                               child: IconButton(
-                                icon: Image(
-                                  image: Svg(
-                                      mirrorStateProvider.googleCastEnabled
-                                          ? 'assets/images/ic_switch_on.svg'
-                                          : 'assets/images/ic_switch_off.svg'),
+                                icon: Opacity(
+                                  opacity: ChannelProvider.isModeratorMode
+                                      ? 0.32
+                                      : 1,
+                                  child: Image(
+                                    image: Svg(mirrorStateProvider
+                                            .googleCastEnabled
+                                        ? 'assets/images/ic_switch_on.svg'
+                                        : 'assets/images/ic_switch_off.svg'),
+                                  ),
                                 ),
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(),
-                                onPressed: () {
-                                  ChannelProvider channelProvider =
+                                onPressed: ChannelProvider.isModeratorMode
+                                    ? null
+                                    : () {
+                                        ChannelProvider channelProvider =
                                       Provider.of<ChannelProvider>(context,
                                           listen: false);
                                   if (mirrorStateProvider.googleCastEnabled) {
@@ -273,15 +290,23 @@ class V3ShortcutsMenu extends StatelessWidget {
                             return SizedBox(
                               height: 21,
                               child: IconButton(
-                                icon: Image(
-                                  image: Svg(mirrorStateProvider.miracastEnabled
-                                      ? 'assets/images/ic_switch_on.svg'
-                                      : 'assets/images/ic_switch_off.svg'),
+                                icon: Opacity(
+                                  opacity: ChannelProvider.isModeratorMode
+                                      ? 0.32
+                                      : 1,
+                                  child: Image(
+                                    image: Svg(mirrorStateProvider
+                                            .miracastEnabled
+                                        ? 'assets/images/ic_switch_on.svg'
+                                        : 'assets/images/ic_switch_off.svg'),
+                                  ),
                                 ),
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(),
-                                onPressed: () {
-                                  ChannelProvider channelProvider =
+                                onPressed: ChannelProvider.isModeratorMode
+                                    ? null
+                                    : () {
+                                        ChannelProvider channelProvider =
                                       Provider.of<ChannelProvider>(context,
                                           listen: false);
                                   if (mirrorStateProvider.miracastEnabled) {
@@ -305,6 +330,47 @@ class V3ShortcutsMenu extends StatelessWidget {
                           }),
                         ],
                       ),
+                      if (ChannelProvider.isModeratorMode) ...[
+                        const Padding(
+                            padding: EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 13,
+                        )),
+                        Container(
+                          height: 51,
+                          decoration: BoxDecoration(
+                            color: context.tokens.color.vsdslColorSurface900,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: context.tokens.spacing.vsdslSpacingXl,
+                          child: Row(
+                            children: [
+                              const SizedBox(
+                                width: 16,
+                                child: Image(
+                                  image:
+                                      Svg('assets/images/ic_toast_alert.svg'),
+                                ),
+                              ),
+                              Gap(context.tokens.spacing.vsdslSpacingLg.right),
+                              SizedBox(
+                                width: 200,
+                                child: AutoSizeText(
+                                  S.of(context).v3_settings_mirroring_blocked,
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w400,
+                                    color:
+                                        context.tokens.color.vsdslColorWarning,
+                                  ),
+                                  minFontSize: 8,
+                                  maxLines: 2,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ],
