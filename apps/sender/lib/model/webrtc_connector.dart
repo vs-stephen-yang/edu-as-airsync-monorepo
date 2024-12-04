@@ -11,7 +11,7 @@ import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_cast_flutter/utilities/wakelock_manager.dart';
-import 'package:display_cast_flutter/utilities/webrtc_eventlog_manager.dart';
+import 'package:display_cast_flutter/utilities/webrtc_log_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
@@ -119,8 +119,8 @@ class WebRTCConnector {
     _pc!.onIceCandidate = _onIceCandidate;
 
     // start the event log
-    if (await WebRTCEventlogManager().startEventLog(_pc)) {
-      final logFilePath = WebRTCEventlogManager().logFilePath;
+    if (await WebRTCLogManager().startLog(_pc)) {
+      final logFilePath = WebRTCLogManager().eventLogFilePath;
       log.info('Start RTC event log: $logFilePath');
     }
 
@@ -679,7 +679,7 @@ class WebRTCConnector {
     }
     try {
       // stop the event log
-      await WebRTCEventlogManager().stopEventLog(_pc);
+      await WebRTCLogManager().stopLog(_pc);
       await _pc?.close();
       await _pc?.dispose();
       _pc = null;
@@ -763,6 +763,9 @@ class WebRTCConnector {
   }
 
   void onStatsReports(List<StatsReport> reports) {
+    // feed the stats to the log manager
+    WebRTCLogManager().onStatsReport(reports);
+
     final outboundRtps = reports
         .where((StatsReport report) => report.type == 'outbound-rtp')
         .toList();

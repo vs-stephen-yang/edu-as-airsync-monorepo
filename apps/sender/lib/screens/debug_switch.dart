@@ -7,7 +7,7 @@ import 'package:display_cast_flutter/utilities/app_preferences.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/share_log.dart';
-import 'package:display_cast_flutter/utilities/webrtc_eventlog_manager.dart';
+import 'package:display_cast_flutter/utilities/webrtc_log_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/widgets/menu_dialog.dart';
 import 'package:flutter/foundation.dart';
@@ -29,10 +29,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
   bool _iceGatheringContinually = false;
   bool _isVideoQualityFirst = false;
   bool _enableRTCEventLogs = false;
+  bool _enableRTCStatsLogs = false;
+  String _rtcLogsDir = '';
   int _maxBitrateKbps = 0;
   int _minBitrateKbps = 0;
   bool _showDebugOverlay = false;
-  String _rtcEventLogsDir = '';
   final ScrollController _scrollController =
       ScrollController(); // 新增 ScrollController
 
@@ -65,12 +66,13 @@ class _DebugSwitchState extends State<DebugSwitch> {
     });
   }
 
-  void _changeRTCEventLogs(bool value) async {
+  void _changeRTCLogs(WebRTCLogType type, bool value) async {
     if (kIsWeb) {
       return; // not supported
     }
+
     String? dir;
-    if (value) {
+    if (value && _rtcLogsDir == '') {
       if (Platform.isIOS) {
         final Directory documentsDirectory =
             await getApplicationDocumentsDirectory();
@@ -85,13 +87,18 @@ class _DebugSwitchState extends State<DebugSwitch> {
     }
 
     setState(() {
-      _enableRTCEventLogs = value;
-      if (!value) {
-        _rtcEventLogsDir = '';
-        WebRTCEventlogManager().clearEventLogDir();
-      } else if (dir != null) {
-        _rtcEventLogsDir = dir;
-        WebRTCEventlogManager().setEventLogDir(dir);
+      if (type == WebRTCLogType.stats) {
+        _enableRTCStatsLogs = value;
+      } else {
+        _enableRTCEventLogs = value;
+      }
+      if (!_enableRTCStatsLogs && !_enableRTCEventLogs) {
+        _rtcLogsDir = '';
+        WebRTCLogManager().clear();
+      }
+      else if (dir != null) {
+        _rtcLogsDir = dir;
+        WebRTCLogManager().setup(dir, _enableRTCStatsLogs, _enableRTCEventLogs);
       }
     });
   }
@@ -207,12 +214,20 @@ class _DebugSwitchState extends State<DebugSwitch> {
                         value: _isLogVerbose,
                         onChanged: _changeLogVerbose),
                     SwitchListTile(
+                        title: const Text('Enable RTC Stats Logs'),
+                        value: _enableRTCStatsLogs,
+                        onChanged: (value) {
+                          _changeRTCLogs(WebRTCLogType.stats, value);
+                        }),
+                    SwitchListTile(
                         title: const Text('Enable RTC Event Logs'),
                         value: _enableRTCEventLogs,
-                        onChanged: _changeRTCEventLogs),
-                    if (_rtcEventLogsDir != '')
+                        onChanged: (value) {
+                          _changeRTCLogs(WebRTCLogType.event, value);
+                        }),
+                    if (_rtcLogsDir != '')
                       Text(
-                        _rtcEventLogsDir,
+                        _rtcLogsDir,
                         style: const TextStyle(fontSize: 14, color: Colors.red),
                       ),
                     shareLogsButton,
