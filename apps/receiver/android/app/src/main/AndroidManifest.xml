@@ -38,7 +38,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
-    <uses-sdk tools:overrideLibrary="com.viewsonic.systemapi" />
+    <uses-sdk tools:overrideLibrary="com.viewsonic.systemapi, com.viewsonic.vsapicompat"/>
 
     <application
         android:name="${applicationName}"

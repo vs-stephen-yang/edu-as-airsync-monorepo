@@ -206,6 +206,10 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-base:18.2.0'
     implementation 'io.sentry:sentry-android:8.0.0-beta.2'
+
+    // import vsapi
+    compileOnly files("src/libs/VSApi-release.aar")
+    implementation files("src/libs/VSApiCompat-release.aar")
 }
 
 flutter {
