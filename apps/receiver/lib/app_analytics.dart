@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:azure_application_insights/azure_application_insights.dart';
 import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/vsapi/vs_api.dart';
 import 'package:http/http.dart';
 
 // https://medium.com/bina-nusantara-it-division/how-to-integrate-flutter-app-with-azure-application-insights-447fcc3bdacf
@@ -17,18 +20,20 @@ enum EventCategory {
 class AppAnalytics {
   TelemetryClient? _client;
   final _globalProperties = <String, String>{};
+  static VSApi? _vsApi;
 
   // Private constructor
   AppAnalytics._();
 
-  static initializeApp({
+  static Future<void> initializeApp({
     required String instrumentationKey,
     required String ingestionEndpoint,
+    required VSApi? vsApi,
     String? applicationVersion,
     String? sessionId,
     String? userId,
     ClientDeviceInfo? deviceInfo,
-  }) {
+  }) async {
     final processor = BufferedProcessor(
       next: TransmissionProcessor(
         instrumentationKey: instrumentationKey,
@@ -64,6 +69,13 @@ class AppAnalytics {
     if (sessionId != null) {
       instance.setGlobalProperty('session_id', sessionId);
     }
+
+    _vsApi = vsApi;
+
+    final serialNumber = await _vsApi?.getSerialNumber();
+    if (serialNumber != null) {
+      instance.setGlobalProperty('serial_number', serialNumber);
+    }
   }
 
   // Singleton instance variable
@@ -85,13 +97,26 @@ class AppAnalytics {
   }) {
     log.info('Track event: $name');
 
-    _client?.trackEvent(
-      name: name,
-      additionalProperties: {
-        ...properties,
-        ..._globalProperties,
-      },
-    );
+    if (_vsApi == null) {
+      _client?.trackEvent(
+        name: name,
+        additionalProperties: {
+          ...properties,
+          ..._globalProperties,
+        },
+      );
+    } else {
+      unawaited(_vsApi!.getCurrentMacAddress().then((macAddress) {
+        _client?.trackEvent(
+          name: name,
+          additionalProperties: {
+            ...properties,
+            ..._globalProperties,
+            'mac_address': macAddress,
+          },
+        );
+      }));
+    }
   }
 
   void trackTrace(
@@ -99,14 +124,28 @@ class AppAnalytics {
     Severity severity = Severity.information,
     Map<String, Object> properties = const <String, Object>{},
   }) {
-    _client?.trackTrace(
-      severity: severity,
-      message: message,
-      additionalProperties: {
-        ...properties,
-        ..._globalProperties,
-      },
-    );
+    if (_vsApi == null) {
+      _client?.trackTrace(
+        severity: severity,
+        message: message,
+        additionalProperties: {
+          ...properties,
+          ..._globalProperties,
+        },
+      );
+    } else {
+      unawaited(_vsApi!.getCurrentMacAddress().then((macAddress) {
+        _client?.trackTrace(
+          severity: severity,
+          message: message,
+          additionalProperties: {
+            ...properties,
+            ..._globalProperties,
+            'mac_address': macAddress,
+          },
+        );
+      }));
+    }
   }
 
   void trackPageView(String name) {
