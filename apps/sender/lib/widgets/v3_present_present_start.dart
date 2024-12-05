@@ -11,9 +11,11 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/screens/debug_switch.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
+import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/touch_back_button.dart';
 import 'package:display_cast_flutter/widgets/v3_options_menu.dart';
@@ -46,6 +48,8 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
 
   StreamSubscription? _broadcastUploadExtensionResumedSubscription;
   StreamSubscription? _broadcastUploadExtensionClosedSubscription;
+
+  String debugOverlayText = '';
 
   void sendReconnectStateToast(
       BuildContext context, ChannelReconnectState state) {
@@ -133,6 +137,9 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     } else if (Platform.isAndroid) {
       isAnnotationImplemented = true;
     }
+
+    setDebugText();
+
     return Container(
       color: Colors.black,
       child: Stack(
@@ -245,6 +252,21 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
               ),
             ],
           ),
+          if (WebRTCUtil.showDebugOverlay)
+            Positioned(
+              top: 30,
+              left: 30,
+              child: IgnorePointer(
+                ignoring: true,
+                child: AutoSizeText(
+                  debugOverlayText,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+            ),
           Positioned(
             bottom: 100,
             child: ValueListenableBuilder(
@@ -291,6 +313,39 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
         ],
       ),
     );
+  }
+
+  void setDebugText() {
+    WebRTCHelper().webRTCConnector?.onVideoStatsReport = (stats) {
+      if (!WebRTCUtil.showDebugOverlay) {
+        _clearDebugOverlay();
+        return;
+      }
+
+      final fpsInfo = 'FPS: '
+          '${stats.framesPerSecond?.toStringAsFixed(0)}';
+
+      final videoInfo = 'Res ${stats.frameWidth}x${stats.frameHeight} '
+          '$fpsInfo\n'
+          'TargetBitrate: ${stats.targetBitrate?.toStringAsFixed(0)}\n'
+          'ContentType: ${stats.contentType}\n'
+          'QualityLimitationReason: ${stats.qualityLimitationReason}\n'
+          'pliCount: ${stats.pliCount}\n'
+          'Encoder: ${stats.encoderImplementation}\n'
+          'EncodeTime: ${stats.encodeTime?.toStringAsFixed(2)}\n';
+
+      setState(() {
+        debugOverlayText = videoInfo;
+      });
+    };
+  }
+
+  void _clearDebugOverlay() {
+    if (debugOverlayText != '') {
+      setState(() {
+        debugOverlayText = '';
+      });
+    }
   }
 
   Future<void> _startAnnotation(AnnotationModel annotationModel) async {

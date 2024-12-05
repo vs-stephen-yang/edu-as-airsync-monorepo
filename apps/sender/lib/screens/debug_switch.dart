@@ -10,9 +10,9 @@ import 'package:display_cast_flutter/utilities/share_log.dart';
 import 'package:display_cast_flutter/utilities/webrtc_log_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_cast_flutter/widgets/menu_dialog.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DebugSwitch extends StatefulWidget {
@@ -28,9 +28,9 @@ class _DebugSwitchState extends State<DebugSwitch> {
   bool _isLogVerbose = false;
   bool _iceGatheringContinually = false;
   bool _isVideoQualityFirst = false;
+  String _rtcLogsDir = '';
   bool _enableRTCEventLogs = false;
   bool _enableRTCStatsLogs = false;
-  String _rtcLogsDir = '';
   int _maxBitrateKbps = 0;
   int _minBitrateKbps = 0;
   bool _showDebugOverlay = false;
@@ -52,6 +52,9 @@ class _DebugSwitchState extends State<DebugSwitch> {
   }
 
   void _showDebugOverlayChanged(bool value) async {
+    WebRTCUtil.showDebugOverlay = value;
+    await WebRTCUtil.saveShowDebugOverlay(value);
+
     setState(() {
       _showDebugOverlay = value;
       _notifyRestart();
@@ -95,10 +98,11 @@ class _DebugSwitchState extends State<DebugSwitch> {
       if (!_enableRTCStatsLogs && !_enableRTCEventLogs) {
         _rtcLogsDir = '';
         WebRTCLogManager().clear();
-      }
-      else if (dir != null) {
-        _rtcLogsDir = dir;
-        WebRTCLogManager().setup(dir, _enableRTCStatsLogs, _enableRTCEventLogs);
+      } else {
+        if (dir != null) {
+          _rtcLogsDir = dir;
+        }
+        WebRTCLogManager().setup(_rtcLogsDir, _enableRTCStatsLogs, _enableRTCEventLogs);
       }
     });
   }
@@ -139,6 +143,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
       _maxBitrateKbps = preset.parameters.maxBitrateKbps;
       _minBitrateKbps = preset.parameters.minBitrateKbps;
       _iceGatheringContinually = WebRTCUtil.iceGatheringContinually;
+      _showDebugOverlay = WebRTCUtil.showDebugOverlay;
     }
     _initialized = true;
   }
@@ -191,7 +196,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
                         onChanged: _showOldUIChanged),
                     SwitchListTile(
                       title: const Text('Show Debug Overlay'),
-                      value: _showDebugOverlay,
+                      value: _showDebugOverlay, // Use static value
                       onChanged: _showDebugOverlayChanged,
                     ),
                     SwitchListTile(

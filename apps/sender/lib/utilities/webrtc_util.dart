@@ -4,7 +4,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class WebRTCUtil {
   static bool defaultIceGatheringContinually =
       true; // gather_continually by default
+  static bool defaultShowDebugOverlay = false;
+
   static bool iceGatheringContinually = defaultIceGatheringContinually;
+  static bool showDebugOverlay = defaultShowDebugOverlay;
 
   static saveIceGatheringContinually(bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -15,6 +18,16 @@ class WebRTCUtil {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool("IceGatheringContinually") ??
         defaultIceGatheringContinually;
+  }
+
+  static saveShowDebugOverlay(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("ShowDebugOverlay", value);
+  }
+
+  static Future<bool> loadShowDebugOverlay() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool("ShowDebugOverlay") ?? defaultShowDebugOverlay;
   }
 
   static Map<String, dynamic> buildWebRtcConfiguration(
