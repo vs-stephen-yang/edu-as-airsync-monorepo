@@ -93,9 +93,11 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     );
     trackEvent('launch', EventCategory.system);
 
-    // load ice gathering continually setting
     WebRTCUtil.iceGatheringContinually =
-        await WebRTCUtil.loadIceGatheringContinually();
+      await WebRTCUtil.loadIceGatheringContinually();
+    WebRTCUtil.showDebugOverlay =
+      await WebRTCUtil.loadShowDebugOverlay();
+
     await DataDisplayCode.getInstance().initialize();
 
     final ProfileStore profileStore = await ProfileUtil.loadProfileStore(args);

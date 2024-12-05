@@ -6,6 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:display_cast_flutter/features/protoc/event.pb.dart';
 import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_cast_flutter/model/profile.dart';
+import 'package:display_cast_flutter/model/rtc_stats.dart';
+import 'package:display_cast_flutter/model/rtc_stats_parser.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -36,6 +38,7 @@ class WebRTCConnector {
   void Function(PresentSignalMessage message) sendSignalMessage;
   void Function(RTCPeerConnectionState state) onConnectionState;
   void Function() onStopPresent;
+  Function(RtcVideoOutboundStats stats)? onVideoStatsReport;
 
   dynamic _deviceId;
   RTCPeerConnection? _pc;
@@ -86,9 +89,7 @@ class WebRTCConnector {
 
   Timer? _statsTimer;
   final _statsTimerInterval = const Duration(seconds: 1);
-  int? _outboundVideoWidth;
-  int? _outboundVideoHeight;
-  int _outboundVideoCount = 0;
+  RtcStatsParser? _rtcStatsParser;
 
   ValueNotifier<ChannelReconnectState> reconnectStateNotifier =
       ValueNotifier<ChannelReconnectState>(ChannelReconnectState.idle);
@@ -751,54 +752,21 @@ class WebRTCConnector {
   void startStatsTimer() {
     _statsTimer?.cancel();
 
+    _rtcStatsParser = RtcStatsParser(
+        (width, height) =>
+            {log.info('Outbound video size has changed to ${width}x$height')},
+        (stats) => {onVideoStatsReport?.call(stats)});
+
     _statsTimer = Timer.periodic(
       _statsTimerInterval,
       (timer) async {
         final reports = await _pc?.getStats(null);
         if (reports != null) {
-          onStatsReports(reports);
+          // feed the stats to the log manager
+          WebRTCLogManager().onStatsReport(reports);
+          _rtcStatsParser?.onVideoStatsReports(reports);
         }
       },
     );
-  }
-
-  void onStatsReports(List<StatsReport> reports) {
-    // feed the stats to the log manager
-    WebRTCLogManager().onStatsReport(reports);
-
-    final outboundRtps = reports
-        .where((StatsReport report) => report.type == 'outbound-rtp')
-        .toList();
-
-    final videoOutboundRtps = outboundRtps
-        .where((StatsReport report) => report.values['kind'] == 'video')
-        .toList();
-
-    onVideoStatsReports(videoOutboundRtps);
-  }
-
-  void onVideoStatsReports(List<StatsReport> reports) {
-    if (reports.length != _outboundVideoCount) {
-      _outboundVideoCount = reports.length;
-      log.info(
-          'The number of outbound videos has changed to ${reports.length}');
-    }
-
-    if (reports.isEmpty) {
-      _outboundVideoWidth = null;
-      _outboundVideoHeight = null;
-    }
-
-    final videoOutboundRtp = reports.first;
-
-    final width = videoOutboundRtp.values['frameWidth'];
-    final height = videoOutboundRtp.values['frameHeight'];
-
-    if (_outboundVideoWidth != width || _outboundVideoHeight != height) {
-      _outboundVideoWidth = width;
-      _outboundVideoHeight = height;
-
-      log.info('Outbound video size has changed to ${width}x$height');
-    }
   }
 }
