@@ -169,16 +169,5 @@
   "v3_download_app_for_mobile": "Para iOS y Android",
   "v3_download_app_for_desktop_desc": "Ingresa la siguiente URL para descargar.",
   "v3_download_app_for_mobile_desc": "Escanea el código QR para acceso instantáneo.",
-  "v3_download_app_or": "O",
-  "v3_moderator_disable_mirror_title": "",
-  "v3_moderator_disable_mirror_desc": "",
-  "v3_moderator_disable_mirror_ok": "",
-  "v3_moderator_disable_mirror_cancel": "",
-  "v3_settings_mirroring_blocked": "",
-  "v3_settings_broadcast_cast_to": "",
-  "v3_settings_broadcast_devices": "",
-  "v3_settings_broadcast_boards": "",
-  "v3_settings_local_connection_only": "",
-  "v3_group_dialog_no_device_message": "",
-  "v3_participant_item_waiting": ""
+  "v3_download_app_or": "O"
 }
