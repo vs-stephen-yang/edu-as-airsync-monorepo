@@ -21,7 +21,6 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'fr';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "eula_agree": MessageLookupByLibrary.simpleMessage("J\'accepte"),
         "eula_disagree": MessageLookupByLibrary.simpleMessage("Je refuse"),
@@ -215,8 +214,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Refuser"),
         "v3_group_dialog_message": MessageLookupByLibrary.simpleMessage(
             "%s a envoyé une demande de diffusion à votre appareil. Cette action synchronisera et affichera le contenu actuel, voulez-vous accepter cette demande?"),
-        "v3_group_dialog_no_device_message":
-            MessageLookupByLibrary.simpleMessage(""),
         "v3_group_dialog_title":
             MessageLookupByLibrary.simpleMessage("Demande de diffusion de %s"),
         "v3_group_receive_view_status_from":
@@ -241,14 +238,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Impossible de détecter une connexion Internet. Veuillez vous connecter à un réseau Wi-Fi ou intranet, et réessayez."),
         "v3_mirror_request_passcode":
             MessageLookupByLibrary.simpleMessage("Code d\'accès"),
-        "v3_moderator_disable_mirror_cancel":
-            MessageLookupByLibrary.simpleMessage(""),
-        "v3_moderator_disable_mirror_desc":
-            MessageLookupByLibrary.simpleMessage(""),
-        "v3_moderator_disable_mirror_ok":
-            MessageLookupByLibrary.simpleMessage(""),
-        "v3_moderator_disable_mirror_title":
-            MessageLookupByLibrary.simpleMessage(""),
         "v3_moderator_mode":
             MessageLookupByLibrary.simpleMessage("Mode modérateur"),
         "v3_new_sharing_join_session":
@@ -275,17 +264,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Code QR"),
         "v3_settings_broadcast":
             MessageLookupByLibrary.simpleMessage("Diffusion"),
-        "v3_settings_broadcast_boards":
-            MessageLookupByLibrary.simpleMessage(""),
         "v3_settings_broadcast_cast_boards":
             MessageLookupByLibrary.simpleMessage("Diffuser vers les tableaux"),
         "v3_settings_broadcast_cast_boards_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Partagez votre écran sur tous les ViewBoards (IFP) du réseau."),
-        "v3_settings_broadcast_cast_to":
-            MessageLookupByLibrary.simpleMessage(""),
-        "v3_settings_broadcast_devices":
-            MessageLookupByLibrary.simpleMessage(""),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage(
                 "Diffuser vers le groupe d\'affichage"),
@@ -345,15 +328,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Me notifier"),
         "v3_settings_legal_policy":
             MessageLookupByLibrary.simpleMessage("Mention Légales & Politique"),
-        "v3_settings_local_connection_only":
-            MessageLookupByLibrary.simpleMessage(""),
         "v3_settings_mirroring_auto_accept":
             MessageLookupByLibrary.simpleMessage("Accepter automatiquement"),
         "v3_settings_mirroring_auto_accept_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Activer instantanément le mirroring sans nécessiter l\'approbation du modérateur."),
-        "v3_settings_mirroring_blocked":
-            MessageLookupByLibrary.simpleMessage(""),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Exiger un mot de passe"),
         "v3_settings_open_source_license":
