@@ -11,7 +11,6 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
-import 'package:display_cast_flutter/screens/debug_switch.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
