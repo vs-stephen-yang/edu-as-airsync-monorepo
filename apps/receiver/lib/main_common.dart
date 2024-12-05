@@ -23,11 +23,11 @@ import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/settings/theme_config.dart';
-import 'package:display_flutter/test_vs_api_page.dart';
 import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
+import 'package:display_flutter/vsapi/vs_api.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -89,6 +89,7 @@ Future<void> commonEntry(ConfigSettings settings) async {
       userId: AppInstanceCreate().instanceID,
       sessionId: const Uuid().v4(),
       deviceInfo: await ClientDeviceInfo.fetch(),
+      vsApi: await VSApi.createVSApiInstance(),
     );
 
     setSentryUser(AppInstanceCreate().displayInstanceID);
@@ -200,8 +201,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               '/v3Home': (context) => const AppOTADialog(child: V3Home()),
               '/eula': (context) => const AppOTADialog(child: Eula()),
               '/v3Eula': (context) => const AppOTADialog(child: V3Eula()),
-              // Add VS API test page route
-              '/vsapi_test': (context) => const TestVSApiPage(),
             },
             builder: (context, child) {
               return MediaQuery(

@@ -246,21 +246,6 @@ class _DebugSwitchState extends State<DebugSwitch> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Center(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop(); // Close debug dialog
-                              Navigator.of(context).pushNamed('/vsapi_test');
-                            },
-                            child: const Text(
-                              'Test VS API',
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
                     );
                   },
