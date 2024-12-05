@@ -1,6 +1,5 @@
 package com.mvbcast.crosswalk;
 
-
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -15,29 +14,30 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.mvbcast.crosswalk.vbsota.SystemImageOTAHelper;
-
-import java.util.Calendar;
-
+import com.mvbcast.crosswalk.vsapi.VSApiHandler;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
+import java.util.Calendar;
+
 public class EulaActivity extends FlutterActivity {
     private static final String TAG = EulaActivity.class.getSimpleName();
     private MethodChannel mVbsOTA;
     private static MethodChannel mAlarmOTA;
+    private VSApiHandler vsApiHandler;
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
         BinaryMessenger binaryMessenger = flutterEngine.getDartExecutor().getBinaryMessenger();
+
+        vsApiHandler = new VSApiHandler(this, binaryMessenger);
 
         MethodChannel mAndroidRetain = new MethodChannel(binaryMessenger, "com.mvbcast" +
                 ".crosswalk/android_app_retain");
@@ -144,6 +144,9 @@ public class EulaActivity extends FlutterActivity {
 
     @Override
     protected void onDestroy() {
+        if (vsApiHandler != null) {
+            vsApiHandler.dispose();
+        }
         SystemImageOTAHelper.getInstance().unregisterBroadcastReceiver(EulaActivity.this);
         super.onDestroy();
 //        System.exit(0);
