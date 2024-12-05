@@ -60,7 +60,6 @@ class RtcStatsParser {
     stats.contentType = videoOutboundRtp.values['contentType'];
     stats.qualityLimitationReason = videoOutboundRtp.values['qualityLimitationReason'];
 
-    int qpSum = videoOutboundRtp.values['qpSum'];
     double totalEncodeTime = videoOutboundRtp.values['totalEncodeTime'];
 
     stats.pliCount = videoOutboundRtp.values['pliCount'];
