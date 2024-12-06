@@ -738,7 +738,7 @@ class WebRTCConnector {
   }
 
   bool _isAudioCaptureAllowed() {
-    if (WebRTC.platformIsWindows) {
+    if (WebRTC.platformIsDesktop) {
       return _isScreenType && systemAudio;
     }
     return true;

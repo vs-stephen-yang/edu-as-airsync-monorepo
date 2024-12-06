@@ -85,7 +85,7 @@ class V3PresentSelectScreen extends StatelessWidget {
       log.info('selectedSource: ${value?.selectedSource?.type})');
       ConnectionTimer.getInstance().stopConnectionTimeoutTimer();
       if (value != null && value.selectedSource != null) {
-        if (Platform.isWindows &&
+        if (WebRTC.platformIsDesktop &&
             value.selectedSource?.type != SourceType.Window) {
           await provider.presentStart(
               selectedSource: value.selectedSource,
