@@ -128,7 +128,7 @@ public class FlutterMirrorPlugin implements
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result res) {
     // onMethodCall() is called on the platform thread
 
-    // Log.v(TAG, "FlutterMirrorPlugin::onMethodCall() " + call.method);
+    Log.v(TAG, "onMethodCall(): " + call.method);
 
     Result result = new AnyThreadResult(res);
 
@@ -154,6 +154,16 @@ public class FlutterMirrorPlugin implements
           x,
           y);
       result.success(new HashMap<>());
+    } else if (call.method.equals("startMirrorReplay")) {
+      String mirrorId = call.argument("mirrorId");
+      String videoCodec = call.argument("videoCodec");
+      String videoPath = call.argument("videoPath");
+
+      startMirrorReplay(mirrorId, videoCodec, videoPath);
+    } else if (call.method.equals("enableDump")) {
+      String dumpPath = call.argument("dumpPath");
+
+      enableDump(dumpPath);
     } else if (call.method.equals("startAirplay")) {
       String name = call.argument("name");
       String security = call.argument("security");
@@ -236,6 +246,22 @@ public class FlutterMirrorPlugin implements
     }
 
     mirrorReceiver_ = new MirrorReceiver(this, this, additionalCodecParams, context_);
+  }
+
+  private void enableDump(String dumpPath) {
+    if (mirrorReceiver_ == null) {
+      return;
+    }
+
+    mirrorReceiver_.enableDump(dumpPath);
+  }
+
+  private void startMirrorReplay(String mirrorId, String videoCodec, String videoPath) {
+    if (mirrorReceiver_ == null) {
+      return;
+    }
+
+    mirrorReceiver_.startMirrorReplay(mirrorId, videoCodec, videoPath);
   }
 
   private void startAirplay(String name, String security) {

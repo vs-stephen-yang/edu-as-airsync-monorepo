@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_mirror/airplay_config.dart';
 import 'package:flutter_mirror/flutter_mirror_config.dart';
 import 'package:flutter_mirror/googlecast_config.dart';
@@ -10,27 +12,43 @@ class FlutterMirror {
     return FlutterMirrorPlatform.instance.registerListener(listener);
   }
 
-  Future<void> initialize(FlutterMirrorConfig config) async{
+  Future<void> initialize(FlutterMirrorConfig config) async {
     await requestPermissions();
     return await FlutterMirrorPlatform.instance.initialize(config);
   }
 
-  Future<void> requestPermissions() async{
+  Future<void> requestPermissions() async {
     var status = await Permission.location.status;
-    if(status != PermissionStatus.granted) {
-      print("location permission status: $status");
+    if (status != PermissionStatus.granted) {
+      log("location permission status: $status");
       status = await Permission.location.request();
-      print("update location permission status: $status");
+      log("update location permission status: $status");
     }
 
     status = await Permission.nearbyWifiDevices.status;
-    if(status != PermissionStatus.granted) {
-      print("nearbyWifiDevices permission status: $status");
+    if (status != PermissionStatus.granted) {
+      log("nearbyWifiDevices permission status: $status");
       status = await Permission.nearbyWifiDevices.request();
-      print("update nearbyWifiDevices permission status: $status");
+      log("update nearbyWifiDevices permission status: $status");
     }
 
     return;
+  }
+
+  Future<void> enableDump(String? dumpPath) {
+    return FlutterMirrorPlatform.instance.enableDump(dumpPath);
+  }
+
+  Future<void> startMirrorReplay(
+    String mirrorId,
+    String videoCodec,
+    String videoPath,
+  ) {
+    return FlutterMirrorPlatform.instance.startMirrorReplay(
+      mirrorId,
+      videoCodec,
+      videoPath,
+    );
   }
 
   Future<void> startAirplay(AirplayConfig config) {

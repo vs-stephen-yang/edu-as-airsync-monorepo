@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mirror/airplay_config.dart';
@@ -40,6 +42,23 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
     await CredentialsStore.init();
     await methodChannel.invokeMethod('initialize', {
       "additionalCodecParams": config.additionalCodecParams,
+    });
+  }
+
+  @override
+  Future<void> enableDump(String? dumpPath) async {
+    await methodChannel.invokeMethod('enableDump', {
+      "dumpPath": dumpPath,
+    });
+  }
+
+  @override
+  Future<void> startMirrorReplay(
+      String mirrorId, String videoCodec, String videoPath) async {
+    await methodChannel.invokeMethod('startMirrorReplay', {
+      'mirrorId': mirrorId,
+      'videoCodec': videoCodec,
+      "videoPath": videoPath,
     });
   }
 
@@ -162,7 +181,7 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
         await updateCredentials(credentials);
       }
     } catch (e) {
-      print("Malformed method call from native: ${call.method}. $e");
+      log("Malformed method call from native: ${call.method}. $e");
     }
   }
 }

@@ -1,26 +1,26 @@
-#include "media/media_session.h"
+#include "media/media_session_impl.h"
 #include <assert.h>
 #include "media/video_csd_util.h"
 #include "util/log.h"
 
-MediaSession::MediaSession(
+MediaSessionImpl::MediaSessionImpl(
     jni::TextureRegistry& texture_registry,
     const std::map<std::string, int>& additional_codec_params)
     : texture_registry_(texture_registry),
       additional_codec_params_(additional_codec_params) {
 }
 
-MediaSession::~MediaSession() {
-  ALOGV("~MediaSession()");
+MediaSessionImpl::~MediaSessionImpl() {
+  ALOGV("~MediaSessionImpl()");
 }
 
-bool MediaSession::Start(
-    MediaSession::Listener* listener,
+bool MediaSessionImpl::Start(
+    MediaSessionImpl::Listener* listener,
     VideoCodecType video_codec,
     AudioCodecType audio_codec,
     AudioFormat audio_format) {
   assert(listener);
-  ALOGD("MediaSession::Start()");
+  ALOGD("MediaSessionImpl::Start()");
 
   listener_ = listener;
 
@@ -47,12 +47,12 @@ bool MediaSession::Start(
   return true;
 }
 
-SurfaceTexture MediaSession::GetTexture() {
+SurfaceTexture MediaSessionImpl::GetTexture() {
   return texture_;
 }
 
-void MediaSession::Stop() {
-  ALOGD("MediaSession::Stop()");
+void MediaSessionImpl::Stop() {
+  ALOGD("MediaSessionImpl::Stop()");
 
   if (video_decoder_) {
     video_decoder_->Stop();
@@ -63,13 +63,13 @@ void MediaSession::Stop() {
     audio_decoder_->Stop();
   }
 
-  ALOGD("MediaSession::Stop() done");
+  ALOGD("MediaSessionImpl::Stop() done");
 }
 
-bool MediaSession::InitVideoDecoder(
+bool MediaSessionImpl::InitVideoDecoder(
     VideoCodecType codec_type,
     bool use_software_decoder) {
-  ALOGD("MediaSession::InitVideoDecoder()");
+  ALOGD("MediaSessionImpl::InitVideoDecoder()");
   assert(csd_);
 
   // create a video decoder that renders to the surface texture
@@ -97,10 +97,10 @@ bool MediaSession::InitVideoDecoder(
   return true;
 }
 
-bool MediaSession::CreateAudioDecoder(
+bool MediaSessionImpl::CreateAudioDecoder(
     AudioCodecType audio_codec,
     AudioFormat audio_format) {
-  ALOGD("MediaSession::CreateAudioDecoder()");
+  ALOGD("MediaSessionImpl::CreateAudioDecoder()");
 
   audio_decoder_ = ::CreateAudioDecoder(
       audio_codec,
@@ -114,7 +114,7 @@ bool MediaSession::CreateAudioDecoder(
   return audio_decoder_->Init();
 }
 
-void MediaSession::OnVideoFormatChanged(
+void MediaSessionImpl::OnVideoFormatChanged(
     int width,
     int height) {
   listener_->OnVideoFormatChanged(
@@ -122,7 +122,7 @@ void MediaSession::OnVideoFormatChanged(
       height);
 }
 
-void MediaSession::OnAudioFrame(
+void MediaSessionImpl::OnAudioFrame(
     std::shared_ptr<std::vector<uint8_t>> frame,
     uint64_t timestamp_us) {
   if (!audio_decoder_) {
@@ -135,7 +135,7 @@ void MediaSession::OnAudioFrame(
       timestamp_us);
 }
 
-void MediaSession::OnVideoFrame(
+void MediaSessionImpl::OnVideoFrame(
     bool key_frame,
     std::shared_ptr<std::vector<uint8_t>> frame,
     uint64_t timestamp_us) {
@@ -158,15 +158,15 @@ void MediaSession::OnVideoFrame(
       timestamp_us);
 }
 
-void MediaSession::EnableAudio(bool enable) {
-  ALOGD("MediaSession::EnableAudio(%d)", enable);
+void MediaSessionImpl::EnableAudio(bool enable) {
+  ALOGD("MediaSessionImpl::EnableAudio(%d)", enable);
 
   if (audio_decoder_) {
     audio_decoder_->EnablePlayback(enable);
   }
 }
 
-void MediaSession::HandleVideoCsd(
+void MediaSessionImpl::HandleVideoCsd(
     const uint8_t* frame,
     size_t size) {
   std::optional<VideoCsd> csd = ParseVideoCsd(
@@ -192,15 +192,15 @@ void MediaSession::HandleVideoCsd(
   ResetVideoDecoder();
 }
 
-bool MediaSession::InitHardwareVideoDecoder() {
+bool MediaSessionImpl::InitHardwareVideoDecoder() {
   return InitVideoDecoder(video_codec_, false);
 }
 
-bool MediaSession::InitSoftwareVideoDecoder() {
+bool MediaSessionImpl::InitSoftwareVideoDecoder() {
   return InitVideoDecoder(video_codec_, true);
 }
 
-void MediaSession::ResetVideoDecoder() {
+void MediaSessionImpl::ResetVideoDecoder() {
   ALOGI("Reset video decoder");
 
   if (video_decoder_) {

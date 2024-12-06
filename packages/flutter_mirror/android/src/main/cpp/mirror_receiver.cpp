@@ -1,5 +1,7 @@
 #include "mirror_receiver.h"
 #include <assert.h>
+#include "media/media_session_dump.h"
+#include "media/media_session_impl.h"
 #include "util/log.h"
 #include "util/thread_checker.h"
 
@@ -32,12 +34,25 @@ MirrorReceiver::MirrorReceiver(
   ALOGV("MirrorReceiver()");
 
   thread_id_ = std::this_thread::get_id();
+
+  replay_receiver_ = std::make_unique<ReplayReceiver>(*this);
 }
 
 MirrorReceiver::~MirrorReceiver() {
   DCHECK_RUN_ON(thread_id_);
 
   ALOGV("~MirrorReceiver()");
+}
+
+void MirrorReceiver::EnableDump(const std::string& path) {
+  dump_path_ = path;
+}
+
+void MirrorReceiver::StartMirrorReplay(
+    const std::string& mirror_id,
+    const std::string& video_codec,
+    const std::string& video_path) {
+  replay_receiver_->StartMirrorReplay(mirror_id, video_codec, video_path);
 }
 
 void MirrorReceiver::StartAirplay(
@@ -194,6 +209,20 @@ void MirrorReceiver::OnMirrorAuth(
       timeout_sec);
 }
 
+MediaSessionPtr MirrorReceiver::CreateMediaSession() {
+  auto session = std::make_unique<MediaSessionImpl>(
+      *texture_registry_,
+      additional_codec_params_);
+
+  if (!dump_path_.empty()) {
+    return std::make_unique<MediaSessionDump>(
+        std::move(session),
+        dump_path_);
+  } else {
+    return session;
+  }
+}
+
 void MirrorReceiver::OnMirrorStart(
     MirrorSessionPtr sess) {
   assert(sess);
@@ -206,9 +235,7 @@ void MirrorReceiver::OnMirrorStart(
   std::string mirror_id = session->GetMirrorId();
   ALOGD("MirrorReceiver::OnMirrorStart(%s)", mirror_id.c_str());
 
-  auto media_session = std::make_unique<MediaSession>(
-      *texture_registry_,
-      additional_codec_params_);
+  auto media_session = CreateMediaSession();
 
   if (!session->StartMirror(
           std::move(media_session))) {

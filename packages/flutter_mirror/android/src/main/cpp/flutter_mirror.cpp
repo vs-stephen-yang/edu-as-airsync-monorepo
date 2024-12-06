@@ -15,9 +15,9 @@
 #include "jni/texture_registry.h"
 
 #include "util/jni/byte_array.h"
+#include "util/jni/map_utils.h"
 #include "util/jni/scoped_env.h"
 #include "util/jni/string.h"
-#include "util/jni/map_utils.h"
 #include "util/log.h"
 
 #define MIRROR(instance) \
@@ -65,7 +65,7 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_createInstanceNative(
 
   std::map<std::string, int> codec_params;
   if (additional_codec_params != nullptr) {
-      codec_params = jni::MapUtils::toStdMap(env, additional_codec_params);
+    codec_params = jni::MapUtils::toStdMap(env, additional_codec_params);
   }
 
   auto proxy = std::make_unique<jni::MirrorReceiver>(
@@ -84,6 +84,44 @@ Java_com_viewsonic_flutter_1mirror_MirrorReceiver_createInstanceNative(
       std::move(codec_params));
 
   return reinterpret_cast<long>(receiver);
+}
+
+JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1mirror_MirrorReceiver_enableDumpNative(
+    JNIEnv* env,
+    jobject thiz,
+    jlong instance,
+    jstring jdump_path) {
+  assert(instance != 0);
+  ALOGV("MirrorReceiver_enableDumpNative()");
+  MirrorReceiver* receiver = MIRROR(instance);
+
+  jni::String str(env);
+
+  std::string dump_path = str.ToUtf8(jdump_path);
+
+  receiver->EnableDump(dump_path);
+}
+
+JNIEXPORT void JNICALL
+Java_com_viewsonic_flutter_1mirror_MirrorReceiver_startMirrorReplayNative(
+    JNIEnv* env,
+    jobject thiz,
+    jlong instance,
+    jstring jmirror_id,
+    jstring jvideo_codec,
+    jstring jvideo_path) {
+  assert(instance != 0);
+  ALOGV("MirrorReceiver_startMirrorReplayNative()");
+  MirrorReceiver* receiver = MIRROR(instance);
+
+  jni::String str(env);
+
+  std::string mirror_id = str.ToUtf8(jmirror_id);
+  std::string video_codec = str.ToUtf8(jvideo_codec);
+  std::string video_path = str.ToUtf8(jvideo_path);
+
+  receiver->StartMirrorReplay(mirror_id, video_codec, video_path);
 }
 
 JNIEXPORT void JNICALL

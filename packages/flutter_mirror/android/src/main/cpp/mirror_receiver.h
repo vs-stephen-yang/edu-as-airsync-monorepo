@@ -1,6 +1,7 @@
 #ifndef FLUTTER_MIRROR_PLUGIN_MIRROR_RECEIVER_H_
 #define FLUTTER_MIRROR_PLUGIN_MIRROR_RECEIVER_H_
 
+#include <replay/replay_receiver.h>
 #include <map>
 #include <string>
 #include <thread>
@@ -25,6 +26,13 @@ class MirrorReceiver
   ~MirrorReceiver();
 
   static void InitializeOnce();
+
+  void EnableDump(const std::string& path);
+
+  void StartMirrorReplay(
+      const std::string& mirror_id,
+      const std::string& video_codec,
+      const std::string& video_path);
 
   // start airplay
   void StartAirplay(
@@ -91,10 +99,14 @@ class MirrorReceiver
   std::vector<MirrorSessionPtr> FindSessionsByType(
       MirrorType mirrorType);
 
+  MediaSessionPtr CreateMediaSession();
+
  private:
   jni::MirrorReceiverPtr proxy_;
   jni::TextureRegistryPtr texture_registry_;
   std::map<std::string, int> additional_codec_params_;
+
+  std::string dump_path_;
 
   std::thread::id thread_id_;
   std::mutex mutex_;
@@ -105,6 +117,9 @@ class MirrorReceiver
 
   // googlecast
   std::unique_ptr<GooglecastReceiver> googlecast_receiver_;
+
+  // replay
+  std::unique_ptr<ReplayReceiver> replay_receiver_;
 };
 
 #endif  // FLUTTER_MIRROR_PLUGIN_MIRROR_RECEIVER_H_
