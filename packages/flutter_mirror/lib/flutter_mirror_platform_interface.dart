@@ -36,6 +36,15 @@ abstract class FlutterMirrorPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
+  Future<void> enableDump(String? dumpPath) async {
+    throw UnimplementedError('enableDump() has not been implemented.');
+  }
+
+  Future<void> startMirrorReplay(
+      String mirrorId, String videoCodec, String videoPath) async {
+    throw UnimplementedError('startMirrorReplay() has not been implemented.');
+  }
+
   Future<void> startAirplay(AirplayConfig config) async {
     throw UnimplementedError('startAirplay() has not been implemented.');
   }

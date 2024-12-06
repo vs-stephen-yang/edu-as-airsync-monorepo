@@ -25,12 +25,14 @@ aux_source_directory(./util/jni util_jni_src)
 aux_source_directory(./media media_src)
 aux_source_directory(./util util_src)
 aux_source_directory(./jni jni_src)
+aux_source_directory(./replay replay_src)
 
 add_library(
   flutter_mirror
   SHARED
   ${src}
   ${media_src}
+  ${replay_src}
   ${util_src}
   ${util_jni_src}
   ${jni_src})

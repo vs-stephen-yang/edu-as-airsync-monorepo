@@ -51,6 +51,24 @@ public class MirrorReceiver implements
     nsdManager_ = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
   }
 
+  // Enable video dump
+  public void enableDump(String path) {
+    assert instance_ != 0;
+
+    enableDumpNative(
+        instance_,
+        path);
+
+  }
+
+  //
+  public void startMirrorReplay(String mirrorId, String videoCodec, String videoPath) {
+    startMirrorReplayNative(instance_,
+        mirrorId,
+        videoCodec,
+        videoPath);
+  }
+
   // start airplay
   public void startAirplay(String name, String security) {
     assert instance_ != 0;
@@ -308,6 +326,10 @@ public class MirrorReceiver implements
   private native void destroyInstanceNative(
       long instance);
 
+  private native void enableDumpNative(
+      long instance,
+      String dumpPath);
+
   private native void stopMirrorNative(
       long instance,
       String mirrorId);
@@ -316,6 +338,12 @@ public class MirrorReceiver implements
       long instance,
       String mirrorId,
       boolean enable);
+
+  private native void startMirrorReplayNative(
+      long instance,
+      String mirrorId,
+      String videoCodec,
+      String videoPath);
 
   private native void startAirplayNative(
       long instance,
