@@ -32,7 +32,7 @@ void MediaSessionDump::EnableAudio(bool enable) {
 void MediaSessionDump::OnAudioFrame(
     std::shared_ptr<std::vector<uint8_t>> frame,
     uint64_t timestamp_us) {
-  media_session_->OnAudioFrame(frame, timestamp_us);
+  // media_session_->OnAudioFrame(frame, timestamp_us);
 }
 
 void MediaSessionDump::OnVideoFrame(
@@ -41,5 +41,5 @@ void MediaSessionDump::OnVideoFrame(
     uint64_t timestamp_us) {
   writer_->writeFrame(*frame, timestamp_us);
 
-  media_session_->OnVideoFrame(key_frame, frame, timestamp_us);
+  // media_session_->OnVideoFrame(key_frame, frame, timestamp_us);
 }
