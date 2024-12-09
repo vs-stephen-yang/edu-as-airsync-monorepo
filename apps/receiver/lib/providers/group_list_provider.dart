@@ -38,6 +38,8 @@ class GroupListModel with ChangeNotifier {
     if (discovery != null) {
       try {
         await stopDiscovery(discovery!);
+        discovery?.removeServiceListener(onEventOccurred);
+        discovery?.dispose();
       } catch (e) {
         log.severe('Failed to stop Bonjour Discovery', e);
       } finally {
