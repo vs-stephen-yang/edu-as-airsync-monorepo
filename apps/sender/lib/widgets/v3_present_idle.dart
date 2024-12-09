@@ -8,6 +8,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/providers/v3_demo_provider.dart';
+import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/v3_toast.dart';
 import 'package:display_cast_flutter/widgets/v3_message_dialog.dart';
@@ -199,6 +200,23 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
             ],
           ],
         ),
+        if (kIsWeb) ...[
+          Positioned(
+            bottom: 24,
+            child: Align(
+              alignment: Alignment.center,
+              child: AutoSizeText(
+                'v${AppConfig.of(context)?.appVersion}',
+                style: TextStyle(
+                  fontSize: 14.0,
+                  color: context.tokens.color.vsdswColorOnSurfaceVariant,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 0.0,
+                ),
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
