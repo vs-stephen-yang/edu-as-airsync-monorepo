@@ -70,10 +70,13 @@ void ReplayMirrorSession::StopMirror() {
   if (video_thread_.joinable()) {
     video_thread_.join();
   }
+
+  Close();
 }
 
 void ReplayMirrorSession::Close() {
   media_session_->Stop();
+  media_session_.reset();
 }
 
 void ReplayMirrorSession::OnVideoFormatChanged(int width, int height) {
