@@ -24,7 +24,7 @@ class V3ShortcutsMenu extends StatelessWidget {
       ),
       alignment: Alignment.bottomLeft,
       backgroundColor: const Color(0xFF151C32),
-      insetPadding: const EdgeInsets.only(left: 8, bottom: 8),
+      insetPadding: const EdgeInsets.only(left: 70, bottom: 70),
       elevation: 16.0,
       shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
       child: SizedBox(

@@ -36,6 +36,8 @@ class _V3StreamingViewState extends ConsumerState {
       _halfHeight = 0,
       _thirdWidth = 0;
   bool _isNewSharingOnScreen = false;
+  bool _showQuickConnect = false;
+  bool _showShortcut = false;
   final isAnnotationImplement = false; // todo: annotation
 
   @override
@@ -231,86 +233,110 @@ class _V3StreamingViewState extends ConsumerState {
                 : Positioned(
                     left: 13,
                     bottom: 8,
-                    child: SizedBox(
-                      width: 41,
-                      height: 41,
-                      child: IconButton(
-                        icon: const Image(
-                          image: Svg('assets/images/ic_streaming_shortcut.svg'),
-                        ),
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                        onPressed: () {
-                          _showShortcutsMenuDialog();
-                        },
-                      ),
-                    ),
-                  );
-          },
-        ),
-        ValueListenableBuilder(
-          valueListenable: V3Home.isShowHeaderFooterBar,
-          builder: (context, value, child) {
-            return value
-                ? const SizedBox.shrink()
-                : Positioned(
-                    right: 8,
-                    bottom: 8,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints.tightFor(
-                        width: isAnnotationImplement ? 96 : 41,
-                        height: 41,
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: context.tokens.color.vsdslColorSurface800,
-                          borderRadius: context.tokens.radii.vsdslRadiusFull,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            if (isAnnotationImplement)
-                              SizedBox(
-                                width: 41,
-                                height: 41,
-                                child: IconButton(
-                                  icon: const Image(
-                                    image: Svg(
-                                        'assets/images/ic_streaming_pen.svg'),
-                                  ),
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(),
-                                  onPressed: () {
-                                    // todo: annotation
-                                  },
-                                ),
-                              ),
-                            if (isAnnotationImplement)
-                              Container(
-                                width: 1,
-                                height: 21,
-                                color: context
-                                    .tokens.color.vsdslColorOnSurfaceVariant,
-                              ),
-                            SizedBox(
-                              width: 41,
-                              height: 41,
-                              child: IconButton(
-                                icon: const Image(
-                                  image: Svg(
-                                      'assets/images/ic_streaming_qrcode.svg'),
-                                ),
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                                onPressed: () {
-                                  _showQuickConnectMenuDialog();
-                                },
-                              ),
+                    child: ExpandableWidget(
+                      children: [
+                        Container(
+                          width: 41,
+                          height: 41,
+                          decoration: ShapeDecoration(
+                            color: _showShortcut
+                                ? context.tokens.color.vsdslColorSecondary
+                                : context.tokens.color.vsdslColorSurface800,
+                            shape: const OvalBorder(),
+                          ),
+                          child: IconButton(
+                            icon: const Image(
+                              width: 20,
+                              height: 20,
+                              image: Svg(
+                                  'assets/images/ic_streaming_shortcut.svg'),
                             ),
-                          ],
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            onPressed: () {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                _showShortcutsMenuDialog();
+                              });
+                              setState(() {
+                                _showShortcut = true;
+                              });
+                            },
+                          ),
                         ),
-                      ),
+                        ConstrainedBox(
+                          constraints: BoxConstraints.tightFor(
+                            width: isAnnotationImplement ? 96 : 41,
+                            height: 41,
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: context.tokens.color.vsdslColorSurface800,
+                              borderRadius:
+                                  context.tokens.radii.vsdslRadiusFull,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                if (isAnnotationImplement)
+                                  SizedBox(
+                                    width: 41,
+                                    height: 41,
+                                    child: IconButton(
+                                      icon: const Image(
+                                        image: Svg(
+                                            'assets/images/ic_streaming_pen.svg'),
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      onPressed: () {
+                                        // todo: annotation
+                                      },
+                                    ),
+                                  ),
+                                if (isAnnotationImplement)
+                                  Container(
+                                    width: 1,
+                                    height: 21,
+                                    color: context.tokens.color
+                                        .vsdslColorOnSurfaceVariant,
+                                  ),
+                                Container(
+                                  width: 41,
+                                  height: 41,
+                                  decoration: ShapeDecoration(
+                                    color: _showQuickConnect
+                                        ? context
+                                            .tokens.color.vsdslColorSecondary
+                                        : context
+                                            .tokens.color.vsdslColorSurface800,
+                                    shape: const OvalBorder(),
+                                  ),
+                                  child: IconButton(
+                                    icon: const Image(
+                                      width: 20,
+                                      height: 20,
+                                      image: Svg(
+                                          'assets/images/ic_streaming_qrcode.svg'),
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) {
+                                        _showQuickConnectMenuDialog();
+                                      });
+                                      setState(() {
+                                        _showQuickConnect = true;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   );
           },
@@ -369,7 +395,11 @@ class _V3StreamingViewState extends ConsumerState {
       builder: (BuildContext context) {
         return const V3ShortcutsMenu();
       },
-    );
+    ).then((_) {
+      setState(() {
+        _showShortcut = false;
+      });
+    });
   }
 
   _showQuickConnectMenuDialog() {
@@ -379,7 +409,11 @@ class _V3StreamingViewState extends ConsumerState {
       builder: (BuildContext context) {
         return const V3QuickConnectMenu();
       },
-    );
+    ).then((_) {
+      setState(() {
+        _showQuickConnect = false;
+      });
+    });
   }
 
   _showNewSharingMessageDialog(List<String> names) async {
@@ -399,5 +433,112 @@ class _V3StreamingViewState extends ConsumerState {
           List.from(channelProvider.showNewSharingNameList.value);
       _isNewSharingOnScreen = false;
     });
+  }
+}
+
+class ExpandableWidget extends StatefulWidget {
+  const ExpandableWidget({super.key, required this.children});
+
+  final List<Widget> children;
+
+  @override
+  State<ExpandableWidget> createState() => _ExpandableWidgetState();
+}
+
+class _ExpandableWidgetState extends State<ExpandableWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _widthAnimation;
+
+  bool isExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    _widthAnimation = Tween<double>(begin: 50.0, end: 150.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  void _toggle() {
+    if (isExpanded) {
+      _controller.reverse();
+    } else {
+      _controller.forward();
+    }
+    setState(() {
+      isExpanded = !isExpanded;
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return ClipRect(
+          child: SizedBox(
+            width: _widthAnimation.value,
+            height: 60.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                if (!isExpanded)
+                  SizedBox(
+                    width: 41,
+                    height: 41,
+                    child: IconButton(
+                      icon: const Image(
+                        image: Svg(
+                            'assets/images/ic_streaming_shortcut_expanded.svg'),
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () {
+                        _toggle();
+                      },
+                    ),
+                  ),
+                if (isExpanded) ...[
+                  Container(
+                    width: 41,
+                    height: 41,
+                    decoration: ShapeDecoration(
+                      color: context.tokens.color.vsdslColorSurface800,
+                      shape: const OvalBorder(),
+                    ),
+                    child: IconButton(
+                      icon: const Image(
+                        width: 20,
+                        height: 20,
+                        image: Svg(
+                            'assets/images/ic_streaming_shortcut_minimize.svg'),
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () {
+                        _toggle();
+                      },
+                    ),
+                  ),
+                  ...widget.children
+                ],
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
