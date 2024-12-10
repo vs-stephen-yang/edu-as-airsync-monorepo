@@ -118,9 +118,9 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     return String.fromCharCodes(Iterable.generate(roomIdLength, (_) => chars.codeUnitAt(rand.codeUnitAt(_ % rand.length) % chars.length)));
   }
 
-  Future startRemoteScreenPublisher() async {
+  Future<bool> startRemoteScreenPublisher() async {
     if (_ionSfuClient != null) {
-      return;
+      return true;
     }
 
     final ionSignal = JsonRPCSignal("ws://127.0.0.1:$roomPort/ws");
@@ -168,44 +168,50 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     constraints.audio = false;
     constraints.resolution = captureResolution.name;
 
-    await Helper.requestCapturePermission();
-    if (!kIsWeb && Platform.isAndroid) {
-      // Android specific
-      Future<void> requestBackgroundPermission() async {
-        // Required for android screen share.
-        try {
-          var hasPermissions = await FlutterBackground.hasPermissions;
-          const androidConfig = FlutterBackgroundAndroidConfig(
-            notificationTitle: 'Screen Sharing',
-            notificationText: 'AirSync is sharing the screen.',
-            notificationImportance: AndroidNotificationImportance.normal,
-            notificationIcon: AndroidResource(
-              name: 'ic_launcher',
-              defType: 'mipmap',
-            ),
-            // Above Android 12 will has some issue if set below option true.
-            shouldRequestBatteryOptimizationsOff: false,
-          );
-
-          hasPermissions = await FlutterBackground.initialize(
-            androidConfig: androidConfig,
-          );
-
-          if (hasPermissions &&
-              !FlutterBackground.isBackgroundExecutionEnabled) {
-            await FlutterBackground.enableBackgroundExecution();
-          }
-        } catch (e, stackTrace) {
-          log.severe('requestBackgroundPermission', e, stackTrace);
-        }
-      }
-
-      await requestBackgroundPermission();
+    bool capturePermission = await Helper.requestCapturePermission();
+    if (!capturePermission) {
+      return false;
+    }
+    bool backgroundPermission = await requestBackgroundPermission();
+    if (!backgroundPermission) {
+      return false;
     }
 
     var localStream =
         await LocalStream.getDisplayMedia(constraints: constraints);
     await _ionSfuClient?.publish(localStream);
+    return true;
+  }
+
+  Future<bool> requestBackgroundPermission() async {
+    if (Platform.isAndroid) {
+      try {
+        var hasPermissions = await FlutterBackground.hasPermissions;
+        const androidConfig = FlutterBackgroundAndroidConfig(
+          notificationTitle: 'Screen Sharing',
+          notificationText: 'AirSync is sharing the screen.',
+          notificationImportance: AndroidNotificationImportance.normal,
+          notificationIcon: AndroidResource(
+            name: 'ic_launcher',
+            defType: 'mipmap',
+          ),
+          // Above Android 12 will has some issue if set below option true.
+          shouldRequestBatteryOptimizationsOff: false,
+        );
+
+        hasPermissions = await FlutterBackground.initialize(
+          androidConfig: androidConfig,
+        );
+        if (hasPermissions && !FlutterBackground.isBackgroundExecutionEnabled) {
+          bool result = await FlutterBackground.enableBackgroundExecution();
+          return result;
+        }
+        return hasPermissions;
+      } catch (e, stackTrace) {
+        log.severe('requestBackgroundPermission', e, stackTrace);
+      }
+    }
+    return false;
   }
 
   void stopRemoteScreenPublisher() {
