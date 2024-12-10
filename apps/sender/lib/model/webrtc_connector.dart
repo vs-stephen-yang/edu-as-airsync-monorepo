@@ -47,6 +47,7 @@ class WebRTCConnector {
 
   MediaStream? _localStream;
   List<RTCIceCandidate> remoteCandidates = [];
+  final Completer _descriptionSetCompleter = Completer();
 
   bool get isFirstConnected {
     return _isRtcFirstConnected;
@@ -369,26 +370,24 @@ class WebRTCConnector {
       case SignalMessageType.offer:
         // handle offer from the peer
         final offer = RTCSessionDescription(msg.sdp, type);
-        _pc!.setRemoteDescription(offer);
+        await _pc!.setRemoteDescription(offer);
         // create answer
         final answer = await _pc!.createAnswer();
         RTCSessionDescription fixedAnswer = SdpUtil.fixSdp(answer);
         await _pc!.setLocalDescription(fixedAnswer);
+        _descriptionSetCompleter.complete();
         break;
       case SignalMessageType.answer:
         // handle answer from the peer
         final answer = RTCSessionDescription(msg.sdp, 'answer');
-        _pc!.setRemoteDescription(answer);
+        await _pc!.setRemoteDescription(answer);
+        _descriptionSetCompleter.complete();
         break;
       case SignalMessageType.candidate:
         final candidate =
             RTCIceCandidate(msg.candidate, msg.sdpMid, msg.sdpMLineIndex);
-        if (_pc != null) {
-          // add candidates from the peer
-          await _pc?.addCandidate(candidate);
-        } else {
-          remoteCandidates.add(candidate);
-        }
+        await _descriptionSetCompleter.future;
+        await _pc!.addCandidate(candidate);
         break;
       case null:
         break;
@@ -558,11 +557,15 @@ class WebRTCConnector {
 
   void _onIceCandidate(RTCIceCandidate candidate) {
     log.info('onIceCandidate: ${candidate.candidate}');
-    var message = PresentSignalMessage(null, SignalMessageType.candidate);
-    message.candidate = candidate.candidate;
-    message.sdpMid = candidate.sdpMid;
-    message.sdpMLineIndex = candidate.sdpMLineIndex;
-    sendSignalMessage(message);
+    try {
+      var message = PresentSignalMessage(null, SignalMessageType.candidate);
+      message.candidate = candidate.candidate;
+      message.sdpMid = candidate.sdpMid;
+      message.sdpMLineIndex = candidate.sdpMLineIndex;
+      sendSignalMessage(message);
+    } catch (e) {
+      log.warning('Unable to add candidate ${candidate} to connection');
+    }
   }
 
   Future<bool> _updateEncodingParameters() async {
