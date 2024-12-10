@@ -386,7 +386,12 @@ class ChannelProvider extends ChangeNotifier {
     final iceServers = await _getIceServers(ChannelMode.tunnel);
 
     await _remoteScreenServe.startSfuServer(iceServers);
-    await _remoteScreenServe.startRemoteScreenPublisher();
+    bool result = await _remoteScreenServe.startRemoteScreenPublisher();
+    if (!result) {
+      removeSender(fromSender: true);
+      return stopRemoteScreenPublisher();
+    }
+
     ConnectionTimer.getInstance().startShareSenderTimer(() {
       removeSender(
         fromGroup: _isGroupMode,
