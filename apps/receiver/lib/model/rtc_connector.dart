@@ -36,6 +36,8 @@ class RTCConnector {
   Timer? _connectionTimeoutTimer;
   StreamController<int> connectionTimeTimeout = StreamController<int>();
 
+  final Completer _descriptionSetCompleter = Completer();
+
   PresentationState presentationState = PresentationState.stopStreaming;
   String? sessionId;
   String? clientId;
@@ -392,6 +394,7 @@ class RTCConnector {
         final answer = await pc!.createAnswer();
         RTCSessionDescription fixedAnswer = _fixSdp(answer);
         await pc!.setLocalDescription(fixedAnswer);
+        _descriptionSetCompleter.complete();
         // send answer to the peer
         final message =
             PresentSignalMessage(msg.sessionId, SignalMessageType.answer);
@@ -403,6 +406,7 @@ class RTCConnector {
         // add candidates from the peer
         final candidate =
             RTCIceCandidate(msg.candidate, msg.sdpMid, msg.sdpMLineIndex);
+        await _descriptionSetCompleter.future;
         await pc!.addCandidate(candidate);
         break;
       default:
@@ -604,22 +608,19 @@ class RTCConnector {
     }
   }
 
-  Future<void> _onIceCandidate(RTCIceCandidate candidate) async {
+  void _onIceCandidate(RTCIceCandidate candidate) {
     _printPeerConnectionLog('_onIceCandidate', candidate.candidate.toString());
 
-    // send candidates to the peer
-    // This delay is needed to allow enough time to try an ICE candidate
-    // before skipping to the next one. 1 second is just an heuristic value
-    // and should be thoroughly tested in your own environment.
-
-    await Future.delayed(const Duration(milliseconds: 1000), () {
+    try {
       var message =
           PresentSignalMessage(sessionId, SignalMessageType.candidate);
       message.candidate = candidate.candidate;
       message.sdpMid = candidate.sdpMid;
       message.sdpMLineIndex = candidate.sdpMLineIndex;
       _channel.send(message);
-    });
+    } catch (e) {
+      log.warning('Unable to add candidate ${candidate} to connection');
+    }
   }
 
   void _onRenegotiationNeeded() {
