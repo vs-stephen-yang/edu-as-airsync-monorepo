@@ -105,21 +105,40 @@ void ReplayMirrorSession::VideoReaderThread() {
     // Use VideoFrameReader to read the video file
     VideoFrameReader frameReader(videoPath_);
 
+    uint64_t start_timestamp_us = 0;                                      // Start timestamp in microseconds
+    std::chrono::time_point<std::chrono::system_clock> start_time_point;  // Start time as a time_point
+
     while (running_) {
       auto payload = std::make_shared<std::vector<uint8_t>>();
-      uint64_t timestamp = 0;
+      uint64_t frame_timestamp_us = 0;  // Timestamp of the current frame in microseconds
 
       // Read a frame
-      if (!frameReader.readFrame(*payload, timestamp)) {
+      if (!frameReader.readFrame(*payload, frame_timestamp_us)) {
         ALOGD("End of video file or read error.");
         break;
       }
 
-      // Feed the frame to the decoder
-      media_session_->OnVideoFrame(false, payload, timestamp);
+      if (start_timestamp_us == 0) {
+        // Initialize the start timestamp and start time point
+        start_timestamp_us = frame_timestamp_us;
+        start_time_point = std::chrono::system_clock::now();
+      }
 
-      // Simulate playback delay based on frame timestamps (optional)
-      std::this_thread::sleep_for(std::chrono::milliseconds(30));  // Approximation for frame rate
+      // Calculate elapsed time in microseconds
+      auto now_time_point = std::chrono::system_clock::now();
+      uint64_t elapsed_real_us = std::chrono::duration_cast<std::chrono::microseconds>(now_time_point - start_time_point).count();
+
+      // Calculate the elapsed time based on frame timestamps
+      uint64_t frame_elapsed_us = frame_timestamp_us - start_timestamp_us;
+
+      // Adjust playback delay based on frame timestamps
+      if (frame_elapsed_us > elapsed_real_us) {
+        uint64_t delay_us = frame_elapsed_us - elapsed_real_us;
+        std::this_thread::sleep_for(std::chrono::microseconds(delay_us));
+      }
+
+      // Feed the frame to the decoder
+      media_session_->OnVideoFrame(false, payload, frame_timestamp_us);
     }
   } catch (const std::exception& ex) {
     ALOGE("Error in VideoReaderThread: %s", ex.what());

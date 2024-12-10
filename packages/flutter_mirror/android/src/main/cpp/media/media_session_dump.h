@@ -1,6 +1,7 @@
 #ifndef FLUTTER_MIRROR_PLUGIN_MEDIA_SESSION_DUMP_H_
 #define FLUTTER_MIRROR_PLUGIN_MEDIA_SESSION_DUMP_H_
 
+#include <chrono>
 #include <map>
 #include <memory>
 #include <optional>
@@ -35,6 +36,10 @@ class MediaSessionDump : public MediaSession {
       uint64_t timestamp_us) override;
 
  private:
+  uint64_t ElapsedTime();
+
+  std::chrono::time_point<std::chrono::system_clock> start_time_;
+
   MediaSessionPtr media_session_;
   std::string path_;
 
