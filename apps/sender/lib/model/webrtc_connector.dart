@@ -46,7 +46,6 @@ class WebRTCConnector {
   RTCDataChannel? _controlDataChannel;
 
   MediaStream? _localStream;
-  List<RTCIceCandidate> remoteCandidates = [];
   final Completer _descriptionSetCompleter = Completer();
 
   bool get isFirstConnected {
@@ -375,13 +374,17 @@ class WebRTCConnector {
         final answer = await _pc!.createAnswer();
         RTCSessionDescription fixedAnswer = SdpUtil.fixSdp(answer);
         await _pc!.setLocalDescription(fixedAnswer);
-        _descriptionSetCompleter.complete();
+        if (!_descriptionSetCompleter.isCompleted) {
+          _descriptionSetCompleter.complete();
+        }
         break;
       case SignalMessageType.answer:
         // handle answer from the peer
         final answer = RTCSessionDescription(msg.sdp, 'answer');
         await _pc!.setRemoteDescription(answer);
-        _descriptionSetCompleter.complete();
+        if (!_descriptionSetCompleter.isCompleted) {
+          _descriptionSetCompleter.complete();
+        }
         break;
       case SignalMessageType.candidate:
         final candidate =
