@@ -390,7 +390,8 @@ class WebRTCConnector {
         final candidate =
             RTCIceCandidate(msg.candidate, msg.sdpMid, msg.sdpMLineIndex);
         await _descriptionSetCompleter.future;
-        await _pc!.addCandidate(candidate);
+        // pc may be null when disconnect peer connection
+        await _pc?.addCandidate(candidate);
         break;
       case null:
         break;
@@ -690,6 +691,10 @@ class WebRTCConnector {
       await _pc?.close();
       await _pc?.dispose();
       _pc = null;
+
+      if (!_descriptionSetCompleter.isCompleted) {
+        _descriptionSetCompleter.complete();
+      }
     } catch (e, stackTrace) {
       log.warning('_peerConnectionDisconnect', e, stackTrace);
     }
