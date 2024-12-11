@@ -394,7 +394,9 @@ class RTCConnector {
         final answer = await pc!.createAnswer();
         RTCSessionDescription fixedAnswer = _fixSdp(answer);
         await pc!.setLocalDescription(fixedAnswer);
-        _descriptionSetCompleter.complete();
+        if (!_descriptionSetCompleter.isCompleted) {
+          _descriptionSetCompleter.complete();
+        }
         // send answer to the peer
         final message =
             PresentSignalMessage(msg.sessionId, SignalMessageType.answer);
