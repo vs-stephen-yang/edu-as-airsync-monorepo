@@ -41,6 +41,8 @@ class ApMirrorSession
       int width,
       int height) override;
 
+  virtual void OnVideoFrameRate(int fps) override;
+
   // implements AirplayMirrorSession::Listener
   virtual void OnMirrorEvent(
       ap::AirplayMirrorSession::Listener::Event ev) override;

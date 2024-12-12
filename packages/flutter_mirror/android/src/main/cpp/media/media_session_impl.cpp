@@ -122,6 +122,10 @@ void MediaSessionImpl::OnVideoFormatChanged(
       height);
 }
 
+void MediaSessionImpl::OnVideoFrameRate(int fps) {
+  listener_->OnVideoFrameRate(fps);
+}
+
 void MediaSessionImpl::OnAudioFrame(
     std::shared_ptr<std::vector<uint8_t>> frame,
     uint64_t timestamp_us) {

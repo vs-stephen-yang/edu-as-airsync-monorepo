@@ -44,6 +44,8 @@ class GooglecastMirrorSession
       int width,
       int height) override;
 
+  virtual void OnVideoFrameRate(int fps) override;
+
   // implements CastMirrorSession::Listener
   virtual void OnMirrorEvent(
       openscreen::cast::CastMirrorSession::Listener::Event ev) override;

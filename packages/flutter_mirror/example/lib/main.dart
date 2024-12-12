@@ -144,6 +144,11 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
     setState(() {});
   }
 
+  @override
+  void onMirrorVideoFrameRate(String mirrorId, int fps) {
+    print('Video frame rate: $fps');
+  }
+
   void _getWidgetInfo(_Mirror mirror) {
     final RenderBox renderBox =
         mirror.stickyKey.currentContext?.findRenderObject() as RenderBox;

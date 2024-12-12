@@ -82,6 +82,9 @@ void ReplayMirrorSession::Close() {
 void ReplayMirrorSession::OnVideoFormatChanged(int width, int height) {
   mirror_listener_.OnMirrorVideoResize(this, width, height);
 }
+void ReplayMirrorSession::OnVideoFrameRate(int fps) {
+  mirror_listener_.OnMirrorVideoFrameRate(this, fps);
+}
 
 std::string ReplayMirrorSession::GetMirrorId() {
   return mirror_id_;

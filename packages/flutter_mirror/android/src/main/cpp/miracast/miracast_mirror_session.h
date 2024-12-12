@@ -69,6 +69,8 @@ class MiracastMirrorSession
       int width,
       int height) override;
 
+  virtual void OnVideoFrameRate(int fps) override;
+
  private:
   std::string mirror_id_;
 

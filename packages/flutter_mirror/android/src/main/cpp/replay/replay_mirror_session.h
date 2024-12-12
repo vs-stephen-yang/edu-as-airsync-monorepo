@@ -40,6 +40,7 @@ class ReplayMirrorSession
 
   // implements MediaSession::Listener
   virtual void OnVideoFormatChanged(int width, int height) override;
+  virtual void OnVideoFrameRate(int fps) override;
 
  private:
   void VideoReaderThread();

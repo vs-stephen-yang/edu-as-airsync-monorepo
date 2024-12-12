@@ -44,6 +44,10 @@ class MirrorReceiver {
       int width,
       int height);
 
+  void OnMirrorVideoFrameRate(
+      const std::string& mirror_id,
+      int fps);
+
   void OnCredentialsRequest(
       int year,
       int month,
@@ -66,6 +70,7 @@ class MirrorReceiver {
   jmethodID onMirrorStop = nullptr;
 
   jmethodID onMirrorVideoResize = nullptr;
+  jmethodID onMirrorVideoFrameRate = nullptr;
 
   jmethodID onCredentialsRequest = nullptr;
 };
