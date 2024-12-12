@@ -41,7 +41,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
       }
       return showModerator || showCastDevice
           ? Positioned(
-              right: 0,
+              left: 0,
               bottom: 80,
               child: SizedBox(
                 width: 41,
@@ -50,7 +50,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                   children: [
                     Positioned(
                       top: 0,
-                      right: 0,
+                      left: 0,
                       bottom: 0,
                       child: Container(
                         width: 32,
@@ -59,24 +59,63 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           color:
                               context.tokens.color.vsdslColorOnSurfaceInverse,
                           borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            bottomLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
                           ),
                         ),
                       ),
                     ),
+                    if (featureCount == 1 &&
+                        (_isModeratorOnScreen || _isCastDeviceOnScreen))
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        bottom: 0,
+                        child: Container(
+                          width: 32,
+                          height: featureCount == 2 ? 123 : 68,
+                          decoration: BoxDecoration(
+                            color: context.tokens.color.vsdslColorSurface300,
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              bottomRight: Radius.circular(20),
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (featureCount == 2 &&
+                        (_isModeratorOnScreen || _isCastDeviceOnScreen))
+                      Positioned(
+                        top: _isModeratorOnScreen ? 0 : 68,
+                        left: 0,
+                        bottom: _isModeratorOnScreen ? 68 : 0,
+                        child: Container(
+                          width: 32,
+                          height: 68,
+                          decoration: BoxDecoration(
+                            color: context.tokens.color.vsdslColorSurface300,
+                            borderRadius: BorderRadius.only(
+                              topRight: _isModeratorOnScreen
+                                  ? const Radius.circular(20)
+                                  : Radius.zero,
+                              bottomRight: _isCastDeviceOnScreen
+                                  ? const Radius.circular(20)
+                                  : Radius.zero,
+                            ),
+                          ),
+                        ),
+                      ),
                     if (showModerator) ...[
                       Positioned(
                         top: 20,
-                        right: 3,
+                        left: 3,
                         child: SizedBox(
                           width: 27,
                           height: 27,
                           child: IconButton(
-                            icon: Image(
-                              image: Svg(_isModeratorOnScreen
-                                  ? 'assets/images/ic_streaming_moderator_on.svg'
-                                  : 'assets/images/ic_streaming_moderator_off.svg'),
+                            icon: const Image(
+                              image: Svg(
+                                  'assets/images/ic_streaming_moderator_off.svg'),
                             ),
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
@@ -92,7 +131,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                         ),
                       ),
                       Positioned(
-                        left: 0,
+                        right: 0,
                         top: 9,
                         child: Container(
                           width: 16,
@@ -120,7 +159,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                     if (featureCount == 2)
                       Positioned(
                         top: 61,
-                        right: 5,
+                        left: 5,
                         child: Container(
                           width: 21,
                           height: 1,
@@ -129,16 +168,15 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                       ),
                     if (showCastDevice) ...[
                       Positioned(
-                        right: 3,
+                        left: 3,
                         bottom: 20,
                         child: SizedBox(
                           width: 27,
                           height: 27,
                           child: IconButton(
-                            icon: Image(
-                              image: Svg(_isCastDeviceOnScreen
-                                  ? 'assets/images/ic_streaming_device_list_on.svg'
-                                  : 'assets/images/ic_streaming_device_list_off.svg'),
+                            icon: const Image(
+                              image: Svg(
+                                  'assets/images/ic_streaming_device_list_off.svg'),
                             ),
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
@@ -150,7 +188,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                       ),
                       if (channelProvider.remoteScreenConnectors.isNotEmpty)
                         Positioned(
-                          left: 0,
+                          right: 0,
                           top: featureCount == 2 ? 64 : 9,
                           child: Container(
                             width: 16,
