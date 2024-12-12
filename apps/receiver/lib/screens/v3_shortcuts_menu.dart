@@ -4,6 +4,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/screens/v3_cast_devices_menu.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -92,8 +93,15 @@ class V3ShortcutsMenu extends StatelessWidget {
                                   channelProvider.removeSender(
                                       fromSender: true);
                                 } else {
+                                  V3CastDevicesMenu.fromShortcut = true;
                                   channelProvider.startRemoteScreen(
                                       fromSender: true);
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    if (navService.canPop()) {
+                                      navService.goBack();
+                                    }
+                                  });
                                 }
 
                                 trackEvent(

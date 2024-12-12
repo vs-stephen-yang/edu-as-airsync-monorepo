@@ -7,8 +7,10 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 class V3CastDevicesMenu extends StatelessWidget {
   const V3CastDevicesMenu({super.key});
 
+  static bool fromShortcut = false;
   @override
   Widget build(BuildContext context) {
+    fromShortcut = false;
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
