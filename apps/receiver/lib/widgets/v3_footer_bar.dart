@@ -54,7 +54,7 @@ class V3FooterBar extends StatelessWidget {
           ),
           Positioned(
             left: 0,
-            bottom: 106,
+            bottom: 150,
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
                 backgroundColor:

@@ -12,7 +12,7 @@ class V3ParticipantsMenu extends StatelessWidget {
     return Stack(
       children: [
         Positioned(
-          right: 40,
+          left: 60,
           bottom: 80,
           child: Dialog(
             shape: RoundedRectangleBorder(
