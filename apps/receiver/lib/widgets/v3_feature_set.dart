@@ -39,6 +39,11 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
         featureCount++;
         showCastDevice = true;
       }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (V3CastDevicesMenu.fromShortcut) {
+          _showCastDeviceMenuDialog(context);
+        }
+      });
       return showModerator || showCastDevice
           ? Positioned(
               left: 0,
