@@ -561,15 +561,11 @@ class WebRTCConnector {
 
   void _onIceCandidate(RTCIceCandidate candidate) {
     log.info('onIceCandidate: ${candidate.candidate}');
-    try {
-      var message = PresentSignalMessage(null, SignalMessageType.candidate);
-      message.candidate = candidate.candidate;
-      message.sdpMid = candidate.sdpMid;
-      message.sdpMLineIndex = candidate.sdpMLineIndex;
-      sendSignalMessage(message);
-    } catch (e) {
-      log.warning('Unable to add candidate ${candidate} to connection');
-    }
+    var message = PresentSignalMessage(null, SignalMessageType.candidate);
+    message.candidate = candidate.candidate;
+    message.sdpMid = candidate.sdpMid;
+    message.sdpMLineIndex = candidate.sdpMLineIndex;
+    sendSignalMessage(message);
   }
 
   Future<bool> _updateEncodingParameters() async {
