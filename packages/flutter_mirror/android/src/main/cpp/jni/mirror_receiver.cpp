@@ -107,6 +107,18 @@ void MirrorReceiver::OnMirrorVideoResize(
       height);
 }
 
+void MirrorReceiver::OnMirrorVideoFrameRate(
+    const std::string& mirror_id,
+    int fps) {
+  jni::ScopedEnv env(vm_);
+
+  env->CallVoidMethod(
+      obj_,
+      onMirrorVideoFrameRate,
+      env->NewStringUTF(mirror_id.c_str()),
+      fps);
+}
+
 void MirrorReceiver::OnCredentialsRequest(
     int year,
     int month,
@@ -143,6 +155,9 @@ void MirrorReceiver::InitMethods(
 
   // void onMirrorVideoResize(int mirrorId, int width, int height)
   DEFINE_METHOD(onMirrorVideoResize, "(Ljava/lang/String;II)V");
+
+  // void onMirrorVideoFrameRate(int mirrorId, int fps)
+  DEFINE_METHOD(onMirrorVideoFrameRate, "(Ljava/lang/String;I)V");
 
   // void onCredentialsRequest(int year, int month, int day)
   DEFINE_METHOD(onCredentialsRequest, "(III)V");

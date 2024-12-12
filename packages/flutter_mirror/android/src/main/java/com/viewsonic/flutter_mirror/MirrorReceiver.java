@@ -313,6 +313,11 @@ public class MirrorReceiver implements
   }
 
   @Override
+  public void onMirrorVideoFrameRate(String mirrorId, int fps) {
+    mirrorListener_.onMirrorVideoFrameRate(mirrorId, fps);
+  }
+
+  @Override
   public void onCredentialsRequest(
       int year,
       int month,

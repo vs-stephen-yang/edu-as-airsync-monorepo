@@ -1,9 +1,9 @@
 #include "video_decoder_ndk.h"
-#include "video_decoder_wrapper.h"
+#include <assert.h>
 #include <map>
 #include <string>
-#include <assert.h>
 #include "util/log.h"
+#include "video_decoder_wrapper.h"
 
 const std::string VideoDecoderNdk::kMimeH264 = "video/avc";
 const std::string VideoDecoderNdk::kMimeVp8 = "video/x-vnd.on2.vp8";
@@ -86,6 +86,8 @@ bool VideoDecoderNdk::Start() {
   }
 
   running_ = true;
+  frame_count_ = 0;
+  start_time_ = std::chrono::steady_clock::now();
 
   thread_ = std::make_unique<std::thread>(
       [this]() {
@@ -137,6 +139,37 @@ bool VideoDecoderNdk::Decode(const uint8_t* frame, size_t frameSize, uint64_t pr
   }
   return true;
 }
+void VideoDecoderNdk::OnFrameDecoded() {
+  MeasureFrameRate();
+}
+
+void VideoDecoderNdk::MeasureFrameRate() {
+  // Increment frame count
+  ++frame_count_;
+
+  // Calculate FPS every second
+  auto now = std::chrono::steady_clock::now();
+  auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start_time_).count();
+
+  if (elapsed >= 1000) {
+    int fps = frame_count_;
+
+    if (callback_) {
+      callback_->OnVideoFrameRate(fps);
+    }
+
+    // Reset frame count
+    frame_count_ = 0;
+
+    if (elapsed <= 2000) {
+      // Normal case: Adjust start_time_ by removing the extra elapsed time
+      start_time_ = now - std::chrono::milliseconds(elapsed - 1000);
+    } else {
+      // Large elapsed time case
+      start_time_ = now;
+    }
+  }
+}
 
 bool VideoDecoderNdk::DeliverDecodedFrame() {
   AMediaCodecBufferInfo info;
@@ -153,6 +186,8 @@ bool VideoDecoderNdk::DeliverDecodedFrame() {
 
     // render each output buffer on the surface
     AMediaCodec_releaseOutputBuffer(codec_.get(), buf_idx, true);
+
+    OnFrameDecoded();
 
     return true;
   } else if (status == AMEDIACODEC_INFO_OUTPUT_BUFFERS_CHANGED) {

@@ -3,8 +3,8 @@
 
 #include <android/native_window_jni.h>
 #include <map>
-#include <string>
 #include <memory>
+#include <string>
 #include "media/media_format.h"
 #include "media/video_csd.h"
 
@@ -17,6 +17,8 @@ class VideoDecoder {
     virtual void OnVideoFormatChanged(
         int width,
         int height) = 0;
+
+    virtual void OnVideoFrameRate(int fps) = 0;
   };
 
   virtual ~VideoDecoder() = default;

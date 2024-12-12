@@ -111,6 +111,10 @@ void GooglecastMirrorSession::OnVideoFormatChanged(
       height);
 }
 
+void GooglecastMirrorSession::OnVideoFrameRate(int fps) {
+  mirror_listener_.OnMirrorVideoFrameRate(this, fps);
+}
+
 void GooglecastMirrorSession::OnMirrorEvent(
     cast::CastMirrorSession::Listener::Event ev) {
   switch (ev) {

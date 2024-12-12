@@ -82,6 +82,10 @@ class MirrorReceiver
       int width,
       int height) override;
 
+  virtual void OnMirrorVideoFrameRate(
+      MirrorSession* session,
+      int fps) override;
+
   virtual void OnCredentialsRequest(
       int year,
       int month,

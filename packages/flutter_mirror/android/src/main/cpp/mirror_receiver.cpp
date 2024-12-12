@@ -287,6 +287,17 @@ void MirrorReceiver::OnMirrorVideoResize(
       height);
 }
 
+void MirrorReceiver::OnMirrorVideoFrameRate(
+    MirrorSession* session,
+    int fps) {
+  std::string mirror_id = session->GetMirrorId();
+  // ALOGD("MirrorReceiver::OnMirrorVideoFrameRate(%s,%d)", mirror_id.c_str(), fps);
+
+  proxy_->OnMirrorVideoFrameRate(
+      mirror_id,
+      fps);
+}
+
 void MirrorReceiver::OnCredentialsRequest(
     int year,
     int month,

@@ -73,6 +73,10 @@ void MiracastMirrorSession::OnVideoFormatChanged(
       height);
 }
 
+void MiracastMirrorSession::OnVideoFrameRate(int fps) {
+  mirror_listener_.OnMirrorVideoFrameRate(this, fps);
+}
+
 void MiracastMirrorSession::OnAudioFrame(
     const uint8_t* frame,
     size_t frameSize,

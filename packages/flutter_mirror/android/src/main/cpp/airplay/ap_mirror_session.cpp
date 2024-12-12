@@ -67,6 +67,10 @@ void ApMirrorSession::OnVideoFormatChanged(
       height);
 }
 
+void ApMirrorSession::OnVideoFrameRate(int fps) {
+  mirror_listener_.OnMirrorVideoFrameRate(this, fps);
+}
+
 void ApMirrorSession::OnMirrorEvent(
     ap::AirplayMirrorSession::Listener::Event ev) {
   switch (ev) {

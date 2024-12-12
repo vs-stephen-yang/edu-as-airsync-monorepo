@@ -167,6 +167,11 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
         int height = call.arguments["height"];
 
         _listener?.onMirrorVideoResize(mirrorId, width, height);
+      } else if (call.method == 'onMirrorVideoFrameRate') {
+        String mirrorId = call.arguments["mirrorId"];
+        int fps = call.arguments["fps"];
+
+        _listener?.onMirrorVideoFrameRate(mirrorId, fps);
       } else if (call.method == 'onMirrorAuth') {
         String pin = call.arguments["pin"];
         int timeoutSec = call.arguments["timeoutSec"];

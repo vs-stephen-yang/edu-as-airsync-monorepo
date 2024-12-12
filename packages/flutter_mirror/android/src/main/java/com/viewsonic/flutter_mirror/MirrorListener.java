@@ -14,6 +14,8 @@ public interface MirrorListener {
 
   public void onMirrorVideoResize(String mirrorId, int width, int height);
 
+  public void onMirrorVideoFrameRate(String mirrorId, int fps);
+
   public void onCredentialsRequest(
       int year,
       int month,

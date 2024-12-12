@@ -7,9 +7,9 @@
 #include "media/ndk_media_util.h"
 #include "media/video_decoder.h"
 
+#include <atomic>
 #include <map>
 #include <string>
-#include <atomic>
 #include <thread>
 #include "media/video_csd.h"
 
@@ -41,6 +41,12 @@ class VideoDecoderNdk
 
  private:
   bool DeliverDecodedFrame();
+  void OnFrameDecoded();
+  void MeasureFrameRate();
+
+  // Measure decode FPS
+  int frame_count_ = 0;
+  std::chrono::steady_clock::time_point start_time_;
 
   AMediaCodecPtr codec_;
 

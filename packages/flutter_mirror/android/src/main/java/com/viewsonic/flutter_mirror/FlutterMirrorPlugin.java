@@ -478,6 +478,19 @@ public class FlutterMirrorPlugin implements
     });
   }
 
+  @Override
+  public void onMirrorVideoFrameRate(String mirrorId, int fps) {
+
+    // Must run on the platform thread
+    post(() -> {
+      Map<String, Object> arguments = new HashMap<>();
+      arguments.put("mirrorId", mirrorId);
+      arguments.put("fps", fps);
+
+      channel_.invokeMethod("onMirrorVideoFrameRate", arguments);
+    });
+  }
+
   public void onCredentialsRequest(
       int year,
       int month,

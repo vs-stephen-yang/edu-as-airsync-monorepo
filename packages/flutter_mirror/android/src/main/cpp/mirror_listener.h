@@ -30,6 +30,10 @@ class MirrorListener {
       int width,
       int height) = 0;
 
+  virtual void OnMirrorVideoFrameRate(
+      MirrorSession* session,
+      int fps) = 0;
+
   // for Googlecast device authentication
   virtual void OnCredentialsRequest(
       int year,

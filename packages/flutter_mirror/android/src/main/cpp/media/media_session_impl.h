@@ -7,9 +7,9 @@
 #include <string>
 #include "jni/texture_registry.h"
 #include "media/audio_decoder.h"
+#include "media/media_session.h"
 #include "media/video_csd.h"
 #include "media/video_decoder.h"
-#include "media/media_session.h"
 
 class MediaSessionImpl
     : public MediaSession,
@@ -25,22 +25,22 @@ class MediaSessionImpl
       MediaSession::Listener* listener,
       VideoCodecType video_codec,
       AudioCodecType audio_codec,
-      AudioFormat audio_format);
+      AudioFormat audio_format) override;
 
-  SurfaceTexture GetTexture();
+  SurfaceTexture GetTexture() override;
 
-  void Stop();
+  void Stop() override;
 
-  void EnableAudio(bool enable);
+  void EnableAudio(bool enable) override;
 
   void OnAudioFrame(
       std::shared_ptr<std::vector<uint8_t>> frame,
-      uint64_t timestamp_us);
+      uint64_t timestamp_us) override;
 
   void OnVideoFrame(
       bool key_frame,
       std::shared_ptr<std::vector<uint8_t>> frame,
-      uint64_t timestamp_us);
+      uint64_t timestamp_us) override;
 
  private:
   bool InitVideoDecoder(
@@ -51,9 +51,12 @@ class MediaSessionImpl
       AudioCodecType audio_codec,
       AudioFormat audio_format);
 
-  void OnVideoFormatChanged(
+  // VideoDecoder::Callback
+  virtual void OnVideoFormatChanged(
       int width,
-      int height);
+      int height) override;
+
+  virtual void OnVideoFrameRate(int fps) override;
 
  private:
   void HandleVideoCsd(
@@ -65,7 +68,7 @@ class MediaSessionImpl
   bool InitHardwareVideoDecoder();
   bool InitSoftwareVideoDecoder();
 
-  MediaSessionImpl::Listener* listener_ = nullptr;
+  MediaSession::Listener* listener_ = nullptr;
 
   jni::TextureRegistry& texture_registry_;
   const std::map<std::string, int>& additional_codec_params_;
