@@ -409,7 +409,8 @@ class RTCConnector {
         final candidate =
             RTCIceCandidate(msg.candidate, msg.sdpMid, msg.sdpMLineIndex);
         await _descriptionSetCompleter.future;
-        await pc!.addCandidate(candidate);
+        // pc may be null when disconnect peer connection
+        await pc?.addCandidate(candidate);
         break;
       default:
         break;
@@ -530,6 +531,10 @@ class RTCConnector {
       _pc = null;
     }
 
+    if (!_descriptionSetCompleter.isCompleted) {
+      _descriptionSetCompleter.complete();
+    }
+
     // change state
     presentationState = PresentationState.stopStreaming;
     onRefresh?.call();
@@ -612,17 +617,11 @@ class RTCConnector {
 
   void _onIceCandidate(RTCIceCandidate candidate) {
     _printPeerConnectionLog('_onIceCandidate', candidate.candidate.toString());
-
-    try {
-      var message =
-          PresentSignalMessage(sessionId, SignalMessageType.candidate);
-      message.candidate = candidate.candidate;
-      message.sdpMid = candidate.sdpMid;
-      message.sdpMLineIndex = candidate.sdpMLineIndex;
-      _channel.send(message);
-    } catch (e) {
-      log.warning('Unable to add candidate ${candidate} to connection');
-    }
+    var message = PresentSignalMessage(sessionId, SignalMessageType.candidate);
+    message.candidate = candidate.candidate;
+    message.sdpMid = candidate.sdpMid;
+    message.sdpMLineIndex = candidate.sdpMLineIndex;
+    _channel.send(message);
   }
 
   void _onRenegotiationNeeded() {
