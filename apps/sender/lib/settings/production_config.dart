@@ -15,7 +15,7 @@ class ProductionConfig implements ConfigSettings {
   String versionPostfix = '';
 
   @override
-  String baseApiUrl = 'https://api2.gateway.airsync.net/';
+  String baseApiUrl = 'https://api.airsync.net/';
 
   @override
   String appInsightsInstrumentationKey = 'c38c02f2-1bb1-4da1-8011-1e592a1e8c11';
