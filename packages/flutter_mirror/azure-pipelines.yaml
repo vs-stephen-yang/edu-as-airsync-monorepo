@@ -12,7 +12,7 @@ trigger:
 variables:
   - group: ifp-keystore-secrets
   - name: Flutter.Version
-    value: "3.7.12"
+    value: "3.24.2"
   - name: Flutter.Url
     value: https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_$(Flutter.Version)-stable.zip
   - name: Flutter.Bin
@@ -44,7 +44,7 @@ jobs:
 
       - task: PowerShell@2
         inputs:
-          targetType: 'inline'
+          targetType: "inline"
           script: |
             $header = "AUTHORIZATION: bearer $(System.AccessToken)"
             git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
