@@ -58,7 +58,7 @@ class MethodChannelFlutterMirror extends FlutterMirrorPlatform {
     await methodChannel.invokeMethod('startMirrorReplay', {
       'mirrorId': mirrorId,
       'videoCodec': videoCodec,
-      "videoPath": videoPath,
+      'videoPath': videoPath,
     });
   }
 
