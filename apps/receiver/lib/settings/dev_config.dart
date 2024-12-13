@@ -8,7 +8,7 @@ class DevConfig implements ConfigSettings {
   SentryConfig? sentry;
 
   @override
-  String baseApiUrl = 'https://api2.gateway.dev.airsync.net/';
+  String baseApiUrl = 'https://api.dev.airsync.net/';
 
   @override
   String? defaultOtp = '0000';
