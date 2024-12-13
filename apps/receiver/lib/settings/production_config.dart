@@ -12,7 +12,7 @@ class ProductionConfig implements ConfigSettings {
   );
 
   @override
-  String baseApiUrl = 'https://api2.gateway.airsync.net/';
+  String baseApiUrl = 'https://api.airsync.net/';
 
   @override
   String? defaultOtp; // For development only. Keep null

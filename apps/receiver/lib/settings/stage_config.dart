@@ -12,7 +12,7 @@ class StageConfig implements ConfigSettings {
   );
 
   @override
-  String baseApiUrl = 'https://api2.gateway.stage.airsync.net/';
+  String baseApiUrl = 'https://api.stage.airsync.net/';
 
   @override
   String? defaultOtp; // For development only. Keep null
