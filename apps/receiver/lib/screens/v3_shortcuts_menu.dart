@@ -96,12 +96,9 @@ class V3ShortcutsMenu extends StatelessWidget {
                                   V3CastDevicesMenu.fromShortcut = true;
                                   channelProvider.startRemoteScreen(
                                       fromSender: true);
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) {
                                     if (navService.canPop()) {
                                       navService.goBack();
                                     }
-                                  });
                                 }
 
                                 trackEvent(
