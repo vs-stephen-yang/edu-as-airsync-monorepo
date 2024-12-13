@@ -18,6 +18,7 @@ class DisplayServiceBroadcast {
   int get directChannelPort => _directChannelPort;
 
   Registration? _broadcast;
+  DateTime previousRestartTime = DateTime(0);
 
   DisplayServiceBroadcast._internal(
     this._serviceType,
@@ -53,6 +54,10 @@ class DisplayServiceBroadcast {
   }
 
   void _onInstanceInfoUpdated() {
+    _restart();
+  }
+
+  void onBroadcastRestart() {
     _restart();
   }
 
@@ -93,7 +98,12 @@ class DisplayServiceBroadcast {
   }
 
   Future<void> _restart() async {
-    await _stop();
-    await _start();
+    final now = DateTime.now();
+    // 避免頻繁重啟
+    if (now.difference(previousRestartTime).inSeconds > 5) {
+      previousRestartTime = now;
+      await _stop();
+      await _start();
+    }
   }
 }

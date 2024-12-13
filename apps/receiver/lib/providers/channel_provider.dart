@@ -22,6 +22,7 @@ import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_server.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/ip_util.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -856,7 +857,7 @@ class ChannelProvider extends ChangeNotifier {
     countDownProgress.value -= 1;
     if (countDownProgress.value == 0) {
       countDownProgress.value = maxCountDown;
-
+      DisplayServiceBroadcast.instance.onBroadcastRestart();
       _updateOTP();
     }
   }
