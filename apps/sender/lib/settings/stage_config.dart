@@ -15,7 +15,7 @@ class StageConfig implements ConfigSettings {
   String versionPostfix = '-s';
 
   @override
-  String baseApiUrl = 'https://api2.gateway.stage.airsync.net/';
+  String baseApiUrl = 'https://api.stage.airsync.net/';
 
   @override
   String appInsightsInstrumentationKey = '6e176c9a-ecc8-443c-a1ad-7cc3954efe80';
