@@ -8,6 +8,7 @@ import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
+import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:gap/gap.dart';
@@ -207,7 +208,10 @@ class ParticipantStandbyFeature extends StatelessWidget {
               padding: EdgeInsets.zero,
             ),
             onPressed: () {
-              _presenterOnOff(context, rtcConnector, presenterId);
+              EasyThrottle.throttle('presenterOn', const Duration(seconds: 1),
+                  () {
+                _presenterOn(context, rtcConnector, presenterId);
+              });
             },
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -256,19 +260,10 @@ class ParticipantStandbyFeature extends StatelessWidget {
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               onPressed: () {
-                if (!rtcConnector.isChannelConnectAvailable()) {
-                  rtcConnector.clickButtonWhenReconnect = true;
-                  V3Toast()
-                      .makeReconnectToast(
-                          rtcConnector.reconnectChannelState,
-                          rtcConnector.reconnectChannelState ==
-                                  ReconnectState.reconnecting
-                              ? S.of(context).main_feature_reconnecting_toast
-                              : S.of(context).main_feature_reconnect_fail_toast)
-                      ?.show(context);
-                  return;
-                }
-                rtcConnector.sendInviteRemoteScreen();
+                EasyThrottle.throttle(
+                    'sendInviteRemoteScreen', const Duration(seconds: 1), () {
+                  _sendInviteRemoteScreen(context, rtcConnector);
+                });
               },
             ),
           ),
@@ -288,15 +283,10 @@ class ParticipantStandbyFeature extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             onPressed: () {
-              if (isForMenuUse) {
-                trackEvent(
-                  'click_exit',
-                  EventCategory.session,
-                  participatorId: rtcConnector.clientId,
-                  mode: 'webrtc',
-                );
-              }
-              _sendPresenterRemove(context, rtcConnector);
+              EasyThrottle.throttle(
+                  'sendPresenterRemove', const Duration(seconds: 1), () {
+                _sendPresenterRemove(context, rtcConnector);
+              });
             },
           ),
         ),
@@ -304,7 +294,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
     );
   }
 
-  _presenterOnOff(
+  _presenterOn(
       BuildContext context, RTCConnector rtcConnector, String presenterId) {
     if (!rtcConnector.isChannelConnectAvailable()) {
       rtcConnector.clickButtonWhenReconnect = true;
@@ -317,11 +307,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
           ?.show(context);
       return;
     }
-    if (HybridConnectionList().isPresenterNotStopStreaming(presenterId)) {
-      // waitForStream and streaming
-
-      rtcConnector.sendStopPresent();
-    } else {
+    if (HybridConnectionList().isPresenterStopStreaming(presenterId)) {
       if (HybridConnectionList().getPresentingCount() >=
           HybridConnectionList.maxHybridSplitScreen) {
         MotionToast(
@@ -341,7 +327,30 @@ class ParticipantStandbyFeature extends StatelessWidget {
     }
   }
 
+  _sendInviteRemoteScreen(BuildContext context, RTCConnector rtcConnector) {
+    if (!rtcConnector.isChannelConnectAvailable()) {
+      rtcConnector.clickButtonWhenReconnect = true;
+      V3Toast()
+          .makeReconnectToast(
+              rtcConnector.reconnectChannelState,
+              rtcConnector.reconnectChannelState == ReconnectState.reconnecting
+                  ? S.of(context).main_feature_reconnecting_toast
+                  : S.of(context).main_feature_reconnect_fail_toast)
+          ?.show(context);
+      return;
+    }
+    rtcConnector.sendInviteRemoteScreen();
+  }
+
   _sendPresenterRemove(BuildContext context, RTCConnector rtcConnector) async {
+    if (isForMenuUse) {
+      trackEvent(
+        'click_exit',
+        EventCategory.session,
+        participatorId: rtcConnector.clientId,
+        mode: 'webrtc',
+      );
+    }
     rtcConnector.trackSessionEvent('click_remove_device');
 
     if (!rtcConnector.isChannelConnectAvailable()) {
@@ -389,7 +398,10 @@ class ParticipantStreamingFeature extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             onPressed: () {
-              _presenterOnOff(context, rtcConnector, presenterId);
+              EasyThrottle.throttle('presenterOff', const Duration(seconds: 1),
+                  () {
+                _presenterOff(context, rtcConnector, presenterId);
+              });
             },
           ),
         ),
@@ -397,7 +409,7 @@ class ParticipantStreamingFeature extends StatelessWidget {
     );
   }
 
-  _presenterOnOff(
+  _presenterOff(
       BuildContext context, RTCConnector rtcConnector, String presenterId) {
     if (!rtcConnector.isChannelConnectAvailable()) {
       rtcConnector.clickButtonWhenReconnect = true;
@@ -412,23 +424,7 @@ class ParticipantStreamingFeature extends StatelessWidget {
     }
     if (HybridConnectionList().isPresenterNotStopStreaming(presenterId)) {
       // waitForStream and streaming
-
       rtcConnector.sendStopPresent();
-    } else {
-      if (HybridConnectionList().getPresentingCount() >=
-          HybridConnectionList.maxHybridSplitScreen) {
-        MotionToast(
-          primaryColor: Colors.grey,
-          description: AutoSizeText(
-            S.of(context).toast_maximum_split_screen,
-            maxLines: 1,
-          ),
-          displaySideBar: false,
-        ).show(context);
-        return;
-      }
-
-      rtcConnector.sendAllowPresent();
     }
   }
 }
@@ -454,7 +450,10 @@ class ParticipantReceivingFeature extends StatelessWidget {
           height: 27,
           child: ElevatedButton(
             onPressed: () {
-              _touchBackOn(context);
+              EasyThrottle.throttle('touchBackOn', const Duration(seconds: 1),
+                  () {
+                _touchBackOn(context);
+              });
             },
             style: ElevatedButton.styleFrom(
               elevation: 5,
@@ -503,33 +502,10 @@ class ParticipantReceivingFeature extends StatelessWidget {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             onPressed: () {
-              trackEvent('click_disconnect', EventCategory.castToBoards);
-
-              if (!rtcConnector.isChannelConnectAvailable()) {
-                rtcConnector.clickButtonWhenReconnect = true;
-                V3Toast()
-                    .makeReconnectToast(
-                        rtcConnector.reconnectChannelState,
-                        rtcConnector.reconnectChannelState ==
-                                ReconnectState.reconnecting
-                            ? S.of(context).main_feature_reconnecting_toast
-                            : S.of(context).main_feature_reconnect_fail_toast)
-                    ?.show(context);
-                return;
-              }
-              rtcConnector.sendStopRemoteScreen();
-              int index = channelProvider.remoteShareConnectors
-                  .indexWhere((item) => item.clientId == rtcConnector.clientId);
-              if (index != -1) {
-                RemoteScreenConnector remoteShareConnector =
-                    channelProvider.remoteShareConnectors[index];
-
-                channelProvider.removeSender(
-                  fromShare: true,
-                  remoteScreenConnector: remoteShareConnector,
-                  kick: false,
-                );
-              }
+              EasyThrottle.throttle('disconnect', const Duration(seconds: 1),
+                  () {
+                _disconnect(context, channelProvider);
+              });
             },
           ),
         ),
@@ -553,6 +529,35 @@ class ParticipantReceivingFeature extends StatelessWidget {
       channelProvider.remoteScreenServe.enableRemoteControlBySessionId(
           remoteShareConnector.sessionId!, remoteShareConnector.isTouchEnabled);
       callback?.call();
+    }
+  }
+
+  _disconnect(BuildContext context, ChannelProvider channelProvider) {
+    trackEvent('click_disconnect', EventCategory.castToBoards);
+
+    if (!rtcConnector.isChannelConnectAvailable()) {
+      rtcConnector.clickButtonWhenReconnect = true;
+      V3Toast()
+          .makeReconnectToast(
+              rtcConnector.reconnectChannelState,
+              rtcConnector.reconnectChannelState == ReconnectState.reconnecting
+                  ? S.of(context).main_feature_reconnecting_toast
+                  : S.of(context).main_feature_reconnect_fail_toast)
+          ?.show(context);
+      return;
+    }
+    rtcConnector.sendStopRemoteScreen();
+    int index = channelProvider.remoteShareConnectors
+        .indexWhere((item) => item.clientId == rtcConnector.clientId);
+    if (index != -1) {
+      RemoteScreenConnector remoteShareConnector =
+          channelProvider.remoteShareConnectors[index];
+
+      channelProvider.removeSender(
+        fromShare: true,
+        remoteScreenConnector: remoteShareConnector,
+        kick: false,
+      );
     }
   }
 }
