@@ -152,6 +152,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
               text: 'Next',
               enable: _connectService != null,
               onTap: () {
+                if (_connectService == null) return;
                 AppAnalytics.instance.setGlobalProperty(
                     'display_code', _connectService!.displayCode);
 
@@ -174,7 +175,7 @@ class _V3DeviceListState extends State<V3DeviceList> {
       required String text,
       required GestureTapCallback onTap}) {
     return InkWell(
-      onTap: onTap,
+      onTap: enable ? onTap : null,
       child: Container(
         margin: const EdgeInsets.only(top: 16, bottom: 32, left: 6, right: 6),
         alignment: Alignment.center,
@@ -671,7 +672,7 @@ class OTPInputWidgetState extends State<OTPInputWidget> {
       child: Container(
         color: context.tokens.color.vsdswColorSurface100,
         child: InkWell(
-          onTap: onTap,
+          onTap: enable ? onTap : null,
           child: Container(
             margin: isMobile()
                 ? const EdgeInsets.only(top: 16, bottom: 32, left: 6, right: 6)
