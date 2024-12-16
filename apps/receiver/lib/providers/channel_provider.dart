@@ -108,20 +108,23 @@ class ChannelProvider extends ChangeNotifier {
   final List<RemoteScreenConnector> _remoteShareConnectors =
       <RemoteScreenConnector>[];
 
+  static const defaultSenderModeEnable = false;
   bool get isSenderMode => _isSenderMode;
 
   bool get isGroupMode => _isGroupMode;
-  bool _isSenderMode = false;
+  bool _isSenderMode = defaultSenderModeEnable;
   bool _isGroupMode = false;
   bool _isShareMode = false;
   final InstanceInfoProvider _instanceInfo;
 
-  bool _isDeviceListQuickConnect = true;
+  static const defaultDeviceListQuickConnect = true;
+  bool _isDeviceListQuickConnect = defaultDeviceListQuickConnect;
 
   bool get isDeviceListQuickConnect => _isDeviceListQuickConnect;
 
   set isDeviceListQuickConnect(bool value) {
     _isDeviceListQuickConnect = value;
+    _save();
     notifyListeners();
   }
 
@@ -162,12 +165,19 @@ class ChannelProvider extends ChangeNotifier {
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('app_AuthorizeModeEnable', _isAuthorizeMode);
+    await prefs.setBool('app_SenderModeEnable', _isSenderMode);
+    await prefs.setBool(
+        'app_DeviceListQuickConnect', _isDeviceListQuickConnect);
   }
 
   _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _isAuthorizeMode =
         prefs.getBool('app_AuthorizeModeEnable') ?? defaultAuthorizeModeEnable;
+    _isSenderMode =
+        prefs.getBool('app_SenderModeEnable') ?? defaultSenderModeEnable;
+    _isDeviceListQuickConnect = prefs.getBool('app_DeviceListQuickConnect') ??
+        defaultDeviceListQuickConnect;
   }
 
   ChannelProvider(
@@ -380,12 +390,14 @@ class ChannelProvider extends ChangeNotifier {
       _isGroupMode = fromGroup ?? _isGroupMode;
       _isShareMode = fromShare ?? _isShareMode;
       _isSenderMode = fromSender ?? _isSenderMode;
+      _save();
       notifyListeners();
       return;
     }
     _isGroupMode = fromGroup ?? _isGroupMode;
     _isShareMode = fromShare ?? _isShareMode;
     _isSenderMode = fromSender ?? _isSenderMode;
+    _save();
     final iceServers = await _getIceServers(ChannelMode.tunnel);
 
     await _remoteScreenServe.startSfuServer(iceServers);
@@ -814,7 +826,10 @@ class ChannelProvider extends ChangeNotifier {
     } else {
       if (fromGroup != null) _isGroupMode = false;
       if (fromShare != null) _isShareMode = false;
-      if (fromSender != null) _isSenderMode = false;
+      if (fromSender != null) {
+        _isSenderMode = false;
+        _save();
+      }
 
       if (_isGroupMode || _isShareMode || _isSenderMode) {
         notifyListeners();
