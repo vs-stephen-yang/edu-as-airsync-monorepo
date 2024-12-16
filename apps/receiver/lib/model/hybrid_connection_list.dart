@@ -245,6 +245,19 @@ class HybridConnectionList {
     return false;
   }
 
+  bool isPresenterStopStreaming(String clientId) {
+    for (var connection in _hybridConnectionList.nonNulls) {
+      if (connection is RTCConnector &&
+          connection.clientId == clientId &&
+          (connection.presentationState.index) ==
+              PresentationState.stopStreaming.index) {
+        // stopStreaming
+        return true;
+      }
+    }
+    return false;
+  }
+
   bool isPresenterNotStopStreaming(String clientId) {
     for (var connection in _hybridConnectionList.nonNulls) {
       if (connection is RTCConnector &&
