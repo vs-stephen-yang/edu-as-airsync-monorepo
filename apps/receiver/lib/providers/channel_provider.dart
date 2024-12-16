@@ -109,6 +109,8 @@ class ChannelProvider extends ChangeNotifier {
       <RemoteScreenConnector>[];
 
   bool get isSenderMode => _isSenderMode;
+
+  bool get isGroupMode => _isGroupMode;
   bool _isSenderMode = false;
   bool _isGroupMode = false;
   bool _isShareMode = false;
@@ -389,7 +391,7 @@ class ChannelProvider extends ChangeNotifier {
     await _remoteScreenServe.startSfuServer(iceServers);
     bool result = await _remoteScreenServe.startRemoteScreenPublisher();
     if (!result) {
-      removeSender(fromSender: true);
+      removeSender(fromSender: true, fromGroup: true);
       return stopRemoteScreenPublisher();
     }
 
