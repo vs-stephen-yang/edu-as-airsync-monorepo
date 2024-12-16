@@ -486,7 +486,7 @@ class V3SettingsCastToBoardsState
                   await discoveryModel.stop();
                   channelProvider.stopDisplayGroup();
                 }
-                groupNotifier.setBroadcastToGroup(state);
+                groupNotifier.setBroadcastToGroup(channelProvider.isGroupMode);
               },
             ),
           )
