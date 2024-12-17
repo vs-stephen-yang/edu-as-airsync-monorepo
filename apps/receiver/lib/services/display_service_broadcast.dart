@@ -50,7 +50,7 @@ class DisplayServiceBroadcast {
 
   updateInvitedToGroupOption(String option) async {
     _invitedToGroupOption = option;
-    await _restart();
+    await _restart(changeGroupOption: true);
   }
 
   void _onInstanceInfoUpdated() {
@@ -97,10 +97,11 @@ class DisplayServiceBroadcast {
     }
   }
 
-  Future<void> _restart() async {
+  Future<void> _restart({bool changeGroupOption = false}) async {
     final now = DateTime.now();
     // 避免頻繁重啟
-    if (now.difference(previousRestartTime).inSeconds > 5) {
+    if (now.difference(previousRestartTime).inSeconds > 5 ||
+        changeGroupOption) {
       previousRestartTime = now;
       await _stop();
       await _start();
