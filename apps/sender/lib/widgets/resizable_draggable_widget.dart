@@ -29,23 +29,34 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
   double _width = 0;
   double _collapsedWidth = 0;
   bool _isExpanded = true;
-
-  final GlobalKey _textKey = GlobalKey();
+  double? _previousScreenWidth;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final renderBox =
-          _textKey.currentContext?.findRenderObject() as RenderBox?;
-      if (renderBox == null) return;
+      final textPainter = TextPainter(
+        text: TextSpan(
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: context.tokens.color.vsdswColorOnSuccess,
+          ),
+          text: widget.text,
+        ),
+        maxLines: 1,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
 
       setState(() {
-        final textWidth = renderBox.size.width;
+        final textWidth = textPainter.size.width;
 
         final gap = context.tokens.spacing.vsdswSpacingSm.right;
         final textPadding = context.tokens.spacing.vsdswSpacingXs.right;
-        _width = textWidth + (26 * 3) + (gap * 3) + (textPadding * 2) + 8;
+        final textWithFullWidth =
+            textWidth + (26 * 3) + (gap * 3) + (textPadding * 2) + 8;
+        _width = math.min(textWithFullWidth, widget.halfScreen * 2);
         // 1 icon + 2 gaps
         _collapsedWidth = 26 + (gap * 2);
 
@@ -55,7 +66,6 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
     });
   }
 
-  double? _previousScreenWidth;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -136,7 +146,6 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
         width: _width,
         height: widget.height,
         text: widget.text,
-        textKey: _textKey,
         onMinimize: () {},
         onStop: () {},
       ),
@@ -155,7 +164,6 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
         width: _width,
         height: widget.height,
         text: widget.text,
-        textKey: _textKey,
         onMinimize: () {
           _updatePositionForExpandOrCollapse(
               false, _collapsedWidth, screenWidth);
@@ -208,7 +216,6 @@ class ExpandedContentWidget extends StatelessWidget {
   final double width;
   final double height;
   final String text;
-  final GlobalKey textKey;
   final VoidCallback onMinimize;
   final VoidCallback onStop;
 
@@ -217,7 +224,6 @@ class ExpandedContentWidget extends StatelessWidget {
     required this.width,
     required this.height,
     required this.text,
-    required this.textKey,
     required this.onMinimize,
     required this.onStop,
   });
@@ -248,7 +254,7 @@ class ExpandedContentWidget extends StatelessWidget {
           gap,
           _buildIcon('assets/images/ic_drag.svg'),
           textPadding,
-          _buildText(context),
+          Flexible(child: _buildText(context)),
           textPadding,
           _buildStopButton(context),
           gap,
@@ -270,7 +276,6 @@ class ExpandedContentWidget extends StatelessWidget {
 
   Widget _buildText(BuildContext context) {
     return AutoSizeText(
-      key: textKey,
       text,
       style: TextStyle(
         fontSize: 14,
@@ -278,6 +283,8 @@ class ExpandedContentWidget extends StatelessWidget {
         color: context.tokens.color.vsdswColorOnSuccess,
       ),
       maxLines: 1,
+      minFontSize: 5,
+      overflow: TextOverflow.ellipsis,
     );
   }
 
