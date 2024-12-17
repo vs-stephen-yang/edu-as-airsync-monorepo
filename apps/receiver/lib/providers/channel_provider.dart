@@ -874,8 +874,8 @@ class ChannelProvider extends ChangeNotifier {
     countDownProgress.value -= 1;
     if (countDownProgress.value == 0) {
       countDownProgress.value = maxCountDown;
-      DisplayServiceBroadcast.instance.onBroadcastRestart();
       _updateOTP();
+      DisplayServiceBroadcast.instance.onBroadcastRestart();
     }
   }
 

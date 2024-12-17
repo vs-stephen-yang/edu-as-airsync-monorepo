@@ -29,8 +29,7 @@ class GroupListModel with ChangeNotifier {
     if (discovery != null) {
       return;
     }
-    discovery =
-        await startDiscovery(discoveryType, ipLookupType: IpLookupType.any);
+    discovery = await startDiscovery(discoveryType);
     discovery!.addServiceListener(onEventOccurred);
   }
 
