@@ -82,10 +82,11 @@ class V3SettingsCastToBoardsState
                 channelProvider)),
         if (isBroadcastingToGroup)
           Positioned(
+            left: 13,
             right: 13,
             bottom: 13,
-            child: _buildActionButton(context, broadcastType, settingsProvider,
-                channelProvider, groupNotifier),
+            child: _buildHintAndActionButton(context, broadcastType,
+                settingsProvider, channelProvider, groupNotifier),
           )
       ],
     );
@@ -106,33 +107,68 @@ class V3SettingsCastToBoardsState
     );
   }
 
-  Align _buildActionButton(
+  SizedBox _buildHintAndActionButton(
       BuildContext context,
       BroadcastGroupLaunchType broadcastType,
       SettingsProvider settingsProvider,
       ChannelProvider channelProvider,
       GroupProvider groupNotifier) {
     final selectedListEmpty = groupNotifier.selectedList.isEmpty;
-    return Align(
-      alignment: Alignment.centerRight,
-      child: broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
-          ? _customButton(context, S.of(context).v3_settings_device_name_save,
-              onClick: () {
-              _trackEvent('click_save_target', groupNotifier.selectedList);
 
-              if (selectedListEmpty) {
-                showDialogOverlay(
-                  onConfirm: () {},
-                );
-              } else {
-                AppPreferences()
-                    .setGroupSelectedList(groupNotifier.historySelectedList);
-                settingsProvider.setPage(SettingPageState.deviceSetting);
-              }
-            })
-          : _customButton(
+    final String hintText =
+        broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
+            ? S.of(context).v3_settings_only_when_casting_info
+            : S.of(context).v3_settings_all_the_time_info;
+
+    return SizedBox(
+      height: 30,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const Image(
+            width: 20,
+            height: 20,
+            image: Svg('assets/images/ic_settings_info.svg'),
+          ),
+          Gap(context.tokens.spacing.vsdslSpacingSm.right),
+          SizedBox(
+            width: 200,
+            child: Text(
+              hintText,
+              style: TextStyle(
+                fontSize: 9,
+                color: context.tokens.color.vsdslColorOnSurfaceVariant,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+          ),
+          const Spacer(),
+          Align(
+            alignment: Alignment.centerRight,
+            child: broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
+                ? _customButton(
+                    context, S.of(context).v3_settings_device_name_save,
+                    onClick: () {
+                    _trackEvent(
+                        'click_save_target', groupNotifier.selectedList);
+
+                    if (selectedListEmpty) {
+                    showDialogOverlay(
+                      onConfirm: () {},
+                    );
+                  } else {
+                    AppPreferences()
+                        .setGroupSelectedList(
+                        groupNotifier.historySelectedList);
+                    settingsProvider.setPage(SettingPageState.deviceSetting);
+                  }
+                })
+                : _customButton(
               context,
-              S.of(context).v3_settings_display_group_cast,
+              S
+                  .of(context)
+                  .v3_settings_display_group_cast,
               isBroadcast: true,
               onClick: () {
                 if (selectedListEmpty) {
@@ -145,6 +181,9 @@ class V3SettingsCastToBoardsState
                 }
               },
             ),
+          ),
+        ],
+      ),
     );
   }
 

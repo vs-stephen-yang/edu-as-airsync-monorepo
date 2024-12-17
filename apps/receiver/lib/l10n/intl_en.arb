@@ -180,5 +180,7 @@
   "v3_moderator_disable_mirror_cancel": "Cancel",
   "v3_settings_mirroring_blocked": "Turn off moderator mode first.",
   "v3_group_dialog_no_device_message": "No device selected.",
-  "v3_participant_item_waiting": "Waiting..."
+  "v3_participant_item_waiting": "Waiting...",
+  "v3_settings_only_when_casting_info": "Devices will only receive the broadcast when the main screen is actively casting.",
+  "v3_settings_all_the_time_info": ""
 }
