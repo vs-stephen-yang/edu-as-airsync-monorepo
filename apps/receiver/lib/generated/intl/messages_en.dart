@@ -273,6 +273,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Display Code"),
         "v3_quick_connect_menu_qrcode":
             MessageLookupByLibrary.simpleMessage("QR Code"),
+        "v3_settings_all_the_time_info":
+            MessageLookupByLibrary.simpleMessage(""),
         "v3_settings_broadcast":
             MessageLookupByLibrary.simpleMessage("Broadcast"),
         "v3_settings_broadcast_boards":
@@ -354,6 +356,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Turn off moderator mode first."),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Require passcode"),
+        "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
+            "Devices will only receive the broadcast when the main screen is actively casting."),
         "v3_settings_open_source_license":
             MessageLookupByLibrary.simpleMessage("Open Source Licenses"),
         "v3_settings_privacy_policy":

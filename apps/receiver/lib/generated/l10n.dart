@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -1866,6 +1865,26 @@ class S {
     return Intl.message(
       'Waiting...',
       name: 'v3_participant_item_waiting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Devices will only receive the broadcast when the main screen is actively casting.`
+  String get v3_settings_only_when_casting_info {
+    return Intl.message(
+      'Devices will only receive the broadcast when the main screen is actively casting.',
+      name: 'v3_settings_only_when_casting_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get v3_settings_all_the_time_info {
+    return Intl.message(
+      '',
+      name: 'v3_settings_all_the_time_info',
       desc: '',
       args: [],
     );
