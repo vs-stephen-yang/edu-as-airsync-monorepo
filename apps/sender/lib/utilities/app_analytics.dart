@@ -1,7 +1,7 @@
 import 'package:azure_application_insights/azure_application_insights.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
-import 'package:http/http.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:http/http.dart';
 
 // https://medium.com/bina-nusantara-it-division/how-to-integrate-flutter-app-with-azure-application-insights-447fcc3bdacf
 enum EventCategory {
@@ -12,10 +12,19 @@ enum EventCategory {
   annotation,
 }
 
+enum EventMode {
+  castToDevice('cast_to_device'),
+  webrtc('webrtc');
+
+  final String value;
+
+  const EventMode(this.value);
+}
+
 class AppAnalytics {
   TelemetryClient? _client;
   final _globalProperties = <String, String>{};
-
+  EventMode? _mode;
   // Private constructor
   AppAnalytics._();
 
@@ -74,6 +83,10 @@ class AppAnalytics {
     _globalProperties[name] = value;
   }
 
+  void setMode(EventMode? mode) {
+    _mode = mode;
+  }
+
   // Log business events
 // Typically it is a user interaction such as button click or order checkout.
 // It can also be an application life cycle event like initialization or configuration update.
@@ -92,6 +105,10 @@ class AppAnalytics {
         ..._globalProperties,
         'category': category.name,
         if (target != null) 'target': target,
+        if (_mode != null &&
+            (category == EventCategory.session ||
+                category == EventCategory.annotation))
+          'mode': _mode!.value,
       },
     );
   }

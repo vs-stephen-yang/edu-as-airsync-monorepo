@@ -177,6 +177,8 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
                           await Future.delayed(
                               const Duration(milliseconds: 100));
                           await _startAnnotation(annotationModel);
+                          trackEvent(
+                              'click_annotation', EventCategory.annotation);
                         },
                       );
                     }),

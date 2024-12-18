@@ -131,8 +131,7 @@ class PresentPresentStart extends StatelessWidget {
                   key: touchBtnKey,
                   initialValue: WebRTCHelper().getTouchBack(),
                   onPressed: (state) {
-                    AppAnalytics.instance
-                        .trackEvent('click_touchback', EventCategory.session);
+                    trackEvent('click_touchback', EventCategory.session);
                     WebRTCHelper().setTouchBack(state);
                   },
                 ),
