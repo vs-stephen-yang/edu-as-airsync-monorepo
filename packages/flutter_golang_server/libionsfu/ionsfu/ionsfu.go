@@ -26,6 +26,7 @@ type logC struct {
 type IonSfuListener interface {
 	OnError(err string, msg string)
 	OnSignalMessage(channelId int, msg string)
+	OnIceConnectionState(channelId int, state int)
 }
 
 type IonSfuServer struct {
@@ -165,6 +166,12 @@ func sendSignal(channelId int, jsonData []byte) {
 	}
 }
 
+func notifyIceConnectionState(channelId int, state webrtc.ICEConnectionState) {
+	if sfuServer.listener_ != nil {
+		sfuServer.listener_.OnIceConnectionState(channelId, int(state))
+	}
+}
+
 // send a JSON-RPC notification over channel
 func sendNotification(channelId int, method string, params interface{}) error {
 	req := &jsonrpc2.Request{Method: method}
@@ -231,6 +238,11 @@ func ProcessSignalMessage(channelId int, message string) {
 			}
 
 		}
+
+		peer.OnICEConnectionStateChange = func(state webrtc.ICEConnectionState) {
+			notifyIceConnectionState(channelId, state)
+		}
+
 		peer.OnIceCandidate = func(candidate *webrtc.ICECandidateInit, target int) {
 			if err := sendNotification(channelId, "trickle", server.Trickle{
 				Candidate: *candidate,

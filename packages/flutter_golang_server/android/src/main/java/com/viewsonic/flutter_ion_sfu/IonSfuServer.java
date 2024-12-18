@@ -117,4 +117,9 @@ public class IonSfuServer implements IonSfuListener {
     public void onSignalMessage(long channelId, String message) {
         ionSfuServerListener_.onSignalMessage(channelId, message);
     }
+
+    @Override
+    public void onIceConnectionState(long channelId, long state) {
+        ionSfuServerListener_.onIceConnectionState(channelId, state);
+    }
 }
