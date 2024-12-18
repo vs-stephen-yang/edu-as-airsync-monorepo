@@ -70,7 +70,9 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   bool _sfuServerStarted = false;
 
   int roomPort = 7000;
-  String roomId = "default-room-id"; // will be updated when starting the publisher
+
+  // roomId will be updated when starting the publisher
+  String roomId = "default-room-id";
 
   final _channels = <String, RemoteControlChannel>{};
   int _nextChannelId = 0;
@@ -113,9 +115,15 @@ class RemoteScreenServer extends FlutterIonSfuListener {
   }
 
   static String _generateRoomId() {
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const chars =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     var rand = const Uuid().v4();
-    return String.fromCharCodes(Iterable.generate(roomIdLength, (_) => chars.codeUnitAt(rand.codeUnitAt(_ % rand.length) % chars.length)));
+    return String.fromCharCodes(Iterable.generate(
+      roomIdLength,
+      (_) => chars.codeUnitAt(
+        rand.codeUnitAt(_ % rand.length) % chars.length,
+      ),
+    ));
   }
 
   Future<bool> startRemoteScreenPublisher() async {
