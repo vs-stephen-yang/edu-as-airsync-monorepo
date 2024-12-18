@@ -4,6 +4,7 @@ import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:uuid/uuid.dart';
 
+import 'display_group_mediator.dart';
 import 'display_group_member_info.dart';
 
 class DisplayGroupMember {
@@ -11,14 +12,9 @@ class DisplayGroupMember {
 
   late DisplayChannelClient _channel;
 
-  RemoteScreenConnector? _connector;
-
   final String _clientId = const Uuid().v4();
 
-  final Future<RemoteScreenConnector> Function(
-    Channel,
-    StartRemoteScreenMessage,
-  ) createRemoteScreenConnector;
+  final DisplayGroupMediator _mediator;
 
   final void Function() onRejected;
 
@@ -26,7 +22,9 @@ class DisplayGroupMember {
 
   bool stayOnList = false;
 
-  DisplayGroupMember(this._info, this.createRemoteScreenConnector,
+  RemoteScreenConnector? _connector;
+
+  DisplayGroupMember(this._info, this._mediator,
       {required this.onRejected, required this.onStopped}) {
     final uri = Uri(
       scheme: 'wss',
@@ -105,7 +103,6 @@ class DisplayGroupMember {
         break;
       case ChannelMessageType.remoteScreenSignal:
         final signalMessage = message as RemoteScreenSignalMessage;
-
         _connector?.processSignalFromPeer(signalMessage.signal!);
         break;
       case ChannelMessageType.stopDisplayGroup:
@@ -118,7 +115,7 @@ class DisplayGroupMember {
 
   // The display group member requests to start the remote screen
   _onStartRemoteScreen(StartRemoteScreenMessage message) async {
-    _connector = await createRemoteScreenConnector(_channel, message);
+    _connector = await _mediator.createRemoteScreenConnector(_channel, message);
   }
 
   void _sendInviteDisplayGroup() {
