@@ -34,7 +34,7 @@ class RemoteScreenConnector {
     return result;
   }
 
-  Function()? onChannelDisconnect;
+  Function()? onDisconnect;
 
   RemoteScreenConnector(
     this.channel,
@@ -62,7 +62,7 @@ class RemoteScreenConnector {
       case ChannelState.connected:
         break;
       case ChannelState.closed:
-        await onChannelDisconnect?.call();
+        await onDisconnect?.call();
         break;
     }
   }
@@ -111,7 +111,8 @@ class RemoteScreenConnector {
   void onRtcConnectionState(IceConnectionState state) {
     if (state == IceConnectionState.ICEConnectionStateFailed ||
         state == IceConnectionState.ICEConnectionStateClosed) {
-      // TODO: Handle RTC connection failure or closure
+      remotePresentationState = RemotePresentationState.stopStreaming;
+      onDisconnect?.call();
     }
   }
 }

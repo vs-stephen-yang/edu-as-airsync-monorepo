@@ -529,7 +529,7 @@ class ChannelProvider extends ChangeNotifier {
                 _instanceInfo.ipAddress,
                 _remoteScreenServe.roomPort,
                 msg);
-            remoteScreenConnector?.onChannelDisconnect = (() async {
+            remoteScreenConnector?.onDisconnect = (() async {
               removeSender(
                 fromSender: true,
                 remoteScreenConnector: remoteScreenConnector,
@@ -591,7 +591,7 @@ class ChannelProvider extends ChangeNotifier {
                 _instanceInfo.ipAddress,
                 _remoteScreenServe.roomPort,
                 joinMessage);
-            remoteScreenConnector?.onChannelDisconnect = (() async {
+            remoteScreenConnector?.onDisconnect = (() async {
               removeSender(
                 fromShare: true,
                 remoteScreenConnector: remoteScreenConnector,
