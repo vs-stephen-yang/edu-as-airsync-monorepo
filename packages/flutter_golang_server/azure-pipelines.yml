@@ -23,7 +23,7 @@ steps:
 
   - task: GoTool@0
     inputs:
-      version: "1.20.12"
+      version: "1.23.4"
 
   - powershell: |
       Write-Host "##vso[task.setvariable variable=GOCACHE;]$Env:GOCACHE"
@@ -53,7 +53,7 @@ steps:
   - task: PowerShell@2
     displayName: "Initialize gomobile"
     inputs:
-      targetType: 'inline'
+      targetType: "inline"
       script: |
         $GOPATH = @(go env GOPATH)
         $Env:Path += [IO.Path]::PathSeparator + "$GOPATH\bin"
@@ -64,7 +64,7 @@ steps:
   - task: PowerShell@2
     displayName: "Build libionsfu.aar"
     inputs:
-      targetType: 'inline'
+      targetType: "inline"
       script: |
         $GOPATH = @(go env GOPATH)
         $Env:Path += [IO.Path]::PathSeparator + "$GOPATH\bin"
@@ -84,7 +84,7 @@ steps:
   - task: PowerShell@2
     displayName: Run flutter static analysis
     inputs:
-      targetType: 'inline'
+      targetType: "inline"
       script: |
         $Env:Path += [IO.Path]::PathSeparator + "$(Flutter.Bin.Dir)"
         flutter pub get
