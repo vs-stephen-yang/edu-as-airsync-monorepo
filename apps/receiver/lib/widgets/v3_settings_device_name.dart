@@ -14,6 +14,7 @@ class V3SettingsDeviceName extends StatefulWidget {
   const V3SettingsDeviceName({super.key, required this.focusNode});
 
   final FocusNode focusNode;
+
   @override
   State<V3SettingsDeviceName> createState() => _V3SettingsDeviceNameState();
 }
@@ -132,8 +133,8 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
         Positioned(
           right: 13,
           bottom: 13,
-          child: _saveButton(
-              context, S.of(context).v3_settings_device_name_save, onClick: () {
+          child: _SaveButton(S.of(context).v3_settings_device_name_save,
+              controller: _controller, onClick: () {
             AppPreferences().set(instanceName: _controller.text);
             InstanceInfoProvider instanceInfoProvider =
                 Provider.of<InstanceInfoProvider>(context, listen: false);
@@ -144,32 +145,56 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
       ],
     );
   }
+}
 
-  _saveButton(BuildContext context, String text,
-      {required VoidCallback onClick}) {
-    return InkWell(
-      onTap: () {
-        trackEvent('edit_name', EventCategory.session);
-        onClick();
-      },
-      child: Container(
-        width: 80,
-        height: 26,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: context.tokens.color.vsdslColorPrimary,
-          borderRadius:
-              BorderRadius.circular(context.tokens.spacing.vsdslSpacing2xl.top),
-        ),
-        child: AutoSizeText(
-          text,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.white,
+class _SaveButton extends StatelessWidget {
+  final TextEditingController controller;
+  final String text;
+  final VoidCallback onClick;
+
+  const _SaveButton(
+    this.text, {
+    required this.controller,
+    required this.onClick,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final disableOpacity =
+        context.tokens.color.vsdslColorOpacityNeutralLg.opacity;
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: controller,
+      builder: (context, value, child) {
+        final enable = value.text.isNotEmpty;
+        return InkWell(
+          onTap: enable
+              ? () {
+                  trackEvent('edit_name', EventCategory.session);
+                  onClick();
+                }
+              : null,
+          child: Container(
+            width: 80,
+            height: 26,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: context.tokens.color.vsdslColorPrimary
+                  .withOpacity(enable ? 1 : disableOpacity),
+              borderRadius: BorderRadius.circular(
+                  context.tokens.spacing.vsdslSpacing2xl.top),
+            ),
+            child: AutoSizeText(
+              text,
+              style: TextStyle(
+                fontSize: 12,
+                color: context.tokens.color.vsdslColorOnPrimary
+                    .withOpacity(enable ? 1 : disableOpacity),
+              ),
+              maxLines: 1,
+            ),
           ),
-          maxLines: 1,
-        ),
-      ),
+        );
+      },
     );
   }
 }
