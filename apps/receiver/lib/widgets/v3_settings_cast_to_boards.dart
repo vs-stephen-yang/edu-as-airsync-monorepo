@@ -122,31 +122,29 @@ class V3SettingsCastToBoardsState
 
     return SizedBox(
       height: 30,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const Image(
-            width: 20,
-            height: 20,
-            image: Svg('assets/images/ic_settings_info.svg'),
-          ),
-          Gap(context.tokens.spacing.vsdslSpacingSm.right),
-          SizedBox(
-            width: 200,
-            child: Text(
-              hintText,
-              style: TextStyle(
-                fontSize: 9,
-                color: context.tokens.color.vsdslColorOnSurfaceVariant,
-              ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
+      child: IntrinsicHeight(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Image(
+              width: 20,
+              height: 20,
+              image: Svg('assets/images/ic_settings_info.svg'),
             ),
-          ),
-          const Spacer(),
-          Align(
-            alignment: Alignment.centerRight,
-            child: broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
+            Gap(context.tokens.spacing.vsdslSpacingSm.right),
+            Expanded(
+              child: Text(
+                hintText,
+                style: TextStyle(
+                  fontSize: 9,
+                  color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+              ),
+            ),
+            Gap(context.tokens.spacing.vsdslSpacingSm.right),
+            broadcastType == BroadcastGroupLaunchType.onlyWhenCasting
                 ? _customButton(
                     context, S.of(context).v3_settings_device_name_save,
                     onClick: () {
@@ -166,10 +164,8 @@ class V3SettingsCastToBoardsState
                 })
                 : _customButton(
               context,
-              S
-                  .of(context)
-                  .v3_settings_display_group_cast,
-              isBroadcast: true,
+                    S.of(context).v3_settings_display_group_cast,
+                    isBroadcast: true,
               onClick: () {
                 if (selectedListEmpty) {
                   showDialogOverlay(
@@ -181,8 +177,8 @@ class V3SettingsCastToBoardsState
                 }
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
