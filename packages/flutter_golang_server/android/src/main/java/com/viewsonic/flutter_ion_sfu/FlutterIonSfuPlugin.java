@@ -116,6 +116,19 @@ public class FlutterIonSfuPlugin implements FlutterPlugin, MethodCallHandler, Io
     });
   }
 
+  @Override
+  public void onIceConnectionState(long channelId, long state) {
+    Log.d(TAG, "FlutterIonSfuPlugin::onIceConnectionState() " + channelId + " " + state);
+
+    post(() -> {
+      Map<String, Object> arguments = new HashMap<>();
+      arguments.put("channelId", channelId);
+      arguments.put("state", state);
+
+      channel.invokeMethod("onIceConnectionState", arguments);
+    });
+  }
+
   private boolean isOnPlatformThread() {
     return Looper.getMainLooper() == Looper.myLooper();
   }

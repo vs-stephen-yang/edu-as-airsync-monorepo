@@ -5,6 +5,14 @@ import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
 import 'flutter_ion_sfu_platform_interface.dart';
 import 'flutter_ion_sfu_listener.dart';
 
+IceConnectionState iceConnectionStateFromInt(int value) {
+  if (value >= 0 && value < IceConnectionState.values.length) {
+    return IceConnectionState.values[value];
+  } else {
+    throw ArgumentError('Invalid value for IceConnectionState: $value');
+  }
+}
+
 /// An implementation of [FlutterIonSfuPlatform] that uses method channels.
 class MethodChannelFlutterIonSfu extends FlutterIonSfuPlatform {
   /// The method channel used to interact with the native platform.
@@ -76,6 +84,15 @@ class MethodChannelFlutterIonSfu extends FlutterIonSfuPlatform {
           _listener?.onSignalMessage(
             call.arguments['channelId'],
             call.arguments['message'],
+          );
+          break;
+
+        case 'onIceConnectionState':
+          final state = call.arguments['state'];
+
+          _listener?.onIceConnectionState(
+            call.arguments['channelId'],
+            iceConnectionStateFromInt(state),
           );
           break;
 
