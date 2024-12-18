@@ -11,6 +11,7 @@ import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/model/display_group_host.dart';
+import 'package:display_flutter/model/display_group_mediator.dart';
 import 'package:display_flutter/model/display_group_member.dart';
 import 'package:display_flutter/model/display_group_member_info.dart';
 import 'package:display_flutter/model/display_group_session.dart';
@@ -920,9 +921,13 @@ class ChannelProvider extends ChangeNotifier {
   void startDisplayGroup(List<GroupListItem> newList) {
     log.info('Starting display group');
 
-    _displayGroupHost ??= DisplayGroupHost(
-      _createRemoteScreenConnector,
-    );
+    // Specify ChannelMode.direct in the anonymous function
+    getIceServersForDirect() => _getIceServers(ChannelMode.direct);
+
+    var mediator = DisplayGroupMediatorObject(
+        _remoteScreenServe, _instanceInfo.ipAddress, getIceServersForDirect);
+
+    _displayGroupHost ??= DisplayGroupHost(mediator);
 
     _handleGroupMembersChange(newList, _displayGroupHost!.members,
         onItemsAdded: (addedItems) {
@@ -963,32 +968,6 @@ class ChannelProvider extends ChangeNotifier {
     if (removedItems.isNotEmpty) {
       onItemsRemoved(removedItems);
     }
-  }
-
-  Future<RemoteScreenConnector> _createRemoteScreenConnector(
-    Channel channel,
-    StartRemoteScreenMessage message,
-  ) async {
-    final joinMessage = JoinDisplayMessage('123');
-
-    final connector = RemoteScreenConnector(
-      channel,
-      _remoteScreenServe.roomId,
-      _instanceInfo.ipAddress,
-      _remoteScreenServe.roomPort,
-      joinMessage,
-    );
-
-    final iceServers = await _getIceServers(ChannelMode.direct);
-
-    _remoteScreenServe.addConnector(connector);
-
-    await connector.onStartRemoteScreen(
-      message,
-      iceServers,
-    );
-
-    return connector;
   }
 
   //region handle Display Group's client

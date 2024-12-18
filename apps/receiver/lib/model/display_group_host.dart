@@ -1,7 +1,6 @@
-import 'package:display_channel/display_channel.dart';
+import 'package:display_flutter/model/display_group_mediator.dart';
 import 'package:display_flutter/model/display_group_member_info.dart';
 import 'package:display_flutter/model/group_list_item.dart';
-import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/providers/group_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,15 +8,9 @@ import 'display_group_member.dart';
 
 class DisplayGroupHost {
   final _members = <String, DisplayGroupMember>{};
+  final DisplayGroupMediator _mediator;
 
-  final Future<RemoteScreenConnector> Function(
-    Channel,
-    StartRemoteScreenMessage,
-  ) _createRemoteScreenConnector;
-
-  DisplayGroupHost(
-    this._createRemoteScreenConnector,
-  );
+  DisplayGroupHost(this._mediator);
 
   get members => _members;
 
@@ -30,8 +23,7 @@ class DisplayGroupHost {
   // Add a member
   void addMember(GroupListItem item, DisplayGroupMemberInfo memberInfo,
       ProviderContainer? providerContainer) {
-    final member = DisplayGroupMember(memberInfo, _createRemoteScreenConnector,
-        onRejected: () {
+    final member = DisplayGroupMember(memberInfo, _mediator, onRejected: () {
       providerContainer?.read(groupProvider.notifier).addToRejectedList(item);
     }, onStopped: (bool stayOnList) {
       removeMember(item.id());
