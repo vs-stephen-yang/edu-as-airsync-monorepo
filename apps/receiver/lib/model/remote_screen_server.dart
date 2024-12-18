@@ -325,6 +325,11 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     connector.sendSignalToPeer(message);
   }
 
+  @override
+  void onIceConnectionState(int channelId, IceConnectionState state) {
+    _connectorChannels[channelId]?.onRtcConnectionState(state);
+  }
+
   // Send a signal message to the sfu server
   void _sendSignalToSfu(int channelId, String message) {
     final channel = _connectorChannels[channelId];

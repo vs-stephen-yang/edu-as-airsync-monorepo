@@ -1,4 +1,5 @@
 import 'package:display_channel/display_channel.dart';
+import 'package:flutter_ion_sfu/flutter_ion_sfu_listener.dart';
 
 enum RemotePresentationState {
   stopStreaming,
@@ -105,5 +106,12 @@ class RemoteScreenConnector {
     channel.send(
       RemoteScreenSignalMessage(_sessionId, message),
     );
+  }
+
+  void onRtcConnectionState(IceConnectionState state) {
+    if (state == IceConnectionState.ICEConnectionStateFailed ||
+        state == IceConnectionState.ICEConnectionStateClosed) {
+      // TODO: Handle RTC connection failure or closure
+    }
   }
 }

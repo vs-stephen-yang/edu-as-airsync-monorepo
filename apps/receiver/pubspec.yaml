@@ -111,7 +111,7 @@ dependencies:
   flutter_ion_sfu:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-ion-sfu
-      ref: release-0.0.6
+      ref: release-3.5.1
   flutter_mirror:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror
