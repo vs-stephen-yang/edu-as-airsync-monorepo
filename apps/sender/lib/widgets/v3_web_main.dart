@@ -4,6 +4,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
@@ -176,6 +177,7 @@ class V3PresentStateMachine extends StatelessWidget {
                       : S.of(context).main_feature_reconnect_fail_toast);
             }
           }
+          AppAnalytics.instance.setMode(EventMode.webrtc);
         });
         return const SizedBox();
       case ViewState.authorizeWait:

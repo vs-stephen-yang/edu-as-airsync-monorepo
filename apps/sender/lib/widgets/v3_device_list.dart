@@ -377,7 +377,8 @@ class _V3DeviceListState extends State<V3DeviceList> {
       case ChannelConnectError.connectionModeUnsupported:
         break;
       case ChannelConnectError.invalidOtp:
-        trackEvent('invalid_pin_code', EventCategory.session);
+        trackEvent('invalid_pin_code', EventCategory.session,
+            properties: {'connectivity': 'intranet'});
         _showNewEnterPinDialog(
             errorMsg: S.current.v3_device_list_dialog_invalid_otp);
         break;
@@ -418,7 +419,8 @@ class _V3DeviceListState extends State<V3DeviceList> {
           onConnect: (opt) {
             _channelProvider.resetMessage();
 
-            trackEvent('enter_pin_code', EventCategory.session);
+            trackEvent('enter_pin_code', EventCategory.session,
+                properties: {'connectivity': 'intranet'});
             _onConnect(opt);
             Navigator.of(context).pop();
             isPinDialogShown = false;

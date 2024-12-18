@@ -47,6 +47,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
   void initState() {
     super.initState();
     initDeepLinks();
+    AppAnalytics.instance.setMode(null);
   }
 
   @override
