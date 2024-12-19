@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:display_flutter/app_manager_config.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
@@ -43,6 +45,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
     Provider.of<MirrorStateProvider>(context, listen: false)
         .startMirrorStartProvider();
     setProviderContainer();
+    AppManagerConfig().startHandleManagerUpdateRequest(context);
   }
 
   void setProviderContainer() {
@@ -56,6 +59,7 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
   void dispose() {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    AppManagerConfig().stopHandleManagerUpdateRequest();
   }
 
   @override

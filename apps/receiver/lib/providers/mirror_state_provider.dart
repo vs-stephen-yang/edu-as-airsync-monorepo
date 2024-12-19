@@ -437,5 +437,10 @@ class MirrorStateProvider extends ChangeNotifier
     _isMirrorConfirmation = prefs.getBool('app_autoAcceptRequired') ?? false;
     log.info('load settings.');
   }
+
+  Future<void> reloadPreferences() async {
+    _load();
+    notifyListeners();
+  }
 // endregion
 }

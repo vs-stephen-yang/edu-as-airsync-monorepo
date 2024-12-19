@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_exception_report.dart';
 import 'package:display_flutter/app_instance_create.dart';
+import 'package:display_flutter/app_manager_config.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/app_update_helper.dart';
@@ -58,6 +59,7 @@ Future<void> commonEntry(ConfigSettings settings) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     await AppInstanceCreate.ensureInitialized(settings, packageInfo);
     await HybridConnectionList.ensureInitialized();
+    await AppManagerConfig().ensureInitialized();
 
     var configureApp = AppConfig(
       settings: settings,

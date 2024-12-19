@@ -42,6 +42,11 @@ class PrefLanguageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> reloadPreferences() async {
+    _load();
+    notifyListeners();
+  }
+
   String _getDefaultSupportedLanguage() {
     //System locale
     String currentSystemLanguageCode =
