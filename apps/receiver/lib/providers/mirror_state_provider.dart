@@ -44,7 +44,7 @@ class MirrorStateProvider extends ChangeNotifier
   get miracastEnabled => _miracastEnabled;
 
   get isAnyMirrorEnabled =>
-      _airplayCodeEnabled | _googleCastEnabled | _miracastEnabled;
+      _airplayEnabled | _googleCastEnabled | _miracastEnabled;
 
   String get pinCode => _pinCode;
 
