@@ -214,6 +214,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Refuser"),
         "v3_group_dialog_message": MessageLookupByLibrary.simpleMessage(
             "%s a envoyé une demande de diffusion à votre appareil. Cette action synchronisera et affichera le contenu actuel, voulez-vous accepter cette demande?"),
+        "v3_group_dialog_no_device_message":
+            MessageLookupByLibrary.simpleMessage("Aucun appareil sélectionné."),
         "v3_group_dialog_title":
             MessageLookupByLibrary.simpleMessage("Demande de diffusion de %s"),
         "v3_group_receive_view_status_from":
@@ -238,6 +240,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "Impossible de détecter une connexion Internet. Veuillez vous connecter à un réseau Wi-Fi ou intranet, et réessayez."),
         "v3_mirror_request_passcode":
             MessageLookupByLibrary.simpleMessage("Code d\'accès"),
+        "v3_moderator_disable_mirror_cancel":
+            MessageLookupByLibrary.simpleMessage("Annuler"),
+        "v3_moderator_disable_mirror_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "La mise en miroir sera désactivée en mode modérateur"),
+        "v3_moderator_disable_mirror_ok":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_moderator_disable_mirror_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Désactiver la mise en miroir pour le mode modérateur"),
         "v3_moderator_mode":
             MessageLookupByLibrary.simpleMessage("Mode modérateur"),
         "v3_new_sharing_join_session":
@@ -252,6 +264,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Réception"),
         "v3_participant_item_share":
             MessageLookupByLibrary.simpleMessage("Partager"),
+        "v3_participant_item_waiting":
+            MessageLookupByLibrary.simpleMessage("En attente..."),
         "v3_participants_desc": MessageLookupByLibrary.simpleMessage(
             "Jusqu\'à 6 participants maximum."),
         "v3_participants_title":
@@ -264,11 +278,17 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Code QR"),
         "v3_settings_broadcast":
             MessageLookupByLibrary.simpleMessage("Diffusion"),
+        "v3_settings_broadcast_boards":
+            MessageLookupByLibrary.simpleMessage("Autres appareils AirSync"),
         "v3_settings_broadcast_cast_boards":
             MessageLookupByLibrary.simpleMessage("Diffuser vers les tableaux"),
         "v3_settings_broadcast_cast_boards_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Partagez votre écran sur tous les ViewBoards (IFP) du réseau."),
+        "v3_settings_broadcast_cast_to":
+            MessageLookupByLibrary.simpleMessage("Diffuser vers"),
+        "v3_settings_broadcast_devices":
+            MessageLookupByLibrary.simpleMessage("Appareils de diffusion"),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage(
                 "Diffuser vers le groupe d\'affichage"),
@@ -328,11 +348,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Me notifier"),
         "v3_settings_legal_policy":
             MessageLookupByLibrary.simpleMessage("Mention Légales & Politique"),
+        "v3_settings_local_connection_only":
+            MessageLookupByLibrary.simpleMessage("Connexion locale uniquement"),
         "v3_settings_mirroring_auto_accept":
             MessageLookupByLibrary.simpleMessage("Accepter automatiquement"),
         "v3_settings_mirroring_auto_accept_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Activer instantanément le mirroring sans nécessiter l\'approbation du modérateur."),
+        "v3_settings_mirroring_blocked": MessageLookupByLibrary.simpleMessage(
+            "Désactivez d’abord le mode modérateur."),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Exiger un mot de passe"),
         "v3_settings_open_source_license":
