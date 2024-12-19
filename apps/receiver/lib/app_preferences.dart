@@ -15,8 +15,8 @@ class AppPreferences {
 
   static ensureInitialized() async {
     await _instance._load();
-    await _instance._loadInvitedToGroupSelectedItem();
-    await _instance._loadSelectedConnectivityType();
+    await _instance.loadInvitedToGroupSelectedItem();
+    await _instance.loadSelectedConnectivityType();
     await _instance._loadGroupSelectedList();
   }
 
@@ -71,6 +71,10 @@ class AppPreferences {
     _moderatorId = prefs.getString('app_moderatorId') ?? '';
   }
 
+  Future<void> reloadPreferences() async {
+    _load();
+  }
+
   String _invitedToGroup = InvitedToGroupOption.notifyMe.value.toString();
 
   String get invitedToGroup {
@@ -86,7 +90,7 @@ class AppPreferences {
     }
   }
 
-  _loadInvitedToGroupSelectedItem() async {
+  loadInvitedToGroupSelectedItem() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _invitedToGroup =
         prefs.getString('app_setting_invited_to_group') ?? _invitedToGroup;
@@ -125,7 +129,7 @@ class AppPreferences {
         'app_settings_connectivity_type', connectivityTypeNotifier.value);
   }
 
-  _loadSelectedConnectivityType() async {
+  loadSelectedConnectivityType() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String type = prefs.getString('app_settings_connectivity_type') ??
         ConnectivityType.both.name;

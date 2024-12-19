@@ -182,6 +182,11 @@ class ChannelProvider extends ChangeNotifier {
         defaultDeviceListQuickConnect;
   }
 
+  Future<void> reloadPreferences() async {
+    _load();
+    notifyListeners();
+  }
+
   ChannelProvider(
     this.appConfig,
     this._instanceInfo,

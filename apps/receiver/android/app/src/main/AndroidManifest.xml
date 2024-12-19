@@ -2,6 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.mvbcast.crosswalk">
 
+    <permission
+        android:name="com.mvbcast.crosswalk.AirSyncSettingService"
+        android:protectionLevel="signature" />
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -46,6 +50,16 @@
         android:icon="@mipmap/ic_launcher"
         android:label="AirSync"
         android:resizeableActivity="false">
+        <service
+            android:name=".AirSyncSettingService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="com.mvbcast.crosswalk.AirSyncSettingService">
+            <intent-filter>
+                <action android:name="com.mvbcast.crosswalk.IAirSyncSettingService" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".EulaActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode|touchscreen"

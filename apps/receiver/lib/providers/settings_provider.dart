@@ -89,6 +89,11 @@ class SettingsProvider with ChangeNotifier {
         prefs.getBool('app_isConnectivityLock') ?? defaultConnectivityLock;
   }
 
+  Future<void> reloadPreferences() async {
+    _load();
+    notifyListeners();
+  }
+
   setPage(SettingPageState state, {Package? license}) {
     switch (state) {
       case SettingPageState.deviceSetting:
