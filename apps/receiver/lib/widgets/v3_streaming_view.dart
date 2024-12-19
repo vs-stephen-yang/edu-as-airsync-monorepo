@@ -63,7 +63,8 @@ class _V3StreamingViewState extends ConsumerState {
                     ? ref.read(groupProvider).selectedList
                     : [];
                 provider.Provider.of<ChannelProvider>(context, listen: false)
-                    .startDisplayGroup(selectedList);
+                    .startDisplayGroup(selectedList,
+                        anyCasting: splitScreenCount != 0);
               }
             }
             if (splitScreenCount == 3 || splitScreenCount == 5) {

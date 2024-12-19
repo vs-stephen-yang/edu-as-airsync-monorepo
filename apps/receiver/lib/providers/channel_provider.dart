@@ -110,6 +110,7 @@ class ChannelProvider extends ChangeNotifier {
       <RemoteScreenConnector>[];
 
   static const defaultSenderModeEnable = false;
+
   bool get isSenderMode => _isSenderMode;
 
   bool get isGroupMode => _isGroupMode;
@@ -912,14 +913,14 @@ class ChannelProvider extends ChangeNotifier {
 
   void stopDisplayGroup() {
     log.info('Stopping display group');
-
     _displayGroupHost?.stop();
     _displayGroupHost = null;
     removeSender(fromGroup: true);
   }
 
-  void startDisplayGroup(List<GroupListItem> newList) {
-    log.info('Starting display group');
+  void startDisplayGroup(List<GroupListItem> newList,
+      {bool anyCasting = false}) {
+    log.info('Starting display group, anyCasting: $anyCasting');
 
     // Specify ChannelMode.direct in the anonymous function
     getIceServersForDirect() => _getIceServers(ChannelMode.direct);
@@ -928,6 +929,10 @@ class ChannelProvider extends ChangeNotifier {
         _remoteScreenServe, _instanceInfo.ipAddress, getIceServersForDirect);
 
     _displayGroupHost ??= DisplayGroupHost(mediator);
+
+    if (!anyCasting) {
+      _displayGroupHost!.resetCastRejectMember();
+    }
 
     _handleGroupMembersChange(newList, _displayGroupHost!.members,
         onItemsAdded: (addedItems) {

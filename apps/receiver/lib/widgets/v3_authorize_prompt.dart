@@ -33,7 +33,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
       } else if (dialogContextList.isNotEmpty && authRequestIdles.isEmpty) {
         if (dialogContextList.isNotEmpty) {
           for (var context in dialogContextList) {
-            if (Navigator.canPop(context)) {
+            if (context.mounted && Navigator.canPop(context)) {
               Navigator.pop(context);
             }
           }
