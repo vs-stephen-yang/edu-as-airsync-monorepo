@@ -126,7 +126,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
       BuildContext context, ChannelProvider channelProvider) {
     trackClickApprove() {
       trackEvent(
-        'clcik_approve_webrtc',
+        'click_approve_webrtc',
         EventCategory.setting,
         target: channelProvider.isAuthorizeMode ? 'on' : 'off',
       );
