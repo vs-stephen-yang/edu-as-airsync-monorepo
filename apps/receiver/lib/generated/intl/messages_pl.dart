@@ -155,63 +155,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Dostępna jest nowa wersja oprogramowania"),
         "update_title":
             MessageLookupByLibrary.simpleMessage("Aktualizacja AirSync"),
-        "v3_authorize_prompt_accept":
-            MessageLookupByLibrary.simpleMessage("Accept"),
-        "v3_authorize_prompt_decline":
-            MessageLookupByLibrary.simpleMessage("Decline"),
-        "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
-        "v3_cast_to_device_Receiving":
-            MessageLookupByLibrary.simpleMessage("Receiving"),
-        "v3_cast_to_device_menu_or": MessageLookupByLibrary.simpleMessage("Or"),
-        "v3_cast_to_device_menu_quick_connect1":
-            MessageLookupByLibrary.simpleMessage("Quick Connect"),
-        "v3_cast_to_device_menu_quick_connect2":
-            MessageLookupByLibrary.simpleMessage("by scan the QR code"),
-        "v3_cast_to_device_menu_title":
-            MessageLookupByLibrary.simpleMessage("Join to Receive This Screen"),
-        "v3_cast_to_device_reached_maximum":
-            MessageLookupByLibrary.simpleMessage(
-                "You’ve reached the maximum limit."),
-        "v3_cast_to_device_title":
-            MessageLookupByLibrary.simpleMessage("Device list"),
-        "v3_cast_to_device_touch_back":
-            MessageLookupByLibrary.simpleMessage("Touchback"),
-        "v3_cast_to_device_touch_back_disable":
-            MessageLookupByLibrary.simpleMessage("Disable"),
-        "v3_cast_to_device_touch_enabled":
-            MessageLookupByLibrary.simpleMessage("Touchback"),
-        "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
-            "Scan the QR code with your iOS or Android device to download"),
-        "v3_download_app_entry":
-            MessageLookupByLibrary.simpleMessage("Download Sender App"),
-        "v3_download_app_title":
-            MessageLookupByLibrary.simpleMessage("Download Sender App"),
-        "v3_eula_agree": MessageLookupByLibrary.simpleMessage("Agree"),
-        "v3_eula_disagree": MessageLookupByLibrary.simpleMessage("Disagree"),
-        "v3_eula_title":
-            MessageLookupByLibrary.simpleMessage("End-User License Agreement"),
-        "v3_exit_moderator_mode_cancel":
-            MessageLookupByLibrary.simpleMessage("Cancel"),
-        "v3_exit_moderator_mode_desc": MessageLookupByLibrary.simpleMessage(
-            "Are you sure? This will disconnect all participants."),
-        "v3_exit_moderator_mode_exit":
-            MessageLookupByLibrary.simpleMessage("Exit"),
-        "v3_exit_moderator_mode_title":
-            MessageLookupByLibrary.simpleMessage("Exit Moderator Mode"),
-        "v3_group_dialog_accept":
-            MessageLookupByLibrary.simpleMessage("Accept"),
-        "v3_group_dialog_decline":
-            MessageLookupByLibrary.simpleMessage("Decline"),
-        "v3_group_dialog_message": MessageLookupByLibrary.simpleMessage(
-            "%s has sent a broadcast request to your device. This action will synchronize and display the current content, do you want to accept this request?"),
-        "v3_group_dialog_title":
-            MessageLookupByLibrary.simpleMessage("Broadcast Request from %s"),
-        "v3_group_receive_view_status_from":
-            MessageLookupByLibrary.simpleMessage("Broadcasting from"),
-        "v3_group_receive_view_status_stop":
-            MessageLookupByLibrary.simpleMessage("Stop"),
-        "v3_group_reject_invited": MessageLookupByLibrary.simpleMessage(
-            "declined your broadcast request, please check the Broads setting."),
         "v3_instruction1a":
             MessageLookupByLibrary.simpleMessage("Instrukcja 1a"),
         "v3_instruction1b":
@@ -224,28 +167,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Udostępnij swój ekran"),
         "v3_instruction_support":
             MessageLookupByLibrary.simpleMessage("Wsparcie dla instrukcji"),
-        "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
-            "Unable to detect an internet connection. Please connect to a Wi-Fi or intranet network, and try again."),
-        "v3_mirror_request_passcode":
-            MessageLookupByLibrary.simpleMessage("Passcode"),
-        "v3_moderator_mode":
-            MessageLookupByLibrary.simpleMessage("Moderator mode"),
-        "v3_new_sharing_join_session":
-            MessageLookupByLibrary.simpleMessage(" joined the session"),
-        "v3_participant_item_casting":
-            MessageLookupByLibrary.simpleMessage("Casting"),
-        "v3_participant_item_connected":
-            MessageLookupByLibrary.simpleMessage("Connected"),
-        "v3_participant_item_controlling":
-            MessageLookupByLibrary.simpleMessage("Remote controlling"),
-        "v3_participant_item_receiving":
-            MessageLookupByLibrary.simpleMessage("Receiving"),
-        "v3_participant_item_share":
-            MessageLookupByLibrary.simpleMessage("Share"),
-        "v3_participants_desc": MessageLookupByLibrary.simpleMessage(
-            "Maximum up to 6 participants."),
-        "v3_participants_title":
-            MessageLookupByLibrary.simpleMessage("Participants"),
         "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage(
             "Kod QR do szybkiego połączenia"),
         "v3_quick_connect_menu_display_code":
@@ -253,88 +174,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Kod wyświetlacza menu szybkiego połączenia"),
         "v3_quick_connect_menu_qrcode": MessageLookupByLibrary.simpleMessage(
             "Szybkie menu połączenia kod QR"),
-        "v3_settings_broadcast":
-            MessageLookupByLibrary.simpleMessage("Broadcast"),
-        "v3_settings_broadcast_cast_boards":
-            MessageLookupByLibrary.simpleMessage("Cast to boards"),
-        "v3_settings_broadcast_cast_boards_desc":
-            MessageLookupByLibrary.simpleMessage(
-                "Share your screen to all Interactive Flat Panels (IFPs) in the network."),
-        "v3_settings_broadcast_to_display_group":
-            MessageLookupByLibrary.simpleMessage(
-                "Broadcast to the display group"),
-        "v3_settings_connectivity":
-            MessageLookupByLibrary.simpleMessage("Connectivity"),
-        "v3_settings_connectivity_both": MessageLookupByLibrary.simpleMessage(
-            "Both internet & local connection"),
-        "v3_settings_connectivity_internet":
-            MessageLookupByLibrary.simpleMessage("Internet connection"),
-        "v3_settings_connectivity_internet_desc":
-            MessageLookupByLibrary.simpleMessage(
-                "Internet connection requires a stable network."),
-        "v3_settings_connectivity_local":
-            MessageLookupByLibrary.simpleMessage("Local connection"),
-        "v3_settings_connectivity_local_desc": MessageLookupByLibrary.simpleMessage(
-            "Local connections operate within a private network, offering more security and stability."),
-        "v3_settings_device_authorize_mode":
-            MessageLookupByLibrary.simpleMessage(
-                "Allow screen sharing only with approval requests."),
-        "v3_settings_device_auto_fill_otp":
-            MessageLookupByLibrary.simpleMessage("Auto-fill one-time password"),
-        "v3_settings_device_auto_fill_otp_desc":
-            MessageLookupByLibrary.simpleMessage(
-                "Enable one-touch connection when selecting a device from the device list."),
-        "v3_settings_device_launch_on_startup":
-            MessageLookupByLibrary.simpleMessage("Launch AirSync on startup"),
-        "v3_settings_device_name":
-            MessageLookupByLibrary.simpleMessage("Device Name"),
-        "v3_settings_device_name_save":
-            MessageLookupByLibrary.simpleMessage("Save"),
-        "v3_settings_device_setting":
-            MessageLookupByLibrary.simpleMessage("Device setting"),
-        "v3_settings_device_show_display_code":
-            MessageLookupByLibrary.simpleMessage("Show display code on top"),
-        "v3_settings_device_show_display_code_desc":
-            MessageLookupByLibrary.simpleMessage(
-                "Keep the code visible at the top of the screen, even when switching to other apps and screen sharing is active."),
-        "v3_settings_device_unavailable":
-            MessageLookupByLibrary.simpleMessage("Unavailable"),
-        "v3_settings_display_group":
-            MessageLookupByLibrary.simpleMessage("Display Group"),
-        "v3_settings_display_group_all_the_time":
-            MessageLookupByLibrary.simpleMessage("All the time"),
-        "v3_settings_display_group_cast":
-            MessageLookupByLibrary.simpleMessage("Broadcast"),
-        "v3_settings_display_group_only_casting":
-            MessageLookupByLibrary.simpleMessage("Only when casting"),
-        "v3_settings_invite_group": MessageLookupByLibrary.simpleMessage(
-            "If invited to a display group"),
-        "v3_settings_invite_group_auto_accept":
-            MessageLookupByLibrary.simpleMessage("Auto Accept"),
-        "v3_settings_invite_group_ignore":
-            MessageLookupByLibrary.simpleMessage("Ignore"),
-        "v3_settings_invite_group_notify_me":
-            MessageLookupByLibrary.simpleMessage("Notify me"),
-        "v3_settings_legal_policy":
-            MessageLookupByLibrary.simpleMessage("Legal & Policy"),
-        "v3_settings_mirroring_auto_accept":
-            MessageLookupByLibrary.simpleMessage("Auto Accept"),
-        "v3_settings_mirroring_auto_accept_desc":
-            MessageLookupByLibrary.simpleMessage(
-                "Instantly enable mirroring without requiring moderator approval."),
-        "v3_settings_mirroring_require_passcode":
-            MessageLookupByLibrary.simpleMessage("Require passcode"),
-        "v3_settings_open_source_license":
-            MessageLookupByLibrary.simpleMessage("Open Source Licenses"),
-        "v3_settings_privacy_policy":
-            MessageLookupByLibrary.simpleMessage("Privacy Policy"),
-        "v3_settings_privacy_policy_description":
-            MessageLookupByLibrary.simpleMessage(
-                "ViewSonic is committed to protecting your privacy and treats the handling of personal data seriously. The Privacy Policy below details how ViewSonic will treat your personal data after it has been collected by ViewSonic through your use of the Website. ViewSonic maintains the privacy of your information using security technologies and adhere to policies that prevent unauthorized use of your personal information. By using this Website, you consent to the collection and use of your information.\n\nWebsites you link to from ViewSonic.com may have their own privacy policy that may differ from ViewSonic’s. Please review those websites’ privacy policies for detailed information on how they may use information gathered while you are visiting them.\n\nPlease click the following links to learn more about our Privacy Policy."),
-        "v3_settings_whats_new":
-            MessageLookupByLibrary.simpleMessage("What\'s new"),
-        "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "AirSync %s\n\nAirSync is a ViewSonic proprietary wireless screen-sharing solution. When used with the AirSync sender, it enables seamless screen sharing from a user\'s device to ViewSonic interactive displays.\n\nKey features: \n\n1. Wireless screensharing.\n\n2. Automatic split screens for multiple presenters.\n\n3. Moderator mode to enable more control during presentation.\n\n4. Screen mirror to support AirPlay, Google Cast and Miracast.\n\n5. Cast to device with remote control.\n\n6. Cast to board to broadcast screens to multiple large screens.\n\n7. Annotation.\n\n8. Interact with Windows, macOS, iOS, Android and web version AirSync sender.\n\n9. Touchback is supported in Windows and macOS sender.\n\n"),
         "v3_shortcuts_airplay":
             MessageLookupByLibrary.simpleMessage("Skróty airplay"),
         "v3_shortcuts_cast_device":
@@ -351,8 +190,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Skróty lustrzane"),
         "v3_waiting_desc": MessageLookupByLibrary.simpleMessage(
             "Oczekiwanie na udostępnienie ekranu przez tego uczestnika"),
-        "v3_waiting_join":
-            MessageLookupByLibrary.simpleMessage("Waiting for others to join"),
         "v3_waiting_up_next":
             MessageLookupByLibrary.simpleMessage("Oczekiwanie na kolejny"),
         "vbs_ota_progress_msg": MessageLookupByLibrary.simpleMessage(

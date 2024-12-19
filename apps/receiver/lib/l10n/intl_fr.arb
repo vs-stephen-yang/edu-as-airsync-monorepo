@@ -169,5 +169,16 @@
   "v3_download_app_for_mobile": "Pour iOS & Android",
   "v3_download_app_for_desktop_desc": "Saisir l'URL suivante pour télécharger.",
   "v3_download_app_for_mobile_desc": "Scannez le code QR pour un accès instantané.",
-  "v3_download_app_or": "OU"
+  "v3_download_app_or": "OU",
+  "v3_moderator_disable_mirror_title": "Désactiver la mise en miroir pour le mode modérateur",
+  "v3_moderator_disable_mirror_desc": "La mise en miroir sera désactivée en mode modérateur",
+  "v3_moderator_disable_mirror_ok": "OK",
+  "v3_moderator_disable_mirror_cancel": "Annuler",
+  "v3_settings_mirroring_blocked": "Désactivez d’abord le mode modérateur.",
+  "v3_settings_broadcast_cast_to": "Diffuser vers",
+  "v3_settings_broadcast_devices": "Appareils de diffusion",
+  "v3_settings_broadcast_boards": "Autres appareils AirSync",
+  "v3_settings_local_connection_only": "Connexion locale uniquement",
+  "v3_group_dialog_no_device_message": "Aucun appareil sélectionné.",
+  "v3_participant_item_waiting": "En attente..."
 }
