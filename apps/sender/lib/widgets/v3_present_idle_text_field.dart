@@ -11,16 +11,30 @@ import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
+class PlatformDetector {
+  bool get isWindows => WebRTC.platformIsWindows;
+
+  bool get isWeb => kIsWeb;
+
+  bool get notWindowsNeitherWeb => !isWindows && !isWeb;
+
+  bool get windowsOrWeb => isWindows || isWeb;
+
+  const PlatformDetector();
+}
+
 class V3PresentIdleTextField extends StatefulWidget {
   const V3PresentIdleTextField(
       {super.key,
       required this.widthTextField,
       required this.onFieldChanged,
-      required this.onPasswordEnterEvent});
+      required this.onPasswordEnterEvent,
+      this.platformDetector = const PlatformDetector()});
 
   final double widthTextField;
   final ValueChanged<V3FieldResult> onFieldChanged;
   final ValueChanged<String> onPasswordEnterEvent;
+  final PlatformDetector platformDetector;
 
   @override
   V3PresentIdleTextFieldState createState() => V3PresentIdleTextFieldState();
@@ -106,35 +120,52 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       focusNode: _codeFocusNode,
       hintText: S.of(context).v3_main_display_code,
       inputFormatter: [
-        if (!WebRTC.platformIsWindows && !kIsWeb)
+        if (widget.platformDetector.notWindowsNeitherWeb)
           FilteringTextInputFormatter.digitsOnly,
-        if (!WebRTC.platformIsWindows && !kIsWeb)
+        if (widget.platformDetector.notWindowsNeitherWeb)
           MaskedInputFormatter(
             List.generate(displayCodeMaxLength, (index) => '0').join(''),
             allowedCharMatcher: RegExp('[0-9\\s]'),
           ),
         TextInputFormatter.withFunction((oldValue, newValue) {
-          final max = (!WebRTC.platformIsWindows && !kIsWeb)
+          final digitsOnly = oldValue.text.replaceAll(RegExp(r'\s'), '');
+          final newDigitsOnly = newValue.text.replaceAll(RegExp(r'\s'), '');
+          final max = (widget.platformDetector.notWindowsNeitherWeb)
               ? displayCodeMaxLength
               : displayCodeMaxLengthW;
-          //old is  1234 5678 |9012 new is  1234 5678|9012 then result is1234 5678| 9012
+
+          if (digitsOnly.length == max &&
+              newDigitsOnly.length >= max &&
+              digitsOnly != newDigitsOnly) {
+            return oldValue;
+          }
+          //old is  1234 5678 |9012 new is  1234 5678|9012 then result is 1234 5678| 9012
+          // Web && Windows with space, otherwise without space
           final newOffset = newValue.selection.baseOffset;
-          if ((newOffset == 4 && newValue.text.length > 5) ||
-              (newOffset == 8 && newValue.text.length > 9) ||
-              (newOffset == 13 && newValue.text.length > 14)) {
+          if (widget.platformDetector.windowsOrWeb &&
+              ((newOffset == 9 && newValue.text.length >= 10) ||
+                  (newOffset == 14 && newValue.text.length >= 15))) {
+            userDeleteSpace = true;
+            return newValue.copyWith();
+          } else if ((newOffset == 4 && newValue.text.length >= 5) ||
+              (newOffset == 8 && newValue.text.length >= 9)) {
             userDeleteSpace = true;
             return newValue.copyWith();
           }
-
-          final digitsOnly = oldValue.text.replaceAll(RegExp(r'\s'), '');
-          if (digitsOnly.length >= max && newValue.text.length >= max) {
-            return oldValue;
+          if (newDigitsOnly.length > max) {
+            // when user copy & paste then will hit newDigits are longer than max
+            final newDigits = newDigitsOnly.substring(0, max);
+            return TextEditingValue(
+              text: newDigits,
+              selection: TextSelection.collapsed(
+                  offset: min(newDigits.length, newOffset)),
+            );
           }
           return newValue;
         }),
       ],
       onFieldChanged: (text) {
-        if (WebRTC.platformIsWindows || kIsWeb) {
+        if (widget.platformDetector.windowsOrWeb) {
           if (text.contains(RegExp(r'[^0-9\s]'))) {
             _setTextFormFieldErrorMsg(
                 codeKey, S.of(context).v3_main_display_code_error);
@@ -146,7 +177,6 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
           }
           _codeController.value = _codeController.value.copyWith(
             text: text.toUpperCase(),
-            selection: TextSelection.collapsed(offset: text.length),
             composing: TextRange.empty,
           );
         }
@@ -212,14 +242,14 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       hintText: S.of(context).v3_main_password,
       maxTextLength: otpLength,
       inputFormatter: [
-        if (!WebRTC.platformIsWindows && !kIsWeb)
+        if (widget.platformDetector.notWindowsNeitherWeb)
           MaskedInputFormatter(
             '0000',
             allowedCharMatcher: RegExp('[0-9]'),
           ),
       ],
       onFieldChanged: (text) {
-        if (WebRTC.platformIsWindows || kIsWeb) {
+        if (widget.platformDetector.windowsOrWeb) {
           if (text.contains(RegExp(r'[^0-9]'))) {
             _setTextFormFieldErrorMsg(otpKey, S.of(context).v3_main_otp_error);
             return;
