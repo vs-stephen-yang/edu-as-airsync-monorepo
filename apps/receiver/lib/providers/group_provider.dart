@@ -173,8 +173,8 @@ class GroupProvider extends StateNotifier<GroupState> {
 
   void addToRejectedList(GroupListItem client) {
     if (!state.rejectedList.any((item) => item.id() == client.id())) {
-      if (client.invitedState() ==
-          InvitedToGroupOption.notifyMe.value.toString()) {
+      if (client.invitedState() !=
+          InvitedToGroupOption.autoAccept.value.toString()) {
         final newList = [...state.rejectedList, client];
         state = state.copyWith(rejectedList: newList);
       }

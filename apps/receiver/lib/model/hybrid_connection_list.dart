@@ -100,6 +100,7 @@ class HybridConnectionList {
         inConnectionNumber++;
       }
     }
+
     hybridSplitScreenCount.value = 0; // workaround to trigger value changed.
     hybridSplitScreenCount.value = inConnectionNumber;
 

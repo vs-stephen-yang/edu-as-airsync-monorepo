@@ -205,7 +205,7 @@ class V3GroupRejectPrompt extends ConsumerWidget {
 
   void _closeRejectDialogs() {
     for (var context in dialogContextList) {
-      if (Navigator.canPop(context)) {
+      if (context.mounted && Navigator.canPop(context)) {
         Navigator.pop(context);
       }
     }
