@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
@@ -259,6 +260,16 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                                             padding: EdgeInsets.zero,
                                           ),
                                           onPressed: () {
+                                            final String mirrorType =
+                                                mirrorRequestIdles
+                                                    .toList()[index]
+                                                    .mirrorType
+                                                    .name
+                                                    .replaceAll('googlecast',
+                                                        'google_cast');
+                                            trackEvent('click_decline_device',
+                                                EventCategory.session,
+                                                mode: mirrorType);
                                             var mirrorId = mirrorRequestIdles
                                                 .toList()[index]
                                                 .mirrorId;
@@ -291,6 +302,16 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                                             padding: EdgeInsets.zero,
                                           ),
                                           onPressed: () async {
+                                            final String mirrorType =
+                                                mirrorRequestIdles
+                                                    .toList()[index]
+                                                    .mirrorType
+                                                    .name
+                                                    .replaceAll('googlecast',
+                                                        'google_cast');
+                                            trackEvent('click_accept_device',
+                                                EventCategory.session,
+                                                mode: mirrorType);
                                             String? mirrorId =
                                                 mirrorRequestIdles
                                                     .toList()[index]

@@ -169,7 +169,8 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                       onPressed: () {
                                         if (authRequestIdles.isNotEmpty) {
                                           trackEvent('click_decline_device',
-                                              EventCategory.session);
+                                              EventCategory.session,
+                                              mode: 'webrtc');
 
                                           authRequestIdles[index]
                                               .entries
@@ -209,7 +210,8 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                       onPressed: () {
                                         if (authRequestIdles.isNotEmpty) {
                                           trackEvent('click_accept_device',
-                                              EventCategory.session);
+                                              EventCategory.session,
+                                              mode: 'webrtc');
 
                                           authRequestIdles[index]
                                               .entries
