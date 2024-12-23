@@ -12,6 +12,12 @@ class V3SettingsLegalPolicy extends StatelessWidget {
 
   final bool isAppMode;
 
+  final List<String> _hiddenLicenses = const [
+    'display_channel',
+    'flutter_input_injection',
+    'flutter_virtual_display',
+  ];
+
   @override
   Widget build(BuildContext context) {
     SettingsProvider settingsProvider =
@@ -85,9 +91,15 @@ class V3SettingsLegalPolicy extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 24),
               child: ListView.separated(
-                itemCount: dependencies.length,
+                itemCount: dependencies
+                    .where((license) => !_hiddenLicenses.contains(license.name))
+                    .length,
                 itemBuilder: (BuildContext context, int index) {
-                  final license = dependencies[index];
+                  final visibleLicenses = dependencies
+                      .where(
+                          (license) => !_hiddenLicenses.contains(license.name))
+                      .toList();
+                  final license = visibleLicenses[index];
                   return SizedBox(
                     width: 352,
                     height: 40,
