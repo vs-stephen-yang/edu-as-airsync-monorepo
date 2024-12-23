@@ -9,6 +9,15 @@ import 'package:provider/provider.dart';
 class V3SettingsLegalPolicy extends StatelessWidget {
   const V3SettingsLegalPolicy({super.key});
 
+  final List<String> _hiddenLicenses = const [
+    'app_ota_flutter',
+    'device_info_vs',
+    'display_channel',
+    'flutter_input_injection',
+    'flutter_ion_sfu',
+    'flutter_mirror',
+  ];
+
   @override
   Widget build(BuildContext context) {
     SettingsProvider settingsProvider =
@@ -63,9 +72,14 @@ class V3SettingsLegalPolicy extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: dependencies.length,
+              itemCount: dependencies
+                  .where((license) => !_hiddenLicenses.contains(license.name))
+                  .length,
               itemBuilder: (context, index) {
-                final license = dependencies[index];
+                final visibleLicenses = dependencies
+                    .where((license) => !_hiddenLicenses.contains(license.name))
+                    .toList();
+                final license = visibleLicenses[index];
                 return SizedBox(
                   height: 26,
                   child: Row(
