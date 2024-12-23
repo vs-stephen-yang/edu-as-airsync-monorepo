@@ -197,10 +197,14 @@ class HybridConnectionList {
         }
       }
     } else {
-      for (var connection in _hybridConnectionList.nonNulls) {
+      for (var i = 0; i < _hybridConnectionList.length; i++) {
+        var connection = _hybridConnectionList[i];
+        if (connection == null) {
+          continue;
+        }
         if (connection is RTCConnector && connection.clientId != null) {
-          connection.sendChangeQuality(
-              false, true, hybridSplitScreenCount.value);
+          connection.sendChangeQuality(i == enlargedScreenIndex.value, true,
+              hybridSplitScreenCount.value);
         }
       }
     }
