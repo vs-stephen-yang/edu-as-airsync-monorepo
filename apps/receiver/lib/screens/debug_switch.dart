@@ -32,6 +32,30 @@ class _DebugSwitchState extends State<DebugSwitch> {
   bool _verboseWebRtcLog = false;
   bool _enableWebRtcH264BaselineProfile = false;
   bool _iceGatheringContinually = false;
+  final TextEditingController _roomNumberController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _roomNumberController.text = DeviceFeatureAdapter.roomNumber;
+  }
+
+  @override
+  void dispose() {
+    _roomNumberController.dispose();
+    super.dispose();
+  }
+
+  void _onSaveRoomNumber() async {
+    DeviceFeatureAdapter.roomNumber = _roomNumberController.text;
+    await DeviceFeatureAdapter.save();
+    // 显示保存成功提示
+    if (mounted) {
+      MotionToast.success(
+        description: const Text("Room number saved successfully"),
+      ).show(context);
+    }
+  }
 
   void _notifyRestart() {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -172,6 +196,52 @@ class _DebugSwitchState extends State<DebugSwitch> {
                     DebugSwitch.log.write('$value \n');
                     return Column(
                       children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _roomNumberController,
+                                  style: const TextStyle(color: Colors.white),
+                                  decoration: const InputDecoration(
+                                    labelText: '請輸入樓層/會議室編號',
+                                    labelStyle: TextStyle(color: Colors.white),
+                                    border: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.white),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.transparent,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              ElevatedButton(
+                                onPressed: _onSaveRoomNumber,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
+                                ),
+                                child: const Text(
+                                  'Save',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         SwitchListTile(
                             title: const Text('Show Old UI'),
                             value: _showOldUI,

@@ -1,9 +1,9 @@
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 
 class DeviceFeatureAdapter {
   static final DeviceFeatureAdapter _instance =
@@ -26,6 +26,7 @@ class DeviceFeatureAdapter {
   static bool verboseWebRtcLog = false;
   static bool dumpSrtpPackets = false;
   static bool iceGatheringContinually = false;
+  static String roomNumber = '';
 
   static bool defaultShowOldUI = false;
   static bool defaultShowDebugOverlay = false;
@@ -37,6 +38,7 @@ class DeviceFeatureAdapter {
   static bool defaultDumpSrtpPackets = false;
   // gather_continually by default
   static bool defaultIceGatheringContinually = true;
+  static const String defaultRoomNumber = '';
 
   static Map<String, int> quickDecodeParams = {
     "low-latency": 1, // RK3588
@@ -121,6 +123,7 @@ class DeviceFeatureAdapter {
         prefs.getBool("DumpSrtpPackets") ?? defaultDumpSrtpPackets;
     iceGatheringContinually = prefs.getBool("IceGatheringContinually") ??
         defaultIceGatheringContinually;
+    roomNumber = prefs.getString("RoomNumber") ?? defaultRoomNumber;
   }
 
   static save() async {
@@ -135,6 +138,7 @@ class DeviceFeatureAdapter {
     await prefs.setBool("VerboseWebRtcLog", verboseWebRtcLog);
     await prefs.setBool("DumpSrtpPackets", dumpSrtpPackets);
     await prefs.setBool("IceGatheringContinually", iceGatheringContinually);
+    await prefs.setString("RoomNumber", roomNumber);
   }
 
   static Map<String, int> getDecodeOptions(
