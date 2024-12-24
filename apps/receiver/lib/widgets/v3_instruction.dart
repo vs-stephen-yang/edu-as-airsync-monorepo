@@ -1,15 +1,18 @@
 import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
+import 'package:display_flutter/screens/v3_download_app_menu.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3Instruction extends StatelessWidget {
@@ -78,8 +81,8 @@ class V3Instruction extends StatelessWidget {
           AutoSizeText(
             S.of(context).v3_instruction_share_screen,
             style: context.tokens.textStyle.airsyncFontTitle.apply(
-              color: context.tokens.color.vsdslColorSurface600,
-            ),
+                color: context.tokens.color.vsdslColorOnSurface,
+                fontWeightDelta: FontWeight.w700.value),
           ),
           SizedBox(height: context.tokens.spacing.vsdslSpacing5xl.top),
         ],
@@ -136,25 +139,73 @@ class V3Instruction extends StatelessWidget {
                     }
                     String airsync =
                         AppConfig.of(context)?.settings.airSyncUrl ?? '';
-                    return AutoSizeText.rich(
-                      _buildTextSpan(
-                        fullText: isInternet && !isCastToDevice
-                            ? S
-                                .of(context)
+                    return Row(
+                      children: [
+                        AutoSizeText.rich(
+                          _buildTextSpan(
+                            fullText: isInternet && !isCastToDevice
+                                ? S
+                                    .of(context)
                                 .v3_instruction1a
                                 .replaceAll('airsync.net', airsync)
-                            : S.of(context).v3_instruction1b,
-                        formatTexts: [airsync],
-                        formatStyle: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.w700,
-                          color: context.tokens.color.vsdslColorSurface600,
-                          letterSpacing: -0.48,
+                                    .replaceAll(
+                                        S.current.v3_instruction1b
+                                            .toLowerCase(),
+                                        '')
+                                : S.of(context).v3_instruction1b,
+                            formatTexts: [airsync],
+                            formatStyle: TextStyle(
+                              fontSize: 21,
+                              fontWeight: FontWeight.w700,
+                              color: context.tokens.color.vsdslColorOnSurface,
+                              letterSpacing: -0.48,
+                            ),
+                          ),
+                          style:
+                              context.tokens.textStyle.airsyncFontTitle.apply(
+                            color: context.tokens.color.vsdslColorOnSurface,
+                          ),
                         ),
-                      ),
-                      style: context.tokens.textStyle.airsyncFontTitle.apply(
-                        color: context.tokens.color.vsdslColorSurface600,
-                      ),
+                        if (isInternet && !isCastToDevice)
+                          InkWell(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                      color: context
+                                          .tokens.color.vsdslColorOnSurface,
+                                      width: 1),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Image(
+                                    image: Svg(
+                                        'assets/images/ic_download_sender.svg'),
+                                    width: 23,
+                                    height: 23,
+                                  ),
+                                  const Gap(5),
+                                  Text(
+                                    S.current.v3_download_app_title,
+                                    style: context
+                                        .tokens.textStyle.airsyncFontTitle
+                                        .apply(
+                                            color: context.tokens.color
+                                                .vsdslColorOnSurface,
+                                            fontWeightDelta:
+                                                FontWeight.w700.value),
+                                  )
+                                ],
+                              ),
+                            ),
+                            onTap: () {
+                              trackEvent('click_dl_qrcode_icon',
+                                  EventCategory.quickMenu);
+                              _showDownloadAppMenuDialog(context);
+                            },
+                          ),
+                      ],
                     );
                   },
                 );
@@ -177,7 +228,7 @@ class V3Instruction extends StatelessWidget {
               child: AutoSizeText(
                 S.of(context).v3_instruction2,
                 style: context.tokens.textStyle.airsyncFontTitle.apply(
-                  color: context.tokens.color.vsdslColorSurface600,
+                  color: context.tokens.color.vsdslColorOnSurface,
                 ),
               ),
             ),
@@ -193,7 +244,7 @@ class V3Instruction extends StatelessWidget {
             return AutoSizeText(
               _getDisplayCodeVisualIdentity(instanceInfoProvider.displayCode),
               style: context.tokens.textStyle.airsyncFontDisplay.apply(
-                color: context.tokens.color.vsdslColorSurface700,
+                color: context.tokens.color.vsdslColorOnSurface,
               ),
             );
           }),
@@ -213,10 +264,35 @@ class V3Instruction extends StatelessWidget {
               child: AutoSizeText(
                 S.of(context).v3_instruction3,
                 style: context.tokens.textStyle.airsyncFontTitle.apply(
-                  color: context.tokens.color.vsdslColorSurface600,
+                  color: context.tokens.color.vsdslColorOnSurface,
                 ),
               ),
             ),
+          ],
+        ),
+        SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
+        Row(
+          children: [
+            Padding(
+              padding: isQuickConnect
+                  ? EdgeInsets.zero
+                  : const EdgeInsets.only(left: 35),
+              child:
+                  Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
+                return ValueListenableBuilder<String>(
+                  valueListenable: channelProvider.otp,
+                  builder: (_, otp, __) {
+                    return AutoSizeText(
+                      otp,
+                      style: context.tokens.textStyle.airsyncFontDisplay.apply(
+                        color: context.tokens.color.vsdslColorOnSurface,
+                      ),
+                    );
+                  },
+                );
+              }),
+            ),
+            const Gap(16),
             Padding(
               padding: EdgeInsets.only(
                   left: context.tokens.spacing.vsdslSpacingMd.left),
@@ -246,26 +322,17 @@ class V3Instruction extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
-        Padding(
-          padding: isQuickConnect
-              ? EdgeInsets.zero
-              : const EdgeInsets.only(left: 35),
-          child: Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
-            return ValueListenableBuilder<String>(
-              valueListenable: channelProvider.otp,
-              builder: (_, otp, __) {
-                return AutoSizeText(
-                  otp,
-                  style: context.tokens.textStyle.airsyncFontDisplay.apply(
-                    color: context.tokens.color.vsdslColorSurface700,
-                  ),
-                );
-              },
-            );
-          }),
-        ),
       ],
+    );
+  }
+
+  _showDownloadAppMenuDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return const V3DownloadAppMenu();
+      },
     );
   }
 
