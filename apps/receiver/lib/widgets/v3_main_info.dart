@@ -20,7 +20,7 @@ class V3MainInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      width: 1065,
+      width: 1173,
       height: 505,
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(
@@ -38,8 +38,7 @@ class V3MainInfo extends StatelessWidget {
             ? const V3NoNetworkStatus()
             : Row(
                 children: [
-                  SizedBox(
-                    width: 752,
+                  Expanded(
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -93,7 +92,8 @@ class V3MainInfo extends StatelessWidget {
                           ),
                         ),
                         Positioned(
-                          right: 8,
+                          top: 150,
+                          right: 42,
                           child: Container(
                             width: 171,
                             height: 229,
@@ -118,7 +118,7 @@ class V3MainInfo extends StatelessWidget {
                     color: context.tokens.color.vsdslColorOutline,
                   ),
                   const SizedBox(
-                    width: 310,
+                    width: 340,
                     child: V3ParticipantsView(),
                   ),
                 ],
