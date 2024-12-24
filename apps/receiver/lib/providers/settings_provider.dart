@@ -58,14 +58,14 @@ class SettingsProvider with ChangeNotifier {
   bool get isMirroringLock => _isMirroringLock;
 
   set isMirroringLock(bool value) {
-    isMirroringLock = value;
+    _isMirroringLock = value;
     _save();
   }
 
   bool get isConnectivityLock => _isConnectivityLock;
 
   set isConnectivityLock(bool value) {
-    isConnectivityLock = value;
+    _isConnectivityLock = value;
     _save();
   }
 
