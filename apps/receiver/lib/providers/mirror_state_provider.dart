@@ -442,5 +442,10 @@ class MirrorStateProvider extends ChangeNotifier
     _load();
     notifyListeners();
   }
+
+  @override
+  void onMirrorVideoFrameRate(String mirrorId, int fps) {
+    // TODO add implementation
+  }
 // endregion
 }
