@@ -13,8 +13,9 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
 class V3ParticipantsView extends StatefulWidget {
-  const V3ParticipantsView({super.key});
+  const V3ParticipantsView({super.key, this.isLandscape = true});
 
+  final bool isLandscape;
   @override
   State<StatefulWidget> createState() => _V3ParticipantsView();
 }
@@ -29,17 +30,20 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
       key: _containerKey,
       alignment: Alignment.center,
       children: [
-        const Positioned(
+        Positioned(
           left: 13,
           top: 27,
           right: 13,
           bottom: 13,
-          child: V3ParticipantList(),
+          child: Container(
+            padding: widget.isLandscape
+                ? EdgeInsets.zero
+                : const EdgeInsets.only(left: 20, right: 20),
+            child: const V3ParticipantList(isForMenuUse: true),
+          ),
         ),
         Positioned(
-          left: 20,
-          right: 20,
-          bottom: 20,
+          bottom: widget.isLandscape ? 20 : 40,
           child: Container(
             width: 270,
             height: 53,
@@ -115,17 +119,25 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
           ),
         ),
         IgnorePointer(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(30),
-                bottomRight: Radius.circular(30),
+          child: LayoutBuilder(builder: (context, constraints) {
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topRight: widget.isLandscape
+                      ? const Radius.circular(30)
+                      : Radius.zero,
+                  bottomRight: const Radius.circular(30),
+                  bottomLeft: !widget.isLandscape
+                      ? const Radius.circular(30)
+                      : Radius.zero,
+                ),
+                color: isShowDialogMenu
+                    ? context.tokens.color.vsdslColorSurface1000
+                        .withOpacity(0.16)
+                    : Colors.transparent,
               ),
-              color: isShowDialogMenu
-                  ? context.tokens.color.vsdslColorSurface1000.withOpacity(0.16)
-                  : Colors.transparent,
-            ),
-          ),
+            );
+          }),
         ),
       ],
     );
@@ -134,8 +146,11 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
   Future<bool> _callCloseMirrorDialog(BuildContext context) async {
     final RenderBox renderBox =
         _containerKey.currentContext!.findRenderObject() as RenderBox;
-    final Offset containerOffset =
-        renderBox.localToGlobal(Offset.zero).translate(27, 157);
+    final Size renderBoxSize = Size(renderBox.size.width - V3CustomDialog.width,
+        renderBox.size.height - V3CustomDialog.height);
+    final Offset containerOffset = renderBox
+        .localToGlobal(Offset.zero)
+        .translate(renderBoxSize.width / 2, renderBoxSize.height / 2);
 
     setState(() {
       isShowDialogMenu = true;
@@ -176,8 +191,11 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
   void _callLogOutDialog(BuildContext context) async {
     final RenderBox renderBox =
         _containerKey.currentContext!.findRenderObject() as RenderBox;
-    final Offset containerOffset =
-        renderBox.localToGlobal(Offset.zero).translate(27, 157);
+    final Size renderBoxSize = Size(renderBox.size.width - V3CustomDialog.width,
+        renderBox.size.height - V3CustomDialog.height);
+    final Offset containerOffset = renderBox
+        .localToGlobal(Offset.zero)
+        .translate(renderBoxSize.width / 2, renderBoxSize.height / 2);
 
     setState(() {
       isShowDialogMenu = true;
