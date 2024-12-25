@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:azure_application_insights/azure_application_insights.dart';
 import 'package:display_flutter/utility/client_device_info.dart';
+import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/vsapi/vs_api.dart';
 import 'package:http/http.dart';
@@ -168,6 +169,8 @@ void trackEvent(
       if (target != null) 'target': target,
       if (participatorId != null) 'participator_id': participatorId,
       if (mode != null) 'mode': mode,
+      if (DeviceFeatureAdapter.roomNumber.isNotEmpty)
+        'room_number': DeviceFeatureAdapter.roomNumber,
     },
   });
 }
