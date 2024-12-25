@@ -3,6 +3,8 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:flutter/material.dart';
 
 class V3CustomDialog extends StatelessWidget {
+  static const double width = 266;
+  static const double height = 193;
   const V3CustomDialog(
       {super.key,
       this.offset,
@@ -32,8 +34,8 @@ class V3CustomDialog extends StatelessWidget {
             // https://blog.csdn.net/shving/article/details/114485776
             constrainedAxis: Axis.vertical,
             child: SizedBox(
-              width: 254,
-              height: 192,
+              width: width,
+              height: height,
               child: Dialog(
                 shape: RoundedRectangleBorder(
                   borderRadius: context.tokens.radii.vsdslRadiusXl,

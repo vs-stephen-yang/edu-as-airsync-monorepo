@@ -18,112 +18,152 @@ class V3MainInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return LayoutBuilder(builder: (context, constraints) {
+      final bool isLandscape = constraints.maxWidth > constraints.maxHeight;
+
+      return Container(
+        alignment: Alignment.center,
+        margin: isLandscape
+            ? null
+            : const EdgeInsets.symmetric(vertical: 120, horizontal: 29),
+        width: isLandscape ? 1173 : null,
+        height: isLandscape ? 505 : null,
+        decoration: _buildContainerDecoration(context),
+        child: Consumer<ConnectivityProvider>(
+            builder: (_, connectivityProvider, __) {
+          return connectivityProvider.connectionStatus ==
+                  ConnectivityResult.none
+              ? const V3NoNetworkStatus()
+              : isLandscape
+                  ? _buildLandscapeContent(context)
+                  : _buildPortraitContent(context);
+        }),
+      );
+    });
+  }
+
+  ShapeDecoration _buildContainerDecoration(BuildContext context) {
+    return ShapeDecoration(
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(30)),
+        side: BorderSide(
+          width: 1,
+          color: context.tokens.color.vsdslColorOutline,
+        ),
+      ),
+      color: context.tokens.color.vsdslColorSurface100.withOpacity(0.64),
+    );
+  }
+
+  Widget _buildLandscapeContent(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildStackContent(context, isLandscape: true),
+        ),
+        Container(
+          width: 1,
+          color: context.tokens.color.vsdslColorOutline,
+        ),
+        const SizedBox(
+          width: 340,
+          child: V3ParticipantsView(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPortraitContent(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: _buildStackContent(context, isLandscape: false),
+        ),
+        Container(
+          height: 1,
+          color: context.tokens.color.vsdslColorOutline,
+        ),
+        const Expanded(
+          child: V3ParticipantsView(isLandscape: false),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStackContent(BuildContext context, {required bool isLandscape}) {
+    return Stack(
       alignment: Alignment.center,
-      width: 1173,
-      height: 505,
-      decoration: ShapeDecoration(
-        shape: RoundedRectangleBorder(
-          borderRadius: const BorderRadius.all(Radius.circular(30)),
-          side: BorderSide(
-            width: 1,
-            color: context.tokens.color.vsdslColorOutline,
+      children: [
+        const Positioned(
+          left: 53,
+          top: 26,
+          bottom: 76,
+          child: V3Instruction(isCastToDevice: false),
+        ),
+        Positioned(
+          left: 50,
+          bottom: 44,
+          child: _buildInstructionRow(context),
+        ),
+        Positioned(
+          bottom: isLandscape ? null : 40,
+          top: isLandscape ? 150 : null,
+          right: isLandscape ? 42 : 29,
+          child: Container(
+            width: 171,
+            height: 229,
+            decoration: _buildQrCodeDecoration(context),
+            child: const V3QrCodeQuickConnect(),
           ),
         ),
-        color: context.tokens.color.vsdslColorSurface100.withOpacity(0.64),
+      ],
+    );
+  }
+
+  Widget _buildInstructionRow(BuildContext context) {
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 35),
+          child: Image(
+            image: const Svg('assets/images/ic_arrow_to_screen.svg'),
+            width: 21,
+            height: 21,
+            color: context.tokens.color.vsdslColorSurface600,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 5),
+          child: AutoSizeText.rich(
+            _buildTextSpan(
+              fullText: S.of(context).v3_instruction_support,
+              formatTexts: ['AirPlay, Google Cast', 'Miracast'],
+              formatStyle: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: context.tokens.color.vsdslColorSurface600,
+              ),
+            ),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: context.tokens.color.vsdslColorSurface600,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  ShapeDecoration _buildQrCodeDecoration(BuildContext context) {
+    return ShapeDecoration(
+      shape: RoundedRectangleBorder(
+        borderRadius: context.tokens.radii.vsdslRadiusXl,
+        side: BorderSide(
+          width: 1,
+          color: context.tokens.color.vsdslColorOutline,
+        ),
       ),
-      child: Consumer<ConnectivityProvider>(
-          builder: (_, connectivityProvider, __) {
-        return connectivityProvider.connectionStatus == ConnectivityResult.none
-            ? const V3NoNetworkStatus()
-            : Row(
-                children: [
-                  Expanded(
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        const Positioned(
-                          left: 53,
-                          top: 26,
-                          bottom: 76,
-                          child: V3Instruction(isCastToDevice: false),
-                        ),
-                        Positioned(
-                          left: 50,
-                          bottom: 44,
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 35),
-                                child: Image(
-                                  image: const Svg(
-                                      'assets/images/ic_arrow_to_screen.svg'),
-                                  width: 21,
-                                  height: 21,
-                                  color:
-                                      context.tokens.color.vsdslColorSurface600,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 5),
-                                child: AutoSizeText.rich(
-                                  _buildTextSpan(
-                                      fullText:
-                                          S.of(context).v3_instruction_support,
-                                      formatTexts: [
-                                        'AirPlay, Google Cast',
-                                        'Miracast'
-                                      ],
-                                      formatStyle: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                        color: context
-                                            .tokens.color.vsdslColorSurface600,
-                                      )),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    color: context
-                                        .tokens.color.vsdslColorSurface600,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          top: 150,
-                          right: 42,
-                          child: Container(
-                            width: 171,
-                            height: 229,
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    context.tokens.radii.vsdslRadiusXl,
-                                side: BorderSide(
-                                  width: 1,
-                                  color: context.tokens.color.vsdslColorOutline,
-                                ),
-                              ),
-                            ),
-                            child: const V3QrCodeQuickConnect(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 1,
-                    color: context.tokens.color.vsdslColorOutline,
-                  ),
-                  const SizedBox(
-                    width: 340,
-                    child: V3ParticipantsView(),
-                  ),
-                ],
-              );
-      }),
     );
   }
 
