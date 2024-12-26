@@ -5,9 +5,10 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_custom_checkbox.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
@@ -19,33 +20,18 @@ class V3SettingsMirroring extends StatelessWidget {
     return Consumer<SettingsProvider>(builder: (_, settingsProvider, __) {
       ChannelProvider channelProvider =
           Provider.of<ChannelProvider>(context, listen: false);
+      var disable =
+          ChannelProvider.isModeratorMode || settingsProvider.isMirroringLock;
       return V3Setting2ndLayer(
         isDisable: settingsProvider.isMirroringLock,
         child: Consumer<MirrorStateProvider>(
           builder: (context, mirrorStateProvider, _) {
-            var disable = ChannelProvider.isModeratorMode;
-            var colorPrimary = context.tokens.color.vsdslColorPrimary
-                .withOpacity(disable ? 0.32 : 1);
-            var colorOnPrimary = context.tokens.color.vsdslColorOnPrimary
-                .withOpacity(disable ? 0.32 : 1);
-            var colorFill = WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.disabled)) {
-                if (states.contains(WidgetState.selected)) {
-                  return context.tokens.color.vsdslColorPrimary
-                      .withOpacity(0.32);
-                }
-                return Colors.transparent;
-              }
-              if (states.contains(WidgetState.selected)) {
-                return context.tokens.color.vsdslColorPrimary;
-              }
-              return Colors.transparent;
-            });
             return Column(
               children: [
                 MirroringItem(
+                    isDisable: disable,
                     name: S.of(context).v3_shortcuts_airplay,
-                    enabled: mirrorStateProvider.airplayEnabled,
+                    mirrorEnabled: mirrorStateProvider.airplayEnabled,
                     callback: () {
                       if (mirrorStateProvider.airplayEnabled) {
                         mirrorStateProvider.stopAirPlay();
@@ -70,26 +56,20 @@ class V3SettingsMirroring extends StatelessWidget {
                         SizedBox(
                           width: 20,
                           height: 20,
-                          child: Checkbox(
+                          child: V3CustomCheckbox(
+                            isDisable: disable,
                             value: mirrorStateProvider.airPlayCodeEnable,
-                            side: BorderSide(color: colorOnPrimary, width: 2),
-                            activeColor: colorPrimary,
-                            checkColor: colorOnPrimary,
-                            fillColor: colorFill,
-                            onChanged: disable
-                                ? null
-                                : (bool? value) {
-                                    if (value != null) {
-                                      trackEvent(
-                                        'click_airplay_pincode',
-                                        EventCategory.setting,
-                                        target: value ? 'on' : 'off',
-                                      );
+                            onChanged: (bool? value) {
+                              if (value != null) {
+                                trackEvent(
+                                  'click_airplay_pincode',
+                                  EventCategory.setting,
+                                  target: value ? 'on' : 'off',
+                                );
 
-                                      mirrorStateProvider
-                                          .setAirPlayCodeEnable(value);
-                                    }
-                                  },
+                                mirrorStateProvider.setAirPlayCodeEnable(value);
+                              }
+                            },
                           ),
                         ),
                         Gap(context.tokens.spacing.vsdslSpacingSm.right),
@@ -106,8 +86,9 @@ class V3SettingsMirroring extends StatelessWidget {
                   ),
                 Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
                 MirroringItem(
+                    isDisable: disable,
                     name: S.of(context).v3_shortcuts_google_cast,
-                    enabled: mirrorStateProvider.googleCastEnabled,
+                    mirrorEnabled: mirrorStateProvider.googleCastEnabled,
                     callback: () {
                       if (mirrorStateProvider.googleCastEnabled) {
                         mirrorStateProvider.stopGoogleCast();
@@ -127,8 +108,9 @@ class V3SettingsMirroring extends StatelessWidget {
                     }),
                 Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
                 MirroringItem(
+                    isDisable: disable,
                     name: S.of(context).v3_shortcuts_miracast,
-                    enabled: mirrorStateProvider.miracastEnabled,
+                    mirrorEnabled: mirrorStateProvider.miracastEnabled,
                     callback: () {
                       if (mirrorStateProvider.miracastEnabled) {
                         mirrorStateProvider.stopMiracast();
@@ -157,27 +139,21 @@ class V3SettingsMirroring extends StatelessWidget {
                     SizedBox(
                       width: 20,
                       height: 20,
-                      child: Checkbox(
+                      child: V3CustomCheckbox(
+                          isDisable: disable,
                           value: !mirrorStateProvider.isMirrorConfirmation,
-                          side: BorderSide(color: colorOnPrimary, width: 2),
-                          activeColor: colorPrimary,
-                          checkColor: colorOnPrimary,
-                          fillColor: colorFill,
-                          onChanged: disable
-                              ? null
-                              : (bool? value) {
-                                  mirrorStateProvider.isMirrorConfirmation =
-                                      !mirrorStateProvider.isMirrorConfirmation;
+                          onChanged: (bool? value) {
+                            mirrorStateProvider.isMirrorConfirmation =
+                                !mirrorStateProvider.isMirrorConfirmation;
 
-                                  trackEvent(
-                                    'click_auto_accept',
-                                    EventCategory.setting,
-                                    target:
-                                        mirrorStateProvider.isMirrorConfirmation
-                                            ? 'on'
-                                            : 'off',
-                                  );
-                                }),
+                            trackEvent(
+                              'click_auto_accept',
+                              EventCategory.setting,
+                              target: mirrorStateProvider.isMirrorConfirmation
+                                  ? 'on'
+                                  : 'off',
+                            );
+                          }),
                     ),
                     Gap(context.tokens.spacing.vsdslSpacingSm.right),
                     AutoSizeText(
@@ -215,11 +191,10 @@ class V3SettingsMirroring extends StatelessWidget {
                     padding: context.tokens.spacing.vsdslSpacingXl,
                     child: Row(
                       children: [
-                        const SizedBox(
+                        SvgPicture.asset(
+                          'assets/images/ic_toast_alert.svg',
                           width: 16,
-                          child: Image(
-                            image: Svg('assets/images/ic_toast_alert.svg'),
-                          ),
+                          height: 16,
                         ),
                         Gap(context.tokens.spacing.vsdslSpacingLg.right),
                         SizedBox(
@@ -251,12 +226,14 @@ class V3SettingsMirroring extends StatelessWidget {
 class MirroringItem extends StatelessWidget {
   const MirroringItem(
       {super.key,
+      this.isDisable = false,
       required this.name,
-      required this.enabled,
+      required this.mirrorEnabled,
       required this.callback});
 
+  final bool isDisable;
   final String name;
-  final bool enabled;
+  final bool mirrorEnabled;
   final VoidCallback callback;
 
   @override
@@ -274,15 +251,15 @@ class MirroringItem extends StatelessWidget {
           ),
           const Spacer(),
           InkWell(
-            onTap: ChannelProvider.isModeratorMode ? null : callback,
+            onTap: isDisable ? null : callback,
             child: Opacity(
-              opacity: ChannelProvider.isModeratorMode ? 0.32 : 1,
-              child: Image(
+              opacity: isDisable ? 0.32 : 1,
+              child: SvgPicture.asset(
+                mirrorEnabled
+                    ? 'assets/images/ic_switch_on.svg'
+                    : 'assets/images/ic_switch_off.svg',
                 width: 36,
                 height: 21,
-                image: Svg(enabled
-                    ? 'assets/images/ic_switch_on.svg'
-                    : 'assets/images/ic_switch_off.svg'),
               ),
             ),
           ),

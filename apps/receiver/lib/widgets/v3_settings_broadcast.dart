@@ -6,7 +6,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsBroadcast extends StatelessWidget {
@@ -28,9 +28,9 @@ class V3SettingsBroadcast extends StatelessWidget {
               ),
             ),
             SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
-            const CastToDevices(),
+            CastToDevices(settingsProvider: settingsProvider),
             SizedBox(height: context.tokens.spacing.vsdslSpacingMd.top),
-            const CastToBoards(),
+            CastToBoards(settingsProvider: settingsProvider),
           ],
         ),
       );
@@ -39,7 +39,9 @@ class V3SettingsBroadcast extends StatelessWidget {
 }
 
 class CastToDevices extends StatelessWidget {
-  const CastToDevices({super.key});
+  const CastToDevices({super.key, required this.settingsProvider});
+
+  final SettingsProvider settingsProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +56,11 @@ class CastToDevices extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
+          SizedBox(
             width: 43,
             height: 43,
-            child: Image(
-              image: Svg('assets/images/ic_cast_to_devices.svg'),
+            child: SvgPicture.asset(
+              'assets/images/ic_cast_to_devices.svg',
             ),
           ),
           SizedBox(
@@ -86,23 +88,25 @@ class CastToDevices extends StatelessWidget {
                             width: 36,
                             height: 21,
                             child: IconButton(
-                              icon: Image(
-                                image: Svg(channelProvider.isSenderMode
+                              icon: SvgPicture.asset(
+                                channelProvider.isSenderMode
                                     ? 'assets/images/ic_switch_on.svg'
-                                    : 'assets/images/ic_switch_off.svg'),
+                                    : 'assets/images/ic_switch_off.svg',
                               ),
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(),
-                              onPressed: () async {
-                                if (channelProvider.isSenderMode) {
-                                  await channelProvider.removeSender(
-                                      fromSender: true);
-                                } else {
-                                  await channelProvider.startRemoteScreen(
-                                      fromSender: true);
-                                }
+                              onPressed: settingsProvider.isBroadcastLock
+                                  ? null
+                                  : () async {
+                                      if (channelProvider.isSenderMode) {
+                                        await channelProvider.removeSender(
+                                            fromSender: true);
+                                      } else {
+                                        await channelProvider.startRemoteScreen(
+                                            fromSender: true);
+                                      }
 
-                                trackEvent(
+                                      trackEvent(
                                   'click_cast_to_device',
                                   EventCategory.setting,
                                   target: channelProvider.isSenderMode
@@ -137,12 +141,12 @@ class CastToDevices extends StatelessWidget {
 }
 
 class CastToBoards extends StatelessWidget {
-  const CastToBoards({super.key});
+  const CastToBoards({super.key, required this.settingsProvider});
+
+  final SettingsProvider settingsProvider;
 
   @override
   Widget build(BuildContext context) {
-    SettingsProvider settingsProvider =
-        Provider.of<SettingsProvider>(context, listen: false);
     return Container(
       width: 325,
       height: 88,
@@ -154,12 +158,10 @@ class CastToBoards extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
+          SvgPicture.asset(
+            'assets/images/ic_cast_to_boards.svg',
             width: 43,
             height: 43,
-            child: Image(
-              image: Svg('assets/images/ic_cast_to_boards.svg'),
-            ),
           ),
           SizedBox(
             width: context.tokens.spacing.vsdslSpacingXl.left,
@@ -184,15 +186,19 @@ class CastToBoards extends StatelessWidget {
                         width: 21,
                         height: 21,
                         child: IconButton(
-                          icon: const Image(
-                            image: Svg('assets/images/ic_arrow_right.svg'),
+                          icon: SvgPicture.asset(
+                            settingsProvider.isBroadcastLock
+                                ? 'assets/images/ic_arrow_right_lock.svg'
+                                : 'assets/images/ic_arrow_right.svg',
                           ),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
-                          onPressed: () {
-                            settingsProvider
-                                .setPage(SettingPageState.broadcastBoards);
-                          },
+                          onPressed: settingsProvider.isBroadcastLock
+                              ? null
+                              : () {
+                                  settingsProvider.setPage(
+                                      SettingPageState.broadcastBoards);
+                                },
                         ),
                       ),
                     ],
