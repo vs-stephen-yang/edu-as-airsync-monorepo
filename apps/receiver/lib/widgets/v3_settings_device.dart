@@ -10,10 +10,11 @@ import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
+import 'package:display_flutter/widgets/v3_custom_checkbox.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsDevice extends StatefulWidget {
@@ -32,8 +33,6 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
   @override
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(builder: (_, settingsProvider, __) {
-      PrefLanguageProvider languageProvider =
-          Provider.of<PrefLanguageProvider>(context, listen: false);
       return V3Setting2ndLayer(
         isDisable: settingsProvider.isDeviceSettingLock,
         child: Column(
@@ -46,11 +45,13 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             _buildDivider(context),
             SizedBox(
               height: 26,
-              child:
-                  _buildLanguage(context, languageProvider, settingsProvider),
+              child: _buildLanguage(context, settingsProvider),
             ),
             _buildDivider(context),
-            SizedBox(height: 26, child: _buildShowDisplayCode(context)),
+            SizedBox(
+              height: 26,
+              child: _buildShowDisplayCode(context, settingsProvider),
+            ),
             Padding(
               padding: EdgeInsets.only(
                 top: context.tokens.spacing.vsdslSpacingSm.top,
@@ -63,13 +64,12 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             _buildDivider(context),
             SizedBox(
               height: 26,
-              child: _buildInviteGroup(context),
+              child: _buildInviteGroup(context, settingsProvider),
             ),
             _buildDivider(context),
-            Consumer<ChannelProvider>(
-              builder: (_, channelProvider, __) {
-                return _buildAutoFillOTP(channelProvider, context);
-              },
+            SizedBox(
+              height: 26,
+              child: _buildAutoFillOTP(context, settingsProvider),
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -85,17 +85,13 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
               _buildDivider(context),
               SizedBox(
                 height: 26,
-                child: _buildLaunchOnStartup(context),
+                child: _buildLaunchOnStartup(context, settingsProvider),
               ),
             ],
             _buildDivider(context),
-            Consumer<ChannelProvider>(
-              builder: (_, channelProvider, __) {
-                return SizedBox(
-                  height: 26,
-                  child: _buildAuthorizeMode(context, channelProvider),
-                );
-              },
+            SizedBox(
+              height: 26,
+              child: _buildAuthorizeMode(context, settingsProvider),
             ),
           ],
         ),
@@ -125,56 +121,63 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
   }
 
   Widget _buildAuthorizeMode(
-      BuildContext context, ChannelProvider channelProvider) {
-    trackClickApprove() {
-      trackEvent(
-        'click_approve_webrtc',
-        EventCategory.setting,
-        target: channelProvider.isAuthorizeMode ? 'on' : 'off',
-      );
-    }
+      BuildContext context, SettingsProvider settingsProvider) {
+    return Consumer<ChannelProvider>(
+      builder: (_, channelProvider, __) {
+        trackClickApprove() {
+          trackEvent(
+            'click_approve_webrtc',
+            EventCategory.setting,
+            target: channelProvider.isAuthorizeMode ? 'on' : 'off',
+          );
+        }
 
-    return Row(
-      children: [
-        SizedBox(
-          width: 20,
-          height: 20,
-          child: Checkbox(
-            value: channelProvider.isAuthorizeMode,
-            activeColor: context.tokens.color.vsdslColorPrimary,
-            onChanged: (bool? value) {
-              channelProvider.isAuthorizeMode = value ?? true;
+        return Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: V3CustomCheckbox(
+                value: channelProvider.isAuthorizeMode,
+                isDisable: settingsProvider.isDeviceSettingLock,
+                onChanged: (bool? value) {
+                  channelProvider.isAuthorizeMode = value ?? true;
 
-              trackClickApprove();
-            },
-          ),
-        ),
-        const Padding(padding: EdgeInsets.only(left: 4)),
-        InkWell(
-          onTap: () {
-            if (channelProvider.isAuthorizeMode) {
-              channelProvider.isAuthorizeMode = false;
-            } else {
-              channelProvider.isAuthorizeMode = true;
-            }
-
-            trackClickApprove();
-          },
-          child: AutoSizeText(
-            S.of(context).v3_settings_device_authorize_mode,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w400,
-              color: Colors.white,
+                  trackClickApprove();
+                },
+              ),
             ),
-            maxLines: 1,
-          ),
-        ),
-      ],
+            const Padding(padding: EdgeInsets.only(left: 4)),
+            InkWell(
+              onTap: settingsProvider.isDeviceSettingLock
+                  ? null
+                  : () {
+                      if (channelProvider.isAuthorizeMode) {
+                        channelProvider.isAuthorizeMode = false;
+                      } else {
+                        channelProvider.isAuthorizeMode = true;
+                      }
+
+                      trackClickApprove();
+                    },
+              child: AutoSizeText(
+                S.of(context).v3_settings_device_authorize_mode,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white,
+                ),
+                maxLines: 1,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Widget _buildLaunchOnStartup(BuildContext context) {
+  Widget _buildLaunchOnStartup(
+      BuildContext context, SettingsProvider settingsProvider) {
     return FutureBuilder(
       future: _getAutoStartUpSettings(),
       builder: (context, snapshot) {
@@ -183,10 +186,10 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             SizedBox(
               width: 20,
               height: 20,
-              child: Checkbox(
+              child: V3CustomCheckbox(
                 value: (snapshot.hasData) ? snapshot.data as bool : null,
+                isDisable: settingsProvider.isDeviceSettingLock,
                 tristate: true,
-                activeColor: context.tokens.color.vsdslColorPrimary,
                 onChanged: (bool? value) {
                   setState(() {
                     _setAutoStartUpSettings(value ?? false);
@@ -198,15 +201,17 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
               padding: EdgeInsets.only(left: 4),
             ),
             InkWell(
-              onTap: () {
-                bool? startup =
-                    (snapshot.hasData) ? snapshot.data as bool : null;
-                if (startup != null) {
-                  setState(() {
-                    _setAutoStartUpSettings(!startup);
-                  });
-                }
-              },
+              onTap: settingsProvider.isDeviceSettingLock
+                  ? null
+                  : () {
+                      bool? startup =
+                          (snapshot.hasData) ? snapshot.data as bool : null;
+                      if (startup != null) {
+                        setState(() {
+                          _setAutoStartUpSettings(!startup);
+                        });
+                      }
+                    },
               child: AutoSizeText(
                 S.of(context).v3_settings_device_launch_on_startup,
                 style: const TextStyle(
@@ -223,87 +228,71 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
   }
 
   Widget _buildAutoFillOTP(
-      ChannelProvider channelProvider, BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 20,
-          height: 20,
-          child: Checkbox(
-              value: channelProvider.isDeviceListQuickConnect,
-              activeColor: context.tokens.color.vsdslColorPrimary,
-              onChanged: (bool? value) {
-                if (channelProvider.isDeviceListQuickConnect) {
-                  channelProvider.isDeviceListQuickConnect = false;
-                } else {
-                  channelProvider.isDeviceListQuickConnect = true;
-                }
+      BuildContext context, SettingsProvider settingsProvider) {
+    return Consumer<ChannelProvider>(
+      builder: (_, channelProvider, __) {
+        return Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: V3CustomCheckbox(
+                value: channelProvider.isDeviceListQuickConnect,
+                isDisable: settingsProvider.isDeviceSettingLock,
+                onChanged: (bool? value) {
+                  if (channelProvider.isDeviceListQuickConnect) {
+                    channelProvider.isDeviceListQuickConnect = false;
+                  } else {
+                    channelProvider.isDeviceListQuickConnect = true;
+                  }
 
-                trackEvent(
-                  'click_auto_fill_otp',
-                  EventCategory.setting,
-                  target:
-                      channelProvider.isDeviceListQuickConnect ? 'on' : 'off',
-                );
-              }),
-        ),
-        const Padding(
-          padding: EdgeInsets.only(left: 4),
-        ),
-        InkWell(
-          onTap: () {
-            if (channelProvider.isDeviceListQuickConnect) {
-              channelProvider.isDeviceListQuickConnect = false;
-            } else {
-              channelProvider.isDeviceListQuickConnect = true;
-            }
-
-            trackEvent(
-              'click_auto_fill_otp',
-              EventCategory.setting,
-              target: channelProvider.isDeviceListQuickConnect ? 'on' : 'off',
-            );
-          },
-          child: AutoSizeText(
-            S.of(context).v3_settings_device_auto_fill_otp,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.white,
+                  trackEvent(
+                    'click_auto_fill_otp',
+                    EventCategory.setting,
+                    target:
+                        channelProvider.isDeviceListQuickConnect ? 'on' : 'off',
+                  );
+                },
+              ),
             ),
-            maxLines: 1,
-          ),
-        ),
-      ],
-    );
-  }
+            const Padding(
+              padding: EdgeInsets.only(left: 4),
+            ),
+            InkWell(
+              onTap: settingsProvider.isDeviceSettingLock
+                  ? null
+                  : () {
+                      if (channelProvider.isDeviceListQuickConnect) {
+                        channelProvider.isDeviceListQuickConnect = false;
+                      } else {
+                        channelProvider.isDeviceListQuickConnect = true;
+                      }
 
-  Widget _buildDropdownMenu(BuildContext context) {
-    return CustomDropdown(
-      options: InvitedToGroupOption.invitedToGroupItems(context),
-      selectedValue: InvitedToGroupOption.getInvitedToGroupString(
-          context, int.parse(AppPreferences().invitedToGroup)),
-      onChange: (String? value) {
-        setState(() {
-          final int optionValue =
-              InvitedToGroupOption.invitedToGroupItems(context)
-                  .indexOf(value ?? '');
-
-          trackEvent(
-            'click_broadcast_request',
-            EventCategory.setting,
-            target: InvitedToGroupOption.fromValue(optionValue).name,
-          );
-
-          AppPreferences()
-              .setInvitedToGroupSelectedItem(item: optionValue.toString());
-          DisplayServiceBroadcast.instance
-              .updateInvitedToGroupOption(optionValue.toString());
-        });
+                      trackEvent(
+                        'click_auto_fill_otp',
+                        EventCategory.setting,
+                        target: channelProvider.isDeviceListQuickConnect
+                            ? 'on'
+                            : 'off',
+                      );
+                    },
+              child: AutoSizeText(
+                S.of(context).v3_settings_device_auto_fill_otp,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                ),
+                maxLines: 1,
+              ),
+            ),
+          ],
+        );
       },
     );
   }
 
-  Widget _buildInviteGroup(BuildContext context) {
+  Widget _buildInviteGroup(
+      BuildContext context, SettingsProvider settingsProvider) {
     return Row(
       children: [
         Text(
@@ -316,13 +305,37 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
         const Spacer(),
         SizedBox(
           width: 105,
-          child: _buildDropdownMenu(context),
+          child: CustomDropdown(
+            isDisable: settingsProvider.isDeviceSettingLock,
+            options: InvitedToGroupOption.invitedToGroupItems(context),
+            selectedValue: InvitedToGroupOption.getInvitedToGroupString(
+                context, int.parse(AppPreferences().invitedToGroup)),
+            onChange: (String? value) {
+              setState(() {
+                final int optionValue =
+                    InvitedToGroupOption.invitedToGroupItems(context)
+                        .indexOf(value ?? '');
+
+                trackEvent(
+                  'click_broadcast_request',
+                  EventCategory.setting,
+                  target: InvitedToGroupOption.fromValue(optionValue).name,
+                );
+
+                AppPreferences().setInvitedToGroupSelectedItem(
+                    item: optionValue.toString());
+                DisplayServiceBroadcast.instance
+                    .updateInvitedToGroupOption(optionValue.toString());
+              });
+            },
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildShowDisplayCode(BuildContext context) {
+  Widget _buildShowDisplayCode(
+      BuildContext context, SettingsProvider settingsProvider) {
     return Row(
       children: [
         Text(
@@ -343,16 +356,24 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             return SizedBox(
               height: 21,
               child: IconButton(
-                icon: Image(
-                  image: Svg(isRunning
-                      ? 'assets/images/ic_switch_on.svg'
-                      : 'assets/images/ic_switch_off.svg'),
+                icon: SvgPicture.asset(
+                  settingsProvider.isDeviceSettingLock
+                      ? isRunning
+                          ? 'assets/images/ic_switch_on_lock.svg'
+                          : 'assets/images/ic_switch_off_lock.svg'
+                      : isRunning
+                          ? 'assets/images/ic_switch_on.svg'
+                          : 'assets/images/ic_switch_off.svg',
+                  width: 21,
+                  height: 21,
                 ),
                 padding: EdgeInsets.zero,
                 // constraints: const BoxConstraints(),
-                onPressed: () async {
-                  _setVisibility(!isRunning);
-                },
+                onPressed: settingsProvider.isDeviceSettingLock
+                    ? null
+                    : () async {
+                        _setVisibility(!isRunning);
+                      },
               ),
             );
           },
@@ -362,9 +383,9 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
   }
 
   Widget _buildLanguage(
-      BuildContext context,
-      PrefLanguageProvider languageProvider,
-      SettingsProvider settingsProvider) {
+      BuildContext context, SettingsProvider settingsProvider) {
+    PrefLanguageProvider languageProvider =
+        Provider.of<PrefLanguageProvider>(context, listen: false);
     return Row(
       children: [
         Text(
@@ -376,28 +397,35 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
         ),
         const Spacer(),
         InkWell(
+          onTap: settingsProvider.isDeviceSettingLock
+              ? null
+              : () {
+                  settingsProvider.setPage(SettingPageState.deviceLanguage);
+                },
           child: Text(
             languageProvider.language,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: Colors.white
+                  .withOpacity(settingsProvider.isDeviceSettingLock ? 0.32 : 1),
               fontSize: 12,
             ),
           ),
-          onTap: () {
-            settingsProvider.setPage(SettingPageState.deviceLanguage);
-          },
         ),
         IconButton(
-          icon: const Image(
-            image: Svg('assets/images/ic_arrow_right.svg'),
+          icon: SvgPicture.asset(
+            settingsProvider.isDeviceSettingLock
+                ? 'assets/images/ic_arrow_right_lock.svg'
+                : 'assets/images/ic_arrow_right.svg',
             width: 21,
             height: 21,
           ),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
-          onPressed: () {
-            settingsProvider.setPage(SettingPageState.deviceLanguage);
-          },
+          onPressed: settingsProvider.isDeviceSettingLock
+              ? null
+              : () {
+                  settingsProvider.setPage(SettingPageState.deviceLanguage);
+                },
         ),
       ],
     );
@@ -416,28 +444,35 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
         ),
         const Spacer(),
         InkWell(
+          onTap: settingsProvider.isDeviceSettingLock
+              ? null
+              : () {
+                  settingsProvider.setPage(SettingPageState.deviceName);
+                },
           child: Text(
             AppPreferences().instanceName,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: Colors.white
+                  .withOpacity(settingsProvider.isDeviceSettingLock ? 0.32 : 1),
               fontSize: 12,
             ),
           ),
-          onTap: () {
-            settingsProvider.setPage(SettingPageState.deviceName);
-          },
         ),
         IconButton(
-          icon: const Image(
-            image: Svg('assets/images/ic_arrow_right.svg'),
+          icon: SvgPicture.asset(
+            settingsProvider.isDeviceSettingLock
+                ? 'assets/images/ic_arrow_right_lock.svg'
+                : 'assets/images/ic_arrow_right.svg',
             width: 21,
             height: 21,
           ),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
-          onPressed: () {
-            settingsProvider.setPage(SettingPageState.deviceName);
-          },
+          onPressed: settingsProvider.isDeviceSettingLock
+              ? null
+              : () {
+                  settingsProvider.setPage(SettingPageState.deviceName);
+                },
         ),
       ],
     );
@@ -511,10 +546,12 @@ enum InvitedToGroupOption {
 class CustomDropdown extends StatefulWidget {
   const CustomDropdown(
       {super.key,
+      this.isDisable = false,
       required this.options,
       required this.selectedValue,
       required this.onChange});
 
+  final bool isDisable;
   final String selectedValue;
   final List<String> options;
   final Function(String?) onChange;
@@ -658,22 +695,20 @@ class CustomDropdownState extends State<CustomDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = TextStyle(
-        fontSize: 9,
-        color: context.tokens.color.vsdslColorOnSurface,
-        fontWeight: FontWeight.w600);
     return CompositedTransformTarget(
       link: _layerLink,
       child: InkWell(
-        onTap: () {
-          setState(() {
-            if (_overlayEntry == null) {
-              _showDropdownMenu();
-            } else {
-              _hideDropdownMenu();
-            }
-          });
-        },
+        onTap: widget.isDisable
+            ? null
+            : () {
+                setState(() {
+                  if (_overlayEntry == null) {
+                    _showDropdownMenu();
+                  } else {
+                    _hideDropdownMenu();
+                  }
+                });
+              },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           decoration: BoxDecoration(
@@ -687,15 +722,22 @@ class CustomDropdownState extends State<CustomDropdown> {
             children: [
               Text(
                 widget.selectedValue,
-                style: textStyle,
+                style: TextStyle(
+                  fontSize: 9,
+                  color: context.tokens.color.vsdslColorOnSurface
+                      .withOpacity(widget.isDisable ? 0.32 : 1),
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const Spacer(),
               Icon(
-                  _overlayEntry != null
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
-                  size: 16,
-                  color: context.tokens.color.vsdslColorOnSurface),
+                _overlayEntry != null
+                    ? Icons.keyboard_arrow_up
+                    : Icons.keyboard_arrow_down,
+                size: 16,
+                color: context.tokens.color.vsdslColorOnSurface
+                    .withOpacity(widget.isDisable ? 0.32 : 1),
+              ),
             ],
           ),
         ),
