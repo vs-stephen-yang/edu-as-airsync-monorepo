@@ -369,7 +369,11 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
             'window frame: ${window?.frame} r:${window?.scaleFactor} ${window?.visibleFrame}');
 
         if (window != null) {
-          windowBar = window.visibleFrame.top - window.frame.top;
+          if (Platform.isMacOS) {
+            windowBar = window.visibleFrame.top - window.frame.top;
+          } else {
+            windowBar = window.frame.bottom - window.visibleFrame.bottom;
+          }
         }
         // 獲取窗口在屏幕中的全局位置
         // final Offset windowPosition = Offset(
