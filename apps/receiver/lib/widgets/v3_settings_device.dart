@@ -10,6 +10,7 @@ import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
+import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -30,78 +31,79 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
 
   @override
   Widget build(BuildContext context) {
-    PrefLanguageProvider languageProvider =
-        Provider.of<PrefLanguageProvider>(context, listen: false);
-    SettingsProvider settingsProvider =
-        Provider.of<SettingsProvider>(context, listen: false);
-    return Padding(
-      padding: const EdgeInsets.only(left: 13, top: 57, right: 13),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 26,
-            child: _buildDeviceName(context, settingsProvider),
-          ),
-          _buildDivider(context),
-          SizedBox(
-            height: 26,
-            child: _buildLanguage(context, languageProvider, settingsProvider),
-          ),
-          _buildDivider(context),
-          SizedBox(height: 26, child: _buildShowDisplayCode(context)),
-          Padding(
-            padding: EdgeInsets.only(
-              top: context.tokens.spacing.vsdslSpacingSm.top,
+    return Consumer<SettingsProvider>(builder: (_, settingsProvider, __) {
+      PrefLanguageProvider languageProvider =
+          Provider.of<PrefLanguageProvider>(context, listen: false);
+      return V3Setting2ndLayer(
+        isDisable: settingsProvider.isDeviceSettingLock,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 26,
+              child: _buildDeviceName(context, settingsProvider),
             ),
-            child: _buildTextDesc(
-              context,
-              S.of(context).v3_settings_device_show_display_code_desc,
-            ),
-          ),
-          _buildDivider(context),
-          SizedBox(
-            height: 26,
-            child: _buildInviteGroup(context),
-          ),
-          _buildDivider(context),
-          Consumer<ChannelProvider>(
-            builder: (_, channelProvider, __) {
-              return _buildAutoFillOTP(channelProvider, context);
-            },
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              top: context.tokens.spacing.vsdslSpacingSm.top,
-              left: 24,
-            ),
-            child: _buildTextDesc(
-              context,
-              S.of(context).v3_settings_device_auto_fill_otp_desc,
-            ),
-          ),
-          if (AppInstanceCreate().isInstalledInVBS200) ...[
             _buildDivider(context),
             SizedBox(
               height: 26,
-              child: _buildLaunchOnStartup(context),
+              child:
+                  _buildLanguage(context, languageProvider, settingsProvider),
+            ),
+            _buildDivider(context),
+            SizedBox(height: 26, child: _buildShowDisplayCode(context)),
+            Padding(
+              padding: EdgeInsets.only(
+                top: context.tokens.spacing.vsdslSpacingSm.top,
+              ),
+              child: _buildTextDesc(
+                context,
+                S.of(context).v3_settings_device_show_display_code_desc,
+              ),
+            ),
+            _buildDivider(context),
+            SizedBox(
+              height: 26,
+              child: _buildInviteGroup(context),
+            ),
+            _buildDivider(context),
+            Consumer<ChannelProvider>(
+              builder: (_, channelProvider, __) {
+                return _buildAutoFillOTP(channelProvider, context);
+              },
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                top: context.tokens.spacing.vsdslSpacingSm.top,
+                left: 24,
+              ),
+              child: _buildTextDesc(
+                context,
+                S.of(context).v3_settings_device_auto_fill_otp_desc,
+              ),
+            ),
+            if (AppInstanceCreate().isInstalledInVBS200) ...[
+              _buildDivider(context),
+              SizedBox(
+                height: 26,
+                child: _buildLaunchOnStartup(context),
+              ),
+            ],
+            _buildDivider(context),
+            Consumer<ChannelProvider>(
+              builder: (_, channelProvider, __) {
+                return SizedBox(
+                  height: 26,
+                  child: _buildAuthorizeMode(context, channelProvider),
+                );
+              },
             ),
           ],
-          _buildDivider(context),
-          Consumer<ChannelProvider>(
-            builder: (_, channelProvider, __) {
-              return SizedBox(
-                height: 26,
-                child: _buildAuthorizeMode(context, channelProvider),
-              );
-            },
-          ),
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 
-  Text _buildTextDesc(BuildContext context, String text) {
+  Widget _buildTextDesc(BuildContext context, String text) {
     return Text(
       text,
       style: TextStyle(
@@ -112,7 +114,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
     );
   }
 
-  Container _buildDivider(BuildContext context) {
+  Widget _buildDivider(BuildContext context) {
     return Container(
       height: 1,
       margin: EdgeInsets.only(
@@ -220,7 +222,8 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
     );
   }
 
-  Row _buildAutoFillOTP(ChannelProvider channelProvider, BuildContext context) {
+  Widget _buildAutoFillOTP(
+      ChannelProvider channelProvider, BuildContext context) {
     return Row(
       children: [
         SizedBox(
@@ -300,7 +303,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
     );
   }
 
-  Row _buildInviteGroup(BuildContext context) {
+  Widget _buildInviteGroup(BuildContext context) {
     return Row(
       children: [
         Text(
@@ -319,7 +322,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
     );
   }
 
-  Row _buildShowDisplayCode(BuildContext context) {
+  Widget _buildShowDisplayCode(BuildContext context) {
     return Row(
       children: [
         Text(
@@ -358,7 +361,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
     );
   }
 
-  Row _buildLanguage(
+  Widget _buildLanguage(
       BuildContext context,
       PrefLanguageProvider languageProvider,
       SettingsProvider settingsProvider) {
@@ -400,7 +403,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
     );
   }
 
-  Row _buildDeviceName(
+  Widget _buildDeviceName(
       BuildContext context, SettingsProvider settingsProvider) {
     return Row(
       children: [

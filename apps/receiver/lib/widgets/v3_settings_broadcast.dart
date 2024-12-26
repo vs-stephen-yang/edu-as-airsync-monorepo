@@ -4,6 +4,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -13,31 +14,27 @@ class V3SettingsBroadcast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned(
-          left: context.tokens.spacing.vsdslSpacingXl.left,
-          top: 57,
-          right: context.tokens.spacing.vsdslSpacingXl.right,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AutoSizeText(
-                S.of(context).v3_settings_broadcast_cast_to,
-                style: TextStyle(
-                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                  fontSize: 12,
-                ),
+    return Consumer<SettingsProvider>(builder: (_, settingsProvider, __) {
+      return V3Setting2ndLayer(
+        isDisable: settingsProvider.isBroadcastLock,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AutoSizeText(
+              S.of(context).v3_settings_broadcast_cast_to,
+              style: TextStyle(
+                color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                fontSize: 12,
               ),
-              SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
-              const CastToDevices(),
-              SizedBox(height: context.tokens.spacing.vsdslSpacingMd.top),
-              const CastToBoards(),
-            ],
-          ),
+            ),
+            SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
+            const CastToDevices(),
+            SizedBox(height: context.tokens.spacing.vsdslSpacingMd.top),
+            const CastToBoards(),
+          ],
         ),
-      ],
-    );
+      );
+    });
   }
 }
 

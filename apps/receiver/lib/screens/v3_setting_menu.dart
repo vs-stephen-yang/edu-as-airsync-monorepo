@@ -16,7 +16,7 @@ import 'package:display_flutter/widgets/v3_settings_mirroring.dart';
 import 'package:display_flutter/widgets/v3_settings_whats_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
@@ -28,16 +28,13 @@ class V3SettingMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SettingsProvider settingsProvider =
-        Provider.of<SettingsProvider>(context, listen: false);
-
     return TapRegion(
       groupId: settingMenuGroupId,
       onTapOutside: (event) {
         if (riverpod.ProviderScope.containerOf(context)
             .read(dialogProvider)
             .isVisible) return;
-        dismissMenu(settingsProvider);
+        dismissMenu();
       },
       child: Dialog(
         shape: RoundedRectangleBorder(
@@ -50,7 +47,7 @@ class V3SettingMenu extends StatelessWidget {
           width: 518,
           height: 413,
           child: Consumer<SettingsProvider>(
-            builder: (context, value, child) {
+            builder: (context, settingsProvider, child) {
               return Row(
                 children: [
                   SizedBox(
@@ -76,9 +73,10 @@ class V3SettingMenu extends StatelessWidget {
                             children: <Widget>[
                               _subTittleButton(context,
                                   state: SettingPageState.deviceSetting,
-                                  text: S
-                                      .of(context)
-                                      .v3_settings_device_setting, onClick: () {
+                                  text:
+                                      S.of(context).v3_settings_device_setting,
+                                  locked: settingsProvider.isDeviceSettingLock,
+                                  onClick: () {
                                 settingsProvider
                                     .setPage(SettingPageState.deviceSetting);
                               }),
@@ -87,6 +85,7 @@ class V3SettingMenu extends StatelessWidget {
                               _subTittleButton(context,
                                   state: SettingPageState.broadcast,
                                   text: S.of(context).v3_settings_broadcast,
+                                  locked: settingsProvider.isBroadcastLock,
                                   onClick: () {
                                 settingsProvider
                                     .setPage(SettingPageState.broadcast);
@@ -96,6 +95,7 @@ class V3SettingMenu extends StatelessWidget {
                               _subTittleButton(context,
                                   state: SettingPageState.mirroring,
                                   text: S.of(context).v3_shortcuts_mirroring,
+                                  locked: settingsProvider.isMirroringLock,
                                   onClick: () {
                                 settingsProvider
                                     .setPage(SettingPageState.mirroring);
@@ -105,6 +105,7 @@ class V3SettingMenu extends StatelessWidget {
                               _subTittleButton(context,
                                   state: SettingPageState.connectivity,
                                   text: S.of(context).v3_settings_connectivity,
+                                  locked: settingsProvider.isConnectivityLock,
                                   onClick: () {
                                 settingsProvider
                                     .setPage(SettingPageState.connectivity);
@@ -152,10 +153,8 @@ class V3SettingMenu extends StatelessWidget {
                                 width: 33,
                                 height: 33,
                                 child: IconButton(
-                                  icon: const Image(
-                                    image:
-                                        Svg('assets/images/ic_menu_close.svg'),
-                                  ),
+                                  icon: SvgPicture.asset(
+                                      'assets/images/ic_menu_close.svg'),
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(),
                                   onPressed: () {
@@ -178,7 +177,7 @@ class V3SettingMenu extends StatelessWidget {
                   Expanded(
                     child: Builder(
                       builder: (context) {
-                        switch (value.currentPage) {
+                        switch (settingsProvider.currentPage) {
                           case SettingPageState.deviceSetting:
                             return const V3SettingsDevice();
                           case SettingPageState.deviceName:
@@ -213,7 +212,7 @@ class V3SettingMenu extends StatelessWidget {
     );
   }
 
-  void dismissMenu(SettingsProvider settingsProvider) {
+  void dismissMenu() {
     // 點擊text cursor做操作會被TapRegion判定為onTapOutside
     if (_childFocusNode.hasFocus) {
       return;
@@ -223,10 +222,13 @@ class V3SettingMenu extends StatelessWidget {
     }
   }
 
-  _subTittleButton(BuildContext context,
-      {required SettingPageState state,
-      required String text,
-      required VoidCallback onClick}) {
+  _subTittleButton(
+    BuildContext context, {
+    required SettingPageState state,
+    required String text,
+    required VoidCallback onClick,
+    bool locked = false,
+  }) {
     return InkWell(
       onTap: () {
         onClick();
@@ -234,8 +236,10 @@ class V3SettingMenu extends StatelessWidget {
       child: Container(
         width: 140,
         height: 26,
-        padding:
-            EdgeInsets.only(left: context.tokens.spacing.vsdslSpacingMd.left),
+        padding: EdgeInsets.symmetric(
+          vertical: context.tokens.spacing.vsdslSpacingSm.top,
+          horizontal: context.tokens.spacing.vsdslSpacingMd.left,
+        ),
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
           color: SettingsProvider.currentTittlePage == state
@@ -243,13 +247,24 @@ class V3SettingMenu extends StatelessWidget {
               : context.tokens.color.vsdslColorSurface1000,
           borderRadius: BorderRadius.circular(15),
         ),
-        child: AutoSizeText(
-          text,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.white,
-          ),
-          maxLines: 1,
+        child: Row(
+          children: [
+            AutoSizeText(
+              text,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.white,
+              ),
+              maxLines: 1,
+            ),
+            const Spacer(),
+            if (locked)
+              SizedBox(
+                width: 11,
+                height: 11,
+                child: SvgPicture.asset('assets/images/ic_lock.svg'),
+              ),
+          ],
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/widgets/v3_focus_single_child_scroll_view.dart';
+import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:gap/gap.dart';
@@ -11,8 +12,7 @@ class V3SettingsWhatsNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 57, left: 13, right: 13, bottom: 13),
+    return V3Setting2ndLayer(
       child: Column(
         children: [
           Expanded(
