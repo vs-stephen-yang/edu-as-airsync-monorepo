@@ -520,7 +520,7 @@ class ChannelProvider extends ChangeNotifier {
     _isPresentingErrorReported = false;
 
     // PeerConnect
-    WebRTCHelper().init(
+    await WebRTCHelper().init(
       sessionId: _sessionId,
       profileStore: profileStore,
       systemAudio: systemAudio,
@@ -542,6 +542,20 @@ class ChannelProvider extends ChangeNotifier {
       onStopPresent: () {
         // Received StopPresent from the peer via data channel
         presentStop();
+      },
+      onTouchEvenWhenPaused: (isPaused, isStop) {
+        if (isPaused) {
+          presentingState.value = !presentingState.value;
+          presentResume();
+        }
+        if (isStop) {
+          presentStop();
+          if (_moderatorStatus) {
+            _presentStateProvider?.presentModeratorWaitPage();
+          } else {
+            presentEnd();
+          }
+        }
       },
     );
 
@@ -603,8 +617,9 @@ class ChannelProvider extends ChangeNotifier {
     _resetTimer();
   }
 
-  Future<void> presentPause() async {
-    WebRTCHelper().pause(_sessionId);
+  Future<void> presentPause({Rect? pauseBtnRect, Rect? stopBtnRect}) async {
+    WebRTCHelper().pause(_sessionId,
+        pauseBtnRect: pauseBtnRect, stopBtnRect: stopBtnRect);
   }
 
   Future<void> presentResume() async {

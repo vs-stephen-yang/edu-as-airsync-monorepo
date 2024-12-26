@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
+import 'dart:ui';
 
 import 'package:collection/collection.dart';
 import 'package:display_cast_flutter/features/protoc/event.pb.dart';
@@ -31,6 +32,7 @@ class WebRTCConnector {
     required this.sendSignalMessage,
     required this.onConnectionState,
     required this.onStopPresent,
+    required this.onTouchEvenWhenPaused,
   });
 
   final List<StreamSubscription> subscriptions = [];
@@ -39,6 +41,7 @@ class WebRTCConnector {
   void Function(RTCPeerConnectionState state) onConnectionState;
   void Function() onStopPresent;
   Function(RtcVideoOutboundStats stats)? onVideoStatsReport;
+  void Function(bool isPause, bool isStop) onTouchEvenWhenPaused;
 
   dynamic _deviceId;
   RTCPeerConnection? _pc;
@@ -53,6 +56,10 @@ class WebRTCConnector {
   }
 
   bool _isRtcFirstConnected = false;
+  bool _isPaused = false; // Track pause state
+
+  // Add rect for pause, stop button
+  Rect? _pauseButtonRect, _stopButtonRect;
 
   // change present quality
   bool _streamPublished = false;
@@ -427,7 +434,11 @@ class WebRTCConnector {
     );
   }
 
-  void pause(String sessionId) {
+  void pause(String sessionId, {Rect? pauseBtnRect, Rect? stopBtnRect}) {
+    print('zz pause $pauseBtnRect');
+    _isPaused = true; //
+    _pauseButtonRect = pauseBtnRect;
+    _stopButtonRect = stopBtnRect;
     // Sends a control message to remotely pause rendering.
     _sendControlMessage(
       PausePresentMessage(sessionId),
@@ -435,13 +446,39 @@ class WebRTCConnector {
   }
 
   void resume(String sessionId) {
+    print('zz resume');
+    _isPaused = false; // Clear pause state
+    _pauseButtonRect = null; // Clear button position info
+    _stopButtonRect = null;
     // Sends a control message to remotely resume rendering.
     _sendControlMessage(
       ResumePresentMessage(sessionId),
     );
   }
 
+  // Helper method to check if a point is within the pause button
+  bool _isPointInPauseButton(Offset point) {
+    if (_pauseButtonRect == null) return false;
+    print(
+        'zz _pauseButtonPosition contain: ${_pauseButtonRect!.contains(point)}');
+    if (_pauseButtonRect!.contains(point)) {
+      return true;
+    }
+    return false;
+  }
+
+  bool _isPointInStopButton(Offset point) {
+    if (_stopButtonRect == null) return false;
+    print(
+        'zz _isPointInStopButton contain: ${_stopButtonRect!.contains(point)}');
+    if (_stopButtonRect!.contains(point)) {
+      return true;
+    }
+    return false;
+  }
+
   void sendStop(String sessionId) {
+    _isPaused = false; // Reset pause state
     final message = StopPresentMessage();
     message.sessionId = sessionId;
 
@@ -510,6 +547,24 @@ class WebRTCConnector {
       injectY = 0;
     } else if (injectY > _screenHeight.toInt() - 1) {
       injectY = _screenHeight.toInt() - 1;
+    }
+
+    print(
+        'zz Touch event - injectX: $injectX, injectY: $injectY, pauseButtonPosition: ${_pauseButtonRect?.left}, pauseButtonRadius: ${_stopButtonRect?.left}');
+
+    if (_isPaused) {
+      if (_isPointInPauseButton(
+          Offset(injectX.toDouble(), injectY.toDouble()))) {
+        onTouchEvenWhenPaused(true, false);
+        return;
+      }
+      if (_isPointInStopButton(
+          Offset(injectX.toDouble(), injectY.toDouble()))) {
+        onTouchEvenWhenPaused(false, true);
+        return;
+      }
+      log.info('Touch event ignored due to paused state');
+      return;
     }
     _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
   }
@@ -697,6 +752,7 @@ class WebRTCConnector {
   }
 
   Future<void> hangUp() async {
+    _isPaused = false; // Reset pause state
     stopStatsTimer();
     await WakelockManager().manageWakelock(AppScene.rtcHangUp);
 
