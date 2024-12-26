@@ -216,6 +216,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Rechazar"),
         "v3_group_dialog_message": MessageLookupByLibrary.simpleMessage(
             "%s ha enviado una solicitud de transmisión a tu dispositivo. Esta acción sincronizará y mostrará el contenido actual, ¿quieres aceptar esta solicitud?"),
+        "v3_group_dialog_no_device_message":
+            MessageLookupByLibrary.simpleMessage(
+                "Ningún dispositivo seleccionado."),
         "v3_group_dialog_title": MessageLookupByLibrary.simpleMessage(
             "Solicitud de transmisión desde %s"),
         "v3_group_receive_view_status_from":
@@ -240,6 +243,16 @@ class MessageLookup extends MessageLookupByLibrary {
             "No se puede detectar una conexión a internet. Por favor, conéctate a una red Wi-Fi o intranet e inténtalo de nuevo."),
         "v3_mirror_request_passcode":
             MessageLookupByLibrary.simpleMessage("Código de Acceso"),
+        "v3_moderator_disable_mirror_cancel":
+            MessageLookupByLibrary.simpleMessage("Cancelar"),
+        "v3_moderator_disable_mirror_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "La duplicación se desactivará en el modo moderador"),
+        "v3_moderator_disable_mirror_ok":
+            MessageLookupByLibrary.simpleMessage("Aceptar"),
+        "v3_moderator_disable_mirror_title":
+            MessageLookupByLibrary.simpleMessage(
+                "Desactivar la duplicación para el modo moderador"),
         "v3_moderator_mode":
             MessageLookupByLibrary.simpleMessage("Modo moderador"),
         "v3_new_sharing_join_session":
@@ -254,6 +267,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Recibiendo"),
         "v3_participant_item_share":
             MessageLookupByLibrary.simpleMessage("Compartir"),
+        "v3_participant_item_waiting":
+            MessageLookupByLibrary.simpleMessage("Esperando..."),
         "v3_participants_desc": MessageLookupByLibrary.simpleMessage(
             "Máximo hasta 6 participantes."),
         "v3_participants_title":
@@ -266,11 +281,17 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Código QR"),
         "v3_settings_broadcast":
             MessageLookupByLibrary.simpleMessage("Transmitir"),
+        "v3_settings_broadcast_boards":
+            MessageLookupByLibrary.simpleMessage("Otros dispositivos AirSync"),
         "v3_settings_broadcast_cast_boards":
             MessageLookupByLibrary.simpleMessage("Transmitir a tableros"),
         "v3_settings_broadcast_cast_boards_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Comparte tu pantalla con todos los paneles interactivos (IFPs) en la red."),
+        "v3_settings_broadcast_cast_to":
+            MessageLookupByLibrary.simpleMessage("Transmitir a"),
+        "v3_settings_broadcast_devices":
+            MessageLookupByLibrary.simpleMessage("Dispositivos emisores"),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage(
                 "Transmitir al grupo de pantallas"),
@@ -329,11 +350,15 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Notificarme"),
         "v3_settings_legal_policy":
             MessageLookupByLibrary.simpleMessage("Legal y Política"),
+        "v3_settings_local_connection_only":
+            MessageLookupByLibrary.simpleMessage("Solo conexión local"),
         "v3_settings_mirroring_auto_accept":
             MessageLookupByLibrary.simpleMessage("Aceptar automáticamente"),
         "v3_settings_mirroring_auto_accept_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Habilitar instantáneamente la duplicación sin requerir la aprobación del moderador."),
+        "v3_settings_mirroring_blocked": MessageLookupByLibrary.simpleMessage(
+            "Apaga el modo moderador primero."),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Requiere código de acceso"),
         "v3_settings_open_source_license":

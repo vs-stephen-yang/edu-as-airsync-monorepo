@@ -234,6 +234,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("接收畫面中"),
         "v3_participant_item_share":
             MessageLookupByLibrary.simpleMessage("分享畫面"),
+        "v3_participant_item_waiting":
+            MessageLookupByLibrary.simpleMessage("等待中"),
         "v3_participants_desc":
             MessageLookupByLibrary.simpleMessage("最多六位參加人員"),
         "v3_participants_title": MessageLookupByLibrary.simpleMessage("參加人員"),
@@ -242,6 +244,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("投影辨識碼"),
         "v3_quick_connect_menu_qrcode":
             MessageLookupByLibrary.simpleMessage("QR code"),
+        "v3_settings_all_the_time_info":
+            MessageLookupByLibrary.simpleMessage("不論有無分享螢幕，一律接收廣播。"),
         "v3_settings_broadcast": MessageLookupByLibrary.simpleMessage("螢幕廣播"),
         "v3_settings_broadcast_boards":
             MessageLookupByLibrary.simpleMessage("其他AirSync裝置"),
@@ -295,6 +299,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("廣播"),
         "v3_settings_display_group_only_casting":
             MessageLookupByLibrary.simpleMessage("僅在分享畫面來源時廣播"),
+        "v3_settings_feature_locked": MessageLookupByLibrary.simpleMessage(
+            "此功能模組透過ViewSonic Manager鎖定中。"),
         "v3_settings_invite_group":
             MessageLookupByLibrary.simpleMessage("當收到螢幕廣播請求時"),
         "v3_settings_invite_group_auto_accept":
@@ -315,6 +321,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("請先關閉主持人模式"),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("需輸入AirPlay密碼"),
+        "v3_settings_only_when_casting_info":
+            MessageLookupByLibrary.simpleMessage("只有在分享螢幕時，才會接收廣播。"),
         "v3_settings_open_source_license":
             MessageLookupByLibrary.simpleMessage("開源許可證"),
         "v3_settings_privacy_policy":

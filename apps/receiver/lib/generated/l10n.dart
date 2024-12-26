@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -1710,46 +1711,6 @@ class S {
     );
   }
 
-  /// `Cast to`
-  String get v3_settings_broadcast_cast_to {
-    return Intl.message(
-      'Cast to',
-      name: 'v3_settings_broadcast_cast_to',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sender devices`
-  String get v3_settings_broadcast_devices {
-    return Intl.message(
-      'Sender devices',
-      name: 'v3_settings_broadcast_devices',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Other AirSync devices`
-  String get v3_settings_broadcast_boards {
-    return Intl.message(
-      'Other AirSync devices',
-      name: 'v3_settings_broadcast_boards',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Local connection only`
-  String get v3_settings_local_connection_only {
-    return Intl.message(
-      'Local connection only',
-      name: 'v3_settings_local_connection_only',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `For Desktop`
   String get v3_download_app_for_desktop {
     return Intl.message(
@@ -1850,6 +1811,46 @@ class S {
     );
   }
 
+  /// `Broadcast to`
+  String get v3_settings_broadcast_cast_to {
+    return Intl.message(
+      'Broadcast to',
+      name: 'v3_settings_broadcast_cast_to',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sender devices`
+  String get v3_settings_broadcast_devices {
+    return Intl.message(
+      'Sender devices',
+      name: 'v3_settings_broadcast_devices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Other AirSync devices`
+  String get v3_settings_broadcast_boards {
+    return Intl.message(
+      'Other AirSync devices',
+      name: 'v3_settings_broadcast_boards',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Local connection only`
+  String get v3_settings_local_connection_only {
+    return Intl.message(
+      'Local connection only',
+      name: 'v3_settings_local_connection_only',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `No device selected.`
   String get v3_group_dialog_no_device_message {
     return Intl.message(
@@ -1870,21 +1871,31 @@ class S {
     );
   }
 
-  /// `Devices will only receive the broadcast when the main screen is actively casting.`
+  /// `Broadcast the source IFP screen only when it is receiving a shared screen.`
   String get v3_settings_only_when_casting_info {
     return Intl.message(
-      'Devices will only receive the broadcast when the main screen is actively casting.',
+      'Broadcast the source IFP screen only when it is receiving a shared screen.',
       name: 'v3_settings_only_when_casting_info',
       desc: '',
       args: [],
     );
   }
 
-  /// ``
+  /// `Broadcast source IFP screen all the time.`
   String get v3_settings_all_the_time_info {
     return Intl.message(
-      '',
+      'Broadcast source IFP screen all the time.',
       name: 'v3_settings_all_the_time_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Locked by ViewSonic Manager.`
+  String get v3_settings_feature_locked {
+    return Intl.message(
+      'Locked by ViewSonic Manager.',
+      name: 'v3_settings_feature_locked',
       desc: '',
       args: [],
     );

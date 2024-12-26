@@ -165,10 +165,6 @@
   "v3_authorize_prompt_decline": "Decline",
   "v3_authorize_prompt_accept": "Accept",
   "v3_group_reject_invited": "declined your broadcast request, please check the Broads setting.",
-  "v3_settings_broadcast_cast_to": "Cast to",
-  "v3_settings_broadcast_devices": "Sender devices",
-  "v3_settings_broadcast_boards": "Other AirSync devices",
-  "v3_settings_local_connection_only": "Local connection only",
   "v3_download_app_for_desktop": "For Desktop",
   "v3_download_app_for_mobile": "For iOS & Android",
   "v3_download_app_for_desktop_desc": "Enter the following URL to download.",
@@ -179,8 +175,13 @@
   "v3_moderator_disable_mirror_ok": "OK",
   "v3_moderator_disable_mirror_cancel": "Cancel",
   "v3_settings_mirroring_blocked": "Turn off moderator mode first.",
+  "v3_settings_broadcast_cast_to": "Broadcast to",
+  "v3_settings_broadcast_devices": "Sender devices",
+  "v3_settings_broadcast_boards": "Other AirSync devices",
+  "v3_settings_local_connection_only": "Local connection only",
   "v3_group_dialog_no_device_message": "No device selected.",
   "v3_participant_item_waiting": "Waiting...",
-  "v3_settings_only_when_casting_info": "Devices will only receive the broadcast when the main screen is actively casting.",
-  "v3_settings_all_the_time_info": ""
+  "v3_settings_only_when_casting_info": "Broadcast the source IFP screen only when it is receiving a shared screen.",
+  "v3_settings_all_the_time_info": "Broadcast source IFP screen all the time.",
+  "v3_settings_feature_locked": "Locked by ViewSonic Manager."
 }
