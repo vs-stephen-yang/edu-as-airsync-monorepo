@@ -29,12 +29,14 @@ class V3PresentIdleTextField extends StatefulWidget {
       required this.widthTextField,
       required this.onFieldChanged,
       required this.onPasswordEnterEvent,
-      this.platformDetector = const PlatformDetector()});
+      this.platformDetector = const PlatformDetector(),
+      this.enable = true});
 
   final double widthTextField;
   final ValueChanged<V3FieldResult> onFieldChanged;
   final ValueChanged<String> onPasswordEnterEvent;
   final PlatformDetector platformDetector;
+  final bool enable;
 
   @override
   V3PresentIdleTextFieldState createState() => V3PresentIdleTextFieldState();
@@ -118,6 +120,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       key: codeKey,
       controller: _codeController,
       focusNode: _codeFocusNode,
+      enable: widget.enable,
       hintText: S.of(context).v3_main_display_code,
       inputFormatter: [
         if (widget.platformDetector.notWindowsNeitherWeb)
@@ -239,6 +242,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       key: otpKey,
       controller: _otpController,
       focusNode: _otpFocusNode,
+      enable: widget.enable,
       hintText: S.of(context).v3_main_password,
       maxTextLength: otpLength,
       inputFormatter: [

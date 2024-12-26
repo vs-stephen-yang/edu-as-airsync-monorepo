@@ -1,8 +1,11 @@
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
+import 'package:display_cast_flutter/utilities/dart_ui_web_fake.dart'
+    if (dart.library.ui_web) 'dart:ui_web' as ui_web;
 import 'package:display_cast_flutter/widgets/v3_web_download.dart';
 import 'package:display_cast_flutter/widgets/v3_web_footer.dart';
 import 'package:display_cast_flutter/widgets/v3_web_main.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,11 +19,14 @@ class V3HomeWeb extends StatefulWidget {
 class _V3HomeWebState extends State<V3HomeWeb> {
   final ScrollController _scrollController = ScrollController();
   bool chineseFontLoaded = false;
+  bool supportedBrowsers = false;
 
   @override
   void initState() {
     super.initState();
-
+    if (kIsWeb) {
+      _initWeb();
+    }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       PrefLanguageProvider prefLanguageProvider =
           Provider.of<PrefLanguageProvider>(context, listen: false);
@@ -37,6 +43,10 @@ class _V3HomeWebState extends State<V3HomeWeb> {
         }();
       }
     });
+  }
+
+  void _initWeb() {
+    supportedBrowsers = ui_web.browser.isChromium || ui_web.browser.isEdge;
   }
 
   @override
@@ -59,6 +69,7 @@ class _V3HomeWebState extends State<V3HomeWeb> {
                         curve: Curves.ease, // Animation curve
                       );
                     },
+                    supportedBrowsers: supportedBrowsers,
                   ),
                   if (presentStateProvider.currentState == ViewState.idle) ...[
                     const V3WebDownload(),

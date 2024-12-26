@@ -14,6 +14,7 @@ class V3CustomTextFormField extends StatefulWidget {
     required this.onFieldChanged,
     required this.onFieldSubmitted,
     this.onTap,
+    this.enable = true,
   });
 
   final TextEditingController controller;
@@ -24,6 +25,7 @@ class V3CustomTextFormField extends StatefulWidget {
   final ValueChanged<String> onFieldChanged;
   final GestureTapCallback? onTap;
   final ValueChanged<String> onFieldSubmitted;
+  final bool enable;
 
   @override
   V3CustomTextFormFieldState createState() => V3CustomTextFormFieldState();
@@ -37,9 +39,12 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
     return TextFormField(
       controller: widget.controller,
       focusNode: widget.focusNode,
+      enabled: widget.enable,
       decoration: InputDecoration(
         filled: true,
-        fillColor: context.tokens.color.vsdswColorSurface100,
+        fillColor: widget.enable
+            ? context.tokens.color.vsdswColorSurface100
+            : context.tokens.color.vsdswColorDisabled,
         hintText: widget.hintText,
         hintStyle: TextStyle(
             fontSize: 12, color: context.tokens.color.vsdswColorOnDisabled),
@@ -53,6 +58,11 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
           borderRadius: context.tokens.radii.vsdswRadiusFull,
           borderSide: BorderSide(
               color: context.tokens.color.vsdswColorOutline, width: 2),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: context.tokens.radii.vsdswRadiusFull,
+          borderSide: BorderSide(
+              color: context.tokens.color.vsdswColorDisabled, width: 2),
         ),
         focusedBorder: _focusedBorder(),
         error: _errorWidget(context),

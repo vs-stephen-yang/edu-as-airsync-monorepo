@@ -22,8 +22,9 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3PresentIdle extends StatefulWidget {
-  const V3PresentIdle({super.key});
+  const V3PresentIdle({super.key, this.supported = true});
 
+  final bool supported;
   @override
   State<StatefulWidget> createState() => _V3PresentIdleState();
 }
@@ -258,14 +259,14 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
     return V3PresentIdleTextField(
       key: fieldKey,
       widthTextField: 300,
+      enable: widget.supported,
       onFieldChanged: (result) {
         isDisplayCodeSelectedFromHistory =
             result.isDisplayCodeSelectedFromHistory;
-
-        nextBtnEnable = result.enable;
+        nextBtnEnable = result.enable && widget.supported;
         displayCode = result.displayCode;
         password = result.password;
-        presentBtnKey.currentState?.setEnable(result.enable,
+        presentBtnKey.currentState?.setEnable(result.enable && widget.supported,
             displayCode: result.displayCode, password: result.password);
       },
       onPasswordEnterEvent: (text) {

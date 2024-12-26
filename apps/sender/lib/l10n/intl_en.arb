@@ -175,5 +175,7 @@
   "v3_setting_software_update_no_internet_description": "Please check your internet connection and try again.",
   "v3_present_moderator_exited": "Moderator is closed",
   "v3_present_moderator_exited_description": "Moderator is closed，please reconnect.",
-  "v3_present_moderator_exited_action": "OK"
+  "v3_present_moderator_exited_action": "OK",
+  "v3_main_web_nonsupport": "Currently, only Chrome and Edge browsers are supported.",
+  "v3_main_web_nonsupport_confirm": "Got it!"
 }
