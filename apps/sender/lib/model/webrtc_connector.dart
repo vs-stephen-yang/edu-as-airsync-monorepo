@@ -435,7 +435,6 @@ class WebRTCConnector {
   }
 
   void pause(String sessionId, {Rect? pauseBtnRect, Rect? stopBtnRect}) {
-    print('zz pause $pauseBtnRect');
     _isPaused = true; //
     _pauseButtonRect = pauseBtnRect;
     _stopButtonRect = stopBtnRect;
@@ -446,7 +445,6 @@ class WebRTCConnector {
   }
 
   void resume(String sessionId) {
-    print('zz resume');
     _isPaused = false; // Clear pause state
     _pauseButtonRect = null; // Clear button position info
     _stopButtonRect = null;
@@ -459,8 +457,6 @@ class WebRTCConnector {
   // Helper method to check if a point is within the pause button
   bool _isPointInPauseButton(Offset point) {
     if (_pauseButtonRect == null) return false;
-    print(
-        'zz _pauseButtonPosition contain: ${_pauseButtonRect!.contains(point)}');
     if (_pauseButtonRect!.contains(point)) {
       return true;
     }
@@ -469,8 +465,6 @@ class WebRTCConnector {
 
   bool _isPointInStopButton(Offset point) {
     if (_stopButtonRect == null) return false;
-    print(
-        'zz _isPointInStopButton contain: ${_stopButtonRect!.contains(point)}');
     if (_stopButtonRect!.contains(point)) {
       return true;
     }
@@ -548,9 +542,6 @@ class WebRTCConnector {
     } else if (injectY > _screenHeight.toInt() - 1) {
       injectY = _screenHeight.toInt() - 1;
     }
-
-    print(
-        'zz Touch event - injectX: $injectX, injectY: $injectY, pauseButtonPosition: ${_pauseButtonRect?.left}, pauseButtonRadius: ${_stopButtonRect?.left}');
 
     if (_isPaused) {
       if (_isPointInPauseButton(

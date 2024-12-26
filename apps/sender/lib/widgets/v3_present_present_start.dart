@@ -25,7 +25,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:logging/logging.dart' as logging;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
@@ -151,10 +150,6 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     }
 
     setDebugText();
-
-    final double devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-
-    print('zz Device Pixel Ratio: $devicePixelRatio');
 
     return Container(
       color: Colors.black,
@@ -351,22 +346,10 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
         widgetKey.currentContext?.findRenderObject() as RenderBox?;
 
     if (renderBox != null) {
-      // Get position relative to app window
       widgetPositionInApp = renderBox.localToGlobal(Offset.zero);
-      logging.Logger('PresentStart')
-          .info('Button position in app: $widgetPositionInApp');
 
       if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
-        // On desktop, we need to add window position
         final window = await getCurrentScreen();
-        // if (window != null) {
-        //   // Add window position to get screen coordinates
-        //   position = Offset(
-        //     position.dx + window.frame.left,
-        //     position.dy + (window.visibleFrame.top-window.frame.top)
-        //   );
-        logging.Logger('PresentStart').info(
-            'window frame: ${window?.frame} r:${window?.scaleFactor} ${window?.visibleFrame}');
 
         if (window != null) {
           if (Platform.isMacOS) {
@@ -375,45 +358,18 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
             windowBar = window.frame.bottom - window.visibleFrame.bottom;
           }
         }
-        // 獲取窗口在屏幕中的全局位置
-        // final Offset windowPosition = Offset(
-        //   appWindow.position.dx,
-        //   appWindow.position.dy,
-        // );
-        //
-        // print('zz Window Position: $windowPosition');
-        //
-        // // 合併計算全局位置
-        // final Offset globalPosition = position + windowPosition;
-        //
-        // // 計算全局 Rect
-        // final Rect widgetRect = Rect.fromLTWH(
-        //   globalPosition.dx,
-        //   globalPosition.dy,
-        //   renderBox.size.width,
-        //   renderBox.size.height,
-        // );
-        // print('zz Widget Rect: $widgetRect');
 
-        // 獲取操作系統中的視窗全局位置
         final Rect windowBounds = await windowManager.getBounds();
         final Offset windowPosition =
             Offset(windowBounds.left, windowBounds.top);
-        print(
-            'zz Window Position: $windowBounds windowBar: $windowBar windowPosition: $windowPosition');
 
-        // 合併計算實際的全局位置
         widgetPositionInScreen = widgetPositionInApp + windowPosition;
-
         widgetRect = Rect.fromLTWH(
           widgetPositionInScreen.dx,
           widgetPositionInScreen.dy,
           renderBox.size.width,
           renderBox.size.height + windowBar,
         );
-
-        debugPrint(
-            "Widget Rect (全局): ${widgetRect.top} ${widgetRect.left} ${widgetRect.width} ${widgetRect.height}");
       }
     }
     return widgetRect;
