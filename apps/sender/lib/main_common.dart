@@ -44,6 +44,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:uuid/uuid.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'annotation/annotation_model.dart';
 import 'annotation/canvas_widget_desktop.dart';
@@ -154,6 +155,8 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
           ..position = Offset.zero
           ..show();
       });
+
+      await windowManager.ensureInitialized();
     }
   }, (error, stackTrace) async {
     await Sentry.captureException(error, stackTrace: stackTrace);

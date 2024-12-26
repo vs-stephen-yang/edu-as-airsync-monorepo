@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/model/webrtc_connector.dart';
@@ -36,6 +37,7 @@ class WebRTCHelper {
     required Function(RTCPeerConnectionState state) onRTCPeerConnectionState,
     required Function() onStopPresent,
     required Function() onStreamInterrupted,
+    required Function(bool isPaused, bool isStop) onTouchEvenWhenPaused,
   }) async {
     // PeerConnect
     webRTCConnector = WebRTCConnector(
@@ -45,6 +47,7 @@ class WebRTCHelper {
       sendSignalMessage: sendPresentSignalMessage,
       onConnectionState: onRTCPeerConnectionState,
       onStopPresent: onStopPresent,
+      onTouchEvenWhenPaused: onTouchEvenWhenPaused,
     );
     webRTCConnector?.onStreamInterrupted = (() async {
       onStreamInterrupted();
@@ -94,8 +97,9 @@ class WebRTCHelper {
     });
   }
 
-  void pause(String sessionId) {
-    webRTCConnector?.pause(sessionId);
+  void pause(String sessionId, {Rect? pauseBtnRect, Rect? stopBtnRect}) {
+    webRTCConnector?.pause(sessionId,
+        pauseBtnRect: pauseBtnRect, stopBtnRect: stopBtnRect);
   }
 
   void resume(String sessionId) {

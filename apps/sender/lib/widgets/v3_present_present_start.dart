@@ -25,8 +25,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:logging/logging.dart' as logging;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
+import 'package:window_size/window_size.dart';
 
 class V3PresentPresentStart extends StatefulWidget {
   const V3PresentPresentStart({super.key, required this.isModeratorMode});
@@ -38,8 +41,10 @@ class V3PresentPresentStart extends StatefulWidget {
 }
 
 class _V3PresentPresentStartState extends State<V3PresentPresentStart>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, WindowListener {
   final GlobalKey<TouchBackButtonState> touchBtnKey = GlobalKey();
+  final GlobalKey pauseButtonKey = GlobalKey(); // 添加用于暂停按钮的GlobalKey
+  final GlobalKey stopButtonKey = GlobalKey(); // 添加用于暂停按钮的GlobalKey
 
   bool isAnnotationImplemented = false;
   bool annotationOn = false;
@@ -73,6 +78,8 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     }
     super.initState();
     if (WebRTC.platformIsIOS) _initializeBroadcastUploadExtensionObserver();
+
+    windowManager.addListener(this); // 監聽視窗事件
   }
 
   void _initializeBroadcastUploadExtensionObserver() {
@@ -121,7 +128,13 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
       WidgetsBinding.instance.removeObserver(this);
     }
+    windowManager.removeListener(this);
     super.dispose();
+  }
+
+  @override
+  Future<void> onWindowMove() async {
+    // 當視窗移動時，可以強制刷新位置
   }
 
   @override
@@ -138,6 +151,10 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
     }
 
     setDebugText();
+
+    final double devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+
+    print('zz Device Pixel Ratio: $devicePixelRatio');
 
     return Container(
       color: Colors.black,
@@ -192,12 +209,13 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
                     valueListenable: presentingState,
                     builder: (BuildContext context, value, Widget? child) {
                       return CircleAvatar(
+                        key: pauseButtonKey, // 使用之前添加的 GlobalKey
                         backgroundColor: !value
                             ? context.tokens.color.vsdswColorOnSurfaceInverse
                             : context.tokens.color.vsdswColorSurface900,
                         radius: kIsWeb ? 24 : 28,
                         child: IconButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (needRelaunchBroadcastUploadExtension) {
                               WebRTCHelper().launchBroadcastUploadExtension();
                             } else {
@@ -207,11 +225,18 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
                                   tempState ? 'click_resume' : 'click_pause',
                                   EventCategory.session);
 
+                              Rect? pauseBtnRec =
+                                  await getBtnRect(pauseButtonKey);
+                              Rect? stopBtnRect =
+                                  await getBtnRect(stopButtonKey);
+
                               // Update state
                               presentingState.value = tempState;
                               tempState
                                   ? channelProvider.presentResume()
-                                  : channelProvider.presentPause();
+                                  : channelProvider.presentPause(
+                                      pauseBtnRect: pauseBtnRec,
+                                      stopBtnRect: stopBtnRect);
                             }
                           },
                           icon: SvgPicture.asset(!value
@@ -230,6 +255,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
                     backgroundColor: context.tokens.color.vsdswColorError,
                     radius: kIsWeb ? 24 : 28,
                     child: IconButton(
+                      key: stopButtonKey,
                       onPressed: () {
                         trackEvent('click_stop', EventCategory.session);
 
@@ -314,6 +340,79 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
         ],
       ),
     );
+  }
+
+  Future<Rect?> getBtnRect(GlobalKey widgetKey) async {
+    Offset? widgetPositionInScreen, widgetPositionInApp;
+    double windowBar = 0;
+    Rect? widgetRect;
+
+    final RenderBox? renderBox =
+        widgetKey.currentContext?.findRenderObject() as RenderBox?;
+
+    if (renderBox != null) {
+      // Get position relative to app window
+      widgetPositionInApp = renderBox.localToGlobal(Offset.zero);
+      logging.Logger('PresentStart')
+          .info('Button position in app: $widgetPositionInApp');
+
+      if (!kIsWeb && (Platform.isWindows || Platform.isMacOS)) {
+        // On desktop, we need to add window position
+        final window = await getCurrentScreen();
+        // if (window != null) {
+        //   // Add window position to get screen coordinates
+        //   position = Offset(
+        //     position.dx + window.frame.left,
+        //     position.dy + (window.visibleFrame.top-window.frame.top)
+        //   );
+        logging.Logger('PresentStart').info(
+            'window frame: ${window?.frame} r:${window?.scaleFactor} ${window?.visibleFrame}');
+
+        if (window != null) {
+          windowBar = window.visibleFrame.top - window.frame.top;
+        }
+        // 獲取窗口在屏幕中的全局位置
+        // final Offset windowPosition = Offset(
+        //   appWindow.position.dx,
+        //   appWindow.position.dy,
+        // );
+        //
+        // print('zz Window Position: $windowPosition');
+        //
+        // // 合併計算全局位置
+        // final Offset globalPosition = position + windowPosition;
+        //
+        // // 計算全局 Rect
+        // final Rect widgetRect = Rect.fromLTWH(
+        //   globalPosition.dx,
+        //   globalPosition.dy,
+        //   renderBox.size.width,
+        //   renderBox.size.height,
+        // );
+        // print('zz Widget Rect: $widgetRect');
+
+        // 獲取操作系統中的視窗全局位置
+        final Rect windowBounds = await windowManager.getBounds();
+        final Offset windowPosition =
+            Offset(windowBounds.left, windowBounds.top);
+        print(
+            'zz Window Position: $windowBounds windowBar: $windowBar windowPosition: $windowPosition');
+
+        // 合併計算實際的全局位置
+        widgetPositionInScreen = widgetPositionInApp + windowPosition;
+
+        widgetRect = Rect.fromLTWH(
+          widgetPositionInScreen.dx,
+          widgetPositionInScreen.dy,
+          renderBox.size.width,
+          renderBox.size.height + windowBar,
+        );
+
+        debugPrint(
+            "Widget Rect (全局): ${widgetRect.top} ${widgetRect.left} ${widgetRect.width} ${widgetRect.height}");
+      }
+    }
+    return widgetRect;
   }
 
   void setDebugText() {
