@@ -155,37 +155,37 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
       return Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          pauseScreenImage ??
-              RepaintBoundary(
-                key: repaintBoundaryKey,
-                child: Focus(
-                  descendantsAreFocusable: false,
-                  canRequestFocus: false,
-                  child: NotificationListener<SizeChangedLayoutNotification>(
-                    onNotification: (notification) {
-                      log.info('onVideoWidgetResize');
-                      _textureSizeChanged = true;
-                      return false;
-                    },
-                    child: Listener(
-                      onPointerDown: (PointerEvent event) {
-                        onTouchEvent(
-                            TouchEvent_TouchEventType.TOUCH_POINT_START, event);
-                      },
-                      onPointerMove: (PointerEvent event) {
-                        onTouchEvent(
-                            TouchEvent_TouchEventType.TOUCH_POINT_MOVE, event);
-                      },
-                      onPointerUp: (PointerEvent event) {
-                        onTouchEvent(
-                            TouchEvent_TouchEventType.TOUCH_POINT_END, event);
-                      },
-                      child: RTCVideoView(widget.rtcConnector.remoteRenderer!,
+          RepaintBoundary(
+            key: repaintBoundaryKey,
+            child: Focus(
+              descendantsAreFocusable: false,
+              canRequestFocus: false,
+              child: NotificationListener<SizeChangedLayoutNotification>(
+                onNotification: (notification) {
+                  log.info('onVideoWidgetResize');
+                  _textureSizeChanged = true;
+                  return false;
+                },
+                child: Listener(
+                  onPointerDown: (PointerEvent event) {
+                    onTouchEvent(
+                        TouchEvent_TouchEventType.TOUCH_POINT_START, event);
+                  },
+                  onPointerMove: (PointerEvent event) {
+                    onTouchEvent(
+                        TouchEvent_TouchEventType.TOUCH_POINT_MOVE, event);
+                  },
+                  onPointerUp: (PointerEvent event) {
+                    onTouchEvent(
+                        TouchEvent_TouchEventType.TOUCH_POINT_END, event);
+                  },
+                  child: pauseScreenImage ??
+                      RTCVideoView(widget.rtcConnector.remoteRenderer!,
                           key: _widgetKey),
-                    ),
-                  ),
                 ),
               ),
+            ),
+          ),
           if (widget.rtcConnector.presentationState ==
                   PresentationState.streaming &&
               (widget.rtcConnector.senderName ?? '').isNotEmpty) ...[
@@ -403,6 +403,9 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
   }
 
   Future<void> _pauseVideo() async {
+    // Add delay before taking screenshot
+    await Future.delayed(const Duration(milliseconds: 300));
+
     // screenshot RTCView
     final boundary = repaintBoundaryKey.currentContext?.findRenderObject()
         as RenderRepaintBoundary?;
