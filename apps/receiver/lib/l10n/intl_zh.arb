@@ -178,5 +178,9 @@
   "v3_settings_broadcast_devices": "傳送端裝置",
   "v3_settings_broadcast_boards": "其他AirSync裝置",
   "v3_settings_local_connection_only": "僅限區域網路連線",
-  "v3_group_dialog_no_device_message": "未選擇任何裝置"
+  "v3_group_dialog_no_device_message": "未選擇任何裝置",
+  "v3_participant_item_waiting": "等待中",
+  "v3_settings_only_when_casting_info": "只有在分享螢幕時，才會接收廣播。",
+  "v3_settings_all_the_time_info": "不論有無分享螢幕，一律接收廣播。",
+  "v3_settings_feature_locked": "此功能模組透過ViewSonic Manager鎖定中。"
 }

@@ -273,8 +273,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Display Code"),
         "v3_quick_connect_menu_qrcode":
             MessageLookupByLibrary.simpleMessage("QR Code"),
-        "v3_settings_all_the_time_info":
-            MessageLookupByLibrary.simpleMessage(""),
+        "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
+            "Broadcast source IFP screen all the time."),
         "v3_settings_broadcast":
             MessageLookupByLibrary.simpleMessage("Broadcast"),
         "v3_settings_broadcast_boards":
@@ -285,7 +285,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Share your screen to all Interactive Flat Panels (IFPs) in the network."),
         "v3_settings_broadcast_cast_to":
-            MessageLookupByLibrary.simpleMessage("Cast to"),
+            MessageLookupByLibrary.simpleMessage("Broadcast to"),
         "v3_settings_broadcast_devices":
             MessageLookupByLibrary.simpleMessage("Sender devices"),
         "v3_settings_broadcast_to_display_group":
@@ -335,6 +335,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Broadcast"),
         "v3_settings_display_group_only_casting":
             MessageLookupByLibrary.simpleMessage("Only when casting"),
+        "v3_settings_feature_locked": MessageLookupByLibrary.simpleMessage(
+            "Locked by ViewSonic Manager."),
         "v3_settings_invite_group": MessageLookupByLibrary.simpleMessage(
             "If invited to a display group"),
         "v3_settings_invite_group_auto_accept":
@@ -357,7 +359,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Require passcode"),
         "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
-            "Devices will only receive the broadcast when the main screen is actively casting."),
+            "Broadcast the source IFP screen only when it is receiving a shared screen."),
         "v3_settings_open_source_license":
             MessageLookupByLibrary.simpleMessage("Open Source Licenses"),
         "v3_settings_privacy_policy":
