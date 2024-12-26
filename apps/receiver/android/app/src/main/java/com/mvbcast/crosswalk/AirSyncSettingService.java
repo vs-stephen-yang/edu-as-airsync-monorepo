@@ -201,7 +201,7 @@ public class AirSyncSettingService extends Service {
 
             switch (key) {
                 case IAirSyncSettingService.KEY_DEVICE_SETTING_LOCK:
-                    value = flutterPref.getBoolean("flutter.app_DeviceSettingLocked",
+                    value = flutterPref.getBoolean("flutter.app_isDeviceSettingLock",
                             false) ? VAL_DEVICE_SETTING_LOCK : VAL_DEVICE_SETTING_UNLOCK;
                     break;
                 case IAirSyncSettingService.KEY_DEVICE_NAME:
@@ -260,7 +260,7 @@ public class AirSyncSettingService extends Service {
                             VAL_SCREENSHARING_WITH_APPROVAL_OFF;
                     break;
                 case IAirSyncSettingService.KEY_BROADCAST_LOCK:
-                    value = flutterPref.getBoolean("flutter.app_BroadcastLocked",
+                    value = flutterPref.getBoolean("flutter.app_isBroadcastLock",
                             false) ? VAL_BROADCAST_LOCK : VAL_BROADCAST_UNLOCK;
                     break;
                 case IAirSyncSettingService.KEY_CAST_TO_DEVICE:
@@ -292,7 +292,7 @@ public class AirSyncSettingService extends Service {
                             false) ? VAL_MIRROR_AUTO_ACCEPT_ON : VAL_MIRROR_AUTO_ACCEPT_OFF;
                     break;
                 case IAirSyncSettingService.KEY_CONNECTIVITY_LOCK:
-                    value = flutterPref.getBoolean("flutter.app_ConnectivityLocked",
+                    value = flutterPref.getBoolean("flutter.app_isConnectivityLock",
                             false) ? VAL_CONNECTIVITY_LOCK : VAL_CONNECTIVITY_UNLOCK;
                     break;
                 case IAirSyncSettingService.KEY_CONNECTIVITY:

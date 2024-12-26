@@ -4,6 +4,8 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:display_flutter/widgets/v3_settings_radio_group.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -38,29 +40,31 @@ class V3SettingsConnectivity extends StatelessWidget {
         divider: false,
       ),
     ];
-    return Padding(
-      padding: const EdgeInsets.only(top: 57, left: 13, right: 13),
-      child: V3SettingsRadioGroup(
-        initSelectedValue: AppPreferences().connectivityType,
-        radioList: radioItems,
-        onChanged: (value) {
-          int index = radioItems.indexWhere((item) => item.value == value);
-          if (index != -1) {
-            ConnectivityType type = ConnectivityType.values[index];
-            trackEvent(
-              'click_connectivity',
-              EventCategory.setting,
-              target: type.name,
-            );
+    return Consumer<SettingsProvider>(builder: (_, settingsProvider, __) {
+      return V3Setting2ndLayer(
+        isDisable: settingsProvider.isConnectivityLock,
+        child: V3SettingsRadioGroup(
+          initSelectedValue: AppPreferences().connectivityType,
+          radioList: radioItems,
+          onChanged: (value) {
+            int index = radioItems.indexWhere((item) => item.value == value);
+            if (index != -1) {
+              ConnectivityType type = ConnectivityType.values[index];
+              trackEvent(
+                'click_connectivity',
+                EventCategory.setting,
+                target: type.name,
+              );
 
-            AppPreferences().setSelectedConnectivityType(type);
-            Provider.of<ChannelProvider>(context, listen: false)
-                .launchChannelServer();
-          } else {
-            log('ConnectivityType not found');
-          }
-        },
-      ),
-    );
+              AppPreferences().setSelectedConnectivityType(type);
+              Provider.of<ChannelProvider>(context, listen: false)
+                  .launchChannelServer();
+            } else {
+              log('ConnectivityType not found');
+            }
+          },
+        ),
+      );
+    });
   }
 }
