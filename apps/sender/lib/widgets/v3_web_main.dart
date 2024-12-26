@@ -17,15 +17,20 @@ import 'package:display_cast_flutter/widgets/v3_present_wait_prompt.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3WebMain extends StatelessWidget {
-  const V3WebMain(
-      {super.key, required this.presentStateProvider, this.scrollTo});
+  const V3WebMain({super.key,
+    required this.presentStateProvider,
+    this.scrollTo,
+    required this.supportedBrowsers});
 
   final PresentStateProvider presentStateProvider;
 
   final Function()? scrollTo;
+
+  final bool supportedBrowsers;
 
   @override
   Widget build(BuildContext context) {
@@ -116,8 +121,15 @@ class V3WebMain extends StatelessWidget {
                             ],
                           ),
                         ),
+                        Positioned(
+                          top: 82,
+                          right: 0,
+                          left: 0,
+                          child: unsupportedMessage(context),
+                        ),
                         V3PresentStateMachine(
                           presentStateProvider: presentStateProvider,
+                          supported: supportedBrowsers,
                         ),
                       ],
                     ),
@@ -142,19 +154,72 @@ class V3WebMain extends StatelessWidget {
       ),
     );
   }
+
+  Widget unsupportedMessage(BuildContext context) {
+    bool showUnsupportedMassage = true;
+    return StatefulBuilder(builder: (context, setState) {
+      return (showUnsupportedMassage && !supportedBrowsers)
+          ? Container(
+              height: 48,
+              color: const Color(0xFFF67F00),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    S.current.v3_main_web_nonsupport,
+                    style: const TextStyle(
+                      color: Color(0xFFFFFAEC),
+                      fontSize: 14,
+                    ),
+                  ),
+                  const Gap(24),
+                  InkWell(
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 67,
+                      height: 32,
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      child: Text(
+                        S.current.v3_main_web_nonsupport_confirm,
+                        style: const TextStyle(
+                          color: Color(0xFFF67F00),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      setState(() {
+                        showUnsupportedMassage = false;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            )
+          : const SizedBox();
+    });
+  }
 }
 
 class V3PresentStateMachine extends StatelessWidget {
-  const V3PresentStateMachine({super.key, required this.presentStateProvider});
+  const V3PresentStateMachine(
+      {super.key, required this.presentStateProvider, this.supported = true});
 
   final PresentStateProvider presentStateProvider;
-
+  final bool supported;
   @override
   Widget build(BuildContext context) {
     log.info('PresentState: ${presentStateProvider.currentState}');
     switch (presentStateProvider.currentState) {
       case ViewState.idle:
-        return const V3PresentIdle();
+        return V3PresentIdle(supported: supported);
       case ViewState.selectRole:
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ChannelProvider channelProvider =

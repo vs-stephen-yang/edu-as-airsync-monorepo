@@ -1820,6 +1820,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Currently, only Chrome and Edge browsers are supported.`
+  String get v3_main_web_nonsupport {
+    return Intl.message(
+      'Currently, only Chrome and Edge browsers are supported.',
+      name: 'v3_main_web_nonsupport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Got it!`
+  String get v3_main_web_nonsupport_confirm {
+    return Intl.message(
+      'Got it!',
+      name: 'v3_main_web_nonsupport_confirm',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
