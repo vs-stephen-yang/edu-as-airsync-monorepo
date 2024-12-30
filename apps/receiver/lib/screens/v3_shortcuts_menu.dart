@@ -6,6 +6,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/screens/v3_cast_devices_menu.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:gap/gap.dart';
@@ -62,57 +63,59 @@ class V3ShortcutsMenu extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    height: 27,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        AutoSizeText(
-                          S.of(context).v3_shortcuts_cast_device,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color:
-                                context.tokens.color.vsdslColorOnSurfaceInverse,
+                  V3Focus(
+                    child: SizedBox(
+                      height: 27,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          AutoSizeText(
+                            S.of(context).v3_shortcuts_cast_device,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: context
+                                  .tokens.color.vsdslColorOnSurfaceInverse,
+                            ),
                           ),
-                        ),
-                        Consumer<ChannelProvider>(
-                            builder: (_, channelProvider, __) {
-                          return SizedBox(
-                            height: 21,
-                            child: IconButton(
-                              icon: Image(
-                                image: Svg(channelProvider.isSenderMode
-                                    ? 'assets/images/ic_switch_on.svg'
-                                    : 'assets/images/ic_switch_off.svg'),
-                              ),
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                              onPressed: () {
-                                if (channelProvider.isSenderMode) {
-                                  channelProvider.removeSender(
-                                      fromSender: true);
-                                } else {
-                                  V3CastDevicesMenu.fromShortcut = true;
-                                  channelProvider.startRemoteScreen(
-                                      fromSender: true);
+                          Consumer<ChannelProvider>(
+                              builder: (_, channelProvider, __) {
+                            return SizedBox(
+                              height: 21,
+                              child: IconButton(
+                                icon: Image(
+                                  image: Svg(channelProvider.isSenderMode
+                                      ? 'assets/images/ic_switch_on.svg'
+                                      : 'assets/images/ic_switch_off.svg'),
+                                ),
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                onPressed: () {
+                                  if (channelProvider.isSenderMode) {
+                                    channelProvider.removeSender(
+                                        fromSender: true);
+                                  } else {
+                                    V3CastDevicesMenu.fromShortcut = true;
+                                    channelProvider.startRemoteScreen(
+                                        fromSender: true);
                                     if (navService.canPop()) {
                                       navService.goBack();
                                     }
-                                }
+                                  }
 
-                                trackEvent(
-                                  'click_cast_to_device',
-                                  EventCategory.quickMenu,
-                                  target: channelProvider.isSenderMode
-                                      ? 'on'
-                                      : 'off',
-                                );
-                              },
-                            ),
-                          );
-                        }),
-                      ],
+                                  trackEvent(
+                                    'click_cast_to_device',
+                                    EventCategory.quickMenu,
+                                    target: channelProvider.isSenderMode
+                                        ? 'on'
+                                        : 'off',
+                                  );
+                                },
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: context.tokens.spacing.vsdslSpacingSm.top),
@@ -384,20 +387,22 @@ class V3ShortcutsMenu extends StatelessWidget {
             Positioned(
               left: 8,
               bottom: 8,
-              child: SizedBox(
-                width: 33,
-                height: 33,
-                child: IconButton(
-                  icon: const Image(
-                    image: Svg('assets/images/ic_menu_close.svg'),
+              child: V3Focus(
+                child: SizedBox(
+                  width: 33,
+                  height: 33,
+                  child: IconButton(
+                    icon: const Image(
+                      image: Svg('assets/images/ic_menu_close.svg'),
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: () {
+                      if (navService.canPop()) {
+                        navService.goBack();
+                      }
+                    },
                   ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () {
-                    if (navService.canPop()) {
-                      navService.goBack();
-                    }
-                  },
                 ),
               ),
             ),

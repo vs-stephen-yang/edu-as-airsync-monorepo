@@ -10,6 +10,7 @@ import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/utility/toast.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:display_flutter/widgets/split_screen_function.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -91,14 +92,16 @@ class _CollapsedView extends StatelessWidget {
             topRight: Radius.circular(50),
           ),
         ),
-        child: IconButton(
-          icon: const Image(
-            image: Svg('assets/images/ic_expend.svg'),
-            semanticLabel: 'Expand',
+        child: V3Focus(
+          child: IconButton(
+            icon: const Image(
+              image: Svg('assets/images/ic_expend.svg'),
+              semanticLabel: 'Expand',
+            ),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            onPressed: onExpand,
           ),
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
-          onPressed: onExpand,
         ),
       ),
     );
@@ -141,136 +144,154 @@ class _ExpandedViewState extends State<_ExpandedView> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               if (HybridConnectionList().getConnectionCount() > 1)
-                SizedBox(
-                  width: 27,
-                  child: IconButton(
-                    icon: Image(
-                      image: HybridConnectionList().enlargedScreenIndex.value ==
-                              widget.index
-                          ? const Svg('assets/images/ic_streaming_collapse.svg')
-                          : const Svg('assets/images/ic_streaming_expand.svg'),
-                    ),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    onPressed: () {
-                      widget.onUserInteraction();
-                      if (HybridConnectionList()
-                          .isMirrorRequest(widget.index)) {
-                        var connection = HybridConnectionList()
-                            .getConnection<MirrorRequest>(widget.index);
-                        if (connection.mirrorState == MirrorState.mirroring) {
-                          _updateSizeForSelected(widget.index);
-                          return;
+                V3Focus(
+                  child: SizedBox(
+                    width: 27,
+                    height: 27,
+                    child: IconButton(
+                      icon: Image(
+                        image:
+                            HybridConnectionList().enlargedScreenIndex.value ==
+                                    widget.index
+                                ? const Svg(
+                                    'assets/images/ic_streaming_collapse.svg')
+                                : const Svg(
+                                    'assets/images/ic_streaming_expand.svg'),
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () {
+                        widget.onUserInteraction();
+                        if (HybridConnectionList()
+                            .isMirrorRequest(widget.index)) {
+                          var connection = HybridConnectionList()
+                              .getConnection<MirrorRequest>(widget.index);
+                          if (connection.mirrorState == MirrorState.mirroring) {
+                            _updateSizeForSelected(widget.index);
+                            return;
+                          }
                         }
-                      }
-                      var webrtcConnector = HybridConnectionList()
-                          .getConnection<RTCConnector>(widget.index);
-                      if (webrtcConnector.isChannelConnectAvailable()) {
-                        webrtcConnector.trackSessionEvent('click_screen_size');
+                        var webrtcConnector = HybridConnectionList()
+                            .getConnection<RTCConnector>(widget.index);
+                        if (webrtcConnector.isChannelConnectAvailable()) {
+                          webrtcConnector
+                              .trackSessionEvent('click_screen_size');
 
-                        _updateSizeForSelected(widget.index);
-                      } else if (webrtcConnector.isChannelReconnect()) {
-                        webrtcConnector.clickButtonWhenReconnect = true;
-                        Toast.showSplitScreenReconnectToast(
-                            context,
-                            S.of(context).main_feature_reconnecting_toast,
-                            widget.index,
-                            isWebRTC: false,
-                            state: webrtcConnector.reconnectChannelState);
-                      } else {
-                        V3Toast().makeSplitScreenReconnectToast(
-                            context,
-                            S.of(context).main_feature_reconnect_fail_toast,
-                            widget.index,
-                            isWebRTC: false,
-                            state: webrtcConnector.reconnectChannelState);
-                      }
-                    },
+                          _updateSizeForSelected(widget.index);
+                        } else if (webrtcConnector.isChannelReconnect()) {
+                          webrtcConnector.clickButtonWhenReconnect = true;
+                          Toast.showSplitScreenReconnectToast(
+                              context,
+                              S.of(context).main_feature_reconnecting_toast,
+                              widget.index,
+                              isWebRTC: false,
+                              state: webrtcConnector.reconnectChannelState);
+                        } else {
+                          V3Toast().makeSplitScreenReconnectToast(
+                              context,
+                              S.of(context).main_feature_reconnect_fail_toast,
+                              widget.index,
+                              isWebRTC: false,
+                              state: webrtcConnector.reconnectChannelState);
+                        }
+                      },
+                    ),
                   ),
                 ),
               Consumer<MirrorStateProvider>(
                 builder: (_, mirrorStateProvider, __) {
                   var isMute = HybridConnectionList()
                       .getAudioDisableStateByIndex(widget.index);
-                  return SizedBox(
-                    width: 27,
-                    height: 27,
-                    child: IconButton(
-                      icon: Image(
-                        image: isMute
-                            ? const Svg('assets/images/ic_streaming_unmute.svg')
-                            : const Svg('assets/images/ic_streaming_mute.svg'),
-                      ),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      onPressed: () {
-                        widget.onUserInteraction();
+                  return V3Focus(
+                    child: SizedBox(
+                      width: 27,
+                      height: 27,
+                      child: IconButton(
+                        icon: Image(
+                          image: isMute
+                              ? const Svg(
+                                  'assets/images/ic_streaming_unmute.svg')
+                              : const Svg(
+                                  'assets/images/ic_streaming_mute.svg'),
+                        ),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        onPressed: () {
+                          widget.onUserInteraction();
 
-                        setState(() {
-                          HybridConnectionList().updateAudioEnableStateByIndex(
-                              widget.index, isMute, true);
-                        });
-                      },
+                          setState(() {
+                            HybridConnectionList()
+                                .updateAudioEnableStateByIndex(
+                                    widget.index, isMute, true);
+                          });
+                        },
+                      ),
                     ),
                   );
                 },
               ),
-              SizedBox(
-                width: 27,
-                height: 27,
-                child: IconButton(
-                  icon: const Image(
-                    image: Svg('assets/images/ic_streaming_stop.svg'),
-                  ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () {
-                    if (HybridConnectionList().isMirrorRequest(widget.index)) {
-                      var connection = HybridConnectionList()
-                          .getConnection<MirrorRequest>(widget.index);
-                      if (connection.mirrorState == MirrorState.mirroring) {
-                        HybridConnectionList().stopPresenterBy(widget.index);
-                        return;
-                      }
-                    }
-                    RTCConnector webrtcConnector = HybridConnectionList()
-                        .getConnection<RTCConnector>(widget.index);
-                    if (webrtcConnector.isChannelReconnect()) {
-                      webrtcConnector.clickButtonWhenReconnect = true;
-                      V3Toast().makeSplitScreenReconnectToast(
-                          context,
-                          S.of(context).main_feature_reconnecting_toast,
-                          widget.index,
-                          isWebRTC: false,
-                          state: webrtcConnector.reconnectChannelState);
-                    } else {
-                      webrtcConnector.trackSessionEvent('stop_cast');
-
-                      if (ChannelProvider.isModeratorMode) {
-                        HybridConnectionList().stopPresenterBy(widget.index);
-                      } else {
-                        SplitScreenFunction.isMenuOnList.value.fillRange(
-                            0,
-                            SplitScreenFunction.isMenuOnList.value.length,
-                            false);
-                        HybridConnectionList().removePresenterBy(widget.index);
-                      }
-                    }
-                  },
-                ),
-              ),
-              SizedBox(
+              V3Focus(
+                child: SizedBox(
                   width: 27,
                   height: 27,
                   child: IconButton(
                     icon: const Image(
-                      image: Svg('assets/images/ic_minimize.svg'),
-                      semanticLabel: 'Minimize',
+                      image: Svg('assets/images/ic_streaming_stop.svg'),
                     ),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(),
-                    onPressed: widget.onCollapse,
-                  )),
+                    onPressed: () {
+                      if (HybridConnectionList()
+                          .isMirrorRequest(widget.index)) {
+                        var connection = HybridConnectionList()
+                            .getConnection<MirrorRequest>(widget.index);
+                        if (connection.mirrorState == MirrorState.mirroring) {
+                          HybridConnectionList().stopPresenterBy(widget.index);
+                          return;
+                        }
+                      }
+                      RTCConnector webrtcConnector = HybridConnectionList()
+                          .getConnection<RTCConnector>(widget.index);
+                      if (webrtcConnector.isChannelReconnect()) {
+                        webrtcConnector.clickButtonWhenReconnect = true;
+                        V3Toast().makeSplitScreenReconnectToast(
+                            context,
+                            S.of(context).main_feature_reconnecting_toast,
+                            widget.index,
+                            isWebRTC: false,
+                            state: webrtcConnector.reconnectChannelState);
+                      } else {
+                        webrtcConnector.trackSessionEvent('stop_cast');
+
+                        if (ChannelProvider.isModeratorMode) {
+                          HybridConnectionList().stopPresenterBy(widget.index);
+                        } else {
+                          SplitScreenFunction.isMenuOnList.value.fillRange(
+                              0,
+                              SplitScreenFunction.isMenuOnList.value.length,
+                              false);
+                          HybridConnectionList()
+                              .removePresenterBy(widget.index);
+                        }
+                      }
+                    },
+                  ),
+                ),
+              ),
+              V3Focus(
+                child: SizedBox(
+                    width: 27,
+                    height: 27,
+                    child: IconButton(
+                      icon: const Image(
+                        image: Svg('assets/images/ic_minimize.svg'),
+                        semanticLabel: 'Minimize',
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: widget.onCollapse,
+                    )),
+              ),
             ],
           ),
         ),

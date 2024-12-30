@@ -4,6 +4,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/message_dialog_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_settings_broadcast.dart';
 import 'package:display_flutter/widgets/v3_settings_cast_to_boards.dart';
 import 'package:display_flutter/widgets/v3_settings_connectivity.dart';

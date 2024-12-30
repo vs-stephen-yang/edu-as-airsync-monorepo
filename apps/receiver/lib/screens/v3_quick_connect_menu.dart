@@ -1,5 +1,6 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
 import 'package:flutter/material.dart';
@@ -52,11 +53,13 @@ class V3QuickConnectMenu extends StatelessWidget {
                               context.tokens.color.vsdslColorPrimary,
                           dividerHeight: 0,
                           tabs: [
+                            // TODO: add focus
                             Tab(
                               text: S
                                   .of(context)
                                   .v3_quick_connect_menu_display_code,
                             ),
+                            // TODO: add focus
                             Tab(
                               text: S.of(context).v3_quick_connect_menu_qrcode,
                             ),
@@ -78,20 +81,22 @@ class V3QuickConnectMenu extends StatelessWidget {
                     Positioned(
                       right: 13,
                       bottom: 13,
-                      child: SizedBox(
-                        width: 33,
-                        height: 33,
-                        child: IconButton(
-                          icon: const Image(
-                            image: Svg('assets/images/ic_menu_minimal.svg'),
+                      child: V3Focus(
+                        child: SizedBox(
+                          width: 33,
+                          height: 33,
+                          child: IconButton(
+                            icon: const Image(
+                              image: Svg('assets/images/ic_menu_minimal.svg'),
+                            ),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            onPressed: () {
+                              if (navService.canPop()) {
+                                navService.goBack();
+                              }
+                            },
                           ),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          onPressed: () {
-                            if (navService.canPop()) {
-                              navService.goBack();
-                            }
-                          },
                         ),
                       ),
                     ),
