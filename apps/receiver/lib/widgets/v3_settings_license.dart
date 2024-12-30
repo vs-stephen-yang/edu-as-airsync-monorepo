@@ -49,7 +49,6 @@ class V3SettingsLicense extends StatelessWidget {
           right: 13,
           bottom: 13,
           child: V3FocusSingleChildScrollView(
-            thumbColor: Colors.transparent,
             children: [
               Text(
                 settingsProvider.license?.license ??

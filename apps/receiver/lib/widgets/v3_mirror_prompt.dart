@@ -5,6 +5,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:motion_toast/motion_toast.dart';
@@ -235,93 +236,98 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                                         ),
                                       ),
                                       const Spacer(),
-                                      SizedBox(
-                                        width: 80,
-                                        height: requestContainerHeight,
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            foregroundColor: context
-                                                .tokens
-                                                .color
-                                                .vsdslColorOnSurfaceInverse,
-                                            backgroundColor: context
-                                                .tokens
-                                                .color
-                                                .vsdslColorOpacityNeutralSm,
-                                            side: BorderSide(
-                                              color: context.tokens.color
+                                      V3Focus(
+                                        child: SizedBox(
+                                          width: 80,
+                                          height: requestContainerHeight,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              foregroundColor: context
+                                                  .tokens
+                                                  .color
                                                   .vsdslColorOnSurfaceInverse,
-                                              width: 1.5,
+                                              backgroundColor: context
+                                                  .tokens
+                                                  .color
+                                                  .vsdslColorOpacityNeutralSm,
+                                              side: BorderSide(
+                                                color: context.tokens.color
+                                                    .vsdslColorOnSurfaceInverse,
+                                                width: 1.5,
+                                              ),
+                                              textStyle: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              padding: EdgeInsets.zero,
                                             ),
-                                            textStyle: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                            padding: EdgeInsets.zero,
+                                            onPressed: () {
+                                              final String mirrorType =
+                                                  mirrorRequestIdles
+                                                      .toList()[index]
+                                                      .mirrorType
+                                                      .name
+                                                      .replaceAll('googlecast',
+                                                          'google_cast');
+                                              trackEvent('click_decline_device',
+                                                  EventCategory.session,
+                                                  mode: mirrorType);
+                                              var mirrorId = mirrorRequestIdles
+                                                  .toList()[index]
+                                                  .mirrorId;
+                                              mirrorStateProvider
+                                                  .clearRequestMirrorId(
+                                                      mirrorId);
+                                            },
+                                            child: AutoSizeText(S
+                                                .of(context)
+                                                .v3_authorize_prompt_decline),
                                           ),
-                                          onPressed: () {
-                                            final String mirrorType =
-                                                mirrorRequestIdles
-                                                    .toList()[index]
-                                                    .mirrorType
-                                                    .name
-                                                    .replaceAll('googlecast',
-                                                        'google_cast');
-                                            trackEvent('click_decline_device',
-                                                EventCategory.session,
-                                                mode: mirrorType);
-                                            var mirrorId = mirrorRequestIdles
-                                                .toList()[index]
-                                                .mirrorId;
-                                            mirrorStateProvider
-                                                .clearRequestMirrorId(mirrorId);
-                                          },
-                                          child: AutoSizeText(S
-                                              .of(context)
-                                              .v3_authorize_prompt_decline),
                                         ),
                                       ),
                                       SizedBox(
                                           width: context.tokens.spacing
                                               .vsdslSpacingSm.left),
-                                      SizedBox(
-                                        width: 80,
-                                        height: 27,
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            foregroundColor: context
-                                                .tokens.color.vsdslColorNeutral,
-                                            backgroundColor: context
-                                                .tokens
-                                                .color
-                                                .vsdslColorOnSurfaceInverse,
-                                            textStyle: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600,
+                                      V3Focus(
+                                        child: SizedBox(
+                                          width: 80,
+                                          height: 27,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              foregroundColor: context.tokens
+                                                  .color.vsdslColorNeutral,
+                                              backgroundColor: context
+                                                  .tokens
+                                                  .color
+                                                  .vsdslColorOnSurfaceInverse,
+                                              textStyle: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              padding: EdgeInsets.zero,
                                             ),
-                                            padding: EdgeInsets.zero,
+                                            onPressed: () async {
+                                              final String mirrorType =
+                                                  mirrorRequestIdles
+                                                      .toList()[index]
+                                                      .mirrorType
+                                                      .name
+                                                      .replaceAll('googlecast',
+                                                          'google_cast');
+                                              trackEvent('click_accept_device',
+                                                  EventCategory.session,
+                                                  mode: mirrorType);
+                                              String? mirrorId =
+                                                  mirrorRequestIdles
+                                                      .toList()[index]
+                                                      .mirrorId;
+                                              mirrorStateProvider
+                                                  .setAcceptMirrorId(mirrorId);
+                                            },
+                                            child: AutoSizeText(S
+                                                .of(context)
+                                                .v3_authorize_prompt_accept),
                                           ),
-                                          onPressed: () async {
-                                            final String mirrorType =
-                                                mirrorRequestIdles
-                                                    .toList()[index]
-                                                    .mirrorType
-                                                    .name
-                                                    .replaceAll('googlecast',
-                                                        'google_cast');
-                                            trackEvent('click_accept_device',
-                                                EventCategory.session,
-                                                mode: mirrorType);
-                                            String? mirrorId =
-                                                mirrorRequestIdles
-                                                    .toList()[index]
-                                                    .mirrorId;
-                                            mirrorStateProvider
-                                                .setAcceptMirrorId(mirrorId);
-                                          },
-                                          child: AutoSizeText(S
-                                              .of(context)
-                                              .v3_authorize_prompt_accept),
                                         ),
                                       ),
                                     ],

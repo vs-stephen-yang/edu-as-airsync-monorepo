@@ -10,6 +10,7 @@ import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/v3_download_app_menu.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:gap/gap.dart';
@@ -167,43 +168,49 @@ class V3Instruction extends StatelessWidget {
                           ),
                         ),
                         if (isInternet && !isCastToDevice)
-                          InkWell(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                      color: context
-                                          .tokens.color.vsdslColorOnSurface,
-                                      width: 1),
+                          V3Focus(
+                            child: InkWell(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 5, right: 5),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                          color: context
+                                              .tokens.color.vsdslColorOnSurface,
+                                          width: 1),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Image(
+                                        image: Svg(
+                                            'assets/images/ic_download_sender.svg'),
+                                        width: 23,
+                                        height: 23,
+                                      ),
+                                      const Gap(5),
+                                      Text(
+                                        S.current.v3_download_app_title,
+                                        style: context
+                                            .tokens.textStyle.airsyncFontTitle
+                                            .apply(
+                                                color: context.tokens.color
+                                                    .vsdslColorOnSurface,
+                                                fontWeightDelta:
+                                                    FontWeight.w700.value),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
-                              child: Row(
-                                children: [
-                                  const Image(
-                                    image: Svg(
-                                        'assets/images/ic_download_sender.svg'),
-                                    width: 23,
-                                    height: 23,
-                                  ),
-                                  const Gap(5),
-                                  Text(
-                                    S.current.v3_download_app_title,
-                                    style: context
-                                        .tokens.textStyle.airsyncFontTitle
-                                        .apply(
-                                            color: context.tokens.color
-                                                .vsdslColorOnSurface,
-                                            fontWeightDelta:
-                                                FontWeight.w700.value),
-                                  )
-                                ],
-                              ),
+                              onTap: () {
+                                trackEvent('click_dl_qrcode_icon',
+                                    EventCategory.quickMenu);
+                                _showDownloadAppMenuDialog(context);
+                              },
                             ),
-                            onTap: () {
-                              trackEvent('click_dl_qrcode_icon',
-                                  EventCategory.quickMenu);
-                              _showDownloadAppMenuDialog(context);
-                            },
                           ),
                       ],
                     );

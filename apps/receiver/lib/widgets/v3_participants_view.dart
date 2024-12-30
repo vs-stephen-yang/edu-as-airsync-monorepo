@@ -6,6 +6,7 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_custom_dialog.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_participant_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -44,55 +45,66 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
         ),
         Positioned(
           bottom: widget.isLandscape ? 20 : 40,
-          child: Container(
-            width: 270,
-            height: 53,
-            padding: const EdgeInsets.all(16),
-            decoration: const ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(9999)),
-                side: BorderSide(
-                  width: 1,
-                  color: Color(0xFFE9EAF0),
-                ),
-              ),
-            ),
-            child: Row(
-              children: [
-                AutoSizeText(
-                  S.of(context).v3_moderator_mode,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
+          child: V3Focus(
+            child: Container(
+              width: 270,
+              height: 53,
+              padding: const EdgeInsets.all(16),
+              decoration: const ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(9999)),
+                  side: BorderSide(
+                    width: 1,
+                    color: Color(0xFFE9EAF0),
                   ),
                 ),
-                const Spacer(),
-                Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
-                  return SizedBox(
-                    width: 37,
-                    height: 21,
-                    child: IconButton(
-                      icon: Image(
-                        image: Svg(ChannelProvider.isModeratorMode
-                            ? 'assets/images/ic_switch_on.svg'
-                            : 'assets/images/ic_switch_off.svg'),
-                      ),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      onPressed: () async {
-                        if (ChannelProvider.isModeratorMode) {
-                          _callLogOutDialog(context);
-                        } else if (Provider.of<MirrorStateProvider>(context,
-                                listen: false)
-                            .isAnyMirrorEnabled) {
-                          final result = await _callCloseMirrorDialog(context);
-                          if (result && context.mounted) {
-                            MirrorStateProvider mirrorStateProvider =
-                                Provider.of<MirrorStateProvider>(context,
-                                    listen: false);
-                            await mirrorStateProvider.stopAllMirror();
+              ),
+              child: Row(
+                children: [
+                  AutoSizeText(
+                    S.of(context).v3_moderator_mode,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const Spacer(),
+                  Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
+                    return SizedBox(
+                      width: 37,
+                      height: 21,
+                      child: IconButton(
+                        icon: Image(
+                          image: Svg(ChannelProvider.isModeratorMode
+                              ? 'assets/images/ic_switch_on.svg'
+                              : 'assets/images/ic_switch_off.svg'),
+                        ),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        onPressed: () async {
+                          if (ChannelProvider.isModeratorMode) {
+                            _callLogOutDialog(context);
+                          } else if (Provider.of<MirrorStateProvider>(context,
+                                  listen: false)
+                              .isAnyMirrorEnabled) {
+                            final result =
+                                await _callCloseMirrorDialog(context);
+                            if (result && context.mounted) {
+                              MirrorStateProvider mirrorStateProvider =
+                                  Provider.of<MirrorStateProvider>(context,
+                                      listen: false);
+                              await mirrorStateProvider.stopAllMirror();
 
+                              trackEvent(
+                                'click_moderator',
+                                EventCategory.menu,
+                                target: 'on',
+                              );
+
+                              channelProvider.setModeratorMode(true);
+                            }
+                          } else {
                             trackEvent(
                               'click_moderator',
                               EventCategory.menu,
@@ -101,20 +113,12 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
 
                             channelProvider.setModeratorMode(true);
                           }
-                        } else {
-                          trackEvent(
-                            'click_moderator',
-                            EventCategory.menu,
-                            target: 'on',
-                          );
-
-                          channelProvider.setModeratorMode(true);
-                        }
-                      },
-                    ),
-                  );
-                }),
-              ],
+                        },
+                      ),
+                    );
+                  }),
+                ],
+              ),
             ),
           ),
         ),
