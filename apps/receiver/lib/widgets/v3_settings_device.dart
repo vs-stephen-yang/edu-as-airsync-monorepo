@@ -11,6 +11,8 @@ import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/widgets/v3_custom_checkbox.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_menu_navigation_icon_button.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,19 +40,25 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 26,
-              child: _buildDeviceName(context, settingsProvider),
+            V3Focus(
+              child: SizedBox(
+                height: 26,
+                child: _buildDeviceName(context, settingsProvider),
+              ),
             ),
             _buildDivider(context),
-            SizedBox(
-              height: 26,
-              child: _buildLanguage(context, settingsProvider),
+            V3Focus(
+              child: SizedBox(
+                height: 26,
+                child: _buildLanguage(context, settingsProvider),
+              ),
             ),
             _buildDivider(context),
-            SizedBox(
-              height: 26,
-              child: _buildShowDisplayCode(context, settingsProvider),
+            V3Focus(
+              child: SizedBox(
+                height: 26,
+                child: _buildShowDisplayCode(context, settingsProvider),
+              ),
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -62,14 +70,18 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
               ),
             ),
             _buildDivider(context),
-            SizedBox(
-              height: 26,
-              child: _buildInviteGroup(context, settingsProvider),
+            V3Focus(
+              child: SizedBox(
+                height: 26,
+                child: _buildInviteGroup(context, settingsProvider),
+              ),
             ),
             _buildDivider(context),
-            SizedBox(
-              height: 26,
-              child: _buildAutoFillOTP(context, settingsProvider),
+            V3Focus(
+              child: SizedBox(
+                height: 26,
+                child: _buildAutoFillOTP(context, settingsProvider),
+              ),
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -83,15 +95,19 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             ),
             if (AppInstanceCreate().isInstalledInVBS200) ...[
               _buildDivider(context),
-              SizedBox(
-                height: 26,
-                child: _buildLaunchOnStartup(context, settingsProvider),
+              V3Focus(
+                child: SizedBox(
+                  height: 26,
+                  child: _buildLaunchOnStartup(context, settingsProvider),
+                ),
               ),
             ],
             _buildDivider(context),
-            SizedBox(
-              height: 26,
-              child: _buildAuthorizeMode(context, settingsProvider),
+            V3Focus(
+              child: SizedBox(
+                height: 26,
+                child: _buildAuthorizeMode(context, settingsProvider),
+              ),
             ),
           ],
         ),
@@ -411,21 +427,13 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             ),
           ),
         ),
-        IconButton(
-          icon: SvgPicture.asset(
-            settingsProvider.isDeviceSettingLock
-                ? 'assets/images/ic_arrow_right_lock.svg'
-                : 'assets/images/ic_arrow_right.svg',
-            width: 21,
-            height: 21,
-          ),
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
-          onPressed: settingsProvider.isDeviceSettingLock
-              ? null
-              : () {
-                  settingsProvider.setPage(SettingPageState.deviceLanguage);
-                },
+        V3MenuNavigationIconButton(
+          enabledIconPath: 'assets/images/ic_arrow_right.svg',
+          disabledIconPath: 'assets/images/ic_arrow_right_lock.svg',
+          disabled: settingsProvider.isDeviceSettingLock,
+          onPressed: () {
+            settingsProvider.setPage(SettingPageState.deviceLanguage);
+          },
         ),
       ],
     );
@@ -458,21 +466,13 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             ),
           ),
         ),
-        IconButton(
-          icon: SvgPicture.asset(
-            settingsProvider.isDeviceSettingLock
-                ? 'assets/images/ic_arrow_right_lock.svg'
-                : 'assets/images/ic_arrow_right.svg',
-            width: 21,
-            height: 21,
-          ),
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
-          onPressed: settingsProvider.isDeviceSettingLock
-              ? null
-              : () {
-                  settingsProvider.setPage(SettingPageState.deviceName);
-                },
+        V3MenuNavigationIconButton(
+          enabledIconPath: 'assets/images/ic_arrow_right.svg',
+          disabledIconPath: 'assets/images/ic_arrow_right_lock.svg',
+          disabled: settingsProvider.isDeviceSettingLock,
+          onPressed: () {
+            settingsProvider.setPage(SettingPageState.deviceName);
+          },
         ),
       ],
     );

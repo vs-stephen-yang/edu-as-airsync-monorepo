@@ -10,6 +10,8 @@ import 'package:display_flutter/providers/group_list_provider.dart';
 import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:display_flutter/widgets/v3_settings_radio_group.dart';
 import 'package:flutter/material.dart';
@@ -374,46 +376,51 @@ class V3SettingsCastToBoardsState
                   right: 8,
                   left: 8,
                   bottom: context.tokens.spacing.vsdslSpacingSm.bottom),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: Checkbox(
-                      value: broadcastSelectedList
-                          .any((element) => element.id() == client.id()),
-                      activeColor: context.tokens.color.vsdslColorPrimary,
-                      side: BorderSide(
-                          color: context.tokens.color.vsdslColorOnPrimary,
-                          width: 2),
-                      onChanged: (bool? value) {
-                        if (value != null) {
-                          if (value) {
-                            groupNotifier.addToSelectedList(client);
-                          } else {
-                            groupNotifier.removeFromSelectedList(client);
+              child: V3Focus(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Checkbox(
+                        value: broadcastSelectedList
+                            .any((element) => element.id() == client.id()),
+                        activeColor: context.tokens.color.vsdslColorPrimary,
+                        side: BorderSide(
+                            color: context.tokens.color.vsdslColorOnPrimary,
+                            width: 2),
+                        onChanged: (bool? value) {
+                          if (value != null) {
+                            if (value) {
+                              groupNotifier.addToSelectedList(client);
+                            } else {
+                              groupNotifier.removeFromSelectedList(client);
+                            }
+                            // 斷線裝置不用按下方按鈕生效，連線還是需要按。
+                            if (value == false &&
+                                channelProvider.groupActivated()) {
+                              startDisplayGroup(groupNotifier, channelProvider);
+                            }
                           }
-                          // 斷線裝置不用按下方按鈕生效，連線還是需要按。
-                          if (value == false &&
-                              channelProvider.groupActivated()) {
-                            startDisplayGroup(groupNotifier, channelProvider);
-                          }
-                        }
-                      },
+                        },
+                      ),
                     ),
-                  ),
-                  Padding(
-                      padding: EdgeInsets.only(
-                          right: context.tokens.spacing.vsdslSpacingSm.right)),
-                  Text(
-                    client.deviceName(),
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: context.tokens.color.vsdslColorOnSurfaceInverse),
-                  ),
-                  const Spacer(),
-                  displayCodeWidget(client, context)
-                ],
+                    Padding(
+                        padding: EdgeInsets.only(
+                            right:
+                                context.tokens.spacing.vsdslSpacingSm.right)),
+                    Text(
+                      client.deviceName(),
+                      style: TextStyle(
+                          fontSize: 12,
+                          color:
+                              context.tokens.color.vsdslColorOnSurfaceInverse),
+                    ),
+                    const Spacer(),
+                    displayCodeWidget(client, context)
+                  ],
+                ),
               ),
             ),
           );
@@ -479,82 +486,66 @@ class V3SettingsCastToBoardsState
     );
   }
 
-  SizedBox _buildBroadcastGroupToggle(BuildContext context,
+  Widget _buildBroadcastGroupToggle(BuildContext context,
       GroupProvider groupNotifier, ChannelProvider channelProvider) {
-    return SizedBox(
-      height: 26,
-      child: Row(
-        children: [
-          Text(
-            S.of(context).v3_settings_broadcast_to_display_group,
-            style: TextStyle(
-              color: context.tokens.color.vsdslColorOnSurfaceInverse,
-              fontSize: 12,
-            ),
-          ),
-          const Spacer(),
-          SizedBox(
-            height: 21,
-            child: IconButton(
-              icon: Image(
-                image: Svg(groupNotifier.broadcastToGroup
-                    ? 'assets/images/ic_switch_on.svg'
-                    : 'assets/images/ic_switch_off.svg'),
+    return V3Focus(
+      child: SizedBox(
+        height: 26,
+        child: Row(
+          children: [
+            Text(
+              S.of(context).v3_settings_broadcast_to_display_group,
+              style: TextStyle(
+                color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                fontSize: 12,
               ),
-              padding: EdgeInsets.zero,
-              // constraints: const BoxConstraints(),
-              onPressed: () async {
-                bool state = !groupNotifier.broadcastToGroup;
-
-                trackEvent(
-                  'click_cast_to_board',
-                  EventCategory.setting,
-                  target: state ? 'on' : 'off',
-                );
-
-                if (state) {
-                  await channelProvider.startRemoteScreen(fromGroup: true);
-                } else {
-                  groupNotifier.clearClients();
-                  GroupListModel discoveryModel =
-                      ref.watch(discoveryModelProvider);
-                  await discoveryModel.stop();
-                  channelProvider.stopDisplayGroup();
-                }
-                groupNotifier.setBroadcastToGroup(channelProvider.isGroupMode);
-              },
             ),
-          )
-        ],
+            const Spacer(),
+            SizedBox(
+              height: 21,
+              child: IconButton(
+                icon: Image(
+                  image: Svg(groupNotifier.broadcastToGroup
+                      ? 'assets/images/ic_switch_on.svg'
+                      : 'assets/images/ic_switch_off.svg'),
+                ),
+                padding: EdgeInsets.zero,
+                // constraints: const BoxConstraints(),
+                onPressed: () async {
+                  bool state = !groupNotifier.broadcastToGroup;
+
+                  trackEvent(
+                    'click_cast_to_board',
+                    EventCategory.setting,
+                    target: state ? 'on' : 'off',
+                  );
+
+                  if (state) {
+                    await channelProvider.startRemoteScreen(fromGroup: true);
+                  } else {
+                    groupNotifier.clearClients();
+                    GroupListModel discoveryModel =
+                        ref.watch(discoveryModelProvider);
+                    await discoveryModel.stop();
+                    channelProvider.stopDisplayGroup();
+                  }
+                  groupNotifier
+                      .setBroadcastToGroup(channelProvider.isGroupMode);
+                },
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
 
-  Row _buildTittle(SettingsProvider settingsProvider, BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          icon: const Image(
-            image: Svg('assets/images/ic_arrow_left.svg'),
-            width: 21,
-            height: 21,
-          ),
-          onPressed: () {
-            settingsProvider.setPage(SettingPageState.broadcast);
-          },
-        ),
-        Padding(
-            padding: EdgeInsets.only(
-                right: context.tokens.spacing.vsdslSpacingXs.right)),
-        Text(
-          S.of(context).v3_settings_broadcast_cast_boards,
-          style: TextStyle(
-            color: context.tokens.color.vsdslColorOnSurfaceInverse,
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-      ],
+  Widget _buildTittle(SettingsProvider settingsProvider, BuildContext context) {
+    return V3MenuBackIconButton(
+      onPressed: () {
+        settingsProvider.setPage(SettingPageState.broadcast);
+      },
+      title: S.of(context).v3_settings_broadcast_cast_boards,
     );
   }
 
@@ -566,48 +557,50 @@ class V3SettingsCastToBoardsState
   }) {
     return SizedBox(
       height: 26,
-      child: ElevatedButton(
-        onPressed: onClick,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: context.tokens.color.vsdslColorPrimary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-                context.tokens.spacing.vsdslSpacing2xl.top),
+      child: V3Focus(
+        child: ElevatedButton(
+          onPressed: onClick,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: context.tokens.color.vsdslColorPrimary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(
+                  context.tokens.spacing.vsdslSpacing2xl.top),
+            ),
+            padding: isBroadcast
+                ? EdgeInsets.symmetric(
+                    horizontal: context.tokens.spacing.vsdslSpacingLg.left,
+                  )
+                : null,
           ),
-          padding: isBroadcast
-              ? EdgeInsets.symmetric(
-                  horizontal: context.tokens.spacing.vsdslSpacingLg.left,
-                )
-              : null,
-        ),
-        child: isBroadcast
-            ? Row(
-                children: [
-                  const Image(
-                    width: 16,
-                    height: 16,
-                    image: Svg('assets/images/ic_broadcast.svg'),
-                  ),
-                  SizedBox(width: context.tokens.spacing.vsdslSpacingXs.left),
-                  Text(
-                    text,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
+          child: isBroadcast
+              ? Row(
+                  children: [
+                    const Image(
+                      width: 16,
+                      height: 16,
+                      image: Svg('assets/images/ic_broadcast.svg'),
                     ),
+                    SizedBox(width: context.tokens.spacing.vsdslSpacingXs.left),
+                    Text(
+                      text,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                      ),
+                    ),
+                  ],
+                )
+              : Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
                   ),
-                ],
-              )
-            : Text(
-                text,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                  maxLines: 1,
                 ),
-                maxLines: 1,
-              ),
+        ),
       ),
     );
   }

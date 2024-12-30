@@ -7,7 +7,7 @@ class V3Focus extends StatelessWidget {
   const V3Focus({
     super.key,
     required this.child,
-    this.borderRadius = const BorderRadius.all(Radius.circular(10)),
+    this.borderRadius = const BorderRadius.all(Radius.circular(8)),
   });
 
   final Widget child;

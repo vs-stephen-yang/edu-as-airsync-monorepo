@@ -232,11 +232,11 @@ class V3SettingMenu extends StatelessWidget {
     required VoidCallback onClick,
     bool locked = false,
   }) {
-    return InkWell(
-      onTap: () {
-        onClick();
-      },
-      child: V3Focus(
+    return V3Focus(
+      child: InkWell(
+        onTap: () {
+          onClick();
+        },
         child: Container(
           width: 140,
           height: 26,

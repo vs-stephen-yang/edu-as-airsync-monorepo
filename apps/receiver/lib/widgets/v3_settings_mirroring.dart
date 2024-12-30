@@ -6,6 +6,7 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/widgets/v3_custom_checkbox.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -50,39 +51,46 @@ class V3SettingsMirroring extends StatelessWidget {
                       );
                     }),
                 if (mirrorStateProvider.airplayEnabled)
-                  SizedBox(
-                    height: 26,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: V3CustomCheckbox(
-                            isDisable: disable,
-                            value: mirrorStateProvider.airPlayCodeEnable,
-                            onChanged: (bool? value) {
-                              if (value != null) {
-                                trackEvent(
-                                  'click_airplay_pincode',
-                                  EventCategory.setting,
-                                  target: value ? 'on' : 'off',
-                                );
+                  V3Focus(
+                    child: Focus(
+                      child: SizedBox(
+                        height: 26,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: V3CustomCheckbox(
+                                isDisable: disable,
+                                value: mirrorStateProvider.airPlayCodeEnable,
+                                onChanged: (bool? value) {
+                                  if (value != null) {
+                                    trackEvent(
+                                      'click_airplay_pincode',
+                                      EventCategory.setting,
+                                      target: value ? 'on' : 'off',
+                                    );
 
-                                mirrorStateProvider.setAirPlayCodeEnable(value);
-                              }
-                            },
-                          ),
+                                    mirrorStateProvider
+                                        .setAirPlayCodeEnable(value);
+                                  }
+                                },
+                              ),
+                            ),
+                            Gap(context.tokens.spacing.vsdslSpacingSm.right),
+                            AutoSizeText(
+                              S
+                                  .of(context)
+                                  .v3_settings_mirroring_require_passcode,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: context.tokens.color.vsdslColorOnPrimary,
+                              ),
+                              maxLines: 1,
+                            ),
+                          ],
                         ),
-                        Gap(context.tokens.spacing.vsdslSpacingSm.right),
-                        AutoSizeText(
-                          S.of(context).v3_settings_mirroring_require_passcode,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: context.tokens.color.vsdslColorOnPrimary,
-                          ),
-                          maxLines: 1,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
@@ -135,37 +143,39 @@ class V3SettingsMirroring extends StatelessWidget {
                       bottom: context.tokens.spacing.vsdslSpacingSm.bottom),
                   color: context.tokens.color.vsdslColorOutlineVariant,
                 ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: V3CustomCheckbox(
-                          isDisable: disable,
-                          value: !mirrorStateProvider.isMirrorConfirmation,
-                          onChanged: (bool? value) {
-                            mirrorStateProvider.isMirrorConfirmation =
-                                !mirrorStateProvider.isMirrorConfirmation;
+                V3Focus(
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: V3CustomCheckbox(
+                            isDisable: disable,
+                            value: !mirrorStateProvider.isMirrorConfirmation,
+                            onChanged: (bool? value) {
+                              mirrorStateProvider.isMirrorConfirmation =
+                                  !mirrorStateProvider.isMirrorConfirmation;
 
-                            trackEvent(
-                              'click_auto_accept',
-                              EventCategory.setting,
-                              target: mirrorStateProvider.isMirrorConfirmation
-                                  ? 'on'
-                                  : 'off',
-                            );
-                          }),
-                    ),
-                    Gap(context.tokens.spacing.vsdslSpacingSm.right),
-                    AutoSizeText(
-                      S.of(context).v3_settings_mirroring_auto_accept,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: context.tokens.color.vsdslColorOnPrimary,
+                              trackEvent(
+                                'click_auto_accept',
+                                EventCategory.setting,
+                                target: mirrorStateProvider.isMirrorConfirmation
+                                    ? 'on'
+                                    : 'off',
+                              );
+                            }),
                       ),
-                      maxLines: 1,
-                    ),
-                  ],
+                      Gap(context.tokens.spacing.vsdslSpacingSm.right),
+                      AutoSizeText(
+                        S.of(context).v3_settings_mirroring_auto_accept,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: context.tokens.color.vsdslColorOnPrimary,
+                        ),
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(
@@ -204,32 +214,34 @@ class MirroringItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 26,
-      child: Row(
-        children: [
-          Text(
-            name,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-            ),
-          ),
-          const Spacer(),
-          InkWell(
-            onTap: isDisable ? null : callback,
-            child: Opacity(
-              opacity: isDisable ? 0.32 : 1,
-              child: SvgPicture.asset(
-                mirrorEnabled
-                    ? 'assets/images/ic_switch_on.svg'
-                    : 'assets/images/ic_switch_off.svg',
-                width: 36,
-                height: 21,
+    return V3Focus(
+      child: SizedBox(
+        height: 26,
+        child: Row(
+          children: [
+            Text(
+              name,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
               ),
             ),
-          ),
-        ],
+            const Spacer(),
+            InkWell(
+              onTap: isDisable ? null : callback,
+              child: Opacity(
+                opacity: isDisable ? 0.32 : 1,
+                child: SvgPicture.asset(
+                  mirrorEnabled
+                      ? 'assets/images/ic_switch_on.svg'
+                      : 'assets/images/ic_switch_off.svg',
+                  width: 36,
+                  height: 21,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
