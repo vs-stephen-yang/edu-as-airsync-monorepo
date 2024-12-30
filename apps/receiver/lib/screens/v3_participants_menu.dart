@@ -1,4 +1,5 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_participant_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -27,6 +28,8 @@ class V3ParticipantsMenu extends StatelessWidget {
               height: 442,
               child: Stack(
                 children: [
+                  // This is for accessibility
+                  const Focus(autofocus: true, child: SizedBox()),
                   const Positioned(
                     left: 13,
                     top: 27,
@@ -37,20 +40,22 @@ class V3ParticipantsMenu extends StatelessWidget {
                   Positioned(
                     right: 5,
                     bottom: 5,
-                    child: SizedBox(
-                      width: 33,
-                      height: 33,
-                      child: IconButton(
-                        icon: const Image(
-                          image: Svg('assets/images/ic_menu_close_gray.svg'),
+                    child: V3Focus(
+                      child: SizedBox(
+                        width: 33,
+                        height: 33,
+                        child: IconButton(
+                          icon: const Image(
+                            image: Svg('assets/images/ic_menu_close_gray.svg'),
+                          ),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          onPressed: () {
+                            if (navService.canPop()) {
+                              navService.goBack();
+                            }
+                          },
                         ),
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                        onPressed: () {
-                          if (navService.canPop()) {
-                            navService.goBack();
-                          }
-                        },
                       ),
                     ),
                   ),

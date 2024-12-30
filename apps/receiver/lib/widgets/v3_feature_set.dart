@@ -5,6 +5,7 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/v3_cast_devices_menu.dart';
 import 'package:display_flutter/screens/v3_participants_menu.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -44,13 +45,14 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
           _showCastDeviceMenuDialog(context);
         }
       });
+      final isFullFeature = featureCount == 2;
       return showModerator || showCastDevice
           ? Positioned(
               left: 0,
               bottom: 80,
               child: SizedBox(
                 width: 41,
-                height: featureCount == 2 ? 123 : 68,
+                height: isFullFeature ? 123 : 68,
                 child: Stack(
                   children: [
                     Positioned(
@@ -59,7 +61,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                       bottom: 0,
                       child: Container(
                         width: 32,
-                        height: featureCount == 2 ? 123 : 68,
+                        height: isFullFeature ? 123 : 68,
                         decoration: BoxDecoration(
                           color:
                               context.tokens.color.vsdslColorOnSurfaceInverse,
@@ -78,7 +80,7 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                         bottom: 0,
                         child: Container(
                           width: 32,
-                          height: featureCount == 2 ? 123 : 68,
+                          height: isFullFeature ? 123 : 68,
                           decoration: BoxDecoration(
                             color: context.tokens.color.vsdslColorSurface300,
                             borderRadius: const BorderRadius.only(
@@ -88,15 +90,15 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           ),
                         ),
                       ),
-                    if (featureCount == 2 &&
+                    if (isFullFeature &&
                         (_isModeratorOnScreen || _isCastDeviceOnScreen))
                       Positioned(
-                        top: _isModeratorOnScreen ? 0 : 68,
+                        top: _isModeratorOnScreen ? 0 : 61.5,
                         left: 0,
-                        bottom: _isModeratorOnScreen ? 68 : 0,
+                        bottom: _isModeratorOnScreen ? 61.5 : 0,
                         child: Container(
                           width: 32,
-                          height: 68,
+                          height: 61.5,
                           decoration: BoxDecoration(
                             color: context.tokens.color.vsdslColorSurface300,
                             borderRadius: BorderRadius.only(
@@ -110,58 +112,75 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           ),
                         ),
                       ),
-                    if (showModerator) ...[
+                    if (showModerator)
                       Positioned(
-                        top: 20,
-                        left: 3,
-                        child: SizedBox(
-                          width: 27,
-                          height: 27,
-                          child: IconButton(
-                            icon: const Image(
-                              image: Svg(
-                                  'assets/images/ic_streaming_moderator_off.svg'),
-                            ),
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            onPressed: () {
-                              trackEvent(
-                                'click_connection_info',
-                                EventCategory.session,
-                                mode: 'webrtc',
-                              );
-                              _showParticipantsMenuDialog(context);
-                            },
-                          ),
-                        ),
-                      ),
-                      Positioned(
+                        left: 0,
                         right: 0,
-                        top: 9,
-                        child: Container(
-                          width: 16,
-                          height: 16,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF5D80ED),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                        top: 0,
+                        bottom: isFullFeature ? 61.5 : 0,
+                        child: V3Focus(
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
                           ),
-                          padding: EdgeInsets.zero,
-                          child: AutoSizeText(
-                            HybridConnectionList()
-                                .getConnectionCount()
-                                .toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: context
-                                  .tokens.color.vsdslColorOnSurfaceInverse,
-                            ),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                top: 20,
+                                left: 3,
+                                right: 10,
+                                child: SizedBox(
+                                  width: 27,
+                                  height: 27,
+                                  child: IconButton(
+                                    icon: const Image(
+                                      image: Svg(
+                                          'assets/images/ic_streaming_moderator_off.svg'),
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      trackEvent(
+                                        'click_connection_info',
+                                        EventCategory.session,
+                                        mode: 'webrtc',
+                                      );
+                                      _showParticipantsMenuDialog(context);
+                                    },
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: Container(
+                                  width: 16,
+                                  height: 16,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFF5D80ED),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                  padding: EdgeInsets.zero,
+                                  child: AutoSizeText(
+                                    HybridConnectionList()
+                                        .getConnectionCount()
+                                        .toString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                      color: context.tokens.color
+                                          .vsdslColorOnSurfaceInverse,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
-                    if (featureCount == 2)
+                    if (isFullFeature)
                       Positioned(
                         top: 61,
                         left: 5,
@@ -171,56 +190,74 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
                           color: context.tokens.color.vsdslColorOutline,
                         ),
                       ),
-                    if (showCastDevice) ...[
+                    if (showCastDevice)
                       Positioned(
-                        left: 3,
-                        bottom: 20,
-                        child: SizedBox(
-                          width: 27,
-                          height: 27,
-                          child: IconButton(
-                            icon: const Image(
-                              image: Svg(
-                                  'assets/images/ic_streaming_device_list_off.svg'),
-                            ),
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            onPressed: () {
-                              _showCastDeviceMenuDialog(context);
-                            },
+                        left: 0,
+                        top: isFullFeature ? 61.5 : 0,
+                        right: 0,
+                        bottom: 0,
+                        child: V3Focus(
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
+                          ),
+                          child: Stack(
+                            children: [
+                              if (channelProvider
+                                  .remoteScreenConnectors.isNotEmpty)
+                                Positioned(
+                                  right: 0,
+                                  top: 0,
+                                  child: Container(
+                                    width: 16,
+                                    height: 16,
+                                    decoration: BoxDecoration(
+                                      color: (channelProvider
+                                              .remoteScreenConnectionFull)
+                                          ? context.tokens.color.vsdslColorError
+                                          : const Color(0xFF5D80ED),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10)),
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    child: AutoSizeText(
+                                      channelProvider
+                                          .remoteScreenConnectors.length
+                                          .toString(),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: context.tokens.color
+                                            .vsdslColorOnSurfaceInverse,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              Positioned(
+                                left: 3,
+                                right: 10,
+                                bottom: 20,
+                                child: SizedBox(
+                                  width: 27,
+                                  height: 27,
+                                  child: IconButton(
+                                    icon: const Image(
+                                      image: Svg(
+                                          'assets/images/ic_streaming_device_list_off.svg'),
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      _showCastDeviceMenuDialog(context);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      if (channelProvider.remoteScreenConnectors.isNotEmpty)
-                        Positioned(
-                          right: 0,
-                          top: featureCount == 2 ? 64 : 9,
-                          child: Container(
-                            width: 16,
-                            height: 16,
-                            decoration: BoxDecoration(
-                              color:
-                                  (channelProvider.remoteScreenConnectionFull)
-                                      ? context.tokens.color.vsdslColorError
-                                      : const Color(0xFF5D80ED),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
-                            ),
-                            padding: EdgeInsets.zero,
-                            child: AutoSizeText(
-                              channelProvider.remoteScreenConnectors.length
-                                  .toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
-                                color: context
-                                    .tokens.color.vsdslColorOnSurfaceInverse,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
                   ],
                 ),
               ),

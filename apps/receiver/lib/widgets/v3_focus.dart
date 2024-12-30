@@ -2,7 +2,13 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:flutter/material.dart';
 
 class V3Focus extends StatelessWidget {
-  const V3Focus({super.key, required this.child});
+  final BorderRadius borderRadius;
+
+  const V3Focus({
+    super.key,
+    required this.child,
+    this.borderRadius = const BorderRadius.all(Radius.circular(10)),
+  });
 
   final Widget child;
 
@@ -17,12 +23,7 @@ class V3Focus extends StatelessWidget {
           return Container(
             decoration: BoxDecoration(
               color: Colors.transparent,
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(10),
-                topLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-                bottomLeft: Radius.circular(10),
-              ),
+              borderRadius: borderRadius,
               border: Border.all(
                 width: 2,
                 color: hasFocus

@@ -3,6 +3,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -82,72 +83,76 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
               SizedBox(
                 width: (remoteScreenConnector.isTouchEnabled) ? 83 : 104,
                 height: 27,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    if (remoteScreenConnector.isTouchEnabled) {
-                      remoteScreenConnector.isTouchEnabled = false;
-                    } else {
-                      remoteScreenConnector.isTouchEnabled = true;
-                    }
-                    channelProvider.remoteScreenServe
-                        .enableRemoteControlBySessionId(
-                            remoteScreenConnector.sessionId!,
-                            remoteScreenConnector.isTouchEnabled);
-                    setState(() {});
-                  },
-                  icon: SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: Image(
-                      image: const Svg('assets/images/ic_finger_touch.svg'),
-                      color: remoteScreenConnector.isTouchEnabled
-                          ? context.tokens.color.vsdslColorError
-                          : null,
+                child: V3Focus(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      if (remoteScreenConnector.isTouchEnabled) {
+                        remoteScreenConnector.isTouchEnabled = false;
+                      } else {
+                        remoteScreenConnector.isTouchEnabled = true;
+                      }
+                      channelProvider.remoteScreenServe
+                          .enableRemoteControlBySessionId(
+                              remoteScreenConnector.sessionId!,
+                              remoteScreenConnector.isTouchEnabled);
+                      setState(() {});
+                    },
+                    icon: SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: Image(
+                        image: const Svg('assets/images/ic_finger_touch.svg'),
+                        color: remoteScreenConnector.isTouchEnabled
+                            ? context.tokens.color.vsdslColorError
+                            : null,
+                      ),
                     ),
-                  ),
-                  label: Text(
-                    remoteScreenConnector.isTouchEnabled
-                        ? S.of(context).v3_cast_to_device_touch_back_disable
-                        : S.of(context).v3_cast_to_device_touch_back,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: remoteScreenConnector.isTouchEnabled
-                          ? context.tokens.color.vsdslColorError
-                          : context.tokens.color.vsdslColorOnSurface,
+                    label: Text(
+                      remoteScreenConnector.isTouchEnabled
+                          ? S.of(context).v3_cast_to_device_touch_back_disable
+                          : S.of(context).v3_cast_to_device_touch_back,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: remoteScreenConnector.isTouchEnabled
+                            ? context.tokens.color.vsdslColorError
+                            : context.tokens.color.vsdslColorOnSurface,
+                      ),
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 5,
-                    backgroundColor:
-                        context.tokens.color.vsdslColorOnSurfaceInverse,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: context.tokens.radii.vsdslRadiusFull,
+                    style: ElevatedButton.styleFrom(
+                      elevation: 5,
+                      backgroundColor:
+                          context.tokens.color.vsdslColorOnSurfaceInverse,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: context.tokens.radii.vsdslRadiusFull,
+                      ),
+                      padding: EdgeInsets.zero,
+                      shadowColor: context.tokens.color.vsdslColorNeutral,
                     ),
-                    padding: EdgeInsets.zero,
-                    shadowColor: context.tokens.color.vsdslColorNeutral,
                   ),
                 ),
               ),
               SizedBox(width: context.tokens.spacing.vsdslSpacingSm.top),
-              SizedBox(
-                width: 27,
-                height: 27,
-                child: IconButton(
-                  icon: const Image(
-                    image: Svg('assets/images/ic_participant_close.svg'),
+              V3Focus(
+                child: SizedBox(
+                  width: 27,
+                  height: 27,
+                  child: IconButton(
+                    icon: const Image(
+                      image: Svg('assets/images/ic_participant_close.svg'),
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: () {
+                      if (remoteScreenConnector.remotePresentationState ==
+                          RemotePresentationState.streaming) {
+                        channelProvider.removeSender(
+                          fromSender: true,
+                          remoteScreenConnector: remoteScreenConnector,
+                        );
+                      }
+                    },
                   ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () {
-                    if (remoteScreenConnector.remotePresentationState ==
-                        RemotePresentationState.streaming) {
-                      channelProvider.removeSender(
-                        fromSender: true,
-                        remoteScreenConnector: remoteScreenConnector,
-                      );
-                    }
-                  },
                 ),
               ),
             ],
