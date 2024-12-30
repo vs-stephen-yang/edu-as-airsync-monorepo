@@ -8,6 +8,7 @@ import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -196,97 +197,105 @@ class ParticipantStandbyFeature extends StatelessWidget {
                   : 74
               : 66,
           height: 27,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              elevation: 5.0,
-              shadowColor: context.tokens.color.vsdslColorOpacitySecondaryLg,
-              backgroundColor: context.tokens.color.vsdslColorPrimary,
-              shape: RoundedRectangleBorder(
-                borderRadius: context.tokens.radii.vsdslRadiusFull,
+          child: V3Focus(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 5.0,
+                shadowColor: context.tokens.color.vsdslColorOpacitySecondaryLg,
+                backgroundColor: context.tokens.color.vsdslColorPrimary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: context.tokens.radii.vsdslRadiusFull,
+                ),
+                padding: EdgeInsets.zero,
               ),
-              padding: EdgeInsets.zero,
-            ),
-            onPressed: () {
-              EasyThrottle.throttle('presenterOn', const Duration(seconds: 1),
-                  () {
-                _presenterOn(context, rtcConnector, presenterId);
-              });
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (isForMenuUse) ...[
-                  SizedBox(
-                    child: Image(
-                      width: 16,
-                      height: 16,
-                      image: const Svg('assets/images/ic_arrow_to_screen.svg'),
+              onPressed: () {
+                EasyThrottle.throttle('presenterOn', const Duration(seconds: 1),
+                    () {
+                  _presenterOn(context, rtcConnector, presenterId);
+                });
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (isForMenuUse) ...[
+                    SizedBox(
+                      child: Image(
+                        width: 16,
+                        height: 16,
+                        image:
+                            const Svg('assets/images/ic_arrow_to_screen.svg'),
+                        color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                      ),
+                    ),
+                    Gap(context.tokens.spacing.vsdslSpacingXs.left),
+                  ],
+                  AutoSizeText(
+                    S.of(context).v3_participant_item_share,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
                       color: context.tokens.color.vsdslColorOnSurfaceInverse,
                     ),
                   ),
-                  Gap(context.tokens.spacing.vsdslSpacingXs.left),
                 ],
-                AutoSizeText(
-                  S.of(context).v3_participant_item_share,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
         Gap(context.tokens.spacing.vsdslSpacingSm.left),
         if (isForMenuUse && rtcConnector.senderPlatform != 'web') ...[
-          SizedBox(
+          V3Focus(
+            child: SizedBox(
+              width: 27,
+              height: 27,
+              child: IconButton(
+                icon: const Image(
+                  width: 16,
+                  height: 16,
+                  image: Svg('assets/images/ic_participant_cast_device.svg'),
+                ),
+                style: IconButton.styleFrom(
+                  elevation: 10.0,
+                  shadowColor:
+                      context.tokens.color.vsdslColorOpacitySecondaryLg,
+                  backgroundColor: context.tokens.color.vsdslColorPrimary,
+                  disabledBackgroundColor:
+                      context.tokens.color.vsdslColorSurface500,
+                ),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () {
+                  EasyThrottle.throttle(
+                      'sendInviteRemoteScreen', const Duration(seconds: 1), () {
+                    _sendInviteRemoteScreen(context, rtcConnector);
+                  });
+                },
+              ),
+            ),
+          ),
+          SizedBox(width: context.tokens.spacing.vsdslSpacingSm.left),
+        ],
+        V3Focus(
+          child: SizedBox(
             width: 27,
             height: 27,
             child: IconButton(
               icon: const Image(
-                width: 16,
-                height: 16,
-                image: Svg('assets/images/ic_participant_cast_device.svg'),
+                image: Svg('assets/images/ic_participant_close.svg'),
               ),
               style: IconButton.styleFrom(
                 elevation: 10.0,
-                shadowColor: context.tokens.color.vsdslColorOpacitySecondaryLg,
-                backgroundColor: context.tokens.color.vsdslColorPrimary,
-                disabledBackgroundColor:
-                    context.tokens.color.vsdslColorSurface500,
+                shadowColor: context.tokens.color.vsdslColorOpacityNeutralXs,
               ),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               onPressed: () {
                 EasyThrottle.throttle(
-                    'sendInviteRemoteScreen', const Duration(seconds: 1), () {
-                  _sendInviteRemoteScreen(context, rtcConnector);
+                    'sendPresenterRemove', const Duration(seconds: 1), () {
+                  _sendPresenterRemove(context, rtcConnector);
                 });
               },
             ),
-          ),
-          SizedBox(width: context.tokens.spacing.vsdslSpacingSm.left),
-        ],
-        SizedBox(
-          width: 27,
-          height: 27,
-          child: IconButton(
-            icon: const Image(
-              image: Svg('assets/images/ic_participant_close.svg'),
-            ),
-            style: IconButton.styleFrom(
-              elevation: 10.0,
-              shadowColor: context.tokens.color.vsdslColorOpacityNeutralXs,
-            ),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            onPressed: () {
-              EasyThrottle.throttle(
-                  'sendPresenterRemove', const Duration(seconds: 1), () {
-                _sendPresenterRemove(context, rtcConnector);
-              });
-            },
           ),
         ),
       ],

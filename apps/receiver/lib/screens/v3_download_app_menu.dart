@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:gap/gap.dart';
@@ -457,20 +458,22 @@ class LandscapeWidget extends StatelessWidget {
           Positioned(
             right: 13,
             bottom: 13,
-            child: SizedBox(
-              width: 33,
-              height: 33,
-              child: IconButton(
-                icon: const Image(
-                  image: Svg('assets/images/ic_menu_close_gray.svg'),
+            child: V3Focus(
+              child: SizedBox(
+                width: 33,
+                height: 33,
+                child: IconButton(
+                  icon: const Image(
+                    image: Svg('assets/images/ic_menu_close_gray.svg'),
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () {
+                    if (navService.canPop()) {
+                      navService.goBack();
+                    }
+                  },
                 ),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                onPressed: () {
-                  if (navService.canPop()) {
-                    navService.goBack();
-                  }
-                },
               ),
             ),
           ),

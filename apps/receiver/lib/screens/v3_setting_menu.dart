@@ -149,19 +149,21 @@ class V3SettingMenu extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                width: 33,
-                                height: 33,
-                                child: IconButton(
-                                  icon: SvgPicture.asset(
-                                      'assets/images/ic_menu_close.svg'),
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(),
-                                  onPressed: () {
-                                    if (navService.canPop()) {
-                                      navService.goBack();
-                                    }
-                                  },
+                              V3Focus(
+                                child: SizedBox(
+                                  width: 33,
+                                  height: 33,
+                                  child: IconButton(
+                                    icon: SvgPicture.asset(
+                                        'assets/images/ic_menu_close.svg'),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      if (navService.canPop()) {
+                                        navService.goBack();
+                                      }
+                                    },
+                                  ),
                                 ),
                               ),
                             ],
@@ -233,38 +235,40 @@ class V3SettingMenu extends StatelessWidget {
       onTap: () {
         onClick();
       },
-      child: Container(
-        width: 140,
-        height: 26,
-        padding: EdgeInsets.symmetric(
-          vertical: context.tokens.spacing.vsdslSpacingSm.top,
-          horizontal: context.tokens.spacing.vsdslSpacingMd.left,
-        ),
-        alignment: Alignment.centerLeft,
-        decoration: BoxDecoration(
-          color: SettingsProvider.currentTittlePage == state
-              ? context.tokens.color.vsdslColorPrimary
-              : context.tokens.color.vsdslColorSurface1000,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Row(
-          children: [
-            AutoSizeText(
-              text,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.white,
+      child: V3Focus(
+        child: Container(
+          width: 140,
+          height: 26,
+          padding: EdgeInsets.symmetric(
+            vertical: context.tokens.spacing.vsdslSpacingSm.top,
+            horizontal: context.tokens.spacing.vsdslSpacingMd.left,
+          ),
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+            color: SettingsProvider.currentTittlePage == state
+                ? context.tokens.color.vsdslColorPrimary
+                : context.tokens.color.vsdslColorSurface1000,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Row(
+            children: [
+              AutoSizeText(
+                text,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
+                ),
+                maxLines: 1,
               ),
-              maxLines: 1,
-            ),
-            const Spacer(),
-            if (locked)
-              SizedBox(
-                width: 11,
-                height: 11,
-                child: SvgPicture.asset('assets/images/ic_lock.svg'),
-              ),
-          ],
+              const Spacer(),
+              if (locked)
+                SizedBox(
+                  width: 11,
+                  height: 11,
+                  child: SvgPicture.asset('assets/images/ic_lock.svg'),
+                ),
+            ],
+          ),
         ),
       ),
     );

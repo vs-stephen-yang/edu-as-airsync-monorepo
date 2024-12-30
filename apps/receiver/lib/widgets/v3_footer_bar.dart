@@ -1,6 +1,7 @@
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -36,16 +37,18 @@ class V3FooterBar extends StatelessWidget {
             child: SizedBox(
               width: 41,
               height: 41,
-              child: IconButton(
-                icon: const Image(
-                  image: Svg('assets/images/ic_menu_settings.svg'),
+              child: V3Focus(
+                child: IconButton(
+                  icon: const Image(
+                    image: Svg('assets/images/ic_menu_settings.svg'),
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () {
+                    trackEvent('click_setting', EventCategory.setting);
+                    _showSettingsMenuDialog(context);
+                  },
                 ),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                onPressed: () {
-                  trackEvent('click_setting', EventCategory.setting);
-                  _showSettingsMenuDialog(context);
-                },
               ),
             ),
           ),

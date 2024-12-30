@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_focus_single_child_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -126,57 +127,66 @@ class V3Eula extends StatelessWidget {
                       SizedBox(
                         width: 108,
                         height: 40,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            foregroundColor:
-                                context.tokens.color.vsdslColorSecondary,
-                            backgroundColor: Colors.white,
-                            side: BorderSide(
-                              color: context.tokens.color.vsdslColorSecondary,
-                              width: 1.5,
+                        child: V3Focus(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor:
+                                  context.tokens.color.vsdslColorSecondary,
+                              backgroundColor: Colors.white,
+                              overlayColor: Colors.transparent,
+                              // remove onFocused color, this is also ripple color
+                              side: BorderSide(
+                                color: context.tokens.color.vsdslColorSecondary,
+                                width: 1.5,
+                              ),
+                              textStyle: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              padding: EdgeInsets.zero,
                             ),
-                            textStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              if (Platform.isAndroid) {
+                                SystemNavigator.pop();
+                              } else if (Platform.isIOS) {
+                                exit(0);
+                              } else {
+                                // todo: support other platform.
+                              }
+                            },
+                            child: AutoSizeText(S.of(context).v3_eula_disagree),
                           ),
-                          onPressed: () {
-                            if (Platform.isAndroid) {
-                              SystemNavigator.pop();
-                            } else if (Platform.isIOS) {
-                              exit(0);
-                            } else {
-                              // todo: support other platform.
-                            }
-                          },
-                          child: AutoSizeText(S.of(context).v3_eula_disagree),
                         ),
                       ),
                       const SizedBox(width: 8),
                       SizedBox(
                         width: 108,
                         height: 40,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            elevation: 5.0,
-                            shadowColor:
-                                context.tokens.color.vsdslColorSecondary,
-                            foregroundColor:
-                                context.tokens.color.vsdslColorOnSurfaceInverse,
-                            backgroundColor:
-                                context.tokens.color.vsdslColorSecondary,
-                            textStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
+                        child: V3Focus(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 5.0,
+                              shadowColor:
+                                  context.tokens.color.vsdslColorSecondary,
+                              foregroundColor: context
+                                  .tokens.color.vsdslColorOnSurfaceInverse,
+                              overlayColor:
+                                  context.tokens.color.vsdslColorSecondary,
+                              // remove onFocused color, this is also ripple color
+                              backgroundColor:
+                                  context.tokens.color.vsdslColorSecondary,
+                              textStyle: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              padding: EdgeInsets.zero,
                             ),
-                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              AppPreferences().set(showEULA: false);
+                              navService.pushNamedAndRemoveUntil('/v3Home');
+                            },
+                            child: AutoSizeText(S.of(context).v3_eula_agree),
                           ),
-                          onPressed: () {
-                            AppPreferences().set(showEULA: false);
-                            navService.pushNamedAndRemoveUntil('/v3Home');
-                          },
-                          child: AutoSizeText(S.of(context).v3_eula_agree),
                         ),
                       ),
                     ],

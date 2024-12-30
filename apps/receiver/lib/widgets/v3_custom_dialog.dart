@@ -1,10 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 
 class V3CustomDialog extends StatelessWidget {
   static const double width = 266;
   static const double height = 193;
+
   const V3CustomDialog(
       {super.key,
       this.offset,
@@ -83,45 +85,54 @@ class V3CustomDialog extends StatelessWidget {
                           SizedBox(
                             width: 108,
                             height: 40,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor:
-                                    context.tokens.color.vsdslColorPrimary,
-                                backgroundColor: Colors.white,
-                                side: BorderSide(
-                                  color: context.tokens.color.vsdslColorPrimary,
-                                  width: 1.5,
+                            child: V3Focus(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor:
+                                      context.tokens.color.vsdslColorPrimary,
+                                  backgroundColor: Colors.white,
+                                  // remove onFocused color, this is also ripple color
+                                  overlayColor: Colors.transparent,
+                                  side: BorderSide(
+                                    color:
+                                        context.tokens.color.vsdslColorPrimary,
+                                    width: 1.5,
+                                  ),
+                                  textStyle: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  padding: EdgeInsets.zero,
                                 ),
-                                textStyle: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                padding: EdgeInsets.zero,
+                                onPressed: onItem1,
+                                child: AutoSizeText(item1),
                               ),
-                              onPressed: onItem1,
-                              child: AutoSizeText(item1),
                             ),
                           ),
                           SizedBox(
                             width: 108,
                             height: 40,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                elevation: 5.0,
-                                shadowColor:
-                                    context.tokens.color.vsdslColorPrimary,
-                                foregroundColor: context
-                                    .tokens.color.vsdslColorOnSurfaceInverse,
-                                backgroundColor:
-                                    context.tokens.color.vsdslColorPrimary,
-                                textStyle: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
+                            child: V3Focus(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 5.0,
+                                  shadowColor:
+                                      context.tokens.color.vsdslColorPrimary,
+                                  foregroundColor: context
+                                      .tokens.color.vsdslColorOnSurfaceInverse,
+                                  backgroundColor:
+                                      context.tokens.color.vsdslColorPrimary,
+                                  // remove onFocused color, this is also ripple color
+                                  overlayColor: Colors.transparent,
+                                  textStyle: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  padding: EdgeInsets.zero,
                                 ),
-                                padding: EdgeInsets.zero,
+                                onPressed: onItem2,
+                                child: AutoSizeText(item2),
                               ),
-                              onPressed: onItem2,
-                              child: AutoSizeText(item2),
                             ),
                           ),
                         ],
