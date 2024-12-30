@@ -452,6 +452,7 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
   late Animation<double> _widthAnimation;
 
   bool isExpanded = false;
+  bool isAnimating = false;
 
   @override
   void initState() {
@@ -464,9 +465,14 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
     _widthAnimation = Tween<double>(begin: 50.0, end: 150.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
+
+    _widthAnimation.addStatusListener((AnimationStatus status) {
+      isAnimating = status.isAnimating;
+    });
   }
 
   void _toggle() {
+    if (isAnimating) return;
     if (isExpanded) {
       _controller.reverse();
     } else {
