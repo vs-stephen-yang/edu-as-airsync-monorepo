@@ -24,6 +24,7 @@ class V3SettingsMirroring extends StatelessWidget {
           ChannelProvider.isModeratorMode || settingsProvider.isMirroringLock;
       return V3Setting2ndLayer(
         isDisable: settingsProvider.isMirroringLock,
+        isDisableFromModerator: ChannelProvider.isModeratorMode,
         child: Consumer<MirrorStateProvider>(
           builder: (context, mirrorStateProvider, _) {
             return Column(
@@ -179,41 +180,6 @@ class V3SettingsMirroring extends StatelessWidget {
                     maxLines: 1,
                   ),
                 ),
-                if (disable) ...[
-                  const Spacer(),
-                  Container(
-                    width: 325,
-                    height: 51,
-                    decoration: BoxDecoration(
-                      color: context.tokens.color.vsdslColorSurface900,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: context.tokens.spacing.vsdslSpacingXl,
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(
-                          'assets/images/ic_toast_alert.svg',
-                          width: 16,
-                          height: 16,
-                        ),
-                        Gap(context.tokens.spacing.vsdslSpacingLg.right),
-                        SizedBox(
-                          width: 270,
-                          child: AutoSizeText(
-                            S.of(context).v3_settings_mirroring_blocked,
-                            style: TextStyle(
-                              fontSize: 9,
-                              fontWeight: FontWeight.w400,
-                              color: context.tokens.color.vsdslColorWarning,
-                            ),
-                            minFontSize: 8,
-                            maxLines: 2,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ],
             );
           },
