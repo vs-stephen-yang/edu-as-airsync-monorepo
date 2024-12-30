@@ -172,7 +172,7 @@ class ChannelProvider extends ChangeNotifier {
         'app_DeviceListQuickConnect', _isDeviceListQuickConnect);
   }
 
-  _load() async {
+  Future<void> _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _isAuthorizeMode =
         prefs.getBool('app_AuthorizeModeEnable') ?? defaultAuthorizeModeEnable;
@@ -209,7 +209,11 @@ class ChannelProvider extends ChangeNotifier {
       instanceId: AppInstanceCreate().displayInstanceID,
     );
 
-    _load();
+    _load().then((_) {
+      if (_isSenderMode) {
+        startRemoteScreen(fromSender: true);
+      }
+    });
   }
 
   startChannelProvider() {
@@ -393,7 +397,7 @@ class ChannelProvider extends ChangeNotifier {
   }) async {
     log.info('Starting remote screen');
 
-    if (_isGroupMode || _isShareMode || _isSenderMode) {
+    if (_remoteScreenServe.isRemoteScreenPublisherStarted()) {
       _isGroupMode = fromGroup ?? _isGroupMode;
       _isShareMode = fromShare ?? _isShareMode;
       _isSenderMode = fromSender ?? _isSenderMode;
