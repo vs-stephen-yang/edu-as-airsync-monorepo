@@ -222,6 +222,10 @@ class RemoteScreenServer extends FlutterIonSfuListener {
     return false;
   }
 
+  bool isRemoteScreenPublisherStarted() {
+    return _ionSfuClient != null;
+  }
+
   void stopRemoteScreenPublisher() {
     log.info('Stop remote screen publisher for room $roomId');
     _ionSfuClient?.close();
