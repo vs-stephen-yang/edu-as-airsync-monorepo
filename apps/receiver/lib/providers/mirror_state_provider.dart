@@ -439,7 +439,7 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> reloadPreferences() async {
-    _load();
+    await _load();
     notifyListeners();
   }
 
