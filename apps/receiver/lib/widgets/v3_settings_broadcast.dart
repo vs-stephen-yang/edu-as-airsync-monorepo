@@ -4,6 +4,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,9 +29,9 @@ class V3SettingsBroadcast extends StatelessWidget {
               ),
             ),
             SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
-            CastToDevices(settingsProvider: settingsProvider),
+            V3Focus(child: CastToDevices(settingsProvider: settingsProvider)),
             SizedBox(height: context.tokens.spacing.vsdslSpacingMd.top),
-            CastToBoards(settingsProvider: settingsProvider),
+            V3Focus(child: CastToBoards(settingsProvider: settingsProvider)),
           ],
         ),
       );
@@ -107,13 +108,13 @@ class CastToDevices extends StatelessWidget {
                                       }
 
                                       trackEvent(
-                                  'click_cast_to_device',
-                                  EventCategory.setting,
-                                  target: channelProvider.isSenderMode
-                                      ? 'on'
-                                      : 'off',
-                                );
-                              },
+                                        'click_cast_to_device',
+                                        EventCategory.setting,
+                                        target: channelProvider.isSenderMode
+                                            ? 'on'
+                                            : 'off',
+                                      );
+                                    },
                             ),
                           );
                         },
