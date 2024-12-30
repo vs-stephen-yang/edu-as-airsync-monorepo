@@ -72,7 +72,7 @@ class AppPreferences {
   }
 
   Future<void> reloadPreferences() async {
-    _load();
+    await _load();
   }
 
   String _invitedToGroup = InvitedToGroupOption.notifyMe.value.toString();
