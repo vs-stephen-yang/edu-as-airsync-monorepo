@@ -9,6 +9,7 @@ class ProductionConfig implements ConfigSettings {
     dsn:
         'https://ba656caa9f9170e1edc009cd46a54421@o4508005887442944.ingest.us.sentry.io/4508159114346496',
     environment: 'prod',
+    tracesSampleRate: 0.01,
   );
 
   @override

@@ -23,10 +23,12 @@ class AppConfig extends InheritedWidget {
 class SentryConfig {
   String environment;
   String dsn;
+  double tracesSampleRate;
 
   SentryConfig({
     required this.dsn,
     required this.environment,
+    required this.tracesSampleRate,
   });
 }
 
