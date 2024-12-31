@@ -15,8 +15,7 @@ initSentry(SentryConfig config) async {
       options.environment = config.environment;
       options.addIntegration(LoggingIntegration());
 
-      // TODO: reduce the trace sample rate before global launch
-      options.tracesSampleRate = 1.0;
+      options.tracesSampleRate = config.tracesSampleRate;
     },
   );
 }
