@@ -92,55 +92,53 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
       height: 34,
       child: Row(
         children: [
-          if (widget.isForMenuUse) ...[
-            Image(
-              width: 32,
-              height: 32,
-              image: Svg(isCasting
-                  ? 'assets/images/ic_participant_avatar_cast.svg'
-                  : isReceiving
-                      ? 'assets/images/ic_participant_avatar_receive.svg'
-                      : 'assets/images/ic_participant_avatar_wait.svg'),
-            ),
-          ],
-          Gap(context.tokens.spacing.vsdslSpacingSm.left),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: (!widget.isForMenuUse && isReceiving) ? 140 : 165,
-                height: 18,
-                child: AutoSizeText(
-                  rtcConnector.senderName ?? '',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: context.tokens.color.vsdslColorOnSurface,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              if (widget.isForMenuUse && status.isNotEmpty) ...[
-                Gap(context.tokens.spacing.vsdslSpacingXs.top),
-                AutoSizeText(
-                  status,
-                  style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w600,
-                    color: (isWaiting)
-                        ? context.tokens.color.vsdslColorSurface400
-                        : (isCasting)
-                            ? context.tokens.color.vsdslColorSecondary
-                            : context.tokens.color.vsdslColorSuccess,
-                  ),
-                  textAlign: TextAlign.center,
-                  minFontSize: 8,
-                ),
-              ],
-            ],
+          Image(
+            width: 32,
+            height: 32,
+            image: Svg(isCasting
+                ? 'assets/images/ic_participant_avatar_cast.svg'
+                : isReceiving
+                    ? 'assets/images/ic_participant_avatar_receive.svg'
+                    : 'assets/images/ic_participant_avatar_wait.svg'),
           ),
-          const Spacer(),
+          Gap(context.tokens.spacing.vsdslSpacingSm.left),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 18,
+                  child: AutoSizeText(
+                    rtcConnector.senderName ?? '',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: context.tokens.color.vsdslColorOnSurface,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (widget.isForMenuUse && status.isNotEmpty) ...[
+                  Gap(context.tokens.spacing.vsdslSpacingXs.top),
+                  AutoSizeText(
+                    status,
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w600,
+                      color: (isWaiting)
+                          ? context.tokens.color.vsdslColorSurface400
+                          : (isCasting)
+                              ? context.tokens.color.vsdslColorSecondary
+                              : context.tokens.color.vsdslColorSuccess,
+                    ),
+                    textAlign: TextAlign.center,
+                    minFontSize: 8,
+                  ),
+                ],
+              ],
+            ),
+          ),
           itemParticipant,
           ValueListenableBuilder(
             valueListenable: rtcConnector.reconnectChannelStateNotifier,
