@@ -139,6 +139,7 @@ class _V3ParticipantItemState extends State<V3ParticipantItem> {
               ],
             ),
           ),
+          Gap(context.tokens.spacing.vsdslSpacing2xl.left),
           itemParticipant,
           ValueListenableBuilder(
             valueListenable: rtcConnector.reconnectChannelStateNotifier,
