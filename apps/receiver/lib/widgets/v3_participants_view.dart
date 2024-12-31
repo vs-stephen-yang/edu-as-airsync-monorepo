@@ -39,7 +39,7 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
             padding: widget.isLandscape
                 ? EdgeInsets.zero
                 : const EdgeInsets.only(left: 20, right: 20),
-            child: const V3ParticipantList(isForMenuUse: true),
+            child: const V3ParticipantList(),
           ),
         ),
         Positioned(
