@@ -1900,6 +1900,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Maximum up to 10 devices.`
+  String get v3_cast_to_device_list_msg {
+    return Intl.message(
+      'Maximum up to 10 devices.',
+      name: 'v3_cast_to_device_list_msg',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

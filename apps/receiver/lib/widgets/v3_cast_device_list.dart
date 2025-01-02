@@ -4,6 +4,8 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/widgets/v3_cast_device_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3CastDeviceList extends StatelessWidget {
@@ -50,22 +52,53 @@ class V3CastDeviceList extends StatelessWidget {
             ),
             SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
             Expanded(
-              child: ListView.separated(
-                itemCount: channelProvider.remoteScreenConnectors.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return V3CastDeviceItem(index: index);
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return Divider(
-                    height: context.tokens.spacing.vsdslSpacingMd.top,
-                    color: Colors.transparent,
-                  );
-                },
-              ),
+              child: channelProvider.remoteScreenConnectors.isNotEmpty
+                  ? ListView.separated(
+                      itemCount: channelProvider.remoteScreenConnectors.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return V3CastDeviceItem(index: index);
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return Divider(
+                          height: context.tokens.spacing.vsdslSpacingMd.top,
+                          color: Colors.transparent,
+                        );
+                      },
+                    )
+                  : const Center(
+                      child: DeviceEmpty(),
+                    ),
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class DeviceEmpty extends StatelessWidget {
+  const DeviceEmpty({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Image(
+          width: 126,
+          height: 110,
+          image: Svg('assets/images/ic_csat_device_empty.svg'),
+        ),
+        const Gap(13),
+        Text(
+          S.current.v3_cast_to_device_list_msg,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: context.tokens.color.vsdslColorSurface400,
+            fontSize: 12,
+          ),
+        ),
+      ],
     );
   }
 }

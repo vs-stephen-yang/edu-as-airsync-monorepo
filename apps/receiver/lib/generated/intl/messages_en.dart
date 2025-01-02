@@ -159,6 +159,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
         "v3_cast_to_device_Receiving":
             MessageLookupByLibrary.simpleMessage("Receiving"),
+        "v3_cast_to_device_list_msg":
+            MessageLookupByLibrary.simpleMessage("Maximum up to 10 devices."),
         "v3_cast_to_device_menu_or": MessageLookupByLibrary.simpleMessage("Or"),
         "v3_cast_to_device_menu_quick_connect1":
             MessageLookupByLibrary.simpleMessage("Quick Connect"),
