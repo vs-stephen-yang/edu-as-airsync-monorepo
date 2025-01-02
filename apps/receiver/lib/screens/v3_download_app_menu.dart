@@ -218,20 +218,22 @@ class PortraitWidget extends StatelessWidget {
           Positioned(
             right: 13,
             bottom: 13,
-            child: SizedBox(
-              width: 33,
-              height: 33,
-              child: IconButton(
-                icon: const Image(
-                  image: Svg('assets/images/ic_menu_close_gray.svg'),
+            child: V3Focus(
+              child: SizedBox(
+                width: 33,
+                height: 33,
+                child: IconButton(
+                  icon: const Image(
+                    image: Svg('assets/images/ic_menu_close_gray.svg'),
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () {
+                    if (navService.canPop()) {
+                      navService.goBack();
+                    }
+                  },
                 ),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                onPressed: () {
-                  if (navService.canPop()) {
-                    navService.goBack();
-                  }
-                },
               ),
             ),
           )
