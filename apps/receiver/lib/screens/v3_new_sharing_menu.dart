@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -102,21 +103,23 @@ class _V3NewSharingMenuState extends State<V3NewSharingMenu> {
                     Positioned(
                       top: 5,
                       right: 5,
-                      child: SizedBox(
-                        width: 27,
-                        height: 27,
-                        child: IconButton(
-                          icon: const Image(
-                            image:
-                                Svg('assets/images/ic_new_sharing_close.svg'),
+                      child: V3Focus(
+                        child: SizedBox(
+                          width: 27,
+                          height: 27,
+                          child: IconButton(
+                            icon: const Image(
+                              image:
+                                  Svg('assets/images/ic_new_sharing_close.svg'),
+                            ),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            onPressed: () {
+                              if (navService.canPop()) {
+                                navService.goBack();
+                              }
+                            },
                           ),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          onPressed: () {
-                            if (navService.canPop()) {
-                              navService.goBack();
-                            }
-                          },
                         ),
                       ),
                     ),
