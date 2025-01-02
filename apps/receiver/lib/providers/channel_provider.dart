@@ -22,6 +22,7 @@ import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_server.dart';
+import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -859,6 +860,14 @@ class ChannelProvider extends ChangeNotifier {
           element.sendRemoteScreenState(RemoteScreenStatus.kicked);
         }
         _remoteScreenConnectors.clear();
+      }
+
+      if (fromGroup != null && fromGroup) {
+        providerContainer
+            ?.read(groupProvider.notifier)
+            .setBroadcastToGroup(false);
+        _displayGroupHost?.stop();
+        _displayGroupHost = null;
       }
 
       if (!_isSenderMode && !_isGroupMode && !_isShareMode) {
