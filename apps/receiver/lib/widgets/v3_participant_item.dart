@@ -392,25 +392,27 @@ class ParticipantStreamingFeature extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(
-          width: 27,
-          height: 27,
-          child: IconButton(
-            icon: const Image(
-              image: Svg('assets/images/ic_participant_stop.svg'),
+        V3Focus(
+          child: SizedBox(
+            width: 27,
+            height: 27,
+            child: IconButton(
+              icon: const Image(
+                image: Svg('assets/images/ic_participant_stop.svg'),
+              ),
+              style: IconButton.styleFrom(
+                elevation: 10.0,
+                shadowColor: context.tokens.color.vsdslColorOpacityNeutralXs,
+              ),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              onPressed: () {
+                EasyThrottle.throttle(
+                    'presenterOff', const Duration(seconds: 1), () {
+                  _presenterOff(context, rtcConnector, presenterId);
+                });
+              },
             ),
-            style: IconButton.styleFrom(
-              elevation: 10.0,
-              shadowColor: context.tokens.color.vsdslColorOpacityNeutralXs,
-            ),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            onPressed: () {
-              EasyThrottle.throttle('presenterOff', const Duration(seconds: 1),
-                  () {
-                _presenterOff(context, rtcConnector, presenterId);
-              });
-            },
           ),
         ),
       ],
@@ -499,25 +501,27 @@ class ParticipantReceivingFeature extends StatelessWidget {
           ),
         ),
         Gap(context.tokens.spacing.vsdslSpacingSm.top),
-        SizedBox(
-          width: 27,
-          height: 27,
-          child: IconButton(
-            icon: const Image(
-              image: Svg('assets/images/ic_participant_stop.svg'),
+        V3Focus(
+          child: SizedBox(
+            width: 27,
+            height: 27,
+            child: IconButton(
+              icon: const Image(
+                image: Svg('assets/images/ic_participant_stop.svg'),
+              ),
+              style: IconButton.styleFrom(
+                elevation: 10.0,
+                shadowColor: context.tokens.color.vsdslColorOpacityNeutralXs,
+              ),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              onPressed: () {
+                EasyThrottle.throttle('disconnect', const Duration(seconds: 1),
+                    () {
+                  _disconnect(context, channelProvider);
+                });
+              },
             ),
-            style: IconButton.styleFrom(
-              elevation: 10.0,
-              shadowColor: context.tokens.color.vsdslColorOpacityNeutralXs,
-            ),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            onPressed: () {
-              EasyThrottle.throttle('disconnect', const Duration(seconds: 1),
-                  () {
-                _disconnect(context, channelProvider);
-              });
-            },
           ),
         ),
       ],

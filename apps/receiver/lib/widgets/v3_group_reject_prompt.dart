@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/group_provider.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -164,15 +165,17 @@ class V3GroupRejectPrompt extends ConsumerWidget {
                     Positioned(
                       top: 10,
                       right: 10,
-                      child: IconButton(
-                        onPressed: () => closeAllRejectPrompts(ref),
-                        icon: SvgPicture.asset(
-                          'assets/images/ic_group_reject_close.svg',
-                          width: 26,
-                          height: 26,
+                      child: V3Focus(
+                        child: IconButton(
+                          onPressed: () => closeAllRejectPrompts(ref),
+                          icon: SvgPicture.asset(
+                            'assets/images/ic_group_reject_close.svg',
+                            width: 26,
+                            height: 26,
+                          ),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
                         ),
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
                       ),
                     ),
                   ],
