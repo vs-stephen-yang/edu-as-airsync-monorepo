@@ -11,11 +11,13 @@ class V3Setting2ndLayer extends StatelessWidget {
     required this.child,
     this.isDisable = false,
     this.isDisableFromModerator = false,
+    this.disableScroll = false,
   });
 
   final Widget child;
   final bool isDisable;
   final bool isDisableFromModerator;
+  final bool disableScroll;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +30,11 @@ class V3Setting2ndLayer extends StatelessWidget {
           bottom: context.tokens.spacing.vsdslSpacingXl.bottom +
               // 67 = 51 (Size of message height) + 16 (Figma space: 48)
               (isDisable ? 67 : 0),
-          child: SingleChildScrollView(
-            child: child,
-          ),
+          child: disableScroll
+              ? child
+              : SingleChildScrollView(
+                  child: child,
+                ),
         ),
         if (isDisableFromModerator)
           Positioned(

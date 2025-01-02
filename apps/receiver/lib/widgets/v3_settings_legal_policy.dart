@@ -25,6 +25,7 @@ class V3SettingsLegalPolicy extends StatelessWidget {
     SettingsProvider settingsProvider =
         Provider.of<SettingsProvider>(context, listen: false);
     return V3Setting2ndLayer(
+      disableScroll: true,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
