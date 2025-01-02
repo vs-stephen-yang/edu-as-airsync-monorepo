@@ -183,5 +183,6 @@
   "v3_participant_item_waiting": "Waiting...",
   "v3_settings_only_when_casting_info": "Broadcast the source IFP screen only when it is receiving a shared screen.",
   "v3_settings_all_the_time_info": "Broadcast source IFP screen all the time.",
-  "v3_settings_feature_locked": "Locked by ViewSonic Manager."
+  "v3_settings_feature_locked": "Locked by ViewSonic Manager.",
+  "v3_cast_to_device_list_msg": "Maximum up to 10 devices."
 }
