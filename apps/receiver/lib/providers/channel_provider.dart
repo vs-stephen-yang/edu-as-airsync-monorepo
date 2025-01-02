@@ -37,6 +37,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprintf/sprintf.dart';
 
+import 'group_list_provider.dart';
 import 'message_dialog_provider.dart';
 
 ///
@@ -863,6 +864,8 @@ class ChannelProvider extends ChangeNotifier {
       }
 
       if (fromGroup != null && fromGroup) {
+        providerContainer?.read(groupProvider.notifier).clearClients();
+        providerContainer?.read(discoveryModelProvider.notifier).stop();
         providerContainer
             ?.read(groupProvider.notifier)
             .setBroadcastToGroup(false);
