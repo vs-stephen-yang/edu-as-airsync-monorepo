@@ -17,10 +17,17 @@ class PrefLanguageProvider extends ChangeNotifier {
   Locale? get locale => localeMap[language];
 
   Map<String, Locale> localeMap = {
+    'Danish': const Locale('da', ''),
     'Deutsch': const Locale('de', ''),
     'English': const Locale('en', ''),
     'Español': const Locale('es', ''),
+    'Estonian': const Locale('et', ''),
+    'Finnish': const Locale('fi', ''),
     'Français': const Locale('fr', ''),
+    'Latvian': const Locale('lv', ''),
+    'Lithuanian': const Locale('lt', ''),
+    'Norwegian': const Locale('no', ''),
+    'Swedish': const Locale('sv', ''),
     '繁體中文': const Locale.fromSubtags(
         languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),
   };
