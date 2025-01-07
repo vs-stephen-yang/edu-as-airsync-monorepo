@@ -24,7 +24,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Por favor seleccione una pantalla para compartir en ${value} segundos...";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "device_list_enter_pin":
             MessageLookupByLibrary.simpleMessage("Contraseña de un solo uso"),

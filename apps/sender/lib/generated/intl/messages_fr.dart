@@ -24,7 +24,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Veuillez sélectionner un écran à partager dans les ${value} secondes...";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "device_list_enter_pin":
             MessageLookupByLibrary.simpleMessage("Mot de Passe à Usage Unique"),
