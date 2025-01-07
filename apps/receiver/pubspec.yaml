@@ -87,7 +87,7 @@ dependencies:
   app_ota_flutter:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/App_OTA_Flutter
-      ref: 1.0.4
+      ref: 1.0.5
   device_info_vs:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS

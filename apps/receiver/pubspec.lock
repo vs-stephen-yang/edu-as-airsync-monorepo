@@ -22,11 +22,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "1.0.4"
-      resolved-ref: f0a53d5c5c67b8bee6b92d26ac10e9446fd6d213
+      ref: "1.0.5"
+      resolved-ref: "99175388f70d678b9d3d0648054c84bd6e22dfc1"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/App_OTA_Flutter"
     source: git
-    version: "1.0.4"
+    version: "1.0.5"
   archive:
     dependency: transitive
     description:
