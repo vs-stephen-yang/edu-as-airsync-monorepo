@@ -31,20 +31,23 @@ class V3SettingsDeviceLanguage extends StatelessWidget {
           top: 57,
           left: 13,
           right: 13,
-          child: V3SettingsRadioGroup(
-            initSelectedValue: languageProvider.language,
-            radioList: languageProvider.localeMap.keys.map((key) {
-              return V3SettingsRadioGroupItem(
-                value: key, // use key as value to set newValue
-                title: key, // use key as title
-                divider: false,
-              );
-            }).toList(),
-            onChanged: (value) {
-              trackEvent('click_language', EventCategory.setting);
+          bottom: 13,
+          child: SingleChildScrollView(
+            child: V3SettingsRadioGroup(
+              initSelectedValue: languageProvider.language,
+              radioList: languageProvider.localeMap.keys.map((key) {
+                return V3SettingsRadioGroupItem(
+                  value: key, // use key as value to set newValue
+                  title: key, // use key as title
+                  divider: false,
+                );
+              }).toList(),
+              onChanged: (value) {
+                trackEvent('click_language', EventCategory.setting);
 
-              languageProvider.setLanguage(value);
-            },
+                languageProvider.setLanguage(value);
+              },
+            ),
           ),
         ),
       ],
