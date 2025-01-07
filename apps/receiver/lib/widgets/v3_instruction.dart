@@ -120,6 +120,7 @@ class V3Instruction extends StatelessWidget {
         ],
         Row(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Image(
               image: Svg('assets/images/ic_item1.svg'),
@@ -140,17 +141,22 @@ class V3Instruction extends StatelessWidget {
                     }
                     String airsync =
                         AppConfig.of(context)?.settings.airSyncUrl ?? '';
-                    return Row(
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AutoSizeText.rich(
                           _buildTextSpan(
                             fullText: isInternet && !isCastToDevice
                                 ? S
                                     .of(context)
-                                .v3_instruction1a
+                                    .v3_instruction1a
                                 .replaceAll('airsync.net', airsync)
                                     .replaceAll(
                                         S.current.v3_instruction1b
+                                            .toLowerCase(),
+                                        '')
+                                    .replaceAll(
+                                        S.current.v3_cast_to_device_menu_or
                                             .toLowerCase(),
                                         '')
                                 : S.of(context).v3_instruction1b,
@@ -168,49 +174,71 @@ class V3Instruction extends StatelessWidget {
                           ),
                         ),
                         if (isInternet && !isCastToDevice)
-                          V3Focus(
-                            child: InkWell(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 5, right: 5),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                          color: context
-                                              .tokens.color.vsdslColorOnSurface,
-                                          width: 1),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Image(
-                                        image: Svg(
-                                            'assets/images/ic_download_sender.svg'),
-                                        width: 23,
-                                        height: 23,
-                                      ),
-                                      const Gap(5),
-                                      Text(
-                                        S.current.v3_download_app_title,
-                                        style: context
-                                            .tokens.textStyle.airsyncFontTitle
-                                            .apply(
-                                                color: context.tokens.color
-                                                    .vsdslColorOnSurface,
-                                                fontWeightDelta:
-                                                    FontWeight.w700.value),
-                                      )
-                                    ],
+                          Row(
+                            children: [
+                              AutoSizeText.rich(
+                                _buildTextSpan(
+                                  fullText: S.current.v3_cast_to_device_menu_or
+                                      .toLowerCase(),
+                                  formatTexts: [airsync],
+                                  formatStyle: TextStyle(
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.w700,
+                                    color: context
+                                        .tokens.color.vsdslColorOnSurface,
+                                    letterSpacing: -0.48,
                                   ),
                                 ),
+                                style: context.tokens.textStyle.airsyncFontTitle
+                                    .apply(
+                                  color:
+                                      context.tokens.color.vsdslColorOnSurface,
+                                ),
                               ),
-                              onTap: () {
-                                trackEvent('click_dl_qrcode_icon',
-                                    EventCategory.quickMenu);
-                                _showDownloadAppMenuDialog(context);
-                              },
-                            ),
+                              V3Focus(
+                                child: InkWell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 5, right: 5),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                              color: context.tokens.color
+                                                  .vsdslColorOnSurface,
+                                              width: 1),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Image(
+                                            image: Svg(
+                                                'assets/images/ic_download_sender.svg'),
+                                            width: 23,
+                                            height: 23,
+                                          ),
+                                          const Gap(5),
+                                          Text(
+                                            S.current.v3_download_app_title,
+                                            style: context.tokens.textStyle
+                                                .airsyncFontTitle
+                                                .apply(
+                                                    color: context.tokens.color
+                                                    .vsdslColorOnSurface,
+                                                fontWeightDelta:
+                                                        FontWeight.w700.value),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    trackEvent('click_dl_qrcode_icon',
+                                        EventCategory.quickMenu);
+                                    _showDownloadAppMenuDialog(context);
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                       ],
                     );
