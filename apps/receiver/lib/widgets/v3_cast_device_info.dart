@@ -239,28 +239,32 @@ class V3QrCodeInstruction extends StatelessWidget {
         children: [
           const V3QrCodeImage(size: 120),
           const SizedBox(width: 20),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AutoSizeText(
-                S.of(context).v3_cast_to_device_menu_quick_connect1,
-                style: TextStyle(
-                  fontSize: 21,
-                  fontWeight: FontWeight.w700,
-                  color: context.tokens.color.vsdslColorOnSurfaceVariant,
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AutoSizeText(
+                  S.of(context).v3_cast_to_device_menu_quick_connect1,
+                  maxLines: 2,
+                  style: TextStyle(
+                    fontSize: 21,
+                    fontWeight: FontWeight.w700,
+                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 5),
-              AutoSizeText(
-                S.of(context).v3_cast_to_device_menu_quick_connect2,
-                style: TextStyle(
-                  fontSize: 21,
-                  fontWeight: FontWeight.w400,
-                  color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                const SizedBox(width: 5),
+                AutoSizeText(
+                  S.of(context).v3_cast_to_device_menu_quick_connect2,
+                  maxLines: 2,
+                  style: TextStyle(
+                    fontSize: 21,
+                    fontWeight: FontWeight.w400,
+                    color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
