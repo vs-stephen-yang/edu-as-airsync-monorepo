@@ -143,7 +143,7 @@ class _ExpandedViewState extends State<_ExpandedView> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              if (HybridConnectionList().getConnectionCount() > 1)
+              if (HybridConnectionList.hybridSplitScreenCount.value > 1)
                 V3Focus(
                   child: SizedBox(
                     width: 27,
