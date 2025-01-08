@@ -1910,6 +1910,16 @@ class S {
       args: [],
     );
   }
+
+  /// `AirSync ©{year}. version {version}`
+  String v3_settings_version(Object year, Object version) {
+    return Intl.message(
+      'AirSync ©$year. version $version',
+      name: 'v3_settings_version',
+      desc: '',
+      args: [year, version],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
