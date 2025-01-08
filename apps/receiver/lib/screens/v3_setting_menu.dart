@@ -136,12 +136,15 @@ class V3SettingMenu extends StatelessWidget {
                           left: 8,
                           bottom: 8,
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 13, bottom: 10),
+                                    const EdgeInsets.only(left: 5, bottom: 10),
                                 child: Text(
-                                  'v${AppConfig.of(context)?.appVersion ?? ''}',
+                                  S.of(context).v3_settings_version(
+                                      DateTime.now().year,
+                                      AppConfig.of(context)?.appVersion ?? ''),
                                   style: TextStyle(
                                     color: context
                                         .tokens.color.vsdslColorSurface700,

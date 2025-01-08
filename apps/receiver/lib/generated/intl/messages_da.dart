@@ -21,7 +21,6 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'da';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "eula_agree": MessageLookupByLibrary.simpleMessage("Jeg er enig"),
         "eula_disagree": MessageLookupByLibrary.simpleMessage("Jeg er uenig"),
