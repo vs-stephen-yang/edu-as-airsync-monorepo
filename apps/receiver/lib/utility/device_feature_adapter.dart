@@ -31,7 +31,7 @@ class DeviceFeatureAdapter {
   static bool defaultShowOldUI = false;
   static bool defaultShowDebugOverlay = false;
   static bool defaultUseSoftwareDecode = false;
-  static bool defaultEnableWebRtcH264BaselineProfile = false;
+  static bool defaultEnableWebRtcH264BaselineProfile = true;
   static bool defaultUseQuickDecodeParams = true;
   static const defaultEnableWebRtcTracing = false;
   static const defaultVerboseWebRtcLog = false;
