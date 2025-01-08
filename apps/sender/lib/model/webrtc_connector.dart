@@ -14,6 +14,7 @@ import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_cast_flutter/utilities/wakelock_manager.dart';
+import 'package:display_cast_flutter/utilities/web_browser_detect.dart';
 import 'package:display_cast_flutter/utilities/webrtc_log_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_channel/display_channel.dart';
@@ -21,7 +22,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:ion_sdk_flutter/src/utils.dart' as sdp_format_utils;
 import 'package:window_size/window_size.dart';
 
 class WebRTCConnector {
@@ -190,29 +190,67 @@ class WebRTCConnector {
     return true;
   }
 
+  void _updateAudioCodecPreferences(CodecCapabilitySelector codecSelector) {
+    var audioCapabilities = codecSelector.getCapabilities('audio');
+    if (audioCapabilities != null) {
+      // Retain only Opus codec
+      audioCapabilities.codecs = audioCapabilities.codecs
+          .where((codec) => (codec['codec'] as String).toLowerCase() == 'opus')
+          .toList();
+      audioCapabilities.setCodecPreferences('audio', audioCapabilities.codecs);
+      codecSelector.setCapabilities(audioCapabilities);
+    }
+  }
+
+  void _updateVideoCodecPreferences(
+      CodecCapabilitySelector codecSelector, bool isWebOnMacOS) {
+    var videoCapabilities = codecSelector.getCapabilities('video');
+    if (videoCapabilities != null) {
+      videoCapabilities.codecs = videoCapabilities.codecs.where((codec) {
+        var codecName = (codec['codec'] as String).toLowerCase();
+        var payload = codec['payload'].toString();
+
+        if (codecName == _codecPreferences[0]) {
+          // Allow all profiles for macOS on the web, otherwise exclude baseline profile
+          if (isWebOnMacOS) {
+            return true;
+          } else {
+            var profile = codecSelector.getH264CodecProfile(payload);
+            return profile != H264CodecProfile.baseline;
+          }
+        }
+        return false; // Exclude all other codecs
+      }).toList();
+
+      videoCapabilities.setCodecPreferences('video', videoCapabilities.codecs);
+      codecSelector.setCapabilities(videoCapabilities);
+    }
+  }
+
   void _modifySDPForCodecPreferences(RTCSessionDescription description) {
-    var capSel = sdp_format_utils.CodecCapabilitySelector(description.sdp!);
-    var acaps = capSel.getCapabilities('audio');
-    if (acaps != null) {
-      acaps.codecs = acaps.codecs
-          .where((e) => (e['codec'] as String).toLowerCase() == 'opus')
-          .toList();
-      acaps.setCodecPreferences('audio', acaps.codecs);
-      capSel.setCapabilities(acaps);
-    }
+    try {
+      var codecSelector = CodecCapabilitySelector(description.sdp!);
 
-    var vcaps = capSel.getCapabilities('video');
-    if (vcaps != null) {
-      vcaps.codecs = vcaps.codecs
-          .where((e) =>
-              (e['codec'] as String).toLowerCase() == _codecPreferences[0])
-          .toList();
-      vcaps.setCodecPreferences('video', vcaps.codecs);
-      capSel.setCapabilities(vcaps);
-    }
-    description.sdp = capSel.sdp();
+      // Update audio codec preferences
+      _updateAudioCodecPreferences(codecSelector);
 
-    log.info('modifySDPForCodecPreferences vcodec:${_codecPreferences[0]}');
+      // Check if the platform is macOS on the web
+      bool isWebOnMacOS = _isWebOnMacOS();
+
+      // Update video codec preferences
+      _updateVideoCodecPreferences(codecSelector, isWebOnMacOS);
+
+      description.sdp = codecSelector.sdp();
+
+      log.info('modifySDPForCodecPreferences vcodec:${_codecPreferences[0]}');
+    } catch (e, stackTrace) {
+      log.severe('Error modifying SDP for codec preferences', e, stackTrace);
+    }
+  }
+
+  bool _isWebOnMacOS() {
+    final browser = Browser.detectOrNull();
+    return browser != null && browser.osPlatform == OSPlatform.macOS;
   }
 
   Future<void> _createControlDataChannel() async {
