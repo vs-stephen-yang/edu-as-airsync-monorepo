@@ -23,6 +23,11 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(value) =>
       "Veuillez sélectionner un écran à partager dans les ${value} secondes...";
 
+  static String m1(year) =>
+      "Copyright © ViewSonic Corporation ${year}. Tous droits réservés.";
+
+  static String m2(year, version) => "AirSync ©${year}. version ${version}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "device_list_enter_pin":
@@ -199,8 +204,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_connection_mode_unsupported":
             MessageLookupByLibrary.simpleMessage(
                 "AirSync ne se connecte pas à Internet."),
-        "v3_main_copy_rights": MessageLookupByLibrary.simpleMessage(
-            "Copyright © ViewSonic Corporation 2024. Tous droits réservés."),
+        "v3_main_copy_rights": m1,
         "v3_main_display_code":
             MessageLookupByLibrary.simpleMessage("Code d\'affichage"),
         "v3_main_display_code_error": MessageLookupByLibrary.simpleMessage(
@@ -340,8 +344,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Temps restant"),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("Commencer le partage"),
-        "v3_setting_app_version":
-            MessageLookupByLibrary.simpleMessage("AirSync ©2024. version %s"),
+        "v3_setting_app_version": m2,
         "v3_setting_check_update":
             MessageLookupByLibrary.simpleMessage("Rechercher des mises à jour"),
         "v3_setting_knowledge_base":

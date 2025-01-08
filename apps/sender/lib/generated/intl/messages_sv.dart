@@ -22,8 +22,12 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(value) => "Välj en skärm att dela inom ${value} sekunder...";
 
-  final messages = _notInlinedMessages(_notInlinedMessages);
+  static String m1(year) =>
+      "Copyright © ViewSonic Corporation ${year}. Alla rättigheter förbehållna.";
 
+  static String m2(year, version) => "AirSync ©${year}. version ${version}";
+
+  final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "device_list_enter_pin":
             MessageLookupByLibrary.simpleMessage("Engångslösenord"),
@@ -195,8 +199,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_connection_mode_unsupported":
             MessageLookupByLibrary.simpleMessage(
                 "AirSync ansluter inte till internet."),
-        "v3_main_copy_rights": MessageLookupByLibrary.simpleMessage(
-            "Copyright © ViewSonic Corporation 2024. Alla rättigheter förbehållna."),
+        "v3_main_copy_rights": m1,
         "v3_main_display_code":
             MessageLookupByLibrary.simpleMessage("Skärmkod"),
         "v3_main_display_code_error":
@@ -339,8 +342,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Återstående tid"),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("Starta delning"),
-        "v3_setting_app_version":
-            MessageLookupByLibrary.simpleMessage("AirSync ©2024. version %s"),
+        "v3_setting_app_version": m2,
         "v3_setting_check_update":
             MessageLookupByLibrary.simpleMessage("Sök efter uppdateringar"),
         "v3_setting_knowledge_base":
