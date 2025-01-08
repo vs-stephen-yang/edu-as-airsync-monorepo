@@ -69,40 +69,45 @@ class V3SettingsLegalPolicy extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: dependencies
-                  .where((license) => !_hiddenLicenses.contains(license.name))
-                  .length,
-              itemBuilder: (context, index) {
-                final visibleLicenses = dependencies
+            child: Scrollbar(
+              thumbVisibility: true,
+              child: ListView.builder(
+                itemCount: dependencies
                     .where((license) => !_hiddenLicenses.contains(license.name))
-                    .toList();
-                final license = visibleLicenses[index];
-                return V3Focus(
-                  child: SizedBox(
-                    height: 26,
-                    child: Row(
-                      children: [
-                        Text(
-                          license.name,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
+                    .length,
+                itemBuilder: (context, index) {
+                  final visibleLicenses = dependencies
+                      .where(
+                          (license) => !_hiddenLicenses.contains(license.name))
+                      .toList();
+                  final license = visibleLicenses[index];
+                  return V3Focus(
+                    child: SizedBox(
+                      height: 26,
+                      child: Row(
+                        children: [
+                          Text(
+                            license.name,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
                           ),
-                        ),
-                        const Spacer(),
-                        V3MenuNavigationIconButton(
-                          enabledIconPath: 'assets/images/ic_arrow_right.svg',
-                          onPressed: () {
-                            settingsProvider.setPage(SettingPageState.licenses,
-                                license: license);
-                          },
-                        ),
-                      ],
+                          const Spacer(),
+                          V3MenuNavigationIconButton(
+                            enabledIconPath: 'assets/images/ic_arrow_right.svg',
+                            onPressed: () {
+                              settingsProvider.setPage(
+                                  SettingPageState.licenses,
+                                  license: license);
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ],
