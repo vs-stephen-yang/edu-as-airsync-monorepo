@@ -1178,7 +1178,7 @@ packages:
     source: hosted
     version: "0.2.0"
   sdp_transform:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: sdp_transform
       sha256: "73e412a5279a5c2de74001535208e20fff88f225c9a4571af0f7146202755e45"
