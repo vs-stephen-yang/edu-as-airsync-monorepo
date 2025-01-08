@@ -19,8 +19,6 @@ class V3SettingMainList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // String appVersion = S.of(context).v3_setting_app_version(
-    //     DateTime.now().year, AppConfig.of(context)?.appVersion);
 
     return Stack(
       alignment: Alignment.center,
