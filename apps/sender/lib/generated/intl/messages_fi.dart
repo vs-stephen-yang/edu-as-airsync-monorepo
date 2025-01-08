@@ -23,8 +23,12 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(value) =>
       "Valitse jaettava näyttö ${value} sekunnin sisällä...";
 
-  final messages = _notInlinedMessages(_notInlinedMessages);
+  static String m1(year) =>
+      "Copyright © ViewSonic Corporation ${year}. Kaikki oikeudet pidätetään.";
 
+  static String m2(year, version) => "AirSync ©${year}. versio ${version}";
+
+  final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "device_list_enter_pin":
             MessageLookupByLibrary.simpleMessage("Kertakäyttösalasana"),
@@ -197,8 +201,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_connection_mode_unsupported":
             MessageLookupByLibrary.simpleMessage(
                 "AirSync ei muodosta yhteyttä Internetiin."),
-        "v3_main_copy_rights": MessageLookupByLibrary.simpleMessage(
-            "Copyright © ViewSonic Corporation 2024. Kaikki oikeudet pidätetään."),
+        "v3_main_copy_rights": m1,
         "v3_main_display_code":
             MessageLookupByLibrary.simpleMessage("Näyttökoodi"),
         "v3_main_display_code_error":
@@ -336,8 +339,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Aikaa jäljellä"),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("Aloita jakaminen"),
-        "v3_setting_app_version":
-            MessageLookupByLibrary.simpleMessage("AirSync ©2024. versio %s"),
+        "v3_setting_app_version": m2,
         "v3_setting_check_update":
             MessageLookupByLibrary.simpleMessage("Tarkista päivitykset"),
         "v3_setting_knowledge_base":

@@ -23,8 +23,12 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(value) =>
       "Valige ekraan, mida jagada ${value} sekundi jooksul...";
 
-  final messages = _notInlinedMessages(_notInlinedMessages);
+  static String m1(year) =>
+      "Autoriõigus © ViewSonic Corporation ${year}. Kõik õigused kaitstud.";
 
+  static String m2(year, version) => "AirSync ©${year}, versioon ${version}";
+
+  final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "device_list_enter_pin":
             MessageLookupByLibrary.simpleMessage("Ühekordne parool"),
@@ -194,8 +198,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_connection_mode_unsupported":
             MessageLookupByLibrary.simpleMessage(
                 "AirSync ei ühendu Internetiga."),
-        "v3_main_copy_rights": MessageLookupByLibrary.simpleMessage(
-            "Autoriõigus © ViewSonic Corporation 2024. Kõik õigused kaitstud."),
+        "v3_main_copy_rights": m1,
         "v3_main_display_code":
             MessageLookupByLibrary.simpleMessage("Kuvakood"),
         "v3_main_display_code_error":
@@ -339,8 +342,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Järelejäänud aeg"),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("Alusta jagamist"),
-        "v3_setting_app_version":
-            MessageLookupByLibrary.simpleMessage("AirSync ©2024, versioon %s"),
+        "v3_setting_app_version": m2,
         "v3_setting_check_update":
             MessageLookupByLibrary.simpleMessage("Kontrolli värskendusi"),
         "v3_setting_knowledge_base":

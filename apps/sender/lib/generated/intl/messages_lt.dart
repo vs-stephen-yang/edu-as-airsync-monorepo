@@ -23,8 +23,12 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(value) =>
       "Pasirinkite ekraną, kurį norite bendrinti per ${value} sekundes...";
 
-  final messages = _notInlinedMessages(_notInlinedMessages);
+  static String m1(year) =>
+      "Autorių teisės © ViewSonic Corporation ${year}. Visos teisės saugomos.";
 
+  static String m2(year, version) => "AirSync ©${year}, versija ${version}";
+
+  final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "device_list_enter_pin":
             MessageLookupByLibrary.simpleMessage("Vienkartinis slaptažodis"),
@@ -201,8 +205,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_connection_mode_unsupported":
             MessageLookupByLibrary.simpleMessage(
                 "AirSync neprisijungia prie interneto."),
-        "v3_main_copy_rights": MessageLookupByLibrary.simpleMessage(
-            "Autorių teisės © ViewSonic Corporation 2024. Visos teisės saugomos."),
+        "v3_main_copy_rights": m1,
         "v3_main_display_code":
             MessageLookupByLibrary.simpleMessage("Ekrano kodas"),
         "v3_main_display_code_error":
@@ -347,8 +350,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Bendrinimo laikas iš viso: %s."),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("Pradėti bendrinimą"),
-        "v3_setting_app_version":
-            MessageLookupByLibrary.simpleMessage("AirSync ©2024, versija %s"),
+        "v3_setting_app_version": m2,
         "v3_setting_check_update":
             MessageLookupByLibrary.simpleMessage("Patikrinti atnaujinimus"),
         "v3_setting_knowledge_base":

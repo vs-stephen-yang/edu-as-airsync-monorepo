@@ -1001,13 +1001,13 @@ class S {
     );
   }
 
-  /// `Copyright © ViewSonic Corporation 2024. All rights reserved.`
-  String get v3_main_copy_rights {
+  /// `Copyright © ViewSonic Corporation {year}. All rights reserved.`
+  String v3_main_copy_rights(Object year) {
     return Intl.message(
-      'Copyright © ViewSonic Corporation 2024. All rights reserved.',
+      'Copyright © ViewSonic Corporation $year. All rights reserved.',
       name: 'v3_main_copy_rights',
       desc: '',
-      args: [],
+      args: [year],
     );
   }
 
@@ -1601,13 +1601,13 @@ class S {
     );
   }
 
-  /// `AirSync ©2024. version %s`
-  String get v3_setting_app_version {
+  /// `AirSync ©{year}. version {version}`
+  String v3_setting_app_version(Object year, Object version) {
     return Intl.message(
-      'AirSync ©2024. version %s',
+      'AirSync ©$year. version $version',
       name: 'v3_setting_app_version',
       desc: '',
-      args: [],
+      args: [year, version],
     );
   }
 

@@ -19,10 +19,9 @@ class V3SettingMainList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String appVersion = S
-        .of(context)
-        .v3_setting_app_version
-        .replaceAll('%s', AppConfig.of(context)?.appVersion ?? '');
+    // String appVersion = S.of(context).v3_setting_app_version(
+    //     DateTime.now().year, AppConfig.of(context)?.appVersion);
+
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -90,7 +89,8 @@ class V3SettingMainList extends StatelessWidget {
           bottom: isAppMode ? 40 : 0,
           right: isAppMode ? null : 0,
           child: AutoSizeText(
-            appVersion,
+            S.of(context).v3_setting_app_version(
+                DateTime.now().year, AppConfig.of(context)?.appVersion),
             minFontSize: 9,
             style: TextStyle(
               fontSize: isAppMode ? 14 : 10,
