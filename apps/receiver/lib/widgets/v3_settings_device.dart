@@ -55,10 +55,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             ),
             _buildDivider(context),
             V3Focus(
-              child: SizedBox(
-                height: 26,
-                child: _buildShowDisplayCode(context, settingsProvider),
-              ),
+              child: _buildShowDisplayCode(context, settingsProvider),
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -71,17 +68,11 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             ),
             _buildDivider(context),
             V3Focus(
-              child: SizedBox(
-                height: 26,
-                child: _buildInviteGroup(context, settingsProvider),
-              ),
+              child: _buildInviteGroup(context, settingsProvider),
             ),
             _buildDivider(context),
             V3Focus(
-              child: SizedBox(
-                height: 26,
-                child: _buildAutoFillOTP(context, settingsProvider),
-              ),
+              child: _buildAutoFillOTP(context, settingsProvider),
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -96,18 +87,12 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             if (AppInstanceCreate().isInstalledInVBS200) ...[
               _buildDivider(context),
               V3Focus(
-                child: SizedBox(
-                  height: 26,
-                  child: _buildLaunchOnStartup(context, settingsProvider),
-                ),
+                child: _buildLaunchOnStartup(context, settingsProvider),
               ),
             ],
             _buildDivider(context),
             V3Focus(
-              child: SizedBox(
-                height: 26,
-                child: _buildAuthorizeMode(context, settingsProvider),
-              ),
+              child: _buildAuthorizeMode(context, settingsProvider),
             ),
           ],
         ),
@@ -164,26 +149,29 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
               ),
             ),
             const Padding(padding: EdgeInsets.only(left: 4)),
-            InkWell(
-              onTap: settingsProvider.isDeviceSettingLock
-                  ? null
-                  : () {
-                      if (channelProvider.isAuthorizeMode) {
-                        channelProvider.isAuthorizeMode = false;
-                      } else {
-                        channelProvider.isAuthorizeMode = true;
-                      }
+            Expanded(
+              child: InkWell(
+                onTap: settingsProvider.isDeviceSettingLock
+                    ? null
+                    : () {
+                        if (channelProvider.isAuthorizeMode) {
+                          channelProvider.isAuthorizeMode = false;
+                        } else {
+                          channelProvider.isAuthorizeMode = true;
+                        }
 
-                      trackClickApprove();
-                    },
-              child: AutoSizeText(
-                S.of(context).v3_settings_device_authorize_mode,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white,
+                        trackClickApprove();
+                },
+                child: AutoSizeText(
+                  S
+                      .of(context)
+                      .v3_settings_device_authorize_mode,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                  ),
                 ),
-                maxLines: 1,
               ),
             ),
           ],
@@ -216,25 +204,26 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             const Padding(
               padding: EdgeInsets.only(left: 4),
             ),
-            InkWell(
-              onTap: settingsProvider.isDeviceSettingLock
-                  ? null
-                  : () {
-                      bool? startup =
-                          (snapshot.hasData) ? snapshot.data as bool : null;
-                      if (startup != null) {
-                        setState(() {
-                          _setAutoStartUpSettings(!startup);
-                        });
-                      }
-                    },
-              child: AutoSizeText(
-                S.of(context).v3_settings_device_launch_on_startup,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.white,
+            Expanded(
+              child: InkWell(
+                onTap: settingsProvider.isDeviceSettingLock
+                    ? null
+                    : () {
+                        bool? startup =
+                            (snapshot.hasData) ? snapshot.data as bool : null;
+                        if (startup != null) {
+                          setState(() {
+                            _setAutoStartUpSettings(!startup);
+                          });
+                        }
+                      },
+                child: AutoSizeText(
+                  S.of(context).v3_settings_device_launch_on_startup,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                  ),
                 ),
-                maxLines: 1,
               ),
             ),
           ],
@@ -274,31 +263,34 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             const Padding(
               padding: EdgeInsets.only(left: 4),
             ),
-            InkWell(
-              onTap: settingsProvider.isDeviceSettingLock
-                  ? null
-                  : () {
-                      if (channelProvider.isDeviceListQuickConnect) {
-                        channelProvider.isDeviceListQuickConnect = false;
-                      } else {
-                        channelProvider.isDeviceListQuickConnect = true;
-                      }
+            Expanded(
+              child: InkWell(
+                onTap: settingsProvider.isDeviceSettingLock
+                    ? null
+                    : () {
+                        if (channelProvider.isDeviceListQuickConnect) {
+                          channelProvider.isDeviceListQuickConnect = false;
+                        } else {
+                          channelProvider.isDeviceListQuickConnect = true;
+                        }
 
-                      trackEvent(
-                        'click_auto_fill_otp',
-                        EventCategory.setting,
-                        target: channelProvider.isDeviceListQuickConnect
-                            ? 'on'
-                            : 'off',
-                      );
-                    },
-              child: AutoSizeText(
-                S.of(context).v3_settings_device_auto_fill_otp,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.white,
+                        trackEvent(
+                    'click_auto_fill_otp',
+                    EventCategory.setting,
+                    target: channelProvider.isDeviceListQuickConnect
+                        ? 'on'
+                        : 'off',
+                  );
+                },
+                child: AutoSizeText(
+                  S
+                      .of(context)
+                      .v3_settings_device_auto_fill_otp,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                  ),
                 ),
-                maxLines: 1,
               ),
             ),
           ],
@@ -311,14 +303,15 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
       BuildContext context, SettingsProvider settingsProvider) {
     return Row(
       children: [
-        Text(
-          S.of(context).v3_settings_invite_group,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 12,
+        Expanded(
+          child: Text(
+            S.of(context).v3_settings_invite_group,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+            ),
           ),
         ),
-        const Spacer(),
         SizedBox(
           width: 105,
           child: CustomDropdown(
@@ -354,14 +347,15 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
       BuildContext context, SettingsProvider settingsProvider) {
     return Row(
       children: [
-        Text(
-          S.of(context).v3_settings_device_show_display_code,
-          style: TextStyle(
-            color: context.tokens.color.vsdslColorOnSurfaceInverse,
-            fontSize: 12,
+        Expanded(
+          child: Text(
+            S.of(context).v3_settings_device_show_display_code,
+            style: TextStyle(
+              color: context.tokens.color.vsdslColorOnSurfaceInverse,
+              fontSize: 12,
+            ),
           ),
         ),
-        const Spacer(),
         FutureBuilder(
           future: AppOverlayTab().getVisibility(),
           builder: (context, snapshot) {
@@ -720,16 +714,19 @@ class CustomDropdownState extends State<CustomDropdown> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                widget.selectedValue,
-                style: TextStyle(
-                  fontSize: 9,
-                  color: context.tokens.color.vsdslColorOnSurface
-                      .withOpacity(widget.isDisable ? 0.32 : 1),
-                  fontWeight: FontWeight.w600,
+              Expanded(
+                child: Text(
+                  widget.selectedValue,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 9,
+                    color: context.tokens.color.vsdslColorOnSurface
+                        .withOpacity(widget.isDisable ? 0.32 : 1),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-              const Spacer(),
               Icon(
                 _overlayEntry != null
                     ? Icons.keyboard_arrow_up

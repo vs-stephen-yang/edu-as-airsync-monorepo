@@ -48,7 +48,9 @@ class CastToDevices extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 325,
-      height: 88,
+      constraints: const BoxConstraints(
+        minHeight: 88,
+      ),
       decoration: BoxDecoration(
         borderRadius: context.tokens.radii.vsdslRadiusLg,
         color: context.tokens.color.vsdslColorSurface900,
@@ -150,7 +152,9 @@ class CastToBoards extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 325,
-      height: 88,
+      constraints: const BoxConstraints(
+        minHeight: 88,
+      ),
       decoration: BoxDecoration(
         borderRadius: context.tokens.radii.vsdslRadiusLg,
         color: context.tokens.color.vsdslColorSurface900,

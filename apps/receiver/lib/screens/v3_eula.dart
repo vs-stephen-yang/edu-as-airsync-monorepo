@@ -100,7 +100,8 @@ class V3Eula extends StatelessWidget {
                           if (snapshot.connectionState ==
                                   ConnectionState.done &&
                               snapshot.data != null) {
-                            content = snapshot.data as String;
+                            content = (snapshot.data as String).replaceFirst(
+                                '2016-%s', '2016-${DateTime.now().year}');
                           } else {
                             content = S.of(context).eula_title;
                           }

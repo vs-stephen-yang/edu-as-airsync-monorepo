@@ -1,5 +1,5 @@
 End User License Agreement for myViewBoard Software
-Copyright  2016-2024 ViewSonic Corporation. All rights reserved.
+Copyright  2016-%s ViewSonic Corporation. All rights reserved.
 Last updated on May 8, 2023
 
 This End User License Agreement (“EULA”) is between you and ViewSonic Corporation (“ViewSonic”). It applies to the myViewBoard software licensed by ViewSonic and its licensor(s) and provided by ViewSonic to you (“Software Product”). The Software Product includes all its individual features and tools, such as the Whiteboard, Companion, Record, Sens, Live, Display, Classroom, Manager, Originals and Insights and any tools which will be added in the future. 

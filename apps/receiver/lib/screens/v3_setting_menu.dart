@@ -242,7 +242,9 @@ class V3SettingMenu extends StatelessWidget {
         },
         child: Container(
           width: 140,
-          height: 26,
+          constraints: const BoxConstraints(
+            minHeight: 26,
+          ),
           padding: EdgeInsets.symmetric(
             vertical: context.tokens.spacing.vsdslSpacingSm.top,
             horizontal: context.tokens.spacing.vsdslSpacingMd.left,
@@ -256,15 +258,17 @@ class V3SettingMenu extends StatelessWidget {
           ),
           child: Row(
             children: [
-              AutoSizeText(
-                text,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.white,
+              Expanded(
+                child: Text(
+                  text,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                  ),
+                  maxLines: 2,
                 ),
-                maxLines: 1,
               ),
-              const Spacer(),
               if (locked)
                 SizedBox(
                   width: 11,
