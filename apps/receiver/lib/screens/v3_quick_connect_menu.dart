@@ -14,10 +14,15 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
 class V3QuickConnectMenu extends StatefulWidget {
-  const V3QuickConnectMenu({super.key});
+  const V3QuickConnectMenu({
+    super.key,
+    required this.primaryFocusNode,
+  });
+
+  final FocusNode primaryFocusNode;
 
   @override
-  _V3QuickConnectMenuState createState() => _V3QuickConnectMenuState();
+  State<V3QuickConnectMenu> createState() => _V3QuickConnectMenuState();
 }
 
 class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
@@ -218,38 +223,46 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                                       curve: Curves.ease,
                                     );
                                   },
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 200),
+                                  child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius:
-                                          context.tokens.radii.vsdslRadiusLg,
+                                          context.tokens.radii.vsdslRadiusXs,
                                       border: Border.all(
                                         color: _focusNodes[index].hasFocus
-                                            ? context
-                                                .tokens.color.vsdslColorPrimary
+                                            ? context.tokens.color
+                                                .vsdslColorSecondary
                                             : Colors.transparent,
                                         width: 2.0,
                                       ),
-                                      color: selected == index
-                                          ? context
-                                              .tokens.color.vsdslColorPrimary
-                                          : Colors.transparent,
+                                      color: Colors.transparent,
                                     ),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      index == 0
-                                          ? S
-                                              .of(context)
-                                              .v3_quick_connect_menu_display_code
-                                          : S
-                                              .of(context)
-                                              .v3_quick_connect_menu_qrcode,
-                                      style: TextStyle(
+                                    child: AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 200),
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            context.tokens.radii.vsdslRadiusLg,
                                         color: selected == index
-                                            ? context.tokens.color
-                                                .vsdslColorOnSurfaceInverse
-                                            : context
-                                                .tokens.color.vsdslColorPrimary,
+                                            ? context
+                                                .tokens.color.vsdslColorPrimary
+                                            : Colors.transparent,
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        index == 0
+                                            ? S
+                                                .of(context)
+                                                .v3_quick_connect_menu_display_code
+                                            : S
+                                                .of(context)
+                                                .v3_quick_connect_menu_qrcode,
+                                        style: TextStyle(
+                                          color: selected == index
+                                              ? context.tokens.color
+                                                  .vsdslColorOnSurfaceInverse
+                                              : context.tokens.color
+                                                  .vsdslColorPrimary,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -319,6 +332,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                           width: 33,
                           height: 33,
                           child: IconButton(
+                            focusNode: widget.primaryFocusNode,
                             icon: const Image(
                               image: Svg('assets/images/ic_menu_minimal.svg'),
                             ),

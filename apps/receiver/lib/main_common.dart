@@ -30,6 +30,7 @@ import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/sentry_util.dart';
 import 'package:display_flutter/vsapi/vs_api.dart';
 import 'package:display_flutter/widgets/app_ota_dialog.dart';
+import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -202,7 +203,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               // for "navService.popUntil('/v3Home')"
               '/v3Home': (context) => const AppOTADialog(child: V3Home()),
               '/eula': (context) => const AppOTADialog(child: Eula()),
-              '/v3Eula': (context) => const AppOTADialog(child: V3Eula()),
+              '/v3Eula': (context) => AppOTADialog(
+                  child: FocusAwareBuilder(
+                      builder: (primaryFocusNode) =>
+                          V3Eula(primaryFocusNode: primaryFocusNode))),
             },
             builder: (context, child) {
               return MediaQuery(

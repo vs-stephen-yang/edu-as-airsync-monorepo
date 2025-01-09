@@ -6,7 +6,12 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class V3ParticipantsMenu extends StatelessWidget {
-  const V3ParticipantsMenu({super.key});
+  const V3ParticipantsMenu({
+    super.key,
+    required this.primaryFocusNode,
+  });
+
+  final FocusNode primaryFocusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +50,7 @@ class V3ParticipantsMenu extends StatelessWidget {
                         width: 33,
                         height: 33,
                         child: IconButton(
+                          focusNode: primaryFocusNode,
                           icon: const Image(
                             image: Svg('assets/images/ic_menu_close_gray.svg'),
                           ),

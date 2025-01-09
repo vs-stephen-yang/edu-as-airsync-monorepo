@@ -11,6 +11,7 @@ import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/screens/v3_new_sharing_menu.dart';
 import 'package:display_flutter/screens/v3_quick_connect_menu.dart';
 import 'package:display_flutter/screens/v3_shortcuts_menu.dart';
+import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_header_bar.dart';
@@ -395,9 +396,9 @@ class _V3StreamingViewState extends ConsumerState {
     showDialog(
       context: context,
       barrierColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return const V3ShortcutsMenu();
-      },
+      builder: (BuildContext context) => FocusAwareBuilder(
+          builder: (primaryFocusNode) =>
+              V3ShortcutsMenu(primaryFocusNode: primaryFocusNode)),
     ).then((_) {
       setState(() {
         _showShortcut = false;
@@ -409,9 +410,10 @@ class _V3StreamingViewState extends ConsumerState {
     showDialog(
       context: context,
       barrierColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return const V3QuickConnectMenu();
-      },
+      builder: (BuildContext context) => FocusAwareBuilder(
+        builder: (primaryFocusNode) =>
+            V3QuickConnectMenu(primaryFocusNode: primaryFocusNode),
+      ),
     ).then((_) {
       setState(() {
         _showQuickConnect = false;

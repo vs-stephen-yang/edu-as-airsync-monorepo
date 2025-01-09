@@ -6,9 +6,10 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class V3CastDevicesMenu extends StatelessWidget {
-  const V3CastDevicesMenu({super.key});
+  const V3CastDevicesMenu({super.key, required this.primaryFocusNode});
 
   static bool fromShortcut = false;
+  final FocusNode primaryFocusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +35,7 @@ class V3CastDevicesMenu extends StatelessWidget {
                 width: 33,
                 height: 33,
                 child: IconButton(
+                  focusNode: primaryFocusNode,
                   icon: const Image(
                     image: Svg('assets/images/ic_menu_close_gray.svg'),
                   ),

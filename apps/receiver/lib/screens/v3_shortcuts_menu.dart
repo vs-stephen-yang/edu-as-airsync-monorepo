@@ -14,9 +14,10 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
 class V3ShortcutsMenu extends StatelessWidget {
-  const V3ShortcutsMenu({super.key});
+  const V3ShortcutsMenu({super.key, required this.primaryFocusNode});
 
   static int _debugCounter = 0;
+  final FocusNode primaryFocusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,8 @@ class V3ShortcutsMenu extends StatelessWidget {
                 onTap: () {
                   _debugCounter++;
                   if (_debugCounter >= 5) {
-                    DeviceFeatureAdapter.showDebugOverlay = !DeviceFeatureAdapter.showDebugOverlay;
+                    DeviceFeatureAdapter.showDebugOverlay =
+                        !DeviceFeatureAdapter.showDebugOverlay;
                     _debugCounter = 0;
                   }
                 },
@@ -414,6 +416,7 @@ class V3ShortcutsMenu extends StatelessWidget {
                   width: 33,
                   height: 33,
                   child: IconButton(
+                    focusNode: primaryFocusNode,
                     icon: const Image(
                       image: Svg('assets/images/ic_menu_close.svg'),
                     ),

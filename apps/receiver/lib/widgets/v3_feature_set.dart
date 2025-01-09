@@ -5,6 +5,7 @@ import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/v3_cast_devices_menu.dart';
 import 'package:display_flutter/screens/v3_participants_menu.dart';
+import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -273,9 +274,9 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
     await showDialog(
       context: context,
       barrierColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return const V3ParticipantsMenu();
-      },
+      builder: (BuildContext context) => FocusAwareBuilder(
+          builder: (primaryFocusNode) =>
+              V3ParticipantsMenu(primaryFocusNode: primaryFocusNode)),
     ).then((_) {
       setState(() {
         _isModeratorOnScreen = false;
@@ -293,7 +294,10 @@ class _V3FeatureSetState extends State<V3FeatureSet> {
       context: context,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
-        return const V3CastDevicesMenu();
+        return FocusAwareBuilder(
+          builder: (FocusNode primaryFocusNode) =>
+              V3CastDevicesMenu(primaryFocusNode: primaryFocusNode),
+        );
       },
     ).then((_) {
       setState(() {
