@@ -59,10 +59,17 @@ class V3SettingMainList extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      AutoSizeText(
-                        settings[index].itemTitle,
+                      Expanded(
+                        child: AutoSizeText(
+                          settings[index].itemTitle,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                       ),
-                      const Spacer(),
                       if (settings[index].itemIcon != null)
                         SizedBox(
                           width: 24,
@@ -84,8 +91,8 @@ class V3SettingMainList extends StatelessWidget {
           );
         }),
         Positioned(
-          bottom: isAppMode ? 40 : 0,
-          right: isAppMode ? null : 0,
+          bottom: isAppMode ? 40 : 50,
+          left: isAppMode ? null : 0,
           child: AutoSizeText(
             S.of(context).v3_setting_app_version(
                 DateTime.now().year, AppConfig.of(context)?.appVersion),
