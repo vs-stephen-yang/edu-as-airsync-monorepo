@@ -22,35 +22,37 @@ class V3CastDevicesMenu extends StatelessWidget {
       insetPadding: EdgeInsets.zero,
       elevation: 16.0,
       shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
-      child: Stack(
-        children: [
-          // This is for accessibility
-          const Focus(autofocus: true, child: SizedBox()),
-          const V3CastDeviceInfo(),
-          Positioned(
-            right: 13,
-            bottom: 13,
-            child: V3Focus(
-              child: SizedBox(
-                width: 33,
-                height: 33,
-                child: IconButton(
-                  focusNode: primaryFocusNode,
-                  icon: const Image(
-                    image: Svg('assets/images/ic_menu_close_gray.svg'),
+      child: FocusScope(
+        autofocus: true,
+        node: FocusScopeNode(),
+        child: Stack(
+          children: [
+            const V3CastDeviceInfo(),
+            Positioned(
+              right: 13,
+              bottom: 13,
+              child: V3Focus(
+                child: SizedBox(
+                  width: 33,
+                  height: 33,
+                  child: IconButton(
+                    focusNode: primaryFocusNode,
+                    icon: const Image(
+                      image: Svg('assets/images/ic_menu_close_gray.svg'),
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    onPressed: () {
+                      if (navService.canPop()) {
+                        navService.goBack();
+                      }
+                    },
                   ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () {
-                    if (navService.canPop()) {
-                      navService.goBack();
-                    }
-                  },
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
