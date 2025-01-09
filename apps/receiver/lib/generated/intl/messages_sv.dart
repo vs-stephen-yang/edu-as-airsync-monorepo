@@ -32,7 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_auto_startup":
             MessageLookupByLibrary.simpleMessage("Starta AirSync vid start"),
         "main_cast_settings_airplay":
-            MessageLookupByLibrary.simpleMessage("\nAirPlay"),
+            MessageLookupByLibrary.simpleMessage("AirPlay"),
         "main_cast_settings_device_name":
             MessageLookupByLibrary.simpleMessage("Namn"),
         "main_cast_settings_google_cast":
