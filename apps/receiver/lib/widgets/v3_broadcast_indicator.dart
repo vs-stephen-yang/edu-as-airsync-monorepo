@@ -28,48 +28,51 @@ class _V3BroadcastIndicatorState extends ConsumerState {
         if (isBroadcastingToGroup) ...[
           SizedBox(
             height: 24,
-            child: ElevatedButton(
-              onPressed: () {
-                // todo: implement dialog.
-                // _showBroadcastMenuDialog(context);
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: _isBroadcastOnScreen
-                    ? context.tokens.color.vsdslColorOnSurface
-                    : _highlightColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: context.tokens.radii.vsdslRadiusFull,
-                ),
-                padding: EdgeInsets.symmetric(
-                  horizontal: context.tokens.spacing.vsdslSpacingMd.left,
-                  vertical: context.tokens.spacing.vsdslSpacing2xs.top,
-                ),
-                minimumSize: const Size(50, 24),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image(
-                    width: 21,
-                    height: 21,
-                    image: const Svg('assets/images/ic_broadcast.svg'),
-                    color: _isBroadcastOnScreen
-                        ? _highlightColor
-                        : context.tokens.color.vsdslColorOnSurface,
+            // TODO implement dialog then remove.
+            child: ExcludeFocus(
+              child: ElevatedButton(
+                onPressed: () {
+                  // todo: implement dialog.
+                  // _showBroadcastMenuDialog(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: _isBroadcastOnScreen
+                      ? context.tokens.color.vsdslColorOnSurface
+                      : _highlightColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: context.tokens.radii.vsdslRadiusFull,
                   ),
-                  SizedBox(width: context.tokens.spacing.vsdslSpacingXs.left),
-                  Text(
-                    S.of(context).v3_broadcast_indicator,
-                    style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.w600,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.tokens.spacing.vsdslSpacingMd.left,
+                    vertical: context.tokens.spacing.vsdslSpacing2xs.top,
+                  ),
+                  minimumSize: const Size(50, 24),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image(
+                      width: 21,
+                      height: 21,
+                      image: const Svg('assets/images/ic_broadcast.svg'),
                       color: _isBroadcastOnScreen
                           ? _highlightColor
                           : context.tokens.color.vsdslColorOnSurface,
                     ),
-                  ),
-                ],
+                    SizedBox(width: context.tokens.spacing.vsdslSpacingXs.left),
+                    Text(
+                      S.of(context).v3_broadcast_indicator,
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w600,
+                        color: _isBroadcastOnScreen
+                            ? _highlightColor
+                            : context.tokens.color.vsdslColorOnSurface,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

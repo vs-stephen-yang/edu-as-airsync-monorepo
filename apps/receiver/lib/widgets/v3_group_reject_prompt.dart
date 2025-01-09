@@ -6,6 +6,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -50,6 +51,14 @@ class V3GroupRejectPrompt extends ConsumerWidget {
         barrierColor: Colors.transparent,
         builder: (BuildContext dialogContext) {
           dialogContextList.add(dialogContext);
+          final primaryFocusNode = FocusNode();
+          final bool openedWithLogicalKey =
+              HardwareKeyboard.instance.logicalKeysPressed.isNotEmpty;
+          if (openedWithLogicalKey) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              primaryFocusNode.requestFocus();
+            });
+          }
 
           return Consumer(builder: (context, ref, child) {
             final currentRejectList =
@@ -167,6 +176,7 @@ class V3GroupRejectPrompt extends ConsumerWidget {
                       right: 10,
                       child: V3Focus(
                         child: IconButton(
+                          focusNode: primaryFocusNode,
                           onPressed: () => closeAllRejectPrompts(ref),
                           icon: SvgPicture.asset(
                             'assets/images/ic_group_reject_close.svg',

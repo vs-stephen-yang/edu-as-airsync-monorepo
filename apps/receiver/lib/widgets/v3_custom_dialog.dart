@@ -7,22 +7,25 @@ class V3CustomDialog extends StatelessWidget {
   static const double width = 266;
   static const double height = 193;
 
-  const V3CustomDialog(
-      {super.key,
-      this.offset,
-      required this.alignmentGeometry,
-      required this.title,
-      required this.content,
-      required this.item1,
-      required this.item2,
-      required this.onItem1,
-      required this.onItem2});
+  const V3CustomDialog({
+    super.key,
+    this.offset,
+    required this.alignmentGeometry,
+    required this.title,
+    required this.content,
+    required this.item1,
+    required this.item2,
+    required this.onItem1,
+    required this.onItem2,
+    required this.primaryFocusNode,
+  });
 
   final Offset? offset;
   final AlignmentGeometry alignmentGeometry;
   final String title, content;
   final String item1, item2;
   final VoidCallback onItem1, onItem2;
+  final FocusNode primaryFocusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +117,7 @@ class V3CustomDialog extends StatelessWidget {
                             height: 40,
                             child: V3Focus(
                               child: ElevatedButton(
+                                focusNode: primaryFocusNode,
                                 style: ElevatedButton.styleFrom(
                                   elevation: 5.0,
                                   shadowColor:

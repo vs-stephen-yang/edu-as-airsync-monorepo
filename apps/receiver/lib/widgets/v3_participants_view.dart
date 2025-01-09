@@ -5,6 +5,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:display_flutter/widgets/v3_custom_dialog.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_participant_list.dart';
@@ -17,6 +18,7 @@ class V3ParticipantsView extends StatefulWidget {
   const V3ParticipantsView({super.key, this.isLandscape = true});
 
   final bool isLandscape;
+
   @override
   State<StatefulWidget> createState() => _V3ParticipantsView();
 }
@@ -164,24 +166,27 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
       context: context,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
-        return V3CustomDialog(
-          offset: containerOffset,
-          alignmentGeometry: Alignment.centerRight,
-          title: S.of(context).v3_moderator_disable_mirror_title,
-          content: S.of(context).v3_moderator_disable_mirror_desc,
-          item1: S.of(context).v3_moderator_disable_mirror_cancel,
-          onItem1: () {
-            if (navService.canPop()) {
-              navService.goBack(result: false);
-            }
-          },
-          item2: S.of(context).v3_moderator_disable_mirror_ok,
-          onItem2: () async {
-            if (navService.canPop()) {
-              navService.goBack(result: true);
-            }
-          },
-        );
+        return FocusAwareBuilder(builder: (primaryFocusNode) {
+          return V3CustomDialog(
+            primaryFocusNode: primaryFocusNode,
+            offset: containerOffset,
+            alignmentGeometry: Alignment.centerRight,
+            title: S.of(context).v3_moderator_disable_mirror_title,
+            content: S.of(context).v3_moderator_disable_mirror_desc,
+            item1: S.of(context).v3_moderator_disable_mirror_cancel,
+            onItem1: () {
+              if (navService.canPop()) {
+                navService.goBack(result: false);
+              }
+            },
+            item2: S.of(context).v3_moderator_disable_mirror_ok,
+            onItem2: () async {
+              if (navService.canPop()) {
+                navService.goBack(result: true);
+              }
+            },
+          );
+        });
       },
     );
 
@@ -208,34 +213,37 @@ class _V3ParticipantsView extends State<V3ParticipantsView> {
       context: context,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
-        return V3CustomDialog(
-          offset: containerOffset,
-          alignmentGeometry: Alignment.centerRight,
-          title: S.of(context).v3_exit_moderator_mode_title,
-          content: S.of(context).v3_exit_moderator_mode_desc,
-          item1: S.of(context).v3_exit_moderator_mode_cancel,
-          onItem1: () {
-            if (navService.canPop()) {
-              navService.goBack();
-            }
-          },
-          item2: S.of(context).v3_exit_moderator_mode_exit,
-          onItem2: () async {
-            trackEvent('click_moderator', EventCategory.menu, target: 'off');
+        return FocusAwareBuilder(builder: (primaryFocusNode) {
+          return V3CustomDialog(
+            primaryFocusNode: primaryFocusNode,
+            offset: containerOffset,
+            alignmentGeometry: Alignment.centerRight,
+            title: S.of(context).v3_exit_moderator_mode_title,
+            content: S.of(context).v3_exit_moderator_mode_desc,
+            item1: S.of(context).v3_exit_moderator_mode_cancel,
+            onItem1: () {
+              if (navService.canPop()) {
+                navService.goBack();
+              }
+            },
+            item2: S.of(context).v3_exit_moderator_mode_exit,
+            onItem2: () async {
+              trackEvent('click_moderator', EventCategory.menu, target: 'off');
 
-            Provider.of<ChannelProvider>(context, listen: false)
-                .setModeratorMode(false);
-            await HybridConnectionList().removeAllPresenters();
-            if (context.mounted) {
-              MirrorStateProvider mirrorStateProvider =
-                  Provider.of<MirrorStateProvider>(context, listen: false);
-              await mirrorStateProvider.restartMirror();
-            }
-            if (navService.canPop()) {
-              navService.goBack();
-            }
-          },
-        );
+              Provider.of<ChannelProvider>(context, listen: false)
+                  .setModeratorMode(false);
+              await HybridConnectionList().removeAllPresenters();
+              if (context.mounted) {
+                MirrorStateProvider mirrorStateProvider =
+                    Provider.of<MirrorStateProvider>(context, listen: false);
+                await mirrorStateProvider.restartMirror();
+              }
+              if (navService.canPop()) {
+                navService.goBack();
+              }
+            },
+          );
+        });
       },
     ).then((_) {
       setState(() {

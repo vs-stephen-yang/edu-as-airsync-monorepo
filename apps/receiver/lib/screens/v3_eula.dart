@@ -12,7 +12,9 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class V3Eula extends StatelessWidget {
-  const V3Eula({super.key});
+  const V3Eula({super.key, required this.primaryFocusNode});
+
+  final FocusNode primaryFocusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -165,6 +167,7 @@ class V3Eula extends StatelessWidget {
                         height: 40,
                         child: V3Focus(
                           child: ElevatedButton(
+                            focusNode: primaryFocusNode,
                             style: ElevatedButton.styleFrom(
                               elevation: 5.0,
                               shadowColor:

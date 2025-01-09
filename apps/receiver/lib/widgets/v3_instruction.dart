@@ -10,6 +10,7 @@ import 'package:display_flutter/providers/connectivity_provider.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/screens/v3_download_app_menu.dart';
 import 'package:display_flutter/settings/app_config.dart';
+import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -387,7 +388,9 @@ class V3Instruction extends StatelessWidget {
       context: context,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
-        return const V3DownloadAppMenu();
+        return FocusAwareBuilder(
+            builder: (primaryFocusNode) =>
+                V3DownloadAppMenu(primaryFocusNode: primaryFocusNode));
       },
     );
   }

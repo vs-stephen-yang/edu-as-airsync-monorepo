@@ -10,7 +10,9 @@ import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class V3DownloadAppMenu extends StatelessWidget {
-  const V3DownloadAppMenu({super.key});
+  const V3DownloadAppMenu({super.key, required this.primaryFocusNode});
+
+  final FocusNode primaryFocusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +28,9 @@ class V3DownloadAppMenu extends StatelessWidget {
             insetPadding: EdgeInsets.zero,
             elevation: 16.0,
             shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
-            child:
-                isLandscape ? const LandscapeWidget() : const PortraitWidget(),
+            child: isLandscape
+                ? LandscapeWidget(primaryFocusNode: primaryFocusNode)
+                : PortraitWidget(primaryFocusNode: primaryFocusNode),
           ),
         );
       },
@@ -36,8 +39,11 @@ class V3DownloadAppMenu extends StatelessWidget {
 }
 
 class PortraitWidget extends StatelessWidget {
+  final FocusNode primaryFocusNode;
+
   const PortraitWidget({
     super.key,
+    required this.primaryFocusNode,
   });
 
   @override
@@ -223,6 +229,7 @@ class PortraitWidget extends StatelessWidget {
                 width: 33,
                 height: 33,
                 child: IconButton(
+                  focusNode: primaryFocusNode,
                   icon: const Image(
                     image: Svg('assets/images/ic_menu_close_gray.svg'),
                   ),
@@ -244,8 +251,11 @@ class PortraitWidget extends StatelessWidget {
 }
 
 class LandscapeWidget extends StatelessWidget {
+  final FocusNode primaryFocusNode;
+
   const LandscapeWidget({
     super.key,
+    required this.primaryFocusNode,
   });
 
   @override
@@ -465,6 +475,7 @@ class LandscapeWidget extends StatelessWidget {
                 width: 33,
                 height: 33,
                 child: IconButton(
+                  focusNode: primaryFocusNode,
                   icon: const Image(
                     image: Svg('assets/images/ic_menu_close_gray.svg'),
                   ),
