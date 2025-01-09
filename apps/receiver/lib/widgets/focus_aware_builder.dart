@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class FocusAwareBuilder extends StatefulWidget {
   final Widget Function(FocusNode primaryFocusNode) builder;
@@ -17,9 +18,13 @@ class _FocusAwareDialogState extends State<FocusAwareBuilder> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.primaryFocusNode.requestFocus();
-    });
+    final bool openedWithLogicalKey =
+        HardwareKeyboard.instance.logicalKeysPressed.isNotEmpty;
+    if (openedWithLogicalKey) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.primaryFocusNode.requestFocus();
+      });
+    }
   }
 
   @override

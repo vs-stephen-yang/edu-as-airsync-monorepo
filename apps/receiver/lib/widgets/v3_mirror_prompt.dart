@@ -7,7 +7,6 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
@@ -195,14 +194,6 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                 } else if (mirrorRequestIdles.isNotEmpty) {
                   // 鏡像確認模式 UI
                   if (mirrorStateProvider.isMirrorConfirmation) {
-                    final primaryFocusNode = FocusNode();
-                    final bool openedWithLogicalKey =
-                        HardwareKeyboard.instance.logicalKeysPressed.isNotEmpty;
-                    if (openedWithLogicalKey) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        primaryFocusNode.requestFocus();
-                      });
-                    }
                     return Container(
                       width: 548,
                       height: totalHeight,
@@ -303,7 +294,6 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                                           width: 80,
                                           height: 27,
                                           child: ElevatedButton(
-                                            focusNode: primaryFocusNode,
                                             style: ElevatedButton.styleFrom(
                                               foregroundColor: context.tokens
                                                   .color.vsdslColorNeutral,

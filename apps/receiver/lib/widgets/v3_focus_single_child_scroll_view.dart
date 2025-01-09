@@ -6,9 +6,11 @@ class V3FocusSingleChildScrollView extends StatefulWidget {
   const V3FocusSingleChildScrollView({
     super.key,
     this.children = const <Widget>[],
+    this.primaryFocusNode,
   });
 
   final List<Widget> children;
+  final FocusNode? primaryFocusNode;
 
   @override
   State<StatefulWidget> createState() => _V3FocusSingleChildScrollViewStage();
@@ -27,6 +29,7 @@ class _V3FocusSingleChildScrollViewStage
   @override
   Widget build(BuildContext context) {
     return Focus(
+      focusNode: widget.primaryFocusNode,
       child: Builder(builder: (context) {
         final FocusNode focusNode = Focus.of(context);
         final bool hasFocus = focusNode.hasFocus;
