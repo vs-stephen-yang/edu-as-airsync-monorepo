@@ -270,81 +270,73 @@ class _V3StreamingViewState extends ConsumerState {
                             ),
                           ),
                         ),
-                        ConstrainedBox(
-                          constraints: BoxConstraints.tightFor(
-                            width: isAnnotationImplement ? 96 : 41,
-                            height: 41,
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: context.tokens.radii.vsdslRadiusFull,
                           ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: context.tokens.color.vsdslColorSurface800,
-                              borderRadius:
-                                  context.tokens.radii.vsdslRadiusFull,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                if (isAnnotationImplement)
-                                  V3Focus(
-                                    child: SizedBox(
-                                      width: 41,
-                                      height: 41,
-                                      child: IconButton(
-                                        icon: const Image(
-                                          image: Svg(
-                                              'assets/images/ic_streaming_pen.svg'),
-                                        ),
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(),
-                                        onPressed: () {
-                                          // todo: annotation
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                if (isAnnotationImplement)
-                                  Container(
-                                    width: 1,
-                                    height: 21,
-                                    color: context.tokens.color
-                                        .vsdslColorOnSurfaceVariant,
-                                  ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              if (isAnnotationImplement)
                                 V3Focus(
-                                  child: Container(
+                                  child: SizedBox(
                                     width: 41,
                                     height: 41,
-                                    decoration: ShapeDecoration(
-                                      color: _showQuickConnect
-                                          ? context
-                                              .tokens.color.vsdslColorSecondary
-                                          : context.tokens.color
-                                              .vsdslColorSurface800,
-                                      shape: const OvalBorder(),
-                                    ),
                                     child: IconButton(
                                       icon: const Image(
-                                        width: 20,
-                                        height: 20,
                                         image: Svg(
-                                            'assets/images/ic_streaming_qrcode.svg'),
+                                            'assets/images/ic_streaming_pen.svg'),
                                       ),
                                       padding: EdgeInsets.zero,
                                       constraints: const BoxConstraints(),
                                       onPressed: () {
-                                        WidgetsBinding.instance
-                                            .addPostFrameCallback((_) {
-                                          _showQuickConnectMenuDialog();
-                                        });
-                                        setState(() {
-                                          _showQuickConnect = true;
-                                        });
+                                        // todo: annotation
                                       },
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
+                              if (isAnnotationImplement)
+                                Container(
+                                  width: 1,
+                                  height: 21,
+                                  color: context
+                                      .tokens.color.vsdslColorOnSurfaceVariant,
+                                ),
+                              V3Focus(
+                                child: Container(
+                                  width: 41,
+                                  height: 41,
+                                  decoration: ShapeDecoration(
+                                    color: _showQuickConnect
+                                        ? context
+                                            .tokens.color.vsdslColorSecondary
+                                        : context
+                                            .tokens.color.vsdslColorSurface800,
+                                    shape: const OvalBorder(),
+                                  ),
+                                  child: IconButton(
+                                    icon: const Image(
+                                      width: 20,
+                                      height: 20,
+                                      image: Svg(
+                                          'assets/images/ic_streaming_qrcode.svg'),
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) {
+                                        _showQuickConnectMenuDialog();
+                                      });
+                                      setState(() {
+                                        _showQuickConnect = true;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
