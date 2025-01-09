@@ -46,7 +46,8 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
   }
 
   _showAuthDialog(BuildContext context) {
-    if (navService.canPop()) {
+    if (navService.canPop() &&
+        HybridConnectionList.hybridSplitScreenCount.value == 0) {
       navService.goBack();
     }
     FocusScope.of(context).unfocus();

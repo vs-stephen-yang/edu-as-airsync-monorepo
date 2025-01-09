@@ -72,7 +72,9 @@ class _V3StreamingViewState extends ConsumerState {
               // add one more to show "Waiting for others to join".
               splitScreenCount++;
             }
-            if (navService.canPop()) {
+            // 沒影任何投影時，關閉資訊dialog
+            if (navService.canPop() &&
+                HybridConnectionList.hybridSplitScreenCount.value == 0) {
               navService.goBack();
             }
             return Stack(
