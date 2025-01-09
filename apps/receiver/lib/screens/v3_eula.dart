@@ -108,6 +108,7 @@ class V3Eula extends StatelessWidget {
                             content = S.of(context).eula_title;
                           }
                           return V3FocusSingleChildScrollView(
+                            primaryFocusNode: primaryFocusNode,
                             children: [
                               AutoSizeText(
                                 content,
@@ -167,7 +168,6 @@ class V3Eula extends StatelessWidget {
                         height: 40,
                         child: V3Focus(
                           child: ElevatedButton(
-                            focusNode: primaryFocusNode,
                             style: ElevatedButton.styleFrom(
                               elevation: 5.0,
                               shadowColor:
