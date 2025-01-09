@@ -1,12 +1,17 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_instruction.dart';
 import 'package:display_flutter/widgets/v3_qrcode_quick_connect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:gap/gap.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
+import 'package:provider/provider.dart';
 
 class V3QuickConnectMenu extends StatefulWidget {
   const V3QuickConnectMenu({super.key});
@@ -41,7 +46,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
       alignment: Alignment.center,
       children: [
         Positioned(
-          bottom: 53,
+          bottom: 55,
           child: Dialog(
             backgroundColor: context.tokens.color.vsdslColorSurface100,
             insetPadding: EdgeInsets.zero,
@@ -49,15 +54,120 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
             shadowColor: context.tokens.color.vsdslColorOpacityNeutralSm,
             child: SizedBox(
               width: 512,
-              height: 507,
+              height: 555,
               child: DefaultTabController(
                 length: 2,
                 child: Stack(
-                  alignment: Alignment.center,
+                  alignment: Alignment.topCenter,
                   children: [
+                    Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: context.tokens.color.vsdslColorOutline,
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        S.current.v3_instruction_share_screen,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: context.tokens.color.vsdslColorOnSurface,
+                          fontSize: 19,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 72,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image(
+                            image: const Svg('assets/images/ic_screen.svg'),
+                            width: 27,
+                            height: 27,
+                            color: context.tokens.color.vsdslColorSurface600,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(
+                                context.tokens.spacing.vsdslSpacingSm.left),
+                            child: Consumer<InstanceInfoProvider>(
+                              builder: (_, instanceInfoProvider, __) {
+                                return AutoSizeText(
+                                  instanceInfoProvider.deviceName,
+                                  style: TextStyle(
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w700,
+                                    color: context
+                                        .tokens.color.vsdslColorSurface600,
+                                    letterSpacing: -0.48,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          ValueListenableBuilder(
+                            valueListenable:
+                                AppPreferences().connectivityTypeNotifier,
+                            builder: (context, connectivityType, child) {
+                              if (AppPreferences().connectivityType ==
+                                  ConnectivityType.local.name) {
+                                return Container(
+                                  decoration: ShapeDecoration(
+                                    color: context
+                                        .tokens.color.vsdslColorSurface200,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(9999),
+                                    ),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: context
+                                          .tokens.spacing.vsdslSpacingXl.left,
+                                      vertical: context
+                                          .tokens.spacing.vsdslSpacingSm.top),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Image(
+                                        image: Svg(
+                                            'assets/images/ic_local_connection_only.svg'),
+                                        width: 21,
+                                        height: 21,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: context.tokens.spacing
+                                                .vsdslSpacingSm.left),
+                                        child: AutoSizeText(
+                                          S
+                                              .of(context)
+                                              .v3_settings_local_connection_only,
+                                          style: context.tokens.textStyle
+                                              .airsyncFontSubtitle600
+                                              .apply(
+                                            color: context.tokens.color
+                                                .vsdslColorSurface600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                return const SizedBox();
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                     Positioned(
                       left: 13,
-                      top: 27,
+                      top: 117,
                       right: 13,
                       child: Container(
                         width: 485,
@@ -151,23 +261,55 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                       ),
                     ),
                     Positioned(
-                      top: 117,
-                      height: 340,
-                      width: 485,
-                      child: PageView(
-                        controller: _pageController,
-                        onPageChanged: (index) {
-                          setState(() {
-                            selected = index;
-                            FocusScope.of(context)
-                                .requestFocus(_focusNodes[index]);
-                          });
-                        },
-                        children: const [
-                          V3Instruction(isQuickConnect: true),
-                          V3QrCodeQuickConnect(isStringOnTop: true, size: 195),
-                        ],
+                      top: 154,
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 340,
+                        width: 485,
+                        child: PageView(
+                          controller: _pageController,
+                          onPageChanged: (index) {
+                            setState(() {
+                              selected = index;
+                              FocusScope.of(context)
+                                  .requestFocus(_focusNodes[index]);
+                            });
+                          },
+                          children: const [
+                            Padding(
+                              padding: EdgeInsets.only(top: 20),
+                              child: V3Instruction(isQuickConnect: true),
+                            ),
+                            V3QrCodeQuickConnect(
+                                isStringOnTop: true, size: 195),
+                          ],
+                        ),
                       ),
+                    ),
+                    Positioned(
+                      top: 494,
+                      child: Container(
+                          alignment: Alignment.center,
+                          child: Row(
+                            children: [
+                              const Image(
+                                width: 21,
+                                height: 21,
+                                image: Svg(
+                                    'assets/images/ic_split_screen_quick_menu.svg'),
+                              ),
+                              const Gap(3),
+                              Text(
+                                S.current.v3_quick_connect_menu_bottom_msg,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: context.tokens.color.vsdslColorInfo,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                            ],
+                          )),
                     ),
                     Positioned(
                       right: 13,

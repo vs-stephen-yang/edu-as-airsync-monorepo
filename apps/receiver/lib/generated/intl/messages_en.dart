@@ -273,6 +273,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Participants"),
         "v3_qrcode_quick_connect":
             MessageLookupByLibrary.simpleMessage("Quick Connect"),
+        "v3_quick_connect_menu_bottom_msg":
+            MessageLookupByLibrary.simpleMessage(
+                "Split-screen activates if two or more users share screens."),
         "v3_quick_connect_menu_display_code":
             MessageLookupByLibrary.simpleMessage("Display Code"),
         "v3_quick_connect_menu_qrcode":

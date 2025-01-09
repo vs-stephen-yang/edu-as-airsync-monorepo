@@ -1920,6 +1920,16 @@ class S {
       args: [year, version],
     );
   }
+
+  /// `Split-screen activates if two or more users share screens.`
+  String get v3_quick_connect_menu_bottom_msg {
+    return Intl.message(
+      'Split-screen activates if two or more users share screens.',
+      name: 'v3_quick_connect_menu_bottom_msg',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

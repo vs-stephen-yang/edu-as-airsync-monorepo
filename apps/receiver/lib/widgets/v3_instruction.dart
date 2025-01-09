@@ -30,93 +30,116 @@ class V3Instruction extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment:
-          isQuickConnect ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ValueListenableBuilder(
-            valueListenable: AppPreferences().connectivityTypeNotifier,
-            builder: (context, connectivityType, child) {
-              if (AppPreferences().connectivityType ==
-                  ConnectivityType.local.name) {
-                return Container(
-                  decoration: ShapeDecoration(
-                    color: context.tokens.color.vsdslColorSurface200,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9999),
-                    ),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                      horizontal: context.tokens.spacing.vsdslSpacingXl.left,
-                      vertical: context.tokens.spacing.vsdslSpacingSm.top),
-                  margin: const EdgeInsets.only(bottom: 38),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Image(
-                        image:
-                            Svg('assets/images/ic_local_connection_only.svg'),
-                        width: 21,
-                        height: 21,
+        if (isCastToDevice) ...[
+          ValueListenableBuilder(
+              valueListenable: AppPreferences().connectivityTypeNotifier,
+              builder: (context, connectivityType, child) {
+                if (AppPreferences().connectivityType ==
+                    ConnectivityType.local.name) {
+                  return Container(
+                    decoration: ShapeDecoration(
+                      color: context.tokens.color.vsdslColorSurface200,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9999),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: context.tokens.spacing.vsdslSpacingSm.left),
-                        child: AutoSizeText(
-                          S.of(context).v3_settings_local_connection_only,
-                          style: context.tokens.textStyle.airsyncFontSubtitle600
-                              .apply(
-                            color: context.tokens.color.vsdslColorSurface600,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: context.tokens.spacing.vsdslSpacingXl.left,
+                        vertical: context.tokens.spacing.vsdslSpacingSm.top),
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Image(
+                          image:
+                              Svg('assets/images/ic_local_connection_only.svg'),
+                          width: 21,
+                          height: 21,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: context.tokens.spacing.vsdslSpacingSm.left),
+                          child: AutoSizeText(
+                            S.of(context).v3_settings_local_connection_only,
+                            style: context
+                                .tokens.textStyle.airsyncFontSubtitle600
+                                .apply(
+                              color: context.tokens.color.vsdslColorSurface600,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return const SizedBox(
-                  height: 27,
-                );
-              }
-            }),
-        if (!isQuickConnect && !isCastToDevice) ...[
-          AutoSizeText(
-            S.of(context).v3_instruction_share_screen,
-            style: context.tokens.textStyle.airsyncFontTitle.apply(
-                color: context.tokens.color.vsdslColorOnSurface,
-                fontWeightDelta: FontWeight.w700.value),
-          ),
-          SizedBox(height: context.tokens.spacing.vsdslSpacing5xl.top),
+                      ],
+                    ),
+                  );
+                } else {
+                  return const SizedBox(
+                    height: 27,
+                  );
+                }
+              }),
         ],
-        if (isQuickConnect) ...[
+        if (!isQuickConnect && !isCastToDevice) ...[
           Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              Image(
-                image: const Svg('assets/images/ic_screen.svg'),
-                width: 27,
-                height: 27,
-                color: context.tokens.color.vsdslColorSurface600,
+              AutoSizeText(
+                S.of(context).v3_instruction_share_screen,
+                style: context.tokens.textStyle.airsyncFontTitle.apply(
+                    color: context.tokens.color.vsdslColorOnSurface,
+                    fontWeightDelta: FontWeight.w700.value),
               ),
-              Padding(
-                padding: EdgeInsets.only(
-                    left: context.tokens.spacing.vsdslSpacingSm.left),
-                child: Consumer<InstanceInfoProvider>(
-                  builder: (_, instanceInfoProvider, __) {
-                    return AutoSizeText(
-                      instanceInfoProvider.deviceName,
-                      style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.w700,
-                        color: context.tokens.color.vsdslColorSurface600,
-                        letterSpacing: -0.48,
-                      ),
-                    );
-                  },
-                ),
-              ),
+              Gap(context.tokens.spacing.vsdslSpacing3xl.right),
+              ValueListenableBuilder(
+                  valueListenable: AppPreferences().connectivityTypeNotifier,
+                  builder: (context, connectivityType, child) {
+                    if (AppPreferences().connectivityType ==
+                        ConnectivityType.local.name) {
+                      return Container(
+                        decoration: ShapeDecoration(
+                          color: context.tokens.color.vsdslColorSurface200,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9999),
+                          ),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            horizontal:
+                                context.tokens.spacing.vsdslSpacingXl.left,
+                            vertical:
+                                context.tokens.spacing.vsdslSpacingSm.top),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Image(
+                              image: Svg(
+                                  'assets/images/ic_local_connection_only.svg'),
+                              width: 21,
+                              height: 21,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: context
+                                      .tokens.spacing.vsdslSpacingSm.left),
+                              child: AutoSizeText(
+                                S.of(context).v3_settings_local_connection_only,
+                                style: context
+                                    .tokens.textStyle.airsyncFontSubtitle600
+                                    .apply(
+                                  color:
+                                      context.tokens.color.vsdslColorSurface600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  }),
             ],
           ),
-          SizedBox(height: context.tokens.spacing.vsdslSpacing4xl.top),
+          SizedBox(height: context.tokens.spacing.vsdslSpacing5xl.top),
         ],
         Row(
           mainAxisSize: MainAxisSize.min,
@@ -146,11 +169,12 @@ class V3Instruction extends StatelessWidget {
                       children: [
                         AutoSizeText.rich(
                           _buildTextSpan(
-                            fullText: isInternet && !isCastToDevice
+                            fullText: isInternet &&
+                                    (!isCastToDevice || isQuickConnect)
                                 ? S
                                     .of(context)
                                     .v3_instruction1a
-                                .replaceAll('airsync.net', airsync)
+                                    .replaceAll('airsync.net', airsync)
                                     .replaceAll(
                                         S.current.v3_instruction1b
                                             .toLowerCase(),
@@ -198,7 +222,8 @@ class V3Instruction extends StatelessWidget {
                               V3Focus(
                                 child: InkWell(
                                   child: Padding(
-                                    padding: const EdgeInsets.only(left: 5, right: 5),
+                                    padding: const EdgeInsets.only(
+                                        left: 5, right: 5),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         border: Border(
@@ -223,8 +248,8 @@ class V3Instruction extends StatelessWidget {
                                                 .airsyncFontTitle
                                                 .apply(
                                                     color: context.tokens.color
-                                                    .vsdslColorOnSurface,
-                                                fontWeightDelta:
+                                                        .vsdslColorOnSurface,
+                                                    fontWeightDelta:
                                                         FontWeight.w700.value),
                                           )
                                         ],
@@ -271,9 +296,7 @@ class V3Instruction extends StatelessWidget {
         ),
         SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
         Padding(
-          padding: isQuickConnect
-              ? EdgeInsets.zero
-              : const EdgeInsets.only(left: 35),
+          padding: const EdgeInsets.only(left: 35),
           child: Consumer<InstanceInfoProvider>(
               builder: (_, instanceInfoProvider, __) {
             return AutoSizeText(
@@ -309,9 +332,7 @@ class V3Instruction extends StatelessWidget {
         Row(
           children: [
             Padding(
-              padding: isQuickConnect
-                  ? EdgeInsets.zero
-                  : const EdgeInsets.only(left: 35),
+              padding: const EdgeInsets.only(left: 35),
               child:
                   Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
                 return ValueListenableBuilder<String>(

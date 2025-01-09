@@ -28,14 +28,18 @@ class V3QrCodeQuickConnect extends StatelessWidget {
             : context.tokens.spacing.vsdslSpacingXl.top - 1);
 
     List<Widget> children = [];
-    children.add(title);
-    children.add(space);
+    if (!isStringOnTop) {
+      children.add(title);
+      children.add(space);
+    }
     children.add(const V3QrCodeImage(isShowBackground: true));
 
     return Container(
+      alignment: Alignment.center,
       padding: EdgeInsets.symmetric(
           vertical: context.tokens.spacing.vsdslSpacing4xl.top - 1),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: isStringOnTop ? children : children.reversed.toList(),
       ),
     );
