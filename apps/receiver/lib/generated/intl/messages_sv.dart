@@ -375,8 +375,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Nyheter"),
         "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
             "AirSync %s\nAirSync är en egenutvecklad trådlös skärmdelningslösning från ViewSonic. När den används med AirSync-sändaren möjliggör den smidig skärmdelning från användarens enhet till ViewSonics interaktiva skärmar.\nHuvudfunktioner:\n1.\tTrådlös skärmdelning.\n2.\tAutomatisk uppdelning av skärmar för flera presentatörer.\n3.\tModeratormodus för bättre kontroll under presentationer.\n4.\tSkärmspegling som stöder AirPlay, Google Cast och Miracast.\n5.\tCasta till enhet med fjärrkontroll.\n6.\tCasta till tavla för att sända skärmar till flera stora skärmar.\n7.\tAnnotation.\n8.\tInteragera med Windows-, macOS-, iOS-, Android- och webbversionen av AirSync-sändaren.\n9.\tTouchback stöds i Windows- och macOS-sändare.\n"),
-        "v3_shortcuts_airplay":
-            MessageLookupByLibrary.simpleMessage("\nAirPlay"),
+        "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
         "v3_shortcuts_cast_device":
             MessageLookupByLibrary.simpleMessage("Casta till enheter"),
         "v3_shortcuts_cast_device_desc": MessageLookupByLibrary.simpleMessage(
