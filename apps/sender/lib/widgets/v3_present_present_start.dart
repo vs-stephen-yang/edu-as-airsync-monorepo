@@ -365,10 +365,10 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
 
         widgetPositionInScreen = widgetPositionInApp + windowPosition;
         widgetRect = Rect.fromLTWH(
-          widgetPositionInScreen.dx,
-          widgetPositionInScreen.dy,
+          widgetPositionInScreen.dx * (window?.scaleFactor ?? 1),
+          widgetPositionInScreen.dy * (window?.scaleFactor ?? 1),
           renderBox.size.width,
-          renderBox.size.height + windowBar,
+          renderBox.size.height + windowBar / 2,
         );
       }
     }
