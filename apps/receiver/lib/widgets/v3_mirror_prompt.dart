@@ -84,7 +84,8 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
   }
 
   _showAuthDialog(BuildContext context) {
-    if (navService.canPop()) {
+    if (navService.canPop() &&
+        HybridConnectionList.hybridSplitScreenCount.value == 0) {
       navService.goBack();
     }
     FocusScope.of(context).unfocus();
