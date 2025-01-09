@@ -65,7 +65,7 @@ class V3CastDeviceInfo extends StatelessWidget {
                           ),
                           Positioned(
                             left: 53,
-                            top: 91,
+                            top: 71,
                             bottom: 0,
                             child: SizedBox(
                               width: 529,
