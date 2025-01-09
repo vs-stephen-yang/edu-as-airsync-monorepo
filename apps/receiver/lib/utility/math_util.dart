@@ -23,3 +23,12 @@ List<T> calculatePercentiles<T extends Comparable>(
     return data[rank.floor()];
   }).toList();
 }
+
+// Calculate the EWMA (Exponentially Weighted Moving Average)
+double calculateEwma({
+  required double currentValue,
+  required double previousValue,
+  required double alpha,
+}) {
+  return (currentValue * alpha) + (previousValue * (1 - alpha));
+}

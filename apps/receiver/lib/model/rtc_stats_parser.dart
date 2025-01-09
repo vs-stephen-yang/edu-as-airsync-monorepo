@@ -25,6 +25,8 @@ class RtcStatsParser {
 
   Function(RtcVideoInboundStats stats)? onVideoInboundStats;
 
+  Function(RtcIceCandidatePairStats stats)? onIceCandidatePairStats;
+
   // the stats values in the last report
   int? _framesReceived;
   int? _framesDecoded;
@@ -94,6 +96,10 @@ class RtcStatsParser {
               (StatsReport report) => report.id == localCandidateId),
           remoteCandidates.firstWhere(
               (StatsReport report) => report.id == remoteCandidateId));
+
+      if (selectedCandidatePair != null) {
+        _onSelectedCandidatePair(selectedCandidatePair);
+      }
     }
 
     // find video inbound-rtp reports
@@ -111,10 +117,24 @@ class RtcStatsParser {
       StatsReport localCandidateReport, StatsReport remoteCandidateReport) {
     final localCandidateType = localCandidateReport.values['candidateType'];
     final remoteCandidateType = remoteCandidateReport.values['candidateType'];
+
     if (localCandidateType != null && remoteCandidateType != null) {
       onPairCandidateType?.call(
           localCandidateType as String, remoteCandidateType as String);
     }
+  }
+
+  void _onSelectedCandidatePair(StatsReport selectedCandidatePair) {
+    final stats = RtcIceCandidatePairStats();
+
+    // Parse the selected candidate pair
+    stats.currentRoundTripTime =
+        selectedCandidatePair.values['currentRoundTripTime'];
+
+    stats.totalRoundTripTime =
+        selectedCandidatePair.values['totalRoundTripTime'];
+
+    onIceCandidatePairStats?.call(stats);
   }
 
   void _onVideoStatsReports(List<StatsReport> reports) {
@@ -147,9 +167,9 @@ class RtcStatsParser {
 
     final totalDecodeTime = videoInboundRtp.values['totalDecodeTime'];
 
-    final bytesReceived = videoInboundRtp.values['bytesReceived'];
+    stats.bytesReceived = videoInboundRtp.values['bytesReceived'];
 
-    stats.bytesPerSecond = _diff(bytesReceived, _bytesReceived);
+    stats.bytesPerSecond = _diff(stats.bytesReceived, _bytesReceived);
 
     stats.framesReceivedPerSecond = _diff(framesReceived, _framesReceived);
 
@@ -180,7 +200,7 @@ class RtcStatsParser {
 
     _totalDecodeTime = totalDecodeTime;
 
-    _bytesReceived = bytesReceived;
+    _bytesReceived = stats.bytesReceived;
 
     _jitterBufferEmittedCount = jitterBufferEmittedCount;
     _jitterBufferDelay = jitterBufferDelay;

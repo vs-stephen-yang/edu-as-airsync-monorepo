@@ -11,9 +11,11 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/settings/channel_config.dart';
+import 'package:display_flutter/utility/app_analytics_util.dart';
 import 'package:display_flutter/utility/bounded_list.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/rtc_stats_monitor.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
@@ -102,6 +104,7 @@ class RTCConnector {
   RTCVideoRenderer? _remoteRenderer = RTCVideoRenderer();
 
   RtcStatsParser? _rtcStatsParser;
+  RtcStatsMonitor? _rtcStatsMonitor;
 
   // implement in webrtc_view
   RTCVideoRenderer? get remoteRenderer => _remoteRenderer;
@@ -184,6 +187,8 @@ class RTCConnector {
   }
 
   void startStatsTimer() {
+    _rtcStatsMonitor = RtcStatsMonitor();
+
     _rtcStatsParser = RtcStatsParser(
       _handleVideoStatsReport,
       (String localCandidateType, String remoteCandidateType) {
@@ -199,6 +204,9 @@ class RTCConnector {
         }
       },
     );
+
+    _rtcStatsParser?.onIceCandidatePairStats =
+        _handleIceCandidatePairStatsReport;
 
     _statsTimer?.cancel();
     _statsTimer = Timer.periodic(
@@ -245,7 +253,13 @@ class RTCConnector {
     return _isRtcFirstConnected;
   }
 
+  void _handleIceCandidatePairStatsReport(RtcIceCandidatePairStats stats) {
+    _rtcStatsMonitor?.onIceCandidatePairStats(stats);
+  }
+
   void _handleVideoStatsReport(RtcVideoInboundStats stats) {
+    _rtcStatsMonitor?.onVideoInboundStats(stats);
+
     _videoBitrateHistory.add(stats.bytesPerSecond);
 
     _videoInboundStatsHistory.add(stats);
@@ -545,7 +559,13 @@ class RTCConnector {
     await onChannelDisconnect?.call(reason: reason);
   }
 
-  _trackMetrics() {}
+  _trackMetrics() {
+    // Track stats summary
+    if (_rtcStatsMonitor != null) {
+      final summary = _rtcStatsMonitor!.createSummary();
+      trackRtcSummary(summary);
+    }
+  }
 
   Future<void> close(ChannelCloseCode code, {String? reason}) async {
     log.info('[$clientId] Close channel $reason');
