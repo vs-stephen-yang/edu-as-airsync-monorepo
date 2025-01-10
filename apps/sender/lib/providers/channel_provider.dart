@@ -14,7 +14,6 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/settings/channel_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
-import 'package:display_cast_flutter/utilities/app_preferences.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -597,11 +596,7 @@ class ChannelProvider extends ChangeNotifier {
 
     if (goIdleState) {
       resetMessage();
-      if (AppPreferences().showOldUI) {
-        navService.popUntil('/home');
-      } else {
-        navService.popUntil('/v3home');
-      }
+      navService.popUntil('/v3home');
       _presentStateProvider?.presentMainPage();
     }
 
