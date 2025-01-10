@@ -17,8 +17,6 @@ import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
-import 'package:display_flutter/screens/eula.dart';
-import 'package:display_flutter/screens/home.dart';
 import 'package:display_flutter/screens/v3_eula.dart';
 import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
@@ -190,19 +188,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             theme: createThemeData(context),
             initialRoute: AppPreferences().showEULA &&
                     !AppInstanceCreate().isInstalledInVBS100
-                ? !DeviceFeatureAdapter.showOldUI
-                    ? '/v3Eula'
-                    : '/eula'
-                : !DeviceFeatureAdapter.showOldUI
-                    ? '/v3Home'
-                    : '/home',
+                ? '/v3Eula'
+                : '/v3Home',
             navigatorKey: NavigationService.navigationKey,
             routes: {
-              // for "navService.popUntil('/home')"
-              '/home': (context) => const AppOTADialog(child: Home()),
               // for "navService.popUntil('/v3Home')"
               '/v3Home': (context) => const AppOTADialog(child: V3Home()),
-              '/eula': (context) => const AppOTADialog(child: Eula()),
               '/v3Eula': (context) => AppOTADialog(
                   child: FocusAwareBuilder(
                       builder: (primaryFocusNode) =>

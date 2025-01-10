@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/app_preferences.dart';
 import 'package:display_flutter/generated/l10n.dart';
-import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/widgets/bottom_bar.dart';
 import 'package:display_flutter/widgets/focus_elevated_button.dart';
 import 'package:display_flutter/widgets/focus_single_child_scroll_view.dart';
@@ -115,8 +114,7 @@ class _EulaState extends State<Eula> {
                 notFocusHeight: 48,
                 onClick: () {
                   AppPreferences().set(showEULA: false);
-                  navService.pushNamedAndRemoveUntil(
-                      !DeviceFeatureAdapter.showOldUI ? '/v3Home' : '/home');
+                  navService.pushNamedAndRemoveUntil('/v3Home');
                 },
                 child: AutoSizeText(
                   S.of(context).eula_agree,
