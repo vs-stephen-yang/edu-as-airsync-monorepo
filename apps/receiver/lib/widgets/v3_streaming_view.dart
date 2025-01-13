@@ -19,7 +19,8 @@ import 'package:display_flutter/widgets/v3_streaming_function.dart';
 import 'package:display_flutter/widgets/v3_webrtc_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart' as provider;
 
@@ -38,9 +39,6 @@ class _V3StreamingViewState extends ConsumerState {
       _halfHeight = 0,
       _thirdWidth = 0;
   bool _isNewSharingOnScreen = false;
-  bool _showQuickConnect = false;
-  bool _showShortcut = false;
-  final isAnnotationImplement = false; // todo: annotation
 
   @override
   Widget build(BuildContext context) {
@@ -193,13 +191,10 @@ class _V3StreamingViewState extends ConsumerState {
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const SizedBox(
+                                      SvgPicture.asset(
+                                        'assets/images/ic_split_screen_waiting.svg',
                                         width: 92,
                                         height: 80,
-                                        child: Image(
-                                          image: Svg(
-                                              'assets/images/ic_split_screen_waiting.svg'),
-                                        ),
                                       ),
                                       AutoSizeText(
                                         S.of(context).v3_waiting_join,
@@ -235,113 +230,10 @@ class _V3StreamingViewState extends ConsumerState {
           builder: (context, value, child) {
             return value
                 ? const SizedBox.shrink()
-                : Positioned(
+                : const Positioned(
                     left: 13,
                     bottom: 8,
-                    child: ExpandableWidget(
-                      children: [
-                        V3Focus(
-                          child: Container(
-                            width: 41,
-                            height: 41,
-                            decoration: ShapeDecoration(
-                              color: _showShortcut
-                                  ? context.tokens.color.vsdslColorSecondary
-                                  : context.tokens.color.vsdslColorSurface800,
-                              shape: const OvalBorder(),
-                            ),
-                            child: IconButton(
-                              icon: const Image(
-                                width: 20,
-                                height: 20,
-                                image: Svg(
-                                    'assets/images/ic_streaming_shortcut.svg'),
-                              ),
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                              onPressed: () {
-                                WidgetsBinding.instance
-                                    .addPostFrameCallback((_) {
-                                  _showShortcutsMenuDialog();
-                                });
-                                setState(() {
-                                  _showShortcut = true;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: context.tokens.radii.vsdslRadiusFull,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              if (isAnnotationImplement)
-                                V3Focus(
-                                  child: SizedBox(
-                                    width: 41,
-                                    height: 41,
-                                    child: IconButton(
-                                      icon: const Image(
-                                        image: Svg(
-                                            'assets/images/ic_streaming_pen.svg'),
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      onPressed: () {
-                                        // todo: annotation
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              if (isAnnotationImplement)
-                                Container(
-                                  width: 1,
-                                  height: 21,
-                                  color: context
-                                      .tokens.color.vsdslColorOnSurfaceVariant,
-                                ),
-                              V3Focus(
-                                child: Container(
-                                  width: 41,
-                                  height: 41,
-                                  decoration: ShapeDecoration(
-                                    color: _showQuickConnect
-                                        ? context
-                                            .tokens.color.vsdslColorSecondary
-                                        : context
-                                            .tokens.color.vsdslColorSurface800,
-                                    shape: const OvalBorder(),
-                                  ),
-                                  child: IconButton(
-                                    icon: const Image(
-                                      width: 20,
-                                      height: 20,
-                                      image: Svg(
-                                          'assets/images/ic_streaming_qrcode.svg'),
-                                    ),
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(),
-                                    onPressed: () {
-                                      WidgetsBinding.instance
-                                          .addPostFrameCallback((_) {
-                                        _showQuickConnectMenuDialog();
-                                      });
-                                      setState(() {
-                                        _showQuickConnect = true;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                    child: ExpandableWidget(),
                   );
           },
         ),
@@ -392,35 +284,6 @@ class _V3StreamingViewState extends ConsumerState {
     }
   }
 
-  _showShortcutsMenuDialog() {
-    showDialog(
-      context: context,
-      barrierColor: Colors.transparent,
-      builder: (BuildContext context) => FocusAwareBuilder(
-          builder: (primaryFocusNode) =>
-              V3ShortcutsMenu(primaryFocusNode: primaryFocusNode)),
-    ).then((_) {
-      setState(() {
-        _showShortcut = false;
-      });
-    });
-  }
-
-  _showQuickConnectMenuDialog() {
-    showDialog(
-      context: context,
-      barrierColor: Colors.transparent,
-      builder: (BuildContext context) => FocusAwareBuilder(
-        builder: (primaryFocusNode) =>
-            V3QuickConnectMenu(primaryFocusNode: primaryFocusNode),
-      ),
-    ).then((_) {
-      setState(() {
-        _showQuickConnect = false;
-      });
-    });
-  }
-
   _showNewSharingMessageDialog(List<String> names) async {
     String name = names.first;
     await showDialog(
@@ -442,9 +305,7 @@ class _V3StreamingViewState extends ConsumerState {
 }
 
 class ExpandableWidget extends StatefulWidget {
-  const ExpandableWidget({super.key, required this.children});
-
-  final List<Widget> children;
+  const ExpandableWidget({super.key});
 
   @override
   State<ExpandableWidget> createState() => _ExpandableWidgetState();
@@ -457,6 +318,8 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
 
   bool isExpanded = false;
   bool isAnimating = false;
+  bool _showQuickConnect = false;
+  bool _showShortcut = false;
 
   @override
   void initState() {
@@ -466,7 +329,8 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
       duration: const Duration(milliseconds: 300),
     );
 
-    _widthAnimation = Tween<double>(begin: 50.0, end: 150.0).animate(
+    // single icon row is -> 45, three icon row is -> 45x3 + Gap(8)x2 = 151
+    _widthAnimation = Tween<double>(begin: 45.0, end: 151.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
@@ -503,51 +367,91 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
             width: _widthAnimation.value,
             height: 60.0,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                if (!isExpanded)
-                  V3Focus(
-                    child: SizedBox(
-                      width: 41,
-                      height: 41,
-                      child: IconButton(
-                        icon: const Image(
-                          image: Svg(
-                              'assets/images/ic_streaming_shortcut_expanded.svg'),
-                        ),
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                        onPressed: () {
-                          _toggle();
-                        },
+                V3Focus(
+                  child: Container(
+                    width: 41,
+                    height: 41,
+                    padding: EdgeInsets.zero,
+                    decoration: ShapeDecoration(
+                      color: context.tokens.color.vsdslColorSurface800,
+                      shape: const OvalBorder(),
+                    ),
+                    child: IconButton(
+                      icon: SvgPicture.asset(
+                        isExpanded
+                            ? 'assets/images/ic_streaming_shortcut_minimize.svg'
+                            : 'assets/images/ic_streaming_shortcut_expanded.svg',
                       ),
+                      focusColor: Colors.transparent,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () {
+                        _toggle();
+                      },
                     ),
                   ),
+                ),
                 if (isExpanded) ...[
+                  const Gap(8),
                   V3Focus(
                     child: Container(
                       width: 41,
                       height: 41,
                       decoration: ShapeDecoration(
-                        color: context.tokens.color.vsdslColorSurface800,
+                        color: _showShortcut
+                            ? context.tokens.color.vsdslColorSecondary
+                            : context.tokens.color.vsdslColorSurface800,
                         shape: const OvalBorder(),
                       ),
                       child: IconButton(
-                        icon: const Image(
-                          width: 20,
-                          height: 20,
-                          image: Svg(
-                              'assets/images/ic_streaming_shortcut_minimize.svg'),
+                        icon: SvgPicture.asset(
+                          'assets/images/ic_streaming_shortcut.svg',
                         ),
+                        focusColor: Colors.transparent,
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                         onPressed: () {
-                          _toggle();
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            _showShortcutsMenuDialog();
+                          });
+                          setState(() {
+                            _showShortcut = true;
+                          });
                         },
                       ),
                     ),
                   ),
-                  ...widget.children
+                  const Gap(8),
+                  V3Focus(
+                    child: Container(
+                      width: 41,
+                      height: 41,
+                      decoration: ShapeDecoration(
+                        color: _showQuickConnect
+                            ? context.tokens.color.vsdslColorSecondary
+                            : context.tokens.color.vsdslColorSurface800,
+                        shape: const OvalBorder(),
+                      ),
+                      child: IconButton(
+                        icon: SvgPicture.asset(
+                          'assets/images/ic_streaming_qrcode.svg',
+                        ),
+                        focusColor: Colors.transparent,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        onPressed: () {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            _showQuickConnectMenuDialog();
+                          });
+                          setState(() {
+                            _showQuickConnect = true;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ],
             ),
@@ -555,5 +459,34 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
         );
       },
     );
+  }
+
+  _showShortcutsMenuDialog() {
+    showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) => FocusAwareBuilder(
+          builder: (primaryFocusNode) =>
+              V3ShortcutsMenu(primaryFocusNode: primaryFocusNode)),
+    ).then((_) {
+      setState(() {
+        _showShortcut = false;
+      });
+    });
+  }
+
+  _showQuickConnectMenuDialog() {
+    showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) => FocusAwareBuilder(
+        builder: (primaryFocusNode) =>
+            V3QuickConnectMenu(primaryFocusNode: primaryFocusNode),
+      ),
+    ).then((_) {
+      setState(() {
+        _showQuickConnect = false;
+      });
+    });
   }
 }
