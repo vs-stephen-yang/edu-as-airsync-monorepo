@@ -12,6 +12,7 @@ class ResizableDraggableWidget extends StatefulWidget {
   final VoidCallback onStop;
   final VoidCallback onMute;
   final double height;
+  final bool isMute;
 
   const ResizableDraggableWidget({
     super.key,
@@ -20,6 +21,7 @@ class ResizableDraggableWidget extends StatefulWidget {
     required this.onStop,
     this.height = 37,
     required this.onMute,
+    required this.isMute,
   });
 
   @override
@@ -150,6 +152,7 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
         width: _width,
         height: widget.height,
         text: widget.text,
+        isMute: widget.isMute,
         onMinimize: () {},
         onStop: () {},
         onMute: () {},
@@ -169,6 +172,7 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
         width: _width,
         height: widget.height,
         text: widget.text,
+        isMute: widget.isMute,
         onMinimize: () {
           _updatePositionForExpandOrCollapse(
               false, _collapsedWidth, screenWidth);
@@ -227,6 +231,7 @@ class ExpandedContentWidget extends StatelessWidget {
   final double width;
   final double height;
   final String text;
+  final bool isMute;
   final VoidCallback onMinimize;
   final VoidCallback onStop;
   final VoidCallback onMute;
@@ -239,6 +244,7 @@ class ExpandedContentWidget extends StatelessWidget {
     required this.onMinimize,
     required this.onStop,
     required this.onMute,
+    required this.isMute,
   });
 
   @override
@@ -264,7 +270,7 @@ class ExpandedContentWidget extends StatelessWidget {
           Flexible(child: _buildText(context)),
           textPadding,
           gap,
-          _buildMuteButton(context),
+          _buildMuteButton(context, isMute),
           gap,
           _buildStopButton(context),
           gap,
@@ -298,17 +304,31 @@ class ExpandedContentWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildMuteButton(BuildContext context) {
-    return SizedBox(
-      width: 26,
-      height: 26,
-      child: IconButton(
-        icon: SvgPicture.asset('assets/images/ic_group_mute.svg'),
-        //TODO:unmute
-        padding: EdgeInsets.zero,
-        constraints: const BoxConstraints(),
-        onPressed: onMute,
-      ),
+  Widget _buildMuteButton(BuildContext context, bool isMute) {
+    bool mute = isMute;
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return SizedBox(
+          width: 26,
+          height: 26,
+          child: IconButton(
+            icon: SvgPicture.asset(
+              mute
+                  ? 'assets/images/ic_group_mute.svg'
+                  : 'assets/images/ic_group_unmute.svg',
+              width: 26,
+              height: 26,
+            ),
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              setState(() {
+                mute = !mute;
+                onMute.call();
+              });
+            },
+          ),
+        );
+      },
     );
   }
 

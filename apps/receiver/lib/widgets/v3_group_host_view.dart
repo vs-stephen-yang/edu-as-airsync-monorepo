@@ -62,6 +62,7 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
                 provider.stopReceivedFromHost(
                     closeReason: 'stop received from host');
               },
+              isMute: videoView.renderer.srcObject!.getAudioTracks()[0].enabled,
             ),
             IgnorePointer(
               child: Stack(
