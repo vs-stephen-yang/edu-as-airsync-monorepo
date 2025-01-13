@@ -25,7 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(year) =>
       "Copyright © ViewSonic Corporation ${year}. All rights reserved.";
 
-  static String m2(year, version) => "AirSync ©${year} 版本 ${version}";
+  static String m2(year, version) => "AirSync ©${year}. 版本 ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -253,6 +253,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_select_role_title":
             MessageLookupByLibrary.simpleMessage("選擇分享或接收畫面"),
         "v3_main_terms": MessageLookupByLibrary.simpleMessage("使用條款"),
+        "v3_main_web_nonsupport": MessageLookupByLibrary.simpleMessage(
+            "目前的瀏覽器不支援AirSync，請使用Chrome或Edge瀏覽器。"),
+        "v3_main_web_nonsupport_confirm":
+            MessageLookupByLibrary.simpleMessage("確定"),
         "v3_present_end_information":
             MessageLookupByLibrary.simpleMessage("已停止分享，共計使用 %s 分鐘"),
         "v3_present_moderator_exited":
