@@ -186,5 +186,6 @@
   "v3_settings_feature_locked": "Locked by ViewSonic Manager.",
   "v3_cast_to_device_list_msg": "Maximum up to 10 devices.",
   "v3_settings_version": "AirSync ©{year}. version {version}",
-  "v3_quick_connect_menu_bottom_msg": "Split-screen activates if two or more users share screens."
+  "v3_quick_connect_menu_bottom_msg": "Split-screen activates if two or more users share screens.",
+  "v3_settings_broadcast_screen_energy_saving": "It is recommended to turn off the screen energy saving mode to avoid screen interruption during projection."
 }

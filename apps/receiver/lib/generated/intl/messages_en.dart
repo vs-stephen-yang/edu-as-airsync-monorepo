@@ -295,6 +295,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Broadcast to"),
         "v3_settings_broadcast_devices":
             MessageLookupByLibrary.simpleMessage("Sender devices"),
+        "v3_settings_broadcast_screen_energy_saving":
+            MessageLookupByLibrary.simpleMessage(
+                "It is recommended to turn off the screen energy saving mode to avoid screen interruption during projection."),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage(
                 "Broadcast to the display group"),

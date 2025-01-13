@@ -1930,6 +1930,16 @@ class S {
       args: [],
     );
   }
+
+  /// `It is recommended to turn off the screen energy saving mode to avoid screen interruption during projection.`
+  String get v3_settings_broadcast_screen_energy_saving {
+    return Intl.message(
+      'It is recommended to turn off the screen energy saving mode to avoid screen interruption during projection.',
+      name: 'v3_settings_broadcast_screen_energy_saving',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
