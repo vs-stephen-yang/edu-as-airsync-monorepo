@@ -8,6 +8,7 @@ import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsBroadcast extends StatelessWidget {
@@ -16,24 +17,48 @@ class V3SettingsBroadcast extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(builder: (_, settingsProvider, __) {
-      return V3Setting2ndLayer(
-        isDisable: settingsProvider.isBroadcastLock,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AutoSizeText(
-              S.of(context).v3_settings_broadcast_cast_to,
+      return Column(
+        children: [
+          Expanded(
+            child: V3Setting2ndLayer(
+              isDisable: settingsProvider.isBroadcastLock,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AutoSizeText(
+                    S.of(context).v3_settings_broadcast_cast_to,
+                    style: TextStyle(
+                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                      fontSize: 12,
+                    ),
+                  ),
+                  SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
+                  V3Focus(
+                      child: CastToDevices(settingsProvider: settingsProvider)),
+                  SizedBox(height: context.tokens.spacing.vsdslSpacingMd.top),
+                  V3Focus(
+                      child: CastToBoards(settingsProvider: settingsProvider)),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            width: 325,
+            decoration: BoxDecoration(
+              borderRadius: context.tokens.radii.vsdslRadiusLg,
+              color: context.tokens.color.vsdslColorSurface900,
+            ),
+            padding: context.tokens.spacing.vsdslSpacingXl,
+            child: Text(
+              S.of(context).v3_settings_broadcast_screen_energy_saving,
               style: TextStyle(
-                color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                color: context.tokens.color.vsdslColorOnTertiary,
                 fontSize: 12,
               ),
             ),
-            SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
-            V3Focus(child: CastToDevices(settingsProvider: settingsProvider)),
-            SizedBox(height: context.tokens.spacing.vsdslSpacingMd.top),
-            V3Focus(child: CastToBoards(settingsProvider: settingsProvider)),
-          ],
-        ),
+          ),
+          const Gap(13)
+        ],
       );
     });
   }
