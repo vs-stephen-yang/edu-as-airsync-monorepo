@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:hive_flutter/hive_flutter.dart';
 
 class DataDisplayCode {
@@ -28,7 +30,7 @@ class DataDisplayCode {
     // Remove exist display code and add to last one.
     // "Display Code drop-down menu" will reversed list to show last one on top.
     await remove(displayCode);
-    _displayCodeBox?.add(displayCode);
+    unawaited(_displayCodeBox?.add(displayCode));
   }
 
   Future<List?> load() async {

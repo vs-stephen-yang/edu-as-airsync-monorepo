@@ -8,7 +8,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'annotation/canvas_widget_android.dart';
 
 void annotationCommonEntry(ConfigSettings settings) async {
-  runZonedGuarded<Future<void>>(() async {
+  unawaited(runZonedGuarded<Future<void>>(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
     if (settings.sentry != null) {
@@ -18,5 +18,5 @@ void annotationCommonEntry(ConfigSettings settings) async {
     runApp(const CanvasWidgetAndroid());
   }, (error, stackTrace) async {
     await Sentry.captureException(error, stackTrace: stackTrace);
-  });
+  }));
 }

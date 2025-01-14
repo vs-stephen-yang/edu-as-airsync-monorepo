@@ -35,9 +35,9 @@ class PresentSelectScreen extends StatelessWidget {
           await _requestBackgroundPermission();
         }
         var value = CustomDesktopCapturerSource(null, true);
-        channelProvider.presentStart(
+        unawaited(channelProvider.presentStart(
             selectedSource: value.selectedSource,
-            systemAudio: value.systemAudio);
+            systemAudio: value.systemAudio));
       }
     });
 
@@ -69,11 +69,11 @@ class PresentSelectScreen extends StatelessWidget {
       if (value != null && value.selectedSource != null) {
         if (WebRTC.platformIsWindows &&
             value.selectedSource?.type != SourceType.Window) {
-          provider.presentStart(
+          unawaited(provider.presentStart(
               selectedSource: value.selectedSource,
-              systemAudio: value.systemAudio);
+              systemAudio: value.systemAudio));
         } else {
-          provider.presentStart(selectedSource: value.selectedSource);
+          unawaited(provider.presentStart(selectedSource: value.selectedSource));
         }
       } else {
         if (WebRTC.platformIsWindows) {
@@ -81,16 +81,16 @@ class PresentSelectScreen extends StatelessWidget {
         }
         SelectScreenDialog._timer?.cancel();
         for (var element in selectScreenDialog!._subscriptions) {
-          element.cancel();
+          unawaited(element.cancel());
         }
         // moderator mode
         if (provider.moderatorStatus) {
-          provider.presentStop();
-          Provider.of<PresentStateProvider>(context, listen: false)
-              .presentModeratorWaitPage();
+          unawaited(provider.presentStop());
+          unawaited(Provider.of<PresentStateProvider>(context, listen: false)
+              .presentModeratorWaitPage());
         } else {
-          provider.presentStop();
-          provider.presentEnd();
+          unawaited(provider.presentStop());
+          unawaited(provider.presentEnd());
         }
       }
     });
@@ -440,7 +440,7 @@ class SelectScreenDialog extends Dialog {
   void cancel() async {
     _timer?.cancel();
     for (var element in _subscriptions) {
-      element.cancel();
+      unawaited(element.cancel());
     }
     Navigator.pop<CustomDesktopCapturerSource>(ctx, null);
   }
@@ -448,7 +448,7 @@ class SelectScreenDialog extends Dialog {
   void _ok(DesktopCapturerSource? selectedSource, bool systemAudio) async {
     _timer?.cancel();
     for (var element in _subscriptions) {
-      element.cancel();
+      unawaited(element.cancel());
     }
     Navigator.pop<CustomDesktopCapturerSource>(
         ctx, CustomDesktopCapturerSource(selectedSource, systemAudio));

@@ -595,7 +595,7 @@ class WebRTCConnector {
       log.info('Touch event ignored due to paused state');
       return;
     }
-    _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
+    unawaited(_flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY));
   }
 
   void _onAddTrack(MediaStream stream, MediaStreamTrack track) {
@@ -751,9 +751,9 @@ class WebRTCConnector {
         if (track.kind == 'video') {
           _applyVideoContentHint(track);
         }
-        _pc?.getSenders().then((value) async {
+        unawaited(_pc?.getSenders().then((value) async {
           await value.first.replaceTrack(track);
-        });
+        }));
       }
     }
   }
@@ -803,7 +803,7 @@ class WebRTCConnector {
         await stream.dispose();
 
         for (var element in subscriptions) {
-          element.cancel();
+          unawaited(element.cancel());
         }
       }
     } catch (e, stackTrace) {

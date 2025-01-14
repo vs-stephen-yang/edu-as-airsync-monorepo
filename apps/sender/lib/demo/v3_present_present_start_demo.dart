@@ -205,16 +205,16 @@ class _V3PresentPresentStartDemoState extends State<V3PresentPresentStartDemo> {
     if (Platform.isWindows || Platform.isMacOS) {
       final list = await DesktopMultiWindow.getAllSubWindowIds();
       if (list.isEmpty) {
-        WindowUtility.minimizeWindow();
+        unawaited(WindowUtility.minimizeWindow());
         await Future.delayed(const Duration(milliseconds: 50));
         final window = await DesktopMultiWindow.createFullscreenWindow(
             jsonEncode({'mode': 'desktop_canvas'}),
             annotationModel.screenIndex);
-        window.show();
+        unawaited(window.show());
       } else {
-        WindowUtility.minimizeWindow();
+        unawaited(WindowUtility.minimizeWindow());
         await Future.delayed(const Duration(milliseconds: 50));
-        WindowController.fromWindowId(list.first).show();
+        unawaited(WindowController.fromWindowId(list.first).show());
       }
     } else if (Platform.isAndroid) {
       if (!await android_window.isRunning()) {
@@ -226,10 +226,10 @@ class _V3PresentPresentStartDemoState extends State<V3PresentPresentStartDemo> {
             position: const Offset(0, 0),
           );
           await Future.delayed(const Duration(milliseconds: 100));
-          WindowUtility.minimizeWindow();
+          unawaited(WindowUtility.minimizeWindow());
         } else {
           annotationOn = false;
-          Permission.systemAlertWindow.request();
+          unawaited(Permission.systemAlertWindow.request());
           return;
         }
       } else {
