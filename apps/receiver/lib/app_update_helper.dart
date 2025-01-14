@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_ota_flutter/app_ota_flutter.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/settings/app_config.dart';
@@ -66,8 +68,8 @@ class AppUpdateHelper {
   checkAppUpdate(bool isStartupCheck) async {
     log.info('InApp _otaState: $_otaEnvironment');
     log.info('InApp _otaFlavor: $_otaFlavor');
-    AppOtaFlutter().startOTAProcess(OtaApp.display, _otaEnvironment, _otaFlavor,
-        isStartupCheck: isStartupCheck);
+    unawaited(AppOtaFlutter().startOTAProcess(OtaApp.display, _otaEnvironment, _otaFlavor,
+        isStartupCheck: isStartupCheck));
   }
 
   startAppUpdate(String filePath) {
