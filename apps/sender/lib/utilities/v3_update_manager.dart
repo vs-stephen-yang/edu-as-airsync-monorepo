@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -32,17 +33,17 @@ class V3UpdateManager {
     _isDialogShowing = true;
 
     if (Platform.isIOS) {
-      _showUpdateDialogIos(context, status).then((_) {
+      unawaited(_showUpdateDialogIos(context, status).then((_) {
         _isDialogShowing = false;
-      });
+      }));
     } else if (Platform.isAndroid) {
-      _showUpdateDialogAndroid(context, status).then((_) {
+      unawaited(_showUpdateDialogAndroid(context, status).then((_) {
         _isDialogShowing = false;
-      });
+      }));
     } else {
-      _showUpdateDialogDesktop(context, status).then((_) {
+      unawaited(_showUpdateDialogDesktop(context, status).then((_) {
         _isDialogShowing = false;
-      });
+      }));
     }
   }
 
@@ -202,8 +203,8 @@ class V3UpdateManager {
                       if (status == CompareVersionResult.userChoose) {
                         Navigator.of(context).pop();
                       }
-                      launchUrl(Uri.parse(
-                          'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast'));
+                      unawaited(launchUrl(Uri.parse(
+                          'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast')));
                     },
                     child: Text(S
                         .of(context)
@@ -290,8 +291,8 @@ class V3UpdateManager {
                         Navigator.of(context).pop();
                       }
                       if (Platform.isMacOS) {
-                        launchUrl(Uri.parse(
-                            'macappstore://apps.apple.com/app/airsync-sender/id6453759985'));
+                        unawaited(launchUrl(Uri.parse(
+                            'macappstore://apps.apple.com/app/airsync-sender/id6453759985')));
                       } else {
                         // windows
                         try {
@@ -299,7 +300,7 @@ class V3UpdateManager {
                           exit(0);
                         } on UpdateErrorExecption catch (e) {
                           if (context.mounted) {
-                            _showUpdateErrorDialogDesktop(context, e);
+                            unawaited(_showUpdateErrorDialogDesktop(context, e));
                           }
                         }
                       }

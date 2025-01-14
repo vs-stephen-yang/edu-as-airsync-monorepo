@@ -244,7 +244,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
         await channelProvider.presentEnd(goIdleState: false);
         if (displayCode == "00000000000" && password == "0000") {
           demoProvider.isDemoMode = true;
-          demoProvider.presentSelectRoleDemoPage();
+          unawaited(demoProvider.presentSelectRoleDemoPage());
         } else {
           channelProvider.startConnect(
               formattedDisplayCode: displayCode,

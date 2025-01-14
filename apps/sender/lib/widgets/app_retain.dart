@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -31,7 +32,7 @@ class AppRetain extends StatelessWidget {
             'AirSync App goes to the background.',
           );
           await Future.delayed(const Duration(seconds: 1));
-          _androidAppRetain.invokeMethod('sendToBackground');
+          unawaited(_androidAppRetain.invokeMethod('sendToBackground'));
         } catch (e, stackTrace) {
           log.severe('sendToBackground', e, stackTrace);
         }

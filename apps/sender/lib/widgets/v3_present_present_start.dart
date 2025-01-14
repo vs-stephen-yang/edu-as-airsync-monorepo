@@ -212,7 +212,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
                         child: IconButton(
                           onPressed: () async {
                             if (needRelaunchBroadcastUploadExtension) {
-                              WebRTCHelper().launchBroadcastUploadExtension();
+                              unawaited(WebRTCHelper().launchBroadcastUploadExtension());
                             } else {
                               // Toggle current state
                               bool tempState = !presentingState.value;
@@ -227,11 +227,11 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
 
                               // Update state
                               presentingState.value = tempState;
-                              tempState
+                              unawaited(tempState
                                   ? channelProvider.presentResume()
                                   : channelProvider.presentPause(
                                       pauseBtnRect: pauseBtnRec,
-                                      stopBtnRect: stopBtnRect);
+                                      stopBtnRect: stopBtnRect));
                             }
                           },
                           icon: SvgPicture.asset(!value
