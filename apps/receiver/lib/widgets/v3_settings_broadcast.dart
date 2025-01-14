@@ -4,8 +4,8 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
-import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -33,10 +33,14 @@ class V3SettingsBroadcast extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: context.tokens.spacing.vsdslSpacingXl.top),
-                  V3Focus(
-                      child: CastToDevices(settingsProvider: settingsProvider)),
+                  V3SettingMenuSubItemFocus(
+                    child: CastToDevices(
+                      settingsProvider: settingsProvider,
+                      focusNode: settingsProvider.subFocusNode ?? FocusNode(),
+                    ),
+                  ),
                   SizedBox(height: context.tokens.spacing.vsdslSpacingMd.top),
-                  V3Focus(
+                  V3SettingMenuSubItemFocus(
                       child: CastToBoards(settingsProvider: settingsProvider)),
                 ],
               ),
@@ -65,7 +69,13 @@ class V3SettingsBroadcast extends StatelessWidget {
 }
 
 class CastToDevices extends StatelessWidget {
-  const CastToDevices({super.key, required this.settingsProvider});
+  const CastToDevices({
+    super.key,
+    required this.settingsProvider,
+    required this.focusNode,
+  });
+
+  final FocusNode focusNode;
 
   final SettingsProvider settingsProvider;
 
@@ -116,6 +126,7 @@ class CastToDevices extends StatelessWidget {
                             width: 36,
                             height: 21,
                             child: IconButton(
+                              focusNode: focusNode,
                               icon: SvgPicture.asset(
                                 channelProvider.isSenderMode
                                     ? 'assets/images/ic_switch_on.svg'
@@ -215,20 +226,18 @@ class CastToBoards extends StatelessWidget {
                       SizedBox(
                         width: 21,
                         height: 21,
-                        child: IconButton(
-                          icon: SvgPicture.asset(
-                            settingsProvider.isBroadcastLock
-                                ? 'assets/images/ic_arrow_right_lock.svg'
-                                : 'assets/images/ic_arrow_right.svg',
-                          ),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          onPressed: settingsProvider.isBroadcastLock
+                        child: InkWell(
+                          onTap: settingsProvider.isBroadcastLock
                               ? null
                               : () {
                                   settingsProvider.setPage(
                                       SettingPageState.broadcastBoards);
                                 },
+                          child: SvgPicture.asset(
+                            settingsProvider.isBroadcastLock
+                                ? 'assets/images/ic_arrow_right_lock.svg'
+                                : 'assets/images/ic_arrow_right.svg',
+                          ),
                         ),
                       ),
                     ],

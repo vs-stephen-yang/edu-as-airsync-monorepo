@@ -1,5 +1,6 @@
 import 'package:display_flutter/oss_licenses.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum SettingPageState {
@@ -12,7 +13,16 @@ enum SettingPageState {
   connectivity,
   whatsNew,
   legalPolicy,
-  licenses,
+  licenses;
+
+  static List<SettingPageState> get mainPages => [
+        SettingPageState.deviceSetting,
+        SettingPageState.broadcast,
+        SettingPageState.mirroring,
+        SettingPageState.connectivity,
+        SettingPageState.whatsNew,
+        SettingPageState.legalPolicy,
+      ];
 }
 
 class SettingsProvider with ChangeNotifier {
@@ -109,5 +119,168 @@ class SettingsProvider with ChangeNotifier {
     _currentPage = state;
     _license = license;
     notifyListeners();
+  }
+
+  /// ----------------- Focus Manager -----------------
+  _V3SettingMenuFocusManager? _focusManager;
+
+  void initFocus() {
+    _focusManager = _V3SettingMenuFocusManager();
+  }
+
+  void clearFocus() {
+    _focusManager = null;
+  }
+
+  FocusNode? get subFocusNode => _focusManager?.subFocusNode;
+
+  KeyEventResult onMainFocusMove(
+    FocusNode node,
+    KeyEvent event,
+    VoidCallback onClick,
+    SettingPageState state,
+  ) =>
+      _focusManager?.onMainFocusMove(node, event, onClick, state) ??
+      KeyEventResult.ignored;
+
+  KeyEventResult onSubFocusMove(FocusNode node, KeyEvent event) =>
+      _focusManager?.onSubFocusMove(node, event) ?? KeyEventResult.ignored;
+
+  void requestMainFocus(int selectedIndex) {
+    _focusManager?.requestMainFocus(selectedIndex);
+  }
+
+  void resetThenFocusMenuPrimary() {
+    _focusManager?.focusMenuPrimary();
+  }
+
+  void requestMainMenuFocus() {
+    _focusManager?.requestMainMenuFocus();
+  }
+
+  void requestSubFocus() {
+    _focusManager?.requestSubFocus();
+  }
+
+  FocusNode getMenuFocusNode(int index) {
+    return _focusManager?.getMenuFocusNode(index) ?? FocusNode();
+  }
+
+  int? getFocusIndex() {
+    return _focusManager?.getFocusIndex();
+  }
+
+  void requestFocusMainMenu() {
+    _focusManager?.requestMainMenuFocus();
+  }
+
+  void requestFocusSub() {
+    _focusManager?.requestSubFocus();
+  }
+
+  void requestFocusMain(int selectedIndex) {
+    _focusManager?.requestMainFocus(selectedIndex);
+  }
+
+  void focusPrimaryMenu() {
+    _focusManager?.focusMenuPrimary();
+  }
+}
+
+class _V3SettingMenuFocusManager {
+  final List<FocusNode> _menuFocusNodes = List<FocusNode>.generate(
+      SettingPageState.mainPages.length, (index) => FocusNode());
+  final FocusNode subFocusNode = FocusNode();
+
+  bool _init = true;
+  int _currentMainIndex = 0;
+
+  void focusMenuPrimary() {
+    _menuFocusNodes[0].requestFocus();
+  }
+
+  FocusNode getMenuFocusNode(int index) {
+    return _menuFocusNodes[index];
+  }
+
+  void requestMainFocus(selectedIndex) {
+    selectedIndex = selectedIndex;
+    _menuFocusNodes[selectedIndex].requestFocus();
+  }
+
+  int? getFocusIndex() {
+    for (var i = 0; i < _menuFocusNodes.length; i += 1) {
+      if (_menuFocusNodes[i].hasFocus) {
+        return i;
+      }
+    }
+    return null;
+  }
+
+  KeyEventResult onSubFocusMove(FocusNode node, KeyEvent event) {
+    if (event is KeyUpEvent) {
+      return KeyEventResult.ignored;
+    }
+    if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      _menuFocusNodes[_currentMainIndex].requestFocus();
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  void requestMainMenuFocus() {
+    _menuFocusNodes[_currentMainIndex].requestFocus();
+  }
+
+  void requestSubFocus() {
+    for (var node in _menuFocusNodes) {
+      if (node.hasFocus) {
+        return;
+      }
+    }
+
+    if (_init) {
+      _init = false;
+      return;
+    }
+
+    subFocusNode.requestFocus();
+  }
+
+  KeyEventResult onMainFocusMove(
+    FocusNode node,
+    KeyEvent event,
+    VoidCallback onClick,
+    SettingPageState state,
+  ) {
+    if (event is KeyUpEvent) {
+      return KeyEventResult.ignored;
+    }
+    final index = getFocusIndex();
+
+    if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+      if (index == 0 || index == null) {
+        return KeyEventResult.ignored;
+      }
+      _menuFocusNodes[index - 1].requestFocus();
+
+      return KeyEventResult.handled;
+    } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+      if (index == _menuFocusNodes.length - 1 || index == null) {
+        return KeyEventResult.ignored;
+      }
+      _menuFocusNodes[index + 1].requestFocus();
+      return KeyEventResult.handled;
+    } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      subFocusNode.requestFocus();
+      return KeyEventResult.handled;
+    } else if (event.logicalKey == LogicalKeyboardKey.enter ||
+        event.logicalKey == LogicalKeyboardKey.select) {
+      _currentMainIndex = index!;
+      onClick();
+
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
   }
 }

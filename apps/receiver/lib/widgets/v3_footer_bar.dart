@@ -3,6 +3,7 @@ import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -61,12 +62,18 @@ class V3FooterBar extends StatelessWidget {
     SettingsProvider settingsProvider =
         Provider.of<SettingsProvider>(context, listen: false);
     settingsProvider.setPage(SettingPageState.deviceSetting);
+
+    final bool openedWithLogicalKey =
+        HardwareKeyboard.instance.logicalKeysPressed.isNotEmpty;
     showDialog(
       context: context,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
-        return const V3SettingMenu();
+        if (openedWithLogicalKey) {
+          settingsProvider.initFocus();
+        }
+        return V3SettingMenu(openedWithLogicalKey: openedWithLogicalKey);
       },
-    );
+    ).then((_) => settingsProvider.clearFocus());
   }
 }

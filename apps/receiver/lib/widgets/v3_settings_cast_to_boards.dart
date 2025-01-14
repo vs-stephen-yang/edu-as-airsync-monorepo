@@ -12,6 +12,7 @@ import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:display_flutter/widgets/v3_settings_radio_group.dart';
 import 'package:flutter/material.dart';
@@ -154,31 +155,31 @@ class V3SettingsCastToBoardsState
                         'click_save_target', groupNotifier.selectedList);
 
                     if (selectedListEmpty) {
-                    showDialogOverlay(
-                      onConfirm: () {},
-                    );
-                  } else {
-                    AppPreferences()
-                        .setGroupSelectedList(
-                        groupNotifier.historySelectedList);
-                    settingsProvider.setPage(SettingPageState.deviceSetting);
-                  }
-                })
+                      showDialogOverlay(
+                        onConfirm: () {},
+                      );
+                    } else {
+                      AppPreferences().setGroupSelectedList(
+                          groupNotifier.historySelectedList);
+                      settingsProvider.setPage(SettingPageState.deviceSetting);
+                    }
+                  })
                 : _customButton(
-              context,
+                    context,
                     S.of(context).v3_settings_display_group_cast,
                     isBroadcast: true,
-              onClick: () {
-                if (selectedListEmpty) {
-                  showDialogOverlay(
-                    onConfirm: () {},
-                  );
-                } else {
-                  startDisplayGroup(groupNotifier, channelProvider);
-                  _trackEvent('click_broadcast', groupNotifier.selectedList);
-                }
-              },
-            ),
+                    onClick: () {
+                      if (selectedListEmpty) {
+                        showDialogOverlay(
+                          onConfirm: () {},
+                        );
+                      } else {
+                        startDisplayGroup(groupNotifier, channelProvider);
+                        _trackEvent(
+                            'click_broadcast', groupNotifier.selectedList);
+                      }
+                    },
+                  ),
           ],
         ),
       ),
@@ -255,39 +256,41 @@ class V3SettingsCastToBoardsState
                     ),
                   ),
                   const Gap(24),
-                  ElevatedButton(
-                    focusNode: focusNode,
-                    style: ButtonStyle(
-                      foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.pressed)) {
-                            return context.tokens.color.vsdslColorSurface300;
-                          }
-                          return context
-                              .tokens.color.vsdslColorOnSurfaceInverse;
-                        },
-                      ),
-                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.pressed)) {
+                  V3Focus(
+                    child: ElevatedButton(
+                      focusNode: focusNode,
+                      style: ButtonStyle(
+                        foregroundColor: WidgetStateProperty.resolveWith<Color>(
+                          (Set<WidgetState> states) {
+                            if (states.contains(WidgetState.pressed)) {
+                              return context.tokens.color.vsdslColorSurface300;
+                            }
                             return context
-                                .tokens.color.vsdslColorPrimaryVariant;
-                          }
-                          return context.tokens.color.vsdslColorPrimary;
-                        },
-                      ),
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9999),
+                                .tokens.color.vsdslColorOnSurfaceInverse;
+                          },
                         ),
+                        backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                          (Set<WidgetState> states) {
+                            if (states.contains(WidgetState.pressed)) {
+                              return context
+                                  .tokens.color.vsdslColorPrimaryVariant;
+                            }
+                            return context.tokens.color.vsdslColorPrimary;
+                          },
+                        ),
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9999),
+                          ),
+                        ),
+                        elevation: WidgetStateProperty.all(4.0),
                       ),
-                      elevation: WidgetStateProperty.all(4.0),
+                      onPressed: () {
+                        removeOverlay();
+                        onConfirm?.call();
+                      },
+                      child: Text(S.current.v3_moderator_disable_mirror_ok),
                     ),
-                    onPressed: () {
-                      removeOverlay();
-                      onConfirm?.call();
-                    },
-                    child: Text(S.current.v3_moderator_disable_mirror_ok),
                   ),
                 ],
               ),
@@ -376,7 +379,7 @@ class V3SettingsCastToBoardsState
                   right: 8,
                   left: 8,
                   bottom: context.tokens.spacing.vsdslSpacingSm.bottom),
-              child: V3Focus(
+              child: V3SettingMenuSubItemFocus(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -488,7 +491,7 @@ class V3SettingsCastToBoardsState
 
   Widget _buildBroadcastGroupToggle(BuildContext context,
       GroupProvider groupNotifier, ChannelProvider channelProvider) {
-    return V3Focus(
+    return V3SettingMenuSubItemFocus(
       child: SizedBox(
         height: 26,
         child: Row(
@@ -504,6 +507,8 @@ class V3SettingsCastToBoardsState
             SizedBox(
               height: 21,
               child: IconButton(
+                focusNode: provider.Provider.of<SettingsProvider>(context)
+                    .subFocusNode,
                 icon: Image(
                   image: Svg(groupNotifier.broadcastToGroup
                       ? 'assets/images/ic_switch_on.svg'
@@ -557,7 +562,7 @@ class V3SettingsCastToBoardsState
   }) {
     return SizedBox(
       height: 26,
-      child: V3Focus(
+      child: V3SettingMenuSubItemFocus(
         child: ElevatedButton(
           onPressed: onClick,
           style: ElevatedButton.styleFrom(

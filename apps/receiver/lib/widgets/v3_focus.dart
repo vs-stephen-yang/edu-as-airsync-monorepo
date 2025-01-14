@@ -8,14 +8,17 @@ class V3Focus extends StatelessWidget {
     super.key,
     required this.child,
     this.borderRadius = const BorderRadius.all(Radius.circular(8)),
+    this.onFocusMove,
   });
 
   final Widget child;
+  final KeyEventResult Function(FocusNode node, KeyEvent event)? onFocusMove;
 
   @override
   Widget build(BuildContext context) {
     return Focus(
       canRequestFocus: false,
+      onKeyEvent: onFocusMove,
       child: Builder(
         builder: (context) {
           final FocusNode focusNode = Focus.of(context);

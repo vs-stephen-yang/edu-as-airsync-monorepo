@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
-import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -56,13 +56,16 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
         children: widget.radioList.map<Widget>((V3SettingsRadioGroupItem key) {
           return Column(
             children: [
-              V3Focus(
+              V3SettingMenuSubItemFocus(
                 child: Padding(
                   padding: EdgeInsets.only(
                     top: context.tokens.spacing.vsdslSpacingSm.bottom / 2,
                     bottom: context.tokens.spacing.vsdslSpacingSm.bottom / 2,
                   ),
                   child: InkWell(
+                    focusNode: (key == widget.radioList.first)
+                        ? settingsProvider.subFocusNode
+                        : null,
                     onTap: settingsProvider.isConnectivityLock
                         ? null
                         : () {

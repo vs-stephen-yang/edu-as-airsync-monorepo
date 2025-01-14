@@ -16,21 +16,39 @@ import 'package:display_flutter/widgets/v3_settings_license.dart';
 import 'package:display_flutter/widgets/v3_settings_mirroring.dart';
 import 'package:display_flutter/widgets/v3_settings_whats_new.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
-class V3SettingMenu extends StatelessWidget {
-  const V3SettingMenu({super.key});
+class V3SettingMenu extends StatefulWidget {
+  const V3SettingMenu({super.key, required this.openedWithLogicalKey});
 
   static const String settingMenuGroupId = 'V3SettingMenu';
   static final FocusNode _childFocusNode = FocusNode();
+  final bool openedWithLogicalKey;
+
+  @override
+  State<V3SettingMenu> createState() => _V3SettingMenuState();
+}
+
+class _V3SettingMenuState extends State<V3SettingMenu> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.openedWithLogicalKey) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Provider.of<SettingsProvider>(context, listen: false)
+            .resetThenFocusMenuPrimary();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return TapRegion(
-      groupId: settingMenuGroupId,
+      groupId: V3SettingMenu.settingMenuGroupId,
       onTapOutside: (event) {
         if (riverpod.ProviderScope.containerOf(context)
             .read(dialogProvider)
@@ -72,63 +90,64 @@ class V3SettingMenu extends StatelessWidget {
                           right: 13,
                           child: Column(
                             children: <Widget>[
-                              _subTittleButton(context,
-                                  state: SettingPageState.deviceSetting,
-                                  text:
-                                      S.of(context).v3_settings_device_setting,
-                                  locked: settingsProvider.isDeviceSettingLock,
-                                  onClick: () {
-                                settingsProvider
-                                    .setPage(SettingPageState.deviceSetting);
-                              }),
+                              _SubTittleButton(
+                                index: 0,
+                                state: SettingPageState.deviceSetting,
+                                text: S.of(context).v3_settings_device_setting,
+                                locked: settingsProvider.isDeviceSettingLock,
+                                onClick: () => settingsProvider
+                                    .setPage(SettingPageState.deviceSetting),
+                              ),
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 5)),
-                              _subTittleButton(context,
-                                  state: SettingPageState.broadcast,
-                                  text: S.of(context).v3_settings_broadcast,
-                                  locked: settingsProvider.isBroadcastLock,
-                                  onClick: () {
-                                settingsProvider
-                                    .setPage(SettingPageState.broadcast);
-                              }),
+                              _SubTittleButton(
+                                index: 1,
+                                state: SettingPageState.broadcast,
+                                text: S.of(context).v3_settings_broadcast,
+                                locked: settingsProvider.isBroadcastLock,
+                                onClick: () => settingsProvider
+                                    .setPage(SettingPageState.broadcast),
+                              ),
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 5)),
-                              _subTittleButton(context,
-                                  state: SettingPageState.mirroring,
-                                  text: S.of(context).v3_shortcuts_mirroring,
-                                  locked: settingsProvider.isMirroringLock,
-                                  onClick: () {
-                                settingsProvider
-                                    .setPage(SettingPageState.mirroring);
-                              }),
+                              _SubTittleButton(
+                                index: 2,
+                                state: SettingPageState.mirroring,
+                                text: S.of(context).v3_shortcuts_mirroring,
+                                locked: settingsProvider.isMirroringLock,
+                                onClick: () => settingsProvider
+                                    .setPage(SettingPageState.mirroring),
+                              ),
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 5)),
-                              _subTittleButton(context,
-                                  state: SettingPageState.connectivity,
-                                  text: S.of(context).v3_settings_connectivity,
-                                  locked: settingsProvider.isConnectivityLock,
-                                  onClick: () {
-                                settingsProvider
-                                    .setPage(SettingPageState.connectivity);
-                              }),
+                              _SubTittleButton(
+                                index: 3,
+                                state: SettingPageState.connectivity,
+                                text: S.of(context).v3_settings_connectivity,
+                                locked: settingsProvider.isConnectivityLock,
+                                onClick: () => settingsProvider
+                                    .setPage(SettingPageState.connectivity),
+                              ),
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 5)),
-                              _subTittleButton(context,
-                                  state: SettingPageState.whatsNew,
-                                  text: S.of(context).v3_settings_whats_new,
-                                  onClick: () {
-                                settingsProvider
-                                    .setPage(SettingPageState.whatsNew);
-                              }),
+                              _SubTittleButton(
+                                index: 4,
+                                state: SettingPageState.whatsNew,
+                                text: S.of(context).v3_settings_whats_new,
+                                locked: false,
+                                onClick: () => settingsProvider
+                                    .setPage(SettingPageState.whatsNew),
+                              ),
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 5)),
-                              _subTittleButton(context,
-                                  state: SettingPageState.legalPolicy,
-                                  text: S.of(context).v3_settings_legal_policy,
-                                  onClick: () {
-                                settingsProvider
-                                    .setPage(SettingPageState.legalPolicy);
-                              }),
+                              _SubTittleButton(
+                                index: 5,
+                                state: SettingPageState.legalPolicy,
+                                text: S.of(context).v3_settings_legal_policy,
+                                locked: false,
+                                onClick: () => settingsProvider
+                                    .setPage(SettingPageState.legalPolicy),
+                              ),
                             ],
                           ),
                         ),
@@ -181,32 +200,41 @@ class V3SettingMenu extends StatelessWidget {
                     color: context.tokens.color.vsdslColorOutlineVariant,
                   ),
                   Expanded(
-                    child: Builder(
-                      builder: (context) {
-                        switch (settingsProvider.currentPage) {
-                          case SettingPageState.deviceSetting:
-                            return const V3SettingsDevice();
-                          case SettingPageState.deviceName:
-                            return V3SettingsDeviceName(
-                                focusNode: _childFocusNode);
-                          case SettingPageState.deviceLanguage:
-                            return const V3SettingsDeviceLanguage();
-                          case SettingPageState.broadcast:
-                            return const V3SettingsBroadcast();
-                          case SettingPageState.broadcastBoards:
-                            return const V3SettingsCastToBoards();
-                          case SettingPageState.mirroring:
-                            return const V3SettingsMirroring();
-                          case SettingPageState.connectivity:
-                            return const V3SettingsConnectivity();
-                          case SettingPageState.whatsNew:
-                            return const V3SettingsWhatsNew();
-                          case SettingPageState.legalPolicy:
-                            return const V3SettingsLegalPolicy();
-                          case SettingPageState.licenses:
-                            return const V3SettingsLicense();
-                        }
-                      },
+                    child: FocusScope(
+                      child: Builder(
+                        builder: (context) {
+                          final bool openedWithLogicalKey = HardwareKeyboard
+                              .instance.logicalKeysPressed.isNotEmpty;
+                          if (openedWithLogicalKey) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              settingsProvider.requestSubFocus();
+                            });
+                          }
+                          switch (settingsProvider.currentPage) {
+                            case SettingPageState.deviceSetting:
+                              return const V3SettingsDevice();
+                            case SettingPageState.deviceName:
+                              return V3SettingsDeviceName(
+                                  focusNode: V3SettingMenu._childFocusNode);
+                            case SettingPageState.deviceLanguage:
+                              return const V3SettingsDeviceLanguage();
+                            case SettingPageState.broadcast:
+                              return const V3SettingsBroadcast();
+                            case SettingPageState.broadcastBoards:
+                              return const V3SettingsCastToBoards();
+                            case SettingPageState.mirroring:
+                              return const V3SettingsMirroring();
+                            case SettingPageState.connectivity:
+                              return const V3SettingsConnectivity();
+                            case SettingPageState.whatsNew:
+                              return const V3SettingsWhatsNew();
+                            case SettingPageState.legalPolicy:
+                              return const V3SettingsLegalPolicy();
+                            case SettingPageState.licenses:
+                              return const V3SettingsLicense();
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -220,31 +248,42 @@ class V3SettingMenu extends StatelessWidget {
 
   void dismissMenu() {
     // 點擊text cursor做操作會被TapRegion判定為onTapOutside
-    if (_childFocusNode.hasFocus) {
+    if (V3SettingMenu._childFocusNode.hasFocus) {
       return;
     }
     if (navService.canPop()) {
       navService.goBack();
     }
   }
+}
 
-  _subTittleButton(
-    BuildContext context, {
-    required SettingPageState state,
-    required String text,
-    required VoidCallback onClick,
-    bool locked = false,
-  }) {
+class _SubTittleButton extends StatelessWidget {
+  const _SubTittleButton({
+    required this.state,
+    required this.text,
+    required this.locked,
+    required this.index,
+    required this.onClick,
+  });
+
+  final SettingPageState state;
+  final String text;
+  final bool locked;
+  final int index;
+  final void Function() onClick;
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = Provider.of<SettingsProvider>(context);
     return V3Focus(
+      onFocusMove: (node, event) =>
+          provider.onMainFocusMove(node, event, onClick, state),
       child: InkWell(
-        onTap: () {
-          onClick();
-        },
+        focusNode: provider.getMenuFocusNode(index),
+        onTap: onClick,
         child: Container(
           width: 140,
-          constraints: const BoxConstraints(
-            minHeight: 26,
-          ),
+          height: 26,
           padding: EdgeInsets.symmetric(
             vertical: context.tokens.spacing.vsdslSpacingSm.top,
             horizontal: context.tokens.spacing.vsdslSpacingMd.left,
@@ -258,17 +297,15 @@ class V3SettingMenu extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Expanded(
-                child: Text(
-                  text,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
-                  ),
-                  maxLines: 2,
+              AutoSizeText(
+                text,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.white,
                 ),
+                maxLines: 1,
               ),
+              const Spacer(),
               if (locked)
                 SizedBox(
                   width: 11,

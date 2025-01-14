@@ -1,7 +1,7 @@
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
-import 'package:display_flutter/widgets/v3_focus_single_child_scroll_view.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_focus_single_child_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +29,8 @@ class V3SettingsLicense extends StatelessWidget {
           left: 13,
           right: 13,
           bottom: 13,
-          child: V3FocusSingleChildScrollView(
+          child: V3SettingMenuFocusSingleChildScrollView(
+            primaryFocus: true,
             children: [
               Text(
                 settingsProvider.license?.license ??
