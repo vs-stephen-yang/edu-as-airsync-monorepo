@@ -11,9 +11,9 @@ import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/widgets/v3_custom_checkbox.dart';
-import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_menu_navigation_icon_button.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -40,21 +40,21 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            V3Focus(
+            V3SettingMenuSubItemFocus(
               child: SizedBox(
                 height: 26,
                 child: _buildDeviceName(context, settingsProvider),
               ),
             ),
             _buildDivider(context),
-            V3Focus(
+            V3SettingMenuSubItemFocus(
               child: SizedBox(
                 height: 26,
                 child: _buildLanguage(context, settingsProvider),
               ),
             ),
             _buildDivider(context),
-            V3Focus(
+            V3SettingMenuSubItemFocus(
               child: _buildShowDisplayCode(context, settingsProvider),
             ),
             Padding(
@@ -67,11 +67,11 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
               ),
             ),
             _buildDivider(context),
-            V3Focus(
+            V3SettingMenuSubItemFocus(
               child: _buildInviteGroup(context, settingsProvider),
             ),
             _buildDivider(context),
-            V3Focus(
+            V3SettingMenuSubItemFocus(
               child: _buildAutoFillOTP(context, settingsProvider),
             ),
             Padding(
@@ -86,12 +86,12 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             ),
             if (AppInstanceCreate().isInstalledInVBS200) ...[
               _buildDivider(context),
-              V3Focus(
+              V3SettingMenuSubItemFocus(
                 child: _buildLaunchOnStartup(context, settingsProvider),
               ),
             ],
             _buildDivider(context),
-            V3Focus(
+            V3SettingMenuSubItemFocus(
               child: _buildAuthorizeMode(context, settingsProvider),
             ),
           ],
@@ -161,11 +161,9 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
                         }
 
                         trackClickApprove();
-                },
+                      },
                 child: AutoSizeText(
-                  S
-                      .of(context)
-                      .v3_settings_device_authorize_mode,
+                  S.of(context).v3_settings_device_authorize_mode,
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
@@ -275,17 +273,15 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
                         }
 
                         trackEvent(
-                    'click_auto_fill_otp',
-                    EventCategory.setting,
-                    target: channelProvider.isDeviceListQuickConnect
-                        ? 'on'
-                        : 'off',
-                  );
-                },
+                          'click_auto_fill_otp',
+                          EventCategory.setting,
+                          target: channelProvider.isDeviceListQuickConnect
+                              ? 'on'
+                              : 'off',
+                        );
+                      },
                 child: AutoSizeText(
-                  S
-                      .of(context)
-                      .v3_settings_device_auto_fill_otp,
+                  S.of(context).v3_settings_device_auto_fill_otp,
                   style: const TextStyle(
                     fontSize: 12,
                     color: Colors.white,
@@ -446,6 +442,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
         ),
         const Spacer(),
         InkWell(
+          focusNode: settingsProvider.subFocusNode,
           onTap: settingsProvider.isDeviceSettingLock
               ? null
               : () {

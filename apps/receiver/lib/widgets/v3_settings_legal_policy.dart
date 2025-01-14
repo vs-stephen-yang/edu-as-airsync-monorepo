@@ -2,10 +2,11 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/oss_licenses.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
-import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_menu_navigation_icon_button.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsLegalPolicy extends StatelessWidget {
@@ -30,26 +31,12 @@ class V3SettingsLegalPolicy extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          V3Focus(
-            child: SizedBox(
-              height: 26,
-              child: Row(children: [
-                Text(
-                  S.of(context).v3_settings_privacy_policy,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                ),
-                const Spacer(),
-                V3MenuNavigationIconButton(
-                  enabledIconPath: 'assets/images/ic_arrow_right.svg',
-                  onPressed: () {
-                    settingsProvider.setPage(SettingPageState.licenses);
-                  },
-                ),
-              ]),
-            ),
+          LicenseTile(
+            focusNode: settingsProvider.subFocusNode,
+            name: S.of(context).v3_settings_privacy_policy,
+            onTap: () {
+              settingsProvider.setPage(SettingPageState.licenses);
+            },
           ),
           Container(
             height: 1,
@@ -81,35 +68,66 @@ class V3SettingsLegalPolicy extends StatelessWidget {
                           (license) => !_hiddenLicenses.contains(license.name))
                       .toList();
                   final license = visibleLicenses[index];
-                  return V3Focus(
-                    child: SizedBox(
-                      height: 26,
-                      child: Row(
-                        children: [
-                          Text(
-                            license.name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                          ),
-                          const Spacer(),
-                          V3MenuNavigationIconButton(
-                            enabledIconPath: 'assets/images/ic_arrow_right.svg',
-                            onPressed: () {
-                              settingsProvider.setPage(
-                                  SettingPageState.licenses,
-                                  license: license);
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+                  return LicenseTile(
+                      name: license.name,
+                      onTap: () {
+                        settingsProvider.setPage(SettingPageState.licenses,
+                            license: license);
+                      });
                 },
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class LicenseTile extends StatelessWidget {
+  const LicenseTile({
+    super.key,
+    required this.name,
+    required this.onTap,
+    this.focusNode,
+  });
+
+  final String name;
+  final VoidCallback onTap;
+  final FocusNode? focusNode;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 26,
+      child: Row(
+        children: [
+          Expanded(
+            child: V3SettingMenuSubItemFocus(
+              child: Row(
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const Spacer(),
+                  V3MenuNavigationIconButton(
+                    focusNode: focusNode,
+                    constraints: const BoxConstraints(
+                      minWidth: 40.0,
+                      minHeight: 48.0,
+                    ),
+                    enabledIconPath: 'assets/images/ic_arrow_right.svg',
+                    onPressed: onTap,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const Gap(8),
         ],
       ),
     );

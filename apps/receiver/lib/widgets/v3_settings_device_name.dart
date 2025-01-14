@@ -5,6 +5,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -54,29 +55,11 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
         Positioned(
             left: 0,
             top: 0,
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Image(
-                    image: Svg('assets/images/ic_arrow_left.svg'),
-                    width: 21,
-                    height: 21,
-                  ),
-                  onPressed: () {
-                    settingsProvider.setPage(SettingPageState.deviceSetting);
-                  },
-                ),
-                Padding(
-                    padding: EdgeInsets.only(
-                        right: context.tokens.spacing.vsdslSpacingXs.right)),
-                Text(
-                  S.of(context).v3_settings_device_name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
+            child: V3MenuBackIconButton(
+              onPressed: () {
+                settingsProvider.setPage(SettingPageState.deviceSetting);
+              },
+              title: S.of(context).v3_settings_device_name,
             )),
         Positioned(
             left: 13,

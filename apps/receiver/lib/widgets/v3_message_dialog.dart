@@ -1,5 +1,6 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/providers/message_dialog_provider.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -76,75 +77,88 @@ class V3MessageDialog extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (dialogState.cancelText != null)
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                          (Set<WidgetState> states) {
-                            return context.tokens.color
-                                .vsdslColorPrimaryVariant; // 默认前景颜色
-                          },
-                        ),
-                        backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                          (Set<WidgetState> states) {
-                            if (states.contains(WidgetState.pressed)) {
+                    V3Focus(
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          foregroundColor:
+                              WidgetStateProperty.resolveWith<Color>(
+                            (Set<WidgetState> states) {
                               return context.tokens.color
-                                  .vsdslColorSurface200; // 按下状态的背景颜色
-                            }
-                            return context.tokens.color
-                                .vsdslColorOnSurfaceInverse; // 默认背景颜色
-                          },
-                        ),
-                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(9999),
-                            side: BorderSide(
-                                color: context
-                                    .tokens.color.vsdslColorPrimaryVariant,
-                                width: 1.0),
+                                  .vsdslColorPrimaryVariant; // 默认前景颜色
+                            },
                           ),
+                          backgroundColor:
+                              WidgetStateProperty.resolveWith<Color>(
+                            (Set<WidgetState> states) {
+                              if (states.contains(WidgetState.pressed)) {
+                                return context.tokens.color
+                                    .vsdslColorSurface200; // 按下状态的背景颜色
+                              }
+                              return context.tokens.color
+                                  .vsdslColorOnSurfaceInverse; // 默认背景颜色
+                            },
+                          ),
+                          shape:
+                              WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(9999),
+                              side: BorderSide(
+                                  color: context
+                                      .tokens.color.vsdslColorPrimaryVariant,
+                                  width: 1.0),
+                            ),
+                          ),
+                          elevation: WidgetStateProperty.all(4.0),
                         ),
-                        elevation: WidgetStateProperty.all(4.0),
+                        onPressed: () {
+                          ref.read(dialogProvider.notifier).hideDialog();
+                          dialogState.onCancel?.call();
+                        },
+                        child: Text(dialogState.cancelText!),
                       ),
-                      onPressed: () {
-                        ref.read(dialogProvider.notifier).hideDialog();
-                        dialogState.onCancel?.call();
-                      },
-                      child: Text(dialogState.cancelText!),
                     ),
                   const SizedBox(width: 8),
                   if (dialogState.confirmText != null)
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                          (Set<WidgetState> states) {
-                            if (states.contains(WidgetState.pressed)) {
-                              return context.tokens.color.vsdslColorSurface300;
-                            }
-                            return context
-                                .tokens.color.vsdslColorOnSurfaceInverse;
-                          },
-                        ),
-                        backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                          (Set<WidgetState> states) {
-                            if (states.contains(WidgetState.pressed)) {
+                    V3Focus(
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          foregroundColor:
+                              WidgetStateProperty.resolveWith<Color>(
+                            (Set<WidgetState> states) {
+                              if (states.contains(WidgetState.pressed)) {
+                                return context
+                                    .tokens.color.vsdslColorSurface300;
+                              }
                               return context
-                                  .tokens.color.vsdslColorPrimaryVariant;
-                            }
-                            return context.tokens.color.vsdslColorPrimary;
-                          },
-                        ),
-                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(9999),
+                                  .tokens.color.vsdslColorOnSurfaceInverse;
+                            },
                           ),
+                          backgroundColor:
+                              WidgetStateProperty.resolveWith<Color>(
+                            (Set<WidgetState> states) {
+                              if (states.contains(WidgetState.pressed)) {
+                                return context
+                                    .tokens.color.vsdslColorPrimaryVariant;
+                              }
+                              return context.tokens.color.vsdslColorPrimary;
+                            },
+                          ),
+                          shape:
+                              WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(9999),
+                            ),
+                          ),
+                          elevation: WidgetStateProperty.all(4.0),
                         ),
-                        elevation: WidgetStateProperty.all(4.0),
+                        onPressed: () {
+                          ref.read(dialogProvider.notifier).hideDialog();
+                          dialogState.onConfirm?.call();
+                        },
+                        child: Text(dialogState.confirmText!),
                       ),
-                      onPressed: () {
-                        ref.read(dialogProvider.notifier).hideDialog();
-                        dialogState.onConfirm?.call();
-                      },
-                      child: Text(dialogState.confirmText!),
                     ),
                 ],
               ),

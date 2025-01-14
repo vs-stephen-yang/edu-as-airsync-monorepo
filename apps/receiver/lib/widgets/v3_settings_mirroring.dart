@@ -6,8 +6,8 @@ import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/widgets/v3_custom_checkbox.dart';
-import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -32,6 +32,7 @@ class V3SettingsMirroring extends StatelessWidget {
               children: [
                 MirroringItem(
                     isDisable: disable,
+                    focusNode: settingsProvider.subFocusNode,
                     name: S.of(context).v3_shortcuts_airplay,
                     mirrorEnabled: mirrorStateProvider.airplayEnabled,
                     callback: () {
@@ -51,7 +52,7 @@ class V3SettingsMirroring extends StatelessWidget {
                       );
                     }),
                 if (mirrorStateProvider.airplayEnabled)
-                  V3Focus(
+                  V3SettingMenuSubItemFocus(
                     child: Focus(
                       child: SizedBox(
                         height: 26,
@@ -143,7 +144,7 @@ class V3SettingsMirroring extends StatelessWidget {
                       bottom: context.tokens.spacing.vsdslSpacingSm.bottom),
                   color: context.tokens.color.vsdslColorOutlineVariant,
                 ),
-                V3Focus(
+                V3SettingMenuSubItemFocus(
                   child: Row(
                     children: [
                       SizedBox(
@@ -200,21 +201,24 @@ class V3SettingsMirroring extends StatelessWidget {
 }
 
 class MirroringItem extends StatelessWidget {
-  const MirroringItem(
-      {super.key,
-      this.isDisable = false,
-      required this.name,
-      required this.mirrorEnabled,
-      required this.callback});
+  const MirroringItem({
+    super.key,
+    this.isDisable = false,
+    required this.name,
+    required this.mirrorEnabled,
+    required this.callback,
+    this.focusNode,
+  });
 
   final bool isDisable;
   final String name;
   final bool mirrorEnabled;
   final VoidCallback callback;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
-    return V3Focus(
+    return V3SettingMenuSubItemFocus(
       child: SizedBox(
         height: 26,
         child: Row(
@@ -228,6 +232,7 @@ class MirroringItem extends StatelessWidget {
             ),
             const Spacer(),
             InkWell(
+              focusNode: focusNode,
               onTap: isDisable ? null : callback,
               child: Opacity(
                 opacity: isDisable ? 0.32 : 1,
