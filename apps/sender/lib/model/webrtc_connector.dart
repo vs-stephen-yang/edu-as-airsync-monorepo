@@ -10,6 +10,7 @@ import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/model/rtc_stats.dart';
 import 'package:display_cast_flutter/model/rtc_stats_parser.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
@@ -82,6 +83,7 @@ class WebRTCConnector {
     'gooAutoGainControl': false,
     'noiseSuppression': false
   };
+  int? _virtualAudioInputDeviceID; // for macOS only
 
   Preset preset;
   bool touchBack = false;
@@ -311,6 +313,14 @@ class WebRTCConnector {
     _trackWidth = _maxTrackWidth;
     _trackHeight = _maxTrackHeight;
 
+    if (!kIsWeb && Platform.isMacOS) {
+      if (await AudioSwitchManager().switchToVirtualAudioOutput()) {
+        _virtualAudioInputDeviceID = await AudioSwitchManager().getVirtualAudioInputDeviceID();
+      } else {
+        _virtualAudioInputDeviceID = null; // no virtual audio device available
+      }
+    }
+
     _localStream = await getDisplayMedia();
     if (_localStream == null || _pc == null) {
       // GetDisplayMedia method will using different UI UX (control by system)
@@ -395,11 +405,16 @@ class WebRTCConnector {
               'width': _trackWidth,
               'height': _trackHeight,
             };
+      final audioConstraints = _isAudioCaptureAllowed()
+          ? {
+              ..._audioConstraints,
+              if (_virtualAudioInputDeviceID != null)
+                'deviceId': _virtualAudioInputDeviceID!.toString(),
+            } : false;
       final constraints = <String, dynamic>{
-        'audio': _isAudioCaptureAllowed() ? _audioConstraints : false,
-        'video': videoConstraints
+        'audio': audioConstraints,
+        'video': videoConstraints,
       };
-
       return await navigator.mediaDevices.getDisplayMedia(constraints);
     } catch (e, stackTrace) {
       log.severe('getDisplayMedia', e, stackTrace);
@@ -785,7 +800,9 @@ class WebRTCConnector {
     _isPaused = false; // Reset pause state
     stopStatsTimer();
     await WakelockManager().manageWakelock(AppScene.rtcHangUp);
-
+    if (!kIsWeb && Platform.isMacOS) {
+      await AudioSwitchManager().restoreToDefaultAudioOutput();
+    }
     await _disposeStream();
     await _peerConnectionDisconnect();
     if (WebRTC.platformIsWindows) {
