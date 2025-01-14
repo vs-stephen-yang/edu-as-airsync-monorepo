@@ -11,6 +11,8 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude: [lib/features/protoc/**, packages/android_window/**]
+  errors:
+    unawaited_futures: warning
 
 linter:
   # The lint rules applied to this project can be customized in the
