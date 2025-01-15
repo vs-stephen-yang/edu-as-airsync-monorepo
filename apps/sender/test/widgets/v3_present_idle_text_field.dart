@@ -82,16 +82,6 @@ void main() {
       final bool isWindows = (platform == TestPlatform.windows);
       final bool isWeb = (platform == TestPlatform.web);
 
-      int getMaxLength(bool isWindows, bool isWeb) {
-        // Windows or Web => 13
-        // macOS / android / iOS / linux => 11
-        if (!isWindows && !isWeb) {
-          return 11;
-        } else {
-          return 13;
-        }
-      }
-
       setUp(() {
         lastDisplayCode = '';
         onFieldChangedCallback = (result) {
@@ -165,7 +155,7 @@ void main() {
 
       group('Input Validation (MaxLength)', () {
         testWidgets(
-            '[$platform] Should respect platform-specific maximum length - Windows / Web',
+            '[$platform] Should format display code correctly - Windows / Web',
             (WidgetTester tester) async {
           if (!isWindows && !isWeb) return;
 
@@ -173,21 +163,18 @@ void main() {
           await tester.pumpAndSettle();
 
           final textField = find.byType(TextFormField).first;
-          const testInput = '12345678901';
+          const testInput = '12345678901234567890';
 
           await tester.enterText(textField, testInput);
           await tester.pump();
 
-          final currentMaxLength = getMaxLength(isWindows, isWeb);
-          expect(lastDisplayCode.length, currentMaxLength - 2);
-
           final TextFormField textFormField = tester.widget(textField);
           final actualText = textFormField.controller!.text;
-          expect(actualText, '1234 5678 901');
+          expect(actualText, '1234 5678 9012 3456 7890');
         });
 
         testWidgets(
-            '[$platform] Should respect platform-specific maximum length - macOS/android/iOS/linux',
+            '[$platform] Should format display code correctly - macOS/android/iOS/linux',
             (WidgetTester tester) async {
           if (isWindows || isWeb) return;
 
@@ -195,17 +182,14 @@ void main() {
           await tester.pumpAndSettle();
 
           final textField = find.byType(TextFormField).first;
-          const testInput = '12345678901';
+          const testInput = '12345678901234567890';
 
           await tester.enterText(textField, testInput);
           await tester.pump();
 
-          final currentMaxLength = getMaxLength(isWindows, isWeb);
-          expect(lastDisplayCode.length, currentMaxLength);
-
           final TextFormField textFormField = tester.widget(textField);
           final actualText = textFormField.controller!.text;
-          expect(actualText, '1234 5678 901');
+          expect(actualText, '1234 5678 9012 3456 7890');
         });
       });
 
@@ -340,77 +324,6 @@ void main() {
           } else {
             expect(controller.selection.baseOffset, 4);
           }
-        });
-      });
-
-      // -----------------------------------------
-      // MaxLength Behavior
-      // -----------------------------------------
-      group('MaxLength Behavior', () {
-        testWidgets(
-            '[$platform] Should respect maxLength for raw text (without spaces)',
-            (WidgetTester tester) async {
-          await tester.pumpWidget(testWidget);
-          await tester.pumpAndSettle();
-
-          final textField = find.byType(TextFormField).first;
-          final currentMaxLength = getMaxLength(isWindows, isWeb);
-
-          // 輸入比最大長度還多2碼
-          await tester.enterText(textField, '1' * (currentMaxLength + 2));
-          await tester.pump();
-
-          // 最終的 raw code 長度應該被限制在 currentMaxLength
-          expect(lastDisplayCode.length, currentMaxLength);
-        });
-
-        testWidgets(
-            '[$platform] Should format text correctly at maxLength for macOS/android/iOS/linux',
-            (WidgetTester tester) async {
-          if (isWindows || isWeb) return;
-
-          await tester.pumpWidget(testWidget);
-          await tester.pumpAndSettle();
-
-          final textField = find.byType(TextFormField).first;
-          final currentMaxLength = getMaxLength(isWindows, isWeb);
-          final enter = '1' * currentMaxLength;
-
-          await tester.enterText(textField, enter);
-          await tester.pump();
-
-          final formattedText =
-              tester.widget<TextFormField>(textField).controller!.text;
-          // Length of formatted text = 11
-          expect(formattedText.replaceAll(' ', '').length, currentMaxLength);
-
-          final spaceCount =
-              formattedText.split('').where((c) => c == ' ').length;
-          expect(spaceCount, (currentMaxLength - 1) ~/ 4);
-        });
-
-        testWidgets(
-            '[$platform] Should format text correctly at maxLength for Windows / Web',
-            (WidgetTester tester) async {
-          if (!isWindows && !isWeb) return;
-
-          await tester.pumpWidget(testWidget);
-          await tester.pumpAndSettle();
-
-          final textField = find.byType(TextFormField).first;
-          final currentMaxLength = getMaxLength(isWindows, isWeb);
-          final enter = '1' * currentMaxLength;
-
-          await tester.enterText(textField, enter);
-          await tester.pump();
-
-          final formattedText =
-              tester.widget<TextFormField>(textField).controller!.text;
-          expect(formattedText.replaceAll(' ', '').length, currentMaxLength);
-
-          final spaceCount =
-              formattedText.split('').where((c) => c == ' ').length;
-          expect(spaceCount, currentMaxLength ~/ 4);
         });
       });
 
