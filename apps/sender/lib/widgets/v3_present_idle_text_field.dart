@@ -44,8 +44,6 @@ class V3PresentIdleTextField extends StatefulWidget {
 
 class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
   static const int displayCodeMinLength = 8;
-  static const int displayCodeMaxLength = 11;
-  static const int displayCodeMaxLengthW = 13; // windows & web
   static const int otpLength = 4;
 
   final TextEditingController _codeController = TextEditingController();
@@ -126,22 +124,8 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
         if (widget.platformDetector.notWindowsNeitherWeb)
           FilteringTextInputFormatter.digitsOnly,
         if (widget.platformDetector.notWindowsNeitherWeb)
-          MaskedInputFormatter(
-            List.generate(displayCodeMaxLength, (index) => '0').join(''),
-            allowedCharMatcher: RegExp('[0-9\\s]'),
-          ),
+          FilteringTextInputFormatter.allow(RegExp('[0-9\\s]')),
         TextInputFormatter.withFunction((oldValue, newValue) {
-          final digitsOnly = oldValue.text.replaceAll(RegExp(r'\s'), '');
-          final newDigitsOnly = newValue.text.replaceAll(RegExp(r'\s'), '');
-          final max = (widget.platformDetector.notWindowsNeitherWeb)
-              ? displayCodeMaxLength
-              : displayCodeMaxLengthW;
-
-          if (digitsOnly.length == max &&
-              newDigitsOnly.length >= max &&
-              digitsOnly != newDigitsOnly) {
-            return oldValue;
-          }
           //old is  1234 5678 |9012 new is  1234 5678|9012 then result is 1234 5678| 9012
           // Web && Windows with space, otherwise without space
           final newOffset = newValue.selection.baseOffset;
@@ -154,15 +138,6 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
               (newOffset == 8 && newValue.text.length >= 9)) {
             userDeleteSpace = true;
             return newValue.copyWith();
-          }
-          if (newDigitsOnly.length > max) {
-            // when user copy & paste then will hit newDigits are longer than max
-            final newDigits = newDigitsOnly.substring(0, max);
-            return TextEditingValue(
-              text: newDigits,
-              selection: TextSelection.collapsed(
-                  offset: min(newDigits.length, newOffset)),
-            );
           }
           return newValue;
         }),
