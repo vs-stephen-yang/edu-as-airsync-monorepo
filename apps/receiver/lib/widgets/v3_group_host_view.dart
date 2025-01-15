@@ -1,6 +1,8 @@
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/resizable_draggable_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -16,11 +18,18 @@ class V3GroupHostView extends StatefulWidget {
 class _V3GroupHostViewState extends State<V3GroupHostView> {
   @override
   Widget build(BuildContext context) {
+    final mirrorStateProvider =
+        Provider.of<MirrorStateProvider>(context, listen: false);
     return Consumer<ChannelProvider>(
       builder: (context, provider, child) {
         final videoView = provider.displayGroupVideoView;
         if (!provider.isDisplayGroupVideoAvailable || videoView == null) {
           return const SizedBox.shrink();
+        } else {
+          HybridConnectionList().removeAllPresenters();
+          provider.removeSender(fromShare: true, fromSender: true);
+          ChannelProvider.isModeratorMode = false;
+          mirrorStateProvider.stopAllMirror();
         }
         bool audioEnabled = videoView.renderer.srcObject != null &&
             videoView.renderer.srcObject!.getAudioTracks().isNotEmpty &&
