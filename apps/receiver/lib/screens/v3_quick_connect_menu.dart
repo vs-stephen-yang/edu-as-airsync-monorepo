@@ -195,7 +195,7 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                                     setState(() {});
                                   }
                                 },
-                                onKey: (node, event) {
+                                onKeyEvent: (node, event) {
                                   if (event.logicalKey ==
                                       LogicalKeyboardKey.enter) {
                                     setState(() {
@@ -284,8 +284,12 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                           onPageChanged: (index) {
                             setState(() {
                               selected = index;
-                              FocusScope.of(context)
-                                  .requestFocus(_focusNodes[index]);
+                              final bool openedWithLogicalKey = HardwareKeyboard
+                                  .instance.logicalKeysPressed.isNotEmpty;
+                              if (openedWithLogicalKey) {
+                                FocusScope.of(context)
+                                    .requestFocus(_focusNodes[index]);
+                              }
                             });
                           },
                           children: const [
