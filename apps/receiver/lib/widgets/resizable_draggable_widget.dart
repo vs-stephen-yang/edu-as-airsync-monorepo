@@ -2,7 +2,10 @@ import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 
@@ -36,6 +39,8 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
   bool _isExpanded = true;
   double? _previousScreenWidth;
   bool _isCollapsedTapDown = false;
+  FocusNode expandedPrimaryFocusNode = FocusNode();
+  FocusNode collapsedFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -169,6 +174,7 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
         });
       },
       child: ExpandedContentWidget(
+        primaryFocusNode: expandedPrimaryFocusNode,
         width: _width,
         height: widget.height,
         text: widget.text,
@@ -176,12 +182,29 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
         onMinimize: () {
           _updatePositionForExpandOrCollapse(
               false, _collapsedWidth, screenWidth);
-          setState(() => _isExpanded = false);
+          setState(() {
+            _isExpanded = false;
+            _focusPrimaryOnExpandedChanged(false);
+          });
         },
         onMute: widget.onMute,
         onStop: onStop,
       ),
     );
+  }
+
+  void _focusPrimaryOnExpandedChanged(bool expanded) {
+    final bool openedWithLogicalKey =
+        HardwareKeyboard.instance.logicalKeysPressed.isNotEmpty;
+    if (openedWithLogicalKey) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        if (expanded) {
+          expandedPrimaryFocusNode.requestFocus();
+        } else {
+          collapsedFocusNode.requestFocus();
+        }
+      });
+    }
   }
 
   Widget _buildCollapsedWidget(double screenWidth) {
@@ -207,20 +230,22 @@ class _ResizableDraggableWidgetState extends State<ResizableDraggableWidget> {
       },
       child: GestureDetector(
         onTapDown: (_) => setState(() => _isCollapsedTapDown = true),
-        onTap: () {
-          _updatePositionForExpandOrCollapse(
-              true, _collapsedWidth, screenWidth);
-          setState(() {
-            _isExpanded = true;
-            _isCollapsedTapDown = false;
-          });
-        },
         onTapCancel: () => setState(() => _isCollapsedTapDown = false),
         child: CollapsedContentWidget(
+          primaryFocusNode: collapsedFocusNode,
           width: _collapsedWidth,
           height: widget.height,
           isDragging: false,
           isTapped: _isCollapsedTapDown,
+          onTap: () {
+            _updatePositionForExpandOrCollapse(
+                true, _collapsedWidth, screenWidth);
+            setState(() {
+              _isExpanded = true;
+              _isCollapsedTapDown = false;
+              _focusPrimaryOnExpandedChanged(true);
+            });
+          },
         ),
       ),
     );
@@ -235,6 +260,7 @@ class ExpandedContentWidget extends StatelessWidget {
   final VoidCallback onMinimize;
   final VoidCallback onStop;
   final VoidCallback onMute;
+  final FocusNode? primaryFocusNode;
 
   const ExpandedContentWidget({
     super.key,
@@ -245,6 +271,7 @@ class ExpandedContentWidget extends StatelessWidget {
     required this.onStop,
     required this.onMute,
     required this.isMute,
+    this.primaryFocusNode,
   });
 
   @override
@@ -271,11 +298,11 @@ class ExpandedContentWidget extends StatelessWidget {
           textPadding,
           gap,
           // TODO Uncomment this line when frameware is ready
-          // _buildMuteButton(context, isMute),
+          // V3Focus(child: _buildMuteButton(context, isMute)),
           gap,
-          _buildStopButton(context),
+          V3Focus(child: _buildStopButton(context)),
           gap,
-          _buildMinimizeButton(),
+          V3Focus(child: _buildMinimizeButton(primaryFocusNode)),
           gap,
         ],
       ),
@@ -334,7 +361,7 @@ class ExpandedContentWidget extends StatelessWidget {
   }
 
   Widget _buildStopButton(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onStop,
       child: SizedBox(
         width: 26,
@@ -356,8 +383,9 @@ class ExpandedContentWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildMinimizeButton() {
-    return GestureDetector(
+  Widget _buildMinimizeButton(FocusNode? primaryFocusNode) {
+    return InkWell(
+      focusNode: primaryFocusNode,
       onTap: onMinimize,
       child: Opacity(
           opacity: 0.64, child: _buildIcon('assets/images/ic_minimize.svg')),
@@ -370,6 +398,8 @@ class CollapsedContentWidget extends StatelessWidget {
   final double height;
   final bool isDragging;
   final bool isTapped;
+  final VoidCallback? onTap;
+  final FocusNode? primaryFocusNode;
 
   const CollapsedContentWidget({
     super.key,
@@ -377,6 +407,8 @@ class CollapsedContentWidget extends StatelessWidget {
     required this.height,
     required this.isDragging,
     required this.isTapped,
+    this.onTap,
+    this.primaryFocusNode,
   });
 
   @override
@@ -395,7 +427,13 @@ class CollapsedContentWidget extends StatelessWidget {
                 top: context.tokens.radii.vsdslRadiusmd.topRight),
             color: context.tokens.color.vsdslColorSuccess),
         alignment: Alignment.center,
-        child: SvgPicture.asset('assets/images/ic_expend.svg'),
+        child: V3Focus(
+          child: InkWell(
+            focusNode: primaryFocusNode,
+            onTap: onTap,
+            child: SvgPicture.asset('assets/images/ic_expend.svg'),
+          ),
+        ),
       ),
     );
   }
