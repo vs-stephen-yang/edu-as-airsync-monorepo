@@ -20,22 +20,34 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
   Widget build(BuildContext context) {
     final mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context, listen: false);
+
     return Consumer<ChannelProvider>(
       builder: (context, provider, child) {
         final videoView = provider.displayGroupVideoView;
         if (!provider.isDisplayGroupVideoAvailable || videoView == null) {
           return const SizedBox.shrink();
         } else {
-          HybridConnectionList().removeAllPresenters();
-          provider.removeSender(fromShare: true, fromSender: true);
-          ChannelProvider.isModeratorMode = false;
-          mirrorStateProvider.stopAllMirror();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (provider.displayGroupVideoView != null &&
+                provider.isDisplayGroupVideoAvailable) {
+              HybridConnectionList().removeAllPresenters();
+              mirrorStateProvider.stopAllMirror();
+              if (provider.isSenderMode) {
+                provider.removeSender(fromSender: true);
+              }
+              if (provider.isGroupMode) {
+                provider.removeSender(fromGroup: true);
+              }
+              if (ChannelProvider.isModeratorMode) {
+                provider.setModeratorMode(false);
+              }
+            }
+          });
         }
         bool audioEnabled = videoView.renderer.srcObject != null &&
             videoView.renderer.srcObject!.getAudioTracks().isNotEmpty &&
             videoView.renderer.srcObject!.getAudioTracks()[0].enabled;
 
-//// Due to Remote control, we need to wrap the RTCVideoView with FocusScope to prevent the remote control  can focus another view under the RTCVideoView
         return FocusScope(
           child: Stack(
             children: [
@@ -82,6 +94,7 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
                 onStop: () {
                   provider.stopReceivedFromHost(
                       closeReason: 'stop received from host');
+                  mirrorStateProvider.restartMirror();
                 },
                 isMute: !audioEnabled,
               ),
