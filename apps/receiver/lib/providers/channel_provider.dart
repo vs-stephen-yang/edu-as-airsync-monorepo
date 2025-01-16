@@ -997,8 +997,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   //region handle Display Group's client
-  void stopReceivedFromHost({required String closeReason}) {
-    _displayGroupSession?.stop(reason: closeReason);
+  Future<void> stopReceivedFromHost({required String closeReason}) async {
+    await _displayGroupSession?.stop(reason: closeReason);
     _displayGroupSession = null;
     notifyListeners();
   }
