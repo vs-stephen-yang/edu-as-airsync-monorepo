@@ -22,6 +22,9 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
         if (!provider.isDisplayGroupVideoAvailable || videoView == null) {
           return const SizedBox.shrink();
         }
+        bool audioEnabled = videoView.renderer.srcObject != null &&
+            videoView.renderer.srcObject!.getAudioTracks().isNotEmpty &&
+            videoView.renderer.srcObject!.getAudioTracks()[0].enabled;
 
         return Stack(
           children: [
@@ -55,7 +58,8 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
               text:
                   '${S.of(context).v3_group_receive_view_status_from} ${provider.displayGroupHostName}',
               onMute: () {
-                if (videoView.renderer.srcObject != null) {
+                if (videoView.renderer.srcObject != null &&
+                    videoView.renderer.srcObject!.getAudioTracks().isNotEmpty) {
                   videoView.renderer.srcObject!.getAudioTracks()[0].enabled =
                       !videoView.renderer.srcObject!
                           .getAudioTracks()[0]
@@ -66,9 +70,7 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
                 provider.stopReceivedFromHost(
                     closeReason: 'stop received from host');
               },
-              isMute:
-                  videoView.renderer.srcObject?.getAudioTracks()[0].enabled ??
-                      false,
+              isMute: !audioEnabled,
             ),
             IgnorePointer(
               child: Stack(
