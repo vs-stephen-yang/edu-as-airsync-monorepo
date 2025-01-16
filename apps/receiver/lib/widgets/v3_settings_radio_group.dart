@@ -29,11 +29,13 @@ class V3SettingsRadioGroup extends StatefulWidget {
     required this.initSelectedValue,
     required this.radioList,
     required this.onChanged,
+    required this.firstFocus,
   });
 
   final String initSelectedValue;
   final List<V3SettingsRadioGroupItem> radioList;
   final ValueChanged<String> onChanged;
+  final bool firstFocus;
 
   @override
   V3SettingsRadioGroupState createState() => V3SettingsRadioGroupState();
@@ -63,9 +65,10 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
                     bottom: context.tokens.spacing.vsdslSpacingSm.bottom / 2,
                   ),
                   child: InkWell(
-                    focusNode: (key == widget.radioList.first)
-                        ? settingsProvider.subFocusNode
-                        : null,
+                    focusNode:
+                        (key == widget.radioList.first) && widget.firstFocus
+                            ? settingsProvider.subFocusNode
+                            : null,
                     onTap: settingsProvider.isConnectivityLock
                         ? null
                         : () {

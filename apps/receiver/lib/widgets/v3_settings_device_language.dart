@@ -34,6 +34,7 @@ class V3SettingsDeviceLanguage extends StatelessWidget {
           bottom: 13,
           child: SingleChildScrollView(
             child: V3SettingsRadioGroup(
+              firstFocus: true,
               initSelectedValue: languageProvider.language,
               radioList: languageProvider.localeMap.keys.map((key) {
                 return V3SettingsRadioGroupItem(
