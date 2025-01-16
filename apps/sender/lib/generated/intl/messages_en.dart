@@ -338,6 +338,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Unable to join. The session has reached its max limit."),
         "v3_present_touch_back_allow":
             MessageLookupByLibrary.simpleMessage("Allow touchback"),
+        "v3_receiver_remote_screen_busy_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_receiver_remote_screen_busy_description":
+            MessageLookupByLibrary.simpleMessage(
+                "The screen is broadcasting to other screens. Please try it later."),
+        "v3_receiver_remote_screen_busy_title":
+            MessageLookupByLibrary.simpleMessage("The screen is broadcasting"),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Quick connect by scan the QR code"),
         "v3_select_screen_ios_countdown":

@@ -40,6 +40,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
   bool isSessionFullDialogOnScreen = false;
   bool isScreenFullDialogOnScreen = false;
   bool isModeratorExitedDialogOnScreen = false;
+  bool isReceiverRemoteScreenBusyDialogOnScreen = false;
 
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
@@ -121,6 +122,10 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
           !isModeratorExitedDialogOnScreen) {
         channelProvider.isModeratorExitedRejected = false;
         _showModeratorExitedDialog();
+      }
+      if (channelProvider.isReceiverRemoteScreenBusyRejected) {
+        channelProvider.isReceiverRemoteScreenBusyRejected = false;
+        _showReceiverRemoteScreenBusyDialog();
       }
       if (channelProvider.totalSharingTime.isNotEmpty) {
         V3Toast().makeSharingTimeToast(
@@ -336,6 +341,27 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       },
     ).then((_) {
       isModeratorExitedDialogOnScreen = false;
+      setState(() {});
+    });
+  }
+
+  _showReceiverRemoteScreenBusyDialog() async {
+    isReceiverRemoteScreenBusyDialogOnScreen = true;
+    FocusScope.of(context).unfocus();
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return V3MessageDialog(
+          stringTitle: S.of(context).v3_receiver_remote_screen_busy_title,
+          stringContent:
+              S.of(context).v3_receiver_remote_screen_busy_description,
+          stringAction: S.of(context).v3_receiver_remote_screen_busy_action,
+        );
+      },
+    ).then((_) {
+      isReceiverRemoteScreenBusyDialogOnScreen = false;
+      presentBtnKey.currentState?.setEnable(false);
+      presentBtnKey.currentState?.setLoadingState(false);
       setState(() {});
     });
   }

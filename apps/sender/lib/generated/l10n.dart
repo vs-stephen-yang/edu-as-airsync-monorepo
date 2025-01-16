@@ -1840,6 +1840,36 @@ class S {
       args: [],
     );
   }
+
+  /// `The screen is broadcasting`
+  String get v3_receiver_remote_screen_busy_title {
+    return Intl.message(
+      'The screen is broadcasting',
+      name: 'v3_receiver_remote_screen_busy_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The screen is broadcasting to other screens. Please try it later.`
+  String get v3_receiver_remote_screen_busy_description {
+    return Intl.message(
+      'The screen is broadcasting to other screens. Please try it later.',
+      name: 'v3_receiver_remote_screen_busy_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get v3_receiver_remote_screen_busy_action {
+    return Intl.message(
+      'OK',
+      name: 'v3_receiver_remote_screen_busy_action',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
