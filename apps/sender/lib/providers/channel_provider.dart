@@ -109,6 +109,7 @@ class ChannelProvider extends ChangeNotifier {
   bool isJoinDisplayRejected = false;
   bool isModeratorExitedRejected = false;
   bool isPresentRejected = false;
+  bool isReceiverRemoteScreenBusyRejected = false;
 
   bool get authorizeStatus => _authorizeStatus;
   bool _authorizeStatus = false;
@@ -337,6 +338,8 @@ class ChannelProvider extends ChangeNotifier {
             } else if (reason?.code ==
                 JoinDisplayRejectedReasonCode.moderatorExited.code) {
               isModeratorExitedRejected = true;
+            } else if (reason?.code == 403) {
+              isReceiverRemoteScreenBusyRejected = true;
             }
             unawaited(presentEnd());
           } else {

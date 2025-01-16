@@ -296,6 +296,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("已達到最大分享畫面數量，請稍後再試"),
         "v3_present_touch_back_allow":
             MessageLookupByLibrary.simpleMessage("允許反控設備端"),
+        "v3_receiver_remote_screen_busy_action":
+            MessageLookupByLibrary.simpleMessage("好"),
+        "v3_receiver_remote_screen_busy_description":
+            MessageLookupByLibrary.simpleMessage("該螢幕正在廣播中，請稍後再試"),
+        "v3_receiver_remote_screen_busy_title":
+            MessageLookupByLibrary.simpleMessage("螢幕廣播中"),
         "v3_scan_qr_reminder":
             MessageLookupByLibrary.simpleMessage("掃描QR code快速連線"),
         "v3_select_screen_ios_countdown":
