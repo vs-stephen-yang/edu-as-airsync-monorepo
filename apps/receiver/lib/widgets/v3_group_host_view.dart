@@ -26,67 +26,72 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
             videoView.renderer.srcObject!.getAudioTracks().isNotEmpty &&
             videoView.renderer.srcObject!.getAudioTracks()[0].enabled;
 
-        return Stack(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: context.tokens.color.vsdslColorSuccess,
-                  width: 4.0,
-                ),
-                color: Colors.black,
-              ),
-              child: RTCVideoView(
-                videoView.renderer,
-                key: videoView.widgetKey,
-              ),
-            ),
-            IgnorePointer(
-              child: Container(
+//// Due to Remote control, we need to wrap the RTCVideoView with FocusScope to prevent the remote control  can focus another view under the RTCVideoView
+        return FocusScope(
+          child: Stack(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
                 decoration: BoxDecoration(
                   border: Border.all(
-                    width: 4,
                     color: context.tokens.color.vsdslColorSuccess,
+                    width: 4.0,
+                  ),
+                  color: Colors.black,
+                ),
+                child: RTCVideoView(
+                  videoView.renderer,
+                  key: videoView.widgetKey,
+                ),
+              ),
+              IgnorePointer(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 4,
+                      color: context.tokens.color.vsdslColorSuccess,
+                    ),
                   ),
                 ),
               ),
-            ),
-            ResizableDraggableWidget(
-              halfScreen: MediaQuery.of(context).size.width / 2,
-              text:
-                  '${S.of(context).v3_group_receive_view_status_from} ${provider.displayGroupHostName}',
-              onMute: () {
-                if (videoView.renderer.srcObject != null &&
-                    videoView.renderer.srcObject!.getAudioTracks().isNotEmpty) {
-                  videoView.renderer.srcObject!.getAudioTracks()[0].enabled =
-                      !videoView.renderer.srcObject!
-                          .getAudioTracks()[0]
-                          .enabled;
-                }
-              },
-              onStop: () {
-                provider.stopReceivedFromHost(
-                    closeReason: 'stop received from host');
-              },
-              isMute: !audioEnabled,
-            ),
-            IgnorePointer(
-              child: Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 4,
-                        color: context.tokens.color.vsdslColorSuccess,
+              ResizableDraggableWidget(
+                halfScreen: MediaQuery.of(context).size.width / 2,
+                text:
+                    '${S.of(context).v3_group_receive_view_status_from} ${provider.displayGroupHostName}',
+                onMute: () {
+                  if (videoView.renderer.srcObject != null &&
+                      videoView.renderer.srcObject!
+                          .getAudioTracks()
+                          .isNotEmpty) {
+                    videoView.renderer.srcObject!.getAudioTracks()[0].enabled =
+                        !videoView.renderer.srcObject!
+                            .getAudioTracks()[0]
+                            .enabled;
+                  }
+                },
+                onStop: () {
+                  provider.stopReceivedFromHost(
+                      closeReason: 'stop received from host');
+                },
+                isMute: !audioEnabled,
+              ),
+              IgnorePointer(
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 4,
+                          color: context.tokens.color.vsdslColorSuccess,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
