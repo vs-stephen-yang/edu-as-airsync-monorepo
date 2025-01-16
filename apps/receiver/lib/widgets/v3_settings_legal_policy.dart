@@ -4,7 +4,7 @@ import 'package:display_flutter/oss_licenses.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/widgets/v3_menu_navigation_icon_button.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
-import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_list_item_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +31,7 @@ class V3SettingsLegalPolicy extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LicenseTile(
+          V3SettingMenuListTile(
             focusNode: settingsProvider.subFocusNode,
             name: S.of(context).v3_settings_privacy_policy,
             onTap: () {
@@ -68,7 +68,7 @@ class V3SettingsLegalPolicy extends StatelessWidget {
                           (license) => !_hiddenLicenses.contains(license.name))
                       .toList();
                   final license = visibleLicenses[index];
-                  return LicenseTile(
+                  return V3SettingMenuListTile(
                       name: license.name,
                       onTap: () {
                         settingsProvider.setPage(SettingPageState.licenses,
@@ -84,8 +84,8 @@ class V3SettingsLegalPolicy extends StatelessWidget {
   }
 }
 
-class LicenseTile extends StatelessWidget {
-  const LicenseTile({
+class V3SettingMenuListTile extends StatelessWidget {
+  const V3SettingMenuListTile({
     super.key,
     required this.name,
     required this.onTap,
@@ -103,7 +103,7 @@ class LicenseTile extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: V3SettingMenuSubItemFocus(
+            child: V3SettingMenuListItemFocus(
               child: Row(
                 children: [
                   Text(

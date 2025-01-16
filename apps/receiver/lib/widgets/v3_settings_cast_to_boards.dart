@@ -12,6 +12,7 @@ import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_list_item_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
 import 'package:display_flutter/widgets/v3_settings_radio_group.dart';
@@ -260,6 +261,7 @@ class V3SettingsCastToBoardsState
                     child: ElevatedButton(
                       focusNode: focusNode,
                       style: ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         foregroundColor: WidgetStateProperty.resolveWith<Color>(
                           (Set<WidgetState> states) {
                             if (states.contains(WidgetState.pressed)) {
@@ -301,7 +303,11 @@ class V3SettingsCastToBoardsState
     );
     Overlay.of(context, debugRequiredFor: widget).insert(_overlayEntry!);
     Future.delayed(Duration.zero, () {
-      focusNode.requestFocus();
+      final bool openedWithLogicalKey =
+          HardwareKeyboard.instance.logicalKeysPressed.isNotEmpty;
+      if (openedWithLogicalKey) {
+        focusNode.requestFocus();
+      }
     });
   }
 
@@ -327,6 +333,7 @@ class V3SettingsCastToBoardsState
           _buildBroadcastGroupToggle(context, groupNotifier, channelProvider),
           if (isBroadcastingToGroup)
             V3SettingsRadioGroup(
+              firstFocus: false,
               initSelectedValue: groupNotifier.broadcastGroupLaunchType.name,
               radioList: radioItems,
               onChanged: (value) {
@@ -362,10 +369,8 @@ class V3SettingsCastToBoardsState
 
   Expanded _buildListContent(GroupProvider groupNotifier,
       bool isBroadcastingToGroup, ChannelProvider channelProvider) {
-    final broadcastSelectedList =
-        ref.watch(groupProvider.select((state) => state.selectedList));
     return Expanded(
-      child: ListView.builder(
+      child: ListView.separated(
         shrinkWrap: true,
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: groupNotifier.getListenListSize(),
@@ -373,61 +378,88 @@ class V3SettingsCastToBoardsState
           final client = groupNotifier.getListenClient(index);
           return Opacity(
             opacity: isBroadcastingToGroup ? 1.0 : 0.3,
-            child: Container(
-              height: 26,
-              margin: EdgeInsets.only(
-                  right: 8,
-                  left: 8,
-                  bottom: context.tokens.spacing.vsdslSpacingSm.bottom),
-              child: V3SettingMenuSubItemFocus(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: Checkbox(
-                        value: broadcastSelectedList
-                            .any((element) => element.id() == client.id()),
-                        activeColor: context.tokens.color.vsdslColorPrimary,
-                        side: BorderSide(
-                            color: context.tokens.color.vsdslColorOnPrimary,
-                            width: 2),
-                        onChanged: (bool? value) {
-                          if (value != null) {
-                            if (value) {
-                              groupNotifier.addToSelectedList(client);
-                            } else {
-                              groupNotifier.removeFromSelectedList(client);
-                            }
-                            // 斷線裝置不用按下方按鈕生效，連線還是需要按。
-                            if (value == false &&
-                                channelProvider.groupActivated()) {
-                              startDisplayGroup(groupNotifier, channelProvider);
-                            }
-                          }
-                        },
-                      ),
+            child:
+                _buildListTIle(client, context, groupNotifier, channelProvider),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) =>
+            Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
+      ),
+    );
+  }
+
+  Widget _buildListTIle(GroupListItem client, BuildContext context,
+      GroupProvider groupNotifier, ChannelProvider channelProvider) {
+    final broadcastSelectedList =
+        ref.watch(groupProvider.select((state) => state.selectedList));
+    void toggleCheckbox(client, {bool? overrideValue}) {
+      final onKeyboard =
+          HardwareKeyboard.instance.logicalKeysPressed.isNotEmpty;
+      if (!onKeyboard && overrideValue == null) {
+        return;
+      }
+
+      final isChecked = overrideValue ??
+          broadcastSelectedList.any((element) => element.id() == client.id());
+      if (!isChecked) {
+        groupNotifier.addToSelectedList(client);
+      } else {
+        groupNotifier.removeFromSelectedList(client);
+      }
+      // 斷線裝置不用按下方按鈕生效，連線還是需要按。
+      if (!isChecked == false && channelProvider.groupActivated()) {
+        startDisplayGroup(groupNotifier, channelProvider);
+      }
+      if (overrideValue == null) setState(() {});
+    }
+
+    return Container(
+      height: 26,
+      margin: const EdgeInsets.only(right: 8, left: 8),
+      child: V3SettingMenuListItemFocus(
+        onTap: () => toggleCheckbox(client),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            InkWell(
+              onTap: () => toggleCheckbox(client),
+              highlightColor: Colors.transparent,
+              child: SizedBox(
+                height: 26,
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: ExcludeFocus(
+                    child: Checkbox(
+                      value: broadcastSelectedList
+                          .any((element) => element.id() == client.id()),
+                      activeColor: context.tokens.color.vsdslColorPrimary,
+                      side: BorderSide(
+                          color: context.tokens.color.vsdslColorOnPrimary,
+                          width: 2),
+                      onChanged: (bool? value) {
+                        if (value != null) {
+                          toggleCheckbox(client, overrideValue: value);
+                        }
+                      },
                     ),
-                    Padding(
-                        padding: EdgeInsets.only(
-                            right:
-                                context.tokens.spacing.vsdslSpacingSm.right)),
-                    Text(
-                      client.deviceName(),
-                      style: TextStyle(
-                          fontSize: 12,
-                          color:
-                              context.tokens.color.vsdslColorOnSurfaceInverse),
-                    ),
-                    const Spacer(),
-                    displayCodeWidget(client, context)
-                  ],
+                  ),
                 ),
               ),
             ),
-          );
-        },
+            Padding(
+                padding: EdgeInsets.only(
+                    right: context.tokens.spacing.vsdslSpacingSm.right)),
+            Text(
+              client.deviceName(),
+              style: TextStyle(
+                  fontSize: 12,
+                  color: context.tokens.color.vsdslColorOnSurfaceInverse),
+            ),
+            const Spacer(),
+            displayCodeWidget(client, context)
+          ],
+        ),
       ),
     );
   }
@@ -506,17 +538,11 @@ class V3SettingsCastToBoardsState
             const Spacer(),
             SizedBox(
               height: 21,
-              child: IconButton(
+              child: InkWell(
+                highlightColor: Colors.transparent,
                 focusNode: provider.Provider.of<SettingsProvider>(context)
                     .subFocusNode,
-                icon: Image(
-                  image: Svg(groupNotifier.broadcastToGroup
-                      ? 'assets/images/ic_switch_on.svg'
-                      : 'assets/images/ic_switch_off.svg'),
-                ),
-                padding: EdgeInsets.zero,
-                // constraints: const BoxConstraints(),
-                onPressed: () async {
+                onTap: () async {
                   bool state = !groupNotifier.broadcastToGroup;
 
                   trackEvent(
@@ -537,6 +563,11 @@ class V3SettingsCastToBoardsState
                   groupNotifier
                       .setBroadcastToGroup(channelProvider.isGroupMode);
                 },
+                child: Image(
+                  image: Svg(groupNotifier.broadcastToGroup
+                      ? 'assets/images/ic_switch_on.svg'
+                      : 'assets/images/ic_switch_off.svg'),
+                ),
               ),
             )
           ],
