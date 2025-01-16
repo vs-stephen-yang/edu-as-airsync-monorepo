@@ -346,8 +346,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Leisti grįžtamąjį ryšį"),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Greitas prisijungimas nuskenuojant QR kodą"),
-        "v3_select_screen_ios_countdown": MessageLookupByLibrary.simpleMessage(
-            "Bendrinimo laikas iš viso: %s."),
+        "v3_select_screen_ios_countdown":
+            MessageLookupByLibrary.simpleMessage("Bendrinimo laikas iš viso:"),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("Pradėti bendrinimą"),
         "v3_setting_app_version": m2,
