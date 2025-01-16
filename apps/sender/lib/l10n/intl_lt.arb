@@ -151,7 +151,7 @@
   "v3_present_options_menu_he_subtitle": "Naudokite įrenginio vaizdo plokštę srautui koduoti.",
   "v3_present_touch_back_allow": "Leisti grįžtamąjį ryšį",
   "v3_present_end_information": "Ekrano bendrinimas sustabdytas.",
-  "v3_select_screen_ios_countdown": "Bendrinimo laikas iš viso: %s.",
+  "v3_select_screen_ios_countdown": "Bendrinimo laikas iš viso:",
   "v3_select_screen_ios_start_sharing": "Pradėti bendrinimą",
   "v3_setting_title": "Nustatymai",
   "v3_setting_app_version": "AirSync ©{year}, versija {version}",
