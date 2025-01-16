@@ -661,7 +661,12 @@ class ChannelProvider extends ChangeNotifier {
       }
     });
 
-    sendDisplayStatus(channel);
+    if (displayGroupVideoView != null && isDisplayGroupVideoAvailable) {
+      sendJoinDisplayRejectMessage(channel,
+          errorCode: 403, reason: 'receive a remote screen');
+    } else {
+      sendDisplayStatus(channel);
+    }
   }
 
   ConnectRequestStatus _verifyConnectRequest(
@@ -780,12 +785,20 @@ class ChannelProvider extends ChangeNotifier {
     return rtcConnector;
   }
 
-  void sendJoinDisplayRejectMessage(Channel channel) {
+  void sendJoinDisplayRejectMessage(Channel channel,
+      {int? errorCode, String? reason}) {
     final message = JoinDisplayRejectedMessage();
-    message.reason = Reason(
-      JoinDisplayRejectedReasonCode.maxClientsReached.code,
-      text: 'Max number of clients reached',
-    );
+    if (errorCode != null) {
+      message.reason = Reason(
+        errorCode,
+        text: reason,
+      );
+    } else {
+      message.reason = Reason(
+        JoinDisplayRejectedReasonCode.maxClientsReached.code,
+        text: 'Max number of clients reached',
+      );
+    }
     channel.send(message);
   }
 
