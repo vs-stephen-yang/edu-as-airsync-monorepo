@@ -150,7 +150,7 @@
   "v3_present_options_menu_he_subtitle": "使用影像處理單元進行編碼",
   "v3_present_touch_back_allow": "允許反控設備端",
   "v3_present_end_information": "已停止分享，共計使用 %s 分鐘",
-  "v3_select_screen_ios_countdown": "請在連線逾時前點擊開始分享。剩餘時間: %s",
+  "v3_select_screen_ios_countdown": "請在連線逾時前點擊開始分享。剩餘時間:",
   "v3_select_screen_ios_start_sharing": "開始分享",
   "v3_setting_title": "設定",
   "v3_setting_app_version": "AirSync ©{year}. 版本 {version}",

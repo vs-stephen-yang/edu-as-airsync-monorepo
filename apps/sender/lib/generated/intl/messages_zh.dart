@@ -299,7 +299,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_scan_qr_reminder":
             MessageLookupByLibrary.simpleMessage("掃描QR code快速連線"),
         "v3_select_screen_ios_countdown":
-            MessageLookupByLibrary.simpleMessage("請在連線逾時前點擊開始分享。剩餘時間: %s"),
+            MessageLookupByLibrary.simpleMessage("請在連線逾時前點擊開始分享。剩餘時間:"),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("開始分享"),
         "v3_setting_app_version": m2,
