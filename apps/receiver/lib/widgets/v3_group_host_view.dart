@@ -55,14 +55,20 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
               text:
                   '${S.of(context).v3_group_receive_view_status_from} ${provider.displayGroupHostName}',
               onMute: () {
-                videoView.renderer.srcObject!.getAudioTracks()[0].enabled =
-                    !videoView.renderer.srcObject!.getAudioTracks()[0].enabled;
+                if (videoView.renderer.srcObject != null) {
+                  videoView.renderer.srcObject!.getAudioTracks()[0].enabled =
+                      !videoView.renderer.srcObject!
+                          .getAudioTracks()[0]
+                          .enabled;
+                }
               },
               onStop: () {
                 provider.stopReceivedFromHost(
                     closeReason: 'stop received from host');
               },
-              isMute: videoView.renderer.srcObject!.getAudioTracks()[0].enabled,
+              isMute:
+                  videoView.renderer.srcObject?.getAudioTracks()[0].enabled ??
+                      false,
             ),
             IgnorePointer(
               child: Stack(
