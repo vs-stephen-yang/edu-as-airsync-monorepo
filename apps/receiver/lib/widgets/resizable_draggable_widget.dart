@@ -270,7 +270,8 @@ class ExpandedContentWidget extends StatelessWidget {
           Flexible(child: _buildText(context)),
           textPadding,
           gap,
-          _buildMuteButton(context, isMute),
+          // TODO Uncomment this line when frameware is ready
+          // _buildMuteButton(context, isMute),
           gap,
           _buildStopButton(context),
           gap,
