@@ -198,10 +198,11 @@ packages:
   dart_webrtc:
     dependency: transitive
     description:
-      name: dart_webrtc
-      sha256: "8949301071ac7c3fb8f78ef7dffc48652db16f2ec63d84078b608f2ca27cca38"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "release-1.0.17-1"
+      resolved-ref: "934e9563c7342bab1c0c533cede5837ff8898c73"
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/dart-webrtc"
+    source: git
     version: "1.0.17"
   dbus:
     dependency: transitive
@@ -455,8 +456,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.9.36-40"
-      resolved-ref: "0c8c4a70f0aaee0fa1600b8a9117157c5ad48fe5"
+      ref: "release-0.9.36-49"
+      resolved-ref: "102e48e1b6605db47baa05bff9075a7bc82235df"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc"
     source: git
     version: "0.9.36"
@@ -568,8 +569,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.0.33"
-      resolved-ref: "863009fcc4caecde4f96af26f8ec4bd3f99b800b"
+      ref: "release-0.0.42"
+      resolved-ref: c92537a37a6c2a21525ecb218d3b262e491cea1e
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter"
     source: git
     version: "1.0.0"
@@ -1342,10 +1343,11 @@ packages:
   webrtc_interface:
     dependency: transitive
     description:
-      name: webrtc_interface
-      sha256: "0dd96f4d7fb6ba9895930644cebd3f1adb5179caa83cb1760061b2fe9cba5aad"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "release-1.1.0-1"
+      resolved-ref: f5c9022bee78cf24a55c3abd9206d49e45a3d991
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/webrtc-interface"
+    source: git
     version: "1.1.0"
   win32:
     dependency: transitive
