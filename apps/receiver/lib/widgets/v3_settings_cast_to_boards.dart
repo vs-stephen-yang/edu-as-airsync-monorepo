@@ -12,6 +12,7 @@ import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_item_toggle_tile.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_list_item_focus.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:display_flutter/widgets/v3_settings_device.dart';
@@ -217,6 +218,12 @@ class V3SettingsCastToBoardsState
         }
       },
     );
+
+    // When the dialog is opened with a logical key, the focus node should be focused.
+    if (HardwareKeyboard.instance.logicalKeysPressed.isNotEmpty) {
+      focusNode.requestFocus();
+    }
+
     _overlayEntry = OverlayEntry(
       builder: (BuildContext context) {
         return TapRegion(
@@ -521,58 +528,34 @@ class V3SettingsCastToBoardsState
     );
   }
 
-  Widget _buildBroadcastGroupToggle(BuildContext context,
-      GroupProvider groupNotifier, ChannelProvider channelProvider) {
-    return V3SettingMenuSubItemFocus(
-      child: SizedBox(
-        height: 26,
-        child: Row(
-          children: [
-            Text(
-              S.of(context).v3_settings_broadcast_to_display_group,
-              style: TextStyle(
-                color: context.tokens.color.vsdslColorOnSurfaceInverse,
-                fontSize: 12,
-              ),
-            ),
-            const Spacer(),
-            SizedBox(
-              height: 21,
-              child: InkWell(
-                highlightColor: Colors.transparent,
-                focusNode: provider.Provider.of<SettingsProvider>(context)
-                    .subFocusNode,
-                onTap: () async {
-                  bool state = !groupNotifier.broadcastToGroup;
+  Widget _buildBroadcastGroupToggle(
+    BuildContext context,
+    GroupProvider groupNotifier,
+    ChannelProvider channelProvider,
+  ) {
+    return V3SettingMenuItemToggleTile(
+      title: S.of(context).v3_settings_broadcast_to_display_group,
+      focusNode: provider.Provider.of<SettingsProvider>(context).subFocusNode,
+      switchOn: groupNotifier.broadcastToGroup,
+      onTap: () async {
+        bool state = !groupNotifier.broadcastToGroup;
 
-                  trackEvent(
-                    'click_cast_to_board',
-                    EventCategory.setting,
-                    target: state ? 'on' : 'off',
-                  );
+        trackEvent(
+          'click_cast_to_board',
+          EventCategory.setting,
+          target: state ? 'on' : 'off',
+        );
 
-                  if (state) {
-                    await channelProvider.startRemoteScreen(fromGroup: true);
-                  } else {
-                    groupNotifier.clearClients();
-                    GroupListModel discoveryModel =
-                        ref.watch(discoveryModelProvider);
-                    await discoveryModel.stop();
-                    channelProvider.stopDisplayGroup();
-                  }
-                  groupNotifier
-                      .setBroadcastToGroup(channelProvider.isGroupMode);
-                },
-                child: Image(
-                  image: Svg(groupNotifier.broadcastToGroup
-                      ? 'assets/images/ic_switch_on.svg'
-                      : 'assets/images/ic_switch_off.svg'),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
+        if (state) {
+          await channelProvider.startRemoteScreen(fromGroup: true);
+        } else {
+          groupNotifier.clearClients();
+          GroupListModel discoveryModel = ref.watch(discoveryModelProvider);
+          await discoveryModel.stop();
+          channelProvider.stopDisplayGroup();
+        }
+        groupNotifier.setBroadcastToGroup(channelProvider.isGroupMode);
+      },
     );
   }
 

@@ -41,6 +41,18 @@ class V3CustomCheckbox extends StatelessWidget {
       activeColor: colorPrimary,
       checkColor: colorOnPrimary,
       fillColor: colorFill,
+      overlayColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.focused)) {
+          return Colors.transparent;
+        }
+        if (states.contains(WidgetState.hovered)) {
+          return Colors.transparent;
+        }
+        if (states.contains(WidgetState.pressed)) {
+          return Colors.transparent;
+        }
+        return null; // 保留其他默认行为
+      }),
     );
   }
 }

@@ -11,12 +11,12 @@ import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/widgets/v3_custom_checkbox.dart';
-import 'package:display_flutter/widgets/v3_menu_navigation_icon_button.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_item_toggle_tile.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_navigation_tile.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsDevice extends StatefulWidget {
@@ -40,23 +40,11 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            V3SettingMenuSubItemFocus(
-              child: SizedBox(
-                height: 26,
-                child: _buildDeviceName(context, settingsProvider),
-              ),
-            ),
+            _buildDeviceName(context, settingsProvider),
             _buildDivider(context),
-            V3SettingMenuSubItemFocus(
-              child: SizedBox(
-                height: 26,
-                child: _buildLanguage(context, settingsProvider),
-              ),
-            ),
+            _buildLanguage(context, settingsProvider),
             _buildDivider(context),
-            V3SettingMenuSubItemFocus(
-              child: _buildShowDisplayCode(context, settingsProvider),
-            ),
+            _buildShowDisplayCode(context, settingsProvider),
             Padding(
               padding: EdgeInsets.only(
                 top: context.tokens.spacing.vsdslSpacingSm.top,
@@ -72,7 +60,10 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             ),
             _buildDivider(context),
             V3SettingMenuSubItemFocus(
-              child: _buildAutoFillOTP(context, settingsProvider),
+              child: SizedBox(
+                height: 26,
+                child: _buildAutoFillOTP(context, settingsProvider),
+              ),
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -87,12 +78,18 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             if (AppInstanceCreate().isInstalledInVBS200) ...[
               _buildDivider(context),
               V3SettingMenuSubItemFocus(
-                child: _buildLaunchOnStartup(context, settingsProvider),
+                child: SizedBox(
+                  height: 26,
+                  child: _buildLaunchOnStartup(context, settingsProvider),
+                ),
               ),
             ],
             _buildDivider(context),
             V3SettingMenuSubItemFocus(
-              child: _buildAuthorizeMode(context, settingsProvider),
+              child: SizedBox(
+                height: 26,
+                child: _buildAuthorizeMode(context, settingsProvider),
+              ),
             ),
           ],
         ),
@@ -263,6 +260,7 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             ),
             Expanded(
               child: InkWell(
+                splashColor: Colors.transparent,
                 onTap: settingsProvider.isDeviceSettingLock
                     ? null
                     : () {
@@ -341,50 +339,22 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
 
   Widget _buildShowDisplayCode(
       BuildContext context, SettingsProvider settingsProvider) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            S.of(context).v3_settings_device_show_display_code,
-            style: TextStyle(
-              color: context.tokens.color.vsdslColorOnSurfaceInverse,
-              fontSize: 12,
-            ),
-          ),
-        ),
-        FutureBuilder(
-          future: AppOverlayTab().getVisibility(),
-          builder: (context, snapshot) {
-            bool isRunning = false;
-            if (snapshot.hasData) {
-              isRunning = snapshot.data as bool;
-            }
-            return SizedBox(
-              height: 21,
-              child: IconButton(
-                icon: SvgPicture.asset(
-                  settingsProvider.isDeviceSettingLock
-                      ? isRunning
-                          ? 'assets/images/ic_switch_on_lock.svg'
-                          : 'assets/images/ic_switch_off_lock.svg'
-                      : isRunning
-                          ? 'assets/images/ic_switch_on.svg'
-                          : 'assets/images/ic_switch_off.svg',
-                  width: 21,
-                  height: 21,
-                ),
-                padding: EdgeInsets.zero,
-                // constraints: const BoxConstraints(),
-                onPressed: settingsProvider.isDeviceSettingLock
-                    ? null
-                    : () async {
-                        _setVisibility(!isRunning);
-                      },
-              ),
-            );
+    return FutureBuilder(
+      future: AppOverlayTab().getVisibility(),
+      builder: (context, snapshot) {
+        bool isRunning = false;
+        if (snapshot.hasData) {
+          isRunning = snapshot.data as bool;
+        }
+        return V3SettingMenuItemToggleTile(
+          switchOn: isRunning,
+          isLocked: settingsProvider.isDeviceSettingLock,
+          title: S.of(context).v3_settings_device_show_display_code,
+          onTap: () async {
+            _setVisibility(!isRunning);
           },
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -392,82 +362,30 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
       BuildContext context, SettingsProvider settingsProvider) {
     PrefLanguageProvider languageProvider =
         Provider.of<PrefLanguageProvider>(context, listen: false);
-    return Row(
-      children: [
-        Text(
-          S.of(context).main_language_title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-          ),
-        ),
-        const Spacer(),
-        InkWell(
-          onTap: settingsProvider.isDeviceSettingLock
-              ? null
-              : () {
-                  settingsProvider.setPage(SettingPageState.deviceLanguage);
-                },
-          child: Text(
-            languageProvider.language,
-            style: TextStyle(
-              color: Colors.white
-                  .withOpacity(settingsProvider.isDeviceSettingLock ? 0.32 : 1),
-              fontSize: 12,
-            ),
-          ),
-        ),
-        V3MenuNavigationIconButton(
-          enabledIconPath: 'assets/images/ic_arrow_right.svg',
-          disabledIconPath: 'assets/images/ic_arrow_right_lock.svg',
-          disabled: settingsProvider.isDeviceSettingLock,
-          onPressed: () {
-            settingsProvider.setPage(SettingPageState.deviceLanguage);
-          },
-        ),
-      ],
+    return V3SettingMenuNavigationTile(
+      title: S.of(context).main_language_title,
+      onTap: settingsProvider.isDeviceSettingLock
+          ? null
+          : () {
+              settingsProvider.setPage(SettingPageState.deviceLanguage);
+            },
+      trialling: languageProvider.language,
+      disable: settingsProvider.isDeviceSettingLock,
     );
   }
 
   Widget _buildDeviceName(
-      BuildContext context, SettingsProvider settingsProvider) {
-    return Row(
-      children: [
-        Text(
-          S.of(context).v3_settings_device_name,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-          ),
-        ),
-        const Spacer(),
-        InkWell(
+          BuildContext context, SettingsProvider settingsProvider) =>
+      V3SettingMenuNavigationTile(
+          title: S.of(context).v3_settings_device_name,
           focusNode: settingsProvider.subFocusNode,
           onTap: settingsProvider.isDeviceSettingLock
               ? null
               : () {
                   settingsProvider.setPage(SettingPageState.deviceName);
                 },
-          child: Text(
-            AppPreferences().instanceName,
-            style: TextStyle(
-              color: Colors.white
-                  .withOpacity(settingsProvider.isDeviceSettingLock ? 0.32 : 1),
-              fontSize: 12,
-            ),
-          ),
-        ),
-        V3MenuNavigationIconButton(
-          enabledIconPath: 'assets/images/ic_arrow_right.svg',
-          disabledIconPath: 'assets/images/ic_arrow_right_lock.svg',
-          disabled: settingsProvider.isDeviceSettingLock,
-          onPressed: () {
-            settingsProvider.setPage(SettingPageState.deviceName);
-          },
-        ),
-      ],
-    );
-  }
+          trialling: AppPreferences().instanceName,
+          disable: settingsProvider.isDeviceSettingLock);
 
   _setVisibility(bool visible) async {
     trackEvent(

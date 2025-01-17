@@ -65,6 +65,8 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
                     bottom: context.tokens.spacing.vsdslSpacingSm.bottom / 2,
                   ),
                   child: InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
                     focusNode:
                         (key == widget.radioList.first) && widget.firstFocus
                             ? settingsProvider.subFocusNode
