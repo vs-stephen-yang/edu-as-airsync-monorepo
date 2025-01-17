@@ -179,7 +179,12 @@ class WebRTCConnector {
       List<RTCRtpTransceiver> transceivers = await _pc!.transceivers;
       for (var transceiver in transceivers) {
         if (transceiver.sender.track!.kind == 'video') {
-          await transceiver.setCodecPreferences(modifiedCapabilities);
+          if (kIsWeb == false && Platform.isAndroid) {
+            await transceiver.setCodecPreferencesBySenderId(
+                modifiedCapabilities);
+          } else {
+            await transceiver.setCodecPreferences(modifiedCapabilities);
+          }
         }
       }
       log.info('succeeded to set codec preferences');
@@ -310,21 +315,21 @@ class WebRTCConnector {
     };
 
     final offer = await _pc!.createOffer(offerConstraints);
-    RTCSessionDescription fixedOffer = SdpUtil.fixSdp(offer);
+    // RTCSessionDescription fixedOffer = SdpUtil.fixSdp(offer);
 
-    if (!setCodecPreferencesResult) {
-      // Due to incomplete implementation of `setCodecPreferences`
-      // in flutter-webrtc, there are issues on certain devices. As a workaround,
-      // we have opted to modify the SDP. However, this workaround currently only
-      // supports selecting a single codec."
-      _modifySDPForCodecPreferences(fixedOffer);
-    }
+    // if (!setCodecPreferencesResult) {
+    //   // Due to incomplete implementation of `setCodecPreferences`
+    //   // in flutter-webrtc, there are issues on certain devices. As a workaround,
+    //   // we have opted to modify the SDP. However, this workaround currently only
+    //   // supports selecting a single codec."
+    //   _modifySDPForCodecPreferences(fixedOffer);
+    // }
 
     try {
-      await _pc!.setLocalDescription(fixedOffer);
+      await _pc!.setLocalDescription(offer);
 
       var message = PresentSignalMessage(null, SignalMessageType.offer);
-      message.sdp = fixedOffer.sdp;
+      message.sdp = offer.sdp;
       sendSignalMessage(message);
 
       startStatsTimer();
