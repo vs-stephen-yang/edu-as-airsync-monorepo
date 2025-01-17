@@ -93,13 +93,8 @@ class GroupProvider extends StateNotifier<GroupState> {
     state = state.copyWith(clients: [], selectedList: []);
   }
 
-  GroupListItem getListenClient(int index) {
-    final List<GroupListItem> list = [...state.selectedList, ...state.clients];
-    return list[index];
-  }
-
-  int getListenListSize() {
-    return state.clients.length + state.selectedList.length;
+  List<GroupListItem> getClientList() {
+    return [...state.selectedList, ...state.clients];
   }
 
   void organizeGroupList() {
