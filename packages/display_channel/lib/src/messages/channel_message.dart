@@ -29,7 +29,8 @@ enum ChannelMessageType {
 
 enum JoinDisplayRejectedReasonCode {
   maxClientsReached(401),
-  moderatorExited(402);
+  moderatorExited(402),
+  receiverRemoteScreenBusy(403);
 
   const JoinDisplayRejectedReasonCode(this.code);
   final int code;
