@@ -22,7 +22,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:gap/gap.dart';
-import 'package:nsd/nsd.dart';
 import 'package:provider/provider.dart' as provider;
 
 class V3SettingsCastToBoards extends ConsumerStatefulWidget {
@@ -39,7 +38,6 @@ class V3SettingsCastToBoardsState
   @override
   void initState() {
     super.initState();
-    enableLogging(LogTopic.calls);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(groupProvider.notifier).organizeGroupList();
     });
@@ -70,6 +68,7 @@ class V3SettingsCastToBoardsState
     final broadcastType = ref
         .watch(groupProvider.select((state) => state.broadcastGroupLaunchType));
     final GroupListModel discoveryModel = ref.watch(discoveryModelProvider);
+    discoveryModel.groupProvider = groupNotifier;
     if (isBroadcastingToGroup) {
       discoveryModel.start(context: context);
     } else {
@@ -380,9 +379,9 @@ class V3SettingsCastToBoardsState
       child: ListView.separated(
         shrinkWrap: true,
         physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: groupNotifier.getListenListSize(),
+        itemCount: groupNotifier.getClientList().length,
         itemBuilder: (context, index) {
-          final client = groupNotifier.getListenClient(index);
+          final client = groupNotifier.getClientList()[index];
           return Opacity(
             opacity: isBroadcastingToGroup ? 1.0 : 0.3,
             child:

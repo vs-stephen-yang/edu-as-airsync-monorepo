@@ -1,56 +1,75 @@
 abstract class GroupListItem {
   String deviceName();
+
   String displayCode();
+
   String invitedState();
+
   String ip();
+
   String id();
+
+  String serviceName();
 }
 
-class GroupBean extends GroupListItem{
-  String? name;
-  String? type;
-  int? port;
-  String? host;
-  Attributes? attributes;
+class GroupBean extends GroupListItem {
+  String? _name;
+  String? _type;
+  int? _port;
+  String? _host;
+  Attributes? _attributes;
 
-  GroupBean({this.name, this.type, this.port, this.host, this.attributes});
+  GroupBean(
+      {String? name,
+      String? type,
+      int? port,
+      String? host,
+      Attributes? attributes})
+      : _attributes = attributes,
+        _host = host,
+        _port = port,
+        _type = type,
+        _name = name;
 
   GroupBean.fromJson(Map<String, dynamic> json) {
-    name = json['service.name'];
-    type = json['service.type'];
-    port = json['service.port'];
-    host = json['service.host'];
-    attributes = json['service.attributes'] != null
+    _name = json['service.name'];
+    _type = json['service.type'];
+    _port = json['service.port'];
+    _host = json['service.host'];
+    _attributes = json['service.attributes'] != null
         ? Attributes.fromJson(json['service.attributes'])
         : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['name'] = name;
-    data['type'] = type;
-    data['port'] = port;
-    data['host'] = host;
-    if (attributes != null) {
-      data['attributes'] = attributes!.toJson();
+    data['name'] = _name;
+    data['type'] = _type;
+    data['port'] = _port;
+    data['host'] = _host;
+    if (_attributes != null) {
+      data['attributes'] = _attributes!.toJson();
     }
     return data;
   }
 
   @override
-  String displayCode() => attributes?.dc ?? '';
+  String displayCode() => _attributes?.dc ?? '';
 
   @override
-  String id() => attributes?.id ?? '';
+  String id() => _attributes?.id ?? '';
 
   @override
-  String invitedState() => attributes?.igo ?? '0';
+  String invitedState() => _attributes?.igo ?? '0';
 
   @override
-  String deviceName() => attributes?.fn ?? '';
+  String deviceName() => _attributes?.fn ?? '';
 
   @override
-  String ip() => attributes?.ip ?? '';
+  String ip() => _attributes?.ip ?? '';
+
+  @override
+  String serviceName() => _name ?? '';
 }
 
 class Attributes {
