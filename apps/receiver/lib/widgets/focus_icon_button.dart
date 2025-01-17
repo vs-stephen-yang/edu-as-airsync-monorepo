@@ -86,6 +86,8 @@ class _FocusIconButtonState extends State<FocusIconButton> {
           matrix4.rotateX(widget.rotateX);
           matrix4.rotateY(widget.rotateY);
           return IconButton(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
             focusNode: _focusNode,
             icon: (widget.icons != null || widget.svgSource != null)
                 ? Container(

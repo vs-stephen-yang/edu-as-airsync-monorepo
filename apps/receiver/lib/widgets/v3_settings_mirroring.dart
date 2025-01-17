@@ -9,6 +9,7 @@ import 'package:display_flutter/widgets/v3_custom_checkbox.dart';
 import 'package:display_flutter/widgets/v3_setting_2ndLayer.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,16 @@ class V3SettingsMirroring extends StatelessWidget {
         isDisableFromModerator: ChannelProvider.isModeratorMode,
         child: Consumer<MirrorStateProvider>(
           builder: (context, mirrorStateProvider, _) {
+            toggleAirPlayCode(bool value) {
+              trackEvent(
+                'click_airplay_pincode',
+                EventCategory.setting,
+                target: value ? 'on' : 'off',
+              );
+
+              mirrorStateProvider.setAirPlayCodeEnable(value);
+            }
+
             return Column(
               children: [
                 MirroringItem(
@@ -54,6 +65,17 @@ class V3SettingsMirroring extends StatelessWidget {
                 if (mirrorStateProvider.airplayEnabled)
                   V3SettingMenuSubItemFocus(
                     child: Focus(
+                      onKeyEvent: (node, event) {
+                        if (event is KeyDownEvent &&
+                            (event.logicalKey == LogicalKeyboardKey.enter ||
+                                event.logicalKey ==
+                                    LogicalKeyboardKey.select)) {
+                          toggleAirPlayCode(
+                              !mirrorStateProvider.airPlayCodeEnable);
+                          return KeyEventResult.handled;
+                        }
+                        return KeyEventResult.ignored;
+                      },
                       child: SizedBox(
                         height: 26,
                         child: Row(
@@ -66,14 +88,7 @@ class V3SettingsMirroring extends StatelessWidget {
                                 value: mirrorStateProvider.airPlayCodeEnable,
                                 onChanged: (bool? value) {
                                   if (value != null) {
-                                    trackEvent(
-                                      'click_airplay_pincode',
-                                      EventCategory.setting,
-                                      target: value ? 'on' : 'off',
-                                    );
-
-                                    mirrorStateProvider
-                                        .setAirPlayCodeEnable(value);
+                                    toggleAirPlayCode(value);
                                   }
                                 },
                               ),
@@ -145,37 +160,41 @@ class V3SettingsMirroring extends StatelessWidget {
                   color: context.tokens.color.vsdslColorOutlineVariant,
                 ),
                 V3SettingMenuSubItemFocus(
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: V3CustomCheckbox(
-                            isDisable: disable,
-                            value: !mirrorStateProvider.isMirrorConfirmation,
-                            onChanged: (bool? value) {
-                              mirrorStateProvider.isMirrorConfirmation =
-                                  !mirrorStateProvider.isMirrorConfirmation;
+                  child: SizedBox(
+                    height: 26,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: V3CustomCheckbox(
+                              isDisable: disable,
+                              value: !mirrorStateProvider.isMirrorConfirmation,
+                              onChanged: (bool? value) {
+                                mirrorStateProvider.isMirrorConfirmation =
+                                    !mirrorStateProvider.isMirrorConfirmation;
 
-                              trackEvent(
-                                'click_auto_accept',
-                                EventCategory.setting,
-                                target: mirrorStateProvider.isMirrorConfirmation
-                                    ? 'on'
-                                    : 'off',
-                              );
-                            }),
-                      ),
-                      Gap(context.tokens.spacing.vsdslSpacingSm.right),
-                      AutoSizeText(
-                        S.of(context).v3_settings_mirroring_auto_accept,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: context.tokens.color.vsdslColorOnPrimary,
+                                trackEvent(
+                                  'click_auto_accept',
+                                  EventCategory.setting,
+                                  target:
+                                      mirrorStateProvider.isMirrorConfirmation
+                                          ? 'on'
+                                          : 'off',
+                                );
+                              }),
                         ),
-                        maxLines: 1,
-                      ),
-                    ],
+                        Gap(context.tokens.spacing.vsdslSpacingSm.right),
+                        AutoSizeText(
+                          S.of(context).v3_settings_mirroring_auto_accept,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: context.tokens.color.vsdslColorOnPrimary,
+                          ),
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Padding(
