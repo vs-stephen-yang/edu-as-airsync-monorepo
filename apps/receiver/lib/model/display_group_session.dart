@@ -14,8 +14,9 @@ class DisplayGroupSession {
           _remoteScreenClient!.rtcWidgetKey,
         );
 
-  void Function(ChannelState? state)? onStateChange;
+  void Function(ChannelState? state)? onChannelStateChange;
   void Function(String hostName, String displayCode)? onInvitation;
+  void Function()? onWebRtcClose;
 
   final Channel _channel;
 
@@ -26,11 +27,12 @@ class DisplayGroupSession {
   DisplayGroupSession(
     this._channel, {
     this.onInvitation,
-    this.onStateChange,
+    this.onChannelStateChange,
+    this.onWebRtcClose,
   }) {
     _channel.messageStream.listen(_onChannelMessage);
     _channel.stateStream.listen((ChannelState state) {
-      onStateChange?.call(state);
+      onChannelStateChange?.call(state);
     });
     _sendDisplayStatus();
   }
@@ -107,10 +109,12 @@ class DisplayGroupSession {
       infoMessage.ionSfuRoom!.iceServers,
       () {
         _isVideoAvailable = true;
-        onStateChange?.call(null);
+        onChannelStateChange?.call(null);
       },
       // onClose callback
-      () {},
+      () {
+        onWebRtcClose?.call();
+      },
     );
   }
 }

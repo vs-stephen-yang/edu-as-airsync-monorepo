@@ -53,6 +53,11 @@ enum ChannelMode {
 }
 
 class ChannelProvider extends ChangeNotifier {
+  // Add these variables to store previous states
+  bool? _previousModeratorMode;
+  bool? _previousSenderMode;
+  bool? _previousGroupMode;
+
   AppConfig appConfig;
 
   ConnectivityResult _lastConnectivityResult = ConnectivityResult.none;
@@ -358,6 +363,11 @@ class ChannelProvider extends ChangeNotifier {
                   width: 400,
                   height: 265,
                   onConfirm: () {
+                    // Store current states before accepting
+                    _previousModeratorMode = isModeratorMode;
+                    _previousSenderMode = _isSenderMode;
+                    _previousGroupMode = _isGroupMode;
+
                     _displayGroupSession?.accept(hostName);
                   },
                   onCancel: () {
@@ -367,6 +377,11 @@ class ChannelProvider extends ChangeNotifier {
                 );
             break;
           case '1': // autoAccept
+            // Store current states before auto accepting
+            _previousModeratorMode = isModeratorMode;
+            _previousSenderMode = _isSenderMode;
+            _previousGroupMode = _isGroupMode;
+
             _displayGroupSession?.accept(hostName);
             break;
           case '2': // ignore
@@ -375,7 +390,7 @@ class ChannelProvider extends ChangeNotifier {
             break;
         }
       },
-      onStateChange: (ChannelState? state) {
+      onChannelStateChange: (ChannelState? state) {
         if (state != null) {
           switch (state) {
             case ChannelState.connected:
@@ -388,6 +403,9 @@ class ChannelProvider extends ChangeNotifier {
           }
         }
         notifyListeners();
+      },
+      onWebRtcClose: () {
+        stopReceivedFromHost(closeReason: 'webrtc close');
       },
     );
   }
@@ -1013,6 +1031,24 @@ class ChannelProvider extends ChangeNotifier {
   Future<void> stopReceivedFromHost({required String closeReason}) async {
     await _displayGroupSession?.stop(reason: closeReason);
     _displayGroupSession = null;
+
+    // Restore previous states if they were saved
+    if (_previousSenderMode != null) {
+      _isSenderMode = _previousSenderMode!;
+      _previousSenderMode = null;
+    }
+    if (_previousGroupMode != null) {
+      _isGroupMode = _previousGroupMode!;
+      _previousGroupMode = null;
+    }
+    if (_previousModeratorMode != null) {
+      isModeratorMode = _previousModeratorMode!;
+      _previousModeratorMode = null;
+      if (isModeratorMode) {
+        await startRemoteScreen(fromShare: true);
+      }
+    }
+
     notifyListeners();
   }
 // endregion
