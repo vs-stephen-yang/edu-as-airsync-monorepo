@@ -175,5 +175,7 @@
   "v3_setting_software_update_no_internet_description": "Vennligst sjekk internettforbindelsen og prøv igjen.",
   "v3_present_moderator_exited": "Moderator er stengt",
   "v3_present_moderator_exited_description": "Moderator er stengt, vennligst koble til igjen.",
-  "v3_present_moderator_exited_action": "OK"
+  "v3_present_moderator_exited_action": "OK",
+  "v3_main_web_nonsupport": "For øyeblikket støttes kun Chrome- og Edge-nettlesere.",
+  "v3_main_web_nonsupport_confirm": "Skjønner!"
 }

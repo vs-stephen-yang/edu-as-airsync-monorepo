@@ -149,7 +149,7 @@
   "v3_present_options_menu_hq_subtitle": "Käytä korkeampaa bittinopeutta lähetykseen.",
   "v3_present_options_menu_he_title": "Laitteistokiihdytys",
   "v3_present_options_menu_he_subtitle": "Käytä laitteen näytönohjainta streamauksen koodaamiseen.",
-  "v3_present_touch_back_allow": "Salli takaisin kosketus",
+  "v3_present_touch_back_allow": "Salli kosketusohjaus",
   "v3_present_end_information": "Näytön jakaminen on pysäytetty.\nKokonaisaika jaettu %s.",
   "v3_select_screen_ios_countdown": "Aikaa jäljellä",
   "v3_select_screen_ios_start_sharing": "Aloita jakaminen",
@@ -175,5 +175,7 @@
   "v3_setting_software_update_no_internet_description": "Tarkista internet-yhteytesi ja yritä uudelleen.",
   "v3_present_moderator_exited": "Moderaattori on suljettu",
   "v3_present_moderator_exited_description": "Moderaattori on suljettu, ole hyvä ja yhdistä uudelleen.",
-  "v3_present_moderator_exited_action": "OK"
+  "v3_present_moderator_exited_action": "OK",
+  "v3_main_web_nonsupport": "Tällä hetkellä vain Chrome- ja Edge-selaimet ovat tuettuja.",
+  "v3_main_web_nonsupport_confirm": "Ymmärretty!"
 }

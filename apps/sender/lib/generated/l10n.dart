@@ -1131,10 +1131,10 @@ class S {
     );
   }
 
-  /// `AirSync does not connect to Internet.`
+  /// `AirSync does not support this connection.`
   String get v3_main_connection_mode_unsupported {
     return Intl.message(
-      'AirSync does not connect to Internet.',
+      'AirSync does not support this connection.',
       name: 'v3_main_connection_mode_unsupported',
       desc: '',
       args: [],
@@ -1201,10 +1201,10 @@ class S {
     );
   }
 
-  /// `Enter your presentation title`
+  /// `Type your presentation title`
   String get v3_main_moderator_subtitle {
     return Intl.message(
-      'Enter your presentation title',
+      'Type your presentation title',
       name: 'v3_main_moderator_subtitle',
       desc: '',
       args: [],
@@ -1221,10 +1221,10 @@ class S {
     );
   }
 
-  /// `Enter your name before share your screen`
+  /// `Type your name before sharing your screen`
   String get v3_main_moderator_app_subtitle {
     return Intl.message(
-      'Enter your name before share your screen',
+      'Type your name before sharing your screen',
       name: 'v3_main_moderator_app_subtitle',
       desc: '',
       args: [],
@@ -1441,10 +1441,10 @@ class S {
     );
   }
 
-  /// `This allows you to drag content between your personal device and the IFP, enhancing real-time interaction and control.`
+  /// `Drag content between your personal device and the IFP, enhancing real-time interaction and control.`
   String get v3_present_select_screen_extension_desc2 {
     return Intl.message(
-      'This allows you to drag content between your personal device and the IFP, enhancing real-time interaction and control.',
+      'Drag content between your personal device and the IFP, enhancing real-time interaction and control.',
       name: 'v3_present_select_screen_extension_desc2',
       desc: '',
       args: [],
@@ -1711,10 +1711,10 @@ class S {
     );
   }
 
-  /// `A new version is now available. Would you like to update now?`
+  /// `A new version is available. Would you like to update now?`
   String get v3_setting_software_update_description {
     return Intl.message(
-      'A new version is now available. Would you like to update now?',
+      'A new version is available. Would you like to update now?',
       name: 'v3_setting_software_update_description',
       desc: '',
       args: [],
@@ -1791,20 +1791,20 @@ class S {
     );
   }
 
-  /// `Moderator is closed`
+  /// `Moderator has closed`
   String get v3_present_moderator_exited {
     return Intl.message(
-      'Moderator is closed',
+      'Moderator has closed',
       name: 'v3_present_moderator_exited',
       desc: '',
       args: [],
     );
   }
 
-  /// `Moderator is closed，please reconnect.`
+  /// `Moderator has closed. Please reconnect.`
   String get v3_present_moderator_exited_description {
     return Intl.message(
-      'Moderator is closed，please reconnect.',
+      'Moderator has closed. Please reconnect.',
       name: 'v3_present_moderator_exited_description',
       desc: '',
       args: [],
@@ -1851,10 +1851,10 @@ class S {
     );
   }
 
-  /// `The screen is broadcasting to other screens. Please try it later.`
+  /// `The screen is broadcasting to other screens. Please try again later.`
   String get v3_receiver_remote_screen_busy_description {
     return Intl.message(
-      'The screen is broadcasting to other screens. Please try it later.',
+      'The screen is broadcasting to other screens. Please try again later.',
       name: 'v3_receiver_remote_screen_busy_description',
       desc: '',
       args: [],

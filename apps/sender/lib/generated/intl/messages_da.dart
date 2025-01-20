@@ -288,6 +288,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Vælg din præsentationstilstand"),
         "v3_main_terms":
             MessageLookupByLibrary.simpleMessage("Brugsbetingelser"),
+        "v3_main_web_nonsupport": MessageLookupByLibrary.simpleMessage(
+            "I øjeblikket understøttes kun Chrome og Edge browsere."),
+        "v3_main_web_nonsupport_confirm":
+            MessageLookupByLibrary.simpleMessage("Forstået!"),
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
             "Skærmdeling er stoppet. Samlet delingstid %s."),
         "v3_present_moderator_exited":
@@ -335,6 +339,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Kan ikke deltage. Sessionen har nået sin maksimale grænse."),
         "v3_present_touch_back_allow": MessageLookupByLibrary.simpleMessage(
             "Tillad berøringstilbageførsel"),
+        "v3_receiver_remote_screen_busy_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Hurtig tilslutning ved at scanne QR-koden"),
         "v3_select_screen_ios_countdown":

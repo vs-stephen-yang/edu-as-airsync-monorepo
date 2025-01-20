@@ -298,7 +298,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_web_nonsupport_confirm":
             MessageLookupByLibrary.simpleMessage("Supratau!"),
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
-            "Ekrano bendrinimas sustabdytas."),
+            "Ekrano bendrinimas sustabdytas %s."),
         "v3_present_moderator_exited":
             MessageLookupByLibrary.simpleMessage("Moderatorius uždarytas"),
         "v3_present_moderator_exited_action":

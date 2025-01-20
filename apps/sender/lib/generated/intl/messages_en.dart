@@ -200,7 +200,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unknown error."),
         "v3_main_connection_mode_unsupported":
             MessageLookupByLibrary.simpleMessage(
-                "AirSync does not connect to Internet."),
+                "AirSync does not support this connection."),
         "v3_main_copy_rights": m1,
         "v3_main_display_code":
             MessageLookupByLibrary.simpleMessage("Display code"),
@@ -241,7 +241,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_moderator_action":
             MessageLookupByLibrary.simpleMessage("Share"),
         "v3_main_moderator_app_subtitle": MessageLookupByLibrary.simpleMessage(
-            "Enter your name before share your screen"),
+            "Type your name before sharing your screen"),
         "v3_main_moderator_app_title":
             MessageLookupByLibrary.simpleMessage("Share"),
         "v3_main_moderator_disconnect":
@@ -251,7 +251,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_moderator_input_limit": MessageLookupByLibrary.simpleMessage(
             "Please limit the name to 20 characters."),
         "v3_main_moderator_subtitle": MessageLookupByLibrary.simpleMessage(
-            "Enter your presentation title"),
+            "Type your presentation title"),
         "v3_main_moderator_title":
             MessageLookupByLibrary.simpleMessage("Share your screen"),
         "v3_main_moderator_wait": MessageLookupByLibrary.simpleMessage(
@@ -294,12 +294,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
             "Screen sharing has stopped.\nTotal sharing time %s."),
         "v3_present_moderator_exited":
-            MessageLookupByLibrary.simpleMessage("Moderator is closed"),
+            MessageLookupByLibrary.simpleMessage("Moderator has closed"),
         "v3_present_moderator_exited_action":
             MessageLookupByLibrary.simpleMessage("OK"),
         "v3_present_moderator_exited_description":
             MessageLookupByLibrary.simpleMessage(
-                "Moderator is closed，please reconnect."),
+                "Moderator has closed. Please reconnect."),
         "v3_present_options_menu_he_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "Use device\'s graphic card to encode the stream."),
@@ -323,7 +323,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Expand Your Workspace"),
         "v3_present_select_screen_extension_desc2":
             MessageLookupByLibrary.simpleMessage(
-                "This allows you to drag content between your personal device and the IFP, enhancing real-time interaction and control."),
+                "Drag content between your personal device and the IFP, enhancing real-time interaction and control."),
         "v3_present_select_screen_share_audio":
             MessageLookupByLibrary.simpleMessage("Share computer audio."),
         "v3_present_select_screen_subtitle":
@@ -342,7 +342,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("OK"),
         "v3_receiver_remote_screen_busy_description":
             MessageLookupByLibrary.simpleMessage(
-                "The screen is broadcasting to other screens. Please try it later."),
+                "The screen is broadcasting to other screens. Please try again later."),
         "v3_receiver_remote_screen_busy_title":
             MessageLookupByLibrary.simpleMessage("The screen is broadcasting"),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
@@ -372,7 +372,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Later"),
         "v3_setting_software_update_description":
             MessageLookupByLibrary.simpleMessage(
-                "A new version is now available. Would you like to update now?"),
+                "A new version is available. Would you like to update now?"),
         "v3_setting_software_update_force_action":
             MessageLookupByLibrary.simpleMessage("Update Now"),
         "v3_setting_software_update_force_description":
