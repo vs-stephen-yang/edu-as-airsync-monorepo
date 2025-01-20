@@ -338,7 +338,8 @@ class ChannelProvider extends ChangeNotifier {
             } else if (reason?.code ==
                 JoinDisplayRejectedReasonCode.moderatorExited.code) {
               isModeratorExitedRejected = true;
-            } else if (reason?.code == 403) {
+            } else if (reason?.code ==
+                JoinDisplayRejectedReasonCode.receiverRemoteScreenBusy.code) {
               isReceiverRemoteScreenBusyRejected = true;
             }
             unawaited(presentEnd());
