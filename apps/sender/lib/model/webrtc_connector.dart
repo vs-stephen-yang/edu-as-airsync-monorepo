@@ -83,7 +83,6 @@ class WebRTCConnector {
     'gooAutoGainControl': false,
     'noiseSuppression': false
   };
-  int? _virtualAudioInputDeviceID; // for macOS only
 
   Preset preset;
   bool touchBack = false;
@@ -313,14 +312,6 @@ class WebRTCConnector {
     _trackWidth = _maxTrackWidth;
     _trackHeight = _maxTrackHeight;
 
-    if (!kIsWeb && Platform.isMacOS) {
-      if (await AudioSwitchManager().switchToVirtualAudioOutput()) {
-        _virtualAudioInputDeviceID = await AudioSwitchManager().getVirtualAudioInputDeviceID();
-      } else {
-        _virtualAudioInputDeviceID = null; // no virtual audio device available
-      }
-    }
-
     _localStream = await getDisplayMedia();
     if (_localStream == null || _pc == null) {
       // GetDisplayMedia method will using different UI UX (control by system)
@@ -405,12 +396,20 @@ class WebRTCConnector {
               'width': _trackWidth,
               'height': _trackHeight,
             };
+      int? virtualAudioInputDeviceID; // for macOS only
+      if (_isAudioCaptureAllowed() && !kIsWeb && Platform.isMacOS) {
+        if (await AudioSwitchManager().switchToVirtualAudioOutput()) {
+          virtualAudioInputDeviceID =
+              await AudioSwitchManager().getVirtualAudioInputDeviceID();
+        }
+      }
       final audioConstraints = _isAudioCaptureAllowed()
           ? {
               ..._audioConstraints,
-              if (_virtualAudioInputDeviceID != null)
-                'deviceId': _virtualAudioInputDeviceID!.toString(),
-            } : false;
+              if (virtualAudioInputDeviceID != null)
+                'deviceId': virtualAudioInputDeviceID.toString(),
+            }
+          : false;
       final constraints = <String, dynamic>{
         'audio': audioConstraints,
         'video': videoConstraints,
@@ -611,7 +610,8 @@ class WebRTCConnector {
       log.info('Touch event ignored due to paused state');
       return;
     }
-    unawaited(_flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY));
+    unawaited(
+        _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY));
   }
 
   void _onAddTrack(MediaStream stream, MediaStreamTrack track) {
