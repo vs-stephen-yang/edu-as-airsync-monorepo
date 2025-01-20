@@ -182,5 +182,8 @@
   "v3_participant_item_waiting": "等待中",
   "v3_settings_only_when_casting_info": "只有在分享螢幕時，才會接收廣播。",
   "v3_settings_all_the_time_info": "不論有無分享螢幕，一律接收廣播。",
-  "v3_settings_feature_locked": "此功能模組透過ViewSonic Manager鎖定中。"
+  "v3_settings_feature_locked": "此功能模組透過ViewSonic Manager鎖定中。",
+  "v3_cast_to_device_list_msg": "最多分享到10台裝置",
+  "v3_quick_connect_menu_bottom_msg": "多人分享時將自動分割畫面",
+  "v3_settings_broadcast_screen_energy_saving": "建議關閉螢幕節能設定，避免螢幕廣播非預期中斷"
 }

@@ -274,6 +274,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Deltagere"),
         "v3_qrcode_quick_connect":
             MessageLookupByLibrary.simpleMessage("Hurtigforbindelse"),
+        "v3_quick_connect_menu_bottom_msg": MessageLookupByLibrary.simpleMessage(
+            "Delt skærm bliver aktiveret, hvis to eller flere brugere deler deres skærm. "),
         "v3_quick_connect_menu_display_code":
             MessageLookupByLibrary.simpleMessage("Display-kode"),
         "v3_quick_connect_menu_qrcode":
@@ -363,9 +365,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Slå moderator-tilstand fra først."),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Kræv adgangskode"),
-        "v3_settings_only_when_casting_info":
-            MessageLookupByLibrary.simpleMessage(
-                "v3_settings_only_when_casting_info"),
         "v3_settings_open_source_license":
             MessageLookupByLibrary.simpleMessage("Open source-licenser"),
         "v3_settings_privacy_policy":

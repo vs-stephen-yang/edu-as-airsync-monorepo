@@ -276,6 +276,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Dalyviai"),
         "v3_qrcode_quick_connect":
             MessageLookupByLibrary.simpleMessage("Greitas prisijungimas"),
+        "v3_quick_connect_menu_bottom_msg": MessageLookupByLibrary.simpleMessage(
+            "Padalintas ekranas įsijungia, kai du ar daugiau vartotojų bendrina ekranus.  "),
         "v3_quick_connect_menu_display_code":
             MessageLookupByLibrary.simpleMessage("Ekrano kodas"),
         "v3_quick_connect_menu_qrcode":

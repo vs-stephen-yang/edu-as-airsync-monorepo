@@ -274,6 +274,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Deltagare"),
         "v3_qrcode_quick_connect":
             MessageLookupByLibrary.simpleMessage("Snabbanslutning"),
+        "v3_quick_connect_menu_bottom_msg": MessageLookupByLibrary.simpleMessage(
+            "Delad skärm aktiveras om två eller flera användare delar skärmar."),
         "v3_quick_connect_menu_display_code":
             MessageLookupByLibrary.simpleMessage("Display kod"),
         "v3_quick_connect_menu_qrcode":
@@ -362,8 +364,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Stäng av moderatormodus först."),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Kräv lösenkod"),
-        "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
-            "https://s3.eu-west-1.amazonaws.com/po-pub/i/BK0sVdd2jma0YpBHE5bBuq3f.png"),
         "v3_settings_open_source_license":
             MessageLookupByLibrary.simpleMessage("Öppna källicenser"),
         "v3_settings_privacy_policy":

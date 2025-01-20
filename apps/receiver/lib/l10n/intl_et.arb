@@ -184,5 +184,6 @@
   "v3_settings_only_when_casting_info": "Edasta IFP lähtekraan ainult siis, kui see saab jagatud ekraani.",
   "v3_settings_all_the_time_info": "Edasta IFP lähtekraan kogu aeg.",
   "v3_settings_feature_locked": "Lukustatud ViewSonic Manageri poolt.",
-  "v3_cast_to_device_list_msg": "Maksimaalselt kuni 10 seadet."
+  "v3_cast_to_device_list_msg": "Maksimaalselt kuni 10 seadet.",
+  "v3_quick_connect_menu_bottom_msg": "Opdelt ekraan aktiveerub, kui kaks või enam kasutajat jagavad ekraane."
 }

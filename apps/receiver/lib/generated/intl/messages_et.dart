@@ -272,6 +272,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Osalejad"),
         "v3_qrcode_quick_connect":
             MessageLookupByLibrary.simpleMessage("Kiirühendus"),
+        "v3_quick_connect_menu_bottom_msg": MessageLookupByLibrary.simpleMessage(
+            "Opdelt ekraan aktiveerub, kui kaks või enam kasutajat jagavad ekraane."),
         "v3_quick_connect_menu_display_code":
             MessageLookupByLibrary.simpleMessage("Kuvakood"),
         "v3_quick_connect_menu_qrcode":

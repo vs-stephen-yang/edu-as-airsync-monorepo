@@ -184,5 +184,6 @@
   "v3_settings_only_when_casting_info": "Transliuoti tik tada, kai IFP ekranas gauna bendrinamą ekraną.",
   "v3_settings_all_the_time_info": "Transliuoti IFP ekraną visada.",
   "v3_settings_feature_locked": "Užrakinta ViewSonic valdymo programoje.",
-  "v3_cast_to_device_list_msg": "Maksimaliai iki 10 įrenginių."
+  "v3_cast_to_device_list_msg": "Maksimaliai iki 10 įrenginių.",
+  "v3_quick_connect_menu_bottom_msg": "Padalintas ekranas įsijungia, kai du ar daugiau vartotojų bendrina ekranus.  "
 }
