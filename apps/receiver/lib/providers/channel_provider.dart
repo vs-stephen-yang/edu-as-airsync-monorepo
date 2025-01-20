@@ -1038,10 +1038,19 @@ class ChannelProvider extends ChangeNotifier {
     if (_previousSenderMode != null) {
       _isSenderMode = _previousSenderMode!;
       _previousSenderMode = null;
+      if (_isSenderMode) {
+        await startRemoteScreen(fromSender: true);
+      }
     }
     if (_previousGroupMode != null) {
       _isGroupMode = _previousGroupMode!;
       _previousGroupMode = null;
+      if (_isGroupMode) {
+        await startRemoteScreen(fromGroup: true);
+        providerContainer
+            ?.read(groupProvider.notifier)
+            .setBroadcastToGroup(_isGroupMode);
+      }
     }
     if (_previousModeratorMode != null) {
       isModeratorMode = _previousModeratorMode!;
