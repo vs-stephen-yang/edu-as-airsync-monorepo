@@ -284,6 +284,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("擴展您的顯示範圍"),
         "v3_present_select_screen_extension_desc2":
             MessageLookupByLibrary.simpleMessage("將要分享的應用程式從電腦顯示器拖拉至外部顯示器"),
+        "v3_present_select_screen_mac_audio_driver":
+            MessageLookupByLibrary.simpleMessage(
+                "尚未安裝音訊驅動程式，聲音將無法透過 IFP 播放，請下載並安裝。"),
         "v3_present_select_screen_share_audio":
             MessageLookupByLibrary.simpleMessage("勾選以分享音訊"),
         "v3_present_select_screen_subtitle":
