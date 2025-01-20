@@ -400,14 +400,14 @@ class V3SettingsCastToBoardsState
       GroupProvider groupNotifier, ChannelProvider channelProvider) {
     final broadcastSelectedList =
         ref.watch(groupProvider.select((state) => state.selectedList));
-    void toggleCheckbox(client, {bool? overrideValue}) {
+    void toggleCheckbox(client, {bool fromTouch = false}) {
       final onKeyboard =
           HardwareKeyboard.instance.logicalKeysPressed.isNotEmpty;
-      if (!onKeyboard && overrideValue == null) {
+      if (!onKeyboard && !fromTouch) {
         return;
       }
 
-      final isChecked = overrideValue ??
+      final isChecked =
           broadcastSelectedList.any((element) => element.id() == client.id());
       if (!isChecked) {
         groupNotifier.addToSelectedList(client);
@@ -418,7 +418,7 @@ class V3SettingsCastToBoardsState
       if (!isChecked == false && channelProvider.groupActivated()) {
         startDisplayGroup(groupNotifier, channelProvider);
       }
-      if (overrideValue == null) setState(() {});
+      if (!fromTouch) setState(() {});
     }
 
     return Container(
@@ -447,7 +447,7 @@ class V3SettingsCastToBoardsState
                           width: 2),
                       onChanged: (bool? value) {
                         if (value != null) {
-                          toggleCheckbox(client, overrideValue: value);
+                          toggleCheckbox(client, fromTouch: true);
                         }
                       },
                     ),
