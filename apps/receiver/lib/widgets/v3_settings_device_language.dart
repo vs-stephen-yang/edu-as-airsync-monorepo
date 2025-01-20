@@ -28,7 +28,7 @@ class V3SettingsDeviceLanguage extends StatelessWidget {
               title: S.of(context).main_language_title,
             )),
         Positioned(
-          top: 57,
+          top: 47,
           left: 13,
           right: 13,
           bottom: 13,
