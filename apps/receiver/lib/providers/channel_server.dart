@@ -123,6 +123,8 @@ class ChannelServer {
   }
 
   void _startTunnelServer(int instanceGroupId, String tunnelApiUrl) {
+    _stopTunnel();
+
     // Create and start the tunnel server
     log.info('Creating the tunnel channel server');
     _tunnelServer = DisplayTunnelServer(
