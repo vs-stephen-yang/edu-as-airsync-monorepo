@@ -143,6 +143,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),
         "v3_cast_to_device_Receiving":
             MessageLookupByLibrary.simpleMessage("接收畫面中"),
+        "v3_cast_to_device_list_msg":
+            MessageLookupByLibrary.simpleMessage("最多分享到10台裝置"),
         "v3_cast_to_device_menu_or": MessageLookupByLibrary.simpleMessage("或"),
         "v3_cast_to_device_menu_quick_connect1":
             MessageLookupByLibrary.simpleMessage("快速連線"),
@@ -240,6 +242,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("最多六位參加人員"),
         "v3_participants_title": MessageLookupByLibrary.simpleMessage("參加人員"),
         "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage("快速連線"),
+        "v3_quick_connect_menu_bottom_msg":
+            MessageLookupByLibrary.simpleMessage("多人分享時將自動分割畫面"),
         "v3_quick_connect_menu_display_code":
             MessageLookupByLibrary.simpleMessage("投影辨識碼"),
         "v3_quick_connect_menu_qrcode":
@@ -257,6 +261,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("廣播到"),
         "v3_settings_broadcast_devices":
             MessageLookupByLibrary.simpleMessage("傳送端裝置"),
+        "v3_settings_broadcast_screen_energy_saving":
+            MessageLookupByLibrary.simpleMessage("建議關閉螢幕節能設定，避免螢幕廣播非預期中斷"),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage("螢幕群組廣播"),
         "v3_settings_connectivity":

@@ -271,6 +271,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Deltakere"),
         "v3_qrcode_quick_connect":
             MessageLookupByLibrary.simpleMessage("Hurtigkobling"),
+        "v3_quick_connect_menu_bottom_msg": MessageLookupByLibrary.simpleMessage(
+            "Opdelt skjerm aktiveres hvis to eller flere brukere deler skjermer."),
         "v3_quick_connect_menu_display_code":
             MessageLookupByLibrary.simpleMessage("Skjermkode"),
         "v3_quick_connect_menu_qrcode":

@@ -279,6 +279,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Dalībnieki"),
         "v3_qrcode_quick_connect":
             MessageLookupByLibrary.simpleMessage("Ātrā savienošana"),
+        "v3_quick_connect_menu_bottom_msg": MessageLookupByLibrary.simpleMessage(
+            "Sadalītā ekrāna režīms tiek aktivizēts, ja divi vai vairāk lietotāji kopīgo ekrānus."),
         "v3_quick_connect_menu_display_code":
             MessageLookupByLibrary.simpleMessage("Displeja kods"),
         "v3_quick_connect_menu_qrcode":

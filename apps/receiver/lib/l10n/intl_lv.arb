@@ -184,5 +184,6 @@
   "v3_settings_only_when_casting_info": "Pārraidīt avota IFP ekrānu tikai tad, kad tas saņem kopīgotu ekrānu.",
   "v3_settings_all_the_time_info": "Vienmēr pārraidīt avota IFP ekrānu.",
   "v3_settings_feature_locked": "Bloķēts ar ViewSonic pārvaldnieku.",
-  "v3_cast_to_device_list_msg": "Maksimums līdz 10 ierīcēm."
+  "v3_cast_to_device_list_msg": "Maksimums līdz 10 ierīcēm.",
+  "v3_quick_connect_menu_bottom_msg": "Sadalītā ekrāna režīms tiek aktivizēts, ja divi vai vairāk lietotāji kopīgo ekrānus."
 }

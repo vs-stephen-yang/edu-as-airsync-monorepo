@@ -275,6 +275,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Osallistujat"),
         "v3_qrcode_quick_connect":
             MessageLookupByLibrary.simpleMessage("Pikayhteys"),
+        "v3_quick_connect_menu_bottom_msg": MessageLookupByLibrary.simpleMessage(
+            "Jaettu näyttö aktivoituu, jos kaksi tai useampi käyttäjä jakaa näyttöjään."),
         "v3_quick_connect_menu_display_code":
             MessageLookupByLibrary.simpleMessage("Näyttökoodi"),
         "v3_quick_connect_menu_qrcode":
@@ -365,9 +367,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Poista ensin moderaattoritila käytöstä."),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Vaadi salasana"),
-        "v3_settings_only_when_casting_info":
-            MessageLookupByLibrary.simpleMessage(
-                "v3_settings_only_when_casting_info"),
         "v3_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
             "Avoimen lähdekoodin lisenssit"),
         "v3_settings_privacy_policy":

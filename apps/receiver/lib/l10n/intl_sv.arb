@@ -181,8 +181,8 @@
   "v3_settings_local_connection_only": "Endast lokal anslutning",
   "v3_group_dialog_no_device_message": "Ingen enhet vald.",
   "v3_participant_item_waiting": "Väntar...",
-  "v3_settings_only_when_casting_info": "https://s3.eu-west-1.amazonaws.com/po-pub/i/BK0sVdd2jma0YpBHE5bBuq3f.png",
   "v3_settings_all_the_time_info": "https://s3.eu-west-1.amazonaws.com/po-pub/i/Aq0gfcuWlTNP5C8gs21VQiAG.png",
   "v3_settings_feature_locked": "Låst av ViewSonic Manager.",
-  "v3_cast_to_device_list_msg": "Högst upp till 10 enheter."
+  "v3_cast_to_device_list_msg": "Högst upp till 10 enheter.",
+  "v3_quick_connect_menu_bottom_msg": "Delad skärm aktiveras om två eller flera användare delar skärmar."
 }
