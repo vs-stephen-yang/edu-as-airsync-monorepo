@@ -286,6 +286,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_select_role_title":
             MessageLookupByLibrary.simpleMessage("Valitse esitystilasi"),
         "v3_main_terms": MessageLookupByLibrary.simpleMessage("Käyttöehdot"),
+        "v3_main_web_nonsupport": MessageLookupByLibrary.simpleMessage(
+            "Tällä hetkellä vain Chrome- ja Edge-selaimet ovat tuettuja."),
+        "v3_main_web_nonsupport_confirm":
+            MessageLookupByLibrary.simpleMessage("Ymmärretty!"),
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
             "Näytön jakaminen on pysäytetty.\nKokonaisaika jaettu %s."),
         "v3_present_moderator_exited":
@@ -332,7 +336,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Liittyminen ei onnistu. Istunto on saavuttanut maksimimäärän."),
         "v3_present_touch_back_allow":
-            MessageLookupByLibrary.simpleMessage("Salli takaisin kosketus"),
+            MessageLookupByLibrary.simpleMessage("Salli kosketusohjaus"),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Yhdistä nopeasti skannaamalla QR-koodi"),
         "v3_select_screen_ios_countdown":

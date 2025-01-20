@@ -287,6 +287,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_select_role_title":
             MessageLookupByLibrary.simpleMessage("Velg presentasjonsmodus"),
         "v3_main_terms": MessageLookupByLibrary.simpleMessage("Bruksvilkår"),
+        "v3_main_web_nonsupport": MessageLookupByLibrary.simpleMessage(
+            "For øyeblikket støttes kun Chrome- og Edge-nettlesere."),
+        "v3_main_web_nonsupport_confirm":
+            MessageLookupByLibrary.simpleMessage("Skjønner!"),
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
             "Skjermdeling er stoppet. Total delingstid %s."),
         "v3_present_moderator_exited":
