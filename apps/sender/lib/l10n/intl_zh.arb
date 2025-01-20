@@ -179,5 +179,6 @@
   "v3_receiver_remote_screen_busy_title": "螢幕廣播中",
   "v3_receiver_remote_screen_busy_description": "該螢幕正在廣播中，請稍後再試",
   "v3_receiver_remote_screen_busy_action": "好",
+  "v3_present_idle_download_virtual_audio_device": "去下載",
   "v3_present_select_screen_mac_audio_driver": "尚未安裝音訊驅動程式，聲音將無法透過 IFP 播放，請下載並安裝。"
 }

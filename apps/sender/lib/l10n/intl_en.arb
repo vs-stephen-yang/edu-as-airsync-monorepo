@@ -181,5 +181,6 @@
   "v3_receiver_remote_screen_busy_title": "The screen is broadcasting",
   "v3_receiver_remote_screen_busy_description": "The screen is broadcasting to other screens. Please try again later.",
   "v3_receiver_remote_screen_busy_action": "OK",
+  "v3_present_idle_download_virtual_audio_device": "Download",
   "v3_present_select_screen_mac_audio_driver": "Unable to share audio. Please download and install audio driver."
 }
