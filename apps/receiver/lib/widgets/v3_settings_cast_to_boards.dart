@@ -45,7 +45,7 @@ class V3SettingsCastToBoardsState
 
   @override
   void deactivate() {
-    GroupListModel discoveryModel = ref.watch(discoveryModelProvider);
+    GroupListModel discoveryModel = ref.read(discoveryModelProvider);
     discoveryModel.stop();
     super.deactivate();
   }
@@ -67,7 +67,7 @@ class V3SettingsCastToBoardsState
         ref.watch(groupProvider.select((state) => state.broadcastToGroup));
     final broadcastType = ref
         .watch(groupProvider.select((state) => state.broadcastGroupLaunchType));
-    final GroupListModel discoveryModel = ref.watch(discoveryModelProvider);
+    final GroupListModel discoveryModel = ref.read(discoveryModelProvider);
     discoveryModel.groupProvider = groupNotifier;
     if (isBroadcastingToGroup) {
       discoveryModel.start(context: context);
@@ -375,13 +375,17 @@ class V3SettingsCastToBoardsState
 
   Expanded _buildListContent(GroupProvider groupNotifier,
       bool isBroadcastingToGroup, ChannelProvider channelProvider) {
+    final broadcastSelectedList =
+        ref.watch(groupProvider.select((state) => state.selectedList));
+    final clientList = ref.watch(groupProvider
+        .select((state) => [...state.selectedList, ...state.clients]));
     return Expanded(
       child: ListView.separated(
         shrinkWrap: true,
         physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: groupNotifier.getClientList().length,
+        itemCount: isBroadcastingToGroup ? clientList.length : 0,
         itemBuilder: (context, index) {
-          final client = groupNotifier.getClientList()[index];
+          final client = clientList[index];
           return Opacity(
             opacity: isBroadcastingToGroup ? 1.0 : 0.3,
             child:
@@ -549,7 +553,7 @@ class V3SettingsCastToBoardsState
           await channelProvider.startRemoteScreen(fromGroup: true);
         } else {
           groupNotifier.clearClients();
-          GroupListModel discoveryModel = ref.watch(discoveryModelProvider);
+          GroupListModel discoveryModel = ref.read(discoveryModelProvider);
           await discoveryModel.stop();
           channelProvider.stopDisplayGroup();
         }
