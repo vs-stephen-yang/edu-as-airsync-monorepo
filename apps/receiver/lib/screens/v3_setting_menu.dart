@@ -297,15 +297,17 @@ class _SubTittleButton extends StatelessWidget {
           ),
           child: Row(
             children: [
-              AutoSizeText(
-                text,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.white,
+              Expanded(
+                child: Text(
+                  text,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
               ),
-              const Spacer(),
               if (locked)
                 SizedBox(
                   width: 11,
