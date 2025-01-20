@@ -375,8 +375,6 @@ class V3SettingsCastToBoardsState
 
   Expanded _buildListContent(GroupProvider groupNotifier,
       bool isBroadcastingToGroup, ChannelProvider channelProvider) {
-    final broadcastSelectedList =
-        ref.watch(groupProvider.select((state) => state.selectedList));
     final clientList = ref.watch(groupProvider
         .select((state) => [...state.selectedList, ...state.clients]));
     return Expanded(
