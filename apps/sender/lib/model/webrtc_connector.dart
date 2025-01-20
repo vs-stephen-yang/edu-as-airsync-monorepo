@@ -315,21 +315,21 @@ class WebRTCConnector {
     };
 
     final offer = await _pc!.createOffer(offerConstraints);
-    // RTCSessionDescription fixedOffer = SdpUtil.fixSdp(offer);
+    RTCSessionDescription fixedOffer = SdpUtil.fixSdp(offer);
 
-    // if (!setCodecPreferencesResult) {
-    //   // Due to incomplete implementation of `setCodecPreferences`
-    //   // in flutter-webrtc, there are issues on certain devices. As a workaround,
-    //   // we have opted to modify the SDP. However, this workaround currently only
-    //   // supports selecting a single codec."
-    //   _modifySDPForCodecPreferences(fixedOffer);
-    // }
+    if (!setCodecPreferencesResult) {
+      // Due to incomplete implementation of `setCodecPreferences`
+      // in flutter-webrtc, there are issues on certain devices. As a workaround,
+      // we have opted to modify the SDP. However, this workaround currently only
+      // supports selecting a single codec."
+      _modifySDPForCodecPreferences(fixedOffer);
+    }
 
     try {
-      await _pc!.setLocalDescription(offer);
+      await _pc!.setLocalDescription(fixedOffer);
 
       var message = PresentSignalMessage(null, SignalMessageType.offer);
-      message.sdp = offer.sdp;
+      message.sdp = fixedOffer.sdp;
       sendSignalMessage(message);
 
       startStatsTimer();
