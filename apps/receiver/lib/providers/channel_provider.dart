@@ -681,7 +681,9 @@ class ChannelProvider extends ChangeNotifier {
 
     if (displayGroupVideoView != null && isDisplayGroupVideoAvailable) {
       sendJoinDisplayRejectMessage(channel,
-          errorCode: 403, reason: 'receive a remote screen');
+          errorCode:
+              JoinDisplayRejectedReasonCode.receiverRemoteScreenBusy.code,
+          reason: 'receive a remote screen');
     } else {
       sendDisplayStatus(channel);
     }
