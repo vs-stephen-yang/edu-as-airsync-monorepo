@@ -324,6 +324,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_present_select_screen_extension_desc2":
             MessageLookupByLibrary.simpleMessage(
                 "Drag content between your personal device and the IFP, enhancing real-time interaction and control."),
+        "v3_present_select_screen_mac_audio_driver":
+            MessageLookupByLibrary.simpleMessage(
+                "Unable to share audio. Please download and install audio driver."),
         "v3_present_select_screen_share_audio":
             MessageLookupByLibrary.simpleMessage("Share computer audio."),
         "v3_present_select_screen_subtitle":

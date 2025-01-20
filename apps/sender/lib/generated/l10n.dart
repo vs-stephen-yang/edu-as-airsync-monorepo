@@ -1870,6 +1870,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Unable to share audio. Please download and install audio driver.`
+  String get v3_present_select_screen_mac_audio_driver {
+    return Intl.message(
+      'Unable to share audio. Please download and install audio driver.',
+      name: 'v3_present_select_screen_mac_audio_driver',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

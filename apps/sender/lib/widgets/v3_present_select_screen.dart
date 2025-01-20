@@ -7,6 +7,7 @@ import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -71,6 +72,7 @@ class V3PresentSelectScreen extends StatelessWidget {
       selectScreenDialog?.cancel();
     });
 
+    final hasAudioDevice = await AudioSwitchManager().hasVirtualAudioDevice();
     await showDialog<CustomDesktopCaptureSource>(
       context: context,
       builder: (context) {
@@ -78,6 +80,7 @@ class V3PresentSelectScreen extends StatelessWidget {
           hostName: provider.deviceName ?? '',
           isExtensionEnable: Platform.isWindows && isSupported,
           annotationModel: context.read<AnnotationModel>(),
+          hasVirtualAudioDevice: hasAudioDevice,
         );
         return selectScreenDialog!;
       },
@@ -258,6 +261,7 @@ class SelectScreenDialog extends Dialog {
     required this.hostName,
     required this.isExtensionEnable,
     required this.annotationModel,
+    required this.hasVirtualAudioDevice,
   }) {
     Future.delayed(const Duration(milliseconds: 100), () {
       _getSources(SourceType.Screen);
@@ -294,6 +298,7 @@ class SelectScreenDialog extends Dialog {
   bool get platformIsDesktop =>
       Platform.isWindows || Platform.isMacOS || Platform.isLinux;
   String hostName;
+  final bool hasVirtualAudioDevice;
 
   @override
   Widget build(BuildContext context) {
@@ -480,41 +485,79 @@ class SelectScreenDialog extends Dialog {
                                     if (platformIsDesktop &&
                                         tabController.index ==
                                             SourceType.Screen.index)
-                                      SizedBox(
-                                        height: 48,
-                                        child: Row(
-                                          children: [
-                                            Checkbox(
-                                              value: _systemAudio,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(2.0),
-                                              ),
-                                              side: WidgetStateBorderSide
-                                                  .resolveWith(
-                                                (states) => BorderSide(
-                                                    width: 1.0,
-                                                    color: context.tokens.color
-                                                        .vsdswColorPrimary),
-                                              ),
-                                              onChanged: (bool? value) {
-                                                setState(() {
-                                                  _systemAudio = value!;
-                                                });
-                                              },
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Gap(10),
+                                          SizedBox(
+                                            height: 48,
+                                            child: Row(
+                                              children: [
+                                                Checkbox(
+                                                  value: _systemAudio,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            2.0),
+                                                  ),
+                                                  side: WidgetStateBorderSide
+                                                      .resolveWith(
+                                                    (states) => BorderSide(
+                                                        width: 1.0,
+                                                        color: context
+                                                            .tokens
+                                                            .color
+                                                            .vsdswColorPrimary),
+                                                  ),
+                                                  onChanged: (bool? value) {
+                                                    setState(() {
+                                                      _systemAudio = value!;
+                                                    });
+                                                  },
+                                                ),
+                                                const Gap(8),
+                                                Text(
+                                                  S.current
+                                                      .v3_present_select_screen_share_audio,
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontFamily: 'Inter',
+                                                      color: context
+                                                          .tokens
+                                                          .color
+                                                          .vsdswColorOnSurface),
+                                                ),
+                                              ],
                                             ),
-                                            const Gap(8),
-                                            Text(
-                                              S.current
-                                                  .v3_present_select_screen_share_audio,
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontFamily: 'Inter',
-                                                  color: context.tokens.color
-                                                      .vsdswColorOnSurface),
+                                          ),
+                                          if (!hasVirtualAudioDevice)
+                                            SizedBox(
+                                              child: Row(
+                                                children: [
+                                                  const Gap(8),
+                                                  SizedBox(
+                                                    width: 16,
+                                                    height: 16,
+                                                    child: SvgPicture.asset(
+                                                        'assets/images/v3_ic_audio_driver_warning.svg'),
+                                                  ),
+                                                  const Gap(8),
+                                                  Text(
+                                                    S.current
+                                                        .v3_present_select_screen_mac_audio_driver,
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontFamily: 'Inter',
+                                                        color: context
+                                                            .tokens
+                                                            .color
+                                                            .vsdswColorWarning),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ],
-                                        ),
+                                        ],
                                       ),
                                     const Spacer(),
                                     createButton(
