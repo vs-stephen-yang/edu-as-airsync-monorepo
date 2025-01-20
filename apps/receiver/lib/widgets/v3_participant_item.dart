@@ -233,6 +233,8 @@ class ParticipantStandbyFeature extends StatelessWidget {
                   Expanded(
                     child: Text(
                       S.of(context).v3_participant_item_share,
+                      textAlign:
+                          isForMenuUse ? TextAlign.left : TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
