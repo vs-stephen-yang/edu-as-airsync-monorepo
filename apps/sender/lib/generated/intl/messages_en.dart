@@ -293,6 +293,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Got it!"),
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
             "Screen sharing has stopped.\nTotal sharing time %s."),
+        "v3_present_idle_download_virtual_audio_device":
+            MessageLookupByLibrary.simpleMessage("Download"),
         "v3_present_moderator_exited":
             MessageLookupByLibrary.simpleMessage("Moderator has closed"),
         "v3_present_moderator_exited_action":

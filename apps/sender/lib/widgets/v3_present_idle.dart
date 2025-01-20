@@ -13,6 +13,7 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/v3_toast.dart';
 import 'package:display_cast_flutter/widgets/v3_message_dialog.dart';
 import 'package:display_cast_flutter/widgets/v3_present_device_list_button.dart';
+import 'package:display_cast_flutter/widgets/v3_present_idle_audio_driver_warning.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_text_field.dart';
 import 'package:flutter/foundation.dart';
@@ -140,6 +141,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       fit: StackFit.expand,
       alignment: AlignmentDirectional.center,
       children: [
+        const V3PresentIdleAudioDriverWarning(),
         if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
           Positioned(
             top: 24,

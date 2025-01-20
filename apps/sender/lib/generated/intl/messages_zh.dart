@@ -259,6 +259,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("確定"),
         "v3_present_end_information":
             MessageLookupByLibrary.simpleMessage("已停止分享，共計使用 %s 分鐘"),
+        "v3_present_idle_download_virtual_audio_device":
+            MessageLookupByLibrary.simpleMessage("去下載"),
         "v3_present_moderator_exited":
             MessageLookupByLibrary.simpleMessage("結束主持人模式"),
         "v3_present_moderator_exited_action":
