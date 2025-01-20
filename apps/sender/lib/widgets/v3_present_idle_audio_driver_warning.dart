@@ -17,6 +17,8 @@ class V3PresentIdleAudioDriverWarning extends StatefulWidget {
 
 class _V3PresentIdleAudioDriverWarningState
     extends State<V3PresentIdleAudioDriverWarning> with WidgetsBindingObserver {
+  bool _isVisible = true;
+
   @override
   void initState() {
     super.initState();
@@ -32,13 +34,15 @@ class _V3PresentIdleAudioDriverWarningState
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      setState(() {});
+      setState(() {
+        _isVisible = true; // 当应用回到前台时重新显示警告
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb || !Platform.isMacOS) {
+    if (kIsWeb || !Platform.isMacOS || !_isVisible) {
       return const SizedBox.shrink();
     }
 
@@ -64,39 +68,64 @@ class _V3PresentIdleAudioDriverWarningState
               color: context.tokens.color.vsdswColorWarning,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  S.current.v3_present_select_screen_mac_audio_driver,
-                  style: TextStyle(
-                    fontSize: context.tokens.textStyle.vsdswBodySm.fontSize,
+                const SizedBox(width: 16), // 左边距
+                Expanded(
+                  // 使用 Expanded 包裹中间内容
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        S.current.v3_present_select_screen_mac_audio_driver,
+                        style: TextStyle(
+                          fontSize:
+                              context.tokens.textStyle.vsdswBodySm.fontSize,
+                          color: context.tokens.color.vsdswColorOnWarning,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                context.tokens.radii.vsdswRadiusmd.topLeft.x),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 6),
+                        ),
+                        onPressed: () {
+                          launchUrl(Uri.parse(
+                              'https://myviewboard.com/kb/en_US/air-sync-troubleshooting/airsync-macos-client-audio-settings'));
+                        },
+                        child: Text(
+                          S.current
+                              .v3_present_idle_download_virtual_audio_device,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: context.tokens.color.vsdswColorWarning,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: Icon(
+                    Icons.close,
+                    size: 14,
                     color: context.tokens.color.vsdswColorOnWarning,
                   ),
-                ),
-                const SizedBox(width: 16),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          context.tokens.radii.vsdswRadiusmd.topLeft.x),
-                    ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  ),
                   onPressed: () {
-                    launchUrl(Uri.parse(
-                        'https://myviewboard.com/kb/en_US/air-sync-troubleshooting/airsync-macos-client-audio-settings'));
+                    setState(() {
+                      _isVisible = false;
+                    });
                   },
-                  child: Text(
-                    S.current.v3_present_idle_download_virtual_audio_device,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: context.tokens.color.vsdswColorWarning,
-                    ),
-                  ),
                 ),
+                const SizedBox(width: 16), // 右边距
               ],
             ),
           ),
