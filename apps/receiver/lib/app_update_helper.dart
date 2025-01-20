@@ -68,8 +68,11 @@ class AppUpdateHelper {
   checkAppUpdate(bool isStartupCheck) async {
     log.info('InApp _otaState: $_otaEnvironment');
     log.info('InApp _otaFlavor: $_otaFlavor');
-    unawaited(AppOtaFlutter().startOTAProcess(OtaApp.display, _otaEnvironment, _otaFlavor,
-        isStartupCheck: isStartupCheck));
+    if (_otaFlavor != OtaFlavor.edla) {
+      unawaited(AppOtaFlutter().startOTAProcess(
+          OtaApp.display, _otaEnvironment, _otaFlavor,
+          isStartupCheck: isStartupCheck));
+    }
   }
 
   startAppUpdate(String filePath) {
