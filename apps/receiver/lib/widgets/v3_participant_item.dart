@@ -233,7 +233,6 @@ class ParticipantStandbyFeature extends StatelessWidget {
                   Expanded(
                     child: Text(
                       S.of(context).v3_participant_item_share,
-                      textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -497,7 +496,6 @@ class ParticipantReceivingFeature extends StatelessWidget {
                   Expanded(
                     child: Text(
                       S.of(context).v3_cast_to_device_touch_back,
-                      textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -637,7 +635,6 @@ class ParticipantControllingFeature extends StatelessWidget {
                   Gap(context.tokens.spacing.vsdslSpacingXs.left),
                   Expanded(
                     child: Text(
-                      textAlign: TextAlign.center,
                       S.of(context).v3_cast_to_device_touch_back_disable,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
