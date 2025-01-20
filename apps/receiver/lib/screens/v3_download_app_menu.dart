@@ -430,10 +430,9 @@ class LandscapeWidget extends StatelessWidget {
           ),
           Positioned(
             top: 97,
-            left: 510,
+            left: 500,
             child: Container(
               alignment: Alignment.center,
-              width: 20,
               height: 459,
               child: Column(
                 mainAxisSize: MainAxisSize.min,

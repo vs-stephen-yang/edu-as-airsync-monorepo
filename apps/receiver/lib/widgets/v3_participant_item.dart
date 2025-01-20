@@ -218,6 +218,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (isForMenuUse) ...[
+                    Gap(context.tokens.spacing.vsdslSpacingSm.left),
                     SizedBox(
                       child: Image(
                         width: 16,
@@ -229,12 +230,17 @@ class ParticipantStandbyFeature extends StatelessWidget {
                     ),
                     Gap(context.tokens.spacing.vsdslSpacingXs.left),
                   ],
-                  AutoSizeText(
-                    S.of(context).v3_participant_item_share,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                  Expanded(
+                    child: Text(
+                      S.of(context).v3_participant_item_share,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                      ),
                     ),
                   ),
                 ],
@@ -479,6 +485,7 @@ class ParticipantReceivingFeature extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Gap(context.tokens.spacing.vsdslSpacingSm.left),
                   const SizedBox(
                     width: 16,
                     height: 16,
@@ -487,12 +494,17 @@ class ParticipantReceivingFeature extends StatelessWidget {
                     ),
                   ),
                   Gap(context.tokens.spacing.vsdslSpacingXs.left),
-                  AutoSizeText(
-                    S.of(context).v3_cast_to_device_touch_back,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: context.tokens.color.vsdslColorOnSurface,
+                  Expanded(
+                    child: Text(
+                      S.of(context).v3_cast_to_device_touch_back,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: context.tokens.color.vsdslColorOnSurface,
+                      ),
                     ),
                   ),
                 ],
@@ -614,6 +626,7 @@ class ParticipantControllingFeature extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Gap(context.tokens.spacing.vsdslSpacingSm.left),
                   const SizedBox(
                     width: 16,
                     height: 16,
@@ -622,12 +635,17 @@ class ParticipantControllingFeature extends StatelessWidget {
                     ),
                   ),
                   Gap(context.tokens.spacing.vsdslSpacingXs.left),
-                  Text(
-                    S.of(context).v3_cast_to_device_touch_back_disable,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: context.tokens.color.vsdslColorError,
+                  Expanded(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      S.of(context).v3_cast_to_device_touch_back_disable,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: context.tokens.color.vsdslColorError,
+                      ),
                     ),
                   ),
                 ],
