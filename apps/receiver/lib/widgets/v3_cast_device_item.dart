@@ -115,6 +115,8 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
                     remoteScreenConnector.isTouchEnabled
                         ? S.of(context).v3_cast_to_device_touch_back_disable
                         : S.of(context).v3_cast_to_device_touch_back,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -130,7 +132,8 @@ class _V3CastDeviceItemState extends State<V3CastDeviceItem> {
                     shape: RoundedRectangleBorder(
                       borderRadius: context.tokens.radii.vsdslRadiusFull,
                     ),
-                    padding: EdgeInsets.zero,
+                    padding: EdgeInsets.symmetric(
+                        horizontal: context.tokens.spacing.vsdslSpacingSm.left),
                     shadowColor: context.tokens.color.vsdslColorNeutral,
                   ),
                 ),
