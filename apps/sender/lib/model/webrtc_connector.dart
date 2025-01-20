@@ -184,7 +184,8 @@ class WebRTCConnector {
       }
       log.info('succeeded to set codec preferences');
     } catch (e, stackTrace) {
-      log.severe('failed to set codec preferences', e, stackTrace);
+      // TODO: Temporarily lower severity to warning. Restore to error after fixing setCodecPreferences.
+      log.warning('failed to set codec preferences', e, stackTrace);
       return false;
     }
     return true;
