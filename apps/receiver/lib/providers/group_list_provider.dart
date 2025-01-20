@@ -77,6 +77,9 @@ class GroupListModel with ChangeNotifier {
     } else if (event.type ==
         BonsoirDiscoveryEventType.discoveryServiceResolved) {
       GroupBean bean = GroupBean.fromJson(service.toJson());
+      if (bean.deviceName().isEmpty || bean.ip().isEmpty || bean.id().isEmpty) {
+        return;
+      }
       _groupProvider?.addClient(bean);
       _serviceFoundTime[bean.id()] = DateTime.now();
       log.info('group list add client:${bean.deviceName()}');
@@ -85,7 +88,8 @@ class GroupListModel with ChangeNotifier {
 
       DateTime? addTime = _serviceFoundTime[bean.id()];
       // Service Found後，又馬上收到Service Lost，會被歸類為雜訊
-      if (addTime != null && DateTime.now().difference(addTime).inMinutes < 5) {
+      if (addTime != null && DateTime.now().difference(addTime).inMinutes < 5 ||
+          bean.deviceName().isEmpty) {
         return;
       }
       // 若是host member正在播放中，bonsoir lost也不從清單刪除
@@ -102,7 +106,6 @@ class GroupListModel with ChangeNotifier {
         log.info('group list remove Client:${bean.deviceName()}');
       }
     }
-    notifyListeners();
   }
 
   set groupProvider(GroupProvider value) {
