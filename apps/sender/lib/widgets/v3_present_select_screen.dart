@@ -308,6 +308,14 @@ class SelectScreenDialog extends Dialog {
     hostName =
         hostName.length > 20 ? '${hostName.substring(0, 20)}...' : hostName;
     ctx = context;
+
+    bool displayAudioDriverWarning = false;
+    if (Platform.isMacOS &&
+        hasVirtualAudioDevice != null &&
+        !hasVirtualAudioDevice!) {
+      displayAudioDriverWarning = true;
+    }
+
     return Material(
       type: MaterialType.transparency,
       child: Center(
@@ -508,16 +516,24 @@ class SelectScreenDialog extends Dialog {
                                                       .resolveWith(
                                                     (states) => BorderSide(
                                                         width: 1.0,
-                                                        color: context
-                                                            .tokens
-                                                            .color
-                                                            .vsdswColorPrimary),
+                                                        color: (!displayAudioDriverWarning)
+                                                            ? context
+                                                                .tokens
+                                                                .color
+                                                                .vsdswColorPrimary
+                                                            : context
+                                                                .tokens
+                                                                .color
+                                                                .vsdswColorDisabled),
                                                   ),
-                                                  onChanged: (bool? value) {
-                                                    setState(() {
-                                                      _systemAudio = value!;
+                                                  onChanged:
+                                                      (!displayAudioDriverWarning)
+                                                          ? (bool? value) {
+                                                              setState(() {
+                                                                _systemAudio = value!;
                                                     });
-                                                  },
+                                                            }
+                                                          : null,
                                                 ),
                                                 const Gap(8),
                                                 Text(
@@ -526,16 +542,16 @@ class SelectScreenDialog extends Dialog {
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       fontFamily: 'Inter',
-                                                      color: context
-                                                          .tokens
-                                                          .color
-                                                          .vsdswColorOnSurface),
+                                                      color: (!displayAudioDriverWarning)
+                                                          ? context.tokens.color
+                                                              .vsdswColorOnSurface
+                                                          : context.tokens.color
+                                                              .vsdswColorDisabled),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                          if (hasVirtualAudioDevice != null &&
-                                              !hasVirtualAudioDevice!)
+                                          if (displayAudioDriverWarning)
                                             SizedBox(
                                               child: Row(
                                                 children: [
