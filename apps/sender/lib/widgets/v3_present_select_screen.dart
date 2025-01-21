@@ -14,6 +14,7 @@ import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/v3_back_button.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_white_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_svg/svg.dart';
@@ -72,7 +73,9 @@ class V3PresentSelectScreen extends StatelessWidget {
       selectScreenDialog?.cancel();
     });
 
-    final hasAudioDevice = await AudioSwitchManager().hasVirtualAudioDevice();
+    bool? hasAudioDevice = (!kIsWeb && Platform.isMacOS)
+        ? await AudioSwitchManager().hasVirtualAudioDevice()
+        : null;
     await showDialog<CustomDesktopCaptureSource>(
       context: context,
       builder: (context) {
@@ -298,7 +301,7 @@ class SelectScreenDialog extends Dialog {
   bool get platformIsDesktop =>
       Platform.isWindows || Platform.isMacOS || Platform.isLinux;
   String hostName;
-  final bool hasVirtualAudioDevice;
+  bool? hasVirtualAudioDevice;
 
   @override
   Widget build(BuildContext context) {
@@ -531,7 +534,8 @@ class SelectScreenDialog extends Dialog {
                                               ],
                                             ),
                                           ),
-                                          if (!hasVirtualAudioDevice)
+                                          if (hasVirtualAudioDevice != null &&
+                                              !hasVirtualAudioDevice!)
                                             SizedBox(
                                               child: Row(
                                                 children: [
