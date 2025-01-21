@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:android_window/android_window.dart';
+import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/providers/pref_language_provider.dart';
@@ -24,7 +25,14 @@ class _V3OverlayTabState extends State<V3OverlayTab> {
   @override
   void initState() {
     super.initState();
+    setExpandedMode();
     _setUpAndroidWindow();
+  }
+
+  Future<void> setExpandedMode() async {
+    var deviceType = await DeviceInfoVs.deviceType;
+    bool isCDE = deviceType?.toString().startsWith('CDE') ?? false;
+    if (isCDE) _isExpandedMode = true;
   }
 
   @override
