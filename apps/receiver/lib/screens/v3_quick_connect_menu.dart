@@ -197,7 +197,9 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                                 },
                                 onKeyEvent: (node, event) {
                                   if (event.logicalKey ==
-                                      LogicalKeyboardKey.enter) {
+                                          LogicalKeyboardKey.enter ||
+                                      event.logicalKey ==
+                                          LogicalKeyboardKey.select) {
                                     setState(() {
                                       selected = index;
                                     });
@@ -232,7 +234,9 @@ class _V3QuickConnectMenuState extends State<V3QuickConnectMenu> {
                                             ? context.tokens.color
                                                 .vsdslColorSecondary
                                             : Colors.transparent,
-                                        width: 2.0,
+                                        width: _focusNodes[index].hasFocus
+                                            ? 2.0
+                                            : 0,
                                       ),
                                       color: Colors.transparent,
                                     ),
