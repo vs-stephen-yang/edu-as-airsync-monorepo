@@ -40,7 +40,8 @@ class _V3SettingMenuListItemFocusState
         onFocusChange: _onFocusChange,
         onKeyEvent: (node, event) {
           if (event is KeyDownEvent &&
-              event.logicalKey == LogicalKeyboardKey.enter) {
+                  event.logicalKey == LogicalKeyboardKey.enter ||
+              event.logicalKey == LogicalKeyboardKey.select) {
             widget.onTap?.call();
             return KeyEventResult.handled;
           }
