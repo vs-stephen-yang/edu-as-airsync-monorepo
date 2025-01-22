@@ -125,25 +125,9 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
           FilteringTextInputFormatter.digitsOnly,
         if (widget.platformDetector.notWindowsNeitherWeb)
           FilteringTextInputFormatter.allow(RegExp('[0-9\\s]')),
-        TextInputFormatter.withFunction((oldValue, newValue) {
-          //old is  1234 5678 |9012 new is  1234 5678|9012 then result is 1234 5678| 9012
-          // Web && Windows with space, otherwise without space
-          final newOffset = newValue.selection.baseOffset;
-          if (widget.platformDetector.windowsOrWeb &&
-              ((newOffset == 9 && newValue.text.length >= 10) ||
-                  (newOffset == 14 && newValue.text.length >= 15))) {
-            userDeleteSpace = true;
-            return newValue.copyWith();
-          } else if ((newOffset == 4 && newValue.text.length >= 5) ||
-              (newOffset == 8 && newValue.text.length >= 9)) {
-            userDeleteSpace = true;
-            return newValue.copyWith();
-          }
-          return newValue;
-        }),
       ],
       onFieldChanged: (text) {
-        if (widget.platformDetector.windowsOrWeb) {
+        if (WebRTC.platformIsWindows || kIsWeb) {
           if (text.contains(RegExp(r'[^0-9\s]'))) {
             _setTextFormFieldErrorMsg(
                 codeKey, S.of(context).v3_main_display_code_error);
@@ -155,46 +139,30 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
           }
           _codeController.value = _codeController.value.copyWith(
             text: text.toUpperCase(),
+            selection: TextSelection.collapsed(offset: text.length),
             composing: TextRange.empty,
           );
         }
 
-        int cursorPosition = _codeController.selection.baseOffset;
-        String currentText = _codeController.text;
-
-        String rawText = currentText.replaceAll(' ', '');
-
         _isCodeSelectedFromHistory = false;
+        // clear error message since pass the validation.
         codeKey.currentState?.setErrorMsg('');
         bool presentBtnEnable = false;
-        if (rawText.length >= displayCodeMinLength &&
+        if (text.length >= displayCodeMinLength &&
             _otpController.text.length == otpLength) {
           presentBtnEnable = true;
         }
         widget.onFieldChanged(V3FieldResult(
             enable: presentBtnEnable,
             isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
-            displayCode: rawText,
+            displayCode: text.replaceAll(' ', ''),
             password: _otpController.text));
 
-        int rawCursorPosition =
-            currentText.substring(0, cursorPosition).replaceAll(' ', '').length;
-
-        String formattedText = _getDisplayCodeVisualIdentity(rawText);
-
-        int newPosition = rawCursorPosition;
-        newPosition += (rawCursorPosition / 4).floor();
-
-        newPosition = min(newPosition, formattedText.length);
-
-        if (userDeleteSpace) {
-          newPosition = newPosition - 1;
-          userDeleteSpace = false; // reset
-        }
-
+        String dc =
+        _getDisplayCodeVisualIdentity(text.replaceAll(' ', '')); // 移除已有的空格
         _codeController.value = TextEditingValue(
-          text: formattedText,
-          selection: TextSelection.collapsed(offset: newPosition),
+          text: dc,
+          selection: TextSelection.collapsed(offset: dc.length),
         );
       },
       onTap: () async {
