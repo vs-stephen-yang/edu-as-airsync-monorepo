@@ -207,7 +207,6 @@ class V3SettingsMirroring extends StatelessWidget {
                       fontSize: 12,
                       color: context.tokens.color.vsdslColorOnSurfaceVariant,
                     ),
-                    maxLines: 1,
                   ),
                 ),
               ],
