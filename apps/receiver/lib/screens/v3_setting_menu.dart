@@ -283,7 +283,6 @@ class _SubTittleButton extends StatelessWidget {
         onTap: onClick,
         child: Container(
           width: 140,
-          height: 26,
           padding: EdgeInsets.symmetric(
             vertical: context.tokens.spacing.vsdslSpacingSm.top,
             horizontal: context.tokens.spacing.vsdslSpacingMd.left,
@@ -304,7 +303,7 @@ class _SubTittleButton extends StatelessWidget {
                     fontSize: 12,
                     color: Colors.white,
                   ),
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),

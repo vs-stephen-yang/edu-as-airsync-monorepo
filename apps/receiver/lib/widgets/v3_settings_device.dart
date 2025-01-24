@@ -17,6 +17,7 @@ import 'package:display_flutter/widgets/v3_setting_menu_navigation_tile.dart';
 import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsDevice extends StatefulWidget {
@@ -61,7 +62,6 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             _buildDivider(context),
             V3SettingMenuSubItemFocus(
               child: SizedBox(
-                height: 26,
                 child: _buildAutoFillOTP(context, settingsProvider),
               ),
             ),
@@ -87,10 +87,10 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
             _buildDivider(context),
             V3SettingMenuSubItemFocus(
               child: SizedBox(
-                height: 26,
                 child: _buildAuthorizeMode(context, settingsProvider),
               ),
             ),
+            if (settingsProvider.isDeviceSettingLock) const Gap(51),
           ],
         ),
       );
