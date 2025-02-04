@@ -54,16 +54,6 @@ TestPlatformDetector mapTestPlatformToDetector(TestPlatform platform) {
   }
 }
 
-String getDisplayCodeVisualIdentity(String displayCode) {
-  String result = displayCode;
-  if (displayCode.length > 4) {
-    result = displayCode
-        .replaceAllMapped(RegExp(r".{4}"), (match) => "${match.group(0)} ")
-        .trimRight();
-  }
-  return result;
-}
-
 void main() {
   final platformVariants = ValueVariant<TestPlatform>({
     TestPlatform.macos,
@@ -146,7 +136,7 @@ void main() {
             await tester.enterText(textField, 'abc123def456');
             await tester.pump();
 
-            final formattedText = getDisplayCodeVisualIdentity('123456');
+            const formattedText = '1234 56';
             expect(find.text(formattedText), findsOneWidget);
             expect(lastDisplayCode, '123456');
           });
@@ -249,6 +239,7 @@ void main() {
           final edit = find.byType(EditableText);
           final EditableTextState editableTextState = tester.state(edit.first);
 
+          // 123|4 5678
           editableTextState.userUpdateTextEditingValue(
             const TextEditingValue(
               text: '1234 5678',
@@ -258,6 +249,7 @@ void main() {
           );
           await tester.pumpAndSettle();
 
+          // enter 9
           final currentValue = editableTextState.textEditingValue;
           final newText = currentValue.text.replaceRange(
             currentValue.selection.baseOffset,
@@ -275,7 +267,13 @@ void main() {
           await tester.pumpAndSettle();
 
           expect(editableTextState.textEditingValue.text, '1239 4567 8');
-          expect(editableTextState.textEditingValue.selection.baseOffset, 4);
+          if (isWeb || isWindows) {
+            // 1239| 5678
+            expect(editableTextState.textEditingValue.selection.baseOffset, 4);
+          } else {
+            // 1239 |5678
+            expect(editableTextState.textEditingValue.selection.baseOffset, 5);
+          }
         });
 
         testWidgets(
@@ -288,20 +286,23 @@ void main() {
           final TextFormField textFormField = tester.widget(textField);
           final controller = textFormField.controller!;
 
+          // 1234 5678|
           await tester.enterText(textField, '12345678');
           await tester.pump();
 
+          // 1234| 5678
           controller.selection = const TextSelection.collapsed(offset: 4);
           await tester.sendKeyEvent(LogicalKeyboardKey.delete);
           await tester.pump();
 
           // Delete space does not affect cursor position
           expect(controller.text, '1234 5678');
+          // 1234| 5678
           expect(controller.selection.baseOffset, 4);
         });
 
         testWidgets(
-            '[$platform] Should handle deletion of digit before space, cursor does not move',
+            '[$platform] Should handle backspace deletion of digit before space, cursor does not move',
             (WidgetTester tester) async {
           await tester.pumpWidget(testWidget);
           await tester.pumpAndSettle();
@@ -313,17 +314,20 @@ void main() {
           await tester.enterText(textField, '12345678');
           await tester.pump();
 
+          // 1234 5678|
+          expect(find.text('1234 5678'), findsOneWidget);
+
+          // 1234 |5678
           controller.selection = const TextSelection.collapsed(offset: 5);
-          await tester.sendKeyEvent(LogicalKeyboardKey.delete);
+          await tester.pump();
+          expect(controller.selection.baseOffset, 5);
+
+          await tester.sendKeyEvent(LogicalKeyboardKey.backspace);
           await tester.pump();
 
-          expect(find.text('1234 678'), findsOneWidget);
-
-          if (isWindows || isWeb) {
-            expect(controller.selection.baseOffset, 5);
-          } else {
-            expect(controller.selection.baseOffset, 4);
-          }
+          // 1234| 5678
+          expect(find.text('1234 5678'), findsOneWidget);
+          expect(controller.selection.baseOffset, 4);
         });
       });
 

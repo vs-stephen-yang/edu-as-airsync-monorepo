@@ -57,9 +57,9 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
   final LayerLink _dropDownLayerLink = LayerLink();
   bool _isDropDownMenuVisible = false;
 
-  bool userDeleteSpace = false;
-
   bool _isCodeSelectedFromHistory = false;
+
+  int rawNewValueLength = 0;
 
   @override
   void initState() {
@@ -121,13 +121,96 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       enable: widget.enable,
       hintText: S.of(context).v3_main_display_code,
       inputFormatter: [
+        TextInputFormatter.withFunction((oldValue, newValue) {
+          rawNewValueLength = newValue.text.length;
+          return newValue;
+        }),
         if (widget.platformDetector.notWindowsNeitherWeb)
           FilteringTextInputFormatter.digitsOnly,
         if (widget.platformDetector.notWindowsNeitherWeb)
           FilteringTextInputFormatter.allow(RegExp('[0-9\\s]')),
+        if (widget.platformDetector.windowsOrWeb)
+          TextInputFormatter.withFunction((oldValue, newValue) {
+            if (newValue.isComposingRangeValid) {
+              // if using language with composing, then there will be input twice
+              return newValue;
+            }
+
+            int newOffset = 0;
+            final isAdding =
+                oldValue.text.length < newValue.text.length; // Add Digit
+            final isRemoving =
+                oldValue.text.length > newValue.text.length; // Remove Digit
+            // With composing based input locale keyboard event, such as Chinese, Japanese, Korean, Thai, Vietnamese... etc
+            final isComposingEndMod5 = oldValue.composing.end % 5 == 0;
+            final isCompose = oldValue.composing.isValid;
+            // With base offset input locale keyboard event, such as English, French, Finnish, Swedish... etc
+            final isBaseOffsetMod5 = newValue.selection.baseOffset % 5 == 0;
+            final notFirstDigit = newValue.selection.baseOffset != 0;
+
+            if ((isAdding && isBaseOffsetMod5) ||
+                (isComposingEndMod5 && isCompose)) {
+              newOffset += 1;
+            } else if (isRemoving && (isBaseOffsetMod5 && notFirstDigit)) {
+              newOffset -= 1;
+            }
+
+            String rawText = newValue.text.replaceAll(' ', '');
+            String formattedText = _getDisplayCodeVisualIdentity(rawText);
+
+            return TextEditingValue(
+              text: formattedText,
+              selection: TextSelection(
+                baseOffset: newValue.selection.baseOffset + newOffset,
+                extentOffset: newValue.selection.baseOffset + newOffset,
+              ),
+            );
+          })
+        else
+          TextInputFormatter.withFunction((oldValue, newValue) {
+            String rawText = newValue.text;
+            String formattedText = _getDisplayCodeVisualIdentity(rawText);
+
+            final bool deleteOneDigit =
+                rawNewValueLength == oldValue.text.length - 1;
+            final bool sameLengthWithoutSpaces =
+                oldValue.text.replaceAll(' ', '').length ==
+                    newValue.text.replaceAll(' ', '').length;
+            final bool baseOffsetMod4 = newValue.selection.baseOffset % 4 == 0;
+            final bool oldBaseOffsetMod5 =
+                oldValue.selection.baseOffset % 5 == 0;
+            if (deleteOneDigit && sameLengthWithoutSpaces) {
+              int newOffset = oldValue.selection.baseOffset;
+              if (baseOffsetMod4 && oldBaseOffsetMod5) {
+                // Handle backspace on space
+                newOffset -= 1;
+              }
+
+              // Handle backspace/delete on digit
+              return TextEditingValue(
+                text: formattedText,
+                selection: TextSelection.collapsed(offset: newOffset),
+              );
+            }
+
+            int rawCursorPosition = rawText
+                .substring(0, newValue.selection.baseOffset)
+                .replaceAll(' ', '')
+                .length;
+
+            int newPosition = rawCursorPosition;
+            newPosition += (rawCursorPosition / 4).floor();
+
+            newPosition = min(newPosition, formattedText.length);
+
+            return TextEditingValue(
+              text: formattedText,
+              selection: TextSelection.collapsed(offset: newPosition),
+            );
+          })
       ],
       onFieldChanged: (text) {
-        if (WebRTC.platformIsWindows || kIsWeb) {
+        if (widget.platformDetector.windowsOrWeb) {
           if (text.contains(RegExp(r'[^0-9\s]'))) {
             _setTextFormFieldErrorMsg(
                 codeKey, S.of(context).v3_main_display_code_error);
@@ -137,11 +220,6 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             }
             return;
           }
-          _codeController.value = _codeController.value.copyWith(
-            text: text.toUpperCase(),
-            selection: TextSelection.collapsed(offset: text.length),
-            composing: TextRange.empty,
-          );
         }
 
         _isCodeSelectedFromHistory = false;
@@ -157,13 +235,6 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
             displayCode: text.replaceAll(' ', ''),
             password: _otpController.text));
-
-        String dc =
-        _getDisplayCodeVisualIdentity(text.replaceAll(' ', '')); // 移除已有的空格
-        _codeController.value = TextEditingValue(
-          text: dc,
-          selection: TextSelection.collapsed(offset: dc.length),
-        );
       },
       onTap: () async {
         List? displayList = await DataDisplayCode.getInstance().load();
