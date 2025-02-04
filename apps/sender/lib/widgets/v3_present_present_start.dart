@@ -292,8 +292,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
           Positioned(
             bottom: 100,
             child: ValueListenableBuilder(
-                valueListenable:
-                    WebRTCHelper().webRTCConnector!.reconnectStateNotifier,
+                valueListenable: WebRTCHelper().reconnectStateNotifier,
                 builder: (BuildContext context, ChannelReconnectState state,
                     Widget? child) {
                   if (state == ChannelReconnectState.reconnecting) {
