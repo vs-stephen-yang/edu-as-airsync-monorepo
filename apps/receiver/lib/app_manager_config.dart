@@ -281,8 +281,7 @@ class AppManagerConfig {
         await mirrorStateProvider.reloadPreferences();
 
         // Apply new settings
-        await mirrorStateProvider
-            .setAirPlayCodeEnable(mirrorStateProvider.airPlayCodeEnable);
+        // reloadPreferences will trigger notifyListeners()
 
         // clear manager update request
         await prefs.setBool('mgr_UpdateMirrorAutoAccept', false);

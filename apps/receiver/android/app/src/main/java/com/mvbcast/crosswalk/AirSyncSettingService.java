@@ -153,7 +153,7 @@ public class AirSyncSettingService extends Service {
                     break;
                 case IAirSyncSettingService.KEY_MIRROR_AUTO_ACCEPT:
                     flutterEditor.putBoolean("flutter.app_autoAcceptRequired",
-                            value.equals(VAL_MIRROR_AUTO_ACCEPT_ON)).commit();
+                            value.equals(VAL_MIRROR_AUTO_ACCEPT_OFF)).commit();
 
                     flutterEditor.putBoolean("flutter.mgr_UpdateMirrorAutoAccept", true).commit();
                     break;
@@ -289,7 +289,7 @@ public class AirSyncSettingService extends Service {
                     break;
                 case IAirSyncSettingService.KEY_MIRROR_AUTO_ACCEPT:
                     value = flutterPref.getBoolean("flutter.app_autoAcceptRequired",
-                            false) ? VAL_MIRROR_AUTO_ACCEPT_ON : VAL_MIRROR_AUTO_ACCEPT_OFF;
+                            false) ? VAL_MIRROR_AUTO_ACCEPT_OFF : VAL_MIRROR_AUTO_ACCEPT_ON;
                     break;
                 case IAirSyncSettingService.KEY_CONNECTIVITY_LOCK:
                     value = flutterPref.getBoolean("flutter.app_isConnectivityLock",
