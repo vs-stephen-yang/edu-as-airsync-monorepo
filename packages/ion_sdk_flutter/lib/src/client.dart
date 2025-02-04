@@ -212,6 +212,8 @@ class Client {
       var pc = transports[RoleSub]!.pc;
       if (pc != null) {
         await pc.setRemoteDescription(description);
+        transports[RoleSub]!.hasRemoteDescription = true;
+
         transports[RoleSub]!.candidates.forEach((c) => pc.addCandidate(c));
         transports[RoleSub]!.candidates = [];
         var answer = await pc.createAnswer({});
