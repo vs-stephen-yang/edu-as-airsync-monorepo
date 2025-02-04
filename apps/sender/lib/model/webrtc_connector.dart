@@ -34,6 +34,7 @@ class WebRTCConnector {
     required this.onConnectionState,
     required this.onStopPresent,
     required this.onTouchEvenWhenPaused,
+    required this.reconnectStateNotifier,
   });
 
   final List<StreamSubscription> subscriptions = [];
@@ -99,8 +100,7 @@ class WebRTCConnector {
   final _statsTimerInterval = const Duration(seconds: 1);
   RtcStatsParser? _rtcStatsParser;
 
-  ValueNotifier<ChannelReconnectState> reconnectStateNotifier =
-      ValueNotifier<ChannelReconnectState>(ChannelReconnectState.idle);
+  ValueNotifier<ChannelReconnectState> reconnectStateNotifier;
 
   set reconnectState(ChannelReconnectState state) {
     reconnectStateNotifier.value = state;
