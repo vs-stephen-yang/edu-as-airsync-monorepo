@@ -66,7 +66,9 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                 : context.tokens.radii.vsdslRadiusFull,
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: isCollapsed
+                ? MainAxisAlignment.center
+                : MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               // Use Visibility Widget to Maintain Focus on the Correct Icon During Collapse/Expand.
