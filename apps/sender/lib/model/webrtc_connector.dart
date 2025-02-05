@@ -421,7 +421,8 @@ class WebRTCConnector {
       return await navigator.mediaDevices.getDisplayMedia(constraints);
     } catch (e, stackTrace) {
       String exception = e.toString().toLowerCase();
-      if (exception.contains('NotAllowedError'.toLowerCase())) {
+      if (exception.contains('NotAllowedError'.toLowerCase()) ||
+          exception.contains('screenRequestPermissions'.toLowerCase())) {
         log.warning('getDisplayMedia', e, stackTrace);
       } else {
         log.severe('getDisplayMedia', e, stackTrace);
