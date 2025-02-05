@@ -420,7 +420,12 @@ class WebRTCConnector {
       };
       return await navigator.mediaDevices.getDisplayMedia(constraints);
     } catch (e, stackTrace) {
-      log.severe('getDisplayMedia', e, stackTrace);
+      String exception = e.toString().toLowerCase();
+      if (exception.contains('NotAllowedError'.toLowerCase())) {
+        log.warning('getDisplayMedia', e, stackTrace);
+      } else {
+        log.severe('getDisplayMedia', e, stackTrace);
+      }
       return null;
     }
   }
