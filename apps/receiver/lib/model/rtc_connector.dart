@@ -16,6 +16,7 @@ import 'package:display_flutter/utility/bounded_list.dart';
 import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:display_flutter/utility/rtc_stats_monitor.dart';
+import 'package:display_flutter/utility/list_util.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/widgets/stream_function.dart';
 import 'package:flutter/foundation.dart';
@@ -565,6 +566,9 @@ class RTCConnector {
       final summary = _rtcStatsMonitor!.createSummary();
       trackRtcSummary(summary);
     }
+
+    trackInboundStats(
+        clientId, filterEverySecond(_videoInboundStatsHistory.elements));
   }
 
   Future<void> close(ChannelCloseCode code, {String? reason}) async {
