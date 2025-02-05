@@ -50,6 +50,8 @@ class WebRTCConnector {
   RTCDataChannel? _touchbackDataChannel;
   RTCDataChannel? _controlDataChannel;
 
+  RTCDataChannelState? _rtcControlDataChannelState;
+
   MediaStream? _localStream;
   final Completer _descriptionSetCompleter = Completer();
 
@@ -263,6 +265,8 @@ class WebRTCConnector {
 
     _controlDataChannel!.onDataChannelState = (state) {
       log.info('Data channel state of control: ${state.name}');
+
+      _rtcControlDataChannelState = state;
 
       trackTrace('control_dc_state', properties: {
         'target': state.name,
@@ -482,9 +486,9 @@ class WebRTCConnector {
   void _sendControlMessage(ChannelMessage message) {
     final text = jsonEncode(message.toJson());
 
-    _controlDataChannel?.send(
-      RTCDataChannelMessage(text),
-    );
+    if (_rtcControlDataChannelState == RTCDataChannelState.RTCDataChannelOpen) {
+      _controlDataChannel?.send(RTCDataChannelMessage(text));
+    }
   }
 
   void pause(String sessionId, {Rect? pauseBtnRect, Rect? stopBtnRect}) {
