@@ -280,8 +280,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Display-kode"),
         "v3_quick_connect_menu_qrcode":
             MessageLookupByLibrary.simpleMessage("QR-kode"),
-        "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
-            "v3_settings_all_the_time_info"),
         "v3_settings_broadcast":
             MessageLookupByLibrary.simpleMessage("Broadcast"),
         "v3_settings_broadcast_boards":

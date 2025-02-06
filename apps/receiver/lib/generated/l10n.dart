@@ -851,10 +851,10 @@ class S {
     );
   }
 
-  /// `Cast your screen to multiple devices, including laptops, tablets and mobile devices simultaneously.`
+  /// `Cast this screen to multiple devices, including laptops, tablets and mobile devices simultaneously.`
   String get v3_shortcuts_cast_device_desc {
     return Intl.message(
-      'Cast your screen to multiple devices, including laptops, tablets and mobile devices simultaneously.',
+      'Cast this screen to multiple devices, including laptops, tablets and mobile devices simultaneously.',
       name: 'v3_shortcuts_cast_device_desc',
       desc: '',
       args: [],
@@ -1201,20 +1201,20 @@ class S {
     );
   }
 
-  /// `Enable one-touch connection when selecting a device from the device list.`
+  /// `Enable one-touch connection when this device is selected from the Sender app's Quick Connect menu.`
   String get v3_settings_device_auto_fill_otp_desc {
     return Intl.message(
-      'Enable one-touch connection when selecting a device from the device list.',
+      'Enable one-touch connection when this device is selected from the Sender app\'s Quick Connect menu.',
       name: 'v3_settings_device_auto_fill_otp_desc',
       desc: '',
       args: [],
     );
   }
 
-  /// `Allow screen sharing only with approval requests.`
+  /// `Require approval for all screen sharing requests.`
   String get v3_settings_device_authorize_mode {
     return Intl.message(
-      'Allow screen sharing only with approval requests.',
+      'Require approval for all screen sharing requests.',
       name: 'v3_settings_device_authorize_mode',
       desc: '',
       args: [],
@@ -1231,10 +1231,10 @@ class S {
     );
   }
 
-  /// `Share your screen to all Interactive Flat Panels (IFPs) in the network.`
+  /// `Share this screen to all Interactive Flat Panels (IFPs) in the network.`
   String get v3_settings_broadcast_cast_boards_desc {
     return Intl.message(
-      'Share your screen to all Interactive Flat Panels (IFPs) in the network.',
+      'Share this screen to all Interactive Flat Panels (IFPs) in the network.',
       name: 'v3_settings_broadcast_cast_boards_desc',
       desc: '',
       args: [],
@@ -1931,10 +1931,10 @@ class S {
     );
   }
 
-  /// `It is recommended to turn off the screen energy saving mode to avoid screen interruption during projection.`
+  /// `Please turn off energy saving to avoid unexpected interruption during broadcasting.`
   String get v3_settings_broadcast_screen_energy_saving {
     return Intl.message(
-      'It is recommended to turn off the screen energy saving mode to avoid screen interruption during projection.',
+      'Please turn off energy saving to avoid unexpected interruption during broadcasting.',
       name: 'v3_settings_broadcast_screen_energy_saving',
       desc: '',
       args: [],

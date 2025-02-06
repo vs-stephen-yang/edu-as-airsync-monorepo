@@ -295,6 +295,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sänd till"),
         "v3_settings_broadcast_devices":
             MessageLookupByLibrary.simpleMessage("Sändarenheter"),
+        "v3_settings_broadcast_screen_energy_saving":
+            MessageLookupByLibrary.simpleMessage(
+                "Stäng av energisparfunktionen för att undvika oväntade avbrott under sändningen."),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage("Sänd till skärmgrupp"),
         "v3_settings_connectivity":
@@ -364,6 +367,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Stäng av moderatormodus först."),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Kräv lösenkod"),
+        "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
+            "Sänd endast IFP-källskärmen när den tar emot en delad skärmbild"),
         "v3_settings_open_source_license":
             MessageLookupByLibrary.simpleMessage("Öppna källicenser"),
         "v3_settings_privacy_policy":
