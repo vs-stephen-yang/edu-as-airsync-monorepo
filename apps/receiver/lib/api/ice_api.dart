@@ -36,7 +36,7 @@ Future<List<RtcIceServer>?> getIceServers(
       parseIceServersFromApi,
     );
   } catch (e) {
-    log.severe('Failed to get ICE servers', e);
+    log.warning('Failed to get ICE servers', e);
     return null;
   }
 }
