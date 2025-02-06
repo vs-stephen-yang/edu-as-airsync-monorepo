@@ -91,6 +91,12 @@ class WebSocketClientConnection implements ClientConnection {
 
   @override
   void send(Map<String, dynamic> message) {
+    if (_socket?.readyState != WebSocket.OPEN) {
+      _config.logger?.call(
+          _url, "WebSocket is not open. Current state: ${_socket?.readyState}");
+      return;
+    }
+
     final data = jsonEncode(message);
     _socket?.send(data);
   }
