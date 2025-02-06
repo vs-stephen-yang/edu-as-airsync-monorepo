@@ -7,7 +7,7 @@ class ProductionConfig implements ConfigSettings {
   @override
   SentryConfig? sentry = SentryConfig(
     dsn:
-        'https://ba656caa9f9170e1edc009cd46a54421@o4508005887442944.ingest.us.sentry.io/4508159114346496',
+        'https://668f1dd8f7d4e911c3fdb474fc74ed63@o4508005887442944.ingest.us.sentry.io/4508159114346496',
     environment: 'prod',
     tracesSampleRate: 0.01,
   );
