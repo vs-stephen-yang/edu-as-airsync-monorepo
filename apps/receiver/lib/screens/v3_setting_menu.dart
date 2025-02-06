@@ -26,7 +26,6 @@ class V3SettingMenu extends StatefulWidget {
   const V3SettingMenu({super.key, required this.openedWithLogicalKey});
 
   static const String settingMenuGroupId = 'V3SettingMenu';
-  static final FocusNode _childFocusNode = FocusNode();
   final bool openedWithLogicalKey;
 
   @override
@@ -214,8 +213,11 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                             case SettingPageState.deviceSetting:
                               return const V3SettingsDevice();
                             case SettingPageState.deviceName:
+                              settingsProvider.resetSubFocusNode();
                               return V3SettingsDeviceName(
-                                  focusNode: V3SettingMenu._childFocusNode);
+                                  focusNode: settingsProvider.subFocusNode ??
+                                      FocusNode(),
+                                  openedWithLogicalKey: openedWithLogicalKey);
                             case SettingPageState.deviceLanguage:
                               return const V3SettingsDeviceLanguage();
                             case SettingPageState.broadcast:
@@ -248,7 +250,10 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
 
   void dismissMenu() {
     // 點擊text cursor做操作會被TapRegion判定為onTapOutside
-    if (V3SettingMenu._childFocusNode.hasFocus) {
+    final settingsProvider =
+        Provider.of<SettingsProvider>(context, listen: false);
+    if (settingsProvider.currentPage == SettingPageState.deviceName &&
+        (settingsProvider.subFocusNode?.hasFocus ?? false)) {
       return;
     }
     if (navService.canPop()) {

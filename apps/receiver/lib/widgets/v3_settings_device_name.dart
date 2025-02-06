@@ -5,16 +5,23 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/providers/instance_info_provider.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
+import 'package:display_flutter/utility/V3TextFieldShortcutsHandler.dart';
 import 'package:display_flutter/widgets/v3_menu_back_icon_button.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsDeviceName extends StatefulWidget {
-  const V3SettingsDeviceName({super.key, required this.focusNode});
+  const V3SettingsDeviceName({
+    super.key,
+    required this.focusNode,
+    required this.openedWithLogicalKey,
+  });
 
   final FocusNode focusNode;
+  final bool openedWithLogicalKey;
 
   @override
   State<V3SettingsDeviceName> createState() => _V3SettingsDeviceNameState();
@@ -23,25 +30,21 @@ class V3SettingsDeviceName extends StatefulWidget {
 class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
   final TextEditingController _controller =
       TextEditingController(text: AppPreferences().instanceName);
-  bool _isEditing = false;
+  final FocusNode saveFocusNode = FocusNode();
+
+  bool _isEditing = true;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      FocusScope.of(context).requestFocus(widget.focusNode);
-    });
-    // 監聽焦點變化
-    widget.focusNode.addListener(() {
-      setState(() {
-        _isEditing = widget.focusNode.hasFocus;
-      });
-    });
+    widget.focusNode.addListener(listenToFocusNode);
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    saveFocusNode.dispose();
+    widget.focusNode.removeListener(listenToFocusNode);
     super.dispose();
   }
 
@@ -77,22 +80,30 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                 const Spacer(),
                 SizedBox(
                   width: 100,
-                  child: TextField(
-                    textAlign: TextAlign.right,
-                    controller: _controller,
-                    focusNode: widget.focusNode,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
-                    decoration: const InputDecoration(
-                      border: InputBorder.none, // 去掉底線
-                    ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]')),
-                      LengthLimitingTextInputFormatter(10),
-                    ],
-                  ),
+                  child: () {
+                    return V3TextFieldShortcutsHandler(
+                      focusNode: widget.focusNode,
+                      child: TextField(
+                        autofocus: true,
+                        textAlign: TextAlign.right,
+                        controller: _controller,
+                        focusNode: widget.focusNode,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none, // 去掉底線
+                        ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp('[a-zA-Z0-9]')),
+                          LengthLimitingTextInputFormatter(10),
+                        ],
+                        onSubmitted: (_) => onSummit(),
+                      ),
+                    );
+                  }(),
                 ),
                 Visibility(
                   visible: _isEditing,
@@ -100,6 +111,11 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
                   maintainAnimation: true,
                   maintainState: true,
                   child: IconButton(
+                    focusNode: FocusNode()
+                      // disable remote focus
+                      ..canRequestFocus = false
+                      // skip when using tab key to be focused
+                      ..skipTraversal = true,
                     icon: const Image(
                       image: Svg('assets/images/ic_close_white.svg'),
                       width: 21,
@@ -117,7 +133,7 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
           right: 13,
           bottom: 13,
           child: _SaveButton(S.of(context).v3_settings_device_name_save,
-              controller: _controller, onClick: () {
+              focusNode: saveFocusNode, controller: _controller, onClick: () {
             AppPreferences().set(instanceName: _controller.text);
             InstanceInfoProvider instanceInfoProvider =
                 Provider.of<InstanceInfoProvider>(context, listen: false);
@@ -128,17 +144,34 @@ class _V3SettingsDeviceNameState extends State<V3SettingsDeviceName> {
       ],
     );
   }
+
+  void listenToFocusNode() {
+    if (mounted) {
+      setState(() {
+        _isEditing = widget.focusNode.hasFocus;
+      });
+    }
+  }
+
+  void onSummit() {
+    if (widget.openedWithLogicalKey) {
+      widget.focusNode.unfocus();
+      saveFocusNode.requestFocus();
+    }
+  }
 }
 
 class _SaveButton extends StatelessWidget {
   final TextEditingController controller;
   final String text;
   final VoidCallback onClick;
+  final FocusNode focusNode;
 
   const _SaveButton(
     this.text, {
     required this.controller,
     required this.onClick,
+    required this.focusNode,
   });
 
   @override
@@ -149,31 +182,34 @@ class _SaveButton extends StatelessWidget {
       valueListenable: controller,
       builder: (context, value, child) {
         final enable = value.text.isNotEmpty;
-        return InkWell(
-          onTap: enable
-              ? () {
-                  trackEvent('edit_name', EventCategory.session);
-                  onClick();
-                }
-              : null,
-          child: Container(
-            width: 80,
-            height: 26,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: context.tokens.color.vsdslColorPrimary
-                  .withOpacity(enable ? 1 : disableOpacity),
-              borderRadius: BorderRadius.circular(
-                  context.tokens.spacing.vsdslSpacing2xl.top),
-            ),
-            child: AutoSizeText(
-              text,
-              style: TextStyle(
-                fontSize: 12,
-                color: context.tokens.color.vsdslColorOnPrimary
+        return V3SettingMenuSubItemFocus(
+          child: InkWell(
+            focusNode: focusNode,
+            onTap: enable
+                ? () {
+                    trackEvent('edit_name', EventCategory.session);
+                    onClick();
+                  }
+                : null,
+            child: Container(
+              width: 80,
+              height: 26,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: context.tokens.color.vsdslColorPrimary
                     .withOpacity(enable ? 1 : disableOpacity),
+                borderRadius: BorderRadius.circular(
+                    context.tokens.spacing.vsdslSpacing2xl.top),
               ),
-              maxLines: 1,
+              child: AutoSizeText(
+                text,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: context.tokens.color.vsdslColorOnPrimary
+                      .withOpacity(enable ? 1 : disableOpacity),
+                ),
+                maxLines: 1,
+              ),
             ),
           ),
         );
