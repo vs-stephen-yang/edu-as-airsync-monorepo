@@ -290,14 +290,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Cast to boards"),
         "v3_settings_broadcast_cast_boards_desc":
             MessageLookupByLibrary.simpleMessage(
-                "Share your screen to all Interactive Flat Panels (IFPs) in the network."),
+                "Share this screen to all Interactive Flat Panels (IFPs) in the network."),
         "v3_settings_broadcast_cast_to":
             MessageLookupByLibrary.simpleMessage("Broadcast to"),
         "v3_settings_broadcast_devices":
             MessageLookupByLibrary.simpleMessage("Sender devices"),
         "v3_settings_broadcast_screen_energy_saving":
             MessageLookupByLibrary.simpleMessage(
-                "It is recommended to turn off the screen energy saving mode to avoid screen interruption during projection."),
+                "Please turn off energy saving to avoid unexpected interruption during broadcasting."),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage(
                 "Broadcast to the display group"),
@@ -316,12 +316,12 @@ class MessageLookup extends MessageLookupByLibrary {
             "Local connections operate within a private network, offering more security and stability."),
         "v3_settings_device_authorize_mode":
             MessageLookupByLibrary.simpleMessage(
-                "Allow screen sharing only with approval requests."),
+                "Require approval for all screen sharing requests."),
         "v3_settings_device_auto_fill_otp":
             MessageLookupByLibrary.simpleMessage("Auto-fill one-time password"),
         "v3_settings_device_auto_fill_otp_desc":
             MessageLookupByLibrary.simpleMessage(
-                "Enable one-touch connection when selecting a device from the device list."),
+                "Enable one-touch connection when this device is selected from the Sender app\'s Quick Connect menu."),
         "v3_settings_device_launch_on_startup":
             MessageLookupByLibrary.simpleMessage("Launch AirSync on startup"),
         "v3_settings_device_name":
@@ -386,7 +386,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_shortcuts_cast_device":
             MessageLookupByLibrary.simpleMessage("Cast to devices"),
         "v3_shortcuts_cast_device_desc": MessageLookupByLibrary.simpleMessage(
-            "Cast your screen to multiple devices, including laptops, tablets and mobile devices simultaneously."),
+            "Cast this screen to multiple devices, including laptops, tablets and mobile devices simultaneously."),
         "v3_shortcuts_google_cast":
             MessageLookupByLibrary.simpleMessage("Google Cast"),
         "v3_shortcuts_menu_title":
