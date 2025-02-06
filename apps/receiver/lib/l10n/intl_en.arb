@@ -79,7 +79,7 @@
   "v3_quick_connect_menu_qrcode": "QR Code",
   "v3_shortcuts_menu_title": "Shortcuts",
   "v3_shortcuts_cast_device": "Cast to devices",
-  "v3_shortcuts_cast_device_desc": "Cast your screen to multiple devices, including laptops, tablets and mobile devices simultaneously.",
+  "v3_shortcuts_cast_device_desc": "Cast this screen to multiple devices, including laptops, tablets and mobile devices simultaneously.",
   "v3_shortcuts_mirroring": "Mirroring",
   "v3_shortcuts_airplay": "AirPlay",
   "v3_shortcuts_google_cast": "Google Cast",
@@ -114,10 +114,10 @@
   "v3_settings_invite_group_auto_accept": "Auto Accept",
   "v3_settings_invite_group_ignore": "Ignore",
   "v3_settings_device_auto_fill_otp": "Auto-fill one-time password",
-  "v3_settings_device_auto_fill_otp_desc": "Enable one-touch connection when selecting a device from the device list.",
-  "v3_settings_device_authorize_mode": "Allow screen sharing only with approval requests.",
+  "v3_settings_device_auto_fill_otp_desc": "Enable one-touch connection when this device is selected from the Sender app's Quick Connect menu.",
+  "v3_settings_device_authorize_mode": "Require approval for all screen sharing requests.",
   "v3_settings_broadcast_cast_boards": "Cast to boards",
-  "v3_settings_broadcast_cast_boards_desc": "Share your screen to all Interactive Flat Panels (IFPs) in the network.",
+  "v3_settings_broadcast_cast_boards_desc": "Share this screen to all Interactive Flat Panels (IFPs) in the network.",
   "v3_settings_mirroring_require_passcode": "Require passcode",
   "v3_settings_mirroring_auto_accept": "Auto Accept",
   "v3_settings_mirroring_auto_accept_desc": "Instantly enable mirroring without requiring moderator approval.",
@@ -187,5 +187,5 @@
   "v3_cast_to_device_list_msg": "Maximum up to 10 devices.",
   "v3_settings_version": "AirSync ©{year}. version {version}",
   "v3_quick_connect_menu_bottom_msg": "Split-screen activates if two or more users share screens.",
-  "v3_settings_broadcast_screen_energy_saving": "It is recommended to turn off the screen energy saving mode to avoid screen interruption during projection."
+  "v3_settings_broadcast_screen_energy_saving": "Please turn off energy saving to avoid unexpected interruption during broadcasting."
 }
