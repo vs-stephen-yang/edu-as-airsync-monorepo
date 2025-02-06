@@ -177,5 +177,8 @@
   "v3_present_moderator_exited_description": "Moderatorn är stängd, vänligen anslut igen.",
   "v3_present_moderator_exited_action": "OK",
   "v3_main_web_nonsupport": "För närvarande stöds endast webbläsarna Chrome och Edge.",
-  "v3_main_web_nonsupport_confirm": "Jag fattar!"
+  "v3_main_web_nonsupport_confirm": "Jag fattar!",
+  "v3_receiver_remote_screen_busy_title": "Skärmen sänder",
+  "v3_receiver_remote_screen_busy_description": "Skärmen sänder redan till andra skärmar. Försök igen senare.",
+  "v3_receiver_remote_screen_busy_action": "OK"
 }

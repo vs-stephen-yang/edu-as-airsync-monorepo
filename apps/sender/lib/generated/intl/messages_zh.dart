@@ -173,7 +173,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_connect_unknown_error":
             MessageLookupByLibrary.simpleMessage("未知的錯誤"),
         "v3_main_connection_mode_unsupported":
-            MessageLookupByLibrary.simpleMessage("不支援的連線類型"),
+            MessageLookupByLibrary.simpleMessage("接收端暫時不支援Internet分享畫面"),
         "v3_main_copy_rights": m1,
         "v3_main_display_code": MessageLookupByLibrary.simpleMessage("投影辨識碼"),
         "v3_main_display_code_error":

@@ -107,7 +107,7 @@
   "v3_main_connect_network_error": "Network connectivity error.",
   "v3_main_password_invalid": "Password invalid.",
   "v3_main_connect_rate_limited": "AirSync instance is busy. Please try it later.",
-  "v3_main_connection_mode_unsupported": "AirSync does not support this connection.",
+  "v3_main_connection_mode_unsupported": "Your receiver does not support Internet screen sharing temporarily.",
   "v3_main_connect_unknown_error": "Unknown error.",
   "v3_main_authorize_wait": "Please wait for the host to approve your request.",
   "v3_main_select_role_title": "Choose your presentation mode",

@@ -292,6 +292,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Elija su modo de presentación"),
         "v3_main_terms":
             MessageLookupByLibrary.simpleMessage("Términos de uso"),
+        "v3_main_web_nonsupport": MessageLookupByLibrary.simpleMessage(
+            "Actualmente, solo se admiten los navegadores Chrome y Edge."),
+        "v3_main_web_nonsupport_confirm":
+            MessageLookupByLibrary.simpleMessage("Aceptar"),
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
             "La compartición de pantalla se ha detenido.\nTiempo total de compartición %s."),
         "v3_present_moderator_exited":
@@ -340,6 +344,14 @@ class MessageLookup extends MessageLookupByLibrary {
                 "No se puede unir. La sesión ha alcanzado su límite máximo."),
         "v3_present_touch_back_allow": MessageLookupByLibrary.simpleMessage(
             "Permitir retroalimentación táctil"),
+        "v3_receiver_remote_screen_busy_action":
+            MessageLookupByLibrary.simpleMessage("Aceptar"),
+        "v3_receiver_remote_screen_busy_description":
+            MessageLookupByLibrary.simpleMessage(
+                "La pantalla se está transmitiendo a otras pantallas. Por favor, inténtelo de nuevo más tarde."),
+        "v3_receiver_remote_screen_busy_title":
+            MessageLookupByLibrary.simpleMessage(
+                "La pantalla se está transmitiendo"),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Conexión rápida escaneando el código QR"),
         "v3_select_screen_ios_countdown":

@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -1131,10 +1130,10 @@ class S {
     );
   }
 
-  /// `AirSync does not support this connection.`
+  /// `Your receiver does not support Internet screen sharing temporarily.`
   String get v3_main_connection_mode_unsupported {
     return Intl.message(
-      'AirSync does not support this connection.',
+      'Your receiver does not support Internet screen sharing temporarily.',
       name: 'v3_main_connection_mode_unsupported',
       desc: '',
       args: [],

@@ -336,6 +336,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Kan inte ansluta. Sessionen har nått sitt maxantal."),
         "v3_present_touch_back_allow":
             MessageLookupByLibrary.simpleMessage("Tillåt touchback"),
+        "v3_receiver_remote_screen_busy_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_receiver_remote_screen_busy_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Skärmen sänder redan till andra skärmar. Försök igen senare."),
+        "v3_receiver_remote_screen_busy_title":
+            MessageLookupByLibrary.simpleMessage("Skärmen sänder"),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Snabbanslut genom att skanna QR-koden"),
         "v3_select_screen_ios_countdown":

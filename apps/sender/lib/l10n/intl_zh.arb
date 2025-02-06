@@ -106,7 +106,7 @@
   "v3_main_connect_network_error": "網路連線錯誤",
   "v3_main_password_invalid": "密碼錯誤",
   "v3_main_connect_rate_limited": "已超過最大請求數量，請稍後再試",
-  "v3_main_connection_mode_unsupported": "不支援的連線類型",
+  "v3_main_connection_mode_unsupported": "接收端暫時不支援Internet分享畫面",
   "v3_main_connect_unknown_error": "未知的錯誤",
   "v3_main_authorize_wait": "接收端同意後即可開始分享畫面",
   "v3_main_select_role_title": "選擇分享或接收畫面",
