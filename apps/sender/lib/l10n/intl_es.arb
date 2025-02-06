@@ -175,5 +175,10 @@
   "v3_setting_software_update_no_internet_description": "Por favor, revisa tu conexión a Internet y vuelve a intentarlo.",
   "v3_present_moderator_exited": "El moderador está cerrado",
   "v3_present_moderator_exited_description": "El moderador está cerrado, por favor reconéctate.",
-  "v3_present_moderator_exited_action": "OK"
+  "v3_present_moderator_exited_action": "OK",
+  "v3_main_web_nonsupport": "Actualmente, solo se admiten los navegadores Chrome y Edge.",
+  "v3_main_web_nonsupport_confirm": "Aceptar",
+  "v3_receiver_remote_screen_busy_title": "La pantalla se está transmitiendo",
+  "v3_receiver_remote_screen_busy_description": "La pantalla se está transmitiendo a otras pantallas. Por favor, inténtelo de nuevo más tarde.",
+  "v3_receiver_remote_screen_busy_action": "Aceptar"
 }

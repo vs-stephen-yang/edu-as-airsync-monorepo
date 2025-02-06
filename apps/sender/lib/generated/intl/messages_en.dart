@@ -198,9 +198,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "AirSync instance is busy. Please try it later."),
         "v3_main_connect_unknown_error":
             MessageLookupByLibrary.simpleMessage("Unknown error."),
-        "v3_main_connection_mode_unsupported":
-            MessageLookupByLibrary.simpleMessage(
-                "AirSync does not support this connection."),
+        "v3_main_connection_mode_unsupported": MessageLookupByLibrary.simpleMessage(
+            "Your receiver does not support Internet screen sharing temporarily."),
         "v3_main_copy_rights": m1,
         "v3_main_display_code":
             MessageLookupByLibrary.simpleMessage("Display code"),
