@@ -134,6 +134,8 @@ class SettingsProvider with ChangeNotifier {
 
   FocusNode? get subFocusNode => _focusManager?.subFocusNode;
 
+  void resetSubFocusNode() => _focusManager?.resetSubFocusNode();
+
   KeyEventResult onMainFocusMove(
     FocusNode node,
     KeyEvent event,
@@ -174,10 +176,6 @@ class SettingsProvider with ChangeNotifier {
     _focusManager?.requestMainMenuFocus();
   }
 
-  void requestFocusSub() {
-    _focusManager?.requestSubFocus();
-  }
-
   void requestFocusMain(int selectedIndex) {
     _focusManager?.requestMainFocus(selectedIndex);
   }
@@ -190,7 +188,11 @@ class SettingsProvider with ChangeNotifier {
 class _V3SettingMenuFocusManager {
   final List<FocusNode> _menuFocusNodes = List<FocusNode>.generate(
       SettingPageState.mainPages.length, (index) => FocusNode());
-  final FocusNode subFocusNode = FocusNode();
+  FocusNode subFocusNode = FocusNode();
+
+  void resetSubFocusNode() {
+    subFocusNode = FocusNode();
+  }
 
   bool _init = true;
   int _currentMainIndex = 0;

@@ -6,9 +6,14 @@ import 'package:flutter/material.dart';
 class V3MenuBackIconButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String title;
+  final FocusNode? focusNode;
 
-  const V3MenuBackIconButton(
-      {super.key, required this.onPressed, required this.title});
+  const V3MenuBackIconButton({
+    super.key,
+    required this.onPressed,
+    required this.title,
+    this.focusNode,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +29,7 @@ class V3MenuBackIconButton extends StatelessWidget {
                 minHeight: 21.0,
               ),
               onPressed: onPressed,
+              focusNode: focusNode,
             ),
             Padding(
                 padding: EdgeInsets.only(
