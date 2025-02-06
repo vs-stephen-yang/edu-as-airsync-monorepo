@@ -7,6 +7,7 @@ import 'package:display_channel/src/display_code2.dart';
 
 enum FetchChannelTunnelUrlError {
   instanceNotFound,
+  instanceOffline,
   networkError,
   unknownError,
 }
@@ -25,6 +26,7 @@ typedef FetchChannelTunnelUrl = Future<String> Function(
 
 enum ChannelConnectorError {
   instanceNotFound,
+  instanceOffline,
   authenticationError,
   authenticationRequired,
   networkError,
@@ -313,6 +315,9 @@ ChannelConnectorError mapTunnelChannelError(
     switch (fetchError) {
       case FetchChannelTunnelUrlError.instanceNotFound:
         return ChannelConnectorError.instanceNotFound;
+
+      case FetchChannelTunnelUrlError.instanceOffline:
+        return ChannelConnectorError.instanceOffline;
 
       case FetchChannelTunnelUrlError.unknownError:
         return ChannelConnectorError.unknownError;
