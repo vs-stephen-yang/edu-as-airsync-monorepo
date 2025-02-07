@@ -37,7 +37,8 @@ class _V3StreamingViewState extends ConsumerState {
       _fullHeight = 0,
       _halfWidth = 0,
       _halfHeight = 0,
-      _thirdWidth = 0;
+      _thirdWidth = 0,
+      _thirdHeight = 0;
   bool _isNewSharingOnScreen = false;
 
   @override
@@ -48,6 +49,7 @@ class _V3StreamingViewState extends ConsumerState {
     _halfWidth = size.width / 2;
     _halfHeight = size.height / 2;
     _thirdWidth = size.width / 3;
+    _thirdHeight = size.height / 3;
     return Stack(
       children: [
         ValueListenableBuilder(
@@ -67,7 +69,12 @@ class _V3StreamingViewState extends ConsumerState {
                         anyCasting: splitScreenCount != 0);
               }
             }
-            if (splitScreenCount == 3 || splitScreenCount == 5) {
+            if (splitScreenCount == 7) {
+              // add two more to show "Waiting for others to join".
+              splitScreenCount += 2;
+            } else if (splitScreenCount == 3 ||
+                splitScreenCount == 5 ||
+                splitScreenCount == 8) {
               // add one more to show "Waiting for others to join".
               splitScreenCount++;
             }
@@ -139,6 +146,44 @@ class _V3StreamingViewState extends ConsumerState {
                               left = _thirdWidth;
                               bottom = 0;
                             } else if (index == 5) {
+                              right = 0;
+                              bottom = 0;
+                            } else {
+                              left = 0;
+                              top = 0;
+                            }
+                          } else if (splitScreenCount <= 9) {
+                            // index 0: left-top  (default)
+                            // index 1: middle-top
+                            // index 2: right-top
+                            // index 3: left-middle
+                            // index 4: middle-middle
+                            // index 5: right-middle
+                            // index 6: left-bottom
+                            // index 7: middle-bottom
+                            // index 8: right-bottom
+                            if (index == 1) {
+                              left = _thirdWidth;
+                              top = 0;
+                            } else if (index == 2) {
+                              right = 0;
+                              top = 0;
+                            } else if (index == 3) {
+                              left = 0;
+                              top = _thirdHeight;
+                            } else if (index == 4) {
+                              left = _thirdWidth;
+                              top = _thirdHeight;
+                            } else if (index == 5) {
+                              right = 0;
+                              top = _thirdHeight;
+                            } else if (index == 6) {
+                              left = 0;
+                              bottom = 0;
+                            } else if (index == 7) {
+                              left = _thirdWidth;
+                              bottom = 0;
+                            } else if (index == 8) {
                               right = 0;
                               bottom = 0;
                             } else {
@@ -272,7 +317,9 @@ class _V3StreamingViewState extends ConsumerState {
       }
     } else {
       // no enlarged screen
-      if (splitScreenCount > 4) {
+      if (splitScreenCount > 6) {
+        return isWidth ? _thirdWidth : _thirdHeight;
+      } else if (splitScreenCount > 4) {
         return isWidth ? _thirdWidth : _halfHeight;
       } else if (splitScreenCount > 2) {
         return isWidth ? _halfWidth : _halfHeight;

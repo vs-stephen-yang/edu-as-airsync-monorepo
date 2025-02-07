@@ -7,7 +7,6 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
-import 'package:display_flutter/utility/toast.dart';
 import 'package:display_flutter/utility/v3_toast.dart';
 import 'package:display_flutter/widgets/split_screen_function.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
@@ -109,7 +108,7 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                           _updateSizeForSelected(widget.index);
                         } else if (webrtcConnector.isChannelReconnect()) {
                           webrtcConnector.clickButtonWhenReconnect = true;
-                          Toast.showSplitScreenReconnectToast(
+                          V3Toast().makeSplitScreenReconnectToast(
                               context,
                               S.of(context).main_feature_reconnecting_toast,
                               widget.index,
