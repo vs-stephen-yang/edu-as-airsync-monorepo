@@ -85,12 +85,42 @@ class V3Toast {
     double halfWidth = screenSize.width / 2;
     double halfHeight = screenSize.height / 2;
     double thirdWidth = screenSize.width / 3;
+    double thirdHeight = screenSize.height / 3;
     double? top, left;
     if (HybridConnectionList().enlargedScreenIndex.value != null) {
       top = screenSize.height - toastPadding;
       left = (screenSize.width - toastWidth) / 2;
     } else {
-      if (HybridConnectionList.hybridSplitScreenCount.value > 4) {
+      if (HybridConnectionList.hybridSplitScreenCount.value > 6) {
+        if (index == 1) {
+          top = thirdHeight - toastPadding;
+          left = thirdWidth + (thirdWidth - toastWidth) / 2;
+        } else if (index == 2) {
+          top = thirdHeight - toastPadding;
+          left = thirdWidth * 2 + (thirdWidth - toastWidth) / 2;
+        } else if (index == 3) {
+          top = thirdHeight * 2 - toastPadding;
+          left = (thirdWidth - toastWidth) / 2;
+        } else if (index == 4) {
+          top = thirdHeight * 2 - toastPadding;
+          left = thirdWidth + (thirdWidth - toastWidth) / 2;
+        } else if (index == 5) {
+          top = thirdHeight * 2 - toastPadding;
+          left = thirdWidth * 2 + (thirdWidth - toastWidth) / 2;
+        } else if (index == 6) {
+          top = screenSize.height - toastPadding;
+          left = (thirdWidth - toastWidth) / 2;
+        } else if (index == 7) {
+          top = screenSize.height - toastPadding;
+          left = thirdWidth + (thirdWidth - toastWidth) / 2;
+        } else if (index == 8) {
+          top = screenSize.height - toastPadding;
+          left = thirdWidth * 2 + (thirdWidth - toastWidth) / 2;
+        } else {
+          top = thirdHeight - toastPadding;
+          left = (thirdWidth - toastWidth) / 2;
+        }
+      } else if (HybridConnectionList.hybridSplitScreenCount.value > 4) {
         if (index == 1) {
           top = halfHeight - toastPadding;
           left = thirdWidth + (thirdWidth - toastWidth) / 2;

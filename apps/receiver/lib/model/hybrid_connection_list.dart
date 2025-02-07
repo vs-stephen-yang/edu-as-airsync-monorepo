@@ -23,16 +23,31 @@ class HybridConnectionList {
 
   static ensureInitialized() async {
     _deviceType = await DeviceInfoVs.deviceType ?? '';
-    if (_support6SplitScreenDevices.contains(_deviceType)) {
+    if (_support9SplitScreenDevices.contains(_deviceType)) {
+      maxHybridConnection = 9;
+      maxHybridSplitScreen = 9;
+    } else if (_support6SplitScreenDevices.contains(_deviceType)) {
+      maxHybridConnection = 6;
       maxHybridSplitScreen = 6;
     } else {
+      maxHybridConnection = 6;
       maxHybridSplitScreen = 4;
     }
   }
 
-  static const int maxHybridConnection = 6;
+  static int maxHybridConnection = 6;
 
   static String _deviceType = '';
+
+  // the following device support 9 split screen
+  static final List<String> _support9SplitScreenDevices = [
+    'IFP105S',
+    'IFP105UW',
+    'IFP110',
+    'IFP92UW',
+    'CDE105UW',
+    'CDE92UW',
+  ];
 
   // the following device support 6 split screen
   static final List<String> _support6SplitScreenDevices = [
