@@ -6,8 +6,8 @@ import 'package:libcastauth/libcastauth.dart';
 class CredentialsStore {
   static const _secureDataDir = "packages/flutter_mirror/assets/credentials";
   static const _secureDataPath = "$_secureDataDir/data.json";
-  static const _aesKey = "ezING5WA+zc51LI4defJCuYS5ei8v5SZHkz01n2Oj+k=";
-  static const _aesIv = "34Ez/9A42ykogldQC04/kA==";
+  static const _aesKey = "cnEqOxne9Wc01A/gEKjnGICqFUHgyyxbSySXxamOYXA=";
+  static const _aesIv = "p9FCq67UzgvieYZ1g7x90w==";
 
   static late SecureData _secureData;
   static late CastKeySetReader _castKeySetReader;
