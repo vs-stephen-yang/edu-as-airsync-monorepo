@@ -114,6 +114,7 @@ jobs:
           pathToPublish: "$(Build.ArtifactStagingDirectory)"
 
   - job: code_scanning
+    condition: eq(variables['EnableCodeScanning'], 'true')
     pool:
       vmImage: "windows-2022"
     steps:
