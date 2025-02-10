@@ -20,6 +20,7 @@ class MiracastMirrorSession
  public:
   MiracastMirrorSession(
       const std::string& mirrorId,
+      const std::string& device_name,
       MirrorListener& mirror_listener,
       MiracastReceiver& receiver);
 
@@ -73,6 +74,7 @@ class MiracastMirrorSession
 
  private:
   std::string mirror_id_;
+  std::string device_name_;
 
   MiracastReceiver& receiver_;
   MirrorListener& mirror_listener_;

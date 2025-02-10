@@ -300,13 +300,16 @@ Java_com_viewsonic_flutter_1mirror_MiracastReceiver_onSessionBeginNative(
     JNIEnv* env,
     jobject thiz,
     jlong instance,
-    jstring jmirror_id) {
+    jstring jmirror_id,
+    jstring jdevice_name) {
   assert(instance != 0);
   ALOGV("MiracastReceiver_onSessionBeginNative()");
 
   MiracastReceiver* receiver = MIRACAST(instance);
   jni::String str(env);
-  receiver->OnMirrorStart(str.ToUtf8(jmirror_id));
+  receiver->OnMirrorStart(
+      str.ToUtf8(jmirror_id),
+      str.ToUtf8(jdevice_name));
 }
 
 JNIEXPORT void JNICALL

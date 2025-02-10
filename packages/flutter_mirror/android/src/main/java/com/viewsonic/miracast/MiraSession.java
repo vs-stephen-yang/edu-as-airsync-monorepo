@@ -265,7 +265,7 @@ public class MiraSession
     rtspParser_ = new RtspParser();
 
     if (mirrorListener_ != null) {
-      mirrorListener_.onRtspConnected(id_);
+      mirrorListener_.onRtspConnected(id_, peerName_);
     }
   }
 

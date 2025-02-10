@@ -123,9 +123,9 @@ public class MiraMgr
   }
 
   @Override
-  public void onRtspConnected(String mirrorId) {
+  public void onRtspConnected(String mirrorId, String deviceName) {
     if (listener_ != null) {
-      listener_.onSessionBegin(mirrorId);
+      listener_.onSessionBegin(mirrorId, deviceName);
     }
   }
 

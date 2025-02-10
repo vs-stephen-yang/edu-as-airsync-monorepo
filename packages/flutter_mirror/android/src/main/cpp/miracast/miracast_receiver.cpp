@@ -11,12 +11,15 @@ MiracastReceiver::MiracastReceiver(
 }
 
 // a mirror session starts
-void MiracastReceiver::OnMirrorStart(const std::string& mirrorId) {
+void MiracastReceiver::OnMirrorStart(
+    const std::string& mirrorId,
+    const std::string& device_name) {
   ALOGD("MiracastReceiver::OnMirrorStart(%s)", mirrorId.c_str());
 
   // create a wrapper for the mirror session
   auto session = std::make_shared<MiracastMirrorSession>(
       mirrorId,
+      device_name,
       mirror_listener_,
       *this);
 

@@ -9,9 +9,11 @@ using namespace std;
 
 MiracastMirrorSession::MiracastMirrorSession(
     const std::string& mirrorId,
+    const std::string& device_name,
     MirrorListener& mirror_listener,
     MiracastReceiver& receiver)
     : mirror_id_(mirrorId),
+      device_name_(device_name),
       receiver_(receiver),
       mirror_listener_(mirror_listener) {
 }
@@ -196,7 +198,7 @@ std::string MiracastMirrorSession::GetMirrorId() {
 }
 
 std::string MiracastMirrorSession::GetSourceDisplayName() {
-  return "";
+  return device_name_;
 }
 
 MirrorType MiracastMirrorSession::GetMirrorType() {
