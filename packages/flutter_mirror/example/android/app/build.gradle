@@ -85,8 +85,17 @@ android {
       }
     } else {
       buildTypes {
+        // ERROR:D8: com.android.tools.r8.kotlin.H
+        // see https://github.com/flutter/flutter/issues/159610
         release {
           signingConfig signingConfigs.debug
+          minifyEnabled true
+        }
+        profile {
+          minifyEnabled true
+        }
+        debug {
+          minifyEnabled true
         }
       }
     }
