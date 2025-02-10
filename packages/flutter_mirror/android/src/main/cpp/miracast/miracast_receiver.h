@@ -13,7 +13,9 @@ class MiracastReceiver {
 
   void StopMirror(const std::string& mirrorId);
 
-  void OnMirrorStart(const std::string& mirrorId);
+  void OnMirrorStart(
+      const std::string& mirrorId,
+      const std::string& device_name);
 
   void OnMirrorStop(const std::string& mirrorId);
 

@@ -1,7 +1,7 @@
 package com.viewsonic.miracast;
 
 public interface MiraSessionListener {
-  void onRtspConnected(String mirrorId);
+  void onRtspConnected(String mirrorId, String deviceName);
 
   void onMirrorData(String mirrorId, long seqNum, long lastSeqNum, byte[] data, int size);
 

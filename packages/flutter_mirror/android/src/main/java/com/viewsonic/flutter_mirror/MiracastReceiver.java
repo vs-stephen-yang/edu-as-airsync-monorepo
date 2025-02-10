@@ -76,12 +76,14 @@ public class MiracastReceiver implements
 
   // implements MiraMgrListener
   @Override
-  public void onSessionBegin(String mirrorId) {
+  public void onSessionBegin(
+      String mirrorId,
+      String deviceName) {
     assert instance_ != 0;
 
-    Log.d(TAG, String.format("MiracastReceiver.onSessionBegin(%s)", mirrorId));
+    Log.d(TAG, String.format("MiracastReceiver.onSessionBegin(%s, %s)", mirrorId, deviceName));
 
-    onSessionBeginNative(instance_, mirrorId);
+    onSessionBeginNative(instance_, mirrorId, deviceName);
   }
 
   @Override
@@ -147,7 +149,8 @@ public class MiracastReceiver implements
 
   private native void onSessionBeginNative(
       long instance,
-      String mirrorId);
+      String mirrorId,
+      String deviceName);
 
   private native void onSessionEndNative(
       long instance,
