@@ -64,7 +64,9 @@ class V3ParticipantList extends StatelessWidget {
                     : context.tokens.spacing.vsdslSpacingXl.top,
               ),
               AutoSizeText(
-                S.of(context).v3_participants_desc,
+                HybridConnectionList.maxHybridSplitScreen == 9
+                    ? S.of(context).v3_participants_desc_maximum_9
+                    : S.of(context).v3_participants_desc,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
