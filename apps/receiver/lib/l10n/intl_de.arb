@@ -185,5 +185,6 @@
   "v3_settings_all_the_time_info": "Quell-IFP-Bildschirm die ganze Zeit übertragen.",
   "v3_settings_feature_locked": "Durch ViewSonic Manager gesperrt.",
   "v3_cast_to_device_list_msg": "Maximal bis zu 10 Geräte.",
-  "v3_quick_connect_menu_bottom_msg": "Der geteilte Bildschirm wird aktiviert, wenn zwei oder mehr Benutzer Bildschirme freigeben."
+  "v3_quick_connect_menu_bottom_msg": "Der geteilte Bildschirm wird aktiviert, wenn zwei oder mehr Benutzer Bildschirme freigeben.",
+  "v3_participants_desc_maximum_9": "Maximal bis zu 9 Teilnehmer."
 }

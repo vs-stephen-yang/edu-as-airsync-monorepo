@@ -268,6 +268,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ootan..."),
         "v3_participants_desc": MessageLookupByLibrary.simpleMessage(
             "Maksimaalselt kuni 6 osalejat."),
+        "v3_participants_desc_maximum_9": MessageLookupByLibrary.simpleMessage(
+            "Maksimaalselt kuni 9 osalejat."),
         "v3_participants_title":
             MessageLookupByLibrary.simpleMessage("Osalejad"),
         "v3_qrcode_quick_connect":
@@ -292,6 +294,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Edasta"),
         "v3_settings_broadcast_devices":
             MessageLookupByLibrary.simpleMessage("Saatjaseadmetele"),
+        "v3_settings_broadcast_screen_energy_saving":
+            MessageLookupByLibrary.simpleMessage(
+                "Palun lülitage energiasäästurežiim välja, et vältida ootamatuid katkestusi edastamise ajal."),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage("Edasta kuvagruppi"),
         "v3_settings_connectivity":

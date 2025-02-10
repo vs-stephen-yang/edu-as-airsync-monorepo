@@ -270,6 +270,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Väntar..."),
         "v3_participants_desc":
             MessageLookupByLibrary.simpleMessage("Max upp till 6 deltagare."),
+        "v3_participants_desc_maximum_9":
+            MessageLookupByLibrary.simpleMessage("Max upp till 9 deltagare."),
         "v3_participants_title":
             MessageLookupByLibrary.simpleMessage("Deltagare"),
         "v3_qrcode_quick_connect":

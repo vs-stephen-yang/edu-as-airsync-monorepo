@@ -270,6 +270,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Venter.."),
         "v3_participants_desc": MessageLookupByLibrary.simpleMessage(
             "Maksimalt op til 6 deltagere."),
+        "v3_participants_desc_maximum_9": MessageLookupByLibrary.simpleMessage(
+            "Maksimalt op til 9 deltagere."),
         "v3_participants_title":
             MessageLookupByLibrary.simpleMessage("Deltagere"),
         "v3_qrcode_quick_connect":
@@ -280,6 +282,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Display-kode"),
         "v3_quick_connect_menu_qrcode":
             MessageLookupByLibrary.simpleMessage("QR-kode"),
+        "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
+            "Udsend kilde IFP-skærmen hele tiden."),
         "v3_settings_broadcast":
             MessageLookupByLibrary.simpleMessage("Broadcast"),
         "v3_settings_broadcast_boards":
@@ -293,6 +297,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Broadcast til"),
         "v3_settings_broadcast_devices":
             MessageLookupByLibrary.simpleMessage("Afsenderenheder"),
+        "v3_settings_broadcast_screen_energy_saving":
+            MessageLookupByLibrary.simpleMessage(
+                "Slå energisparetilstand fra for at undgå uventede afbrydelser under udsendelse."),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage(
                 "Broadcast til display-gruppen"),
@@ -363,6 +370,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "Slå moderator-tilstand fra først."),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Kræv adgangskode"),
+        "v3_settings_only_when_casting_info":
+            MessageLookupByLibrary.simpleMessage(
+                "Udsend kun kilde IFP-skærmen, når den modtager en delt skærm."),
         "v3_settings_open_source_license":
             MessageLookupByLibrary.simpleMessage("Open source-licenser"),
         "v3_settings_privacy_policy":

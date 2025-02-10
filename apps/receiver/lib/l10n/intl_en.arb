@@ -185,7 +185,8 @@
   "v3_settings_all_the_time_info": "Broadcast source IFP screen all the time.",
   "v3_settings_feature_locked": "Locked by ViewSonic Manager.",
   "v3_cast_to_device_list_msg": "Maximum up to 10 devices.",
-  "v3_settings_version": "AirSync ©{year}. version {version}",
   "v3_quick_connect_menu_bottom_msg": "Split-screen activates if two or more users share screens.",
-  "v3_settings_broadcast_screen_energy_saving": "Please turn off energy saving to avoid unexpected interruption during broadcasting."
+  "v3_settings_version": "AirSync ©{year}. version {version}",
+  "v3_settings_broadcast_screen_energy_saving": "Please turn off energy saving to avoid unexpected interruption during broadcasting.",
+  "v3_participants_desc_maximum_9": "Maximum up to 9 participants."
 }

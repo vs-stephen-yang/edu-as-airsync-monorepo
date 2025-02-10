@@ -272,6 +272,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Laukiama..."),
         "v3_participants_desc":
             MessageLookupByLibrary.simpleMessage("Maksimaliai iki 6 dalyvių."),
+        "v3_participants_desc_maximum_9":
+            MessageLookupByLibrary.simpleMessage("Maksimaliai iki 9 dalyvių."),
         "v3_participants_title":
             MessageLookupByLibrary.simpleMessage("Dalyviai"),
         "v3_qrcode_quick_connect":
@@ -297,6 +299,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Transliuoti į"),
         "v3_settings_broadcast_devices":
             MessageLookupByLibrary.simpleMessage("Siuntėjo įrenginius"),
+        "v3_settings_broadcast_screen_energy_saving":
+            MessageLookupByLibrary.simpleMessage(
+                "Prašome išjungti energijos taupymo režimą, kad išvengtumėte netikėtų transliacijos pertraukimų."),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage("Transliuoti į ekrano grupę"),
         "v3_settings_connectivity":

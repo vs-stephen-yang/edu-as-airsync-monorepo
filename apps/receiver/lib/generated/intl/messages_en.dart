@@ -269,6 +269,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Waiting..."),
         "v3_participants_desc": MessageLookupByLibrary.simpleMessage(
             "Maximum up to 6 participants."),
+        "v3_participants_desc_maximum_9": MessageLookupByLibrary.simpleMessage(
+            "Maximum up to 9 participants."),
         "v3_participants_title":
             MessageLookupByLibrary.simpleMessage("Participants"),
         "v3_qrcode_quick_connect":

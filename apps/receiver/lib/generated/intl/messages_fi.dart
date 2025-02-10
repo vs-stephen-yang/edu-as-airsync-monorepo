@@ -271,6 +271,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Odotetaan..."),
         "v3_participants_desc":
             MessageLookupByLibrary.simpleMessage("Enintään 6 osallistujaa."),
+        "v3_participants_desc_maximum_9":
+            MessageLookupByLibrary.simpleMessage("Enintään 9 osallistujaa."),
         "v3_participants_title":
             MessageLookupByLibrary.simpleMessage("Osallistujat"),
         "v3_qrcode_quick_connect":
@@ -296,6 +298,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Lähetä kohteeseen"),
         "v3_settings_broadcast_devices":
             MessageLookupByLibrary.simpleMessage("Lähetyslaitteet"),
+        "v3_settings_broadcast_screen_energy_saving":
+            MessageLookupByLibrary.simpleMessage(
+                "Ota virransäästö pois päältä välttääksesi odottamattomat keskeytykset lähetyksen aikana."),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage("Lähetys näyttöryhmään"),
         "v3_settings_connectivity":
@@ -367,6 +372,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Poista ensin moderaattoritila käytöstä."),
         "v3_settings_mirroring_require_passcode":
             MessageLookupByLibrary.simpleMessage("Vaadi salasana"),
+        "v3_settings_only_when_casting_info": MessageLookupByLibrary.simpleMessage(
+            "Lähetä lähteen IFP-näyttö vain silloin, kun se vastaanottaa jaetun näytön."),
         "v3_settings_open_source_license": MessageLookupByLibrary.simpleMessage(
             "Avoimen lähdekoodin lisenssit"),
         "v3_settings_privacy_policy":

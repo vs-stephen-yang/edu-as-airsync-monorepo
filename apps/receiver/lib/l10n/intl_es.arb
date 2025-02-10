@@ -180,5 +180,6 @@
   "v3_settings_broadcast_boards": "Otros dispositivos AirSync",
   "v3_settings_local_connection_only": "Solo conexión local",
   "v3_group_dialog_no_device_message": "Ningún dispositivo seleccionado.",
-  "v3_participant_item_waiting": "Esperando..."
+  "v3_participant_item_waiting": "Esperando...",
+  "v3_participants_desc_maximum_9": "Máximo hasta 9 participantes."
 }
