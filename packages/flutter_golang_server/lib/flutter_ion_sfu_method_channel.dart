@@ -17,7 +17,7 @@ IceConnectionState iceConnectionStateFromInt(int value) {
 class MethodChannelFlutterIonSfu extends FlutterIonSfuPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
-  final methodChannel = const MethodChannel('flutter_ion_sfu');
+  final methodChannel = const MethodChannel('flutter_golang_server');
   FlutterIonSfuListener? _listener;
 
   MethodChannelFlutterIonSfu() {

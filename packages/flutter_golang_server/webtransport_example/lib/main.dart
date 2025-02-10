@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_webtransport/flutter_webtransport.dart';
-import 'package:flutter_webtransport/flutter_webtransport_config.dart';
-import 'package:flutter_webtransport/flutter_webtransport_listener.dart';
+import 'package:flutter_golang_server/flutter_webtransport.dart';
+import 'package:flutter_golang_server/flutter_webtransport_config.dart';
+import 'package:flutter_golang_server/flutter_webtransport_listener.dart';
 
 void main() {
   runApp(const MyApp());

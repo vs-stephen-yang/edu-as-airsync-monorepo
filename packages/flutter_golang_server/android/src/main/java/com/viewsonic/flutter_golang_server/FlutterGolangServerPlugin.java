@@ -20,7 +20,7 @@ import io.flutter.plugin.common.MethodChannel.Result;
 /**
  * FlutterGolangPlugin
  */
-public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandler, IonSfuServerListener {
+public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandler, IonSfuServerListener, WebtransportServerListener {
     /// The MethodChannel that will the communication between Flutter and native
     /// Android
     ///
@@ -32,58 +32,117 @@ public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandl
     private MethodChannel channel;
     private IonSfuServer ionSfuServer_;
 
+    private WebtransportServer webtransportServer_;
+    private Map<String, Object> configuration;
+
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "flutter_ion_sfu");
+        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "flutter_golang_server");
         channel.setMethodCallHandler(this);
     }
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-        if (call.method.equals("initialize")) {
-            ionSfuServer_ = new IonSfuServer(this);
-            ionSfuServer_.initialize();
+        switch (call.method) {
+            case "initialize": {
+                ionSfuServer_ = new IonSfuServer(this);
+                ionSfuServer_.initialize();
 
-            Map<String, Long> reply = new HashMap<>();
-            result.success(reply);
-        } else if (call.method.equals("start")) {
-            Map<String, Object> configuration = call.argument("configuration");
-            if (configuration == null) {
-                result.error("InvalidArgument", "configuration is null", null);
-                return;
+                Map<String, Long> reply = new HashMap<>();
+                result.success(reply);
+                break;
+            }
+            case "start": {
+                Map<String, Object> configuration = call.argument("configuration");
+                if (configuration == null) {
+                    result.error("InvalidArgument", "configuration is null", null);
+                    return;
+                }
+
+                ionSfuServer_.start(configuration);
+
+                Map<String, Long> reply = new HashMap<>();
+                result.success(reply);
+                break;
+            }
+            case "stop": {
+                ionSfuServer_.stop();
+
+                Map<String, Long> reply = new HashMap<>();
+                result.success(reply);
+                break;
+            }
+            case "createSignalChannel": {
+
+                long channelId = ionSfuServer_.createSignalChannel();
+
+                result.success(channelId);
+                break;
+            }
+            case "closeSignalChannel": {
+                int channelId = call.argument("channelId");
+
+                ionSfuServer_.closeSignalChannel(channelId);
+
+                Map<String, Long> reply = new HashMap<>();
+                result.success(reply);
+                break;
+            }
+            case "processSignalMessage": {
+                int channelId = call.argument("channelId");
+                String message = call.argument("message");
+
+                ionSfuServer_.processSignalMessage(channelId, message);
+
+                Map<String, Long> reply = new HashMap<>();
+                result.success(reply);
+                break;
             }
 
-            ionSfuServer_.start(configuration);
-
-            Map<String, Long> reply = new HashMap<>();
-            result.success(reply);
-        } else if (call.method.equals("stop")) {
-            ionSfuServer_.stop();
-
-            Map<String, Long> reply = new HashMap<>();
-            result.success(reply);
-        } else if (call.method.equals("createSignalChannel")) {
-
-            long channelId = ionSfuServer_.createSignalChannel();
-
-            result.success(channelId);
-        } else if (call.method.equals("closeSignalChannel")) {
-            int channelId = call.argument("channelId");
-
-            ionSfuServer_.closeSignalChannel(channelId);
-
-            Map<String, Long> reply = new HashMap<>();
-            result.success(reply);
-        } else if (call.method.equals("processSignalMessage")) {
-            int channelId = call.argument("channelId");
-            String message = call.argument("message");
-
-            ionSfuServer_.processSignalMessage(channelId, message);
-
-            Map<String, Long> reply = new HashMap<>();
-            result.success(reply);
-        } else {
-            result.notImplemented();
+            case "startWebTransportServer": {
+                webtransportServer_ = new WebtransportServer(this);
+                configuration = call.argument("configuration");
+                if (configuration == null) {
+                    result.error("InvalidArgument", "configuration is null", null);
+                }
+                try {
+                    webtransportServer_.start(configuration);
+                    Log.d(TAG, "onMethodCall: startWebTransportServer success");
+                    result.success(true);
+                } catch (Exception e) {
+                    Log.e(TAG, "onMethodCall: startWebTransportServer failed " + e);
+                    result.error("start server", e.getMessage(), null);
+                }
+                break;
+            }
+            case "stopWebTransportServer": {
+                assert (webtransportServer_ != null);
+                webtransportServer_.stop();
+                Log.d(TAG, "onMethodCall: stopWebTransportServer");
+                result.success(true);
+                break;
+            }
+            case "sendWebTransportMessage": {
+                assert (webtransportServer_ != null);
+                String clientID = call.argument("clientId");
+                String message = call.argument("message");
+                webtransportServer_.sendMessage(clientID, message);
+                Log.d(TAG, "onMethodCall: sendWebTransportMessage clientID: " + clientID + ", message: " + message);
+                break;
+            }
+            case "updateWebTransportCertificate": {
+                assert (webtransportServer_ != null);
+                configuration = call.argument("configuration");
+                if (configuration == null) {
+                    result.error("InvalidArgument", "configuration is null", null);
+                }
+                webtransportServer_.updateCertificate(configuration);
+                Log.d(TAG, "onMethodCall: updateWebTransportCertificate");
+                break;
+            }
+            default:
+                result.notImplemented();
+                break;
         }
     }
 
@@ -158,5 +217,43 @@ public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandl
 
         // Run the task on the platform thread
         handler_.post(r);
+    }
+
+    @Override
+    public void onMessage(String clientId, String message) {
+        Log.d(TAG, "FlutterWebTransport::onMessage() " + clientId + " " + message);
+
+        post(() -> {
+            Map<String, Object> arguments = new HashMap<>();
+            arguments.put("clientId", clientId);
+            arguments.put("message", message);
+
+            channel.invokeMethod("onMessage", arguments);
+        });
+    }
+
+    @Override
+    public void onClose(String clientId) {
+        Log.d(TAG, "FlutterWebTransport::onClose() " + clientId);
+
+        post(() -> {
+            Map<String, Object> arguments = new HashMap<>();
+            arguments.put("clientId", clientId);
+
+            channel.invokeMethod("onClose", arguments);
+        });
+    }
+
+    @Override
+    public void onConnect(String clientId, String queryStr) {
+        Log.d(TAG, "FlutterWebTransport::onConnect() " + clientId + ", query: " + queryStr);
+
+        post(() -> {
+            Map<String, Object> arguments = new HashMap<>();
+            arguments.put("clientId", clientId);
+            arguments.put("queryStr", queryStr);
+
+            channel.invokeMethod("onConnect", arguments);
+        });
     }
 }
