@@ -103,7 +103,7 @@ class _MyAppState extends State<MyApp> implements FlutterMirrorListener {
     String deviceName,
     MirrorType mirrorType,
   ) {
-    print('Mirror type: $mirrorType');
+    print('A new mirror has started. $mirrorType $deviceName');
 
     _pinTimer?.cancel();
     _pin = "";
