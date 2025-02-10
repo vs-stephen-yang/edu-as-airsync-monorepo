@@ -1,0 +1,80 @@
+package com.viewsonic.flutter_golang_server;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import server.WebTransportConfig;
+import server.WebTransportListener;
+
+
+public class WebtransportServer implements WebTransportListener {
+    private final WebtransportServerListener webtransportServerListener_;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    public WebtransportServer(WebtransportServerListener webtransportServerListener) {
+        assert (webtransportServerListener != null);
+        webtransportServerListener_ = webtransportServerListener;
+    }
+
+    public void start(Map<String, Object> configuration) throws Exception {
+        WebTransportConfig config = new WebTransportConfig();
+
+        if (configuration.containsKey("port")) {
+            config.setPort((int) configuration.get("port"));
+        }
+
+        Map<String, byte[]> certMap = WebtransportUtil.generateCertSlice(configuration);
+        config.setInitCert(certMap.get(WebtransportUtil.CERT_PEM));
+        config.setInitKey(certMap.get(WebtransportUtil.KEY_PEM));
+
+        if (configuration.containsKey("initReadBufferSize")) {
+            config.setInitReadBufferSize((int) configuration.get("initReadBufferSize"));
+        }
+
+        if (configuration.containsKey("maxReadBufferSize")) {
+            config.setMaxReadBufferSize((int) configuration.get("maxReadBufferSize"));
+        }
+
+        if (configuration.containsKey("allowOrigins")) {
+            List<String> allowOriginConfigs = (List<String>) configuration.get("allowOrigins");
+            WebtransportUtil.addAllowOrigins(config, allowOriginConfigs);
+        }
+
+        server.Server.registerWebTransportListener(this);
+        executorService.submit(() -> {
+            try {
+                server.Server.startWebTransportServer(config);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public void stop() {
+        server.Server.stopWebTransportServer();
+    }
+
+    public void sendMessage(String clientID, String message) {
+        server.Server.sendMessage(clientID, message);
+    }
+
+    public void updateCertificate(Map<String, Object> configuration) {
+        Map<String, byte[]> certMap = WebtransportUtil.generateCertSlice(configuration);
+        server.Server.updateCertificate(certMap.get(WebtransportUtil.CERT_PEM), certMap.get(WebtransportUtil.KEY_PEM));
+    }
+
+    @Override
+    public void onMessage(String clientId, String message) {
+        webtransportServerListener_.onMessage(clientId, message);
+    }
+
+    public void onClose(String clientId) {
+        webtransportServerListener_.onClose(clientId);
+    }
+
+    public void onConnect(String clientId, String queryStr) {
+        webtransportServerListener_.onConnect(clientId, queryStr);
+    }
+}
