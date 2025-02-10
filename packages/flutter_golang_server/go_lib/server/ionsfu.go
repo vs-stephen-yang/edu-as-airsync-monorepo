@@ -1,4 +1,4 @@
-package ionsfu
+package server
 
 import (
 	"context"
