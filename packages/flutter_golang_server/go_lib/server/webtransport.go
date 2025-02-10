@@ -196,7 +196,7 @@ func StartWebTransportServer(config *WebTransportConfig) error {
 	}
 }
 
-func Stop() {
+func StopWebTransportServer() {
 	doneCh <- struct{}{}
 }
 

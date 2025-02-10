@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_ion_sfu/flutter_ion_sfu.dart';
-import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
-import 'package:flutter_ion_sfu/flutter_ion_sfu_listener.dart';
+import 'package:flutter_golang_server/flutter_ion_sfu.dart';
+import 'package:flutter_golang_server/flutter_ion_sfu_configuration.dart';
+import 'package:flutter_golang_server/flutter_ion_sfu_listener.dart';
 
 void main() {
   runApp(const MyApp());

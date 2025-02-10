@@ -1,4 +1,4 @@
-import 'package:flutter_ion_sfu/flutter_ion_sfu_configuration.dart';
+import 'package:flutter_golang_server/flutter_ion_sfu_configuration.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_ion_sfu_method_channel.dart';

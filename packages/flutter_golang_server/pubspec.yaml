@@ -1,4 +1,4 @@
-name: flutter_ion_sfu
+name: flutter_golang_server
 description: A new Flutter project.
 version: 0.0.1
 homepage:
@@ -35,8 +35,8 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.viewsonic.flutter_ion_sfu
-        pluginClass: FlutterIonSfuPlugin
+        package: com.viewsonic.flutter_golang_server
+        pluginClass: FlutterGolangServerPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

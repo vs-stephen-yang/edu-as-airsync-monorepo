@@ -1,16 +1,15 @@
-package com.viewsonic.flutter_ion_sfu;
+package com.viewsonic.flutter_golang_server;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
-import ionsfu.IonSfuListener;
-import ionsfu.ConfigInfo;
-import ionsfu.ICEServerConfig;
+import server.ConfigInfo;
+import server.IonSfuListener;
 
 public class IonSfuServer implements IonSfuListener {
     private static final String TAG = "IonSfuServer";
 
-    private IonSfuServerListener ionSfuServerListener_;
+    private final IonSfuServerListener ionSfuServerListener_;
 
     public IonSfuServer(IonSfuServerListener ionSfuServerListener) {
         assert (ionSfuServerListener != null);
@@ -18,7 +17,7 @@ public class IonSfuServer implements IonSfuListener {
     }
 
     public void initialize() {
-        ionsfu.Ionsfu.initialize();
+        server.Server.initialize();
     }
 
     public boolean start(Map<String, Object> configuration) {
@@ -82,8 +81,8 @@ public class IonSfuServer implements IonSfuListener {
         }
 
         try {
-            ionsfu.Ionsfu.registerListener(this);
-            ionsfu.Ionsfu.startServer(configInfo);
+            server.Server.registerListener(this);
+            server.Server.startServer(configInfo);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,19 +92,19 @@ public class IonSfuServer implements IonSfuListener {
     }
 
     public void stop() {
-        ionsfu.Ionsfu.stopServer();
+        server.Server.stopServer();
     }
 
     public long createSignalChannel() {
-        return ionsfu.Ionsfu.createSignalChannel();
+        return server.Server.createSignalChannel();
     }
 
     public void closeSignalChannel(long channelId) {
-        ionsfu.Ionsfu.closeSignalChannel(channelId);
+        server.Server.closeSignalChannel(channelId);
     }
 
     public void processSignalMessage(long channelId, String message) {
-        ionsfu.Ionsfu.processSignalMessage(channelId, message);
+        server.Server.processSignalMessage(channelId, message);
     }
 
     @Override
