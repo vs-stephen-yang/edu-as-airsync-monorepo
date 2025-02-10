@@ -296,11 +296,9 @@ packages:
   display_channel:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "release-3.5.10"
-      resolved-ref: "5c505dcc461fdf7d82f4bff3cf94dff52b4e11b1"
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel"
-    source: git
+      path: "../display-channel"
+      relative: true
+    source: path
     version: "0.0.1"
   dropdown_button2:
     dependency: "direct main"
@@ -410,6 +408,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.1.6"
+  flutter_golang_server:
+    dependency: "direct main"
+    description:
+      path: "../flutter-golang-server"
+      relative: true
+    source: path
+    version: "0.0.1"
   flutter_input_injection:
     dependency: "direct main"
     description:
@@ -417,15 +422,6 @@ packages:
       ref: "release-0.7.0"
       resolved-ref: "352082cc30e4c30fe1eef949ece520d8485ab0e8"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection"
-    source: git
-    version: "0.0.1"
-  flutter_ion_sfu:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: "release-3.5.1"
-      resolved-ref: dd96e3bb13bfc025b7e04d4bee61864c340acfd4
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-ion-sfu"
     source: git
     version: "0.0.1"
   flutter_launcher_icons:

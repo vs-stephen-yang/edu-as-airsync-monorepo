@@ -97,9 +97,9 @@ dependencies:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc
       ref: release-0.9.36-49
   display_channel:
-    git:
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
-      ref: release-3.5.10
+    path: '../display-channel'
+  flutter_golang_server:
+    path: "../flutter-golang-server"
   ion_sdk_flutter:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter
@@ -108,10 +108,6 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection
       ref: release-0.7.0
-  flutter_ion_sfu:
-    git:
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-ion-sfu
-      ref: release-3.5.1
   flutter_mirror:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror
