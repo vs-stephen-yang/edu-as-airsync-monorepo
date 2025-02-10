@@ -1911,16 +1911,6 @@ class S {
     );
   }
 
-  /// `AirSync ©{year}. version {version}`
-  String v3_settings_version(Object year, Object version) {
-    return Intl.message(
-      'AirSync ©$year. version $version',
-      name: 'v3_settings_version',
-      desc: '',
-      args: [year, version],
-    );
-  }
-
   /// `Split-screen activates if two or more users share screens.`
   String get v3_quick_connect_menu_bottom_msg {
     return Intl.message(
@@ -1931,11 +1921,31 @@ class S {
     );
   }
 
+  /// `AirSync ©{year}. version {version}`
+  String v3_settings_version(Object year, Object version) {
+    return Intl.message(
+      'AirSync ©$year. version $version',
+      name: 'v3_settings_version',
+      desc: '',
+      args: [year, version],
+    );
+  }
+
   /// `Please turn off energy saving to avoid unexpected interruption during broadcasting.`
   String get v3_settings_broadcast_screen_energy_saving {
     return Intl.message(
       'Please turn off energy saving to avoid unexpected interruption during broadcasting.',
       name: 'v3_settings_broadcast_screen_energy_saving',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Maximum up to 9 participants.`
+  String get v3_participants_desc_maximum_9 {
+    return Intl.message(
+      'Maximum up to 9 participants.',
+      name: 'v3_participants_desc_maximum_9',
       desc: '',
       args: [],
     );

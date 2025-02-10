@@ -185,5 +185,7 @@
   "v3_settings_all_the_time_info": "Edasta IFP lähtekraan kogu aeg.",
   "v3_settings_feature_locked": "Lukustatud ViewSonic Manageri poolt.",
   "v3_cast_to_device_list_msg": "Maksimaalselt kuni 10 seadet.",
-  "v3_quick_connect_menu_bottom_msg": "Opdelt ekraan aktiveerub, kui kaks või enam kasutajat jagavad ekraane."
+  "v3_quick_connect_menu_bottom_msg": "Opdelt ekraan aktiveerub, kui kaks või enam kasutajat jagavad ekraane.",
+  "v3_settings_broadcast_screen_energy_saving": "Palun lülitage energiasäästurežiim välja, et vältida ootamatuid katkestusi edastamise ajal.",
+  "v3_participants_desc_maximum_9": "Maksimaalselt kuni 9 osalejat."
 }

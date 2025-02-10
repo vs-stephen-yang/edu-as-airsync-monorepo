@@ -267,6 +267,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Venter..."),
         "v3_participants_desc": MessageLookupByLibrary.simpleMessage(
             "Maksimalt opptil 6 deltakere."),
+        "v3_participants_desc_maximum_9": MessageLookupByLibrary.simpleMessage(
+            "Maksimalt opptil 9 deltakere."),
         "v3_participants_title":
             MessageLookupByLibrary.simpleMessage("Deltakere"),
         "v3_qrcode_quick_connect":
@@ -292,6 +294,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Send til"),
         "v3_settings_broadcast_devices":
             MessageLookupByLibrary.simpleMessage("Senderenheter"),
+        "v3_settings_broadcast_screen_energy_saving":
+            MessageLookupByLibrary.simpleMessage(
+                "Vennligst slå av energisparing for å unngå uventede avbrudd under kringkasting."),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage("Send til skjermgruppen"),
         "v3_settings_connectivity":

@@ -242,6 +242,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("等待中"),
         "v3_participants_desc":
             MessageLookupByLibrary.simpleMessage("最多六位參加人員"),
+        "v3_participants_desc_maximum_9":
+            MessageLookupByLibrary.simpleMessage("最多九位參加人員"),
         "v3_participants_title": MessageLookupByLibrary.simpleMessage("參加人員"),
         "v3_qrcode_quick_connect": MessageLookupByLibrary.simpleMessage("快速連線"),
         "v3_quick_connect_menu_bottom_msg":

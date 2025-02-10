@@ -275,6 +275,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Gaida..."),
         "v3_participants_desc": MessageLookupByLibrary.simpleMessage(
             "Maksimums līdz 6 dalībniekiem."),
+        "v3_participants_desc_maximum_9": MessageLookupByLibrary.simpleMessage(
+            "Maksimums līdz 9 dalībniekiem."),
         "v3_participants_title":
             MessageLookupByLibrary.simpleMessage("Dalībnieki"),
         "v3_qrcode_quick_connect":
@@ -300,6 +302,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Pārraidīt uz"),
         "v3_settings_broadcast_devices":
             MessageLookupByLibrary.simpleMessage("Sūtītāja ierīcēm"),
+        "v3_settings_broadcast_screen_energy_saving":
+            MessageLookupByLibrary.simpleMessage(
+                "Lūdzu, izslēdziet enerģijas taupīšanas režīmu, lai izvairītos no negaidītiem pārtraukumiem pārraides laikā."),
         "v3_settings_broadcast_to_display_group":
             MessageLookupByLibrary.simpleMessage("Pārraidīt displeja grupai"),
         "v3_settings_connectivity":

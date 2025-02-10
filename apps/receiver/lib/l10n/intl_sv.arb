@@ -186,5 +186,6 @@
   "v3_settings_feature_locked": "Låst av ViewSonic Manager.",
   "v3_cast_to_device_list_msg": "Högst upp till 10 enheter.",
   "v3_quick_connect_menu_bottom_msg": "Delad skärm aktiveras om två eller flera användare delar skärmar.",
-  "v3_settings_broadcast_screen_energy_saving": "Stäng av energisparfunktionen för att undvika oväntade avbrott under sändningen."
+  "v3_settings_broadcast_screen_energy_saving": "Stäng av energisparfunktionen för att undvika oväntade avbrott under sändningen.",
+  "v3_participants_desc_maximum_9": "Max upp till 9 deltagare."
 }

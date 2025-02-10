@@ -186,5 +186,6 @@
   "v3_cast_to_device_list_msg": "最多分享到10台裝置",
   "v3_quick_connect_menu_bottom_msg": "多人分享時將自動分割畫面",
   "v3_settings_version": "AirSync ©{year}. 版本 {version}",
-  "v3_settings_broadcast_screen_energy_saving": "建議關閉螢幕節能設定，避免螢幕廣播非預期中斷"
+  "v3_settings_broadcast_screen_energy_saving": "建議關閉螢幕節能設定，避免螢幕廣播非預期中斷",
+  "v3_participants_desc_maximum_9": "最多九位參加人員"
 }

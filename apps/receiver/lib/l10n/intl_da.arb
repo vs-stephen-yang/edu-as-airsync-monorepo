@@ -181,7 +181,11 @@
   "v3_settings_local_connection_only": "Kun lokal forbindelse",
   "v3_group_dialog_no_device_message": "Ingen enhed valgt.",
   "v3_participant_item_waiting": "Venter..",
+  "v3_settings_only_when_casting_info": "Udsend kun kilde IFP-skærmen, når den modtager en delt skærm.",
+  "v3_settings_all_the_time_info": "Udsend kilde IFP-skærmen hele tiden.",
   "v3_settings_feature_locked": "Låst af ViewSonic Manager.",
   "v3_cast_to_device_list_msg": "Maksimalt op til 10 enheder.",
-  "v3_quick_connect_menu_bottom_msg": "Delt skærm bliver aktiveret, hvis to eller flere brugere deler deres skærm. "
+  "v3_quick_connect_menu_bottom_msg": "Delt skærm bliver aktiveret, hvis to eller flere brugere deler deres skærm. ",
+  "v3_settings_broadcast_screen_energy_saving": "Slå energisparetilstand fra for at undgå uventede afbrydelser under udsendelse.",
+  "v3_participants_desc_maximum_9": "Maksimalt op til 9 deltagere."
 }
