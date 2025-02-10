@@ -1,3 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.viewsonic.flutter_ion_sfu">
-</manifest>
+<manifest package="com.viewsonic.flutter_golang_server"></manifest>
