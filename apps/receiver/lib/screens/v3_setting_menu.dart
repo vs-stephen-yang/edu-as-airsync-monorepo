@@ -325,3 +325,21 @@ class _SubTittleButton extends StatelessWidget {
     );
   }
 }
+
+extension NavigationServiceExtension on NavigationService {
+  static DialogRoute<dynamic>? _dialogRoute;
+
+  void setMenuRoute(DialogRoute<dynamic>? route) {
+    _dialogRoute = route;
+  }
+
+  void dismissSettingMenu() {
+    if (_dialogRoute?.navigator == null) return;
+
+    if (_dialogRoute!.navigator!.canPop()) {
+      _dialogRoute!.navigator!.pop();
+      _dialogRoute!.navigator!.removeRoute(_dialogRoute!);
+      _dialogRoute = null;
+    }
+  }
+}
