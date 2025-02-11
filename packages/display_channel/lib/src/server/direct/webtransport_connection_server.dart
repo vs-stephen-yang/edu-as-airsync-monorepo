@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:display_channel/src/channel_store.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
 import 'package:display_channel/src/server/connection.dart';
@@ -82,5 +81,14 @@ class WebTransportConnectionServer {
     }
     final data = jsonDecode(message);
     connection.onMessage?.call(connection, data);
+  }
+
+  void onClose(String connId) {
+    var connection = _connections[connId];
+    if (connection == null) {
+      return;
+    }
+    connection.onClosed?.call(connection);
+    _connections.remove(connId);
   }
 }
