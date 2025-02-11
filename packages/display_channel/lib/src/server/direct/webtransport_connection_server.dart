@@ -79,6 +79,11 @@ class WebTransportConnectionServer {
     if (connection == null) {
       return;
     }
+
+    // receive data from the peer
+    // reset the idle timer
+    connection.resetIdleTimeout();
+
     final data = jsonDecode(message);
     connection.onMessage?.call(connection, data);
   }
