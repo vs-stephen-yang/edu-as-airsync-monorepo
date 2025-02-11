@@ -3,7 +3,9 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_participant_item.dart';
+import 'package:display_flutter/widgets/v3_participant_mirror_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:provider/provider.dart';
@@ -15,10 +17,9 @@ class V3ParticipantList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ChannelProvider>(
-      builder: (context, channelProvider, child) {
-        if (!ChannelProvider.isModeratorMode ||
-            HybridConnectionList().getRtcConnectorMap().isEmpty) {
+    return Consumer2<ChannelProvider, MirrorStateProvider>(
+      builder: (context, channelProvider, mirrorProvider, child) {
+        if (!ChannelProvider.isModeratorMode) {
           return Column(
             mainAxisAlignment: ChannelProvider.isModeratorMode
                 ? MainAxisAlignment.start
@@ -37,7 +38,7 @@ class V3ParticipantList extends StatelessWidget {
                     ),
                     TextSpan(
                       text:
-                          ' (${HybridConnectionList().getRtcConnectorMap().length}/${HybridConnectionList.maxHybridConnection})',
+                          ' (${HybridConnectionList().getConnectionCount()}/${HybridConnectionList.maxHybridConnection})',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
@@ -91,13 +92,13 @@ class V3ParticipantList extends StatelessWidget {
                   ),
                   TextSpan(
                     text:
-                        ' (${HybridConnectionList().getRtcConnectorMap().length}/${HybridConnectionList.maxHybridConnection})',
+                        ' (${HybridConnectionList().getConnectionCount()}/${HybridConnectionList.maxHybridConnection})',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
                       color: context.tokens.color.vsdslColorOnSurface,
                     ),
-                  )
+                  ),
                 ]),
                 textAlign: TextAlign.center,
               ),
@@ -106,10 +107,15 @@ class V3ParticipantList extends StatelessWidget {
                 child: ListView.separated(
                   itemCount: HybridConnectionList().getConnectionCount(),
                   itemBuilder: (BuildContext context, int index) {
-                    return V3ParticipantItem(
-                      index: index,
-                      isForMenuUse: isForMenuUse,
-                    );
+                    if (HybridConnectionList().isMirrorRequest(index)) {
+                      return V3ParticipantMirrorItem(
+                          index: index, isForMenuUse: isForMenuUse);
+                    } else {
+                      return V3ParticipantItem(
+                        index: index,
+                        isForMenuUse: isForMenuUse,
+                      );
+                    }
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return isForMenuUse

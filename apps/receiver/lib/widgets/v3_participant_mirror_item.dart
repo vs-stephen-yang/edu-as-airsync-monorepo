@@ -1,0 +1,260 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:display_flutter/assets/tokens/tokens.g.dart';
+import 'package:display_flutter/generated/l10n.dart';
+import 'package:display_flutter/model/hybrid_connection_list.dart';
+import 'package:display_flutter/model/mirror_request.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
+import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:easy_debounce/easy_throttle.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
+
+class V3ParticipantMirrorItem extends StatefulWidget {
+  const V3ParticipantMirrorItem(
+      {super.key, required this.index, required this.isForMenuUse});
+
+  final int index;
+  final bool isForMenuUse;
+
+  @override
+  State createState() => _V3ParticipantMirrorItemState();
+}
+
+class _V3ParticipantMirrorItemState extends State<V3ParticipantMirrorItem> {
+  @override
+  Widget build(BuildContext context) {
+    final MirrorRequest mirrorRequest =
+        HybridConnectionList().getConnection<MirrorRequest>(widget.index);
+    String mirrorId = mirrorRequest.mirrorId;
+    Widget? itemParticipant;
+    bool isCasting = mirrorRequest.mirrorState == MirrorState.mirroring;
+    String status = '';
+    if (isCasting) {
+      status = S.of(context).v3_participant_item_casting;
+      itemParticipant = ParticipantStreamingFeature(
+        mirrorId: mirrorId,
+      );
+    } else {
+      itemParticipant = ParticipantStandbyFeature(
+        mirrorId: mirrorId,
+        isForMenuUse: widget.isForMenuUse,
+      );
+    }
+
+    if (mirrorRequest.mirrorState == MirrorState.idle) {
+      return const SizedBox.shrink();
+    } else {
+      return SizedBox(
+        width: widget.isForMenuUse ? 358 : 283,
+        height: 34,
+        child: Row(
+          children: [
+            Image(
+              width: 32,
+              height: 32,
+              image: Svg(isCasting
+                  ? 'assets/images/ic_participant_avatar_cast.svg'
+                  : 'assets/images/ic_participant_avatar_wait.svg'),
+            ),
+            Gap(context.tokens.spacing.vsdslSpacingSm.left),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 18,
+                    child: AutoSizeText(
+                      mirrorRequest.mirrorId,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: context.tokens.color.vsdslColorOnSurface,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  if (widget.isForMenuUse && status.isNotEmpty) ...[
+                    Gap(context.tokens.spacing.vsdslSpacingXs.top),
+                    AutoSizeText(
+                      status,
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.w600,
+                        color: (isCasting)
+                            ? context.tokens.color.vsdslColorSecondary
+                            : context.tokens.color.vsdslColorSuccess,
+                      ),
+                      textAlign: TextAlign.center,
+                      minFontSize: 8,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Gap(context.tokens.spacing.vsdslSpacing2xl.left),
+            itemParticipant,
+          ],
+        ),
+      );
+    }
+  }
+}
+
+class ParticipantStandbyFeature extends StatelessWidget {
+  const ParticipantStandbyFeature({
+    super.key,
+    required this.mirrorId,
+    required this.isForMenuUse,
+  });
+
+  final String mirrorId;
+  final bool isForMenuUse;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        V3Focus(
+          child: SizedBox(
+            width: isForMenuUse ? 105 : 66,
+            height: 27,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                elevation: 5.0,
+                shadowColor: context.tokens.color.vsdslColorOpacitySecondaryLg,
+                backgroundColor: context.tokens.color.vsdslColorPrimary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: context.tokens.radii.vsdslRadiusFull,
+                ),
+                padding: EdgeInsets.zero,
+              ),
+              onPressed: () {
+                EasyThrottle.throttle('presenterOn', const Duration(seconds: 1),
+                    () {
+                  _presenterOn(context, mirrorId);
+                });
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (isForMenuUse) ...[
+                    Gap(context.tokens.spacing.vsdslSpacingSm.left),
+                    SizedBox(
+                      child: Image(
+                        width: 16,
+                        height: 16,
+                        image:
+                            const Svg('assets/images/ic_arrow_to_screen.svg'),
+                        color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                      ),
+                    ),
+                    Gap(context.tokens.spacing.vsdslSpacingXs.left),
+                  ],
+                  Expanded(
+                    child: Text(
+                      S.of(context).v3_participant_item_share,
+                      textAlign:
+                          isForMenuUse ? TextAlign.left : TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: context.tokens.color.vsdslColorOnSurfaceInverse,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Gap(context.tokens.spacing.vsdslSpacingSm.left),
+        V3Focus(
+          child: SizedBox(
+            width: 27,
+            height: 27,
+            child: IconButton(
+              icon: const Image(
+                image: Svg('assets/images/ic_participant_close.svg'),
+              ),
+              style: IconButton.styleFrom(
+                elevation: 10.0,
+                shadowColor: context.tokens.color.vsdslColorOpacityNeutralXs,
+              ),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              onPressed: () {
+                EasyThrottle.throttle(
+                    'sendPresenterRemove', const Duration(seconds: 1), () {
+                  _sendPresenterRemove(context);
+                });
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  _presenterOn(BuildContext context, String mirrorId) {
+    final mirrorStateProvider =
+        Provider.of<MirrorStateProvider>(context, listen: false);
+    mirrorStateProvider.setAcceptMirrorId(mirrorId);
+  }
+
+  _sendPresenterRemove(BuildContext context) async {
+    final mirrorStateProvider =
+        Provider.of<MirrorStateProvider>(context, listen: false);
+    mirrorStateProvider.stopAcceptedMirror(mirrorId);
+  }
+}
+
+class ParticipantStreamingFeature extends StatelessWidget {
+  const ParticipantStreamingFeature({
+    super.key,
+    required this.mirrorId,
+  });
+
+  final String mirrorId;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        V3Focus(
+          child: SizedBox(
+            width: 27,
+            height: 27,
+            child: IconButton(
+              icon: const Image(
+                image: Svg('assets/images/ic_participant_stop.svg'),
+              ),
+              style: IconButton.styleFrom(
+                elevation: 10.0,
+                shadowColor: context.tokens.color.vsdslColorOpacityNeutralXs,
+              ),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              onPressed: () {
+                EasyThrottle.throttle(
+                    'presenterOff', const Duration(seconds: 1), () {
+                  _presenterOff(context, mirrorId);
+                });
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  _presenterOff(BuildContext context, String mirrorId) {
+    final mirrorStateProvider =
+        Provider.of<MirrorStateProvider>(context, listen: false);
+    mirrorStateProvider.setModeratorIdleMirrorId(mirrorId);
+  }
+}

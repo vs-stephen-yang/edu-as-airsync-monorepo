@@ -180,8 +180,16 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                           var connection = HybridConnectionList()
                               .getConnection<MirrorRequest>(widget.index);
                           if (connection.mirrorState == MirrorState.mirroring) {
-                            HybridConnectionList()
-                                .stopPresenterBy(widget.index);
+                            if (ChannelProvider.isModeratorMode) {
+                              final mirrorStateProvider =
+                                  Provider.of<MirrorStateProvider>(context,
+                                      listen: false);
+                              mirrorStateProvider.setModeratorIdleMirrorId(
+                                  connection.mirrorId);
+                            } else {
+                              HybridConnectionList()
+                                  .stopPresenterBy(widget.index);
+                            }
                             return;
                           }
                         }

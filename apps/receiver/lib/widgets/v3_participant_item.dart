@@ -30,10 +30,8 @@ class V3ParticipantItem extends StatefulWidget {
 class _V3ParticipantItemState extends State<V3ParticipantItem> {
   @override
   Widget build(BuildContext context) {
-    RTCConnector rtcConnector = HybridConnectionList()
-        .getRtcConnectorMap()
-        .values
-        .toList()[widget.index];
+    final RTCConnector rtcConnector =
+        HybridConnectionList().getConnection<RTCConnector>(widget.index);
     String presenterId = rtcConnector.clientId ?? '';
     Widget? itemParticipant;
     bool isWaiting = ((rtcConnector.presentationState.index) ==

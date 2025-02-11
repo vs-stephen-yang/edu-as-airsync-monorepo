@@ -21,6 +21,7 @@ import 'package:uuid/uuid.dart';
 enum MirrorState {
   idle,
   mirroring,
+  moderatorIdle,
 }
 
 class MirrorStateProvider extends ChangeNotifier
@@ -49,6 +50,8 @@ class MirrorStateProvider extends ChangeNotifier
   String get pinCode => _pinCode;
 
   final InstanceInfoProvider _instanceInfoProvider;
+
+  static const int maxIdle = 6;
 
   FlutterMirror? _flutterMirrorPlugin;
   String _deviceName = '';
@@ -148,6 +151,7 @@ class MirrorStateProvider extends ChangeNotifier
       if (request.mirrorId == mirrorId) {
         HybridConnectionList().removeConnection(request);
         HybridConnectionList().updateSplitScreen();
+        notifyListeners();
       }
     }
   }
@@ -204,6 +208,27 @@ class MirrorStateProvider extends ChangeNotifier
       }
 
       // _aspectRatio = _mirrorRequestList[index].aspectRatio;
+      _sizeChanged = true;
+
+      HybridConnectionList().updateSplitScreen();
+      StreamFunction.streamFunctionState.value = stateMenuOff;
+      notifyListeners();
+    }
+  }
+
+  setModeratorIdleMirrorId(String? mirrorId) {
+    if (HybridConnectionList().getMirrorMap().isNotEmpty) {
+      for (var entry in HybridConnectionList().getMirrorMap().entries) {
+        if (entry.value.mirrorId == mirrorId) {
+          MirrorRequest request = entry.value;
+          request.mirrorState = MirrorState.moderatorIdle;
+          request.controlAudio(false, setIsAudioEnabled: false);
+          HybridConnectionList()
+              .getMirrorMap()
+              .update(entry.key, (value) => request);
+        }
+      }
+
       _sizeChanged = true;
 
       HybridConnectionList().updateSplitScreen();
