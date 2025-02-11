@@ -13,6 +13,6 @@ func (t *WebTransportListenerStub) OnClose(clientID string) {
 	log.Printf("client %s closed\n", clientID)
 }
 
-func (t *WebTransportListenerStub) OnConnect(clientID string, queryStr string) {
+func (t *WebTransportListenerStub) OnConnect(clientID string, queryStr string, clientIp string) {
 	log.Printf("client %s connected, query: %s\n", clientID, queryStr)
 }

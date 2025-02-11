@@ -252,13 +252,14 @@ public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandl
     }
 
     @Override
-    public void onConnect(String connId, String queryStr) {
-        Log.d(TAG, "FlutterWebTransport::onConnect() " + connId + ", query: " + queryStr);
+    public void onConnect(String connId, String queryStr, String clientIp) {
+        Log.d(TAG, "FlutterWebTransport::onConnect() " + connId + ", query: " + queryStr + ", clientIp: " + clientIp);
 
         post(() -> {
             Map<String, Object> arguments = new HashMap<>();
             arguments.put("connId", connId);
             arguments.put("queryStr", queryStr);
+            arguments.put("clientIp", clientIp);
 
             channel.invokeMethod("onConnect", arguments);
         });

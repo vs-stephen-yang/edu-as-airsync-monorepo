@@ -25,7 +25,7 @@ const (
 type WebTransportListener interface {
 	OnMessage(clientID string, msg string)
 	OnClose(clientID string)
-	OnConnect(clientID string, queryStr string)
+	OnConnect(clientID string, queryStr string, clientIp string)
 }
 
 type WebTransportServer struct {
@@ -38,6 +38,7 @@ type WebTransportServer struct {
 type WebTransportClientQuery struct {
 	ID    string
 	Query string
+	Ip    string
 }
 
 var (
@@ -204,13 +205,14 @@ func StopWebTransportServer() {
 	doneCh <- struct{}{}
 }
 
-func addClient(client *WebTransportClient, paramStr string) {
+func addClient(client *WebTransportClient, paramStr string, clientIp string) {
 	clientMapLock.Lock()
 	defer clientMapLock.Unlock()
 
 	clientConnectChan <- WebTransportClientQuery{
 		ID:    client.id,
 		Query: paramStr,
+		Ip:    clientIp,
 	}
 	webtransportServer.clients[client.id] = client
 }
@@ -274,6 +276,8 @@ func webTransportHandler() func(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		clientIp := strings.Split(r.RemoteAddr, ":")[0]
+
 		// Upgrade to WebTransport
 		session, err := webtransportServer.wt.Upgrade(w, r)
 		if err != nil {
@@ -287,7 +291,7 @@ func webTransportHandler() func(w http.ResponseWriter, r *http.Request) {
 			id:      xid.New().String(),
 			session: session,
 		}
-		addClient(client, jsonStr)
+		addClient(client, jsonStr, clientIp)
 
 		handleSession(client)
 	}
@@ -312,7 +316,7 @@ func notifyListener(ctx context.Context) {
 		case clientID := <-clientCloseChan:
 			webtransportServer.listener.OnClose(clientID)
 		case clientQuery := <-clientConnectChan:
-			webtransportServer.listener.OnConnect(clientQuery.ID, clientQuery.Query)
+			webtransportServer.listener.OnConnect(clientQuery.ID, clientQuery.Query, clientQuery.Ip)
 		case <-ctx.Done():
 			return
 		}

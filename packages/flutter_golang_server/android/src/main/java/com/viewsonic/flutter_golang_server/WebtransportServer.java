@@ -78,7 +78,7 @@ public class WebtransportServer implements WebTransportListener {
         webtransportServerListener_.onClose(connId);
     }
 
-    public void onConnect(String connId, String queryStr) {
-        webtransportServerListener_.onConnect(connId, queryStr);
+    public void onConnect(String connId, String queryStr, String clientIp) {
+        webtransportServerListener_.onConnect(connId, queryStr, clientIp);
     }
 }
