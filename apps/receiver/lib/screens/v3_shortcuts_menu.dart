@@ -9,7 +9,6 @@ import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:gap/gap.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
@@ -362,47 +361,6 @@ class V3ShortcutsMenu extends StatelessWidget {
                           ],
                         ),
                       ),
-                      if (ChannelProvider.isModeratorMode) ...[
-                        const Padding(
-                            padding: EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 13,
-                        )),
-                        Container(
-                          height: 51,
-                          decoration: BoxDecoration(
-                            color: context.tokens.color.vsdslColorSurface900,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          padding: context.tokens.spacing.vsdslSpacingXl,
-                          child: Row(
-                            children: [
-                              const SizedBox(
-                                width: 16,
-                                child: Image(
-                                  image:
-                                      Svg('assets/images/ic_toast_alert.svg'),
-                                ),
-                              ),
-                              Gap(context.tokens.spacing.vsdslSpacingLg.right),
-                              SizedBox(
-                                width: 200,
-                                child: AutoSizeText(
-                                  S.of(context).v3_settings_mirroring_blocked,
-                                  style: TextStyle(
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.w400,
-                                    color:
-                                        context.tokens.color.vsdslColorWarning,
-                                  ),
-                                  minFontSize: 8,
-                                  maxLines: 2,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
                     ],
                   ),
                 ],
