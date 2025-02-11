@@ -126,6 +126,10 @@ func initServer(config *WebTransportConfig) error {
 	}
 	setCurrentCertificate(cert)
 
+	if webtransportServer.listener == nil {
+		webtransportServer.listener = &WebTransportListenerStub{}
+	}
+
 	return nil
 }
 
@@ -330,6 +334,15 @@ func SendMessage(clientID string, msg string) {
 	}
 
 	client.sendMessage(msg)
+}
+
+func CloseWebTransportConn(clientID string) {
+	client := getClient(clientID)
+	if client == nil {
+		return
+	}
+
+	client.session.CloseWithError(0, "Session closed")
 }
 
 type WebTransportMessage struct {

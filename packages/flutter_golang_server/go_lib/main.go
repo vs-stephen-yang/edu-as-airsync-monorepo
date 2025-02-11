@@ -1,4 +1,11 @@
-package go_lib
+// package main
+
+// import (
+// 	"fmt"
+// 	"go_lib/server"
+// 	"syscall"
+// 	"unsafe"
+// )
 
 // func main() {
 
