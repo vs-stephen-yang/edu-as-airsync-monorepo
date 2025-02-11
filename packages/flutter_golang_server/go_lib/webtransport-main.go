@@ -19,7 +19,7 @@ func main() {
 
 		select {
 		case <-quit:
-			server.Stop()
+			server.StopWebTransportServer()
 		}
 	}()
 
@@ -28,13 +28,13 @@ func main() {
 
 	cert := []string{
 		"-----BEGIN CERTIFICATE-----",
-		"MIIBSjCB8aADAgECAhR3Bj1FkNotNxDxAJVGRodXUBzRsTAKBggqhkjOPQQDAjAU",
-		"MRIwEAYDVQQDDAkxMjcuMC4wLjEwHhcNMjUwMTEzMDAwMDAwWhcNMjUwMTI0MDcw",
-		"NzExWjAUMRIwEAYDVQQDDAkxMjcuMC4wLjEwWTATBgcqhkjOPQIBBggqhkjOPQMB",
+		"MIIBSzCB8aADAgECAhQsvsEkoX0ejH8koims25SIuce+bTAKBggqhkjOPQQDAjAU",
+		"MRIwEAYDVQQDDAkxMjcuMC4wLjEwHhcNMjUwMjAzMDIyMTE0WhcNMjUwMjE3MDIy",
+		"MTE0WjAUMRIwEAYDVQQDDAkxMjcuMC4wLjEwWTATBgcqhkjOPQIBBggqhkjOPQMB",
 		"BwNCAASvcFfEf/u2h1UQeajhLdGgT5mGedkp1G+4OlhIyDdpS7Uru/Y82Z3oTg90",
 		"oxTxaQf3NXe6IHijekxxPQzJf0mGoyEwHzAdBgNVHQ4EFgQUmgBMRZU/+Jpawb/4",
-		"0SJtrx5CKekwCgYIKoZIzj0EAwIDSAAwRQIhAIj8G23BJVrzpzvNIoN/6D83Oi56",
-		"0qqpyE21CPxwJq8TAiB9viQZsAqF6dESt7Fu73WN2Ch6A8sjBvc0tRrhjgHT3w==",
+		"0SJtrx5CKekwCgYIKoZIzj0EAwIDSQAwRgIhAOMNNbpKPeDCiWJMQCM/6ALmoLk9",
+		"f/FmI6ptna/5b5yvAiEAwzyDXEFpZrpc8m3yEERhQHfrwaGYIV37/Ba5UYjy4ik=",
 		"-----END CERTIFICATE-----",
 	}
 
@@ -94,6 +94,10 @@ func handleUserInput() {
 			clientID := parts[0]
 			message := parts[1]
 
+			if message == "quit" {
+				server.CloseWebTransportConn(clientID)
+				continue
+			}
 			// Call SendMessage to send the message to the specified client
 			server.SendMessage(clientID, message)
 		}

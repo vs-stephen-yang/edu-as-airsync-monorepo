@@ -65,6 +65,10 @@ public class WebtransportServer implements WebTransportListener {
         server.Server.updateCertificate(certMap.get(WebtransportUtil.CERT_PEM), certMap.get(WebtransportUtil.KEY_PEM));
     }
 
+    public void closeConn(String connId) {
+        server.Server.closeConn(connId);
+    }
+
     @Override
     public void onMessage(String connId, String message) {
         webtransportServerListener_.onMessage(connId, message);
