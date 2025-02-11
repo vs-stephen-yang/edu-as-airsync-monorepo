@@ -4,6 +4,7 @@ import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
@@ -35,8 +36,13 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
         for (MirrorRequest request
             in HybridConnectionList().getMirrorMap().values) {
           if (request.mirrorState == MirrorState.idle) {
-            if (HybridConnectionList.hybridSplitScreenCount.value <
-                HybridConnectionList.maxHybridSplitScreen) {
+            if ((!ChannelProvider.isModeratorMode &&
+                    HybridConnectionList.hybridSplitScreenCount.value <
+                        HybridConnectionList.maxHybridSplitScreen) ||
+                (ChannelProvider.isModeratorMode &&
+                    HybridConnectionList().getConnectionCount() <
+                        HybridConnectionList.maxHybridConnection)) {
+              // 拒絕邏輯 一般模式:目前視窗大於等於最大視窗數。 ModeratorMode:連線數大於等於最大連線數
               Future.delayed(Duration.zero, () {
                 _showAuthDialog(context);
               });
@@ -141,7 +147,6 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                 }
                 totalHeight =
                     containerPaddingHeight + pinCodeHeight + requestTotalHeight;
-
                 if (mirrorStateProvider.pinCode.isNotEmpty) {
                   // PIN 碼模式 UI
                   return Container(
@@ -194,172 +199,208 @@ class _V3MirrorPromptState extends State<V3MirrorPrompt> {
                 } else if (mirrorRequestIdles.isNotEmpty) {
                   // 鏡像確認模式 UI
                   if (mirrorStateProvider.isMirrorConfirmation) {
-                    return Container(
-                      width: 548,
-                      height: totalHeight,
-                      padding: EdgeInsets.symmetric(
-                        vertical: containerPaddingHeight / 2,
-                        horizontal: context.tokens.spacing.vsdslSpacing3xl.left,
-                      ),
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: ListView.separated(
-                              reverse: HybridConnectionList().isMirroring(),
-                              itemCount: mirrorRequestIdles.length,
-                              itemBuilder:
-                                  (BuildContext buildContext, int index) {
-                                return SizedBox(
-                                  width: 508,
-                                  height: requestContainerHeight,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Image(
-                                        image: Svg(
-                                            'assets/images/ic_prompt_in_mirror.svg'),
-                                      ),
-                                      SizedBox(
-                                          width: context.tokens.spacing
-                                              .vsdslSpacingSm.left),
-                                      AutoSizeText(
-                                        sprintf(
-                                            S.current.main_mirror_from_client, [
-                                          mirrorRequestIdles
-                                              .toList()[index]
-                                              .mirrorId
-                                        ]),
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: context.tokens.color
-                                              .vsdslColorOnSurfaceInverse,
+                    if (!ChannelProvider.isModeratorMode &&
+                            HybridConnectionList.hybridSplitScreenCount.value >=
+                                HybridConnectionList.maxHybridSplitScreen ||
+                        (ChannelProvider.isModeratorMode &&
+                            HybridConnectionList().getConnectionCount() >=
+                                HybridConnectionList.maxHybridConnection)) {
+                      // 拒絕邏輯 一般模式:目前視窗大於等於最大視窗數。 ModeratorMode:連線數大於等於最大連線數
+                      for (var idle in mirrorRequestIdles) {
+                        mirrorStateProvider.stopAcceptedMirror(idle.mirrorId);
+                      }
+                      Future.delayed(Duration.zero, () {
+                        _showMaxAmountToast();
+                      });
+                    } else {
+                      return Container(
+                        width: 548,
+                        height: totalHeight,
+                        padding: EdgeInsets.symmetric(
+                          vertical: containerPaddingHeight / 2,
+                          horizontal:
+                              context.tokens.spacing.vsdslSpacing3xl.left,
+                        ),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: ListView.separated(
+                                reverse: HybridConnectionList().isMirroring(),
+                                itemCount: mirrorRequestIdles.length,
+                                itemBuilder:
+                                    (BuildContext buildContext, int index) {
+                                  return SizedBox(
+                                    width: 508,
+                                    height: requestContainerHeight,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Image(
+                                          image: Svg(
+                                              'assets/images/ic_prompt_in_mirror.svg'),
                                         ),
-                                      ),
-                                      const Spacer(),
-                                      V3Focus(
-                                        child: SizedBox(
-                                          width: 80,
-                                          height: requestContainerHeight,
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              foregroundColor: context
-                                                  .tokens
-                                                  .color
-                                                  .vsdslColorOnSurfaceInverse,
-                                              backgroundColor: context
-                                                  .tokens
-                                                  .color
-                                                  .vsdslColorOpacityNeutralSm,
-                                              side: BorderSide(
-                                                color: context.tokens.color
+                                        SizedBox(
+                                            width: context.tokens.spacing
+                                                .vsdslSpacingSm.left),
+                                        AutoSizeText(
+                                          sprintf(
+                                              S.current.main_mirror_from_client,
+                                              [
+                                                mirrorRequestIdles
+                                                    .toList()[index]
+                                                    .mirrorId
+                                              ]),
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: context.tokens.color
+                                                .vsdslColorOnSurfaceInverse,
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        V3Focus(
+                                          child: SizedBox(
+                                            width: 80,
+                                            height: requestContainerHeight,
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                foregroundColor: context
+                                                    .tokens
+                                                    .color
                                                     .vsdslColorOnSurfaceInverse,
-                                                width: 1.5,
+                                                backgroundColor: context
+                                                    .tokens
+                                                    .color
+                                                    .vsdslColorOpacityNeutralSm,
+                                                side: BorderSide(
+                                                  color: context.tokens.color
+                                                      .vsdslColorOnSurfaceInverse,
+                                                  width: 1.5,
+                                                ),
+                                                textStyle: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                                padding: EdgeInsets.zero,
                                               ),
-                                              textStyle: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              padding: EdgeInsets.zero,
+                                              onPressed: () {
+                                                final String mirrorType =
+                                                    mirrorRequestIdles
+                                                        .toList()[index]
+                                                        .mirrorType
+                                                        .name
+                                                        .replaceAll(
+                                                            'googlecast',
+                                                            'google_cast');
+                                                trackEvent(
+                                                    'click_decline_device',
+                                                    EventCategory.session,
+                                                    mode: mirrorType);
+                                                var mirrorId =
+                                                    mirrorRequestIdles
+                                                        .toList()[index]
+                                                        .mirrorId;
+                                                mirrorStateProvider
+                                                    .clearRequestMirrorId(
+                                                        mirrorId);
+                                              },
+                                              child: AutoSizeText(S
+                                                  .of(context)
+                                                  .v3_authorize_prompt_decline),
                                             ),
-                                            onPressed: () {
-                                              final String mirrorType =
-                                                  mirrorRequestIdles
-                                                      .toList()[index]
-                                                      .mirrorType
-                                                      .name
-                                                      .replaceAll('googlecast',
-                                                          'google_cast');
-                                              trackEvent('click_decline_device',
-                                                  EventCategory.session,
-                                                  mode: mirrorType);
-                                              var mirrorId = mirrorRequestIdles
-                                                  .toList()[index]
-                                                  .mirrorId;
-                                              mirrorStateProvider
-                                                  .clearRequestMirrorId(
-                                                      mirrorId);
-                                            },
-                                            child: AutoSizeText(S
-                                                .of(context)
-                                                .v3_authorize_prompt_decline),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                          width: context.tokens.spacing
-                                              .vsdslSpacingSm.left),
-                                      V3Focus(
-                                        child: SizedBox(
-                                          width: 80,
-                                          height: 27,
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              foregroundColor: context.tokens
-                                                  .color.vsdslColorNeutral,
-                                              backgroundColor: context
-                                                  .tokens
-                                                  .color
-                                                  .vsdslColorOnSurfaceInverse,
-                                              textStyle: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
+                                        SizedBox(
+                                            width: context.tokens.spacing
+                                                .vsdslSpacingSm.left),
+                                        V3Focus(
+                                          child: SizedBox(
+                                            width: 80,
+                                            height: 27,
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                foregroundColor: context.tokens
+                                                    .color.vsdslColorNeutral,
+                                                backgroundColor: context
+                                                    .tokens
+                                                    .color
+                                                    .vsdslColorOnSurfaceInverse,
+                                                textStyle: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                                padding: EdgeInsets.zero,
                                               ),
-                                              padding: EdgeInsets.zero,
+                                              onPressed: () async {
+                                                final String mirrorType =
+                                                    mirrorRequestIdles
+                                                        .toList()[index]
+                                                        .mirrorType
+                                                        .name
+                                                        .replaceAll(
+                                                            'googlecast',
+                                                            'google_cast');
+                                                trackEvent(
+                                                    'click_accept_device',
+                                                    EventCategory.session,
+                                                    mode: mirrorType);
+                                                String? mirrorId =
+                                                    mirrorRequestIdles
+                                                        .toList()[index]
+                                                        .mirrorId;
+                                                if (ChannelProvider
+                                                    .isModeratorMode) {
+                                                  mirrorStateProvider
+                                                      .setModeratorIdleMirrorId(
+                                                          mirrorId);
+                                                } else {
+                                                  mirrorStateProvider
+                                                      .setAcceptMirrorId(
+                                                          mirrorId);
+                                                }
+                                              },
+                                              child: AutoSizeText(S
+                                                  .of(context)
+                                                  .v3_authorize_prompt_accept),
                                             ),
-                                            onPressed: () async {
-                                              final String mirrorType =
-                                                  mirrorRequestIdles
-                                                      .toList()[index]
-                                                      .mirrorType
-                                                      .name
-                                                      .replaceAll('googlecast',
-                                                          'google_cast');
-                                              trackEvent('click_accept_device',
-                                                  EventCategory.session,
-                                                  mode: mirrorType);
-                                              String? mirrorId =
-                                                  mirrorRequestIdles
-                                                      .toList()[index]
-                                                      .mirrorId;
-                                              mirrorStateProvider
-                                                  .setAcceptMirrorId(mirrorId);
-                                            },
-                                            child: AutoSizeText(S
-                                                .of(context)
-                                                .v3_authorize_prompt_accept),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                              separatorBuilder:
-                                  (BuildContext buildContext, int index) {
-                                return Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: requestPaddingHeight / 2,
-                                  ),
-                                  child: Container(
-                                    color: context.tokens.color
-                                        .vsdslColorOnSurfaceVariant,
-                                    height: requestDividerHeight,
-                                  ),
-                                );
-                              },
+                                      ],
+                                    ),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext buildContext, int index) {
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: requestPaddingHeight / 2,
+                                    ),
+                                    child: Container(
+                                      color: context.tokens.color
+                                          .vsdslColorOnSurfaceVariant,
+                                      height: requestDividerHeight,
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
+                          ],
+                        ),
+                      );
+                    }
                   } else {
                     Future.delayed(Duration.zero, () {
                       for (MirrorRequest request
                           in HybridConnectionList().getMirrorMap().values) {
                         if (request.mirrorState == MirrorState.idle) {
-                          mirrorStateProvider
-                              .setAcceptMirrorId(request.mirrorId);
+                          if (ChannelProvider.isModeratorMode) {
+                            mirrorStateProvider
+                                .setModeratorIdleMirrorId(request.mirrorId);
+                          } else {
+                            mirrorStateProvider
+                                .setAcceptMirrorId(request.mirrorId);
+                          }
                         }
                       }
                     });

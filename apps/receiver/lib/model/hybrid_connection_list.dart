@@ -65,7 +65,7 @@ class HybridConnectionList {
   static ValueNotifier<int> hybridSplitScreenCount = ValueNotifier(0);
 
   final List<dynamic> _hybridConnectionList =
-      List.filled(maxHybridConnection, null);
+      List.filled(maxHybridConnection + MirrorStateProvider.maxIdle, null);
 
   T getConnection<T>(int index) {
     return _hybridConnectionList[index];
@@ -190,7 +190,8 @@ class HybridConnectionList {
   }
 
   int getConnectionCount() {
-    return _hybridConnectionList.nonNulls.length;
+    return HybridConnectionList().getRtcConnectorMap().length +
+        HybridConnectionList().getModeratorMirrorMap().length;
   }
 
   bool isRTCConnector(int index) {
@@ -421,6 +422,11 @@ class HybridConnectionList {
     return mirrorMap;
   }
 
+  Map<int, MirrorRequest> getModeratorMirrorMap() {
+    return Map.fromEntries(getMirrorMap()
+        .entries
+        .where((entry) => entry.value.mirrorState != MirrorState.idle));
+  }
   //Mirror functions region
 
   bool isMirroring() {
