@@ -5,6 +5,7 @@ import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
 class V3FooterBar extends StatelessWidget {
@@ -65,15 +66,18 @@ class V3FooterBar extends StatelessWidget {
 
     final bool openedWithLogicalKey =
         HardwareKeyboard.instance.logicalKeysPressed.isNotEmpty;
-    showDialog(
-      context: context,
-      barrierColor: Colors.transparent,
-      builder: (BuildContext context) {
-        if (openedWithLogicalKey) {
-          settingsProvider.initFocus();
-        }
-        return V3SettingMenu(openedWithLogicalKey: openedWithLogicalKey);
-      },
-    ).then((_) => settingsProvider.clearFocus());
+    if (openedWithLogicalKey) {
+      settingsProvider.initFocus();
+    }
+    final route = DialogRoute(
+        barrierColor: Colors.transparent,
+        context: context,
+        builder: (_) =>
+            V3SettingMenu(openedWithLogicalKey: openedWithLogicalKey),
+        barrierDismissible: false);
+
+    navService.setMenuRoute(route);
+
+    navService.push(route).whenComplete(settingsProvider.clearFocus);
   }
 }

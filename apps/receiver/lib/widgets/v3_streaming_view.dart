@@ -10,6 +10,7 @@ import 'package:display_flutter/providers/group_provider.dart';
 import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/screens/v3_new_sharing_menu.dart';
 import 'package:display_flutter/screens/v3_quick_connect_menu.dart';
+import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/screens/v3_shortcuts_menu.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
@@ -55,6 +56,11 @@ class _V3StreamingViewState extends ConsumerState {
         ValueListenableBuilder(
           valueListenable: HybridConnectionList.hybridSplitScreenCount,
           builder: (context, int splitScreenCount, child) {
+            // 當有任何 cast 進入，則關閉 setting menu
+            if (splitScreenCount > 0) {
+              navService.dismissSettingMenu();
+            }
+
             if (splitScreenCount >= 0) {
               final toggle = ref.read(groupProvider).broadcastToGroup;
               final launchType =
