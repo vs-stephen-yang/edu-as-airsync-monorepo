@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:convert';
 import 'package:display_channel/src/server/connection.dart';
 import 'package:display_channel/src/server/idle_connection_timer.dart';

@@ -98,6 +98,6 @@ class WebTransportDirectServer implements FlutterWebtransportListener {
 
   @override
   void onMessage(String connId, String message) {
-    // TODO: implement onMessage
+    _connectionServer?.onMessage(connId, message);
   }
 }
