@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:display_channel/src/channel_store.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
 import 'package:display_channel/src/server/connection.dart';
@@ -13,6 +12,8 @@ class WebTransportConnectionServer {
   final void Function(String clientId, Connection) _onNewConnection;
   final VerifyConnectRequest _verifyConnectRequest;
   final FlutterWebtransport _webTransport;
+
+  final _connections = <String, WebTransportConnection>{};
 
   static const defaultPingInterval = Duration(seconds: 2);
 
@@ -70,6 +71,16 @@ class WebTransportConnectionServer {
       return;
     }
 
+    _connections[connId] = connection;
     _onNewConnection(connectionRequest.clientId, connection);
+  }
+
+  void onMessage(String connId, String message) {
+    var connection = _connections[connId];
+    if (connection == null) {
+      return;
+    }
+    final data = jsonDecode(message);
+    connection.onMessage?.call(connection, data);
   }
 }
