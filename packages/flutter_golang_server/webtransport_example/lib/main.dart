@@ -121,6 +121,28 @@ class _MyAppState extends State<MyApp> implements FlutterWebtransportListener {
     }
   }
 
+  Future<void> closeConn() async {
+    final clientId = _clientIdController.text;
+
+    if (clientId.isEmpty) {
+      setState(() {
+        _message = "Invalid client ID";
+      });
+      return;
+    }
+
+    try {
+      await _flutterWebtransportPlugin.closeWebTransportConn(clientId);
+      setState(() {
+        _message = "Close conn: $clientId";
+      });
+    } on Exception catch (e) {
+      setState(() {
+        _message = "Failed to close connection: $e";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -172,6 +194,11 @@ class _MyAppState extends State<MyApp> implements FlutterWebtransportListener {
               ElevatedButton(
                 onPressed: sendMessage,
                 child: const Text("Send Message"),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: closeConn,
+                child: const Text("Close Conn"),
               ),
               const SizedBox(height: 20),
               Text(

@@ -19,6 +19,10 @@ class FlutterWebtransport {
     return FlutterWebtransportPlatform.instance.sendMessage(connId, message);
   }
 
+  Future<void> closeWebTransportConn(String connId) {
+    return FlutterWebtransportPlatform.instance.closeWebTransportConn(connId);
+  }
+
   Future<void> updateCertificate(FlutterWebtransportConfig config) {
     return FlutterWebtransportPlatform.instance.updateCertificate(config);
   }

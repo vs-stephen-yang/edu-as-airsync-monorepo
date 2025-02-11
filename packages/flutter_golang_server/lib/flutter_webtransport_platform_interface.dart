@@ -47,6 +47,10 @@ abstract class FlutterWebtransportPlatform extends PlatformInterface {
     throw UnimplementedError('sendMessage() has not been implemented.');
   }
 
+  Future<void> closeWebTransportConn(String connId) {
+    throw UnimplementedError('closeWebTransportConn() has not been implemented.');
+  }
+
   Future<void> updateCertificate(FlutterWebtransportConfig config) {
     throw UnimplementedError('updateCertificate() has not been implemented.');
   }

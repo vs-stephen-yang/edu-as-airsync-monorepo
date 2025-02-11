@@ -140,6 +140,13 @@ public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandl
                 Log.d(TAG, "onMethodCall: updateWebTransportCertificate");
                 break;
             }
+            case "closeWebTransportConn": {
+                assert (webtransportServer_ != null);
+                String connId = call.argument("connId");
+                webtransportServer_.closeConn(connId);
+                Log.d(TAG, "onMethodCall: closeWebTransportConn connId: " + connId);
+                break;
+            }
             default:
                 result.notImplemented();
                 break;
