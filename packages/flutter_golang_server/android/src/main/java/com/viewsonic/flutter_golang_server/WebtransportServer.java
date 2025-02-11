@@ -66,7 +66,7 @@ public class WebtransportServer implements WebTransportListener {
     }
 
     public void closeConn(String connId) {
-        server.Server.closeConn(connId);
+        server.Server.closeWebTransportConn(connId);
     }
 
     @Override

@@ -41,6 +41,12 @@ class MethodChannelFlutterWebtransport extends FlutterWebtransportPlatform {
   }
 
   @override
+  Future<void> closeWebTransportConn(String connId) async {
+    await methodChannel.invokeMethod("closeWebTransportConn",
+        <String, String>{'connId': connId});
+  }
+
+  @override
   Future<void> updateCertificate(FlutterWebtransportConfig config) async {
     await methodChannel.invokeMethod("updateWebTransportCertificate", <String, dynamic>{
       'configuration': config.toMap(),
