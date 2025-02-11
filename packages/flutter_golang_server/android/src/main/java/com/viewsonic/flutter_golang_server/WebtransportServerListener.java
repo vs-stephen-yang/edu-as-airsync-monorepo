@@ -1,9 +1,9 @@
 package com.viewsonic.flutter_golang_server;
 
 public interface WebtransportServerListener {
-    void onMessage(String clientId, String message);
+    void onMessage(String connId, String message);
 
-    void onClose(String clientId);
+    void onClose(String connId);
 
-    void onConnect(String clientId, String queryStr);
+    void onConnect(String connId, String queryStr);
 }

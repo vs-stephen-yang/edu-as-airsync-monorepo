@@ -15,6 +15,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/quic-go/quic-go/http3"
 	"github.com/quic-go/webtransport-go"
+	"github.com/rs/xid"
 )
 
 const (
@@ -270,12 +271,6 @@ func webTransportHandler() func(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		clientID := queryParams.Get("clientId")
-		if len(clientID) == 0 {
-			http.Error(w, "clientId required", http.StatusBadRequest)
-			return
-		}
-
 		// Upgrade to WebTransport
 		session, err := webtransportServer.wt.Upgrade(w, r)
 		if err != nil {
@@ -286,7 +281,7 @@ func webTransportHandler() func(w http.ResponseWriter, r *http.Request) {
 		log.Println("WebTransport session established")
 
 		client := &WebTransportClient{
-			id:      clientID,
+			id:      xid.New().String(),
 			session: session,
 		}
 		addClient(client, jsonStr)

@@ -15,8 +15,8 @@ class FlutterWebtransport {
     return FlutterWebtransportPlatform.instance.stopServer();
   }
 
-  Future<void> sendMessage(String clientId, String message) {
-    return FlutterWebtransportPlatform.instance.sendMessage(clientId, message);
+  Future<void> sendMessage(String connId, String message) {
+    return FlutterWebtransportPlatform.instance.sendMessage(connId, message);
   }
 
   Future<void> updateCertificate(FlutterWebtransportConfig config) {

@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> implements FlutterWebtransportListener {
       _flutterWebtransportPlugin.registerListener(this);
 
       final config = FlutterWebtransportConfig(
-          port: 8443, cert: pemCertificate, key: pemKey, allowOrigins: []);
+          port: 8888, cert: pemCertificate, key: pemKey, allowOrigins: []);
 
       await _flutterWebtransportPlugin.startWebtransportServer(config);
       message = "Webtransport Server started";
