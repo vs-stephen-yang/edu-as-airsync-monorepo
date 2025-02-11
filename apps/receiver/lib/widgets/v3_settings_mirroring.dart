@@ -22,11 +22,9 @@ class V3SettingsMirroring extends StatelessWidget {
     return Consumer<SettingsProvider>(builder: (_, settingsProvider, __) {
       ChannelProvider channelProvider =
           Provider.of<ChannelProvider>(context, listen: false);
-      var disable =
-          ChannelProvider.isModeratorMode || settingsProvider.isMirroringLock;
+      var disable = settingsProvider.isMirroringLock;
       return V3Setting2ndLayer(
         isDisable: settingsProvider.isMirroringLock,
-        isDisableFromModerator: ChannelProvider.isModeratorMode,
         child: Consumer<MirrorStateProvider>(
           builder: (context, mirrorStateProvider, _) {
             toggleAirPlayCode(bool value) {

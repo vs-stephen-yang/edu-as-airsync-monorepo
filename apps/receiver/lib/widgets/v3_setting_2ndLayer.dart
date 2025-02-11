@@ -10,13 +10,11 @@ class V3Setting2ndLayer extends StatelessWidget {
     super.key,
     required this.child,
     this.isDisable = false,
-    this.isDisableFromModerator = false,
     this.disableScroll = false,
   });
 
   final Widget child;
   final bool isDisable;
-  final bool isDisableFromModerator;
   final bool disableScroll;
 
   @override
@@ -36,44 +34,6 @@ class V3Setting2ndLayer extends StatelessWidget {
                   child: child,
                 ),
         ),
-        if (isDisableFromModerator)
-          Positioned(
-            left: context.tokens.spacing.vsdslSpacingXl.left,
-            right: context.tokens.spacing.vsdslSpacingXl.right,
-            bottom: context.tokens.spacing.vsdslSpacingXl.bottom,
-            child: Container(
-              width: 325,
-              height: 51,
-              decoration: BoxDecoration(
-                color: context.tokens.color.vsdslColorSurface900,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: context.tokens.spacing.vsdslSpacingXl,
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/images/ic_toast_alert.svg',
-                    width: 16,
-                    height: 16,
-                  ),
-                  Gap(context.tokens.spacing.vsdslSpacingLg.right),
-                  SizedBox(
-                    width: 270,
-                    child: AutoSizeText(
-                      S.of(context).v3_settings_mirroring_blocked,
-                      style: TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w400,
-                        color: context.tokens.color.vsdslColorWarning,
-                      ),
-                      minFontSize: 8,
-                      maxLines: 2,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
         if (isDisable)
           Positioned(
             left: context.tokens.spacing.vsdslSpacingXl.left,
