@@ -124,10 +124,10 @@ public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandl
             }
             case "sendWebTransportMessage": {
                 assert (webtransportServer_ != null);
-                String clientID = call.argument("clientId");
+                String connId = call.argument("connId");
                 String message = call.argument("message");
-                webtransportServer_.sendMessage(clientID, message);
-                Log.d(TAG, "onMethodCall: sendWebTransportMessage clientID: " + clientID + ", message: " + message);
+                webtransportServer_.sendMessage(connId, message);
+                Log.d(TAG, "onMethodCall: sendWebTransportMessage connId: " + connId + ", message: " + message);
                 break;
             }
             case "updateWebTransportCertificate": {
@@ -220,12 +220,12 @@ public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandl
     }
 
     @Override
-    public void onMessage(String clientId, String message) {
-        Log.d(TAG, "FlutterWebTransport::onMessage() " + clientId + " " + message);
+    public void onMessage(String connId, String message) {
+        Log.d(TAG, "FlutterWebTransport::onMessage() " + connId + " " + message);
 
         post(() -> {
             Map<String, Object> arguments = new HashMap<>();
-            arguments.put("clientId", clientId);
+            arguments.put("connId", connId);
             arguments.put("message", message);
 
             channel.invokeMethod("onMessage", arguments);
@@ -233,24 +233,24 @@ public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandl
     }
 
     @Override
-    public void onClose(String clientId) {
-        Log.d(TAG, "FlutterWebTransport::onClose() " + clientId);
+    public void onClose(String connId) {
+        Log.d(TAG, "FlutterWebTransport::onClose() " + connId);
 
         post(() -> {
             Map<String, Object> arguments = new HashMap<>();
-            arguments.put("clientId", clientId);
+            arguments.put("connId", connId);
 
             channel.invokeMethod("onClose", arguments);
         });
     }
 
     @Override
-    public void onConnect(String clientId, String queryStr) {
-        Log.d(TAG, "FlutterWebTransport::onConnect() " + clientId + ", query: " + queryStr);
+    public void onConnect(String connId, String queryStr) {
+        Log.d(TAG, "FlutterWebTransport::onConnect() " + connId + ", query: " + queryStr);
 
         post(() -> {
             Map<String, Object> arguments = new HashMap<>();
-            arguments.put("clientId", clientId);
+            arguments.put("connId", connId);
             arguments.put("queryStr", queryStr);
 
             channel.invokeMethod("onConnect", arguments);

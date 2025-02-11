@@ -35,9 +35,9 @@ class MethodChannelFlutterWebtransport extends FlutterWebtransportPlatform {
   }
 
   @override
-  Future<void> sendMessage(String clientId, String message) async {
+  Future<void> sendMessage(String connId, String message) async {
     await methodChannel.invokeMethod("sendWebTransportMessage",
-        <String, String>{'clientId': clientId, 'message': message});
+        <String, String>{'connId': connId, 'message': message});
   }
 
   @override
@@ -58,18 +58,18 @@ class MethodChannelFlutterWebtransport extends FlutterWebtransportPlatform {
       switch (call.method) {
         case 'onMessage':
           _listener?.onMessage(
-            call.arguments['clientId'],
+            call.arguments['connId'],
             call.arguments['message'],
           );
           break;
         case 'onClose':
           _listener?.onClose(
-            call.arguments['clientId'],
+            call.arguments['connId'],
           );
           break;
         case 'onConnect':
           _listener?.onConnect(
-            call.arguments['clientId'],
+            call.arguments['connId'],
             call.arguments['queryStr'],
           );
           break;

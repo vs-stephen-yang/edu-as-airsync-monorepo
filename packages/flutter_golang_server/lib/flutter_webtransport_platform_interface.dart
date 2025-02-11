@@ -43,7 +43,7 @@ abstract class FlutterWebtransportPlatform extends PlatformInterface {
     throw UnimplementedError('stopServer() has not been implemented.');
   }
 
-  Future<void> sendMessage(String clientId, String message) {
+  Future<void> sendMessage(String connId, String message) {
     throw UnimplementedError('sendMessage() has not been implemented.');
   }
 

@@ -56,8 +56,8 @@ public class WebtransportServer implements WebTransportListener {
         server.Server.stopWebTransportServer();
     }
 
-    public void sendMessage(String clientID, String message) {
-        server.Server.sendMessage(clientID, message);
+    public void sendMessage(String connId, String message) {
+        server.Server.sendMessage(connId, message);
     }
 
     public void updateCertificate(Map<String, Object> configuration) {
@@ -66,15 +66,15 @@ public class WebtransportServer implements WebTransportListener {
     }
 
     @Override
-    public void onMessage(String clientId, String message) {
-        webtransportServerListener_.onMessage(clientId, message);
+    public void onMessage(String connId, String message) {
+        webtransportServerListener_.onMessage(connId, message);
     }
 
-    public void onClose(String clientId) {
-        webtransportServerListener_.onClose(clientId);
+    public void onClose(String connId) {
+        webtransportServerListener_.onClose(connId);
     }
 
-    public void onConnect(String clientId, String queryStr) {
-        webtransportServerListener_.onConnect(clientId, queryStr);
+    public void onConnect(String connId, String queryStr) {
+        webtransportServerListener_.onConnect(connId, queryStr);
     }
 }
