@@ -93,7 +93,7 @@ class WebTransportDirectServer implements FlutterWebtransportListener {
 
   @override
   void onClose(String connId) {
-    // TODO: implement onClose
+    _connectionServer?.onClose(connId);
   }
 
   @override
