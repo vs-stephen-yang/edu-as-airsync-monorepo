@@ -49,4 +49,8 @@ class WebTransportConnection implements Connection {
     _idleTimer.stop();
     onClosed?.call(this);
   }
+
+  void resetIdleTimeout() {
+    _idleTimer.reset();
+  }
 }
