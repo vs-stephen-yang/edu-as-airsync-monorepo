@@ -229,7 +229,7 @@ class _MyAppState extends State<MyApp> implements FlutterWebtransportListener {
   }
 
   @override
-  void onConnect(String clientId, String queryStr) {
+  void onConnect(String clientId, String queryStr, String clientIp) {
     // Convert JSON string to Map
     Map<String, dynamic> jsonMap = jsonDecode(queryStr);
     print(jsonMap['clientId']);
@@ -237,7 +237,7 @@ class _MyAppState extends State<MyApp> implements FlutterWebtransportListener {
     print(jsonMap['token']);
 
     setState(() {
-      _message = '$clientId: connected, queryStr: $queryStr';
+      _message = '$clientId: connected, queryStr: $queryStr, clientIp: $clientIp';
     });
   }
 }

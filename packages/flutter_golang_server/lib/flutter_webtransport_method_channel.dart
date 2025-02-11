@@ -77,6 +77,7 @@ class MethodChannelFlutterWebtransport extends FlutterWebtransportPlatform {
           _listener?.onConnect(
             call.arguments['connId'],
             call.arguments['queryStr'],
+            call.arguments['clientIp']
           );
           break;
         default:

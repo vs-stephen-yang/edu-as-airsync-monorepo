@@ -5,5 +5,5 @@ public interface WebtransportServerListener {
 
     void onClose(String connId);
 
-    void onConnect(String connId, String queryStr);
+    void onConnect(String connId, String queryStr, String clientIp);
 }
