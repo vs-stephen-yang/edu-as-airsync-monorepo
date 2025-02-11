@@ -6,6 +6,8 @@ export 'package:display_channel/src/channel_store.dart'
     show ConnectRequestStatus;
 export 'package:display_channel/src/display_direct_server.dart'
     show DisplayDirectServer;
+export 'package:display_channel/src/webtransport_direct_server.dart'
+    show WebTransportDirectServer;
 export 'package:display_channel/src/display_tunnel_server.dart'
     show DisplayTunnelServer;
 
