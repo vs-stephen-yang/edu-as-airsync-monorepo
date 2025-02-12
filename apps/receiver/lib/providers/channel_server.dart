@@ -119,15 +119,17 @@ class ChannelServer {
       log.info('Direct channel server has started');
 
       // TODO: read port from config
-      WebTransportCertificate webTransportCertificate = WebTransportCertificate([], []);
+      WebTransportCertificate? webTransportCertificate = WebTransportCertificate([], []);
       try {
-        webTransportCertificate = await getWebtransportCert();
-        await _webTransportDirectServer?.start(
-            8443,
-            certPem: webTransportCertificate.certPem,
-            keyPem: webTransportCertificate.keyPem
-        );
-        log.info('WebTransport channel server has started');
+        webTransportCertificate = await getWebTransportCert();
+        if (webTransportCertificate != null) {
+          await _webTransportDirectServer?.start(
+              8443,
+              certPem: webTransportCertificate.certPem,
+              keyPem: webTransportCertificate.keyPem
+          );
+          log.info('WebTransport channel server has started');
+        }
       } catch (e) {
         log.warning('Failed to start webTransport server: $e');
       }
