@@ -33,6 +33,7 @@ class ApReceiver
       unsigned int timeout_sec) override;
 
   virtual bool OnMirrorStart(
+      const std::string& device_name,
       ap::AirplayMirrorSessionPtr session) override;
 
  private:

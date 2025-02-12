@@ -4,9 +4,11 @@
 
 ApMirrorSession::ApMirrorSession(
     const std::string& mirror_id,
+    const std::string& device_name,
     MirrorListener& mirror_listener,
     ap::AirplayMirrorSessionPtr session)
     : mirror_id_(mirror_id),
+      device_name_(device_name),
       mirror_listener_(mirror_listener),
       session_(session) {
   assert(session);
@@ -116,7 +118,7 @@ SurfaceTexture ApMirrorSession::GetTexture() {
   return media_session_->GetTexture();
 }
 std::string ApMirrorSession::GetSourceDisplayName() {
-  return "";
+  return device_name_;
 }
 
 MirrorType ApMirrorSession::GetMirrorType() {
