@@ -339,7 +339,8 @@ class V3SettingsCastToBoardsState
           _buildBroadcastGroupToggle(context, groupNotifier, channelProvider),
           if (isBroadcastingToGroup)
             V3SettingsRadioGroup(
-              firstFocus: false,
+              hasSubFocusItem: false,
+              focusOnInit: false,
               initSelectedValue: groupNotifier.broadcastGroupLaunchType.name,
               radioList: radioItems,
               onChanged: (value) {

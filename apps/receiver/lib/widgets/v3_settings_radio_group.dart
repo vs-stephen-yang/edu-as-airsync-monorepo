@@ -1,8 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
-import 'package:display_flutter/widgets/v3_setting_menu_sub_item_focus.dart';
+import 'package:display_flutter/widgets/v3_setting_menu_list_item_focus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -29,13 +30,15 @@ class V3SettingsRadioGroup extends StatefulWidget {
     required this.initSelectedValue,
     required this.radioList,
     required this.onChanged,
-    required this.firstFocus,
+    required this.hasSubFocusItem,
+    required this.focusOnInit,
   });
 
   final String initSelectedValue;
   final List<V3SettingsRadioGroupItem> radioList;
   final ValueChanged<String> onChanged;
-  final bool firstFocus;
+  final bool hasSubFocusItem;
+  final bool focusOnInit;
 
   @override
   V3SettingsRadioGroupState createState() => V3SettingsRadioGroupState();
@@ -48,6 +51,13 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
   void initState() {
     super.initState();
     _selectedRadio = widget.initSelectedValue;
+    if (widget.focusOnInit) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        Provider.of<SettingsProvider>(context, listen: false)
+            .subFocusNode
+            ?.requestFocus();
+      });
+    }
   }
 
   @override
@@ -58,82 +68,77 @@ class V3SettingsRadioGroupState extends State<V3SettingsRadioGroup> {
         children: widget.radioList.map<Widget>((V3SettingsRadioGroupItem key) {
           return Column(
             children: [
-              V3SettingMenuSubItemFocus(
+              V3SettingMenuListItemFocus(
+                focusNode:
+                    (key == widget.radioList.first) && widget.hasSubFocusItem
+                        ? settingsProvider.subFocusNode
+                        : null,
+                onTap: settingsProvider.isConnectivityLock
+                    ? null
+                    : () {
+                        setState(() {
+                          _selectedRadio = key.value;
+                          widget.onChanged(key.value);
+                        });
+                      },
                 child: Padding(
                   padding: EdgeInsets.only(
-                    top: context.tokens.spacing.vsdslSpacingSm.bottom / 2,
-                    bottom: context.tokens.spacing.vsdslSpacingSm.bottom / 2,
+                    top: context.tokens.spacing.vsdslSpacingSm.bottom,
+                    bottom: context.tokens.spacing.vsdslSpacingSm.bottom,
                   ),
-                  child: InkWell(
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    focusNode:
-                        (key == widget.radioList.first) && widget.firstFocus
-                            ? settingsProvider.subFocusNode
-                            : null,
-                    onTap: settingsProvider.isConnectivityLock
-                        ? null
-                        : () {
-                            setState(() {
-                              _selectedRadio = key.value;
-                              widget.onChanged(key.value);
-                            });
-                          },
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              _selectedRadio == key.value
-                                  ? settingsProvider.isConnectivityLock
-                                      ? 'assets/images/ic_settings_radio_selected_lock.svg'
-                                      : 'assets/images/ic_settings_radio_selected.svg'
-                                  : settingsProvider.isConnectivityLock
-                                      ? 'assets/images/ic_settings_radio_unselect_lock.svg'
-                                      : 'assets/images/ic_settings_radio_unselect.svg',
-                              width: 20,
-                              height: 20,
-                            ),
-                            Gap(context.tokens.spacing.vsdslSpacingSm.right),
-                            AutoSizeText(
-                              key.title,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.white,
-                              ),
-                            )
-                          ],
-                        ),
-                        if (key.subtitle != null)
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: 25,
-                              top: context.tokens.spacing.vsdslSpacingSm.top,
-                              bottom:
-                                  context.tokens.spacing.vsdslSpacingSm.bottom,
-                            ),
-                            child: Row(
-                              children: [
-                                if (key.subtitleIcon != null) key.subtitleIcon!,
-                                Gap(context
-                                    .tokens.spacing.vsdslSpacingXs.right),
-                                Expanded(
-                                  child: AutoSizeText(
-                                    key.subtitle!,
-                                    style: TextStyle(
-                                      fontSize: 9,
-                                      color: context.tokens.color
-                                          .vsdslColorOnSurfaceVariant,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    maxLines: 2,
-                                  ),
-                                ),
-                              ],
-                            ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            _selectedRadio == key.value
+                                ? settingsProvider.isConnectivityLock
+                                    ? 'assets/images/ic_settings_radio_selected_lock.svg'
+                                    : 'assets/images/ic_settings_radio_selected.svg'
+                                : settingsProvider.isConnectivityLock
+                                    ? 'assets/images/ic_settings_radio_unselect_lock.svg'
+                                    : 'assets/images/ic_settings_radio_unselect.svg',
+                            width: 20,
+                            height: 20,
                           ),
-                      ],
-                    ),
+                          Gap(context.tokens.spacing.vsdslSpacingSm.right),
+                          AutoSizeText(
+                            key.title,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                            ),
+                          )
+                        ],
+                      ),
+                      if (key.subtitle != null)
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: 25,
+                            top: context.tokens.spacing.vsdslSpacingSm.top,
+                            bottom:
+                                context.tokens.spacing.vsdslSpacingSm.bottom,
+                          ),
+                          child: Row(
+                            children: [
+                              if (key.subtitleIcon != null) key.subtitleIcon!,
+                              Gap(context.tokens.spacing.vsdslSpacingXs.right),
+                              Expanded(
+                                child: AutoSizeText(
+                                  key.subtitle!,
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    color: context.tokens.color
+                                        .vsdslColorOnSurfaceVariant,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  maxLines: 2,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),

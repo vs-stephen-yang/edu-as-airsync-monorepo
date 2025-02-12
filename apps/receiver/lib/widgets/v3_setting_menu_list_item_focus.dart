@@ -9,6 +9,7 @@ class V3SettingMenuListItemFocus extends StatefulWidget {
   final VoidCallback? onTap;
   final BorderRadius borderRadius;
   final double borderWidth;
+  final FocusNode? focusNode;
 
   const V3SettingMenuListItemFocus({
     super.key,
@@ -16,6 +17,7 @@ class V3SettingMenuListItemFocus extends StatefulWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(8)),
     this.borderWidth = 2.0,
     this.onTap,
+    this.focusNode,
   });
 
   @override
@@ -37,6 +39,7 @@ class _V3SettingMenuListItemFocusState
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(builder: (context, settingsProvider, _) {
       return Focus(
+        focusNode: widget.focusNode,
         onFocusChange: _onFocusChange,
         onKeyEvent: (node, event) {
           if (event is KeyDownEvent &&

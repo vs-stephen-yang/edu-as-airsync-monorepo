@@ -44,7 +44,8 @@ class V3SettingsConnectivity extends StatelessWidget {
       return V3Setting2ndLayer(
         isDisable: settingsProvider.isConnectivityLock,
         child: V3SettingsRadioGroup(
-          firstFocus: true,
+          hasSubFocusItem: true,
+          focusOnInit: false,
           initSelectedValue: AppPreferences().connectivityType,
           radioList: radioItems,
           onChanged: (value) {

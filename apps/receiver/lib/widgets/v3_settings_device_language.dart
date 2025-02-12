@@ -8,7 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class V3SettingsDeviceLanguage extends StatelessWidget {
-  const V3SettingsDeviceLanguage({super.key});
+  final bool openedWithLogicalKey;
+
+  const V3SettingsDeviceLanguage(
+      {super.key, required this.openedWithLogicalKey});
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +31,14 @@ class V3SettingsDeviceLanguage extends StatelessWidget {
               title: S.of(context).main_language_title,
             )),
         Positioned(
-          top: 47,
+          top: 57,
           left: 13,
           right: 13,
           bottom: 13,
           child: SingleChildScrollView(
             child: V3SettingsRadioGroup(
-              firstFocus: true,
+              hasSubFocusItem: true,
+              focusOnInit: openedWithLogicalKey,
               initSelectedValue: languageProvider.language,
               radioList: languageProvider.localeMap.keys.map((key) {
                 return V3SettingsRadioGroupItem(
