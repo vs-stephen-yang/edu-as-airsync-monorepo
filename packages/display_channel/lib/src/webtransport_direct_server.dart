@@ -58,7 +58,6 @@ class WebTransportDirectServer implements FlutterWebtransportListener {
         _store.handleNewConnection(clientId, connection);
       },
       (ConnectionRequest connectionRequest) {
-        //TODO: remove?
         // Apply rate limiting to connection requests.
         if (connectionRequest.clientIpAddress != null) {
           if (!_rateLimiter.allowRequest(connectionRequest.clientIpAddress!)) {
@@ -87,8 +86,8 @@ class WebTransportDirectServer implements FlutterWebtransportListener {
   }
 
   @override
-  void onConnect(String connId, String queryStr) {
-    _connectionServer?.onConnect(connId, queryStr);
+  void onConnect(String connId, String queryStr, String clientIp) {
+    _connectionServer?.onConnect(connId, queryStr, clientIp);
   }
 
   @override

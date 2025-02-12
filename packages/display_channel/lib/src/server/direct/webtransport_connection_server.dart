@@ -26,7 +26,7 @@ class WebTransportConnectionServer {
   });
 
   ConnectionRequest? _generateConnectionRequest(
-      Map<String, String> parameters) {
+      Map<String, String> parameters, String clientIp) {
     final clientId = parameters['clientId'];
     final token = parameters['token'];
     final displayCode = parameters['displayCode'];
@@ -35,16 +35,16 @@ class WebTransportConnectionServer {
       return null;
     }
 
-    return ConnectionRequest(clientId, token, displayCode, null);
+    return ConnectionRequest(clientId, token, displayCode, clientIp);
   }
 
-  Future onConnect(String connId, String queryStr) async {
+  Future onConnect(String connId, String queryStr, String clientIp) async {
     final Map<String, dynamic> decodedMap = await jsonDecode(queryStr);
     Map<String, String> parameters = decodedMap.map(
           (key, value) => MapEntry(key, value.toString()),
     );
 
-    final connectionRequest = _generateConnectionRequest(parameters);
+    final connectionRequest = _generateConnectionRequest(parameters, clientIp);
 
     if (connectionRequest == null) {
       await _webTransport.closeWebTransportConn(connId);
