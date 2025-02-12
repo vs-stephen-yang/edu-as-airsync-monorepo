@@ -18,6 +18,7 @@ class GooglecastMirrorSession
  public:
   GooglecastMirrorSession(
       const std::string& mirror_id,
+      const std::string& device_name,
       MirrorListener& mirror_listener,
       openscreen::cast::CastMirrorSessionPtr session,
       const openscreen::cast::MediaFormats& formats);
@@ -63,6 +64,8 @@ class GooglecastMirrorSession
   void OnMirrorStop();
 
   const std::string mirror_id_;
+  std::string device_name_;
+
   MirrorListener& mirror_listener_;
 
   openscreen::cast::CastMirrorSessionPtr session_;

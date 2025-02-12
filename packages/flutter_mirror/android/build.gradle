@@ -73,7 +73,7 @@ android {
 dependencies {
     implementation 'com.google.oboe:oboe:1.7.0'
     implementation 'com.viewsonic.airplay:airplay:0.17.0'
-    implementation 'com.viewsonic.googlecast:googlecast:0.9.2'
+    implementation 'com.viewsonic.googlecast:googlecast:0.10.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'

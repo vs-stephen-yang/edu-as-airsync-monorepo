@@ -33,10 +33,12 @@ static std::optional<AudioCodecType> MapAudioCodec(
 
 GooglecastMirrorSession::GooglecastMirrorSession(
     const std::string& mirror_id,
+    const std::string& device_name,
     MirrorListener& mirror_listener,
     cast::CastMirrorSessionPtr session,
     const openscreen::cast::MediaFormats& formats)
     : mirror_id_(mirror_id),
+      device_name_(device_name),
       mirror_listener_(mirror_listener),
       session_(session),
       formats_(formats) {
@@ -160,7 +162,7 @@ SurfaceTexture GooglecastMirrorSession::GetTexture() {
   return media_session_->GetTexture();
 }
 std::string GooglecastMirrorSession::GetSourceDisplayName() {
-  return "";
+  return device_name_;
 }
 
 MirrorType GooglecastMirrorSession::GetMirrorType() {

@@ -1,9 +1,9 @@
 #include "googlecast/googlecast_receiver.h"
 #include <assert.h>
 #include <sstream>
+#include "googlecast_utils.h"
 #include "service_info.h"
 #include "util/log.h"
-#include "googlecast_utils.h"
 
 static const std::string kMirrorIdPrefix = "googlecast-";
 
@@ -11,6 +11,15 @@ static std::string FormatMirrorId(unsigned int seq) {
   std::stringstream strm;
 
   strm << kMirrorIdPrefix << seq;
+  return strm.str();
+}
+
+static std::string FormatSenderDeviceName(
+    const std::string& sender_ip,
+    unsigned int seq) {
+  std::stringstream strm;
+
+  strm << sender_ip << "-" << seq;
   return strm.str();
 }
 
@@ -70,16 +79,19 @@ bool GooglecastReceiver::OnServiceUnregister(
 // a mirror session starts
 bool GooglecastReceiver::OnMirrorStart(
     openscreen::cast::CastMirrorSessionPtr sess,
+    const std::string& sender_ip,
     const openscreen::cast::MediaFormats& media_formats) {
   ALOGD("GooglecastReceiver::OnMirrorStart()");
 
   mirror_increment_seq_ += 1;
 
   std::string mirror_id = FormatMirrorId(mirror_increment_seq_);
+  std::string device_name = FormatSenderDeviceName(sender_ip, mirror_increment_seq_);
 
   // create a wrapper for the mirror session
   auto session = std::make_shared<GooglecastMirrorSession>(
       mirror_id,
+      device_name,
       mirror_listener_,
       sess,
       media_formats);

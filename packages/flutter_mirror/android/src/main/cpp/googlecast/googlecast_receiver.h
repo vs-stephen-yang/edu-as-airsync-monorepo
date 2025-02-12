@@ -33,6 +33,7 @@ class GooglecastReceiver
 
   virtual bool OnMirrorStart(
       openscreen::cast::CastMirrorSessionPtr session,
+      const std::string& sender_ip,
       const openscreen::cast::MediaFormats& formats) override;
 
   virtual void OnCredentialsRequest(
