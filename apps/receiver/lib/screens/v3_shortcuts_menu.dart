@@ -144,9 +144,8 @@ class V3ShortcutsMenu extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
-                          color: ChannelProvider.isModeratorMode
-                              ? context.tokens.color.vsdslColorOnSurfaceVariant
-                              : context.tokens.color.vsdslColorOnSurfaceInverse,
+                          color:
+                              context.tokens.color.vsdslColorOnSurfaceInverse,
                         ),
                       ),
                       V3Focus(
@@ -173,46 +172,35 @@ class V3ShortcutsMenu extends StatelessWidget {
                               return SizedBox(
                                 height: 21,
                                 child: IconButton(
-                                  icon: Opacity(
-                                    opacity: ChannelProvider.isModeratorMode
-                                        ? 0.32
-                                        : 1,
-                                    child: Image(
-                                      image: Svg(mirrorStateProvider
-                                              .airplayEnabled
-                                          ? 'assets/images/ic_switch_on.svg'
-                                          : 'assets/images/ic_switch_off.svg'),
-                                    ),
+                                  icon: Image(
+                                    image: Svg(mirrorStateProvider
+                                            .airplayEnabled
+                                        ? 'assets/images/ic_switch_on.svg'
+                                        : 'assets/images/ic_switch_off.svg'),
                                   ),
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(),
-                                  onPressed: ChannelProvider.isModeratorMode
-                                      ? null
-                                      : () {
-                                          ChannelProvider channelProvider =
-                                              Provider.of<ChannelProvider>(
-                                                  context,
-                                                  listen: false);
-                                          if (mirrorStateProvider
-                                              .airplayEnabled) {
-                                            mirrorStateProvider.stopAirPlay();
-                                            channelProvider.blockRtcConnection =
-                                                false;
-                                          } else {
-                                            mirrorStateProvider.startAirPlay();
-                                            channelProvider.blockRtcConnection =
-                                                true;
-                                          }
+                                  onPressed: () {
+                                    ChannelProvider channelProvider =
+                                        Provider.of<ChannelProvider>(context,
+                                            listen: false);
+                                    if (mirrorStateProvider.airplayEnabled) {
+                                      mirrorStateProvider.stopAirPlay();
+                                      channelProvider.blockRtcConnection =
+                                          false;
+                                    } else {
+                                      mirrorStateProvider.startAirPlay();
+                                      channelProvider.blockRtcConnection = true;
+                                    }
 
-                                          trackEvent(
-                                            'click_airplay',
-                                            EventCategory.quickMenu,
-                                            target: mirrorStateProvider
-                                                    .airplayEnabled
-                                                ? 'on'
-                                                : 'off',
-                                          );
-                                        },
+                                    trackEvent(
+                                      'click_airplay',
+                                      EventCategory.quickMenu,
+                                      target: mirrorStateProvider.airplayEnabled
+                                          ? 'on'
+                                          : 'off',
+                                    );
+                                  },
                                 ),
                               );
                             }),
@@ -243,48 +231,36 @@ class V3ShortcutsMenu extends StatelessWidget {
                               return SizedBox(
                                 height: 21,
                                 child: IconButton(
-                                  icon: Opacity(
-                                    opacity: ChannelProvider.isModeratorMode
-                                        ? 0.32
-                                        : 1,
-                                    child: Image(
-                                      image: Svg(mirrorStateProvider
-                                              .googleCastEnabled
-                                          ? 'assets/images/ic_switch_on.svg'
-                                          : 'assets/images/ic_switch_off.svg'),
-                                    ),
+                                  icon: Image(
+                                    image: Svg(mirrorStateProvider
+                                            .googleCastEnabled
+                                        ? 'assets/images/ic_switch_on.svg'
+                                        : 'assets/images/ic_switch_off.svg'),
                                   ),
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(),
-                                  onPressed: ChannelProvider.isModeratorMode
-                                      ? null
-                                      : () {
-                                          ChannelProvider channelProvider =
-                                              Provider.of<ChannelProvider>(
-                                                  context,
-                                                  listen: false);
-                                          if (mirrorStateProvider
-                                              .googleCastEnabled) {
-                                            mirrorStateProvider
-                                                .stopGoogleCast();
-                                            channelProvider.blockRtcConnection =
-                                                false;
-                                          } else {
-                                            mirrorStateProvider
-                                                .startGoogleCast();
-                                            channelProvider.blockRtcConnection =
-                                                true;
-                                          }
+                                  onPressed: () {
+                                    ChannelProvider channelProvider =
+                                        Provider.of<ChannelProvider>(context,
+                                            listen: false);
+                                    if (mirrorStateProvider.googleCastEnabled) {
+                                      mirrorStateProvider.stopGoogleCast();
+                                      channelProvider.blockRtcConnection =
+                                          false;
+                                    } else {
+                                      mirrorStateProvider.startGoogleCast();
+                                      channelProvider.blockRtcConnection = true;
+                                    }
 
-                                          trackEvent(
-                                            'click_google_cast',
-                                            EventCategory.quickMenu,
-                                            target: mirrorStateProvider
-                                                    .googleCastEnabled
-                                                ? 'on'
-                                                : 'off',
-                                          );
-                                        },
+                                    trackEvent(
+                                      'click_google_cast',
+                                      EventCategory.quickMenu,
+                                      target:
+                                          mirrorStateProvider.googleCastEnabled
+                                              ? 'on'
+                                              : 'off',
+                                    );
+                                  },
                                 ),
                               );
                             }),
@@ -315,46 +291,36 @@ class V3ShortcutsMenu extends StatelessWidget {
                               return SizedBox(
                                 height: 21,
                                 child: IconButton(
-                                  icon: Opacity(
-                                    opacity: ChannelProvider.isModeratorMode
-                                        ? 0.32
-                                        : 1,
-                                    child: Image(
-                                      image: Svg(mirrorStateProvider
-                                              .miracastEnabled
-                                          ? 'assets/images/ic_switch_on.svg'
-                                          : 'assets/images/ic_switch_off.svg'),
-                                    ),
+                                  icon: Image(
+                                    image: Svg(mirrorStateProvider
+                                            .miracastEnabled
+                                        ? 'assets/images/ic_switch_on.svg'
+                                        : 'assets/images/ic_switch_off.svg'),
                                   ),
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(),
-                                  onPressed: ChannelProvider.isModeratorMode
-                                      ? null
-                                      : () {
-                                          ChannelProvider channelProvider =
-                                              Provider.of<ChannelProvider>(
-                                                  context,
-                                                  listen: false);
-                                          if (mirrorStateProvider
-                                              .miracastEnabled) {
-                                            mirrorStateProvider.stopMiracast();
-                                            channelProvider.blockRtcConnection =
-                                                false;
-                                          } else {
-                                            mirrorStateProvider.startMiracast();
-                                            channelProvider.blockRtcConnection =
-                                                true;
-                                          }
+                                  onPressed: () {
+                                    ChannelProvider channelProvider =
+                                        Provider.of<ChannelProvider>(context,
+                                            listen: false);
+                                    if (mirrorStateProvider.miracastEnabled) {
+                                      mirrorStateProvider.stopMiracast();
+                                      channelProvider.blockRtcConnection =
+                                          false;
+                                    } else {
+                                      mirrorStateProvider.startMiracast();
+                                      channelProvider.blockRtcConnection = true;
+                                    }
 
-                                          trackEvent(
-                                            'click_miracast',
-                                            EventCategory.quickMenu,
-                                            target: mirrorStateProvider
-                                                    .miracastEnabled
-                                                ? 'on'
-                                                : 'off',
-                                          );
-                                        },
+                                    trackEvent(
+                                      'click_miracast',
+                                      EventCategory.quickMenu,
+                                      target:
+                                          mirrorStateProvider.miracastEnabled
+                                              ? 'on'
+                                              : 'off',
+                                    );
+                                  },
                                 ),
                               );
                             }),
