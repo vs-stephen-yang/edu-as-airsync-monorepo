@@ -1,13 +1,21 @@
+import 'dart:async';
+
+import 'package:cron/cron.dart';
+
 import 'flutter_webtransport_config.dart';
 import 'flutter_webtransport_listener.dart';
 import 'flutter_webtransport_platform_interface.dart';
 
 class FlutterWebtransport {
+  late FlutterWebtransportListener _listener;
+
   void registerListener(FlutterWebtransportListener listener) {
+    _listener = listener;
     return FlutterWebtransportPlatform.instance.registerListener(listener);
   }
 
   Future<void> startWebtransportServer(FlutterWebtransportConfig config) {
+    scheduleTask();
     return FlutterWebtransportPlatform.instance.startWebTransportServer(config);
   }
 
@@ -25,5 +33,21 @@ class FlutterWebtransport {
 
   Future<void> updateCertificate(FlutterWebtransportConfig config) {
     return FlutterWebtransportPlatform.instance.updateCertificate(config);
+  }
+
+  void scheduleTask() {
+    final cron = Cron();
+
+    Duration offset = DateTime.now().timeZoneOffset;
+
+    int checkCertificateValidHour = 0;
+    int checkCertificateValidLocalHour = checkCertificateValidHour + offset.inHours;
+
+    // Runs every day at midnight (00:00)
+    cron.schedule(Schedule.parse('0 $checkCertificateValidLocalHour * * *'), () async {
+      _listener.onRequestCertificate();
+    });
+
+    print("Cron job started");
   }
 }

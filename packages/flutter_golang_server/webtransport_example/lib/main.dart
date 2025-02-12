@@ -240,4 +240,9 @@ class _MyAppState extends State<MyApp> implements FlutterWebtransportListener {
       _message = '$clientId: connected, queryStr: $queryStr, clientIp: $clientIp';
     });
   }
+
+  @override
+  void onRequestCertificate() {
+    print("Call onRequestCertificate on Listener");
+  }
 }
