@@ -110,9 +110,9 @@ class _V3QRcodeScanState extends State<V3QRcodeScan> {
       (scanData) async {
         if (connecting) return;
         String? inputString = scanData.code;
-        if (inputString != null) {
-          Uri uri = Uri.parse(inputString);
-          String? quickConnectValue = uri.queryParameters['quick_connect'];
+        if (inputString != null && isValidQuickConnectUrl(inputString)) {
+          Uri? uri = Uri.tryParse(inputString);
+          String? quickConnectValue = uri?.queryParameters['quick_connect'];
           if (quickConnectValue != null) {
             List<String> parts = quickConnectValue.split('@');
             if (parts.length == 3) {
@@ -126,6 +126,12 @@ class _V3QRcodeScanState extends State<V3QRcodeScan> {
         }
       },
     );
+  }
+
+  bool isValidQuickConnectUrl(String url) {
+    // 確保 quick_connect參數符合"數字@數字@字母或數字_字母"格式
+    final RegExp quickConnectPattern = RegExp(r"quick_connect=\d+@\d+@[\w.]+");
+    return quickConnectPattern.hasMatch(url);
   }
 
   Future<void> startConnect(
