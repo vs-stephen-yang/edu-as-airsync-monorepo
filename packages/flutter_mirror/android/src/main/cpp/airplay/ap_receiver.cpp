@@ -85,6 +85,7 @@ void ApReceiver::OnAuthRequest(
 
 // a mirror session starts
 bool ApReceiver::OnMirrorStart(
+    const std::string& device_name,
     ap::AirplayMirrorSessionPtr sess) {
   ALOGD("ApReceiver::OnMirrorStart()");
 
@@ -95,6 +96,7 @@ bool ApReceiver::OnMirrorStart(
   // create a wrapper for the mirror session
   auto session = std::make_shared<ApMirrorSession>(
       mirror_id,
+      device_name,
       mirror_listener_,
       sess);
 

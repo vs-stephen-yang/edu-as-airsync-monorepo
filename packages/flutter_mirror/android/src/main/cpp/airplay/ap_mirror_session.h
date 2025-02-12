@@ -16,6 +16,7 @@ class ApMirrorSession
  public:
   ApMirrorSession(
       const std::string& mirror_id,
+      const std::string& device_name,
       MirrorListener& mirror_listener,
       ap::AirplayMirrorSessionPtr session);
 
@@ -61,6 +62,8 @@ class ApMirrorSession
 
  private:
   std::string mirror_id_;
+  std::string device_name_;
+
   MirrorListener& mirror_listener_;
 
   ap::AirplayMirrorSessionPtr session_;
