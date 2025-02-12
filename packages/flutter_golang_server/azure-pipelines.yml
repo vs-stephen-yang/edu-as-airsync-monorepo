@@ -31,7 +31,7 @@ steps:
   - task: Cache@2
     displayName: Cache GO packages
     inputs:
-      key: 'go | "$(Agent.OS)" | libionsfu/go.mod'
+      key: 'go | "$(Agent.OS)" | go_lib/go.mod'
       restoreKeys: |
         go | "$(Agent.OS)"
       path: $(GOCACHE)
@@ -40,8 +40,8 @@ steps:
     displayName: "Run GO static analysis"
     inputs:
       command: "vet"
-      arguments: "./ionsfu"
-      workingDirectory: "$(System.DefaultWorkingDirectory)/libionsfu"
+      arguments: "./server"
+      workingDirectory: "$(System.DefaultWorkingDirectory)/go_lib"
 
   - task: Go@0
     displayName: "Install gomobile"
@@ -59,18 +59,17 @@ steps:
         $Env:Path += [IO.Path]::PathSeparator + "$GOPATH\bin"
         & $GOPATH\bin\gomobile init
         & go get -d golang.org/x/mobile/cmd/gomobile
-      workingDirectory: "$(Build.SourcesDirectory)/libionsfu"
+      workingDirectory: "$(Build.SourcesDirectory)/go_lib"
 
   - task: PowerShell@2
-    displayName: "Build libionsfu.aar"
+    displayName: "Build lib-server.aar"
     inputs:
       targetType: "inline"
       script: |
         $GOPATH = @(go env GOPATH)
         $Env:Path += [IO.Path]::PathSeparator + "$GOPATH\bin"
-        & $GOPATH\bin\gomobile bind -v -o ../android/libs/libionsfu.aar -target=android -androidapi 24 ./ionsfu
-
-      workingDirectory: "$(Build.SourcesDirectory)/libionsfu"
+        & $GOPATH\bin\gomobile bind -v -o ../android/libs/lib-server.aar -target=android -androidapi 24 ./server
+      workingDirectory: "$(Build.SourcesDirectory)/go_lib"
 
   - script: curl $(Flutter.Url) --output $(Pipeline.Workspace)/flutter.zip
     displayName: Download the flutter SDK
