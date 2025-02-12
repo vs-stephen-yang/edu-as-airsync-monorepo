@@ -18,6 +18,7 @@ enum TunnelStatus {
 
 class ChannelServer {
   DisplayDirectServer? _directServer;
+  WebTransportDirectServer? _webTransportDirectServer;
   DisplayTunnelServer? _tunnelServer;
 
   bool _tunnelEnabled = false;
@@ -104,11 +105,32 @@ class ChannelServer {
         (ConnectionRequest connectionRequest) =>
             verifyConnectRequest(connectionRequest, isDirectConnect: true),
       );
+      _webTransportDirectServer = WebTransportDirectServer(
+        reconnectTimeout: channelReconnectTimeoutInStreaming,
+        onNewDirectChannel,
+        (ConnectionRequest connectionRequest) =>
+            verifyConnectRequest(connectionRequest, isDirectConnect: true),
+      );
+
       await _directServer?.start(
         DisplayServiceBroadcast.instance.directChannelPort,
         securityContext: securityContext,
       );
       log.info('Direct channel server has started');
+
+      // TODO: read port from config
+      WebTransportCertificate webTransportCertificate = WebTransportCertificate([], []);
+      try {
+        webTransportCertificate = await getWebtransportCert();
+        await _webTransportDirectServer?.start(
+            8443,
+            certPem: webTransportCertificate.certPem,
+            keyPem: webTransportCertificate.keyPem
+        );
+        log.info('WebTransport channel server has started');
+      } catch (e) {
+        log.warning('Failed to start webTransport server: $e');
+      }
     } on Exception catch (e) {
       log.severe('Failed to start direct channel server', e);
     }
@@ -119,6 +141,12 @@ class ChannelServer {
       log.info('Stopping direct channel server');
       _directServer?.stop();
       _directServer = null;
+    }
+
+    if (_webTransportDirectServer != null) {
+      log.info('Stopping webTransport server');
+      _webTransportDirectServer?.stop();
+      _webTransportDirectServer = null;
     }
   }
 
