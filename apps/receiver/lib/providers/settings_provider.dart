@@ -194,7 +194,6 @@ class _V3SettingMenuFocusManager {
     subFocusNode = FocusNode();
   }
 
-  bool _init = true;
   int _currentMainIndex = 0;
 
   void focusMenuPrimary() {
@@ -239,11 +238,6 @@ class _V3SettingMenuFocusManager {
       if (node.hasFocus) {
         return;
       }
-    }
-
-    if (_init) {
-      _init = false;
-      return;
     }
 
     subFocusNode.requestFocus();

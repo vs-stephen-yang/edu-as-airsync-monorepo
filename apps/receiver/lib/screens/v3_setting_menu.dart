@@ -204,22 +204,28 @@ class _V3SettingMenuState extends State<V3SettingMenu> {
                         builder: (context) {
                           final bool openedWithLogicalKey = HardwareKeyboard
                               .instance.logicalKeysPressed.isNotEmpty;
-                          if (openedWithLogicalKey) {
+
+                          // setting language menu page will trigger rebuild page when by itself, if that so need to provide focus to sub focus node
+                          if (openedWithLogicalKey &&
+                              settingsProvider.currentPage !=
+                                  SettingPageState.deviceLanguage) {
+                            settingsProvider.resetSubFocusNode();
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               settingsProvider.requestSubFocus();
                             });
                           }
+
                           switch (settingsProvider.currentPage) {
                             case SettingPageState.deviceSetting:
                               return const V3SettingsDevice();
                             case SettingPageState.deviceName:
-                              settingsProvider.resetSubFocusNode();
                               return V3SettingsDeviceName(
                                   focusNode: settingsProvider.subFocusNode ??
                                       FocusNode(),
                                   openedWithLogicalKey: openedWithLogicalKey);
                             case SettingPageState.deviceLanguage:
-                              return const V3SettingsDeviceLanguage();
+                              return V3SettingsDeviceLanguage(
+                                  openedWithLogicalKey: openedWithLogicalKey);
                             case SettingPageState.broadcast:
                               return const V3SettingsBroadcast();
                             case SettingPageState.broadcastBoards:
