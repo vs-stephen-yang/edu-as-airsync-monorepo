@@ -44,7 +44,7 @@ class DisplayChannelConnector {
 
   final String _encodedDisplayCode;
   final DisplayCode _displayCode;
-  final List<String>? _localIpAddresses;
+  final List<String>? _remoteIpAddresses;
   final String _otp;
 
   DisplayChannelClient? _tunnelClient;
@@ -70,7 +70,7 @@ class DisplayChannelConnector {
     required String clientId,
     required String otp,
     required DisplayCode displayCode,
-    List<String>? localIpAddresses,
+    List<String>? remoteIpAddresses,
     required String encodedDisplayCode,
     required CreateWebsocketClientConnection createConnectionTunnel,
     required CreateWebsocketClientConnection createConnectionDirect,
@@ -80,7 +80,7 @@ class DisplayChannelConnector {
   })  : _clientId = clientId,
         _otp = otp,
         _displayCode = displayCode,
-        _localIpAddresses = localIpAddresses,
+        _remoteIpAddresses = remoteIpAddresses,
         _encodedDisplayCode = encodedDisplayCode,
         _createConnectionTunnel = createConnectionTunnel,
         _createConnectionDirect = createConnectionDirect,
@@ -92,18 +92,12 @@ class DisplayChannelConnector {
     int? directPort,
   }) {
     // open direct channels
-    if (directPort != null && _localIpAddresses?.isNotEmpty == true) {
+    if (directPort != null && _remoteIpAddresses?.isNotEmpty == true) {
       _useDirect = true;
 
-      // Try all available IP addresses
-      for (final localIp in _localIpAddresses!) {
-        final remoteIpAddress = createRemoteIp(
-          localIp,
-          _displayCode.instanceGroupId,
-        );
-
+      for (final remoteIp in _remoteIpAddresses!) {
         _openDirectChannel(
-          remoteIpAddress,
+          remoteIp,
           directPort,
         );
       }
@@ -286,7 +280,7 @@ class DisplayChannelConnector {
   _onConnectFailed() {
     if (_useDirect && _useTunnel) {
       // dual connections: direct and tunnel
-      if (_failedDirectIps.length == _localIpAddresses!.length &&
+      if (_failedDirectIps.length == _remoteIpAddresses!.length &&
           _tunnelFailed) {
         // Only report error if ALL direct connections have failed AND tunnel has failed
         final error = _mapDualConnectError();
@@ -302,7 +296,7 @@ class DisplayChannelConnector {
           _tunnelClient?.closeReason?.code,
         );
         _onOpenError(error);
-      } else if (_failedDirectIps.length == _localIpAddresses!.length) {
+      } else if (_failedDirectIps.length == _remoteIpAddresses!.length) {
         // For direct-only, only report error if ALL direct connections have failed
         ChannelConnectorError error = ChannelConnectorError.unknownError;
         for (final client in _directClients.values) {
