@@ -114,4 +114,16 @@ void main() {
           '10.255.255.255'
         ]));
   });
+
+  test('createRemoteIpCandidates() with no local IP address', () {
+    // arrange
+    // action
+    final actual = createRemoteIpCandidates(
+      DisplayCode(instanceGroupId: 1),
+      [],
+    );
+
+    //assert
+    expect(actual, unorderedEquals(['192.0.0.1', '172.0.0.1', '10.0.0.1']));
+  });
 }
