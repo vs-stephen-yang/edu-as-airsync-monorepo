@@ -106,6 +106,7 @@ class ChannelServer {
             verifyConnectRequest(connectionRequest, isDirectConnect: true),
       );
       _webTransportDirectServer = WebTransportDirectServer(
+        getWebTransportCert,
         reconnectTimeout: channelReconnectTimeoutInStreaming,
         onNewDirectChannel,
         (ConnectionRequest connectionRequest) =>
@@ -118,18 +119,17 @@ class ChannelServer {
       );
       log.info('Direct channel server has started');
 
-      // TODO: read port from config
-      WebTransportCertificate? webTransportCertificate = WebTransportCertificate([], []);
       try {
-        webTransportCertificate = await getWebTransportCert();
-        if (webTransportCertificate != null) {
-          await _webTransportDirectServer?.start(
-              8443,
-              certPem: webTransportCertificate.certPem,
-              keyPem: webTransportCertificate.keyPem
-          );
-          log.info('WebTransport channel server has started');
+        WebTransportCertificate? webTransportCertificate = await getWebTransportCert();
+        if (webTransportCertificate == null) {
+          return;
         }
+        await _webTransportDirectServer?.start(
+            8888,
+            certPem: webTransportCertificate.certPem,
+            keyPem: webTransportCertificate.keyPem
+        );
+        log.info('WebTransport channel server has started');
       } catch (e) {
         log.warning('Failed to start webTransport server: $e');
       }
