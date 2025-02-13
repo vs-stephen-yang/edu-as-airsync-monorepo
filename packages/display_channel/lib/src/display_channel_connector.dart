@@ -48,18 +48,18 @@ class DisplayChannelConnector {
   final String _otp;
 
   DisplayChannelClient? _tunnelClient;
-  DisplayChannelClient? _directClient;
+  final _directClients = <String, DisplayChannelClient>{};
 
   StreamSubscription? _tunnelSubscription;
-  StreamSubscription? _directSubscription;
+  final _directSubscriptions = <String, StreamSubscription<ChannelState>>{};
 
   bool _connected = false;
 
   bool _useDirect = false;
   bool _useTunnel = false;
 
-  bool _directFailed = false;
   bool _tunnelFailed = false;
+  final Set<String> _failedDirectIps = <String>{};
 
   FetchChannelTunnelUrlError? _tunnelUrlFetchError;
 
@@ -88,23 +88,25 @@ class DisplayChannelConnector {
         _onOpened = onOpened,
         _onOpenError = onOpenError;
 
-  open({
+  void open({
     int? directPort,
   }) {
-    // open direct channel
+    // open direct channels
     if (directPort != null && _localIpAddresses?.isNotEmpty == true) {
       _useDirect = true;
 
-      final remoteIpAddress = createRemoteIp(
-        // TODO: handle multiple local IP addresses
-        _localIpAddresses![0],
-        _displayCode.instanceGroupId,
-      );
+      // Try all available IP addresses
+      for (final localIp in _localIpAddresses!) {
+        final remoteIpAddress = createRemoteIp(
+          localIp,
+          _displayCode.instanceGroupId,
+        );
 
-      _openDirectChannel(
-        remoteIpAddress,
-        directPort,
-      );
+        _openDirectChannel(
+          remoteIpAddress,
+          directPort,
+        );
+      }
     }
 
     // open tunnel channel
@@ -166,8 +168,7 @@ class DisplayChannelConnector {
     });
   }
 
-  // open direct channel
-  _openDirectChannel(
+  void _openDirectChannel(
     String ipAddress,
     int port,
   ) {
@@ -178,48 +179,70 @@ class DisplayChannelConnector {
     );
 
     // create a channel client
-    _directClient = DisplayChannelClient(
+    final directClient = DisplayChannelClient(
       _clientId,
       uri,
       _createConnectionDirect,
     );
+    _directClients[ipAddress] = directClient;
 
     // open the client
-    _directClient!.openDirectChannel(
+    directClient.openDirectChannel(
       token: _otp,
       displayCode: _encodedDisplayCode,
     );
 
-    _directSubscription =
-        _directClient!.stateStream.listen((ChannelState state) {
+    _directSubscriptions[ipAddress] =
+        directClient.stateStream.listen((ChannelState state) {
       if (state == ChannelState.connected) {
-        _onDirectConnected();
+        _onDirectConnected(ipAddress);
       } else if (state == ChannelState.closed) {
-        _directFailed = true;
-        _onConnectFailed();
+        _failedDirectIps.add(ipAddress);
+        _onDirectFailed(ipAddress);
       }
     });
+  }
+
+  void _onDirectFailed(String ipAddress) {
+    _failedDirectIps.add(ipAddress);
+    _onConnectFailed();
   }
 
   // One of channels is connected
   _handleChannelOpened(Channel channel, bool isDirectChannel) {
     _tunnelSubscription?.cancel();
-    _directSubscription?.cancel();
+
+    // Cancel all direct subscriptions
+    for (final subscription in _directSubscriptions.values) {
+      subscription.cancel();
+    }
+    _directSubscriptions.clear();
 
     _connected = true;
     _onOpened(channel, isDirectChannel);
   }
 
+  // Close all direct connections except the successful one
+  void _closeOtherDirectConnections(String successfulIp) {
+    for (final entry in _directClients.entries) {
+      if (entry.key != successfulIp) {
+        entry.value.close(null);
+        _directSubscriptions[entry.key]?.cancel();
+      }
+    }
+  }
+
   // direct channel is connected
-  _onDirectConnected() {
+  void _onDirectConnected(String ipAddress) {
     if (_connected) {
-      // Too late. The tunnel channel is already connected.
-      // Close the direct channel
-      _directClient?.close(null);
+      // Too late. Another channel is already connected.
+      // Close this direct channel
+      _directClients[ipAddress]?.close(null);
       return;
     }
 
-    _handleChannelOpened(_directClient!, true);
+    _closeOtherDirectConnections(ipAddress);
+    _handleChannelOpened(_directClients[ipAddress]!, true);
   }
 
   // tunnel channel is connected
@@ -241,10 +264,18 @@ class DisplayChannelConnector {
       _tunnelClient?.closeReason?.code,
     );
 
-    //direct error
-    final directError = mapCloseCodeToChannelConnectorError(
-      _directClient?.closeReason?.code,
-    );
+    //direct error - use first failed client's error code
+    ChannelConnectorError directError = ChannelConnectorError.unknownError;
+    if (_failedDirectIps.isNotEmpty) {
+      // Get error from any of the failed clients
+      for (final client in _directClients.values) {
+        if (client.closeReason != null) {
+          directError =
+              mapCloseCodeToChannelConnectorError(client.closeReason?.code);
+          break;
+        }
+      }
+    }
 
     return mapDualConnectError(
       directError,
@@ -255,8 +286,9 @@ class DisplayChannelConnector {
   _onConnectFailed() {
     if (_useDirect && _useTunnel) {
       // dual connections: direct and tunnel
-      if (_directFailed && _tunnelFailed) {
-        // both failed
+      if (_failedDirectIps.length == _localIpAddresses!.length &&
+          _tunnelFailed) {
+        // Only report error if ALL direct connections have failed AND tunnel has failed
         final error = _mapDualConnectError();
         _onOpenError(error);
       }
@@ -264,21 +296,22 @@ class DisplayChannelConnector {
       // single connection: direct or tunnel
       if (_useTunnel) {
         assert(_tunnelFailed);
-
-        // tunnel
+        // For tunnel-only, report error immediately since there's only one connection
         final error = mapTunnelChannelError(
           _tunnelUrlFetchError,
           _tunnelClient?.closeReason?.code,
         );
-
         _onOpenError(error);
-      } else {
-        assert(_directFailed);
-
-        // direct
-        final error = mapCloseCodeToChannelConnectorError(
-          _directClient?.closeReason?.code,
-        );
+      } else if (_failedDirectIps.length == _localIpAddresses!.length) {
+        // For direct-only, only report error if ALL direct connections have failed
+        ChannelConnectorError error = ChannelConnectorError.unknownError;
+        for (final client in _directClients.values) {
+          if (client.closeReason != null) {
+            error =
+                mapCloseCodeToChannelConnectorError(client.closeReason?.code);
+            break;
+          }
+        }
         _onOpenError(error);
       }
     }
