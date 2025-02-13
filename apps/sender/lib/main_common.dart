@@ -16,7 +16,6 @@ import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/providers/v3_demo_provider.dart';
-import 'package:display_cast_flutter/screens/home.dart';
 import 'package:display_cast_flutter/screens/v3_eula.dart';
 import 'package:display_cast_flutter/screens/v3_home.dart';
 import 'package:display_cast_flutter/screens/v3_splash_screen.dart';
@@ -231,15 +230,10 @@ class MyApp extends StatelessWidget {
                         : context.tokens.color.vsdswColorOnSurface,
                   ),
             ),
-            initialRoute: AppPreferences().showOldUI
-                ? '/home'
-                : kIsWeb
-                    ? '/v3home'
+            initialRoute: kIsWeb ? '/v3home'
                     : '/v3splash',
             navigatorKey: NavigationService.navigationKey,
             routes: {
-              // for 'navService.popUntil('/home')'
-              '/home': (context) => botToastBuilder(context, const Home()),
               // for 'navService.popUntil('/v3home')'
               '/v3home': (context) => botToastBuilder(context, const V3Home()),
               '/v3eula': (context) => const V3Eula(),

@@ -14,7 +14,6 @@ import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/settings/channel_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
-import 'package:display_cast_flutter/utilities/app_preferences.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -110,6 +109,7 @@ class ChannelProvider extends ChangeNotifier {
   bool isJoinDisplayRejected = false;
   bool isModeratorExitedRejected = false;
   bool isPresentRejected = false;
+  bool isReceiverRemoteScreenBusyRejected = false;
 
   bool get authorizeStatus => _authorizeStatus;
   bool _authorizeStatus = false;
@@ -320,7 +320,7 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.displayStatus:
           resetMessage();
           if (formattedDisplayCode.isNotEmpty) {
-            DataDisplayCode.getInstance().save(formattedDisplayCode);
+            unawaited(DataDisplayCode.getInstance().save(formattedDisplayCode));
           }
           _onDisplayStatus(message as DisplayStatusMessage);
           break;
@@ -338,8 +338,11 @@ class ChannelProvider extends ChangeNotifier {
             } else if (reason?.code ==
                 JoinDisplayRejectedReasonCode.moderatorExited.code) {
               isModeratorExitedRejected = true;
+            } else if (reason?.code ==
+                JoinDisplayRejectedReasonCode.receiverRemoteScreenBusy.code) {
+              isReceiverRemoteScreenBusyRejected = true;
             }
-            presentEnd();
+            unawaited(presentEnd());
           } else {
             if (reason?.code ==
                 JoinDisplayRejectedReasonCode.maxClientsReached.code) {
@@ -362,18 +365,18 @@ class ChannelProvider extends ChangeNotifier {
               // moderator mode need keep sender in moderator list,
               // do not send present end event.
             } else {
-              presentEnd();
+              unawaited(presentEnd());
             }
           }
           break;
         case ChannelMessageType.presentSignal:
-          WebRTCHelper().receiveSignalMessage(message as PresentSignalMessage);
+          unawaited(WebRTCHelper().receiveSignalMessage(message as PresentSignalMessage));
           break;
         case ChannelMessageType.stopPresent:
           // split-screen / moderator mode
           if (_moderatorStatus) {
-            presentStop();
-            _presentStateProvider?.presentModeratorWaitPage();
+            unawaited(presentStop());
+            unawaited(_presentStateProvider?.presentModeratorWaitPage());
           }
           break;
         case ChannelMessageType.allowPresent:
@@ -388,7 +391,7 @@ class ChannelProvider extends ChangeNotifier {
           await _handleStopRemoteScreen(message as StopRemoteScreenMessage);
           break;
         case ChannelMessageType.remoteScreenStatus:
-          _handleRemoteScreenState(message as RemoteScreenStatusMessage);
+          unawaited(_handleRemoteScreenState(message as RemoteScreenStatusMessage));
           break;
         case ChannelMessageType.remoteScreenInfo:
           await _handleRemoteScreenInfo(message as RemoteScreenInfoMessage);
@@ -423,8 +426,8 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   _handleInviteRemoteScreen(InviteRemoteScreenMessage message) async {
-    _presentStateProvider?.presentModeratorSharePage();
-    _requestRemoteScreen();
+    unawaited(_presentStateProvider?.presentModeratorSharePage());
+    unawaited(_requestRemoteScreen());
   }
 
   _handleStopRemoteScreen(StopRemoteScreenMessage message) async {
@@ -532,11 +535,11 @@ class ChannelProvider extends ChangeNotifier {
       },
       onRTCPeerConnectionState: _onRtcConnectionState,
       onStreamInterrupted: () async {
-        presentStop();
+        unawaited(presentStop());
         if (_moderatorStatus) {
-          _presentStateProvider?.presentModeratorWaitPage();
+          unawaited(_presentStateProvider?.presentModeratorWaitPage());
         } else {
-          presentEnd();
+          unawaited(presentEnd());
         }
       },
       onStopPresent: () {
@@ -597,12 +600,8 @@ class ChannelProvider extends ChangeNotifier {
 
     if (goIdleState) {
       resetMessage();
-      if (AppPreferences().showOldUI) {
-        navService.popUntil('/home');
-      } else {
-        navService.popUntil('/v3home');
-      }
-      _presentStateProvider?.presentMainPage();
+      navService.popUntil('/v3home');
+      unawaited(_presentStateProvider?.presentMainPage());
     }
 
     AnnotationModel.closeAnnotation();
@@ -689,14 +688,14 @@ class ChannelProvider extends ChangeNotifier {
     await remoteScreenClient?.remove();
     await closeChannel();
     _resetTimer();
-    _presentStateProvider?.presentMainPage();
+    unawaited(_presentStateProvider?.presentMainPage());
   }
 
   void removeShareRemoteScreenClient() async {
     await _remoteScreenClient?.sendStopRemoteScreenMessage();
     await remoteScreenClient?.remove();
     if (_moderatorStatus) {
-      _presentStateProvider?.presentModeratorWaitPage();
+      unawaited(_presentStateProvider?.presentModeratorWaitPage());
     }
   }
 
@@ -705,12 +704,12 @@ class ChannelProvider extends ChangeNotifier {
     _moderatorStatus = message.status!.moderator!;
     _authorizeStatus = message.status!.authorize!;
     deviceName = message.name;
-    _presentStateProvider?.presentSelectRolePage();
+    unawaited(_presentStateProvider?.presentSelectRolePage());
   }
 
   Future _requestRemoteScreen() async {
     _remoteScreenClient = RemoteScreenClient(_channel);
-    _remoteScreenClient?.sendStartRemoteScreenMessage();
+    unawaited(_remoteScreenClient?.sendStartRemoteScreenMessage());
   }
 
   void _onChannelOpenFailed(ChannelConnectorError error) {
@@ -728,7 +727,7 @@ class ChannelProvider extends ChangeNotifier {
       case RemoteScreenStatus.rejected:
         _resetTimer();
         Toast.makeToast(S.current.toast_enable_remote_screen);
-        _presentStateProvider?.presentMainPage();
+        unawaited(_presentStateProvider?.presentMainPage());
         break;
       case RemoteScreenStatus.kicked:
         removeRemoteScreenClient();

@@ -94,7 +94,7 @@
   "v3_main_privacy": "Política de Privacidad",
   "v3_main_terms": "Términos de uso",
   "v3_main_accessibility": "Accesibilidad",
-  "v3_main_copy_rights": "Copyright © ViewSonic Corporation 2024. Todos los derechos reservados.",
+  "v3_main_copy_rights": "Copyright © ViewSonic Corporation {year}. Todos los derechos reservados.",
   "v3_main_present_title": "Comparte tu pantalla",
   "v3_main_present_subtitle": "Sigue los pasos para empezar.",
   "v3_main_display_code": "Código de pantalla",
@@ -154,7 +154,7 @@
   "v3_select_screen_ios_countdown": "Tiempo restante",
   "v3_select_screen_ios_start_sharing": "Comenzar a compartir",
   "v3_setting_title": "Configuraciones",
-  "v3_setting_app_version": "AirSync ©2024. versión %s",
+  "v3_setting_app_version": "AirSync ©{year}. versión {version}",
   "v3_setting_language": "Idioma",
   "v3_setting_legal_policy": "Legal y privacidad",
   "v3_setting_knowledge_base": "Base de conocimientos",
@@ -175,5 +175,10 @@
   "v3_setting_software_update_no_internet_description": "Por favor, revisa tu conexión a Internet y vuelve a intentarlo.",
   "v3_present_moderator_exited": "El moderador está cerrado",
   "v3_present_moderator_exited_description": "El moderador está cerrado, por favor reconéctate.",
-  "v3_present_moderator_exited_action": "OK"
+  "v3_present_moderator_exited_action": "OK",
+  "v3_main_web_nonsupport": "Actualmente, solo se admiten los navegadores Chrome y Edge.",
+  "v3_main_web_nonsupport_confirm": "Aceptar",
+  "v3_receiver_remote_screen_busy_title": "La pantalla se está transmitiendo",
+  "v3_receiver_remote_screen_busy_description": "La pantalla se está transmitiendo a otras pantallas. Por favor, inténtelo de nuevo más tarde.",
+  "v3_receiver_remote_screen_busy_action": "Aceptar"
 }

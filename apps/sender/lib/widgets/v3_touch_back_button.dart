@@ -24,7 +24,7 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 299,
+      // width: 299,
       height: 66,
       decoration: BoxDecoration(
         color: context.tokens.color.vsdswColorSurface900,
@@ -46,6 +46,11 @@ class _V3TouchBackButtonState extends State<V3TouchBackButton> {
               fontSize: 18,
               fontWeight: FontWeight.w400,
               color: context.tokens.color.vsdswColorOnSurfaceInverse,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              right: context.tokens.spacing.vsdswSpacingMd.left,
             ),
           ),
           SizedBox(

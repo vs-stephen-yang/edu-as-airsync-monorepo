@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:display_channel/display_channel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,7 +13,7 @@ class WebRTCUtil {
 
   static saveIceGatheringContinually(bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("IceGatheringContinually", value);
+    unawaited(prefs.setBool("IceGatheringContinually", value));
   }
 
   static Future<bool> loadIceGatheringContinually() async {
@@ -22,7 +24,7 @@ class WebRTCUtil {
 
   static saveShowDebugOverlay(bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("ShowDebugOverlay", value);
+    unawaited(prefs.setBool("ShowDebugOverlay", value));
   }
 
   static Future<bool> loadShowDebugOverlay() async {

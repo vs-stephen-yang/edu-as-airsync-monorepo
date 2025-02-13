@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
@@ -51,10 +53,10 @@ class PresentSelectRole extends StatelessWidget {
 
             channelProvider.currentRole = JoinIntentType.present;
             if (channelProvider.moderatorStatus) {
-              presentStateProvider.presentModeratorNamePage();
+              unawaited(presentStateProvider.presentModeratorNamePage());
             } else {
               if (channelProvider.isConnectAvailable()) {
-                channelProvider.beginBasicMode();
+                unawaited(channelProvider.beginBasicMode());
               } else {
                 Toast.makeFeatureReconnectToast(
                     channelProvider.reconnectState,

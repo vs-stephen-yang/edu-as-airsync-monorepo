@@ -13,6 +13,7 @@ import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/v3_toast.dart';
 import 'package:display_cast_flutter/widgets/v3_message_dialog.dart';
 import 'package:display_cast_flutter/widgets/v3_present_device_list_button.dart';
+import 'package:display_cast_flutter/widgets/v3_present_idle_audio_driver_warning.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_button.dart';
 import 'package:display_cast_flutter/widgets/v3_present_idle_text_field.dart';
 import 'package:flutter/foundation.dart';
@@ -40,6 +41,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
   bool isSessionFullDialogOnScreen = false;
   bool isScreenFullDialogOnScreen = false;
   bool isModeratorExitedDialogOnScreen = false;
+  bool isReceiverRemoteScreenBusyDialogOnScreen = false;
 
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
@@ -122,6 +124,10 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
         channelProvider.isModeratorExitedRejected = false;
         _showModeratorExitedDialog();
       }
+      if (channelProvider.isReceiverRemoteScreenBusyRejected) {
+        channelProvider.isReceiverRemoteScreenBusyRejected = false;
+        _showReceiverRemoteScreenBusyDialog();
+      }
       if (channelProvider.totalSharingTime.isNotEmpty) {
         V3Toast().makeSharingTimeToast(
             context,
@@ -135,6 +141,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       fit: StackFit.expand,
       alignment: AlignmentDirectional.center,
       children: [
+        const V3PresentIdleAudioDriverWarning(),
         if (!kIsWeb && (Platform.isAndroid || Platform.isIOS))
           Positioned(
             top: 24,
@@ -244,7 +251,7 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
         await channelProvider.presentEnd(goIdleState: false);
         if (displayCode == "00000000000" && password == "0000") {
           demoProvider.isDemoMode = true;
-          demoProvider.presentSelectRoleDemoPage();
+          unawaited(demoProvider.presentSelectRoleDemoPage());
         } else {
           channelProvider.startConnect(
               formattedDisplayCode: displayCode,
@@ -336,6 +343,27 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       },
     ).then((_) {
       isModeratorExitedDialogOnScreen = false;
+      setState(() {});
+    });
+  }
+
+  _showReceiverRemoteScreenBusyDialog() async {
+    isReceiverRemoteScreenBusyDialogOnScreen = true;
+    FocusScope.of(context).unfocus();
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return V3MessageDialog(
+          stringTitle: S.of(context).v3_receiver_remote_screen_busy_title,
+          stringContent:
+              S.of(context).v3_receiver_remote_screen_busy_description,
+          stringAction: S.of(context).v3_receiver_remote_screen_busy_action,
+        );
+      },
+    ).then((_) {
+      isReceiverRemoteScreenBusyDialogOnScreen = false;
+      presentBtnKey.currentState?.setEnable(false);
+      presentBtnKey.currentState?.setLoadingState(false);
       setState(() {});
     });
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:display_cast_flutter/model/profile.dart';
@@ -36,7 +37,7 @@ class ProfileUtil {
 
   static saveSelectedProfile(String selectedProfile) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("SelectedProfile", selectedProfile);
+    unawaited(prefs.setString("SelectedProfile", selectedProfile));
   }
 
   static Future<ProfileStore> loadProfileStore(List<String> args) async {

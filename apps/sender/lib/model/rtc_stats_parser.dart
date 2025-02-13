@@ -15,7 +15,7 @@ class RtcStatsParser {
   double _totalEncodeTime = 0;
 
   Function(RtcVideoOutboundStats stats)? onVideoOutboundStats;
-  Function(int width, int height)? onOutboundVideoFrameSizeChanged;
+  Function(int? width, int? height)? onOutboundVideoFrameSizeChanged;
 
   RtcStatsParser(
       this.onOutboundVideoFrameSizeChanged,
@@ -72,7 +72,7 @@ class RtcStatsParser {
     if (_outboundVideoWidth != stats.frameWidth || _outboundVideoHeight != stats.frameHeight) {
       _outboundVideoWidth = stats.frameWidth;
       _outboundVideoHeight = stats.frameHeight;
-      onOutboundVideoFrameSizeChanged?.call(_outboundVideoWidth!, _outboundVideoHeight!);
+      onOutboundVideoFrameSizeChanged?.call(_outboundVideoWidth, _outboundVideoHeight);
     }
 
     // update

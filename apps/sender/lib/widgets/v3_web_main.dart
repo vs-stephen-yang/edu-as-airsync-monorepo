@@ -177,7 +177,6 @@ class V3WebMain extends StatelessWidget {
                   InkWell(
                     child: Container(
                       alignment: Alignment.center,
-                      width: 67,
                       height: 32,
                       decoration: ShapeDecoration(
                         color: Colors.white,
@@ -185,6 +184,7 @@ class V3WebMain extends StatelessWidget {
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Text(
                         S.current.v3_main_web_nonsupport_confirm,
                         style: const TextStyle(

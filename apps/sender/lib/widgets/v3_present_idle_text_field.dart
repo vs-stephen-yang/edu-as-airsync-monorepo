@@ -44,8 +44,6 @@ class V3PresentIdleTextField extends StatefulWidget {
 
 class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
   static const int displayCodeMinLength = 8;
-  static const int displayCodeMaxLength = 11;
-  static const int displayCodeMaxLengthW = 13; // windows & web
   static const int otpLength = 4;
 
   final TextEditingController _codeController = TextEditingController();
@@ -59,9 +57,9 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
   final LayerLink _dropDownLayerLink = LayerLink();
   bool _isDropDownMenuVisible = false;
 
-  bool userDeleteSpace = false;
-
   bool _isCodeSelectedFromHistory = false;
+
+  int rawNewValueLength = 0;
 
   @override
   void initState() {
@@ -123,49 +121,93 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
       enable: widget.enable,
       hintText: S.of(context).v3_main_display_code,
       inputFormatter: [
+        TextInputFormatter.withFunction((oldValue, newValue) {
+          rawNewValueLength = newValue.text.length;
+          return newValue;
+        }),
         if (widget.platformDetector.notWindowsNeitherWeb)
           FilteringTextInputFormatter.digitsOnly,
         if (widget.platformDetector.notWindowsNeitherWeb)
-          MaskedInputFormatter(
-            List.generate(displayCodeMaxLength, (index) => '0').join(''),
-            allowedCharMatcher: RegExp('[0-9\\s]'),
-          ),
-        TextInputFormatter.withFunction((oldValue, newValue) {
-          final digitsOnly = oldValue.text.replaceAll(RegExp(r'\s'), '');
-          final newDigitsOnly = newValue.text.replaceAll(RegExp(r'\s'), '');
-          final max = (widget.platformDetector.notWindowsNeitherWeb)
-              ? displayCodeMaxLength
-              : displayCodeMaxLengthW;
+          FilteringTextInputFormatter.allow(RegExp('[0-9\\s]')),
+        if (widget.platformDetector.windowsOrWeb)
+          TextInputFormatter.withFunction((oldValue, newValue) {
+            if (newValue.isComposingRangeValid) {
+              // if using language with composing, then there will be input twice
+              return newValue;
+            }
 
-          if (digitsOnly.length == max &&
-              newDigitsOnly.length >= max &&
-              digitsOnly != newDigitsOnly) {
-            return oldValue;
-          }
-          //old is  1234 5678 |9012 new is  1234 5678|9012 then result is 1234 5678| 9012
-          // Web && Windows with space, otherwise without space
-          final newOffset = newValue.selection.baseOffset;
-          if (widget.platformDetector.windowsOrWeb &&
-              ((newOffset == 9 && newValue.text.length >= 10) ||
-                  (newOffset == 14 && newValue.text.length >= 15))) {
-            userDeleteSpace = true;
-            return newValue.copyWith();
-          } else if ((newOffset == 4 && newValue.text.length >= 5) ||
-              (newOffset == 8 && newValue.text.length >= 9)) {
-            userDeleteSpace = true;
-            return newValue.copyWith();
-          }
-          if (newDigitsOnly.length > max) {
-            // when user copy & paste then will hit newDigits are longer than max
-            final newDigits = newDigitsOnly.substring(0, max);
+            int newOffset = 0;
+            final isAdding =
+                oldValue.text.length < newValue.text.length; // Add Digit
+            final isRemoving =
+                oldValue.text.length > newValue.text.length; // Remove Digit
+            // With composing based input locale keyboard event, such as Chinese, Japanese, Korean, Thai, Vietnamese... etc
+            final isComposingEndMod5 = oldValue.composing.end % 5 == 0;
+            final isCompose = oldValue.composing.isValid;
+            // With base offset input locale keyboard event, such as English, French, Finnish, Swedish... etc
+            final isBaseOffsetMod5 = newValue.selection.baseOffset % 5 == 0;
+            final notFirstDigit = newValue.selection.baseOffset != 0;
+
+            if ((isAdding && isBaseOffsetMod5) ||
+                (isComposingEndMod5 && isCompose)) {
+              newOffset += 1;
+            } else if (isRemoving && (isBaseOffsetMod5 && notFirstDigit)) {
+              newOffset -= 1;
+            }
+
+            String rawText = newValue.text.replaceAll(' ', '');
+            String formattedText = _getDisplayCodeVisualIdentity(rawText);
+
             return TextEditingValue(
-              text: newDigits,
-              selection: TextSelection.collapsed(
-                  offset: min(newDigits.length, newOffset)),
+              text: formattedText,
+              selection: TextSelection(
+                baseOffset: newValue.selection.baseOffset + newOffset,
+                extentOffset: newValue.selection.baseOffset + newOffset,
+              ),
             );
-          }
-          return newValue;
-        }),
+          })
+        else
+          TextInputFormatter.withFunction((oldValue, newValue) {
+            String rawText = newValue.text;
+            String formattedText = _getDisplayCodeVisualIdentity(rawText);
+
+            final bool deleteOneDigit =
+                rawNewValueLength == oldValue.text.length - 1;
+            final bool sameLengthWithoutSpaces =
+                oldValue.text.replaceAll(' ', '').length ==
+                    newValue.text.replaceAll(' ', '').length;
+            final bool baseOffsetMod4 = newValue.selection.baseOffset % 4 == 0;
+            final bool oldBaseOffsetMod5 =
+                oldValue.selection.baseOffset % 5 == 0;
+            if (deleteOneDigit && sameLengthWithoutSpaces) {
+              int newOffset = oldValue.selection.baseOffset;
+              if (baseOffsetMod4 && oldBaseOffsetMod5) {
+                // Handle backspace on space
+                newOffset -= 1;
+              }
+
+              // Handle backspace/delete on digit
+              return TextEditingValue(
+                text: formattedText,
+                selection: TextSelection.collapsed(offset: newOffset),
+              );
+            }
+
+            int rawCursorPosition = rawText
+                .substring(0, newValue.selection.baseOffset)
+                .replaceAll(' ', '')
+                .length;
+
+            int newPosition = rawCursorPosition;
+            newPosition += (rawCursorPosition / 4).floor();
+
+            newPosition = min(newPosition, formattedText.length);
+
+            return TextEditingValue(
+              text: formattedText,
+              selection: TextSelection.collapsed(offset: newPosition),
+            );
+          })
       ],
       onFieldChanged: (text) {
         if (widget.platformDetector.windowsOrWeb) {
@@ -178,49 +220,21 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
             }
             return;
           }
-          _codeController.value = _codeController.value.copyWith(
-            text: text.toUpperCase(),
-            composing: TextRange.empty,
-          );
         }
 
-        int cursorPosition = _codeController.selection.baseOffset;
-        String currentText = _codeController.text;
-
-        String rawText = currentText.replaceAll(' ', '');
-
         _isCodeSelectedFromHistory = false;
+        // clear error message since pass the validation.
         codeKey.currentState?.setErrorMsg('');
         bool presentBtnEnable = false;
-        if (rawText.length >= displayCodeMinLength &&
+        if (text.length >= displayCodeMinLength &&
             _otpController.text.length == otpLength) {
           presentBtnEnable = true;
         }
         widget.onFieldChanged(V3FieldResult(
             enable: presentBtnEnable,
             isDisplayCodeSelectedFromHistory: _isCodeSelectedFromHistory,
-            displayCode: rawText,
+            displayCode: text.replaceAll(' ', ''),
             password: _otpController.text));
-
-        int rawCursorPosition =
-            currentText.substring(0, cursorPosition).replaceAll(' ', '').length;
-
-        String formattedText = _getDisplayCodeVisualIdentity(rawText);
-
-        int newPosition = rawCursorPosition;
-        newPosition += (rawCursorPosition / 4).floor();
-
-        newPosition = min(newPosition, formattedText.length);
-
-        if (userDeleteSpace) {
-          newPosition = newPosition - 1;
-          userDeleteSpace = false; // reset
-        }
-
-        _codeController.value = TextEditingValue(
-          text: formattedText,
-          selection: TextSelection.collapsed(offset: newPosition),
-        );
       },
       onTap: () async {
         List? displayList = await DataDisplayCode.getInstance().load();

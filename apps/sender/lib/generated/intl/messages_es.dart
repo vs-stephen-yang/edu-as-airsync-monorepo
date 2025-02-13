@@ -23,8 +23,12 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(value) =>
       "Por favor seleccione una pantalla para compartir en ${value} segundos...";
 
-  final messages = _notInlinedMessages(_notInlinedMessages);
+  static String m1(year) =>
+      "Copyright © ViewSonic Corporation ${year}. Todos los derechos reservados.";
 
+  static String m2(year, version) => "AirSync ©${year}. versión ${version}";
+
+  final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "device_list_enter_pin":
             MessageLookupByLibrary.simpleMessage("Contraseña de un solo uso"),
@@ -202,8 +206,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_connection_mode_unsupported":
             MessageLookupByLibrary.simpleMessage(
                 "AirSync no se conecta a Internet."),
-        "v3_main_copy_rights": MessageLookupByLibrary.simpleMessage(
-            "Copyright © ViewSonic Corporation 2024. Todos los derechos reservados."),
+        "v3_main_copy_rights": m1,
         "v3_main_display_code":
             MessageLookupByLibrary.simpleMessage("Código de pantalla"),
         "v3_main_display_code_error":
@@ -289,6 +292,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Elija su modo de presentación"),
         "v3_main_terms":
             MessageLookupByLibrary.simpleMessage("Términos de uso"),
+        "v3_main_web_nonsupport": MessageLookupByLibrary.simpleMessage(
+            "Actualmente, solo se admiten los navegadores Chrome y Edge."),
+        "v3_main_web_nonsupport_confirm":
+            MessageLookupByLibrary.simpleMessage("Aceptar"),
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
             "La compartición de pantalla se ha detenido.\nTiempo total de compartición %s."),
         "v3_present_moderator_exited":
@@ -337,14 +344,21 @@ class MessageLookup extends MessageLookupByLibrary {
                 "No se puede unir. La sesión ha alcanzado su límite máximo."),
         "v3_present_touch_back_allow": MessageLookupByLibrary.simpleMessage(
             "Permitir retroalimentación táctil"),
+        "v3_receiver_remote_screen_busy_action":
+            MessageLookupByLibrary.simpleMessage("Aceptar"),
+        "v3_receiver_remote_screen_busy_description":
+            MessageLookupByLibrary.simpleMessage(
+                "La pantalla se está transmitiendo a otras pantallas. Por favor, inténtelo de nuevo más tarde."),
+        "v3_receiver_remote_screen_busy_title":
+            MessageLookupByLibrary.simpleMessage(
+                "La pantalla se está transmitiendo"),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Conexión rápida escaneando el código QR"),
         "v3_select_screen_ios_countdown":
             MessageLookupByLibrary.simpleMessage("Tiempo restante"),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("Comenzar a compartir"),
-        "v3_setting_app_version":
-            MessageLookupByLibrary.simpleMessage("AirSync ©2024. versión %s"),
+        "v3_setting_app_version": m2,
         "v3_setting_check_update":
             MessageLookupByLibrary.simpleMessage("Buscar actualizaciones"),
         "v3_setting_knowledge_base":

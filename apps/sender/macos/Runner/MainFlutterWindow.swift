@@ -9,14 +9,14 @@ class MainFlutterWindow: NSWindow {
     let windowFrame = self.frame
     self.contentViewController = flutterViewController
     self.setFrame(windowFrame, display: true)
-
+    
     RegisterGeneratedPlugins(registry: flutterViewController)
-
+    
     FlutterMultiWindowPlugin.setOnWindowCreatedCallback { controller in
-       // Register the plugin which you want access from other isolate.
-       SystemTrayPlugin.register(with: controller.registrar(forPlugin: "SystemTrayPlugin"))
+      // Register the plugin which you want access from other isolate.
+      SystemTrayPlugin.register(with: controller.registrar(forPlugin: "SystemTrayPlugin"))
     }
-
+    
     super.awakeFromNib()
   }
 }
