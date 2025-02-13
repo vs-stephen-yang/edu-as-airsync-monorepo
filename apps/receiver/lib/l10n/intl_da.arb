@@ -186,6 +186,7 @@
   "v3_settings_feature_locked": "Låst af ViewSonic Manager.",
   "v3_cast_to_device_list_msg": "Maksimalt op til 10 enheder.",
   "v3_quick_connect_menu_bottom_msg": "Delt skærm bliver aktiveret, hvis to eller flere brugere deler deres skærm. ",
+  "v3_settings_version": "AirSync ©{year}. version {version}",
   "v3_settings_broadcast_screen_energy_saving": "Slå energisparetilstand fra for at undgå uventede afbrydelser under udsendelse.",
   "v3_participants_desc_maximum_9": "Maksimalt op til 9 deltagere."
 }

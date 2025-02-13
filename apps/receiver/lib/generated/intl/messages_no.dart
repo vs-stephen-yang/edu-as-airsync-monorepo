@@ -20,6 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'no';
 
+  static String m0(year, version) => "AirSync ©${year}. version ${version}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "eula_agree": MessageLookupByLibrary.simpleMessage("Jeg er enig"),
@@ -377,6 +379,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_privacy_policy_description":
             MessageLookupByLibrary.simpleMessage(
                 "ViewSonic er forpliktet til å beskytte personvernet ditt og behandler håndtering av personopplysninger med stort alvor. Personvernreglene nedenfor beskriver hvordan ViewSonic behandler dine personopplysninger etter at de er samlet inn gjennom din bruk av nettstedet. ViewSonic opprettholder personvernet til informasjonen din ved å bruke sikkerhetsteknologier og følge retningslinjer som forhindrer uautorisert bruk av dine personopplysninger. Ved å bruke dette nettstedet samtykker du i innsamling og bruk av informasjonen din.\n\nNettsteder du lenker til fra ViewSonic.com kan ha sine egne personvernregler som kan avvike fra ViewSonics. Les gjennom disse nettsteders personvernregler for detaljert informasjon om hvordan de kan bruke informasjon samlet inn mens du besøker dem.\n\nKlikk på følgende lenker for å lære mer om våre personvernregler."),
+        "v3_settings_version": m0,
         "v3_settings_whats_new":
             MessageLookupByLibrary.simpleMessage("Hva er nytt"),
         "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(

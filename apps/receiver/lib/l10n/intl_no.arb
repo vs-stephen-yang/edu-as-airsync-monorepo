@@ -186,6 +186,7 @@
   "v3_settings_feature_locked": "Låst av ViewSonic Manager.",
   "v3_cast_to_device_list_msg": "Maksimalt opptil 10 enheter.",
   "v3_quick_connect_menu_bottom_msg": "Opdelt skjerm aktiveres hvis to eller flere brukere deler skjermer.",
+  "v3_settings_version": "AirSync ©{year}. version {version}",
   "v3_settings_broadcast_screen_energy_saving": "Vennligst slå av energisparing for å unngå uventede avbrudd under kringkasting.",
   "v3_participants_desc_maximum_9": "Maksimalt opptil 9 deltakere."
 }
