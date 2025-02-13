@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/utility/assets_util.dart';
 
+import 'log.dart';
+
 enum ReconnectState { idle, reconnecting, success, fail }
 
 const _certPemPath = 'assets/channel/certificate.pem';
@@ -37,15 +39,8 @@ List<RtcIceServer> parseIceServersFromApi(Map<String, dynamic> body) {
 
 const _webtransportCertsListPath = 'assets/channel/webtransport_certs_list.json';
 
-class WebTransportCertificate {
-  late List<String> certPem;
-  late List<String> keyPem;
-
-  WebTransportCertificate(this.certPem, this.keyPem);
-}
-
-
 Future<WebTransportCertificate?> getWebTransportCert() async {
+  log.info("Finding webTransport certificate");
   Map<String, dynamic> jsonData = await loadAssetAsJsonData(_webtransportCertsListPath);
   List<Map<String, dynamic>> certs = List<Map<String, dynamic>>.from(jsonData['certs']);
 
@@ -62,7 +57,10 @@ Future<WebTransportCertificate?> getWebTransportCert() async {
     }
   }
 
-  if (validCerts.isEmpty) return null;
+  if (validCerts.isEmpty) {
+    log.warning("Failed to get webTransport certificate");
+    return null;
+  }
 
   validCerts.sort((a, b) => DateTime.parse(b['date']).compareTo(DateTime.parse(a['date'])));
   Map<String, dynamic> selectedCert = validCerts.first;
