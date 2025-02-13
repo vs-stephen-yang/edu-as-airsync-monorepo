@@ -46,8 +46,8 @@ dependencies:
       path: plugins/window_size
   protobuf: ^2.1.0
   provider: ^6.1.1
-  sentry_flutter: ^8.9.0
-  sentry_logging: ^8.9.0
+  sentry_flutter: 8.9.0
+  sentry_logging: 8.9.0
   share_plus: ^9.0.0
   path_provider: ^2.1.4
   flutter_multi_formatter: ^2.13.0
