@@ -186,6 +186,7 @@
   "v3_settings_feature_locked": "Bloķēts ar ViewSonic pārvaldnieku.",
   "v3_cast_to_device_list_msg": "Maksimums līdz 10 ierīcēm.",
   "v3_quick_connect_menu_bottom_msg": "Sadalītā ekrāna režīms tiek aktivizēts, ja divi vai vairāk lietotāji kopīgo ekrānus.",
+  "v3_settings_version": "AirSync ©{year}. version {version}",
   "v3_settings_broadcast_screen_energy_saving": "Lūdzu, izslēdziet enerģijas taupīšanas režīmu, lai izvairītos no negaidītiem pārtraukumiem pārraides laikā.",
   "v3_participants_desc_maximum_9": "Maksimums līdz 9 dalībniekiem."
 }

@@ -20,6 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'lv';
 
+  static String m0(year, version) => "AirSync ©${year}. version ${version}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "eula_agree": MessageLookupByLibrary.simpleMessage("Piekrītu"),
@@ -385,6 +387,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_privacy_policy_description":
             MessageLookupByLibrary.simpleMessage(
                 "ViewSonic ir apņēmies aizsargāt jūsu privātumu un nopietni izturas pret personas datu apstrādi. Zemāk redzamā Privātuma politika detalizēti izskaidro, kā ViewSonic apstrādās jūsu personas datus pēc to iegūšanas, izmantojot tīmekļa vietni. ViewSonic nodrošina jūsu informācijas privātumu, izmantojot drošības tehnoloģijas, un ievēro politikas, kas novērš neatļautu jūsu personas datu izmantošanu. Izmantojot šo tīmekļa vietni, jūs piekrītat informācijas vākšanai un izmantošanai.  \n\nTīmekļa vietnēm, uz kurām jūs pārejat no ViewSonic.com, var būt sava privātuma politika, kas atšķiras no ViewSonic politikas. Lūdzu, iepazīstieties ar šo tīmekļa vietņu privātuma politikām, lai iegūtu detalizētu informāciju par to, kā tās var izmantot informāciju, kas iegūta jūsu apmeklējuma laikā.  \n\nLūdzu, noklikšķiniet uz šīm saitēm, lai uzzinātu vairāk par mūsu Privātuma politiku.  "),
+        "v3_settings_version": m0,
         "v3_settings_whats_new":
             MessageLookupByLibrary.simpleMessage("Kas jauns"),
         "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(

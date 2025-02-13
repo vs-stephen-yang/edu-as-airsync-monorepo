@@ -20,6 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'fi';
 
+  static String m0(year, version) => "AirSync ©${year}. version ${version}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "eula_agree": MessageLookupByLibrary.simpleMessage("Hyväksyn"),
@@ -284,7 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_quick_connect_menu_qrcode":
             MessageLookupByLibrary.simpleMessage("QR-koodi"),
         "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
-            "v3_settings_all_the_time_info"),
+            "Lähetyslähteen IFP-näyttö koko ajan."),
         "v3_settings_broadcast":
             MessageLookupByLibrary.simpleMessage("Lähetys"),
         "v3_settings_broadcast_boards":
@@ -381,6 +383,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_privacy_policy_description":
             MessageLookupByLibrary.simpleMessage(
                 "ViewSonic on sitoutunut suojaamaan yksityisyyttäsi ja käsittelee henkilötietojen käsittelyä vakavasti. Alla oleva tietosuojakäytäntö selittää, miten ViewSonic käsittelee henkilötietojasi sen jälkeen, kun ne on kerätty ViewSonicin verkkosivuston käytön yhteydessä. ViewSonic säilyttää tietojesi yksityisyyden tietoturvatekniikoiden avulla ja noudattaa käytäntöjä, jotka estävät henkilötietojesi luvattoman käytön. Käyttämällä tätä verkkosivustoa hyväksyt tietojesi keräämisen ja käytön.\n\nVerkkosivustot, joihin linkität ViewSonic.comista, saattavat noudattaa omia tietosuojakäytäntöjään, jotka voivat poiketa ViewSonicin käytännöistä. Tarkista näiden verkkosivustojen tietosuojakäytännöt saadaksesi tarkempaa tietoa siitä, miten ne voivat käyttää vierailusi aikana kerättyjä tietoja.\n\nKlikkaa seuraavia linkkejä saadaksesi lisätietoa tietosuojakäytännöstämme."),
+        "v3_settings_version": m0,
         "v3_settings_whats_new":
             MessageLookupByLibrary.simpleMessage("Mitä uutta"),
         "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(

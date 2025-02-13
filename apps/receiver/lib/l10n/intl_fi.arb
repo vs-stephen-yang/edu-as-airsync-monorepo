@@ -182,10 +182,11 @@
   "v3_group_dialog_no_device_message": "Ei valittua laitetta.",
   "v3_participant_item_waiting": "Odotetaan...",
   "v3_settings_only_when_casting_info": "Lähetä lähteen IFP-näyttö vain silloin, kun se vastaanottaa jaetun näytön.",
-  "v3_settings_all_the_time_info": "v3_settings_all_the_time_info",
+  "v3_settings_all_the_time_info": "Lähetyslähteen IFP-näyttö koko ajan.",
   "v3_settings_feature_locked": "Lukittu ViewSonic Managerin toimesta.",
   "v3_cast_to_device_list_msg": "Enintään 10 laitetta.",
   "v3_quick_connect_menu_bottom_msg": "Jaettu näyttö aktivoituu, jos kaksi tai useampi käyttäjä jakaa näyttöjään.",
+  "v3_settings_version": "AirSync ©{year}. version {version}",
   "v3_settings_broadcast_screen_energy_saving": "Ota virransäästö pois päältä välttääksesi odottamattomat keskeytykset lähetyksen aikana.",
   "v3_participants_desc_maximum_9": "Enintään 9 osallistujaa."
 }
