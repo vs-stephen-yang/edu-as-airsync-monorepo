@@ -234,6 +234,8 @@ class DisplayChannelConnector {
       return;
     }
 
+    _tunnelClient?.close(null);
+
     _closeOtherDirectConnections(ipAddress);
     _handleChannelOpened(_directClients[ipAddress]!, true);
   }
@@ -245,6 +247,11 @@ class DisplayChannelConnector {
       // Close the tunnel channel
       _tunnelClient?.close(null);
       return;
+    }
+
+    // Close all direct connections when tunnel wins
+    for (final client in _directClients.values) {
+      client.close(null);
     }
 
     _handleChannelOpened(_tunnelClient!, false);
