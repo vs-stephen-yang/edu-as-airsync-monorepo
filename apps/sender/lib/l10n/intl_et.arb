@@ -177,5 +177,8 @@
   "v3_present_moderator_exited_description": "Moderaator on suletud, palun ühendage uuesti.",
   "v3_present_moderator_exited_action": "OK",
   "v3_main_web_nonsupport": "Praegu toetatakse ainult Chrome'i ja Edge'i brausereid.",
-  "v3_main_web_nonsupport_confirm": "Sain aru!"
+  "v3_main_web_nonsupport_confirm": "Sain aru!",
+  "v3_receiver_remote_screen_busy_title": "Ekraan on edastamisel.",
+  "v3_receiver_remote_screen_busy_description": "Ekraan edastab teistesse ekraanidesse. Palun proovige hiljem uuesti.",
+  "v3_receiver_remote_screen_busy_action": "OK"
 }

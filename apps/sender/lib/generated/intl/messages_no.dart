@@ -338,6 +338,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Kan ikke bli med. Økten har nådd maksgrensen."),
         "v3_present_touch_back_allow":
             MessageLookupByLibrary.simpleMessage("Tillat tilbakekobling"),
+        "v3_receiver_remote_screen_busy_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_receiver_remote_screen_busy_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Skjermen speiles til andre skjermer. Vennligst prøv igjen senere."),
+        "v3_receiver_remote_screen_busy_title":
+            MessageLookupByLibrary.simpleMessage("Denne skjermen speiles"),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Hurtigkobling ved å skanne QR-koden"),
         "v3_select_screen_ios_countdown":

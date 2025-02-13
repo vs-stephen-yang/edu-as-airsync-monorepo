@@ -175,5 +175,10 @@
   "v3_setting_software_update_no_internet_description": "Veuillez vérifier votre connexion Internet et réessayer.",
   "v3_present_moderator_exited": "Le modérateur est fermé",
   "v3_present_moderator_exited_description": "Le modérateur est fermé, veuillez vous reconnecter.",
-  "v3_present_moderator_exited_action": "OK"
+  "v3_present_moderator_exited_action": "OK",
+  "v3_main_web_nonsupport": "Actuellement, seuls les navigateurs Chrome et Edge sont pris en charge.",
+  "v3_main_web_nonsupport_confirm": "Compris!",
+  "v3_receiver_remote_screen_busy_title": "L'appareil est en cours de diffusion",
+  "v3_receiver_remote_screen_busy_description": "L'appareil est en train de diffuser vers d'autres appareils. Veuillez réessayer plus tard.",
+  "v3_receiver_remote_screen_busy_action": "OK"
 }

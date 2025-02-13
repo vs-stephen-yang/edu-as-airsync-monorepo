@@ -336,6 +336,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Ühendamine ebaõnnestus. Sessioon on saavutanud oma maksimumi."),
         "v3_present_touch_back_allow":
             MessageLookupByLibrary.simpleMessage("Luba tagasiside"),
+        "v3_receiver_remote_screen_busy_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_receiver_remote_screen_busy_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Ekraan edastab teistesse ekraanidesse. Palun proovige hiljem uuesti."),
+        "v3_receiver_remote_screen_busy_title":
+            MessageLookupByLibrary.simpleMessage("Ekraan on edastamisel."),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Kiirühendus QR-koodi skaneerimisega"),
         "v3_select_screen_ios_countdown":

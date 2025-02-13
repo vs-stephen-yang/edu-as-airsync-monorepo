@@ -341,6 +341,11 @@ class MessageLookup extends MessageLookupByLibrary {
             "Tillad berøringstilbageførsel"),
         "v3_receiver_remote_screen_busy_action":
             MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_receiver_remote_screen_busy_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Denne skærm broadcastes til andre skærme. Prøv igen senere."),
+        "v3_receiver_remote_screen_busy_title":
+            MessageLookupByLibrary.simpleMessage("Denne skærm broadcastes"),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Hurtig tilslutning ved at scanne QR-koden"),
         "v3_select_screen_ios_countdown":
