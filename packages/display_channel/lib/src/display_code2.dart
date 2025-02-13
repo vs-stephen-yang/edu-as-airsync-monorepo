@@ -24,14 +24,41 @@ int getInstanceGroupIdFromIp(String ipAddress) {
   return instanceGroupId;
 }
 
-String createRemoteIp(String localIpAddress, int instanceGroupId) {
-  List<String> parts = localIpAddress.split('.');
+List<String> createRemoteIpCandidates(
+  DisplayCode displayCode,
+  List<String> localIpAddresses,
+) {
+  // Extract first octets from local IPs
+  final firstOctets = localIpAddresses
+      .map(
+        (ip) => ip.split('.')[0],
+      )
+      .toSet();
 
+  // Add standard private network octets
+  const firstOctetsOfPrivate = ['172', '10', '192'];
+
+  final allFirstOctets = [
+    ...firstOctets,
+    ...firstOctetsOfPrivate,
+  ];
+
+  // Create remote IPs for each first octet
+  final remoteIps = allFirstOctets
+      .map((firstOctet) =>
+          _deriveRemoteIp(firstOctet, displayCode.instanceGroupId))
+      .toSet()
+      .toList();
+
+  return remoteIps;
+}
+
+String _deriveRemoteIp(String firstOctet, int instanceGroupId) {
   int octet1 = (instanceGroupId >> 16) & 0xFF;
   int octet2 = (instanceGroupId >> 8) & 0xFF;
   int octet3 = instanceGroupId & 0xFF;
 
-  return '${parts[0]}.$octet1.$octet2.$octet3';
+  return '$firstOctet.$octet1.$octet2.$octet3';
 }
 
 final maxInstanceGroups = BigInt.from(256 * 256 * 256);

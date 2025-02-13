@@ -78,11 +78,16 @@ main(List<String> arguments) async {
   log().info('Instance Group Id: ${displayCode.instanceGroupId}');
   log().info('Instance Index: ${displayCode.instanceIndex}');
 
+// Construct remote IPs from local IPs
+
+  final remoteIpAddresses =
+      createRemoteIpCandidates(displayCode, localIpAddresses);
+
   final client = DisplayChannelConnector(
     clientId: clientId,
     otp: otp,
     displayCode: displayCode,
-    localIpAddresses: localIpAddresses,
+    remoteIpAddresses: remoteIpAddresses,
     encodedDisplayCode: encodedDisplayCode,
     createConnectionTunnel: createConnectionTunnel,
     createConnectionDirect: createConnectionDirect,
