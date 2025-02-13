@@ -4,6 +4,7 @@ import 'package:display_channel/src/channel_store.dart';
 import 'package:display_channel/src/rate_limit/rate_limiter.dart';
 import 'package:display_channel/src/server/connection.dart';
 import 'package:display_channel/src/server/connection_request.dart';
+import 'package:display_channel/src/webtransport_certificate.dart';
 import 'package:display_channel/src/server/direct/webtransport_connection_server.dart';
 import 'package:flutter_golang_server/flutter_webtransport.dart';
 import 'package:flutter_golang_server/flutter_webtransport_config.dart';
@@ -12,17 +13,14 @@ import 'package:flutter_golang_server/flutter_webtransport_listener.dart';
 class WebTransportDirectServer implements FlutterWebtransportListener {
   late ChannelStore _store;
   WebTransportConnectionServer? _connectionServer;
-  HttpServer? _httpServer;
+  late Future<WebTransportCertificate?> Function() _getWebTransportCertificateCallback;
   final _webTransportServer = FlutterWebtransport();
   late RateLimiter _rateLimiter;
 
   late Duration _idleConnectionTimeout;
 
-  int? get port {
-    return _httpServer?.port;
-  }
-
   WebTransportDirectServer(
+    Future<WebTransportCertificate?> Function() getWebTransportCertificateCallback,
     OnNewChannel onNewChannel,
     VerifyConnectRequest verifyConnectRequest, {
     int maxBurstyRequests = 5,
@@ -31,6 +29,7 @@ class WebTransportDirectServer implements FlutterWebtransportListener {
     Duration heartbeatTimeout = const Duration(seconds: 10),
     Duration reconnectTimeout = const Duration(seconds: 2),
   }) {
+    _getWebTransportCertificateCallback = getWebTransportCertificateCallback;
     _store = ChannelStore(
       onNewChannel,
       verifyConnectRequest,
@@ -98,5 +97,19 @@ class WebTransportDirectServer implements FlutterWebtransportListener {
   @override
   void onMessage(String connId, String message) {
     _connectionServer?.onMessage(connId, message);
+  }
+
+  @override
+  Future<void> onRequestCertificate() async {
+    final certificate = await _getWebTransportCertificateCallback();
+    if (certificate == null) {
+      return;
+    }
+
+    final config = FlutterWebtransportConfig(
+        cert: certificate.certPem,
+        key: certificate.keyPem
+    );
+    await _webTransportServer.updateCertificate(config);
   }
 }
