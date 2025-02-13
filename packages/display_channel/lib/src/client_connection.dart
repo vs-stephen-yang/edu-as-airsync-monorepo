@@ -2,6 +2,7 @@ enum ConnectErrorType {
   websocket,
   socket,
   http,
+  webTransport,
 }
 
 class ConnectError {
