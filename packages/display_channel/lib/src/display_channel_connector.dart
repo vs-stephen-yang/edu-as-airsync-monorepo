@@ -198,7 +198,6 @@ class DisplayChannelConnector {
   }
 
   void _onDirectFailed(String ipAddress) {
-    _failedDirectIps.add(ipAddress);
     _onConnectFailed();
   }
 
