@@ -51,8 +51,6 @@ class MirrorStateProvider extends ChangeNotifier
 
   final InstanceInfoProvider _instanceInfoProvider;
 
-  static const int maxIdle = 6;
-
   FlutterMirror? _flutterMirrorPlugin;
   String _deviceName = '';
   bool _airplayEnabled = false;

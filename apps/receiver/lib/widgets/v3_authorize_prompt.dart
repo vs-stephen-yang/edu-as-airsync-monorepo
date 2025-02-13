@@ -4,10 +4,14 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
+import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
+import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:gap/gap.dart';
+import 'package:motion_toast/motion_toast.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 import 'package:sprintf/sprintf.dart';
@@ -24,17 +28,55 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
+    return Consumer2<ChannelProvider, MirrorStateProvider>(
+        builder: (_, channelProvider, mirrorStateProvider, __) {
       var authRequestIdles = channelProvider.authorizeRequestList;
+      var mirrorRequestIdles = HybridConnectionList()
+          .getMirrorMap()
+          .values
+          .where((request) => request.mirrorState == MirrorState.idle);
 
-      if (authRequestIdles.isNotEmpty && dialogContextList.isEmpty) {
+      if ((authRequestIdles.isNotEmpty || mirrorRequestIdles.isNotEmpty) &&
+          dialogContextList.isEmpty) {
+        if (authRequestIdles.isNotEmpty) {
+          Future.delayed(Duration.zero, () {
+            _showAuthDialog(context);
+          });
+        } else {
+          for (MirrorRequest request
+              in HybridConnectionList().getMirrorMap().values) {
+            if (request.mirrorState == MirrorState.idle) {
+              if ((!ChannelProvider.isModeratorMode &&
+                      HybridConnectionList.hybridSplitScreenCount.value <
+                          HybridConnectionList.maxHybridSplitScreen) ||
+                  (ChannelProvider.isModeratorMode &&
+                      HybridConnectionList().getConnectionCount() <
+                          HybridConnectionList.maxHybridConnection)) {
+                // 拒絕邏輯 一般模式:目前視窗大於等於最大視窗數。 ModeratorMode:連線數大於等於最大連線數
+                Future.delayed(Duration.zero, () {
+                  _showAuthDialog(context);
+                });
+              } else {
+                mirrorStateProvider.stopAcceptedMirror(request.mirrorId);
+                Future.delayed(Duration.zero, () {
+                  _showMaxAmountToast();
+                });
+              }
+            }
+          }
+        }
+      } else if (mirrorStateProvider.pinCode.isNotEmpty &&
+          dialogContextList.isEmpty) {
         Future.delayed(Duration.zero, () {
           _showAuthDialog(context);
         });
-      } else if (dialogContextList.isNotEmpty && authRequestIdles.isEmpty) {
+      } else if (dialogContextList.isNotEmpty &&
+          mirrorRequestIdles.isEmpty &&
+          mirrorStateProvider.pinCode.isEmpty &&
+          authRequestIdles.isEmpty) {
         if (dialogContextList.isNotEmpty) {
           for (var context in dialogContextList) {
-            if (context.mounted && Navigator.canPop(context)) {
+            if (Navigator.canPop(context)) {
               Navigator.pop(context);
             }
           }
@@ -43,6 +85,20 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
       }
       return const SizedBox.shrink();
     });
+  }
+
+  _showMaxAmountToast() {
+    MotionToast(
+      primaryColor: Colors.grey,
+      description: Center(
+        child: AutoSizeText(
+          S.of(context).toast_maximum_split_screen,
+          maxLines: 1,
+        ),
+      ),
+      displaySideBar: false,
+      position: MotionToastPosition.center,
+    ).show(context);
   }
 
   _showAuthDialog(BuildContext context) {
@@ -65,17 +121,26 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
             backgroundColor: context.tokens.color.vsdslColorOpacityNeutralXl,
             alignment: Alignment.bottomCenter,
             insetPadding: const EdgeInsets.only(bottom: 27),
-            child: Consumer<ChannelProvider>(
-              builder: (_, channelProvider, __) {
+            child: Consumer2<MirrorStateProvider, ChannelProvider>(
+              builder: (_, mirrorStateProvider, channelProvider, __) {
+                final List<Widget> widgetList = [];
                 var authRequestIdles = channelProvider.authorizeRequestList;
+                var mirrorRequestIdles = HybridConnectionList()
+                    .getMirrorMap()
+                    .values
+                    .where(
+                        (request) => request.mirrorState == MirrorState.idle);
 
                 // Calculate Dialog height.
                 var totalHeight = 0.0;
                 // container padding height
                 var containerPaddingHeight =
                     context.tokens.spacing.vsdslSpacing4xl.vertical;
-                // title bar height
-                var titleBarHeight = 53.0;
+                // pin code height
+                var pinCodeHeight = 0.0;
+                if (mirrorStateProvider.pinCode.isNotEmpty) {
+                  pinCodeHeight += 70;
+                }
                 // Divider height
                 var requestDividerHeight = 2.0;
                 // mirror request height and spacing height
@@ -83,45 +148,116 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                 var requestContainerHeight = 27.0;
                 var requestPaddingHeight =
                     context.tokens.spacing.vsdslSpacingLg.vertical;
-                if (authRequestIdles.isNotEmpty) {
+                if (mirrorRequestIdles.isNotEmpty) {
+                  if (mirrorStateProvider.pinCode.isNotEmpty) {
+                    requestTotalHeight +=
+                        (requestPaddingHeight + requestDividerHeight);
+                  }
                   requestTotalHeight +=
                       (requestPaddingHeight + requestDividerHeight) *
-                          authRequestIdles.length;
+                          (mirrorRequestIdles.length - 1);
                   requestTotalHeight +=
-                      authRequestIdles.length * requestContainerHeight;
+                      mirrorRequestIdles.length * requestContainerHeight;
                 }
-                totalHeight = containerPaddingHeight +
-                    titleBarHeight +
-                    requestTotalHeight;
-                return Container(
-                  width: 548,
-                  height: totalHeight,
-                  padding: EdgeInsets.symmetric(
-                    vertical: containerPaddingHeight / 2,
-                    horizontal: context.tokens.spacing.vsdslSpacing3xl.left,
+                totalHeight =
+                    containerPaddingHeight + pinCodeHeight + requestTotalHeight;
+                widgetList.addAll([
+                  const Image(
+                    height: 53,
+                    image: Svg('assets/images/ic_prompt_in_mirror.svg'),
                   ),
-                  child: Column(
-                    children: [
-                      Image(
-                        height: titleBarHeight,
-                        image:
-                            const Svg('assets/images/ic_prompt_in_mirror.svg'),
-                      ),
-                      if (authRequestIdles.isNotEmpty)
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            vertical: requestPaddingHeight / 2,
+                  SizedBox(
+                    width: 548,
+                    height: requestDividerHeight,
+                    child: Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal:
+                              context.tokens.spacing.vsdslSpacing3xl.left),
+                      color: context.tokens.color.vsdslColorOnSurfaceVariant,
+                    ),
+                  ),
+                ]);
+                if (mirrorStateProvider.pinCode.isNotEmpty) {
+                  // PIN 碼模式 UI
+                  widgetList.add(Container(
+                    width: 548,
+                    height: totalHeight,
+                    padding: EdgeInsets.symmetric(
+                      vertical: containerPaddingHeight / 2,
+                      horizontal: context.tokens.spacing.vsdslSpacing3xl.left,
+                    ),
+                    child: Column(
+                      children: [
+                        if (mirrorStateProvider.pinCode.isNotEmpty) ...[
+                          SizedBox(
+                            height: pinCodeHeight,
+                            child: Column(
+                              children: [
+                                AutoSizeText(
+                                  S.of(context).v3_mirror_request_passcode,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                AutoSizeText(
+                                  mirrorStateProvider.pinCode,
+                                  style: const TextStyle(
+                                    fontSize: 41,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 19.2,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Container(
-                            color:
-                                context.tokens.color.vsdslColorOnSurfaceVariant,
-                            height: requestDividerHeight,
-                          ),
-                        ),
-                      Expanded(
+                          if (mirrorRequestIdles.isNotEmpty)
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: requestPaddingHeight / 2,
+                              ),
+                              child: Container(
+                                color: context
+                                    .tokens.color.vsdslColorOnSurfaceVariant,
+                                height: requestDividerHeight,
+                              ),
+                            ),
+                        ],
+                      ],
+                    ),
+                  ));
+                } else if (mirrorRequestIdles.isNotEmpty) {
+                  // 鏡像確認模式 UI
+                  if (mirrorStateProvider.isMirrorConfirmation) {
+                    if (!ChannelProvider.isModeratorMode &&
+                            HybridConnectionList.hybridSplitScreenCount.value >=
+                                HybridConnectionList.maxHybridSplitScreen ||
+                        (ChannelProvider.isModeratorMode &&
+                            HybridConnectionList().getConnectionCount() >=
+                                HybridConnectionList.maxHybridConnection)) {
+                      // 拒絕邏輯 一般模式:目前視窗大於等於最大視窗數。 ModeratorMode:連線數大於等於最大連線數
+                      for (var idle in mirrorRequestIdles) {
+                        mirrorStateProvider.stopAcceptedMirror(idle.mirrorId);
+                      }
+                      Future.delayed(Duration.zero, () {
+                        _showMaxAmountToast();
+                      });
+                    } else {
+                      widgetList.add(Container(
+                        width: 548,
+                        height: totalHeight,
+                        padding: EdgeInsets.only(
+                            left: context.tokens.spacing.vsdslSpacing3xl.left,
+                            right: context.tokens.spacing.vsdslSpacing3xl.left,
+                            top: containerPaddingHeight / 2,
+                            bottom: authRequestIdles.isEmpty
+                                ? containerPaddingHeight / 2
+                                : 0),
                         child: ListView.separated(
                           reverse: HybridConnectionList().isMirroring(),
-                          itemCount: authRequestIdles.length,
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: mirrorRequestIdles.length,
                           itemBuilder: (BuildContext buildContext, int index) {
                             return SizedBox(
                               width: 508,
@@ -132,14 +268,16 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                 children: [
                                   const Image(
                                     image: Svg(
-                                        'assets/images/ic_prompt_in_webrtc.svg'),
+                                        'assets/images/ic_prompt_in_mirror.svg'),
                                   ),
                                   SizedBox(
                                       width: context
                                           .tokens.spacing.vsdslSpacingSm.left),
                                   AutoSizeText(
                                     sprintf(S.current.main_mirror_from_client, [
-                                      authRequestIdles[index].entries.first.key
+                                      mirrorRequestIdles
+                                          .toList()[index]
+                                          .mirrorId
                                     ]),
                                     style: TextStyle(
                                       fontSize: 12,
@@ -170,22 +308,21 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                           padding: EdgeInsets.zero,
                                         ),
                                         onPressed: () {
-                                          if (authRequestIdles.isNotEmpty) {
-                                            trackEvent('click_decline_device',
-                                                EventCategory.session,
-                                                mode: 'webrtc');
-
-                                            authRequestIdles[index]
-                                                .entries
-                                                .first
-                                                .value
-                                                .sendRejectPresent(
-                                                    PresentRejectedReasonCode
-                                                        .authorizeDecline.code,
-                                                    'authorize decline');
-                                            channelProvider.authorizeRequestList
-                                                .removeAt(index);
-                                          }
+                                          final String mirrorType =
+                                              mirrorRequestIdles
+                                                  .toList()[index]
+                                                  .mirrorType
+                                                  .name
+                                                  .replaceAll('googlecast',
+                                                      'google_cast');
+                                          trackEvent('click_decline_device',
+                                              EventCategory.session,
+                                              mode: mirrorType);
+                                          var mirrorId = mirrorRequestIdles
+                                              .toList()[index]
+                                              .mirrorId;
+                                          mirrorStateProvider
+                                              .clearRequestMirrorId(mirrorId);
                                         },
                                         child: AutoSizeText(S
                                             .of(context)
@@ -212,19 +349,27 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                           ),
                                           padding: EdgeInsets.zero,
                                         ),
-                                        onPressed: () {
-                                          if (authRequestIdles.isNotEmpty) {
-                                            trackEvent('click_accept_device',
-                                                EventCategory.session,
-                                                mode: 'webrtc');
-
-                                            authRequestIdles[index]
-                                                .entries
-                                                .first
-                                                .value
-                                                .sendAllowPresent();
-                                            channelProvider.authorizeRequestList
-                                                .removeAt(index);
+                                        onPressed: () async {
+                                          final String mirrorType =
+                                              mirrorRequestIdles
+                                                  .toList()[index]
+                                                  .mirrorType
+                                                  .name
+                                                  .replaceAll('googlecast',
+                                                      'google_cast');
+                                          trackEvent('click_accept_device',
+                                              EventCategory.session,
+                                              mode: mirrorType);
+                                          String? mirrorId = mirrorRequestIdles
+                                              .toList()[index]
+                                              .mirrorId;
+                                          if (ChannelProvider.isModeratorMode) {
+                                            mirrorStateProvider
+                                                .setModeratorIdleMirrorId(
+                                                    mirrorId);
+                                          } else {
+                                            mirrorStateProvider
+                                                .setAcceptMirrorId(mirrorId);
                                           }
                                         },
                                         child: AutoSizeText(S
@@ -251,8 +396,210 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                             );
                           },
                         ),
+                      ));
+                    }
+                  } else {
+                    Future.delayed(Duration.zero, () {
+                      for (MirrorRequest request
+                          in HybridConnectionList().getMirrorMap().values) {
+                        if (request.mirrorState == MirrorState.idle) {
+                          if (ChannelProvider.isModeratorMode) {
+                            mirrorStateProvider
+                                .setModeratorIdleMirrorId(request.mirrorId);
+                          } else {
+                            mirrorStateProvider
+                                .setAcceptMirrorId(request.mirrorId);
+                          }
+                        }
+                      }
+                    });
+                  }
+                }
+
+                if (authRequestIdles.isNotEmpty) {
+                  var totalHeight = 0.0;
+                  var requestTotalHeight = 0.0;
+                  if (mirrorRequestIdles.isNotEmpty) {
+                    widgetList.add(
+                      SizedBox(
+                        width: 548,
+                        height: requestDividerHeight,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal:
+                                  context.tokens.spacing.vsdslSpacing3xl.left),
+                          color:
+                              context.tokens.color.vsdslColorOnSurfaceVariant,
+                        ),
                       ),
-                    ],
+                    );
+                    widgetList.add(
+                      Gap(requestPaddingHeight / 2),
+                    );
+                  }
+                  if (authRequestIdles.isNotEmpty) {
+                    requestTotalHeight +=
+                        (requestPaddingHeight + requestDividerHeight) *
+                            authRequestIdles.length;
+                    requestTotalHeight +=
+                        authRequestIdles.length * requestContainerHeight;
+                  }
+                  totalHeight = containerPaddingHeight + requestTotalHeight;
+                  widgetList.add(Container(
+                    width: 548,
+                    height: totalHeight,
+                    padding: EdgeInsets.only(
+                        left: context.tokens.spacing.vsdslSpacing3xl.left,
+                        right: context.tokens.spacing.vsdslSpacing3xl.left,
+                        bottom: containerPaddingHeight / 2,
+                        top: mirrorRequestIdles.isEmpty
+                            ? containerPaddingHeight / 2
+                            : 0),
+                    child: ListView.separated(
+                      reverse: HybridConnectionList().isMirroring(),
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: authRequestIdles.length,
+                      itemBuilder: (BuildContext buildContext, int index) {
+                        return SizedBox(
+                          width: 508,
+                          height: requestContainerHeight,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Image(
+                                image: Svg(
+                                    'assets/images/ic_prompt_in_webrtc.svg'),
+                              ),
+                              SizedBox(
+                                  width: context
+                                      .tokens.spacing.vsdslSpacingSm.left),
+                              AutoSizeText(
+                                sprintf(S.current.main_mirror_from_client, [
+                                  authRequestIdles[index].entries.first.key
+                                ]),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: context
+                                      .tokens.color.vsdslColorOnSurfaceInverse,
+                                ),
+                              ),
+                              const Spacer(),
+                              V3Focus(
+                                child: SizedBox(
+                                  width: 80,
+                                  height: requestContainerHeight,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: context.tokens.color
+                                          .vsdslColorOnSurfaceInverse,
+                                      backgroundColor: context.tokens.color
+                                          .vsdslColorOpacityNeutralSm,
+                                      side: BorderSide(
+                                        color: context.tokens.color
+                                            .vsdslColorOnSurfaceInverse,
+                                        width: 1.5,
+                                      ),
+                                      textStyle: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                    ),
+                                    onPressed: () {
+                                      if (authRequestIdles.isNotEmpty) {
+                                        trackEvent('click_decline_device',
+                                            EventCategory.session,
+                                            mode: 'webrtc');
+
+                                        authRequestIdles[index]
+                                            .entries
+                                            .first
+                                            .value
+                                            .sendRejectPresent(
+                                                PresentRejectedReasonCode
+                                                    .authorizeDecline.code,
+                                                'authorize decline');
+                                        channelProvider.authorizeRequestList
+                                            .removeAt(index);
+                                      }
+                                    },
+                                    child: AutoSizeText(S
+                                        .of(context)
+                                        .v3_authorize_prompt_decline),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                  width: context
+                                      .tokens.spacing.vsdslSpacingSm.left),
+                              V3Focus(
+                                child: SizedBox(
+                                  width: 80,
+                                  height: 27,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: context
+                                          .tokens.color.vsdslColorNeutral,
+                                      backgroundColor: context.tokens.color
+                                          .vsdslColorOnSurfaceInverse,
+                                      textStyle: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                    ),
+                                    onPressed: () {
+                                      if (authRequestIdles.isNotEmpty) {
+                                        trackEvent('click_accept_device',
+                                            EventCategory.session,
+                                            mode: 'webrtc');
+
+                                        authRequestIdles[index]
+                                            .entries
+                                            .first
+                                            .value
+                                            .sendAllowPresent();
+                                        channelProvider.authorizeRequestList
+                                            .removeAt(index);
+                                      }
+                                    },
+                                    child: AutoSizeText(S
+                                        .of(context)
+                                        .v3_authorize_prompt_accept),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (BuildContext buildContext, int index) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(
+                            vertical: requestPaddingHeight / 2,
+                          ),
+                          child: Container(
+                            color:
+                                context.tokens.color.vsdslColorOnSurfaceVariant,
+                            height: requestDividerHeight,
+                          ),
+                        );
+                      },
+                    ),
+                  ));
+                }
+
+                return ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxHeight: 400,
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: widgetList,
+                    ),
                   ),
                 );
               },
