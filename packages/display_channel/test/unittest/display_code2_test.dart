@@ -84,21 +84,34 @@ void main() {
     expect(actual, '989855743');
   });
 
-  test('createRemoteIp() for instanceGroupId=1', () {
+  test('createRemoteIpCandidates() for 1 local private IP', () {
     // arrange
     // action
-    final actual = createRemoteIp('192.168.1.5', 1);
+    final actual = createRemoteIpCandidates(
+      DisplayCode(instanceGroupId: 1),
+      ['192.168.1.5'],
+    );
 
     //assert
-    expect(actual, '192.0.0.1');
+    expect(actual, unorderedEquals(['192.0.0.1', '172.0.0.1', '10.0.0.1']));
   });
 
-  test('createRemoteIp() for instanceGroupId=16777215', () {
+  test('createRemoteIpCandidates() for 1 local public IP', () {
     // arrange
     // action
-    final actual = createRemoteIp('123.168.1.5', 16777215);
+    final actual = createRemoteIpCandidates(
+      DisplayCode(instanceGroupId: 16777215),
+      ['123.168.1.5'],
+    );
 
     //assert
-    expect(actual, '123.255.255.255');
+    expect(
+        actual,
+        unorderedEquals([
+          '123.255.255.255',
+          '192.255.255.255',
+          '172.255.255.255',
+          '10.255.255.255'
+        ]));
   });
 }

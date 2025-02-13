@@ -35,6 +35,7 @@ export 'package:display_channel/src/display_code2.dart'
         decodeDisplayCode,
         encodeDisplayCode,
         DisplayCode,
+        createRemoteIpCandidates,
         getInstanceGroupIdFromIp;
 
 export 'package:display_channel/src/util/channel_util.dart'
