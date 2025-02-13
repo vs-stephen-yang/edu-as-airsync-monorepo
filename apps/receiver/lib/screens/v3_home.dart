@@ -15,7 +15,6 @@ import 'package:display_flutter/widgets/v3_group_reject_prompt.dart';
 import 'package:display_flutter/widgets/v3_header_bar.dart';
 import 'package:display_flutter/widgets/v3_main_info.dart';
 import 'package:display_flutter/widgets/v3_message_dialog.dart';
-import 'package:display_flutter/widgets/v3_mirror_prompt.dart';
 import 'package:display_flutter/widgets/v3_streaming_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -127,7 +126,6 @@ class _V3HomeState extends State<V3Home> with WidgetsBindingObserver {
                 },
               ),
               const V3FeatureSet(),
-              const V3MirrorPrompt(),
               const V3AuthorizePrompt(),
               const V3GroupRejectPrompt(),
               const V3GroupHostView(),

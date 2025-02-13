@@ -65,7 +65,7 @@ class HybridConnectionList {
   static ValueNotifier<int> hybridSplitScreenCount = ValueNotifier(0);
 
   final List<dynamic> _hybridConnectionList =
-      List.filled(maxHybridConnection + MirrorStateProvider.maxIdle, null);
+      List.filled(maxHybridConnection * 2, null);
 
   T getConnection<T>(int index) {
     return _hybridConnectionList[index];
