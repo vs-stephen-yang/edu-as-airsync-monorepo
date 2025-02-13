@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
@@ -71,7 +73,7 @@ class PresentIdle extends StatelessWidget {
             await channelProvider.presentEnd(goIdleState: false);
             if (displayCode == "00000000000" && password == "0000") {
               demoProvider.isDemoMode = true;
-              demoProvider.presentSelectRoleDemoPage();
+              unawaited(demoProvider.presentSelectRoleDemoPage());
             } else {
               channelProvider.startConnect(
                   formattedDisplayCode: displayCode,

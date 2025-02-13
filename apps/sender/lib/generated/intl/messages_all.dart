@@ -16,35 +16,63 @@ import 'package:intl/intl.dart';
 import 'package:intl/message_lookup_by_library.dart';
 import 'package:intl/src/intl_helpers.dart';
 
+import 'messages_da.dart' as messages_da;
 import 'messages_de.dart' as messages_de;
 import 'messages_en.dart' as messages_en;
 import 'messages_es.dart' as messages_es;
+import 'messages_et.dart' as messages_et;
+import 'messages_fi.dart' as messages_fi;
 import 'messages_fr.dart' as messages_fr;
+import 'messages_lt.dart' as messages_lt;
+import 'messages_lv.dart' as messages_lv;
+import 'messages_no.dart' as messages_no;
 import 'messages_ru.dart' as messages_ru;
+import 'messages_sv.dart' as messages_sv;
 import 'messages_zh.dart' as messages_zh;
 
 typedef Future<dynamic> LibraryLoader();
 Map<String, LibraryLoader> _deferredLibraries = {
+  'da': () => new SynchronousFuture(null),
   'de': () => new SynchronousFuture(null),
   'en': () => new SynchronousFuture(null),
   'es': () => new SynchronousFuture(null),
+  'et': () => new SynchronousFuture(null),
+  'fi': () => new SynchronousFuture(null),
   'fr': () => new SynchronousFuture(null),
+  'lt': () => new SynchronousFuture(null),
+  'lv': () => new SynchronousFuture(null),
+  'no': () => new SynchronousFuture(null),
   'ru': () => new SynchronousFuture(null),
+  'sv': () => new SynchronousFuture(null),
   'zh': () => new SynchronousFuture(null),
 };
 
 MessageLookupByLibrary? _findExact(String localeName) {
   switch (localeName) {
+    case 'da':
+      return messages_da.messages;
     case 'de':
       return messages_de.messages;
     case 'en':
       return messages_en.messages;
     case 'es':
       return messages_es.messages;
+    case 'et':
+      return messages_et.messages;
+    case 'fi':
+      return messages_fi.messages;
     case 'fr':
       return messages_fr.messages;
+    case 'lt':
+      return messages_lt.messages;
+    case 'lv':
+      return messages_lv.messages;
+    case 'no':
+      return messages_no.messages;
     case 'ru':
       return messages_ru.messages;
+    case 'sv':
+      return messages_sv.messages;
     case 'zh':
       return messages_zh.messages;
     default:

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/demo_provider.dart';
 import 'package:flutter/foundation.dart';
@@ -72,7 +74,7 @@ class PresentSelectRoleDemo extends StatelessWidget {
                     ],
                   ),
                   onTap: () async {
-                    demoProvider.presentBasicStartDemoPage();
+                    unawaited(demoProvider.presentBasicStartDemoPage());
                   },
                 ),
               ],

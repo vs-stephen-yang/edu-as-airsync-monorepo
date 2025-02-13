@@ -22,6 +22,11 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(value) => "請在${value}秒內選擇要分享的螢幕";
 
+  static String m1(year) =>
+      "Copyright © ViewSonic Corporation ${year}. All rights reserved.";
+
+  static String m2(year, version) => "AirSync ©${year}. 版本 ${version}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "device_list_enter_pin": MessageLookupByLibrary.simpleMessage("一次性密碼"),
@@ -168,9 +173,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_connect_unknown_error":
             MessageLookupByLibrary.simpleMessage("未知的錯誤"),
         "v3_main_connection_mode_unsupported":
-            MessageLookupByLibrary.simpleMessage("不支援的連線類型"),
-        "v3_main_copy_rights": MessageLookupByLibrary.simpleMessage(
-            "Copyright © ViewSonic Corporation 2024. All rights reserved."),
+            MessageLookupByLibrary.simpleMessage("接收端暫時不支援Internet分享畫面"),
+        "v3_main_copy_rights": m1,
         "v3_main_display_code": MessageLookupByLibrary.simpleMessage("投影辨識碼"),
         "v3_main_display_code_error":
             MessageLookupByLibrary.simpleMessage("投影辨識碼錯誤"),
@@ -249,8 +253,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_main_select_role_title":
             MessageLookupByLibrary.simpleMessage("選擇分享或接收畫面"),
         "v3_main_terms": MessageLookupByLibrary.simpleMessage("使用條款"),
+        "v3_main_web_nonsupport": MessageLookupByLibrary.simpleMessage(
+            "目前的瀏覽器不支援AirSync，請使用Chrome或Edge瀏覽器。"),
+        "v3_main_web_nonsupport_confirm":
+            MessageLookupByLibrary.simpleMessage("確定"),
         "v3_present_end_information":
             MessageLookupByLibrary.simpleMessage("已停止分享，共計使用 %s 分鐘"),
+        "v3_present_idle_download_virtual_audio_device":
+            MessageLookupByLibrary.simpleMessage("去下載"),
         "v3_present_moderator_exited":
             MessageLookupByLibrary.simpleMessage("結束主持人模式"),
         "v3_present_moderator_exited_action":
@@ -276,6 +286,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("擴展您的顯示範圍"),
         "v3_present_select_screen_extension_desc2":
             MessageLookupByLibrary.simpleMessage("將要分享的應用程式從電腦顯示器拖拉至外部顯示器"),
+        "v3_present_select_screen_mac_audio_driver":
+            MessageLookupByLibrary.simpleMessage(
+                "尚未安裝音訊驅動程式，聲音將無法透過 IFP 播放，請下載並安裝。"),
         "v3_present_select_screen_share_audio":
             MessageLookupByLibrary.simpleMessage("勾選以分享音訊"),
         "v3_present_select_screen_subtitle":
@@ -288,13 +301,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("已達到最大分享畫面數量，請稍後再試"),
         "v3_present_touch_back_allow":
             MessageLookupByLibrary.simpleMessage("允許反控設備端"),
+        "v3_receiver_remote_screen_busy_action":
+            MessageLookupByLibrary.simpleMessage("好"),
+        "v3_receiver_remote_screen_busy_description":
+            MessageLookupByLibrary.simpleMessage("該螢幕正在廣播中，請稍後再試"),
+        "v3_receiver_remote_screen_busy_title":
+            MessageLookupByLibrary.simpleMessage("螢幕廣播中"),
         "v3_scan_qr_reminder":
             MessageLookupByLibrary.simpleMessage("掃描QR code快速連線"),
         "v3_select_screen_ios_countdown":
-            MessageLookupByLibrary.simpleMessage("請在連線逾時前點擊開始分享。剩餘時間: %s"),
+            MessageLookupByLibrary.simpleMessage("請在連線逾時前點擊開始分享。剩餘時間:"),
         "v3_select_screen_ios_start_sharing":
             MessageLookupByLibrary.simpleMessage("開始分享"),
-        "v3_setting_app_version": MessageLookupByLibrary.simpleMessage("版本 %s"),
+        "v3_setting_app_version": m2,
         "v3_setting_check_update": MessageLookupByLibrary.simpleMessage("檢查更新"),
         "v3_setting_knowledge_base":
             MessageLookupByLibrary.simpleMessage("知識庫"),

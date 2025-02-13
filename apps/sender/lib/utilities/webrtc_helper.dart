@@ -28,6 +28,9 @@ class WebRTCHelper {
   final String _macMainScreenOrder = '1';
   final String _windowsMainScreenOrder = '0';
 
+  ValueNotifier<ChannelReconnectState> reconnectStateNotifier =
+      ValueNotifier<ChannelReconnectState>(ChannelReconnectState.idle);
+
   Future<void> init({
     required String sessionId,
     required ProfileStore profileStore,
@@ -48,6 +51,7 @@ class WebRTCHelper {
       onConnectionState: onRTCPeerConnectionState,
       onStopPresent: onStopPresent,
       onTouchEvenWhenPaused: onTouchEvenWhenPaused,
+      reconnectStateNotifier: reconnectStateNotifier,
     );
     webRTCConnector?.onStreamInterrupted = (() async {
       onStreamInterrupted();
@@ -120,6 +124,7 @@ class WebRTCHelper {
     try {
       await webRTCConnector?.hangUp();
       webRTCConnector = null;
+      reconnectStateNotifier.value = ChannelReconnectState.idle;
     } catch (e, stackTrace) {
       log.severe('close', e, stackTrace);
     }

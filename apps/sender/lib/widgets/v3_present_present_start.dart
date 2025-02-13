@@ -212,7 +212,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
                         child: IconButton(
                           onPressed: () async {
                             if (needRelaunchBroadcastUploadExtension) {
-                              WebRTCHelper().launchBroadcastUploadExtension();
+                              unawaited(WebRTCHelper().launchBroadcastUploadExtension());
                             } else {
                               // Toggle current state
                               bool tempState = !presentingState.value;
@@ -227,11 +227,11 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
 
                               // Update state
                               presentingState.value = tempState;
-                              tempState
+                              unawaited(tempState
                                   ? channelProvider.presentResume()
                                   : channelProvider.presentPause(
                                       pauseBtnRect: pauseBtnRec,
-                                      stopBtnRect: stopBtnRect);
+                                      stopBtnRect: stopBtnRect));
                             }
                           },
                           icon: SvgPicture.asset(!value
@@ -292,8 +292,7 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
           Positioned(
             bottom: 100,
             child: ValueListenableBuilder(
-                valueListenable:
-                    WebRTCHelper().webRTCConnector!.reconnectStateNotifier,
+                valueListenable: WebRTCHelper().reconnectStateNotifier,
                 builder: (BuildContext context, ChannelReconnectState state,
                     Widget? child) {
                   if (state == ChannelReconnectState.reconnecting) {
@@ -365,10 +364,10 @@ class _V3PresentPresentStartState extends State<V3PresentPresentStart>
 
         widgetPositionInScreen = widgetPositionInApp + windowPosition;
         widgetRect = Rect.fromLTWH(
-          widgetPositionInScreen.dx,
-          widgetPositionInScreen.dy,
+          widgetPositionInScreen.dx * (window?.scaleFactor ?? 1),
+          widgetPositionInScreen.dy * (window?.scaleFactor ?? 1),
           renderBox.size.width,
-          renderBox.size.height + windowBar,
+          renderBox.size.height + windowBar / 2,
         );
       }
     }

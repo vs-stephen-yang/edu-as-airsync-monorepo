@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppPreferences {
@@ -31,8 +33,8 @@ class AppPreferences {
 
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('showOldUI', _showOldUI);
-    prefs.setBool('app_showEULA', _showEULA);
+    unawaited(prefs.setBool('showOldUI', _showOldUI));
+    unawaited(prefs.setBool('app_showEULA', _showEULA));
   }
 
   _load() async {

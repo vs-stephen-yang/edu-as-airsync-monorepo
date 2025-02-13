@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bonsoir/bonsoir.dart';
@@ -16,10 +17,10 @@ class DiscoverServices {
     if (discovery != null) return;
     // start the discovery
     discovery = BonsoirDiscovery(printLogs: true, type: type);
-    discovery?.ready.then((value) {
+    unawaited(discovery?.ready.then((value) {
       discovery?.eventStream!.listen(onEventOccurred);
       discovery?.start();
-    });
+    }));
   }
 
   Future<void> stopDiscovery() async {
@@ -28,8 +29,8 @@ class DiscoverServices {
   }
 
   Future<void> resolveService(BonsoirService service) async {
-    lock.synchronized(
-        () async => await service.resolve(discovery!.serviceResolver));
+    unawaited(lock.synchronized(
+        () async => await service.resolve(discovery!.serviceResolver)));
   }
 
   Future<String?> lookupIpAddress(String hostName) async {

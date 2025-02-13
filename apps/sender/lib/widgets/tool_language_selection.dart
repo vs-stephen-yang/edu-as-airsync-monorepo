@@ -1,7 +1,6 @@
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
 class LanguageSelection extends StatelessWidget {
@@ -31,7 +30,6 @@ class LanguageSelection extends StatelessWidget {
                       fit: BoxFit.fitHeight,
                       child: IconButton(
                         onPressed: () {
-                          navService.popUntil('/home');
                         },
                         splashRadius: 20,
                         focusColor: Colors.grey,

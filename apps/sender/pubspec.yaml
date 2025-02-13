@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 3.5.14+305037
+version: 3.5.21+305053
 
 environment:
   sdk: '>=3.1.2 <4.0.0'
@@ -89,6 +89,7 @@ dependencies:
   app_links: ^6.3.2
   file_picker: ^8.0.7
   window_manager: ^0.4.2
+  sdp_transform: ^0.3.2
 
   # ViewSonic plug-in
   flutter_webrtc:
@@ -98,7 +99,7 @@ dependencies:
   display_channel:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
-      ref: release-3.5.9
+      ref: release-3.5.11
   ion_sdk_flutter:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter

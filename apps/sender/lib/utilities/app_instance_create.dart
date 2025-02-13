@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -21,7 +23,7 @@ class AppInstanceCreate {
 
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('app_instanceId', _instanceId);
+    unawaited(prefs.setString('app_instanceId', _instanceId));
   }
 
   _load() async {

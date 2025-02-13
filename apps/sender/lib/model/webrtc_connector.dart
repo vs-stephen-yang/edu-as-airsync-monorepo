@@ -10,10 +10,12 @@ import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/model/rtc_stats.dart';
 import 'package:display_cast_flutter/model/rtc_stats_parser.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_cast_flutter/utilities/wakelock_manager.dart';
+import 'package:display_cast_flutter/utilities/web_browser_detect.dart';
 import 'package:display_cast_flutter/utilities/webrtc_log_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:display_channel/display_channel.dart';
@@ -21,7 +23,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:ion_sdk_flutter/src/utils.dart' as sdp_format_utils;
 import 'package:window_size/window_size.dart';
 
 class WebRTCConnector {
@@ -33,6 +34,7 @@ class WebRTCConnector {
     required this.onConnectionState,
     required this.onStopPresent,
     required this.onTouchEvenWhenPaused,
+    required this.reconnectStateNotifier,
   });
 
   final List<StreamSubscription> subscriptions = [];
@@ -47,6 +49,8 @@ class WebRTCConnector {
   RTCPeerConnection? _pc;
   RTCDataChannel? _touchbackDataChannel;
   RTCDataChannel? _controlDataChannel;
+
+  RTCDataChannelState? _rtcControlDataChannelState;
 
   MediaStream? _localStream;
   final Completer _descriptionSetCompleter = Completer();
@@ -98,8 +102,7 @@ class WebRTCConnector {
   final _statsTimerInterval = const Duration(seconds: 1);
   RtcStatsParser? _rtcStatsParser;
 
-  ValueNotifier<ChannelReconnectState> reconnectStateNotifier =
-      ValueNotifier<ChannelReconnectState>(ChannelReconnectState.idle);
+  ValueNotifier<ChannelReconnectState> reconnectStateNotifier;
 
   set reconnectState(ChannelReconnectState state) {
     reconnectStateNotifier.value = state;
@@ -189,35 +192,74 @@ class WebRTCConnector {
       }
       log.info('succeeded to set codec preferences');
     } catch (e, stackTrace) {
-      log.severe('failed to set codec preferences', e, stackTrace);
+      // TODO: Temporarily lower severity to warning. Restore to error after fixing setCodecPreferences.
+      log.warning('failed to set codec preferences', e, stackTrace);
       return false;
     }
     return true;
   }
 
+  void _updateAudioCodecPreferences(CodecCapabilitySelector codecSelector) {
+    var audioCapabilities = codecSelector.getCapabilities('audio');
+    if (audioCapabilities != null) {
+      // Retain only Opus codec
+      audioCapabilities.codecs = audioCapabilities.codecs
+          .where((codec) => (codec['codec'] as String).toLowerCase() == 'opus')
+          .toList();
+      audioCapabilities.setCodecPreferences('audio', audioCapabilities.codecs);
+      codecSelector.setCapabilities(audioCapabilities);
+    }
+  }
+
+  void _updateVideoCodecPreferences(
+      CodecCapabilitySelector codecSelector, bool isWebOnMacOS) {
+    var videoCapabilities = codecSelector.getCapabilities('video');
+    if (videoCapabilities != null) {
+      videoCapabilities.codecs = videoCapabilities.codecs.where((codec) {
+        var codecName = (codec['codec'] as String).toLowerCase();
+        var payload = codec['payload'].toString();
+
+        if (codecName == _codecPreferences[0]) {
+          // Allow all profiles for macOS on the web, otherwise exclude baseline profile
+          if (isWebOnMacOS) {
+            return true;
+          } else {
+            var profile = codecSelector.getH264CodecProfile(payload);
+            return profile != H264CodecProfile.baseline;
+          }
+        }
+        return false; // Exclude all other codecs
+      }).toList();
+
+      videoCapabilities.setCodecPreferences('video', videoCapabilities.codecs);
+      codecSelector.setCapabilities(videoCapabilities);
+    }
+  }
+
   void _modifySDPForCodecPreferences(RTCSessionDescription description) {
-    var capSel = sdp_format_utils.CodecCapabilitySelector(description.sdp!);
-    var acaps = capSel.getCapabilities('audio');
-    if (acaps != null) {
-      acaps.codecs = acaps.codecs
-          .where((e) => (e['codec'] as String).toLowerCase() == 'opus')
-          .toList();
-      acaps.setCodecPreferences('audio', acaps.codecs);
-      capSel.setCapabilities(acaps);
-    }
+    try {
+      var codecSelector = CodecCapabilitySelector(description.sdp!);
 
-    var vcaps = capSel.getCapabilities('video');
-    if (vcaps != null) {
-      vcaps.codecs = vcaps.codecs
-          .where((e) =>
-              (e['codec'] as String).toLowerCase() == _codecPreferences[0])
-          .toList();
-      vcaps.setCodecPreferences('video', vcaps.codecs);
-      capSel.setCapabilities(vcaps);
-    }
-    description.sdp = capSel.sdp();
+      // Update audio codec preferences
+      _updateAudioCodecPreferences(codecSelector);
 
-    log.info('modifySDPForCodecPreferences vcodec:${_codecPreferences[0]}');
+      // Check if the platform is macOS on the web
+      bool isWebOnMacOS = _isWebOnMacOS();
+
+      // Update video codec preferences
+      _updateVideoCodecPreferences(codecSelector, isWebOnMacOS);
+
+      description.sdp = codecSelector.sdp();
+
+      log.info('modifySDPForCodecPreferences vcodec:${_codecPreferences[0]}');
+    } catch (e, stackTrace) {
+      log.severe('Error modifying SDP for codec preferences', e, stackTrace);
+    }
+  }
+
+  bool _isWebOnMacOS() {
+    final browser = Browser.detectOrNull();
+    return browser != null && browser.osPlatform == OSPlatform.macOS;
   }
 
   Future<void> _createControlDataChannel() async {
@@ -228,6 +270,8 @@ class WebRTCConnector {
 
     _controlDataChannel!.onDataChannelState = (state) {
       log.info('Data channel state of control: ${state.name}');
+
+      _rtcControlDataChannelState = state;
 
       trackTrace('control_dc_state', properties: {
         'target': state.name,
@@ -361,14 +405,33 @@ class WebRTCConnector {
               'width': _trackWidth,
               'height': _trackHeight,
             };
+      int? virtualAudioInputDeviceID; // for macOS only
+      if (_isAudioCaptureAllowed() && !kIsWeb && Platform.isMacOS) {
+        if (await AudioSwitchManager().switchToVirtualAudioOutput()) {
+          virtualAudioInputDeviceID =
+              await AudioSwitchManager().getVirtualAudioInputDeviceID();
+        }
+      }
+      final audioConstraints = _isAudioCaptureAllowed()
+          ? {
+              ..._audioConstraints,
+              if (virtualAudioInputDeviceID != null)
+                'deviceId': virtualAudioInputDeviceID.toString(),
+            }
+          : false;
       final constraints = <String, dynamic>{
-        'audio': _isAudioCaptureAllowed() ? _audioConstraints : false,
-        'video': videoConstraints
+        'audio': audioConstraints,
+        'video': videoConstraints,
       };
-
       return await navigator.mediaDevices.getDisplayMedia(constraints);
     } catch (e, stackTrace) {
-      log.severe('getDisplayMedia', e, stackTrace);
+      String exception = e.toString().toLowerCase();
+      if (exception.contains('NotAllowedError'.toLowerCase()) ||
+          exception.contains('screenRequestPermissions'.toLowerCase())) {
+        log.warning('getDisplayMedia', e, stackTrace);
+      } else {
+        log.severe('getDisplayMedia', e, stackTrace);
+      }
       return null;
     }
   }
@@ -434,9 +497,9 @@ class WebRTCConnector {
   void _sendControlMessage(ChannelMessage message) {
     final text = jsonEncode(message.toJson());
 
-    _controlDataChannel?.send(
-      RTCDataChannelMessage(text),
-    );
+    if (_rtcControlDataChannelState == RTCDataChannelState.RTCDataChannelOpen) {
+      _controlDataChannel?.send(RTCDataChannelMessage(text));
+    }
   }
 
   void pause(String sessionId, {Rect? pauseBtnRect, Rect? stopBtnRect}) {
@@ -562,7 +625,8 @@ class WebRTCConnector {
       log.info('Touch event ignored due to paused state');
       return;
     }
-    _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY);
+    unawaited(
+        _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY));
   }
 
   void _onAddTrack(MediaStream stream, MediaStreamTrack track) {
@@ -718,9 +782,9 @@ class WebRTCConnector {
         if (track.kind == 'video') {
           _applyVideoContentHint(track);
         }
-        _pc?.getSenders().then((value) async {
+        unawaited(_pc?.getSenders().then((value) async {
           await value.first.replaceTrack(track);
-        });
+        }));
       }
     }
   }
@@ -751,7 +815,9 @@ class WebRTCConnector {
     _isPaused = false; // Reset pause state
     stopStatsTimer();
     await WakelockManager().manageWakelock(AppScene.rtcHangUp);
-
+    if (!kIsWeb && Platform.isMacOS) {
+      await AudioSwitchManager().restoreToDefaultAudioOutput();
+    }
     await _disposeStream();
     await _peerConnectionDisconnect();
     if (WebRTC.platformIsWindows) {
@@ -770,7 +836,7 @@ class WebRTCConnector {
         await stream.dispose();
 
         for (var element in subscriptions) {
-          element.cancel();
+          unawaited(element.cancel());
         }
       }
     } catch (e, stackTrace) {

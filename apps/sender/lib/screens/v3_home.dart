@@ -7,6 +7,7 @@ import 'package:display_cast_flutter/providers/channel_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/screens/v3_home_app.dart';
 import 'package:display_cast_flutter/screens/v3_home_web.dart';
+import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/v3_network_status_detector.dart';
 import 'package:display_cast_flutter/utilities/v3_update_manager.dart';
 import 'package:display_cast_flutter/widgets/app_retain.dart';
@@ -107,6 +108,9 @@ class _V3HomeState extends State<V3Home> {
 
     () async {
       await _presentEndOnExit();
+      if (!kIsWeb && Platform.isMacOS) {
+        await AudioSwitchManager().restoreToDefaultAudioOutput();
+      }
       completer.complete(AppExitResponse.exit);
     }();
 
@@ -169,11 +173,11 @@ class _V3HomeState extends State<V3Home> {
               ),
               onPressed: () async {
                 if (defaultTargetPlatform == TargetPlatform.android) {
-                  launchUrl(Uri.parse(
-                      'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast&pcampaignid=web_share'));
+                  unawaited(launchUrl(Uri.parse(
+                      'https://play.google.com/store/apps/details?id=com.viewsonic.display.cast&pcampaignid=web_share')));
                 } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-                  launchUrl(Uri.parse(
-                      'https://apps.apple.com/tw/app/airsync-sender/id6453759985'));
+                  unawaited(launchUrl(Uri.parse(
+                      'https://apps.apple.com/tw/app/airsync-sender/id6453759985')));
                 }
               },
               child: Text(S.of(context).main_notice_positive_button),

@@ -268,22 +268,19 @@ class _V3DeviceListState extends State<V3DeviceList> {
             ],
           ),
           const Spacer(),
-          SizedBox(
-            width: 110,
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                    width: 24,
-                    height: 24,
-                    'assets/images/ic_device_list_qrcode.svg'),
-                const Gap(8),
-                Text(
-                  airSyncBonsoirService.displayCode,
-                  textAlign: TextAlign.left,
-                  style: style,
-                ),
-              ],
-            ),
+          Row(
+            children: [
+              SvgPicture.asset(
+                  width: 24,
+                  height: 24,
+                  'assets/images/ic_device_list_qrcode.svg'),
+              const Gap(8),
+              Text(
+                airSyncBonsoirService.displayCode,
+                textAlign: TextAlign.left,
+                style: style,
+              ),
+            ],
           ),
         ],
       ),

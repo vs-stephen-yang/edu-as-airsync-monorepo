@@ -436,8 +436,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-3.5.9"
-      resolved-ref: "8c3446c695a0f5fbffa2a42fb23715f3c17ad38f"
+      ref: "release-3.5.11"
+      resolved-ref: e9bd603d35b93a886202e9e1c928969b1bbc9e42
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel"
     source: git
     version: "0.0.1"
@@ -1178,7 +1178,7 @@ packages:
     source: hosted
     version: "0.2.0"
   sdp_transform:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: sdp_transform
       sha256: "73e412a5279a5c2de74001535208e20fff88f225c9a4571af0f7146202755e45"
