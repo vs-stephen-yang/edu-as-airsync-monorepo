@@ -337,6 +337,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Liittyminen ei onnistu. Istunto on saavuttanut maksimimäärän."),
         "v3_present_touch_back_allow":
             MessageLookupByLibrary.simpleMessage("Salli kosketusohjaus"),
+        "v3_receiver_remote_screen_busy_action":
+            MessageLookupByLibrary.simpleMessage("OK"),
+        "v3_receiver_remote_screen_busy_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Näyttö on lähetyksessä muille näytöille. Yritä myöhemmin uudelleen."),
+        "v3_receiver_remote_screen_busy_title":
+            MessageLookupByLibrary.simpleMessage("Näyttö on lähetyksessä."),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Yhdistä nopeasti skannaamalla QR-koodi"),
         "v3_select_screen_ios_countdown":

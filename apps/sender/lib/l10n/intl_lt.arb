@@ -177,5 +177,8 @@
   "v3_present_moderator_exited_description": "Moderatorius uždarytas, prašome prisijungti iš naujo.",
   "v3_present_moderator_exited_action": "GERAI",
   "v3_main_web_nonsupport": "Šiuo metu palaikomos tik Chrome ir Edge naršyklės.",
-  "v3_main_web_nonsupport_confirm": "Supratau!"
+  "v3_main_web_nonsupport_confirm": "Supratau!",
+  "v3_receiver_remote_screen_busy_title": "Ekranas transliuojamas.",
+  "v3_receiver_remote_screen_busy_description": "Ekranas transliuojamas į kitus ekranus. Prašome bandyti vėliau.",
+  "v3_receiver_remote_screen_busy_action": "Gerai"
 }

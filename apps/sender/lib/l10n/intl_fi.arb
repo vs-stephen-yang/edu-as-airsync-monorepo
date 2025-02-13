@@ -177,5 +177,8 @@
   "v3_present_moderator_exited_description": "Moderaattori on suljettu, ole hyvä ja yhdistä uudelleen.",
   "v3_present_moderator_exited_action": "OK",
   "v3_main_web_nonsupport": "Tällä hetkellä vain Chrome- ja Edge-selaimet ovat tuettuja.",
-  "v3_main_web_nonsupport_confirm": "Ymmärretty!"
+  "v3_main_web_nonsupport_confirm": "Ymmärretty!",
+  "v3_receiver_remote_screen_busy_title": "Näyttö on lähetyksessä.",
+  "v3_receiver_remote_screen_busy_description": "Näyttö on lähetyksessä muille näytöille. Yritä myöhemmin uudelleen.",
+  "v3_receiver_remote_screen_busy_action": "OK"
 }

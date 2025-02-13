@@ -177,5 +177,8 @@
   "v3_present_moderator_exited_description": "Moderator er stengt, vennligst koble til igjen.",
   "v3_present_moderator_exited_action": "OK",
   "v3_main_web_nonsupport": "For øyeblikket støttes kun Chrome- og Edge-nettlesere.",
-  "v3_main_web_nonsupport_confirm": "Skjønner!"
+  "v3_main_web_nonsupport_confirm": "Skjønner!",
+  "v3_receiver_remote_screen_busy_title": "Denne skjermen speiles",
+  "v3_receiver_remote_screen_busy_description": "Skjermen speiles til andre skjermer. Vennligst prøv igjen senere.",
+  "v3_receiver_remote_screen_busy_action": "OK"
 }

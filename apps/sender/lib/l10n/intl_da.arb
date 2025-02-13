@@ -178,5 +178,8 @@
   "v3_present_moderator_exited_action": "OK",
   "v3_main_web_nonsupport": "I øjeblikket understøttes kun Chrome og Edge browsere.",
   "v3_main_web_nonsupport_confirm": "Forstået!",
+  "v3_receiver_remote_screen_busy_title": "Denne skærm broadcastes",
+  "v3_receiver_remote_screen_busy_description": "Denne skærm broadcastes til andre skærme. Prøv igen senere.",
   "v3_receiver_remote_screen_busy_action": "OK"
+
 }

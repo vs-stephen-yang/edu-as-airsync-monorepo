@@ -342,6 +342,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "Nevar pievienoties. Sesija ir sasniegusi maksimālo ierobežojumu."),
         "v3_present_touch_back_allow":
             MessageLookupByLibrary.simpleMessage("Atļaut Touchback"),
+        "v3_receiver_remote_screen_busy_action":
+            MessageLookupByLibrary.simpleMessage("Labi"),
+        "v3_receiver_remote_screen_busy_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Ekrāns tiek pārraidīts uz citiem ekrāniem. Lūdzu, mēģiniet vēlreiz vēlāk."),
+        "v3_receiver_remote_screen_busy_title":
+            MessageLookupByLibrary.simpleMessage("Ekrāns tiek pārraidīts."),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Ātrā savienošana, skenējot QR kodu"),
         "v3_select_screen_ios_countdown":

@@ -344,6 +344,13 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Nepavyko prisijungti. Sesija pasiekė maksimalų dalyvių skaičių."),
         "v3_present_touch_back_allow":
             MessageLookupByLibrary.simpleMessage("Leisti grįžtamąjį ryšį"),
+        "v3_receiver_remote_screen_busy_action":
+            MessageLookupByLibrary.simpleMessage("Gerai"),
+        "v3_receiver_remote_screen_busy_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Ekranas transliuojamas į kitus ekranus. Prašome bandyti vėliau."),
+        "v3_receiver_remote_screen_busy_title":
+            MessageLookupByLibrary.simpleMessage("Ekranas transliuojamas."),
         "v3_scan_qr_reminder": MessageLookupByLibrary.simpleMessage(
             "Greitas prisijungimas nuskenuojant QR kodą"),
         "v3_select_screen_ios_countdown":
