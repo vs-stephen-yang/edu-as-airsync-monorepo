@@ -104,6 +104,7 @@ func (c *WebTransportClient) sendMessage(msg string) {
 	// Send to all streams
 	for _, stream := range c.streams {
 		s := *stream
+		// TODO: handle stream buffer full
 		if _, err := s.Write(finalMessage); err != nil {
 			log.Printf("Client: %s, Stream write error: %v\n", c.id, err)
 			return

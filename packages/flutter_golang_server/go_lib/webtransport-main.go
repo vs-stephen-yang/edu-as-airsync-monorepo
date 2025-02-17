@@ -23,9 +23,6 @@ func main() {
 		}
 	}()
 
-	// Accept input from the console and send messages
-	go handleUserInput()
-
 	cert := []string{
 		"-----BEGIN CERTIFICATE-----",
 		"MIIBSzCB8aADAgECAhQsvsEkoX0ejH8koims25SIuce+bTAKBggqhkjOPQQDAjAU",
@@ -71,6 +68,8 @@ func main() {
 	if err := server.StartWebTransportServer(config); err != nil {
 		log.Fatalf("StartWebTransportServer err: %s", err)
 	}
+
+	handleUserInput()
 }
 
 // handleUserInput accepts user input from the console and sends messages to clients

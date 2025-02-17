@@ -156,6 +156,26 @@ func StartWebTransportServer(config *WebTransportConfig) error {
 		notifyListener(context.Background())
 	}()
 
+	go startWebTransport(config)
+	return nil
+}
+
+func startWebTransport(config *WebTransportConfig) {
+	defer func() {
+		if r := recover(); r != nil {
+			logger.Error(fmt.Errorf("recover from panic: %v", r), "error")
+		}
+	}()
+
+	go func() {
+		select {
+		case err := <-errCh:
+			log.Printf("errChannel get error, err: %s\n", err)
+		case <-doneCh:
+			webtransportServer.wt.Close()
+		}
+	}()
+
 	// Load TLS certificate
 	tlsConfig := &tls.Config{
 		GetCertificate: getCertificate,
@@ -180,20 +200,9 @@ func StartWebTransportServer(config *WebTransportConfig) error {
 		TLSConfig: tlsConfig,
 	}
 
-	go func() {
-		log.Println("WebTransport server is running")
-		if err := webtransportServer.wt.ListenAndServe(); err != nil {
-			errCh <- err
-		}
-	}()
-
-	select {
-	case err := <-errCh:
-		log.Printf("errChannel get error, err: %s\n", err)
-		return err
-	case <-doneCh:
-		webtransportServer.wt.Close()
-		return nil
+	log.Println("WebTransport server is running")
+	if err := webtransportServer.wt.ListenAndServe(); err != nil {
+		errCh <- err
 	}
 }
 
