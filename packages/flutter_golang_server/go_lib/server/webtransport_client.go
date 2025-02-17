@@ -91,9 +91,20 @@ func (c *WebTransportClient) handleSignalingStream(stream webtransport.Stream) {
 }
 
 func (c *WebTransportClient) sendMessage(msg string) {
+	// Convert message to bytes (UTF-8 encoding)
+	messageBytes := []byte(msg)
+
+	// Create a 4-byte length prefix (Big Endian)
+	lengthPrefix := make([]byte, 4)
+	binary.BigEndian.PutUint32(lengthPrefix, uint32(len(messageBytes)))
+
+	// Concatenate length header + message
+	finalMessage := append(lengthPrefix, messageBytes...)
+
+	// Send to all streams
 	for _, stream := range c.streams {
 		s := *stream
-		if _, err := s.Write([]byte(msg)); err != nil {
+		if _, err := s.Write(finalMessage); err != nil {
 			log.Printf("Client: %s, Stream write error: %v\n", c.id, err)
 			return
 		}
