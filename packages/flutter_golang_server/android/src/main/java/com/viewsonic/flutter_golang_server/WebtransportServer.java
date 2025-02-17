@@ -11,7 +11,7 @@ import server.WebTransportListener;
 
 public class WebtransportServer implements WebTransportListener {
     private final WebtransportServerListener webtransportServerListener_;
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final ExecutorService executorService_ = Executors.newSingleThreadExecutor();
 
     public WebtransportServer(WebtransportServerListener webtransportServerListener) {
         assert (webtransportServerListener != null);
@@ -43,7 +43,7 @@ public class WebtransportServer implements WebTransportListener {
         }
 
         server.Server.registerWebTransportListener(this);
-        executorService.submit(() -> {
+        executorService_.submit(() -> {
             try {
                 server.Server.startWebTransportServer(config);
             } catch (Exception e) {

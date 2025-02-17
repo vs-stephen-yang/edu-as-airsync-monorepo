@@ -7,7 +7,8 @@ import 'flutter_webtransport_listener.dart';
 import 'flutter_webtransport_platform_interface.dart';
 
 class FlutterWebtransport {
-  late FlutterWebtransportListener _listener;
+  FlutterWebtransportListener? _listener;
+  Cron? _cron;
 
   void registerListener(FlutterWebtransportListener listener) {
     _listener = listener;
@@ -20,6 +21,9 @@ class FlutterWebtransport {
   }
 
   Future<void> stopServer() {
+    _cron?.close(); // Stop the cron job when stopping the server
+    _cron = null;
+
     return FlutterWebtransportPlatform.instance.stopServer();
   }
 
@@ -36,7 +40,8 @@ class FlutterWebtransport {
   }
 
   void scheduleTask() {
-    final cron = Cron();
+    _cron?.close(); // Ensure any previous cron job is stopped before starting a new one
+    _cron = Cron();
 
     Duration offset = DateTime.now().timeZoneOffset;
 
@@ -44,8 +49,8 @@ class FlutterWebtransport {
     int checkCertificateValidLocalHour = checkCertificateValidHour + offset.inHours;
 
     // Runs every day at midnight (00:00)
-    cron.schedule(Schedule.parse('0 $checkCertificateValidLocalHour * * *'), () async {
-      _listener.onRequestCertificate();
+    _cron?.schedule(Schedule.parse('0 $checkCertificateValidLocalHour * * *'), () async {
+      _listener?.onRequestCertificate();
     });
 
     print("Cron job started");
