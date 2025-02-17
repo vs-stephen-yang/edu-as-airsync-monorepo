@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"encoding/binary"
 	"io"
 	"log"
 	"strings"
@@ -46,9 +47,10 @@ func (c *WebTransportClient) acceptStream() {
 func (c *WebTransportClient) handleSignalingStream(stream webtransport.Stream) {
 	defer stream.Close()
 
-	buf := make([]byte, initReadBufferSize)
+	buf := make([]byte, 4) // Buffer to read the 4-byte length prefix
+
 	for {
-		n, err := stream.Read(buf)
+		_, err := io.ReadFull(stream, buf)
 		if err != nil {
 			if errors.Is(err, io.EOF) {
 				log.Println("Stream closed by peer")
@@ -61,18 +63,30 @@ func (c *WebTransportClient) handleSignalingStream(stream webtransport.Stream) {
 			return
 		}
 
-		content := string(buf[:n])
+		// Convert 4-byte buffer to an integer (Big Endian)
+		messageLength := int(binary.BigEndian.Uint32(buf))
+		if messageLength <= 0 || messageLength > int(maxReadBufferSize) {
+			log.Printf("Invalid message length: %d", messageLength)
+			return
+		}
+
+		// Step 2: Read the full message based on the extracted length
+		messageBuf := make([]byte, messageLength)
+		_, err = io.ReadFull(stream, messageBuf)
+		if err != nil {
+			log.Printf("Error reading message: %v", err)
+			return
+		}
+
+		// Step 3: Decode the UTF-8 message
+		content := string(messageBuf)
+
 		msg := WebTransportMessage{
 			ClientID: c.id,
 			Content:  content,
 		}
-		msgChan <- msg
 
-		// Resize the buffer before it’s completely consumed
-		if len(content) > len(buf)*3/4 && len(buf) < int(maxReadBufferSize) {
-			buf = make([]byte, len(buf)*2)
-			log.Printf("Buffer size increased to %d bytes", len(buf))
-		}
+		msgChan <- msg
 	}
 }
 
