@@ -44,6 +44,7 @@ ChannelConnectError mapChannelConnectError(ChannelConnectorError error) {
     case ChannelConnectorError.unknownError:
       return ChannelConnectError.unknownError;
 
+    case ChannelConnectorError.instanceOffline:
     case ChannelConnectorError.instanceNotFound:
       return ChannelConnectError.instanceNotFound;
 
@@ -170,12 +171,18 @@ class ChannelProvider extends ChangeNotifier {
       return;
     }
 
+    // Retrieve the local IP addresses
     final localIpAddresses = await fetchIPv4Addresses();
+
+    // Generate potential remote IP addresses
+    final remoteIpAddresses =
+      createRemoteIpCandidates(displayCode!, localIpAddresses);
+
     _channelConnector = DisplayChannelConnector(
       clientId: _clientId!,
       otp: otp,
       displayCode: displayCode!,
-      localIpAddresses: localIpAddresses,
+      remoteIpAddresses: remoteIpAddresses,
       encodedDisplayCode: formattedDisplayCode,
       createConnectionTunnel: (url, bool isReconnect) =>
           WebSocketClientConnection(
