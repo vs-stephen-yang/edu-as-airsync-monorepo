@@ -2,16 +2,14 @@ package com.viewsonic.flutter_golang_server;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+import server.Server;
 import server.WebTransportConfig;
 import server.WebTransportListener;
 
 
 public class WebtransportServer implements WebTransportListener {
     private final WebtransportServerListener webtransportServerListener_;
-    private final ExecutorService executorService_ = Executors.newSingleThreadExecutor();
 
     public WebtransportServer(WebtransportServerListener webtransportServerListener) {
         assert (webtransportServerListener != null);
@@ -42,14 +40,8 @@ public class WebtransportServer implements WebTransportListener {
             WebtransportUtil.addAllowOrigins(config, allowOriginConfigs);
         }
 
-        server.Server.registerWebTransportListener(this);
-        executorService_.submit(() -> {
-            try {
-                server.Server.startWebTransportServer(config);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        Server.registerWebTransportListener(this);
+        Server.startWebTransportServer(config);
     }
 
     public void stop() {
@@ -57,16 +49,16 @@ public class WebtransportServer implements WebTransportListener {
     }
 
     public void sendMessage(String connId, String message) {
-        server.Server.sendMessage(connId, message);
+        Server.sendMessage(connId, message);
     }
 
     public void updateCertificate(Map<String, Object> configuration) {
         Map<String, byte[]> certMap = WebtransportUtil.generateCertSlice(configuration);
-        server.Server.updateCertificate(certMap.get(WebtransportUtil.CERT_PEM), certMap.get(WebtransportUtil.KEY_PEM));
+        Server.updateCertificate(certMap.get(WebtransportUtil.CERT_PEM), certMap.get(WebtransportUtil.KEY_PEM));
     }
 
     public void closeConn(String connId) {
-        server.Server.closeWebTransportConn(connId);
+        Server.closeWebTransportConn(connId);
     }
 
     @Override
