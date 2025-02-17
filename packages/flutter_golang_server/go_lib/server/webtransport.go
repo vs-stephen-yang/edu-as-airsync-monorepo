@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"strings"
 	"sync"
+	"sync/atomic"
 
 	"github.com/pkg/errors"
 	"github.com/quic-go/quic-go/http3"
@@ -42,9 +43,8 @@ type WebTransportClientQuery struct {
 }
 
 var (
-	currentCert     *tls.Certificate
-	currentCertLock sync.RWMutex
-	clientMapLock   sync.RWMutex
+	currentCert   atomic.Pointer[tls.Certificate]
+	clientMapLock sync.RWMutex
 
 	initReadBufferSize uint = DEFAULT_READ_BUFFER_SIZE
 	maxReadBufferSize  uint = DEFAULT_MAX_READ_BUFFER_SIZE
@@ -86,9 +86,7 @@ func loadCertificate(certPEM, keyPEM []byte) (*tls.Certificate, error) {
 
 // Callback to get the current certificate during the TLS handshake
 func getCertificate(clientHello *tls.ClientHelloInfo) (*tls.Certificate, error) {
-	currentCertLock.RLock()
-	defer currentCertLock.RUnlock()
-	return currentCert, nil
+	return currentCert.Load(), nil
 }
 
 // Function to update the certificate
@@ -102,9 +100,7 @@ func UpdateCertificate(certPEM, keyPEM []byte) {
 }
 
 func setCurrentCertificate(cert *tls.Certificate) {
-	currentCertLock.Lock()
-	defer currentCertLock.Unlock()
-	currentCert = cert
+	currentCert.Store(cert)
 	log.Println("Certificate updated successfully")
 }
 
