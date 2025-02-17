@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_flutter/generated/l10n.dart';
@@ -51,260 +53,265 @@ class _V3StreamingViewState extends ConsumerState {
     _halfHeight = size.height / 2;
     _thirdWidth = size.width / 3;
     _thirdHeight = size.height / 3;
-    return Stack(
-      children: [
-        ValueListenableBuilder(
-          valueListenable: HybridConnectionList.hybridSplitScreenCount,
-          builder: (context, int splitScreenCount, child) {
-            // 當有任何 cast 進入，則關閉 setting menu
-            if (splitScreenCount > 0) {
-              navService.dismissSettingMenu();
-            }
-
-            if (splitScreenCount >= 0) {
-              final toggle = ref.read(groupProvider).broadcastToGroup;
-              final launchType =
-                  ref.read(groupProvider).broadcastGroupLaunchType;
-              if (toggle &&
-                  launchType == BroadcastGroupLaunchType.onlyWhenCasting) {
-                final List<GroupListItem> selectedList = splitScreenCount > 0
-                    ? ref.read(groupProvider).selectedList
-                    : [];
-                provider.Provider.of<ChannelProvider>(context, listen: false)
-                    .startDisplayGroup(selectedList,
-                        anyCasting: splitScreenCount != 0);
+    return FocusTraversalGroup(
+      policy: CastingViewFocusTraversalPolicy(),
+      child: Stack(
+        children: [
+          ValueListenableBuilder(
+            valueListenable: HybridConnectionList.hybridSplitScreenCount,
+            builder: (context, int splitScreenCount, child) {
+              // 當有任何 cast 進入，則關閉 setting menu
+              if (splitScreenCount > 0) {
+                navService.dismissSettingMenu();
               }
-            }
-            if (splitScreenCount == 7) {
-              // add two more to show "Waiting for others to join".
-              splitScreenCount += 2;
-            } else if (splitScreenCount == 3 ||
-                splitScreenCount == 5 ||
-                splitScreenCount == 8) {
-              // add one more to show "Waiting for others to join".
-              splitScreenCount++;
-            }
-            // 沒影任何投影時，關閉資訊dialog
-            if (navService.canPop() &&
-                HybridConnectionList.hybridSplitScreenCount.value == 0) {
-              navService.goBack();
-            }
-            return Stack(
-              children: [
-                Stack(
-                  children: List.generate(splitScreenCount, (index) {
-                    return ValueListenableBuilder(
-                      valueListenable:
-                          HybridConnectionList().enlargedScreenIndex,
-                      builder: (context, enlargedIndex, child) {
-                        double? left, top, right, bottom;
-                        if (enlargedIndex != null) {
-                          // enlarged screen
-                          left = 0;
-                          top = 0;
-                        } else {
-                          // no enlarged screen
-                          if (splitScreenCount <= 2) {
-                            // index 0: left (default)
-                            // index 1: right
-                            if (index == 1) {
-                              right = 0;
-                              top = 0;
-                            } else {
-                              left = 0;
-                              top = 0;
-                            }
-                          } else if (splitScreenCount <= 4) {
-                            // index 0: left-top (default)
-                            // index 1: right-top
-                            // index 2: left-bottom
-                            // index 3: right-bottom
-                            if (index == 1) {
-                              right = 0;
-                              top = 0;
-                            } else if (index == 2) {
-                              left = 0;
-                              bottom = 0;
-                            } else if (index == 3) {
-                              right = 0;
-                              bottom = 0;
-                            } else {
-                              left = 0;
-                              top = 0;
-                            }
-                          } else if (splitScreenCount <= 6) {
-                            // index 0: left-top  (default)
-                            // index 1: middle-top
-                            // index 2: right-top
-                            // index 3: left-bottom
-                            // index 4: middle-bottom
-                            // index 5: right-bottom
-                            if (index == 1) {
-                              left = _thirdWidth;
-                              top = 0;
-                            } else if (index == 2) {
-                              right = 0;
-                              top = 0;
-                            } else if (index == 3) {
-                              left = 0;
-                              bottom = 0;
-                            } else if (index == 4) {
-                              left = _thirdWidth;
-                              bottom = 0;
-                            } else if (index == 5) {
-                              right = 0;
-                              bottom = 0;
-                            } else {
-                              left = 0;
-                              top = 0;
-                            }
-                          } else if (splitScreenCount <= 9) {
-                            // index 0: left-top  (default)
-                            // index 1: middle-top
-                            // index 2: right-top
-                            // index 3: left-middle
-                            // index 4: middle-middle
-                            // index 5: right-middle
-                            // index 6: left-bottom
-                            // index 7: middle-bottom
-                            // index 8: right-bottom
-                            if (index == 1) {
-                              left = _thirdWidth;
-                              top = 0;
-                            } else if (index == 2) {
-                              right = 0;
-                              top = 0;
-                            } else if (index == 3) {
-                              left = 0;
-                              top = _thirdHeight;
-                            } else if (index == 4) {
-                              left = _thirdWidth;
-                              top = _thirdHeight;
-                            } else if (index == 5) {
-                              right = 0;
-                              top = _thirdHeight;
-                            } else if (index == 6) {
-                              left = 0;
-                              bottom = 0;
-                            } else if (index == 7) {
-                              left = _thirdWidth;
-                              bottom = 0;
-                            } else if (index == 8) {
-                              right = 0;
-                              bottom = 0;
-                            } else {
-                              left = 0;
-                              top = 0;
-                            }
-                          } else {
-                            left = 0;
-                            top = 0;
-                          }
-                        }
-                        return Positioned(
-                          left: left,
-                          top: top,
-                          right: right,
-                          bottom: bottom,
-                          child: SizedBox(
-                            width: _getWidthHeight(
-                                index: index,
-                                splitScreenCount: splitScreenCount,
-                                enlargedScreenIndex: enlargedIndex,
-                                isWidth: true),
-                            height: _getWidthHeight(
-                                index: index,
-                                splitScreenCount: splitScreenCount,
-                                enlargedScreenIndex: enlargedIndex,
-                                isWidth: false),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: <Widget>[
-                                if (HybridConnectionList()
-                                    .isRTCConnector(index))
-                                  V3WebrtcView(
-                                      rtcConnector: HybridConnectionList()
-                                          .getConnection<RTCConnector>(index),
-                                      index: index),
-                                if (HybridConnectionList()
-                                    .isMirrorRequest(index))
-                                  MirrorView(
-                                      mirrorRequest: HybridConnectionList()
-                                          .getConnection<MirrorRequest>(index)),
-                                if (HybridConnectionList()
-                                    .isPresenting(index: index))
-                                  Positioned(
-                                    bottom: 0,
-                                    child: V3StreamingFunction(index: index),
-                                  ),
-                                if (HybridConnectionList()
-                                    .isStopPresenting(index))
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/images/ic_split_screen_waiting.svg',
-                                        width: 92,
-                                        height: 80,
-                                      ),
-                                      AutoSizeText(
-                                        S.of(context).v3_waiting_join,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          color: context.tokens.color
-                                              .vsdslColorSurface800,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }),
-                ),
-                if (splitScreenCount == 1 &&
-                    HybridConnectionList().isRTCConnector(0) &&
-                    (HybridConnectionList().getConnection(0) as RTCConnector)
-                            .presentationState ==
-                        PresentationState.waitForStream)
-                  const V3HeaderBar(isWaitForStream: true),
-              ],
-            );
-          },
-        ),
-        ValueListenableBuilder(
-          valueListenable: V3Home.isShowHeaderFooterBar,
-          builder: (context, value, child) {
-            return value
-                ? const SizedBox.shrink()
-                : const Positioned(
-                    left: 13,
-                    bottom: 8,
-                    child: ExpandableWidget(),
-                  );
-          },
-        ),
-        ValueListenableBuilder(
-          valueListenable:
-              provider.Provider.of<ChannelProvider>(context, listen: false)
-                  .showNewSharingNameList,
-          builder: (_, value, __) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (value.isNotEmpty &&
-                  HybridConnectionList.hybridSplitScreenCount.value > 0) {
-                if (!_isNewSharingOnScreen) {
-                  _showNewSharingMessageDialog(value);
+
+              if (splitScreenCount >= 0) {
+                final toggle = ref.read(groupProvider).broadcastToGroup;
+                final launchType =
+                    ref.read(groupProvider).broadcastGroupLaunchType;
+                if (toggle &&
+                    launchType == BroadcastGroupLaunchType.onlyWhenCasting) {
+                  final List<GroupListItem> selectedList = splitScreenCount > 0
+                      ? ref.read(groupProvider).selectedList
+                      : [];
+                  provider.Provider.of<ChannelProvider>(context, listen: false)
+                      .startDisplayGroup(selectedList,
+                          anyCasting: splitScreenCount != 0);
                 }
               }
-            });
-            return const SizedBox.shrink();
-          },
-        ),
-      ],
+              if (splitScreenCount == 7) {
+                // add two more to show "Waiting for others to join".
+                splitScreenCount += 2;
+              } else if (splitScreenCount == 3 ||
+                  splitScreenCount == 5 ||
+                  splitScreenCount == 8) {
+                // add one more to show "Waiting for others to join".
+                splitScreenCount++;
+              }
+              // 沒影任何投影時，關閉資訊dialog
+              if (navService.canPop() &&
+                  HybridConnectionList.hybridSplitScreenCount.value == 0) {
+                navService.goBack();
+              }
+              return Stack(
+                children: [
+                  Stack(
+                    children: List.generate(splitScreenCount, (index) {
+                      return ValueListenableBuilder(
+                        valueListenable:
+                            HybridConnectionList().enlargedScreenIndex,
+                        builder: (context, enlargedIndex, child) {
+                          double? left, top, right, bottom;
+                          if (enlargedIndex != null) {
+                            // enlarged screen
+                            left = 0;
+                            top = 0;
+                          } else {
+                            // no enlarged screen
+                            if (splitScreenCount <= 2) {
+                              // index 0: left (default)
+                              // index 1: right
+                              if (index == 1) {
+                                right = 0;
+                                top = 0;
+                              } else {
+                                left = 0;
+                                top = 0;
+                              }
+                            } else if (splitScreenCount <= 4) {
+                              // index 0: left-top (default)
+                              // index 1: right-top
+                              // index 2: left-bottom
+                              // index 3: right-bottom
+                              if (index == 1) {
+                                right = 0;
+                                top = 0;
+                              } else if (index == 2) {
+                                left = 0;
+                                bottom = 0;
+                              } else if (index == 3) {
+                                right = 0;
+                                bottom = 0;
+                              } else {
+                                left = 0;
+                                top = 0;
+                              }
+                            } else if (splitScreenCount <= 6) {
+                              // index 0: left-top  (default)
+                              // index 1: middle-top
+                              // index 2: right-top
+                              // index 3: left-bottom
+                              // index 4: middle-bottom
+                              // index 5: right-bottom
+                              if (index == 1) {
+                                left = _thirdWidth;
+                                top = 0;
+                              } else if (index == 2) {
+                                right = 0;
+                                top = 0;
+                              } else if (index == 3) {
+                                left = 0;
+                                bottom = 0;
+                              } else if (index == 4) {
+                                left = _thirdWidth;
+                                bottom = 0;
+                              } else if (index == 5) {
+                                right = 0;
+                                bottom = 0;
+                              } else {
+                                left = 0;
+                                top = 0;
+                              }
+                            } else if (splitScreenCount <= 9) {
+                              // index 0: left-top  (default)
+                              // index 1: middle-top
+                              // index 2: right-top
+                              // index 3: left-middle
+                              // index 4: middle-middle
+                              // index 5: right-middle
+                              // index 6: left-bottom
+                              // index 7: middle-bottom
+                              // index 8: right-bottom
+                              if (index == 1) {
+                                left = _thirdWidth;
+                                top = 0;
+                              } else if (index == 2) {
+                                right = 0;
+                                top = 0;
+                              } else if (index == 3) {
+                                left = 0;
+                                top = _thirdHeight;
+                              } else if (index == 4) {
+                                left = _thirdWidth;
+                                top = _thirdHeight;
+                              } else if (index == 5) {
+                                right = 0;
+                                top = _thirdHeight;
+                              } else if (index == 6) {
+                                left = 0;
+                                bottom = 0;
+                              } else if (index == 7) {
+                                left = _thirdWidth;
+                                bottom = 0;
+                              } else if (index == 8) {
+                                right = 0;
+                                bottom = 0;
+                              } else {
+                                left = 0;
+                                top = 0;
+                              }
+                            } else {
+                              left = 0;
+                              top = 0;
+                            }
+                          }
+                          return Positioned(
+                            left: left,
+                            top: top,
+                            right: right,
+                            bottom: bottom,
+                            child: SizedBox(
+                              width: _getWidthHeight(
+                                  index: index,
+                                  splitScreenCount: splitScreenCount,
+                                  enlargedScreenIndex: enlargedIndex,
+                                  isWidth: true),
+                              height: _getWidthHeight(
+                                  index: index,
+                                  splitScreenCount: splitScreenCount,
+                                  enlargedScreenIndex: enlargedIndex,
+                                  isWidth: false),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: <Widget>[
+                                  if (HybridConnectionList()
+                                      .isRTCConnector(index))
+                                    V3WebrtcView(
+                                        rtcConnector: HybridConnectionList()
+                                            .getConnection<RTCConnector>(index),
+                                        index: index),
+                                  if (HybridConnectionList()
+                                      .isMirrorRequest(index))
+                                    MirrorView(
+                                        mirrorRequest: HybridConnectionList()
+                                            .getConnection<MirrorRequest>(
+                                                index)),
+                                  if (HybridConnectionList()
+                                      .isPresenting(index: index))
+                                    Positioned(
+                                      bottom: 0,
+                                      child: V3StreamingFunction(index: index),
+                                    ),
+                                  if (HybridConnectionList()
+                                      .isStopPresenting(index))
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/images/ic_split_screen_waiting.svg',
+                                          width: 92,
+                                          height: 80,
+                                        ),
+                                        AutoSizeText(
+                                          S.of(context).v3_waiting_join,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                            color: context.tokens.color
+                                                .vsdslColorSurface800,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }),
+                  ),
+                  if (splitScreenCount == 1 &&
+                      HybridConnectionList().isRTCConnector(0) &&
+                      (HybridConnectionList().getConnection(0) as RTCConnector)
+                              .presentationState ==
+                          PresentationState.waitForStream)
+                    const V3HeaderBar(isWaitForStream: true),
+                ],
+              );
+            },
+          ),
+          ValueListenableBuilder(
+            valueListenable: V3Home.isShowHeaderFooterBar,
+            builder: (context, value, child) {
+              return value
+                  ? const SizedBox.shrink()
+                  : const Positioned(
+                      left: 13,
+                      bottom: 8,
+                      child: ExpandableWidget(),
+                    );
+            },
+          ),
+          ValueListenableBuilder(
+            valueListenable:
+                provider.Provider.of<ChannelProvider>(context, listen: false)
+                    .showNewSharingNameList,
+            builder: (_, value, __) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (value.isNotEmpty &&
+                    HybridConnectionList.hybridSplitScreenCount.value > 0) {
+                  if (!_isNewSharingOnScreen) {
+                    _showNewSharingMessageDialog(value);
+                  }
+                }
+              });
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -541,5 +548,182 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
         _showQuickConnect = false;
       });
     });
+  }
+}
+
+/// - `←` / `→`： 選擇水平方向距離最近的按鈕（歐幾里得距離）
+/// - `↑` / `↓`：優先選擇 **X 軸最接近** 且符合方向的按鈕，否則選擇歐幾里得距離最短的
+class CastingViewFocusTraversalPolicy extends ReadingOrderTraversalPolicy {
+  @override
+  bool inDirection(FocusNode currentNode, TraversalDirection direction) {
+    super.inDirection(currentNode, direction);
+    final FocusScopeNode nearestScope = currentNode.nearestScope!;
+    final Rect currentRect = currentNode.rect;
+
+    final Iterable<FocusNode> allNodes = nearestScope.traversalDescendants;
+
+    // 過濾掉自己，避免選到自己
+    final Iterable<FocusNode> filteredNodes =
+        allNodes.where((node) => node != currentNode);
+
+    FocusNode? nextNode;
+
+    if (direction == TraversalDirection.left ||
+        direction == TraversalDirection.right) {
+      nextNode =
+          _findClosestHorizontally(currentRect, filteredNodes, direction);
+    } else if (direction == TraversalDirection.up ||
+        direction == TraversalDirection.down) {
+      nextNode = _findClosestVertically(currentRect, filteredNodes, direction);
+    }
+
+    if (nextNode != null) {
+      requestFocusCallback(nextNode);
+      return true;
+    }
+
+    return false;
+  }
+
+  FocusNode? _findClosestHorizontally(Rect currentRect,
+      Iterable<FocusNode> candidates, TraversalDirection direction) {
+    FocusNode? closestNode;
+    double minDistance = double.infinity;
+    List<FocusNode> strictYAlignedNodes = [];
+    List<FocusNode> relaxedYAlignedNodes = [];
+
+    for (final FocusNode node in candidates) {
+      final Rect nodeRect = node.rect;
+
+      bool isValid = direction == TraversalDirection.left
+          ? nodeRect.right <= currentRect.left
+          : nodeRect.left >= currentRect.right;
+
+      if (!isValid) continue;
+
+      // 計算與 Y 軸的距離
+      double yDistance = (nodeRect.center.dy - currentRect.center.dy).abs();
+
+      // Y 軸 有些許誤差對齊者, 50 為下排 widget 的容忍高度
+      if (yDistance < 50.0) {
+        strictYAlignedNodes.add(node);
+      } else {
+        relaxedYAlignedNodes.add(node);
+      }
+    }
+
+    // 如果有些許誤差對齊者，則選擇 Y 軸距離最短的
+    if (strictYAlignedNodes.isNotEmpty) {
+      for (final FocusNode node in strictYAlignedNodes) {
+        double xDistance = (node.rect.center.dx - currentRect.center.dx).abs();
+        double yDistance = (node.rect.center.dy - currentRect.center.dy).abs();
+        double euclideanDistance = (xDistance * xDistance) +
+            (yDistance * yDistance); // 省略 sqrt 來避免浮點計算開銷
+
+        if (euclideanDistance < minDistance) {
+          minDistance = euclideanDistance;
+          closestNode = node;
+        }
+      }
+      return closestNode;
+    }
+
+    // 如果沒有對齊的節點，則選擇 Y 軸符合的最短歐幾里得距離
+    if (relaxedYAlignedNodes.isNotEmpty) {
+      for (final FocusNode node in relaxedYAlignedNodes) {
+        double xDistance = (node.rect.center.dx - currentRect.center.dx).abs();
+        double yDistance = (node.rect.center.dy - currentRect.center.dy).abs();
+        double euclideanDistance =
+            (xDistance * xDistance) + (yDistance * yDistance);
+
+        if (euclideanDistance < minDistance) {
+          minDistance = euclideanDistance;
+          closestNode = node;
+        }
+      }
+      return closestNode;
+    }
+
+    return closestNode;
+  }
+
+  FocusNode? _findClosestVertically(Rect currentRect,
+      Iterable<FocusNode> candidates, TraversalDirection direction) {
+    FocusNode? closestNode;
+    double minDistance = double.infinity;
+    double minXDistance = double.infinity;
+    List<FocusNode> xAlignedNodes = [];
+
+    for (final FocusNode node in candidates) {
+      final Rect nodeRect = node.rect;
+
+      bool isValid;
+      if (direction == TraversalDirection.up) {
+        isValid = nodeRect.bottom <= currentRect.top;
+      } else {
+        isValid = nodeRect.top >= currentRect.bottom;
+      }
+      if (!isValid) continue;
+
+      double xDistance = (nodeRect.center.dx - currentRect.center.dx).abs();
+
+      // 優先挑選 X 軸距離最小的
+      if (xDistance < minXDistance) {
+        minXDistance = xDistance;
+        xAlignedNodes = [node];
+      } else if (xDistance == minXDistance) {
+        xAlignedNodes.add(node);
+      }
+    }
+
+    //  如果有 X 軸對齊的節點，選擇 Y 軸距離最短的
+    if (xAlignedNodes.isNotEmpty) {
+      for (final FocusNode node in xAlignedNodes) {
+        final Rect nodeRect = node.rect;
+        double distance = _euclideanDistance(
+          Offset(currentRect.center.dx, currentRect.center.dy),
+          Offset(nodeRect.center.dx, nodeRect.center.dy),
+        );
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestNode = node;
+        }
+      }
+      return closestNode;
+    }
+
+    // 如果沒有 X 軸對齊的，則選擇 Y 軸符合的最短歐幾里得距離
+    for (final FocusNode node in candidates) {
+      final Rect nodeRect = node.rect;
+
+      bool isValid;
+      if (direction == TraversalDirection.up) {
+        isValid = nodeRect.bottom <= currentRect.top;
+      } else {
+        isValid = nodeRect.top >= currentRect.bottom;
+      }
+      if (!isValid) continue;
+
+      double distance = _euclideanDistance(
+        Offset(currentRect.center.dx, currentRect.center.dy),
+        Offset(nodeRect.center.dx, nodeRect.center.dy),
+      );
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestNode = node;
+      }
+    }
+
+    return closestNode;
+  }
+
+  double _euclideanDistance(Offset p1, Offset p2) {
+    final dx = p1.dx - p2.dx;
+    final powDx = math.pow(dx, 2);
+    final dy = p1.dy - p2.dy;
+    final powDy = math.pow(dy, 2);
+    return math.sqrt(powDx + powDy);
   }
 }
