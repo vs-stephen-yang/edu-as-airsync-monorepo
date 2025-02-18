@@ -25,7 +25,7 @@ class RtcStatsParser {
     try {
       _onStatsReports(reports);
     } catch (e, stacktrace) {
-      log.severe('onStatsReports', e, stacktrace);
+      log.warning('onStatsReports', e, stacktrace);
     }
   }
 
