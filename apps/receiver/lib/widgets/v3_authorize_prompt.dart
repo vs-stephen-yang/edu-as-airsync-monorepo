@@ -277,7 +277,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                     sprintf(S.current.main_mirror_from_client, [
                                       mirrorRequestIdles
                                           .toList()[index]
-                                          .mirrorId
+                                          .deviceName
                                     ]),
                                     style: TextStyle(
                                       fontSize: 12,
