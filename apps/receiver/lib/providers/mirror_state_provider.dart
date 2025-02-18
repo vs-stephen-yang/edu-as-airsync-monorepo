@@ -133,8 +133,12 @@ class MirrorStateProvider extends ChangeNotifier
       _pinCode = '';
     }
 
-    HybridConnectionList().addConnection(MirrorRequest(
-        _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType));
+    if (HybridConnectionList().connectionListFull()) {
+      stopAcceptedMirror(mirrorId);
+    } else {
+      HybridConnectionList().addConnection(MirrorRequest(
+          _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType));
+    }
 
     notifyListeners();
 

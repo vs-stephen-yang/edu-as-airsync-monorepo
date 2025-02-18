@@ -476,7 +476,8 @@ class ChannelProvider extends ChangeNotifier {
           if (msg.intent == JoinIntentType.present) {
             if (isModeratorMode) {
               if (HybridConnectionList().getConnectionCount() >=
-                  HybridConnectionList.maxHybridConnection) {
+                      HybridConnectionList.maxHybridConnection ||
+                  HybridConnectionList().connectionListFull()) {
                 trackEvent(
                   'device_full',
                   EventCategory.session,
@@ -499,7 +500,8 @@ class ChannelProvider extends ChangeNotifier {
                 return;
               }
               if (HybridConnectionList.hybridSplitScreenCount.value >=
-                  HybridConnectionList.maxHybridSplitScreen) {
+                      HybridConnectionList.maxHybridSplitScreen ||
+                  HybridConnectionList().connectionListFull()) {
                 trackEvent(
                   'device_full',
                   EventCategory.session,

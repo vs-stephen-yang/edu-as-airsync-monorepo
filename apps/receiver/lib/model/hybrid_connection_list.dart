@@ -194,6 +194,11 @@ class HybridConnectionList {
         HybridConnectionList().getModeratorMirrorMap().length;
   }
 
+  bool connectionListFull() {
+    return _hybridConnectionList.nonNulls.length >=
+        _hybridConnectionList.length;
+  }
+
   bool isRTCConnector(int index) {
     return _hybridConnectionList[index] is RTCConnector;
   }
