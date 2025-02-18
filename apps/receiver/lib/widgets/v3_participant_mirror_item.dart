@@ -67,7 +67,7 @@ class _V3ParticipantMirrorItemState extends State<V3ParticipantMirrorItem> {
                   SizedBox(
                     height: 18,
                     child: AutoSizeText(
-                      mirrorRequest.mirrorId,
+                      mirrorRequest.deviceName,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
