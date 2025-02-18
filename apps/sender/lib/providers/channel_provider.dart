@@ -45,6 +45,9 @@ ChannelConnectError mapChannelConnectError(ChannelConnectorError error) {
       return ChannelConnectError.unknownError;
 
     case ChannelConnectorError.instanceOffline:
+      // TODO: Return ChannelConnectError.instanceOffline indicating the instance is offline
+      return ChannelConnectError.instanceNotFound;
+
     case ChannelConnectorError.instanceNotFound:
       return ChannelConnectError.instanceNotFound;
 
@@ -238,6 +241,9 @@ class ChannelProvider extends ChangeNotifier {
         if (exception.statusCode == 404) {
           return FetchChannelTunnelUrlException(
               FetchChannelTunnelUrlError.instanceNotFound);
+        } else if (exception.statusCode == 400) {
+          return FetchChannelTunnelUrlException(
+              FetchChannelTunnelUrlError.instanceOffline);
         } else {
           return FetchChannelTunnelUrlException(
               FetchChannelTunnelUrlError.unknownError);
