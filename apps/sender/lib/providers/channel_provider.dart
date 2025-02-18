@@ -175,14 +175,14 @@ class ChannelProvider extends ChangeNotifier {
     final localIpAddresses = await fetchIPv4Addresses();
 
     // Generate potential remote IP addresses
-    final remoteIpAddresses =
+    final remoteIpCandidates =
       createRemoteIpCandidates(displayCode!, localIpAddresses);
 
     _channelConnector = DisplayChannelConnector(
       clientId: _clientId!,
       otp: otp,
       displayCode: displayCode!,
-      remoteIpAddresses: remoteIpAddresses,
+      remoteIpAddresses: remoteIpCandidates,
       encodedDisplayCode: formattedDisplayCode,
       createConnectionTunnel: (url, bool isReconnect) =>
           WebSocketClientConnection(
