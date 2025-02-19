@@ -264,4 +264,17 @@ public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandl
             channel.invokeMethod("onConnect", arguments);
         });
     }
+
+    @Override
+    public void onError(String connId, Exception e) {
+        Log.d(TAG, "FlutterWebTransport::onError() " + connId + "error: " + e.toString());
+
+        post(() -> {
+            Map<String, Object> arguments = new HashMap<>();
+            arguments.put("connId", connId);
+            arguments.put("error", e.toString());
+
+            channel.invokeMethod("onError", arguments);
+        });
+    }
 }

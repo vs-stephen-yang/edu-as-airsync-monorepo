@@ -65,4 +65,9 @@ public class WebtransportServer implements WebTransportListener {
     public void onConnect(String connId, String queryStr, String clientIp) {
         webtransportServerListener_.onConnect(connId, queryStr, clientIp);
     }
+
+    @Override
+    public void onError(String connId, Exception e) {
+        webtransportServerListener_.onError(connId, e);
+    }
 }

@@ -245,4 +245,9 @@ class _MyAppState extends State<MyApp> implements FlutterWebtransportListener {
   void onRequestCertificate() {
     print("Call onRequestCertificate on Listener");
   }
+
+  @override
+  void onError(String connId, String e) {
+    print("Listener on error: connId: $connId, err: $e");
+  }
 }

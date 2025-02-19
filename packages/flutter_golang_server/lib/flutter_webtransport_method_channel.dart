@@ -80,6 +80,12 @@ class MethodChannelFlutterWebtransport extends FlutterWebtransportPlatform {
             call.arguments['clientIp']
           );
           break;
+        case 'onError':
+          _listener?.onError(
+              call.arguments['connId'],
+              call.arguments['error'],
+          );
+          break;
         default:
           throw MissingPluginException();
       }
