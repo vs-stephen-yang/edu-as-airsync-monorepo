@@ -65,7 +65,7 @@ func (c *WebTransportClient) handleSignalingStream(stream webtransport.Stream) {
 
 		// Convert 4-byte buffer to an integer (Big Endian)
 		messageLength := int(binary.BigEndian.Uint32(buf))
-		if messageLength <= 0 || messageLength > int(maxReadBufferSize) {
+		if messageLength <= 0 {
 			log.Printf("Invalid message length: %d", messageLength)
 			return
 		}

@@ -1,12 +1,10 @@
 package server
 
 type WebTransportConfig struct {
-	Port               int
-	InitCert           []byte
-	InitKey            []byte
-	AllowOrigins       []string
-	InitReadBufferSize int
-	MaxReadBufferSize  int
+	Port         int
+	InitCert     []byte
+	InitKey      []byte
+	AllowOrigins []string
 }
 
 func (c *WebTransportConfig) AddAllowOrigin(origin string) {

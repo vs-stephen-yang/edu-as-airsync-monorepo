@@ -46,9 +46,6 @@ var (
 	currentCert   atomic.Pointer[tls.Certificate]
 	clientMapLock sync.RWMutex
 
-	initReadBufferSize uint = DEFAULT_READ_BUFFER_SIZE
-	maxReadBufferSize  uint = DEFAULT_MAX_READ_BUFFER_SIZE
-
 	webtransportServer = WebTransportServer{
 		clients: make(map[string]*WebTransportClient),
 	}
@@ -104,19 +101,7 @@ func setCurrentCertificate(cert *tls.Certificate) {
 	log.Println("Certificate updated successfully")
 }
 
-func setReadBufferSize(config WebTransportConfig) {
-	if config.InitReadBufferSize != 0 {
-		initReadBufferSize = uint(config.InitReadBufferSize)
-	}
-
-	if config.MaxReadBufferSize != 0 {
-		maxReadBufferSize = uint(config.MaxReadBufferSize)
-	}
-}
-
 func initServer(config *WebTransportConfig) error {
-	setReadBufferSize(*config)
-
 	cert, err := loadCertificate(config.InitCert, config.InitKey)
 	if err != nil {
 		return errors.Wrap(err, "Failed to load initial certificate:")
