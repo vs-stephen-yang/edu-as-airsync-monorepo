@@ -27,14 +27,6 @@ public class WebtransportServer implements WebTransportListener {
         config.setInitCert(certMap.get(WebtransportUtil.CERT_PEM));
         config.setInitKey(certMap.get(WebtransportUtil.KEY_PEM));
 
-        if (configuration.containsKey("initReadBufferSize")) {
-            config.setInitReadBufferSize((int) configuration.get("initReadBufferSize"));
-        }
-
-        if (configuration.containsKey("maxReadBufferSize")) {
-            config.setMaxReadBufferSize((int) configuration.get("maxReadBufferSize"));
-        }
-
         if (configuration.containsKey("allowOrigins")) {
             List<String> allowOriginConfigs = (List<String>) configuration.get("allowOrigins");
             WebtransportUtil.addAllowOrigins(config, allowOriginConfigs);
