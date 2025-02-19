@@ -126,6 +126,17 @@ class ChannelProvider extends ChangeNotifier {
   bool _isShareMode = false;
   final InstanceInfoProvider _instanceInfo;
 
+  static const defaultSmartScaling = false;
+  bool _smartScaling = defaultSmartScaling;
+
+  bool get smartScaling => _smartScaling;
+
+  set smartScaling(bool value) {
+    _smartScaling = value;
+    _save();
+    notifyListeners();
+  }
+
   static const defaultDeviceListQuickConnect = true;
   bool _isDeviceListQuickConnect = defaultDeviceListQuickConnect;
 
@@ -177,6 +188,7 @@ class ChannelProvider extends ChangeNotifier {
     await prefs.setBool('app_SenderModeEnable', _isSenderMode);
     await prefs.setBool(
         'app_DeviceListQuickConnect', _isDeviceListQuickConnect);
+    await prefs.setBool('app_SmartScaling', _smartScaling);
   }
 
   Future<void> _load() async {
@@ -187,6 +199,7 @@ class ChannelProvider extends ChangeNotifier {
         prefs.getBool('app_SenderModeEnable') ?? defaultSenderModeEnable;
     _isDeviceListQuickConnect = prefs.getBool('app_DeviceListQuickConnect') ??
         defaultDeviceListQuickConnect;
+    _smartScaling = prefs.getBool('app_SmartScaling') ?? defaultSmartScaling;
   }
 
   Future<void> reloadPreferences() async {

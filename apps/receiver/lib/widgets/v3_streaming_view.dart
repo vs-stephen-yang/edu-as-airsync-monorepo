@@ -44,7 +44,6 @@ class _V3StreamingViewState extends ConsumerState {
       _thirdWidth = 0,
       _thirdHeight = 0;
   bool _isNewSharingOnScreen = false;
-  bool _displaySmartScalingEnabled = true;    // get from user setting
 
   @override
   Widget build(BuildContext context) {
@@ -209,12 +208,12 @@ class _V3StreamingViewState extends ConsumerState {
                           }
 
                           bool smartScalingDecision = false;
-                          if (_displaySmartScalingEnabled) {
-                            if (splitScreenCount == 1 || (splitScreenCount > 1 && enlargedIndex != null)) {
-                              smartScalingDecision = true;
-                            } else {
-                              smartScalingDecision = false;
-                            }
+                          if (provider.Provider.of<ChannelProvider>(context)
+                                  .smartScaling &&
+                              (splitScreenCount == 1 ||
+                                  (splitScreenCount > 1 &&
+                                      enlargedIndex != null))) {
+                            smartScalingDecision = true;
                           }
 
                           return Positioned(
@@ -244,7 +243,8 @@ class _V3StreamingViewState extends ConsumerState {
                                         index: index,
                                         screenWidth: _fullWidth,
                                         screenHeight: _fullHeight,
-                                        displaySmartScalingEnabled: smartScalingDecision),
+                                        displaySmartScalingEnabled:
+                                            smartScalingDecision),
                                   if (HybridConnectionList()
                                       .isMirrorRequest(index))
                                     MirrorView(
@@ -253,7 +253,8 @@ class _V3StreamingViewState extends ConsumerState {
                                                 index),
                                         screenWidth: _fullWidth,
                                         screenHeight: _fullHeight,
-                                        displaySmartScalingEnabled: smartScalingDecision),
+                                        displaySmartScalingEnabled:
+                                            smartScalingDecision),
                                   if (HybridConnectionList()
                                       .isPresenting(index: index))
                                     Positioned(
