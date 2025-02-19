@@ -23,8 +23,9 @@ class WebTransportClientConnection implements ClientConnection {
   void Function(Map<String, dynamic> data)? onMessage;
 
   final String _url;
-  final List<String> _hashCertificates;
+  final Future<List<String>?> Function() _getWebTransportCertificateHashesCallback;
 
+  List<String>? _hashCertificates;
   final WebTransportClientConnectionConfig _config;
 
   final RetryOptions _retryOptions;
@@ -38,7 +39,7 @@ class WebTransportClientConnection implements ClientConnection {
 
   WebTransportClientConnection(
     this._url,
-    this._hashCertificates,
+    this._getWebTransportCertificateHashesCallback,
     this._config,
   ) : _retryOptions = RetryOptions(
           maxDelay: _config.retry.maxRetryDelay,
@@ -68,7 +69,18 @@ class WebTransportClientConnection implements ClientConnection {
 
     _retryAttempt++;
 
-    _webTransport = WebTransport(_url, _hashCertificates);
+    try {
+      _hashCertificates = await _getWebTransportCertificateHashesCallback();
+      if (_hashCertificates == null) {
+        _config.logger?.call(_url, "WebTransport certificate is empty");
+        return;
+      }
+    } catch (e) {
+      _config.logger?.call(_url, "Failed to get webTransport certificate hash");
+      return;
+    }
+
+    _webTransport = WebTransport(_url, _hashCertificates!);
 
     _webTransport?.onOpen = () {
       _config.logger?.call(_url, "connected");
@@ -87,6 +99,8 @@ class WebTransportClientConnection implements ClientConnection {
       final message = jsonDecode(data);
       onMessage?.call(message);
     };
+
+    await _webTransport?.connect();
   }
 
   @override
