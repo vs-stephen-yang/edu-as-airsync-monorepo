@@ -336,7 +336,8 @@ func CloseWebTransportConn(clientID string) {
 		return
 	}
 
-	client.session.CloseWithError(0, "Session closed")
+	client.isDisconneting = true
+	client.session.CloseWithError(0, "NormalClose")
 }
 
 type WebTransportMessage struct {

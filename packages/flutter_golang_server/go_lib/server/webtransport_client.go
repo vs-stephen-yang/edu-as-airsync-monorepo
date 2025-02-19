@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"io"
 	"log"
 	"strings"
@@ -12,9 +13,10 @@ import (
 )
 
 type WebTransportClient struct {
-	id      string
-	session *webtransport.Session
-	streams []*webtransport.Stream
+	id             string
+	session        *webtransport.Session
+	streams        []*webtransport.Stream
+	isDisconneting bool
 }
 
 type WebTransportError struct {
@@ -38,6 +40,10 @@ func (c *WebTransportClient) acceptStream() {
 				}
 			}
 
+			if strings.Contains(err.Error(), "NormalClose") {
+				c.isDisconneting = true
+				return
+			}
 			errCh <- WebTransportError{
 				clientID: c.id,
 				err:      errors.Wrap(err, "Error accepting stream"),
@@ -57,9 +63,16 @@ func (c *WebTransportClient) handleSignalingStream(stream webtransport.Stream) {
 	buf := make([]byte, 4) // Buffer to read the 4-byte length prefix
 
 	for {
-		_, err := io.ReadFull(stream, buf)
-		if err != nil {
-			if errors.Is(err, io.EOF) || strings.Contains(err.Error(), "stream reset") {
+		if _, err := io.ReadFull(stream, buf); err != nil {
+			if c.isDisconneting {
+				return
+			}
+			if errors.Is(err, io.EOF) {
+				errCh <- WebTransportError{
+					clientID: c.id,
+					err:      errors.Wrap(err, "Stream EOF"),
+				}
+			} else if strings.Contains(err.Error(), "stream reset") {
 				errCh <- WebTransportError{
 					clientID: c.id,
 					err:      errors.Wrap(err, "Stream closed by peer"),
@@ -78,15 +91,14 @@ func (c *WebTransportClient) handleSignalingStream(stream webtransport.Stream) {
 		if messageLength <= 0 {
 			errCh <- WebTransportError{
 				clientID: c.id,
-				err:      errors.Wrapf(err, "Invalid message length: %d", messageLength),
+				err:      fmt.Errorf("Invalid message length: %d", messageLength),
 			}
 			return
 		}
 
 		// Step 2: Read the full message based on the extracted length
 		messageBuf := make([]byte, messageLength)
-		_, err = io.ReadFull(stream, messageBuf)
-		if err != nil {
+		if _, err := io.ReadFull(stream, messageBuf); err != nil {
 			errCh <- WebTransportError{
 				clientID: c.id,
 				err:      errors.Wrap(err, "Error reading message"),
