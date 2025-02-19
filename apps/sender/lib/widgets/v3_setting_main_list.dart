@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
+import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/settings_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
@@ -15,6 +16,10 @@ import 'package:url_launcher/url_launcher.dart';
 class V3SettingMainList extends StatelessWidget {
   const V3SettingMainList({super.key, this.isAppMode = false});
 
+  static const String enKnowledgeBaseUrl =
+      'https://myviewboard.com/kb/en_US/airsync-overview/airsync';
+  static const String zhKnowledgeBaseUrl =
+      'https://myviewboard.com/kb/t_CN/airsync-overview/airsync';
   final bool isAppMode;
 
   @override
@@ -34,7 +39,7 @@ class V3SettingMainList extends StatelessWidget {
                 height: 40,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    shadowColor: context.tokens.color.vsdswColorPrimary,
+                    shadowColor: Colors.transparent,
                     foregroundColor:
                         context.tokens.color.vsdswColorOnSurfaceInverse,
                     backgroundColor: !isAppMode &&
@@ -135,7 +140,12 @@ class V3SettingMainList extends StatelessWidget {
         SvgPicture.asset('assets/images/v3_ic_setting_external.svg'),
         () async {
           trackEvent('click_news', EventCategory.setting);
-          var url = Uri.parse('https://myviewboard.com/kb/t_CN');
+          PrefLanguageProvider languageProvider =
+              Provider.of<PrefLanguageProvider>(context, listen: false);
+          var url = Uri.parse(enKnowledgeBaseUrl);
+          if (languageProvider.language == '繁體中文') {
+            url = Uri.parse(zhKnowledgeBaseUrl);
+          }
           await launchUrl(url);
         },
       ),
