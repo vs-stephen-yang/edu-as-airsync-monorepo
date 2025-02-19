@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:js/js_util.dart';
 
 class WebTransport {
+  WebTransportMessageDecoder decoder = WebTransportMessageDecoder();
   final String _url;
   final List<String> _hashCertificates;
   dynamic _transport;
@@ -15,7 +19,10 @@ class WebTransport {
 
   Future<void> connect() async {
     List<List<int>> parsedData = parseHexList(_hashCertificates);
-    final options = generateJsOptions(parsedData);
+
+    final options = jsify({
+      'serverCertificateHashes': generateJsOptions(parsedData)
+    });
 
     try {
       _transport = callConstructor(
@@ -41,7 +48,7 @@ class WebTransport {
         'catch',
         [
           allowInterop((error) {
-            onError(error);
+            onError(error.message);
             print("WebTransport connection closed with error: $error");
           })
         ],
@@ -102,8 +109,15 @@ class WebTransport {
 
         // Decode and log the received data
         final receivedData = getProperty(streamData, 'value');
-        final message = String.fromCharCodes(receivedData);
-        onMessage(message);
+
+        if (receivedData is Uint8List) {
+          List<String> messages = decoder.onDataReceived(receivedData); // Decode message with fixed length header
+          for (var msg in messages) {
+            onMessage(msg);
+          }
+        } else {
+          print("Unexpected data format.");
+        }
       } catch (e) {
         rethrow;
       }
@@ -116,15 +130,25 @@ class WebTransport {
         getProperty(_streamWriter, 'ready'),
       );
 
-      final textEncoder =
-          callConstructor(getProperty(globalThis, 'TextEncoder'), []);
-      final encodedMessage = callMethod(textEncoder, 'encode', [data]);
+      // Encode message
+      Uint8List encodedMessage = utf8.encode(data);
+
+      // Create a 4-byte length prefix
+      ByteData lengthPrefix = ByteData(4);
+      lengthPrefix.setUint32(0, encodedMessage.length, Endian.big);
+
+      // Concatenate length + message
+      Uint8List framedMessage = Uint8List.fromList([
+        ...lengthPrefix.buffer.asUint8List(),
+        ...encodedMessage,
+      ]);
+
 
       await promiseToFuture(
         callMethod(
           _streamWriter,
           'write',
-          [encodedMessage],
+          [framedMessage],
         ),
       );
     } catch (e) {
@@ -185,10 +209,40 @@ class WebTransport {
       };
     }).toList();
 
-    print("generate js option: $certificateHashes");
+    return certificateHashes;
+  }
+}
 
-    return jsify({
-      'serverCertificateHashes': certificateHashes,
-    });
+class WebTransportMessageDecoder {
+  List<int> _buffer = []; // Buffer to store partial messages
+  List<String> messages = [];
+
+  List<String> onDataReceived(Uint8List newData) {
+    _buffer.addAll(newData); // Append new data
+
+    while (_buffer.length >= 4) { // Ensure at least 4 bytes for length
+      // Extract 4-byte length prefix
+      ByteData lengthData = ByteData.sublistView(Uint8List.fromList(_buffer.sublist(0, 4)));
+      int messageLength = lengthData.getUint32(0, Endian.big);
+
+      // Check if full message is available
+      if (_buffer.length >= 4 + messageLength) {
+        // Extract full message bytes
+        Uint8List messageBytes = Uint8List.fromList(_buffer.sublist(4, 4 + messageLength));
+
+        // Decode UTF-8 message
+        String message = utf8.decode(messageBytes);
+
+        // Store the decoded message
+        messages.add(message);
+
+        // Remove processed message from buffer
+        _buffer = _buffer.sublist(4 + messageLength);
+      } else {
+        break; // Wait for more data
+      }
+    }
+
+    return messages;
   }
 }
