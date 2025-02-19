@@ -6,4 +6,6 @@ public interface WebtransportServerListener {
     void onClose(String connId);
 
     void onConnect(String connId, String queryStr, String clientIp);
+
+    void onError(String connId, Exception e);
 }

@@ -17,6 +17,11 @@ type WebTransportClient struct {
 	streams []*webtransport.Stream
 }
 
+type WebTransportError struct {
+	clientID string
+	err      error
+}
+
 func (c *WebTransportClient) addStream(stream *webtransport.Stream) {
 	c.streams = append(c.streams, stream)
 }
@@ -33,8 +38,10 @@ func (c *WebTransportClient) acceptStream() {
 				}
 			}
 
-			// Log other unexpected errors
-			log.Printf("Error accepting stream: %v", err)
+			errCh <- WebTransportError{
+				clientID: c.id,
+				err:      errors.Wrap(err, "Error accepting stream"),
+			}
 			return
 		}
 		log.Printf("Client: %s, Accept Stream\n", c.id)
@@ -52,13 +59,16 @@ func (c *WebTransportClient) handleSignalingStream(stream webtransport.Stream) {
 	for {
 		_, err := io.ReadFull(stream, buf)
 		if err != nil {
-			if errors.Is(err, io.EOF) {
-				log.Println("Stream closed by peer")
-			} else if strings.Contains(err.Error(), "stream reset") {
-				log.Println("Stream closed by peer")
-				return
+			if errors.Is(err, io.EOF) || strings.Contains(err.Error(), "stream reset") {
+				errCh <- WebTransportError{
+					clientID: c.id,
+					err:      errors.Wrap(err, "Stream closed by peer"),
+				}
 			} else {
-				log.Printf("Stream read error: %v", err)
+				errCh <- WebTransportError{
+					clientID: c.id,
+					err:      errors.Wrap(err, "Stream read error"),
+				}
 			}
 			return
 		}
@@ -66,7 +76,10 @@ func (c *WebTransportClient) handleSignalingStream(stream webtransport.Stream) {
 		// Convert 4-byte buffer to an integer (Big Endian)
 		messageLength := int(binary.BigEndian.Uint32(buf))
 		if messageLength <= 0 {
-			log.Printf("Invalid message length: %d", messageLength)
+			errCh <- WebTransportError{
+				clientID: c.id,
+				err:      errors.Wrapf(err, "Invalid message length: %d", messageLength),
+			}
 			return
 		}
 
@@ -74,7 +87,10 @@ func (c *WebTransportClient) handleSignalingStream(stream webtransport.Stream) {
 		messageBuf := make([]byte, messageLength)
 		_, err = io.ReadFull(stream, messageBuf)
 		if err != nil {
-			log.Printf("Error reading message: %v", err)
+			errCh <- WebTransportError{
+				clientID: c.id,
+				err:      errors.Wrap(err, "Error reading message"),
+			}
 			return
 		}
 
@@ -106,7 +122,10 @@ func (c *WebTransportClient) sendMessage(msg string) {
 		s := *stream
 		// TODO: handle stream buffer full
 		if _, err := s.Write(finalMessage); err != nil {
-			log.Printf("Client: %s, Stream write error: %v\n", c.id, err)
+			errCh <- WebTransportError{
+				clientID: c.id,
+				err:      errors.Wrap(err, "Failed to write message"),
+			}
 			return
 		}
 	}

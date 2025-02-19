@@ -18,15 +18,11 @@ import (
 	"github.com/rs/xid"
 )
 
-const (
-	DEFAULT_READ_BUFFER_SIZE     = 4096
-	DEFAULT_MAX_READ_BUFFER_SIZE = 65536
-)
-
 type WebTransportListener interface {
 	OnMessage(clientID string, msg string)
 	OnClose(clientID string)
 	OnConnect(clientID string, queryStr string, clientIp string)
+	OnError(clientID string, err error)
 }
 
 type WebTransportServer struct {
@@ -53,7 +49,7 @@ var (
 	msgChan           = make(chan WebTransportMessage)
 	clientCloseChan   = make(chan string)
 	clientConnectChan = make(chan WebTransportClientQuery)
-	errCh             = make(chan error, 1)
+	errCh             = make(chan WebTransportError)
 	doneCh            = make(chan struct{}, 1)
 )
 
@@ -148,17 +144,15 @@ func StartWebTransportServer(config *WebTransportConfig) error {
 func startWebTransport(config *WebTransportConfig) {
 	defer func() {
 		if r := recover(); r != nil {
-			logger.Error(fmt.Errorf("recover from panic: %v", r), "error")
+			errCh <- WebTransportError{
+				err: fmt.Errorf("recover from panic: %v", r),
+			}
 		}
 	}()
 
 	go func() {
-		select {
-		case err := <-errCh:
-			log.Printf("errChannel get error, err: %s\n", err)
-		case <-doneCh:
-			webtransportServer.wt.Close()
-		}
+		<-doneCh
+		webtransportServer.wt.Close()
 	}()
 
 	// Load TLS certificate
@@ -187,7 +181,10 @@ func startWebTransport(config *WebTransportConfig) {
 
 	log.Println("WebTransport server is running")
 	if err := webtransportServer.wt.ListenAndServe(); err != nil {
-		errCh <- err
+		errCh <- WebTransportError{
+			err: errors.Wrap(err, "Failed to ListenAndServe"),
+		}
+		return
 	}
 }
 
@@ -307,6 +304,9 @@ func notifyListener(ctx context.Context) {
 			webtransportServer.listener.OnClose(clientID)
 		case clientQuery := <-clientConnectChan:
 			webtransportServer.listener.OnConnect(clientQuery.ID, clientQuery.Query, clientQuery.Ip)
+		case wtErr := <-errCh:
+			log.Printf("Notify error: clientID: %s, err: %s\n", wtErr.clientID, wtErr.err)
+			webtransportServer.listener.OnError(wtErr.clientID, wtErr.err)
 		case <-ctx.Done():
 			return
 		}
