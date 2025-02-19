@@ -55,6 +55,16 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
                 S.of(context).v3_settings_device_show_display_code_desc,
               ),
             ),
+            _buildSmartScaling(context, settingsProvider),
+            Padding(
+              padding: EdgeInsets.only(
+                top: context.tokens.spacing.vsdslSpacingSm.top,
+              ),
+              child: _buildTextDesc(
+                context,
+                S.of(context).v3_settings_device_smart_scaling_desc,
+              ),
+            ),
             _buildDivider(context),
             V3SettingMenuSubItemFocus(
               child: _buildInviteGroup(context, settingsProvider),
@@ -356,6 +366,20 @@ class _V3SettingsDeviceState extends State<V3SettingsDevice> {
         );
       },
     );
+  }
+
+  Widget _buildSmartScaling(
+      BuildContext context, SettingsProvider settingsProvider) {
+    return Consumer<ChannelProvider>(builder: (_, channelProvider, __) {
+      return V3SettingMenuItemToggleTile(
+        switchOn: channelProvider.smartScaling,
+        isLocked: settingsProvider.isDeviceSettingLock,
+        title: S.of(context).v3_settings_device_smart_scaling,
+        onTap: () async {
+          channelProvider.smartScaling = !channelProvider.smartScaling;
+        },
+      );
+    });
   }
 
   Widget _buildLanguage(
