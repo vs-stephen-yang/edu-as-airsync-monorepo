@@ -115,6 +115,8 @@ android {
     sourceSets {
         // "open" use same source code with "ifp"
         open.java.srcDir "src/ifp/java"
+        // "edla" use same source code with "ifp"
+        edla.java.srcDir "src/ifp/java"
     }
 
     buildTypes {
