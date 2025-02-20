@@ -1,3 +1,4 @@
+import 'package:display_channel/display_channel.dart';
 
 import 'client_connection.dart';
 
@@ -17,8 +18,8 @@ class WebTransportClientConnection implements ClientConnection {
   @override
   void Function(Map<String, dynamic> data)? onMessage;
 
-  WebTransportClientConnection(String, Future<List<String>?> Function(), WebTransportClientConnectionConfig){}
-
+  WebTransportClientConnection(String url, Future<List<String>?> Function() fn,
+      WebTransportClientConnectionConfig config);
 
   @override
   void close() {
@@ -33,4 +34,5 @@ class WebTransportClientConnection implements ClientConnection {
   @override
   void send(Map<String, dynamic> message) {
     // TODO: implement send
-  }}
+  }
+}

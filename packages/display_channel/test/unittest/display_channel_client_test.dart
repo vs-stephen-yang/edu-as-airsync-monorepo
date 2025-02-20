@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:display_channel/display_channel.dart';
-import 'package:display_channel/src/client_connection.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'contains_map_matcher.dart';
