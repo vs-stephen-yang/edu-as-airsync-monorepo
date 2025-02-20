@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:html';
 
 import 'package:js/js_util.dart';
 
@@ -38,7 +39,6 @@ class WebTransport {
         [
           allowInterop((_) {
             onClose(null);
-            print("WebTransport connection closed gracefully.");
           })
         ],
       );
@@ -48,8 +48,9 @@ class WebTransport {
         'catch',
         [
           allowInterop((error) {
-            onError(error.message);
-            print("WebTransport connection closed with error: $error");
+            onError("WebTransport connection closed with error: ${error.toString()}");
+            onClose(error.toString());
+            return;
           })
         ],
       );
@@ -58,7 +59,6 @@ class WebTransport {
       await promiseToFuture(
         getProperty(_transport, 'ready'),
       );
-      print("WebTransport connection established.");
 
       final datagram = getProperty(_transport, 'datagrams');
       final datagramReader =
@@ -89,8 +89,10 @@ class WebTransport {
 
       onOpen();
     } catch (e) {
-      onError(e.toString());
-      onClose(e.toString());
+        if (e is! DomException || (!e.message!.contains ("Opening handshake failed"))) {
+          onError(e.toString());
+          onClose(e.toString());
+        }
     }
   }
 
@@ -161,13 +163,21 @@ class WebTransport {
       return;
     }
 
+    var closeInfo = jsify({
+      "closeCode": 0,
+      "reason": "NormalClose"
+    });
+
     try {
-      print("Disconnecting WebTransport...");
-      callMethod(_transport, 'close', []);
-      print("WebTransport connection closed.");
+      // wait until ready
+      await promiseToFuture(
+        getProperty(_transport, 'ready'),
+      );
+
+      callMethod(_transport, 'close', [closeInfo]);
     } catch (e) {
       onError("Failed to close: ${e.toString()}");
-    } finally {
+    }  finally {
       _transport = null;
       _streamWriter = null;
     }
