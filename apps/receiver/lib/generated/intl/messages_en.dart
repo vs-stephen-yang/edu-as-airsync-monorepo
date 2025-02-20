@@ -337,6 +337,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_device_show_display_code_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Keep the code visible at the top of the screen, even when switching to other apps and screen sharing is active."),
+        "v3_settings_device_smart_scaling":
+            MessageLookupByLibrary.simpleMessage("Smart scaling"),
+        "v3_settings_device_smart_scaling_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "Automatically adjust the screen size to maximize the use of screen space. The image may be slightly distorted."),
         "v3_settings_device_unavailable":
             MessageLookupByLibrary.simpleMessage("Unavailable"),
         "v3_settings_display_group":
@@ -383,7 +388,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_whats_new":
             MessageLookupByLibrary.simpleMessage("What\'s new"),
         "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "AirSync %s\n\nAirSync is a ViewSonic proprietary wireless screen-sharing solution. When used with the AirSync sender, it enables seamless screen sharing from a user\'s device to ViewSonic interactive displays.\n\nKey features: \n\n1. Wireless screensharing.\n\n2. Automatic split screens for multiple presenters.\n\n3. Moderator mode to enable more control during presentation.\n\n4. Screen mirror to support AirPlay, Google Cast and Miracast.\n\n5. Cast to device with remote control.\n\n6. Cast to board to broadcast screens to multiple large screens.\n\n7. Annotation.\n\n8. Interact with Windows, macOS, iOS, Android and web version AirSync sender.\n\n9. Touchback is supported in Windows and macOS sender.\n\n"),
+            "AirSync %s\n\nAirSync is a ViewSonic proprietary wireless screen-sharing solution. When used with the AirSync sender, it enables seamless screen sharing from a user\'s device to ViewSonic interactive displays.\n\nNew features with this release: \n\n1. Moderator mode supports mirror.\n\n2. Integrate with ViewSonic Manager through Manager remote control.\n\n3. PWA version sender available for Chromebook internet screen sharing.\n\n4. Improve stability.\n\n5. Bugs fixed."),
         "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
         "v3_shortcuts_cast_device":
             MessageLookupByLibrary.simpleMessage("Cast to devices"),

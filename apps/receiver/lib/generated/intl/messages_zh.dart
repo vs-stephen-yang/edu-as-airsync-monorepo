@@ -299,6 +299,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_device_show_display_code_desc":
             MessageLookupByLibrary.simpleMessage(
                 "AirSync在背景執行時，仍能在螢幕上方顯示連線資訊，方便即時分享螢幕"),
+        "v3_settings_device_smart_scaling":
+            MessageLookupByLibrary.simpleMessage("智慧滿屏"),
+        "v3_settings_device_smart_scaling_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "自動調整畫面大小，最大利用螢幕空間．畫面可能會些許變形．"),
         "v3_settings_device_unavailable":
             MessageLookupByLibrary.simpleMessage("無法接收廣播"),
         "v3_settings_display_group":
@@ -341,7 +346,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_whats_new":
             MessageLookupByLibrary.simpleMessage("What\'s New"),
         "v3_settings_whats_new_content": MessageLookupByLibrary.simpleMessage(
-            "AirSync %s 版本發行說明\n\nAirSync 是 ViewSonic 專有的無線螢幕分享產品。搭配AirSync 傳送端一起使用時，您可以快速地從您的各種設備無線分享螢幕到 ViewSonic 大型互動式顯示器。\n\nAirSync主要功能:\n\n1. 無線螢幕分享\n\n2. 多人投影時自動分屏顯示\n\n3. 主持人模式，有效管理投影的權限及順序\n\n4. 支援AirPlay，Google Cast，Miracast螢幕鏡射功能\n\n5. 反向分享大屏畫面到設備端，並支援設備端反控大屏\n\n6. 大屏螢幕廣播\n\n7. 支援螢幕分享筆畫批註功能\n\n8. 支援Windows，macOS，iOS，Android以及網路瀏覽器傳送端\n\n9. Windows及macOS傳送端支援大屏反控設備端功能"),
+            "AirSync %s 版本發行說明\n\nAirSync 是 ViewSonic 專有的無線螢幕分享產品。搭配AirSync 傳送端一起使用時，您可以快速地從您的各種設備無線分享螢幕到 ViewSonic 大型互動式顯示器。\n\n新功能:\n\n1. 主持人模式可管理螢幕鏡射\n\n2. 可透過ViewSonic Manager遠端調整設定\n\n3. 提供Chromebook使用者PWA版本sender，以支援internet螢幕分享\n\n4. 改善穩定度\n\n5. 問題修正"),
         "v3_shortcuts_airplay": MessageLookupByLibrary.simpleMessage("AirPlay"),
         "v3_shortcuts_cast_device":
             MessageLookupByLibrary.simpleMessage("分享到設備端"),
