@@ -17,7 +17,7 @@ class WebTransportClientConnection implements ClientConnection {
   @override
   void Function(Map<String, dynamic> data)? onMessage;
 
-  WebTransportClientConnection(){}
+  WebTransportClientConnection(String, Future<List<String>?> Function(), WebTransportClientConnectionConfig){}
 
 
   @override

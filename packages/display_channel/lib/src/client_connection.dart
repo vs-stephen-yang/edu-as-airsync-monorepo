@@ -30,3 +30,8 @@ typedef CreateWebsocketClientConnection = ClientConnection Function(
   String url,
   bool isReconnect,
 );
+
+typedef CreateClientConnection = ClientConnection Function(
+  String url,
+  bool isReconnect,
+);
