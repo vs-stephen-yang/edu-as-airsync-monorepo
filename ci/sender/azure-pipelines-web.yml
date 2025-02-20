@@ -86,7 +86,9 @@ jobs:
         displayName: Copy artifacts
         inputs:
           SourceFolder: "$(Build.SourcesDirectory)/build/web"
-          contents: "**"
+          contents: |
+            **
+            !**/*.js.map
           targetFolder: "$(Build.ArtifactStagingDirectory)"
 
       # Publish artifacts
