@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:display_channel/src/channel_store.dart';
 import 'package:display_channel/src/messages/channel_message.dart';
@@ -41,15 +42,10 @@ class WebTransportConnectionServer {
   Future onConnect(String connId, String queryStr, String clientIp) async {
     final Map<String, dynamic> decodedMap = await jsonDecode(queryStr);
     Map<String, String> parameters = decodedMap.map(
-          (key, value) => MapEntry(key, value.toString()),
+      (key, value) => MapEntry(key, value.toString()),
     );
 
     final connectionRequest = _generateConnectionRequest(parameters, clientIp);
-
-    if (connectionRequest == null) {
-      await _webTransport.closeWebTransportConn(connId);
-      return;
-    }
 
     final connection = WebTransportConnection(
       _webTransport,
@@ -58,8 +54,20 @@ class WebTransportConnectionServer {
       connId: connId,
     );
 
+    if (connectionRequest == null) {
+      final reason = convertConnectRequestStatusToReason(
+          ConnectRequestStatus.authenticationRequired);
+      connection.send(ChannelClosedMessage(reason).toJson());
+
+      Timer(const Duration(seconds: 10), () {
+        _webTransport.closeWebTransportConn(connId);
+      });
+
+      return;
+    }
+
     // authenticate the connection request
-    final status = _verifyConnectRequest(connectionRequest!);
+    final status = _verifyConnectRequest(connectionRequest);
     if (status != ConnectRequestStatus.success) {
       // reject the connection
       final reason = convertConnectRequestStatusToReason(status);
