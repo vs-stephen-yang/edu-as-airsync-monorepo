@@ -21,9 +21,8 @@ class WebTransport {
   Future<void> connect() async {
     List<List<int>> parsedData = parseHexList(_hashCertificates);
 
-    final options = jsify({
-      'serverCertificateHashes': generateJsOptions(parsedData)
-    });
+    final options =
+        jsify({'serverCertificateHashes': generateJsOptions(parsedData)});
 
     try {
       _transport = callConstructor(
@@ -48,7 +47,8 @@ class WebTransport {
         'catch',
         [
           allowInterop((error) {
-            onError("WebTransport connection closed with error: ${error.toString()}");
+            onError(
+                "WebTransport connection closed with error: ${error.toString()}");
             onClose(error.toString());
             return;
           })
@@ -89,10 +89,11 @@ class WebTransport {
 
       onOpen();
     } catch (e) {
-        if (e is! DomException || (!e.message!.contains ("Opening handshake failed"))) {
-          onError(e.toString());
-          onClose(e.toString());
-        }
+      if (e is! DomException ||
+          (!e.message!.contains("Opening handshake failed"))) {
+        onError(e.toString());
+        onClose(e.toString());
+      }
     }
   }
 
@@ -113,12 +114,11 @@ class WebTransport {
         final receivedData = getProperty(streamData, 'value');
 
         if (receivedData is Uint8List) {
-          List<String> messages = decoder.onDataReceived(receivedData); // Decode message with fixed length header
+          List<String> messages = decoder.onDataReceived(
+              receivedData); // Decode message with fixed length header
           for (var msg in messages) {
             onMessage(msg);
           }
-        } else {
-          print("Unexpected data format.");
         }
       } catch (e) {
         rethrow;
@@ -145,7 +145,6 @@ class WebTransport {
         ...encodedMessage,
       ]);
 
-
       await promiseToFuture(
         callMethod(
           _streamWriter,
@@ -163,10 +162,7 @@ class WebTransport {
       return;
     }
 
-    var closeInfo = jsify({
-      "closeCode": 0,
-      "reason": "NormalClose"
-    });
+    var closeInfo = jsify({"closeCode": 0, "reason": "NormalClose"});
 
     try {
       // wait until ready
@@ -177,7 +173,7 @@ class WebTransport {
       callMethod(_transport, 'close', [closeInfo]);
     } catch (e) {
       onError("Failed to close: ${e.toString()}");
-    }  finally {
+    } finally {
       _transport = null;
       _streamWriter = null;
     }
@@ -198,7 +194,6 @@ class WebTransport {
               return int.parse(hex, radix: 16);
             }).toList();
           } catch (e) {
-            print("Skipping invalid line: $input | Error: $e");
             return null; // Mark this entry as invalid
           }
         })
@@ -230,15 +225,18 @@ class WebTransportMessageDecoder {
   List<String> onDataReceived(Uint8List newData) {
     _buffer.addAll(newData); // Append new data
 
-    while (_buffer.length >= 4) { // Ensure at least 4 bytes for length
+    while (_buffer.length >= 4) {
+      // Ensure at least 4 bytes for length
       // Extract 4-byte length prefix
-      ByteData lengthData = ByteData.sublistView(Uint8List.fromList(_buffer.sublist(0, 4)));
+      ByteData lengthData =
+          ByteData.sublistView(Uint8List.fromList(_buffer.sublist(0, 4)));
       int messageLength = lengthData.getUint32(0, Endian.big);
 
       // Check if full message is available
       if (_buffer.length >= 4 + messageLength) {
         // Extract full message bytes
-        Uint8List messageBytes = Uint8List.fromList(_buffer.sublist(4, 4 + messageLength));
+        Uint8List messageBytes =
+            Uint8List.fromList(_buffer.sublist(4, 4 + messageLength));
 
         // Decode UTF-8 message
         String message = utf8.decode(messageBytes);
