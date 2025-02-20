@@ -37,7 +37,7 @@ enum ChannelConnectorError {
 
 class DisplayChannelConnector {
   final CreateWebsocketClientConnection _createConnectionTunnel;
-  final CreateWebsocketClientConnection _createConnectionDirect;
+  final CreateClientConnection _createConnectionDirect;
   final FetchChannelTunnelUrl _fetchTunnelUrl;
 
   final String _clientId;
@@ -90,6 +90,7 @@ class DisplayChannelConnector {
 
   void open({
     int? directPort,
+    bool useWebTransport = false
   }) {
     // open direct channels
     if (directPort != null && _remoteIpAddresses?.isNotEmpty == true) {
@@ -99,6 +100,7 @@ class DisplayChannelConnector {
         _openDirectChannel(
           remoteIp,
           directPort,
+          useWebTransport,
         );
       }
     }
@@ -165,12 +167,21 @@ class DisplayChannelConnector {
   void _openDirectChannel(
     String ipAddress,
     int port,
+    bool useWebTransport,
   ) {
-    final uri = Uri(
+    Uri uri = Uri(
       scheme: 'wss',
       host: ipAddress,
       port: port,
     );
+
+    if (useWebTransport) {
+      uri = Uri(
+          scheme: 'https',
+          host: ipAddress,
+          port: port,
+          path: "/webtransport");
+    }
 
     // create a channel client
     final directClient = DisplayChannelClient(

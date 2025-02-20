@@ -21,6 +21,8 @@ export 'package:display_channel/src/channel.dart';
 
 // client-side
 export 'package:display_channel/src/display_channel_connector.dart';
+export 'package:display_channel/src/client_connection.dart'
+  show ClientConnection;
 
 // server-side
 export 'package:display_channel/src/server/connection.dart' show Connection;
