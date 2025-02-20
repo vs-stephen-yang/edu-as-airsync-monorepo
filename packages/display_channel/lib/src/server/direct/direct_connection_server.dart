@@ -49,6 +49,7 @@ class DirectConnectionServer {
 
     if (connectionRequest == null) {
       // invalid http request
+      // TODO: upgrade 發送關閉訊息後隔一段時間再斷線
       await httpRequest.response.close();
       return;
     }
