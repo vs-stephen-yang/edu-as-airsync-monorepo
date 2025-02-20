@@ -94,9 +94,8 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     trackEvent('launch', EventCategory.system);
 
     WebRTCUtil.iceGatheringContinually =
-      await WebRTCUtil.loadIceGatheringContinually();
-    WebRTCUtil.showDebugOverlay =
-      await WebRTCUtil.loadShowDebugOverlay();
+        await WebRTCUtil.loadIceGatheringContinually();
+    WebRTCUtil.showDebugOverlay = await WebRTCUtil.loadShowDebugOverlay();
 
     await DataDisplayCode.getInstance().initialize();
 
@@ -230,8 +229,7 @@ class MyApp extends StatelessWidget {
                         : context.tokens.color.vsdswColorOnSurface,
                   ),
             ),
-            initialRoute: kIsWeb ? '/v3home'
-                    : '/v3splash',
+            initialRoute: kIsWeb ? '/v3home' : '/v3splash',
             navigatorKey: NavigationService.navigationKey,
             routes: {
               // for 'navService.popUntil('/v3home')'
