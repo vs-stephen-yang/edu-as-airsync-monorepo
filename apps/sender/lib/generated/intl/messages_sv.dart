@@ -291,6 +291,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Jag fattar!"),
         "v3_present_end_information": MessageLookupByLibrary.simpleMessage(
             "Skärmdelning har avslutats.\nTotal delningstid %s."),
+        "v3_present_idle_download_virtual_audio_device":
+            MessageLookupByLibrary.simpleMessage("Ladda ner"),
         "v3_present_moderator_exited":
             MessageLookupByLibrary.simpleMessage("Moderatorn är stängd"),
         "v3_present_moderator_exited_action":
@@ -322,6 +324,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_present_select_screen_extension_desc2":
             MessageLookupByLibrary.simpleMessage(
                 "Detta låter dig dra innehåll mellan din personliga enhet och IFP, vilket förbättrar realtidsinteraktion och kontroll."),
+        "v3_present_select_screen_mac_audio_driver":
+            MessageLookupByLibrary.simpleMessage(
+                "Det går inte att dela ljud. Ladda ner och installera ljuddrivrutinen."),
         "v3_present_select_screen_share_audio":
             MessageLookupByLibrary.simpleMessage("Dela datorljud."),
         "v3_present_select_screen_subtitle":

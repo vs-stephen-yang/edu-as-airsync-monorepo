@@ -180,5 +180,7 @@
   "v3_main_web_nonsupport_confirm": "Jag fattar!",
   "v3_receiver_remote_screen_busy_title": "Skärmen sänder",
   "v3_receiver_remote_screen_busy_description": "Skärmen sänder redan till andra skärmar. Försök igen senare.",
-  "v3_receiver_remote_screen_busy_action": "OK"
+  "v3_receiver_remote_screen_busy_action": "OK",
+  "v3_present_idle_download_virtual_audio_device": "Ladda ner",
+  "v3_present_select_screen_mac_audio_driver": "Det går inte att dela ljud. Ladda ner och installera ljuddrivrutinen."
 }
