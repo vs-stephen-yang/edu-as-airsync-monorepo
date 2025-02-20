@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:display_channel/src/channel_store.dart';
 import 'package:display_channel/src/rate_limit/rate_limiter.dart';
 import 'package:display_channel/src/server/connection.dart';
 import 'package:display_channel/src/server/connection_request.dart';
 import 'package:display_channel/src/webtransport_certificate.dart';
 import 'package:display_channel/src/server/direct/webtransport_connection_server.dart';
+import 'package:display_channel/src/util/log.dart';
 import 'package:flutter_golang_server/flutter_webtransport.dart';
 import 'package:flutter_golang_server/flutter_webtransport_config.dart';
 import 'package:flutter_golang_server/flutter_webtransport_listener.dart';
@@ -111,5 +110,18 @@ class WebTransportDirectServer implements FlutterWebtransportListener {
         key: certificate.keyPem
     );
     await _webTransportServer.updateCertificate(config);
+  }
+
+  @override
+  void onError(String connId, String e) {
+    String errMsg;
+
+    if (connId.isNotEmpty) {
+      errMsg = 'WebTransport server error, connId = $connId : $e';
+    } else {
+      errMsg = 'WebTransport server error: $e';
+    }
+
+    log().warning(errMsg);
   }
 }
