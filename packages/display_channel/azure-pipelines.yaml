@@ -24,6 +24,14 @@ jobs:
     steps:
       - checkout: self
 
+      - task: PowerShell@2
+        displayName: Authenticates git repos
+        inputs:
+          targetType: "inline"
+          script: |
+            $header = "AUTHORIZATION: bearer $(System.AccessToken)"
+            git config --global http.https://viewsonic-ssi.visualstudio.com/Display%20App/.extraheader $header
+
       - task: JavaToolInstaller@0
         inputs:
           versionSpec: "11"
