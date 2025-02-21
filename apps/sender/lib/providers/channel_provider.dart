@@ -21,6 +21,7 @@ import 'package:display_cast_flutter/utilities/misc_util.dart';
 import 'package:display_cast_flutter/utilities/platform_util.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
 import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
+import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/v3_qrcode_scan.dart';
 import 'package:display_channel/display_channel.dart';
@@ -144,16 +145,6 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool _isConnectionModeSupported(DisplayCode displayCode) {
-    if (kIsWeb) {
-      // web supports only tunnel connection
-      return displayCode.hasTunnelSupport();
-    } else {
-      // other platforms support direct and tunnel connections
-      return true;
-    }
-  }
-
   startConnect({
     required String formattedDisplayCode,
     required String otp,
@@ -168,11 +159,6 @@ class ChannelProvider extends ChangeNotifier {
     _presentStateProvider = presentStateProvider;
     displayCode = decodeDisplayCode(formattedDisplayCode);
     this.otp = otp;
-
-    if (!_isConnectionModeSupported(displayCode!)) {
-      setChannelConnectError(ChannelConnectError.connectionModeUnsupported);
-      return;
-    }
 
     // Retrieve the local IP addresses
     final localIpAddresses = await fetchIPv4Addresses();
@@ -198,17 +184,7 @@ class ChannelProvider extends ChangeNotifier {
         ),
       ),
       createConnectionDirect: (url, bool isReconnect) =>
-          WebSocketClientConnection(
-        url,
-        WebSocketClientConnectionConfig(
-          connectionTimeout: defaultDirectConnectionTimeout,
-          // allow self-signed certificate
-          allowSelfSignedCertificates: true,
-          retry: getChannelRetryConfig(isReconnect),
-          logger: (url, message) =>
-              log.fine('direct connection: $url $message}'),
-        ),
-      ),
+          fetchCreateClientConnection(url, isReconnect),
       fetchTunnelUrl: (int instanceIndex, int instanceGroupId) async {
         return await _fetchTunnelUrl(instanceIndex, instanceGroupId);
       },
@@ -229,8 +205,8 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     _channelConnector!.open(
-      // Web does not support direct channel connection
-      directPort: kIsWeb ? null : port,
+      directPort: kIsWeb ? 8888 : port,
+      useWebTransport: kIsWeb
     );
   }
 
@@ -872,5 +848,32 @@ class ChannelProvider extends ChangeNotifier {
         }
       }
     });
+  }
+
+  ClientConnection fetchCreateClientConnection(String url, bool isReconnect) {
+    if (kIsWeb) {
+      return WebTransportClientConnection(
+          url,
+          fetchWebTransportCertificateHashes,
+          WebTransportClientConnectionConfig(
+            connectionTimeout: defaultDirectConnectionTimeout,
+            allowSelfSignedCertificates: true, // Allow self-signed certificates
+            retry: getChannelRetryConfig(isReconnect),
+            logger: (url, message) => log.fine('direct connection: $url $message'),
+          ),
+        );
+    } else {
+      return WebSocketClientConnection(
+        url,
+        WebSocketClientConnectionConfig(
+          connectionTimeout: defaultDirectConnectionTimeout,
+          // allow self-signed certificate
+          allowSelfSignedCertificates: true,
+          retry: getChannelRetryConfig(isReconnect),
+          logger: (url, message) =>
+              log.fine('direct connection: $url $message}'),
+        ),
+      );
+    }
   }
 }
