@@ -1,5 +1,7 @@
 #!/bin/bash
 
+openssl x509 -help
+
 CERT_DIR="certs"
 JSON_FILE="$CERT_DIR/webtransport_certs_list.json"
 DAYS_VALID=14
