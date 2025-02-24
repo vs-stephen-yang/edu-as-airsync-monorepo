@@ -60,4 +60,7 @@ abstract class ConfigSettings {
 
   late String appUpdateVersionEndpoint;
   late String appStoreUrl;
+
+  late int platformDirectPort;
+  late int webTransportPort;
 }
