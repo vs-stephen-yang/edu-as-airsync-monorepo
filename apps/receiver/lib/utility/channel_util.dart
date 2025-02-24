@@ -41,21 +41,11 @@ const _webtransportCertsListPath = 'assets/channel/webtransport_certs_list.json'
 
 Future<WebTransportCertificate?> getWebTransportCert() async {
   log.info("Finding webTransport certificate");
+
   Map<String, dynamic> jsonData = await loadAssetAsJsonData(_webtransportCertsListPath);
   List<Map<String, dynamic>> certs = List<Map<String, dynamic>>.from(jsonData['certs']);
 
-  DateTime today = DateTime.now().toUtc();
-  List<Map<String, dynamic>> validCerts = [];
-
-  for (var cert in certs) {
-    DateTime notBefore = DateTime.parse(cert['date']);
-    DateTime notAfter = notBefore.add(Duration(days: 14));
-
-    if ((notBefore.isBefore(today) || notBefore.isAtSameMomentAs(today)) &&
-        today.isBefore(notAfter)) {
-      validCerts.add(cert);
-    }
-  }
+  List<Map<String, dynamic>> validCerts = filterValidCertificates(certs);
 
   if (validCerts.isEmpty) {
     log.warning("Failed to get webTransport certificate");
@@ -65,7 +55,17 @@ Future<WebTransportCertificate?> getWebTransportCert() async {
   validCerts.sort((a, b) => DateTime.parse(b['date']).compareTo(DateTime.parse(a['date'])));
   Map<String, dynamic> selectedCert = validCerts.first;
 
-  List<String> certPem =  List<String>.from(selectedCert["certPem"]);
-  List<String> keyPem = List<String>.from(selectedCert["keyPem"]);
-  return WebTransportCertificate(certPem, keyPem);
+  return WebTransportCertificate(
+    List<String>.from(selectedCert["certPem"]),
+    List<String>.from(selectedCert["keyPem"]),
+  );
+}
+
+List<Map<String, dynamic>> filterValidCertificates(List<Map<String, dynamic>> certs) {
+  DateTime today = DateTime.now().toUtc();
+  return certs.where((cert) {
+    DateTime notBefore = DateTime.parse(cert['date']);
+    DateTime notAfter = notBefore.add(Duration(days: 14));
+    return (notBefore.isBefore(today) || notBefore.isAtSameMomentAs(today)) && today.isBefore(notAfter);
+  }).toList();
 }
