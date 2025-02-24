@@ -43,6 +43,7 @@ class _V3StreamingViewState extends ConsumerState {
       _thirdWidth = 0,
       _thirdHeight = 0;
   bool _isNewSharingOnScreen = false;
+  bool _displaySmartScalingEnabled = true;    // should get from user setting
 
   @override
   Widget build(BuildContext context) {
@@ -205,6 +206,17 @@ class _V3StreamingViewState extends ConsumerState {
                               top = 0;
                             }
                           }
+
+                          bool smartScalingDecision = false;
+                          if (_displaySmartScalingEnabled) {
+                            if (splitScreenCount == 1 || enlargedIndex != null) {
+                              smartScalingDecision = true;
+                            } else {
+                              smartScalingDecision = false;
+                            }
+                          }
+                          print("[UG] smartScalingDecision = $smartScalingDecision");
+
                           return Positioned(
                             left: left,
                             top: top,
@@ -229,7 +241,10 @@ class _V3StreamingViewState extends ConsumerState {
                                     V3WebrtcView(
                                         rtcConnector: HybridConnectionList()
                                             .getConnection<RTCConnector>(index),
-                                        index: index),
+                                        index: index,
+                                        fullWidth: _fullWidth,
+                                        fullHeight: _fullHeight,
+                                        displaySmartScalingEnabled: smartScalingDecision),
                                   if (HybridConnectionList()
                                       .isMirrorRequest(index))
                                     MirrorView(
