@@ -50,7 +50,7 @@ while [[ "$CURRENT_DATE" -le "$END_DATE" ]]; do
     CURRENT_DATE="$NEXT_DATE"
 done
 
-# Start JSON output
+# Start JSON output correctly
 echo "{" > "$JSON_FILE"
 echo "  \"certs\": [" >> "$JSON_FILE"
 
@@ -84,13 +84,29 @@ for DATE in "${CERT_DATES[@]}"; do
     openssl x509 -req -in "$CSR_FILE" -signkey "$KEY_FILE" -out "$CERT_FILE" \
         -not_before "$NOT_BEFORE" -not_after "$NOT_AFTER" || { echo "❌ ERROR: Failed to sign certificate"; exit 1; }
 
+    # Convert certificate & key to JSON-friendly format
+    CERT_LINES=$(awk '{print "    \""$0"\","}' "$CERT_FILE" | sed '$ s/,$//')
+    KEY_LINES=$(awk '{print "    \""$0"\","}' "$KEY_FILE" | sed '$ s/,$//')
+
+    # ✅ Fix JSON Formatting (Remove trailing commas)
     if [ "$FIRST" = true ]; then
         FIRST=false
     else
         echo "    ," >> "$JSON_FILE"
     fi
+
+    echo "    {" >> "$JSON_FILE"
+    echo "      \"date\": \"$HUMAN_DATE\"," >> "$JSON_FILE"
+    echo "      \"certPem\": [" >> "$JSON_FILE"
+    echo "$CERT_LINES" >> "$JSON_FILE"
+    echo "      ]," >> "$JSON_FILE"
+    echo "      \"keyPem\": [" >> "$JSON_FILE"
+    echo "$KEY_LINES" >> "$JSON_FILE"
+    echo "      ]" >> "$JSON_FILE"
+    echo "    }" >> "$JSON_FILE"
 done
 
+# ✅ Remove trailing comma and close JSON array properly
 echo "  ]" >> "$JSON_FILE"
 echo "}" >> "$JSON_FILE"
 
