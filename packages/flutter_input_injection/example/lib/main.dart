@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
+import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
+
+import 'package:scribble/scribble.dart' as scribble;
 
 void main() {
   runApp(const MyApp());
@@ -44,7 +46,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  final _notifier = scribble.ScribbleNotifier();
+
   final _flutterInputInjectionPlugin = FlutterInputInjection();
   final _focusNode = FocusNode();
   final _controller = TextEditingController();
@@ -73,9 +76,7 @@ class _MyAppState extends State<MyApp> {
     // setState to update our non-existent appearance.
     if (!mounted) return;
 
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    setState(() {});
   }
 
   List<KeyEvent> generateKeyEvents() {
@@ -139,45 +140,6 @@ class _MyAppState extends State<MyApp> {
     return keyEvents;
   }
 
-  List<TouchEvent> generateTouchEvents() {
-    final List<TouchEvent> touchEvents = [];
-
-    int x = 200, y = 200;
-    int id = 9;
-    for (int j = 0; j < 3; ++j) {
-      touchEvents.add(
-        TouchEvent(id, FlutterInputInjection.TOUCH_POINT_START, x, y, 0),
-      );
-      for (int i = 0; i < 50; ++i) {
-        touchEvents.add(
-          TouchEvent(id, FlutterInputInjection.TOUCH_POINT_MOVE, x, y, 10),
-        );
-        y += 10;
-      }
-      touchEvents.add(
-        TouchEvent(id, FlutterInputInjection.TOUCH_POINT_END, x, y, 0),
-      );
-
-      x += 50;
-      touchEvents.add(
-        TouchEvent(id, FlutterInputInjection.TOUCH_POINT_START, x, y, 0),
-      );
-      for (int i = 0; i < 50; ++i) {
-        touchEvents.add(
-          TouchEvent(id, FlutterInputInjection.TOUCH_POINT_MOVE, x, y, 10),
-        );
-        y -= 10;
-      }
-      touchEvents.add(
-        TouchEvent(id, FlutterInputInjection.TOUCH_POINT_END, x, y, 0),
-      );
-
-      x += 50;
-      id += 1;
-    }
-    return touchEvents;
-  }
-
   Future<void> testKey() async {
     final keyEvents = generateKeyEvents();
 
@@ -194,10 +156,66 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  Future<void> testSingleTouch() async {
-    final touchEvents = generateTouchEvents();
+  List<TouchEvent> generateSingleTouchEvents(Size screenSize) {
+    final List<TouchEvent> touchEvents = [];
 
-    await Future.delayed(const Duration(seconds: 10));
+    const int padding = 200;
+    const int lineLength = 400;
+    const int moveStep = 20;
+
+    int id = 9;
+
+    // Define the four corners
+    final List<Point<int>> corners = [
+      const Point(padding, padding),
+      Point(padding, (screenSize.height - padding - lineLength).toInt()),
+      Point((screenSize.width - padding).toInt(), padding),
+      Point((screenSize.width - padding).toInt(),
+          (screenSize.height - padding - lineLength).toInt()),
+    ];
+
+    for (final corner in corners) {
+      _simulateTouchPath(touchEvents, id, corner, moveStep, lineLength);
+      id++; // Increment touch ID for next stroke
+    }
+
+    return touchEvents;
+  }
+
+  /// Simulates a touch moving in a straight line downwards
+  void _simulateTouchPath(
+    List<TouchEvent> touchEvents,
+    int id,
+    Point<int> start,
+    int moveStep,
+    int lineLength,
+  ) {
+    int x = start.x;
+    int y = start.y;
+
+    // Start touch event
+    touchEvents.add(
+      TouchEvent(id, FlutterInputInjection.TOUCH_POINT_START, x, y, 0),
+    );
+
+    // Move touch in a straight line
+    for (int move = 0; move < lineLength; move += moveStep) {
+      y += moveStep;
+      touchEvents.add(
+        TouchEvent(id, FlutterInputInjection.TOUCH_POINT_MOVE, x, y, 5),
+      );
+    }
+
+    // End touch event
+    touchEvents.add(
+      TouchEvent(id, FlutterInputInjection.TOUCH_POINT_END, x, y, 0),
+    );
+  }
+
+  Future<void> testSingleTouch(Size screenSize) async {
+    final touchEvents = generateSingleTouchEvents(screenSize);
+
+    await Future.delayed(const Duration(seconds: 1));
 
     for (var touchEvent in touchEvents) {
       await _flutterInputInjectionPlugin.sendTouch(
@@ -209,10 +227,26 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  Future<void> testMultiTouch() async {
-    final touchEvents = generateTouchEvents();
+  List<TouchEvent> generateMultiTouchEvents() {
+    final List<TouchEvent> touchEvents = [];
 
-    await Future.delayed(const Duration(seconds: 10));
+    const int padding = 200;
+    const int lineLength = 400;
+    const int moveStep = 20;
+
+    int id = 9;
+
+    const start = Point(padding, padding);
+
+    _simulateTouchPath(touchEvents, id, start, moveStep, lineLength);
+
+    return touchEvents;
+  }
+
+  Future<void> testMultiTouch(Size screenSize) async {
+    final touchEvents = generateMultiTouchEvents();
+
+    await Future.delayed(const Duration(seconds: 1));
 
     for (var touchEvent in touchEvents) {
       // first touch
@@ -237,51 +271,64 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  Widget createButtons(Size screenSize) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text('Scree size ${screenSize.width}x${screenSize.height}\n'),
+        ElevatedButton(
+          onPressed: () {
+            _notifier.clear();
+            testSingleTouch(screenSize);
+          },
+          child: const Text('Test Single Touch'),
+        ),
+        const SizedBox(height: 20), // Adding some space between buttons
+        ElevatedButton(
+          onPressed: () {
+            _notifier.clear();
+            testMultiTouch(screenSize);
+          },
+          child: const Text('Test MultiTouch'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            _controller.clear();
+
+            // move focus to the text field
+            FocusScope.of(context).requestFocus(_focusNode);
+
+            testKey();
+          },
+          child: const Text('Test Key'),
+        ),
+        TextField(
+          controller: _controller,
+          focusNode: _focusNode,
+          keyboardType: TextInputType.none,
+          decoration: const InputDecoration(
+            labelText: '',
+            border: OutlineInputBorder(),
+          ),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenSize = mediaQuery.size * mediaQuery.devicePixelRatio;
+
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Input injection plugin example app'),
-        ),
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Running on: $_platformVersion\n'),
-              ElevatedButton(
-                onPressed: () {
-                  testSingleTouch();
-                },
-                child: const Text('Test Single Touch'),
+          child: Stack(
+            children: <Widget>[
+              scribble.Scribble(
+                notifier: _notifier,
               ),
-              const SizedBox(height: 20), // Adding some space between buttons
-              ElevatedButton(
-                onPressed: () {
-                  testMultiTouch();
-                },
-                child: const Text('Test MultiTouch'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  _controller.clear();
-
-                  // move focus to the text field
-                  FocusScope.of(context).requestFocus(_focusNode);
-
-                  testKey();
-                },
-                child: const Text('Test Key'),
-              ),
-              TextField(
-                controller: _controller,
-                focusNode: _focusNode,
-                keyboardType: TextInputType.none,
-                decoration: const InputDecoration(
-                  labelText: '',
-                  border: OutlineInputBorder(),
-                ),
-              ),
+              createButtons(screenSize),
             ],
           ),
         ),

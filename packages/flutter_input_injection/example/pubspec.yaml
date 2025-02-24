@@ -16,6 +16,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  scribble: ^0.10.0+1
 
   flutter_input_injection:
     # When depending on this package from a real application you should use:
