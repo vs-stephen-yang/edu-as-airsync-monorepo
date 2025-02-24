@@ -13,6 +13,16 @@ steps:
   - checkout: self
 
   - script: |
+      brew install openssl  # ✅ Install OpenSSL via Homebrew
+      echo "✅ OpenSSL installed at: $(brew --prefix openssl)"
+    displayName: 'Install OpenSSL on macOS-latest'
+
+  - script: |
+      export PATH="$(brew --prefix openssl)/bin:$PATH"  # ✅ Use Homebrew OpenSSL
+      openssl version -a  # ✅ Verify OpenSSL version
+    displayName: 'Verify OpenSSL Version'
+
+  - script: |
       chmod +x script/generate_certs.sh
       ./script/generate_certs.sh 20250201 20260201
     displayName: 'Generate webtransport certs'
