@@ -81,6 +81,7 @@ class ChannelProvider extends ChangeNotifier {
   String? _clientId;
   var _sessionId = const Uuid().v4();
   int port = 5100;
+  int webTransportPort = 8888;
 
   PresentStateProvider? _presentStateProvider;
   late String _baseApiUrl = '';
@@ -205,7 +206,7 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     _channelConnector!.open(
-      directPort: kIsWeb ? 8888 : port,
+      directPort: kIsWeb ? webTransportPort : port,
       useWebTransport: kIsWeb
     );
   }
