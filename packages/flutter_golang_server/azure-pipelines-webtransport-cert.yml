@@ -20,10 +20,9 @@ steps:
   - script: |
       export PATH="$(brew --prefix openssl)/bin:$PATH"  # ✅ Use Homebrew OpenSSL
       openssl version -a  # ✅ Verify OpenSSL version
-      openssl x509 -help
     displayName: 'Verify OpenSSL Version'
 
-  # - script: |
-  #     chmod +x script/generate_certs.sh
-  #     ./script/generate_certs.sh 20250201 20260201
-  #   displayName: 'Generate webtransport certs'
+  - script: |
+       chmod +x script/generate_certs.sh
+       ./script/generate_certs.sh 20250201 20260201
+     displayName: 'Generate webtransport certs'
