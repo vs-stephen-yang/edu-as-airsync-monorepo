@@ -72,6 +72,8 @@ class ChannelProvider extends ChangeNotifier {
   ChannelProvider(BuildContext context) {
     _baseApiUrl = AppConfig.of(context)!.settings.baseApiUrl;
     _profileStore = AppConfig.of(context)!.profileStore;
+    platformDirectPort = AppConfig.of(context)!.settings.platformDirectPort;
+    webTransportPort = AppConfig.of(context)!.settings.webTransportPort;
   }
 
   Channel? _channel;
@@ -80,8 +82,8 @@ class ChannelProvider extends ChangeNotifier {
 
   String? _clientId;
   var _sessionId = const Uuid().v4();
-  int port = 5100;
-  int webTransportPort = 8888;
+  late int platformDirectPort;
+  late int webTransportPort;
 
   PresentStateProvider? _presentStateProvider;
   late String _baseApiUrl = '';
@@ -206,7 +208,7 @@ class ChannelProvider extends ChangeNotifier {
     );
 
     _channelConnector!.open(
-      directPort: kIsWeb ? webTransportPort : port,
+      directPort: kIsWeb ? webTransportPort : platformDirectPort,
       useWebTransport: kIsWeb
     );
   }
