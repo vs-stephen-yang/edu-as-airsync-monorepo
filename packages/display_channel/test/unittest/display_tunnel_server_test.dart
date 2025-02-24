@@ -1,5 +1,4 @@
 import 'package:display_channel/display_channel.dart';
-import 'package:display_channel/src/client_connection.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_message.dart';
 import 'package:flutter_test/flutter_test.dart';
 

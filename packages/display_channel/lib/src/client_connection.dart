@@ -26,11 +26,6 @@ abstract class ClientConnection {
   void send(Map<String, dynamic> message);
 }
 
-typedef CreateWebsocketClientConnection = ClientConnection Function(
-  String url,
-  bool isReconnect,
-);
-
 typedef CreateClientConnection = ClientConnection Function(
   String url,
   bool isReconnect,

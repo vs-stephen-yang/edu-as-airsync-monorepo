@@ -11,7 +11,7 @@ class DisplayTunnelServer {
 
   final ChannelStore _store;
   TunnelConnectionServer? _tunnelServer;
-  final CreateWebsocketClientConnection _createWebSocketConnection;
+  final CreateClientConnection _createWebSocketConnection;
 
   Uri? _tunnelUrl;
   String? _instanceId;

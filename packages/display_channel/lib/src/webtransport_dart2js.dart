@@ -2,25 +2,26 @@ import 'dart:typed_data';
 import 'dart:html';
 
 import 'package:js/js_util.dart';
+import 'package:display_channel/src/util/hex_util.dart';
 import 'package:display_channel/src/webtransport_message_decoder.dart';
 import 'package:display_channel/src/webtransport_message_encoder.dart';
 
 class WebTransport {
-  WebTransportMessageDecoder decoder = WebTransportMessageDecoder();
+  final WebTransportMessageDecoder _decoder = WebTransportMessageDecoder();
   final String _url;
   final List<String> _hashCertificates;
   dynamic _transport;
   dynamic _streamWriter;
 
-  late Function() onOpen;
-  late Function(String?) onClose;
-  late Function(String) onMessage;
-  late Function(String) onError;
+  Function()? onOpen;
+  Function(String?)? onClose;
+  Function(String)? onMessage;
+  Function(String)? onError;
 
   WebTransport(this._url, this._hashCertificates);
 
   Future<void> connect() async {
-    List<List<int>> parsedData = parseHexList(_hashCertificates);
+    List<List<int>> parsedData = parseHexListToIntList(_hashCertificates);
 
     final options =
         jsify({'serverCertificateHashes': generateJsOptions(parsedData)});
@@ -38,7 +39,7 @@ class WebTransport {
         'then',
         [
           allowInterop((_) {
-            onClose(null);
+            onClose?.call(null);
           })
         ],
       );
@@ -48,9 +49,9 @@ class WebTransport {
         'catch',
         [
           allowInterop((error) {
-            onError(
+            onError?.call(
                 "WebTransport connection closed with error: ${error.toString()}");
-            onClose(error.toString());
+            onClose?.call(error.toString());
             return;
           })
         ],
@@ -77,12 +78,12 @@ class WebTransport {
 
       _startListeningToStream(streamReader);
 
-      onOpen();
+      onOpen?.call();
     } catch (e) {
       if (e is! DomException ||
           (!e.message!.contains("Opening handshake failed"))) {
-        onError(e.toString());
-        onClose(e.toString());
+        onError?.call(e.toString());
+        onClose?.call(e.toString());
       }
     }
   }
@@ -104,10 +105,10 @@ class WebTransport {
         final receivedData = getProperty(streamData, 'value');
 
         if (receivedData is Uint8List) {
-          List<String> messages = decoder.onDataReceived(
+          List<String> messages = _decoder.onDataReceived(
               receivedData); // Decode message with fixed length header
           for (var msg in messages) {
-            onMessage(msg);
+            onMessage?.call(msg);
           }
         }
       } catch (e) {
@@ -132,7 +133,7 @@ class WebTransport {
         ),
       );
     } catch (e) {
-      onError("Failed to send message: ${e.toString()}");
+      onError?.call("Failed to send message: ${e.toString()}");
     }
   }
 
@@ -151,34 +152,11 @@ class WebTransport {
 
       callMethod(_transport, 'close', [closeInfo]);
     } catch (e) {
-      onError("Failed to close: ${e.toString()}");
+      onError?.call("Failed to close: ${e.toString()}");
     } finally {
       _transport = null;
       _streamWriter = null;
     }
-  }
-
-  List<List<int>> parseHexList(List<String> inputs) {
-    return inputs
-        .map((input) {
-          try {
-            // Remove spaces and split by commas
-            final hexValues = input.replaceAll(' ', '').split(',');
-
-            // Parse each value, ensuring explicit int type
-            return hexValues.map<int>((hex) {
-              if (hex.startsWith('0x')) {
-                return int.parse(hex.substring(2), radix: 16);
-              }
-              return int.parse(hex, radix: 16);
-            }).toList();
-          } catch (e) {
-            return null; // Mark this entry as invalid
-          }
-        })
-        .where((list) => list != null)
-        .cast<List<int>>()
-        .toList(); // Filter out invalid entries
   }
 
   dynamic generateJsOptions(List<List<int>> parsedData) {

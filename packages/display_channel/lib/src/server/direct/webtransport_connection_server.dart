@@ -49,9 +49,9 @@ class WebTransportConnectionServer {
 
     final connection = WebTransportConnection(
       _webTransport,
+      connId,
+      parameters,
       idleConnectionTimeout: idleConnectionTimeout,
-      queryParam: parameters,
-      connId: connId,
     );
 
     if (connectionRequest == null) {
@@ -83,7 +83,7 @@ class WebTransportConnectionServer {
   }
 
   void onMessage(String connId, String message) {
-    var connection = _connections[connId];
+    final connection = _connections[connId];
     if (connection == null) {
       return;
     }

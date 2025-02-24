@@ -53,7 +53,7 @@ class DisplayChannelClient implements Channel {
   // Maximum allowed duration to wait for a message before considering the connection as lost.
   Duration _heartbeatTimeout = const Duration(seconds: 20);
 
-  final CreateWebsocketClientConnection _createConnection;
+  final CreateClientConnection _createConnection;
 
   DisplayChannelClient(
     this._clientId,
