@@ -304,9 +304,11 @@ packages:
   display_channel:
     dependency: "direct main"
     description:
-      path: "../display-channel"
-      relative: true
-    source: path
+      path: "."
+      ref: "release-3.6.1"
+      resolved-ref: "0274d64e3b1d45ac8b01476a66a728aee486b7a0"
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel"
+    source: git
     version: "0.0.1"
   dropdown_button2:
     dependency: "direct main"
@@ -419,9 +421,11 @@ packages:
   flutter_golang_server:
     dependency: "direct main"
     description:
-      path: "../flutter-golang-server"
-      relative: true
-    source: path
+      path: "."
+      ref: "release-3.6.1"
+      resolved-ref: ef194acea4fb23027da2bc0cf2181feef5652faa
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-golang-server"
+    source: git
     version: "0.0.1"
   flutter_input_injection:
     dependency: "direct main"
