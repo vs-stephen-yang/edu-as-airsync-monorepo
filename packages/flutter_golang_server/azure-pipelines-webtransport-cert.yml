@@ -1,7 +1,5 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Azure DevOps Pipeline for macOS
+# Generates and stores WebTransport certificates
 
 trigger:
   - main
@@ -20,5 +18,14 @@ steps:
   - script: |
       export PATH="$(brew --prefix openssl)/bin:$PATH"  # ✅ Use Homebrew OpenSSL
       chmod +x script/generate_certs.sh
-       ./script/generate_certs.sh 20250201 20260201
-    displayName: 'Generate webtransport certs'
+      ./script/generate_certs.sh $(START_DATE) $(END_DATE)
+      chmod +x script/generate_certs_hash.sh
+      ./script/generate_certs_hash.sh $(CERT_DIR)
+    displayName: 'Generate WebTransport Certs'
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: "$(CERT_DIR)"  # ✅ Save generated certificates as artifacts
+      artifact: "WebTransportCerts"
+      publishLocation: "pipeline"
+    displayName: 'Upload Certificates to Pipeline Artifacts'
