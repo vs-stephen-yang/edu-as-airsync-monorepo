@@ -24,6 +24,8 @@ class ChannelServer {
   bool _tunnelEnabled = false;
   bool _directEnabled = false;
 
+  final int webTransportServerPort;
+
   final int tunnelMaxRetry;
   final Duration tunnelRetryInterval;
 
@@ -80,6 +82,7 @@ class ChannelServer {
     required this.onDisplayCodeChange,
     required this.baseApiUrl,
     required this.instanceId,
+    required this.webTransportServerPort,
     this.tunnelMaxRetry = 30,
     this.tunnelRetryInterval = const Duration(minutes: 2),
   });
@@ -125,7 +128,7 @@ class ChannelServer {
           return;
         }
         await _webTransportDirectServer?.start(
-            8888,
+            webTransportServerPort,
             certPem: webTransportCertificate.certPem,
             keyPem: webTransportCertificate.keyPem
         );

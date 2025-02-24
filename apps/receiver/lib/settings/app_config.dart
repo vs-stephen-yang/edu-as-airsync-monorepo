@@ -58,4 +58,6 @@ abstract class ConfigSettings {
 
   late String airSyncUrl;
   late String appStoreUrl;
+
+  late int webTransportServerPort;
 }

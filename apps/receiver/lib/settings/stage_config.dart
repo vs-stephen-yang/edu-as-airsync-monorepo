@@ -55,4 +55,7 @@ class StageConfig implements ConfigSettings {
 
   @override
   String appStoreUrl = 'https://www.stage.airsync.net/download';
+
+  @override
+  int webTransportServerPort = 8001;
 }

@@ -214,6 +214,7 @@ class ChannelProvider extends ChangeNotifier {
       onDisplayCodeChange: _onDisplayCodeChange,
       baseApiUrl: appConfig.settings.baseApiUrl,
       instanceId: AppInstanceCreate().displayInstanceID,
+      webTransportServerPort: appConfig.settings.webTransportServerPort,
     );
 
     _load().then((_) {
