@@ -25,4 +25,4 @@ steps:
   - script: |
        chmod +x script/generate_certs.sh
        ./script/generate_certs.sh 20250201 20260201
-     displayName: 'Generate webtransport certs'
+    displayName: 'Generate webtransport certs'
