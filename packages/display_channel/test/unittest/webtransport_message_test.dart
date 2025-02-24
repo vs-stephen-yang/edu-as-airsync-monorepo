@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:display_channel/src/webtransport_message_encoder.dart';
 import 'package:display_channel/src/webtransport_message_decoder.dart'; // Adjust the import path accordingly
 
 void main() {
@@ -57,6 +59,33 @@ void main() {
       decoder.onDataReceived(encodedMessage.sublist(0, encodedMessage.length - 2)); // Send all but last two bytes
 
       expect(decoder.messages, isEmpty);
+    });
+  });
+
+  group('WebTransportMessageEncoder', () {
+    test('should encode message with correct length prefix', () {
+      String message = "Test Message";
+      Uint8List encodedMessage = WebTransportMessageEncoder.encodeMessage(message);
+
+      // Extract the length prefix
+      ByteData lengthData = ByteData.sublistView(encodedMessage.sublist(0, 4));
+      int messageLength = lengthData.getUint32(0, Endian.big);
+
+      // Extract the encoded message
+      Uint8List messageBytes = Uint8List.fromList(encodedMessage.sublist(4));
+      String decodedMessage = utf8.decode(messageBytes);
+
+      expect(messageLength, equals(message.length));
+      expect(decodedMessage, equals(message));
+    });
+
+    test('should encode and decode correctly', () {
+      String message = "Round-trip Test";
+      Uint8List encodedMessage = WebTransportMessageEncoder.encodeMessage(message);
+      WebTransportMessageDecoder decoder = WebTransportMessageDecoder();
+
+      List<String> result = decoder.onDataReceived(encodedMessage);
+      expect(result, contains(message));
     });
   });
 }

@@ -1,9 +1,9 @@
-import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:html';
 
-import 'package:display_channel/src/webtransport_message_decoder.dart';
 import 'package:js/js_util.dart';
+import 'package:display_channel/src/webtransport_message_decoder.dart';
+import 'package:display_channel/src/webtransport_message_encoder.dart';
 
 class WebTransport {
   WebTransportMessageDecoder decoder = WebTransportMessageDecoder();
@@ -122,18 +122,7 @@ class WebTransport {
         getProperty(_streamWriter, 'ready'),
       );
 
-      // Encode message
-      Uint8List encodedMessage = utf8.encode(data);
-
-      // Create a 4-byte length prefix
-      ByteData lengthPrefix = ByteData(4);
-      lengthPrefix.setUint32(0, encodedMessage.length, Endian.big);
-
-      // Concatenate length + message
-      Uint8List framedMessage = Uint8List.fromList([
-        ...lengthPrefix.buffer.asUint8List(),
-        ...encodedMessage,
-      ]);
+      Uint8List framedMessage = WebTransportMessageEncoder.encodeMessage(data);
 
       await promiseToFuture(
         callMethod(
