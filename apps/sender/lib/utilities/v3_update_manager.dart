@@ -128,53 +128,56 @@ class V3UpdateManager {
     await showCupertinoDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => CupertinoAlertDialog(
-              title: Text(_dialogTittle(context, status)),
-              content: Text(_dialogDescription(context, status)),
-              actions: [
-                if (status == CompareVersionResult.userChoose)
-                  CupertinoDialogAction(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                        S.of(context).v3_setting_software_update_deny_action,
-                        style: const TextStyle(
-                            color: Color(0xFF007AFF), fontSize: 17)),
-                  ),
-                if (isUpdate)
-                  CupertinoDialogAction(
-                    onPressed: () {
-                      if (status == CompareVersionResult.userChoose) {
+        builder: (context) => PopScope(
+              canPop: false,
+              child: CupertinoAlertDialog(
+                title: Text(_dialogTittle(context, status)),
+                content: Text(_dialogDescription(context, status)),
+                actions: [
+                  if (status == CompareVersionResult.userChoose)
+                    CupertinoDialogAction(
+                      onPressed: () {
                         Navigator.of(context).pop();
-                      }
-                      launchUrl(Uri.parse(
-                          'https://apps.apple.com/us/app/airsync-sender/id6453759985'));
-                    },
-                    child: Text(
-                        status == CompareVersionResult.forceUpgrade
-                            ? S
-                                .of(context)
-                                .v3_setting_software_update_force_action
-                            : S
-                                .of(context)
-                                .v3_setting_software_update_positive_action,
-                        style: const TextStyle(
-                            color: Color(0xFF007AFF), fontSize: 17)),
-                  ),
-                if (!isUpdate)
-                  CupertinoDialogAction(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                        S
-                            .of(context)
-                            .v3_setting_software_update_no_available_action,
-                        style: const TextStyle(
-                            color: Color(0xFF007AFF), fontSize: 17)),
-                  ),
-              ],
+                      },
+                      child: Text(
+                          S.of(context).v3_setting_software_update_deny_action,
+                          style: const TextStyle(
+                              color: Color(0xFF007AFF), fontSize: 17)),
+                    ),
+                  if (isUpdate)
+                    CupertinoDialogAction(
+                      onPressed: () {
+                        if (status == CompareVersionResult.userChoose) {
+                          Navigator.of(context).pop();
+                        }
+                        launchUrl(Uri.parse(
+                            'https://apps.apple.com/us/app/airsync-sender/id6453759985'));
+                      },
+                      child: Text(
+                          status == CompareVersionResult.forceUpgrade
+                              ? S
+                                  .of(context)
+                                  .v3_setting_software_update_force_action
+                              : S
+                                  .of(context)
+                                  .v3_setting_software_update_positive_action,
+                          style: const TextStyle(
+                              color: Color(0xFF007AFF), fontSize: 17)),
+                    ),
+                  if (!isUpdate)
+                    CupertinoDialogAction(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                          S
+                              .of(context)
+                              .v3_setting_software_update_no_available_action,
+                          style: const TextStyle(
+                              color: Color(0xFF007AFF), fontSize: 17)),
+                    ),
+                ],
+              ),
             ));
   }
 
@@ -185,7 +188,9 @@ class V3UpdateManager {
     await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
+        builder: (context) => PopScope(
+            canPop: false,
+            child: AlertDialog(
               title: Text(_dialogTittle(context, status)),
               content: Text(_dialogDescription(context, status)),
               actions: [
@@ -220,7 +225,7 @@ class V3UpdateManager {
                         .v3_setting_software_update_no_available_action),
                   ),
               ],
-            ));
+            )));
   }
 
   Future<void> _showUpdateDialogDesktop(
@@ -230,7 +235,9 @@ class V3UpdateManager {
     await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
+        builder: (context) => PopScope(
+            canPop: false,
+            child: AlertDialog(
               title: Stack(
                 children: [
                   if (status == CompareVersionResult.userChoose)
@@ -300,7 +307,8 @@ class V3UpdateManager {
                           exit(0);
                         } on UpdateErrorExecption catch (e) {
                           if (context.mounted) {
-                            unawaited(_showUpdateErrorDialogDesktop(context, e));
+                            unawaited(
+                                _showUpdateErrorDialogDesktop(context, e));
                           }
                         }
                       }
@@ -318,7 +326,7 @@ class V3UpdateManager {
                     },
                   ),
               ],
-            ));
+            )));
   }
 
   String _dialogTittle(BuildContext context, CompareVersionResult status) {
