@@ -10,28 +10,20 @@ class WebTransportConnection implements Connection {
   @override
   void Function(Connection connection, Map<String, dynamic> message)? onMessage;
 
-  late String _connId;
-
   @override
-  late Map<String, String> queryParameters;
+  final Map<String, String> queryParameters;
 
-  late FlutterWebtransport _webTransport;
+  final FlutterWebtransport _webTransport;
   late IdleConnectionTimer _idleTimer;
+  final String _connId;
 
   WebTransportConnection(
-    FlutterWebtransport webTransport, {
-    required String connId,
+    this._webTransport,
+    this._connId,
+    this.queryParameters, {
     required Duration idleConnectionTimeout,
-    required Map<String, String> queryParam,
   }) {
-    _webTransport = webTransport;
-    queryParameters = queryParam;
-    _connId = connId;
-
-    _idleTimer = IdleConnectionTimer(
-      _onIdleTimeout,
-      idleConnectionTimeout,
-    );
+    _idleTimer = IdleConnectionTimer(_onIdleTimeout, idleConnectionTimeout);
   }
 
   @override
@@ -45,7 +37,7 @@ class WebTransportConnection implements Connection {
     _webTransport.closeWebTransportConn(_connId);
   }
 
-  _onIdleTimeout() {
+  void _onIdleTimeout() {
     _idleTimer.stop();
     onClosed?.call(this);
   }

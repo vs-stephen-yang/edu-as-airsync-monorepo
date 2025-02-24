@@ -36,7 +36,7 @@ enum ChannelConnectorError {
 }
 
 class DisplayChannelConnector {
-  final CreateWebsocketClientConnection _createConnectionTunnel;
+  final CreateClientConnection _createConnectionTunnel;
   final CreateClientConnection _createConnectionDirect;
   final FetchChannelTunnelUrl _fetchTunnelUrl;
 
@@ -72,8 +72,8 @@ class DisplayChannelConnector {
     required DisplayCode displayCode,
     List<String>? remoteIpAddresses,
     required String encodedDisplayCode,
-    required CreateWebsocketClientConnection createConnectionTunnel,
-    required CreateWebsocketClientConnection createConnectionDirect,
+    required CreateClientConnection createConnectionTunnel,
+    required CreateClientConnection createConnectionDirect,
     required FetchChannelTunnelUrl fetchTunnelUrl,
     required void Function(Channel channel, bool isDirectChannel) onOpened,
     required void Function(ChannelConnectorError error) onOpenError,
@@ -88,10 +88,7 @@ class DisplayChannelConnector {
         _onOpened = onOpened,
         _onOpenError = onOpenError;
 
-  void open({
-    int? directPort,
-    bool useWebTransport = false
-  }) {
+  void open({int? directPort, bool useWebTransport = false}) {
     // open direct channels
     if (directPort != null && _remoteIpAddresses?.isNotEmpty == true) {
       _useDirect = true;
@@ -169,19 +166,14 @@ class DisplayChannelConnector {
     int port,
     bool useWebTransport,
   ) {
-    Uri uri = Uri(
-      scheme: 'wss',
-      host: ipAddress,
-      port: port,
-    );
-
-    if (useWebTransport) {
-      uri = Uri(
-          scheme: 'https',
-          host: ipAddress,
-          port: port,
-          path: "/webtransport");
-    }
+    final uri = useWebTransport
+        ? Uri(
+            scheme: 'https', host: ipAddress, port: port, path: "/webtransport")
+        : Uri(
+            scheme: 'wss',
+            host: ipAddress,
+            port: port,
+          );
 
     // create a channel client
     final directClient = DisplayChannelClient(

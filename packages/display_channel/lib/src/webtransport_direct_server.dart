@@ -10,13 +10,13 @@ import 'package:flutter_golang_server/flutter_webtransport_config.dart';
 import 'package:flutter_golang_server/flutter_webtransport_listener.dart';
 
 class WebTransportDirectServer implements FlutterWebtransportListener {
-  late ChannelStore _store;
+  final ChannelStore _store;
   WebTransportConnectionServer? _connectionServer;
-  late Future<WebTransportCertificate?> Function() _getWebTransportCertificateCallback;
+  final Future<WebTransportCertificate?> Function() _getWebTransportCertificateCallback;
   final _webTransportServer = FlutterWebtransport();
-  late RateLimiter _rateLimiter;
+  final RateLimiter _rateLimiter;
 
-  late Duration _idleConnectionTimeout;
+  final Duration _idleConnectionTimeout;
 
   WebTransportDirectServer(
     Future<WebTransportCertificate?> Function() getWebTransportCertificateCallback,
@@ -27,22 +27,23 @@ class WebTransportDirectServer implements FlutterWebtransportListener {
     Duration heartbeatInterval = const Duration(seconds: 10),
     Duration heartbeatTimeout = const Duration(seconds: 10),
     Duration reconnectTimeout = const Duration(seconds: 2),
-  }) {
-    _getWebTransportCertificateCallback = getWebTransportCertificateCallback;
+  }) :
+    _getWebTransportCertificateCallback = getWebTransportCertificateCallback,
     _store = ChannelStore(
       onNewChannel,
       verifyConnectRequest,
       heartbeatInterval: heartbeatInterval,
       heartbeatTimeout: heartbeatTimeout,
       reconnectTimeout: reconnectTimeout,
-    );
+    ),
     _rateLimiter = RateLimiter(
       maxBurstyRequests,
       requestsPerSecond,
-    );
-    _idleConnectionTimeout = heartbeatInterval + heartbeatTimeout;
-    _webTransportServer.registerListener(this);
+    ),
+    _idleConnectionTimeout = heartbeatInterval + heartbeatTimeout {
+      _webTransportServer.registerListener(this);
   }
+
 
   Future<void> start(
     int port, {
