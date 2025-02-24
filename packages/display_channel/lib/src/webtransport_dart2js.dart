@@ -60,17 +60,6 @@ class WebTransport {
         getProperty(_transport, 'ready'),
       );
 
-      final datagram = getProperty(_transport, 'datagrams');
-      final datagramReader =
-          callMethod(getProperty(datagram, 'readable'), 'getReader', []);
-      _startListeningToStream(datagramReader);
-
-      final datagramWriter =
-          callMethod(getProperty(datagram, 'writable'), 'getWriter', []);
-      await promiseToFuture(
-        getProperty(datagramWriter, 'ready'),
-      );
-
       // Create a bidirectional stream and get the writer
       final stream = await promiseToFuture(
         callMethod(_transport, 'createBidirectionalStream', []),
