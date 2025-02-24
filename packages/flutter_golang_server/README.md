@@ -61,3 +61,15 @@ A flutter plugin for webtransport
 cd go_lib
 go run webtransport-main.go
 ```
+
+## Run script to generate webtransport certs
+1. Generate certs
+   ```
+   ./script/generate_certs.sh 20250201 20350201
+   ```
+2. Put certs/webtransport_certs_list.json to Display_Flutter/assets/channel
+3. Generate hash
+   ```
+   ./script/generate_certs_hash.sh certs
+   ```
+4. Put certs/webtransport_cert_hashes.json to Display_Cast_Flutter/assets
