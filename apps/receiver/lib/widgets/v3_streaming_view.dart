@@ -250,7 +250,10 @@ class _V3StreamingViewState extends ConsumerState {
                                     MirrorView(
                                         mirrorRequest: HybridConnectionList()
                                             .getConnection<MirrorRequest>(
-                                                index)),
+                                                index),
+                                        fullWidth: _fullWidth,
+                                        fullHeight: _fullHeight,
+                                        displaySmartScalingEnabled: smartScalingDecision),
                                   if (HybridConnectionList()
                                       .isPresenting(index: index))
                                     Positioned(
