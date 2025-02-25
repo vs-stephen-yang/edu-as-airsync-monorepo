@@ -402,7 +402,6 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
           textureElement!.findRenderObject() as RenderBox;
       _textureSize = widget.displaySmartScalingEnabled? Size(widget.fullWidth, widget.fullHeight) : renderBox.size;
       _textureOffset = renderBox.localToGlobal(Offset.zero);
-      print("[UG] webrtc_view, ss ${widget.displaySmartScalingEnabled}, size ${widget.fullWidth}, ${widget.fullHeight}");
       log.info(
           'texture widget size: (${_textureSize.width.toStringAsFixed(2)}, ${_textureSize.height.toStringAsFixed(2)}), offset: (${_textureOffset.dx.toStringAsFixed(2)}, ${_textureOffset.dy.toStringAsFixed(2)})');
       _textureSizeChanged = false;

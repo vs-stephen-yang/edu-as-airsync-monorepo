@@ -209,13 +209,12 @@ class _V3StreamingViewState extends ConsumerState {
 
                           bool smartScalingDecision = false;
                           if (_displaySmartScalingEnabled) {
-                            if (splitScreenCount == 1 || enlargedIndex != null) {
+                            if (splitScreenCount == 1 || (splitScreenCount > 1 && enlargedIndex != null)) {
                               smartScalingDecision = true;
                             } else {
                               smartScalingDecision = false;
                             }
                           }
-                          print("[UG] smartScalingDecision = $smartScalingDecision");
 
                           return Positioned(
                             left: left,
