@@ -396,8 +396,6 @@ class RTCConnector {
     await disconnectPeerConnection(sendAnalytics: true);
     // clear renderer and close connection
     await disconnectChannel(reason: 'User stopped the present');
-    // stop timer
-    ConnectionTimer.getInstance().stopRemainingTimeTimer();
   }
 
   Future<void> onPresentSignal(PresentSignalMessage msg) async {
@@ -634,7 +632,6 @@ class RTCConnector {
         reconnectRtcState = ReconnectState.fail;
         trackSessionEvent('cast_fail');
       }
-      ConnectionTimer.getInstance().stopRemainingTimeTimer();
       await disconnectPeerConnection();
       await disconnectChannel(
           reason: 'RTC connection failed'); // todo: WebRTC連線fail, 不影響moderator

@@ -227,4 +227,75 @@ class V3Toast {
     }
     return true;
   }
+
+  MotionToast _makeToast({
+    required BuildContext context,
+    required String message,
+    IconData? icon,
+    Color? mainColor,
+  }) {
+    final textPainter = TextPainter(
+      text: TextSpan(
+          text: message,
+          style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w400)),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    double toastWidth =
+        20 + (icon != null ? 16 + 2.6 : 0) + textPainter.width + 20;
+
+    return MotionToast(
+      height: 46,
+      width: toastWidth,
+      primaryColor: context.tokens.color.vsdslColorSurface1000,
+      description: Center(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (icon != null) ...[
+              ImageIcon(
+                size: 16,
+                color: mainColor,
+                const Svg('assets/images/ic_checkmark.svg'),
+              ),
+              const SizedBox(width: 2.6),
+            ],
+            Text(
+              message,
+              style: TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.w400,
+                color: mainColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+      displaySideBar: false,
+      position: MotionToastPosition.bottom,
+    );
+  }
+
+  MotionToast makeMessageToast(BuildContext context, String message,
+      {bool showIcon = true}) {
+    return _makeToast(
+      context: context,
+      message: message,
+      icon: showIcon ? Icons.check : null,
+      mainColor: context.tokens.color.vsdslColorOnSurfaceInverse,
+    );
+  }
+
+  MotionToast makeSuccessToast(BuildContext context, String message,
+      {bool showIcon = true}) {
+    return _makeToast(
+      context: context,
+      message: message,
+      icon: showIcon ? Icons.check : null,
+      mainColor: context.tokens.color.vsdslColorSuccess,
+    );
+  }
 }
