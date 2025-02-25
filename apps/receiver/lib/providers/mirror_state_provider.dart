@@ -140,7 +140,7 @@ class MirrorStateProvider extends ChangeNotifier
       stopAcceptedMirror(mirrorId);
     } else {
       HybridConnectionList().addConnection(MirrorRequest(
-          _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType, _fullWidth, _fullHeight, false));
+          _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType));
     }
 
     notifyListeners();
