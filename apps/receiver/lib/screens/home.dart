@@ -168,7 +168,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                     MirrorView(
                                         mirrorRequest: HybridConnectionList()
                                             .getConnection<MirrorRequest>(
-                                                index)),
+                                                index),
+                                        fullWidth: _fullWidth,
+                                        fullHeight: _fullHeight,
+                                        displaySmartScalingEnabled: false,
+                                        ),
                                   if (HybridConnectionList()
                                       .isPresenting(index: index))
                                     SplitScreenFunction(

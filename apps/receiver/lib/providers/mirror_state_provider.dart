@@ -63,6 +63,9 @@ class MirrorStateProvider extends ChangeNotifier
   bool _sizeChanged = false;
   Size _videoWidgetSize = const Size(0, 0);
   Offset _videoWidgetOffset = const Offset(0, 0);
+  double _fullWidth = 0;
+  double _fullHeight = 0;
+  bool _displaySmartScalingEnabled = false;
   Map<MirrorType, bool> mirrorTypeState = {
     MirrorType.airplay: false,
     MirrorType.googlecast: false,
@@ -137,7 +140,7 @@ class MirrorStateProvider extends ChangeNotifier
       stopAcceptedMirror(mirrorId);
     } else {
       HybridConnectionList().addConnection(MirrorRequest(
-          _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType));
+          _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType, _fullWidth, _fullHeight, false));
     }
 
     notifyListeners();
@@ -252,6 +255,21 @@ class MirrorStateProvider extends ChangeNotifier
       request.controlAudio(request.isAudioEnabled & enable,
           setIsAudioEnabled: false);
     }
+  }
+
+  setFullWidth(double width) {
+    _fullWidth = width;
+    // print('[UG] setFullWidth $_fullWidth ');
+  }
+
+  setFullHeight(double height) {
+    _fullHeight = height;
+    // print('[UG] setFullHeight $_fullHeight ');
+  }
+
+  setDisplayedSmartScalingEnabled(bool enable) {
+    _displaySmartScalingEnabled = enable;
+    // print('[UG] setSmartScalingEnabled $_displaySmartScalingEnabled ');
   }
 
   onTouchEvent(PointerEvent event, String? mirrorId, GlobalKey mirrorViewKey) {

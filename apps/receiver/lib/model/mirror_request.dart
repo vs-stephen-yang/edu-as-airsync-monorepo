@@ -12,8 +12,12 @@ class MirrorRequest {
   MirrorState mirrorState = MirrorState.idle;
   bool isAudioEnabled = false;
 
+  double fullWidth;
+  double fullHeight;
+  bool displaySmartScalingEnabled;
+
   MirrorRequest(this._flutterMirrorPlugin, this.mirrorId, this.textureId,
-      this.deviceName, this.mirrorType);
+      this.deviceName, this.mirrorType, this.fullWidth, this.fullHeight, this.displaySmartScalingEnabled);
 
   void controlAudio(bool isEnable, {required bool setIsAudioEnabled}) {
     _flutterMirrorPlugin?.enableAudio(mirrorId, isEnable);

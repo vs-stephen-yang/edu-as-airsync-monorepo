@@ -2,11 +2,15 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:display_flutter/utility/log.dart';
 
 class MirrorView extends StatefulWidget {
-  const MirrorView({super.key, required this.mirrorRequest});
+  const MirrorView({super.key, required this.mirrorRequest, required this.fullWidth, required this.fullHeight, required this.displaySmartScalingEnabled});
 
   final MirrorRequest mirrorRequest;
+  final double fullWidth;
+  final double fullHeight;
+  final bool displaySmartScalingEnabled;
 
   @override
   State<StatefulWidget> createState() => MirrorViewState();
@@ -19,6 +23,18 @@ class MirrorViewState extends State<MirrorView> {
   Widget build(BuildContext context) {
     return Consumer<MirrorStateProvider>(
       builder: (context, mirror, child) {
+        double screenRatio = widget.fullWidth / widget.fullHeight;
+        mirror.setFullWidth(widget.fullWidth);
+        mirror.setFullHeight(widget.fullHeight);
+        mirror.setDisplayedSmartScalingEnabled(widget.displaySmartScalingEnabled);
+
+        // check video frame and device orientation
+        bool isVideoLandscape = widget.mirrorRequest.aspectRatio >= 1.0;
+        bool isDeviceLandscape = (widget.fullWidth > widget.fullHeight);
+        double castRatio = widget.mirrorRequest.aspectRatio;
+        if (widget.displaySmartScalingEnabled && isVideoLandscape == isDeviceLandscape) {
+          castRatio = screenRatio;
+        }
         return ConstrainedBox(
           constraints: const BoxConstraints.expand(),
           child: Stack(
@@ -48,7 +64,7 @@ class MirrorViewState extends State<MirrorView> {
                           },
                           child: AspectRatio(
                             key: mirrorViewKey,
-                            aspectRatio: widget.mirrorRequest.aspectRatio,
+                            aspectRatio: castRatio,
                             child: Texture(
                                 textureId: widget.mirrorRequest.textureId),
                           ),
