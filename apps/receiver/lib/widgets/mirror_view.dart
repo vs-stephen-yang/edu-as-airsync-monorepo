@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:display_flutter/utility/log.dart';
 
 class MirrorView extends StatefulWidget {
-  const MirrorView({super.key, required this.mirrorRequest, required this.fullWidth, required this.fullHeight, required this.displaySmartScalingEnabled});
+  const MirrorView({super.key, required this.mirrorRequest, this.fullWidth = 0.0, this.fullHeight = 0.0, this.displaySmartScalingEnabled = false});
 
   final MirrorRequest mirrorRequest;
   final double fullWidth;
@@ -23,17 +23,20 @@ class MirrorViewState extends State<MirrorView> {
   Widget build(BuildContext context) {
     return Consumer<MirrorStateProvider>(
       builder: (context, mirror, child) {
-        double screenRatio = widget.fullWidth / widget.fullHeight;
-        mirror.setFullWidth(widget.fullWidth);
-        mirror.setFullHeight(widget.fullHeight);
-        mirror.setDisplayedSmartScalingEnabled(widget.displaySmartScalingEnabled);
-
-        // check video frame and device orientation
-        bool isVideoLandscape = widget.mirrorRequest.aspectRatio >= 1.0;
-        bool isDeviceLandscape = (widget.fullWidth > widget.fullHeight);
         double castRatio = widget.mirrorRequest.aspectRatio;
-        if (widget.displaySmartScalingEnabled && isVideoLandscape == isDeviceLandscape) {
-          castRatio = screenRatio;
+        if (widget.displaySmartScalingEnabled != false && widget.fullHeight != 0) {
+          double screenRatio = widget.fullWidth / widget.fullHeight;
+          mirror.setFullWidth(widget.fullWidth);
+          mirror.setFullHeight(widget.fullHeight);
+          mirror.setDisplayedSmartScalingEnabled(widget.displaySmartScalingEnabled);
+
+          // check video frame and device orientation
+          bool isVideoLandscape = widget.mirrorRequest.aspectRatio >= 1.0;
+          bool isDeviceLandscape = (widget.fullWidth > widget.fullHeight);
+          castRatio = widget.mirrorRequest.aspectRatio;
+          if (widget.displaySmartScalingEnabled && isVideoLandscape == isDeviceLandscape) {
+            castRatio = screenRatio;
+          }
         }
         return ConstrainedBox(
           constraints: const BoxConstraints.expand(),
