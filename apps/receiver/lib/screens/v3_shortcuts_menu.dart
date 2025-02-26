@@ -136,198 +136,182 @@ class V3ShortcutsMenu extends StatelessWidget {
                       color: context.tokens.color.vsdslColorOutlineVariant,
                     ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AutoSizeText(
-                        S.of(context).v3_shortcuts_mirroring,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color:
-                              context.tokens.color.vsdslColorOnSurfaceInverse,
-                        ),
-                      ),
-                      V3Focus(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 13,
-                              ),
-                              child: AutoSizeText(
-                                S.of(context).v3_shortcuts_airplay,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: context
-                                      .tokens.color.vsdslColorOnSurfaceInverse,
-                                ),
-                              ),
+                  Consumer<MirrorStateProvider>(
+                    builder: (_, mirrorStateProvider, __) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AutoSizeText(
+                            S.of(context).v3_shortcuts_mirroring,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: context
+                                  .tokens.color.vsdslColorOnSurfaceInverse,
                             ),
-                            Consumer<MirrorStateProvider>(
-                                builder: (_, mirrorStateProvider, __) {
-                              return SizedBox(
-                                height: 21,
-                                child: IconButton(
-                                  icon: Image(
-                                    image: Svg(mirrorStateProvider
-                                            .airplayEnabled
-                                        ? 'assets/images/ic_switch_on.svg'
-                                        : 'assets/images/ic_switch_off.svg'),
+                          ),
+                          V3Focus(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                    horizontal: 13,
                                   ),
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(),
-                                  onPressed: () {
-                                    ChannelProvider channelProvider =
-                                        Provider.of<ChannelProvider>(context,
-                                            listen: false);
-                                    if (mirrorStateProvider.airplayEnabled) {
-                                      mirrorStateProvider.stopAirPlay();
-                                      channelProvider.blockRtcConnection =
-                                          false;
-                                    } else {
-                                      mirrorStateProvider.startAirPlay();
-                                      channelProvider.blockRtcConnection = true;
-                                    }
+                                  child: AutoSizeText(
+                                    S.of(context).v3_shortcuts_airplay,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: context.tokens.color
+                                          .vsdslColorOnSurfaceInverse,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 21,
+                                  child: IconButton(
+                                    icon: Image(
+                                      image: Svg(mirrorStateProvider
+                                              .airplayEnabled
+                                          ? 'assets/images/ic_switch_on.svg'
+                                          : 'assets/images/ic_switch_off.svg'),
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      if (mirrorStateProvider.airplayEnabled) {
+                                        mirrorStateProvider.stopAirPlay();
+                                        false;
+                                      } else {
+                                        mirrorStateProvider.startAirPlay();
+                                      }
 
-                                    trackEvent(
-                                      'click_airplay',
-                                      EventCategory.quickMenu,
-                                      target: mirrorStateProvider.airplayEnabled
-                                          ? 'on'
-                                          : 'off',
-                                    );
-                                  },
+                                      trackEvent(
+                                        'click_airplay',
+                                        EventCategory.quickMenu,
+                                        target:
+                                            mirrorStateProvider.airplayEnabled
+                                                ? 'on'
+                                                : 'off',
+                                      );
+                                    },
+                                  ),
                                 ),
-                              );
-                            }),
-                          ],
-                        ),
-                      ),
-                      V3Focus(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 13,
-                              ),
-                              child: AutoSizeText(
-                                S.of(context).v3_shortcuts_google_cast,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: context
-                                      .tokens.color.vsdslColorOnSurfaceInverse,
-                                ),
-                              ),
+                              ],
                             ),
-                            Consumer<MirrorStateProvider>(
-                                builder: (_, mirrorStateProvider, __) {
-                              return SizedBox(
-                                height: 21,
-                                child: IconButton(
-                                  icon: Image(
-                                    image: Svg(mirrorStateProvider
-                                            .googleCastEnabled
-                                        ? 'assets/images/ic_switch_on.svg'
-                                        : 'assets/images/ic_switch_off.svg'),
+                          ),
+                          V3Focus(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                    horizontal: 13,
                                   ),
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(),
-                                  onPressed: () {
-                                    ChannelProvider channelProvider =
-                                        Provider.of<ChannelProvider>(context,
-                                            listen: false);
-                                    if (mirrorStateProvider.googleCastEnabled) {
-                                      mirrorStateProvider.stopGoogleCast();
-                                      channelProvider.blockRtcConnection =
-                                          false;
-                                    } else {
-                                      mirrorStateProvider.startGoogleCast();
-                                      channelProvider.blockRtcConnection = true;
-                                    }
+                                  child: AutoSizeText(
+                                    S.of(context).v3_shortcuts_google_cast,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      color: context.tokens.color
+                                          .vsdslColorOnSurfaceInverse,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 21,
+                                  child: IconButton(
+                                    icon: Image(
+                                      image: Svg(mirrorStateProvider
+                                              .googleCastEnabled
+                                          ? 'assets/images/ic_switch_on.svg'
+                                          : 'assets/images/ic_switch_off.svg'),
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      if (mirrorStateProvider
+                                          .googleCastEnabled) {
+                                        mirrorStateProvider.stopGoogleCast();
+                                        false;
+                                      } else {
+                                        mirrorStateProvider.startGoogleCast();
+                                      }
 
-                                    trackEvent(
-                                      'click_google_cast',
-                                      EventCategory.quickMenu,
-                                      target:
-                                          mirrorStateProvider.googleCastEnabled
+                                      trackEvent(
+                                        'click_google_cast',
+                                        EventCategory.quickMenu,
+                                        target: mirrorStateProvider
+                                                .googleCastEnabled
+                                            ? 'on'
+                                            : 'off',
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (mirrorStateProvider.miracastSupport)
+                            V3Focus(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                      horizontal: 13,
+                                    ),
+                                    child: AutoSizeText(
+                                      S.of(context).v3_shortcuts_miracast,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                        color: context.tokens.color
+                                            .vsdslColorOnSurfaceInverse,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 21,
+                                    child: IconButton(
+                                      icon: Image(
+                                        image: Svg(mirrorStateProvider
+                                                .miracastEnabled
+                                            ? 'assets/images/ic_switch_on.svg'
+                                            : 'assets/images/ic_switch_off.svg'),
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      onPressed: () {
+                                        if (mirrorStateProvider
+                                            .miracastEnabled) {
+                                          mirrorStateProvider.stopMiracast();
+                                        } else {
+                                          mirrorStateProvider.startMiracast();
+                                        }
+
+                                        trackEvent(
+                                          'click_miracast',
+                                          EventCategory.quickMenu,
+                                          target: mirrorStateProvider
+                                                  .miracastEnabled
                                               ? 'on'
                                               : 'off',
-                                    );
-                                  },
-                                ),
-                              );
-                            }),
-                          ],
-                        ),
-                      ),
-                      V3Focus(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 13,
-                              ),
-                              child: AutoSizeText(
-                                S.of(context).v3_shortcuts_miracast,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  color: context
-                                      .tokens.color.vsdslColorOnSurfaceInverse,
-                                ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Consumer<MirrorStateProvider>(
-                                builder: (_, mirrorStateProvider, __) {
-                              return SizedBox(
-                                height: 21,
-                                child: IconButton(
-                                  icon: Image(
-                                    image: Svg(mirrorStateProvider
-                                            .miracastEnabled
-                                        ? 'assets/images/ic_switch_on.svg'
-                                        : 'assets/images/ic_switch_off.svg'),
-                                  ),
-                                  padding: EdgeInsets.zero,
-                                  constraints: const BoxConstraints(),
-                                  onPressed: () {
-                                    ChannelProvider channelProvider =
-                                        Provider.of<ChannelProvider>(context,
-                                            listen: false);
-                                    if (mirrorStateProvider.miracastEnabled) {
-                                      mirrorStateProvider.stopMiracast();
-                                      channelProvider.blockRtcConnection =
-                                          false;
-                                    } else {
-                                      mirrorStateProvider.startMiracast();
-                                      channelProvider.blockRtcConnection = true;
-                                    }
-
-                                    trackEvent(
-                                      'click_miracast',
-                                      EventCategory.quickMenu,
-                                      target:
-                                          mirrorStateProvider.miracastEnabled
-                                              ? 'on'
-                                              : 'off',
-                                    );
-                                  },
-                                ),
-                              );
-                            }),
-                          ],
-                        ),
-                      ),
-                    ],
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
