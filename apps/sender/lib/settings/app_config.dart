@@ -28,6 +28,9 @@ class AppConfig extends InheritedWidget {
     return context.dependOnInheritedWidgetOfExactType<AppConfig>();
   }
 
+  final int platformDirectPort = 5100;
+  final int webTransportPort = 8001;
+
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => false;
 }
@@ -60,7 +63,4 @@ abstract class ConfigSettings {
 
   late String appUpdateVersionEndpoint;
   late String appStoreUrl;
-
-  late int platformDirectPort;
-  late int webTransportPort;
 }
