@@ -7,15 +7,6 @@ Future<Uint8List> loadAssetAsBytes(String assetPath) async {
   return data.buffer.asUint8List();
 }
 
-Future<List<String>> loadAssetAsStringList(String assetPath) async {
-  try {
-    String data = await rootBundle.loadString(assetPath);
-    return data.split('\n');
-  } catch (e) {
-    throw Exception('asset not found: $e');
-  }
-}
-
 Future<Map<String, dynamic>> loadAssetAsJsonData(String assetPath) async {
   try {
     String data = await rootBundle.loadString(assetPath);

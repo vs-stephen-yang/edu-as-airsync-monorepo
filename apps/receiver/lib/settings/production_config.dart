@@ -55,7 +55,4 @@ class ProductionConfig implements ConfigSettings {
 
   @override
   String appStoreUrl = 'https://www.airsync.net/download';
-
-  @override
-  int webTransportServerPort = 8001;
 }

@@ -65,7 +65,7 @@ List<Map<String, dynamic>> filterValidCertificates(List<Map<String, dynamic>> ce
   DateTime today = DateTime.now().toUtc();
   return certs.where((cert) {
     DateTime notBefore = DateTime.parse(cert['date']);
-    DateTime notAfter = notBefore.add(Duration(days: 14));
+    DateTime notAfter = notBefore.add(const Duration(days: 14));
     return (notBefore.isBefore(today) || notBefore.isAtSameMomentAs(today)) && today.isBefore(notAfter);
   }).toList();
 }
