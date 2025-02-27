@@ -72,8 +72,8 @@ class ChannelProvider extends ChangeNotifier {
   ChannelProvider(BuildContext context) {
     _baseApiUrl = AppConfig.of(context)!.settings.baseApiUrl;
     _profileStore = AppConfig.of(context)!.profileStore;
-    platformDirectPort = AppConfig.of(context)!.settings.platformDirectPort;
-    webTransportPort = AppConfig.of(context)!.settings.webTransportPort;
+    platformDirectPort = AppConfig.of(context)!.platformDirectPort;
+    webTransportPort = AppConfig.of(context)!.webTransportPort;
   }
 
   Channel? _channel;
@@ -187,7 +187,7 @@ class ChannelProvider extends ChangeNotifier {
         ),
       ),
       createConnectionDirect: (url, bool isReconnect) =>
-          fetchCreateClientConnection(url, isReconnect),
+          createDirectClientConnection(url, isReconnect),
       fetchTunnelUrl: (int instanceIndex, int instanceGroupId) async {
         return await _fetchTunnelUrl(instanceIndex, instanceGroupId);
       },
@@ -853,7 +853,7 @@ class ChannelProvider extends ChangeNotifier {
     });
   }
 
-  ClientConnection fetchCreateClientConnection(String url, bool isReconnect) {
+  ClientConnection createDirectClientConnection(String url, bool isReconnect) {
     if (kIsWeb) {
       return WebTransportClientConnection(
           url,
