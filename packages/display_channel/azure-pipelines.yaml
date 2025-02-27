@@ -15,7 +15,9 @@ variables:
   - name: Flutter.Url
     value: https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_$(Flutter.Version)-stable.zip
   - name: Flutter.Bin
-    value: $(Pipeline.Workspace)/flutter/flutter/bin/flutter
+    value: $(Pipeline.Workspace)/flutter/flutter/bin
+  - name: Pub.Bin
+    value: $HOME/.pub-cache/bin
 
 jobs:
   - job: unittest
@@ -47,10 +49,28 @@ jobs:
           archiveFilePatterns: "$(Pipeline.Workspace)/flutter.zip"
           destinationFolder: "$(Pipeline.Workspace)/flutter"
 
-      - script: $(Flutter.Bin) analyze --no-fatal-infos
-        displayName: Run lint checks
-        workingDirectory: "$(Build.SourcesDirectory)"
+      - script: |
+          echo "##vso[task.prependpath]$(Flutter.Bin)"
+          echo "##vso[task.prependpath]$(Pub.Bin)"
+        displayName: 'Add Flutter and Pub Cache Bin to PATH'
 
-      - script: $(Flutter.Bin) test test/unittest
+      - script: flutter pub get
+        displayName: Get dependencies
+
+      - script: flutter analyze --no-pub --no-fatal-infos
+        displayName: Run lint checks
+
+      - script: flutter test -j 2 --no-pub --coverage --branch-coverage test/unittest
         displayName: Run unit test
-        workingDirectory: "$(Build.SourcesDirectory)"
+
+      - script: |
+          flutter pub global activate cobertura
+          cobertura convert
+        displayName: 'Convert LCOV to Cobertura'
+
+      - task: PublishCodeCoverageResults@2    
+        inputs:
+          summaryFileLocation: 'coverage/cobertura.xml'  # Path to your coverage summary file
+        displayName: 'Publish Code Coverage Results'
+
+    
