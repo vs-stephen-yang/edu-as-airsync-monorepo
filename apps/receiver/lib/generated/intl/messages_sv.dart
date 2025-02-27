@@ -338,6 +338,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_settings_device_show_display_code_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Håll koden synlig högst upp på skärmen, även när du växlar till andra appar och skärmdelning är aktiv."),
+        "v3_settings_device_smart_scaling":
+            MessageLookupByLibrary.simpleMessage("Smart skalning"),
+        "v3_settings_device_smart_scaling_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "Justera skärmstorleken automatiskt för att maximera användningen av skärmutrymmet. Bilden kan vara något förvrängd."),
         "v3_settings_device_unavailable":
             MessageLookupByLibrary.simpleMessage("Ej tillgänglig"),
         "v3_settings_display_group":
