@@ -140,8 +140,11 @@ class MirrorStateProvider extends ChangeNotifier
     if (HybridConnectionList().connectionListFull()) {
       stopAcceptedMirror(mirrorId);
     } else {
-      HybridConnectionList().addConnection(MirrorRequest(
-          _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType));
+      final mirrorRequest = MirrorRequest(
+          _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType);
+      HybridConnectionList().addConnection(mirrorRequest);
+
+      mirrorRequest.trackSessionEvent('connect_successfully');
     }
 
     notifyListeners();
@@ -210,6 +213,7 @@ class MirrorStateProvider extends ChangeNotifier
           HybridConnectionList()
               .getMirrorMap()
               .update(entry.key, (value) => request);
+          entry.value.trackSessionEvent('start_cast');
         }
       }
 
@@ -222,7 +226,7 @@ class MirrorStateProvider extends ChangeNotifier
     }
   }
 
-  setModeratorIdleMirrorId(String? mirrorId) {
+  setModeratorIdleMirrorId(String? mirrorId, {bool stopCastEvent = false}) {
     if (HybridConnectionList().getMirrorMap().isNotEmpty) {
       for (var entry in HybridConnectionList().getMirrorMap().entries) {
         if (entry.value.mirrorId == mirrorId) {
@@ -232,6 +236,9 @@ class MirrorStateProvider extends ChangeNotifier
           HybridConnectionList()
               .getMirrorMap()
               .update(entry.key, (value) => request);
+          if (stopCastEvent) {
+            entry.value.trackSessionEvent('stop_cast');
+          }
         }
       }
 
@@ -243,8 +250,17 @@ class MirrorStateProvider extends ChangeNotifier
     }
   }
 
-  stopAcceptedMirror(String? mirrorId) {
+  stopAcceptedMirror(String? mirrorId, {bool removeUserEvent = false}) {
     log.info('stopAcceptedMirror');
+    if (removeUserEvent) {
+      for (var entry in HybridConnectionList().getMirrorMap().entries) {
+        if (entry.value.mirrorId == mirrorId) {
+          MirrorRequest request = entry.value;
+          request.trackSessionEvent('click_exit');
+          break;
+        }
+      }
+    }
     if (mirrorId != null) {
       _flutterMirrorPlugin?.stopMirror(mirrorId);
     }

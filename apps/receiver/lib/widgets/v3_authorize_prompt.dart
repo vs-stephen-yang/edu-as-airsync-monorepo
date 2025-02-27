@@ -61,6 +61,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                 Future.delayed(Duration.zero, () {
                   _showMaxAmountToast();
                 });
+                request.trackSessionEvent('device_full');
               }
             }
           }
@@ -238,6 +239,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                       // 拒絕邏輯 一般模式:目前視窗大於等於最大視窗數。 ModeratorMode:連線數大於等於最大連線數
                       for (var idle in mirrorRequestIdles) {
                         mirrorStateProvider.stopAcceptedMirror(idle.mirrorId);
+                        idle.trackSessionEvent('device_full');
                       }
                       Future.delayed(Duration.zero, () {
                         _showMaxAmountToast();

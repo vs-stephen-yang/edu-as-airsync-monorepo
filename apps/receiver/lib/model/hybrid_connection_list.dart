@@ -360,6 +360,8 @@ class HybridConnectionList {
 
       connection.controlAudio(enable, setIsAudioEnabled: setIsAudioEnabled);
     } else if (connection != null && connection is MirrorRequest) {
+      connection.trackSessionEvent('click_sound');
+
       connection.controlAudio(enable, setIsAudioEnabled: setIsAudioEnabled);
     }
   }
