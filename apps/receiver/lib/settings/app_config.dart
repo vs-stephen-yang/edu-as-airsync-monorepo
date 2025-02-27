@@ -16,6 +16,8 @@ class AppConfig extends InheritedWidget {
     return context.dependOnInheritedWidgetOfExactType<AppConfig>();
   }
 
+  final int webTransportServerPort = 8001;
+
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) => false;
 }
@@ -58,6 +60,4 @@ abstract class ConfigSettings {
 
   late String airSyncUrl;
   late String appStoreUrl;
-
-  late int webTransportServerPort;
 }

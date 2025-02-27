@@ -50,7 +50,4 @@ class DevConfig implements ConfigSettings {
 
   @override
   String appStoreUrl = 'https://www.dev.airsync.net/download';
-
-  @override
-  int webTransportServerPort = 8001;
 }
