@@ -228,6 +228,7 @@ class RTCConnector {
 
     if (reconnectChannelState == ReconnectState.reconnecting) {
       reconnectChannelState = ReconnectState.fail;
+      trackSessionEvent('connect_fail');
     }
 
     await disconnectChannel(reason: 'Channel reconnect timeout');
@@ -631,6 +632,7 @@ class RTCConnector {
     } else if (state == RTCPeerConnectionState.RTCPeerConnectionStateFailed) {
       if (reconnectRtcState == ReconnectState.reconnecting) {
         reconnectRtcState = ReconnectState.fail;
+        trackSessionEvent('cast_fail');
       }
       ConnectionTimer.getInstance().stopRemainingTimeTimer();
       await disconnectPeerConnection();

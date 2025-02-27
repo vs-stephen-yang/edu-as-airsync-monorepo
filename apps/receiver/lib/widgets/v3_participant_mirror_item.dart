@@ -209,7 +209,7 @@ class ParticipantStandbyFeature extends StatelessWidget {
   _sendPresenterRemove(BuildContext context) async {
     final mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context, listen: false);
-    mirrorStateProvider.stopAcceptedMirror(mirrorId);
+    mirrorStateProvider.stopAcceptedMirror(mirrorId, removeUserEvent: true);
   }
 }
 
@@ -255,6 +255,6 @@ class ParticipantStreamingFeature extends StatelessWidget {
   _presenterOff(BuildContext context, String mirrorId) {
     final mirrorStateProvider =
         Provider.of<MirrorStateProvider>(context, listen: false);
-    mirrorStateProvider.setModeratorIdleMirrorId(mirrorId);
+    mirrorStateProvider.setModeratorIdleMirrorId(mirrorId, stopCastEvent: true);
   }
 }
