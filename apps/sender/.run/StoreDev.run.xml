@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Dev" type="FlutterRunConfigurationType" factoryName="Flutter">
+  <configuration default="false" name="StoreDev" type="FlutterRunConfigurationType" factoryName="Flutter">
     <option name="additionalArgs" value="--web-browser-flag --disable-web-security" />
+    <option name="buildFlavor" value="Store" />
     <option name="filePath" value="$PROJECT_DIR$/lib/main_dev.dart" />
     <method v="2" />
   </configuration>

@@ -18,6 +18,7 @@ import 'package:display_cast_flutter/utilities/wakelock_manager.dart';
 import 'package:display_cast_flutter/utilities/web_browser_detect.dart';
 import 'package:display_cast_flutter/utilities/webrtc_log_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
+import 'package:display_cast_flutter/widgets/v3_present_select_screen.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
@@ -820,7 +821,7 @@ class WebRTCConnector {
     }
     await _disposeStream();
     await _peerConnectionDisconnect();
-    if (WebRTC.platformIsWindows) {
+    if (WebRTC.platformIsWindows || V3PresentSelectScreen.isOpenVersion) {
       await FlutterVirtualDisplay.instance.stopVirtualDisplay();
     }
   }

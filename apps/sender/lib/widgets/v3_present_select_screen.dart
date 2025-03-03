@@ -16,6 +16,7 @@ import 'package:display_cast_flutter/widgets/v3_back_button.dart';
 import 'package:display_cast_flutter/widgets/v3_custom_white_button.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display.dart';
@@ -32,6 +33,10 @@ class V3PresentSelectScreen extends StatelessWidget {
 
   bool get platformIsDesktop =>
       Platform.isWindows || Platform.isMacOS || Platform.isLinux;
+
+  static bool get isOpenVersion {
+    return WebRTC.platformIsMacOS && appFlavor == 'Open';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +68,9 @@ class V3PresentSelectScreen extends StatelessWidget {
 
   Future<void> _handleDesktopPlatform(
       BuildContext context, ChannelProvider provider) async {
-    bool isSupported = !Platform.isWindows
-        ? false
-        : (await FlutterVirtualDisplay.instance.isSupported() ?? false);
+    bool isSupported = (Platform.isWindows || isOpenVersion)
+        ? (await FlutterVirtualDisplay.instance.isSupported() ?? false)
+        : false;
     // start timeout timer (30 sec)
     ConnectionTimer.getInstance().startConnectionTimeoutTimer(() {
       log.info('timeout');
@@ -81,7 +86,8 @@ class V3PresentSelectScreen extends StatelessWidget {
       builder: (context) {
         selectScreenDialog = SelectScreenDialog(
           hostName: provider.deviceName ?? '',
-          isExtensionEnable: Platform.isWindows && isSupported,
+          isExtensionEnable:
+              (Platform.isWindows || isOpenVersion) && isSupported,
           annotationModel: context.read<AnnotationModel>(),
           hasVirtualAudioDevice: hasAudioDevice,
         );
@@ -101,7 +107,7 @@ class V3PresentSelectScreen extends StatelessWidget {
           await provider.presentStart(selectedSource: value.selectedSource);
         }
       } else {
-        if (Platform.isWindows) {
+        if (Platform.isWindows || isOpenVersion) {
           await FlutterVirtualDisplay.instance.stopVirtualDisplay();
         }
         SelectScreenDialog._timer?.cancel();

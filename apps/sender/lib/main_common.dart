@@ -32,6 +32,7 @@ import 'package:display_cast_flutter/utilities/screen_state_detector.dart';
 import 'package:display_cast_flutter/utilities/sentry_util.dart';
 import 'package:display_cast_flutter/utilities/v3_network_status_detector.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
+import 'package:display_cast_flutter/widgets/v3_present_select_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -90,7 +91,7 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     await AppInstanceCreate.ensureInitialized();
 
-    if (WebRTC.platformIsWindows) {
+    if (WebRTC.platformIsWindows || V3PresentSelectScreen.isOpenVersion) {
       await FlutterVirtualDisplay.instance.initialize();
     }
 
