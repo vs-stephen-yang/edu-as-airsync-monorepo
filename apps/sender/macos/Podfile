@@ -36,5 +36,20 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_macos_build_settings(target)
+    if target.name == 'flutter_virtual_display'  # only flutter_virtual_display
+      target.build_configurations.each do |config|
+        config.build_settings['OTHER_SWIFT_FLAGS'] ||= ['$(inherited)']
+        config.build_settings['OTHER_CFLAGS'] ||= ['$(inherited)']
+        config.build_settings['OTHER_CPLUSPLUSFLAGS'] ||= ['$(inherited)']
+
+        if config.name.end_with?('-Open')
+          config.build_settings['OTHER_SWIFT_FLAGS'] << '-DAIRSYNC_OPEN'
+          config.build_settings['OTHER_CFLAGS'] << '-DAIRSYNC_OPEN'
+        elsif config.name.end_with?('-Store')
+          config.build_settings['OTHER_SWIFT_FLAGS'] << '-DAIRSYNC_STORE'
+          config.build_settings['OTHER_CFLAGS'] << '-DAIRSYNC_STORE'
+        end
+      end
+    end
   end
 end
