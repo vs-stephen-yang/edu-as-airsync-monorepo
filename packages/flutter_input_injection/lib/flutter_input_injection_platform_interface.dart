@@ -2,6 +2,12 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'flutter_input_injection_method_channel.dart';
 
+enum InputInjectionMethod {
+  uinput,
+  accessibilityService,
+  auto, // automatically choose the default injection method
+}
+
 abstract class FlutterInputInjectionPlatform extends PlatformInterface {
   /// Constructs a FlutterInputInjectionPlatform.
   FlutterInputInjectionPlatform() : super(token: _token);
@@ -26,6 +32,12 @@ abstract class FlutterInputInjectionPlatform extends PlatformInterface {
 
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
+  }
+
+  Future<void> initialize({
+    InputInjectionMethod inputInjectionMethod = InputInjectionMethod.auto,
+  }) {
+    throw UnimplementedError('initialize() has not been implemented.');
   }
 
   Future<void> sendTouch(int action, int id, int x, int y) {

@@ -15,6 +15,15 @@ class MethodChannelFlutterInputInjection extends FlutterInputInjectionPlatform {
   }
 
   @override
+  Future<void> initialize({
+    InputInjectionMethod inputInjectionMethod = InputInjectionMethod.auto,
+  }) async {
+    await methodChannel.invokeMethod<void>('initialize', {
+      'inputInjectionMethod': inputInjectionMethod.name,
+    });
+  }
+
+  @override
   Future<void> sendTouch(int action, int id, int x, int y) async {
     await methodChannel.invokeMethod<void>('sendTouch', {
       'action': action,

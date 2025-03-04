@@ -12,6 +12,15 @@ class FlutterInputInjection {
   }
 
   // Injects a touch event to the system (main screen)
+  Future<void> initialize({
+    InputInjectionMethod inputInjectionMethod = InputInjectionMethod.auto,
+  }) {
+    return FlutterInputInjectionPlatform.instance.initialize(
+      inputInjectionMethod: inputInjectionMethod,
+    );
+  }
+
+  // Injects a touch event to the system
   Future<void> sendTouch(int action, int id, int x, int y) {
     return FlutterInputInjectionPlatform.instance.sendTouch(action, id, x, y);
   }

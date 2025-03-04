@@ -30,5 +30,18 @@
     <meta-data
       android:name="flutterEmbedding"
       android:value="2" />
+
+    <service android:name="com.viewsonic.flutter_input_injection.GestureDispatchService"
+      android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+      android:exported="false"
+      android:label="Flutter Input Injection">
+      <intent-filter>
+        <action android:name="android.accessibilityservice.AccessibilityService" />
+      </intent-filter>
+
+      <meta-data
+        android:name="android.accessibilityservice"
+        android:resource="@xml/accessibility_service_config" />
+    </service>
   </application>
 </manifest>
