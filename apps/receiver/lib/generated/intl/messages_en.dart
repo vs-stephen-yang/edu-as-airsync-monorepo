@@ -20,6 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
+  static String m1(value) =>
+      "The projection is about to end. Would you like to extend it by 3 hours? You can extend up to ${value} times and interrupt at any time.";
+
   static String m0(year, version) => "AirSync ©${year}. version ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -181,6 +184,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Disable"),
         "v3_cast_to_device_touch_enabled":
             MessageLookupByLibrary.simpleMessage("Touchback"),
+        "v3_casting_ended_toast":
+            MessageLookupByLibrary.simpleMessage("The projection has ended."),
+        "v3_casting_time_countdown": m1,
+        "v3_casting_time_do_not_extend":
+            MessageLookupByLibrary.simpleMessage("Do not extend"),
+        "v3_casting_time_extend":
+            MessageLookupByLibrary.simpleMessage("Extend"),
+        "v3_casting_time_extend_success_toast":
+            MessageLookupByLibrary.simpleMessage(
+                "Projection time has been extended."),
         "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
             "Scan the QR code with your iOS or Android device to download"),
         "v3_download_app_entry":
@@ -237,6 +250,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Share Your Screens"),
         "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
             "Supports sharing via AirPlay, Google Cast or Miracast"),
+        "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
+            "The projection is about to end. To extend the projection time, please restart the projection."),
         "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
             "Unable to detect an internet connection. Please connect to a Wi-Fi or intranet network, and try again."),
         "v3_mirror_request_passcode":

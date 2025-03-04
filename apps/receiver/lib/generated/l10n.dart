@@ -1970,6 +1970,66 @@ class S {
       args: [],
     );
   }
+
+  /// `The projection is about to end. Would you like to extend it by 3 hours? You can extend up to {value} times and interrupt at any time.`
+  String v3_casting_time_countdown(Object value) {
+    return Intl.message(
+      'The projection is about to end. Would you like to extend it by 3 hours? You can extend up to $value times and interrupt at any time.',
+      name: 'v3_casting_time_countdown',
+      desc: '',
+      args: [value],
+    );
+  }
+
+  /// `The projection is about to end. To extend the projection time, please restart the projection.`
+  String get v3_last_casting_time_countdown {
+    return Intl.message(
+      'The projection is about to end. To extend the projection time, please restart the projection.',
+      name: 'v3_last_casting_time_countdown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Projection time has been extended.`
+  String get v3_casting_time_extend_success_toast {
+    return Intl.message(
+      'Projection time has been extended.',
+      name: 'v3_casting_time_extend_success_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The projection has ended.`
+  String get v3_casting_ended_toast {
+    return Intl.message(
+      'The projection has ended.',
+      name: 'v3_casting_ended_toast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do not extend`
+  String get v3_casting_time_do_not_extend {
+    return Intl.message(
+      'Do not extend',
+      name: 'v3_casting_time_do_not_extend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Extend`
+  String get v3_casting_time_extend {
+    return Intl.message(
+      'Extend',
+      name: 'v3_casting_time_extend',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
