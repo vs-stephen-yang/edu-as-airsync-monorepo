@@ -420,7 +420,8 @@ class MirrorStateProvider extends ChangeNotifier
     var deviceType = await DeviceInfoVs.deviceType ?? '';
     log.info('deviceType: $deviceType');
     log.info('flavor: $flavor');
-    _miracastSupport = (flavor == 'ifp' && deviceType != 'dvLED');
+    _miracastSupport =
+        (flavor == 'ifp' && deviceType != 'dvLED') || (flavor == 'edla');
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
