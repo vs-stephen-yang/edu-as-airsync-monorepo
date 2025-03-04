@@ -51,10 +51,20 @@ namespace "com.viewsonic.flutter_input_injection_example"
         applicationId "com.viewsonic.flutter_input_injection_example"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+    }
+
+    flavorDimensions("channel")
+    productFlavors {
+        ifp {
+          dimension "channel"
+        }
+        store {
+          dimension "channel"
+        }
     }
 
     if (keystoreExist) {
