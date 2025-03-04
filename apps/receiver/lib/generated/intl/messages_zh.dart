@@ -20,6 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh';
 
+  static String m1(value) =>
+      "The projection is about to end. Would you like to extend it by 3 hours? You can extend up to ${value} times and interrupt at any time.";
+
   static String m0(year, version) => "AirSync ©${year}. 版本 ${version}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -163,6 +166,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("停止反控"),
         "v3_cast_to_device_touch_enabled":
             MessageLookupByLibrary.simpleMessage("反控中"),
+        "v3_casting_ended_toast":
+            MessageLookupByLibrary.simpleMessage("The projection has ended."),
+        "v3_casting_time_countdown": m1,
+        "v3_casting_time_do_not_extend":
+            MessageLookupByLibrary.simpleMessage("Do not extend"),
+        "v3_casting_time_extend":
+            MessageLookupByLibrary.simpleMessage("Extend"),
+        "v3_casting_time_extend_success_toast":
+            MessageLookupByLibrary.simpleMessage(
+                "Projection time has been extended."),
         "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
             "以iOS或是Android設備掃描QR code後，即可下載傳送端App"),
         "v3_download_app_entry":
@@ -213,6 +226,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("分享您的螢幕"),
         "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
             "透過AirPlay, Google Cast或是Miracast分享螢幕"),
+        "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
+            "The projection is about to end. To extend the projection time, please restart the projection."),
         "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
             "無網路連接。請連接到Wi-Fi或Intranet網絡，然後重試。"),
         "v3_mirror_request_passcode":
