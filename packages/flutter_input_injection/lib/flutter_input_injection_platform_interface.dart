@@ -32,6 +32,11 @@ abstract class FlutterInputInjectionPlatform extends PlatformInterface {
     throw UnimplementedError('sendTouch() has not been implemented.');
   }
 
+  Future<void> sendNormalizedTouch(int screenId, bool autoVirtualDisplay,
+      int action, int id, double x, double y) {
+    throw UnimplementedError('sendNormalizedTouch() has not been implemented.');
+  }
+
   Future<void> sendKey(int usbKeyCode, bool pressed) {
     throw UnimplementedError('sendKey() has not been implemented.');
   }

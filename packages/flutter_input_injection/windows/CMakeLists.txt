@@ -18,6 +18,10 @@ list(APPEND PLUGIN_SOURCES
   "flutter_input_injection_plugin.h"
   "touch_injector_win.cc"
   "touch_injector_win.h"
+  "desktop_geometry.h"
+  "desktop_geometry.cc"
+  "screen_capture_utils.h"
+  "screen_capture_utils.cc"
 )
 
 # Define the plugin library target. Its name must not be changed (see comment

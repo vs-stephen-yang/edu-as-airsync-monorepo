@@ -10,7 +10,7 @@
 #include <map>
 #include <memory>
 #include <vector>
-
+#include "screen_capture_utils.h"
 
 namespace remoting {
 
@@ -35,7 +35,6 @@ namespace protocol {
         {
             return 2;
         }
-
         int x() const
         {
             return x_;
@@ -44,10 +43,21 @@ namespace protocol {
         {
             return y_;
         }
-
+        void set_x(int x)
+        {
+            x_ = x;
+        }
+        void set_y(int y)
+        {
+            y_ = y;
+        }
         int angle() const
         {
             return angle_;
+        }
+        void set_angle(int angle)
+        {
+            angle_ = angle;
         }
         bool has_pressure() const
         {
@@ -123,6 +133,14 @@ class TouchInjectorWin {
   // Inject touch events.
   void InjectTouchEvent(const protocol::TouchEvent& event);
 
+  // Inject a normalized touch event.
+  void InjectNormalizedTouchEvent(ScreenId screen_id,
+                                  bool autoVirtualScreen,
+                                  int id,
+                                  int event_type,
+                                  double x,
+                                  double y);
+
   void SetInjectorDelegateForTest(
       std::unique_ptr<TouchInjectorWinDelegate> functions);
 
@@ -149,6 +167,8 @@ class TouchInjectorWin {
   // All the POINTER_TOUCH_INFOs are stored as "move" points.
   std::map<uint32_t, POINTER_TOUCH_INFO> touches_in_contact_;
 
+  // Screen ID to inject touch events to.
+  ScreenId screen_id_ = kInvalidScreenId;
 };
 
 }  // namespace remoting

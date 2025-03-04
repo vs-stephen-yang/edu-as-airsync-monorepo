@@ -87,23 +87,21 @@ void ConvertToPointerTouchInfoImpl(
 // The caller should set memset(0) the struct and set
 // pointer_touch_info->pointerInfo.pointerFlags.
 void ConvertToPointerTouchInfo(
+    const ScreenId screen_id,
     const TouchEventPoint& touch_point,
     POINTER_TOUCH_INFO* pointer_touch_info) {
-  // TODO(zijiehe): Use GetFullscreenTopLeft() once
-  // https://chromium-review.googlesource.com/c/581951/ is submitted.
-  /*webrtc::DesktopVector top_left = webrtc::GetScreenRect(
-      webrtc::kFullDesktopScreenId, std::wstring()).top_left();
-  if (top_left.is_zero()) {*/
+
+  DesktopVector top_left = GetScreenRect(screen_id).top_left();
+  if (top_left.is_zero()) {
     ConvertToPointerTouchInfoImpl(touch_point, pointer_touch_info);
     return;
-/*    return;
   }
 
   TouchEventPoint point(touch_point);
   point.set_x(point.x() + top_left.x());
   point.set_y(point.y() + top_left.y());
 
-  ConvertToPointerTouchInfoImpl(point, pointer_touch_info);*/
+  ConvertToPointerTouchInfoImpl(point, pointer_touch_info);
 }
 
 }  // namespace
@@ -194,6 +192,40 @@ void TouchInjectorWin::InjectTouchEvent(const TouchEvent& event) {
   }
 }
 
+void TouchInjectorWin::InjectNormalizedTouchEvent(
+    ScreenId screen_id,
+    bool auto_virtual_screen,
+    int id,
+    int event_type,
+    double x,
+    double y) {
+
+  if (auto_virtual_screen) {
+    ScreenId virtual_screen_id = GetVirtualScreen();
+    if (virtual_screen_id != kInvalidScreenId) {
+      screen_id_ = virtual_screen_id;
+    } else {
+      screen_id_ = GetPrimaryScreen();
+    }
+  } else {
+    screen_id_ = screen_id;
+  }
+
+  DesktopRect desktop_rect = GetScreenRect(screen_id_);
+
+  remoting::protocol::TouchEvent event;
+  remoting::protocol::TouchEventPoint tp;
+  tp.id_ = id % kMaxSimultaneousTouchCount;
+  tp.x_ = (int)(x * desktop_rect.width());
+  tp.y_ = (int)(y * desktop_rect.height());
+  tp.angle_ = 0;
+
+  event.event_type_ = event_type;
+  event.points_.push_back(tp);
+
+  InjectTouchEvent(event);
+}
+
 void TouchInjectorWin::SetInjectorDelegateForTest(
     std::unique_ptr<TouchInjectorWinDelegate> functions) {
   delegate_ = std::move(functions);
@@ -214,7 +246,7 @@ void TouchInjectorWin::AddNewTouchPoints(const TouchEvent& event) {
     pointer_touch_info.pointerInfo.pointerFlags =
         POINTER_FLAG_INRANGE | POINTER_FLAG_INCONTACT | POINTER_FLAG_DOWN;
 
-    ConvertToPointerTouchInfo(touch_point, &pointer_touch_info);
+    ConvertToPointerTouchInfo(screen_id_, touch_point, &pointer_touch_info);
 
     touches.push_back(pointer_touch_info);
 
@@ -238,7 +270,7 @@ void TouchInjectorWin::MoveTouchPoints(const TouchEvent& event) {
     memset(pointer_touch_info, 0, sizeof(*pointer_touch_info));
     pointer_touch_info->pointerInfo.pointerFlags =
         POINTER_FLAG_INRANGE | POINTER_FLAG_INCONTACT | POINTER_FLAG_UPDATE;
-    ConvertToPointerTouchInfo(touch_point, pointer_touch_info);
+    ConvertToPointerTouchInfo(screen_id_, touch_point, pointer_touch_info);
   }
 
   std::vector<POINTER_TOUCH_INFO> touches;

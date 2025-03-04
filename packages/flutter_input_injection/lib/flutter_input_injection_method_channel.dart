@@ -25,6 +25,19 @@ class MethodChannelFlutterInputInjection extends FlutterInputInjectionPlatform {
   }
 
   @override
+  Future<void> sendNormalizedTouch(int screenId, bool autoVirtualDisplay,
+      int action, int id, double x, double y) async {
+    await methodChannel.invokeMethod<void>('sendNormalizedTouch', {
+      'action': action,
+      'id': id,
+      'x': x,
+      'y': y,
+      'screenId': screenId,
+      'autoVirtualDisplay': autoVirtualDisplay,
+    });
+  }
+
+  @override
   Future<void> sendKey(int usbKeyCode, bool pressed) async {
     await methodChannel.invokeMethod<void>('sendKey', {
       'usbKeyCode': usbKeyCode,

@@ -11,9 +11,16 @@ class FlutterInputInjection {
     return FlutterInputInjectionPlatform.instance.getPlatformVersion();
   }
 
-  // Injects a touch event to the system
+  // Injects a touch event to the system (main screen)
   Future<void> sendTouch(int action, int id, int x, int y) {
     return FlutterInputInjectionPlatform.instance.sendTouch(action, id, x, y);
+  }
+
+  // Injects a touch event to the specified screen
+  Future<void> sendNormalizedTouch(int screenId, bool autoVirtualDisplay,
+      int action, int id, double x, double y) {
+    return FlutterInputInjectionPlatform.instance.sendNormalizedTouch(
+      screenId, autoVirtualDisplay, action, id, x, y, );
   }
 
   // Injects a keyboard event to the system
