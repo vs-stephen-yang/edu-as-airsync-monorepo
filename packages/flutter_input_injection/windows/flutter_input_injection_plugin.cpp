@@ -56,6 +56,20 @@ void FlutterInputInjectionPlugin::HandleMethodCall(
       version_stream << "7";
     }
     result->Success(flutter::EncodableValue(version_stream.str()));
+  } else if (method_call.method_name().compare("sendNormalizedTouch") == 0) {
+    const auto *arguments = std::get_if<flutter::EncodableMap>(method_call.arguments());
+    if (arguments) {
+      int action = static_cast<int>(std::get<int>((arguments->find(flutter::EncodableValue("action")))->second));
+      int id = static_cast<int>(std::get<int>((arguments->find(flutter::EncodableValue("id")))->second));
+      double normalizedX = static_cast<double>(std::get<double>((arguments->find(flutter::EncodableValue("x")))->second));
+      double normalizedY = static_cast<double>(std::get<double>((arguments->find(flutter::EncodableValue("y")))->second));
+      int screenId = static_cast<int>(std::get<int>((arguments->find(flutter::EncodableValue("screenId")))->second));
+      bool autoVirtualDisplay = static_cast<bool>(std::get<bool>((arguments->find(flutter::EncodableValue("autoVirtualDisplay")))->second));
+      injector.InjectNormalizedTouchEvent(screenId, autoVirtualDisplay, id, action, normalizedX, normalizedY);
+      result->Success(flutter::EncodableValue(true));
+    } else {
+      result->Error("InvalidArgument", "Invalid argument");
+    }
   } else if (method_call.method_name().compare("sendTouch") == 0) {
     const auto *arguments = std::get_if<flutter::EncodableMap>(method_call.arguments());
     if (arguments) {
