@@ -51,6 +51,7 @@ class _MyAppState extends State<MyApp> {
   final _flutterInputInjectionPlugin = FlutterInputInjection();
   final _focusNode = FocusNode();
   final _controller = TextEditingController();
+  final _inputInjectionMethod = InputInjectionMethod.auto;
 
   @override
   void initState() {
@@ -61,8 +62,7 @@ class _MyAppState extends State<MyApp> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     _flutterInputInjectionPlugin.initialize(
-      inputInjectionMethod: InputInjectionMethod.accessibilityService,
-      //inputInjectionMethod: InputInjectionMethod.uinput,
+      inputInjectionMethod: _inputInjectionMethod,
     );
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -269,6 +269,7 @@ class _MyAppState extends State<MyApp> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        Text('Input injection method: ${_inputInjectionMethod.name}\n'),
         Text('Scree size ${screenSize.width}x${screenSize.height}\n'),
         ElevatedButton(
           onPressed: () {
