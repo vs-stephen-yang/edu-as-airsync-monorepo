@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
-import 'package:flutter/services.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
+import 'package:flutter_input_injection/flutter_input_injection_platform_interface.dart';
 
 import 'package:scribble/scribble.dart' as scribble;
 
@@ -60,16 +60,10 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _flutterInputInjectionPlugin.getPlatformVersion() ??
-              'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
+    _flutterInputInjectionPlugin.initialize(
+      inputInjectionMethod: InputInjectionMethod.accessibilityService,
+      //inputInjectionMethod: InputInjectionMethod.uinput,
+    );
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling

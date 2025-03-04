@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  android:sharedUserId="android.uid.system">
+>
   <application
     android:label="flutter_input_injection_example"
     android:name="${applicationName}"
