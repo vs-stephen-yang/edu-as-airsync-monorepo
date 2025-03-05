@@ -48,7 +48,7 @@ class FlutterVirtualDisplay {
     let desc = CGVirtualDisplayDescriptor()
     desc.setDispatchQueue(DispatchQueue.main)
     desc.terminationHandler = { [weak self] a, b in
-      self.notifyEvent(event: "virtualDisplayError",
+      self?.notifyEvent(event: "virtualDisplayError",
                         success: true,
                         errorMessage: "\(String(describing: a)), \(String(describing: b))")
     }
