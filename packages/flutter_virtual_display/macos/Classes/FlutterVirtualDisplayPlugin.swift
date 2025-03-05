@@ -41,8 +41,9 @@ public class FlutterVirtualDisplayPlugin: NSObject, FlutterPlugin, FlutterStream
 #if AIRSYNC_OPEN
       if virtualDisplay != nil {
         result(virtualDisplay?.isSupported())
+      } else {
+        result(false)
       }
-      result(false)
 #endif //AIRSYNC_OPEN
       result(false)
       
