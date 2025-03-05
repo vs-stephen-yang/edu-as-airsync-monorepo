@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Stage" type="FlutterRunConfigurationType" factoryName="Flutter">
+    <option name="additionalArgs" value="--web-browser-flag --disable-web-security" />
+    <option name="filePath" value="$PROJECT_DIR$/lib/main_stage.dart" />
+    <method v="2" />
+  </configuration>
+</component>
