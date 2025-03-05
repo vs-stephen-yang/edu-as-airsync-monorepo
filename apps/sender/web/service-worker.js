@@ -428,6 +428,32 @@ self.addEventListener("fetch", (event) => {
   if (event.request.url == origin || event.request.url.startsWith(origin + '/#') || key == '') {
     key = '/';
   }
+
+  // ✅ Special case for version.json (Network First)
+  if (key === "version.json") {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          return caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, networkResponse.clone()); // Cache the latest version.json
+            return networkResponse;
+          });
+        })
+        .catch(async () => {
+          // If fetch fails, try fetching the cached version **ignoring query params**
+          const cache = await caches.open(CACHE_NAME);
+          const cachedResponse = await cache.match("version.json", { ignoreSearch: true });
+          if (cachedResponse) {
+            console.log("[Service Worker] Serving cached version.json");
+            return cachedResponse;
+          }
+          console.warn("[Service Worker] No cached version.json found, returning empty {}");
+          return new Response("{}", { headers: { "Content-Type": "application/json" } });
+        })
+    );
+    return;
+  }
+
   // If the URL is not the RESOURCE list then return to signal that the
   // browser should take over.
   if (!RESOURCES[key]) {
@@ -436,7 +462,7 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.match(event.request).then((response) => {
+      return cache.match(event.request, { ignoreSearch: true }).then((response) => {
         // Either respond with the cached resource, or perform a fetch and
         // lazily populate the cache only if the resource was successfully fetched.
         if (response) {

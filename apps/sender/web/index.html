@@ -75,7 +75,7 @@
     {{flutter_build_config}}
     _flutter.loader.load({
       config: {
-        'entryPointBaseUrl': '',
+        'entryPointBaseUrl': 'main.dart.js?v=' + {{flutter_service_worker_version}},
         'canvasKitBaseUrl': '/canvaskit/',
       },
       onEntrypointLoaded: async function(engineInitializer) {
