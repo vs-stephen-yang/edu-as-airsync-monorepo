@@ -43,7 +43,7 @@ class _V3StreamingViewState extends ConsumerState {
       _thirdWidth = 0,
       _thirdHeight = 0;
   bool _isNewSharingOnScreen = false;
-  bool _displaySmartScalingEnabled = true;    // should get from user setting
+  bool _displaySmartScalingEnabled = false;    // get from user setting
 
   @override
   Widget build(BuildContext context) {
