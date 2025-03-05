@@ -400,8 +400,8 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
     } else {
       final RenderBox renderBox =
           textureElement!.findRenderObject() as RenderBox;
-      bool isSameDirection = (widget.fullWidth > widget.fullHeight && renderBox.size.width > renderBox.size.height ) || (widget.fullHeight > widget.fullWidth && renderBox.size.height > renderBox.size.width );
-      _textureSize = (widget.displaySmartScalingEnabled && isSameDirection)? Size(widget.fullWidth, widget.fullHeight) : renderBox.size;
+      bool isSameDirection = (widget.fullWidth > widget.fullHeight && renderBox.size.width > renderBox.size.height ) || (widget.fullHeight > widget.fullWidth && renderBox.size.height > renderBox.size.width);
+      _textureSize = (widget.displaySmartScalingEnabled && isSameDirection) ? Size(widget.fullWidth, widget.fullHeight) : renderBox.size;
       _textureOffset = renderBox.localToGlobal(Offset.zero);
       log.info(
           'texture widget size: (${_textureSize.width.toStringAsFixed(2)}, ${_textureSize.height.toStringAsFixed(2)}), offset: (${_textureOffset.dx.toStringAsFixed(2)}, ${_textureOffset.dy.toStringAsFixed(2)})');
