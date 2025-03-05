@@ -75,7 +75,7 @@
     {{flutter_build_config}}
     _flutter.loader.load({
       config: {
-        'entryPointBaseUrl': 'main.dart.js?v=' + {{flutter_service_worker_version}},
+        'entryPointBaseUrl': '',
         'canvasKitBaseUrl': '/canvaskit/',
       },
       onEntrypointLoaded: async function(engineInitializer) {
@@ -86,6 +86,31 @@
         serviceWorkerVersion: {{flutter_service_worker_version}},
       },
     });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+      .then((registration) => {
+        console.log('Service Worker registered with scope:', registration.scope);
+      })
+      .catch((error) => {
+        console.log('Service Worker registration failed:', error);
+      });
+
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        console.log('New service worker activated.');
+
+      // ✅ Prevent infinite reload loop
+      if (!sessionStorage.getItem('serviceWorkerReloaded')) {
+        sessionStorage.setItem('serviceWorkerReloaded', 'true');
+        setTimeout(function () {
+          console.log('Reloading to apply updates...');
+          window.location.reload();
+        }, 500); // Add slight delay
+      } else {
+        console.log('Skipping reload to prevent loop.');
+      }
+    });
+  }
   </script>
 </body>
 </html>
