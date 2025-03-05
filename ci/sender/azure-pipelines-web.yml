@@ -25,12 +25,12 @@ jobs:
         dev:
           flavor: 'dev'
           buildOptions: '-t ./lib/main_dev.dart --source-maps --pwa-strategy=none'
-        stage:
-          flavor: 'stage'
-          buildOptions: '--release -t ./lib/main_stage.dart --source-maps --pwa-strategy=none'
-        prod:
-          flavor: 'prod'
-          buildOptions: '--release -t ./lib/main_production.dart --source-maps --pwa-strategy=none'
+#        stage:
+#          flavor: 'stage'
+#          buildOptions: '--release -t ./lib/main_stage.dart --source-maps --pwa-strategy=none'
+#        prod:
+#          flavor: 'prod'
+#          buildOptions: '--release -t ./lib/main_production.dart --source-maps --pwa-strategy=none'
 
     pool:
       vmImage: macOS-latest
