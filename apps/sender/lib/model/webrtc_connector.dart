@@ -88,7 +88,7 @@ class WebRTCConnector {
   };
 
   Preset preset;
-  bool touchBack = false;
+  bool touchBack = true;
   bool systemAudio = false;
   bool autoVirtualDisplay = false;
   final List<String> _codecPreferences = ['h264', 'vp8', 'vp9'];
