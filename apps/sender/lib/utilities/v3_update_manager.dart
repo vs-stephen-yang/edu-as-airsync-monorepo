@@ -19,12 +19,6 @@ enum CompareVersionResult { forceUpgrade, userChoose, noUpdate, noNetwork }
 class V3UpdateManager {
   static final V3UpdateManager _instance = V3UpdateManager._internal();
 
-  // Get build flavor from environment
-  String? get buildFlavor => const String.fromEnvironment('FLAVOR', defaultValue: '');
-
-  // Check if this is Store flavor
-  bool get isStoreFlavor => buildFlavor == 'Store';
-
   factory V3UpdateManager() {
     return _instance;
   }
