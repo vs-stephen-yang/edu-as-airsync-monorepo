@@ -9,13 +9,21 @@ import 'package:display_cast_flutter/utilities/updater_windows.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:auto_updater/auto_updater.dart';
 
 enum CompareVersionResult { forceUpgrade, userChoose, noUpdate, noNetwork }
 
 class V3UpdateManager {
   static final V3UpdateManager _instance = V3UpdateManager._internal();
+
+  // Get build flavor from environment
+  String? get buildFlavor => const String.fromEnvironment('FLAVOR', defaultValue: '');
+
+  // Check if this is Store flavor
+  bool get isStoreFlavor => buildFlavor == 'Store';
 
   factory V3UpdateManager() {
     return _instance;
@@ -298,8 +306,16 @@ class V3UpdateManager {
                         Navigator.of(context).pop();
                       }
                       if (Platform.isMacOS) {
-                        unawaited(launchUrl(Uri.parse(
-                            'macappstore://apps.apple.com/app/airsync-sender/id6453759985')));
+                        if (appFlavor == 'Open') {
+                          String? feedURL = AppConfig.of(context)?.settings.appUpdateMacAppcastUrl;
+                          if (feedURL != null) {
+                            await autoUpdater.setFeedURL(feedURL);
+                            await autoUpdater.checkForUpdates();
+                          }
+                        } else {
+                          unawaited(launchUrl(Uri.parse(
+                              'macappstore://apps.apple.com/app/airsync-sender/id6453759985')));
+                        }
                       } else {
                         // windows
                         try {
