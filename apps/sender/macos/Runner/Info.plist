@@ -32,5 +32,9 @@
 	<string>$(PRODUCT_NAME) Microphone Usage!</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.education</string>
+	<key>SUPublicEDKey</key>
+	<string>qWkRDaC+vHGh+jXtLPohvrneotT0uAkSc2ptfV636LE=</string>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
 </dict>
 </plist>

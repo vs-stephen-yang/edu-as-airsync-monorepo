@@ -1,0 +1,32 @@
+{
+  "profiles": [
+    {
+      "name": "video_quality_first",
+      "presets": [
+        {
+          "codec": "all",
+          "platform": "all",
+          "description": "maintain video quality between fair and good",
+          "parameters": {
+            "minBitrateKbps": 3000,
+            "maxBitrateKbps": 5000
+          }
+        }
+      ]
+    },
+    {
+      "name": "video_smoothness_first",
+      "presets": [
+        {
+          "codec": "all",
+          "platform": "all",
+          "description": "maintain video smoothness and good quality when bandwidth is sufficient",
+          "parameters": {
+            "minBitrateKbps": 0,
+            "maxBitrateKbps": 5000
+          }
+        }
+      ]
+    }
+  ]
+}
