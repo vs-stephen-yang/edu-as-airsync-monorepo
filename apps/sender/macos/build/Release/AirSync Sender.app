@@ -1,0 +1,1 @@
+../../../../../../../tmp/Runner.dst/Applications/AirSync Sender.app
