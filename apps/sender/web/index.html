@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <!--
     If you are serving your web app in a path other than the root, change the
@@ -35,7 +36,7 @@
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <title>AirSync Sender</title>
   <link rel="manifest" href="manifest.json">
@@ -59,12 +60,14 @@
       0% {
         opacity: 0.2;
       }
+
       100% {
         opacity: 1;
       }
     }
   </style>
 </head>
+
 <body>
   <div class="center loading-spinner">
     <img src="icons/Icon-192.png">
@@ -87,30 +90,94 @@
       },
     });
 
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-      .then((registration) => {
-        console.log('Service Worker registered with scope:', registration.scope);
-      })
-      .catch((error) => {
-        console.log('Service Worker registration failed:', error);
+    // Immediate function to handle service worker registration
+    (function () {
+      console.log('[APP] Page loaded, checking for service worker support');
+
+      if (!('serviceWorker' in navigator)) {
+        console.error('[APP] Service workers not supported in this browser');
+        return;
+      }
+
+      // Wait for page to fully load
+      window.addEventListener('load', () => {
+        console.log('[APP] Window loaded, registering service worker');
+
+        // Register the service worker
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('[APP] Service worker registration successful:', registration.scope);
+
+            // Check if this is a new installation
+            if (registration.installing) {
+              const sw = registration.installing;
+              console.log('[APP] Service worker installing');
+
+              // Track installation progress
+              sw.addEventListener('statechange', event => {
+                console.log('[APP] Service worker state changed to:', sw.state);
+
+                if (sw.state === 'activated') {
+                  console.log('[APP] Service worker activated - checking cache');
+                  checkCacheStatus();
+                }
+              });
+            } else if (registration.active) {
+              console.log('[APP] Service worker already active');
+              checkCacheStatus();
+            }
+          })
+          .catch(error => {
+            console.error('[APP] Service worker registration failed:', error);
+          });
+
+        // Handle messages from the service worker
+        navigator.serviceWorker.addEventListener('message', event => {
+          console.log('[APP] Received message from service worker:', event.data);
+
+          if (event.data && event.data.type === 'CACHE_STATUS') {
+            console.log(`[APP] Cache contains ${event.data.count} files`);
+
+            // If cache is empty after activation, force caching
+            if (event.data.count === 0 && navigator.serviceWorker.controller) {
+              console.log('[APP] Cache appears empty, forcing manual cache');
+              forceCaching();
+            }
+          } else if (event.data && event.data.type === 'CACHE_RESULT') {
+            console.log(`[APP] Manual caching ${event.data.success ? 'succeeded' : 'failed'}`);
+            if (event.data.success) {
+              setTimeout(checkCacheStatus, 1000);
+            }
+          }
+        });
       });
 
-      navigator.serviceWorker.addEventListener('controllerchange', function () {
-        console.log('New service worker activated.');
+      // Check cache status
+      function checkCacheStatus() {
+        console.log('[APP] Checking cache status');
 
-      // ✅ Prevent infinite reload loop
-      if (!sessionStorage.getItem('serviceWorkerReloaded')) {
-        sessionStorage.setItem('serviceWorkerReloaded', 'true');
-        setTimeout(function () {
-          console.log('Reloading to apply updates...');
-          window.location.reload();
-        }, 500); // Add slight delay
-      } else {
-        console.log('Skipping reload to prevent loop.');
+        // First try direct cache check
+        caches.open('flutter-app-cache')
+          .then(cache => cache.keys())
+          .then(requests => {
+            console.log(`[APP] Direct cache check: ${requests.length} files in cache`);
+
+            if (requests.length === 0) {
+              // Cache is empty, try to force caching if we have an active service worker
+              if (navigator.serviceWorker.controller) {
+                console.log('[APP] Cache is empty, asking service worker to check');
+                navigator.serviceWorker.controller.postMessage('CHECK_CACHE');
+              } else {
+                console.log('[APP] No controller, cannot verify with service worker');
+              }
+            }
+          })
+          .catch(error => {
+            console.error('[APP] Error checking cache:', error);
+          });
       }
-    });
-  }
+    })();
   </script>
 </body>
+
 </html>
