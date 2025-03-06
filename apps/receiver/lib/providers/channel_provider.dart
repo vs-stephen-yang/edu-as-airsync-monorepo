@@ -159,7 +159,7 @@ class ChannelProvider extends ChangeNotifier {
 
   bool get isAuthorizeMode => _isAuthorizeMode;
   bool _isAuthorizeMode = defaultAuthorizeModeEnable;
-  static const defaultAuthorizeModeEnable = true;
+  static const defaultAuthorizeModeEnable = false;
 
   final List<Map<String, RTCConnector>> authorizeRequestList = [];
 
