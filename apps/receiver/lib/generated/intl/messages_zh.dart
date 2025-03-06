@@ -21,7 +21,7 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh';
 
   static String m1(value) =>
-      "The projection is about to end. Would you like to extend it by 3 hours? You can extend up to ${value} times and interrupt at any time.";
+      "投影即將結束。你想要將其延長 3 小時嗎？你最多可以延長 ${value} 次，並且可以隨時中斷。";
 
   static String m0(year, version) => "AirSync ©${year}. 版本 ${version}";
 
@@ -167,15 +167,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "v3_cast_to_device_touch_enabled":
             MessageLookupByLibrary.simpleMessage("反控中"),
         "v3_casting_ended_toast":
-            MessageLookupByLibrary.simpleMessage("The projection has ended."),
+            MessageLookupByLibrary.simpleMessage("投影已結束。"),
         "v3_casting_time_countdown": m1,
         "v3_casting_time_do_not_extend":
-            MessageLookupByLibrary.simpleMessage("Do not extend"),
-        "v3_casting_time_extend":
-            MessageLookupByLibrary.simpleMessage("Extend"),
+            MessageLookupByLibrary.simpleMessage("不要延長"),
+        "v3_casting_time_extend": MessageLookupByLibrary.simpleMessage("延長"),
         "v3_casting_time_extend_success_toast":
-            MessageLookupByLibrary.simpleMessage(
-                "Projection time has been extended."),
+            MessageLookupByLibrary.simpleMessage("投影時間已延長。"),
         "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
             "以iOS或是Android設備掃描QR code後，即可下載傳送端App"),
         "v3_download_app_entry":
@@ -226,8 +224,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("分享您的螢幕"),
         "v3_instruction_support": MessageLookupByLibrary.simpleMessage(
             "透過AirPlay, Google Cast或是Miracast分享螢幕"),
-        "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
-            "The projection is about to end. To extend the projection time, please restart the projection."),
+        "v3_last_casting_time_countdown":
+            MessageLookupByLibrary.simpleMessage("投影即將結束。如需延長投影時間，請重新啟動投影。"),
         "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
             "無網路連接。請連接到Wi-Fi或Intranet網絡，然後重試。"),
         "v3_mirror_request_passcode":
