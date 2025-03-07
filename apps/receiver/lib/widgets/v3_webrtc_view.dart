@@ -185,8 +185,6 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
                   child: pauseScreenImage ??
                       RTCVideoView(widget.rtcConnector.remoteRenderer!,
                           key: _widgetKey,
-                          fullWidth: widget.fullWidth,
-                          fullHeight: widget.fullHeight,
                           displaySmartScalingEnabled: widget.displaySmartScalingEnabled),
                 ),
               ),
