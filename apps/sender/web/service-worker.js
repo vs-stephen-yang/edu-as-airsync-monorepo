@@ -379,48 +379,42 @@ const RESOURCES = {
   "canvaskit/canvaskit.wasm": "1f237a213d7370cf95f443d896176460",
   "canvaskit/skwasm.worker.js": "bfb704a6c714a75da9ef320991e88b03"
 };
-// The application shell files that are downloaded before a service worker can
-// start.
-const CORE = ["main.dart.js",
-  "index.html",
-  "flutter_bootstrap.js",
-  "assets/AssetManifest.bin.json",
-  "assets/FontManifest.json",
-  "assets/assets/webtransport_cert_hashes.json"
-];
-
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      await cache.addAll(
         Object.keys(RESOURCES).map((key) => new Request(key, { 'cache': 'reload' }))
       );
-    })
+    })()
   );
 });
+
 // During activate, the cache is populated with the temp files downloaded in
 // install. If this service worker is upgrading from one with a saved
 // MANIFEST, then use this to retain unchanged resource files.
-self.addEventListener("activate", function (event) {
+self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
       await checkForUpdates();
       await downloadOffline(); // 🛠 Ensures all assets are cached immediately
-
       self.clients.claim();
     })()
   );
 });
+
 // The fetch handler redirects requests for RESOURCE files to the service
 // worker cache.
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== 'GET') {
     return;
   }
-  var origin = self.location.origin;
-  var key = event.request.url.substring(origin.length + 1);
+
+  const origin = self.location.origin;
+  let key = event.request.url.substring(origin.length + 1);
+
   // Redirect URLs to the index.html
   if (key.indexOf('?') !== -1) {
     key = key.split('?')[0];
@@ -432,14 +426,13 @@ self.addEventListener("fetch", (event) => {
   // ✅ Special case for version.json (Network First)
   if (key === "version.json") {
     event.respondWith(
-      fetch(event.request)
-        .then((networkResponse) => {
-          return caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, networkResponse.clone()); // Cache the latest version.json
-            return networkResponse;
-          });
-        })
-        .catch(async () => {
+      (async () => {
+        try {
+          const networkResponse = await fetch(event.request);
+          const cache = await caches.open(CACHE_NAME);
+          await cache.put(event.request, networkResponse.clone()); // Cache the latest version.json
+          return networkResponse;
+        } catch (error) {
           // If fetch fails, try fetching the cached version **ignoring query params**
           const cache = await caches.open(CACHE_NAME);
           const cachedResponse = await cache.match("version.json", { ignoreSearch: true });
@@ -449,7 +442,8 @@ self.addEventListener("fetch", (event) => {
           }
           console.warn("[Service Worker] No cached version.json found, returning empty {}");
           return new Response("{}", { headers: { "Content-Type": "application/json" } });
-        })
+        }
+      })()
     );
     return;
   }
@@ -461,34 +455,32 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.match(event.request, { ignoreSearch: true }).then((response) => {
-        // Either respond with the cached resource, or perform a fetch and
-        // lazily populate the cache only if the resource was successfully fetched.
-        if (response) {
-          return response;
-        }
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      const cachedResponse = await cache.match(event.request, { ignoreSearch: true });
 
-        return fetch(event.request)
-          .then((response) => {
-            if (response && Boolean(response.ok)) {
-              cache.put(event.request, response.clone());
-            }
-            return response;
-          })
-          .catch(() => {
-            if (key === 'version.json') {
-              return new Response('{}', { headers: { 'Content-Type': 'application/json' } });
-            }
-            if (event.request.destination === 'document') {
-              return caches.match('index.html');
-            }
-          });
-      })
-    })
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
+      try {
+        const networkResponse = await fetch(event.request);
+        if (networkResponse && Boolean(networkResponse.ok)) {
+          await cache.put(event.request, networkResponse.clone());
+        }
+        return networkResponse;
+      } catch (error) {
+        if (key === 'version.json') {
+          return new Response('{}', { headers: { 'Content-Type': 'application/json' } });
+        }
+        if (event.request.destination === 'document') {
+          return await caches.match('index.html');
+        }
+        throw error; // Rethrow if we can't handle it
+      }
+    })()
   );
 });
-
 
 self.addEventListener('message', (event) => {
   // SkipWaiting can be used to immediately activate a waiting service worker.
@@ -502,6 +494,7 @@ self.addEventListener('message', (event) => {
     return;
   }
 });
+
 // Download offline will check the RESOURCES for all files not in the cache
 // and populate them.
 async function downloadOffline() {
@@ -531,9 +524,13 @@ async function checkForUpdates() {
     let newVersion = null;
 
     // Fetch latest version.json
-    const versionRequest = await fetch("version.json", { cache: "no-store" }).catch(() => null);
-    if (versionRequest && versionRequest.ok) {
-      newVersion = await versionRequest.json();
+    try {
+      const versionRequest = await fetch("version.json", { cache: "no-store" });
+      if (versionRequest.ok) {
+        newVersion = await versionRequest.json();
+      }
+    } catch (error) {
+      console.warn("[Service Worker] Failed to fetch version.json:", error);
     }
 
     if (manifest) {
