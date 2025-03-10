@@ -255,8 +255,8 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: "release-1.0.17-1"
-      resolved-ref: "934e9563c7342bab1c0c533cede5837ff8898c73"
+      ref: "release-1.0.17-2"
+      resolved-ref: "25f4a6188dafccf897ac913878b09434c34ce9c0"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/dart-webrtc"
     source: git
     version: "1.0.17"
@@ -512,8 +512,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.9.36-49"
-      resolved-ref: "102e48e1b6605db47baa05bff9075a7bc82235df"
+      ref: "release-0.9.36-53"
+      resolved-ref: f876c8791cd1a241122330f25f9e9b58cd890009
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc"
     source: git
     version: "0.9.36"
@@ -625,8 +625,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-0.0.43"
-      resolved-ref: d47e839746a22f826c24b60e87f640ffe305f591
+      ref: "release-0.0.47"
+      resolved-ref: "7f7544f3861afadc341b496b2d0a5af9c5f2ce6f"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter"
     source: git
     version: "1.0.0"
@@ -1352,8 +1352,8 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: "release-1.1.0-1"
-      resolved-ref: f5c9022bee78cf24a55c3abd9206d49e45a3d991
+      ref: "release-1.1.0-2"
+      resolved-ref: d8686d96c442cce8c29cf71bb6bd119ffbe74053
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/webrtc-interface"
     source: git
     version: "1.1.0"
