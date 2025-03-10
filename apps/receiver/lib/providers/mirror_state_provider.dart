@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:device_info_vs/device_info_vs.dart';
 import 'package:display_flutter/app_overlay_tab.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/mirror_request.dart';
@@ -38,6 +39,8 @@ class MirrorStateProvider extends ChangeNotifier
     _instanceInfoProvider.addListener(_onInstanceInfoUpdated);
   }
 
+  get miracastSupport => _miracastSupport;
+
   get airplayEnabled => _airplayEnabled;
 
   get googleCastEnabled => _googleCastEnabled;
@@ -53,6 +56,7 @@ class MirrorStateProvider extends ChangeNotifier
 
   FlutterMirror? _flutterMirrorPlugin;
   String _deviceName = '';
+  bool _miracastSupport = true;
   bool _airplayEnabled = false;
   bool _googleCastEnabled = false;
   bool _miracastEnabled = false;
@@ -136,8 +140,11 @@ class MirrorStateProvider extends ChangeNotifier
     if (HybridConnectionList().connectionListFull()) {
       stopAcceptedMirror(mirrorId);
     } else {
-      HybridConnectionList().addConnection(MirrorRequest(
-          _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType));
+      final mirrorRequest = MirrorRequest(
+          _flutterMirrorPlugin, mirrorId, textureId, deviceName, mirrorType);
+      HybridConnectionList().addConnection(mirrorRequest);
+
+      mirrorRequest.trackSessionEvent('connect_successfully');
     }
 
     notifyListeners();
@@ -206,6 +213,7 @@ class MirrorStateProvider extends ChangeNotifier
           HybridConnectionList()
               .getMirrorMap()
               .update(entry.key, (value) => request);
+          entry.value.trackSessionEvent('start_cast');
         }
       }
 
@@ -218,7 +226,7 @@ class MirrorStateProvider extends ChangeNotifier
     }
   }
 
-  setModeratorIdleMirrorId(String? mirrorId) {
+  setModeratorIdleMirrorId(String? mirrorId, {bool stopCastEvent = false}) {
     if (HybridConnectionList().getMirrorMap().isNotEmpty) {
       for (var entry in HybridConnectionList().getMirrorMap().entries) {
         if (entry.value.mirrorId == mirrorId) {
@@ -228,6 +236,9 @@ class MirrorStateProvider extends ChangeNotifier
           HybridConnectionList()
               .getMirrorMap()
               .update(entry.key, (value) => request);
+          if (stopCastEvent) {
+            entry.value.trackSessionEvent('stop_cast');
+          }
         }
       }
 
@@ -239,8 +250,17 @@ class MirrorStateProvider extends ChangeNotifier
     }
   }
 
-  stopAcceptedMirror(String? mirrorId) {
+  stopAcceptedMirror(String? mirrorId, {bool removeUserEvent = false}) {
     log.info('stopAcceptedMirror');
+    if (removeUserEvent) {
+      for (var entry in HybridConnectionList().getMirrorMap().entries) {
+        if (entry.value.mirrorId == mirrorId) {
+          MirrorRequest request = entry.value;
+          request.trackSessionEvent('click_exit');
+          break;
+        }
+      }
+    }
     if (mirrorId != null) {
       _flutterMirrorPlugin?.stopMirror(mirrorId);
     }
@@ -334,6 +354,8 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> startMiracast({bool updatePreference = true}) async {
+    if (!_miracastSupport) return;
+
     log.info('startMiracast');
     await _flutterMirrorPlugin?.startMiracast(_deviceName);
     if (updatePreference) {
@@ -343,6 +365,8 @@ class MirrorStateProvider extends ChangeNotifier
   }
 
   Future<void> stopMiracast({bool updatePreference = true}) async {
+    if (!_miracastSupport) return;
+
     log.info('stopMiracast');
     for (MirrorRequest request
         in HybridConnectionList().getMirrorMap().values) {
@@ -391,6 +415,13 @@ class MirrorStateProvider extends ChangeNotifier
   // region Private method
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> _initPlatformState() async {
+    var channel = const MethodChannel('com.mvbcast.crosswalk/app_update');
+    String flavor = await channel.invokeMethod("getFlavor") ?? '';
+    var deviceType = await DeviceInfoVs.deviceType ?? '';
+    log.info('deviceType: $deviceType');
+    log.info('flavor: $flavor');
+    _miracastSupport =
+        (flavor == 'ifp' && deviceType != 'dvLED') || (flavor == 'edla');
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {

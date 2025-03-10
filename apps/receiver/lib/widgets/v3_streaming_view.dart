@@ -16,6 +16,7 @@ import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/screens/v3_shortcuts_menu.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
+import 'package:display_flutter/widgets/v3_extend_casting_time_menu.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_header_bar.dart';
 import 'package:display_flutter/widgets/v3_streaming_function.dart';
@@ -327,6 +328,11 @@ class _V3StreamingViewState extends ConsumerState {
               return const SizedBox.shrink();
             },
           ),
+          Positioned(
+            bottom: _isNewSharingOnScreen ? 164 : 54,
+            right: 53,
+            child: const V3ExtendCastingTimeMenu(),
+          ),
         ],
       ),
     );
@@ -363,11 +369,13 @@ class _V3StreamingViewState extends ConsumerState {
 
   _showNewSharingMessageDialog(List<String> names) async {
     String name = names.first;
+    setState(() {
+      _isNewSharingOnScreen = true;
+    });
     await showDialog(
       context: context,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
-        _isNewSharingOnScreen = true;
         return V3NewSharingMenu(name: name);
       },
     ).then((_) {
@@ -376,7 +384,10 @@ class _V3StreamingViewState extends ConsumerState {
       channelProvider.showNewSharingNameList.value.remove(name);
       channelProvider.showNewSharingNameList.value =
           List.from(channelProvider.showNewSharingNameList.value);
-      _isNewSharingOnScreen = false;
+    }).whenComplete(() {
+      setState(() {
+        _isNewSharingOnScreen = false;
+      });
     });
   }
 }

@@ -47,6 +47,7 @@ class HybridConnectionList {
     'IFP92UW',
     'CDE105UW',
     'CDE92UW',
+    'IFP51',
   ];
 
   // the following device support 6 split screen
@@ -359,6 +360,8 @@ class HybridConnectionList {
 
       connection.controlAudio(enable, setIsAudioEnabled: setIsAudioEnabled);
     } else if (connection != null && connection is MirrorRequest) {
+      connection.trackSessionEvent('click_sound');
+
       connection.controlAudio(enable, setIsAudioEnabled: setIsAudioEnabled);
     }
   }

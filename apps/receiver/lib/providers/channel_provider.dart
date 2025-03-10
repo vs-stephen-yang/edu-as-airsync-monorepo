@@ -159,7 +159,7 @@ class ChannelProvider extends ChangeNotifier {
 
   bool get isAuthorizeMode => _isAuthorizeMode;
   bool _isAuthorizeMode = defaultAuthorizeModeEnable;
-  static const defaultAuthorizeModeEnable = true;
+  static const defaultAuthorizeModeEnable = false;
 
   final List<Map<String, RTCConnector>> authorizeRequestList = [];
 
@@ -214,6 +214,7 @@ class ChannelProvider extends ChangeNotifier {
       onDisplayCodeChange: _onDisplayCodeChange,
       baseApiUrl: appConfig.settings.baseApiUrl,
       instanceId: AppInstanceCreate().displayInstanceID,
+      webTransportServerPort: appConfig.webTransportServerPort,
     );
 
     _load().then((_) {

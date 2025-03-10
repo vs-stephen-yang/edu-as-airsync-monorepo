@@ -1,5 +1,5 @@
 import 'package:display_channel/display_channel.dart';
-import 'package:flutter_ion_sfu/flutter_ion_sfu_listener.dart';
+import 'package:flutter_golang_server/flutter_ion_sfu_listener.dart';
 
 enum RemotePresentationState {
   stopStreaming,

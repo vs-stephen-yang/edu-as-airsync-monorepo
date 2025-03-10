@@ -190,5 +190,11 @@
   "v3_settings_broadcast_screen_energy_saving": "Please turn off energy saving to avoid unexpected interruption during broadcasting.",
   "v3_participants_desc_maximum_9": "Maximum up to 9 participants.",
   "v3_settings_device_smart_scaling": "Smart scaling",
-  "v3_settings_device_smart_scaling_desc": "Automatically adjust the screen size to maximize the use of screen space. The image may be slightly distorted."
+  "v3_settings_device_smart_scaling_desc": "Automatically adjust the screen size to maximize the use of screen space. The image may be slightly distorted.",
+  "v3_casting_time_countdown": "The projection is about to end. Would you like to extend it by 3 hours? You can extend up to {value} times and interrupt at any time.",
+  "v3_last_casting_time_countdown": "The projection is about to end. To extend the projection time, please restart the projection.",
+  "v3_casting_time_extend_success_toast": "Projection time has been extended.",
+  "v3_casting_ended_toast": "The projection has ended.",
+  "v3_casting_time_do_not_extend": "Do not extend",
+  "v3_casting_time_extend": "Extend"
 }
