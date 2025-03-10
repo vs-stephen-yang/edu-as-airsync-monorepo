@@ -8,9 +8,29 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
       const cache = await caches.open(CACHE_NAME);
+
+      // Cache all resources first
       await cache.addAll(
         RESOURCES.map((path) => new Request(path, { 'cache': 'reload' }))
       );
+
+      // After caching all resources, fetch version.json and store in manifest
+      try {
+        const versionRequest = await fetch("version.json", { cache: "no-store" });
+        if (versionRequest.ok) {
+          const versionData = await versionRequest.json();
+
+          // Store version in manifest
+          const manifestCache = await caches.open(MANIFEST);
+          await manifestCache.put("manifest", new Response(JSON.stringify({
+            version: versionData.version
+          }), { headers: { "Content-Type": "application/json" } }));
+
+          console.log("[Service Worker] Initial version stored:", versionData.version);
+        }
+      } catch (error) {
+        console.warn("[Service Worker] Failed to fetch initial version.json:", error);
+      }
     })()
   );
 });
@@ -144,8 +164,6 @@ async function downloadOffline() {
 
 async function checkForUpdates() {
   try {
-    const contentCache = await caches.open(CACHE_NAME);
-    const tempCache = await caches.open(TEMP);
     const manifestCache = await caches.open(MANIFEST);
     const manifest = await manifestCache.match("manifest");
 
@@ -173,23 +191,45 @@ async function checkForUpdates() {
       return;
     }
 
-    console.log("New version detected! Clearing old cache and updating...");
+    console.log("New version detected! Updating cache...");
 
+    // Download all resources first, then replace the cache
+    const tempCache = await caches.open(TEMP);
+
+    // Pre-download all resources to temp cache
+    await Promise.all(RESOURCES.map(async (path) => {
+      try {
+        const request = new Request(path, { cache: "reload" });
+        const response = await fetch(request);
+        if (response.ok) {
+          await tempCache.put(request, response.clone());
+        }
+      } catch (error) {
+        console.error(`[Service Worker] Failed to fetch resource: ${path}`, error);
+      }
+    }));
+
+    // Delete the main cache and recreate it
     await caches.delete(CACHE_NAME);
+    const mainCache = await caches.open(CACHE_NAME);
 
+    // Copy all resources from temp to main cache
     for (const request of await tempCache.keys()) {
       const response = await tempCache.match(request);
       if (response) {
-        await contentCache.put(request, response);
+        await mainCache.put(request, response);
       }
     }
+
+    // Clean up the temp cache
     await caches.delete(TEMP);
 
+    // Update the manifest with the new version
     await manifestCache.put("manifest", new Response(JSON.stringify({
       version: newVersion.version
     }), { headers: { "Content-Type": "application/json" } }));
 
-    console.log("Updated");
+    console.log("Updated to version:", newVersion.version);
   } catch (err) {
     console.error("Failed to update service worker:", err);
   }
