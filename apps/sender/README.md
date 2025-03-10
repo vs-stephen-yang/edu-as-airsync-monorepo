@@ -52,3 +52,9 @@ followed by an optional build number separated by a +.
 - Run the command in the root of your project to generate tokens:
 
 `figma2flutter --input ./design/airsync-vsdsw-token-v2.json --output ./lib/assets/tokens/`
+
+# Deployment
+
+## Build WEB PWA on local
+Run the build script to build PWA support offline
+` ./build-web-script.sh --env dev`
