@@ -98,7 +98,10 @@ find "$BUILD_DIR" -type f | sort | while read -r file; do
   fi
 
   # Skip the service worker itself to avoid a circular reference
-  if [[ "$relative_path" != "service-worker.js" ]] && [[ "$relative_path" != "/service-worker.js" ]]; then
+  # Also skip main.dart.js.map to prevent 403 errors
+  if [[ "$relative_path" != "service-worker.js" ]] &&
+     [[ "$relative_path" != "/service-worker.js" ]] &&
+     [[ "$relative_path" != "main.dart.js.map" ]]; then
     # Add to assets array with comma
     echo "  \"$relative_path\"," >> "$ASSETS_FILE"
     ASSET_COUNT=$((ASSET_COUNT + 1))
