@@ -20,12 +20,12 @@ import 'package:provider/provider.dart';
 
 class V3WebrtcView extends StatefulWidget {
   const V3WebrtcView(
-      {super.key, required this.rtcConnector, required this.index, required this.fullWidth, required this.fullHeight, required this.displaySmartScalingEnabled});
+      {super.key, required this.rtcConnector, required this.index, required this.screenWidth, required this.screenHeight, required this.displaySmartScalingEnabled});
 
   final RTCConnector rtcConnector;
   final int index;
-  final double fullWidth;
-  final double fullHeight;
+  final double screenWidth;
+  final double screenHeight;
   final bool displaySmartScalingEnabled;
 
   @override
@@ -398,8 +398,8 @@ class _V3WebrtcViewState extends State<V3WebrtcView> {
     } else {
       final RenderBox renderBox =
           textureElement!.findRenderObject() as RenderBox;
-      bool isSameDirection = (widget.fullWidth > widget.fullHeight && renderBox.size.width > renderBox.size.height ) || (widget.fullHeight > widget.fullWidth && renderBox.size.height > renderBox.size.width);
-      _textureSize = (widget.displaySmartScalingEnabled && isSameDirection) ? Size(widget.fullWidth, widget.fullHeight) : renderBox.size;
+      bool isSameDirection = (widget.screenWidth > widget.screenHeight && renderBox.size.width > renderBox.size.height ) || (widget.screenHeight > widget.screenWidth && renderBox.size.height > renderBox.size.width);
+      _textureSize = (widget.displaySmartScalingEnabled && isSameDirection) ? Size(widget.screenWidth, widget.screenHeight) : renderBox.size;
       _textureOffset = renderBox.localToGlobal(Offset.zero);
       log.info(
           'texture widget size: (${_textureSize.width.toStringAsFixed(2)}, ${_textureSize.height.toStringAsFixed(2)}), offset: (${_textureOffset.dx.toStringAsFixed(2)}, ${_textureOffset.dy.toStringAsFixed(2)})');

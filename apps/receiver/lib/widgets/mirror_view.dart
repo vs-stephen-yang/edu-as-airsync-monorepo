@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MirrorView extends StatefulWidget {
-  const MirrorView({super.key, required this.mirrorRequest, this.fullWidth = 0.0, this.fullHeight = 0.0, this.displaySmartScalingEnabled = false});
+  const MirrorView({super.key, required this.mirrorRequest, this.screenWidth = 0.0, this.screenHeight = 0.0, this.displaySmartScalingEnabled = false});
 
   final MirrorRequest mirrorRequest;
-  final double fullWidth;
-  final double fullHeight;
+  final double screenWidth;
+  final double screenHeight;
   final bool displaySmartScalingEnabled;
 
   @override
@@ -23,14 +23,13 @@ class MirrorViewState extends State<MirrorView> {
     return Consumer<MirrorStateProvider>(
       builder: (context, mirror, child) {
         double castRatio = widget.mirrorRequest.aspectRatio;
-        if (widget.displaySmartScalingEnabled != false && widget.fullHeight != 0) {
-          double screenRatio = widget.fullWidth / widget.fullHeight;
+        if (widget.displaySmartScalingEnabled && widget.screenHeight != 0) {
+          double screenRatio = widget.screenWidth / widget.screenHeight;
 
           // check video frame and device orientation
           bool isVideoLandscape = widget.mirrorRequest.aspectRatio >= 1.0;
-          bool isDeviceLandscape = (widget.fullWidth > widget.fullHeight);
-          castRatio = widget.mirrorRequest.aspectRatio;
-          if (widget.displaySmartScalingEnabled && isVideoLandscape == isDeviceLandscape) {
+          bool isDeviceLandscape = (widget.screenWidth > widget.screenHeight);
+          if (isVideoLandscape == isDeviceLandscape) {
             castRatio = screenRatio;
           }
         }

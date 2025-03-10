@@ -44,7 +44,7 @@ class _V3StreamingViewState extends ConsumerState {
       _thirdWidth = 0,
       _thirdHeight = 0;
   bool _isNewSharingOnScreen = false;
-  bool _displaySmartScalingEnabled = false;    // get from user setting
+  bool _displaySmartScalingEnabled = true;    // get from user setting
 
   @override
   Widget build(BuildContext context) {
@@ -242,8 +242,8 @@ class _V3StreamingViewState extends ConsumerState {
                                         rtcConnector: HybridConnectionList()
                                             .getConnection<RTCConnector>(index),
                                         index: index,
-                                        fullWidth: _fullWidth,
-                                        fullHeight: _fullHeight,
+                                        screenWidth: _fullWidth,
+                                        screenHeight: _fullHeight,
                                         displaySmartScalingEnabled: smartScalingDecision),
                                   if (HybridConnectionList()
                                       .isMirrorRequest(index))
@@ -251,8 +251,8 @@ class _V3StreamingViewState extends ConsumerState {
                                         mirrorRequest: HybridConnectionList()
                                             .getConnection<MirrorRequest>(
                                                 index),
-                                        fullWidth: _fullWidth,
-                                        fullHeight: _fullHeight,
+                                        screenWidth: _fullWidth,
+                                        screenHeight: _fullHeight,
                                         displaySmartScalingEnabled: smartScalingDecision),
                                   if (HybridConnectionList()
                                       .isPresenting(index: index))
