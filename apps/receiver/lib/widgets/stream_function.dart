@@ -14,7 +14,7 @@ import 'package:display_flutter/screens/settings.dart';
 import 'package:display_flutter/widgets/focus_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
-import 'package:move_to_background/move_to_background.dart';
+// import 'package:move_to_background/move_to_background.dart';
 import 'package:provider/provider.dart';
 
 // SplitScreen, Moderator, Language, WhatsNew,
@@ -131,7 +131,7 @@ class _StreamFunctionStates extends State<StreamFunction> {
                             notFocusSize: AppUIConstant.iconNotFocusSize,
                             rotateY: math.pi,
                             onClick: () {
-                              MoveToBackground.moveTaskToBack();
+                              // MoveToBackground.moveTaskToBack();
                             }),
                         const SizedBox(
                           width: 48,
