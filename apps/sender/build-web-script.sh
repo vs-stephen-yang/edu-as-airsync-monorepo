@@ -9,6 +9,9 @@ TEMPLATE_FILE="web/service-worker-template.js"
 OUTPUT_FILE="${BUILD_DIR}/service-worker.js"
 ENVIRONMENT="dev"  # Default environment
 
+# Default to 'flutter' command if FLUTTER_BIN is not set (for local development)
+FLUTTER_CMD=${FLUTTER_BIN:-"flutter"}
+
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -30,13 +33,13 @@ done
 # Set environment-specific build commands
 case $ENVIRONMENT in
   dev)
-    BUILD_CMD="flutter build web -t ./lib/main_dev.dart --source-maps --pwa-strategy=none"
+    BUILD_CMD="$FLUTTER_CMD build web -t ./lib/main_dev.dart --source-maps --pwa-strategy=none"
     ;;
   stage)
-    BUILD_CMD="flutter build web --release -t ./lib/main_stage.dart --source-maps --pwa-strategy=none"
+    BUILD_CMD="$FLUTTER_CMD build web --release -t ./lib/main_stage.dart --source-maps --pwa-strategy=none"
     ;;
   prod|production)
-    BUILD_CMD="flutter build web --release -t ./lib/main_production.dart --source-maps --pwa-strategy=none"
+    BUILD_CMD="$FLUTTER_CMD build web --release -t ./lib/main_production.dart --source-maps --pwa-strategy=none"
     ENVIRONMENT="production"  # Normalize the name
     ;;
   *)
