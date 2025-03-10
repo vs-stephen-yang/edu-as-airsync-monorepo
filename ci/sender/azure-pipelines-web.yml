@@ -17,8 +17,8 @@ variables:
     value: "macos"
   - name: PUB_CACHE
     value: $(Pipeline.Workspace)/.pub-cache
-  - name: BuildScript
-    value: "$(Build.SourcesDirectory)/build-web-script.sh"
+  - name: Dart.Bin
+    value: $(Pipeline.Workspace)/flutter/flutter/bin/dart
 
 jobs:
   - job: Build
@@ -26,13 +26,13 @@ jobs:
       matrix:
         dev:
           flavor: 'dev'
-          envName: 'dev'
-        stage:
-          flavor: 'stage'
-          envName: 'stage'
-        prod:
-          flavor: 'prod'
-          envName: 'production'
+          buildOptions: '-t ./lib/main_dev.dart --source-maps --pwa-strategy=none'
+#        stage:
+#          flavor: 'stage'
+#          buildOptions: '--release -t ./lib/main_stage.dart --source-maps --pwa-strategy=none'
+#        prod:
+#          flavor: 'prod'
+#          buildOptions: '--release -t ./lib/main_production.dart --source-maps --pwa-strategy=none'
 
     pool:
       vmImage: macOS-latest
@@ -79,15 +79,20 @@ jobs:
         displayName: Run lint checks
         workingDirectory: "$(Build.SourcesDirectory)"
 
-      # Make the build script executable
-      - script: chmod +x $(BuildScript)
-        displayName: Make build script executable
-        workingDirectory: "$(Build.SourcesDirectory)"
+      # Verify Dart
+      - script: |
+          echo "Flutter bin location: $(Flutter.Bin)"
+          echo "Dart bin location: $(Dart.Bin)"
+          $(Dart.Bin) --version
+        displayName: Verify Dart installation
 
-      # Build using custom script
-      - script: FLUTTER_BIN="$(Flutter.Bin)" $(BuildScript) --env=$(envName)
-        displayName: Build web app with custom service worker
-        workingDirectory: "$(Build.SourcesDirectory)"
+      # Build
+      - script: $(Flutter.Bin) build web $(buildOptions)
+        displayName: Build
+
+      # Overwrite service-worker RESOURCES
+      - script: $(Dart.Bin) $(Build.SourcesDirectory)/web/generate_assets.dart
+        displayName: Generate resources list
 
       # Prepare to publish
       - task: CopyFiles@2
