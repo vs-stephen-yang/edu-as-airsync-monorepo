@@ -17,6 +17,8 @@ variables:
     value: "macos"
   - name: PUB_CACHE
     value: $(Pipeline.Workspace)/.pub-cache
+  - name: BuildScript
+    value: "$(Build.SourcesDirectory)/build-web-script.sh"
 
 jobs:
   - job: Build
@@ -24,13 +26,13 @@ jobs:
       matrix:
         dev:
           flavor: 'dev'
-          buildOptions: '-t ./lib/main_dev.dart --source-maps --pwa-strategy=none'
+          envName: 'dev'
         stage:
           flavor: 'stage'
-          buildOptions: '--release -t ./lib/main_stage.dart --source-maps --pwa-strategy=none'
+          envName: 'stage'
         prod:
           flavor: 'prod'
-          buildOptions: '--release -t ./lib/main_production.dart --source-maps --pwa-strategy=none'
+          envName: 'production'
 
     pool:
       vmImage: macOS-latest
@@ -77,9 +79,15 @@ jobs:
         displayName: Run lint checks
         workingDirectory: "$(Build.SourcesDirectory)"
 
-      # Build
-      - script: $(Flutter.Bin) build web $(buildOptions)
-        displayName: Build
+      # Make the build script executable
+      - script: chmod +x $(BuildScript)
+        displayName: Make build script executable
+        workingDirectory: "$(Build.SourcesDirectory)"
+
+      # Build using custom script
+      - script: $(BuildScript) --env=$(envName)
+        displayName: Build web app with custom service worker
+        workingDirectory: "$(Build.SourcesDirectory)"
 
       # Prepare to publish
       - task: CopyFiles@2
