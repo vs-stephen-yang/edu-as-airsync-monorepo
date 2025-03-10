@@ -23,10 +23,7 @@ class WebRTCHelper {
 
   WebRTCConnector? webRTCConnector;
   List<RtcIceServer>? iceServerList;
-  bool _isMainScreen = false;
   bool _isScreenType = false;
-  final String _macMainScreenOrder = '1';
-  final String _windowsMainScreenOrder = '0';
 
   ValueNotifier<ChannelReconnectState> reconnectStateNotifier =
       ValueNotifier<ChannelReconnectState>(ChannelReconnectState.idle);
@@ -67,22 +64,11 @@ class WebRTCHelper {
     if (kIsWeb) {
       // In web environment, if do not enter this case first, an error will occur immediately if enter other platforms case.
     } else if (Platform.isAndroid) {
-      _isMainScreen = true;
     } else if (Platform.isIOS) {
       deviceId = 'broadcast';
-      _isMainScreen = true;
     } else if (WebRTC.platformIsDesktop) {
       deviceId = {'exact': selectedSource.id};
       _isScreenType = (selectedSource.type == SourceType.Screen);
-      RegExp regExp = RegExp(r'\d+');
-      final onScreenExtension = webRTCConnector?.autoVirtualDisplay ?? false;
-      _isMainScreen = _isScreenType &&
-          (Platform.isMacOS
-              ? ((regExp.firstMatch(selectedSource.name)?.group(0)) ?? '') ==
-                  _macMainScreenOrder
-              : selectedSource.id == _windowsMainScreenOrder &&
-                  !onScreenExtension);
-
       DesktopCapturerSource s = selectedSource;
       webRTCConnector?.subscriptions
           .add(s.onCaptureError.stream.listen((event) async {
@@ -140,7 +126,7 @@ class WebRTCHelper {
 
   bool showTouchBack() {
     return (WebRTC.platformIsWindows || WebRTC.platformIsMacOS) &&
-        (_isMainScreen);
+        (_isScreenType);
   }
 
   setReconnectState(ChannelReconnectState state) {
