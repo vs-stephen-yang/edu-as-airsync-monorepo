@@ -51,7 +51,6 @@ dependencies:
   share_plus: ^9.0.0
   path_provider: ^2.1.4
   flutter_multi_formatter: ^2.13.0
-  socket_io_client: ^1.0.2
   logging: ^1.2.0
   http: ^1.2.2
   events2: ^1.0.0
@@ -92,6 +91,8 @@ dependencies:
   sdp_transform: ^0.3.2
   windows_single_instance: ^1.0.1
   auto_updater: ^0.2.0
+  qr_flutter: ^4.1.0
+  flutter_launcher_icons: ^0.14.1
 
   # ViewSonic plug-in
   flutter_webrtc:
@@ -114,7 +115,6 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-desktop-screenstate
       ref: release-0.0.5-1
-  qr_flutter: ^4.1.0
   flutter_virtual_display:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-virtual-display
@@ -124,7 +124,6 @@ dependencies:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/mixin-network-flutter-plugins
       path: packages/desktop_multi_window
       ref: release-0.20-3
-  flutter_launcher_icons: ^0.14.1
   # ViewSonic plug-in
 
 dependency_overrides:
