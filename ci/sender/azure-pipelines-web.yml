@@ -85,7 +85,7 @@ jobs:
         workingDirectory: "$(Build.SourcesDirectory)"
 
       # Build using custom script
-      - script: $(BuildScript) --env=$(envName)
+      - script: FLUTTER_BIN="$(Flutter.Bin)" $(BuildScript) --env=$(envName)
         displayName: Build web app with custom service worker
         workingDirectory: "$(Build.SourcesDirectory)"
 
