@@ -56,5 +56,11 @@ followed by an optional build number separated by a +.
 # Deployment
 
 ## Build WEB PWA on local
-Run the build script to build PWA support offline
-` ./build-web-script.sh --env dev`
+Run the build script to build PWA supports offline
+```
+flutter build web --target=lib/main_dev.dart --pwa-strategy=none
+
+dart web/generate_assets.dart
+```
+
+
