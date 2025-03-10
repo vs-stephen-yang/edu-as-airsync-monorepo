@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.6.1+306003
+version: 3.7.0+307001
 
 environment:
   sdk: '>=3.1.2 <4.0.0'
@@ -91,7 +91,7 @@ dependencies:
   device_info_vs:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS
-      ref: 1.1.2
+      ref: 1.1.5
   flutter_webrtc:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-webrtc
@@ -99,7 +99,11 @@ dependencies:
   display_channel:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel
-      ref: release-3.5.10
+      ref: release-3.7.0
+  flutter_golang_server:
+    git:
+      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-golang-server
+      ref: release-3.6.1
   ion_sdk_flutter:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/ion-sdk-flutter
@@ -108,10 +112,6 @@ dependencies:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection
       ref: release-0.7.0
-  flutter_ion_sfu:
-    git:
-      url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-ion-sfu
-      ref: release-3.5.1
   flutter_mirror:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-mirror

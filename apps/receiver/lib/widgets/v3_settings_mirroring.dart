@@ -130,8 +130,9 @@ class V3SettingsMirroring extends StatelessWidget {
                       );
                     }),
                 Gap(context.tokens.spacing.vsdslSpacingSm.bottom),
-                MirroringItem(
-                    isDisable: disable,
+                if (mirrorStateProvider.miracastSupport)
+                  MirroringItem(
+                      isDisable: disable,
                     name: S.of(context).v3_shortcuts_miracast,
                     mirrorEnabled: mirrorStateProvider.miracastEnabled,
                     callback: () {

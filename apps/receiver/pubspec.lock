@@ -211,6 +211,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  cron:
+    dependency: transitive
+    description:
+      name: cron
+      sha256: e1b379dec3d7967c8e521a92832a6ac97a11ea4046cbc3e584193a470e3ad8f5
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.1"
   crypto:
     dependency: "direct main"
     description:
@@ -280,11 +288,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "1.1.2"
-      resolved-ref: "11fa383bd86394f9e305fe0af5f69be1db021c75"
+      ref: "1.1.5"
+      resolved-ref: "992d9dcf42d6696df7060c29ee46f68f74b030a6"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/Device_Info_VS"
     source: git
-    version: "1.1.1"
+    version: "1.1.5"
   dio:
     dependency: transitive
     description:
@@ -297,8 +305,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-3.5.10"
-      resolved-ref: "5c505dcc461fdf7d82f4bff3cf94dff52b4e11b1"
+      ref: "release-3.7.0"
+      resolved-ref: "0274d64e3b1d45ac8b01476a66a728aee486b7a0"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel"
     source: git
     version: "0.0.1"
@@ -410,6 +418,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.1.6"
+  flutter_golang_server:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: "release-3.6.1"
+      resolved-ref: ef194acea4fb23027da2bc0cf2181feef5652faa
+      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-golang-server"
+    source: git
+    version: "0.0.1"
   flutter_input_injection:
     dependency: "direct main"
     description:
@@ -417,15 +434,6 @@ packages:
       ref: "release-0.7.0"
       resolved-ref: "352082cc30e4c30fe1eef949ece520d8485ab0e8"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-input-injection"
-    source: git
-    version: "0.0.1"
-  flutter_ion_sfu:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: "release-3.5.1"
-      resolved-ref: dd96e3bb13bfc025b7e04d4bee61864c340acfd4
-      url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-ion-sfu"
     source: git
     version: "0.0.1"
   flutter_launcher_icons:

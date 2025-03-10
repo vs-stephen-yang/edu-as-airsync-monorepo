@@ -92,10 +92,13 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                         _startAutoCollapseTimer();
                         if (HybridConnectionList()
                             .isMirrorRequest(widget.index)) {
-                          var connection = HybridConnectionList()
+                          var mirrorConnection = HybridConnectionList()
                               .getConnection<MirrorRequest>(widget.index);
-                          if (connection.mirrorState == MirrorState.mirroring) {
+                          if (mirrorConnection.mirrorState ==
+                              MirrorState.mirroring) {
                             _updateSizeForSelected(widget.index);
+                            mirrorConnection
+                                .trackSessionEvent('click_screen_size');
                             return;
                           }
                         }
@@ -185,7 +188,8 @@ class _V3StreamingFunctionState extends State<V3StreamingFunction> {
                                   Provider.of<MirrorStateProvider>(context,
                                       listen: false);
                               mirrorStateProvider.setModeratorIdleMirrorId(
-                                  connection.mirrorId);
+                                  connection.mirrorId,
+                                  stopCastEvent: true);
                             } else {
                               HybridConnectionList()
                                   .stopPresenterBy(widget.index);

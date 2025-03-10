@@ -18,10 +18,13 @@ enum TunnelStatus {
 
 class ChannelServer {
   DisplayDirectServer? _directServer;
+  WebTransportDirectServer? _webTransportDirectServer;
   DisplayTunnelServer? _tunnelServer;
 
   bool _tunnelEnabled = false;
   bool _directEnabled = false;
+
+  final int webTransportServerPort;
 
   final int tunnelMaxRetry;
   final Duration tunnelRetryInterval;
@@ -79,6 +82,7 @@ class ChannelServer {
     required this.onDisplayCodeChange,
     required this.baseApiUrl,
     required this.instanceId,
+    required this.webTransportServerPort,
     this.tunnelMaxRetry = 30,
     this.tunnelRetryInterval = const Duration(minutes: 2),
   });
@@ -104,11 +108,34 @@ class ChannelServer {
         (ConnectionRequest connectionRequest) =>
             verifyConnectRequest(connectionRequest, isDirectConnect: true),
       );
+      _webTransportDirectServer = WebTransportDirectServer(
+        getWebTransportCert,
+        reconnectTimeout: channelReconnectTimeoutInStreaming,
+        onNewDirectChannel,
+        (ConnectionRequest connectionRequest) =>
+            verifyConnectRequest(connectionRequest, isDirectConnect: true),
+      );
+
       await _directServer?.start(
         DisplayServiceBroadcast.instance.directChannelPort,
         securityContext: securityContext,
       );
       log.info('Direct channel server has started');
+
+      try {
+        WebTransportCertificate? webTransportCertificate = await getWebTransportCert();
+        if (webTransportCertificate == null) {
+          return;
+        }
+        await _webTransportDirectServer?.start(
+            webTransportServerPort,
+            certPem: webTransportCertificate.certPem,
+            keyPem: webTransportCertificate.keyPem
+        );
+        log.info('WebTransport channel server has started');
+      } catch (e) {
+        log.warning('Failed to start webTransport server: $e');
+      }
     } on Exception catch (e) {
       log.severe('Failed to start direct channel server', e);
     }
@@ -119,6 +146,12 @@ class ChannelServer {
       log.info('Stopping direct channel server');
       _directServer?.stop();
       _directServer = null;
+    }
+
+    if (_webTransportDirectServer != null) {
+      log.info('Stopping webTransport server');
+      _webTransportDirectServer?.stop();
+      _webTransportDirectServer = null;
     }
   }
 

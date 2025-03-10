@@ -1,3 +1,4 @@
+import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
 import 'package:flutter_mirror/flutter_mirror.dart';
 import 'package:flutter_mirror/mirror_type.dart';
@@ -28,5 +29,14 @@ class MirrorRequest {
 
   void stopMirror() {
     _flutterMirrorPlugin?.stopMirror(mirrorId);
+  }
+
+  trackSessionEvent(String name) {
+    trackEvent(
+      name,
+      EventCategory.session,
+      mode: mirrorType.name.replaceAll('googlecast', 'google_cast'),
+      participatorId: mirrorId,
+    );
   }
 }
