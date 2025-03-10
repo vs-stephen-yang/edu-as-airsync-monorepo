@@ -122,16 +122,22 @@ self.addEventListener('message', (event) => {
 // and populate them.
 async function downloadOffline() {
   const contentCache = await caches.open(CACHE_NAME);
-  const resourcesToCache = RESOURCES.map((path) => new Request(path, { cache: "reload" }));
 
-  for (const resource of resourcesToCache) {
+  for (const path of RESOURCES) {
     try {
-      const request = new Request(resource, { cache: "reload" });
+      // Check if the resource is already in the cache
+      const existingResponse = await contentCache.match(path);
+      if (existingResponse) {
+        continue; // Skip this resource if it's already cached
+      }
+
+      // Fetch and cache the resource if it's not already cached
+      const request = new Request(path, { cache: "reload" });
       const response = await fetch(request);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       await contentCache.put(request, response.clone());
     } catch (error) {
-      console.error(`[Service Worker] Failed to cache ${resource}:`, error);
+      console.error(`[Service Worker] Failed to cache ${path}:`, error);
     }
   }
 }
