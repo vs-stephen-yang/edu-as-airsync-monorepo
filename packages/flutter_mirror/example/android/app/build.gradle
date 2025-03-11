@@ -1,7 +1,8 @@
 plugins {
-  id 'com.android.application'
-  id 'kotlin-android'
-  id 'org.jetbrains.kotlin.android' // Ensures Kotlin integration
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
 }
 
 def localProperties = new Properties()
@@ -27,43 +28,31 @@ if (keystorePropertiesFile.exists()) {
     keystoreExist = keystoreProperties.getProperty("storeFile") != null
 }
 
-def flutterRoot = localProperties.getProperty('flutter.sdk')
-if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
-}
-
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
-}
-
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-
 android {
-    compileSdkVersion flutter.compileSdkVersion
-    // ndkVersion flutter.ndkVersion
-    ndkVersion '23.2.8568313'
+    namespace = "com.viewsonic.flutter_mirror_example"
+    compileSdk = flutter.compileSdkVersion
+    // ndkVersion = flutter.ndkVersion
+    ndkVersion = '23.2.8568313'
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
     }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.viewsonic.flutter_mirror_example"
+        applicationId = "com.viewsonic.flutter_mirror_example"
         // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion 21
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
-  }
+        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        minSdk = 24
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
 
   if (keystoreExist) {
       signingConfigs {
@@ -77,10 +66,10 @@ android {
 
       buildTypes {
         debug {
-          signingConfig signingConfigs.ifp
+          signingConfig = signingConfigs.ifp
         }
         release {
-          signingConfig signingConfigs.ifp
+          signingConfig = signingConfigs.ifp
         }
       }
     } else {
@@ -88,14 +77,14 @@ android {
         // ERROR:D8: com.android.tools.r8.kotlin.H
         // see https://github.com/flutter/flutter/issues/159610
         release {
-          signingConfig signingConfigs.debug
-          minifyEnabled true
+          signingConfig = signingConfigs.debug
+          minifyEnabled = true
         }
         profile {
-          minifyEnabled true
+          minifyEnabled = true
         }
         debug {
-          minifyEnabled true
+          minifyEnabled = true
         }
       }
     }
@@ -108,5 +97,5 @@ android {
 }
 
 flutter {
-    source '../..'
+    source = "../.."
 }

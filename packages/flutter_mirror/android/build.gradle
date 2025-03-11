@@ -1,5 +1,5 @@
-group 'com.viewsonic.flutter_mirror'
-version '1.0'
+group = "com.viewsonic.flutter_mirror"
+version = "1.0"
 
 buildscript {
     repositories {
@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath("com.android.tools.build:gradle:8.1.0")
     }
 }
 
@@ -30,19 +30,21 @@ rootProject.allprojects {
     }
 }
 
-apply plugin: 'com.android.library'
+apply plugin: "com.android.library"
 
 android {
-    compileSdkVersion 33
+    namespace = "com.viewsonic.flutter_mirror"
+
+    compileSdk = 35
     ndkVersion '23.2.8568313'
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     defaultConfig {
-        minSdkVersion 21
+        minSdk 24
         externalNativeBuild {
             cmake {
                 abiFilters "armeabi-v7a", "arm64-v8a", "x86_64"
