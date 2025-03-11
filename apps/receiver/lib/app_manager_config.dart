@@ -28,6 +28,8 @@ class AppManagerConfig {
 
   Timer? _appPreferenceUpdateTimer;
 
+  bool _isSettingsLockUpdate = false;
+  bool _isSettingsPasswordUpdate = false;
   bool _isDeviceSettingLockUpdate = false;
   bool _isDeviceNameUpdate = false;
   bool _isLanguageUpdate = false;
@@ -48,6 +50,9 @@ class AppManagerConfig {
 
   _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    _isSettingsLockUpdate = prefs.getBool('mgr_updateSettingsLock') ?? false;
+    _isSettingsPasswordUpdate =
+        prefs.getBool('mgr_updateSettingsPassword') ?? false;
     _isDeviceSettingLockUpdate =
         prefs.getBool('mgr_updateDeviceSettingLock') ?? false;
     _isDeviceNameUpdate = prefs.getBool('mgr_updateDeviceName') ?? false;
@@ -84,10 +89,14 @@ class AppManagerConfig {
       log('handle manager update -> context mounted: ${context.mounted}');
 
       if (context.mounted &&
-          (_isDeviceSettingLockUpdate ||
+          (_isSettingsLockUpdate ||
+              _isSettingsPasswordUpdate ||
+              _isDeviceSettingLockUpdate ||
               _isBroadcastLockUpdate ||
               _isMirroringLockUpdate ||
               _isConnectivityLockUpdate)) {
+        _isSettingsLockUpdate = false;
+        _isSettingsPasswordUpdate = false;
         _isDeviceSettingLockUpdate = false;
         _isBroadcastLockUpdate = false;
         _isMirroringLockUpdate = false;
@@ -99,6 +108,8 @@ class AppManagerConfig {
         await settingsProvider.reloadPreferences();
 
         // clear manager update request
+        await prefs.setBool('mgr_updateSettingsLock', false);
+        await prefs.setBool('mgr_updateSettingsPassword', false);
         await prefs.setBool('mgr_updateDeviceSettingLock', false);
         await prefs.setBool('mgr_UpdateBroadcastLock', false);
         await prefs.setBool('mgr_UpdateMirroringLock', false);
