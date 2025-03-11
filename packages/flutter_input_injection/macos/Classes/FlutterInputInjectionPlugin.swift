@@ -2,6 +2,9 @@ import Cocoa
 import CoreGraphics
 import FlutterMacOS
 
+let VIEWSONIC_VID: UInt16 = 0x0543
+let VIEWSONIC_PID: UInt16 = 0x1234
+
 public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
   private var lastMouseDownEvent: (action: Int, id: Int, x: Int, y: Int, timestamp: TimeInterval)? =
     nil
@@ -32,10 +35,37 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
         result(false)
         return
       }
-
-      processEvent((action: action, id: id, x: x, y: y))
+      
+      processTouchEvent((action: action, id: id, x: x, y: y))
       result(true)
+      
+    case "sendNormalizedTouch":
+      guard let arguments = call.arguments as? [String: Any] else {
+        result(false)
+        return
+      }
 
+      guard let action = arguments["action"] as? Int,
+        let id = arguments["id"] as? Int,
+        let normalizedX = arguments["x"] as? Double,
+        let normalizedY = arguments["y"] as? Double,
+        let screenId = arguments["screenId"] as? Int,
+        let autoVirtualDisplay = arguments["autoVirtualDisplay"] as? Bool
+      else {
+        result(false)
+        return
+      }
+
+      processNormalizedTouchEvent(
+        (action: action,
+         id: id,
+         x: normalizedX,
+         y: normalizedY,
+         screenId: screenId,
+         autoVirtualDisplay: autoVirtualDisplay))
+      
+      result(true)
+      
     case "getPlatformVersion":
       result("macOS " + ProcessInfo.processInfo.operatingSystemVersionString)
 
@@ -44,7 +74,7 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
     }
   }
 
-  private func processEvent(_ event: (action: Int, id: Int, x: Int, y: Int)) {
+  private func processTouchEvent(_ event: (action: Int, id: Int, x: Int, y: Int)) {
     switch event.action {
     case 0:  // touch down
       handleMouseDown(event)  // convert touch down to mouse down
@@ -61,6 +91,63 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
     default:
       break
     }
+  }
+  
+  private func findVirtualScreen() -> NSScreen? {
+    let screens = NSScreen.screens
+    for screen in screens {
+      let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? Int
+      if screenNumber != nil {
+        let vendorId = CGDisplayVendorNumber(CGDirectDisplayID(screenNumber!))
+        let productId = CGDisplayModelNumber(CGDirectDisplayID(screenNumber!))
+        if vendorId == VIEWSONIC_VID && productId == VIEWSONIC_PID {
+          return screen
+        }
+      }
+    }
+    return nil
+  }
+  
+  private func findScreenBySceenNumber(_ screenNumber: Int) -> NSScreen? {
+    let screens = NSScreen.screens
+    for screen in screens {
+      if screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? Int == screenNumber {
+        return screen
+      }
+    }
+    return nil
+  }
+  
+  private func processNormalizedTouchEvent(_ event: (
+    action: Int, id: Int, x: Double, y: Double, screenId: Int, autoVirtualDisplay: Bool)) {
+
+    var screen: NSScreen? = nil
+    if event.autoVirtualDisplay {
+      screen = findVirtualScreen()
+      if screen == nil {
+        screen = NSScreen.screens[0]
+      }
+    } else {
+      screen = findScreenBySceenNumber(event.screenId)
+    }
+    if screen == nil {
+      return
+    }
+      
+    let frame = screen!.frame
+    let actualX = frame.minX + CGFloat(event.x) * frame.width
+      
+    // Compute flippedY to match macOS coordinate system
+    // In macOS, the origin (0,0) is at the bottom-left, while normalizedY ranges from [0,1],
+    // where 1.0 represents the top of the screen.
+    // To convert normalizedY to the actual macOS coordinate, we need to flip the Y-axis.
+    //
+    // normalizedY follows a top-down system where 1.0 is at the top and 0.0 is at the bottom.
+    // However, macOS uses a bottom-up system where (0,0) is at the bottom-left.
+    // Therefore, we use (1.0 - normalizedY) to invert the Y coordinate before scaling it.
+    let flippedY = NSScreen.screens[0].frame.maxY - (frame.minY + (1.0 - CGFloat(event.y)) * frame.height)
+
+    processTouchEvent((action: event.action, id: event.id, x: Int(actualX), y: Int(flippedY)))
   }
 
   private func handleMouseDown(_ event: (action: Int, id: Int, x: Int, y: Int)) {
