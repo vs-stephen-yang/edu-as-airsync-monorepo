@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:display_flutter/app_colors.dart';
+import 'package:display_flutter/model/connect_timer.dart';
 import 'package:display_flutter/settings/app_config.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log_upload.dart';
@@ -297,6 +300,7 @@ class _DebugSwitchState extends State<DebugSwitch> {
                           value: _verboseWebRtcLog,
                           onChanged: (value) => _changeWebRtcLogVerbose(value),
                         ),
+                        const _CastingTimeAdjuster(),
                         Center(
                           child: ElevatedButton(
                             onPressed: () {
@@ -321,6 +325,106 @@ class _DebugSwitchState extends State<DebugSwitch> {
                   },
                 ),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CastingTimeAdjuster extends StatefulWidget {
+  const _CastingTimeAdjuster();
+
+  @override
+  State<_CastingTimeAdjuster> createState() => _CastingTimeAdjusterState();
+}
+
+class _CastingTimeAdjusterState extends State<_CastingTimeAdjuster> {
+  late int currentMinutes;
+  Timer? _timer;
+  static const int stepMinutes = 5;
+  static const int minMinutes = 10;
+  static const int maxMinutes = 180;
+
+  @override
+  void initState() {
+    super.initState();
+    currentMinutes = ConnectionTimer.threeHourTimeLimitSec ~/ 60;
+  }
+
+  void _updateConnectionTimer() {
+    ConnectionTimer.threeHourTimeLimitSec = currentMinutes * 60;
+  }
+
+  void _increment() {
+    setState(() {
+      if (currentMinutes + stepMinutes <= maxMinutes) {
+        currentMinutes += stepMinutes;
+        _updateConnectionTimer();
+      }
+    });
+  }
+
+  void _decrement() {
+    setState(() {
+      if (currentMinutes - stepMinutes >= minMinutes) {
+        currentMinutes -= stepMinutes;
+        _updateConnectionTimer();
+      }
+    });
+  }
+
+  void _startTimer(VoidCallback action) {
+    action();
+    _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      action();
+    });
+  }
+
+  void _stopTimer() {
+    _timer?.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text('Casting Time Limit'),
+          const Spacer(),
+          GestureDetector(
+            onTap: _decrement,
+            onLongPressStart: (_) => _startTimer(_decrement),
+            onLongPressEnd: (_) => _stopTimer(),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.remove, size: 15),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Text(
+              '${(currentMinutes ~/ 60).toString().padLeft(1, '0')} h '
+              '${(currentMinutes % 60).toString().padLeft(2, '0')} m',
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+          ),
+          GestureDetector(
+            onTap: _increment,
+            onLongPressStart: (_) => _startTimer(_increment),
+            onLongPressEnd: (_) => _stopTimer(),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.add, size: 15),
             ),
           ),
         ],

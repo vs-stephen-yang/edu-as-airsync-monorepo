@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 typedef TimeOutCallback = void Function();
 
 class ConnectionTimer {
-  static const threeHourTimeLimitSec = 10800;
+  static int threeHourTimeLimitSec = 10800;
   static const hintStartTimeSec = 300;
 
   static const maxExtendTime = 2;
