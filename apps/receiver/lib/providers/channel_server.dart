@@ -74,6 +74,8 @@ class ChannelServer {
   // Callback for display code change
   final Function() onDisplayCodeChange;
 
+  final Function(int port, bool success, String? error) reportPortBindResult;
+
   ChannelServer({
     required this.onNewDirectChannel,
     required this.onNewTunnelChannel,
@@ -83,6 +85,7 @@ class ChannelServer {
     required this.baseApiUrl,
     required this.instanceId,
     required this.webTransportServerPort,
+    required this.reportPortBindResult,
     this.tunnelMaxRetry = 30,
     this.tunnelRetryInterval = const Duration(minutes: 2),
   });
@@ -120,23 +123,28 @@ class ChannelServer {
         DisplayServiceBroadcast.instance.directChannelPort,
         securityContext: securityContext,
       );
+      reportPortBindResult(
+          DisplayServiceBroadcast.instance.directChannelPort, true, null);
       log.info('Direct channel server has started');
 
       try {
-        WebTransportCertificate? webTransportCertificate = await getWebTransportCert();
+        WebTransportCertificate? webTransportCertificate =
+            await getWebTransportCert();
         if (webTransportCertificate == null) {
           return;
         }
-        await _webTransportDirectServer?.start(
-            webTransportServerPort,
+        await _webTransportDirectServer?.start(webTransportServerPort,
             certPem: webTransportCertificate.certPem,
-            keyPem: webTransportCertificate.keyPem
-        );
+            keyPem: webTransportCertificate.keyPem);
+        reportPortBindResult(webTransportServerPort, true, null);
         log.info('WebTransport channel server has started');
       } catch (e) {
+        reportPortBindResult(webTransportServerPort, false, e.toString());
         log.warning('Failed to start webTransport server: $e');
       }
     } on Exception catch (e) {
+      reportPortBindResult(DisplayServiceBroadcast.instance.directChannelPort,
+          false, e.toString());
       log.severe('Failed to start direct channel server', e);
     }
   }

@@ -18,6 +18,7 @@ import 'package:display_flutter/model/display_group_session.dart';
 import 'package:display_flutter/model/display_group_video_view.dart';
 import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
+import 'package:display_flutter/model/network_diagnostic.dart';
 import 'package:display_flutter/model/remote_screen_connector.dart';
 import 'package:display_flutter/model/remote_screen_server.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
@@ -176,6 +177,8 @@ class ChannelProvider extends ChangeNotifier {
 
   late ChannelServer _channelServer;
 
+  final NetworkDiagnostic _networkDiagnostic = NetworkDiagnostic();
+
   set isAuthorizeMode(bool value) {
     _isAuthorizeMode = value;
     _save();
@@ -228,6 +231,7 @@ class ChannelProvider extends ChangeNotifier {
       baseApiUrl: appConfig.settings.baseApiUrl,
       instanceId: AppInstanceCreate().displayInstanceID,
       webTransportServerPort: appConfig.webTransportServerPort,
+      reportPortBindResult: _networkDiagnostic.importPortTestResult,
     );
 
     _load().then((_) {
