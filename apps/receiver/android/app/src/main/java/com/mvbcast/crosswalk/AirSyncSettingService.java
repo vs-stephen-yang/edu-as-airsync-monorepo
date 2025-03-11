@@ -42,6 +42,17 @@ public class AirSyncSettingService extends Service {
             SharedPreferences.Editor androidEditor = androidPref.edit();
 
             switch (key) {
+                case IAirSyncSettingService.KEY_SETTINGS_LOCK:
+                    flutterEditor.putBoolean("flutter.app_isSettingsLock",
+                            value.equals(VAL_SETTINGS_LOCK)).commit();
+
+                    flutterEditor.putBoolean("flutter.mgr_updateSettingsLock", true).commit();
+                    break;
+                case IAirSyncSettingService.KEY_SETTINGS_PASSWORD:
+                    flutterEditor.putString("flutter.app_SettingsPassword", value).commit();
+
+                    flutterEditor.putBoolean("flutter.mgr_updateSettingsPassword", true).commit();
+                    break;
                 case IAirSyncSettingService.KEY_DEVICE_SETTING_LOCK:
                     flutterEditor.putBoolean("flutter.app_isDeviceSettingLock",
                             value.equals(VAL_DEVICE_SETTING_LOCK)).commit();
@@ -200,6 +211,14 @@ public class AirSyncSettingService extends Service {
             String value = "";
 
             switch (key) {
+                case IAirSyncSettingService.KEY_SETTINGS_LOCK:
+                    value = flutterPref.getBoolean("flutter.app_isSettingsLock",
+                            false) ? VAL_SETTINGS_LOCK : VAL_SETTINGS_UNLOCK;
+                    break;
+                case IAirSyncSettingService.KEY_SETTINGS_PASSWORD:
+                    value = flutterPref.getString("flutter.app_SettingsPassword",
+                            "1234");
+                    break;
                 case IAirSyncSettingService.KEY_DEVICE_SETTING_LOCK:
                     value = flutterPref.getBoolean("flutter.app_isDeviceSettingLock",
                             false) ? VAL_DEVICE_SETTING_LOCK : VAL_DEVICE_SETTING_UNLOCK;

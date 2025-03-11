@@ -1,8 +1,19 @@
 package com.mvbcast.crosswalk;
 
 interface IAirSyncSettingService {
-    const String AIRSYNC_SETTING_SERVICE_VERSION = "1.0.0";
+    const String AIRSYNC_SETTING_SERVICE_VERSION = "1.1.0";
 
+    // V1.1.0 start
+    // region settings
+    const String KEY_SETTINGS_LOCK = "key_settings_lock";
+    const String VAL_SETTINGS_LOCK = "val_settings_lock";
+    const String VAL_SETTINGS_UNLOCK = "val_settings_unlock";
+
+    const String KEY_SETTINGS_PASSWORD = "key_settings_password";
+    const String VAL_SETTINGS_PASSWORD = "";
+    // endregion
+
+    // V1.0.0 start
     // region device setting
     const String KEY_DEVICE_SETTING_LOCK = "key_device_setting_lock";
     const String VAL_DEVICE_SETTING_LOCK = "val_device_setting_lock";

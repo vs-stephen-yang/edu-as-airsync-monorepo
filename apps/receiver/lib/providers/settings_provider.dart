@@ -42,14 +42,31 @@ class SettingsProvider with ChangeNotifier {
 
   Package? get license => _license;
 
+  static const defaultSettingsLock = false;
   static const defaultDeviceSettingLock = false;
   static const defaultBroadcastLock = false;
   static const defaultMirroringLock = false;
   static const defaultConnectivityLock = false;
+  bool _isSettingsLock = defaultSettingsLock;
+  String _settingsPassword = '';
   bool _isDeviceSettingLock = defaultDeviceSettingLock;
   bool _isBroadcastLock = defaultBroadcastLock;
   bool _isMirroringLock = defaultMirroringLock;
   bool _isConnectivityLock = defaultConnectivityLock;
+
+  bool get isSettingsLock => _isSettingsLock;
+
+  set isSettingsLock(bool value) {
+    _isSettingsLock = value;
+    _save();
+  }
+
+  String get settingsPassword => _settingsPassword;
+
+  set settingsPassword(String value) {
+    _settingsPassword = value;
+    _save();
+  }
 
   bool get isDeviceSettingLock => _isDeviceSettingLock;
 
@@ -81,6 +98,8 @@ class SettingsProvider with ChangeNotifier {
 
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('app_isSettingsLock', _isSettingsLock);
+    await prefs.setString('app_SettingsPassword', _settingsPassword);
     await prefs.setBool('app_isDeviceSettingLock', _isDeviceSettingLock);
     await prefs.setBool('app_isBroadcastLock', _isBroadcastLock);
     await prefs.setBool('app_isMirroringLock', _isMirroringLock);
@@ -89,6 +108,9 @@ class SettingsProvider with ChangeNotifier {
 
   _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    _isSettingsLock =
+        prefs.getBool('app_isSettingsLock') ?? defaultSettingsLock;
+    _settingsPassword = prefs.getString('app_SettingsPassword') ?? '';
     _isDeviceSettingLock =
         prefs.getBool('app_isDeviceSettingLock') ?? defaultDeviceSettingLock;
     _isBroadcastLock =
