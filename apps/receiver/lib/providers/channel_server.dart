@@ -2,6 +2,7 @@ import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/api/http_request.dart';
 import 'package:display_flutter/api/instance_api.dart';
 import 'package:display_flutter/app_analytics.dart';
+import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/cancelable_task.dart';
@@ -153,6 +154,8 @@ class ChannelServer {
           certPem: webTransportCertificate.certPem,
           keyPem: webTransportCertificate.keyPem);
       reportPortBindResult(webTransportServerPort, true, null);
+
+      CurrentChannelType.addDirect();
       log.info('WebTransport channel server has started');
     } catch (e) {
       reportPortBindResult(webTransportServerPort, false, e.toString());
@@ -165,6 +168,7 @@ class ChannelServer {
       log.info('Stopping direct channel server');
       _directServer?.stop();
       _directServer = null;
+      CurrentChannelType.removeDirect();
     }
 
     if (_webTransportDirectServer != null) {
@@ -310,6 +314,12 @@ class ChannelServer {
 
   void _changeTunnelStatus(TunnelStatus status) {
     if (_tunnelStatus != status) {
+      if (status == TunnelStatus.connected) {
+        CurrentChannelType.addTunnel();
+      } else if (status == TunnelStatus.disabled ||
+          status == TunnelStatus.unavailable) {
+        CurrentChannelType.removeTunnel();
+      }
       log.info('Tunnel status has changed to ${status.name}');
       _tunnelStatus = status;
       onTunnelStatusChange(_tunnelStatus);
