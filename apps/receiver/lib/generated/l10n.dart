@@ -2030,6 +2030,66 @@ class S {
       args: [],
     );
   }
+
+  /// `For Best User Experience!`
+  String get v3_download_app_desktop {
+    return Intl.message(
+      'For Best User Experience!',
+      name: 'v3_download_app_desktop',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `*Manual Installer`
+  String get v3_download_app_desktop_hint {
+    return Intl.message(
+      '*Manual Installer',
+      name: 'v3_download_app_desktop_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Install MacOS via App Store`
+  String get v3_download_app_desktop_store {
+    return Intl.message(
+      'Install MacOS via App Store',
+      name: 'v3_download_app_desktop_store',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `*Only For MacOS`
+  String get v3_download_app_desktop_store_hint {
+    return Intl.message(
+      '*Only For MacOS',
+      name: 'v3_download_app_desktop_store_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Desktop`
+  String get v3_download_app_desktop_title {
+    return Intl.message(
+      'Desktop',
+      name: 'v3_download_app_desktop_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mobile`
+  String get v3_download_app_mobile_title {
+    return Intl.message(
+      'Mobile',
+      name: 'v3_download_app_mobile_title',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
