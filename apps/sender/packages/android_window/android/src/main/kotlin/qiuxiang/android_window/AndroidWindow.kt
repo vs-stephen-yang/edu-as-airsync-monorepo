@@ -14,6 +14,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import android.content.res.Configuration
 import android.util.Log
+import android.content.Context
 
 class AndroidWindow(
   val service: Service,
@@ -52,7 +53,7 @@ class AndroidWindow(
     layoutParams.x = x
     layoutParams.y = y
     windowManager.addView(rootView, layoutParams)
-    @Suppress("Deprecation") windowManager.defaultDisplay.getMetrics(metrics)
+    @Suppress("Deprecation") windowManager.defaultDisplay.getRealMetrics(metrics)
     flutterView = FlutterView(inflater.context, FlutterSurfaceView(inflater.context, true))
     flutterView.attachToFlutterEngine(engine)
     @Suppress("ClickableViewAccessibility") flutterView.setOnTouchListener { _, event ->
@@ -96,6 +97,11 @@ class AndroidWindow(
           ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
         )
       )
+    val orientation = service.resources.configuration.orientation
+    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+      flutterView.layoutParams.height = metrics.heightPixels - getStatusBarHeight(service)
+      flutterView.requestLayout()
+    }
   }
 
   fun dragStart() {
@@ -127,6 +133,7 @@ class AndroidWindow(
     }
     if (height > metrics.heightPixels) {
       chkHeight = metrics.heightPixels
+      chkHeight = chkHeight;
     }
     if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
       newWidth = max(chkWidth, chkHeight)
@@ -150,6 +157,10 @@ class AndroidWindow(
   }
 
   fun onOrientationChange(newConfig: Configuration) {
+    flutterView.layoutParams = LinearLayout.LayoutParams(
+      ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+    )
+    flutterView.requestLayout()
     var newWidth = 0
     var newHeight = 0
     if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -161,4 +172,14 @@ class AndroidWindow(
     }
     setLayout(newWidth, newHeight)
   }
+
+  fun getStatusBarHeight(context: Context): Int {
+    val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+    return if (resourceId > 0) {
+      context.resources.getDimensionPixelSize(resourceId)
+    } else {
+      0
+    }
+  }
+
 }
