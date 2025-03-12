@@ -23,7 +23,7 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/app_instance_create.dart';
 import 'package:display_cast_flutter/utilities/app_preferences.dart';
-import 'package:display_cast_flutter/utilities/app_unresponsive_detector.dart';
+//import 'package:display_cast_flutter/utilities/app_unresponsive_detector.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
 import 'package:display_cast_flutter/utilities/data_display_code.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
@@ -133,13 +133,14 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
       });
     }
     // Detect App suspension
-    AppUnresponsiveDetector.initialize();
+    // TODO: #81702 Temporarily disable the collection of app_unresponsive events due to their excessive volume.
+    // AppUnresponsiveDetector.initialize();
 
-    AppUnresponsiveDetector.instance.addListener((suspensionDuration) {
-      trackTrace('app_unresponsive', properties: {
-        'target': suspensionDuration.inSeconds,
-      });
-    });
+    // AppUnresponsiveDetector.instance.addListener((suspensionDuration) {
+    //   trackTrace('app_unresponsive', properties: {
+    //     'target': suspensionDuration.inSeconds,
+    //   });
+    // });
 
     V3NetworkStatusDetector.ensureInitialized();
 
