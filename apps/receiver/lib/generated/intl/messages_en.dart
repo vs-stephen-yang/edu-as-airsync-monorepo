@@ -196,6 +196,16 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Projection time has been extended."),
         "v3_download_app_desc": MessageLookupByLibrary.simpleMessage(
             "Scan the QR code with your iOS or Android device to download"),
+        "v3_download_app_desktop":
+            MessageLookupByLibrary.simpleMessage("For Best User Experience!"),
+        "v3_download_app_desktop_hint":
+            MessageLookupByLibrary.simpleMessage("*Manual Installer"),
+        "v3_download_app_desktop_store":
+            MessageLookupByLibrary.simpleMessage("Install MacOS via App Store"),
+        "v3_download_app_desktop_store_hint":
+            MessageLookupByLibrary.simpleMessage("*Only For MacOS"),
+        "v3_download_app_desktop_title":
+            MessageLookupByLibrary.simpleMessage("Desktop"),
         "v3_download_app_entry":
             MessageLookupByLibrary.simpleMessage("Download Sender App"),
         "v3_download_app_for_desktop":
@@ -207,6 +217,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("For iOS & Android"),
         "v3_download_app_for_mobile_desc": MessageLookupByLibrary.simpleMessage(
             "Scan the QR code for instant access."),
+        "v3_download_app_mobile_title":
+            MessageLookupByLibrary.simpleMessage("Mobile"),
         "v3_download_app_or": MessageLookupByLibrary.simpleMessage("OR"),
         "v3_download_app_title":
             MessageLookupByLibrary.simpleMessage("Download Sender App"),

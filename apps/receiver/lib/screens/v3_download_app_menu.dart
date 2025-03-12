@@ -49,177 +49,285 @@ class PortraitWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 961,
+      height: 996,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Column(
-            children: [
-              Container(
-                alignment: Alignment.center,
-                height: 51,
-                child: AutoSizeText(
-                  S.of(context).v3_download_app_title,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  height: 51,
+                  child: AutoSizeText(
+                    S.of(context).v3_download_app_title,
+                    style: TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.w600,
+                      color: context.tokens.color.vsdslColorOnSurface,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 910,
+                  height: 1,
+                  color: context.tokens.color.vsdslColorOutline,
+                ),
+                const Gap(30),
+                Text(
+                  S.current.v3_download_app_desktop_title,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 19,
-                    fontWeight: FontWeight.w600,
-                    color: context.tokens.color.vsdslColorOnSurface,
+                    color: context.tokens.color.vsdslColorNeutral,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-              ),
-              Container(
-                width: 910,
-                height: 1,
-                color: context.tokens.color.vsdslColorOutline,
-              ),
-              const Gap(40),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    'assets/images/ic_store_windows.png',
-                    width: 55,
-                    height: 55,
+                const Gap(3),
+                Text(
+                  S.current.v3_download_app_for_desktop_desc,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdslColorNeutral,
+                    fontSize: 21,
+                    fontWeight: FontWeight.w500,
                   ),
-                  const Gap(13),
-                  Image.asset(
-                    'assets/images/ic_store_mac.png',
-                    width: 55,
-                    height: 55,
-                  ),
-                ],
-              ),
-              const Gap(30),
-              Text(
-                S.current.v3_download_app_for_desktop,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: context.tokens.color.vsdslColorInfo,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w700,
                 ),
-              ),
-              const Gap(11),
-              Text(
-                S.current.v3_download_app_for_desktop_desc,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: context.tokens.color.vsdslColorInfo,
-                  fontSize: 21,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Gap(40),
-              Container(
-                width: 400,
-                height: 63,
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(
+                const Gap(13),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/ic_store_windows.png',
+                      width: 118,
+                      height: 60,
+                    ),
+                    const Gap(30),
+                    Container(
                       width: 2,
+                      height: 27,
                       color: context.tokens.color.vsdslColorOutline,
                     ),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      AppConfig.of(context)!.settings.appStoreUrl,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: context.tokens.color.vsdslColorOnSurface,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(width: 9),
-                    const Image(
-                      width: 33,
-                      height: 33,
-                      image: Svg('assets/images/ic_store_magnifier.svg'),
+                    const Gap(30),
+                    Image.asset(
+                      'assets/images/ic_store_mac.png',
+                      width: 102,
+                      height: 60,
                     ),
                   ],
                 ),
-              ),
-              const Gap(29),
-              SizedBox(
-                width: 524,
-                height: 18,
-                child: Row(
+                const Gap(16),
+                Row(
                   children: [
-                    Expanded(
-                      child: Container(
-                        height: 2,
-                        color: context.tokens.color.vsdslColorOutline,
+                    const SizedBox(
+                      width: 27,
+                      height: 27,
+                      child: Image(
+                        image: Svg('assets/images/ic_download_thumbs.svg'),
                       ),
                     ),
-                    const Gap(13),
+                    const Gap(5),
                     Text(
-                      S.current.v3_download_app_or,
+                      S.current.v3_download_app_desktop,
                       style: TextStyle(
-                        color: context.tokens.color.vsdslColorSurface500,
+                        color: context.tokens.color.vsdslColorPrimary,
+                        fontSize: 21,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                const Gap(8),
+                Container(
+                  height: 63,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 2,
+                        color: context.tokens.color.vsdslColorOutline,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        AppConfig.of(context)!.settings.appStoreUrl,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: context.tokens.color.vsdslColorOnSurface,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Spacer(),
+                      const Image(
+                        width: 33,
+                        height: 33,
+                        image: Svg('assets/images/ic_store_magnifier.svg'),
+                      ),
+                    ],
+                  ),
+                ),
+                const Gap(3),
+                Row(
+                  children: [
+                    const Spacer(),
+                    Text(
+                      S.current.v3_download_app_desktop_hint,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: context.tokens.color.vsdslColorSurface800,
                         fontSize: 12,
                       ),
                     ),
-                    const Gap(13),
-                    Expanded(
-                      child: Container(
-                        height: 2,
+                  ],
+                ),
+                const Gap(20),
+                Row(
+                  children: [
+                    Text(
+                      'Install MacOS via App Store',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: context.tokens.color.vsdslColorSurface800,
+                        fontSize: 21,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer()
+                  ],
+                ),
+                const Gap(8),
+                Container(
+                  height: 63,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 2,
                         color: context.tokens.color.vsdslColorOutline,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(
+                        '${AppConfig.of(context)!.settings.appStoreUrl}?r',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: context.tokens.color.vsdslColorOnSurface,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Spacer(),
+                      const Image(
+                        width: 33,
+                        height: 33,
+                        image: Svg('assets/images/ic_store_magnifier.svg'),
+                      ),
+                    ],
+                  ),
+                ),
+                const Gap(3),
+                Row(
+                  children: [
+                    const Spacer(),
+                    Text(
+                      S.current.v3_download_app_desktop_store_hint,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: context.tokens.color.vsdslColorSurface800,
+                        fontSize: 12,
                       ),
                     ),
                   ],
                 ),
-              ),
-              const Gap(29),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    'assets/images/ic_store_google_play.png',
-                    width: 55,
-                    height: 55,
+                SizedBox(
+                  height: 18,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 2,
+                          color: context.tokens.color.vsdslColorOutline,
+                        ),
+                      ),
+                      const Gap(13),
+                      Text(
+                        S.current.v3_download_app_or,
+                        style: TextStyle(
+                          color: context.tokens.color.vsdslColorSurface500,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const Gap(13),
+                      Expanded(
+                        child: Container(
+                          height: 2,
+                          color: context.tokens.color.vsdslColorOutline,
+                        ),
+                      ),
+                    ],
                   ),
-                  const Gap(13),
-                  Image.asset(
-                    'assets/images/ic_store_appstore.png',
-                    width: 55,
-                    height: 55,
+                ),
+                const Gap(21),
+                Text(
+                  S.current.v3_download_app_mobile_title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdslColorNeutral,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w700,
                   ),
-                ],
-              ),
-              const Gap(40),
-              Text(
-                S.current.v3_download_app_for_mobile,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: context.tokens.color.vsdslColorInfo,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w700,
                 ),
-              ),
-              const Gap(11),
-              Text(
-                S.current.v3_download_app_for_mobile_desc,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: context.tokens.color.vsdslColorInfo,
-                  fontSize: 21,
-                  fontWeight: FontWeight.w500,
+                const Gap(3),
+                Text(
+                  S.current.v3_download_app_for_mobile_desc,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: context.tokens.color.vsdslColorNeutral,
+                    fontSize: 21,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-              const Gap(30),
-              QrImageView(
-                data: AppConfig.of(context)!.settings.appStoreUrl,
-                version: QrVersions.auto,
-                size: 200,
-              ),
-            ],
+                const Gap(13),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/ic_store_google_play.png',
+                      width: 110,
+                      height: 60,
+                    ),
+                    const Gap(30),
+                    Container(
+                      width: 2,
+                      height: 27,
+                      color: context.tokens.color.vsdslColorOutline,
+                    ),
+                    const Gap(13),
+                    Image.asset(
+                      'assets/images/ic_store_appstore.png',
+                      width: 101,
+                      height: 60,
+                    ),
+                  ],
+                ),
+                const Gap(3),
+                QrImageView(
+                  data: '${AppConfig.of(context)!.settings.appStoreUrl}?r',
+                  version: QrVersions.auto,
+                  size: 280,
+                ),
+              ],
+            ),
           ),
           Positioned(
             right: 13,
@@ -287,36 +395,18 @@ class LandscapeWidget extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 97,
+            top: 61,
             left: 0,
             child: SizedBox(
               width: 510,
-              height: 460,
               child: Column(
                 children: [
                   const Gap(30),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        'assets/images/ic_store_windows.png',
-                        width: 55,
-                        height: 55,
-                      ),
-                      const Gap(13),
-                      Image.asset(
-                        'assets/images/ic_store_mac.png',
-                        width: 55,
-                        height: 55,
-                      ),
-                    ],
-                  ),
-                  const Gap(32),
                   Text(
-                    S.current.v3_download_app_for_desktop,
+                    S.current.v3_download_app_desktop_title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: context.tokens.color.vsdslColorInfo,
+                      color: context.tokens.color.vsdslColorNeutral,
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
                     ),
@@ -326,12 +416,60 @@ class LandscapeWidget extends StatelessWidget {
                     S.current.v3_download_app_for_desktop_desc,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: context.tokens.color.vsdslColorInfo,
+                      color: context.tokens.color.vsdslColorNeutral,
                       fontSize: 21,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const Gap(93),
+                  const Gap(30),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'assets/images/ic_store_windows.png',
+                        width: 118,
+                        height: 60,
+                      ),
+                      const Gap(30),
+                      Container(
+                        width: 2,
+                        height: 27,
+                        color: context.tokens.color.vsdslColorOutline,
+                      ),
+                      const Gap(30),
+                      Image.asset(
+                        'assets/images/ic_store_mac.png',
+                        width: 102,
+                        height: 60,
+                      ),
+                    ],
+                  ),
+                  const Gap(33),
+                  SizedBox(
+                    width: 400,
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: 27,
+                          height: 27,
+                          child: Image(
+                            image: Svg('assets/images/ic_download_thumbs.svg'),
+                          ),
+                        ),
+                        const Gap(5),
+                        Text(
+                          S.current.v3_download_app_desktop,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: context.tokens.color.vsdslColorPrimary,
+                            fontSize: 21,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Gap(8),
                   Container(
                     width: 400,
                     height: 63,
@@ -368,42 +506,98 @@ class LandscapeWidget extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const Gap(3),
+                  SizedBox(
+                    width: 400,
+                    child: Text(
+                      S.current.v3_download_app_desktop_hint,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: context.tokens.color.vsdslColorSurface800,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                  const Gap(25),
+                  SizedBox(
+                    width: 400,
+                    child: Text(
+                      S.current.v3_download_app_desktop_store,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: context.tokens.color.vsdslColorSurface800,
+                        fontSize: 21,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const Gap(8),
+                  Container(
+                    width: 400,
+                    height: 63,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 2,
+                          color: context.tokens.color.vsdslColorOutline,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${AppConfig.of(context)!.settings.appStoreUrl}?r',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: context.tokens.color.vsdslColorOnSurface,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(width: 9),
+                        const Image(
+                          width: 33,
+                          height: 33,
+                          image: Svg('assets/images/ic_store_magnifier.svg'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Gap(3),
+                  SizedBox(
+                    width: 400,
+                    child: Text(
+                      S.current.v3_download_app_desktop_store_hint,
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: context.tokens.color.vsdslColorSurface800,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
           Positioned(
-            top: 97,
+            top: 61,
             right: 0,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               width: 380,
-              height: 460,
               child: Column(
                 children: [
-                  const Gap(30),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset(
-                        'assets/images/ic_store_google_play.png',
-                        width: 55,
-                        height: 55,
-                      ),
-                      const Gap(13),
-                      Image.asset(
-                        'assets/images/ic_store_appstore.png',
-                        width: 55,
-                        height: 55,
-                      ),
-                    ],
-                  ),
                   const Gap(32),
                   Text(
-                    S.current.v3_download_app_for_mobile,
+                    S.current.v3_download_app_mobile_title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: context.tokens.color.vsdslColorInfo,
+                      color: context.tokens.color.vsdslColorNeutral,
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
                     ),
@@ -413,16 +607,39 @@ class LandscapeWidget extends StatelessWidget {
                     S.current.v3_download_app_for_mobile_desc,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: context.tokens.color.vsdslColorInfo,
+                      color: context.tokens.color.vsdslColorNeutral,
                       fontSize: 21,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
+                  const Gap(30),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'assets/images/ic_store_google_play.png',
+                        width: 110,
+                        height: 60,
+                      ),
+                      const Gap(30),
+                      Container(
+                        width: 2,
+                        height: 27,
+                        color: context.tokens.color.vsdslColorOutline,
+                      ),
+                      const Gap(13),
+                      Image.asset(
+                        'assets/images/ic_store_appstore.png',
+                        width: 101,
+                        height: 60,
+                      ),
+                    ],
+                  ),
                   const Gap(25),
                   QrImageView(
-                    data: AppConfig.of(context)!.settings.appStoreUrl,
+                    data: '${AppConfig.of(context)!.settings.appStoreUrl}?r',
                     version: QrVersions.auto,
-                    size: 200,
+                    size: 250,
                   ),
                 ],
               ),

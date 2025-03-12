@@ -196,5 +196,11 @@
   "v3_casting_time_extend_success_toast": "Projection time has been extended.",
   "v3_casting_ended_toast": "The projection has ended.",
   "v3_casting_time_do_not_extend": "Do not extend",
-  "v3_casting_time_extend": "Extend"
+  "v3_casting_time_extend": "Extend",
+  "v3_download_app_desktop": "For Best User Experience!",
+  "v3_download_app_desktop_hint": "*Manual Installer",
+  "v3_download_app_desktop_store": "Install MacOS via App Store",
+  "v3_download_app_desktop_store_hint": "*Only For MacOS",
+  "v3_download_app_desktop_title": "Desktop",
+  "v3_download_app_mobile_title": "Mobile"
 }
