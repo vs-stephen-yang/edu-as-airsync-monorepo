@@ -9,6 +9,7 @@ import 'package:display_flutter/model/mirror_request.dart';
 import 'package:display_flutter/model/rtc_connector.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/group_provider.dart';
+import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/screens/v3_new_sharing_menu.dart';
 import 'package:display_flutter/screens/v3_quick_connect_menu.dart';
@@ -19,6 +20,7 @@ import 'package:display_flutter/widgets/mirror_view.dart';
 import 'package:display_flutter/widgets/v3_extend_casting_time_menu.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_header_bar.dart';
+import 'package:display_flutter/widgets/v3_settings_password_dialog.dart';
 import 'package:display_flutter/widgets/v3_streaming_function.dart';
 import 'package:display_flutter/widgets/v3_webrtc_view.dart';
 import 'package:flutter/material.dart';
@@ -485,32 +487,38 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
                 if (isExpanded) ...[
                   const Gap(8),
                   V3Focus(
-                    child: Container(
-                      width: 41,
-                      height: 41,
-                      decoration: ShapeDecoration(
-                        color: _showShortcut
-                            ? context.tokens.color.vsdslColorSecondary
-                            : context.tokens.color.vsdslColorSurface800,
-                        shape: const OvalBorder(),
-                      ),
-                      child: IconButton(
-                        icon: SvgPicture.asset(
-                          'assets/images/ic_streaming_shortcut.svg',
+                    child: provider.Consumer<SettingsProvider>(
+                        builder: (_, settingsProvider, __) {
+                      return Container(
+                        width: 41,
+                        height: 41,
+                        decoration: ShapeDecoration(
+                          color: _showShortcut
+                              ? context.tokens.color.vsdslColorSecondary
+                              : context.tokens.color.vsdslColorSurface800,
+                          shape: const OvalBorder(),
                         ),
-                        focusColor: Colors.transparent,
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                        onPressed: () {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            _showShortcutsMenuDialog();
-                          });
-                          setState(() {
-                            _showShortcut = true;
-                          });
-                        },
-                      ),
-                    ),
+                        child: IconButton(
+                          icon: SvgPicture.asset(
+                            settingsProvider.isSettingsLock
+                                ? 'assets/images/ic_streaming_shortcut_locked.svg'
+                                : 'assets/images/ic_streaming_shortcut.svg',
+                          ),
+                          focusColor: Colors.transparent,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          onPressed: () {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _showShortcutsMenuDialog(
+                                  context, settingsProvider);
+                            });
+                            setState(() {
+                              _showShortcut = true;
+                            });
+                          },
+                        ),
+                      );
+                    }),
                   ),
                   const Gap(8),
                   V3Focus(
@@ -550,8 +558,24 @@ class _ExpandableWidgetState extends State<ExpandableWidget>
     );
   }
 
-  _showShortcutsMenuDialog() {
-    showDialog(
+  _showShortcutsMenuDialog(
+      BuildContext context, SettingsProvider settingsProvider) async {
+    bool isShortcutsMenuUnLocked = true;
+
+    if (settingsProvider.isSettingsLock) {
+      await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) {
+            return const V3SettingsPasswordDialog();
+          }).then((value) {
+        isShortcutsMenuUnLocked = value;
+      });
+    }
+
+    if (!(isShortcutsMenuUnLocked && context.mounted)) return;
+
+    await showDialog(
       context: context,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) => FocusAwareBuilder(
