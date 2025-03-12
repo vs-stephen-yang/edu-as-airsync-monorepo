@@ -81,7 +81,7 @@ class V3Instruction extends StatelessWidget {
                 }
               }),
         ],
-        if (!isQuickConnect && !isCastToDevice) ...[
+        if (!isQuickConnect && !isCastToDevice || true) ...[
           Row(
             children: [
               AutoSizeText(
@@ -91,53 +91,328 @@ class V3Instruction extends StatelessWidget {
                     fontWeightDelta: FontWeight.w700.value),
               ),
               Gap(context.tokens.spacing.vsdslSpacing3xl.right),
-              ValueListenableBuilder(
-                  valueListenable: AppPreferences().connectivityTypeNotifier,
-                  builder: (context, connectivityType, child) {
-                    if (AppPreferences().connectivityType ==
-                        ConnectivityType.local.name) {
-                      return Container(
-                        decoration: ShapeDecoration(
-                          color: context.tokens.color.vsdslColorSurface200,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(9999),
-                          ),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            horizontal:
-                                context.tokens.spacing.vsdslSpacingXl.left,
-                            vertical:
-                                context.tokens.spacing.vsdslSpacingSm.top),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Image(
-                              image: Svg(
-                                  'assets/images/ic_local_connection_only.svg'),
-                              width: 21,
-                              height: 21,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: context
-                                      .tokens.spacing.vsdslSpacingSm.left),
-                              child: AutoSizeText(
-                                S.of(context).v3_settings_local_connection_only,
-                                style: context
-                                    .tokens.textStyle.airsyncFontSubtitle600
-                                    .apply(
-                                  color:
-                                      context.tokens.color.vsdslColorSurface600,
+              StreamBuilder(
+                stream: CurrentChannelType.currentChannelTypeStream.stream,
+                builder: (context, snapshot) => ValueListenableBuilder(
+                    valueListenable: AppPreferences().connectivityTypeNotifier,
+                    builder: (context, userSettingConnectivityType, child) {
+                      if (snapshot.hasData) {
+                        print('snapshot.data: ${snapshot.data}');
+                      }
+
+                      if (userSettingConnectivityType ==
+                              ConnectivityType.both.name) {
+                            if (CurrentChannelType.tunnelServerActivated) {
+                              return const SizedBox.shrink();
+                            }
+
+                            return Container(
+                              decoration: ShapeDecoration(
+                                color: context.tokens.color
+                                    .vsdslColorSurface200,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(9999),
                                 ),
                               ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                  context.tokens.spacing.vsdslSpacingXl.left,
+                                  vertical:
+                                  context.tokens.spacing.vsdslSpacingSm.top),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Image(
+                                    image: const Svg(
+                                      'assets/images/ic_local_connection_only.svg',
+                                    ),
+                                    color: context.tokens.color
+                                        .vsdslColorWarning,
+                                    width: 21,
+                                    height: 21,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: context
+                                            .tokens.spacing.vsdslSpacingSm
+                                            .left),
+                                    child: AutoSizeText(
+                                      '只接受內部網路連線，部分異常，可能是用戶端網路設定問題',
+                                      style: context
+                                          .tokens.textStyle
+                                          .airsyncFontSubtitle600
+                                          .apply(
+                                        color:
+                                        context.tokens.color.vsdslColorWarning,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else if (userSettingConnectivityType ==
+                              ConnectivityType.internet.name) {
+                            if (CurrentChannelType.tunnelServerActivated) {
+                              return Container(
+                                decoration: ShapeDecoration(
+                                  color: context.tokens.color
+                                      .vsdslColorSurface200,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(9999),
+                                  ),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                    context.tokens.spacing.vsdslSpacingXl.left,
+                                    vertical:
+                                    context.tokens.spacing.vsdslSpacingSm.top),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Image(
+                                      image: Svg(
+                                          'assets/images/ic_local_connection_only.svg'),
+                                      width: 21,
+                                      height: 21,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          left: context
+                                              .tokens.spacing.vsdslSpacingSm
+                                              .left),
+                                      child: AutoSizeText(
+                                        '只接受網際網路連線',
+                                        style: context
+                                            .tokens.textStyle
+                                            .airsyncFontSubtitle600
+                                            .apply(
+                                          color: context
+                                              .tokens.color
+                                              .vsdslColorSurface600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                            return Container(
+                              decoration: ShapeDecoration(
+                                color: context.tokens.color
+                                    .vsdslColorSurface200,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(9999),
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                  context.tokens.spacing.vsdslSpacingXl.left,
+                                  vertical:
+                                  context.tokens.spacing.vsdslSpacingSm.top),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Image(
+                                    image: const Svg(
+                                        'assets/images/ic_local_connection_only.svg'),
+                                    color: context.tokens.color.vsdslColorError,
+                                    width: 21,
+                                    height: 21,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: context
+                                            .tokens.spacing.vsdslSpacingSm
+                                            .left),
+                                    child: AutoSizeText(
+                                      '網路連線能力錯誤',
+                                      style: context
+                                          .tokens.textStyle
+                                          .airsyncFontSubtitle600
+                                          .apply(
+                                        color: context.tokens.color
+                                            .vsdslColorError,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
+                          return Container(
+                            decoration: ShapeDecoration(
+                              color: context.tokens.color.vsdslColorSurface200,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(9999),
+                              ),
                             ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      return const SizedBox();
-                    }
-                  }),
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                context.tokens.spacing.vsdslSpacingXl.left,
+                                vertical:
+                                context.tokens.spacing.vsdslSpacingSm.top),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Image(
+                                  image: Svg(
+                                      'assets/images/ic_local_connection_only.svg'),
+                                  width: 21,
+                                  height: 21,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: context
+                                          .tokens.spacing.vsdslSpacingSm.left),
+                                  child: AutoSizeText(
+                                    S
+                                        .of(context)
+                                        .v3_settings_local_connection_only,
+                                    style: context
+                                        .tokens.textStyle.airsyncFontSubtitle600
+                                        .apply(
+                                      color:
+                                      context.tokens.color.vsdslColorSurface600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+
+                          return RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: '使用者設定:',
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: ' $userSettingConnectivityType, ',
+                                  style: TextStyle(
+                                    color: userSettingConnectivityType ==
+                                        ConnectivityType.internet.name
+                                        ? Colors.green
+                                        : userSettingConnectivityType ==
+                                        ConnectivityType.both.name
+                                        ? Colors.blue
+                                        : Colors.red,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: 'notifier: ',
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text:
+                                  '${AppPreferences().connectivityTypeNotifier
+                                      .value}, ',
+                                  style: TextStyle(
+                                    color: AppPreferences()
+                                        .connectivityTypeNotifier
+                                        .value ==
+                                        ConnectivityType.internet.name
+                                        ? Colors.green
+                                        : AppPreferences()
+                                        .connectivityTypeNotifier
+                                        .value ==
+                                        ConnectivityType.both.name
+                                        ? Colors.blue
+                                        : Colors.red,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: 'tunnel: ',
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: '${CurrentChannelType
+                                      .tunnelServerActivated}, ',
+                                  style: TextStyle(
+                                    color: CurrentChannelType
+                                        .tunnelServerActivated
+                                        ? Colors.green
+                                        : Colors.red,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: 'direct: ',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: '${CurrentChannelType
+                                      .directServerActivated}, ',
+                                  style: TextStyle(
+                                    color: CurrentChannelType
+                                        .directServerActivated
+                                        ? Colors.red
+                                        : Colors.green,
+                                  ),
+                                ),
+                              ],
+                              style: TextStyle(
+                                color: Colors.green,
+                              ),
+                            ),
+                          );
+                        }),
+              ),
+              //     ValueListenableBuilder(
+              //         valueListenable: AppPreferences().connectivityTypeNotifier,
+              //         builder: (context, connectivityType, child) {
+              //           if (AppPreferences().connectivityType ==
+              //               ConnectivityType.local.name) {
+              //             return Container(
+              //               decoration: ShapeDecoration(
+              //                 color: context.tokens.color.vsdslColorSurface200,
+              //                 shape: RoundedRectangleBorder(
+              //                   borderRadius: BorderRadius.circular(9999),
+              //                 ),
+              //               ),
+              //               padding: EdgeInsets.symmetric(
+              //                   horizontal:
+              //                       context.tokens.spacing.vsdslSpacingXl.left,
+              //                   vertical:
+              //                       context.tokens.spacing.vsdslSpacingSm.top),
+              //               child: Row(
+              //                 mainAxisSize: MainAxisSize.min,
+              //                 children: [
+              //                   const Image(
+              //                     image: Svg(
+              //                         'assets/images/ic_local_connection_only.svg'),
+              //                     width: 21,
+              //                     height: 21,
+              //                   ),
+              //                   Padding(
+              //                     padding: EdgeInsets.only(
+              //                         left: context
+              //                             .tokens.spacing.vsdslSpacingSm.left),
+              //                     child: AutoSizeText(
+              //                       S.of(context).v3_settings_local_connection_only,
+              //                       style: context
+              //                           .tokens.textStyle.airsyncFontSubtitle600
+              //                           .apply(
+              //                         color:
+              //                             context.tokens.color.vsdslColorSurface600,
+              //                       ),
+              //                     ),
+              //                   ),
+              //                 ],
+              //               ),
+              //             );
+              //           } else {
+              //             return const SizedBox();
+              //           }
+              //         }),
             ],
           ),
           SizedBox(height: context.tokens.spacing.vsdslSpacing5xl.top),

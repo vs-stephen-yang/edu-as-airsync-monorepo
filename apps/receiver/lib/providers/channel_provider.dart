@@ -48,6 +48,45 @@ import 'message_dialog_provider.dart';
 /// - communicate custom protocols with server and build webRTC connection(_channelRtcConnectors)
 /// - refresh Main, WebRTCView
 
+enum CurrentChannelType {
+  tunnel,
+  direct,
+  none;
+
+  static bool tunnelServerActivated = false;
+  static bool directServerActivated = false;
+
+  static StreamController<CurrentChannelType> currentChannelTypeStream =
+      StreamController<CurrentChannelType>.broadcast()..add(none);
+
+  static void addTunnel() {
+    if (tunnelServerActivated) return;
+    tunnelServerActivated = true;
+    currentChannelTypeStream.add(tunnel);
+  }
+
+  static void addDirect() {
+    if (tunnelServerActivated) return;
+    directServerActivated = true;
+    currentChannelTypeStream.add(direct);
+  }
+
+  static void clear() {
+    tunnelServerActivated = false;
+    directServerActivated = false;
+    currentChannelTypeStream.add(none);
+  }
+
+  static removeDirect() {
+    clear();
+  }
+
+  static removeTunnel() {
+    tunnelServerActivated = false;
+    currentChannelTypeStream.add(direct);
+  }
+}
+
 enum ChannelMode {
   tunnel,
   direct,
