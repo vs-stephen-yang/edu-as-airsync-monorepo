@@ -11,12 +11,36 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
   private var skipEventsUntilMouseUp: Bool = false
   private var mouseDown: Bool = false
   private let distanceThreshold: CGFloat = 25
+  private var targetScreen: NSScreen? = nil
+  private let screenStateQueue = DispatchQueue(label: "flutter_input_injection.screenStateQueue", attributes: .concurrent)
+  private var isScreenConfigChanged: Bool = false
 
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(
       name: "flutter_input_injection", binaryMessenger: registrar.messenger)
     let instance = FlutterInputInjectionPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
+  }
+  
+  public override init() {
+    super.init()
+    // registered
+    NotificationCenter.default.addObserver(
+        self,
+        selector: #selector(handleScreenConfigurationChanged),
+        name: NSApplication.didChangeScreenParametersNotification,
+        object: nil
+    )
+  }
+  
+  deinit {
+      NotificationCenter.default.removeObserver(self, name: NSApplication.didChangeScreenParametersNotification, object: nil)
+  }
+
+  @objc private func handleScreenConfigurationChanged() {
+    screenStateQueue.async(flags: .barrier) {
+      self.isScreenConfigChanged = true
+    }
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -92,49 +116,81 @@ public class FlutterInputInjectionPlugin: NSObject, FlutterPlugin {
       break
     }
   }
-  
-  private func findVirtualScreen() -> NSScreen? {
-    let screens = NSScreen.screens
-    for screen in screens {
-      let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? Int
-      if screenNumber != nil {
-        let vendorId = CGDisplayVendorNumber(CGDirectDisplayID(screenNumber!))
-        let productId = CGDisplayModelNumber(CGDirectDisplayID(screenNumber!))
-        if vendorId == VIEWSONIC_VID && productId == VIEWSONIC_PID {
-          return screen
+
+  private func findVirtualScreen() -> CGDirectDisplayID? {
+    let maxDisplays: UInt32 = 10 // Reasonable upper limit for the number of displays
+    var onlineDisplays = [CGDirectDisplayID](repeating: 0, count: Int(maxDisplays))
+    var displayCount: UInt32 = 0
+    let result = CGGetOnlineDisplayList(maxDisplays, &onlineDisplays, &displayCount)
+    if result != .success {
+      return nil
+    }
+    for i in 0..<displayCount {
+      let displayID = onlineDisplays[Int(i)]
+      guard displayID != kCGNullDirectDisplay else { continue }
+      let vendorId = CGDisplayVendorNumber(displayID)
+      let productId = CGDisplayModelNumber(displayID)
+      let isVirtual = vendorId == VIEWSONIC_VID && productId == VIEWSONIC_PID
+      let mirroredToDisplay = CGDisplayMirrorsDisplay(displayID)
+      if isVirtual {
+        if mirroredToDisplay == kCGNullDirectDisplay {
+          return displayID
+        } else {
+          return mirroredToDisplay
         }
       }
     }
     return nil
   }
   
-  private func findScreenBySceenNumber(_ screenNumber: Int) -> NSScreen? {
+  private func findScreenBySceenNumber(_ target: CGDirectDisplayID) -> NSScreen? {
     let screens = NSScreen.screens
     for screen in screens {
-      if screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? Int == screenNumber {
+      let screenNumber = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? Int
+      if Int(target) == screenNumber {
         return screen
       }
     }
     return nil
   }
   
+  private func findVirtualDisplayScreen() -> NSScreen? {
+    guard let virtualScreenDisplayId = findVirtualScreen() else {
+      return nil
+    }
+    return findScreenBySceenNumber(virtualScreenDisplayId)
+  }
+  
+  private func findTargetScreen(autoVirtualDisplay: Bool, screenId: Int) -> NSScreen? {
+    let shouldReset = screenStateQueue.sync { isScreenConfigChanged }
+    
+    if shouldReset {
+      print("Screen configuration changed, resetting target screen.")
+    }
+
+    if targetScreen == nil || shouldReset {
+      guard let screen = autoVirtualDisplay
+              ? findVirtualDisplayScreen()
+              : findScreenBySceenNumber(CGDirectDisplayID(screenId))
+      else {
+        return nil
+      }
+      self.targetScreen = screen
+      screenStateQueue.async(flags: .barrier) {
+        self.isScreenConfigChanged = false
+      }
+    }
+    return targetScreen
+  }
+  
   private func processNormalizedTouchEvent(_ event: (
     action: Int, id: Int, x: Double, y: Double, screenId: Int, autoVirtualDisplay: Bool)) {
-
-    var screen: NSScreen? = nil
-    if event.autoVirtualDisplay {
-      screen = findVirtualScreen()
-      if screen == nil {
-        screen = NSScreen.screens[0]
-      }
-    } else {
-      screen = findScreenBySceenNumber(event.screenId)
-    }
-    if screen == nil {
+    
+    guard let screen = findTargetScreen(autoVirtualDisplay: event.autoVirtualDisplay, screenId: event.screenId) else {
       return
     }
-      
-    let frame = screen!.frame
+
+    let frame = screen.frame
     let actualX = frame.minX + CGFloat(event.x) * frame.width
       
     // Compute flippedY to match macOS coordinate system
