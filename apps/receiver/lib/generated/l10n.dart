@@ -2090,6 +2090,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Enter passcode to unlock Settings`
+  String get v3_setting_passcode_title {
+    return Intl.message(
+      'Enter passcode to unlock Settings',
+      name: 'v3_setting_passcode_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid password, please try again.`
+  String get v3_setting_passcode_error_description {
+    return Intl.message(
+      'Invalid password, please try again.',
+      name: 'v3_setting_passcode_error_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get v3_setting_passcode_cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'v3_setting_passcode_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear`
+  String get v3_setting_passcode_clear {
+    return Intl.message(
+      'Clear',
+      name: 'v3_setting_passcode_clear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm`
+  String get v3_setting_passcode_confirm {
+    return Intl.message(
+      'Confirm',
+      name: 'v3_setting_passcode_confirm',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

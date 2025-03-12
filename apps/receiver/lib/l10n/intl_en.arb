@@ -202,5 +202,11 @@
   "v3_download_app_desktop_store": "Install MacOS via App Store",
   "v3_download_app_desktop_store_hint": "*Only For MacOS",
   "v3_download_app_desktop_title": "Desktop",
-  "v3_download_app_mobile_title": "Mobile"
+  "v3_download_app_mobile_title": "Mobile",
+  "v3_casting_time_extend": "Extend",
+  "v3_setting_passcode_title": "Enter passcode to unlock Settings",
+  "v3_setting_passcode_error_description": "Invalid password, please try again.",
+  "v3_setting_passcode_cancel": "Cancel",
+  "v3_setting_passcode_clear": "Clear",
+  "v3_setting_passcode_confirm": "Confirm"
 }

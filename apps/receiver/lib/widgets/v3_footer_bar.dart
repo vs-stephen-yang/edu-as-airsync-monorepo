@@ -2,9 +2,10 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
+import 'package:display_flutter/widgets/v3_settings_password_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 import 'package:provider/provider.dart';
 
@@ -40,15 +41,19 @@ class V3FooterBar extends StatelessWidget {
               width: 41,
               height: 41,
               child: V3Focus(
-                child: IconButton(
-                  icon: const Image(
-                    image: Svg('assets/images/ic_menu_settings.svg'),
-                  ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () {
-                    trackEvent('click_setting', EventCategory.setting);
-                    _showSettingsMenuDialog(context);
+                child: Consumer<SettingsProvider>(
+                  builder: (_, settingsProvider, __) {
+                    return IconButton(
+                      icon: SvgPicture.asset(settingsProvider.isSettingsLock
+                          ? 'assets/images/ic_menu_settings_locked.svg'
+                          : 'assets/images/ic_menu_settings.svg'),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () {
+                        trackEvent('click_setting', EventCategory.setting);
+                        _showSettingsMenuDialog(context, settingsProvider);
+                      },
+                    );
                   },
                 ),
               ),
@@ -59,9 +64,8 @@ class V3FooterBar extends StatelessWidget {
     );
   }
 
-  _showSettingsMenuDialog(BuildContext context) {
-    SettingsProvider settingsProvider =
-        Provider.of<SettingsProvider>(context, listen: false);
+  _showSettingsMenuDialog(
+      BuildContext context, SettingsProvider settingsProvider) async {
     settingsProvider.setPage(SettingPageState.deviceSetting);
 
     final bool openedWithLogicalKey =
@@ -69,6 +73,22 @@ class V3FooterBar extends StatelessWidget {
     if (openedWithLogicalKey) {
       settingsProvider.initFocus();
     }
+
+    bool isSettingsUnLocked = true;
+
+    if (settingsProvider.isSettingsLock) {
+      await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) {
+            return const V3SettingsPasswordDialog();
+          }).then((value) {
+        isSettingsUnLocked = value;
+      });
+    }
+
+    if (!(isSettingsUnLocked && context.mounted)) return;
+
     final route = DialogRoute(
         barrierColor: Colors.transparent,
         context: context,
@@ -78,6 +98,6 @@ class V3FooterBar extends StatelessWidget {
 
     navService.setMenuRoute(route);
 
-    navService.push(route).whenComplete(settingsProvider.clearFocus);
+    await navService.push(route).whenComplete(settingsProvider.clearFocus);
   }
 }
