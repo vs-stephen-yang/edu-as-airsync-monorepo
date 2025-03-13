@@ -43,12 +43,13 @@ class SettingsProvider with ChangeNotifier {
   Package? get license => _license;
 
   static const defaultSettingsLock = false;
+  static const defaultSettingsPassword = '0000';
   static const defaultDeviceSettingLock = false;
   static const defaultBroadcastLock = false;
   static const defaultMirroringLock = false;
   static const defaultConnectivityLock = false;
   bool _isSettingsLock = defaultSettingsLock;
-  String _settingsPassword = '';
+  String _settingsPassword = defaultSettingsPassword;
   bool _isDeviceSettingLock = defaultDeviceSettingLock;
   bool _isBroadcastLock = defaultBroadcastLock;
   bool _isMirroringLock = defaultMirroringLock;
@@ -110,7 +111,8 @@ class SettingsProvider with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _isSettingsLock =
         prefs.getBool('app_isSettingsLock') ?? defaultSettingsLock;
-    _settingsPassword = prefs.getString('app_SettingsPassword') ?? '';
+    _settingsPassword =
+        prefs.getString('app_SettingsPassword') ?? defaultSettingsPassword;
     _isDeviceSettingLock =
         prefs.getBool('app_isDeviceSettingLock') ?? defaultDeviceSettingLock;
     _isBroadcastLock =
