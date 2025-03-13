@@ -581,11 +581,7 @@ class WebRTCConnector {
     EventMessage eventMessage = EventMessage.fromBuffer(data.binary);
 
     if (eventMessage.hasTouchEvent()) {
-      if (Platform.isMacOS) { // TODO: will be removed after the touch event is supported on macOS
-        await _onTouchMessageLegacy(eventMessage);
-      } else if (Platform.isWindows) {
-        await _onTouchMessageLegacy(eventMessage);
-      }
+      await _onTouchMessage(eventMessage);
     }
   }
 
@@ -637,55 +633,6 @@ class WebRTCConnector {
     }
     unawaited(
         _flutterInputInjectionPlugin.sendNormalizedTouch(_screenId, autoVirtualDisplay, action, id, remoteX, remoteY));
-  }
-
-  Future<void> _onTouchMessageLegacy(EventMessage eventMessage) async {
-    int action = FlutterInputInjection.TOUCH_POINT_START;
-
-    if (eventMessage.touchEvent.eventType ==
-        TouchEvent_TouchEventType.TOUCH_POINT_START) {
-      action = FlutterInputInjection.TOUCH_POINT_START;
-    } else if (eventMessage.touchEvent.eventType ==
-        TouchEvent_TouchEventType.TOUCH_POINT_MOVE) {
-      action = FlutterInputInjection.TOUCH_POINT_MOVE;
-    } else if (eventMessage.touchEvent.eventType ==
-        TouchEvent_TouchEventType.TOUCH_POINT_END) {
-      action = FlutterInputInjection.TOUCH_POINT_END;
-    }
-    int id = eventMessage.touchEvent.touchPoints[0].id;
-    double remoteX = eventMessage.touchEvent.touchPoints[0].x;
-    double remoteY = eventMessage.touchEvent.touchPoints[0].y;
-    await _updateScreenSize();
-
-    int injectX = (remoteX * _screenWidth).toInt();
-    if (injectX < 0) {
-      injectX = 0;
-    } else if (injectX > _screenWidth.toInt() - 1) {
-      injectX = _screenWidth.toInt() - 1;
-    }
-    int injectY = (remoteY * _screenHeight).toInt();
-    if (injectY < 0) {
-      injectY = 0;
-    } else if (injectY > _screenHeight.toInt() - 1) {
-      injectY = _screenHeight.toInt() - 1;
-    }
-
-    if (_isPaused) {
-      if (_isPointInPauseButton(
-          Offset(injectX.toDouble(), injectY.toDouble()))) {
-        onTouchEvenWhenPaused(true, false);
-        return;
-      }
-      if (_isPointInStopButton(
-          Offset(injectX.toDouble(), injectY.toDouble()))) {
-        onTouchEvenWhenPaused(false, true);
-        return;
-      }
-      log.info('Touch event ignored due to paused state');
-      return;
-    }
-    unawaited(
-        _flutterInputInjectionPlugin.sendTouch(action, id, injectX, injectY));
   }
 
   void _onAddTrack(MediaStream stream, MediaStreamTrack track) {
