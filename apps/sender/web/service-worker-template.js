@@ -7,12 +7,11 @@ self.addEventListener("install", (event) => {
   self.skipWaiting();
   event.waitUntil(
     (async () => {
+      console.log("service-work install event");
       const cache = await caches.open(CACHE_NAME);
 
       // Cache all resources first
-      await cache.addAll(
-        RESOURCES.map((path) => new Request(path, { 'cache': 'reload' }))
-      );
+      await downloadOffline();
 
       // After caching all resources, fetch version.json and store in manifest
       try {
@@ -41,9 +40,9 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
+      await clients.claim(); // Forces new SW to take over all clients immediately
       await checkForUpdates();
       await downloadOffline(); // 🛠 Ensures all assets are cached immediately
-      self.clients.claim();
     })()
   );
 });
