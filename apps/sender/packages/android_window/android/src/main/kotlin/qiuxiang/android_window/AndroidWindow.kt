@@ -15,6 +15,7 @@ import kotlin.math.roundToInt
 import android.content.res.Configuration
 import android.util.Log
 import android.content.Context
+import android.view.WindowManager
 
 class AndroidWindow(
   val service: Service,
@@ -99,7 +100,9 @@ class AndroidWindow(
       )
     val orientation = service.resources.configuration.orientation
     if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-      flutterView.layoutParams.height = metrics.heightPixels - getStatusBarHeight(service)
+      val navBarVisible = getNavigationBarHeight(service)
+      flutterView.layoutParams.height =
+        metrics.heightPixels - getStatusBarHeight(service) - getNavigationBarHeight(service)
       flutterView.requestLayout()
     }
   }
@@ -181,5 +184,30 @@ class AndroidWindow(
       0
     }
   }
+
+  fun getNavigationBarHeight(context: Context): Int {
+    val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager
+      ?: return 0
+
+    val realMetrics = DisplayMetrics()
+    val displayMetrics = DisplayMetrics()
+
+    val display = windowManager.defaultDisplay
+
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+      // API 30+ (Android 11 以上)
+      display.getRealMetrics(realMetrics)
+      display.getMetrics(displayMetrics)
+    } else {
+      // API 29 以下
+      display.getMetrics(displayMetrics)
+      display.getRealMetrics(realMetrics)
+    }
+
+    val realHeight = realMetrics.heightPixels // 總高度（包含 Navigation Bar）
+    val displayHeight = displayMetrics.heightPixels // 應用可用高度
+    return realHeight - displayHeight
+  }
+
 
 }
