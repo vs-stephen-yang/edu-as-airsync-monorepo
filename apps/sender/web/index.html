@@ -96,6 +96,13 @@
         return;
       }
 
+      navigator.serviceWorker.ready.then(registration => {
+        if (registration.active) {
+          console.log("[APP] Sending message to service worker on refresh...");
+          registration.active.postMessage({ type: "downloadOffline" });
+        }
+      }).catch(error => console.error("[APP] Service worker not ready:", error));
+
       // Wait for page to fully load
       window.addEventListener('appinstalled', () => {
         console.log('[APP] installed, registering service worker');
