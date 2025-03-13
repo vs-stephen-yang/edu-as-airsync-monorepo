@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -1885,6 +1886,36 @@ class S {
     return Intl.message(
       'Unable to share audio. Please download and install audio driver.',
       name: 'v3_present_select_screen_mac_audio_driver',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `For Best User Experience!`
+  String get v3_main_download_mac_pkg_label {
+    return Intl.message(
+      'For Best User Experience!',
+      name: 'v3_main_download_mac_pkg_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App Store`
+  String get v3_main_download_mac_store {
+    return Intl.message(
+      'App Store',
+      name: 'v3_main_download_mac_store',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Or Install via`
+  String get v3_main_download_mac_store_label {
+    return Intl.message(
+      'Or Install via',
+      name: 'v3_main_download_mac_store_label',
       desc: '',
       args: [],
     );

@@ -224,6 +224,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("AirSync App"),
         "v3_main_download_desc": MessageLookupByLibrary.simpleMessage(
             "Effortless screen sharing with one-click connect."),
+        "v3_main_download_mac_pkg_label":
+            MessageLookupByLibrary.simpleMessage("For Best User Experience!"),
+        "v3_main_download_mac_store":
+            MessageLookupByLibrary.simpleMessage("App Store"),
+        "v3_main_download_mac_store_label":
+            MessageLookupByLibrary.simpleMessage("Or Install via"),
         "v3_main_download_mac_subtitle":
             MessageLookupByLibrary.simpleMessage("macOS 10.15+"),
         "v3_main_download_mac_title":

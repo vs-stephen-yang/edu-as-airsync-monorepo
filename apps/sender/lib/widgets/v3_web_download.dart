@@ -1,10 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
-import 'package:display_cast_flutter/utilities/web_util.dart';
+import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/widgets/v3_web_download_app_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class V3WebDownload extends StatelessWidget {
@@ -24,24 +25,20 @@ class V3WebDownload extends StatelessWidget {
         children: [
           Positioned(
             left: 0,
-            top: isBigThan1536(context)
-                ? 162
-                : isBigThan1280(context)
-                    ? 184
-                    : 131,
+            top: 131,
             right: 0,
             child: SvgPicture.asset('assets/images/ic_web_planetary_rings.svg'),
           ),
           Positioned(
-            top: isBigThan1536(context)
-                ? 124
-                : isBigThan1280(context)
-                    ? 146
-                    : 80,
+            top: 80,
             child: Column(
               children: [
-                Image.asset('assets/images/ic_logo_airsync_icon.png'),
-                const SizedBox(height: 6),
+                Image.asset(
+                  'assets/images/ic_logo_airsync_icon.png',
+                  width: 90,
+                  height: 90,
+                ),
+                const SizedBox(height: 40),
                 AutoSizeText(
                   S.of(context).v3_main_download_title,
                   style: TextStyle(
@@ -63,10 +60,8 @@ class V3WebDownload extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: isBigThan1280(context) ? 455 : 349,
-            child: Wrap(
-              direction:
-                  isBigThan1280(context) ? Axis.horizontal : Axis.vertical,
+            top: 80 + 269,
+            child: Column(
               children: [
                 V3WebDownloadItem(
                   leadingSvg: 'assets/images/ic_web_download_windows.svg',
@@ -83,7 +78,12 @@ class V3WebDownload extends StatelessWidget {
                   title: S.of(context).v3_main_download_mac_title,
                   subtitle: S.of(context).v3_main_download_mac_subtitle,
                   action: S.of(context).v3_main_download_action_download,
+                  isMac: true,
                   onClick: () {
+                    launchUrl(
+                        Uri.parse(AppConfig.of(context)!.settings.appStoreUrl));
+                  },
+                  onClick2: () {
                     launchUrl(Uri.parse(macLink));
                   },
                 ),
@@ -92,7 +92,7 @@ class V3WebDownload extends StatelessWidget {
                   leadingSvg: 'assets/images/ic_web_download_qrcode.svg',
                   title: S.of(context).v3_main_download_app_title,
                   subtitle: S.of(context).v3_main_download_app_subtitle,
-                  action: S.of(context).v3_main_download_action_get,
+                  action: S.of(context).v3_main_download_action_download,
                   onClick: () {
                     _showDownloadAppMenuDialog(context);
                   },
@@ -124,74 +124,216 @@ class V3WebDownloadItem extends StatelessWidget {
     required this.subtitle,
     required this.action,
     required this.onClick,
+    this.isMac = false,
+    this.onClick2,
   });
 
   final String leadingSvg;
   final String title;
   final String subtitle;
   final String action;
+  final bool isMac;
   final Function() onClick;
+  final Function()? onClick2;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: isBigThan1920(context)
-          ? 502
-          : isBigThan1536(context)
-              ? 396
-              : isBigThan1280(context)
-                  ? 350
-                  : isBigThan1024(context)
-                      ? 643
-                      : 472,
-      height: 92,
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        color: context.tokens.color.vsdswColorSurface100,
-        child: Center(
-          child: ListTile(
-            leading: SvgPicture.asset(leadingSvg),
-            title: AutoSizeText(
-              title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: context.tokens.color.vsdswColorOnSurface,
+      width: 602,
+      height: 92 + (isMac ? 37 : 0),
+      child: !isMac
+          ? Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
               ),
-            ),
-            subtitle: AutoSizeText(
-              subtitle,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: context.tokens.color.vsdswColorOnSurfaceVariant,
-              ),
-            ),
-            trailing: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                elevation: 5.0,
-                foregroundColor: context.tokens.color.vsdswColorOnSurface,
-                backgroundColor: context.tokens.color.vsdswColorSurface100,
-                side: BorderSide(
-                  color: context.tokens.color.vsdswColorSurface300,
-                  width: 1,
+              color: context.tokens.color.vsdswColorSurface100,
+              child: Center(
+                child: ListTile(
+                  leading: SvgPicture.asset(leadingSvg),
+                  title: AutoSizeText(
+                    title,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: context.tokens.color.vsdswColorOnSurface,
+                    ),
+                  ),
+                  subtitle: AutoSizeText(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: context.tokens.color.vsdswColorOnSurfaceVariant,
+                    ),
+                  ),
+                  trailing: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 5.0,
+                      foregroundColor: context.tokens.color.vsdswColorOnSurface,
+                      backgroundColor:
+                          context.tokens.color.vsdswColorSurface100,
+                      side: BorderSide(
+                        color: context.tokens.color.vsdswColorSurface300,
+                        width: 1,
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    onPressed: () {
+                      onClick.call();
+                    },
+                    child: AutoSizeText(action),
+                  ),
                 ),
-                textStyle: const TextStyle(
-                  fontSize: 14,
+              ),
+            )
+          : MacDownloadWidget(
+              leadingSvg: leadingSvg,
+              title: title,
+              subtitle: subtitle,
+              action: action,
+              onClick: onClick,
+              onClick2: onClick2,
+            ),
+    );
+  }
+}
+
+class MacDownloadWidget extends StatelessWidget {
+  const MacDownloadWidget(
+      {super.key,
+      required this.leadingSvg,
+      required this.title,
+      required this.subtitle,
+      required this.action,
+      required this.onClick,
+      required this.onClick2});
+
+  final String leadingSvg;
+  final String title;
+  final String subtitle;
+  final String action;
+  final Function() onClick;
+  final Function()? onClick2;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(left: 16, right: 16),
+      margin: const EdgeInsets.symmetric(horizontal: 5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          SvgPicture.asset(leadingSvg),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AutoSizeText(
+                title,
+                style: TextStyle(
+                  fontSize: 18,
                   fontWeight: FontWeight.w500,
+                  color: context.tokens.color.vsdswColorOnSurface,
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
               ),
-              onPressed: () {
-                onClick.call();
-              },
-              child: AutoSizeText(action),
+              AutoSizeText(
+                subtitle,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: context.tokens.color.vsdswColorOnSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SvgPicture.asset(
+                          'assets/images/v3_ic_web_download_thumb.svg'),
+                      const Gap(4),
+                      Text(
+                        maxLines: 2,
+                        S.current.v3_main_download_mac_pkg_label,
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: context.tokens.color.vsdswColorPrimary,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const Gap(13),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 5.0,
+                          foregroundColor:
+                              context.tokens.color.vsdswColorOnSurface,
+                          backgroundColor:
+                              context.tokens.color.vsdswColorSurface100,
+                          side: BorderSide(
+                            color: context.tokens.color.vsdswColorSurface300,
+                            width: 1,
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        onPressed: onClick,
+                        child: AutoSizeText(action),
+                      ),
+                      const Gap(5),
+                    ],
+                  ),
+                ),
+                const Gap(12),
+                Container(
+                  height: 1,
+                  color: context.tokens.color.vsdswColorOutline,
+                ),
+                const Gap(12),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        S.current.v3_main_download_mac_store_label,
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: context.tokens.color.vsdswColorOnSurface),
+                      ),
+                      const Gap(5),
+                      GestureDetector(
+                        onTap: onClick2,
+                        child: Text(
+                          S.current.v3_main_download_mac_store,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: context.tokens.color.vsdswColorOnSurface,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }
