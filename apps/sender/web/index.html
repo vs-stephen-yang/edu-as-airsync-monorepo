@@ -85,9 +85,6 @@
         const appRunner = await engineInitializer.initializeEngine();
         await appRunner.runApp();
       },
-      serviceWorkerSettings: {
-        serviceWorkerVersion: {{flutter_service_worker_version}},
-      },
     });
 
     // Immediate function to handle service worker registration
@@ -100,8 +97,8 @@
       }
 
       // Wait for page to fully load
-      window.addEventListener('load', () => {
-        console.log('[APP] Window loaded, registering service worker');
+      window.addEventListener('appinstalled', () => {
+        console.log('[APP] installed, registering service worker');
 
         // Register the service worker
         navigator.serviceWorker.register('/service-worker.js')
