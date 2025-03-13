@@ -33,5 +33,5 @@ class StageConfig implements ConfigSettings {
   String appStoreUrl = 'https://www.stage.airsync.net/download';
 
   @override
-  String appUpdateMacAppcastUrl = 'https://appconfig.stage.airsync.net/airsync-sender/mac_appcast.xml';
+  String appUpdateMacAppcastUrl = 'https://appconfig.stage.airsync.net/airsync-sender/mac_appcast_s.xml';
 }
