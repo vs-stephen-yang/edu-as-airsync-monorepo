@@ -11,7 +11,9 @@ self.addEventListener("install", (event) => {
       const cache = await caches.open(CACHE_NAME);
 
       // Cache all resources first
-      await downloadOffline();
+      await cache.addAll(
+        RESOURCES.map((path) => new Request(path, { 'cache': 'reload' }))
+      );
 
       // After caching all resources, fetch version.json and store in manifest
       try {
