@@ -5,9 +5,17 @@ const CACHE_NAME = 'flutter-app-cache';
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
+  console.log("[event] install");
+});
+
+// During activate, the cache is populated with the temp files downloaded in
+// install. If this service worker is upgrading from one with a saved
+// MANIFEST, then use this to retain unchanged resource files.
+self.addEventListener("activate", (event) => {
+  console.log("[event] activate");
   event.waitUntil(
     (async () => {
-      console.log("service-work install event");
+      await clients.claim(); // Forces new SW to take over all clients immediately
       const cache = await caches.open(CACHE_NAME);
 
       // Cache all resources first
@@ -32,19 +40,6 @@ self.addEventListener("install", (event) => {
       } catch (error) {
         console.warn("[Service Worker] Failed to fetch initial version.json:", error);
       }
-    })()
-  );
-});
-
-// During activate, the cache is populated with the temp files downloaded in
-// install. If this service worker is upgrading from one with a saved
-// MANIFEST, then use this to retain unchanged resource files.
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    (async () => {
-      await clients.claim(); // Forces new SW to take over all clients immediately
-      await checkForUpdates();
-      await downloadOffline(); // 🛠 Ensures all assets are cached immediately
     })()
   );
 });
@@ -114,9 +109,6 @@ self.addEventListener("fetch", (event) => {
         }
         return networkResponse;
       } catch (error) {
-        if (key === 'version.json') {
-          return new Response('{}', { headers: { 'Content-Type': 'application/json' } });
-        }
         if (event.request.destination === 'document') {
           return await caches.match('index.html');
         }
@@ -127,9 +119,12 @@ self.addEventListener("fetch", (event) => {
 });
 
 self.addEventListener('message', (event) => {
-  if (event.data.type == 'downloadOffline') {
-    console.log("[event] message downloadOffline");
-    downloadOffline();
+  if (event.data.type == 'reload') {
+    console.log("[event] message");
+    (async () => {
+      await downloadOffline();
+      checkForUpdates();
+    })();
     return;
   }
 });
@@ -174,6 +169,7 @@ async function checkForUpdates() {
       }
     } catch (error) {
       console.warn("[Service Worker] Failed to fetch version.json:", error);
+      return
     }
 
     if (manifest) {
