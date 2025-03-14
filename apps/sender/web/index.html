@@ -99,7 +99,7 @@
       navigator.serviceWorker.ready.then(registration => {
         if (registration.active) {
           console.log("[APP] Sending message to service worker on refresh...");
-          registration.active.postMessage({ type: "downloadOffline" });
+          registration.active.postMessage({ type: "reload" });
         }
       }).catch(error => console.error("[APP] Service worker not ready:", error));
 
