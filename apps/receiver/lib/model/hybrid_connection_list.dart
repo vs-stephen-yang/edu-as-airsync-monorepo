@@ -52,12 +52,11 @@ class HybridConnectionList {
 
   // the following device support 6 split screen
   static final List<String> _support6SplitScreenDevices = [
-    'IFP105S',
-    'IFP105UW',
-    'IFP110',
-    'IFP92UW',
-    'CDE105UW',
-    'CDE92UW',
+    'IFP50_5',
+    'IFP52_K',
+    'IFP52_1C',
+    'IFP52_2',
+    'IFP53',
   ];
   static int maxHybridSplitScreen = 4;
 
