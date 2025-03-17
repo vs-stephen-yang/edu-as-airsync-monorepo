@@ -8,6 +8,7 @@ import 'package:display_channel/src/util/uri_util.dart';
 class DisplayTunnelServer {
   void Function()? onTunnelConnected;
   void Function()? onTunnelConnecting;
+  void Function(bool success, String status)? reportTunnelConnectResult;
 
   final ChannelStore _store;
   TunnelConnectionServer? _tunnelServer;
@@ -64,6 +65,7 @@ class DisplayTunnelServer {
 
     _tunnelServer!.onTunnelConnected = () => onTunnelConnected?.call();
     _tunnelServer!.onTunnelConnecting = () => onTunnelConnecting?.call();
+    _tunnelServer!.reportTunnelConnectResult = reportTunnelConnectResult;
 
     _tunnelServer!.start();
   }
