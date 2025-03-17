@@ -9,11 +9,15 @@ import 'package:display_flutter/utility/channel_util.dart';
 import 'package:display_flutter/utility/log.dart';
 
 enum TunnelStatus {
-  disabled,
-  checking,
-  unavailable,
-  connecting,
-  connected,
+  disabled('Disable'),
+  checking('Checking'),
+  unavailable('Unavailable'),
+  connecting('Connecting'),
+  connected('Connected');
+
+  const TunnelStatus(this.value);
+
+  final String value;
 }
 
 class ChannelServer {
@@ -75,6 +79,7 @@ class ChannelServer {
   final Function() onDisplayCodeChange;
 
   final Function(int port, bool success, String? error) reportPortBindResult;
+  final Function(bool success, String status)? reportTunnelConnectResult;
 
   ChannelServer({
     required this.onNewDirectChannel,
@@ -86,6 +91,7 @@ class ChannelServer {
     required this.instanceId,
     required this.webTransportServerPort,
     required this.reportPortBindResult,
+    required this.reportTunnelConnectResult,
     this.tunnelMaxRetry = 30,
     this.tunnelRetryInterval = const Duration(minutes: 2),
   });
@@ -194,6 +200,8 @@ class ChannelServer {
       _changeTunnelStatus(TunnelStatus.connecting);
       trackTrace('tunnel_connecting');
     };
+
+    _tunnelServer?.reportTunnelConnectResult = reportTunnelConnectResult;
 
     _tunnelServer?.start(
       instanceId,

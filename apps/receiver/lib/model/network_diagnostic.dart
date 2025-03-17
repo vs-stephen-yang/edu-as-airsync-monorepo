@@ -39,6 +39,28 @@ class PortTestResult extends TestResult {
   }
 }
 
+enum TunnelStatusType {
+  register,
+  connect
+}
+
+class TunnelResult extends TestResult {
+  final String status;
+
+  TunnelResult({
+    required this.status,
+    required super.success,
+    super.error,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = super.toJson();
+    json['status'] = status;
+    return json;
+  }
+}
+
 class NetworkDiagnostic {
   final DiagnosticResults _results = DiagnosticResults();
 
@@ -51,6 +73,7 @@ class NetworkDiagnostic {
       _testWebRTCCandidates(iceServers),
     ]);
 
+    // TODO: replace
     _results.logResult();
     return _results;
   }
@@ -153,13 +176,31 @@ class NetworkDiagnostic {
     _results.portTests
         .add(PortTestResult(port: port, success: success, error: error));
 
+    // TODO: replace
     _results.logResult();
+  }
+
+  setTunnelResult(TunnelStatusType type, bool success, String status) {
+    if (type == TunnelStatusType.register) {
+      _results.tunnelRegisterTest = TunnelResult(status: status, success: success);
+    } else {
+      _results.tunnelConnectionTest = TunnelResult(status: status, success: success);
+    }
+
+    // TODO: replace
+    _results.logResult();
+  }
+
+  reportTunnelConnectResult(bool success, String status) {
+    setTunnelResult(TunnelStatusType.connect, success, status);
   }
 }
 
 // Models for diagnostic results and configuration
 class DiagnosticResults {
   List<PortTestResult> portTests = [];
+  TunnelResult? tunnelRegisterTest;
+  TunnelResult? tunnelConnectionTest;
   TestResult? udpCandidateTest;
   TestResult? tcpCandidateTest;
   TestResult? stunServerTest;
@@ -168,6 +209,8 @@ class DiagnosticResults {
   Map<String, dynamic> toJson() {
     return {
       'portTests': portTests.map((test) => test.toJson()).toList(),
+      'tunnelRegisterTest': tunnelRegisterTest?.toJson(),
+      'tunnelConnectionTest': tunnelConnectionTest?.toJson(),
       'udpCandidateTest': udpCandidateTest?.toJson(),
       'tcpCandidateTest': tcpCandidateTest?.toJson(),
       'stunServerTest': stunServerTest?.toJson(),
