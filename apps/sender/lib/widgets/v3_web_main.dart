@@ -6,6 +6,8 @@ import 'package:display_cast_flutter/providers/pref_language_provider.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
+import 'package:display_cast_flutter/utilities/dart_ui_web_fake.dart'
+    if (dart.library.ui_web) 'dart:ui_web' as ui_web;
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
 import 'package:display_cast_flutter/widgets/moderator_share.dart';
@@ -21,16 +23,15 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class V3WebMain extends StatelessWidget {
-  const V3WebMain({super.key,
+  const V3WebMain({
+    super.key,
     required this.presentStateProvider,
     this.scrollTo,
-    required this.supportedBrowsers});
+  });
 
   final PresentStateProvider presentStateProvider;
 
   final Function()? scrollTo;
-
-  final bool supportedBrowsers;
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +48,7 @@ class V3WebMain extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          if (isPresenting)
-            V3PresentStateMachine(
-              presentStateProvider: presentStateProvider,
-            ),
+          if (isPresenting) const V3PresentStateMachine(),
           if (!isPresenting) ...[
             Row(
               children: [
@@ -127,10 +125,7 @@ class V3WebMain extends StatelessWidget {
                           left: 0,
                           child: unsupportedMessage(context),
                         ),
-                        V3PresentStateMachine(
-                          presentStateProvider: presentStateProvider,
-                          supported: supportedBrowsers,
-                        ),
+                        const V3PresentStateMachine(),
                       ],
                     ),
                   ),
@@ -156,6 +151,7 @@ class V3WebMain extends StatelessWidget {
   }
 
   Widget unsupportedMessage(BuildContext context) {
+    bool supportedBrowsers = ui_web.browser.isChromium || ui_web.browser.isEdge;
     bool showUnsupportedMassage = true;
     return StatefulBuilder(builder: (context, setState) {
       return (showUnsupportedMassage && !supportedBrowsers)
@@ -209,17 +205,17 @@ class V3WebMain extends StatelessWidget {
 }
 
 class V3PresentStateMachine extends StatelessWidget {
-  const V3PresentStateMachine(
-      {super.key, required this.presentStateProvider, this.supported = true});
+  const V3PresentStateMachine({super.key});
 
-  final PresentStateProvider presentStateProvider;
-  final bool supported;
   @override
   Widget build(BuildContext context) {
+    bool supportedBrowsers = ui_web.browser.isChromium || ui_web.browser.isEdge;
+    PresentStateProvider presentStateProvider =
+        Provider.of<PresentStateProvider>(context);
     log.info('PresentState: ${presentStateProvider.currentState}');
     switch (presentStateProvider.currentState) {
       case ViewState.idle:
-        return V3PresentIdle(supported: supported);
+        return V3PresentIdle(supported: supportedBrowsers);
       case ViewState.selectRole:
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ChannelProvider channelProvider =
