@@ -10,6 +10,7 @@ import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/model/direct_connector.dart';
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/model/remote_screen_client.dart';
+import 'package:display_cast_flutter/model/network_diagnostic.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/settings/channel_config.dart';
@@ -124,6 +125,8 @@ class ChannelProvider extends ChangeNotifier {
 
   String get randomName => _randomName;
   String _randomName = '';
+
+  final NetworkDiagnostic _networkDiagnostic = NetworkDiagnostic();
 
   void setChannelConnectError(ChannelConnectError error) {
     trackEvent(
