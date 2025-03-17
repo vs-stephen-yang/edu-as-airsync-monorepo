@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:display_cast_flutter/api/http_request.dart';
+import 'package:display_cast_flutter/api/fetch_tunnel_info.dart';
+
 
 class TestResult {
   final bool success;
@@ -66,7 +67,7 @@ class NetworkDiagnostic {
   NetworkDiagnostic();
 
   // Run all diagnostic tests
-  Future<DiagnosticResults> runAllTests(String receiverIp, int port) async {
+  Future<DiagnosticResults> runAllTests(String receiverIp, int port, String tunnelUrl) async {
     if (kIsWeb) {
       // Web platform has different network behavior, skip tests
       return _results;
@@ -77,6 +78,9 @@ class NetworkDiagnostic {
 
     // Test WebSocket connection
     await _testWebSocketConnection(receiverIp, port);
+
+    // Test tunnel server connection
+    await _testTunnelServerConnection(tunnelUrl);
 
     _results.logResult();
     return _results;
@@ -179,17 +183,42 @@ class NetworkDiagnostic {
       await wsClient?.close();
     }
   }
+
+  Future<void> _testTunnelServerConnection(String url) async {
+    try {
+      final request = HttpRequest<void>(
+        url,
+        path: '/v1/instance',
+      );
+      await request.sendRequest(
+          'fetchTunnelInfo',
+          HttpMethod.get,
+          FetchTunnelInfoResult.fromJson
+      );
+      _results.tunnelTest = TestResult(success: true);
+    } catch (e) {
+      if (e is HttpRequestException) {
+        if (e.error == HttpRequestError.httpError && e.statusCode == 400) {
+          _results.tunnelTest = TestResult(success: true);
+          return;
+        }
+      }
+      _results.tunnelTest = TestResult(success: false, error: e.toString());
+    }
+  }
 }
 
 // Models for diagnostic results and configuration
 class DiagnosticResults {
   List<PortTestResult> portTests = [];
   WebSocketTestResult? webSocketTest;
+  TestResult? tunnelTest;
 
   Map<String, dynamic> toJson() {
     return {
       'portTests': portTests.map((test) => test.toJson()).toList(),
       'webSocketTest': webSocketTest?.toJson(),
+      'tunnelServerTest': tunnelTest?.toJson(),
     };
   }
 
