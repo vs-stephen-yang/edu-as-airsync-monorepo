@@ -232,6 +232,7 @@ class ChannelProvider extends ChangeNotifier {
       instanceId: AppInstanceCreate().displayInstanceID,
       webTransportServerPort: appConfig.webTransportServerPort,
       reportPortBindResult: _networkDiagnostic.importPortTestResult,
+      reportTunnelConnectResult: _networkDiagnostic.reportTunnelConnectResult,
     );
 
     _load().then((_) {
@@ -331,7 +332,9 @@ class ChannelProvider extends ChangeNotifier {
   }
 
   _onTunnelStatusChange(TunnelStatus status) {
-    isLanModeOnly.value = !_channelServer.isTunnelAvailable;
+    bool isTunnelAvailable = _channelServer.isTunnelAvailable;
+    isLanModeOnly.value = !isTunnelAvailable;
+    _networkDiagnostic.setTunnelResult(TunnelStatusType.register, isTunnelAvailable, status.value);
   }
 
   void _onDisplayCodeChange() {
