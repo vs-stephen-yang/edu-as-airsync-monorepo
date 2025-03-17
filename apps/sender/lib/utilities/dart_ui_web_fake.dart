@@ -13,3 +13,17 @@ class FakeBrowserDetection {
 
   bool get isEdge => false;
 }
+
+FakeWindow window = FakeWindow.instance;
+
+class FakeWindow {
+  FakeWindow._();
+
+  static final FakeWindow instance = FakeWindow._();
+
+  FakeNavigator get navigator => FakeNavigator();
+}
+
+class FakeNavigator {
+  String get userAgent => "";
+}
