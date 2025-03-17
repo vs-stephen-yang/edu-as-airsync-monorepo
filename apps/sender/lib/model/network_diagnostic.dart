@@ -69,7 +69,8 @@ class NetworkDiagnostic {
   // Run all diagnostic tests
   Future<DiagnosticResults> runAllTests(String receiverIp, int port, String tunnelUrl) async {
     if (kIsWeb) {
-      // Web platform has different network behavior, skip tests
+      await _testTunnelServerConnection(tunnelUrl);
+      _results.logResult();
       return _results;
     }
 
