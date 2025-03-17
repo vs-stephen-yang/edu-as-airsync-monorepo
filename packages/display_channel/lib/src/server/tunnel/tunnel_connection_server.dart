@@ -11,9 +11,21 @@ import 'package:display_channel/src/server/tunnel/tunnel_message_handler.dart';
 import 'package:display_channel/src/server/tunnel/tunnel_message_parser.dart';
 import 'package:display_channel/src/util/channel_message_util.dart';
 
+enum TunnelConnectionStatus {
+  connecting('Connecting'),
+  connected('Connected'),
+  connectFailed('ConnectFailed'),
+  disconnected('Disconnected');
+
+  const TunnelConnectionStatus(this.value);
+
+  final String value;
+}
+
 class TunnelConnectionServer extends TunnelMessageHandler {
   void Function()? onTunnelConnected;
   void Function()? onTunnelConnecting;
+  void Function(bool success, String status)? reportTunnelConnectResult;
 
   bool _isTunnelConnecting = false;
 
@@ -136,12 +148,14 @@ class TunnelConnectionServer extends TunnelMessageHandler {
     if (!_isTunnelConnecting) {
       _isTunnelConnecting = true;
       onTunnelConnecting?.call();
+      reportTunnelConnectResult?.call(true, TunnelConnectionStatus.connecting.value);
     }
   }
 
   void _onTunnelConnected() {
     _isTunnelConnecting = false;
     onTunnelConnected?.call();
+    reportTunnelConnectResult?.call(true, TunnelConnectionStatus.connected.value);
 
     _enableHeartbeat(true);
 
@@ -156,6 +170,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
 
   _onTunnelConnectFailed(ConnectError error) {
     _closeTunnelConnection();
+    reportTunnelConnectResult?.call(true, TunnelConnectionStatus.connectFailed.value);
 
     // Reconnect
     _openTunnelConnection();
@@ -163,6 +178,7 @@ class TunnelConnectionServer extends TunnelMessageHandler {
 
   void _onTunnelDisconnected() {
     _enableHeartbeat(false);
+    reportTunnelConnectResult?.call(true, TunnelConnectionStatus.disconnected.value);
 
     _connections.forEach((_, connection) {
       connection.onClosed?.call(connection);
