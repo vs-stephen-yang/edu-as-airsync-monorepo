@@ -32,6 +32,28 @@ class FlutterMirror {
       log("update nearbyWifiDevices permission status: $status");
     }
 
+    // TBD: do we need to request bluetooth permissions when actually use it?
+    status = await Permission.bluetooth.status;
+    if (status != PermissionStatus.granted) {
+      log("bluetooth permission status: $status");
+      status = await Permission.bluetooth.request();
+      log("update bluetooth permission status: $status");
+    }
+
+    status = await Permission.bluetoothConnect.status;
+    if (status != PermissionStatus.granted) {
+      log("bluetoothConnect permission status: $status");
+      status = await Permission.bluetoothConnect.request();
+      log("update bluetoothConnect permission status: $status");
+    }
+
+    status = await Permission.bluetoothScan.status;
+    if (status != PermissionStatus.granted) {
+      log("bluetoothScan permission status: $status");
+      status = await Permission.bluetoothScan.request();
+      log("update bluetoothScan permission status: $status");
+    }
+
     return;
   }
 

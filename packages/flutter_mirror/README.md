@@ -6,7 +6,7 @@
 
 Install Flutter SDK 3.3.10+
 
-checks your environment and displays a report of the status of your Flutter installation
+checks your environment and displays a report of the sta7tus of your Flutter installation
 
 ```
 flutter doctor
