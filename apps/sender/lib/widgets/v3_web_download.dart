@@ -2,6 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
+import 'package:display_cast_flutter/utilities/dart_ui_web_fake.dart'
+    if (dart.library.ui_web) 'dart:html' as html;
 import 'package:display_cast_flutter/widgets/v3_web_download_app_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -84,7 +86,14 @@ class V3WebDownload extends StatelessWidget {
                         Uri.parse(AppConfig.of(context)!.settings.appStoreUrl));
                   },
                   onClick2: () {
-                    launchUrl(Uri.parse(macLink));
+                    String userAgent =
+                        html.window.navigator.userAgent.toLowerCase();
+                    if (userAgent.contains("mac os")) {
+                      launchUrl(Uri.parse(macLink));
+                    } else {
+                      launchUrl(Uri.parse(
+                          macLink.replaceAll("macappstore", "https")));
+                    }
                   },
                 ),
                 const SizedBox(width: 24, height: 12),
