@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:display_channel/src/channel_store.dart';
@@ -47,13 +48,6 @@ class DirectConnectionServer {
   Future onHttpRequest(HttpRequest httpRequest) async {
     final connectionRequest = _parseConnectionRequest(httpRequest);
 
-    if (connectionRequest == null) {
-      // invalid http request
-      // TODO: upgrade 發送關閉訊息後隔一段時間再斷線
-      await httpRequest.response.close();
-      return;
-    }
-
     final websocket = await WebSocketTransformer.upgrade(httpRequest);
     websocket.pingInterval = pingInterval;
 
@@ -62,6 +56,19 @@ class DirectConnectionServer {
       idleConnectionTimeout: idleConnectionTimeout,
       uri: httpRequest.uri,
     );
+
+    if (connectionRequest == null) {
+      // invalid http request
+      final reason = convertConnectRequestStatusToReason(
+          ConnectRequestStatus.authenticationRequired);
+      connection.send(ChannelClosedMessage(reason).toJson());
+
+      Timer(const Duration(seconds: 10), () async {
+        await httpRequest.response.close();
+      });
+
+      return;
+    }
 
     // authenticate the connectin request
     final status = _verifyConnectRequest(connectionRequest);
