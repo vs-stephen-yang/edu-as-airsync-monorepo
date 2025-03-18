@@ -7,6 +7,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_stats.dart';
 import 'package:display_flutter/model/rtc_stats_parser.dart';
+import 'package:display_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
 import 'package:display_flutter/screens/home.dart';
@@ -189,8 +190,7 @@ class RTCConnector {
 
   void startStatsTimer() {
     _rtcStatsMonitor = RtcStatsMonitor();
-
-    _rtcStatsParser = RtcStatsParser(
+    final rtcStatsReporter = RtcStatsReporter(
       _handleVideoStatsReport,
       (String localCandidateType, String remoteCandidateType) {
         onPairCandidateType?.call(localCandidateType, remoteCandidateType);
@@ -204,10 +204,10 @@ class RTCConnector {
           _remoteCandidateType = remoteCandidateType;
         }
       },
+      _handleIceCandidatePairStatsReport,
     );
 
-    _rtcStatsParser?.onIceCandidatePairStats =
-        _handleIceCandidatePairStatsReport;
+    _rtcStatsParser = RtcStatsParser(rtcStatsReporter);
 
     _statsTimer?.cancel();
     _statsTimer = Timer.periodic(
