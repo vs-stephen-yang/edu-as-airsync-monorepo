@@ -861,6 +861,7 @@ class ChannelProvider extends ChangeNotifier {
       return WebTransportClientConnection(
           url,
           fetchWebTransportCertificateHashes,
+          _networkDiagnostic.reportWebTransportCertDate,
           WebTransportClientConnectionConfig(
             connectionTimeout: defaultDirectConnectionTimeout,
             allowSelfSignedCertificates: true, // Allow self-signed certificates
