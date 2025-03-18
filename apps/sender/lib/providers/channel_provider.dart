@@ -860,8 +860,13 @@ class ChannelProvider extends ChangeNotifier {
     if (kIsWeb) {
       return WebTransportClientConnection(
           url,
-          fetchWebTransportCertificateHashes,
-          _networkDiagnostic.reportWebTransportCertDate,
+          () async {
+            final certMap = await fetchWebTransportCertificateHashes();
+            if (certMap['dates'] != null) {
+              _networkDiagnostic.reportWebTransportCertDate(certMap['dates']!);
+            }
+            return certMap['hashes'];
+          },
           WebTransportClientConnectionConfig(
             connectionTimeout: defaultDirectConnectionTimeout,
             allowSelfSignedCertificates: true, // Allow self-signed certificates
