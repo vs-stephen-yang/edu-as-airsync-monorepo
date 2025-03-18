@@ -79,7 +79,8 @@ class ChannelServer {
   final Function() onDisplayCodeChange;
 
   final Function(int port, bool success, String? error) reportPortBindResult;
-  final Function(bool success, String status)? reportTunnelConnectResult;
+  final Function(bool success, String status) reportTunnelConnectResult;
+  final Function(String date) reportWebTransportCertDate;
 
   ChannelServer({
     required this.onNewDirectChannel,
@@ -92,6 +93,7 @@ class ChannelServer {
     required this.webTransportServerPort,
     required this.reportPortBindResult,
     required this.reportTunnelConnectResult,
+    required this.reportWebTransportCertDate,
     this.tunnelMaxRetry = 30,
     this.tunnelRetryInterval = const Duration(minutes: 2),
   });
@@ -139,6 +141,7 @@ class ChannelServer {
         if (webTransportCertificate == null) {
           return;
         }
+        reportWebTransportCertDate(webTransportCertificate.date);
         await _webTransportDirectServer?.start(webTransportServerPort,
             certPem: webTransportCertificate.certPem,
             keyPem: webTransportCertificate.keyPem);
