@@ -1,6 +1,7 @@
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_setting_menu.dart';
+import 'package:display_flutter/utility/navigation_service_util.dart';
 import 'package:display_flutter/widgets/v3_focus.dart';
 import 'package:display_flutter/widgets/v3_settings_password_dialog.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +97,7 @@ class V3FooterBar extends StatelessWidget {
             V3SettingMenu(openedWithLogicalKey: openedWithLogicalKey),
         barrierDismissible: false);
 
-    navService.setMenuRoute(route);
+    navService.setRoute(route);
 
     await navService.push(route).whenComplete(settingsProvider.clearFocus);
   }

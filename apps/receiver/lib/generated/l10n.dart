@@ -2140,6 +2140,56 @@ class S {
       args: [],
     );
   }
+
+  /// `Local connection only. Partial issue detected, possibly due to client network configuration.`
+  String get v3_main_local_connection_only_dialog_desc {
+    return Intl.message(
+      'Local connection only. Partial issue detected, possibly due to client network configuration.',
+      name: 'v3_main_local_connection_only_dialog_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get v3_main_connection_dialog_close {
+    return Intl.message(
+      'Close',
+      name: 'v3_main_connection_dialog_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Internet Only`
+  String get v3_main_internet_connection_only {
+    return Intl.message(
+      'Internet Only',
+      name: 'v3_main_internet_connection_only',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connectivity error`
+  String get v3_main_internet_connection_only_error {
+    return Intl.message(
+      'Connectivity error',
+      name: 'v3_main_internet_connection_only_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network connectivity error. Please check network settings.`
+  String get v3_main_internet_connection_only_error_dialog_desc {
+    return Intl.message(
+      'Network connectivity error. Please check network settings.',
+      name: 'v3_main_internet_connection_only_error_dialog_desc',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
