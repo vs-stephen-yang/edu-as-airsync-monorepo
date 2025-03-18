@@ -264,6 +264,18 @@ class MessageLookup extends MessageLookupByLibrary {
             "Supports sharing via AirPlay, Google Cast or Miracast"),
         "v3_last_casting_time_countdown": MessageLookupByLibrary.simpleMessage(
             "The projection is about to end. To extend the projection time, please restart the projection."),
+        "v3_main_connection_dialog_close":
+            MessageLookupByLibrary.simpleMessage("Close"),
+        "v3_main_internet_connection_only":
+            MessageLookupByLibrary.simpleMessage("Internet Only"),
+        "v3_main_internet_connection_only_error":
+            MessageLookupByLibrary.simpleMessage("Connectivity error"),
+        "v3_main_internet_connection_only_error_dialog_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "Network connectivity error. Please check network settings."),
+        "v3_main_local_connection_only_dialog_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "Local connection only. Partial issue detected, possibly due to client network configuration."),
         "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
             "Unable to detect an internet connection. Please connect to a Wi-Fi or intranet network, and try again."),
         "v3_mirror_request_passcode":
@@ -309,6 +321,17 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Display Code"),
         "v3_quick_connect_menu_qrcode":
             MessageLookupByLibrary.simpleMessage("QR Code"),
+        "v3_setting_passcode_cancel":
+            MessageLookupByLibrary.simpleMessage("Cancel"),
+        "v3_setting_passcode_clear":
+            MessageLookupByLibrary.simpleMessage("Clear"),
+        "v3_setting_passcode_confirm":
+            MessageLookupByLibrary.simpleMessage("Confirm"),
+        "v3_setting_passcode_error_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Invalid password, please try again."),
+        "v3_setting_passcode_title": MessageLookupByLibrary.simpleMessage(
+            "Enter passcode to unlock Settings"),
         "v3_settings_all_the_time_info": MessageLookupByLibrary.simpleMessage(
             "Broadcast source IFP screen all the time."),
         "v3_settings_broadcast":

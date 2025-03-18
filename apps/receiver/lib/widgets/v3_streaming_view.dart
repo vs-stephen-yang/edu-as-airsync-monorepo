@@ -13,8 +13,8 @@ import 'package:display_flutter/providers/settings_provider.dart';
 import 'package:display_flutter/screens/v3_home.dart';
 import 'package:display_flutter/screens/v3_new_sharing_menu.dart';
 import 'package:display_flutter/screens/v3_quick_connect_menu.dart';
-import 'package:display_flutter/screens/v3_setting_menu.dart';
 import 'package:display_flutter/screens/v3_shortcuts_menu.dart';
+import 'package:display_flutter/utility/navigation_service_util.dart';
 import 'package:display_flutter/widgets/focus_aware_builder.dart';
 import 'package:display_flutter/widgets/mirror_view.dart';
 import 'package:display_flutter/widgets/v3_extend_casting_time_menu.dart';
@@ -65,7 +65,7 @@ class _V3StreamingViewState extends ConsumerState {
             builder: (context, int splitScreenCount, child) {
               // 當有任何 cast 進入，則關閉 setting menu
               if (splitScreenCount > 0) {
-                navService.dismissSettingMenu();
+                navService.dismissRegisteredDialogs();
               }
 
               if (splitScreenCount >= 0) {

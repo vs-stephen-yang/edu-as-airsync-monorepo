@@ -3,7 +3,7 @@ import 'package:display_flutter/generated/l10n.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/providers/mirror_state_provider.dart';
-import 'package:display_flutter/screens/v3_setting_menu.dart';
+import 'package:display_flutter/utility/navigation_service_util.dart';
 import 'package:display_flutter/widgets/resizable_draggable_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -30,7 +30,7 @@ class _V3GroupHostViewState extends State<V3GroupHostView> {
           return const SizedBox.shrink();
         } else {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            navService.dismissSettingMenu();
+            navService.dismissRegisteredDialogs();
 
             if (provider.displayGroupVideoView != null &&
                 provider.isDisplayGroupVideoAvailable) {

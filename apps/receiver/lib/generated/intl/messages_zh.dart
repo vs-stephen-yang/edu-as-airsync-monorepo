@@ -226,6 +226,17 @@ class MessageLookup extends MessageLookupByLibrary {
             "透過AirPlay, Google Cast或是Miracast分享螢幕"),
         "v3_last_casting_time_countdown":
             MessageLookupByLibrary.simpleMessage("投影即將結束。如需延長投影時間，請重新啟動投影。"),
+        "v3_main_connection_dialog_close":
+            MessageLookupByLibrary.simpleMessage("關閉"),
+        "v3_main_internet_connection_only":
+            MessageLookupByLibrary.simpleMessage("僅限網際網路連線"),
+        "v3_main_internet_connection_only_error":
+            MessageLookupByLibrary.simpleMessage("連線能力受限"),
+        "v3_main_internet_connection_only_error_dialog_desc":
+            MessageLookupByLibrary.simpleMessage("網絡連線錯誤，請檢查網絡設置。"),
+        "v3_main_local_connection_only_dialog_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "僅限本地連接。檢測到部分問題，可能是由於客戶端網絡配置導致。"),
         "v3_main_status_no_network": MessageLookupByLibrary.simpleMessage(
             "無網路連接。請連接到Wi-Fi或Intranet網絡，然後重試。"),
         "v3_mirror_request_passcode":

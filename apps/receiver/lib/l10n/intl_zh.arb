@@ -195,5 +195,10 @@
   "v3_casting_time_extend_success_toast": "投影時間已延長。",
   "v3_casting_ended_toast": "投影已結束。",
   "v3_casting_time_do_not_extend": "不要延長",
-  "v3_casting_time_extend": "延長"
+  "v3_casting_time_extend": "延長",
+  "v3_main_local_connection_only_dialog_desc": "僅限本地連接。檢測到部分問題，可能是由於客戶端網絡配置導致。",
+  "v3_main_connection_dialog_close": "關閉",
+  "v3_main_internet_connection_only": "僅限網際網路連線",
+  "v3_main_internet_connection_only_error": "連線能力受限",
+  "v3_main_internet_connection_only_error_dialog_desc": "網絡連線錯誤，請檢查網絡設置。"
 }

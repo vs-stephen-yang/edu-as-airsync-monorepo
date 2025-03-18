@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:display_channel/display_channel.dart';
 import 'package:display_flutter/api/http_request.dart';
 import 'package:display_flutter/api/instance_api.dart';
 import 'package:display_flutter/app_analytics.dart';
-import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/cancelable_task.dart';
@@ -43,6 +44,9 @@ class ChannelServer {
 
   TunnelStatus get tunnelStatus => _tunnelStatus;
   TunnelStatus _tunnelStatus = TunnelStatus.disabled;
+
+  StreamController<bool> tunnelActivatedStream =
+      StreamController<bool>.broadcast()..add(false);
 
   // Provide a displayCode only if it is available (i.e., instanceGroupId is not zero).
   // If the instanceGroupId is 0, which means the code is not available,
@@ -155,7 +159,6 @@ class ChannelServer {
           keyPem: webTransportCertificate.keyPem);
       reportPortBindResult(webTransportServerPort, true, null);
 
-      CurrentChannelType.addDirect();
       log.info('WebTransport channel server has started');
     } catch (e) {
       reportPortBindResult(webTransportServerPort, false, e.toString());
@@ -168,7 +171,6 @@ class ChannelServer {
       log.info('Stopping direct channel server');
       _directServer?.stop();
       _directServer = null;
-      CurrentChannelType.removeDirect();
     }
 
     if (_webTransportDirectServer != null) {
@@ -314,14 +316,11 @@ class ChannelServer {
 
   void _changeTunnelStatus(TunnelStatus status) {
     if (_tunnelStatus != status) {
-      if (status == TunnelStatus.connected) {
-        CurrentChannelType.addTunnel();
-      } else if (status == TunnelStatus.disabled ||
-          status == TunnelStatus.unavailable) {
-        CurrentChannelType.removeTunnel();
-      }
       log.info('Tunnel status has changed to ${status.name}');
       _tunnelStatus = status;
+      final activated =
+          status == TunnelStatus.connected || status == TunnelStatus.connecting;
+      tunnelActivatedStream.add(activated);
       onTunnelStatusChange(_tunnelStatus);
     }
   }
