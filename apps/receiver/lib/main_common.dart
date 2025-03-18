@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:accessibility_tools/accessibility_tools.dart';
 import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/app_exception_report.dart';
 import 'package:display_flutter/app_instance_create.dart';
@@ -179,6 +180,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
+              DefaultMaterialLocalizations.delegate,
             ],
             //add
             supportedLocales: S.delegate.supportedLocales,
@@ -198,6 +200,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   child: FocusAwareBuilder(
                       builder: (primaryFocusNode) =>
                           V3Eula(primaryFocusNode: primaryFocusNode))),
+            },
+            builder: (context, child) {
+              var c = child!;
+              if (AppConfig.of(context)!.settings.appA11yDebug == true) {
+                c = AccessibilityTools(child: child);
+              }
+              return c;
             },
           );
         },

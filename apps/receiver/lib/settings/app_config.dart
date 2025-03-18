@@ -60,4 +60,7 @@ abstract class ConfigSettings {
 
   late String airSyncUrl;
   late String appStoreUrl;
+
+  // Accessibility. For development only.
+  late bool? appA11yDebug;
 }
