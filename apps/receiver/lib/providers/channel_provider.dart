@@ -233,6 +233,7 @@ class ChannelProvider extends ChangeNotifier {
       webTransportServerPort: appConfig.webTransportServerPort,
       reportPortBindResult: _networkDiagnostic.importPortTestResult,
       reportTunnelConnectResult: _networkDiagnostic.reportTunnelConnectResult,
+      reportWebTransportCertDate: _networkDiagnostic.reportWebTransportCertDate,
     );
 
     _load().then((_) {

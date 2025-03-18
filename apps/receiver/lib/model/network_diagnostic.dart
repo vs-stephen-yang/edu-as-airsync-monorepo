@@ -194,11 +194,19 @@ class NetworkDiagnostic {
   reportTunnelConnectResult(bool success, String status) {
     setTunnelResult(TunnelStatusType.connect, success, status);
   }
+
+  reportWebTransportCertDate(String date) {
+    _results.webTransportCertDate = date;
+
+    // TODO: replace
+    _results.logResult();
+  }
 }
 
 // Models for diagnostic results and configuration
 class DiagnosticResults {
   List<PortTestResult> portTests = [];
+  String? webTransportCertDate;
   TunnelResult? tunnelRegisterTest;
   TunnelResult? tunnelConnectionTest;
   TestResult? udpCandidateTest;
@@ -209,6 +217,7 @@ class DiagnosticResults {
   Map<String, dynamic> toJson() {
     return {
       'portTests': portTests.map((test) => test.toJson()).toList(),
+      'webTransportCertDate': webTransportCertDate,
       'tunnelRegisterTest': tunnelRegisterTest?.toJson(),
       'tunnelConnectionTest': tunnelConnectionTest?.toJson(),
       'udpCandidateTest': udpCandidateTest?.toJson(),

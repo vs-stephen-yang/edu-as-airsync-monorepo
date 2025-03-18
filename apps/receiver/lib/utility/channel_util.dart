@@ -56,6 +56,7 @@ Future<WebTransportCertificate?> getWebTransportCert() async {
   Map<String, dynamic> selectedCert = validCerts.first;
 
   return WebTransportCertificate(
+    selectedCert["date"],
     List<String>.from(selectedCert["certPem"]),
     List<String>.from(selectedCert["keyPem"]),
   );
