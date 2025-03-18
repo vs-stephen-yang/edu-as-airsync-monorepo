@@ -13,17 +13,13 @@ bool isBigThan1536(context) => MediaQuery.of(context).size.width >= 1536;
 
 bool isBigThan1920(context) => MediaQuery.of(context).size.width >= 1920;
 
-Future<List<String>?> fetchWebTransportCertificateHashes(Function(List<String> dates) reportWebTransportCertsDate) async {
+Future<Map<String, List<String>>> fetchWebTransportCertificateHashes() async {
   try {
     String data = await rootBundle.loadString("assets/webtransport_cert_hashes.json");
     Map<String, dynamic> jsonData = json.decode(data);
 
     final certMap = filterValidHashes(jsonData['certs'], DateTime.now().toUtc());
-    if (certMap['dates'] != null) {
-      reportWebTransportCertsDate(certMap['dates']!);
-    }
-
-    return certMap['hashes'];
+    return certMap;
   } catch (e) {
     throw Exception('Asset not found: $e');
   }
