@@ -207,6 +207,13 @@ class NetworkDiagnostic {
       _results.tunnelTest = TestResult(success: false, error: e.toString());
     }
   }
+
+  reportWebTransportCertDate(List<String> dates) {
+    _results.webTransportCertsDate = dates;
+
+    // TODO: replace
+    _results.logResult();
+  }
 }
 
 // Models for diagnostic results and configuration
@@ -214,12 +221,14 @@ class DiagnosticResults {
   List<PortTestResult> portTests = [];
   WebSocketTestResult? webSocketTest;
   TestResult? tunnelTest;
+  List<String>? webTransportCertsDate;
 
   Map<String, dynamic> toJson() {
     return {
       'portTests': portTests.map((test) => test.toJson()).toList(),
       'webSocketTest': webSocketTest?.toJson(),
       'tunnelServerTest': tunnelTest?.toJson(),
+      'webTransportCertsDate': webTransportCertsDate,
     };
   }
 

@@ -13,19 +13,37 @@ bool isBigThan1536(context) => MediaQuery.of(context).size.width >= 1536;
 
 bool isBigThan1920(context) => MediaQuery.of(context).size.width >= 1920;
 
-Future<List<String>?> fetchWebTransportCertificateHashes() async {
+Future<List<String>?> fetchWebTransportCertificateHashes(Function(List<String> dates) reportWebTransportCertsDate) async {
   try {
     String data = await rootBundle.loadString("assets/webtransport_cert_hashes.json");
     Map<String, dynamic> jsonData = json.decode(data);
-    return filterValidHashes(jsonData['certs'], DateTime.now().toUtc());
+
+    final certMap = filterValidHashes(jsonData['certs'], DateTime.now().toUtc());
+    if (certMap['dates'] != null) {
+      reportWebTransportCertsDate(certMap['dates']!);
+    }
+
+    return certMap['hashes'];
   } catch (e) {
     throw Exception('Asset not found: $e');
   }
 }
 
-List<String> filterValidHashes(List<dynamic> certs, DateTime today) {
-  return certs.where((cert) {
+Map<String, List<String>> filterValidHashes(List<dynamic> certs, DateTime today) {
+  final validCerts = certs.where((cert) {
     DateTime certDate = DateTime.parse(cert['date']);
-    return today.isAfter(certDate) && today.isBefore(certDate.add(Duration(days: 14)));
-  }).map<String>((cert) => cert['hash'].trim().replaceAll(' ', '')).toList();
+    return today.isAfter(certDate) && today.isBefore(certDate.add(const Duration(days: 14)));
+  }).toList();
+
+  final List<String> validHashes = validCerts
+      .map<String>((cert) => cert['hash'].trim().replaceAll(' ', ''))
+      .toList();
+  final List<String> validDates = validCerts
+      .map<String>((cert) => cert['date'])
+      .toList();
+
+  return {
+    'hashes': validHashes,
+    'dates': validDates,
+  };
 }
