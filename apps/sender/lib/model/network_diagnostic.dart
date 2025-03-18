@@ -89,11 +89,11 @@ class NetworkDiagnostic {
 
   // Test TCP connection to the receiver
   Future<void> _testTcpConnection(String ip, int port,
-      {int timeout = 5}) async {
+      {Duration timeout = const Duration(seconds: 5)}) async {
     try {
       log.info('[Network Diagnostic] Testing TCP connection to $ip:$port...');
       final socket =
-          await Socket.connect(ip, port, timeout: Duration(seconds: timeout));
+          await Socket.connect(ip, port, timeout: timeout);
       log.info('[Network Diagnostic] Successfully connected to $ip:$port');
       await socket.close();
       _results.portTests
@@ -112,7 +112,7 @@ class NetworkDiagnostic {
 
   // Test WebSocket connection and get ice server list
   Future<void> _testWebSocketConnection(String ip, int port,
-      {int timeout = 10}) async {
+      {Duration timeout = const Duration(seconds: 10)}) async {
     final wsUrl = 'wss://$ip:$port';
     WebSocket? wsClient;
 
@@ -123,19 +123,9 @@ class NetworkDiagnostic {
       // Create a completer to handle timeout
       final completer = Completer<WebSocketTestResult>();
 
-      // Set timeout
-      Timer(Duration(seconds: timeout), () {
-        if (!completer.isCompleted) {
-          completer.complete(WebSocketTestResult(
-            url: wsUrl,
-            success: false,
-            error: 'Connection timeout after $timeout seconds',
-          ));
-        }
-      });
-
       // Connect to WebSocket
       final httpClient = HttpClient();
+      httpClient.connectionTimeout = timeout;
 
       // Determine whether to allow self-signed certificates.
       httpClient.badCertificateCallback =
