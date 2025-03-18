@@ -1,4 +1,5 @@
 import 'package:display_flutter/model/rtc_stats.dart';
+import 'package:display_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
@@ -20,12 +21,7 @@ double? _avg(double? a, double? b, int? c, int? d) {
 }
 
 class RtcStatsParser {
-  Function(String localCandidateType, String remoteCandidateType)?
-      onPairCandidateType;
-
-  Function(RtcVideoInboundStats stats)? onVideoInboundStats;
-
-  Function(RtcIceCandidatePairStats stats)? onIceCandidatePairStats;
+  final RtcStatsReporter _rtcStatsReporter;
 
   // the stats values in the last report
   int? _framesReceived;
@@ -39,8 +35,7 @@ class RtcStatsParser {
   int? _bytesReceived;
 
   RtcStatsParser(
-    this.onVideoInboundStats,
-    this.onPairCandidateType,
+    this._rtcStatsReporter
   );
 
   void onStatsReports(List<StatsReport> reports) {
@@ -91,14 +86,14 @@ class RtcStatsParser {
           .where((StatsReport report) => report.type == 'remote-candidate')
           .toList();
 
-      _onPairCandidatesReports(
+      _rtcStatsReporter.pairCandidates(
           localCandidates.firstWhere(
               (StatsReport report) => report.id == localCandidateId),
           remoteCandidates.firstWhere(
-              (StatsReport report) => report.id == remoteCandidateId));
+            (StatsReport report) => report.id == remoteCandidateId));
 
       if (selectedCandidatePair != null) {
-        _onSelectedCandidatePair(selectedCandidatePair);
+        _rtcStatsReporter.selectedCandidatePair(selectedCandidatePair);
       }
     }
 
@@ -113,95 +108,58 @@ class RtcStatsParser {
     _onVideoStatsReports(videoInboundRtps);
   }
 
-  void _onPairCandidatesReports(
-      StatsReport localCandidateReport, StatsReport remoteCandidateReport) {
-    final localCandidateType = localCandidateReport.values['candidateType'];
-    final remoteCandidateType = remoteCandidateReport.values['candidateType'];
-
-    if (localCandidateType != null && remoteCandidateType != null) {
-      onPairCandidateType?.call(
-          localCandidateType as String, remoteCandidateType as String);
-    }
-  }
-
-  void _onSelectedCandidatePair(StatsReport selectedCandidatePair) {
-    final stats = RtcIceCandidatePairStats();
-
-    // Parse the selected candidate pair
-    stats.currentRoundTripTime =
-        selectedCandidatePair.values['currentRoundTripTime'];
-
-    stats.totalRoundTripTime =
-        selectedCandidatePair.values['totalRoundTripTime'];
-
-    onIceCandidatePairStats?.call(stats);
-  }
-
   void _onVideoStatsReports(List<StatsReport> reports) {
     if (reports.isEmpty) {
       return;
     }
 
     final videoInboundRtp = reports.first;
-    final stats = RtcVideoInboundStats();
-
-    stats.decoderName = videoInboundRtp.values['decoderImplementation'];
-    stats.packetsLost = videoInboundRtp.values['packetsLost'];
-    stats.packetsReceived = videoInboundRtp.values['packetsReceived'];
-    stats.jitter = videoInboundRtp.values['jitter'];
-    stats.pauseCount = videoInboundRtp.values['pauseCount'];
-
-    stats.framesPerSecond = videoInboundRtp.values['framesPerSecond'];
-
-    stats.frameWidth = videoInboundRtp.values['frameWidth'];
-    stats.frameHeight = videoInboundRtp.values['frameHeight'];
 
     final jitterBufferEmittedCount =
         videoInboundRtp.values['jitterBufferEmittedCount'];
     final jitterBufferDelay = videoInboundRtp.values['jitterBufferDelay'];
-
     final framesReceived = videoInboundRtp.values['framesReceived'];
     final framesDecoded = videoInboundRtp.values['framesDecoded'];
-
     final framesDropped = videoInboundRtp.values['framesDropped'];
-
     final totalDecodeTime = videoInboundRtp.values['totalDecodeTime'];
 
-    stats.bytesReceived = videoInboundRtp.values['bytesReceived'];
-
-    stats.bytesPerSecond = _diff(stats.bytesReceived, _bytesReceived);
-
-    stats.framesReceivedPerSecond = _diff(framesReceived, _framesReceived);
-
-    stats.framesDecodedPerSecond = _diff(framesDecoded, _framesDecoded);
-
-    stats.framesDroppedPerSecond = _diff(framesDropped, _framesDropped);
-
-    stats.decodeTime = _avg(
-      totalDecodeTime,
-      _totalDecodeTime,
-      framesDecoded,
-      _framesDecoded,
+    final stats = RtcVideoInboundStats(
+      decoderName: videoInboundRtp.values['decoderImplementation'],
+      frameWidth: videoInboundRtp.values['frameWidth'],
+      frameHeight: videoInboundRtp.values['frameHeight'],
+      framesPerSecond: videoInboundRtp.values['framesPerSecond'],
+      framesReceivedPerSecond: _diff(framesReceived, _framesReceived),
+      framesDecodedPerSecond: _diff(framesDecoded, _framesDecoded),
+      framesDroppedPerSecond: _diff(framesDropped, _framesDropped),
+      bytesPerSecond:
+          _diff(videoInboundRtp.values['bytesReceived'], _bytesReceived),
+      bytesReceived: videoInboundRtp.values['bytesReceived'],
+      packetsLost: videoInboundRtp.values['packetsLost'],
+      packetsReceived: videoInboundRtp.values['packetsReceived'],
+      jitter: videoInboundRtp.values['jitter'],
+      pauseCount: videoInboundRtp.values['pauseCount'],
+      jitterBufferDelay: _avg(
+        jitterBufferDelay,
+        _jitterBufferDelay,
+        jitterBufferEmittedCount,
+        _jitterBufferEmittedCount,
+      ),
+      decodeTime: _avg(
+        totalDecodeTime,
+        _totalDecodeTime,
+        framesDecoded,
+        _framesDecoded,
+      ),
     );
 
-    stats.jitterBufferDelay = _avg(
-      jitterBufferDelay,
-      _jitterBufferDelay,
-      jitterBufferEmittedCount,
-      _jitterBufferEmittedCount,
-    );
-
-    onVideoInboundStats?.call(stats);
+    _rtcStatsReporter.videoInboundStats(stats);
 
     // update
     _framesReceived = framesReceived;
     _framesDecoded = framesDecoded;
     _framesDropped = framesDropped;
-
     _totalDecodeTime = totalDecodeTime;
-
     _bytesReceived = stats.bytesReceived;
-
     _jitterBufferEmittedCount = jitterBufferEmittedCount;
     _jitterBufferDelay = jitterBufferDelay;
   }
