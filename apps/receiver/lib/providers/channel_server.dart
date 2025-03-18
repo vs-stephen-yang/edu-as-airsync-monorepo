@@ -119,13 +119,6 @@ class ChannelServer {
         (ConnectionRequest connectionRequest) =>
             verifyConnectRequest(connectionRequest, isDirectConnect: true),
       );
-      _webTransportDirectServer = WebTransportDirectServer(
-        getWebTransportCert,
-        reconnectTimeout: channelReconnectTimeoutInStreaming,
-        onNewDirectChannel,
-        (ConnectionRequest connectionRequest) =>
-            verifyConnectRequest(connectionRequest, isDirectConnect: true),
-      );
 
       await _directServer?.start(
         DisplayServiceBroadcast.instance.directChannelPort,
@@ -134,27 +127,36 @@ class ChannelServer {
       reportPortBindResult(
           DisplayServiceBroadcast.instance.directChannelPort, true, null);
       log.info('Direct channel server has started');
-
-      try {
-        WebTransportCertificate? webTransportCertificate =
-            await getWebTransportCert();
-        if (webTransportCertificate == null) {
-          return;
-        }
-        reportWebTransportCertDate(webTransportCertificate.date);
-        await _webTransportDirectServer?.start(webTransportServerPort,
-            certPem: webTransportCertificate.certPem,
-            keyPem: webTransportCertificate.keyPem);
-        reportPortBindResult(webTransportServerPort, true, null);
-        log.info('WebTransport channel server has started');
-      } catch (e) {
-        reportPortBindResult(webTransportServerPort, false, e.toString());
-        log.warning('Failed to start webTransport server: $e');
-      }
     } on Exception catch (e) {
       reportPortBindResult(DisplayServiceBroadcast.instance.directChannelPort,
           false, e.toString());
       log.severe('Failed to start direct channel server', e);
+    }
+
+    try {
+      _webTransportDirectServer = WebTransportDirectServer(
+        getWebTransportCert,
+        reconnectTimeout: channelReconnectTimeoutInStreaming,
+        onNewDirectChannel,
+        (ConnectionRequest connectionRequest) =>
+            verifyConnectRequest(connectionRequest, isDirectConnect: true),
+      );
+
+      WebTransportCertificate? webTransportCertificate =
+          await getWebTransportCert();
+      if (webTransportCertificate == null) {
+        return;
+      }
+      reportWebTransportCertDate(webTransportCertificate.date);
+
+      await _webTransportDirectServer?.start(webTransportServerPort,
+          certPem: webTransportCertificate.certPem,
+          keyPem: webTransportCertificate.keyPem);
+      reportPortBindResult(webTransportServerPort, true, null);
+      log.info('WebTransport channel server has started');
+    } catch (e) {
+      reportPortBindResult(webTransportServerPort, false, e.toString());
+      log.warning('Failed to start webTransport server: $e');
     }
   }
 
