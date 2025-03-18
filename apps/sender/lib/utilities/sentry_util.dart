@@ -15,6 +15,9 @@ initSentry(SentryConfig config) async {
       options.addIntegration(LoggingIntegration());
 
       options.tracesSampleRate = config.tracesSampleRate;
+
+      // Disable recording of exceptions for failed HTTP requests.
+      options.captureFailedRequests = false;
     },
   );
 }
