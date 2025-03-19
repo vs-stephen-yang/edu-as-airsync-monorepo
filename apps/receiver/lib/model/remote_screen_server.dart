@@ -238,13 +238,17 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       log.warning('Channel already exists for connector');
       return;
     }
-    final channelId = await _sfuServer.createSignalChannel();
+    try {
+      final channelId = await _sfuServer.createSignalChannel();
 
-    _connectorChannels[channelId] = connector;
+      _connectorChannels[channelId] = connector;
 
-    connector.registerSignalHandler((String message) {
-      _sendSignalToSfu(channelId, message);
-    });
+      connector.registerSignalHandler((String message) {
+        _sendSignalToSfu(channelId, message);
+      });
+    } catch (e) {
+      log.warning(e);
+    }
   }
 
   void removeConnector(RemoteScreenConnector connector) async {
@@ -261,6 +265,8 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       _connectorChannels.remove(channelId);
     } on StateError {
       log.warning('No channel is found for connector');
+    } catch (e) {
+      log.warning(e);
     }
   }
 
@@ -341,6 +347,10 @@ class RemoteScreenServer extends FlutterIonSfuListener {
       return;
     }
 
-    _sfuServer.processSignalMessage(channelId, message);
+    try {
+      _sfuServer.processSignalMessage(channelId, message);
+    } catch (e) {
+      log.warning(e);
+    }
   }
 }
