@@ -1,28 +1,20 @@
 // https://www.w3.org/TR/webrtc-stats/
 class RtcVideoInboundStats {
-  String? decoderName;
-
-  int? frameWidth;
-  int? frameHeight;
-
-  double? framesPerSecond;
-
-  int? framesReceivedPerSecond;
-  int? framesDecodedPerSecond;
-  int? framesDroppedPerSecond;
-
-  int? bytesPerSecond;
-
-  int? bytesReceived;
-
-  int? packetsLost;
-  int? packetsReceived;
-  double? jitter;
-  int? pauseCount;
-
-  double? jitterBufferDelay;
-
-  double? decodeTime;
+  final String? decoderName;
+  final int? frameWidth;
+  final int? frameHeight;
+  final double? framesPerSecond;
+  final int? framesReceivedPerSecond;
+  final int? framesDecodedPerSecond;
+  final int? framesDroppedPerSecond;
+  final int? bytesPerSecond;
+  final int? bytesReceived;
+  final int? packetsLost;
+  final int? packetsReceived;
+  final double? jitter;
+  final int? pauseCount;
+  final double? jitterBufferDelay;
+  final double? decodeTime;
 
   RtcVideoInboundStats({
     this.decoderName,
