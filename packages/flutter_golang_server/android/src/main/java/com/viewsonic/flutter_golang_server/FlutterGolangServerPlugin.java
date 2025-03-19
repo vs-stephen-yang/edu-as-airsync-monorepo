@@ -59,6 +59,11 @@ public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandl
                     return;
                 }
 
+                if (ionSfuServer_ == null) {
+                    result.error("SfuServer", "Sfu server is not initialized", null);
+                    return;
+                }
+
                 ionSfuServer_.start(configuration);
 
                 Map<String, Long> reply = new HashMap<>();
@@ -66,6 +71,11 @@ public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandl
                 break;
             }
             case "stop": {
+                if (ionSfuServer_ == null) {
+                    result.error("SfuServer", "Sfu server is not initialized", null);
+                    return;
+                }
+
                 ionSfuServer_.stop();
 
                 Map<String, Long> reply = new HashMap<>();
@@ -74,6 +84,11 @@ public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandl
             }
             case "createSignalChannel": {
 
+                if (ionSfuServer_ == null) {
+                    result.error("SfuServer", "Sfu server is not initialized", null);
+                    return;
+                }
+
                 long channelId = ionSfuServer_.createSignalChannel();
 
                 result.success(channelId);
@@ -81,6 +96,11 @@ public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandl
             }
             case "closeSignalChannel": {
                 int channelId = call.argument("channelId");
+
+                if (ionSfuServer_ == null) {
+                    result.error("SfuServer", "Sfu server is not initialized", null);
+                    return;
+                }
 
                 ionSfuServer_.closeSignalChannel(channelId);
 
@@ -91,6 +111,11 @@ public class FlutterGolangServerPlugin implements FlutterPlugin, MethodCallHandl
             case "processSignalMessage": {
                 int channelId = call.argument("channelId");
                 String message = call.argument("message");
+
+                if (ionSfuServer_ == null) {
+                    result.error("SfuServer", "Sfu server is not initialized", null);
+                    return;
+                }
 
                 ionSfuServer_.processSignalMessage(channelId, message);
 
