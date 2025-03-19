@@ -4,6 +4,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:display_flutter/model/rtc_stats.dart' as _i3;
+import 'package:display_flutter/model/rtc_stats_presenter.dart' as _i5;
 import 'package:display_flutter/model/rtc_stats_reporter.dart' as _i2;
 import 'package:flutter_webrtc/flutter_webrtc.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
@@ -60,6 +61,185 @@ class MockRtcStatsReporter extends _i1.Mock implements _i2.RtcStatsReporter {
         Invocation.method(
           #selectedCandidatePair,
           [selectedCandidatePair],
+        ),
+        returnValueForMissingStub: null,
+      );
+}
+
+/// A class which mocks [RtcStatsPresenter].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockRtcStatsPresenter extends _i1.Mock implements _i5.RtcStatsPresenter {
+  MockRtcStatsPresenter() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  int get maxVideoStats => (super.noSuchMethod(
+        Invocation.getter(#maxVideoStats),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  int get maxCandidates => (super.noSuchMethod(
+        Invocation.getter(#maxCandidates),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  int get maxCandidatePairs => (super.noSuchMethod(
+        Invocation.getter(#maxCandidatePairs),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  int get maxCodecStats => (super.noSuchMethod(
+        Invocation.getter(#maxCodecStats),
+        returnValue: 0,
+      ) as int);
+
+  @override
+  set onVideoStatsPresent(
+          dynamic Function(List<_i3.RtcVideoInboundStatsForPresenter>)?
+              _onVideoStatsPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onVideoStatsPresent,
+          _onVideoStatsPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set onLocalCandidatesPresent(
+          dynamic Function(Map<String, _i3.RtcIceCandidate>)?
+              _onLocalCandidatesPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onLocalCandidatesPresent,
+          _onLocalCandidatesPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set onRemoteCandidatesPresent(
+          dynamic Function(Map<String, _i3.RtcIceCandidate>)?
+              _onRemoteCandidatesPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onRemoteCandidatesPresent,
+          _onRemoteCandidatesPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set onCandidatePairPresent(
+          dynamic Function(Map<String, _i3.RtcIceCandidatePairStats>)?
+              _onCandidatePairPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onCandidatePairPresent,
+          _onCandidatePairPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set onCodecStatsPresent(
+          dynamic Function(Map<String, _i3.RtcCodecStats>)?
+              _onCodecStatsPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onCodecStatsPresent,
+          _onCodecStatsPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set onLocalSDPPresent(
+          dynamic Function(_i4.RTCSessionDescription)? _onLocalSDPPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onLocalSDPPresent,
+          _onLocalSDPPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set onRemoteSDPPresent(
+          dynamic Function(_i4.RTCSessionDescription)? _onRemoteSDPPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onRemoteSDPPresent,
+          _onRemoteSDPPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void addVideoStats(_i3.RtcVideoInboundStatsForPresenter? stats) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #addVideoStats,
+          [stats],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void addLocalCandidate(List<_i4.StatsReport>? reports) => super.noSuchMethod(
+        Invocation.method(
+          #addLocalCandidate,
+          [reports],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void addRemoteCandidate(List<_i4.StatsReport>? reports) => super.noSuchMethod(
+        Invocation.method(
+          #addRemoteCandidate,
+          [reports],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void addCandidatePairStats(_i4.StatsReport? report) => super.noSuchMethod(
+        Invocation.method(
+          #addCandidatePairStats,
+          [report],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void addCodecStats(_i4.StatsReport? report) => super.noSuchMethod(
+        Invocation.method(
+          #addCodecStats,
+          [report],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void setLocalSDP(_i4.RTCSessionDescription? sdp) => super.noSuchMethod(
+        Invocation.method(
+          #setLocalSDP,
+          [sdp],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void setRemoteSDP(_i4.RTCSessionDescription? sdp) => super.noSuchMethod(
+        Invocation.method(
+          #setRemoteSDP,
+          [sdp],
         ),
         returnValueForMissingStub: null,
       );

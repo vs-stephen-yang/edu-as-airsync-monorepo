@@ -66,14 +66,23 @@ class RtcStatsParser {
       reportsByType.putIfAbsent(report.type, () => []).add(report);
     }
 
+    for (var report in reportsByType['codec'] ?? []) {
+      presenter?.addCodecStats(report);
+    }
+
     // Create candidate pair map
-    final candidatePairMap = {
-      for (var report in reportsByType['candidate-pair'] ?? [])
-        report.id: report
-    };
+    final candidatePairMap = <String, StatsReport>{};
+
+    for (var report in reportsByType['candidate-pair'] ?? []) {
+      candidatePairMap[report.id] = report;
+      presenter?.addCandidatePairStats(report);
+    }
 
     final localCandidates = reportsByType['local-candidate'] ?? [];
     final remoteCandidates = reportsByType['remote-candidate'] ?? [];
+
+    presenter?.addLocalCandidate(localCandidates);
+    presenter?.addRemoteCandidate(remoteCandidates);
 
     // Process transports
     final transports = reportsByType['transport'] ?? [];
@@ -129,7 +138,7 @@ class RtcStatsParser {
     final videoInboundRtp = reports.first;
 
     final jitterBufferEmittedCount =
-        videoInboundRtp.values['jitterBufferEmittedCount'];
+    videoInboundRtp.values['jitterBufferEmittedCount'];
     final jitterBufferDelay = videoInboundRtp.values['jitterBufferDelay'];
     final framesReceived = videoInboundRtp.values['framesReceived'];
     final framesDecoded = videoInboundRtp.values['framesDecoded'];
@@ -166,6 +175,13 @@ class RtcStatsParser {
     );
 
     _reporter?.videoInboundStats(stats);
+
+    final statsForPresent = RtcVideoInboundStatsForPresenter(
+        stats,
+        powerEfficientDecoder: videoInboundRtp.values['powerEfficientDecoder'],
+        qpSum: videoInboundRtp.values['qpSum']
+    );
+    _presenter?.addVideoStats(statsForPresent);
 
     // update
     _framesReceived = framesReceived;
