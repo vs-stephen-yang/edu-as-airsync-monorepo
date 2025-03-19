@@ -36,37 +36,115 @@ class RtcVideoInboundStats {
 }
 
 class RtcVideoInboundStatsForPresenter {
-  final RtcVideoInboundStats baseStats;
+  final RtcVideoInboundStats _baseStats;
 
   // Presenter-specific fields
   bool? powerEfficientDecoder;
   int? qpSum;
 
   RtcVideoInboundStatsForPresenter(
-    this.baseStats, {
+    this._baseStats, {
     this.powerEfficientDecoder,
     this.qpSum,
   });
 
   // Expose only necessary fields
-  int? get frameWidth => baseStats.frameWidth;
-  int? get frameHeight => baseStats.frameHeight;
-  double? get framesPerSecond => baseStats.framesPerSecond;
-  int? get framesReceivedPerSecond => baseStats.framesReceivedPerSecond;
-  int? get framesDecodedPerSecond => baseStats.framesDecodedPerSecond;
-  int? get framesDroppedPerSecond => baseStats.framesDroppedPerSecond;
-  int? get bytesPerSecond => baseStats.bytesPerSecond;
-  int? get bytesReceived => baseStats.bytesReceived;
-  int? get packetsLost => baseStats.packetsLost;
-  int? get packetsReceived => baseStats.packetsReceived;
-  double? get jitter => baseStats.jitter;
-  double? get decodeTime => baseStats.decodeTime;
+  int? get frameWidth => _baseStats.frameWidth;
+  int? get frameHeight => _baseStats.frameHeight;
+  double? get framesPerSecond => _baseStats.framesPerSecond;
+  int? get framesReceivedPerSecond => _baseStats.framesReceivedPerSecond;
+  int? get framesDecodedPerSecond => _baseStats.framesDecodedPerSecond;
+  int? get framesDroppedPerSecond => _baseStats.framesDroppedPerSecond;
+  int? get bytesPerSecond => _baseStats.bytesPerSecond;
+  int? get bytesReceived => _baseStats.bytesReceived;
+  int? get packetsLost => _baseStats.packetsLost;
+  int? get packetsReceived => _baseStats.packetsReceived;
+  double? get jitter => _baseStats.jitter;
+  double? get decodeTime => _baseStats.decodeTime;
+}
+
+class RtcIceCandidate {
+  final String? candidateType;
+  final String? protocol;
+  final String? address;
+  final int? port;
+  final String? ip;
+  final int? priority;
+
+  // Constructor
+  RtcIceCandidate({
+    this.candidateType,
+    this.protocol,
+    this.address,
+    this.port,
+    this.ip,
+    this.priority,
+  });
+
+  // Named constructor to create an instance from a map
+  factory RtcIceCandidate.fromMap(Map<dynamic, dynamic> values) {
+    return RtcIceCandidate(
+      candidateType: values['candidateType'],
+      protocol: values['protocol'],
+      address: values['address'],
+      port: values['port'],
+      ip: values['ip'],
+      priority: values['priority'],
+    );
+  }
 }
 
 class RtcIceCandidatePairStats {
-  // Represents the latest round trip time measured in seconds
-  double? currentRoundTripTime;
+  final String? localCandidateId;
+  final String? remoteCandidateId;
+  final String? state;
 
+  // Represents the latest round trip time measured in seconds
+  final double? currentRoundTripTime;
   // Represents the sum of all round trip time measurements in seconds since the beginning of the session
-  double? totalRoundTripTime;
+  final double? totalRoundTripTime;
+
+  RtcIceCandidatePairStats({
+    this.localCandidateId,
+    this.remoteCandidateId,
+    this.state,
+    this.totalRoundTripTime,
+    this.currentRoundTripTime,
+  });
+
+  factory RtcIceCandidatePairStats.fromMap(Map<dynamic, dynamic> map) {
+    return RtcIceCandidatePairStats(
+      localCandidateId: map['localCandidateId'],
+      remoteCandidateId: map['remoteCandidateId'],
+      totalRoundTripTime: (map['totalRoundTripTime'] as num?)?.toDouble(),
+      currentRoundTripTime: (map['totalRoundTripTime'] as num?)?.toDouble(),
+      state: map['state'],
+    );
+  }
+}
+
+class RtcCodecStats {
+  final String? sdpFmtpLine;
+  final int? payloadType;
+  final String? transportId;
+  final String? mimeType;
+  final int? clockRate;
+
+  RtcCodecStats({
+    this.sdpFmtpLine,
+    this.payloadType,
+    this.transportId,
+    this.mimeType,
+    this.clockRate,
+  });
+
+  factory RtcCodecStats.fromMap(Map<dynamic, dynamic> map) {
+    return RtcCodecStats(
+      sdpFmtpLine: map['sdpFmtpLine'],
+      payloadType: map['payloadType'],
+      transportId: map['transportId'],
+      mimeType: map['mimeType'],
+      clockRate: map['clockRate'],
+    );
+  }
 }

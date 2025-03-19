@@ -2,6 +2,7 @@
 
 import 'package:display_flutter/model/rtc_stats.dart';
 import 'package:display_flutter/model/rtc_stats_parser.dart';
+import 'package:display_flutter/model/rtc_stats_presenter.dart';
 import 'package:display_flutter/model/rtc_stats_reporter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -10,17 +11,20 @@ import 'package:mockito/annotations.dart';
 
 
 import 'rtc_stats_parse_test.mocks.dart';
-@GenerateMocks([RtcStatsReporter])
+@GenerateMocks([RtcStatsReporter, RtcStatsPresenter])
 
 void main() {
   group('RtcStatsParser - _onStatsReports', () {
     late RtcStatsParser parser;
     late MockRtcStatsReporter mockReporter;
+    late MockRtcStatsPresenter mockPresenter;
 
     setUp(() {
       mockReporter = MockRtcStatsReporter();
+      mockPresenter = MockRtcStatsPresenter();
       parser = RtcStatsParser();
       parser.setReporter(mockReporter);
+      parser.setPresenter(mockPresenter);
     });
 
     test('Should correctly parse and pair candidates', () {
@@ -59,6 +63,11 @@ void main() {
       // Assert
       verify(mockReporter.pairCandidates(localCandidate1, remoteCandidate1)).called(1);
       verify(mockReporter.selectedCandidatePair(candidatePair1)).called(1);
+
+      verify(mockPresenter.addLocalCandidate([localCandidate1, localCandidate2])).called(1);
+      verify(mockPresenter.addRemoteCandidate([remoteCandidate1, remoteCandidate2])).called(1);
+      verify(mockPresenter.addCandidatePairStats(candidatePair1)).called(1);
+      verify(mockPresenter.addCandidatePairStats(candidatePair2)).called(1);
     });
 
     test('Should not pair candidates when bytesSent is zero', () {
@@ -97,6 +106,8 @@ void main() {
         'jitterBufferEmittedCount': 980,
         'jitterBufferDelay': 2.5,
         'totalDecodeTime': 15.0,
+        'powerEfficientDecoder': true,
+        'qpSum': 1000,
       });
 
       final reports = [videoReport];
@@ -115,6 +126,19 @@ void main() {
               .having((s) => s.packetsLost, 'packetsLost', 5)
               .having((s) => s.packetsReceived, 'packetsReceived', 1000)
               .having((s) => s.jitter, 'jitter', 5.2)
+      ))).called(1);
+
+      verify(mockPresenter.addVideoStats(argThat(
+          isA<RtcVideoInboundStatsForPresenter>()
+              .having((s) => s.frameWidth, 'frameWidth', 1280)
+              .having((s) => s.frameHeight, 'frameHeight', 720)
+              .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
+              .having((s) => s.bytesReceived, 'bytesReceived', 500000)
+              .having((s) => s.packetsLost, 'packetsLost', 5)
+              .having((s) => s.packetsReceived, 'packetsReceived', 1000)
+              .having((s) => s.jitter, 'jitter', 5.2)
+              .having((s) => s.powerEfficientDecoder, 'powerEfficientDecoder', true)
+              .having((s) => s.qpSum, 'qpSum', 1000)
       ))).called(1);
     });
 
@@ -160,7 +184,6 @@ void main() {
 
       // Act
       parser.onStatsReports([videoReport1]);
-
       parser.onStatsReports([videoReport2]);
 
 
