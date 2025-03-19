@@ -31,14 +31,11 @@ class RtcStatsReporter {
   }
 
   void selectedCandidatePair(StatsReport selectedCandidatePair) {
-    final stats = RtcIceCandidatePairStats();
-
-    // Parse the selected candidate pair
-    stats.currentRoundTripTime =
-        selectedCandidatePair.values['currentRoundTripTime'];
-
-    stats.totalRoundTripTime =
-        selectedCandidatePair.values['totalRoundTripTime'];
+    final stats = RtcIceCandidatePairStats(
+      currentRoundTripTime:
+          selectedCandidatePair.values['currentRoundTripTime'],
+      totalRoundTripTime: selectedCandidatePair.values['totalRoundTripTime'],
+    );
 
     _onIceCandidatePairStats.call(stats);
   }

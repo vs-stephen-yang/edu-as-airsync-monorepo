@@ -1,4 +1,5 @@
 import 'package:display_flutter/model/rtc_stats.dart';
+import 'package:display_flutter/model/rtc_stats_presenter.dart';
 import 'package:display_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -21,7 +22,19 @@ double? _avg(double? a, double? b, int? c, int? d) {
 }
 
 class RtcStatsParser {
-  final RtcStatsReporter _rtcStatsReporter;
+  RtcStatsReporter? _reporter;
+  RtcStatsPresenter? _presenter;
+
+  void setReporter(RtcStatsReporter reporter) {
+    _reporter = reporter;
+  }
+
+  void setPresenter(RtcStatsPresenter presenter) {
+    _presenter = presenter;
+  }
+
+  RtcStatsReporter? get reporter => _reporter;
+  RtcStatsPresenter? get presenter => _presenter;
 
   // the stats values in the last report
   int? _framesReceived;
@@ -34,9 +47,7 @@ class RtcStatsParser {
   double? _totalDecodeTime;
   int? _bytesReceived;
 
-  RtcStatsParser(
-    this._rtcStatsReporter
-  );
+  RtcStatsParser();
 
   void onStatsReports(List<StatsReport> reports) {
     try {
@@ -86,14 +97,14 @@ class RtcStatsParser {
           .where((StatsReport report) => report.type == 'remote-candidate')
           .toList();
 
-      _rtcStatsReporter.pairCandidates(
+      _reporter?.pairCandidates(
           localCandidates.firstWhere(
               (StatsReport report) => report.id == localCandidateId),
           remoteCandidates.firstWhere(
             (StatsReport report) => report.id == remoteCandidateId));
 
       if (selectedCandidatePair != null) {
-        _rtcStatsReporter.selectedCandidatePair(selectedCandidatePair);
+        _reporter?.selectedCandidatePair(selectedCandidatePair);
       }
     }
 
@@ -152,7 +163,7 @@ class RtcStatsParser {
       ),
     );
 
-    _rtcStatsReporter.videoInboundStats(stats);
+    _reporter?.videoInboundStats(stats);
 
     // update
     _framesReceived = framesReceived;
