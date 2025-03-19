@@ -58,65 +58,67 @@ class RtcStatsParser {
   }
 
   void _onStatsReports(List<StatsReport> reports) {
-    // create Map from candidate-pair reports
-    final candidatePairs = reports
-        .where((StatsReport report) => report.type == 'candidate-pair')
-        .toList();
+    // Create maps for different report types
+    final reportsByType = <String, List<StatsReport>>{};
+
+    // Categorize reports by type
+    for (final report in reports) {
+      reportsByType.putIfAbsent(report.type, () => []).add(report);
+    }
+
+    // Create candidate pair map
     final candidatePairMap = {
-      for (var report in candidatePairs) report.id: report
+      for (var report in reportsByType['candidate-pair'] ?? [])
+        report.id: report
     };
 
-    // get active transport
-    final transports = reports
-        .where((StatsReport report) => report.type == 'transport')
-        .toList();
-    final bytesSend = transports
-        .map((StatsReport report) => report.values['bytesSent'])
-        .firstWhere((value) => value != null, orElse: () => null);
+    final localCandidates = reportsByType['local-candidate'] ?? [];
+    final remoteCandidates = reportsByType['remote-candidate'] ?? [];
 
-    if (bytesSend != null && bytesSend != 0) {
-      // get selectedCandidatePairId
-      final selectedCandidatePairId = transports
-          .map((StatsReport report) => report.values['selectedCandidatePairId'])
-          .firstWhere((value) => value != null, orElse: () => null);
+    // Process transports
+    final transports = reportsByType['transport'] ?? [];
+    final bytesSent = _findFirstValueForKey(transports, 'bytesSent');
 
-      // get selected candidate pair
+    if (bytesSent != null && bytesSent != 0) {
+      final selectedCandidatePairId =
+          _findFirstValueForKey(transports, 'selectedCandidatePairId');
+
       final selectedCandidatePair = candidatePairMap[selectedCandidatePairId];
 
-      // get local and remote candidate id
-      final localCandidateId =
-          selectedCandidatePair?.values['localCandidateId'];
-      final remoteCandidateId =
-          selectedCandidatePair?.values['remoteCandidateId'];
-
-      // find selected local and remote candidate reports
-      final localCandidates = reports
-          .where((StatsReport report) => report.type == 'local-candidate')
-          .toList();
-      final remoteCandidates = reports
-          .where((StatsReport report) => report.type == 'remote-candidate')
-          .toList();
-
-      _reporter?.pairCandidates(
-          localCandidates.firstWhere(
-              (StatsReport report) => report.id == localCandidateId),
-          remoteCandidates.firstWhere(
-            (StatsReport report) => report.id == remoteCandidateId));
-
       if (selectedCandidatePair != null) {
+        final localCandidateId =
+            selectedCandidatePair.values['localCandidateId'];
+        final remoteCandidateId =
+            selectedCandidatePair.values['remoteCandidateId'];
+
+        _reporter?.pairCandidates(
+            localCandidates.firstWhere(
+                (StatsReport report) => report.id == localCandidateId),
+            remoteCandidates.firstWhere(
+                (StatsReport report) => report.id == remoteCandidateId));
+
         _reporter?.selectedCandidatePair(selectedCandidatePair);
       }
     }
 
-    // find video inbound-rtp reports
-    final inboundRtps = reports
-        .where((StatsReport report) => report.type == 'inbound-rtp')
-        .toList();
+    // Process video inbound-rtp
+    final inboundRtps = reportsByType['inbound-rtp'] ?? [];
     final videoInboundRtps = inboundRtps
         .where((StatsReport report) => report.values['kind'] == 'video')
         .toList();
 
     _onVideoStatsReports(videoInboundRtps);
+  }
+
+  // Helper method to get the first non-null value from a list of reports
+  dynamic _findFirstValueForKey(List<StatsReport> reports, String key) {
+    for (final report in reports) {
+      final value = report.values[key];
+      if (value != null) {
+        return value;
+      }
+    }
+    return null;
   }
 
   void _onVideoStatsReports(List<StatsReport> reports) {
