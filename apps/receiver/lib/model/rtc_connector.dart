@@ -7,6 +7,7 @@ import 'package:display_flutter/app_analytics.dart';
 import 'package:display_flutter/model/hybrid_connection_list.dart';
 import 'package:display_flutter/model/rtc_stats.dart';
 import 'package:display_flutter/model/rtc_stats_parser.dart';
+import 'package:display_flutter/model/rtc_stats_presenter.dart';
 import 'package:display_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_flutter/providers/channel_provider.dart';
 import 'package:display_flutter/screens/debug_switch.dart';
@@ -107,6 +108,7 @@ class RTCConnector {
 
   RtcStatsParser? _rtcStatsParser;
   RtcStatsMonitor? _rtcStatsMonitor;
+  RtcStatsPresenter? rtcStatsPresenter;
 
   // implement in webrtc_view
   RTCVideoRenderer? get remoteRenderer => _remoteRenderer;
@@ -188,11 +190,11 @@ class RTCConnector {
     _statsTimer = null;
   }
 
-  void startStatsTimer() {
+  void startRtcStatsReport() {
     _rtcStatsMonitor = RtcStatsMonitor();
     final rtcStatsReporter = RtcStatsReporter(
       _handleVideoStatsReport,
-      (String localCandidateType, String remoteCandidateType) {
+          (String localCandidateType, String remoteCandidateType) {
         onPairCandidateType?.call(localCandidateType, remoteCandidateType);
 
         if (_localCandidateType != localCandidateType &&
@@ -207,7 +209,11 @@ class RTCConnector {
       _handleIceCandidatePairStatsReport,
     );
 
-    _rtcStatsParser = RtcStatsParser(rtcStatsReporter);
+    _rtcStatsParser?.setReporter(rtcStatsReporter);
+  }
+
+  void startStatsTimer() {
+    _rtcStatsParser = RtcStatsParser();
 
     _statsTimer?.cancel();
     _statsTimer = Timer.periodic(
@@ -294,6 +300,14 @@ class RTCConnector {
     _pc!.onAddTrack = _onAddTrack; // iOS, macOS did not use this event.
     _pc!.onRemoveTrack = _onRemoveTrack;
     _pc!.onDataChannel = _onDataChannel;
+
+    startStatsTimer();
+
+    // TODO: enable by some flag
+    // if (xxx) {
+      rtcStatsPresenter = RtcStatsPresenter();
+      _rtcStatsParser?.setPresenter(rtcStatsPresenter!);
+    // }
   }
 
   void startConnectionTimer(TimeOutCallback onFinish) {
@@ -662,7 +676,7 @@ class RTCConnector {
   void _onTrack(RTCTrackEvent event) async {
     _printPeerConnectionLog('_onTrack', event.track);
     if (event.track.kind == 'video') {
-      startStatsTimer();
+      startRtcStatsReport();
       _remoteRenderer?.srcObject = event.streams[0];
     }
   }
