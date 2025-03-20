@@ -865,7 +865,7 @@ class WebRTCConnector {
     return !kIsWeb &&
         (Platform.isAndroid || _isScreenType) &&
         touchBack &&
-        _localStream!.getTracks().first.enabled;
+        (_localStream != null && _localStream!.getTracks().first.enabled);
   }
 
   bool _isAudioCaptureAllowed() {
