@@ -17,6 +17,7 @@ import 'package:display_cast_flutter/widgets/v3_present_idle.dart';
 import 'package:display_cast_flutter/widgets/v3_present_present_start.dart';
 import 'package:display_cast_flutter/widgets/v3_present_wait_prompt.dart';
 import 'package:display_channel/display_channel.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -151,7 +152,8 @@ class V3WebMain extends StatelessWidget {
   }
 
   Widget unsupportedMessage(BuildContext context) {
-    bool supportedBrowsers = ui_web.browser.isChromium || ui_web.browser.isEdge;
+    bool supportedBrowsers =
+        kIsWeb && (ui_web.browser.isChromium || ui_web.browser.isEdge);
     bool showUnsupportedMassage = true;
     return StatefulBuilder(builder: (context, setState) {
       return (showUnsupportedMassage && !supportedBrowsers)
@@ -209,7 +211,8 @@ class V3PresentStateMachine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool supportedBrowsers = ui_web.browser.isChromium || ui_web.browser.isEdge;
+    bool supportedBrowsers =
+        kIsWeb && (ui_web.browser.isChromium || ui_web.browser.isEdge);
     PresentStateProvider presentStateProvider =
         Provider.of<PresentStateProvider>(context);
     log.info('PresentState: ${presentStateProvider.currentState}');
