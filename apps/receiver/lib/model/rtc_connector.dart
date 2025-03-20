@@ -418,9 +418,11 @@ class RTCConnector {
         // handle offer from the peer
         final offer = RTCSessionDescription(msg.sdp, 'offer');
         await pc!.setRemoteDescription(offer);
+        rtcStatsPresenter?.setRemoteSDP(offer);
         // create answer
         final answer = await pc!.createAnswer();
         RTCSessionDescription fixedAnswer = _fixSdp(answer);
+        rtcStatsPresenter?.setLocalSDP(fixedAnswer);
         await pc!.setLocalDescription(fixedAnswer);
         if (!_descriptionSetCompleter.isCompleted) {
           _descriptionSetCompleter.complete();
