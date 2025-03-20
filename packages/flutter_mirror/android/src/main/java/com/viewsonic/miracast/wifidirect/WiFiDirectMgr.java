@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class WiFiDirectMgr {
   private static final String TAG = "MiraWiFiDirectMgr";
@@ -42,6 +43,8 @@ public class WiFiDirectMgr {
   private String sourceIp_ = "";
   private String sourceMacAddr_ = "";
   private String sourceDeviceName_ = "";
+
+  private static final Set<String> GROUP_OWNER_ADDRESS_KEYS = Set.of("groupOwnerAddress", "groupOwnerIpAddress");
 
   private class PeerInfo {
     public String deviceName_;
@@ -312,6 +315,8 @@ public class WiFiDirectMgr {
     public void onConnectionInfoAvailable(WifiP2pInfo info) {
       String connectInfoStr = info.toString();
       Log.d(TAG, "\n====== Connection info: ======\n" + connectInfoStr + "\n==================");
+      // TODO: Avoid relying on the content of WifiP2pInfo.toString().
+      // It is an implementation detail that is not reliable and may change over time.
       setConnInfo(connectInfoStr);
     }
   };
@@ -384,7 +389,7 @@ public class WiFiDirectMgr {
           isGroupFormed_ = "true".equals(connectInfoArr[i + 1]);
         } else if ("isGroupOwner".equals(connectInfoArr[i])) {
           isGroupOwner_ = "true".equals(connectInfoArr[i + 1]);
-        } else if ("groupOwnerAddress".equals(connectInfoArr[i])) {
+        } else if (GROUP_OWNER_ADDRESS_KEYS.contains(connectInfoArr[i])) {
           if (isGroupOwner_) {
             String sourceIpStr;
             while (isGroupFormed_ && isStart_) {
