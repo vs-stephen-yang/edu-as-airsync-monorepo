@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:azure_application_insights/azure_application_insights.dart';
+import 'package:display_flutter/utility/caching_http_client.dart';
 import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -35,12 +36,17 @@ class AppAnalytics {
     String? userId,
     ClientDeviceInfo? deviceInfo,
   }) async {
+    const timeout = Duration(seconds: 10);
+
     final processor = BufferedProcessor(
       next: TransmissionProcessor(
         instrumentationKey: instrumentationKey,
         ingestionEndpoint: ingestionEndpoint,
-        httpClient: Client(),
-        timeout: const Duration(seconds: 10),
+        httpClient: CachingHttpClient(
+          innerClient: Client(),
+          requestTimeout: timeout,
+        ),
+        timeout: timeout,
       ),
     );
 
