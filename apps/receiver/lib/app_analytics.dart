@@ -5,6 +5,7 @@ import 'package:display_flutter/utility/caching_http_client.dart';
 import 'package:display_flutter/utility/client_device_info.dart';
 import 'package:display_flutter/utility/device_feature_adapter.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:display_flutter/utility/offline_http_client.dart';
 import 'package:display_flutter/vsapi/vs_api.dart';
 import 'package:http/http.dart';
 
@@ -38,14 +39,16 @@ class AppAnalytics {
   }) async {
     const timeout = Duration(seconds: 10);
 
+    final cachingClient = CachingHttpClient(
+      innerClient: Client(),
+      requestTimeout: timeout,
+    );
+
     final processor = BufferedProcessor(
       next: TransmissionProcessor(
         instrumentationKey: instrumentationKey,
         ingestionEndpoint: ingestionEndpoint,
-        httpClient: CachingHttpClient(
-          innerClient: Client(),
-          requestTimeout: timeout,
-        ),
+        httpClient: OfflineHttpClient(cachingClient),
         timeout: timeout,
       ),
     );
