@@ -179,7 +179,8 @@ class RtcStatsParser {
     final statsForPresent = RtcVideoInboundStatsForPresenter(
         stats,
         powerEfficientDecoder: videoInboundRtp.values['powerEfficientDecoder'],
-        qpSum: videoInboundRtp.values['qpSum']
+        qpSum: videoInboundRtp.values['qpSum'],
+        timestamp: videoInboundRtp.timestamp,
     );
     _presenter?.addVideoStats(statsForPresent);
 

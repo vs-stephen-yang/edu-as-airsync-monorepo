@@ -41,11 +41,13 @@ class RtcVideoInboundStatsForPresenter {
   // Presenter-specific fields
   bool? powerEfficientDecoder;
   int? qpSum;
+  double? timestamp;
 
   RtcVideoInboundStatsForPresenter(
     this._baseStats, {
     this.powerEfficientDecoder,
     this.qpSum,
+    this.timestamp,
   });
 
   // Expose only necessary fields
