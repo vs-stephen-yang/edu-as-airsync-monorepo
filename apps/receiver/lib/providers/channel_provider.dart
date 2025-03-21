@@ -931,7 +931,6 @@ class ChannelProvider extends ChangeNotifier {
       }
 
       if (fromGroup != null && fromGroup) {
-        providerContainer?.read(groupProvider.notifier).clearClients();
         providerContainer?.read(discoveryModelProvider.notifier).stop();
         providerContainer
             ?.read(groupProvider.notifier)

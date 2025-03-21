@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bonsoir/bonsoir.dart';
 import 'package:display_flutter/model/group_list_item.dart';
 import 'package:display_flutter/utility/log.dart';
@@ -22,18 +24,74 @@ class GroupListModel with ChangeNotifier {
   static bool _startDiscoveryService = false;
   static bool _stopDiscoveryService = false;
   final Map<String, DateTime> _serviceFoundTime = {};
-  BuildContext? context;
 
-  start({BuildContext? context}) async {
-    this.context = context;
+  start({required BuildContext context}) async {
     if (discovery?.isStopped == false || _startDiscoveryService) {
       return;
     }
     _startDiscoveryService = true;
+    // 等待三秒，讓上一次的資源回收完
+    await Future.delayed(const Duration(seconds: 3));
+    if (!context.mounted) {
+      _startDiscoveryService = false;
+      return;
+    }
     try {
       discovery = BonsoirDiscovery(type: discoveryType);
       await discovery!.ready;
-      discovery!.eventStream!.listen(onEventOccurred);
+      discovery!.eventStream!.listen((BonsoirDiscoveryEvent event) {
+        if (event.service == null) {
+          return;
+        }
+        BonsoirService service = event.service!;
+
+        if (event.type == BonsoirDiscoveryEventType.discoveryServiceFound) {
+          bool containsName = _groupProvider
+                  ?.getClientList()
+                  .any((item) => item.serviceName() == service.name) ??
+              false;
+          if (discovery != null && !containsName) {
+            service.resolve(discovery!.serviceResolver);
+          }
+        } else if (event.type ==
+            BonsoirDiscoveryEventType.discoveryServiceResolved) {
+          GroupBean bean = GroupBean.fromJson(service.toJson());
+          if (bean.deviceName().isEmpty ||
+              bean.ip().isEmpty ||
+              bean.id().isEmpty) {
+            return;
+          }
+          _groupProvider?.addClient(bean);
+          _serviceFoundTime[bean.id()] = DateTime.now();
+          log.info('group list add client:${bean.deviceName()}');
+        } else if (event.type ==
+            BonsoirDiscoveryEventType.discoveryServiceLost) {
+          if (event.service!.attributes.containsValue('AirSync')) {
+            GroupBean bean = GroupBean.fromJson(service.toJson());
+
+            DateTime? addTime = _serviceFoundTime[bean.id()];
+            // Service Found後，又馬上收到Service Lost，會被歸類為雜訊
+            if (addTime != null &&
+                    DateTime.now().difference(addTime).inMinutes < 5 ||
+                bean.deviceName().isEmpty) {
+              return;
+            }
+            // 若是host member正在播放中，bonsoir lost也不從清單刪除
+            bool onGrouping = false;
+            if (context.mounted) {
+              ChannelProvider channelProvider =
+                  provider.Provider.of<ChannelProvider>(context, listen: false);
+              if (channelProvider.groupActivated()) {
+                onGrouping = channelProvider.isGroupHostMember(bean.id());
+              }
+            }
+            if (!onGrouping) {
+              _groupProvider?.removeClient(bean);
+              log.info('group list remove Client:${bean.deviceName()}');
+            }
+          }
+        }
+      });
       await discovery!.start();
     } catch (e) {
       discovery = null;
@@ -57,54 +115,6 @@ class GroupListModel with ChangeNotifier {
     } finally {
       discovery = null;
       _stopDiscoveryService = false;
-    }
-  }
-
-  void onEventOccurred(BonsoirDiscoveryEvent event) {
-    if (event.service == null) {
-      return;
-    }
-    BonsoirService service = event.service!;
-
-    if (event.type == BonsoirDiscoveryEventType.discoveryServiceFound) {
-      bool containsName = _groupProvider
-              ?.getClientList()
-              .any((item) => item.serviceName() == service.name) ??
-          false;
-      if (discovery != null && !containsName) {
-        service.resolve(discovery!.serviceResolver);
-      }
-    } else if (event.type ==
-        BonsoirDiscoveryEventType.discoveryServiceResolved) {
-      GroupBean bean = GroupBean.fromJson(service.toJson());
-      if (bean.deviceName().isEmpty || bean.ip().isEmpty || bean.id().isEmpty) {
-        return;
-      }
-      _groupProvider?.addClient(bean);
-      _serviceFoundTime[bean.id()] = DateTime.now();
-      log.info('group list add client:${bean.deviceName()}');
-    } else if (event.type == BonsoirDiscoveryEventType.discoveryServiceLost) {
-      GroupBean bean = GroupBean.fromJson(service.toJson());
-
-      DateTime? addTime = _serviceFoundTime[bean.id()];
-      // Service Found後，又馬上收到Service Lost，會被歸類為雜訊
-      if (addTime != null && DateTime.now().difference(addTime).inMinutes < 5 ||
-          bean.deviceName().isEmpty) {
-        return;
-      }
-      // 若是host member正在播放中，bonsoir lost也不從清單刪除
-      bool onGrouping = false;
-      if (context != null && context!.mounted) {
-        ChannelProvider channelProvider =
-            provider.Provider.of<ChannelProvider>(context!, listen: false);
-        if (channelProvider.groupActivated()) {
-          onGrouping = channelProvider.isGroupHostMember(bean.id());
-        }
-      }
-      if (!onGrouping) {
-        _groupProvider?.removeClient(bean);
-        log.info('group list remove Client:${bean.deviceName()}');
-      }
     }
   }
 

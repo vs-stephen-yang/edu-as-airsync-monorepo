@@ -31,13 +31,14 @@ class V3SettingsCastToBoards extends ConsumerStatefulWidget {
   V3SettingsCastToBoardsState createState() => V3SettingsCastToBoardsState();
 }
 
-class V3SettingsCastToBoardsState
-    extends ConsumerState<V3SettingsCastToBoards> {
+class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
+    with WidgetsBindingObserver {
   OverlayEntry? _overlayEntry;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(groupProvider.notifier).organizeGroupList();
     });
@@ -52,6 +53,7 @@ class V3SettingsCastToBoardsState
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     removeOverlay();
     super.dispose();
   }
@@ -94,6 +96,16 @@ class V3SettingsCastToBoardsState
           )
       ],
     );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      GroupListModel discoveryModel = ref.read(discoveryModelProvider);
+      discoveryModel.stop();
+    }
+    super.didChangeAppLifecycleState(state);
   }
 
   void _trackEvent(
@@ -551,7 +563,6 @@ class V3SettingsCastToBoardsState
         if (state) {
           await channelProvider.startRemoteScreen(fromGroup: true);
         } else {
-          groupNotifier.clearClients();
           GroupListModel discoveryModel = ref.read(discoveryModelProvider);
           await discoveryModel.stop();
           channelProvider.stopDisplayGroup();

@@ -102,6 +102,8 @@ class DisplayServiceBroadcast {
         changeGroupOption) {
       previousRestartTime = now;
       await _stop();
+      // 等待三秒，讓上一次的資源回收完
+      await Future.delayed(const Duration(seconds: 3));
       await _start();
     }
   }
