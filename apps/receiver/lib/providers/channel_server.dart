@@ -48,6 +48,8 @@ class ChannelServer {
   StreamController<bool> tunnelActivatedStream =
       StreamController<bool>.broadcast()..add(false);
 
+  Timer? _tunnelActivatedDebounceTimer;
+
   // Provide a displayCode only if it is available (i.e., instanceGroupId is not zero).
   // If the instanceGroupId is 0, which means the code is not available,
   // the getter returns an empty string to indicate the absence of a valid code
@@ -318,11 +320,20 @@ class ChannelServer {
     if (_tunnelStatus != status) {
       log.info('Tunnel status has changed to ${status.name}');
       _tunnelStatus = status;
+      _debouncedTunnelActivatedUpdate(status);
+      onTunnelStatusChange(_tunnelStatus);
+    }
+  }
+
+  void _debouncedTunnelActivatedUpdate(TunnelStatus status) {
+    _tunnelActivatedDebounceTimer?.cancel();
+
+    _tunnelActivatedDebounceTimer =
+        Timer(const Duration(milliseconds: 300), () {
       final activated =
           status == TunnelStatus.connected || status == TunnelStatus.connecting;
       tunnelActivatedStream.add(activated);
-      onTunnelStatusChange(_tunnelStatus);
-    }
+    });
   }
 
   void onIpAddressChange(String ipAddress) {
