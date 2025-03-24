@@ -47,6 +47,7 @@ class HybridConnectionList {
     'IFP92UW',
     'CDE105UW',
     'CDE92UW',
+    'IFP53',
     'IFP51',
   ];
 
@@ -57,7 +58,6 @@ class HybridConnectionList {
     'IFP52_K',
     'IFP52_1C',
     'IFP52_2',
-    'IFP53',
   ];
   static int maxHybridSplitScreen = 4;
 
