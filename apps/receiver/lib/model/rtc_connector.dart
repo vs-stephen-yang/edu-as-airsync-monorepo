@@ -127,6 +127,7 @@ class RTCConnector {
 
   Timer? _channelReconnectTimer;
   bool _isRtcFirstConnected = false;
+  Timer? _firstFrameRenderTimer;
 
   // rtc stats
   final _videoBitrateHistory = <int?>[];
@@ -259,6 +260,26 @@ class RTCConnector {
     }
   }
 
+  void _startFirstFrameRenderTimer() {
+    log.info('Start first frame render timer');
+
+    _firstFrameRenderTimer = Timer(const Duration(seconds: 10), () async {
+      final reports = await _pc?.getStats(null);
+      if (reports != null) {
+        final videoInboundRtp = _rtcStatsParser?.getOneTimeVideoInboundStats(reports);
+        _trackTrace('first_frame_render_delay', properties: {...?videoInboundRtp?.values});
+      }
+    });
+  }
+
+  void _stopFirstFrameRenderTimer() {
+    if (_firstFrameRenderTimer != null) {
+      log.info('Stop first frame render timer');
+      _firstFrameRenderTimer!.cancel();
+      _firstFrameRenderTimer = null;
+    }
+  }
+
   bool _isStreaming() {
     return _isRtcFirstConnected;
   }
@@ -364,6 +385,10 @@ class RTCConnector {
     });
 
     await _remoteRenderer?.initialize();
+    _remoteRenderer?.onFirstFrameRendered = (){
+      _stopFirstFrameRenderTimer();
+    };
+
     await _peerConnectionConnect(iceServers);
 
     final message = PresentAcceptedMessage(sessionId = msg.sessionId);
@@ -632,6 +657,7 @@ class RTCConnector {
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
       if (!_isRtcFirstConnected) {
         _isRtcFirstConnected = true;
+        _startFirstFrameRenderTimer();
 
         trackSessionEvent('start_cast');
       }
