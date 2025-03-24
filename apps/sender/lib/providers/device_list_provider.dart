@@ -23,6 +23,7 @@ class DeviceListProvider with ChangeNotifier {
               getVersionSuffix(event.service!.attributes['ver']!);
           if (versionPostfix == serviceVersionPostfix) {
             checkIP(event).then((value) {
+              print('dc: ${event.service!.attributes['dc']}');
               if (value != null && checkDisplayCode(event)) {
                 addDevice(AirSyncBonsoirService(
                     uuid: event.service!.name,
@@ -43,7 +44,8 @@ class DeviceListProvider with ChangeNotifier {
                 getVersionSuffix(event.service!.attributes['ver']!);
             if (versionPostfix == serviceVersionPostfix) {
               checkIP(event).then((value) {
-                if (value != null) {
+                if (value != null && checkDisplayCode(event)) {
+                  print('dc: ${event.service!.attributes['dc']}');
                   addDevice(AirSyncBonsoirService(
                       uuid: event.service!.name,
                       name: event.service!.attributes['fn'] ?? 'AirSync',
@@ -66,7 +68,8 @@ class DeviceListProvider with ChangeNotifier {
 
   bool checkDisplayCode(BonsoirDiscoveryEvent event) =>
       event.service!.attributes['dc'] != null &&
-      event.service!.attributes['dc']!.isNotEmpty;
+      event.service!.attributes['dc']!.isNotEmpty &&
+      !event.service!.attributes['dc']!.contains(RegExp(r'[^0-9]'));
 
   Future<String?> checkIP(BonsoirDiscoveryEvent event) async {
     if (event.service!.attributes['ip'] != null &&

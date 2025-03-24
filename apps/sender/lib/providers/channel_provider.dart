@@ -8,9 +8,9 @@ import 'package:display_cast_flutter/api/http_request.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/model/airsync_bonsoir_service.dart';
 import 'package:display_cast_flutter/model/direct_connector.dart';
+import 'package:display_cast_flutter/model/network_diagnostic.dart';
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/model/remote_screen_client.dart';
-import 'package:display_cast_flutter/model/network_diagnostic.dart';
 import 'package:display_cast_flutter/providers/present_state_provider.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/settings/channel_config.dart';
@@ -21,8 +21,8 @@ import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/misc_util.dart';
 import 'package:display_cast_flutter/utilities/platform_util.dart';
 import 'package:display_cast_flutter/utilities/profile_util.dart';
-import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
 import 'package:display_cast_flutter/utilities/web_util.dart';
+import 'package:display_cast_flutter/utilities/webrtc_helper.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
 import 'package:display_cast_flutter/widgets/v3_qrcode_scan.dart';
 import 'package:display_channel/display_channel.dart';
@@ -157,6 +157,12 @@ class ChannelProvider extends ChangeNotifier {
     required PresentStateProvider presentStateProvider,
     QRcodeConnectResult? qrCallback,
   }) async {
+    if (formattedDisplayCode.contains(RegExp(r'[^0-9]'))) {
+      // Ensure that the 'display code' is numeric to prevent a parse
+      // exception when decoding the display code in decodeDisplayCode().
+      log.warning('Display Code must be entirely numeric');
+      return;
+    }
     trackTrace('connect');
     // Generate a new client Id
     _clientId = const Uuid().v4();
@@ -264,6 +270,12 @@ class ChannelProvider extends ChangeNotifier {
     required AirSyncBonsoirService service,
     required PresentStateProvider presentStateProvider,
   }) {
+    if (service.displayCode.contains(RegExp(r'[^0-9]'))) {
+      // Ensure that the 'display code' is numeric to prevent a parse
+      // exception when decoding the display code in decodeDisplayCode().
+      log.warning('Display Code must be entirely numeric');
+      return;
+    }
     trackTrace('quick_connect');
 
     // Generate a new client Id

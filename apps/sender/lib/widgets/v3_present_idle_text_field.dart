@@ -277,6 +277,7 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
         otpKey.currentState?.setErrorMsg('');
         bool presentBtnEnable = false;
         if (_codeController.text.length >= displayCodeMinLength &&
+            !_codeController.text.contains(RegExp(r'[^0-9\s]')) &&
             text.length == otpLength) {
           presentBtnEnable = true;
         }
