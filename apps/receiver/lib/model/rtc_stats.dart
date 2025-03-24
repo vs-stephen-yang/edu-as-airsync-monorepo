@@ -39,16 +39,75 @@ class RtcVideoInboundStatsForPresenter {
   final RtcVideoInboundStats _baseStats;
 
   // Presenter-specific fields
+  double? timestamp;
   bool? powerEfficientDecoder;
   int? qpSum;
-  double? timestamp;
+  double? qpSumAvg;
+  int? nackCount;
+  int? firCount;
+  int? pliCount;
+  int? freezeCount;
+  double? totalFreezesDuration;
+  int? keyFramesDecoded;
+  int? keyFramesDecodedPerSecond;
+  double? totalInterFrameDelay;
+  double? totalInterFrameDelayAvg;
+  double? totalSquaredInterFrameDelay;
+  double? interFrameDelayPerSecond;
+  int? pauseCount;
+  double? totalPausesDuration;
+  double? totalAssemblyTime;
+  int? framesAssembledFromMultiplePackets;
+  double? totalAssemblyTimeAvg;
+  int? framesDropped;
+  int? framesReceived;
+  int? framesDecoded;
+  double? jitterBufferDelay;
+  int? jitterBufferEmittedCount;
+  double? jitterBufferDelayAvg;
+  int? headerBytesReceived;
+  int? headerBytesPerSecond;
+  double? totalProcessingDelay;
+  double? totalDecodeTime;
+  double? decodeTimeAvg;
+  int? packetsReceivedPerSecond;
 
-  RtcVideoInboundStatsForPresenter(
-    this._baseStats, {
-    this.powerEfficientDecoder,
-    this.qpSum,
-    this.timestamp,
-  });
+
+  RtcVideoInboundStatsForPresenter(this._baseStats,
+      {
+        this.timestamp,
+        this.powerEfficientDecoder,
+        this.qpSum,
+        this.qpSumAvg,
+        this.nackCount,
+        this.firCount,
+        this.pliCount,
+        this.freezeCount,
+        this.totalFreezesDuration,
+        this.keyFramesDecoded,
+        this.keyFramesDecodedPerSecond,
+        this.totalInterFrameDelay,
+        this.totalInterFrameDelayAvg,
+        this.totalSquaredInterFrameDelay,
+        this.interFrameDelayPerSecond,
+        this.pauseCount,
+        this.totalPausesDuration,
+        this.totalAssemblyTime,
+        this.framesAssembledFromMultiplePackets,
+        this.totalAssemblyTimeAvg,
+        this.framesDropped,
+        this.framesReceived,
+        this.framesDecoded,
+        this.jitterBufferDelay,
+        this.jitterBufferEmittedCount,
+        this.jitterBufferDelayAvg,
+        this.headerBytesReceived,
+        this.headerBytesPerSecond,
+        this.totalProcessingDelay,
+        this.totalDecodeTime,
+        this.decodeTimeAvg,
+        this.packetsReceivedPerSecond,
+      });
 
   // Expose only necessary fields
   int? get frameWidth => _baseStats.frameWidth;
