@@ -2,10 +2,10 @@ import 'package:display_flutter/model/rtc_stats.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class RtcStatsPresenter {
-  final int maxVideoStats;
-  final int maxCandidates;
-  final int maxCandidatePairs;
-  final int maxCodecStats;
+  final int _maxVideoStats;
+  final int _maxCandidates;
+  final int _maxCandidatePairs;
+  final int _maxCodecStats;
 
   final List<RtcVideoInboundStatsForPresenter> _videoStats = [];
   final Map<String, RtcIceCandidate> _localCandidates = {};
@@ -24,13 +24,17 @@ class RtcStatsPresenter {
   Function(RTCSessionDescription sdp)? onRemoteSDPPresent;
 
   RtcStatsPresenter(
-      {this.maxVideoStats = 300,
-      this.maxCandidates = 10,
-      this.maxCandidatePairs = 100,
-      this.maxCodecStats = 10});
+      {int maxVideoStats = 300,
+      int maxCandidates = 10,
+      int maxCandidatePairs = 100,
+      int maxCodecStats = 10})
+      : _maxCodecStats = maxCodecStats,
+        _maxCandidatePairs = maxCandidatePairs,
+        _maxCandidates = maxCandidates,
+        _maxVideoStats = maxVideoStats;
 
   void addVideoStats(RtcVideoInboundStatsForPresenter stats) {
-    if (_videoStats.length >= maxVideoStats) {
+    if (_videoStats.length >= _maxVideoStats) {
       _videoStats.removeAt(0);
     }
     _videoStats.add(stats);
@@ -61,7 +65,7 @@ class RtcStatsPresenter {
         continue;
       }
 
-      if (candidateMap.length >= maxCandidates) {
+      if (candidateMap.length >= _maxCandidates) {
         final firstKey = candidateMap.keys.first;
         candidateMap.remove(firstKey);
       }
@@ -75,7 +79,7 @@ class RtcStatsPresenter {
       return;
     }
 
-    if (_candidatePairs.length >= maxCandidates) {
+    if (_candidatePairs.length >= _maxCandidatePairs) {
       final firstKey = _candidatePairs.keys.first;
       _candidatePairs.remove(firstKey);
     }
@@ -90,7 +94,7 @@ class RtcStatsPresenter {
       return;
     }
 
-    if (_codecStats.length >= maxCodecStats) {
+    if (_codecStats.length >= _maxCodecStats) {
       final firstKey = _codecStats.keys.first;
       _codecStats.remove(firstKey);
     }

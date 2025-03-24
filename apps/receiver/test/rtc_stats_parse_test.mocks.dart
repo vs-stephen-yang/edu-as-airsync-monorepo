@@ -75,25 +75,25 @@ class MockRtcStatsPresenter extends _i1.Mock implements _i5.RtcStatsPresenter {
   }
 
   @override
-  int get maxVideoStats => (super.noSuchMethod(
+  int get _maxVideoStats => (super.noSuchMethod(
         Invocation.getter(#maxVideoStats),
         returnValue: 0,
       ) as int);
 
   @override
-  int get maxCandidates => (super.noSuchMethod(
+  int get _maxCandidates => (super.noSuchMethod(
         Invocation.getter(#maxCandidates),
         returnValue: 0,
       ) as int);
 
   @override
-  int get maxCandidatePairs => (super.noSuchMethod(
+  int get _maxCandidatePairs => (super.noSuchMethod(
         Invocation.getter(#maxCandidatePairs),
         returnValue: 0,
       ) as int);
 
   @override
-  int get maxCodecStats => (super.noSuchMethod(
+  int get _maxCodecStats => (super.noSuchMethod(
         Invocation.getter(#maxCodecStats),
         returnValue: 0,
       ) as int);
