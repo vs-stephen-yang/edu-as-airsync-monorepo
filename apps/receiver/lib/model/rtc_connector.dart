@@ -108,7 +108,9 @@ class RTCConnector {
 
   RtcStatsParser? _rtcStatsParser;
   RtcStatsMonitor? _rtcStatsMonitor;
-  RtcStatsPresenter? rtcStatsPresenter;
+  RtcStatsPresenter? _rtcStatsPresenter;
+
+  RtcStatsParser? get rtcStatsPresenter => _rtcStatsParser;
 
   // implement in webrtc_view
   RTCVideoRenderer? get remoteRenderer => _remoteRenderer;
@@ -418,11 +420,11 @@ class RTCConnector {
         // handle offer from the peer
         final offer = RTCSessionDescription(msg.sdp, 'offer');
         await pc!.setRemoteDescription(offer);
-        rtcStatsPresenter?.setRemoteSDP(offer);
+        _rtcStatsPresenter?.setRemoteSDP(offer);
         // create answer
         final answer = await pc!.createAnswer();
         RTCSessionDescription fixedAnswer = _fixSdp(answer);
-        rtcStatsPresenter?.setLocalSDP(fixedAnswer);
+        _rtcStatsPresenter?.setLocalSDP(fixedAnswer);
         await pc!.setLocalDescription(fixedAnswer);
         if (!_descriptionSetCompleter.isCompleted) {
           _descriptionSetCompleter.complete();
