@@ -275,5 +275,31 @@ void main() {
               .having((s) => s.qpSumAvg, 'qpSumAvg', 10.0)
       ))).called(1);
     });
+
+    test('should return the first video inbound-rtp report', () {
+      final reports = [
+        StatsReport('1', 'inbound-rtp', 123.0, {'kind': 'audio'}),
+        StatsReport('2', 'inbound-rtp', 124.0, {'kind': 'video'}),
+        StatsReport('3', 'inbound-rtp', 125.0, {'kind': 'video'}),
+        StatsReport('4', 'outbound-rtp', 126.0, {'kind': 'video'}),
+      ];
+
+      final result = parser.getOneTimeVideoInboundStats(reports);
+
+      expect(result!.id, '2');
+      expect(result!.type, 'inbound-rtp');
+      expect(result!.values['kind'], 'video');
+    });
+
+    test('should return null if no video inbound-rtp report exists', () {
+      final reports = [
+        StatsReport('1', 'inbound-rtp', 123.0, {'kind': 'audio'}),
+        StatsReport('2', 'outbound-rtp', 124.0, {'kind': 'video'}),
+      ];
+
+      final result = parser.getOneTimeVideoInboundStats(reports);
+
+      expect(result, isNull);
+    });
   });
 }

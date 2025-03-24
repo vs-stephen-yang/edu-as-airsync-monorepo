@@ -268,4 +268,15 @@ class RtcStatsParser {
     _totalSquaredInterFrameDelay = totalSquaredInterFrameDelay;
     _qpSum = qpSum;
   }
+
+  StatsReport? getOneTimeVideoInboundStats(List<StatsReport> reports) {
+    final inboundRtps = reports.where((StatsReport report) => report.type == 'inbound-rtp');
+    if (inboundRtps.isEmpty) return null;
+
+    for (final report in inboundRtps) {
+      if (report.values['kind'] == 'video') return report;
+    }
+
+    return null;
+  }
 }
