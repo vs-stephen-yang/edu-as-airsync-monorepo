@@ -20,7 +20,7 @@ dynamic _avg(dynamic a, dynamic b, int? c, int? d) {
 }
 
 abstract class RtcStatsSubscriber {
-  void onVideoStatsReports(RtcVideoOutboundStats stats);
+  void updateVideoStats(RtcVideoOutboundStats stats);
 }
 
 class RtcStatsParser {
@@ -34,7 +34,7 @@ class RtcStatsParser {
 
   RtcStatsParser(this.onOutboundVideoFrameSizeChanged);
 
-  void onVideoStatsReports(List<StatsReport> reports) {
+  void onStatsReports(List<StatsReport> reports) {
     try {
       _onStatsReports(reports);
     } catch (e, stacktrace) {
@@ -231,7 +231,7 @@ class RtcStatsParser {
 
   void publishRtcVideoOutboundStats(RtcVideoOutboundStats stats) {
     for (final subscriber in _subscribers) {
-      subscriber.onVideoStatsReports(stats);
+      subscriber.updateVideoStats(stats);
     }
   }
 }

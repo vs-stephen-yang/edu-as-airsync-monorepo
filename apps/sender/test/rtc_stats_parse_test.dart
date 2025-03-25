@@ -39,10 +39,10 @@ void main() {
       final reports = [videoReport];
 
       // Act
-      parser.onVideoStatsReports(reports);
+      parser.onStatsReports(reports);
 
       // Assert
-      verify(mockReporter.onVideoStatsReports(argThat(isA<RtcVideoOutboundStats>()
+      verify(mockReporter.updateVideoStats(argThat(isA<RtcVideoOutboundStats>()
           .having((s) => s.encoderImplementation, 'encoderImplementation', 'vp8')
           .having((s) => s.frameWidth, 'frameWidth', 1280)
           .having((s) => s.frameHeight, 'frameHeight', 720)
