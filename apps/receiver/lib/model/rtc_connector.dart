@@ -328,8 +328,8 @@ class RTCConnector {
 
     // TODO: enable by some flag
     // if (xxx) {
-      rtcStatsPresenter = RtcStatsPresenter();
-      _rtcStatsParser?.setPresenter(rtcStatsPresenter!);
+      _rtcStatsPresenter = RtcStatsPresenter();
+      _rtcStatsParser?.setPresenter(_rtcStatsPresenter!);
     // }
   }
 
