@@ -4,7 +4,9 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:display_cast_flutter/model/rtc_stats.dart' as _i3;
+import 'package:display_cast_flutter/model/rtc_stats_presenter.dart' as _i5;
 import 'package:display_cast_flutter/model/rtc_stats_reporter.dart' as _i2;
+import 'package:flutter_webrtc/flutter_webrtc.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -40,11 +42,204 @@ class MockRtcStatsReporter extends _i1.Mock implements _i2.RtcStatsReporter {
       );
 
   @override
-  void onVideoStatsReports(_i3.RtcVideoOutboundStats? stats) =>
+  void updateVideoStats(_i3.RtcVideoOutboundStats? stats) => super.noSuchMethod(
+        Invocation.method(
+          #updateVideoStats,
+          [stats],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void updateCandidatePairStats(_i4.StatsReport? report) => super.noSuchMethod(
+        Invocation.method(
+          #updateCandidatePairStats,
+          [report],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void updateCodecStats(_i4.StatsReport? report) => super.noSuchMethod(
+        Invocation.method(
+          #updateCodecStats,
+          [report],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void updateLocalCandidate(List<_i4.StatsReport>? reports) =>
       super.noSuchMethod(
         Invocation.method(
-          #onVideoStatsReports,
+          #updateLocalCandidate,
+          [reports],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void updateRemoteCandidate(List<_i4.StatsReport>? reports) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #updateRemoteCandidate,
+          [reports],
+        ),
+        returnValueForMissingStub: null,
+      );
+}
+
+/// A class which mocks [RtcStatsPresenter].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockRtcStatsPresenter extends _i1.Mock implements _i5.RtcStatsPresenter {
+  MockRtcStatsPresenter() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  set onVideoStatsPresent(
+          dynamic Function(List<_i3.RtcVideoOutboundStats>)?
+              _onVideoStatsPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onVideoStatsPresent,
+          _onVideoStatsPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set onLocalCandidatesPresent(
+          dynamic Function(Map<String, _i3.RtcIceCandidate>)?
+              _onLocalCandidatesPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onLocalCandidatesPresent,
+          _onLocalCandidatesPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set onRemoteCandidatesPresent(
+          dynamic Function(Map<String, _i3.RtcIceCandidate>)?
+              _onRemoteCandidatesPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onRemoteCandidatesPresent,
+          _onRemoteCandidatesPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set onCandidatePairPresent(
+          dynamic Function(Map<String, _i3.RtcIceCandidatePairStats>)?
+              _onCandidatePairPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onCandidatePairPresent,
+          _onCandidatePairPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set onCodecStatsPresent(
+          dynamic Function(Map<String, _i3.RtcCodecStats>)?
+              _onCodecStatsPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onCodecStatsPresent,
+          _onCodecStatsPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set onLocalSDPPresent(
+          dynamic Function(_i4.RTCSessionDescription)? _onLocalSDPPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onLocalSDPPresent,
+          _onLocalSDPPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set onRemoteSDPPresent(
+          dynamic Function(_i4.RTCSessionDescription)? _onRemoteSDPPresent) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #onRemoteSDPPresent,
+          _onRemoteSDPPresent,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void updateVideoStats(_i3.RtcVideoOutboundStats? stats) => super.noSuchMethod(
+        Invocation.method(
+          #updateVideoStats,
           [stats],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void updateLocalCandidate(List<_i4.StatsReport>? reports) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #updateLocalCandidate,
+          [reports],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void updateRemoteCandidate(List<_i4.StatsReport>? reports) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #updateRemoteCandidate,
+          [reports],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void updateCandidatePairStats(_i4.StatsReport? report) => super.noSuchMethod(
+        Invocation.method(
+          #updateCandidatePairStats,
+          [report],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void updateCodecStats(_i4.StatsReport? report) => super.noSuchMethod(
+        Invocation.method(
+          #updateCodecStats,
+          [report],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void setLocalSDP(_i4.RTCSessionDescription? sdp) => super.noSuchMethod(
+        Invocation.method(
+          #setLocalSDP,
+          [sdp],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void setRemoteSDP(_i4.RTCSessionDescription? sdp) => super.noSuchMethod(
+        Invocation.method(
+          #setRemoteSDP,
+          [sdp],
         ),
         returnValueForMissingStub: null,
       );
