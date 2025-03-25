@@ -185,5 +185,6 @@
   "v3_present_select_screen_mac_audio_driver": "Unable to share audio. Please download and install audio driver.",
   "v3_main_download_mac_pkg_label": "For Best User Experience!",
   "v3_main_download_mac_store": "App Store",
-  "v3_main_download_mac_store_label": "Or Install via"
+  "v3_main_download_mac_store_label": "Or Install via",
+  "v3_setting_app_version_independent": "AirSync ©{year}. version {version} (Ind.)"
 }

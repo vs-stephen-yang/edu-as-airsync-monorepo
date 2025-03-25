@@ -6,6 +6,7 @@ import 'package:display_cast_flutter/assets/tokens/tokens.g.dart';
 import 'package:display_cast_flutter/generated/l10n.dart';
 import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/updater_windows.dart';
+import 'package:display_cast_flutter/utilities/version_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -102,8 +103,13 @@ class V3UpdateManager {
           targetVersion = json['ios']['target-version'];
           minSupportedVersion = json['ios']['min-supported-version'];
         } else if (Platform.isMacOS) {
-          targetVersion = json['macos']['target-version'];
-          minSupportedVersion = json['macos']['min-supported-version'];
+          if (VersionUtil.isOpenVersion) {
+            targetVersion = json['macos-ind']['target-version'];
+            minSupportedVersion = json['macos-ind']['min-supported-version'];
+          } else {
+            targetVersion = json['macos']['target-version'];
+            minSupportedVersion = json['macos']['min-supported-version'];
+          }
         } else if (Platform.isWindows) {
           targetVersion = json['windows']['target-version'];
           minSupportedVersion = json['windows']['min-supported-version'];
@@ -300,7 +306,7 @@ class V3UpdateManager {
                         Navigator.of(context).pop();
                       }
                       if (Platform.isMacOS) {
-                        if (appFlavor == 'Open') {
+                        if (VersionUtil.isOpenVersion) {
                           String? feedURL = AppConfig.of(context)?.settings.appUpdateMacAppcastUrl;
                           if (feedURL != null) {
                             await autoUpdater.setFeedURL(feedURL);
