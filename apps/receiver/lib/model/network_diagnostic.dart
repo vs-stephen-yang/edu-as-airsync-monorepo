@@ -4,6 +4,7 @@ import 'package:display_channel/display_channel.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:display_flutter/utility/webrtc_util.dart';
 import 'package:display_flutter/utility/log.dart';
+import 'package:ntp/ntp.dart';
 
 class TestResult {
   final bool success;
@@ -19,6 +20,23 @@ class TestResult {
       'success': success,
       'error': error,
     };
+  }
+}
+
+class NtpTestResult extends TestResult {
+  final String offset;
+
+  NtpTestResult({
+    required this.offset,
+    required super.success,
+    super.error,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = super.toJson();
+    json['offset'] = offset;
+    return json;
   }
 }
 
@@ -39,10 +57,7 @@ class PortTestResult extends TestResult {
   }
 }
 
-enum TunnelStatusType {
-  register,
-  connect
-}
+enum TunnelStatusType { register, connect }
 
 class TunnelResult extends TestResult {
   final String status;
@@ -71,11 +86,23 @@ class NetworkDiagnostic {
     // Run tests in parallel for efficiency
     await Future.wait([
       _testWebRTCCandidates(iceServers),
+      _testNtpOffset(),
     ]);
 
     // TODO: replace
     _results.logResult();
     return _results;
+  }
+
+  Future<void> _testNtpOffset() async {
+    try {
+      DateTime startDate = DateTime.now().toLocal();
+      int offset = await NTP.getNtpOffset(localTime: startDate);
+      _results.ntpOffset = NtpTestResult(offset: '$offset ms', success: true);
+    } catch (e) {
+      _results.ntpOffset =
+          NtpTestResult(offset: '', success: false, error: e.toString());
+    }
   }
 
   // Test WebRTC candidate gathering including STUN and TURN
@@ -122,8 +149,7 @@ class NetworkDiagnostic {
 
       await peerConnection.createDataChannel(
           'diagnosticChannel', RTCDataChannelInit());
-      RTCSessionDescription localDesc =
-          await peerConnection.createOffer();
+      RTCSessionDescription localDesc = await peerConnection.createOffer();
       await peerConnection.setLocalDescription(localDesc);
 
       // Set timeout for candidate gathering
@@ -182,9 +208,11 @@ class NetworkDiagnostic {
 
   setTunnelResult(TunnelStatusType type, bool success, String status) {
     if (type == TunnelStatusType.register) {
-      _results.tunnelRegisterTest = TunnelResult(status: status, success: success);
+      _results.tunnelRegisterTest =
+          TunnelResult(status: status, success: success);
     } else {
-      _results.tunnelConnectionTest = TunnelResult(status: status, success: success);
+      _results.tunnelConnectionTest =
+          TunnelResult(status: status, success: success);
     }
 
     // TODO: replace
@@ -207,6 +235,7 @@ class NetworkDiagnostic {
 class DiagnosticResults {
   List<PortTestResult> portTests = [];
   String? webTransportCertDate;
+  NtpTestResult? ntpOffset;
   TunnelResult? tunnelRegisterTest;
   TunnelResult? tunnelConnectionTest;
   TestResult? udpCandidateTest;
@@ -218,6 +247,7 @@ class DiagnosticResults {
     return {
       'portTests': portTests.map((test) => test.toJson()).toList(),
       'webTransportCertDate': webTransportCertDate,
+      'ntpOffset': ntpOffset,
       'tunnelRegisterTest': tunnelRegisterTest?.toJson(),
       'tunnelConnectionTest': tunnelConnectionTest?.toJson(),
       'udpCandidateTest': udpCandidateTest?.toJson(),
