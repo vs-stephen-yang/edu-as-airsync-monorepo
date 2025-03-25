@@ -197,7 +197,7 @@ class RTCConnector {
     _rtcStatsMonitor = RtcStatsMonitor();
     final rtcStatsReporter = RtcStatsReporter(
       _handleVideoStatsReport,
-          (String localCandidateType, String remoteCandidateType) {
+      (String localCandidateType, String remoteCandidateType) {
         onPairCandidateType?.call(localCandidateType, remoteCandidateType);
 
         if (_localCandidateType != localCandidateType &&
@@ -373,7 +373,7 @@ class RTCConnector {
 
       if (reports != null && reports.isNotEmpty) {
         final videoInboundRtp =
-        _rtcStatsParser?.getOneTimeVideoInboundStats(reports);
+            _rtcStatsParser?.getOneTimeVideoInboundStats(reports);
         if (videoInboundRtp != null && videoInboundRtp.values.isNotEmpty) {
           // Cast to the correct type for addAll
           properties.addAll(videoInboundRtp.values.cast<String, Object>());
@@ -383,8 +383,7 @@ class RTCConnector {
       if (_firstConnectTime != null) {
         final Duration delay = DateTime.now().difference(_firstConnectTime!);
         _trackTrace('first_frame_render_delay',
-            target: delay.inSeconds.toString(),
-            properties: properties);
+            target: delay.inSeconds.toString(), properties: properties);
       }
     };
 
