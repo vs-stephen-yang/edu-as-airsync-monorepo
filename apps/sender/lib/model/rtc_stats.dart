@@ -138,7 +138,7 @@ class RtcIceCandidatePairStats {
       localCandidateId: map['localCandidateId'],
       remoteCandidateId: map['remoteCandidateId'],
       totalRoundTripTime: (map['totalRoundTripTime'] as num?)?.toDouble(),
-      currentRoundTripTime: (map['totalRoundTripTime'] as num?)?.toDouble(),
+      currentRoundTripTime: (map['currentRoundTripTime'] as num?)?.toDouble(),
       state: map['state'],
     );
   }
