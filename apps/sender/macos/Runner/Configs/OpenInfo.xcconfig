@@ -1,0 +1,18 @@
+//
+//  OpenInfo.xcconfig
+//  Runner
+//
+//  Created by Zoey Chen on 2025/3/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+// The application's name. By default this is also the title of the Flutter window.
+PRODUCT_NAME = AirSync Sender Ind.
+
+// The application's bundle identifier
+PRODUCT_BUNDLE_IDENTIFIER = com.viewsonic.display.cast.macos
+
+// The copyright displayed in application information
+PRODUCT_COPYRIGHT = Copyright © 2023 ViewSonic. All rights reserved.
