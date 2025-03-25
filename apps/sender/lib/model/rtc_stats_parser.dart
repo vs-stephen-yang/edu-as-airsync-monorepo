@@ -106,10 +106,10 @@ class RtcStatsParser {
     double? headerBytesSentPerSecond;
     double? retransmittedBytesSentPerSecond;
     double? framesEncodedPerSecond;
-    double? encodeTimeAvg;
+    double? encodeTimeAvgMs;
     double? totalEncodedBytesTargetPerSecond;
     double? framesSentPerSecond;
-    double? packetSendDelayAvg;
+    double? packetSendDelayAvgMs;
     double? qpSumAvg;
 
     // Calculate differences if we have previous stats
@@ -146,19 +146,19 @@ class RtcStatsParser {
           _previousVideoOutboundStats!.framesSent?.toDouble());
 
       // Calculate averages
-      encodeTimeAvg = _avg(
+      encodeTimeAvgMs = _avg(
         totalEncodeTime,
         _previousVideoOutboundStats!.totalEncodeTime,
         framesEncoded,
         _previousVideoOutboundStats!.framesEncoded,
-      );
+      ) * 1000; // Convert to ms;
 
-      packetSendDelayAvg = _avg(
+      packetSendDelayAvgMs = _avg(
         totalPacketSendDelay,
         _previousVideoOutboundStats!.totalPacketSendDelay,
         packetsSent,
         _previousVideoOutboundStats!.packetsSent,
-      );
+      ) * 1000; // Convert to ms;
 
       qpSumAvg = _avg(
         qpSum,
@@ -166,9 +166,6 @@ class RtcStatsParser {
         framesEncoded,
         _previousVideoOutboundStats!.framesEncoded,
       );
-    } else {
-      // If there are no previous stats, we can't calculate the difference
-      encodeTime = 0;
     }
 
     // Create the stats object with all fields
@@ -206,10 +203,10 @@ class RtcStatsParser {
         headerBytesSentPerSecond: headerBytesSentPerSecond,
         retransmittedBytesSentPerSecond: retransmittedBytesSentPerSecond,
         framesEncodedPerSecond: framesEncodedPerSecond,
-        encodeTimeAvg: encodeTimeAvg,
+        encodeTimeAvgMs: encodeTimeAvgMs,
         totalEncodedBytesTargetPerSecond: totalEncodedBytesTargetPerSecond,
         framesSentPerSecond: framesSentPerSecond,
-        packetSendDelayAvg: packetSendDelayAvg,
+        packetSendDelayAvgMs: packetSendDelayAvgMs,
         qpSumAvg: qpSumAvg
     );
 
