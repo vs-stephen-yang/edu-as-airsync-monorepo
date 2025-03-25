@@ -9,10 +9,9 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 
-
 import 'rtc_stats_parse_test.mocks.dart';
-@GenerateMocks([RtcStatsReporter, RtcStatsPresenter])
 
+@GenerateMocks([RtcStatsReporter, RtcStatsPresenter])
 void main() {
   group('RtcStatsParser - _onStatsReports', () {
     late RtcStatsParser parser;
@@ -29,22 +28,16 @@ void main() {
 
     test('Should correctly parse and pair candidates', () {
       // Arrange
-      final localCandidate1 = StatsReport('LC01', 'local-candidate', 0,{});
-      final localCandidate2 = StatsReport('LC02', 'local-candidate', 0,{});
-      final remoteCandidate1 = StatsReport('RC01', 'remote-candidate',0,{});
-      final remoteCandidate2 = StatsReport('RC02', 'remote-candidate',0,{});
-      final candidatePair1 = StatsReport('CP01', 'candidate-pair', 0, {
-        'localCandidateId': 'LC01',
-        'remoteCandidateId': 'RC01'
-      });
-      final candidatePair2 = StatsReport('CP02', 'candidate-pair', 0, {
-        'localCandidateId': 'LC02',
-        'remoteCandidateId': 'RC02'
-      });
-      final transport = StatsReport('T01','transport',0,{
-        'bytesSent': 1000,
-        'selectedCandidatePairId': 'CP01'
-      });
+      final localCandidate1 = StatsReport('LC01', 'local-candidate', 0, {});
+      final localCandidate2 = StatsReport('LC02', 'local-candidate', 0, {});
+      final remoteCandidate1 = StatsReport('RC01', 'remote-candidate', 0, {});
+      final remoteCandidate2 = StatsReport('RC02', 'remote-candidate', 0, {});
+      final candidatePair1 = StatsReport('CP01', 'candidate-pair', 0,
+          {'localCandidateId': 'LC01', 'remoteCandidateId': 'RC01'});
+      final candidatePair2 = StatsReport('CP02', 'candidate-pair', 0,
+          {'localCandidateId': 'LC02', 'remoteCandidateId': 'RC02'});
+      final transport = StatsReport('T01', 'transport', 0,
+          {'bytesSent': 1000, 'selectedCandidatePairId': 'CP01'});
 
       final reports = [
         transport,
@@ -54,18 +47,21 @@ void main() {
         candidatePair2,
         localCandidate2,
         remoteCandidate2,
-        StatsReport('IR01','inbound-rtp',0,{'kind': 'video'})
+        StatsReport('IR01', 'inbound-rtp', 0, {'kind': 'video'})
       ];
 
       // Act
       parser.onStatsReports(reports);
 
       // Assert
-      verify(mockReporter.pairCandidates(localCandidate1, remoteCandidate1)).called(1);
+      verify(mockReporter.pairCandidates(localCandidate1, remoteCandidate1))
+          .called(1);
       verify(mockReporter.selectedCandidatePair(candidatePair1)).called(1);
 
-      verify(mockPresenter.addLocalCandidate([localCandidate1, localCandidate2])).called(1);
-      verify(mockPresenter.addRemoteCandidate([remoteCandidate1, remoteCandidate2])).called(1);
+      verify(mockPresenter
+          .addLocalCandidate([localCandidate1, localCandidate2])).called(1);
+      verify(mockPresenter
+          .addRemoteCandidate([remoteCandidate1, remoteCandidate2])).called(1);
       verify(mockPresenter.addCandidatePairStats(candidatePair1)).called(1);
       verify(mockPresenter.addCandidatePairStats(candidatePair2)).called(1);
     });
@@ -73,10 +69,8 @@ void main() {
     test('Should not pair candidates when bytesSent is zero', () {
       // Arrange
       final reports = [
-        StatsReport('T01','transport',0,{
-          'bytesSent': 0,
-          'selectedCandidatePairId': 'CP01'
-        })
+        StatsReport('T01', 'transport', 0,
+            {'bytesSent': 0, 'selectedCandidatePairId': 'CP01'})
       ];
 
       // Act
@@ -129,8 +123,7 @@ void main() {
       parser.onStatsReports(reports);
 
       // Assert
-      verify(mockReporter.videoInboundStats(argThat(
-          isA<RtcVideoInboundStats>()
+      verify(mockReporter.videoInboundStats(argThat(isA<RtcVideoInboundStats>()
               .having((s) => s.decoderName, 'decoderName', 'vp8')
               .having((s) => s.frameWidth, 'frameWidth', 1280)
               .having((s) => s.frameHeight, 'frameHeight', 720)
@@ -138,11 +131,11 @@ void main() {
               .having((s) => s.bytesReceived, 'bytesReceived', 500000)
               .having((s) => s.packetsLost, 'packetsLost', 5)
               .having((s) => s.packetsReceived, 'packetsReceived', 1000)
-              .having((s) => s.jitter, 'jitter', 5.2)
-      ))).called(1);
+              .having((s) => s.jitter, 'jitter', 5.2))))
+          .called(1);
 
-      verify(mockPresenter.addVideoStats(argThat(
-          isA<RtcVideoInboundStatsForPresenter>()
+      verify(mockPresenter.addVideoStats(argThat(isA<
+                  RtcVideoInboundStatsForPresenter>()
               .having((s) => s.frameWidth, 'frameWidth', 1280)
               .having((s) => s.frameHeight, 'frameHeight', 720)
               .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
@@ -150,29 +143,37 @@ void main() {
               .having((s) => s.packetsLost, 'packetsLost', 5)
               .having((s) => s.packetsReceived, 'packetsReceived', 1000)
               .having((s) => s.jitter, 'jitter', 5.2)
-              .having((s) => s.powerEfficientDecoder, 'powerEfficientDecoder', true)
+              .having(
+                  (s) => s.powerEfficientDecoder, 'powerEfficientDecoder', true)
               .having((s) => s.qpSum, 'qpSum', 1000)
               .having((s) => s.nackCount, 'nackCount', 26)
               .having((s) => s.firCount, 'firCount', 2)
               .having((s) => s.pliCount, 'pliCount', 1)
               .having((s) => s.freezeCount, 'freezeCount', 5)
-              .having((s) => s.totalFreezesDuration, 'totalFreezesDuration', 3.537)
+              .having(
+                  (s) => s.totalFreezesDuration, 'totalFreezesDuration', 3.537)
               .having((s) => s.keyFramesDecoded, 'keyFramesDecoded', 1)
-              .having((s) => s.totalInterFrameDelay, 'totalInterFrameDelay', 110.464)
-              .having((s) => s.totalSquaredInterFrameDelay, 'totalSquaredInterFrameDelay', 28.5005)
+              .having((s) => s.totalInterFrameDelay, 'totalInterFrameDelay',
+                  110.464)
+              .having((s) => s.totalSquaredInterFrameDelay,
+                  'totalSquaredInterFrameDelay', 28.5005)
               .having((s) => s.pauseCount, 'pauseCount', 0)
               .having((s) => s.totalPausesDuration, 'totalPausesDuration', 0.0)
               .having((s) => s.totalAssemblyTime, 'totalAssemblyTime', 64.272)
-              .having((s) => s.framesAssembledFromMultiplePackets, 'framesAssembledFromMultiplePackets', 588)
+              .having((s) => s.framesAssembledFromMultiplePackets,
+                  'framesAssembledFromMultiplePackets', 588)
               .having((s) => s.framesDropped, 'framesDropped', 10)
               .having((s) => s.framesReceived, 'framesReceived', 1000)
               .having((s) => s.framesDecoded, 'framesDecoded', 990)
               .having((s) => s.jitterBufferDelay, 'jitterBufferDelay', 2.5)
-              .having((s) => s.jitterBufferEmittedCount, 'jitterBufferEmittedCount', 980)
-              .having((s) => s.headerBytesReceived, 'headerBytesReceived', 140480)
-              .having((s) => s.totalProcessingDelay, 'totalProcessingDelay', 346.802)
-              .having((s) => s.totalDecodeTime, 'totalDecodeTime', 15.0)
-      ))).called(1);
+              .having((s) => s.jitterBufferEmittedCount,
+                  'jitterBufferEmittedCount', 980)
+              .having(
+                  (s) => s.headerBytesReceived, 'headerBytesReceived', 140480)
+              .having((s) => s.totalProcessingDelay, 'totalProcessingDelay',
+                  346.802)
+              .having((s) => s.totalDecodeTime, 'totalDecodeTime', 15.0))))
+          .called(1);
     });
 
     test('Given two inbound-rtp reports, processing stats twice', () {
@@ -193,9 +194,9 @@ void main() {
         'pauseCount': 0,
         'jitterBufferEmittedCount': 1000,
         'jitterBufferDelay': 2000.0, // Makes avg calculation clean (2.0)
-        'totalDecodeTime': 5000.0,   // Makes avg calculation clean (5.0)
+        'totalDecodeTime': 5000.0, // Makes avg calculation clean (5.0)
         'powerEfficientDecoder': true,
-        'qpSum': 10000,              // Makes avg calculation clean (10.0)
+        'qpSum': 10000, // Makes avg calculation clean (10.0)
         'nackCount': 20,
         'firCount': 0,
         'pliCount': 0,
@@ -205,7 +206,7 @@ void main() {
         'totalInterFrameDelay': 5000.0, // Makes avg calculation clean (5.0)
         'totalSquaredInterFrameDelay': 20000.0,
         'totalPausesDuration': 0.0,
-        'totalAssemblyTime': 2000.0,    // Makes avg calculation clean (2.0)
+        'totalAssemblyTime': 2000.0, // Makes avg calculation clean (2.0)
         'framesAssembledFromMultiplePackets': 1000,
         'headerBytesReceived': 100000,
         'totalProcessingDelay': 300.0,
@@ -218,25 +219,25 @@ void main() {
         'frameWidth': 1280,
         'frameHeight': 720,
         'framesPerSecond': 30.0,
-        'framesReceived': 1030,      // +30 per second
-        'framesDecoded': 1025,       // +25 per second
-        'framesDropped': 15,         // +5 per second
-        'bytesReceived': 550000,     // +50000 per second
+        'framesReceived': 1030, // +30 per second
+        'framesDecoded': 1025, // +25 per second
+        'framesDropped': 15, // +5 per second
+        'bytesReceived': 550000, // +50000 per second
         'packetsLost': 6,
-        'packetsReceived': 1050,     // +50 per second
+        'packetsReceived': 1050, // +50 per second
         'jitter': 5.3,
         'pauseCount': 0,
         'jitterBufferEmittedCount': 1025,
         'jitterBufferDelay': 2050.0, // Makes avg calculation clean
-        'totalDecodeTime': 5125.0,   // Makes avg calculation clean
+        'totalDecodeTime': 5125.0, // Makes avg calculation clean
         'powerEfficientDecoder': true,
-        'qpSum': 10250,              // Makes avg calculation clean
+        'qpSum': 10250, // Makes avg calculation clean
         'nackCount': 22,
         'firCount': 1,
         'pliCount': 1,
         'freezeCount': 6,
         'totalFreezesDuration': 3.5,
-        'keyFramesDecoded': 12,      // +2 per second
+        'keyFramesDecoded': 12, // +2 per second
         'totalInterFrameDelay': 5125.0, // Makes avg calculation clean
         'totalSquaredInterFrameDelay': 21000.0, // +1000 per second
         'totalPausesDuration': 0.0,
@@ -251,29 +252,38 @@ void main() {
       parser.onStatsReports([videoReport2]);
 
       // Assert
-      verify(mockReporter.videoInboundStats(argThat(
-          isA<RtcVideoInboundStats>()
-              .having((s) => s.framesReceivedPerSecond, 'framesReceivedPerSecond', 30)
-              .having((s) => s.framesDecodedPerSecond, 'framesDecodedPerSecond', 25)
-              .having((s) => s.framesDroppedPerSecond, 'framesDroppedPerSecond', 5)
+      verify(mockReporter.videoInboundStats(argThat(isA<RtcVideoInboundStats>()
+              .having((s) => s.framesReceivedPerSecond,
+                  'framesReceivedPerSecond', 30)
+              .having(
+                  (s) => s.framesDecodedPerSecond, 'framesDecodedPerSecond', 25)
+              .having(
+                  (s) => s.framesDroppedPerSecond, 'framesDroppedPerSecond', 5)
               .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000.0)
               .having((s) => s.jitterBufferDelay, 'jitterBufferDelay', 2.0)
-              .having((s) => s.decodeTime, 'decodeTime', 5.0)
-      ))).called(1);
-      verify(mockPresenter.addVideoStats(argThat(
-          isA<RtcVideoInboundStatsForPresenter>()
-          // Per-second differentials
-              .having((s) => s.packetsReceivedPerSecond, 'packetsReceivedPerSecond', 50)
-              .having((s) => s.keyFramesDecodedPerSecond, 'keyFramesDecodedPerSecond', 2)
-              .having((s) => s.headerBytesPerSecond, 'headerBytesPerSecond', 5000)
-              .having((s) => s.interFrameDelayPerSecond, 'interFrameDelayPerSecond', 1000.0)
-          // Averages
-              .having((s) => s.jitterBufferDelayAvg, 'jitterBufferDelayAvg', 2.0)
+              .having((s) => s.decodeTime, 'decodeTime', 5.0))))
+          .called(1);
+      verify(mockPresenter.addVideoStats(argThat(isA<
+                  RtcVideoInboundStatsForPresenter>()
+              // Per-second differentials
+              .having((s) => s.packetsReceivedPerSecond,
+                  'packetsReceivedPerSecond', 50)
+              .having((s) => s.keyFramesDecodedPerSecond,
+                  'keyFramesDecodedPerSecond', 2)
+              .having(
+                  (s) => s.headerBytesPerSecond, 'headerBytesPerSecond', 5000)
+              .having((s) => s.interFrameDelayPerSecond,
+                  'interFrameDelayPerSecond', 1000.0)
+              // Averages
+              .having(
+                  (s) => s.jitterBufferDelayAvg, 'jitterBufferDelayAvg', 2.0)
               .having((s) => s.decodeTimeAvg, 'decodeTimeAvg', 5.0)
-              .having((s) => s.totalAssemblyTimeAvg, 'totalAssemblyTimeAvg', 2.0)
-              .having((s) => s.totalInterFrameDelayAvg, 'totalInterFrameDelayAvg', 5.0)
-              .having((s) => s.qpSumAvg, 'qpSumAvg', 10.0)
-      ))).called(1);
+              .having(
+                  (s) => s.totalAssemblyTimeAvg, 'totalAssemblyTimeAvg', 2.0)
+              .having((s) => s.totalInterFrameDelayAvg,
+                  'totalInterFrameDelayAvg', 5.0)
+              .having((s) => s.qpSumAvg, 'qpSumAvg', 10.0))))
+          .called(1);
     });
 
     test('should return the first video inbound-rtp report', () {
@@ -287,8 +297,8 @@ void main() {
       final result = parser.getOneTimeVideoInboundStats(reports);
 
       expect(result!.id, '2');
-      expect(result!.type, 'inbound-rtp');
-      expect(result!.values['kind'], 'video');
+      expect(result.type, 'inbound-rtp');
+      expect(result.values['kind'], 'video');
     });
 
     test('should return null if no video inbound-rtp report exists', () {
