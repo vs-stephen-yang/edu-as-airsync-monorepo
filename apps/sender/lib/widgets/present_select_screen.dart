@@ -7,8 +7,8 @@ import 'package:display_cast_flutter/utilities/app_constants.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_cast_flutter/utilities/connect_timer.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
+import 'package:display_cast_flutter/utilities/version_util.dart';
 import 'package:display_cast_flutter/widgets/toast.dart';
-import 'package:display_cast_flutter/widgets/v3_present_select_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display.dart';
@@ -50,7 +50,7 @@ class PresentSelectScreen extends StatelessWidget {
 
   Future<void> _handleDesktopPlatform(
       BuildContext context, ChannelProvider provider) async {
-    if (WebRTC.platformIsWindows || V3PresentSelectScreen.isOpenVersion) {
+    if (WebRTC.platformIsWindows || VersionUtil.isOpenVersion) {
       await FlutterVirtualDisplay.instance.startVirtualDisplay();
     }
 
@@ -77,7 +77,7 @@ class PresentSelectScreen extends StatelessWidget {
           unawaited(provider.presentStart(selectedSource: value.selectedSource));
         }
       } else {
-        if (WebRTC.platformIsWindows || V3PresentSelectScreen.isOpenVersion) {
+        if (WebRTC.platformIsWindows || VersionUtil.isOpenVersion) {
           await FlutterVirtualDisplay.instance.stopVirtualDisplay();
         }
         SelectScreenDialog._timer?.cancel();

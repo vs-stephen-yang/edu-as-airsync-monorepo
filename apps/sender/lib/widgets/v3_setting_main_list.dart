@@ -8,6 +8,7 @@ import 'package:display_cast_flutter/settings/app_config.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/v3_network_status_detector.dart';
 import 'package:display_cast_flutter/utilities/v3_update_manager.dart';
+import 'package:display_cast_flutter/utilities/version_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -99,8 +100,11 @@ class V3SettingMainList extends StatelessWidget {
           bottom: isAppMode ? 40 : 50,
           left: isAppMode ? null : 0,
           child: AutoSizeText(
-            S.of(context).v3_setting_app_version(
-                DateTime.now().year, AppConfig.of(context)?.appVersion),
+            VersionUtil.isOpenVersion
+                ? S.of(context).v3_setting_app_version_independent(
+                    DateTime.now().year, AppConfig.of(context)?.appVersion)
+                : S.of(context).v3_setting_app_version(
+                    DateTime.now().year, AppConfig.of(context)?.appVersion),
             minFontSize: 9,
             style: TextStyle(
               fontSize: isAppMode ? 14 : 10,
