@@ -6,7 +6,6 @@ import 'package:ntp/ntp.dart';
 import 'package:http/http.dart' as http;
 import 'package:display_cast_flutter/utilities/log.dart';
 
-
 class TestResult {
   final bool success;
   final String? error;
@@ -21,6 +20,23 @@ class TestResult {
       'success': success,
       'error': error,
     };
+  }
+}
+
+class NtpTestResult extends TestResult {
+  final String offset;
+
+  NtpTestResult({
+    required this.offset,
+    required super.success,
+    super.error,
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = super.toJson();
+    json['offset'] = offset;
+    return json;
   }
 }
 
@@ -67,7 +83,8 @@ class NetworkDiagnostic {
   NetworkDiagnostic();
 
   // Run all diagnostic tests
-  Future<DiagnosticResults> runAllTests(String receiverIp, int port, String tunnelUrl) async {
+  Future<DiagnosticResults> runAllTests(
+      String receiverIp, int port, String tunnelUrl) async {
     if (kIsWeb) {
       await Future.wait([
         _testTunnelServerConnection(tunnelUrl),
@@ -93,8 +110,7 @@ class NetworkDiagnostic {
       {Duration timeout = const Duration(seconds: 5)}) async {
     try {
       log.info('[Network Diagnostic] Testing TCP connection to $ip:$port...');
-      final socket =
-          await Socket.connect(ip, port, timeout: timeout);
+      final socket = await Socket.connect(ip, port, timeout: timeout);
       log.info('[Network Diagnostic] Successfully connected to $ip:$port');
       await socket.close();
       _results.portTests
@@ -197,12 +213,16 @@ class NetworkDiagnostic {
   }
 
   Future<void> _testNtpOffset() async {
-    DateTime startDate = new DateTime.now().toLocal();
-    int offset = await NTP.getNtpOffset(localTime: startDate);
-    _results.ntpOffset = '$offset ms';
+    try {
+      DateTime startDate = DateTime.now().toLocal();
+      int offset = await NTP.getNtpOffset(localTime: startDate);
+      _results.ntpOffset = NtpTestResult(offset: '$offset ms', success: true);
+    } catch (e) {
+      _results.ntpOffset =
+          NtpTestResult(offset: '', success: false, error: e.toString());
+    }
   }
 }
-
 
 // Models for diagnostic results and configuration
 class DiagnosticResults {
@@ -210,7 +230,7 @@ class DiagnosticResults {
   WebSocketTestResult? webSocketTest;
   TestResult? tunnelTest;
   List<String>? webTransportCertsDate;
-  String? ntpOffset;
+  NtpTestResult? ntpOffset;
 
   Map<String, dynamic> toJson() {
     return {
