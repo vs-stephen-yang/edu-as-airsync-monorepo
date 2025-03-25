@@ -127,7 +127,7 @@ class RTCConnector {
 
   Timer? _channelReconnectTimer;
   bool _isRtcFirstConnected = false;
-  Timer? _firstFrameRenderTimer;
+  DateTime? _firstConnectTime;
 
   // rtc stats
   final _videoBitrateHistory = <int?>[];
@@ -260,26 +260,6 @@ class RTCConnector {
     }
   }
 
-  void _startFirstFrameRenderTimer() {
-    log.info('Start first frame render timer');
-
-    _firstFrameRenderTimer = Timer(const Duration(seconds: 10), () async {
-      final reports = await _pc?.getStats(null);
-      if (reports != null) {
-        final videoInboundRtp = _rtcStatsParser?.getOneTimeVideoInboundStats(reports);
-        _trackTrace('first_frame_render_delay', properties: {...?videoInboundRtp?.values});
-      }
-    });
-  }
-
-  void _stopFirstFrameRenderTimer() {
-    if (_firstFrameRenderTimer != null) {
-      log.info('Stop first frame render timer');
-      _firstFrameRenderTimer!.cancel();
-      _firstFrameRenderTimer = null;
-    }
-  }
-
   bool _isStreaming() {
     return _isRtcFirstConnected;
   }
@@ -385,8 +365,27 @@ class RTCConnector {
     });
 
     await _remoteRenderer?.initialize();
-    _remoteRenderer?.onFirstFrameRendered = (){
-      _stopFirstFrameRenderTimer();
+    _remoteRenderer?.onFirstFrameRendered = () async {
+      log.info('First frame rendered');
+
+      final reports = await _pc?.getStats(null);
+      final Map<String, Object> properties = <String, Object>{};
+
+      if (reports != null && reports.isNotEmpty) {
+        final videoInboundRtp =
+        _rtcStatsParser?.getOneTimeVideoInboundStats(reports);
+        if (videoInboundRtp != null && videoInboundRtp.values.isNotEmpty) {
+          // Cast to the correct type for addAll
+          properties.addAll(videoInboundRtp.values.cast<String, Object>());
+        }
+      }
+
+      if (_firstConnectTime != null) {
+        final Duration delay = DateTime.now().difference(_firstConnectTime!);
+        _trackTrace('first_frame_render_delay',
+            target: delay.inSeconds.toString(),
+            properties: properties);
+      }
     };
 
     await _peerConnectionConnect(iceServers);
@@ -657,7 +656,7 @@ class RTCConnector {
     if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
       if (!_isRtcFirstConnected) {
         _isRtcFirstConnected = true;
-        _startFirstFrameRenderTimer();
+        _firstConnectTime = DateTime.now();
 
         trackSessionEvent('start_cast');
       }
