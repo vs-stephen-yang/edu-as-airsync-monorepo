@@ -42,7 +42,7 @@ class RtcVideoOutboundStats {
   double? packetSendDelayAvg;
   double? qpSumAvg;
 
-  RtcVideoOutboundStats(
+  RtcVideoOutboundStats({
       this.encoderImplementation,
       this.frameWidth,
       this.frameHeight,
@@ -80,5 +80,6 @@ class RtcVideoOutboundStats {
       this.totalEncodedBytesTargetPerSecond,
       this.framesSentPerSecond,
       this.packetSendDelayAvg,
-      this.qpSumAvg);
+      this.qpSumAvg
+  });
 }

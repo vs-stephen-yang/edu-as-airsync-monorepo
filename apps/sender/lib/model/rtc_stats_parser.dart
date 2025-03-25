@@ -65,34 +65,34 @@ class RtcStatsParser {
     final values = videoOutboundRtp.values;
 
     // Extract basic fields from report
-    final String? encoderImplementation = values['encoderImplementation'];
-    final int? frameWidth = values['frameWidth'];
-    final int? frameHeight = values['frameHeight'];
-    final double? framesPerSecond = values['framesPerSecond'];
-    final String? contentType = values['contentType'];
-    final String? qualityLimitationReason = values['qualityLimitationReason'];
-    final int? pliCount = values['pliCount'];
-    final double? targetBitrate = values['targetBitrate'];
-    final bool? powerEfficientEncoder = values['powerEfficientEncoder'];
-    final double timestamp = videoOutboundRtp.timestamp;
+    final encoderImplementation = values['encoderImplementation'];
+    final frameWidth = values['frameWidth'];
+    final frameHeight = values['frameHeight'];
+    final framesPerSecond = values['framesPerSecond'];
+    final contentType = values['contentType'];
+    final qualityLimitationReason = values['qualityLimitationReason'];
+    final pliCount = values['pliCount'];
+    final targetBitrate = values['targetBitrate'];
+    final powerEfficientEncoder = values['powerEfficientEncoder'];
+    final timestamp = videoOutboundRtp.timestamp;
 
     // Extract additional fields
-    final int? bytesSent = values['bytesSent'];
-    final int? packetsSent = values['packetsSent'];
-    final bool? active = values['active'];
-    final int? firCount = values['firCount'];
-    final int? framesEncoded = values['framesEncoded'];
-    final int? framesSent = values['framesSent'];
-    final int? headerBytesSent = values['headerBytesSent'];
-    final int? hugeFramesSent = values['hugeFramesSent'];
-    final int? keyFramesEncoded = values['keyFramesEncoded'];
-    final int? nackCount = values['nackCount'];
-    final int? retransmittedBytesSent = values['retransmittedBytesSent'];
-    final int? retransmittedPacketsSent = values['retransmittedPacketsSent'];
-    final double? totalEncodeTime = values['totalEncodeTime'];
-    final int? totalEncodedBytesTarget = values['totalEncodedBytesTarget'];
-    final double? totalPacketSendDelay = values['totalPacketSendDelay'];
-    final int? qpSum = values['qpSum'];
+    final bytesSent = values['bytesSent'];
+    final packetsSent = values['packetsSent'];
+    final active = values['active'];
+    final firCount = values['firCount'];
+    final framesEncoded = values['framesEncoded'];
+    final framesSent = values['framesSent'];
+    final headerBytesSent = values['headerBytesSent'];
+    final hugeFramesSent = values['hugeFramesSent'];
+    final keyFramesEncoded = values['keyFramesEncoded'];
+    final nackCount = values['nackCount'];
+    final retransmittedBytesSent = values['retransmittedBytesSent'];
+    final retransmittedPacketsSent = values['retransmittedPacketsSent'];
+    final totalEncodeTime = values['totalEncodeTime'];
+    final totalEncodedBytesTarget = values['totalEncodedBytesTarget'];
+    final totalPacketSendDelay = values['totalPacketSendDelay'];
+    final qpSum = values['qpSum'];
 
     // Initialize calculated metrics
     double? encodeTime;
@@ -110,7 +110,6 @@ class RtcStatsParser {
 
     // Calculate differences if we have previous stats
     if (_previousVideoOutboundStats != null) {
-      // Calculate encodeTime directly from the difference in totalEncodeTime
       encodeTime =
           _diff(totalEncodeTime, _previousVideoOutboundStats!.totalEncodeTime);
 
@@ -142,7 +141,7 @@ class RtcStatsParser {
       framesSentPerSecond = _diff(framesSent?.toDouble(),
           _previousVideoOutboundStats!.framesSent?.toDouble());
 
-      // Calculate averages regardless of previous stats
+      // Calculate averages
       encodeTimeAvg = _avg(
         totalEncodeTime,
         _previousVideoOutboundStats!.totalEncodeTime,
@@ -170,44 +169,45 @@ class RtcStatsParser {
 
     // Create the stats object with all fields
     final stats = RtcVideoOutboundStats(
-        encoderImplementation,
-        frameWidth,
-        frameHeight,
-        framesPerSecond,
-        contentType,
-        qualityLimitationReason,
-        pliCount,
-        targetBitrate,
-        encodeTime,
-        powerEfficientEncoder,
-        timestamp,
-        bytesSent,
-        packetsSent,
-        active,
-        firCount,
-        framesEncoded,
-        framesSent,
-        headerBytesSent,
-        hugeFramesSent,
-        keyFramesEncoded,
-        nackCount,
-        retransmittedBytesSent,
-        retransmittedPacketsSent,
-        totalEncodeTime,
-        totalEncodedBytesTarget,
-        totalPacketSendDelay,
-        qpSum,
-        packetsSentPerSecond,
-        bytesSentPerSecond,
-        retransmittedPacketsSentPerSecond,
-        headerBytesSentPerSecond,
-        retransmittedBytesSentPerSecond,
-        framesEncodedPerSecond,
-        encodeTimeAvg,
-        totalEncodedBytesTargetPerSecond,
-        framesSentPerSecond,
-        packetSendDelayAvg,
-        qpSumAvg);
+        encoderImplementation: encoderImplementation,
+        frameWidth: frameWidth,
+        frameHeight: frameHeight,
+        framesPerSecond: framesPerSecond,
+        contentType: contentType,
+        qualityLimitationReason: qualityLimitationReason,
+        pliCount: pliCount,
+        targetBitrate: targetBitrate,
+        encodeTime: encodeTime,
+        powerEfficientEncoder: powerEfficientEncoder,
+        timestamp: timestamp,
+        bytesSent: bytesSent,
+        packetsSent: packetsSent,
+        active: active,
+        firCount: firCount,
+        framesEncoded: framesEncoded,
+        framesSent: framesSent,
+        headerBytesSent: headerBytesSent,
+        hugeFramesSent: hugeFramesSent,
+        keyFramesEncoded: keyFramesEncoded,
+        nackCount: nackCount,
+        retransmittedBytesSent: retransmittedBytesSent,
+        retransmittedPacketsSent: retransmittedPacketsSent,
+        totalEncodeTime: totalEncodeTime,
+        totalEncodedBytesTarget: totalEncodedBytesTarget,
+        totalPacketSendDelay: totalPacketSendDelay,
+        qpSum: qpSum,
+        packetsSentPerSecond: packetsSentPerSecond,
+        bytesSentPerSecond: bytesSentPerSecond,
+        retransmittedPacketsSentPerSecond: retransmittedPacketsSentPerSecond,
+        headerBytesSentPerSecond: headerBytesSentPerSecond,
+        retransmittedBytesSentPerSecond: retransmittedBytesSentPerSecond,
+        framesEncodedPerSecond: framesEncodedPerSecond,
+        encodeTimeAvg: encodeTimeAvg,
+        totalEncodedBytesTargetPerSecond: totalEncodedBytesTargetPerSecond,
+        framesSentPerSecond: framesSentPerSecond,
+        packetSendDelayAvg: packetSendDelayAvg,
+        qpSumAvg: qpSumAvg
+    );
 
     // Publish the stats to subscribers
     publishRtcVideoOutboundStats(stats);
