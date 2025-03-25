@@ -6,7 +6,7 @@ class RtcVideoOutboundStats {
   String? contentType;
   String? qualityLimitationReason;
   int? pliCount;
-  double? targetBitrate;
+  int? targetBitrate;
   double? encodeTime;
   bool? powerEfficientEncoder;
 
@@ -36,10 +36,10 @@ class RtcVideoOutboundStats {
   double? headerBytesSentPerSecond;
   double? retransmittedBytesSentPerSecond;
   double? framesEncodedPerSecond;
-  double? encodeTimeAvg;
+  double? encodeTimeAvgMs;
   double? totalEncodedBytesTargetPerSecond;
   double? framesSentPerSecond;
-  double? packetSendDelayAvg;
+  double? packetSendDelayAvgMs;
   double? qpSumAvg;
 
   RtcVideoOutboundStats({
@@ -76,10 +76,10 @@ class RtcVideoOutboundStats {
       this.headerBytesSentPerSecond,
       this.retransmittedBytesSentPerSecond,
       this.framesEncodedPerSecond,
-      this.encodeTimeAvg,
+      this.encodeTimeAvgMs,
       this.totalEncodedBytesTargetPerSecond,
       this.framesSentPerSecond,
-      this.packetSendDelayAvg,
+      this.packetSendDelayAvgMs,
       this.qpSumAvg
   });
 }
