@@ -21,6 +21,10 @@ dynamic _avg(dynamic a, dynamic b, int? c, int? d) {
 
 abstract class RtcStatsSubscriber {
   void updateVideoStats(RtcVideoOutboundStats stats);
+  void updateLocalCandidate(List<StatsReport> reports);
+  void updateRemoteCandidate(List<StatsReport> reports);
+  void updateCandidatePairStats(StatsReport report);
+  void updateCodecStats(StatsReport report);
 }
 
 class RtcStatsParser {

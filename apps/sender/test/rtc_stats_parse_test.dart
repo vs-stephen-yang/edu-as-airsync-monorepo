@@ -1,5 +1,6 @@
 import 'package:display_cast_flutter/model/rtc_stats.dart';
 import 'package:display_cast_flutter/model/rtc_stats_parser.dart';
+import 'package:display_cast_flutter/model/rtc_stats_presenter.dart';
 import 'package:display_cast_flutter/model/rtc_stats_reporter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -7,7 +8,7 @@ import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 
 import 'rtc_stats_parse_test.mocks.dart';
-@GenerateMocks([RtcStatsReporter])
+@GenerateMocks([RtcStatsReporter, RtcStatsPresenter])
 
 void main() {
   group('RtcStatsParser - _onStatsReports', () {
