@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:ntp/ntp.dart';
+import 'package:http/http.dart' as http;
 import 'package:display_cast_flutter/utilities/log.dart';
-import 'package:display_cast_flutter/api/http_request.dart';
-import 'package:display_cast_flutter/api/fetch_tunnel_info.dart';
 
 
 class TestResult {
@@ -69,19 +69,20 @@ class NetworkDiagnostic {
   // Run all diagnostic tests
   Future<DiagnosticResults> runAllTests(String receiverIp, int port, String tunnelUrl) async {
     if (kIsWeb) {
-      await _testTunnelServerConnection(tunnelUrl);
+      await Future.wait([
+        _testTunnelServerConnection(tunnelUrl),
+      ]);
+
       _results.logResult();
       return _results;
     }
 
-    // Test TCP connection
-    await _testTcpConnection(receiverIp, port);
-
-    // Test WebSocket connection
-    await _testWebSocketConnection(receiverIp, port);
-
-    // Test tunnel server connection
-    await _testTunnelServerConnection(tunnelUrl);
+    await Future.wait([
+      _testTcpConnection(receiverIp, port),
+      _testWebSocketConnection(receiverIp, port),
+      _testTunnelServerConnection(tunnelUrl),
+      _testNtpOffset(),
+    ]);
 
     _results.logResult();
     return _results;
@@ -177,23 +178,13 @@ class NetworkDiagnostic {
 
   Future<void> _testTunnelServerConnection(String url) async {
     try {
-      final request = HttpRequest<void>(
-        url,
-        path: '/v1/instance',
-      );
-      await request.sendRequest(
-          'fetchTunnelInfo',
-          HttpMethod.get,
-          FetchTunnelInfoResult.fromJson
-      );
-      _results.tunnelTest = TestResult(success: true);
-    } catch (e) {
-      if (e is HttpRequestException) {
-        if (e.error == HttpRequestError.httpError && e.statusCode == 400) {
-          _results.tunnelTest = TestResult(success: true);
-          return;
-        }
+      final response = await http.get(Uri.parse('${url}health'));
+      if (response.statusCode == 200) {
+        _results.tunnelTest = TestResult(success: true);
+        return;
       }
+      _results.tunnelTest = TestResult(success: false);
+    } catch (e) {
       _results.tunnelTest = TestResult(success: false, error: e.toString());
     }
   }
@@ -204,7 +195,14 @@ class NetworkDiagnostic {
     // TODO: replace
     _results.logResult();
   }
+
+  Future<void> _testNtpOffset() async {
+    DateTime startDate = new DateTime.now().toLocal();
+    int offset = await NTP.getNtpOffset(localTime: startDate);
+    _results.ntpOffset = '$offset ms';
+  }
 }
+
 
 // Models for diagnostic results and configuration
 class DiagnosticResults {
@@ -212,6 +210,7 @@ class DiagnosticResults {
   WebSocketTestResult? webSocketTest;
   TestResult? tunnelTest;
   List<String>? webTransportCertsDate;
+  String? ntpOffset;
 
   Map<String, dynamic> toJson() {
     return {
@@ -219,6 +218,7 @@ class DiagnosticResults {
       'webSocketTest': webSocketTest?.toJson(),
       'tunnelServerTest': tunnelTest?.toJson(),
       'webTransportCertsDate': webTransportCertsDate,
+      'ntpOffset': ntpOffset,
     };
   }
 

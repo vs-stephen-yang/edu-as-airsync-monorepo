@@ -94,6 +94,7 @@ dependencies:
   qr_flutter: ^4.1.0
   flutter_launcher_icons: ^0.14.1
   async: ^2.11.0
+  ntp: ^2.0.0
 
   # ViewSonic plug-in
   flutter_webrtc:
