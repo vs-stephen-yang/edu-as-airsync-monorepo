@@ -9,6 +9,16 @@ double? _diff(double? a, double? b) {
   return a - b;
 }
 
+dynamic _avg(dynamic a, dynamic b, int? c, int? d) {
+  if (a == null || b == null || c == null || d == null) {
+    return null;
+  }
+  if (c == d) {
+    return null;
+  }
+  return (a - b) / (c - d);
+}
+
 abstract class RtcStatsSubscriber {
   void onVideoStatsReports(RtcVideoOutboundStats stats);
 }
@@ -16,14 +26,13 @@ abstract class RtcStatsSubscriber {
 class RtcStatsParser {
   int? _outboundVideoWidth;
   int? _outboundVideoHeight;
-  double _totalEncodeTime = 0;
+  RtcVideoOutboundStats? _previousVideoOutboundStats;
 
   final List<RtcStatsSubscriber> _subscribers = [];
 
   Function(int? width, int? height)? onOutboundVideoFrameSizeChanged;
 
-  RtcStatsParser(
-      this.onOutboundVideoFrameSizeChanged);
+  RtcStatsParser(this.onOutboundVideoFrameSizeChanged);
 
   void onVideoStatsReports(List<StatsReport> reports) {
     try {
@@ -48,39 +57,172 @@ class RtcStatsParser {
     if (reports.isEmpty) {
       _outboundVideoWidth = null;
       _outboundVideoHeight = null;
-      _totalEncodeTime = 0;
+      _previousVideoOutboundStats = null;
       return;
     }
 
     final videoOutboundRtp = reports.first;
-    final stats = RtcVideoOutboundStats();
+    final values = videoOutboundRtp.values;
 
-    stats.encoderImplementation = videoOutboundRtp.values['encoderImplementation'];
-    stats.frameHeight = videoOutboundRtp.values['frameHeight'];
-    stats.frameWidth = videoOutboundRtp.values['frameWidth'];
+    // Extract basic fields from report
+    final String? encoderImplementation = values['encoderImplementation'];
+    final int? frameWidth = values['frameWidth'];
+    final int? frameHeight = values['frameHeight'];
+    final double? framesPerSecond = values['framesPerSecond'];
+    final String? contentType = values['contentType'];
+    final String? qualityLimitationReason = values['qualityLimitationReason'];
+    final int? pliCount = values['pliCount'];
+    final double? targetBitrate = values['targetBitrate'];
+    final bool? powerEfficientEncoder = values['powerEfficientEncoder'];
+    final double timestamp = videoOutboundRtp.timestamp;
 
-    stats.framesPerSecond = videoOutboundRtp.values['framesPerSecond'];
+    // Extract additional fields
+    final int? bytesSent = values['bytesSent'];
+    final int? packetsSent = values['packetsSent'];
+    final bool? active = values['active'];
+    final int? firCount = values['firCount'];
+    final int? framesEncoded = values['framesEncoded'];
+    final int? framesSent = values['framesSent'];
+    final int? headerBytesSent = values['headerBytesSent'];
+    final int? hugeFramesSent = values['hugeFramesSent'];
+    final int? keyFramesEncoded = values['keyFramesEncoded'];
+    final int? nackCount = values['nackCount'];
+    final int? retransmittedBytesSent = values['retransmittedBytesSent'];
+    final int? retransmittedPacketsSent = values['retransmittedPacketsSent'];
+    final double? totalEncodeTime = values['totalEncodeTime'];
+    final int? totalEncodedBytesTarget = values['totalEncodedBytesTarget'];
+    final double? totalPacketSendDelay = values['totalPacketSendDelay'];
+    final int? qpSum = values['qpSum'];
 
-    stats.contentType = videoOutboundRtp.values['contentType'];
-    stats.qualityLimitationReason = videoOutboundRtp.values['qualityLimitationReason'];
+    // Initialize calculated metrics
+    double? encodeTime;
+    double? packetsSentPerSecond;
+    double? bytesSentPerSecond;
+    double? retransmittedPacketsSentPerSecond;
+    double? headerBytesSentPerSecond;
+    double? retransmittedBytesSentPerSecond;
+    double? framesEncodedPerSecond;
+    double? encodeTimeAvg;
+    double? totalEncodedBytesTargetPerSecond;
+    double? framesSentPerSecond;
+    double? packetSendDelayAvg;
+    double? qpSumAvg;
 
-    double totalEncodeTime = videoOutboundRtp.values['totalEncodeTime'];
+    // Calculate differences if we have previous stats
+    if (_previousVideoOutboundStats != null) {
+      // Calculate encodeTime directly from the difference in totalEncodeTime
+      encodeTime =
+          _diff(totalEncodeTime, _previousVideoOutboundStats!.totalEncodeTime);
 
-    stats.pliCount = videoOutboundRtp.values['pliCount'];
-    stats.targetBitrate = videoOutboundRtp.values['targetBitrate'];
-    stats.encodeTime = _diff(totalEncodeTime, _totalEncodeTime);
-    stats.powerEfficientEncoder = videoOutboundRtp.values['powerEfficientEncoder'];
+      // Per-second calculations
+      packetsSentPerSecond = _diff(packetsSent?.toDouble(),
+          _previousVideoOutboundStats!.packetsSent?.toDouble());
 
-    publishRtcVideoOutboundStats(stats);
+      bytesSentPerSecond = _diff(bytesSent?.toDouble(),
+          _previousVideoOutboundStats!.bytesSent?.toDouble());
 
-    if (_outboundVideoWidth != stats.frameWidth || _outboundVideoHeight != stats.frameHeight) {
-      _outboundVideoWidth = stats.frameWidth;
-      _outboundVideoHeight = stats.frameHeight;
-      onOutboundVideoFrameSizeChanged?.call(_outboundVideoWidth, _outboundVideoHeight);
+      retransmittedPacketsSentPerSecond = _diff(
+          retransmittedPacketsSent?.toDouble(),
+          _previousVideoOutboundStats!.retransmittedPacketsSent?.toDouble());
+
+      headerBytesSentPerSecond = _diff(headerBytesSent?.toDouble(),
+          _previousVideoOutboundStats!.headerBytesSent?.toDouble());
+
+      retransmittedBytesSentPerSecond = _diff(
+          retransmittedBytesSent?.toDouble(),
+          _previousVideoOutboundStats!.retransmittedBytesSent?.toDouble());
+
+      framesEncodedPerSecond = _diff(framesEncoded?.toDouble(),
+          _previousVideoOutboundStats!.framesEncoded?.toDouble());
+
+      totalEncodedBytesTargetPerSecond = _diff(
+          totalEncodedBytesTarget?.toDouble(),
+          _previousVideoOutboundStats!.totalEncodedBytesTarget?.toDouble());
+
+      framesSentPerSecond = _diff(framesSent?.toDouble(),
+          _previousVideoOutboundStats!.framesSent?.toDouble());
+
+      // Calculate averages regardless of previous stats
+      encodeTimeAvg = _avg(
+        totalEncodeTime,
+        _previousVideoOutboundStats!.totalEncodeTime,
+        framesEncoded,
+        _previousVideoOutboundStats!.framesEncoded,
+      );
+
+      packetSendDelayAvg = _avg(
+        totalPacketSendDelay,
+        _previousVideoOutboundStats!.totalPacketSendDelay,
+        packetsSent,
+        _previousVideoOutboundStats!.packetsSent,
+      );
+
+      qpSumAvg = _avg(
+        qpSum,
+        _previousVideoOutboundStats!.qpSum,
+        framesEncoded,
+        _previousVideoOutboundStats!.framesEncoded,
+      );
+    } else {
+      // If there are no previous stats, we can't calculate the difference
+      encodeTime = 0;
     }
 
-    // update
-    _totalEncodeTime = totalEncodeTime;
+    // Create the stats object with all fields
+    final stats = RtcVideoOutboundStats(
+        encoderImplementation,
+        frameWidth,
+        frameHeight,
+        framesPerSecond,
+        contentType,
+        qualityLimitationReason,
+        pliCount,
+        targetBitrate,
+        encodeTime,
+        powerEfficientEncoder,
+        timestamp,
+        bytesSent,
+        packetsSent,
+        active,
+        firCount,
+        framesEncoded,
+        framesSent,
+        headerBytesSent,
+        hugeFramesSent,
+        keyFramesEncoded,
+        nackCount,
+        retransmittedBytesSent,
+        retransmittedPacketsSent,
+        totalEncodeTime,
+        totalEncodedBytesTarget,
+        totalPacketSendDelay,
+        qpSum,
+        packetsSentPerSecond,
+        bytesSentPerSecond,
+        retransmittedPacketsSentPerSecond,
+        headerBytesSentPerSecond,
+        retransmittedBytesSentPerSecond,
+        framesEncodedPerSecond,
+        encodeTimeAvg,
+        totalEncodedBytesTargetPerSecond,
+        framesSentPerSecond,
+        packetSendDelayAvg,
+        qpSumAvg);
+
+    // Publish the stats to subscribers
+    publishRtcVideoOutboundStats(stats);
+
+    // Check if frame size has changed
+    if (_outboundVideoWidth != frameWidth ||
+        _outboundVideoHeight != frameHeight) {
+      _outboundVideoWidth = frameWidth;
+      _outboundVideoHeight = frameHeight;
+      onOutboundVideoFrameSizeChanged?.call(
+          _outboundVideoWidth, _outboundVideoHeight);
+    }
+
+    // Update state for next calculation
+    _previousVideoOutboundStats = stats;
   }
 
   void addSubscriber(RtcStatsSubscriber s) {
