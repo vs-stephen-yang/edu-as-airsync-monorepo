@@ -9,6 +9,7 @@ import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/model/rtc_stats.dart';
 import 'package:display_cast_flutter/model/rtc_stats_parser.dart';
+import 'package:display_cast_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
@@ -885,8 +886,10 @@ class WebRTCConnector {
 
     _rtcStatsParser = RtcStatsParser(
         (width, height) =>
-            {log.info('Outbound video size has changed to ${width}x$height')},
-        (stats) => {onVideoStatsReport?.call(stats)});
+            {log.info('Outbound video size has changed to ${width}x$height')});
+
+    final rtcStatsReporter = RtcStatsReporter((stats) => {onVideoStatsReport?.call(stats)});
+    _rtcStatsParser?.addSubscriber(rtcStatsReporter);
 
     _statsTimer = Timer.periodic(
       _statsTimerInterval,
