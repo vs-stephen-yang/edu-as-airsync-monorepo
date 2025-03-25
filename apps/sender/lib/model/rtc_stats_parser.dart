@@ -9,17 +9,21 @@ double? _diff(double? a, double? b) {
   return a - b;
 }
 
+abstract class RtcStatsSubscriber {
+  void onVideoStatsReports(RtcVideoOutboundStats stats);
+}
+
 class RtcStatsParser {
   int? _outboundVideoWidth;
   int? _outboundVideoHeight;
   double _totalEncodeTime = 0;
 
-  Function(RtcVideoOutboundStats stats)? onVideoOutboundStats;
+  final List<RtcStatsSubscriber> _subscribers = [];
+
   Function(int? width, int? height)? onOutboundVideoFrameSizeChanged;
 
   RtcStatsParser(
-      this.onOutboundVideoFrameSizeChanged,
-      this.onVideoOutboundStats);
+      this.onOutboundVideoFrameSizeChanged);
 
   void onVideoStatsReports(List<StatsReport> reports) {
     try {
@@ -67,7 +71,7 @@ class RtcStatsParser {
     stats.encodeTime = _diff(totalEncodeTime, _totalEncodeTime);
     stats.powerEfficientEncoder = videoOutboundRtp.values['powerEfficientEncoder'];
 
-    onVideoOutboundStats?.call(stats);
+    publishRtcVideoOutboundStats(stats);
 
     if (_outboundVideoWidth != stats.frameWidth || _outboundVideoHeight != stats.frameHeight) {
       _outboundVideoWidth = stats.frameWidth;
@@ -77,5 +81,15 @@ class RtcStatsParser {
 
     // update
     _totalEncodeTime = totalEncodeTime;
+  }
+
+  void addSubscriber(RtcStatsSubscriber s) {
+    _subscribers.add(s);
+  }
+
+  void publishRtcVideoOutboundStats(RtcVideoOutboundStats stats) {
+    for (final subscriber in _subscribers) {
+      subscriber.onVideoStatsReports(stats);
+    }
   }
 }
