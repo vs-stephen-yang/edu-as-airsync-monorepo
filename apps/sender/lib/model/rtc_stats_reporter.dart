@@ -8,7 +8,7 @@ class RtcStatsReporter implements RtcStatsSubscriber {
   RtcStatsReporter(this.onVideoOutboundStats);
 
   @override
-  void onVideoStatsReports(RtcVideoOutboundStats stats) {
+  void updateVideoStats(RtcVideoOutboundStats stats) {
     onVideoOutboundStats?.call(stats);
   }
 }

@@ -898,7 +898,7 @@ class WebRTCConnector {
         if (reports != null) {
           // feed the stats to the log manager
           WebRTCLogManager().onStatsReport(reports);
-          _rtcStatsParser?.onVideoStatsReports(reports);
+          _rtcStatsParser?.onStatsReports(reports);
         }
       },
     );
