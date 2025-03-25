@@ -47,10 +47,32 @@ class RtcStatsParser {
   }
 
   void _onStatsReports(List<StatsReport> reports) {
+    // Create maps for different report types
+    final reportsByType = <String, List<StatsReport>>{};
+
+    // Categorize reports by type
+    for (final report in reports) {
+      reportsByType.putIfAbsent(report.type, () => []).add(report);
+    }
+
+    for (var report in reportsByType['codec'] ?? []) {
+      publishCodecStats(report);
+    }
+
+    for (var report in reportsByType['candidate-pair'] ?? []) {
+      publishCandidatePairStats(report);
+    }
+
+    if (reportsByType['local-candidate'] != null) {
+      publishLocalCandidate(reportsByType['local-candidate']!);
+    }
+
+    if (reportsByType['remote-candidate'] != null) {
+      publishRemoteCandidate(reportsByType['remote-candidate']!);
+    }
+
     // find video outbound-rtp reports
-    final outboundRtps = reports
-        .where((StatsReport report) => report.type == 'outbound-rtp')
-        .toList();
+    final outboundRtps = reportsByType['outbound-rtp'] ?? [];
     final videoOutboundRtps = outboundRtps
         .where((StatsReport report) => report.values['kind'] == 'video')
         .toList();
@@ -233,6 +255,36 @@ class RtcStatsParser {
   void publishRtcVideoOutboundStats(RtcVideoOutboundStats stats) {
     for (final subscriber in _subscribers) {
       subscriber.updateVideoStats(stats);
+    }
+  }
+
+  void publishLocalCandidate(List<StatsReport> reports) {
+    if (reports.isEmpty) {
+      return;
+    }
+    for (final subscriber in _subscribers) {
+      subscriber.updateLocalCandidate(reports);
+    }
+  }
+
+  void publishRemoteCandidate(List<StatsReport> reports) {
+    if (reports.isEmpty) {
+      return;
+    }
+    for (final subscriber in _subscribers) {
+      subscriber.updateRemoteCandidate(reports);
+    }
+  }
+
+  void publishCandidatePairStats(StatsReport report) {
+    for (final subscriber in _subscribers) {
+      subscriber.updateCandidatePairStats(report);
+    }
+  }
+
+  void publishCodecStats(StatsReport report) {
+    for (final subscriber in _subscribers) {
+      subscriber.updateCodecStats(report);
     }
   }
 }
