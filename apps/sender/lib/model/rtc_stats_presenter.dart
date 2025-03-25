@@ -80,13 +80,11 @@ class RtcStatsPresenter implements RtcStatsSubscriber {
 
   @override
   void updateCandidatePairStats(StatsReport report) {
-    if (_candidatePairs.containsKey(report.id)) {
-      return;
-    }
-
-    if (_candidatePairs.length >= _maxCandidatePairs) {
-      final firstKey = _candidatePairs.keys.first;
-      _candidatePairs.remove(firstKey);
+    if (!_candidatePairs.containsKey(report.id)) {
+      if (_candidatePairs.length >= _maxCandidatePairs) {
+        final firstKey = _candidatePairs.keys.first;
+        _candidatePairs.remove(firstKey);
+      }
     }
 
     _candidatePairs[report.id] =
@@ -96,13 +94,11 @@ class RtcStatsPresenter implements RtcStatsSubscriber {
 
   @override
   void updateCodecStats(StatsReport report) {
-    if (_codecStats.containsKey(report.id)) {
-      return;
-    }
-
-    if (_codecStats.length >= _maxCodecStats) {
-      final firstKey = _codecStats.keys.first;
-      _codecStats.remove(firstKey);
+    if (!_codecStats.containsKey(report.id)) {
+      if (_codecStats.length >= _maxCodecStats) {
+        final firstKey = _codecStats.keys.first;
+        _codecStats.remove(firstKey);
+      }
     }
 
     _codecStats[report.id] = RtcCodecStats.fromMap(report.values);

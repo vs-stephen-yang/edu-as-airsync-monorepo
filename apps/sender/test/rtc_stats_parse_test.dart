@@ -200,5 +200,112 @@ void main() {
           .having((s) => s.packetSendDelayAvgMs, 'packetSendDelayAvg', 200.0)
       ))).called(1);
     });
+
+    // New test case to add to the existing rtc_stats_parse_test.dart file
+// This should be added inside the main() group('RtcStatsParser - _onStatsReports', () {...}) function
+
+    test('Should call all subscriber methods when processing different types of reports', () {
+      // Arrange
+      final videoReport = StatsReport('OR01', 'outbound-rtp', 0, {
+        'kind': 'video',
+        'encoderImplementation': 'vp8',
+        'frameWidth': 1280,
+        'frameHeight': 720,
+        'framesPerSecond': 30.0,
+      });
+
+      final localCandidateReport1 = StatsReport('LC01', 'local-candidate', 0, {
+        'candidateType': 'host',
+        'ip': '192.168.1.1',
+        'port': 12345,
+        'protocol': 'udp',
+        'networkType': 'wifi',
+      });
+
+      final localCandidateReport2 = StatsReport('LC02', 'local-candidate', 0, {
+        'candidateType': 'srflx',
+        'ip': '203.0.113.1',
+        'port': 54321,
+        'protocol': 'udp',
+        'networkType': 'cellular',
+      });
+
+      final remoteCandidateReport = StatsReport('RC01', 'remote-candidate', 0, {
+        'candidateType': 'prflx',
+        'ip': '198.51.100.1',
+        'port': 54321,
+        'protocol': 'udp',
+      });
+
+      final candidatePairReport = StatsReport('CP01', 'candidate-pair', 0, {
+        'state': 'succeeded',
+        'nominated': true,
+        'bytesSent': 12345,
+        'bytesReceived': 54321,
+        'localCandidateId': 'LC01',
+        'remoteCandidateId': 'RC01',
+        'currentRoundTripTime': 0.035,
+        'availableOutgoingBitrate': 2500000,
+      });
+
+      final codecReport = StatsReport('CD01', 'codec', 0, {
+        'mimeType': 'video/VP8',
+        'clockRate': 90000,
+        'channels': 1,
+        'payloadType': 96,
+      });
+
+      // Create a list with all reports
+      final reports = [
+        videoReport,
+        localCandidateReport1,
+        localCandidateReport2,
+        remoteCandidateReport,
+        candidatePairReport,
+        codecReport,
+      ];
+
+      // Act - process all reports at once
+      parser.onStatsReports(reports);
+
+      // Assert - verify that all subscriber methods were called with appropriate arguments
+      // Verify video stats update
+      verify(mockReporter.updateVideoStats(any)).called(1);
+      verify(mockPresenter.updateVideoStats(any)).called(1);
+
+      // Verify local candidate updates - should pass a list containing both local candidates
+      verify(mockReporter.updateLocalCandidate(argThat(isA<List<StatsReport>>()
+          .having((list) => list.length, 'length', 2)
+          .having((list) => list.any((report) => report.id == 'LC01'), 'contains LC01', true)
+          .having((list) => list.any((report) => report.id == 'LC02'), 'contains LC02', true)))).called(1);
+      verify(mockPresenter.updateLocalCandidate(argThat(isA<List<StatsReport>>()
+          .having((list) => list.length, 'length', 2)
+          .having((list) => list.any((report) => report.id == 'LC01'), 'contains LC01', true)
+          .having((list) => list.any((report) => report.id == 'LC02'), 'contains LC02', true)))).called(1);
+
+      // Verify remote candidate updates
+      verify(mockReporter.updateRemoteCandidate(argThat(isA<List<StatsReport>>()
+          .having((list) => list.length, 'length', 1)
+          .having((list) => list.first.id, 'first id', 'RC01')))).called(1);
+      verify(mockPresenter.updateRemoteCandidate(argThat(isA<List<StatsReport>>()
+          .having((list) => list.length, 'length', 1)
+          .having((list) => list.first.id, 'first id', 'RC01')))).called(1);
+
+      // Verify candidate pair updates
+      verify(mockReporter.updateCandidatePairStats(argThat(isA<StatsReport>()
+          .having((r) => r.id, 'id', 'CP01')
+          .having((r) => r.type, 'type', 'candidate-pair')))).called(1);
+      verify(mockPresenter.updateCandidatePairStats(argThat(isA<StatsReport>()
+          .having((r) => r.id, 'id', 'CP01')
+          .having((r) => r.type, 'type', 'candidate-pair')))).called(1);
+
+      // Verify codec stats updates
+      verify(mockReporter.updateCodecStats(argThat(isA<StatsReport>()
+          .having((r) => r.id, 'id', 'CD01')
+          .having((r) => r.type, 'type', 'codec')))).called(1);
+      verify(mockPresenter.updateCodecStats(argThat(isA<StatsReport>()
+          .having((r) => r.id, 'id', 'CD01')
+          .having((r) => r.type, 'type', 'codec')))).called(1);
+    });
   });
 }
