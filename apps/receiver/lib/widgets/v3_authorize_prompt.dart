@@ -40,7 +40,9 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
           dialogContextList.isEmpty) {
         if (authRequestIdles.isNotEmpty) {
           Future.delayed(Duration.zero, () {
-            _showAuthDialog(context);
+            if (context.mounted) {
+              _showAuthDialog(context);
+            }
           });
         } else {
           for (MirrorRequest request
@@ -54,7 +56,9 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                           HybridConnectionList.maxHybridConnection)) {
                 // 拒絕邏輯 一般模式:目前視窗大於等於最大視窗數。 ModeratorMode:連線數大於等於最大連線數
                 Future.delayed(Duration.zero, () {
-                  _showAuthDialog(context);
+                  if (context.mounted) {
+                    _showAuthDialog(context);
+                  }
                 });
               } else {
                 mirrorStateProvider.stopAcceptedMirror(request.mirrorId);
@@ -69,7 +73,9 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
       } else if (mirrorStateProvider.pinCode.isNotEmpty &&
           dialogContextList.isEmpty) {
         Future.delayed(Duration.zero, () {
-          _showAuthDialog(context);
+          if (context.mounted) {
+            _showAuthDialog(context);
+          }
         });
       } else if (dialogContextList.isNotEmpty &&
           mirrorRequestIdles.isEmpty &&
