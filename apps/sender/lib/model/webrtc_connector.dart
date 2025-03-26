@@ -9,6 +9,7 @@ import 'package:display_cast_flutter/features/protoc/internal.pb.dart';
 import 'package:display_cast_flutter/model/profile.dart';
 import 'package:display_cast_flutter/model/rtc_stats.dart';
 import 'package:display_cast_flutter/model/rtc_stats_parser.dart';
+import 'package:display_cast_flutter/model/rtc_stats_presenter.dart';
 import 'package:display_cast_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
@@ -891,6 +892,9 @@ class WebRTCConnector {
     final rtcStatsReporter = RtcStatsReporter((stats) => {onVideoStatsReport?.call(stats)});
     _rtcStatsParser?.addSubscriber(rtcStatsReporter);
 
+    // TODO: enable by some flag
+    final rtcStatsPresenter = RtcStatsPresenter();
+    _rtcStatsParser?.addSubscriber(rtcStatsPresenter);
     _statsTimer = Timer.periodic(
       _statsTimerInterval,
       (timer) async {

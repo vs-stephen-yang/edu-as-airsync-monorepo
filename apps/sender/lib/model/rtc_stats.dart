@@ -6,7 +6,7 @@ class RtcVideoOutboundStats {
   String? contentType;
   String? qualityLimitationReason;
   int? pliCount;
-  int? targetBitrate;
+  double? targetBitrate;
   double? encodeTime;
   bool? powerEfficientEncoder;
 
