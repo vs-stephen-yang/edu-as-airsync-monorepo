@@ -185,8 +185,8 @@ class ChannelProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  StreamController<bool> get tunnelActivatedStream =>
-      _channelServer.tunnelActivatedStream;
+  Stream<bool> get tunnelActivatedStream =>
+      _channelServer.tunnelActivatedController.stream;
 
   _save() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -244,6 +244,12 @@ class ChannelProvider extends ChangeNotifier {
         startRemoteScreen(fromSender: true);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _channelServer.dispose();
+    super.dispose();
   }
 
   startChannelProvider() {
@@ -338,7 +344,8 @@ class ChannelProvider extends ChangeNotifier {
   _onTunnelStatusChange(TunnelStatus status) {
     bool isTunnelAvailable = _channelServer.isTunnelAvailable;
     isLanModeOnly.value = !isTunnelAvailable;
-    _networkDiagnostic.setTunnelResult(TunnelStatusType.register, isTunnelAvailable, status.value);
+    _networkDiagnostic.setTunnelResult(
+        TunnelStatusType.register, isTunnelAvailable, status.value);
   }
 
   void _onDisplayCodeChange() {

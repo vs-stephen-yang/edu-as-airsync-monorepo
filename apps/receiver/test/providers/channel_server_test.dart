@@ -18,7 +18,7 @@ void main() {
       reportPortBindResult: (_, __, ___) {},
       reportTunnelConnectResult: (_, __) {},
       reportWebTransportCertDate: (_) {},
-    )..tunnelActivatedStream.stream.listen(emitted.add);
+    )..tunnelActivatedController.stream.listen(emitted.add);
   }
 
   group('ChannelServer - tunnelActivatedStream debounce', () {

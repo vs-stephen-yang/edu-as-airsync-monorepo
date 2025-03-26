@@ -26,8 +26,7 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
   Widget build(BuildContext context) {
     return StreamBuilder<bool>(
       stream: Provider.of<ChannelProvider>(context, listen: false)
-          .tunnelActivatedStream
-          .stream,
+          .tunnelActivatedStream,
       builder: (context, snapshot) => ValueListenableBuilder(
           valueListenable: AppPreferences().connectivityTypeNotifier,
           builder: (context, userSettingConnectivityType, child) {

@@ -8,6 +8,7 @@ import 'package:display_flutter/services/display_service_broadcast.dart';
 import 'package:display_flutter/settings/channel_config.dart';
 import 'package:display_flutter/utility/cancelable_task.dart';
 import 'package:display_flutter/utility/channel_util.dart';
+import 'package:display_flutter/utility/debounced_stream_controller.dart';
 import 'package:display_flutter/utility/log.dart';
 
 enum TunnelStatus {
@@ -45,10 +46,8 @@ class ChannelServer {
   TunnelStatus get tunnelStatus => _tunnelStatus;
   TunnelStatus _tunnelStatus = TunnelStatus.disabled;
 
-  StreamController<bool> tunnelActivatedStream =
-      StreamController<bool>.broadcast()..add(false);
-
-  Timer? _tunnelActivatedDebounceTimer;
+  late final DebouncedStreamController<bool> tunnelActivatedController =
+      DebouncedStreamController<bool>(delay: const Duration(milliseconds: 300));
 
   // Provide a displayCode only if it is available (i.e., instanceGroupId is not zero).
   // If the instanceGroupId is 0, which means the code is not available,
@@ -320,20 +319,11 @@ class ChannelServer {
     if (_tunnelStatus != status) {
       log.info('Tunnel status has changed to ${status.name}');
       _tunnelStatus = status;
-      _debouncedTunnelActivatedUpdate(status);
-      onTunnelStatusChange(_tunnelStatus);
-    }
-  }
-
-  void _debouncedTunnelActivatedUpdate(TunnelStatus status) {
-    _tunnelActivatedDebounceTimer?.cancel();
-
-    _tunnelActivatedDebounceTimer =
-        Timer(const Duration(milliseconds: 300), () {
       final activated =
           status == TunnelStatus.connected || status == TunnelStatus.connecting;
-      tunnelActivatedStream.add(activated);
-    });
+      tunnelActivatedController.add(activated);
+      onTunnelStatusChange(_tunnelStatus);
+    }
   }
 
   void onIpAddressChange(String ipAddress) {
@@ -417,5 +407,9 @@ class ChannelServer {
       return false;
     }
     return true;
+  }
+
+  void dispose() {
+    tunnelActivatedController.dispose();
   }
 }
