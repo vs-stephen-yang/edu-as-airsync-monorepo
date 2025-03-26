@@ -305,6 +305,7 @@ class SelectScreenDialog extends Dialog {
       Platform.isWindows || Platform.isMacOS || Platform.isLinux;
   String hostName;
   bool? hasVirtualAudioDevice;
+  bool enableAudioCheckbox = true;
 
   @override
   Widget build(BuildContext context) {
@@ -440,6 +441,13 @@ class SelectScreenDialog extends Dialog {
                                             null;
                                         break;
                                     }
+                                    setState(() {
+                                      if (index == 0) {
+                                        enableAudioCheckbox = true;
+                                      } else {
+                                        enableAudioCheckbox = false;
+                                      }
+                                    });
                                   },
                                   tabs: [
                                     Tab(
@@ -497,8 +505,7 @@ class SelectScreenDialog extends Dialog {
                                 child: Row(
                                   children: <Widget>[
                                     if (platformIsDesktop &&
-                                        tabController.index ==
-                                            SourceType.Screen.index)
+                                        enableAudioCheckbox)
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
