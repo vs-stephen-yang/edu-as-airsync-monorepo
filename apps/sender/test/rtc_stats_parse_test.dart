@@ -36,7 +36,7 @@ void main() {
         'qualityLimitationReason': 'bandwidth',
         'totalEncodeTime': 25.5,
         'pliCount': 3,
-        'targetBitrate': 1200000,
+        'targetBitrate': 1200000.0,
         'powerEfficientEncoder': true,
         'framesSent': 1200,
         'framesEncoded': 1180,
@@ -100,7 +100,7 @@ void main() {
           .having((s) => s.contentType, 'contentType', 'realtime')
           .having((s) => s.qualityLimitationReason, 'qualityLimitationReason', 'bandwidth')
           .having((s) => s.pliCount, 'pliCount', 3)
-          .having((s) => s.targetBitrate, 'targetBitrate', 1200000)
+          .having((s) => s.targetBitrate, 'targetBitrate', 1200000.0)
           .having((s) => s.powerEfficientEncoder, 'powerEfficientEncoder', true)
           .having((s) => s.bytesSent, 'bytesSent', 600000)
           .having((s) => s.packetsSent, 'packetsSent', 950)
@@ -133,7 +133,7 @@ void main() {
         'qualityLimitationReason': 'bandwidth',
         'totalEncodeTime': 20.0,  // Nice round numbers for clean division
         'pliCount': 2,
-        'targetBitrate': 1000000,
+        'targetBitrate': 1000000.0,
         'powerEfficientEncoder': true,
         'framesSent': 1000,
         'framesEncoded': 1000,
@@ -161,7 +161,7 @@ void main() {
         'qualityLimitationReason': 'bandwidth',
         'totalEncodeTime': 43.0,  // +23.0 from first report, chosen for clean division
         'pliCount': 3,
-        'targetBitrate': 1000000,
+        'targetBitrate': 1000000.0,
         'powerEfficientEncoder': true,
         'framesSent': 1200,  // +200 from first report
         'framesEncoded': 1200,  // +200 from first report
