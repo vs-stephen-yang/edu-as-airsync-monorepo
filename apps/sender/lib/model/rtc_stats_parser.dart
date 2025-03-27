@@ -140,16 +140,17 @@ class RtcStatsParser {
           _diff(totalEncodeTime, _previousVideoOutboundStats!.totalEncodeTime);
 
       // Per-second calculations
-      packetsSentPerSecond = _diff(packetsSent,
-          _previousVideoOutboundStats!.packetsSent);
+      packetsSentPerSecond =
+          _diff(packetsSent, _previousVideoOutboundStats!.packetsSent);
 
-      bytesSentPerSecond = _diff(bytesSent, _previousVideoOutboundStats!.bytesSent);
+      bytesSentPerSecond =
+          _diff(bytesSent, _previousVideoOutboundStats!.bytesSent);
 
-      framesEncodedPerSecond = _diff(framesEncoded,
-          _previousVideoOutboundStats!.framesEncoded);
+      framesEncodedPerSecond =
+          _diff(framesEncoded, _previousVideoOutboundStats!.framesEncoded);
 
-      framesSentPerSecond = _diff(framesSent,
-          _previousVideoOutboundStats!.framesSent);
+      framesSentPerSecond =
+          _diff(framesSent, _previousVideoOutboundStats!.framesSent);
 
       retransmittedPacketsSentPerSecond = _diff(
           retransmittedPacketsSent?.toDouble(),
@@ -162,26 +163,26 @@ class RtcStatsParser {
           retransmittedBytesSent?.toDouble(),
           _previousVideoOutboundStats!.retransmittedBytesSent?.toDouble());
 
-
       totalEncodedBytesTargetPerSecond = _diff(
           totalEncodedBytesTarget?.toDouble(),
           _previousVideoOutboundStats!.totalEncodedBytesTarget?.toDouble());
 
-
       // Calculate averages
       encodeTimeAvgMs = _avg(
-        totalEncodeTime,
-        _previousVideoOutboundStats!.totalEncodeTime,
-        framesEncoded,
-        _previousVideoOutboundStats!.framesEncoded,
-      ) * 1000; // Convert to ms;
+            totalEncodeTime,
+            _previousVideoOutboundStats!.totalEncodeTime,
+            framesEncoded,
+            _previousVideoOutboundStats!.framesEncoded,
+          ) *
+          1000; // Convert to ms;
 
       packetSendDelayAvgMs = _avg(
-        totalPacketSendDelay,
-        _previousVideoOutboundStats!.totalPacketSendDelay,
-        packetsSent,
-        _previousVideoOutboundStats!.packetsSent,
-      ) * 1000; // Convert to ms;
+            totalPacketSendDelay,
+            _previousVideoOutboundStats!.totalPacketSendDelay,
+            packetsSent,
+            _previousVideoOutboundStats!.packetsSent,
+          ) *
+          1000; // Convert to ms;
 
       qpSumAvg = _avg(
         qpSum,
@@ -230,8 +231,7 @@ class RtcStatsParser {
         totalEncodedBytesTargetPerSecond: totalEncodedBytesTargetPerSecond,
         framesSentPerSecond: framesSentPerSecond,
         packetSendDelayAvgMs: packetSendDelayAvgMs,
-        qpSumAvg: qpSumAvg
-    );
+        qpSumAvg: qpSumAvg);
 
     // Publish the stats to subscribers
     publishRtcVideoOutboundStats(stats);
