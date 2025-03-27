@@ -12,8 +12,10 @@ import 'package:display_cast_flutter/model/rtc_stats_parser.dart';
 import 'package:display_cast_flutter/model/rtc_stats_presenter.dart';
 import 'package:display_cast_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_cast_flutter/utilities/app_analytics.dart';
+import 'package:display_cast_flutter/utilities/app_analytics_outbound.dart';
 import 'package:display_cast_flutter/utilities/audio_switch_manager.dart';
 import 'package:display_cast_flutter/utilities/channel_util.dart';
+import 'package:display_cast_flutter/utilities/list_util.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:display_cast_flutter/utilities/sdp_utility.dart';
 import 'package:display_cast_flutter/utilities/version_util.dart';
@@ -21,12 +23,14 @@ import 'package:display_cast_flutter/utilities/wakelock_manager.dart';
 import 'package:display_cast_flutter/utilities/web_browser_detect.dart';
 import 'package:display_cast_flutter/utilities/webrtc_log_manager.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
+import 'package:display_cast_flutter/utilities/bounded_list.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_input_injection/flutter_input_injection.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:window_size/window_size.dart';
+
 
 class WebRTCConnector {
   WebRTCConnector({
@@ -106,6 +110,9 @@ class WebRTCConnector {
   final _statsTimerInterval = const Duration(seconds: 1);
   RtcStatsParser? _rtcStatsParser;
   RtcStatsPresenter? _rtcStatsPresenter;
+
+  // keep last 20 RtcVideoOutboundStats
+  final _videoOutboundStatsHistory = BoundedList<RtcVideoOutboundStats>(20);
 
   List<RtcIceServer> _iceServerList = [];
 
@@ -826,6 +833,9 @@ class WebRTCConnector {
   Future<void> hangUp() async {
     _isPaused = false; // Reset pause state
     stopStatsTimer();
+
+    trackOutboundStats(filterEverySecond(_videoOutboundStatsHistory.elements));
+
     await WakelockManager().manageWakelock(AppScene.rtcHangUp);
     if (!kIsWeb && Platform.isMacOS) {
       await AudioSwitchManager().restoreToDefaultAudioOutput();
@@ -893,7 +903,7 @@ class WebRTCConnector {
         (width, height) =>
             {log.info('Outbound video size has changed to ${width}x$height')});
 
-    final rtcStatsReporter = RtcStatsReporter((stats) => {onVideoStatsReport?.call(stats)});
+    final rtcStatsReporter = RtcStatsReporter((stats) => _handleVideoStatsReport(stats));
     _rtcStatsParser?.addSubscriber(rtcStatsReporter);
 
     _rtcStatsPresenter = RtcStatsPresenter();
@@ -910,6 +920,12 @@ class WebRTCConnector {
         }
       },
     );
+  }
+
+  void _handleVideoStatsReport(RtcVideoOutboundStats stats) {
+    _videoOutboundStatsHistory.add(stats);
+
+    onVideoStatsReport?.call(stats);
   }
 
   Map<String, String> getIceInfo() {
