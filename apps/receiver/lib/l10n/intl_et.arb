@@ -148,7 +148,6 @@
   "v3_group_dialog_message": "%s on saatnud teie seadmele edastuse taotluse. See toiming sünkroniseerib ja kuvab praeguse sisu. Kas soovite selle taotluse heaks kiita?",
   "v3_group_dialog_accept": "Nõustu",
   "v3_group_dialog_decline": "Keeldu",
-  "v3_settings_whats_new_content": "AirSync %s  \n\nAirSync on ViewSonicu patenteeritud juhtmevaba ekraanijagamise lahendus. Kasutades koos AirSynci saatjaga, võimaldab see sujuvat ekraanijagamist kasutaja seadmest ViewSonicu interaktiivsetele ekraanidele.  \n\nPõhifunktsioonid:  \n\n1. Juhtmevaba ekraanijagamine.  \n\n2. Automaatne opdelt ekraan mitme esitleja jaoks.  \n\n3. Moderaatori režiim suurema kontrolli võimaldamiseks esitlusel.  \n\n4. Ekraani peegeldamine AirPlay, Google Cast ja Miracast toega.  \n\n5. Edasta seadmele koos kaugjuhtimisega.  \n\n6. Edasta tahvlile, et edastada ekraane mitmele suurele ekraanile.  \n\n7. Märkmete lisamine.  \n\n8. Suhtlemine Windowsi, macOS-i, iOS-i, Androidi ja AirSync saatja veebiversiooniga.  \n\n9. Tagasiside tugi Windowsi ja macOS-i saatjates.  ",
   "v3_eula_title": "Lõppkasutaja litsentsileping",
   "v3_eula_agree": "Nõustu",
   "v3_eula_disagree": "Ei nõustu",

@@ -148,7 +148,6 @@
   "v3_group_dialog_message": "%s ir nosūtījis pārraides pieprasījumu uz jūsu ierīci. Šī darbība sinhronizēs un parādīs pašreizējo saturu. Vai vēlaties pieņemt šo pieprasījumu?",
   "v3_group_dialog_accept": "Pieņemt",
   "v3_group_dialog_decline": "Noraidīt",
-  "v3_settings_whats_new_content": "AirSync %s  \n\nAirSync ir ViewSonic patentēts bezvadu ekrāna kopīgošanas risinājums. Izmantojot kopā ar AirSync sūtītāju, tas nodrošina vienmērīgu ekrāna kopīgošanu no lietotāja ierīces uz ViewSonic interaktīvajiem displejiem.  \n\nGalvenās funkcijas:  \n\n1. Bezvadu ekrāna kopīgošana.  \n\n2. Automātiska sadalītā ekrāna funkcija vairākiem prezentētājiem.  \n\n3. Moderatora režīms, kas nodrošina lielāku kontroli prezentācijas laikā.  \n\n4. Ekrāna spoguļošana, atbalstot AirPlay, Google Cast un Miracast.  \n\n5. Pārraidīšana uz ierīci ar tālvadību.  \n\n6. Pārraidīšana uz tāfeli, lai kopīgotu ekrānus ar vairākiem lielajiem ekrāniem.  \n\n7. Anotācijas.  \n\n8. Savietojamība ar Windows, macOS, iOS, Android un AirSync tīmekļa versijas sūtītājiem.  \n\n9. Touchback funkcija atbalstīta Windows un macOS sūtītājos.  ",
   "v3_eula_title": "Galalietotāja licences līgums",
   "v3_eula_agree": "Piekrītu",
   "v3_eula_disagree": "Nepiekrītu",
