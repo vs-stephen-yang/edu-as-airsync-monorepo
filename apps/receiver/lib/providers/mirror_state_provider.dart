@@ -73,7 +73,8 @@ class MirrorStateProvider extends ChangeNotifier
     MirrorType.miracast: false,
   };
 
-  bool _isMirrorConfirmation = false;
+  static const defaultMirrorConfirmation = true;
+  bool _isMirrorConfirmation = defaultMirrorConfirmation;
 
   bool get isMirrorConfirmation => _isMirrorConfirmation;
 
@@ -492,7 +493,8 @@ class MirrorStateProvider extends ChangeNotifier
     _googleCastEnabled = prefs.getBool('app_GoogleCastEnable') ?? true;
     _miracastEnabled = prefs.getBool('app_MiracastEnable') ?? true;
     _airplayCodeEnabled = prefs.getBool('app_AirPlayCodeEnable') ?? false;
-    _isMirrorConfirmation = prefs.getBool('app_autoAcceptRequired') ?? false;
+    _isMirrorConfirmation =
+        prefs.getBool('app_autoAcceptRequired') ?? defaultMirrorConfirmation;
     log.info('load settings.');
   }
 
