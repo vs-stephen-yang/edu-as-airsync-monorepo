@@ -120,7 +120,7 @@ dependencies:
   flutter_virtual_display:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-virtual-display
-      ref: release-1.0.3
+      ref: release-1.0.4
   desktop_multi_window:
     git:
       url: https://viewsonic-ssi.visualstudio.com/Display%20App/_git/mixin-network-flutter-plugins

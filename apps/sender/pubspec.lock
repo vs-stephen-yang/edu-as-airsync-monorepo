@@ -630,8 +630,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "release-1.0.3"
-      resolved-ref: "811c919b9067a2a889378befcd8b5fd238201917"
+      ref: "release-1.0.4"
+      resolved-ref: "2ab728dc70c2534942c8373073d980a7b2e1a1e7"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/flutter-virtual-display"
     source: git
     version: "0.0.1"
