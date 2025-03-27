@@ -180,5 +180,9 @@
   "v3_receiver_remote_screen_busy_description": "該螢幕正在廣播中，請稍後再試",
   "v3_receiver_remote_screen_busy_action": "好",
   "v3_present_idle_download_virtual_audio_device": "去下載",
-  "v3_present_select_screen_mac_audio_driver": "尚未安裝音訊驅動程式，聲音將無法透過 IFP 播放，請下載並安裝。"
+  "v3_present_select_screen_mac_audio_driver": "尚未安裝音訊驅動程式，聲音將無法透過 IFP 播放，請下載並安裝。",
+  "v3_main_download_mac_pkg_label": "取得最佳化體驗版本!",
+  "v3_main_download_mac_store": "App Store",
+  "v3_main_download_mac_store_label": "或安裝商店版本",
+  "v3_setting_app_version_independent": "AirSync ©{year}. 版本 {version} (Ind.)"
 }
