@@ -262,6 +262,9 @@ class _CountDownTextState extends State<CountDownText> {
 
 //ignore: must_be_immutable
 class SelectScreenDialog extends Dialog {
+  bool _isVirtualDisplayStarted = false;
+  StreamSubscription? _virtualDisplaySubscription;
+
   SelectScreenDialog({
     super.key,
     required this.hostName,
@@ -730,6 +733,56 @@ class SelectScreenDialog extends Dialog {
     return selectedSource.type == SourceType.Screen ? 'screen' : 'application';
   }
 
+  Future<bool> _startAndWaitForVirtualDisplay() async {
+    _isVirtualDisplayStarted = false;
+
+    // Cancel previous subscription if it exists
+    await _virtualDisplaySubscription?.cancel();
+
+    // Create a Completer to handle asynchronous waiting
+    final completer = Completer<bool>();
+
+    // Set up a listener that triggers when the virtual display starts
+    _virtualDisplaySubscription = FlutterVirtualDisplay.instance.onVirtualDisplayStarted.stream.listen((_) {
+      log.info('Virtual display started');
+      _isVirtualDisplayStarted = true;
+      if (!completer.isCompleted) {
+        completer.complete(true);
+      }
+    });
+
+    // Add error handling
+    FlutterVirtualDisplay.instance.onVirtualDisplayError.stream.listen((errorMsg) {
+      log.severe('Virtual display error: $errorMsg');
+      if (!completer.isCompleted) {
+        completer.complete(false);
+      }
+    });
+
+    // Start the virtual display
+    log.info('Starting virtual display');
+    final startResult = await FlutterVirtualDisplay.instance.startVirtualDisplay();
+
+    if (!startResult!) {
+      log.warning('Failed to start virtual display');
+      if (!completer.isCompleted) {
+        completer.complete(false);
+      }
+      await _virtualDisplaySubscription?.cancel();
+      return false;
+    }
+
+    // Wait for the virtual display to start or timeout
+    try {
+      final result = await completer.future.timeout(const Duration(seconds: 5));
+      return result;
+    } on TimeoutException {
+      log.warning('Timed out waiting for virtual display to start');
+      await _virtualDisplaySubscription?.cancel();
+      return false;
+    }
+  }
+
   void _ok(DesktopCapturerSource? selectedSource, bool systemAudio,
       bool isExtensionSelected) async {
     trackEvent(
@@ -743,7 +796,7 @@ class SelectScreenDialog extends Dialog {
       await element.cancel();
     }
     if (isExtensionSelected) {
-      await FlutterVirtualDisplay.instance.startVirtualDisplay();
+      await _startAndWaitForVirtualDisplay();
       _selectedSource =
           (await desktopCapturer.getSources(types: [SourceType.Screen])).last;
       Navigator.pop<CustomDesktopCaptureSource>(
