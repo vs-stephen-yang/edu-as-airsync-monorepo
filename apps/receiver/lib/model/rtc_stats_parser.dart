@@ -4,7 +4,7 @@ import 'package:display_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-double? _diff(double? a, double? b) {
+dynamic _diff(dynamic a, dynamic b) {
   if (a == null || b == null) {
     return null;
   }
@@ -156,10 +156,10 @@ class RtcStatsParser {
     final totalSquaredInterFrameDelay = videoInboundRtp.values['totalSquaredInterFrameDelay'];
     final qpSum = videoInboundRtp.values['qpSum'];
 
-    double? framesReceivedPerSecond;
-    double? framesDecodedPerSecond;
-    double? framesDroppedPerSecond;
-    double? bytesPerSecond;
+    int? framesReceivedPerSecond;
+    int? framesDecodedPerSecond;
+    int? framesDroppedPerSecond;
+    int? bytesPerSecond;
     double? interFrameDelayPerSecond;
     double? keyFramesDecodedPerSecond;
     double? headerBytesPerSecond;
@@ -172,10 +172,10 @@ class RtcStatsParser {
 
 
     if (_previousVideoInboundStats != null) {
-      framesReceivedPerSecond = _diff(framesReceived?.toDouble(), _previousVideoInboundStats!.framesReceived?.toDouble());
-      framesDecodedPerSecond = _diff(framesDecoded?.toDouble(), _previousVideoInboundStats!.framesDecoded?.toDouble());
-      framesDroppedPerSecond = _diff(framesDropped?.toDouble(), _previousVideoInboundStats!.framesDropped?.toDouble());
-      bytesPerSecond = _diff(bytesReceived?.toDouble(), _previousVideoInboundStats!.bytesReceived?.toDouble());
+      framesReceivedPerSecond = _diff(framesReceived, _previousVideoInboundStats!.framesReceived);
+      framesDecodedPerSecond = _diff(framesDecoded, _previousVideoInboundStats!.framesDecoded);
+      framesDroppedPerSecond = _diff(framesDropped, _previousVideoInboundStats!.framesDropped);
+      bytesPerSecond = _diff(bytesReceived, _previousVideoInboundStats!.bytesReceived);
       interFrameDelayPerSecond = _diff(totalSquaredInterFrameDelay?.toDouble(), _previousVideoInboundStats!.totalSquaredInterFrameDelay?.toDouble());
       keyFramesDecodedPerSecond = _diff(keyFramesDecoded?.toDouble(), _previousVideoInboundStats!.keyFramesDecoded?.toDouble());
       headerBytesPerSecond = _diff(headerBytesReceived?.toDouble(), _previousVideoInboundStats!.headerBytesReceived?.toDouble());
@@ -251,7 +251,7 @@ class RtcStatsParser {
       jitterBufferEmittedCount: jitterBufferEmittedCount,
       jitterBufferDelay: jitterBufferDelay,
       jitterBufferDelayAvg: jitterBufferDelayAvg,
-      decodeTimeAvg: decodeTimeAvg,
+      decodeTime: decodeTimeAvg,
       totalDecodeTime: totalDecodeTime,
       framesReceivedPerSecond: framesReceivedPerSecond,
       framesDecodedPerSecond: framesDecodedPerSecond,

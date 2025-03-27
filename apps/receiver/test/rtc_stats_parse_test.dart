@@ -254,13 +254,13 @@ void main() {
       // Assert
       verify(mockReporter.updateVideoStats(argThat(isA<RtcVideoInboundStats>()
               .having((s) => s.framesReceivedPerSecond,
-                  'framesReceivedPerSecond', 30.0)
+                  'framesReceivedPerSecond', 30)
               .having(
-                  (s) => s.framesDecodedPerSecond, 'framesDecodedPerSecond', 25.0)
+                  (s) => s.framesDecodedPerSecond, 'framesDecodedPerSecond', 25)
               .having(
-                  (s) => s.framesDroppedPerSecond, 'framesDroppedPerSecond', 5.0)
-              .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000.0)
-              .having((s) => s.decodeTimeAvg, 'decodeTime', 5.0))))
+                  (s) => s.framesDroppedPerSecond, 'framesDroppedPerSecond', 5)
+              .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000)
+              .having((s) => s.decodeTime, 'decodeTimeAvg', 5.0))))
           .called(1);
       verify(mockPresenter.updateVideoStats(argThat(isA<
                   RtcVideoInboundStats>()
@@ -276,7 +276,7 @@ void main() {
               // Averages
               .having(
                   (s) => s.jitterBufferDelayAvg, 'jitterBufferDelayAvg', 2.0)
-              .having((s) => s.decodeTimeAvg, 'decodeTimeAvg', 5.0)
+              .having((s) => s.decodeTime, 'decodeTimeAvg', 5.0)
               .having(
                   (s) => s.totalAssemblyTimeAvg, 'totalAssemblyTimeAvg', 2.0)
               .having((s) => s.totalInterFrameDelayAvg,
