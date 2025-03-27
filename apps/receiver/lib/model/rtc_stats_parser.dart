@@ -1,6 +1,4 @@
 import 'package:display_flutter/model/rtc_stats.dart';
-import 'package:display_flutter/model/rtc_stats_presenter.dart';
-import 'package:display_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
