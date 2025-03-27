@@ -2,7 +2,7 @@ import 'package:display_cast_flutter/model/rtc_stats.dart';
 import 'package:display_cast_flutter/utilities/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-double? _diff(double? a, double? b) {
+dynamic _diff(dynamic a, dynamic b) {
   if (a == null || b == null) {
     return null;
   }
@@ -121,16 +121,16 @@ class RtcStatsParser {
     final qpSum = values['qpSum'];
 
     // Initialize calculated metrics
+    int? bytesSentPerSecond;
+    int? framesEncodedPerSecond;
+    int? framesSentPerSecond;
+    int? packetsSentPerSecond;
     double? encodeTime;
-    double? packetsSentPerSecond;
-    double? bytesSentPerSecond;
     double? retransmittedPacketsSentPerSecond;
     double? headerBytesSentPerSecond;
     double? retransmittedBytesSentPerSecond;
-    double? framesEncodedPerSecond;
     double? encodeTimeAvgMs;
     double? totalEncodedBytesTargetPerSecond;
-    double? framesSentPerSecond;
     double? packetSendDelayAvgMs;
     double? qpSumAvg;
 
@@ -140,11 +140,16 @@ class RtcStatsParser {
           _diff(totalEncodeTime, _previousVideoOutboundStats!.totalEncodeTime);
 
       // Per-second calculations
-      packetsSentPerSecond = _diff(packetsSent?.toDouble(),
-          _previousVideoOutboundStats!.packetsSent?.toDouble());
+      packetsSentPerSecond = _diff(packetsSent,
+          _previousVideoOutboundStats!.packetsSent);
 
-      bytesSentPerSecond = _diff(bytesSent?.toDouble(),
-          _previousVideoOutboundStats!.bytesSent?.toDouble());
+      bytesSentPerSecond = _diff(bytesSent, _previousVideoOutboundStats!.bytesSent);
+
+      framesEncodedPerSecond = _diff(framesEncoded,
+          _previousVideoOutboundStats!.framesEncoded);
+
+      framesSentPerSecond = _diff(framesSent,
+          _previousVideoOutboundStats!.framesSent);
 
       retransmittedPacketsSentPerSecond = _diff(
           retransmittedPacketsSent?.toDouble(),
@@ -157,15 +162,11 @@ class RtcStatsParser {
           retransmittedBytesSent?.toDouble(),
           _previousVideoOutboundStats!.retransmittedBytesSent?.toDouble());
 
-      framesEncodedPerSecond = _diff(framesEncoded?.toDouble(),
-          _previousVideoOutboundStats!.framesEncoded?.toDouble());
 
       totalEncodedBytesTargetPerSecond = _diff(
           totalEncodedBytesTarget?.toDouble(),
           _previousVideoOutboundStats!.totalEncodedBytesTarget?.toDouble());
 
-      framesSentPerSecond = _diff(framesSent?.toDouble(),
-          _previousVideoOutboundStats!.framesSent?.toDouble());
 
       // Calculate averages
       encodeTimeAvgMs = _avg(

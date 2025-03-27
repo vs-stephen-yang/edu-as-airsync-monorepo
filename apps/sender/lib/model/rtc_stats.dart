@@ -30,15 +30,15 @@ class RtcVideoOutboundStats {
   int? qpSum;
 
   // Calculated metrics (per second or averages)
-  double? packetsSentPerSecond;
-  double? bytesSentPerSecond;
+  int? packetsSentPerSecond;
+  int? bytesSentPerSecond;
+  int? framesSentPerSecond;
+  int? framesEncodedPerSecond;
   double? retransmittedPacketsSentPerSecond;
   double? headerBytesSentPerSecond;
   double? retransmittedBytesSentPerSecond;
-  double? framesEncodedPerSecond;
   double? encodeTimeAvgMs;
   double? totalEncodedBytesTargetPerSecond;
-  double? framesSentPerSecond;
   double? packetSendDelayAvgMs;
   double? qpSumAvg;
 
