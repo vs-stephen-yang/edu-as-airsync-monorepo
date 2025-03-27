@@ -138,33 +138,33 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/window_size/macos
 
 SPEC CHECKSUMS:
-  app_links: 9028728e32c83a0831d9db8cf91c526d16cc5468
-  auto_updater_macos: 3a42f1a06be6981f1a18be37e6e7bf86aa732118
-  bitsdojo_window_macos: 7959fb0ca65a3ccda30095c181ecb856fae48ea9
-  bonsoir_darwin: 29c7ccf356646118844721f36e1de4b61f6cbd0e
-  connectivity_plus: e74b9f74717d2d99d45751750e266e55912baeb5
-  desktop_multi_window: 93667594ccc4b88d91a97972fd3b1b89667fa80a
-  device_info_plus: b0fafc687fb901e2af612763340f1b0d4352f8e5
-  flutter_input_injection: d108e1e3e01e278cc963cebfc4c619085bed9e50
-  flutter_virtual_display: 63ada9b11b4ed9c45ff01faa21ca5c273737b4ea
-  flutter_webrtc: 6539cf77eb5f66c4c99bdcfcc14c1ecbeefc120c
-  flutter_window_close: 9d78dd36bf853ca3d3e24d24b555b8d0786ed428
+  app_links: 10e0a0ab602ffaf34d142cd4862f29d34b303b2a
+  auto_updater_macos: 3e3462c418fe4e731917eacd8d28eef7af84086d
+  bitsdojo_window_macos: 44e3b8fe3dd463820e0321f6256c5b1c16bb6a00
+  bonsoir_darwin: e3b8526c42ca46a885142df84229131dfabea842
+  connectivity_plus: 18d3c32514c886e046de60e9c13895109866c747
+  desktop_multi_window: 566489c048b501134f9d7fb6a2354c60a9126486
+  device_info_plus: 5401765fde0b8d062a2f8eb65510fb17e77cf07f
+  flutter_input_injection: 0103e805a95614dabd37a068a73e04b3a5b04e39
+  flutter_virtual_display: 51ef646e212b562bcd3baa7306cf56b5f381e5e2
+  flutter_webrtc: 3593bbff2741516f34f270bbf473b27d601d14e4
+  flutter_window_close: ee4a6b81ca6fafe93b7cba48b0a18976e3f48e39
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
-  package_info_plus: f0052d280d17aa382b932f399edf32507174e870
-  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  package_info_plus: 12f1c5c2cfe8727ca46cbd0b26677728972d9a5b
+  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   ReachabilitySwift: 7f151ff156cea1481a8411701195ac6a984f4979
-  screen_retriever_macos: 452e51764a9e1cdb74b3c541238795849f21557f
+  screen_retriever_macos: 776e0fa5d42c6163d2bf772d22478df4b302b161
   Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
-  sentry_flutter: 0a211008f52553ba5dd81ceb71f48d78f0f1f6ab
-  share_plus: 11c7b7fa7020465584eca3ff6392c5bc1e399d6e
-  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  sentry_flutter: 0eb93e5279eb41e2392212afe1ccd2fecb4f8cbe
+  share_plus: 36537c04ce0c3e3f5bd297ce4318b6d5ee5fd6cf
+  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   Sparkle: 9c328bdcfbcaf8f030c4b678eadfd0fcb03822d8
-  system_tray: 53f0cdb020c3fbee711d3fe45ae7ce730e033d2b
-  url_launcher_macos: 0fba8ddabfc33ce0a9afe7c5fef5aab3d8d2d673
-  wakelock_plus: 21ddc249ac4b8d018838dbdabd65c5976c308497
-  window_manager: 1d01fa7ac65a6e6f83b965471b1a7fdd3f06166c
-  window_size: 4bd15034e6e3d0720fd77928a7c42e5492cfece9
+  system_tray: e53c972838c69589ff2e77d6d3abfd71332f9e5d
+  url_launcher_macos: c82c93949963e55b228a30115bd219499a6fe404
+  wakelock_plus: 4783562c9a43d209c458cb9b30692134af456269
+  window_manager: 3a1844359a6295ab1e47659b1a777e36773cd6e8
+  window_size: 339dafa0b27a95a62a843042038fa6c3c48de195
 
 PODFILE CHECKSUM: d0e3f2e5c02157e9f5532bcda91d3a728678167c
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.15.0
