@@ -1,5 +1,4 @@
 import 'package:azure_application_insights/azure_application_insights.dart';
-import 'package:display_cast_flutter/model/rtc_stats.dart';
 import 'package:display_cast_flutter/utilities/caching_http_client.dart';
 import 'package:display_cast_flutter/utilities/offline_http_client.dart';
 import 'package:display_cast_flutter/utilities/client_device_info.dart';
