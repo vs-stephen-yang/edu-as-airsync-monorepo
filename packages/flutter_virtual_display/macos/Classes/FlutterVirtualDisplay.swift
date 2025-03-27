@@ -13,6 +13,12 @@ class FlutterVirtualDisplay {
   private let productID: UInt32 = 0x1234
   private let serialNumber: UInt32 = 0x0001
   
+  private let retryInterval: TimeInterval = 0.1 // 100 ms
+  private let maxWaitTime: TimeInterval = 3.0
+  private var maxRetry: Int { Int(maxWaitTime / retryInterval) }
+  private var retryCount = 0
+  private var displayObserver: NSObjectProtocol?
+  
   init(eventSink: (([String: Any]) -> Void)? = nil) {
     self.eventSink = eventSink
   }
@@ -33,13 +39,26 @@ class FlutterVirtualDisplay {
       notifyEvent(event: "virtualDisplayError", success: false, errorMessage: "Virtual display already started")
       return false
     }
+    
+    retryCount = 0
+    
+    let notificationCenter = NotificationCenter.default
+    displayObserver = notificationCenter.addObserver(
+      forName: NSApplication.didChangeScreenParametersNotification,
+      object: nil,
+      queue: .main
+    ) { [weak self] _ in
+      self?.attemptDetectVirtualDisplay()
+    }
+    
     virtualDisplay = createDisplay(name: displayName, width: displayWidth, height: displayHeight)
-    notifyEvent(event: "virtualDisplayStarted", success: true, errorMessage: nil)
+    
     return true
   }
   
   func stopVirtualDisplay() -> Bool {
     virtualDisplay = nil
+    cleanupObserver();
     notifyEvent(event: "virtualDisplayStopped", success: true, errorMessage: nil)
     return false
   }
@@ -69,6 +88,53 @@ class FlutterVirtualDisplay {
     ]
     display.apply(settings)
     return display
+  }
+  
+  private func checkVirtualDisplayExists() -> Bool {
+    let maxDisplays: UInt32 = 10; // Reasonable max number of displays
+    var onlineDisplays = [CGDirectDisplayID](repeating: 0, count: Int(maxDisplays))
+    var actualCount: UInt32 = 0
+    guard CGGetOnlineDisplayList(maxDisplays, &onlineDisplays, &actualCount) == .success else {
+      return false
+    }
+    
+    for i in 0..<Int(actualCount) {
+      let displayID = onlineDisplays[i]
+      let vendorID = CGDisplayVendorNumber(displayID)
+      let productID = CGDisplayModelNumber(displayID)
+      if (vendorID == self.vendorID && productID == self.productID) {
+        return true
+      }
+    }
+    
+    return false
+  }
+  
+  private func attemptDetectVirtualDisplay() {
+    guard retryCount < maxRetry else {
+      notifyEvent(event: "virtualDisplayError", success: false, errorMessage: "Virtual display not detected after retries")
+      cleanupObserver()
+      return
+    }
+
+    retryCount += 1
+
+    DispatchQueue.main.asyncAfter(deadline: .now() + retryInterval) { [weak self] in
+      guard let self = self else { return }
+      if self.checkVirtualDisplayExists() {
+        self.notifyEvent(event: "virtualDisplayStarted", success: true, errorMessage: nil)
+        self.cleanupObserver()
+      } else {
+        self.attemptDetectVirtualDisplay()
+      }
+    }
+  }
+  
+  private func cleanupObserver() {
+    if let observer = displayObserver {
+      NotificationCenter.default.removeObserver(observer)
+      displayObserver = nil
+    }
   }
   
   private func notifyEvent(event: String, success: Bool, errorMessage: String?) {
