@@ -1,7 +1,8 @@
 import 'package:display_flutter/model/rtc_stats.dart';
+import 'package:display_flutter/model/rtc_stats_parser.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-class RtcStatsReporter {
+class RtcStatsReporter implements RtcStatsSubscriber {
   final Function(String localCandidateType, String remoteCandidateType)
       _onPairCandidateType;
 
@@ -15,10 +16,12 @@ class RtcStatsReporter {
     this._onIceCandidatePairStats,
   );
 
-  void videoInboundStats(RtcVideoInboundStats stats) {
+  @override
+  void updateVideoStats(RtcVideoInboundStats stats) {
     _onVideoInboundStats(stats);
   }
 
+  @override
   void pairCandidates(
       StatsReport localCandidateReport, StatsReport remoteCandidateReport) {
     final localCandidateType = localCandidateReport.values['candidateType'];
@@ -30,6 +33,7 @@ class RtcStatsReporter {
     }
   }
 
+  @override
   void selectedCandidatePair(StatsReport selectedCandidatePair) {
     final stats = RtcIceCandidatePairStats(
       currentRoundTripTime:
@@ -38,5 +42,21 @@ class RtcStatsReporter {
     );
 
     _onIceCandidatePairStats.call(stats);
+  }
+
+  @override
+  void updateCandidatePairStats(StatsReport report) {
+  }
+
+  @override
+  void updateCodecStats(StatsReport report) {
+  }
+
+  @override
+  void updateLocalCandidate(List<StatsReport> reports) {
+  }
+
+  @override
+  void updateRemoteCandidate(List<StatsReport> reports) {
   }
 }

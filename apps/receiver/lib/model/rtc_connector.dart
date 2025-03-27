@@ -212,7 +212,7 @@ class RTCConnector {
       _handleIceCandidatePairStatsReport,
     );
 
-    _rtcStatsParser?.setReporter(rtcStatsReporter);
+    _rtcStatsParser?.addSubscriber(rtcStatsReporter);
   }
 
   void startStatsTimer() {
@@ -309,7 +309,7 @@ class RTCConnector {
     // TODO: enable by some flag
     // if (xxx) {
       _rtcStatsPresenter = RtcStatsPresenter();
-      _rtcStatsParser?.setPresenter(_rtcStatsPresenter!);
+      _rtcStatsParser?.addSubscriber(_rtcStatsPresenter!);
     // }
   }
 

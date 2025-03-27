@@ -22,8 +22,8 @@ void main() {
       mockReporter = MockRtcStatsReporter();
       mockPresenter = MockRtcStatsPresenter();
       parser = RtcStatsParser();
-      parser.setReporter(mockReporter);
-      parser.setPresenter(mockPresenter);
+      parser.addSubscriber(mockReporter);
+      parser.addSubscriber(mockPresenter);
     });
 
     test('Should correctly parse and pair candidates', () {
@@ -59,11 +59,11 @@ void main() {
       verify(mockReporter.selectedCandidatePair(candidatePair1)).called(1);
 
       verify(mockPresenter
-          .addLocalCandidate([localCandidate1, localCandidate2])).called(1);
+          .updateLocalCandidate([localCandidate1, localCandidate2])).called(1);
       verify(mockPresenter
-          .addRemoteCandidate([remoteCandidate1, remoteCandidate2])).called(1);
-      verify(mockPresenter.addCandidatePairStats(candidatePair1)).called(1);
-      verify(mockPresenter.addCandidatePairStats(candidatePair2)).called(1);
+          .updateRemoteCandidate([remoteCandidate1, remoteCandidate2])).called(1);
+      verify(mockPresenter.updateCandidatePairStats(candidatePair1)).called(1);
+      verify(mockPresenter.updateCandidatePairStats(candidatePair2)).called(1);
     });
 
     test('Should not pair candidates when bytesSent is zero', () {
@@ -123,7 +123,7 @@ void main() {
       parser.onStatsReports(reports);
 
       // Assert
-      verify(mockReporter.videoInboundStats(argThat(isA<RtcVideoInboundStats>()
+      verify(mockReporter.updateVideoStats(argThat(isA<RtcVideoInboundStats>()
               .having((s) => s.decoderName, 'decoderName', 'vp8')
               .having((s) => s.frameWidth, 'frameWidth', 1280)
               .having((s) => s.frameHeight, 'frameHeight', 720)
@@ -134,8 +134,8 @@ void main() {
               .having((s) => s.jitter, 'jitter', 5.2))))
           .called(1);
 
-      verify(mockPresenter.addVideoStats(argThat(isA<
-                  RtcVideoInboundStatsForPresenter>()
+      verify(mockPresenter.updateVideoStats(argThat(isA<
+                  RtcVideoInboundStats>()
               .having((s) => s.frameWidth, 'frameWidth', 1280)
               .having((s) => s.frameHeight, 'frameHeight', 720)
               .having((s) => s.framesPerSecond, 'framesPerSecond', 30.0)
@@ -252,19 +252,18 @@ void main() {
       parser.onStatsReports([videoReport2]);
 
       // Assert
-      verify(mockReporter.videoInboundStats(argThat(isA<RtcVideoInboundStats>()
+      verify(mockReporter.updateVideoStats(argThat(isA<RtcVideoInboundStats>()
               .having((s) => s.framesReceivedPerSecond,
-                  'framesReceivedPerSecond', 30)
+                  'framesReceivedPerSecond', 30.0)
               .having(
-                  (s) => s.framesDecodedPerSecond, 'framesDecodedPerSecond', 25)
+                  (s) => s.framesDecodedPerSecond, 'framesDecodedPerSecond', 25.0)
               .having(
-                  (s) => s.framesDroppedPerSecond, 'framesDroppedPerSecond', 5)
+                  (s) => s.framesDroppedPerSecond, 'framesDroppedPerSecond', 5.0)
               .having((s) => s.bytesPerSecond, 'bytesPerSecond', 50000.0)
-              .having((s) => s.jitterBufferDelay, 'jitterBufferDelay', 2.0)
-              .having((s) => s.decodeTime, 'decodeTime', 5.0))))
+              .having((s) => s.decodeTimeAvg, 'decodeTime', 5.0))))
           .called(1);
-      verify(mockPresenter.addVideoStats(argThat(isA<
-                  RtcVideoInboundStatsForPresenter>()
+      verify(mockPresenter.updateVideoStats(argThat(isA<
+                  RtcVideoInboundStats>()
               // Per-second differentials
               .having((s) => s.packetsReceivedPerSecond,
                   'packetsReceivedPerSecond', 50)

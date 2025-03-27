@@ -3,125 +3,99 @@ class RtcVideoInboundStats {
   final String? decoderName;
   final int? frameWidth;
   final int? frameHeight;
-  final double? framesPerSecond;
-  final int? framesReceivedPerSecond;
-  final int? framesDecodedPerSecond;
-  final int? framesDroppedPerSecond;
-  final int? bytesPerSecond;
   final int? bytesReceived;
   final int? packetsLost;
   final int? packetsReceived;
   final double? jitter;
   final int? pauseCount;
   final double? jitterBufferDelay;
-  final double? decodeTime;
+
+  final double? timestamp;
+
+  final bool? powerEfficientDecoder;
+  final int? qpSum;
+  final int? nackCount;
+  final int? firCount;
+  final int? pliCount;
+  final int? freezeCount;
+  final double? totalFreezesDuration;
+  final int? keyFramesDecoded;
+
+  final double? totalInterFrameDelay;
+  final double? totalSquaredInterFrameDelay;
+  final double? totalPausesDuration;
+  final double? totalAssemblyTime;
+  final int? framesAssembledFromMultiplePackets;
+  final int? framesDropped;
+  final int? framesReceived;
+  final int? framesDecoded;
+  final int? jitterBufferEmittedCount;
+  final int? headerBytesReceived;
+  final double? totalProcessingDelay;
+  final double? totalDecodeTime;
+
+  final double? packetsReceivedPerSecond;
+  final double? framesPerSecond;
+  final double? framesReceivedPerSecond;
+  final double? framesDecodedPerSecond;
+  final double? framesDroppedPerSecond;
+  final double? bytesPerSecond;
+  final double? keyFramesDecodedPerSecond;
+  final double? interFrameDelayPerSecond;
+  final double? headerBytesPerSecond;
+
+  final double? decodeTimeAvg;
+  final double? totalInterFrameDelayAvg;
+  final double? totalAssemblyTimeAvg;
+  final double? jitterBufferDelayAvg;
+  final double? qpSumAvg;
 
   RtcVideoInboundStats({
-    this.decoderName,
-    this.frameWidth,
-    this.frameHeight,
-    this.framesPerSecond,
-    this.framesReceivedPerSecond,
-    this.framesDecodedPerSecond,
-    this.framesDroppedPerSecond,
-    this.bytesPerSecond,
-    this.bytesReceived,
-    this.packetsLost,
-    this.packetsReceived,
-    this.jitter,
-    this.pauseCount,
-    this.jitterBufferDelay,
-    this.decodeTime,
+      this.decoderName,
+      this.frameWidth,
+      this.frameHeight,
+      this.bytesReceived,
+      this.packetsLost,
+      this.packetsReceived,
+      this.jitter,
+      this.pauseCount,
+      this.jitterBufferDelay,
+      this.timestamp,
+      this.powerEfficientDecoder,
+      this.qpSum,
+      this.nackCount,
+      this.firCount,
+      this.pliCount,
+      this.freezeCount,
+      this.totalFreezesDuration,
+      this.keyFramesDecoded,
+      this.totalInterFrameDelay,
+      this.totalSquaredInterFrameDelay,
+      this.totalPausesDuration,
+      this.totalAssemblyTime,
+      this.framesAssembledFromMultiplePackets,
+      this.framesDropped,
+      this.framesReceived,
+      this.framesDecoded,
+      this.jitterBufferEmittedCount,
+      this.headerBytesReceived,
+      this.totalProcessingDelay,
+      this.totalDecodeTime,
+      this.packetsReceivedPerSecond,
+      this.framesPerSecond,
+      this.framesReceivedPerSecond,
+      this.framesDecodedPerSecond,
+      this.framesDroppedPerSecond,
+      this.bytesPerSecond,
+      this.keyFramesDecodedPerSecond,
+      this.interFrameDelayPerSecond,
+      this.headerBytesPerSecond,
+      this.decodeTimeAvg,
+      this.totalInterFrameDelayAvg,
+      this.totalAssemblyTimeAvg,
+      this.jitterBufferDelayAvg,
+      this.qpSumAvg
   });
-}
-
-class RtcVideoInboundStatsForPresenter {
-  final RtcVideoInboundStats _baseStats;
-
-  // Presenter-specific fields
-  double? timestamp;
-  bool? powerEfficientDecoder;
-  int? qpSum;
-  double? qpSumAvg;
-  int? nackCount;
-  int? firCount;
-  int? pliCount;
-  int? freezeCount;
-  double? totalFreezesDuration;
-  int? keyFramesDecoded;
-  int? keyFramesDecodedPerSecond;
-  double? totalInterFrameDelay;
-  double? totalInterFrameDelayAvg;
-  double? totalSquaredInterFrameDelay;
-  double? interFrameDelayPerSecond;
-  int? pauseCount;
-  double? totalPausesDuration;
-  double? totalAssemblyTime;
-  int? framesAssembledFromMultiplePackets;
-  double? totalAssemblyTimeAvg;
-  int? framesDropped;
-  int? framesReceived;
-  int? framesDecoded;
-  double? jitterBufferDelay;
-  int? jitterBufferEmittedCount;
-  double? jitterBufferDelayAvg;
-  int? headerBytesReceived;
-  int? headerBytesPerSecond;
-  double? totalProcessingDelay;
-  double? totalDecodeTime;
-  double? decodeTimeAvg;
-  int? packetsReceivedPerSecond;
-
-
-  RtcVideoInboundStatsForPresenter(this._baseStats,
-      {
-        this.timestamp,
-        this.powerEfficientDecoder,
-        this.qpSum,
-        this.qpSumAvg,
-        this.nackCount,
-        this.firCount,
-        this.pliCount,
-        this.freezeCount,
-        this.totalFreezesDuration,
-        this.keyFramesDecoded,
-        this.keyFramesDecodedPerSecond,
-        this.totalInterFrameDelay,
-        this.totalInterFrameDelayAvg,
-        this.totalSquaredInterFrameDelay,
-        this.interFrameDelayPerSecond,
-        this.pauseCount,
-        this.totalPausesDuration,
-        this.totalAssemblyTime,
-        this.framesAssembledFromMultiplePackets,
-        this.totalAssemblyTimeAvg,
-        this.framesDropped,
-        this.framesReceived,
-        this.framesDecoded,
-        this.jitterBufferDelay,
-        this.jitterBufferEmittedCount,
-        this.jitterBufferDelayAvg,
-        this.headerBytesReceived,
-        this.headerBytesPerSecond,
-        this.totalProcessingDelay,
-        this.totalDecodeTime,
-        this.decodeTimeAvg,
-        this.packetsReceivedPerSecond,
-      });
-
-  // Expose only necessary fields
-  int? get frameWidth => _baseStats.frameWidth;
-  int? get frameHeight => _baseStats.frameHeight;
-  double? get framesPerSecond => _baseStats.framesPerSecond;
-  int? get framesReceivedPerSecond => _baseStats.framesReceivedPerSecond;
-  int? get framesDecodedPerSecond => _baseStats.framesDecodedPerSecond;
-  int? get framesDroppedPerSecond => _baseStats.framesDroppedPerSecond;
-  int? get bytesPerSecond => _baseStats.bytesPerSecond;
-  int? get bytesReceived => _baseStats.bytesReceived;
-  int? get packetsLost => _baseStats.packetsLost;
-  int? get packetsReceived => _baseStats.packetsReceived;
-  double? get jitter => _baseStats.jitter;
-  double? get decodeTime => _baseStats.decodeTime;
 }
 
 class RtcIceCandidate {

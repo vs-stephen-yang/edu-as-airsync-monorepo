@@ -4,7 +4,7 @@ import 'package:display_flutter/model/rtc_stats_reporter.dart';
 import 'package:display_flutter/utility/log.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-dynamic _diff(dynamic a, dynamic b) {
+double? _diff(double? a, double? b) {
   if (a == null || b == null) {
     return null;
   }
@@ -21,40 +21,19 @@ dynamic _avg(dynamic a, dynamic b, int? c, int? d) {
   return (a - b) / (c - d);
 }
 
+abstract class RtcStatsSubscriber {
+  void updateVideoStats(RtcVideoInboundStats stats);
+  void updateLocalCandidate(List<StatsReport> reports);
+  void updateRemoteCandidate(List<StatsReport> reports);
+  void updateCandidatePairStats(StatsReport report);
+  void updateCodecStats(StatsReport report);
+  void pairCandidates(StatsReport localCandidateReport, StatsReport remoteCandidateReport);
+  void selectedCandidatePair(StatsReport selectedCandidatePair);
+}
+
 class RtcStatsParser {
-  RtcStatsReporter? _reporter;
-  RtcStatsPresenter? _presenter;
-
-  void setReporter(RtcStatsReporter reporter) {
-    _reporter = reporter;
-  }
-
-  void setPresenter(RtcStatsPresenter presenter) {
-    _presenter = presenter;
-  }
-
-  RtcStatsReporter? get reporter => _reporter;
-  RtcStatsPresenter? get presenter => _presenter;
-
-  // the stats values in the last report
-  int? _framesReceived;
-  int? _framesDecoded;
-  int? _framesDropped;
-  int? _packetsReceived;
-
-  int? _jitterBufferEmittedCount;
-  double? _jitterBufferDelay;
-
-  double? _totalDecodeTime;
-  int? _bytesReceived;
-  int? _headerBytesReceived;
-
-  int? _keyFramesDecoded;
-  double? _totalAssemblyTime;
-  int? _framesAssembledFromMultiplePackets;
-  double? _totalInterFrameDelay;
-  double? _totalSquaredInterFrameDelay;
-  int? _qpSum;
+  final List<RtcStatsSubscriber> _subscribers = [];
+  RtcVideoInboundStats? _previousVideoInboundStats;
 
   RtcStatsParser();
 
@@ -76,7 +55,7 @@ class RtcStatsParser {
     }
 
     for (var report in reportsByType['codec'] ?? []) {
-      presenter?.addCodecStats(report);
+      publishCodecStats(report);
     }
 
     // Create candidate pair map
@@ -84,14 +63,14 @@ class RtcStatsParser {
 
     for (var report in reportsByType['candidate-pair'] ?? []) {
       candidatePairMap[report.id] = report;
-      presenter?.addCandidatePairStats(report);
+      publishCandidatePairStats(report);
     }
 
     final localCandidates = reportsByType['local-candidate'] ?? [];
     final remoteCandidates = reportsByType['remote-candidate'] ?? [];
 
-    presenter?.addLocalCandidate(localCandidates);
-    presenter?.addRemoteCandidate(remoteCandidates);
+    publishLocalCandidate(localCandidates);
+    publishRemoteCandidate(remoteCandidates);
 
     // Process transports
     final transports = reportsByType['transport'] ?? [];
@@ -109,13 +88,12 @@ class RtcStatsParser {
         final remoteCandidateId =
             selectedCandidatePair.values['remoteCandidateId'];
 
-        _reporter?.pairCandidates(
-            localCandidates.firstWhere(
+        publishPairCandidates(localCandidates.firstWhere(
                 (StatsReport report) => report.id == localCandidateId),
             remoteCandidates.firstWhere(
-                (StatsReport report) => report.id == remoteCandidateId));
+                    (StatsReport report) => report.id == remoteCandidateId));
 
-        _reporter?.selectedCandidatePair(selectedCandidatePair);
+        publishSelectedCandidatePair(selectedCandidatePair);
       }
     }
 
@@ -157,116 +135,139 @@ class RtcStatsParser {
     final headerBytesReceived = videoInboundRtp.values['headerBytesReceived'];
     final keyFramesDecoded = videoInboundRtp.values['keyFramesDecoded'];
     final packetsReceived = videoInboundRtp.values['packetsReceived'];
-    final jitterBufferDelayAvg = _avg(
-      jitterBufferDelay,
-      _jitterBufferDelay,
-      jitterBufferEmittedCount,
-      _jitterBufferEmittedCount,
-    );
-    final decodeTimeAvg = _avg(
-      totalDecodeTime,
-      _totalDecodeTime,
-      framesDecoded,
-      _framesDecoded,
-    );
+    final decoderName = videoInboundRtp.values['decoderImplementation'];
+    final frameWidth = videoInboundRtp.values['frameWidth'];
+    final frameHeight = videoInboundRtp.values['frameHeight'];
+    final framesPerSecond = videoInboundRtp.values['framesPerSecond'];
+    final packetsLost = videoInboundRtp.values['packetsLost'];
+    final jitter = videoInboundRtp.values['jitter'];
+    final pauseCount = videoInboundRtp.values['pauseCount'];
+    final powerEfficientDecoder = videoInboundRtp.values['powerEfficientDecoder'];
+    final nackCount = videoInboundRtp.values['nackCount'];
+    final firCount = videoInboundRtp.values['firCount'];
+    final pliCount = videoInboundRtp.values['pliCount'];
+    final freezeCount = videoInboundRtp.values['freezeCount'];
+    final totalFreezesDuration = videoInboundRtp.values['totalFreezesDuration'];
+    final totalPausesDuration = videoInboundRtp.values['totalPausesDuration'];
+    final totalProcessingDelay = videoInboundRtp.values['totalProcessingDelay'];
     final totalAssemblyTime = videoInboundRtp.values['totalAssemblyTime'];
     final framesAssembledFromMultiplePackets = videoInboundRtp.values['framesAssembledFromMultiplePackets'];
-    final totalAssemblyTimeAvg = _avg(
-        totalAssemblyTime,
-        _totalAssemblyTime,
-        framesAssembledFromMultiplePackets,
-        _framesAssembledFromMultiplePackets
-    );
     final totalInterFrameDelay = videoInboundRtp.values['totalInterFrameDelay'];
-    final totalInterFrameDelayAvg = _avg(
-        totalInterFrameDelay,
-        _totalInterFrameDelay,
-        framesDecoded,
-        _framesDecoded,
-    );
     final totalSquaredInterFrameDelay = videoInboundRtp.values['totalSquaredInterFrameDelay'];
     final qpSum = videoInboundRtp.values['qpSum'];
-    final qpSumAvg = _avg(
-      qpSum,
-      _qpSum,
-      framesDecoded,
-      _framesDecoded,
-    );
+
+    double? framesReceivedPerSecond;
+    double? framesDecodedPerSecond;
+    double? framesDroppedPerSecond;
+    double? bytesPerSecond;
+    double? interFrameDelayPerSecond;
+    double? keyFramesDecodedPerSecond;
+    double? headerBytesPerSecond;
+    double? packetsReceivedPerSecond;
+    double? qpSumAvg;
+    double? totalAssemblyTimeAvg;
+    double? totalInterFrameDelayAvg;
+    double? jitterBufferDelayAvg;
+    double? decodeTimeAvg;
+
+
+    if (_previousVideoInboundStats != null) {
+      framesReceivedPerSecond = _diff(framesReceived?.toDouble(), _previousVideoInboundStats!.framesReceived?.toDouble());
+      framesDecodedPerSecond = _diff(framesDecoded?.toDouble(), _previousVideoInboundStats!.framesDecoded?.toDouble());
+      framesDroppedPerSecond = _diff(framesDropped?.toDouble(), _previousVideoInboundStats!.framesDropped?.toDouble());
+      bytesPerSecond = _diff(bytesReceived?.toDouble(), _previousVideoInboundStats!.bytesReceived?.toDouble());
+      interFrameDelayPerSecond = _diff(totalSquaredInterFrameDelay?.toDouble(), _previousVideoInboundStats!.totalSquaredInterFrameDelay?.toDouble());
+      keyFramesDecodedPerSecond = _diff(keyFramesDecoded?.toDouble(), _previousVideoInboundStats!.keyFramesDecoded?.toDouble());
+      headerBytesPerSecond = _diff(headerBytesReceived?.toDouble(), _previousVideoInboundStats!.headerBytesReceived?.toDouble());
+      packetsReceivedPerSecond = _diff(packetsReceived?.toDouble(), _previousVideoInboundStats!.packetsReceived?.toDouble());
+
+      qpSumAvg = _avg(
+        qpSum,
+        _previousVideoInboundStats!.qpSum,
+        framesDecoded,
+        _previousVideoInboundStats!.framesDecoded,
+      );
+
+      totalAssemblyTimeAvg = _avg(
+          totalAssemblyTime,
+          _previousVideoInboundStats!.totalAssemblyTime,
+          framesAssembledFromMultiplePackets,
+          _previousVideoInboundStats!.framesAssembledFromMultiplePackets
+      );
+
+      totalInterFrameDelayAvg = _avg(
+        totalInterFrameDelay,
+        _previousVideoInboundStats!.totalInterFrameDelay,
+        framesDecoded,
+        _previousVideoInboundStats!.framesDecoded,
+      );
+
+      jitterBufferDelayAvg = _avg(
+        jitterBufferDelay,
+        _previousVideoInboundStats!.jitterBufferDelay,
+        jitterBufferEmittedCount,
+        _previousVideoInboundStats!.jitterBufferEmittedCount,
+      );
+
+      decodeTimeAvg = _avg(
+        totalDecodeTime,
+        _previousVideoInboundStats!.totalDecodeTime,
+        framesDecoded,
+        _previousVideoInboundStats!.framesDecoded,
+      );
+    }
 
     final stats = RtcVideoInboundStats(
-      decoderName: videoInboundRtp.values['decoderImplementation'],
-      frameWidth: videoInboundRtp.values['frameWidth'],
-      frameHeight: videoInboundRtp.values['frameHeight'],
-      framesPerSecond: videoInboundRtp.values['framesPerSecond'],
-      framesReceivedPerSecond: _diff(framesReceived, _framesReceived),
-      framesDecodedPerSecond: _diff(framesDecoded, _framesDecoded),
-      framesDroppedPerSecond: _diff(framesDropped, _framesDropped),
-      bytesPerSecond:
-          _diff(bytesReceived, _bytesReceived),
+      decoderName: decoderName,
+      frameWidth: frameWidth,
+      frameHeight: frameHeight,
+      framesPerSecond: framesPerSecond,
       bytesReceived: bytesReceived,
-      packetsLost: videoInboundRtp.values['packetsLost'],
       packetsReceived: packetsReceived,
-      jitter: videoInboundRtp.values['jitter'],
-      pauseCount: videoInboundRtp.values['pauseCount'],
-      jitterBufferDelay: jitterBufferDelayAvg,
-      decodeTime: decodeTimeAvg,
-    );
-
-    _reporter?.videoInboundStats(stats);
-
-    final statsForPresent = RtcVideoInboundStatsForPresenter(
-      stats,
-      powerEfficientDecoder: videoInboundRtp.values['powerEfficientDecoder'],
       qpSum: qpSum,
       qpSumAvg: qpSumAvg,
-      nackCount: videoInboundRtp.values['nackCount'],
-      firCount: videoInboundRtp.values['firCount'],
-      pliCount: videoInboundRtp.values['pliCount'],
-      freezeCount: videoInboundRtp.values['freezeCount'],
-      totalFreezesDuration: videoInboundRtp.values['totalFreezesDuration'],
       keyFramesDecoded: keyFramesDecoded,
-      keyFramesDecodedPerSecond: _diff(keyFramesDecoded, _keyFramesDecoded),
+      packetsLost: packetsLost,
+      jitter: jitter,
+      pauseCount: pauseCount,
+      powerEfficientDecoder: powerEfficientDecoder,
+      nackCount: nackCount,
+      firCount: firCount,
+      pliCount: pliCount,
+      freezeCount: freezeCount,
+      totalFreezesDuration: totalFreezesDuration,
+      totalPausesDuration: totalPausesDuration,
+      headerBytesReceived: headerBytesReceived,
+      totalProcessingDelay: totalProcessingDelay,
       totalInterFrameDelay: totalInterFrameDelay,
       totalInterFrameDelayAvg: totalInterFrameDelayAvg,
       totalSquaredInterFrameDelay: totalSquaredInterFrameDelay,
-      interFrameDelayPerSecond: _diff(totalSquaredInterFrameDelay, _totalSquaredInterFrameDelay),
-      pauseCount: videoInboundRtp.values['pauseCount'],
-      totalPausesDuration: videoInboundRtp.values['totalPausesDuration'],
       totalAssemblyTime: totalAssemblyTime,
       framesAssembledFromMultiplePackets: framesAssembledFromMultiplePackets,
       totalAssemblyTimeAvg: totalAssemblyTimeAvg,
       framesDropped: framesDropped,
       framesReceived: framesReceived,
       framesDecoded: framesDecoded,
-      jitterBufferDelay: jitterBufferDelay,
       jitterBufferEmittedCount: jitterBufferEmittedCount,
+      jitterBufferDelay: jitterBufferDelay,
       jitterBufferDelayAvg: jitterBufferDelayAvg,
-      headerBytesReceived: videoInboundRtp.values['headerBytesReceived'],
-      headerBytesPerSecond: _diff(headerBytesReceived, _headerBytesReceived),
-      totalProcessingDelay: videoInboundRtp.values['totalProcessingDelay'],
-      totalDecodeTime: totalDecodeTime,
       decodeTimeAvg: decodeTimeAvg,
-      packetsReceivedPerSecond: _diff(packetsReceived, _packetsReceived),
+      totalDecodeTime: totalDecodeTime,
+      framesReceivedPerSecond: framesReceivedPerSecond,
+      framesDecodedPerSecond: framesDecodedPerSecond,
+      framesDroppedPerSecond: framesDroppedPerSecond,
+      bytesPerSecond: bytesPerSecond,
+      interFrameDelayPerSecond: interFrameDelayPerSecond,
+      keyFramesDecodedPerSecond: keyFramesDecodedPerSecond,
+      headerBytesPerSecond: headerBytesPerSecond,
+      packetsReceivedPerSecond: packetsReceivedPerSecond,
       timestamp: videoInboundRtp.timestamp,
     );
-    _presenter?.addVideoStats(statsForPresent);
+
+    publishRtcVideoOutboundStats(stats);
 
     // update
-    _framesReceived = framesReceived;
-    _framesDecoded = framesDecoded;
-    _framesDropped = framesDropped;
-    _totalDecodeTime = totalDecodeTime;
-    _bytesReceived = stats.bytesReceived;
-    _jitterBufferEmittedCount = jitterBufferEmittedCount;
-    _jitterBufferDelay = jitterBufferDelay;
-    _headerBytesReceived = headerBytesReceived;
-    _packetsReceived = packetsReceived;
-    _keyFramesDecoded = keyFramesDecoded;
-    _totalAssemblyTime = totalAssemblyTime;
-    _framesAssembledFromMultiplePackets = framesAssembledFromMultiplePackets;
-    _totalInterFrameDelay = totalInterFrameDelay;
-    _totalSquaredInterFrameDelay = totalSquaredInterFrameDelay;
-    _qpSum = qpSum;
+    _previousVideoInboundStats = stats;
   }
 
   StatsReport? getOneTimeVideoInboundStats(List<StatsReport> reports) {
@@ -278,5 +279,58 @@ class RtcStatsParser {
     }
 
     return null;
+  }
+
+  void addSubscriber(RtcStatsSubscriber s) {
+    _subscribers.add(s);
+  }
+
+
+  void publishRtcVideoOutboundStats(RtcVideoInboundStats stats) {
+    for (final subscriber in _subscribers) {
+      subscriber.updateVideoStats(stats);
+    }
+  }
+
+  void publishLocalCandidate(List<StatsReport> reports) {
+    if (reports.isEmpty) {
+      return;
+    }
+    for (final subscriber in _subscribers) {
+      subscriber.updateLocalCandidate(reports);
+    }
+  }
+
+  void publishRemoteCandidate(List<StatsReport> reports) {
+    if (reports.isEmpty) {
+      return;
+    }
+    for (final subscriber in _subscribers) {
+      subscriber.updateRemoteCandidate(reports);
+    }
+  }
+
+  void publishCandidatePairStats(StatsReport report) {
+    for (final subscriber in _subscribers) {
+      subscriber.updateCandidatePairStats(report);
+    }
+  }
+
+  void publishCodecStats(StatsReport report) {
+    for (final subscriber in _subscribers) {
+      subscriber.updateCodecStats(report);
+    }
+  }
+
+  void publishPairCandidates(StatsReport localCandidateReport, StatsReport remoteCandidateReport) {
+    for (final subscriber in _subscribers) {
+      subscriber.pairCandidates(localCandidateReport, remoteCandidateReport);
+    }
+  }
+
+  void publishSelectedCandidatePair(StatsReport selectedCandidatePair) {
+    for (final subscriber in _subscribers) {
+      subscriber.selectedCandidatePair(selectedCandidatePair);
+    }
   }
 }
