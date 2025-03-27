@@ -36,15 +36,15 @@ class RtcVideoInboundStats {
 
   final double? packetsReceivedPerSecond;
   final double? framesPerSecond;
-  final double? framesReceivedPerSecond;
-  final double? framesDecodedPerSecond;
-  final double? framesDroppedPerSecond;
-  final double? bytesPerSecond;
+  final int? framesReceivedPerSecond;
+  final int? framesDecodedPerSecond;
+  final int? framesDroppedPerSecond;
+  final int? bytesPerSecond;
   final double? keyFramesDecodedPerSecond;
   final double? interFrameDelayPerSecond;
   final double? headerBytesPerSecond;
 
-  final double? decodeTimeAvg;
+  final double? decodeTime;
   final double? totalInterFrameDelayAvg;
   final double? totalAssemblyTimeAvg;
   final double? jitterBufferDelayAvg;
@@ -90,7 +90,7 @@ class RtcVideoInboundStats {
       this.keyFramesDecodedPerSecond,
       this.interFrameDelayPerSecond,
       this.headerBytesPerSecond,
-      this.decodeTimeAvg,
+      this.decodeTime,
       this.totalInterFrameDelayAvg,
       this.totalAssemblyTimeAvg,
       this.jitterBufferDelayAvg,
