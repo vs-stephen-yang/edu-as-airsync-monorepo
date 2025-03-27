@@ -190,10 +190,10 @@ void main() {
           .having((s) => s.frameHeight, 'frameHeight', 720)
       // Calculated differences
           .having((s) => s.encodeTime, 'encodeTime', 23.0) // 43.0 - 20.0 = 23.0
-          .having((s) => s.bytesSentPerSecond, 'bytesSentPerSecond', 100000.0) // 600000-500000 = 100000 bits
-          .having((s) => s.packetsSentPerSecond, 'packetsSentPerSecond', 200.0) // 1000-800 = 200
-          .having((s) => s.framesEncodedPerSecond, 'framesEncodedPerSecond', 200.0) // 1200-1000 = 200
-          .having((s) => s.framesSentPerSecond, 'framesSentPerSecond', 200.0) // 1200-1000 = 200
+          .having((s) => s.bytesSentPerSecond, 'bytesSentPerSecond', 100000) // 600000-500000 = 100000 bits
+          .having((s) => s.packetsSentPerSecond, 'packetsSentPerSecond', 200) // 1000-800 = 200
+          .having((s) => s.framesEncodedPerSecond, 'framesEncodedPerSecond', 200) // 1200-1000 = 200
+          .having((s) => s.framesSentPerSecond, 'framesSentPerSecond', 200) // 1200-1000 = 200
       // Calculated averages (properly divisible for clean results)
           .having((s) => s.encodeTimeAvgMs, 'encodeTimeAvg', 115.0)
           .having((s) => s.qpSumAvg, 'qpSumAvg', 5.0)
