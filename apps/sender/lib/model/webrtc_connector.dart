@@ -105,6 +105,9 @@ class WebRTCConnector {
   Timer? _statsTimer;
   final _statsTimerInterval = const Duration(seconds: 1);
   RtcStatsParser? _rtcStatsParser;
+  RtcStatsPresenter? _rtcStatsPresenter;
+
+  List<RtcIceServer> _iceServerList = [];
 
   ValueNotifier<ChannelReconnectState> reconnectStateNotifier;
 
@@ -125,6 +128,7 @@ class WebRTCConnector {
     if (!kIsWeb && WebRTC.platformIsDesktop && _isScreenType) { // macOS, Windows
       _screenId = int.parse(_deviceId['exact']);
     }
+    _iceServerList = iceServerList!;
     final configuration = WebRTCUtil.buildWebRtcConfiguration(iceServerList);
 
     _pc = await createPeerConnection(configuration);
@@ -892,9 +896,9 @@ class WebRTCConnector {
     final rtcStatsReporter = RtcStatsReporter((stats) => {onVideoStatsReport?.call(stats)});
     _rtcStatsParser?.addSubscriber(rtcStatsReporter);
 
-    // TODO: enable by some flag
-    final rtcStatsPresenter = RtcStatsPresenter();
-    _rtcStatsParser?.addSubscriber(rtcStatsPresenter);
+    _rtcStatsPresenter = RtcStatsPresenter();
+    _rtcStatsParser?.addSubscriber(_rtcStatsPresenter!);
+
     _statsTimer = Timer.periodic(
       _statsTimerInterval,
       (timer) async {
@@ -906,5 +910,30 @@ class WebRTCConnector {
         }
       },
     );
+  }
+
+  Map<String, String> getIceInfo() {
+    final result = <String, String>{};
+
+    final candidates = _rtcStatsPresenter?.getCandidates();
+    if (candidates != null) {
+      final local = (candidates['local'] as List<RtcIceCandidate>?)
+          ?.map((e) => e.toJson())
+          .toList();
+      final remote = (candidates['remote'] as List<RtcIceCandidate>?)
+          ?.map((e) => e.toJson())
+          .toList();
+
+      result['candidates'] = jsonEncode({
+        'local': local,
+        'remote': remote,
+      });
+    }
+
+    result['iceServers'] = jsonEncode(
+        _iceServerList.map((server) => server.urls).expand((urls) => urls).toList(),
+    );
+
+    return result;
   }
 }

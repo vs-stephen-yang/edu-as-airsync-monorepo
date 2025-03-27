@@ -113,6 +113,15 @@ class RtcIceCandidate {
       priority: values['priority'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'address': address,
+      'port': port,
+      'protocol': protocol,
+      'candidateType': candidateType
+    };
+  }
 }
 
 class RtcIceCandidatePairStats {

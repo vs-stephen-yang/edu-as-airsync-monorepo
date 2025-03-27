@@ -834,7 +834,9 @@ class ChannelProvider extends ChangeNotifier {
     // cast_error: when users fail to cast their screen on the first attempt
     final eventName = _isRtcFirstConnected ? 'cast_fail' : 'cast_error';
 
-    trackEvent(eventName, EventCategory.session);
+    final Map<String, Object> properties = _isRtcFirstConnected ? {} : WebRTCHelper().getIceInfo();
+
+    trackEvent(eventName, EventCategory.session, properties: properties);
 
     _isPresentingErrorReported = true;
   }

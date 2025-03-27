@@ -8,7 +8,6 @@ import 'package:display_cast_flutter/utilities/channel_util.dart';
 import 'package:display_channel/display_channel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-
 import 'log.dart';
 
 class WebRTCHelper {
@@ -156,5 +155,9 @@ class WebRTCHelper {
 
   Future<void> launchBroadcastUploadExtension() async {
     await WebRTC.invokeMethod('launchBroadcastUploadExtension');
+  }
+
+  Map<String, Object> getIceInfo() {
+    return webRTCConnector?.getIceInfo() ?? {};
   }
 }
