@@ -262,7 +262,6 @@ class _CountDownTextState extends State<CountDownText> {
 
 //ignore: must_be_immutable
 class SelectScreenDialog extends Dialog {
-  bool _isVirtualDisplayStarted = false;
   StreamSubscription? _virtualDisplaySubscription;
 
   SelectScreenDialog({
@@ -734,8 +733,6 @@ class SelectScreenDialog extends Dialog {
   }
 
   Future<bool> _startAndWaitForVirtualDisplay() async {
-    _isVirtualDisplayStarted = false;
-
     // Cancel previous subscription if it exists
     await _virtualDisplaySubscription?.cancel();
 
@@ -745,7 +742,6 @@ class SelectScreenDialog extends Dialog {
     // Set up a listener that triggers when the virtual display starts
     _virtualDisplaySubscription = FlutterVirtualDisplay.instance.onVirtualDisplayStarted.stream.listen((_) {
       log.info('Virtual display started');
-      _isVirtualDisplayStarted = true;
       if (!completer.isCompleted) {
         completer.complete(true);
       }
