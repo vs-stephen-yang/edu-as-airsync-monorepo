@@ -148,7 +148,6 @@
   "v3_group_dialog_message": "%s išsiuntė transliacijos užklausą jūsų įrenginiui. Šis veiksmas sinchronizuos ir rodys dabartinį turinį. Ar norite priimti šią užklausą?",
   "v3_group_dialog_accept": "Priimti",
   "v3_group_dialog_decline": "Atmesti",
-  "v3_settings_whats_new_content": "AirSync %s  \n\nAirSync yra ViewSonic patentuotas belaidžio ekrano bendrinimo sprendimas. Naudojant kartu su AirSync siuntėju, jis užtikrina sklandų ekrano bendrinimą iš vartotojo įrenginio į ViewSonic interaktyvius ekranus.  \n\nPagrindinės funkcijos:  \n\n1. Belaidis ekrano bendrinimas.  \n\n2. Automatinis padalintas ekranas keliems pranešėjams.  \n\n3. Moderatoriaus režimas, suteikiantis daugiau valdymo galimybių pristatymo metu.  \n\n4. Ekrano veidrodinis atvaizdavimas, palaikantis AirPlay, Google Cast ir Miracast.  \n\n5. Siuntimas į įrenginį su nuotoliniu valdymu.  \n\n6. Siuntimas į lentą, kad būtų galima transliuoti ekranus į kelis didelius ekranus.  \n\n7. Anotacijos funkcija.  \n\n8. Sąveika su AirSync siuntėju Windows, macOS, iOS, Android ir žiniatinklio versijose.  \n\n9. Grįžtamasis ryšys palaikomas Windows ir macOS siuntėjo versijose.  ",
   "v3_eula_title": "Galutinio vartotojo licencijos sutartis",
   "v3_eula_agree": "Sutinku",
   "v3_eula_disagree": "Nesutinku",

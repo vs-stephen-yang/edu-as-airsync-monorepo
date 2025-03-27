@@ -148,7 +148,7 @@
   "v3_group_dialog_message": "%s ha enviado una solicitud de transmisión a tu dispositivo. Esta acción sincronizará y mostrará el contenido actual, ¿quieres aceptar esta solicitud?",
   "v3_group_dialog_accept": "Aceptar",
   "v3_group_dialog_decline": "Rechazar",
-  "v3_settings_whats_new_content": "AirSync %s\n\nAirSync es una solución propietaria de ViewSonic para compartir pantalla de manera inalámbrica. Cuando se usa con el emisor AirSync, permite compartir la pantalla sin problemas desde el dispositivo de un usuario a las pantallas interactivas de ViewSonic.\n\nCaracterísticas clave: \n\n1. Compartir pantalla de manera inalámbrica.\n\n2. Pantallas divididas automáticas para múltiples presentadores.\n\n3. Modo moderador para permitir más control durante la presentación.\n\n4. Espejo de pantalla para soportar AirPlay, Google Cast y Miracast.\n\n5. Transmitir al dispositivo con control remoto.\n\n6. Transmitir a la pizarra para transmitir pantallas a múltiples pantallas grandes.\n\n7. Anotaciones.\n\n8. Interactuar con el emisor AirSync en Windows, macOS, iOS, Android y versión web.\n\n9. Touchback es compatible con el emisor de Windows y macOS.\n\n",
+  "v3_settings_whats_new_content": "AirSync %s\n\nAirSync es la solución propietaria de ViewSonic para compartir pantalla de forma inalámbrica. Al utilizarlo con el transmisor AirSync, permite compartir la pantalla sin interrupciones desde el dispositivo del usuario a las pantallas interactivas de ViewSonic.\n\nNuevas funciones en esta versión:\n\n1. El modo moderador ahora admite duplicación de pantalla.\n\n2. Integración con ViewSonic Manager a través del control remoto de Manager.\n\n3. Versión PWA disponible para compartir pantalla desde Chromebook a través de internet.\n\n4. Soporte para pantalla dividida en 9 partes en modelos seleccionados.\n\n5. Mejoras en estabilidad.\n\n6. Corrección de errores.",
   "v3_eula_title": "Acuerdo de Licencia de Usuario Final",
   "v3_eula_agree": "Aceptar",
   "v3_eula_disagree": "Rechazar",
@@ -181,5 +181,14 @@
   "v3_settings_local_connection_only": "Solo conexión local",
   "v3_group_dialog_no_device_message": "Ningún dispositivo seleccionado.",
   "v3_participant_item_waiting": "Esperando...",
-  "v3_participants_desc_maximum_9": "Máximo hasta 9 participantes."
+  "v3_settings_only_when_casting_info": "Transmitir la pantalla del panel interactivo solo cuando esté recibiendo una pantalla compartida.",
+  "v3_settings_all_the_time_info": "Transmitir la pantalla del panel interactivo en todo momento.",
+  "v3_settings_feature_locked": "Bloqueado por ViewSonic Manager.",
+  "v3_cast_to_device_list_msg": "Máximo de hasta 10 dispositivos.",
+  "v3_quick_connect_menu_bottom_msg": "Pantalla dividida activada cuando dos o más usuarios comparten pantalla.",
+  "v3_settings_version": "AirSync ©{year}. versión {version}",
+  "v3_settings_broadcast_screen_energy_saving": "Desactiva el ahorro de energía para evitar interrupciones inesperadas durante la transmisión.",
+  "v3_participants_desc_maximum_9": "Máximo hasta 9 participantes.",
+  "v3_settings_device_smart_scaling": "Escalado Inteligente",
+  "v3_settings_device_smart_scaling_desc": "Ajusta automáticamente el tamaño de la pantalla para maximizar el uso del espacio disponible. La imagen puede sufrir una ligera distorsión."
 }

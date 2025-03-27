@@ -148,7 +148,6 @@
   "v3_group_dialog_message": "%s on lähettänyt lähetyspyynnön laitteellesi. Tämä toiminto synkronoi ja näyttää nykyisen sisällön, haluatko hyväksyä tämän pyynnön?",
   "v3_group_dialog_accept": "Hyväksy",
   "v3_group_dialog_decline": "Hylkää",
-  "v3_settings_whats_new_content": "AirSync on ViewSonicin oma langaton näytönjakoratkaisu. AirSync-lähettimen kanssa käytettynä se mahdollistaa saumattoman näytönjaon käyttäjän laitteesta ViewSonicin interaktiivisiin näyttöihin.\nTärkeimmät ominaisuudet:\n1.\tLangaton näytönjako.\n2.\tAutomaattiset jaetut näytöt useille esittäjille.\n3.\tModeraattoritila tarjoaa enemmän hallintaa esityksen aikana.\n4.\tNäytön peilaus tukee AirPlayta, Google Castia ja Miracastia.\n5.\tLähetys laitteeseen kauko-ohjauksella.\n6.\tLähetys taululle useisiin suuriin näyttöihin.\n7.\tAnnoitointi.\n8.\tYhteensopiva Windowsin, macOS:n, iOS:n, Androidin ja verkkoversio AirSync-lähettimen kanssa.\n9.\tPalautus (Touchback) tuettuna Windows- ja macOS-lähettimissä.",
   "v3_eula_title": "Käyttöehtosopimus",
   "v3_eula_agree": "Hyväksy",
   "v3_eula_disagree": "Hylkää",

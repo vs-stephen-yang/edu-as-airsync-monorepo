@@ -148,7 +148,6 @@
   "v3_group_dialog_message": "%s hat eine Übertragungsanfrage an Ihr Gerät gesendet. Diese Aktion synchronisiert und zeigt den aktuellen Inhalt an. Möchten Sie diese Anfrage akzeptieren?",
   "v3_group_dialog_accept": "Akzeptieren",
   "v3_group_dialog_decline": "Ablehnen",
-  "v3_settings_whats_new_content": "AirSync %s\n\nAirSync ist eine proprietäre drahtlose Bildschirmfreigabelösung von ViewSonic. In Verbindung mit dem AirSync-Sender ermöglicht es eine nahtlose Bildschirmfreigabe vom Gerät eines Benutzers auf interaktiven ViewSonic-Displays.\n\nHauptmerkmale: \n\n1. Drahtlose Bildschirmfreigabe.\n\n2. Automatische geteilte Bildschirme für mehrere Moderatoren.\n\n3. Moderator-Modus für mehr Kontrolle während der Präsentation.\n\n4. Bildschirmspiegelung zur Unterstützung von AirPlay, Google Cast und Miracast.\n\n5. Übertragung auf Gerät mit Fernbedienung.\n\n6. Übertragung auf Tafel, um Bildschirme auf mehrere große Bildschirme zu übertragen.\n\n7. Anmerkungen.\n\n8. Interaktion mit Windows-, macOS-, iOS-, Android- und Webversion des AirSync-Senders.\n\n9. Touchback wird in Windows- und macOS-Sendern unterstützt.\n\n",
   "v3_eula_title": "Endbenutzer-Lizenzvereinbarung",
   "v3_eula_agree": "Zustimmen",
   "v3_eula_disagree": "Ablehnen",
@@ -186,5 +185,6 @@
   "v3_settings_feature_locked": "Durch ViewSonic Manager gesperrt.",
   "v3_cast_to_device_list_msg": "Maximal bis zu 10 Geräte.",
   "v3_quick_connect_menu_bottom_msg": "Der geteilte Bildschirm wird aktiviert, wenn zwei oder mehr Benutzer Bildschirme freigeben.",
+  "v3_settings_broadcast_screen_energy_saving": "Bitte schalten Sie den Energiesparmodus aus, um unerwartete Unterbrechungen während der Übertragung zu vermeiden.",
   "v3_participants_desc_maximum_9": "Maximal bis zu 9 Teilnehmer."
 }

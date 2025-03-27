@@ -148,7 +148,6 @@
   "v3_group_dialog_message": "%s har sendt en forespørsel om sending til enheten din. Denne handlingen vil synkronisere og vise det gjeldende innholdet. Vil du godta denne forespørselen?",
   "v3_group_dialog_accept": "Godta",
   "v3_group_dialog_decline": "Avslå",
-  "v3_settings_whats_new_content": "AirSync %s  \n\nAirSync er ViewSonics egen trådløse løsning for skjermdeling. Når den brukes sammen med AirSync-senderen, muliggjør den sømløs skjermdeling fra en brukers enhet til ViewSonic interaktive skjermer.  \n\nNøkkelfunksjoner:  \n\n1. Trådløs skjermdeling.  \n\n2. Automatisk delt skjerm for flere presentatører.  \n\n3. Moderator-modus for bedre kontroll under presentasjoner.  \n\n4. Skjermspeiling som støtter AirPlay, Google Cast og Miracast.  \n\n5. Casting til enhet med fjernkontroll.  \n\n6. Casting til tavle for å sende skjermer til flere store skjermer.  \n\n7. Annotering.  \n\n8. Interaksjon med Windows, macOS, iOS, Android og nettversjon av AirSync-sender.  \n\n9. Tilbakekobling støttes i Windows- og macOS-sendere.  ",
   "v3_eula_title": "Sluttbrukeravtale",
   "v3_eula_agree": "Godta",
   "v3_eula_disagree": "Avslå",

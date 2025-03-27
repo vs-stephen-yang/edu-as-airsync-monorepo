@@ -19,17 +19,20 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    assert(
+      _current != null,
+      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
+    );
     return _current!;
   }
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
+    final name =
+        (locale.countryCode?.isEmpty ?? false)
+            ? locale.languageCode
+            : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -42,8 +45,10 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(instance != null,
-        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -93,12 +98,7 @@ class S {
 
   /// `AirSync EULA`
   String get eula_title {
-    return Intl.message(
-      'AirSync EULA',
-      name: 'eula_title',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('AirSync EULA', name: 'eula_title', desc: '', args: []);
   }
 
   /// `I Disagree`
@@ -113,12 +113,7 @@ class S {
 
   /// `I Agree`
   String get eula_agree {
-    return Intl.message(
-      'I Agree',
-      name: 'eula_agree',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('I Agree', name: 'eula_agree', desc: '', args: []);
   }
 
   /// `%02d min : %02d sec`
@@ -353,32 +348,17 @@ class S {
 
   /// `CANCEL`
   String get moderator_cancel {
-    return Intl.message(
-      'CANCEL',
-      name: 'moderator_cancel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('CANCEL', name: 'moderator_cancel', desc: '', args: []);
   }
 
   /// `EXIT`
   String get moderator_exit {
-    return Intl.message(
-      'EXIT',
-      name: 'moderator_exit',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('EXIT', name: 'moderator_exit', desc: '', args: []);
   }
 
   /// `REMOVE`
   String get moderator_remove {
-    return Intl.message(
-      'REMOVE',
-      name: 'moderator_remove',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('REMOVE', name: 'moderator_remove', desc: '', args: []);
   }
 
   /// `Click the above toggle for Split Screen Mode. Up to 4 participants can present at once.`
@@ -1541,10 +1521,10 @@ class S {
     );
   }
 
-  /// `AirSync %s\n\nAirSync is a ViewSonic proprietary wireless screen-sharing solution. When used with the AirSync sender, it enables seamless screen sharing from a user's device to ViewSonic interactive displays.\n\nNew features with this release: \n\n1. Moderator mode supports mirror.\n\n2. Integrate with ViewSonic Manager through Manager remote control.\n\n3. PWA version sender available for Chromebook internet screen sharing.\n\n4. Improve stability.\n\n5. Bugs fixed.`
+  /// `AirSync %s\n\nAirSync is a ViewSonic proprietary wireless screen-sharing solution. When used with the AirSync sender, it enables seamless screen sharing from a user's device to ViewSonic interactive displays.\n\nNew features for this release: \n\n1. Moderator mode now supports mirrorring.\n\n2. Integration with ViewSonic Manager through Manager remote control.\n\n3. PWA version sender for Chromebooks for internet screen sharing.\n\n4. Support for 9-split screens on selected models.\n\n5. Support screen extension with touchback. \n\n6. Improved stability.\n\n7. Bugs fixed.`
   String get v3_settings_whats_new_content {
     return Intl.message(
-      'AirSync %s\n\nAirSync is a ViewSonic proprietary wireless screen-sharing solution. When used with the AirSync sender, it enables seamless screen sharing from a user\'s device to ViewSonic interactive displays.\n\nNew features with this release: \n\n1. Moderator mode supports mirror.\n\n2. Integrate with ViewSonic Manager through Manager remote control.\n\n3. PWA version sender available for Chromebook internet screen sharing.\n\n4. Improve stability.\n\n5. Bugs fixed.',
+      'AirSync %s\n\nAirSync is a ViewSonic proprietary wireless screen-sharing solution. When used with the AirSync sender, it enables seamless screen sharing from a user\'s device to ViewSonic interactive displays.\n\nNew features for this release: \n\n1. Moderator mode now supports mirrorring.\n\n2. Integration with ViewSonic Manager through Manager remote control.\n\n3. PWA version sender for Chromebooks for internet screen sharing.\n\n4. Support for 9-split screens on selected models.\n\n5. Support screen extension with touchback. \n\n6. Improved stability.\n\n7. Bugs fixed.',
       name: 'v3_settings_whats_new_content',
       desc: '',
       args: [],
@@ -1563,12 +1543,7 @@ class S {
 
   /// `Agree`
   String get v3_eula_agree {
-    return Intl.message(
-      'Agree',
-      name: 'v3_eula_agree',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Agree', name: 'v3_eula_agree', desc: '', args: []);
   }
 
   /// `Disagree`
@@ -1753,12 +1728,7 @@ class S {
 
   /// `OR`
   String get v3_download_app_or {
-    return Intl.message(
-      'OR',
-      name: 'v3_download_app_or',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('OR', name: 'v3_download_app_or', desc: '', args: []);
   }
 
   /// `Disable Mirroring for Moderator Mode`
@@ -1971,40 +1941,40 @@ class S {
     );
   }
 
-  /// `The projection is about to end. Would you like to extend it by 3 hours? You can extend up to {value} times and interrupt at any time.`
+  /// `Screen sharing is about to end. Would you like to extend it by 3 hours? You can extend up to {value} times. `
   String v3_casting_time_countdown(Object value) {
     return Intl.message(
-      'The projection is about to end. Would you like to extend it by 3 hours? You can extend up to $value times and interrupt at any time.',
+      'Screen sharing is about to end. Would you like to extend it by 3 hours? You can extend up to $value times. ',
       name: 'v3_casting_time_countdown',
       desc: '',
       args: [value],
     );
   }
 
-  /// `The projection is about to end. To extend the projection time, please restart the projection.`
+  /// `Screen sharing is about to end. Please restart the screen sharing if necessary.`
   String get v3_last_casting_time_countdown {
     return Intl.message(
-      'The projection is about to end. To extend the projection time, please restart the projection.',
+      'Screen sharing is about to end. Please restart the screen sharing if necessary.',
       name: 'v3_last_casting_time_countdown',
       desc: '',
       args: [],
     );
   }
 
-  /// `Projection time has been extended.`
+  /// `Extended for 3 hours.`
   String get v3_casting_time_extend_success_toast {
     return Intl.message(
-      'Projection time has been extended.',
+      'Extended for 3 hours.',
       name: 'v3_casting_time_extend_success_toast',
       desc: '',
       args: [],
     );
   }
 
-  /// `The projection has ended.`
+  /// `Screen sharing has ended.`
   String get v3_casting_ended_toast {
     return Intl.message(
-      'The projection has ended.',
+      'Screen sharing has ended.',
       name: 'v3_casting_ended_toast',
       desc: '',
       args: [],
@@ -2141,40 +2111,40 @@ class S {
     );
   }
 
-  /// `Internet Only`
+  /// `Internet connection only。`
   String get v3_main_internet_connection_only {
     return Intl.message(
-      'Internet Only',
+      'Internet connection only。',
       name: 'v3_main_internet_connection_only',
       desc: '',
       args: [],
     );
   }
 
-  /// `Connectivity error`
+  /// `Connectivity error，please check device network setting。`
   String get v3_main_internet_connection_only_error {
     return Intl.message(
-      'Connectivity error',
+      'Connectivity error，please check device network setting。',
       name: 'v3_main_internet_connection_only_error',
       desc: '',
       args: [],
     );
   }
 
-  /// `Local connection only. Partial issue detected, possibly due to client network configuration.`
+  /// `LAN connection only，please check device network setting。`
   String get v3_main_local_connection_only_dialog_desc {
     return Intl.message(
-      'Local connection only. Partial issue detected, possibly due to client network configuration.',
+      'LAN connection only，please check device network setting。',
       name: 'v3_main_local_connection_only_dialog_desc',
       desc: '',
       args: [],
     );
   }
 
-  /// `Network connectivity error. Please check network settings.`
+  /// `Connectivity error，please check device network setting。`
   String get v3_main_internet_connection_only_error_dialog_desc {
     return Intl.message(
-      'Network connectivity error. Please check network settings.',
+      'Connectivity error，please check device network setting。',
       name: 'v3_main_internet_connection_only_error_dialog_desc',
       desc: '',
       args: [],

@@ -79,7 +79,6 @@
   "v3_group_dialog_message": "%s があなたのデバイスにブロードキャスト要求を送信しました。このアクションにより、現在のコンテンツが同期されて表示されます。この要求を受け入れますか?",
   "v3_group_dialog_accept": "許可",
   "v3_group_dialog_decline": "拒否",
-  "v3_settings_whats_new_content": "AirSync %s\n\nAirSync は、ViewSonic 独自のワイヤレス画面共有ソリューションです。AirSync Sender アプリと組み合わせて、ユーザーのデバイスから ViewSonic ViewBoard 電子黒板へのシームレスな画面共有を可能にします。\n\n主な特長 \n\n1. ワイヤレス画面共有。\n\n2. 複数のプレゼンターのための自動分割画面。\n\n3. モデレーターモードにより、プレゼンテーション中のコントロールが可能。\n\n4. AirPlay、Google Cast、Miracast をサポートする画面ミラーリング。\n\n5. リモートコントロールでデバイスにキャスト。\n\n6. 複数の大画面に画面をブロードキャストする。\n\n7. 注釈機能。\n\n8. Windows、macOS、iOS、Android、Web 版 AirSync 送信機との連動。\n\n9. タッチバックは Windows と macOS の Sender アプリでサポートされています。",
   "v3_eula_title": "エンドユーザー使用許諾契約",
   "v3_eula_agree": "同意",
   "v3_eula_disagree": "拒否",
