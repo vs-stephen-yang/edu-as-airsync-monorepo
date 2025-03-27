@@ -208,9 +208,10 @@
   "v3_setting_passcode_cancel": "Cancel",
   "v3_setting_passcode_clear": "Clear",
   "v3_setting_passcode_confirm": "Confirm",
-  "v3_main_local_connection_only_dialog_desc": "Local connection only. Partial issue detected, possibly due to client network configuration.",
-  "v3_main_connection_dialog_close": "Close",
   "v3_main_internet_connection_only": "Internet Only",
   "v3_main_internet_connection_only_error": "Connectivity error",
-  "v3_main_internet_connection_only_error_dialog_desc": "Network connectivity error. Please check network settings."
+  "v3_main_local_connection_only_dialog_desc": "Local connection only. Partial issue detected, possibly due to client network configuration.",
+  "v3_main_internet_connection_only_error_dialog_desc": "Network connectivity error. Please check network settings.",
+  "v3_main_connection_dialog_close": "Close",
+  "v3_authorize_prompt_accept_all": "Accept All"
 }

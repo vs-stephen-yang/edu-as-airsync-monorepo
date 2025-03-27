@@ -2141,26 +2141,6 @@ class S {
     );
   }
 
-  /// `Local connection only. Partial issue detected, possibly due to client network configuration.`
-  String get v3_main_local_connection_only_dialog_desc {
-    return Intl.message(
-      'Local connection only. Partial issue detected, possibly due to client network configuration.',
-      name: 'v3_main_local_connection_only_dialog_desc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Close`
-  String get v3_main_connection_dialog_close {
-    return Intl.message(
-      'Close',
-      name: 'v3_main_connection_dialog_close',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Internet Only`
   String get v3_main_internet_connection_only {
     return Intl.message(
@@ -2181,11 +2161,41 @@ class S {
     );
   }
 
+  /// `Local connection only. Partial issue detected, possibly due to client network configuration.`
+  String get v3_main_local_connection_only_dialog_desc {
+    return Intl.message(
+      'Local connection only. Partial issue detected, possibly due to client network configuration.',
+      name: 'v3_main_local_connection_only_dialog_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Network connectivity error. Please check network settings.`
   String get v3_main_internet_connection_only_error_dialog_desc {
     return Intl.message(
       'Network connectivity error. Please check network settings.',
       name: 'v3_main_internet_connection_only_error_dialog_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get v3_main_connection_dialog_close {
+    return Intl.message(
+      'Close',
+      name: 'v3_main_connection_dialog_close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accept All`
+  String get v3_authorize_prompt_accept_all {
+    return Intl.message(
+      'Accept All',
+      name: 'v3_authorize_prompt_accept_all',
       desc: '',
       args: [],
     );

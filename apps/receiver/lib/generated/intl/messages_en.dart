@@ -159,6 +159,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_title": MessageLookupByLibrary.simpleMessage("AirSync Update"),
         "v3_authorize_prompt_accept":
             MessageLookupByLibrary.simpleMessage("Accept"),
+        "v3_authorize_prompt_accept_all":
+            MessageLookupByLibrary.simpleMessage("Accept All"),
         "v3_authorize_prompt_decline":
             MessageLookupByLibrary.simpleMessage("Decline"),
         "v3_broadcast_indicator": MessageLookupByLibrary.simpleMessage("ON"),

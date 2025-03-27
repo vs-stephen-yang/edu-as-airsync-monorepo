@@ -83,8 +83,10 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
           authRequestIdles.isEmpty) {
         if (dialogContextList.isNotEmpty) {
           for (var context in dialogContextList) {
-            if (Navigator.canPop(context)) {
-              Navigator.pop(context);
+            if (context.mounted) {
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
             }
           }
         }
@@ -119,6 +121,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
       barrierDismissible: false,
       barrierColor: Colors.transparent,
       builder: (BuildContext dialogContext) {
+        var dialogWidth = 628.0;
         dialogContextList.add(dialogContext);
         return PopScope(
           // Using onWillPop to block back key return,
@@ -174,7 +177,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                     image: Svg('assets/images/ic_prompt_in_mirror.svg'),
                   ),
                   SizedBox(
-                    width: 548,
+                    width: dialogWidth,
                     height: requestDividerHeight,
                     child: Container(
                       margin: EdgeInsets.symmetric(
@@ -187,7 +190,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                 if (mirrorStateProvider.pinCode.isNotEmpty) {
                   // PIN 碼模式 UI
                   widgetList.add(Container(
-                    width: 548,
+                    width: dialogWidth,
                     height: totalHeight,
                     padding: EdgeInsets.symmetric(
                       vertical: containerPaddingHeight / 2,
@@ -252,7 +255,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                       });
                     } else {
                       widgetList.add(Container(
-                        width: 548,
+                        width: dialogWidth,
                         height: totalHeight,
                         padding: EdgeInsets.only(
                             left: context.tokens.spacing.vsdslSpacing3xl.left,
@@ -278,9 +281,8 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                     image: Svg(
                                         'assets/images/ic_prompt_in_mirror.svg'),
                                   ),
-                                  SizedBox(
-                                      width: context
-                                          .tokens.spacing.vsdslSpacingSm.left),
+                                  Gap(context
+                                      .tokens.spacing.vsdslSpacingSm.left),
                                   AutoSizeText(
                                     sprintf(S.current.main_mirror_from_client, [
                                       mirrorRequestIdles
@@ -338,9 +340,8 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
-                                      width: context
-                                          .tokens.spacing.vsdslSpacingSm.left),
+                                  Gap(context
+                                      .tokens.spacing.vsdslSpacingSm.left),
                                   V3Focus(
                                     child: SizedBox(
                                       width: 80,
@@ -383,6 +384,65 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                         child: AutoSizeText(S
                                             .of(context)
                                             .v3_authorize_prompt_accept),
+                                      ),
+                                    ),
+                                  ),
+                                  Gap(context
+                                      .tokens.spacing.vsdslSpacingSm.left),
+                                  V3Focus(
+                                    child: SizedBox(
+                                      width: 80,
+                                      height: 27,
+                                      child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          foregroundColor: context
+                                              .tokens.color.vsdslColorNeutral,
+                                          backgroundColor: context.tokens.color
+                                              .vsdslColorOnSurfaceInverse,
+                                          textStyle: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          padding: EdgeInsets.zero,
+                                        ),
+                                        onPressed: () async {
+                                          final String mirrorType =
+                                              mirrorRequestIdles
+                                                  .toList()[index]
+                                                  .mirrorType
+                                                  .name
+                                                  .replaceAll('googlecast',
+                                                      'google_cast');
+                                          trackEvent('click_accept_all_device',
+                                              EventCategory.session,
+                                              mode: mirrorType);
+
+                                          for (int i = mirrorRequestIdles
+                                                  .toList()
+                                                  .length;
+                                              i > 0;
+                                              i--) {
+                                            String? mirrorId =
+                                                mirrorRequestIdles
+                                                    .toList()[i - 1]
+                                                    .mirrorId;
+                                            if (ChannelProvider
+                                                .isModeratorMode) {
+                                              mirrorStateProvider
+                                                  .setModeratorIdleMirrorId(
+                                                      mirrorId);
+                                            } else {
+                                              mirrorStateProvider
+                                                  .setAcceptMirrorId(mirrorId);
+                                            }
+                                          }
+
+                                          mirrorStateProvider
+                                              .isMirrorConfirmation = false;
+                                        },
+                                        child: AutoSizeText(S
+                                            .of(context)
+                                            .v3_authorize_prompt_accept_all),
                                       ),
                                     ),
                                   ),
@@ -430,7 +490,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                   if (mirrorRequestIdles.isNotEmpty) {
                     widgetList.add(
                       SizedBox(
-                        width: 548,
+                        width: dialogWidth,
                         height: requestDividerHeight,
                         child: Container(
                           margin: EdgeInsets.symmetric(
@@ -454,7 +514,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                   }
                   totalHeight = containerPaddingHeight + requestTotalHeight;
                   widgetList.add(Container(
-                    width: 548,
+                    width: dialogWidth,
                     height: totalHeight,
                     padding: EdgeInsets.only(
                         left: context.tokens.spacing.vsdslSpacing3xl.left,
@@ -480,9 +540,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                 image: Svg(
                                     'assets/images/ic_prompt_in_webrtc.svg'),
                               ),
-                              SizedBox(
-                                  width: context
-                                      .tokens.spacing.vsdslSpacingSm.left),
+                              Gap(context.tokens.spacing.vsdslSpacingSm.left),
                               AutoSizeText(
                                 sprintf(S.current.main_mirror_from_client, [
                                   authRequestIdles[index].entries.first.key
@@ -539,9 +597,7 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                  width: context
-                                      .tokens.spacing.vsdslSpacingSm.left),
+                              Gap(context.tokens.spacing.vsdslSpacingSm.left),
                               V3Focus(
                                 child: SizedBox(
                                   width: 80,
@@ -576,6 +632,49 @@ class _V3AuthorizePromptState extends State<V3AuthorizePrompt> {
                                     child: AutoSizeText(S
                                         .of(context)
                                         .v3_authorize_prompt_accept),
+                                  ),
+                                ),
+                              ),
+                              Gap(context.tokens.spacing.vsdslSpacingSm.left),
+                              V3Focus(
+                                child: SizedBox(
+                                  width: 80,
+                                  height: 27,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: context
+                                          .tokens.color.vsdslColorNeutral,
+                                      backgroundColor: context.tokens.color
+                                          .vsdslColorOnSurfaceInverse,
+                                      textStyle: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                    ),
+                                    onPressed: () {
+                                      if (authRequestIdles.isNotEmpty) {
+                                        trackEvent('click_accept_all_device',
+                                            EventCategory.session,
+                                            mode: 'webrtc');
+
+                                        for (int i = authRequestIdles.length;
+                                            i > 0;
+                                            i--) {
+                                          authRequestIdles[i - 1]
+                                              .entries
+                                              .first
+                                              .value
+                                              .sendAllowPresent();
+                                          channelProvider.authorizeRequestList
+                                              .removeAt(i - 1);
+                                        }
+                                      }
+                                      channelProvider.isAuthorizeMode = false;
+                                    },
+                                    child: AutoSizeText(S
+                                        .of(context)
+                                        .v3_authorize_prompt_accept_all),
                                   ),
                                 ),
                               ),
