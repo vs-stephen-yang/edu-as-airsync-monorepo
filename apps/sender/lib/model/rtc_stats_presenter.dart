@@ -114,4 +114,13 @@ class RtcStatsPresenter implements RtcStatsSubscriber {
     _remoteSDP = sdp;
     onRemoteSDPPresent?.call(_remoteSDP!);
   }
+
+  Map<String, List<RtcIceCandidate>> getCandidates() {
+    final result = <String, List<RtcIceCandidate>>{};
+
+    result['local'] = _localCandidates.values.toList();
+    result['remote'] = _remoteCandidates.values.toList();
+
+    return result;
+  }
 }
