@@ -31,9 +31,9 @@ class MockRtcStatsReporter extends _i1.Mock implements _i2.RtcStatsReporter {
   }
 
   @override
-  void videoInboundStats(_i3.RtcVideoInboundStats? stats) => super.noSuchMethod(
+  void updateVideoStats(_i3.RtcVideoInboundStats? stats) => super.noSuchMethod(
         Invocation.method(
-          #videoInboundStats,
+          #updateVideoStats,
           [stats],
         ),
         returnValueForMissingStub: null,
@@ -64,6 +64,44 @@ class MockRtcStatsReporter extends _i1.Mock implements _i2.RtcStatsReporter {
         ),
         returnValueForMissingStub: null,
       );
+
+  @override
+  void updateCandidatePairStats(_i4.StatsReport? report) => super.noSuchMethod(
+        Invocation.method(
+          #updateCandidatePairStats,
+          [report],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void updateCodecStats(_i4.StatsReport? report) => super.noSuchMethod(
+        Invocation.method(
+          #updateCodecStats,
+          [report],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void updateLocalCandidate(List<_i4.StatsReport>? reports) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #updateLocalCandidate,
+          [reports],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void updateRemoteCandidate(List<_i4.StatsReport>? reports) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #updateRemoteCandidate,
+          [reports],
+        ),
+        returnValueForMissingStub: null,
+      );
 }
 
 /// A class which mocks [RtcStatsPresenter].
@@ -76,7 +114,7 @@ class MockRtcStatsPresenter extends _i1.Mock implements _i5.RtcStatsPresenter {
 
   @override
   set onVideoStatsPresent(
-          dynamic Function(List<_i3.RtcVideoInboundStatsForPresenter>)?
+          dynamic Function(List<_i3.RtcVideoInboundStats>)?
               _onVideoStatsPresent) =>
       super.noSuchMethod(
         Invocation.setter(
@@ -157,46 +195,47 @@ class MockRtcStatsPresenter extends _i1.Mock implements _i5.RtcStatsPresenter {
       );
 
   @override
-  void addVideoStats(_i3.RtcVideoInboundStatsForPresenter? stats) =>
-      super.noSuchMethod(
+  void updateVideoStats(_i3.RtcVideoInboundStats? stats) => super.noSuchMethod(
         Invocation.method(
-          #addVideoStats,
+          #updateVideoStats,
           [stats],
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  void addLocalCandidate(List<_i4.StatsReport>? reports) => super.noSuchMethod(
+  void updateLocalCandidate(List<_i4.StatsReport>? reports) =>
+      super.noSuchMethod(
         Invocation.method(
-          #addLocalCandidate,
+          #updateLocalCandidate,
           [reports],
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  void addRemoteCandidate(List<_i4.StatsReport>? reports) => super.noSuchMethod(
+  void updateRemoteCandidate(List<_i4.StatsReport>? reports) =>
+      super.noSuchMethod(
         Invocation.method(
-          #addRemoteCandidate,
+          #updateRemoteCandidate,
           [reports],
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  void addCandidatePairStats(_i4.StatsReport? report) => super.noSuchMethod(
+  void updateCandidatePairStats(_i4.StatsReport? report) => super.noSuchMethod(
         Invocation.method(
-          #addCandidatePairStats,
+          #updateCandidatePairStats,
           [report],
         ),
         returnValueForMissingStub: null,
       );
 
   @override
-  void addCodecStats(_i4.StatsReport? report) => super.noSuchMethod(
+  void updateCodecStats(_i4.StatsReport? report) => super.noSuchMethod(
         Invocation.method(
-          #addCodecStats,
+          #updateCodecStats,
           [report],
         ),
         returnValueForMissingStub: null,
@@ -216,6 +255,32 @@ class MockRtcStatsPresenter extends _i1.Mock implements _i5.RtcStatsPresenter {
         Invocation.method(
           #setRemoteSDP,
           [sdp],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void pairCandidates(
+    _i4.StatsReport? localCandidateReport,
+    _i4.StatsReport? remoteCandidateReport,
+  ) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #pairCandidates,
+          [
+            localCandidateReport,
+            remoteCandidateReport,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void selectedCandidatePair(_i4.StatsReport? selectedCandidatePair) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #selectedCandidatePair,
+          [selectedCandidatePair],
         ),
         returnValueForMissingStub: null,
       );

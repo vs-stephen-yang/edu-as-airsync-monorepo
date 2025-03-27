@@ -1,13 +1,14 @@
 import 'package:display_flutter/model/rtc_stats.dart';
+import 'package:display_flutter/model/rtc_stats_parser.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-class RtcStatsPresenter {
+class RtcStatsPresenter implements RtcStatsSubscriber {
   final int _maxVideoStats;
   final int _maxCandidates;
   final int _maxCandidatePairs;
   final int _maxCodecStats;
 
-  final List<RtcVideoInboundStatsForPresenter> _videoStats = [];
+  final List<RtcVideoInboundStats> _videoStats = [];
   final Map<String, RtcIceCandidate> _localCandidates = {};
   final Map<String, RtcIceCandidate> _remoteCandidates = {};
   final Map<String, RtcIceCandidatePairStats> _candidatePairs = {};
@@ -15,7 +16,7 @@ class RtcStatsPresenter {
   late RTCSessionDescription? _localSDP;
   late RTCSessionDescription? _remoteSDP;
 
-  Function(List<RtcVideoInboundStatsForPresenter> stats)? onVideoStatsPresent;
+  Function(List<RtcVideoInboundStats> stats)? onVideoStatsPresent;
   Function(Map<String, RtcIceCandidate> candidates)? onLocalCandidatesPresent;
   Function(Map<String, RtcIceCandidate> candidates)? onRemoteCandidatesPresent;
   Function(Map<String, RtcIceCandidatePairStats> pairs)? onCandidatePairPresent;
@@ -33,7 +34,8 @@ class RtcStatsPresenter {
         _maxCandidates = maxCandidates,
         _maxVideoStats = maxVideoStats;
 
-  void addVideoStats(RtcVideoInboundStatsForPresenter stats) {
+  @override
+  void updateVideoStats(RtcVideoInboundStats stats) {
     if (_videoStats.length >= _maxVideoStats) {
       _videoStats.removeAt(0);
     }
@@ -41,12 +43,14 @@ class RtcStatsPresenter {
     onVideoStatsPresent?.call(_videoStats);
   }
 
-  void addLocalCandidate(List<StatsReport> reports) {
+  @override
+  void updateLocalCandidate(List<StatsReport> reports) {
     _addCandidatesToMap(reports, _localCandidates);
     onLocalCandidatesPresent?.call(_localCandidates);
   }
 
-  void addRemoteCandidate(List<StatsReport> reports) {
+  @override
+  void updateRemoteCandidate(List<StatsReport> reports) {
     _addCandidatesToMap(reports, _remoteCandidates);
     onRemoteCandidatesPresent?.call(_remoteCandidates);
   }
@@ -74,7 +78,8 @@ class RtcStatsPresenter {
     }
   }
 
-  void addCandidatePairStats(StatsReport report) {
+  @override
+  void updateCandidatePairStats(StatsReport report) {
     if (_candidatePairs.containsKey(report.id)) {
       return;
     }
@@ -89,7 +94,8 @@ class RtcStatsPresenter {
     onCandidatePairPresent?.call(_candidatePairs);
   }
 
-  void addCodecStats(StatsReport report) {
+  @override
+  void updateCodecStats(StatsReport report) {
     if (_codecStats.containsKey(report.id)) {
       return;
     }
@@ -111,5 +117,13 @@ class RtcStatsPresenter {
   void setRemoteSDP(RTCSessionDescription sdp) {
     _remoteSDP = sdp;
     onRemoteSDPPresent?.call(_remoteSDP!);
+  }
+
+  @override
+  void pairCandidates(StatsReport localCandidateReport, StatsReport remoteCandidateReport) {
+  }
+
+  @override
+  void selectedCandidatePair(StatsReport selectedCandidatePair) {
   }
 }
