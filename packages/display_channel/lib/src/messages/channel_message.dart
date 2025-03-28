@@ -393,6 +393,7 @@ class StartPresentMessage extends ChannelMessage {
 
 class StopPresentMessage extends ChannelMessage {
   String? sessionId;
+  Reason? reason;
 
   StopPresentMessage() : super(ChannelMessageType.stopPresent);
 
@@ -401,12 +402,16 @@ class StopPresentMessage extends ChannelMessage {
     final data = super._fromJson(json);
 
     sessionId = data['sessionId'] as String?;
+    if (data['reason'] != null) {
+      reason = Reason.fromJson(data['reason']);
+    }
   }
 
   @override
   Map<String, dynamic> toJson() {
     return super._toJson({
       'sessionId': sessionId,
+      'reason': reason?.toJson(),
     });
   }
 }
