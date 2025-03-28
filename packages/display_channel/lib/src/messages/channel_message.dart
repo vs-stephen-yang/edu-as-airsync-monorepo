@@ -46,6 +46,18 @@ enum PresentRejectedReasonCode {
   final int code;
 }
 
+enum StopPresentReasonCode {
+  timeout(400),
+  userTrigger(401),
+  makeCallFailed(402),
+  streamInterrupted(403),
+  getStopPresentFromPeer(404),
+  touchStopWhenTouchBack(405);
+
+  const StopPresentReasonCode(this.code);
+  final int code;
+}
+
 final channelMessageActionNames = <int, String>{
   ChannelMessageType.channelConnected.index: 'channel-connected',
   ChannelMessageType.clientConnected.index: 'client-connected',
