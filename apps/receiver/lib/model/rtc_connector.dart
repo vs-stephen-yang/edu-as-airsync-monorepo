@@ -360,7 +360,10 @@ class RTCConnector {
         await disconnectPeerConnection(sendAnalytics: true);
         await disconnectChannel(reason: 'Timeout: present rejected');
       } else {
-        sendStopPresent();
+        sendStopPresent(reason: Reason(
+          StopPresentReasonCode.timeout.code,
+          text: 'timeout',
+        ));
       }
     });
 
@@ -535,9 +538,18 @@ class RTCConnector {
     _channel.send(message);
   }
 
-  void sendStopPresent() {
+  void sendStopPresent({Reason? reason}) {
     var message = StopPresentMessage();
     message.sessionId = sessionId;
+
+    if (reason != null) {
+      message.reason = reason;
+    } else {
+      message.reason = Reason(
+        StopPresentReasonCode.userTrigger.code,
+        text: 'user trigger stop present',
+      );
+    }
 
     _channel.send(message);
 

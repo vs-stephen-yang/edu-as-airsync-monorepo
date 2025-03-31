@@ -407,7 +407,7 @@ packages:
     description:
       path: "."
       ref: "release-3.7.2"
-      resolved-ref: "538d4ee0af0a15c26ec3abab9ca043af1eb3976b"
+      resolved-ref: "8c6081193f5afa9da5d6e9f9a1098b56d8188f2c"
       url: "https://viewsonic-ssi.visualstudio.com/Display%20App/_git/display-channel"
     source: git
     version: "0.0.1"
