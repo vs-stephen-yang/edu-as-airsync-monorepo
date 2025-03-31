@@ -593,10 +593,8 @@ class WebRTCConnector {
     return false;
   }
 
-  void sendStop(String sessionId) {
+  void sendStop(StopPresentMessage message) {
     _isPaused = false; // Reset pause state
-    final message = StopPresentMessage();
-    message.sessionId = sessionId;
 
     _sendControlMessage(
       message,

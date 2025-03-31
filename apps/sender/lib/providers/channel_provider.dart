@@ -768,7 +768,7 @@ class ChannelProvider extends ChangeNotifier {
     msg.sessionId = _sessionId;
     _channel?.send(msg);
 
-    WebRTCHelper().sendStop(_sessionId);
+    WebRTCHelper().sendStop(msg);
   }
 
   //endregion

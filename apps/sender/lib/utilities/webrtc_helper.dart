@@ -95,8 +95,8 @@ class WebRTCHelper {
     webRTCConnector?.resume(sessionId);
   }
 
-  void sendStop(String sessionId) {
-    webRTCConnector?.sendStop(sessionId);
+  void sendStop(StopPresentMessage msg) {
+    webRTCConnector?.sendStop(msg);
   }
 
   void stop() {
