@@ -382,7 +382,10 @@ class ChannelProvider extends ChangeNotifier {
         case ChannelMessageType.stopPresent:
           // split-screen / moderator mode
           if (_moderatorStatus) {
-            unawaited(presentStop());
+            unawaited(presentStop(reason: Reason(
+              StopPresentReasonCode.getStopPresentFromPeer.code,
+              text: 'Get stop present from peer',
+            )));
             unawaited(_presentStateProvider?.presentModeratorWaitPage());
           }
           break;
@@ -542,7 +545,10 @@ class ChannelProvider extends ChangeNotifier {
       },
       onRTCPeerConnectionState: _onRtcConnectionState,
       onStreamInterrupted: () async {
-        unawaited(presentStop());
+        unawaited(presentStop(reason: Reason(
+          StopPresentReasonCode.streamInterrupted.code,
+          text: 'Stream interrupted',
+        )));
         if (_moderatorStatus) {
           unawaited(_presentStateProvider?.presentModeratorWaitPage());
         } else {
@@ -551,7 +557,10 @@ class ChannelProvider extends ChangeNotifier {
       },
       onStopPresent: () {
         // Received StopPresent from the peer via data channel
-        presentStop();
+        presentStop(reason: Reason(
+          StopPresentReasonCode.getStopPresentFromPeer.code,
+          text: 'Get stop present from peer',
+        ));
       },
       onTouchEvenWhenPaused: (isPaused, isStop) {
         if (isPaused) {
@@ -559,7 +568,10 @@ class ChannelProvider extends ChangeNotifier {
           presentResume();
         }
         if (isStop) {
-          presentStop();
+          presentStop(reason: Reason(
+            StopPresentReasonCode.touchStopWhenTouchBack.code,
+            text: 'Touch stop when touch back',
+          ));
           if (_moderatorStatus) {
             _presentStateProvider?.presentModeratorWaitPage();
           } else {
@@ -586,7 +598,10 @@ class ChannelProvider extends ChangeNotifier {
             presentingState.value = true;
             _startPresentTimer();
           } else {
-            presentStop();
+            presentStop(reason: Reason(
+              StopPresentReasonCode.makeCallFailed.code,
+              text: 'Make call failed',
+            ));
             if (_moderatorStatus) {
               _presentStateProvider?.presentModeratorWaitPage();
             } else {
@@ -614,12 +629,12 @@ class ChannelProvider extends ChangeNotifier {
     AnnotationModel.closeAnnotation();
   }
 
-  Future<void> presentStop() async {
+  Future<void> presentStop({Reason? reason}) async {
     // handle stream
     WebRTCHelper().stop();
 
     // send command
-    _stopPresent();
+    _stopPresent(reason: reason);
     _resetTimer();
   }
 
@@ -763,9 +778,19 @@ class ChannelProvider extends ChangeNotifier {
     _channel?.send(msg);
   }
 
-  void _stopPresent() {
+  void _stopPresent({Reason? reason}) {
     final msg = StopPresentMessage();
     msg.sessionId = _sessionId;
+
+    if (reason != null) {
+      msg.reason = reason;
+    } else {
+      msg.reason = Reason(
+        StopPresentReasonCode.userTrigger.code,
+        text: 'user trigger stop present',
+      );
+    }
+
     _channel?.send(msg);
 
     WebRTCHelper().sendStop(msg);
