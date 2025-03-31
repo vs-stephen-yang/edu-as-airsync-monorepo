@@ -84,11 +84,16 @@ class HybridConnectionList {
 
   void removeConnection(connection) {
     int index = _hybridConnectionList.indexOf(connection);
+    dynamic enlargedScreenConnection;
     if (index != -1) {
       // If the removing connector's index matches the enlarged index, reset it
       if (index == enlargedScreenIndex.value) {
         Home.enlargedScreenPositionIndex.value = null;
         enlargedScreenIndex.value = null;
+      } else {
+        enlargedScreenConnection = enlargedScreenIndex.value == null
+            ? null
+            : _hybridConnectionList[enlargedScreenIndex.value!];
       }
 
       _hybridConnectionList[_hybridConnectionList.indexOf(connection)] = null;
@@ -97,6 +102,11 @@ class HybridConnectionList {
           _hybridConnectionList[index] = _hybridConnectionList[index + 1];
           _hybridConnectionList[index + 1] = null;
         }
+      }
+      // 更新enlargedScreenIndex
+      if (enlargedScreenConnection != null) {
+        enlargedScreenIndex.value =
+            _hybridConnectionList.indexOf(enlargedScreenConnection);
       }
     }
     _remainingTimeOnOff();
