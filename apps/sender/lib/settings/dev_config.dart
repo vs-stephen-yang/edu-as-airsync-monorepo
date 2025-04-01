@@ -29,4 +29,7 @@ class DevConfig implements ConfigSettings {
 
   @override
   String appUpdateMacAppcastUrl = 'https://appconfig.dev.airsync.net/airsync-sender/mac_appcast.xml';
+
+  @override
+  bool appA11yDebug = true;
 }

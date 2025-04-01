@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:accessibility_tools/accessibility_tools.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:desktop_multi_window/desktop_multi_window.dart';
@@ -34,6 +35,7 @@ import 'package:display_cast_flutter/utilities/version_util.dart';
 import 'package:display_cast_flutter/utilities/webrtc_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_virtual_display/flutter_virtual_display.dart';
@@ -153,7 +155,9 @@ void commonEntry(List<String> args, ConfigSettings settings) async {
         child: const MyApp(),
       ),
     ));
-
+    if (kIsWeb) {
+      SemanticsBinding.instance.ensureSemantics();
+    }
     if (!kIsWeb &&
         (Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
       doWhenWindowReady(() {
@@ -221,11 +225,19 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             title: 'AirSync Sender',
             debugShowCheckedModeBanner: false,
+            builder: (_, c) {
+              if (AppConfig.of(context)?.settings.appA11yDebug ?? false) {
+                return AccessibilityTools(child: c);
+              }
+
+              return c!;
+            },
             localizationsDelegates: const [
               S.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
+              DefaultMaterialLocalizations.delegate,
             ],
             supportedLocales: S.delegate.supportedLocales,
             locale: languageModel.locale,

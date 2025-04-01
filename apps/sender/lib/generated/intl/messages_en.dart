@@ -239,7 +239,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "v3_eula_title": MessageLookupByLibrary.simpleMessage(
       "End-User License Agreement",
     ),
-    "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
+        "v3_lbl_device_list_button_device_list":
+            MessageLookupByLibrary.simpleMessage("Device List"),
+        "v3_lbl_main_display_code": MessageLookupByLibrary.simpleMessage(
+          "Type Display Code",
+        ),
+        "v3_lbl_main_moderator_action": MessageLookupByLibrary.simpleMessage(
+          "Summit Share",
+        ),
+        "v3_lbl_main_moderator_input_hint":
+            MessageLookupByLibrary.simpleMessage(
+          "Type Your Name",
+        ),
+        "v3_lbl_main_password": MessageLookupByLibrary.simpleMessage(
+          "Type Password",
+        ),
+        "v3_lbl_main_present_action": MessageLookupByLibrary.simpleMessage(
+          "Summit Next",
+        ),
+        "v3_lbl_main_receive_app_action": MessageLookupByLibrary.simpleMessage(
+          "Summit Connect",
+        ),
+        "v3_main_accessibility": MessageLookupByLibrary.simpleMessage(
       "Accessibility",
     ),
     "v3_main_authorize_wait": MessageLookupByLibrary.simpleMessage(

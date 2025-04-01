@@ -115,6 +115,8 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
 
   V3CustomTextFormField _displayCodeTextFormField(BuildContext context) {
     return V3CustomTextFormField(
+      label: S.of(context).v3_lbl_main_display_code,
+      identifier: 'v3_qa_main_display_code',
       key: codeKey,
       controller: _codeController,
       focusNode: _codeFocusNode,
@@ -253,6 +255,8 @@ class V3PresentIdleTextFieldState extends State<V3PresentIdleTextField> {
 
   V3CustomTextFormField _otpTextFormField(BuildContext context) {
     return V3CustomTextFormField(
+      label: S.of(context).v3_lbl_main_password,
+      identifier: 'v3_qa_main_password',
       key: otpKey,
       controller: _otpController,
       focusNode: _otpFocusNode,

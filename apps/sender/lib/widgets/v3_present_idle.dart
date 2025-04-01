@@ -26,6 +26,7 @@ class V3PresentIdle extends StatefulWidget {
   const V3PresentIdle({super.key, this.supported = true});
 
   final bool supported;
+
   @override
   State<StatefulWidget> createState() => _V3PresentIdleState();
 }
@@ -198,7 +199,9 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
               const Padding(padding: EdgeInsets.only(top: 40)),
             ],
             if (!kIsWeb) ...[
-              SvgPicture.asset('assets/images/v3_ic_airsync.svg'),
+              ExcludeSemantics(
+                child: SvgPicture.asset('assets/images/v3_ic_airsync.svg'),
+              ),
               const Padding(padding: EdgeInsets.only(top: 35)),
             ],
             _inputTextFields(),
@@ -236,6 +239,8 @@ class _V3PresentIdleState extends State<V3PresentIdle> {
       key: presentBtnKey,
       fixedSize: const Size(300, 48),
       buttonText: S.of(context).v3_main_present_action,
+      buttonLabel: S.of(context).v3_lbl_main_present_action,
+      buttonIdentifier: 'v3_qa_main_present_action',
       onPressed: () async {
         trackEvent(
           'enter_display_code',
