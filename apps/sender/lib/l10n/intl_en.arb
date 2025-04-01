@@ -186,5 +186,12 @@
   "v3_main_download_mac_pkg_label": "For Best User Experience!",
   "v3_main_download_mac_store": "App Store",
   "v3_main_download_mac_store_label": "Or Install via",
-  "v3_setting_app_version_independent": "AirSync ©{year}. version {version} (Ind.)"
+  "v3_setting_app_version_independent": "AirSync ©{year}. version {version} (Ind.)",
+  "v3_lbl_main_present_action": "Summit Next",
+  "v3_lbl_device_list_button_device_list": "Device List",
+  "v3_lbl_main_receive_app_action": "Summit Connect",
+  "v3_lbl_main_moderator_action": "Summit Share",
+  "v3_lbl_main_moderator_input_hint": "Type Your Name",
+  "v3_lbl_main_display_code": "Type Display Code",
+  "v3_lbl_main_password": "Type Password"
 }

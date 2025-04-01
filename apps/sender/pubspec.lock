@@ -14,6 +14,14 @@ packages:
     description: dart
     source: sdk
     version: "0.3.2"
+  accessibility_tools:
+    dependency: "direct main"
+    description:
+      name: accessibility_tools
+      sha256: "1ee3612b9439ca315f92dcc31c6a4828e95b96c1aa64ac3a7776c149722deca8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
   analyzer:
     dependency: transitive
     description:

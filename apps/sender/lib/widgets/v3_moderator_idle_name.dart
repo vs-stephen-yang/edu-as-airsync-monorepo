@@ -178,6 +178,8 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
                 SizedBox(
                   height: 56,
                   child: V3CustomTextFormField(
+                    label: S.of(context).v3_lbl_main_moderator_input_hint,
+                    identifier: 'v3_qa_main_moderator_input_hint',
                     key: nameKey,
                     controller: _nameController,
                     focusNode: _nameFocusNode,
@@ -229,6 +231,14 @@ class _V3ModeratorInputNameState extends State<V3ModeratorInputName> {
                       ? context.tokens.spacing.vsdswSpacing5xl.bottom
                       : context.tokens.spacing.vsdswSpacingSm.bottom)),
           V3PresentIdleButton(
+            buttonIdentifier:
+                channelProvider.currentRole == JoinIntentType.remoteScreen
+                    ? 'v3_qa_main_receive_app_action'
+                    : 'v3_qa_main_moderator_action',
+            buttonLabel:
+                channelProvider.currentRole == JoinIntentType.remoteScreen
+                    ? S.of(context).v3_lbl_main_receive_app_action
+                    : S.of(context).v3_lbl_main_moderator_action,
             key: buttonKey,
             fixedSize: const Size(kIsWeb ? 240 : 300, 48),
             buttonText:

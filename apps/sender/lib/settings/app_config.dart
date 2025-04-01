@@ -64,4 +64,6 @@ abstract class ConfigSettings {
   late String appUpdateVersionEndpoint;
   late String appStoreUrl;
   late String appUpdateMacAppcastUrl;
+
+  late bool appA11yDebug;
 }

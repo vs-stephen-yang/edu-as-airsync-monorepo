@@ -9,6 +9,8 @@ class V3CustomTextFormField extends StatefulWidget {
     required this.controller,
     required this.focusNode,
     required this.hintText,
+    required this.label,
+    required this.identifier,
     this.maxTextLength,
     required this.inputFormatter,
     required this.onFieldChanged,
@@ -20,6 +22,8 @@ class V3CustomTextFormField extends StatefulWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
   final String? hintText;
+  final String label;
+  final String identifier;
   final int? maxTextLength;
   final List<TextInputFormatter>? inputFormatter;
   final ValueChanged<String> onFieldChanged;
@@ -36,49 +40,53 @@ class V3CustomTextFormFieldState extends State<V3CustomTextFormField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: widget.controller,
-      focusNode: widget.focusNode,
-      enabled: widget.enable,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: widget.enable
-            ? context.tokens.color.vsdswColorSurface100
-            : context.tokens.color.vsdswColorDisabled,
-        hintText: widget.hintText,
-        hintStyle: TextStyle(
-            fontSize: 12, color: context.tokens.color.vsdswColorOnDisabled),
-        counterText: '',
-        border: OutlineInputBorder(
-          borderRadius: context.tokens.radii.vsdswRadiusFull,
-          borderSide: BorderSide(
-              color: context.tokens.color.vsdswColorOutline, width: 2),
+    return Semantics(
+      label: widget.label,
+      identifier: widget.identifier,
+      child: TextFormField(
+        controller: widget.controller,
+        focusNode: widget.focusNode,
+        enabled: widget.enable,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: widget.enable
+              ? context.tokens.color.vsdswColorSurface100
+              : context.tokens.color.vsdswColorDisabled,
+          hintText: widget.hintText,
+          hintStyle: TextStyle(
+              fontSize: 12, color: context.tokens.color.vsdswColorOnDisabled),
+          counterText: '',
+          border: OutlineInputBorder(
+            borderRadius: context.tokens.radii.vsdswRadiusFull,
+            borderSide: BorderSide(
+                color: context.tokens.color.vsdswColorOutline, width: 2),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: context.tokens.radii.vsdswRadiusFull,
+            borderSide: BorderSide(
+                color: context.tokens.color.vsdswColorOutline, width: 2),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: context.tokens.radii.vsdswRadiusFull,
+            borderSide: BorderSide(
+                color: context.tokens.color.vsdswColorDisabled, width: 2),
+          ),
+          focusedBorder: _focusedBorder(),
+          error: _errorWidget(context),
+          errorBorder: _errorBorder(),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: context.tokens.radii.vsdswRadiusFull,
-          borderSide: BorderSide(
-              color: context.tokens.color.vsdswColorOutline, width: 2),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: context.tokens.radii.vsdswRadiusFull,
-          borderSide: BorderSide(
-              color: context.tokens.color.vsdswColorDisabled, width: 2),
-        ),
-        focusedBorder: _focusedBorder(),
-        error: _errorWidget(context),
-        errorBorder: _errorBorder(),
+        maxLength: widget.maxTextLength,
+        inputFormatters: widget.inputFormatter,
+        onChanged: (_) {
+          widget.onFieldChanged(_);
+        },
+        onTap: () {
+          if (widget.onTap != null) widget.onTap!();
+        },
+        onFieldSubmitted: (value) {
+          widget.onFieldSubmitted(value);
+        },
       ),
-      maxLength: widget.maxTextLength,
-      inputFormatters: widget.inputFormatter,
-      onChanged: (_) {
-        widget.onFieldChanged(_);
-      },
-      onTap: () {
-        if (widget.onTap != null) widget.onTap!();
-      },
-      onFieldSubmitted: (value) {
-        widget.onFieldSubmitted(value);
-      },
     );
   }
 

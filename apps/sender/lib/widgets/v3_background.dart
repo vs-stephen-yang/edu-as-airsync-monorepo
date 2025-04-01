@@ -27,19 +27,23 @@ class V3Background extends StatelessWidget {
                     debugCounter = 0;
                   }
                 },
-                child: Image.asset(
-                  'assets/images/ic_logo_viewsonic_mobile.png',
-                  width: 170,
-                  height: 50,
+                child: ExcludeSemantics(
+                  child: Image.asset(
+                    'assets/images/ic_logo_viewsonic_mobile.png',
+                    width: 170,
+                    height: 50,
+                  ),
                 ),
               ),
             )
           : Stack(
               alignment: Alignment.bottomCenter,
               children: [
-                Image.asset(
-                  'assets/images/ic_wallpaper.png',
-                  width: 1280,
+                ExcludeSemantics(
+                  child: Image.asset(
+                    'assets/images/ic_wallpaper.png',
+                    width: 1280,
+                  ),
                 ),
                 Positioned(
                   right: 24,
@@ -52,10 +56,12 @@ class V3Background extends StatelessWidget {
                         debugCounter = 0;
                       }
                     },
-                    child: Image.asset(
-                      'assets/images/ic_logo_viewsonic_desktop.png',
-                      width: 193,
-                      height: 60,
+                    child: ExcludeSemantics(
+                      child: Image.asset(
+                        'assets/images/ic_logo_viewsonic_desktop.png',
+                        width: 193,
+                        height: 60,
+                      ),
                     ),
                   ),
                 ),

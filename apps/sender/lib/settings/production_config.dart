@@ -34,4 +34,7 @@ class ProductionConfig implements ConfigSettings {
 
   @override
   String appUpdateMacAppcastUrl = 'https://appconfig.airsync.net/airsync-sender/mac_appcast.xml';
+
+  @override
+  bool appA11yDebug = false;
 }
