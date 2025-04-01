@@ -101,6 +101,7 @@ class V3SettingsCastToBoardsState extends ConsumerState<V3SettingsCastToBoards>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
         state == AppLifecycleState.detached) {
       GroupListModel discoveryModel = ref.read(discoveryModelProvider);
       discoveryModel.stop();
