@@ -31,7 +31,6 @@ import 'package:flutter_virtual_display/flutter_virtual_display.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:window_size/window_size.dart';
 
-
 class WebRTCConnector {
   WebRTCConnector({
     required this.preset,
@@ -83,8 +82,11 @@ class WebRTCConnector {
   static const int _maxTrackHeight = 1080;
   int _trackWidth = _maxTrackWidth;
   int _trackHeight = _maxTrackHeight;
+
+  static const double _defaultMinFrameRate = 30.0;
   static const double _defaultFrameRate = 30.0;
-  double _trackFrameRate = _defaultFrameRate;
+  double _idealTrackFrameRate = _defaultFrameRate;
+  double _minTrackFrameRate = _defaultMinFrameRate;
 
   // disable webrtc audio processing
   // Note: the audio constraints in webrtc-flutter only works on web platform
@@ -132,7 +134,8 @@ class WebRTCConnector {
       required List<RtcIceServer>? iceServerList}) async {
     _deviceId = deviceId;
     _isScreenType = isScreenType;
-    if (!kIsWeb && WebRTC.platformIsDesktop && _isScreenType) { // macOS, Windows
+    if (!kIsWeb && WebRTC.platformIsDesktop && _isScreenType) {
+      // macOS, Windows
       _screenId = int.parse(_deviceId['exact']);
     }
     _iceServerList = iceServerList!;
@@ -201,8 +204,8 @@ class WebRTCConnector {
       for (var transceiver in transceivers) {
         if (transceiver.sender.track!.kind == 'video') {
           if (kIsWeb == false && Platform.isAndroid) {
-            await transceiver.setCodecPreferencesBySenderId(
-                modifiedCapabilities);
+            await transceiver
+                .setCodecPreferencesBySenderId(modifiedCapabilities);
           } else {
             await transceiver.setCodecPreferences(modifiedCapabilities);
           }
@@ -317,6 +320,33 @@ class WebRTCConnector {
     _touchbackDataChannel!.onMessage = _onTouchbackMessage;
   }
 
+  // When sharing a browser tab, if the shared page has no animation,
+  // frame rate may drop to 1fps. On macOS with hardware encoder (VideoToolbox),
+  // receiver may see black screen for up to 1 minute; software encoder (OpenH264)
+  // improves it to ~5 seconds.
+  // Likely caused by buffering in capture pipeline.
+  // Increasing capture FPS helps reduce delay.
+  //
+  // Setting minFrameRate in getDisplayMedia() fails, but applyConstraints() works.
+  // Possibly because OS capture limits FPS, and applyConstraints() triggers
+  // frame duplication in WebRTC.
+  //
+  // Related: https://issues.chromium.org/issues/40922733
+  void _applyMinFrameRate(MediaStreamTrack track) {
+    track.applyConstraints(
+      <String, dynamic>{
+        'frameRate': {
+          'ideal': _idealTrackFrameRate,
+          'min': _minTrackFrameRate,
+        },
+        'width': _trackWidth,
+        'height': _trackHeight,
+      },
+    );
+    log.info(
+        'Applied idealFPS: $_idealTrackFrameRate minFPS: $_minTrackFrameRate');
+  }
+
   void _applyVideoContentHint(MediaStreamTrack track) {
     // see https://www.w3.org/TR/mst-content-hint/#dom-mediastreamtrack-contenthint
     //
@@ -335,7 +365,8 @@ class WebRTCConnector {
     await _createTouchbackDataChannel();
     await _createControlDataChannel();
 
-    _trackFrameRate = _defaultFrameRate;
+    _idealTrackFrameRate = _defaultFrameRate;
+    _minTrackFrameRate = _defaultMinFrameRate;
     _trackWidth = _maxTrackWidth;
     _trackHeight = _maxTrackHeight;
 
@@ -362,6 +393,11 @@ class WebRTCConnector {
       log.info('Adding track: ${track.kind}');
       if (track.kind == 'video') {
         _applyVideoContentHint(track);
+        // On Web, we need to apply minFrameRate to avoid static content
+        // delay or black screen issue.
+        if (kIsWeb) {
+          _applyMinFrameRate(track);
+        }
       }
       await _pc!.addTrack(track, _localStream!);
     }
@@ -410,7 +446,7 @@ class WebRTCConnector {
           ? {
               // note: TypeError - Failed to execute 'getDisplayMedia' on 'MediaDevices':
               // Malformed constraint: Cannot use both optional/mandatory and specific constraints.
-              'frameRate': _trackFrameRate,
+              'frameRate': _idealTrackFrameRate,
               'width': _trackWidth,
               'height': _trackHeight,
             }
@@ -418,7 +454,7 @@ class WebRTCConnector {
               'deviceId': _deviceId,
               'autoSelectVirtualDisplay': autoVirtualDisplay,
               'mandatory': {
-                'frameRate': _trackFrameRate,
+                'frameRate': _idealTrackFrameRate,
               },
               'width': _trackWidth,
               'height': _trackHeight,
@@ -730,7 +766,7 @@ class WebRTCConnector {
         // In the future, we could consider applying this approach to other platforms like
         // Windows, macOS, iOS, and Web as well.
         if (!kIsWeb && Platform.isAndroid) {
-          encoding.maxFramerate = _trackFrameRate.toInt();
+          encoding.maxFramerate = _idealTrackFrameRate.toInt();
           log.info('Set maxFramerate: ${encoding.maxFramerate}');
         }
 
@@ -781,19 +817,24 @@ class WebRTCConnector {
       _trackWidth = _maxTrackWidth ~/ (_maxTrackHeight / constraints.height!);
       _trackHeight = constraints.height!;
     }
-    _trackFrameRate = constraints.frameRate!.toDouble();
+    _idealTrackFrameRate = constraints.frameRate!.toDouble();
 
     if (kIsWeb || Platform.isAndroid || Platform.isIOS) {
-      final constraints = <String, dynamic>{
-        'frameRate': _trackFrameRate,
-        'width': _trackWidth,
-        'height': _trackHeight,
-      };
-      log.info(
-          "Apply video constraints. width:$_trackWidth height:$_trackHeight");
-
       final videoTrack = _localStream?.getVideoTracks().first;
-      await videoTrack?.applyConstraints(constraints);
+      if (kIsWeb) {
+        // Apply both constraints and minimum frame rate for web platform
+        _applyMinFrameRate(videoTrack!);
+      } else {
+        // For Android and iOS, just apply the basic constraints
+        final constraints = <String, dynamic>{
+          'frameRate': _idealTrackFrameRate,
+          'width': _trackWidth,
+          'height': _trackHeight,
+        };
+        log.info(
+            "Apply video constraints. width:$_trackWidth height:$_trackHeight");
+        await videoTrack?.applyConstraints(constraints);
+      }
     } else {
       _localStream = await getDisplayMedia();
 
